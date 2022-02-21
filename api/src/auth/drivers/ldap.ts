@@ -30,6 +30,8 @@ import { respond } from '../../middleware/respond';
 import logger from '../../logger';
 
 interface UserInfo {
+	dn: string;
+	uid?: string;
 	firstName?: string;
 	lastName?: string;
 	email?: string;
@@ -112,16 +114,27 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserDn(identifier: string): Promise<string | undefined> {
-		const { userDn, userAttribute, userScope } = this.config;
+	private async fetchUserInfo(filter: EqualityFilter): Promise<UserInfo | undefined> {
+		const { userDn } = this.config;
+		let { firstnameAttribute, surnameAttribute, mailAttribute } = this.config;
+		
+		firstnameAttribute ??= 'givenName';
+		surnameAttribute ??= 'sn';
+		mailAttribute ??= 'mail';
 
 		return new Promise((resolve, reject) => {
-			// Search for the user in LDAP by attribute
+			// Search for the user in LDAP by filter
 			this.bindClient.search(
 				userDn,
 				{
-					filter: new EqualityFilter({ attribute: userAttribute ?? 'cn', value: identifier }),
-					scope: userScope ?? 'one',
+					filter,
+					attributes: [
+						'uid',
+						firstnameAttribute,
+						surnameAttribute,
+						mailAttribute,
+						'userAccountControl'
+					]
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
@@ -130,40 +143,14 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						resolve(object.dn.toLowerCase());
-					});
-
-					res.on('error', (err: Error) => {
-						reject(handleError(err));
-					});
-
-					res.on('end', () => {
-						resolve(undefined);
-					});
-				}
-			);
-		});
-	}
-
-	private async fetchUserInfo(userDn: string): Promise<UserInfo | undefined> {
-		const { mailAttribute } = this.config;
-
-		return new Promise((resolve, reject) => {
-			// Fetch user info in LDAP by domain component
-			this.bindClient.search(
-				userDn,
-				{ attributes: ['givenName', 'sn', mailAttribute ?? 'mail', 'userAccountControl'] },
-				(err: Error | null, res: SearchCallbackResponse) => {
-					if (err) {
-						reject(handleError(err));
-						return;
-					}
-
-					res.on('searchEntry', ({ object }: SearchEntry) => {
-						const email = object[mailAttribute ?? 'mail'];
+						const firstname = object[firstnameAttribute];
+						const surname = object[surnameAttribute];
+						const email = object[mailAttribute];
 						const user = {
-							firstName: typeof object.givenName === 'object' ? object.givenName[0] : object.givenName,
-							lastName: typeof object.sn === 'object' ? object.sn[0] : object.sn,
+							dn: object.dn,
+							uid: object.uid as string | undefined,
+							firstName: typeof firstname === 'object' ? firstname[0] : firstname,
+							lastName: typeof surname === 'object' ? surname[0] : surname,
 							email: typeof email === 'object' ? email[0] : email,
 							userAccountControl:
 								typeof object.userAccountControl === 'object'
@@ -185,8 +172,8 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserGroups(userDn: string): Promise<string[]> {
-		const { groupDn, groupAttribute, groupScope } = this.config;
+	private async fetchUserGroups(filter: EqualityFilter): Promise<string[]> {
+		const { groupDn, groupScope } = this.config;
 
 		if (!groupDn) {
 			return Promise.resolve([]);
@@ -199,8 +186,8 @@ export class LDAPAuthDriver extends AuthDriver {
 			this.bindClient.search(
 				groupDn,
 				{
+					filter,
 					attributes: ['cn'],
-					filter: new EqualityFilter({ attribute: groupAttribute ?? 'member', value: userDn }),
 					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
@@ -245,15 +232,25 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		await this.validateBindClient();
+		
+		const { userAttribute, groupAttribute } = this.config;
+		
+		const userInfo = await this.fetchUserInfo(new EqualityFilter({
+			attribute: userAttribute ?? 'cn',
+			value: identifier
+		}));
 
-		const userDn = await this.fetchUserDn(payload.identifier);
-
-		if (!userDn) {
+		if (!userInfo?.dn) {
 			throw new InvalidCredentialsException();
 		}
-
-		const userId = await this.fetchUserId(userDn);
-		const userGroups = await this.fetchUserGroups(userDn);
+		
+		const userId = await this.fetchUserId(userInfo.dn);
+		const userGroups = await this.fetchUserGroups(new EqualityFilter({
+			attribute: groupAttribute ?? 'member',
+			value: groupAttribute?.toLowerCase() === 'memberuid' && user.uid
+				? user.uid
+				: user.dn
+		}));
 
 		let userRole;
 
@@ -272,8 +269,6 @@ export class LDAPAuthDriver extends AuthDriver {
 			await this.usersService.updateOne(userId, { role: userRole?.id ?? null });
 			return userId;
 		}
-
-		const userInfo = await this.fetchUserInfo(userDn);
 
 		if (!userInfo) {
 			throw new InvalidCredentialsException();
@@ -326,8 +321,11 @@ export class LDAPAuthDriver extends AuthDriver {
 	async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
-		const userInfo = await this.fetchUserInfo(user.external_identifier!);
-
+		const userInfo = await this.fetchUserInfo(new EqualityFilter({
+			attribute: 'dn',
+			value: user.external_identifier
+		}));
+		
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
 			throw new InvalidCredentialsException();
 		}
