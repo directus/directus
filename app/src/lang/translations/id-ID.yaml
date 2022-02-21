@@ -840,6 +840,7 @@ directus_collection:
   directus_fields: Isian konfigurasi tambahan dan metadata
 fields:
   directus_activity:
+    item: Kunci Utama Item
     action: Aksi
     collection: Koleksi
     comment: Komentar
@@ -942,11 +943,13 @@ fields:
     public_note: Catatan Publik
     auth_password_policy: Kebijakan Kata sandi Autentik
     auth_login_attempts: Upaya Login Autentik
+    files_and_thumbnails: File & Penyimpanan
     module_bar: Papan Modul
   directus_shares:
     name: Nama
     role: Peran
     password: Kata Sandi
+    date_start: Tanggal Mulai
   directus_fields:
     note: Catatan
     hidden: Tersembunyi
