@@ -326,9 +326,16 @@ related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
 translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
+import_data_input_placeholder: CSV atau JSON...
+import_data_button: Mulai Impor
+import_data_indeterminate: Mengimpor Data...
+import_data_success: Data berhasil diimpor dari {filename}
 label_import: Impor
+label_export: Ekspor
+import_export: Impor / Ekspor
 format: Format
 use_current_filters_settings: Gunakan Filter Saat Ini & Pengaturan
+export_data_button: Mulai Ekspor
 last_page: Halaman Terakhir
 last_access: Akses Terakhir
 fill_template: Isi dengan Nilai Template
@@ -524,6 +531,9 @@ errors:
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
   ILLEGAL_ASSET_TRANSFORMATION: Sumber gambar terlalu besar untuk diratinjau
+  VALUE_TOO_LONG: Nilai terlalu panjang
+  VALUE_OUT_OF_RANGE: Nilai di luar rentang
+  INVALID_FOREIGN_KEY: Foreign key tidak valid
   UNKNOWN: Kesalahan Tidak Terduga
 security: Keamanan
 value_hashed: Nilai telah Di-hash secara Aman
@@ -554,6 +564,8 @@ update_collection_success: Perbarui Koleksi
 delete_collection_success: Koleksi yang Dihapus
 make_collection_visible: Buat Koleksi Terlihat
 make_collection_hidden: Buat Koleksi Tersembunyi
+make_folder_visible: Buat Folder Terlihat
+make_folder_hidden: Buat Folder Tersembunyi
 start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
@@ -719,6 +731,8 @@ unlimited: Tak terbatas
 open_link_in: Buka tautan di
 new_tab: Tab baru
 current_tab: Tab saat ini
+save_image: Simpan Gambar
+save_media: Simpan Media
 wysiwyg_options:
   aligncenter: Rata Tengah
   alignjustify: Rata Kanan-Kiri
@@ -808,14 +822,22 @@ keep_editing: Tetap Mengedit
 page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
 page_help_collections_collection: >-
   **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
+activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
 all: Semua
+none: Tidak ada
 batch_delete_confirm: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
 cancel: Batal
 collection: Koleksi
 collections: Pengumpulan
+content: Konten
+singleton_label: Perlakukan sebagai objek tunggal
+directus_collection:
+  directus_activity: Log akuntabilitas untuk semua kejadian
+  directus_collections: Konfigurasi koleksi tambahan dan metadata
+  directus_fields: Isian konfigurasi tambahan dan metadata
 fields:
   directus_activity:
     action: Aksi
@@ -823,6 +845,7 @@ fields:
     comment: Komentar
     user_agent: Agen pengguna
     ip: Alamat IP
+    revisions: Revisi
   directus_collections:
     collection: Koleksi
     icon: Ikon
@@ -951,6 +974,7 @@ field_options:
     login: Masuk
     create: Buat
     update: Perbarui
+    delete: Hapus
   directus_collections:
     track_activity_revisions: Lacak Aktifitas & Revisi
     only_track_activity: Hanya Aktifitas Melacak
@@ -1031,7 +1055,11 @@ start_collapsed: Mulai Runtuh
 block: Blokir
 inline: Inline
 comment: Komentar
+expired: Kedaluwarsa
+share: Bagikan
+continue_label: Lanjut
 editing_role: 'Peraturan {role}'
+delete_label: Hapus
 delete_field_are_you_sure: >-
   Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.
 description: Deskripsi
@@ -1046,21 +1074,31 @@ forgot_password: Lupa Kata Sandi
 hidden: Tersembunyi
 icon: Ikon
 info: Info
+normal: Normal
+success: Sukses
+warning: Peringatan
+danger: Bahaya
 junction_collection: Pengumpulan Persimpangan
 latency: Latensi
 login: Masuk
 my_activity: Aktivitas Saya
+not_authenticated: Tidak diautentikasi
+authenticated: Terautentikasi
 options: Pilihan
 otp: Kata Sandi Sekali Pakai
 password: Kata Sandi
 permissions: Izin
 relationship: Hubungan
+reset: Setel ulang
 reset_password: Atur Ulang Kata Sandi
+revisions: Revisi
+no_revisions: Belum Ada Revisi
 revert: Pulihkan
 save: Simpan
 schema: Skema
 search: Cari
 select_existing: Pilih yang Ada
+select_field_type: Pilih kolom
 select_interface: Pilih antarmuka
 settings: Pengaturan
 sign_in: Masuk
@@ -1139,6 +1177,7 @@ interfaces:
     include_system_collections: Termasuk Koleksi Sistem
   select-color:
     color: Warna
+    description: Masukan atau pilih nilai warna
   datetime:
     datetime: Datetime
   system-display-template:
@@ -1158,6 +1197,9 @@ interfaces:
     hash: Hash
   select-icon:
     icon: Ikon
+    search_for_icon: Cari ikon...
+  file-image:
+    image: Gambar
   system-interface:
     interface: Antarmuka
   select-dropdown-m2o:
