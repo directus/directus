@@ -211,6 +211,10 @@ export function applyFilter(
 
 	return rootQuery;
 
+	function isNegativeOperator(operator: string) {
+		return operator.indexOf('_n') === 0;
+	}
+
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
@@ -335,6 +339,42 @@ export function applyFilter(
 		}
 	}
 
+	function callbackSubqueryRelation(relation: Relation, value: any) {
+		return function (subQueryKnex: Knex.QueryBuilder<any, any>) {
+			const field = relation!.field;
+			const collection = relation!.collection;
+			const column = `${collection}.${field}`;
+
+			subQueryKnex.from(collection).whereRaw(`${field} = ${column}`);
+
+			applyQuery(
+				knex,
+				relation!.collection,
+				subQueryKnex,
+				{
+					filter: value,
+				},
+				schema,
+				true
+			);
+		};
+	}
+
+	function inverseFilters(value: any) {
+		for (const field in value) {
+			for (const operator in value[field]) {
+				let inverseOperator = operator;
+				if (isNegativeOperator(operator)) {
+					inverseOperator = '_' + operator.substring(2);
+				} else {
+					inverseOperator = '_n' + operator.substring(1);
+				}
+				value[field][inverseOperator] = value[field][operator];
+				delete value[field][operator];
+			}
+		}
+	}
+
 	function addWhereClauses(
 		knex: Knex,
 		dbQuery: Knex.QueryBuilder,
@@ -390,25 +430,12 @@ export function applyFilter(
 					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
 				}
 
-				// Note: knex's types don't appreciate knex.raw in whereIn, even though it's officially supported
-				dbQuery[logical].whereIn(pkField as string, (subQueryKnex) => {
-					const field = relation!.field;
-					const collection = relation!.collection;
-					const column = `${collection}.${field}`;
-
-					subQueryKnex.select({ [field]: column }).from(collection);
-
-					applyQuery(
-						knex,
-						relation!.collection,
-						subQueryKnex,
-						{
-							filter: value,
-						},
-						schema,
-						true
-					);
-				});
+				if (isNegativeOperator(filterOperator)) {
+					inverseFilters(value);
+					dbQuery[logical].whereNotExists(callbackSubqueryRelation(relation, value));
+				} else {
+					dbQuery[logical].whereExists(callbackSubqueryRelation(relation, value));
+				}
 			}
 		}
 
