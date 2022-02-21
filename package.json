@@ -74,7 +74,7 @@
 	"lint-staged": {
 		"*.{js,ts,vue}": "eslint --fix",
 		"*.{md,yaml}": "prettier --write",
-		"*.{css,scss,vue}": "stylelint --fix --custom-syntax postcss-html"
+		"app/*.{css,scss,vue}": "stylelint --fix --custom-syntax postcss-html"
 	},
 	"volta": {
 		"node": "16.13.2",
