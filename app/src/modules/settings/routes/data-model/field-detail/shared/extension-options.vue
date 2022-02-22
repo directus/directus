@@ -27,7 +27,8 @@ import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
 import { getPanel } from '@/panels';
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/shared/types';
+import { useFieldDetailStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	props: {
@@ -51,18 +52,14 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
-		collection: {
-			type: String,
-			default: '',
-		},
-		field: {
-			type: Object as PropType<Field>,
-			default: null,
-		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const fieldDetailStore = useFieldDetailStore();
+
+		const { collection, field } = storeToRefs(fieldDetailStore);
 
 		const extensionInfo = computed(() => {
 			switch (props.type) {
@@ -122,6 +119,8 @@ export default defineComponent({
 			optionsValues,
 			optionsFields,
 			t,
+			collection,
+			field,
 		};
 	},
 });
