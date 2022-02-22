@@ -588,7 +588,7 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	color: #fff;
+	color: var(--background-page);
 }
 
 .header .text h1 {
@@ -627,6 +627,14 @@ export default {
 .panel svg {
 	display: block;
 	margin: 0;
+}
+
+.panel svg circle {
+	fill: var(--primary);
+}
+
+.panel svg path {
+	fill: var(--background-page);
 }
 
 .panel h2 {
