@@ -6,7 +6,7 @@
 					<v-icon
 						:name="value ? 'clear' : 'today'"
 						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
-						@click.stop="unsetValue"
+						v-on="{ click: value ? unsetValue : null }"
 					/>
 				</template>
 			</v-input>
@@ -97,7 +97,9 @@ export default defineComponent({
 			}
 		}
 
-		function unsetValue() {
+		function unsetValue(e: any) {
+			e.preventDefault();
+			e.stopPropagation();
 			emit('input', null);
 		}
 
@@ -109,7 +111,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-icon {
 	&.today-icon {
-		pointer-events: none;
+		&:hover,
 		&.active {
 			--v-icon-color: var(--primary);
 		}
