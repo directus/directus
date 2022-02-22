@@ -3,7 +3,11 @@
 		<template #activator="{ toggle, active }">
 			<v-input :active="active" clickable readonly :model-value="displayValue" :disabled="disabled" @click="toggle">
 				<template v-if="!disabled" #append>
-					<v-icon :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
+					<v-icon
+						:name="value ? 'clear' : 'today'"
+						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
+						@click.stop="unsetValue"
+					/>
 				</template>
 			</v-input>
 		</template>
@@ -103,7 +107,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-icon.active {
-	--v-icon-color: var(--primary);
+.v-icon {
+	&.today-icon {
+		pointer-events: none;
+		&.active {
+			--v-icon-color: var(--primary);
+		}
+	}
+
+	&.clear-icon {
+		&:hover,
+		&.active {
+			--v-icon-color: var(--danger);
+		}
+	}
 }
 </style>
