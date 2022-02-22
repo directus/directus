@@ -13,7 +13,7 @@ import ldap, {
 } from 'ldapjs';
 import ms from 'ms';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import Joi, { number } from 'joi';
+import Joi from 'joi';
 import { AuthDriver } from '../auth';
 import { AuthDriverOptions, User } from '../../types';
 import {
