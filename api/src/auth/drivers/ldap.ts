@@ -13,7 +13,7 @@ import ldap, {
 } from 'ldapjs';
 import ms from 'ms';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import Joi from 'joi';
+import Joi, { number } from 'joi';
 import { AuthDriver } from '../auth';
 import { AuthDriverOptions, User } from '../../types';
 import {
@@ -38,6 +38,8 @@ interface UserInfo {
 	userAccountControl: number;
 }
 
+type SearchScope = 'base' | 'one' | 'sub';
+
 // 0x2: ACCOUNTDISABLE
 // 0x10: LOCKOUT
 // 0x800000: PASSWORD_EXPIRED
@@ -53,7 +55,13 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const { bindDn, bindPassword, userDn, provider, clientUrl } = config;
 
-		if (!bindDn || !bindPassword || !userDn || !provider || (!clientUrl && !config.client?.socketPath)) {
+		if (
+			bindDn === undefined ||
+			bindPassword === undefined ||
+			!userDn ||
+			!provider ||
+			(!clientUrl && !config.client?.socketPath)
+		) {
 			throw new InvalidConfigException('Invalid provider config', { provider });
 		}
 
@@ -106,7 +114,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 				res.on('end', (result: LDAPResult | null) => {
 					if (result?.status === 0) {
-						// Handle edge case with IBM systems where authenticated bind user could not fetch their DN
+						// Handle edge case where authenticated bind user could not fetch their own DN
 						reject(new UnexpectedResponseException('Failed to find bind user record'));
 					}
 				});
@@ -114,27 +122,25 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserInfo(filter: EqualityFilter): Promise<UserInfo | undefined> {
-		const { userDn } = this.config;
-		let { firstnameAttribute, surnameAttribute, mailAttribute } = this.config;
-		
-		firstnameAttribute ??= 'givenName';
-		surnameAttribute ??= 'sn';
+	private async fetchUserInfo(
+		baseDn: string,
+		filter?: EqualityFilter,
+		scope?: SearchScope
+	): Promise<UserInfo | undefined> {
+		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
+
+		firstNameAttribute ??= 'givenName';
+		lastNameAttribute ??= 'sn';
 		mailAttribute ??= 'mail';
 
 		return new Promise((resolve, reject) => {
 			// Search for the user in LDAP by filter
 			this.bindClient.search(
-				userDn,
+				baseDn,
 				{
 					filter,
-					attributes: [
-						'uid',
-						firstnameAttribute,
-						surnameAttribute,
-						mailAttribute,
-						'userAccountControl'
-					]
+					scope,
+					attributes: ['uid', firstNameAttribute, lastNameAttribute, mailAttribute, 'userAccountControl'],
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
@@ -143,19 +149,13 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						const firstname = object[firstnameAttribute];
-						const surname = object[surnameAttribute];
-						const email = object[mailAttribute];
 						const user = {
 							dn: object.dn,
-							uid: object.uid as string | undefined,
-							firstName: typeof firstname === 'object' ? firstname[0] : firstname,
-							lastName: typeof surname === 'object' ? surname[0] : surname,
-							email: typeof email === 'object' ? email[0] : email,
-							userAccountControl:
-								typeof object.userAccountControl === 'object'
-									? Number(object.userAccountControl[0])
-									: Number(object.userAccountControl),
+							uid: getAttributeValue(object.uid),
+							firstName: getAttributeValue(object[firstNameAttribute]),
+							lastName: getAttributeValue(object[lastNameAttribute]),
+							email: getAttributeValue(object[mailAttribute]),
+							userAccountControl: Number(getAttributeValue(object.userAccountControl) ?? 0),
 						};
 						resolve(user);
 					});
@@ -172,23 +172,17 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserGroups(filter: EqualityFilter): Promise<string[]> {
-		const { groupDn, groupScope } = this.config;
-
-		if (!groupDn) {
-			return Promise.resolve([]);
-		}
-
+	private async fetchUserGroups(baseDn: string, filter: EqualityFilter, scope?: SearchScope): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			let userGroups: string[] = [];
 
 			// Search for the user info in LDAP by group attribute
 			this.bindClient.search(
-				groupDn,
+				baseDn,
 				{
 					filter,
+					scope,
 					attributes: ['cn'],
-					scope: groupScope ?? 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
 					if (err) {
@@ -232,38 +226,47 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		await this.validateBindClient();
-		
-		const { userAttribute, groupAttribute } = this.config;
-		
-		const userInfo = await this.fetchUserInfo(new EqualityFilter({
-			attribute: userAttribute ?? 'cn',
-			value: identifier
-		}));
+
+		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute } = this.config;
+
+		const userInfo = await this.fetchUserInfo(
+			userDn,
+			new EqualityFilter({
+				attribute: userAttribute ?? 'cn',
+				value: payload.identifier,
+			}),
+			userScope ?? 'one'
+		);
 
 		if (!userInfo?.dn) {
 			throw new InvalidCredentialsException();
 		}
-		
-		const userId = await this.fetchUserId(userInfo.dn);
-		const userGroups = await this.fetchUserGroups(new EqualityFilter({
-			attribute: groupAttribute ?? 'member',
-			value: groupAttribute?.toLowerCase() === 'memberuid' && user.uid
-				? user.uid
-				: user.dn
-		}));
 
 		let userRole;
 
-		if (userGroups.length) {
-			userRole = await this.knex
-				.select('id')
-				.from('directus_roles')
-				.whereRaw(`LOWER(??) IN (${userGroups.map(() => '?')})`, [
-					'name',
-					...userGroups.map((group) => group.toLowerCase()),
-				])
-				.first();
+		if (groupDn) {
+			const userGroups = await this.fetchUserGroups(
+				groupDn,
+				new EqualityFilter({
+					attribute: groupAttribute ?? 'member',
+					value: groupAttribute?.toLowerCase() === 'memberuid' && userInfo.uid ? userInfo.uid : userInfo.dn,
+				}),
+				groupScope ?? 'one'
+			);
+
+			if (userGroups.length) {
+				userRole = await this.knex
+					.select('id')
+					.from('directus_roles')
+					.whereRaw(`LOWER(??) IN (${userGroups.map(() => '?')})`, [
+						'name',
+						...userGroups.map((group) => group.toLowerCase()),
+					])
+					.first();
+			}
 		}
+
+		const userId = await this.fetchUserId(userInfo.dn);
 
 		if (userId) {
 			await this.usersService.updateOne(userId, { role: userRole?.id ?? null });
@@ -279,11 +282,11 @@ export class LDAPAuthDriver extends AuthDriver {
 			first_name: userInfo.firstName,
 			last_name: userInfo.lastName,
 			email: userInfo.email,
-			external_identifier: userDn,
+			external_identifier: userInfo.dn,
 			role: userRole?.id,
 		});
 
-		return (await this.fetchUserId(userDn)) as string;
+		return (await this.fetchUserId(userInfo.dn)) as string;
 	}
 
 	async verify(user: User, password?: string): Promise<void> {
@@ -321,11 +324,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
-		const userInfo = await this.fetchUserInfo(new EqualityFilter({
-			attribute: 'dn',
-			value: user.external_identifier
-		}));
-		
+		const userInfo = await this.fetchUserInfo(user.external_identifier!);
+
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
 			throw new InvalidCredentialsException();
 		}
@@ -344,6 +344,10 @@ const handleError = (e: Error) => {
 		service: 'ldap',
 		message: e.message,
 	});
+};
+
+const getAttributeValue = (value: string | string[] | undefined): string | undefined => {
+	return typeof value === 'object' ? value[0] : value;
 };
 
 export function createLDAPAuthRouter(provider: string): Router {
