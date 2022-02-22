@@ -215,7 +215,8 @@ export default defineComponent({
 	border-spacing: 0;
 }
 
-.md :deep(img) {
+.md :deep(img),
+.md :deep(video) {
 	max-width: 100%;
 	margin: 20px 0;
 	border-radius: 6px;
