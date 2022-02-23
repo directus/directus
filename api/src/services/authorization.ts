@@ -15,6 +15,7 @@ import {
 } from '@directus/shared/types';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
+import { stripFunction } from '../utils/strip-function';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -128,7 +129,7 @@ export class AuthorizationService {
 
 					if (allowedFields.includes('*')) continue;
 
-					const fieldKey = childNode.name;
+					const fieldKey = stripFunction(childNode.name);
 
 					if (allowedFields.includes(fieldKey) === false) {
 						throw new ForbiddenException();

@@ -100,7 +100,7 @@
 				<template #append-outer>
 					<save-options
 						v-if="isSavable"
-						:disabled-options="['save-and-add-new']"
+						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 						@discard-and-stay="discardAndStay"
@@ -291,7 +291,7 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 
-		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
+		const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			ref('directus_files'),
 			item,
 			isNew
@@ -335,6 +335,7 @@ export default defineComponent({
 			to,
 			replaceFileDialogActive,
 			refresh,
+			createAllowed,
 			deleteAllowed,
 			saveAllowed,
 			updateAllowed,

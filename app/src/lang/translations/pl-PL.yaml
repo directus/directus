@@ -889,6 +889,7 @@ directus_collection:
   directus_roles: Grupy uprawnień dla użytkowników systemu
   directus_sessions: Informacje o sesji użytkownika
   directus_settings: Opcje konfiguracji projektu
+  directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
   directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
 fields:

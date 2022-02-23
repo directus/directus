@@ -94,7 +94,7 @@ export default {
       .ds-suggestion
         border-bottom 1px solid var(--border-normal)
     .algolia-docsearch-suggestion--highlight
-      color var(--green-150) !important
+      color var(--primary-dark) !important
       box-shadow inset 0 -2px 0 0 var(--primary) !important
     .algolia-docsearch-suggestion--text
       color var(--foreground-normal)
