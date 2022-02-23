@@ -509,6 +509,36 @@ module.exports = {
 					},
 				],
 			},
+			{
+				title: 'Cloud',
+				children: [
+					{
+						type: 'page',
+						path: '/cloud/overview',
+						title: 'Overview',
+					},
+					{
+						type: 'page',
+						path: '/cloud/accounts-and-teams',
+						title: 'Accounts & Teams',
+					},
+					{
+						type: 'page',
+						path: '/cloud/tiers-and-billing',
+						title: 'Tiers & Billing',
+					},
+					{
+						type: 'page',
+						path: '/cloud/projects',
+						title: 'Projects',
+					},
+					{
+						type: 'page',
+						path: '/cloud/api',
+						title: 'API',
+					},
+				],
+			},
 		],
 	},
 	markdown: {
