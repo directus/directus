@@ -51,7 +51,13 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const { bindDn, bindPassword, userDn, provider, clientUrl } = config;
 
-		if (!bindDn || !bindPassword || !userDn || !provider || (!clientUrl && !config.client?.socketPath)) {
+		if (
+			bindDn === undefined ||
+			bindPassword === undefined ||
+			!userDn ||
+			!provider ||
+			(!clientUrl && !config.client?.socketPath)
+		) {
 			throw new InvalidConfigException('Invalid provider config', { provider });
 		}
 
