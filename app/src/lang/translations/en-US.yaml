@@ -902,6 +902,7 @@ directus_collection:
   directus_roles: Permission groups for system users
   directus_sessions: User session information
   directus_settings: Project configuration options
+  directus_shares: Tracks externally shared items
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
 fields:
