@@ -20,6 +20,7 @@ const defaults: Record<string, any> = {
 	MAX_PAYLOAD_SIZE: '100kb',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
+	DB_INCLUDE_TABLES: '',
 
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',
@@ -91,6 +92,7 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 
 	DB_EXCLUDE_TABLES: 'array',
+	DB_INCLUDE_TABLES: 'array',
 };
 
 let env: Record<string, any> = {
