@@ -140,7 +140,7 @@ $navbar-horizontal-padding = 30px
       .suggestion
         &.focused
           a
-            color var(--primary-110)
+            color var(--primary-dark)
         a
           color var(--foreground-normal-alt)
 

@@ -259,16 +259,19 @@ export default defineComponent({
 			}
 
 			const id = item[relatedPrimKey];
-			emit(
-				'input',
-				props.value.filter((item) => {
-					if (typeof item === 'number' || typeof item === 'string') return item !== id;
-					if (typeof item === 'object' && relatedPrimKey in item) {
-						return item[relatedPrimKey] !== id;
-					}
-					return true;
-				})
-			);
+			const newValue = props.value.filter((item) => {
+				if (typeof item === 'number' || typeof item === 'string') return item !== id;
+				if (typeof item === 'object' && relatedPrimKey in item) {
+					return item[relatedPrimKey] !== id;
+				}
+				return true;
+			});
+
+			if (newValue.length === 0) {
+				emit('input', null);
+			} else {
+				emit('input', newValue);
+			}
 		}
 
 		function useSort() {

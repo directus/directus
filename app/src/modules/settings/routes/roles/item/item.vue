@@ -12,6 +12,7 @@
 			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-if="primaryKey !== lastAdminRoleId"
 						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon
@@ -126,6 +127,10 @@ export default defineComponent({
 			required: true,
 		},
 		permissionKey: {
+			type: String,
+			default: null,
+		},
+		lastAdminRoleId: {
 			type: String,
 			default: null,
 		},

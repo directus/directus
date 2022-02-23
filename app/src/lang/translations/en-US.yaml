@@ -363,6 +363,8 @@ delete_share: Delete Share
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -900,6 +902,7 @@ directus_collection:
   directus_roles: Permission groups for system users
   directus_sessions: User session information
   directus_settings: Project configuration options
+  directus_shares: Tracks externally shared items
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
 fields:
