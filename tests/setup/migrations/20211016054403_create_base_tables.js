@@ -14,6 +14,8 @@ exports.up = async function (knex) {
 		table.string('password');
 		table.integer('shows_attended');
 		table.uuid('favorite_artist').references('id').inTable('artists');
+		table.uuid('user_created').references('id').inTable('directus_users');
+		table.uuid('user_role').references('id').inTable('directus_roles');
 	});
 	await knex.schema.createTable('events', (table) => {
 		table.uuid('id').primary().notNullable();
