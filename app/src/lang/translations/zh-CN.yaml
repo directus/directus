@@ -34,7 +34,7 @@ conditions: 条件
 maps: 地图
 switch_user: 切换用户
 item_creation: 新建
-item_revision: 条目调整
+item_revision: 项目调整
 enter_a_name: 请输入名称...
 duplicate_field: 复制
 half_width: 半宽
@@ -55,8 +55,8 @@ exclusive: 唯一的
 children: 子页面
 db_only_click_to_configure: '仅限数据库：点击配置'
 show_active_items: 显示活动项
-show_archived_items: 显示存档条目
-show_all_items: 显示所有条目
+show_archived_items: 显示存档项目
+show_all_items: 显示所有项目
 edited: 已编辑的值
 required: 必填
 required_for_app_access: 应用程序访问所需的
@@ -105,14 +105,14 @@ os_totalmem: 系统内存
 archive: 存档
 archive_confirm: 您确定要归档所选吗？
 archive_confirm_count: >-
-  没有选定条目 | 你确定要存档这个条目吗？| 你确定你想要存档这些 {count} 个条目吗？
+  没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
 reset_system_permissions_to: '重置系统权限：'
 reset_system_permissions_copy: 此操作将覆盖您可能应用到系统模型中的自定义权限。确定吗？
 the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
 app_access_minimum: 最小权限
 recommended_defaults: 推荐设置
 unarchive: 取消存档
-unarchive_confirm: 您确定要取消归档此条目吗？
+unarchive_confirm: 您确定要取消归档此项目吗？
 nested_files_folders_will_be_moved: 文件和文件夹将被上移一级。
 unknown_validation_errors: '以下隐藏字段的验证错误：'
 validationError:
@@ -151,7 +151,7 @@ field_o2m: O2M 关系
 field_m2m: M2M 关系
 field_translations: 翻译
 field_group: 字段组
-item_permissions: 条目权限
+item_permissions: 项目权限
 field_permissions: 字段权限
 field_validation: 字段验证
 field_presets: 字段预设
@@ -160,8 +160,8 @@ fields_for_role: '{role} 角色能够 {action} 字段。'
 validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
 presets_for_role: '{role} 角色的默认值。'
 presentation_and_aliases: 别名
-revision_post_create: 这是新建条目后看起来的样子。
-revision_post_update: 这是更新后该条目的外观。
+revision_post_create: 这是新建项目后看起来的样子。
+revision_post_update: 这是更新后该项目的外观。
 changes_made: 下面是本次修订中所作的具体修改。
 no_relational_data: 请记住，此处不包括关系数据。
 hide_field_on_detail: 在详情中隐藏该字段
@@ -321,7 +321,7 @@ leave_comment: 发表评论...
 post_comment_success: 评论已发布
 item_create_success: 条目已创建 | 条目已创建
 item_update_success: 条目已更新 | 条目已更新
-item_delete_success: 条目已删除 | 条目已删除
+item_delete_success: 项目已删除 | 项目已删除
 this_collection: 该模型
 related_collection: 相关模型
 related_collections: 相关模型
@@ -423,15 +423,15 @@ save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_as_copy: 另存为
 add_existing: 添加现有
-creating_items: 创建条目
+creating_items: 创建项目
 enable_create_button: 启用创建按钮
-selecting_items: 选择条目
+selecting_items: 选择项目
 enable_select_button: 启用选择按钮
 comments: 注释
 no_comments: 暂无评论
 click_to_expand: 单击展开
-select_item: 选择条目
-no_items: 无条目
+select_item: 选择项目
+no_items: 无项目
 search_items: 搜索条目...
 disabled: 禁用
 information: 信息
@@ -453,7 +453,7 @@ no_webhooks_copy: 尚未配置任何Webhooks，来创建一个吧。
 no_notifications: 无通知
 no_notifications_copy: 你已全部搞定！
 activity_log: 活动日志
-all_items: 所有条目
+all_items: 所有项目
 any: 任意
 csv: CSV
 no_collections: 没有任何模型
@@ -506,7 +506,7 @@ toggle_manual_sorting: 切换手动排序
 bookmark_doesnt_exist: 书签不存在
 bookmark_doesnt_exist_copy: 找不到您试图打开的书签。
 bookmark_doesnt_exist_cta: 返回模型
-select_an_item: 选择一个条目...
+select_an_item: 选择一个项目...
 edit: 编辑
 enabled: 已启用
 disable_tfa: 停用双重认证
@@ -524,8 +524,8 @@ errors:
   INVALID_OTP: 错误的一次性密码
   INVALID_PAYLOAD: 无效的内容
   INVALID_QUERY: 无效的查询
-  ITEM_LIMIT_REACHED: 条目已达到限制
-  ITEM_NOT_FOUND: 找不到条目
+  ITEM_LIMIT_REACHED: 项目已达到限制
+  ITEM_NOT_FOUND: 找不到项目
   ROUTE_NOT_FOUND: 未找到
   RECORD_NOT_UNIQUE: 检测到重复的值
   USER_SUSPENDED: 用户已禁用
@@ -569,10 +569,10 @@ make_collection_visible: 显示收藏
 make_collection_hidden: 隐藏收藏集
 make_folder_visible: 显示文件夹
 make_folder_hidden: 隐藏文件夹
-start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
-start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
+start_end_of_count_items: '{count} 个项目中的 {start}-{end}'
+start_end_of_count_filtered_items: '已过滤后{count} 个项目中的 {start}-{end}'
 one_item: '1项'
-one_filtered_item: '1 个已过滤条目'
+one_filtered_item: '1 个已过滤项目'
 delete_collection_are_you_sure: >-
   您确定要删除此模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
 delete_folder_are_you_sure: 您确定要删除此文件夹吗？嵌套文件夹和收藏将被移动到最上层。
@@ -649,11 +649,11 @@ collection_setup: 模型设置
 optional_system_fields: 可选系统字段
 value_unique: 值必须唯一
 all_activity: 所有活动的
-create_item: 创建条目
+create_item: 创建项目
 display_template: 显示模板
 language_display_template: 语言显示模板
 translations_display_template: 翻译显示模板
-n_items_selected: '没有选定条目 | 1 项选定条目 | {n} 项选定条目'
+n_items_selected: '没有选定项目 | 1 项选定项目 | {n} 项选定项目'
 per_page: 每页
 all_files: 所有文件
 my_files: 我的文件
@@ -792,7 +792,7 @@ adding_user: 添加用户
 unknown_user: 未知用户
 creating_in: '在 {collection} 中创建条目'
 editing_in: '在 {collection} 中编辑条目'
-viewing_in: '在 {collection} 中查看条目'
+viewing_in: '在 {collection} 中查看项目'
 creating_unit: '正在创建 {unit}'
 editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
@@ -825,7 +825,7 @@ page_help_collections_overview: '**模型总览** - 您可以访问的所有模�
 page_help_collections_collection: >-
   **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
 page_help_collections_item: >-
-  **条目详情** - 查看和管理此条目的表单。侧边栏还包含完整的修改历史和评论。
+  **条目详情l** - 查看和管理此条目的表单。侧边栏还包含完整的修改历史和评论。
 page_help_activity_collection: >-
   **浏览活动** - 您所有用户的系统和内容活动的完整列表。
 page_help_docs_global: >-
@@ -889,7 +889,7 @@ directus_collection:
   directus_webhooks: 基于事件的 HTTP 请求配置
 fields:
   directus_activity:
-    item: 条目主键
+    item: 项目主键
     action: 操作
     collection: 数据模型
     timestamp: 操作于
@@ -913,7 +913,7 @@ fields:
     sort_field: 排序字段
     accountability: 活动和版本修订跟踪
     archive_field: 归档字段
-    item_duplication_fields: 条目重复字段
+    item_duplication_fields: 项目重复字段
   directus_files:
     $thumbnail: 缩略图
     title: 标题
@@ -1168,8 +1168,8 @@ new_share: 新建分享
 expired: 已过期
 upcoming: 即将到来的
 share: 分享
-share_item: 分享条目
-shared_with_you: 已与您分享一个条目
+share_item: 分享项目
+shared_with_you: 已与您分享一个项目
 shared_enter_passcode: 输入您的密码以继续...
 shared_leave_blank_for_unlimited: 留空表示无限制
 shared_times_remaining: 此链接只能使用 {n} 次
@@ -1177,7 +1177,7 @@ shared_last_remaining: 此链接只能使用一次
 shared_uses_left: 为了增加安全性，该共享页面已被设置成只可显示有限次。 目前还剩下 {n} 次显示，此后本页面将无法访问。
 share_access_page: 访问共享页面
 share_access_not_found: 这个共享页面不存在或已经超过允许的最大数量。
-share_access_not_found_desc: 请联系此条目的授权用户以请求访问。
+share_access_not_found_desc: 请联系此项目的授权用户以请求访问。
 share_access_not_found_title: 未知共享页面
 share_copy_link: 复制链接
 share_copy_link_success: 链接已复制
