@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { computed, defineComponent, reactive, watch, PropType, ref } from 'vue';
+import { computed, defineComponent, reactive, watch, PropType } from 'vue';
 import { getPanels, getPanel } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@directus/shared/types';

@@ -245,7 +245,7 @@ click_to_manage_translated_fields: >-
 fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
-search_collection: Sammlung durchsuchen...
+search_collection: Sammlung suchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
 add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
@@ -1256,7 +1256,6 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1406,8 +1405,6 @@ interfaces:
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
     box: Block / Inline
-    imageToken: Bild-Token
-    imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
   map:
     map: Karte
     description: Ort auf der Karte wählen
@@ -1514,8 +1511,6 @@ interfaces:
     custom_formats: Benutzerdefinierte Formate
     options_override: Optionen überschreiben
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
-    imageToken: Bild-Token
-    imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.

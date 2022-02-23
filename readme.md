@@ -64,17 +64,18 @@ Directus only requires Node.js and supports most operating systems and SQL datab
   [mysql_native_password](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors))
 - MariaDB 10.2.7+
 - SQLite 3+
+- CockroachDB 21.1.13+<sup>[1]</sup>
 - MS SQL 13+<sup>[1]</sup>
 - OracleDB 19+<sup>[1]</sup>
 
-<sup>[1]</sup> Older versions may work, but aren't officially supported.
+<sup>[1]</sup> Older versions may work, but aren't officially tested/supported.
 
 #### Supported OS
 
 - Ubuntu 18.04
 - CentOS / RHEL 8
 - macOS Catalina or newer
-- Windows 10
+- Windows 10/11
 - Docker ([DockerHub](https://hub.docker.com/r/directus/directus) +
   [Dockerfile](https://github.com/directus/directus/blob/main/docker/Dockerfile))
 

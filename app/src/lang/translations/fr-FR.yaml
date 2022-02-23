@@ -1256,7 +1256,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1406,8 +1405,6 @@ interfaces:
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
     box: Bloc / Inline
-    imageToken: Token d'image
-    imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
@@ -1514,8 +1511,6 @@ interfaces:
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
-    imageToken: Token d'image
-    imageToken_label: Quel token (statique) ajouter aux sources d'images
   input-autocomplete-api:
     input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.

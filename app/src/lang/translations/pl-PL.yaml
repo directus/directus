@@ -357,6 +357,8 @@ delete_share: Usuń udostępnienie
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'GG:mm:ss'
+date-fns_time_no_seconds_24hour: 'GG:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -735,6 +737,8 @@ unlimited: Nielimitowany
 open_link_in: Otwórz link w
 new_tab: Nowa karta
 current_tab: Aktualna karta
+save_image: Zapisz obraz
+save_media: Zapisz media
 wysiwyg_options:
   aligncenter: Wyśrodkuj
   alignjustify: Wyjustuj
@@ -885,6 +889,7 @@ directus_collection:
   directus_roles: Grupy uprawnień dla użytkowników systemu
   directus_sessions: Informacje o sesji użytkownika
   directus_settings: Opcje konfiguracji projektu
+  directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
   directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
 fields:
@@ -1406,8 +1411,8 @@ interfaces:
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1514,8 +1519,8 @@ interfaces:
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.

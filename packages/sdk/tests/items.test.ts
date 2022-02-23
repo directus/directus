@@ -47,19 +47,35 @@ describe('items', function () {
 		expect(item?.name).toBe('Double Slash');
 	});
 
-	test(`can get multiple items by id`, async (url, nock) => {
+	test(`can get multiple items by primary key`, async (url, nock) => {
 		nock()
-			.get('/items/posts')
+			.get('/fields/posts')
 			.reply(200, {
 				data: [
 					{
-						id: 1,
+						collection: 'posts',
+						field: 'primary_key',
+						schema: { is_primary_key: true },
+					},
+				],
+			});
+
+		nock()
+			.get('/items/posts')
+			.query({
+				filter: '{"primary_key":{"_in":[1,2]}}',
+				sort: 'primary_key',
+			})
+			.reply(200, {
+				data: [
+					{
+						primary_key: 1,
 						title: 'My first post',
 						body: '<h1>Hey there!</h1>',
 						published: false,
 					},
 					{
-						id: 2,
+						primary_key: 2,
 						title: 'My second post',
 						body: '<h1>Hey there!</h1>',
 						published: true,
@@ -68,17 +84,17 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
-		const items = await sdk.items('posts').readMany();
+		const items = await sdk.items('posts').readMany([1, 2]);
 
 		expect(items.data?.[0]).toMatchObject({
-			id: 1,
+			primary_key: 1,
 			title: 'My first post',
 			body: '<h1>Hey there!</h1>',
 			published: false,
 		});
 
 		expect(items.data?.[1]).toMatchObject({
-			id: 2,
+			primary_key: 2,
 			title: 'My second post',
 			body: '<h1>Hey there!</h1>',
 			published: true,
@@ -105,7 +121,7 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
-		const items = await sdk.items('posts').readMany({
+		const items = await sdk.items('posts').readByQuery({
 			fields: ['id', 'title'],
 		});
 

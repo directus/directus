@@ -155,9 +155,9 @@ item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
-permissions_for_role: 'Campi che il ruolo {role} può {action}.'
-fields_for_role: 'Campi che il ruolo {role} può {action}.'
-validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
+permissions_for_role: 'Oggetti per cui è abilitata l''azione {action} per il ruolo {role}.'
+fields_for_role: 'Campi per cui è abilitata l''azione {action} per il ruolo {role}.'
+validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare all''azione {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
 revision_post_create: Ecco come appariva questo elemento quando è stato creato.
@@ -357,6 +357,8 @@ delete_share: Elimina condivisione
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -735,6 +737,8 @@ unlimited: Illimitato
 open_link_in: Apri collegamento in
 new_tab: Nuova scheda
 current_tab: Scheda corrente
+save_image: Salva immagine
+save_media: Salva media
 wysiwyg_options:
   aligncenter: Centrato
   alignjustify: Giustificato
@@ -1194,7 +1198,7 @@ choose_action: Scegli azione
 continue_label: Continua
 continue_as: >-
   {name} è attualmente autenticato. Se riconosci questo account, premi continua.
-editing_role: '{role} Ruolo'
+editing_role: 'Ruolo {role}'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
 delete_label: Elimina
@@ -1256,7 +1260,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1406,8 +1409,8 @@ interfaces:
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
-    imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
@@ -1514,8 +1517,8 @@ interfaces:
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
-    imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.
