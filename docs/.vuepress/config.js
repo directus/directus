@@ -534,8 +534,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/cloud/api',
-						title: 'API',
+						path: '/cloud/cloud-api',
+						title: 'Cloud API',
 					},
 				],
 			},
