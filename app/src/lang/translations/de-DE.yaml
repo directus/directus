@@ -245,7 +245,7 @@ click_to_manage_translated_fields: >-
 fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
-search_collection: Sammlung durchsuchen...
+search_collection: Sammlung suchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
 add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
