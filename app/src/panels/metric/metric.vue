@@ -43,7 +43,7 @@ export default defineComponent({
 		},
 		function: {
 			type: String as PropType<
-				'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max' | 'first' | 'last'
+				'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max' | 'first' | 'last'
 			>,
 			required: true,
 		},

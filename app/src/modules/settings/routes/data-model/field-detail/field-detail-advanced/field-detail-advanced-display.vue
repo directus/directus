@@ -40,7 +40,6 @@ export default defineComponent({
 
 		const interfaceID = computed(() => field.value.meta?.interface);
 		const display = syncFieldDetailStoreProperty('field.meta.display');
-		const options = syncFieldDetailStoreProperty('field.meta.display_options');
 
 		const selectedInterface = computed(() => getInterface(interfaceID.value));
 		const selectedDisplay = computed(() => getDisplay(display.value));
@@ -91,6 +90,20 @@ export default defineComponent({
 			}
 
 			return null;
+		});
+
+		const options = computed({
+			get() {
+				return fieldDetailStore.field.meta?.display_options ?? {};
+			},
+			set(newOptions: Record<string, any>) {
+				fieldDetailStore.$patch((state) => {
+					state.field.meta = {
+						...(state.field.meta ?? {}),
+						display_options: newOptions,
+					};
+				});
+			},
 		});
 
 		return { t, selectItems, selectedDisplay, display, options, customOptionsFields };

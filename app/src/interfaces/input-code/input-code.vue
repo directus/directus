@@ -28,6 +28,7 @@ import 'codemirror/keymap/sublime.js';
 
 import formatTitle from '@directus/format-title';
 import importCodemirrorMode from './import-codemirror-mode';
+import { useWindowSize } from '@/composables/use-window-size';
 
 export default defineComponent({
 	props: {
@@ -71,6 +72,8 @@ export default defineComponent({
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const { width } = useWindowSize();
 
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
 		let codemirror: CodeMirror.Editor | null;
@@ -217,6 +220,16 @@ export default defineComponent({
 			return 0;
 		});
 
+		const readOnly = computed(() => {
+			if (width.value < 600) {
+				// mobile requires 'nocursor' to avoid bringing up the keyboard
+				return props.disabled ? 'nocursor' : false;
+			} else {
+				// desktop cannot use 'nocursor' as it prevents copy/paste
+				return props.disabled;
+			}
+		});
+
 		const defaultOptions: CodeMirror.EditorConfiguration = {
 			tabSize: 4,
 			autoRefresh: true,
@@ -229,6 +242,7 @@ export default defineComponent({
 			},
 			matchBrackets: true,
 			showCursorWhenSelecting: true,
+			lineWiseCopyCut: false,
 			theme: 'default',
 			extraKeys: { Ctrl: 'autocomplete' },
 			lint: true,
@@ -242,7 +256,8 @@ export default defineComponent({
 				{
 					lineNumbers: props.lineNumber,
 					lineWrapping: props.lineWrapping,
-					readOnly: props.disabled ? 'nocursor' : false,
+					readOnly: readOnly.value,
+					cursorBlinkRate: props.disabled ? -1 : 530,
 					mode: props.language,
 					placeholder: props.placeholder,
 				},
@@ -253,7 +268,8 @@ export default defineComponent({
 		watch(
 			() => props.disabled,
 			(disabled) => {
-				codemirror?.setOption('readOnly', disabled ? 'nocursor' : false);
+				codemirror?.setOption('readOnly', readOnly.value);
+				codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 			},
 			{ immediate: true }
 		);

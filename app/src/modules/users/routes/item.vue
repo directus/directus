@@ -86,6 +86,7 @@
 				<template #append-outer>
 					<save-options
 						v-if="isSavable"
+						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -282,11 +283,8 @@ export default defineComponent({
 
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
-			ref('directus_users'),
-			item,
-			isNew
-		);
+		const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
+			usePermissions(ref('directus_users'), item, isNew);
 
 		// These fields will be shown in the sidebar instead
 		const fieldsDenyList = [
@@ -349,6 +347,7 @@ export default defineComponent({
 			leaveTo,
 			discardAndLeave,
 			formFields,
+			createAllowed,
 			deleteAllowed,
 			saveAllowed,
 			archiveAllowed,
