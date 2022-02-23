@@ -13,7 +13,7 @@ import ldap, {
 } from 'ldapjs';
 import ms from 'ms';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import Joi, { number } from 'joi';
+import Joi from 'joi';
 import { AuthDriver } from '../auth';
 import { AuthDriverOptions, User } from '../../types';
 import {
@@ -151,11 +151,11 @@ export class LDAPAuthDriver extends AuthDriver {
 					res.on('searchEntry', ({ object }: SearchEntry) => {
 						const user = {
 							dn: object.dn,
-							uid: getAttributeValue(object.uid),
-							firstName: getAttributeValue(object[firstNameAttribute]),
-							lastName: getAttributeValue(object[lastNameAttribute]),
-							email: getAttributeValue(object[mailAttribute]),
-							userAccountControl: Number(getAttributeValue(object.userAccountControl) ?? 0),
+							uid: getEntryValue(object.uid),
+							firstName: getEntryValue(object[firstNameAttribute]),
+							lastName: getEntryValue(object[lastNameAttribute]),
+							email: getEntryValue(object[mailAttribute]),
+							userAccountControl: Number(getEntryValue(object.userAccountControl) ?? 0),
 						};
 						resolve(user);
 					});
@@ -346,7 +346,7 @@ const handleError = (e: Error) => {
 	});
 };
 
-const getAttributeValue = (value: string | string[] | undefined): string | undefined => {
+const getEntryValue = (value: string | string[] | undefined): string | undefined => {
 	return typeof value === 'object' ? value[0] : value;
 };
 
