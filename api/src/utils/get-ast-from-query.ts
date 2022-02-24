@@ -7,6 +7,8 @@ import { cloneDeep, mapKeys, omitBy, uniq } from 'lodash';
 import { AST, FieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
+import env from '../env';
+import { ForbiddenException } from '../exceptions';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -102,6 +104,12 @@ export default async function getASTFromQuery(
 
 	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, any>) {
 		if (!fields) return [];
+
+		for (const field of fields) {
+			if (field.split('.').length > env.MAX_FILTER_DEPTH) {
+				throw new ForbiddenException();
+			}
+		}
 
 		fields = await convertWildcards(parentCollection, fields);
 
