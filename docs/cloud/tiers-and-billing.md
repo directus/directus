@@ -4,22 +4,20 @@
 
 [[toc]]
 
-## Tiers
+## Community
 
-### Community
+## Standard
 
-### Standard
-
-#### Node Type
+### Node Type
 
 - General Purpose
 - Performance
 - Enterprise
 
-## Load Balancing
+### Load Balancing
 
 - ???
 
-## Auto-Scaling
+### Auto-Scaling
 
-### Enterprise
+## Enterprise

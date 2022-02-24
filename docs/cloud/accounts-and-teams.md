@@ -1,6 +1,8 @@
 # Accounts and Teams
 
-> Intro statement.
+> You must create an Account and join a Team to access a Directus [Project]. Your Directus Account is as it sounds, a
+> typical user account. A Team is the same, it is a group of users that have access to Directus Projects. A user Account
+> can have multiple Teams, Teams can have multiple Projects.
 
 [[toc]]
 
