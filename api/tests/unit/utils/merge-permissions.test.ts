@@ -3,6 +3,7 @@ import { Permission, Filter } from '@directus/shared/types';
 
 const fullFilter = {} as Filter;
 const conditionalFilter = { user: { id: { _eq: '$CURRENT_USER' } } } as Filter;
+const conditionalFilter2 = { count: { _gt: 42 } } as Filter;
 
 const permissionTemplate = {
 	role: null,
@@ -18,12 +19,12 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, permissions: conditionalFilter },
-			{ ...permissionTemplate, permissions: conditionalFilter }
+			{ ...permissionTemplate, permissions: conditionalFilter2 }
 		);
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			permissions: {
-				_or: [conditionalFilter, conditionalFilter],
+				_or: [conditionalFilter, conditionalFilter2],
 			},
 		});
 	});
@@ -32,12 +33,12 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, validation: conditionalFilter },
-			{ ...permissionTemplate, validation: conditionalFilter }
+			{ ...permissionTemplate, validation: conditionalFilter2 }
 		);
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			validation: {
-				_or: [conditionalFilter, conditionalFilter],
+				_or: [conditionalFilter, conditionalFilter2],
 			},
 		});
 	});
@@ -46,12 +47,12 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'and',
 			{ ...permissionTemplate, permissions: conditionalFilter },
-			{ ...permissionTemplate, permissions: conditionalFilter }
+			{ ...permissionTemplate, permissions: conditionalFilter2 }
 		);
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			permissions: {
-				_and: [conditionalFilter, conditionalFilter],
+				_and: [conditionalFilter, conditionalFilter2],
 			},
 		});
 	});
@@ -60,12 +61,12 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'and',
 			{ ...permissionTemplate, validation: conditionalFilter },
-			{ ...permissionTemplate, validation: conditionalFilter }
+			{ ...permissionTemplate, validation: conditionalFilter2 }
 		);
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			validation: {
-				_and: [conditionalFilter, conditionalFilter],
+				_and: [conditionalFilter, conditionalFilter2],
 			},
 		});
 	});
