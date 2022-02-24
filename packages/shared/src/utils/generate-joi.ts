@@ -104,6 +104,12 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
 		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
+		const preventEmptyString = (val: any) => {
+			if (typeof val === 'string') return val;
+			// Prevent errors in string functions from Joi and prevent coercing to an empty string
+			return val === null || val === undefined ? '==directus_missing_conditional_string==' : val.toString();
+		};
+
 		if (operator === '_eq') {
 			schema[key] = getAnySchema().equal(compareValue);
 		}
@@ -113,34 +119,34 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_contains') {
-			schema[key] = getStringSchema().contains(compareValue);
+			schema[key] = getStringSchema().contains(preventEmptyString(compareValue));
 		}
 
 		if (operator === '_ncontains') {
-			schema[key] = getStringSchema().ncontains(compareValue);
+			schema[key] = getStringSchema().ncontains(preventEmptyString(compareValue));
 		}
 
 		if (operator === '_starts_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(preventEmptyString(compareValue))}.*`), {
 				name: 'starts_with',
 			});
 		}
 
 		if (operator === '_nstarts_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(preventEmptyString(compareValue))}.*`), {
 				name: 'starts_with',
 				invert: true,
 			});
 		}
 
 		if (operator === '_ends_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(preventEmptyString(compareValue))}$`), {
 				name: 'ends_with',
 			});
 		}
 
 		if (operator === '_nends_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(preventEmptyString(compareValue))}$`), {
 				name: 'ends_with',
 				invert: true,
 			});
@@ -219,8 +225,11 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_regex') {
-			const wrapped = compareValue.startsWith('/') && compareValue.endsWith('/');
-			schema[key] = getStringSchema().regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
+			const wrapped =
+				typeof compareValue === 'string' ? compareValue.startsWith('/') && compareValue.endsWith('/') : false;
+			schema[key] = getStringSchema().regex(
+				new RegExp(wrapped ? compareValue.slice(1, -1) : preventEmptyString(compareValue))
+			);
 		}
 	}
 
