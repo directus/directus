@@ -95,6 +95,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		}</a>`;
 
 		editor.value.selection.setContent(linkHtml);
+		editor.value.undoManager.add();
 		closeLinkDrawer();
 	}
 }
