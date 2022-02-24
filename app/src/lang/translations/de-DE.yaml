@@ -357,6 +357,8 @@ delete_share: Freigabe löschen
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
@@ -735,6 +737,8 @@ unlimited: Unlimitiert
 open_link_in: Link öffnen in
 new_tab: Neuer Tab
 current_tab: Aktueller Tab
+save_image: Bild speichern
+save_media: Medien speichern
 wysiwyg_options:
   aligncenter: Zentriert
   alignjustify: Blocksatz
@@ -885,6 +889,7 @@ directus_collection:
   directus_roles: Berechtigungsgruppen für Systembenutzer
   directus_sessions: Sitzungsinformation
   directus_settings: Projekt-Konfiguration
+  directus_shares: Verfolgen von extern freigegebenen Elementen
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
 fields:
@@ -1256,6 +1261,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1405,6 +1411,8 @@ interfaces:
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
     box: Block / Inline
+    imageToken: Statisches Zugriffstoken
+    imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
   map:
     map: Karte
     description: Ort auf der Karte wählen
@@ -1511,6 +1519,8 @@ interfaces:
     custom_formats: Benutzerdefinierte Formate
     options_override: Optionen überschreiben
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
+    imageToken: Statisches Zugriffstoken
+    imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.
