@@ -2,7 +2,7 @@
 	<v-input
 		:model-value="modelValue"
 		db-safe
-		:nullable="false"
+		:nullable="nullable"
 		:disabled="disabled"
 		:placeholder="placeholder"
 		:class="{ matches: fieldExists }"
@@ -64,6 +64,10 @@ export default defineComponent({
 		placeholder: {
 			type: String,
 			default: () => i18n.global.t('foreign_key') + '...',
+		},
+		nullable: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],

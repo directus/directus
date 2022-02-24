@@ -20,18 +20,46 @@ import { Directus } from '@directus/sdk';
 const directus = new Directus('http://directus.example.com');
 
 async function start() {
-	// Wait for login to be done...
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
-
-	// ... before fetching items
-	const articles = await directus.items('articles').readMany();
+	// We don't need to authenticate if data is public
+	const publicData = await directus.items('public').readByQuery({ meta: 'total_count' });
 
 	console.log({
-		items: articles.data,
-		total: articles.meta.total_count,
+		items: publicData.data,
+		total: publicData.meta.total_count,
+	});
+
+	// But, we need to authenticate if data is private
+	let authenticated = false;
+
+	// Try to authenticate with token if exists
+	await directus.auth
+		.refresh()
+		.then(() => {
+			authenticated = true;
+		})
+		.catch(() => {});
+
+	// Let's login in case we don't have token or it is invalid / expired
+	while (!authenticated) {
+		const email = window.prompt('Email:');
+		const password = window.prompt('Password:');
+
+		await directus.auth
+			.login({ email, password })
+			.then(() => {
+				authenticated = true;
+			})
+			.catch(() => {
+				window.alert('Invalid credentials');
+			});
+	}
+
+	// After authentication, we can fetch the private data in case the user has access to it
+	const privateData = await directus.items('privateData').readByQuery({ meta: 'total_count' });
+
+	console.log({
+		items: privateData.data,
+		total: privateData.meta.total_count,
 	});
 }
 
@@ -143,7 +171,7 @@ const directus = new Directus(url, init);
 
       <a name="options.auth.autoRefresh"></a>
 
-    - `autoRefresh` [optional] _Boolean_ - Tells SDK ifit should handle refresh tokens automatically. Defaults to
+    - `autoRefresh` [optional] _Boolean_ - Tells SDK if it should handle refresh tokens automatically. Defaults to
       `true`.
     - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
       before the refresh token expires and needs to be refreshed. Defaults to `30000`.
@@ -235,6 +263,15 @@ By default, Directus will handle token refreshes. Although, you can handle this 
 ```js
 await directus.auth.refresh();
 ```
+
+::: tip Developing Locally
+
+If you're developing locally, you might not be able to refresh your auth token automatically in all browsers. This is
+because the default auth configuration requires secure cookies to be set, and not all browsers allow this for localhost.
+You can use a browser which does support this such as Firefox, or
+[disable secure cookies](/configuration/config-options/#security).
+
+:::
 
 ### Logout
 
@@ -329,37 +366,27 @@ upload progress (a downside of `fetch`).
 
 The storage is used to load and save token information.
 
-### Custom Implementatin
+### Custom Implementation
 
-It is possible to provide a custom implementation by extending `IStorage`. While, this could be useful for advanced
+It is possible to provide a custom implementation by extending `BaseStorage`. While, this could be useful for advanced
 usage, it is not needed for most use-cases.
 
 ```js
-import { IStorage, Directus } from '@directus/sdk';
+import { BaseStorage, Directus } from '@directus/sdk';
 
-class MyStorage extends IStorage {
-	get auth_token() {
-		return this.get('auth_token');
-	}
-	get auth_expires() {
-		return Number(this.get('auth_expires'));
-	}
-	get auth_refresh_token() {
-		return this.get('auth_refresh_token');
-	}
-
+class SessionStorage extends BaseStorage {
 	get(key) {
-		return '';
+		return sessionStorage.getItem(key);
 	}
 	set(key, value) {
-		return value;
+		return sessionStorage.setItem(key, value);
 	}
 	delete(key) {
-		return null;
+		return sessionStorage.removeItem(key);
 	}
 }
 
-const directus = new Directus('http://directus.example.com', { storage: new MyStorage() });
+const directus = new Directus('http://directus.example.com', { storage: new SessionStorage() });
 ```
 
 ### Directus Implementation
@@ -369,12 +396,11 @@ By default, Directus creates an instance of `Storage` which handles store inform
 
 SDK uses `localStorage` on browsers and the memory itself on Node.js to save tokens. This behavior can be configured in
 [`options.storage.mode`](#options.storage.mode). The `LocalStorage` is only available on browsers and the
-`MemoryStorage` is not persitent, i.e., once you leave the tab or quit the process, you will need to authenticate again.
+`MemoryStorage` is not persistent, i.e., once you leave the tab or quit the process, you will need to authenticate
+again.
 
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#options.storage.prefix) for each
 one.
-
-When using
 
 ## Items
 
@@ -450,16 +476,10 @@ await articles.createMany([
 ]);
 ```
 
-### Read All
-
-```js
-await articles.readMany();
-```
-
 ### Read By Query
 
 ```js
-await articles.readMany({
+await articles.readByQuery({
 	search: 'Directus',
 	filter: {
 		date_published: {
@@ -469,7 +489,18 @@ await articles.readMany({
 });
 ```
 
-### Read By Primary Key(s)
+### Read All
+
+```js
+await articles.readByQuery({
+	// By default API limits results to 100.
+	// With -1, it will return all results, but it may lead to performance degradation
+	// for large result sets.
+	limit: -1,
+});
+```
+
+### Read Single Item
 
 ```js
 await articles.readOne(15);
@@ -478,7 +509,45 @@ await articles.readOne(15);
 Supports optional query:
 
 ```js
-await articles.readOne(15, { fields: ['title'] });
+await articles.readOne(15, {
+	fields: ['title'],
+});
+```
+
+### Read Multiple Items
+
+```js
+await articles.readMany([15, 16, 17]);
+```
+
+Supports optional query:
+
+```js
+await articles.readMany([15, 16, 17], {
+	fields: ['title'],
+});
+```
+
+### Update Single Item
+
+```js
+await articles.updateOne(15, {
+	title: 'This articles now has a different title',
+});
+```
+
+Supports optional query:
+
+```js
+await articles.updateOne(
+	42,
+	{
+		title: 'This articles now has a similar title',
+	},
+	{
+		fields: ['title'],
+	}
+);
 ```
 
 ### Update Multiple Items
@@ -552,6 +621,48 @@ directus.files;
 ```
 
 Same methods as `directus.items("directus_files")`.
+
+### Uploading a file
+
+To upload a file you will need to send a `multipart/form-data` as body. On browser side you do so:
+
+```js
+/* index.js */
+import { Directus } from 'https://unpkg.com/@directus/sdk@latest/dist/sdk.esm.min.js';
+
+const directus = new Directus('http://localhost:8055', {
+	auth: {
+		staticToken: 'STATIC_TOKEN', // If you want to use a static token, otherwise check below how you can use email and password.
+	},
+});
+
+// await directus.auth.login({ email, password }) // If you want to use email and password. You should remove the staticToken above
+
+const form = document.querySelector('#upload-file');
+
+if (form && form instanceof HTMLFormElement) {
+	form.addEventListener('submit', async (event) => {
+		event.preventDefault();
+
+		const form = new FormData(event.target);
+		await directus.files.createOne(form);
+	});
+}
+```
+
+```html
+<!-- index.html -->
+<head></head>
+<body>
+	<form id="upload-file">
+		<input type="text" name="title" />
+		<input type="file" name="file" />
+    	<button>Send</button>
+	</form>
+	<script src="/index.js" type="module"></script>
+</body>
+</html>
+```
 
 ## Folders
 

@@ -13,11 +13,14 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="translationsPrimaryKeyField?.field ? firstItemInitial?.[translationsPrimaryKeyField.field] : null"
+				:disabled="disabled"
 				:loading="valuesLoading"
 				:fields="fields"
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:autofocus="autofocus"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 			<v-divider />
@@ -34,6 +37,10 @@
 				</template>
 			</language-select>
 			<v-form
+				:primary-key="
+					translationsPrimaryKeyField?.field ? secondItemInitial?.[translationsPrimaryKeyField.field] : null
+				"
+				:disabled="disabled"
 				:loading="valuesLoading"
 				:initial-values="secondItemInitial"
 				:fields="fields"
@@ -49,7 +56,7 @@
 <script lang="ts">
 import LanguageSelect from './language-select.vue';
 import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } from 'vue';
-import { useFieldsStore, useRelationsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, useUserStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
@@ -82,13 +89,21 @@ export default defineComponent({
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
 		},
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { collection, field } = toRefs(props);
-		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
+
+		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
 
 		const { width } = useWindowSize();
@@ -164,7 +179,6 @@ export default defineComponent({
 			firstItem,
 			secondItem,
 			updateValue,
-			relationsStore,
 			firstItemInitial,
 			secondItemInitial,
 			splitViewAvailable,
@@ -268,6 +282,7 @@ export default defineComponent({
 			const items = ref<Record<string, any>[]>([]);
 			const loading = ref(false);
 			const error = ref(null);
+			const isUndo = ref(false);
 
 			const firstItem = computed(() => getEditedValue(firstLang));
 			const secondItem = computed(() => getEditedValue(secondLang));
@@ -278,17 +293,16 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(newVal, oldVal) => {
-					if (
-						newVal &&
-						newVal !== oldVal &&
-						newVal?.every((item) => typeof item === 'string' || typeof item === 'number' || typeof item === 'object')
-					) {
-						loadItems();
-					}
-
 					if (newVal === null || newVal.length === 0) {
 						items.value = [];
 					}
+
+					if (!newVal && oldVal) return; // when user clears whole translations value
+					if (newVal?.some((item) => typeof item === 'object')) return; // when there's any new edits since edits are objects
+					if (newVal?.some((item) => typeof item === 'object') && isEqual(newVal, oldVal)) return; // when user unfocus/blur inputs so they will be equal
+					if (isUndo.value) return; // when user undo to the original value
+
+					loadItems();
 				},
 				{ immediate: true }
 			);
@@ -355,7 +369,7 @@ export default defineComponent({
 					});
 
 					items.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 					unexpectedError(err);
 				} finally {
@@ -373,6 +387,8 @@ export default defineComponent({
 
 				if (!pkField || !langField) return;
 
+				isUndo.value = false;
+
 				let copyValue = cloneDeep(value.value ?? []);
 
 				if (pkField in values === false) {
@@ -380,6 +396,7 @@ export default defineComponent({
 
 					if (newIndex !== -1) {
 						if (Object.keys(values).length === 1 && langField in values) {
+							isUndo.value = true;
 							copyValue.splice(newIndex, 1);
 						} else {
 							copyValue[newIndex] = values;
@@ -403,6 +420,7 @@ export default defineComponent({
 						} else {
 							if (values[pkField] === item[pkField]) {
 								if (isEqual(initialValues, { ...initialValues, ...values })) {
+									isUndo.value = true;
 									return values[pkField];
 								} else {
 									return values;
@@ -435,10 +453,6 @@ export default defineComponent({
 		margin-top: 32px;
 	}
 
-	.v-divider {
-		margin-top: var(--form-vertical-gap);
-	}
-
 	.primary {
 		--v-divider-color: var(--primary-50);
 	}
@@ -450,6 +464,13 @@ export default defineComponent({
 			--primary: var(--blue);
 			--v-chip-color: var(--blue);
 			--v-chip-background-color: var(--blue-alt);
+		}
+	}
+
+	.primary,
+	.secondary {
+		.v-divider {
+			margin-top: var(--form-vertical-gap);
 		}
 	}
 }

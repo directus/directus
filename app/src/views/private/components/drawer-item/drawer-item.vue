@@ -32,6 +32,7 @@
 				/>
 
 				<v-form
+					:disabled="disabled"
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
@@ -47,6 +48,7 @@
 
 			<v-form
 				v-model="internalEdits"
+				:disabled="disabled"
 				:loading="loading"
 				:initial-values="item"
 				:primary-key="primaryKey"
@@ -84,7 +86,7 @@ export default defineComponent({
 		},
 		primaryKey: {
 			type: [String, Number],
-			required: true,
+			default: null,
 		},
 		edits: {
 			type: Object as PropType<Record<string, any>>,
@@ -93,6 +95,10 @@ export default defineComponent({
 		junctionField: {
 			type: String,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 		// There's an interesting case where the main form can be a newly created item ('+'), while
 		// it has a pre-selected related item it needs to alter. In that case, we have to fetch the

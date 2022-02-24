@@ -4,19 +4,18 @@ import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { validatePayload } from '@directus/shared/utils';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, PrimaryKey } from '../types';
 import {
-	AbstractServiceOptions,
-	AST,
-	FieldNode,
-	Item,
-	NestedCollectionNode,
-	PrimaryKey,
+	Query,
+	Aggregate,
+	Permission,
+	PermissionsAction,
+	Accountability,
 	SchemaOverview,
-} from '../types';
-import { Query, Aggregate, Permission, PermissionsAction } from '@directus/shared/types';
+} from '@directus/shared/types';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
+import { stripFunction } from '../utils/strip-function';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -66,7 +65,7 @@ export class AuthorizationService {
 		function getCollectionsFromAST(ast: AST | NestedCollectionNode): { collection: string; field: string }[] {
 			const collections = [];
 
-			if (ast.type === 'm2a') {
+			if (ast.type === 'a2o') {
 				collections.push(...ast.names.map((name) => ({ collection: name, field: ast.fieldKey })));
 
 				for (const children of Object.values(ast.children)) {
@@ -94,7 +93,7 @@ export class AuthorizationService {
 
 		function validateFields(ast: AST | NestedCollectionNode | FieldNode) {
 			if (ast.type !== 'field') {
-				if (ast.type === 'm2a') {
+				if (ast.type === 'a2o') {
 					for (const [collection, children] of Object.entries(ast.children)) {
 						checkFields(collection, children, ast.query?.[collection]?.aggregate);
 					}
@@ -130,7 +129,7 @@ export class AuthorizationService {
 
 					if (allowedFields.includes('*')) continue;
 
-					const fieldKey = childNode.name;
+					const fieldKey = stripFunction(childNode.name);
 
 					if (allowedFields.includes(fieldKey) === false) {
 						throw new ForbiddenException();
@@ -144,7 +143,7 @@ export class AuthorizationService {
 			accountability: Accountability | null
 		): AST | NestedCollectionNode | FieldNode {
 			if (ast.type !== 'field') {
-				if (ast.type === 'm2a') {
+				if (ast.type === 'a2o') {
 					const collections = Object.keys(ast.children);
 
 					for (const collection of collections) {

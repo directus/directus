@@ -10,9 +10,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, computed } from 'vue';
+import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
 import api from '@/api';
-import { isEqual } from 'lodash';
 import { Filter } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
@@ -44,7 +43,7 @@ export default defineComponent({
 		},
 		function: {
 			type: String as PropType<
-				'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max' | 'first' | 'last'
+				'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max' | 'first' | 'last'
 			>,
 			required: true,
 		},
@@ -78,25 +77,62 @@ export default defineComponent({
 	setup(props) {
 		const { n } = useI18n();
 
-		const metric = ref();
+		const metric = ref<number | string>();
 		const loading = ref(false);
 
-		fetchData();
+		watchEffect(async () => {
+			const isRawValue = ['first', 'last'].includes(props.function);
 
-		watch(
-			() => props,
-			(newOptions, oldOptions) => {
-				if (isEqual(newOptions, oldOptions)) return;
-				fetchData();
-			},
-			{ deep: true }
-		);
+			loading.value = true;
+
+			try {
+				const sort = props.sortField && `${props.function === 'last' ? '-' : ''}${props.sortField}`;
+
+				const aggregate = isRawValue
+					? undefined
+					: {
+							[props.function]: [props.field || '*'],
+					  };
+
+				const res = await api.get(getEndpoint(props.collection), {
+					params: {
+						aggregate,
+						filter: props.filter,
+						sort: sort,
+						limit: 1,
+						fields: [props.field],
+					},
+				});
+
+				if (props.field) {
+					if (props.function === 'first' || props.function === 'last') {
+						if (typeof res.data.data[0][props.field] === 'string') {
+							metric.value = res.data.data[0][props.field];
+						} else {
+							metric.value = Number(res.data.data[0][props.field]);
+						}
+					} else {
+						metric.value = Number(res.data.data[0][props.function][props.field]);
+					}
+				} else {
+					metric.value = Number(res.data.data[0][props.function]);
+				}
+			} catch (err) {
+				// oh no
+			} finally {
+				loading.value = false;
+			}
+		});
 
 		const displayValue = computed(() => {
 			if (isNil(metric.value)) return null;
 
 			if (props.abbreviate) {
 				return abbreviateNumber(metric.value, props.decimals ?? 0);
+			}
+
+			if (typeof metric.value === 'string') {
+				return metric.value;
 			}
 
 			return n(Number(metric.value), 'decimal', {
@@ -140,48 +176,6 @@ export default defineComponent({
 		});
 
 		return { metric, loading, displayValue, color };
-
-		async function fetchData() {
-			if (!props) return;
-
-			const isRawValue = ['first', 'last'].includes(props.function);
-
-			loading.value = true;
-
-			try {
-				const sort = props.sortField && `${props.function === 'last' ? '-' : ''}${props.sortField}`;
-
-				const aggregate = isRawValue
-					? undefined
-					: {
-							[props.function]: [props.field || '*'],
-					  };
-
-				const res = await api.get(getEndpoint(props.collection), {
-					params: {
-						aggregate,
-						filter: props.filter,
-						sort: sort,
-						limit: 1,
-						fields: [props.field],
-					},
-				});
-
-				if (props.field) {
-					if (props.function === 'first' || props.function === 'last') {
-						metric.value = Number(res.data.data[0][props.field]);
-					} else {
-						metric.value = Number(res.data.data[0][props.function][props.field]);
-					}
-				} else {
-					metric.value = Number(res.data.data[0][props.function]);
-				}
-			} catch (err) {
-				// oh no
-			} finally {
-				loading.value = false;
-			}
-		}
 	},
 });
 </script>

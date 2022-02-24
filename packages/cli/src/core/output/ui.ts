@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import yargs from 'yargs';
-import marked from 'marked';
+import { marked } from 'marked';
 import TerminalRenderer from 'marked-terminal';
 import stripAnsi from 'strip-ansi';
 import title from '@directus/format-title';
@@ -10,8 +10,7 @@ import cliui from 'cliui';
 
 import Table from 'cli-table3';
 import figlet from 'figlet';
-//import indent from 'indent-string';
-import stripIndent from 'strip-indent';
+import redent from 'redent';
 import { DEFAULT_THEME, highlight } from 'cli-highlight';
 
 import { IUIComposer, OutputColumn, Style, TableOptions, TableStyle, TextLayoutOptions } from '../../output';
@@ -134,7 +133,7 @@ export class UIBuilder implements IUIComposer {
 
 		ui.div({
 			padding: opts.padding,
-			text: opts.removeIndent ? stripIndent(text) : text,
+			text: opts.removeIndent ? redent(text) : text,
 		});
 
 		return opts.style(ui.toString());
@@ -157,7 +156,7 @@ export class UIBuilder implements IUIComposer {
 					return {
 						align: opts.alignment,
 						padding: opts.padding,
-						text: opts.style(opts.removeIndent ? stripIndent(col.text) : col.text),
+						text: opts.style(opts.removeIndent ? redent(col.text) : col.text),
 					};
 				})
 			);
@@ -236,7 +235,7 @@ export class UIBuilder implements IUIComposer {
 	}
 
 	markdown(text: string): string {
-		return marked(stripIndent(text), {
+		return marked(redent(text), {
 			baseUrl: 'https://docs.directus.io',
 			renderer: this.markdownRenderer as any,
 			sanitize: false,

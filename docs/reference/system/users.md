@@ -66,6 +66,9 @@ One of `auto`, `light`, `dark`.
 `tfa_secret` **string**\
 When TFA is enabled, this holds the secret key for it.
 
+`email_notifications` **boolean**\
+When this is enabled, the user will receive emails for notifications.
+
 </div>
 </div>
 <div class="right">
@@ -255,6 +258,65 @@ type Query {
 ```graphql
 query {
 	users_me {
+		email
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update the Current User
+
+Update the authenticated user.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Returns
+
+Returns the updated [user object](#the-user-object) for the authenticated user.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /users/me
+```
+
+```json
+// PATCH /users/me
+
+{
+	"email": "new.email@example.com"
+}
+```
+
+### GraphQL
+
+```
+POST /graphql/system
+```
+
+```graphql
+type Mutation {
+	update_users_me(data: update_directus_users_input!): directus_users
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_users_me(data: { email: "new.email@example.com" }) {
 		email
 	}
 }

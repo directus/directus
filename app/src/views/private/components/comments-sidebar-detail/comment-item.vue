@@ -2,34 +2,17 @@
 	<div class="comment-item">
 		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
 
-		<v-textarea v-if="editing" ref="textarea" v-model="edits">
-			<template #append>
-				<div class="buttons">
-					<v-button class="cancel" secondary x-small @click="cancelEditing">
-						{{ t('cancel') }}
-					</v-button>
+		<comment-input
+			v-if="editing"
+			:existing-comment="activity"
+			:primary-key="primaryKey"
+			:collection="collection"
+			:refresh="refresh"
+			:previews="userPreviews"
+			@cancel="cancelEditing"
+		/>
 
-					<v-button
-						:loading="savingEdits"
-						class="post-comment"
-						x-small
-						:disabled="edits === activity.comment"
-						@click="saveEdits"
-					>
-						{{ t('save') }}
-					</v-button>
-				</div>
-			</template>
-		</v-textarea>
-
-		<div v-else class="content">
-			<span v-md="activity.comment" class="selectable" />
-
-			<!-- @TODO: Dynamically add element below if the comment overflows -->
-			<!-- <div v-if="activity.id == 204" class="expand-text">
-				<span>{{ t('click_to_expand') }}</span>
-			</div> -->
-		</div>
+		<div v-else v-md="activity.display" class="content selectable" />
 	</div>
 </template>
 
@@ -38,13 +21,14 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, watch, ComponentPublicInstance } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
+import CommentInput from './comment-input.vue';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	components: { CommentItemHeader },
+	components: { CommentItemHeader, CommentInput },
 	props: {
 		activity: {
 			type: Object as PropType<Activity>,
@@ -52,6 +36,19 @@ export default defineComponent({
 		},
 		refresh: {
 			type: Function as PropType<() => void>,
+			required: true,
+		},
+		userPreviews: {
+			type: Object,
+			require: true,
+			default: () => ({}),
+		},
+		primaryKey: {
+			type: [Number, String],
+			required: true,
+		},
+		collection: {
+			type: String,
 			required: true,
 		},
 	},
@@ -85,7 +82,8 @@ export default defineComponent({
 					await api.patch(`/activity/comment/${props.activity.id}`, {
 						comment: edits.value,
 					});
-					await props.refresh();
+
+					props.refresh();
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
@@ -117,6 +115,7 @@ export default defineComponent({
 }
 
 .comment-item .content {
+	display: inline-block;
 	max-height: 300px;
 	overflow-y: auto;
 }
@@ -143,6 +142,17 @@ export default defineComponent({
 	margin: 12px 0;
 	border: 0;
 	border-top: 2px solid var(--border-normal);
+}
+
+.comment-item .content :deep(mark) {
+	display: inline-block;
+	padding: 2px 4px;
+	color: var(--primary);
+	line-height: 1;
+	background: var(--primary-alt);
+	border-radius: var(--border-radius);
+	user-select: text;
+	pointer-events: none;
 }
 
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
@@ -199,6 +209,10 @@ export default defineComponent({
 
 .comment-item:hover :deep(.comment-header .header-right .more) {
 	opacity: 1;
+}
+
+.user-name {
+	color: var(--primary);
 }
 
 .buttons {

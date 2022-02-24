@@ -46,6 +46,20 @@ export default defineInterface({
 			],
 			advanced: [
 				{
+					field: 'softLength',
+					name: '$t:soft_length',
+					type: 'integer',
+					meta: {
+						width: 'half',
+						interface: 'input',
+						options: {
+							placeholder: '255',
+							min: 1,
+							max: field.schema?.max_length,
+						},
+					},
+				},
+				{
 					field: 'font',
 					name: '$t:font',
 					type: 'string',

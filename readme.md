@@ -18,14 +18,6 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 <br>
 
-## 🚧 Release Candidate
-
-This is _pre-release_ software. While we're providing migrations between versions, changes may occur at any time, and
-certain features might be missing or broken. You can follow along with
-[the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements.
-
-<br>
-
 ## ⚙️ Installation
 
 Create a new Directus project by running the following npm command:
@@ -52,9 +44,9 @@ If you would like to completely avoid the manual installation process, the follo
 handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these
 services.
 
-| DigitalOcean                                                                                                                            | Heroku                                                                                                                                                                                              | Platform.sh                                                                                                                                                                                                                                                                                                                                                                             | Zeet                                                                                                                                                                               |
-| --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <a href="https://marketplace.digitalocean.com/apps/directus"><img src="https://www.deploytodo.com/do-btn-blue.svg" width="180px" /></a> | <a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy on Heroku" width="180px"></a> | <a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px"></a> | <a href="https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template"><img src="https://deploy.zeet.co/directus.svg" alt="Deploy on Zeet" width="180px"></a> |
+| Google Cloud                                                                                                                                        | Cleavr                                                                                                                                | Cloudron                                                                                                                                  | DigitalOcean                                                                                                                            | Heroku                                                                                                                                                                                              | Platform.sh                                                                                                                                                                                                                                                                                                                                                                             | Zeet                                                                                                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/directus-community/gcp-example) | <a href="https://docs.cleavr.io/guides/directus"><img src="https://docs.cleavr.io/images/deploy-with-cleavr.png" width="180px" /></a> | <a href="https://cloudron.io/button.html?app=io.directus9.cloudronapp"><img src="https://cloudron.io/img/button.svg" width="180px" /></a> | <a href="https://marketplace.digitalocean.com/apps/directus"><img src="https://www.deploytodo.com/do-btn-blue.svg" width="180px" /></a> | <a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy on Heroku" width="180px"></a> | <a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px"></a> | <a href="https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template"><img src="https://deploy.zeet.co/directus.svg" alt="Deploy on Zeet" width="180px"></a> |
 
 <br>
 
@@ -72,17 +64,18 @@ Directus only requires Node.js and supports most operating systems and SQL datab
   [mysql_native_password](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors))
 - MariaDB 10.2.7+
 - SQLite 3+
+- CockroachDB 21.1.13+<sup>[1]</sup>
 - MS SQL 13+<sup>[1]</sup>
 - OracleDB 19+<sup>[1]</sup>
 
-<sup>[1]</sup> Older versions may work, but aren't officially supported.
+<sup>[1]</sup> Older versions may work, but aren't officially tested/supported.
 
 #### Supported OS
 
 - Ubuntu 18.04
 - CentOS / RHEL 8
 - macOS Catalina or newer
-- Windows 10
+- Windows 10/11
 - Docker ([DockerHub](https://hub.docker.com/r/directus/directus) +
   [Dockerfile](https://github.com/directus/directus/blob/main/docker/Dockerfile))
 
@@ -115,4 +108,4 @@ team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sp
 
 <br>
 
-© 2004-2021, Monospace Inc
+© 2004-2022, Monospace Inc

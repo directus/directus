@@ -161,6 +161,10 @@ export default defineComponent({
 		});
 
 		const groupOpen = computed(() => {
+			if (props.showSelectionOnly === true) {
+				return visibleChildrenValues.value.length > 0;
+			}
+
 			return typeof props.search === 'string' && props.search.length > 0;
 		});
 

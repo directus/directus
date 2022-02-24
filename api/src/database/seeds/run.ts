@@ -4,7 +4,7 @@ import { Knex } from 'knex';
 import { isObject } from 'lodash';
 import path from 'path';
 import { Type, Field } from '@directus/shared/types';
-import { getGeometryHelper } from '../helpers/geometry';
+import { getHelpers } from '../helpers';
 
 type TableSeed = {
 	table: string;
@@ -27,6 +27,7 @@ type TableSeed = {
 };
 
 export default async function runSeed(database: Knex): Promise<void> {
+	const helpers = getHelpers(database);
 	const exists = await database.schema.hasTable('directus_collections');
 
 	if (exists) {
@@ -57,8 +58,7 @@ export default async function runSeed(database: Knex): Promise<void> {
 				} else if (columnInfo.type === 'hash') {
 					column = tableBuilder.string(columnName, 255);
 				} else if (columnInfo.type?.startsWith('geometry')) {
-					const helper = getGeometryHelper();
-					column = helper.createColumn(tableBuilder, { field: columnName, type: columnInfo.type } as Field);
+					column = helpers.st.createColumn(tableBuilder, { field: columnName, type: columnInfo.type } as Field);
 				} else {
 					// @ts-ignore
 					column = tableBuilder[columnInfo.type!](columnName);

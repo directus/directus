@@ -75,9 +75,9 @@ export default defineComponent({
 
 		const fieldDetailStore = useFieldDetailStore();
 
-		const readonly = syncFieldDetailStoreProperty('field.meta.readonly');
-		const hidden = syncFieldDetailStoreProperty('field.meta.hidden');
-		const required = syncFieldDetailStoreProperty('field.meta.required');
+		const readonly = syncFieldDetailStoreProperty('field.meta.readonly', false);
+		const hidden = syncFieldDetailStoreProperty('field.meta.hidden', false);
+		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 		const translations = syncFieldDetailStoreProperty('field.meta.translations');
 

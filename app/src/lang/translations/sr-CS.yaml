@@ -197,9 +197,6 @@ dismiss: Ignoriši
 raw_value: Vrijednost
 edit_raw_value: Izmijeni Vrijednost
 enter_raw_value: Unesi vrijednost...
-clear_value: Obriši vrijednost
-reset_to_default: Vrati na podrazumijevano
-undo_changes: Poništi izmjene
 notifications: Obavještenja
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nijе pronađеna
@@ -229,10 +226,8 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
-export_data: Izvoz Podataka
 format: Format
 use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
-export_collection: 'Izvoz {collection}'
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
@@ -751,6 +746,10 @@ fields:
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
     custom_css: Prilagođeni CSS
+  directus_shares:
+    name: Ime
+    role: Uloga
+    password: Lozinka
   directus_fields:
     collection: Ime Kolekcije
     icon: Ikonica Kolekcije
@@ -773,6 +772,7 @@ fields:
     name: Ime
     status: Status
     value: Vrijednost
+    collections: Kolekcije
 field_options:
   directus_activity:
     create: Kreiraj
@@ -930,7 +930,6 @@ interfaces:
   presentation-divider:
     divider: Djelilac
     description: Označi i podijeli polja u sekcije
-    title_placeholder: Unesi naslov...
     inline_title: Linijski Naslov
     inline_title_label: Prikaži naslov u liniji
     margin_top: Gornja Margina
@@ -982,12 +981,11 @@ interfaces:
   input-rich-text-md:
     markdown: Smanjenje
     description: Unesi i pregledaj opcije smanjenja
+    edit: Izmijeni
     customSyntax: Prilagođeni Blokovi
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
     box: Blok / Linijski
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   map:
     zoom: Uvеćanjе
   presentation-notice:
@@ -1048,6 +1046,8 @@ interfaces:
   boolean:
     toggle: Isključi / Uključi
     description: Prebaci između uključeno i isključeno
+    color_on: Boja Uključena
+    color_off: Boja Isključena
     label_placeholder: Unesi ime...
     label_default: Omogućen
   translations:
@@ -1118,9 +1118,18 @@ displays:
   formatted-value:
     formatted-value: Formatirana Vrijednost
     description: Prikaži formatiranu verziju teksta
-    format_title: Formatiraj Naslov
-    format_title_label: Automatsko formatiranje naslova
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Fiksni razmak
+    bold: Podebljano
     bold_label: Koristi podebljan stil
+    italic: Kurziv
+    prefix: Prefiks
+    suffix: Sufiks
+    color: Boja
+    icon: Ikonica
+    text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta

@@ -5,6 +5,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import { Settings } from '@directus/shared/types';
+import { useUserStore } from './user';
 
 export const useSettingsStore = defineStore({
 	id: 'settingsStore',
@@ -13,6 +14,9 @@ export const useSettingsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
+			const userStore = useUserStore();
+			if (!userStore.currentUser || 'share' in userStore.currentUser) return;
+
 			const response = await api.get(`/settings`);
 			this.settings = response.data.data;
 		},

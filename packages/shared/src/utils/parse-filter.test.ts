@@ -106,9 +106,13 @@ describe('', () => {
 					status: {
 						_eq: 'true',
 					},
+				},
+				{
 					field: {
 						_eq: 'false',
 					},
+				},
+				{
 					field2: {
 						_eq: 'null',
 					},
@@ -122,9 +126,13 @@ describe('', () => {
 					status: {
 						_eq: true,
 					},
+				},
+				{
 					field: {
 						_eq: false,
 					},
+				},
+				{
 					field2: {
 						_eq: null,
 					},

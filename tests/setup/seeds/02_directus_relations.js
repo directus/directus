@@ -1,4 +1,5 @@
 exports.seed = async function (knex) {
+	await knex('directus_relations').del();
 	return await knex('directus_relations').insert([
 		{
 			many_collection: 'guests',

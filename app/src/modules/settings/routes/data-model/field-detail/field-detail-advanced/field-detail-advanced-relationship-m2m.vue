@@ -72,6 +72,7 @@
 				v-model="sortField"
 				:collection="junctionCollection"
 				:placeholder="t('add_sort_field') + '...'"
+				:nullable="true"
 			/>
 		</div>
 

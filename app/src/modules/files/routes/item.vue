@@ -92,16 +92,18 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true || saveAllowed === true"
+						v-if="isSavable"
+						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -179,7 +181,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -197,7 +199,7 @@ import ReplaceFile from '../components/replace-file.vue';
 import { usePermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'FilesItem',
@@ -234,6 +236,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -247,9 +250,9 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(ref('directus_files'), primaryKey);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
-		unsavedChanges(hasEdits);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		const confirmDelete = ref(false);
 		const editActive = ref(false);
@@ -285,24 +288,11 @@ export default defineComponent({
 			else return '/files';
 		});
 
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		useShortcut('meta+s', saveAndStay, form);
 
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
-
-		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
+		const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			ref('directus_files'),
 			item,
 			isNew
@@ -329,6 +319,7 @@ export default defineComponent({
 			deleting,
 			saveAndStay,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			editActive,
 			revisionsDrawerDetail,
@@ -345,6 +336,7 @@ export default defineComponent({
 			to,
 			replaceFileDialogActive,
 			refresh,
+			createAllowed,
 			deleteAllowed,
 			saveAllowed,
 			updateAllowed,
@@ -352,6 +344,7 @@ export default defineComponent({
 			fieldsFiltered,
 			revisionsAllowed,
 			validationErrors,
+			isSavable,
 		};
 
 		function useBreadcrumb() {
@@ -402,7 +395,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(to.value);
+				router.replace(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
 				confirmDelete.value = false;
@@ -412,7 +405,13 @@ export default defineComponent({
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		function downloadFile() {

@@ -1,9 +1,10 @@
 <template>
 	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<div class="label type-title" :class="{ active }" @click="handleModifier($event, toggle)">
+			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				{{ field.name }}
+				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 				<v-icon
 					v-if="!active && validationMessage"
 					v-tooltip="validationMessage"
@@ -24,6 +25,7 @@
 						:validation-errors="validationErrors"
 						:loading="loading"
 						:batch-mode="batchMode"
+						:disabled="disabled"
 						@update:model-value="$emit('apply', $event)"
 					/>
 				</div>
@@ -113,6 +115,13 @@ export default defineComponent({
 				});
 		});
 
+		const edited = computed(() => {
+			if (!props.values) return false;
+
+			const editedFields = Object.keys(props.values);
+			return fieldsInSection.value.some((field) => editedFields.includes(field.field)) ? true : false;
+		});
+
 		const validationMessage = computed(() => {
 			const validationError = props.validationErrors.find((error) => error.field === props.field.field);
 			if (validationError === undefined) return;
@@ -124,7 +133,7 @@ export default defineComponent({
 			}
 		});
 
-		return { fieldsInSection, handleModifier, validationMessage };
+		return { fieldsInSection, edited, handleModifier, validationMessage };
 
 		function handleModifier(event: MouseEvent, toggle: () => void) {
 			if (props.multiple === false) {
@@ -142,37 +151,58 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .accordion-section {
 	border-top: var(--border-width) solid var(--border-normal);
-}
 
-.accordion-section:last-child {
-	border-bottom: var(--border-width) solid var(--border-normal);
+	&:last-child {
+		border-bottom: var(--border-width) solid var(--border-normal);
+	}
 }
 
 .label {
+	position: relative;
 	display: flex;
 	align-items: center;
 	margin: 8px 0;
 	color: var(--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
-}
 
-.label:hover,
-.label.active {
-	color: var(--foreground-normal);
+	&:hover,
+	&.active {
+		color: var(--foreground-normal);
+	}
+
+	.required {
+		--v-icon-color: var(--primary);
+
+		margin-top: -12px;
+		margin-left: 2px;
+	}
+
+	&.edited::before {
+		position: absolute;
+		top: 14px;
+		left: -7px;
+		display: block;
+		width: 4px;
+		height: 4px;
+		background-color: var(--foreground-subdued);
+		border-radius: 4px;
+		content: '';
+		pointer-events: none;
+	}
 }
 
 .icon {
 	margin-right: 12px;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
-}
 
-.icon.active {
-	transform: rotate(0);
+	&.active {
+		transform: rotate(0);
+	}
 }
 
 .warning {

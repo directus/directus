@@ -15,8 +15,8 @@ installations.
 ## REST vs. GraphQL
 
 **There is no difference in the functionality available between the REST and GraphQL endpoints.** The functionality
-available in both is mapped to same set of core services, meaning that you don't lose any performance or capabilities by
-choosing one or the other.
+available in both is mapped to the same set of core services, meaning that you don't lose any performance or
+capabilities by choosing one or the other.
 
 Which one you choose is ultimately up to you.
 
@@ -34,9 +34,9 @@ Useful references:
 ## Relational Data
 
 Directus only retrieves the fields in your items that explicitly have been requested. Relational data can be retrieved
-nested by using the [the `fields` parameter](/reference/query/#fields) in REST, or regular nested queries in GraphQL.
-This allows you to retrieve the author of your article included in the articles data, or fetch related log entry points
-for your app's analytics data for example.
+nested by using [the `fields` parameter](/reference/query/#fields) in REST, or regular nested queries in GraphQL. This
+allows you to retrieve the author of your article included in the articles data, or fetch related log entry points for
+your app's analytics data for example.
 
 ### Creating / Updating / Deleting
 
@@ -252,28 +252,29 @@ Useful reading:
 ## System data in GraphQL
 
 Due to restrictions in GraphQL itself, it's impossible to properly scope/namespace system functionality from regular
-data access. In order to prevent any naming conflicts between user-created and system data, we've scoped the access to
-the two into two endpoints for user and system data respectively: `/graphql` and `/graphql/system`. Both endpoints share
-the same underlying schema, so **nested relations will work as expected** regardless if they "cross over" between user
-and system data. The only difference in the two endpoints are the root query and mutation fields available.
+data access. In order to prevent any naming conflicts between user-created and system data, we've scoped the access of
+the two into separate endpoints for user and system data respectively: `/graphql` and `/graphql/system`. Both endpoints
+share the same underlying schema, so **nested relations will work as expected** regardless if they "cross over" between
+user and system data. The only difference in the two endpoints are the root query and mutation fields available.
 
 ## Error Codes
 
 Below are the global error codes used within Directus, and what they mean.
 
-| Error Code             | HTTP Status | Description                                                  |
-| ---------------------- | ----------- | ------------------------------------------------------------ |
-| `FAILED_VALIDATION`    | 400         | Validation for this particular item failed                   |
-| `FORBIDDEN`            | 403         | You are not allowed to do the current action                 |
-| `INVALID_CREDENTIALS`  | 401         | Username / password or access token is wrong                 |
-| `INVALID_IP`           | 401         | Your IP address isn't allow-listed to be used with this user |
-| `INVALID_OTP`          | 401         | Wrong OTP was provided                                       |
-| `INVALID_PAYLOAD`      | 400         | Provided payload is invalid                                  |
-| `INVALID_QUERY`        | 400         | The requested query parameters can not be used               |
-| `REQUESTS_EXCEEDED`    | 429         | Hit the rate limit                                           |
-| `ROUTE_NOT_FOUND`      | 404         | Endpoint does not exist                                      |
-| `SERVICE_UNAVAILABLE`  | 503         | Could not use external service                               |
-| `UNPROCESSABLE_ENTITY` | 422         | You tried doing something illegal                            |
+| Error Code               | HTTP Status | Description                                                     |
+| ------------------------ | ----------- | --------------------------------------------------------------- |
+| `FAILED_VALIDATION`      | 400         | Validation for this particular item failed                      |
+| `FORBIDDEN`              | 403         | You are not allowed to do the current action                    |
+| `INVALID_CREDENTIALS`    | 401         | Username / password or access token is wrong                    |
+| `INVALID_IP`             | 401         | Your IP address isn't allow-listed to be used with this user    |
+| `INVALID_OTP`            | 401         | Wrong OTP was provided                                          |
+| `INVALID_PAYLOAD`        | 400         | Provided payload is invalid                                     |
+| `INVALID_QUERY`          | 400         | The requested query parameters can not be used                  |
+| `UNSUPPORTED_MEDIA_TYPE` | 415         | Provided payload format or `Content-Type` header is unsupported |
+| `REQUESTS_EXCEEDED`      | 429         | Hit the rate limit                                              |
+| `ROUTE_NOT_FOUND`        | 404         | Endpoint does not exist                                         |
+| `SERVICE_UNAVAILABLE`    | 503         | Could not use external service                                  |
+| `UNPROCESSABLE_ENTITY`   | 422         | You tried doing something illegal                               |
 
 ::: warning Security
 

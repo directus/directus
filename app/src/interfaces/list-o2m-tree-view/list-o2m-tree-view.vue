@@ -40,6 +40,7 @@
 			v-model:active="selectDrawer"
 			:collection="collection"
 			:selection="[]"
+			:filter="customFilter"
 			multiple
 			@input="stageSelection"
 		/>
@@ -48,7 +49,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, PropType, onMounted, watch } from 'vue';
+import { defineComponent, ref, computed, PropType, onMounted, watch, inject } from 'vue';
 import { useCollection } from '@directus/shared/composables';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
@@ -58,6 +59,10 @@ import NestedDraggable from './nested-draggable.vue';
 import { Relation } from '@directus/shared/types';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
+import { deepMap } from '@directus/shared/utils';
 
 export default defineComponent({
 	components: { NestedDraggable, DrawerCollection, DrawerItem },
@@ -94,10 +99,28 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const values = inject('values', ref<Record<string, any>>({}));
+
+		const customFilter = computed(() => {
+			return parseFilter(
+				deepMap(props.filter, (val: any) => {
+					if (val && typeof val === 'string') {
+						return render(val, values.value);
+					}
+
+					return val;
+				})
+			);
+		});
 
 		const relationsStore = useRelationsStore();
 		const openItems = ref([]);
@@ -136,6 +159,7 @@ export default defineComponent({
 			selectDrawer,
 			addNewActive,
 			addNew,
+			customFilter,
 		};
 
 		function useValues() {
@@ -194,14 +218,19 @@ export default defineComponent({
 				return result;
 			}
 
-			function emitValue(value: Record<string, any>[]) {
-				stagedValues.value = value;
+			function emitValue(value: Record<string, any>[] | null) {
+				if (!value || value.length === 0) {
+					stagedValues.value = [];
+					emit('input', null);
+				} else {
+					stagedValues.value = value;
 
-				if (relation.value.meta?.sort_field) {
-					return emit('input', addSort(value));
+					if (relation.value.meta?.sort_field) {
+						return emit('input', addSort(value));
+					}
+
+					emit('input', value);
 				}
-
-				emit('input', value);
 
 				function addSort(value: Record<string, any>[]): Record<string, any>[] {
 					return (value || []).map((item, index) => {
@@ -291,7 +320,7 @@ export default defineComponent({
 
 				const newVal = [...response.data.data, ...stagedValues.value];
 
-				if (newVal.length === 0) emitValue([]);
+				if (newVal.length === 0) emitValue(null);
 				else emitValue(newVal);
 
 				loading.value = false;

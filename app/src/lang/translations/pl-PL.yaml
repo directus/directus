@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identyfikator
 avatar: Awatar
+application: Aplikacja
 default_provider: Domyślny
 published: Opublikowany
 draft: Szkic
@@ -31,6 +32,7 @@ tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
 maps: Mapy
+switch_user: Przełącz użytkownika
 item_creation: Tworzenie elementu
 item_revision: Wersja elementu
 enter_a_name: Wprowadź nazwę...
@@ -52,7 +54,9 @@ edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować'
+show_active_items: Pokaż aktywne elementy
 show_archived_items: Pokaż zarchiwizowane elementy
+show_all_items: Pokaż wszystkie elementy
 edited: Wartość zmieniona
 required: Wymagane
 required_for_app_access: Wymagane dla Dostępu Aplikacji
@@ -66,6 +70,8 @@ create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
+subject: Temat
+inbox: Skrzynka odbiorcza
 emails: E-maile
 connection_excellent: Doskonałe połączenie
 connection_good: Dobre połączenie
@@ -87,6 +93,7 @@ logoutReason:
   SESSION_EXPIRED: Sesja wygasła
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
+admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
 node_version: Wersja Node
@@ -173,7 +180,7 @@ global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
 show_zero: Pokaż zerowy
-create_in_advanced_field_creation_mode: Utwórz w Zaawansowanym trybie tworzenia pól
+create_in_advanced_field_creation_mode: Utwórz pole w trybie zaawansowanym
 continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
@@ -215,7 +222,13 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
-geometry: Geometria
+geometry: Geometria (wszystkie)
+geometry.Point: Punkt
+geometry.LineString: Ciąg linii
+geometry.Polygon: Wielokąt
+geometry.MultiPoint: Wielopunktowy
+geometry.MultiLineString: Ciąg multilinii
+geometry.MultiPolygon: Wielokąt
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -250,7 +263,7 @@ multiple_files: Wiele plików
 m2o_relationship: Relacja wiele do jednego
 o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
-m2a_relationship: Relacja wiele do wielu
+m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
 next: Następny
 field_name: Nazwa pola
@@ -260,6 +273,7 @@ note: Notatka
 enter_a_value: Wprowadź wartość...
 enter_a_placeholder: Wprowadź tekst zastępczy...
 length: Długość
+soft_length: Limit miękki
 precision_scale: Precyzja i Skala
 readonly: Tylko do odczytu
 unique: Unikalne
@@ -270,11 +284,18 @@ foreign_key: Klucz obcy
 finish_setup: Zakończ konfigurację
 dismiss: Anuluj
 raw_value: Wartość surowa
+copy_raw_value: Kopiuj wartość surową
+copy_raw_value_success: Skopiowano
+copy_raw_value_fail: Kopiowanie nie powiodło się
+paste_raw_value: Wklej wartość surową
+paste_raw_value_success: Wklejony
+paste_raw_value_fail: Wklejanie nie powiodło się
+view_raw_value: Zobacz wartość surową
 edit_raw_value: Edytuj wartość surową
 enter_raw_value: Wprowadź surową wartość...
 clear_value: Wyczyść wartość
 clear_changes: Wyczyść zmiany
-reset_to_default: Zresetuj do ustawień domyślnych
+reset_to_default: Przywróć domyślne
 undo_changes: Cofnij zmiany
 notifications: Powiadomienia
 show_all_activity: Pokaż wszystkie aktywności
@@ -306,10 +327,17 @@ related_collection: Powiązana kolekcja
 related_collections: Powiązane kolekcje
 translations_collection: Kolekcja tłumaczeń
 languages_collection: Kolekcja języków
-export_data: Eksportuj dane
+import_data_input_placeholder: CSV lub JSON...
+import_data_button: Rozpocznij import
+import_data_indeterminate: Importowanie danych...
+import_data_success: Pomyślnie zaimportowano dane z {filename}
+import_data_error: Struktura danych tego pliku nie pasuje do kolekcji.
+label_import: Importuj
+label_export: Eksportuj
+import_export: Import / Eksport
 format: Formatowanie
 use_current_filters_settings: Użyj obecnych filtrów i ustawień
-export_collection: 'Eksportuj {collection}'
+export_data_button: Rozpocznij eksport
 last_page: Ostatnia strona
 last_access: Ostatni dostęp
 fill_template: Wypełnij wartością szablonu
@@ -325,10 +353,13 @@ interface_label: Interfejs
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
+delete_share: Usuń udostępnienie
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_date_short: 'D MMM u'
+date-fns_time_24hour: 'GG:mm:ss'
+date-fns_time_no_seconds_24hour: 'GG:mm'
+date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minuty
@@ -421,6 +452,9 @@ user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
 no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
+no_notifications: Brak powiadomień
+no_notifications_copy: Jesteś na bieżąco z wiadomościami!
+activity_log: Dziennik aktywności
 all_items: Wszystkie elementy
 any: Dowolny
 csv: CSV
@@ -502,6 +536,9 @@ errors:
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
   ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
+  VALUE_TOO_LONG: Wartość jest zbyt długa
+  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
+  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
@@ -532,12 +569,15 @@ update_collection_success: Zaktualizowana kolekcja
 delete_collection_success: Usunięta kolekcja
 make_collection_visible: Spraw, aby kolekcja była widoczna
 make_collection_hidden: Spraw, aby kolekcja była ukryta
+make_folder_visible: Uwidocznij folder
+make_folder_hidden: Ukryj folder
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
 one_filtered_item: '1 przefiltrowany element'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć tę kolekcję? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. Ta akcja jest trwała.
+delete_folder_are_you_sure: Czy na pewno chcesz usunąć ten folder? Zagnieżdżone foldery i kolekcje zostaną przeniesione na najwyższy poziom.
 collections_shown: Wyświetlane kolekcje
 visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
@@ -652,6 +692,7 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
+insights: Statystyki
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -696,6 +737,8 @@ unlimited: Nielimitowany
 open_link_in: Otwórz link w
 new_tab: Nowa karta
 current_tab: Aktualna karta
+save_image: Zapisz obraz
+save_media: Zapisz media
 wysiwyg_options:
   aligncenter: Wyśrodkuj
   alignjustify: Wyjustuj
@@ -753,6 +796,7 @@ adding_user: Dodawanie użytkownika
 unknown_user: Nieznany użytkownik
 creating_in: 'Tworzenie elementu w {collection}'
 editing_in: 'Edycja elementu w {collection}'
+viewing_in: 'Podgląd elementu w {collection}'
 creating_unit: 'Tworzenie {unit}'
 editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
@@ -776,6 +820,7 @@ layout_setup: Ustawienia układu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
+discard_all_changes: Odrzuć wszystkie zmiany
 discard_changes_copy: Czy na pewno chcesz odrzucić wszystkie wprowadzone zmiany?
 show_x_axis: Pokaż oś X
 show_y_axis: Pokaż oś Y
@@ -823,6 +868,7 @@ cancel: Anuluj
 no_upscale: Nie skaluj obrazów
 collection: Kolekcja
 collections: Kolekcje
+content: Zawartość
 singleton: Singleton
 singleton_label: Traktuj jako pojedynczy obiekt
 system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
@@ -836,12 +882,14 @@ directus_collection:
   directus_migrations: Jaką wersję bazy danych używasz
   directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
+  directus_notifications: Powiadomienia wysłane do użytkowników
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
   directus_revisions: Zrzuty danych dla wszystkich działań
   directus_roles: Grupy uprawnień dla użytkowników systemu
   directus_sessions: Informacje o sesji użytkownika
   directus_settings: Opcje konfiguracji projektu
+  directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
   directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
 fields:
@@ -869,6 +917,8 @@ fields:
     unarchive_value: Niezarchiwizowane wartości
     sort_field: Pole sortowania
     accountability: Śledzenie Aktywności i Wersji
+    archive_field: Pole archiwum
+    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     $thumbnail: Miniaturka
     title: Tytuł
@@ -924,29 +974,52 @@ fields:
     external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
+    email_notifications: Powiadomienia e-mail
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atrybuty
+    attribution_placeholder: '© Współtwórcy OpenStreetMap'
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Dodatkowe przekształcenia
     project_name: Nazwa projektu
+    project_descriptor: Opis projektu
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
+    branding: Marka i Styl
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
+    files_and_thumbnails: Pliki i pamięć
+    storage_default_folder: Domyślny folder
+    storage_asset_presets: Presety transformacji
+    storage_asset_transform: Dozwolone przekształcenia
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
+    module_bar: Pasek modułu
+    transformations_all: Zezwól na wszystkie transformacje
+    transformations_none: Wyłącz transformacje
+    transformations_presets: Ogranicz transformacje do poniższych ustawień
+  directus_shares:
+    name: Nazwa
+    role: Rola
+    password: Hasło
+    date_start: Data rozpoczęcia
+    date_end: Data zakończenia
+    max_uses: Maksymalna ilość użyć
+    times_used: Czas użyć
   directus_fields:
     collection: Nazwa kolekcji
     icon: Ikona kolekcji
@@ -976,10 +1049,12 @@ fields:
     data_label: Wyślij dane wydarzenia
     triggers: Wyzwalacze
     actions: Akcje
+    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
-    project_logo_note: Tło logowania i logo
+    project_color_note: Tło logowania i logo
+    project_logo_note: Biały 40x40 SVG/PNG
     public_note_placeholder: Krótka, publiczna wiadomość, która obsługuje formatowanie markdown...
     security_divider_title: Bezpieczeństwo
     auth_password_policy:
@@ -987,6 +1062,8 @@ field_options:
       weak_text: Słabe - co najmniej 8 znaków
       strong_text: Silne – duże / małe litery / cyfry / specjalne
     storage_asset_presets:
+      fit_label: Dopasuj
+      upscaling: Skalowanie
       fit:
         contain_text: Zawiera (współczynnik proporcji zachowania)
         cover_text: Okładka (wymusza dokładny rozmiar)
@@ -995,7 +1072,9 @@ field_options:
     additional_transforms: Dodatkowe przekształcenia
     transforms_note: Nazwa metody ostrej i jej argumenty. Aby uzyskać więcej informacji, zobacz https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Token dostępu do Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Podstawowe
+    basemaps_name_placeholder: Wprowadź nazwę mapy bazowej...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Styl Mapbox
@@ -1021,7 +1100,6 @@ field_options:
     singular_unit: Pojedyncza jednostka
     plural_unit: Liczba mnoga
     archive_divider: Archiwum
-    archive_field: Pole archiwum
     archive_field_placeholder: Wybierz pole...
     archive_app_filter: Włącz filtr archiwum aplikacji
     archive_value: Wartość ustawiona podczas archiwizacji...
@@ -1030,7 +1108,6 @@ field_options:
     sort_field: Wybierz pole...
     accountability_divider: Odpowiedzialność
     duplication_divider: Duplikacja
-    item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
     title: Unikalny tytuł...
     description: Opcjonalny opis...
@@ -1088,6 +1165,29 @@ start_collapsed: Rozpocznij zwinięty
 block: Zablokuj
 inline: W lini
 comment: Komentarz
+shares: Udostępnienia
+unlimited_usage: Nieograniczone użycie
+uses_left: Brak pozostałych zastosowań | 1 zastosowanie | {n} zastosowań pozostało
+no_shares: Brak udostępnień do wyświetlenia
+new_share: Nowe udostępnianie
+expired: Wygasły
+upcoming: Nadchodzące
+share: Udostępnij
+share_item: Udostępnij element
+shared_with_you: Pewien element został Ci udostępniony
+shared_enter_passcode: Wprowadź kod dostępu, aby kontynuować...
+shared_leave_blank_for_unlimited: Pozostaw puste dla nieograniczonej liczby
+shared_times_remaining: Ten link może być użyty tylko {n} razy
+shared_last_remaining: Ten link może być użyty tylko raz
+shared_uses_left: Dla dodanego bezpieczeństwa, ta wspólna strona została skonfigurowana z ograniczoną liczbą widoków. Pozostało {n} wyświetleń, po których strona nie będzie już dostępna.
+share_access_page: Dostęp do udostępnionej strony
+share_access_not_found: Ta współdzielona strona nie istnieje lub przekroczyła już maksymalną liczbę dozwolonych zastosowań.
+share_access_not_found_desc: Skontaktuj się z autoryzowanym użytkownikiem tego projektu, aby poprosić o dostęp.
+share_access_not_found_title: Nieznana strona udostępniania
+share_copy_link: Kopiuj link
+share_copy_link_success: Link skopiowany
+share_copy_link_error: Nie można skopiować linku
+share_send_link: Wyślij link
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
 referential_action_field_label_o2m: Po odznaczeniu {collection}...
@@ -1139,6 +1239,7 @@ relationship: Powiązanie
 reset: Resetuj
 reset_password: Resetuj hasło
 revisions: Wersje
+no_revisions: Brak rewizji
 revert: Przywróć
 save: Zapisz
 schema: Schemat
@@ -1160,6 +1261,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1169,6 +1271,8 @@ interfaces:
     add_filter: Dodaj Filtr
     add_group: I / lub grupa
     add_value: Dodaj wartość
+    logic_type_and: ORAZ
+    logic_type_or: LUB
     all: Wszystkie
     any: Dowolny
     and: i
@@ -1211,6 +1315,7 @@ interfaces:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii
+    line_wrapping: Zawijanie linii
     placeholder: Wprowadź kod tutaj...
   system-collection:
     collection: Kolekcja
@@ -1225,6 +1330,7 @@ interfaces:
     description: Wprowadź lub wybierz kolor
     placeholder: Wybierz kolor...
     preset_colors: Ustawienia kolorów
+    opacity: Przezroczystość
     preset_colors_add_label: Dodaj nowy kolor...
     name_placeholder: Wprowadź nazwę koloru...
   datetime:
@@ -1242,7 +1348,7 @@ interfaces:
   presentation-divider:
     divider: Separator
     description: Etykietowanie i dzielenie pól na sekcje
-    title_placeholder: Wprowadź tytuł...
+    title_placeholder: Wprowadź tytuł, lub pozostaw puste, aby pokazać tylko linię...
     inline_title: Tytuł w linii
     inline_title_label: Pokaż tytuł w linii
     margin_top: Margines górny
@@ -1277,6 +1383,8 @@ interfaces:
   file-image:
     image: Obraz
     description: Wybierz lub prześlij plik
+    crop: Przytnij aby dopasować
+    crop_label: Przytnij obraz w razie potrzeby
   system-interface:
     interface: Interfejs
     description: Wybierz istniejący interfejs
@@ -1287,6 +1395,7 @@ interfaces:
   list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
+    display_template_configure_notice: Możesz skonfigurować szablon wyświetlania po utworzeniu tego pola.
   select-dropdown-m2o:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
@@ -1294,12 +1403,16 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
+    edit: Edytuj
+    preview: Podgląd
+    editorFont: Czcionka edytora
+    previewFont: Podgląd czcionki
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1328,6 +1441,7 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
+    field_hint: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -1378,6 +1492,8 @@ interfaces:
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
+    color_on: Kolor włączony
+    color_off: Kolor wyłączony
     label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:
@@ -1402,11 +1518,15 @@ interfaces:
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
+    folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.
     results_path: Ścieżka wyników
     value_path: Ścieżka bazowa
+    text_path: Ścieżka tekstowa
     trigger: Wyzwalacz
     rate: Oceń
   group-raw:
@@ -1466,9 +1586,27 @@ displays:
   formatted-value:
     formatted-value: Wartość sformatowana
     description: Wyświetl sformatowaną wersję tekstu
-    format_title: Format tytułu
-    format_title_label: Automatyczny format
+    format: Formatowanie
+    format_label: Automatyczny format
+    font: Czcionka
+    font_sans_serif: Bezszeryfowa
+    font_serif: Szeryfowa
+    font_monospace: Monospace
+    bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
+    italic: Kursywa
+    italic_label: Użyj stylu italic
+    prefix: Przedrostek
+    prefix_label: Poprzedni tekst
+    suffix: Przyrostek
+    suffix_label: Tekst dodany
+    color: Kolor
+    background: Tło
+    icon: Ikona
+    border: Krawędź
+    border_label: Pokaż obramowanie
+    text: Tekst
+    text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
@@ -1506,6 +1644,7 @@ displays:
   related-values:
     related-values: Powiązane wartości
     description: Wyświetl wartości Raw
+    display_template_configure_notice: Możesz skonfigurować szablon wyświetlania po utworzeniu tego pola.
   user:
     user: Użytkownik
     description: Wyświetl użytkownika
@@ -1546,6 +1685,7 @@ layouts:
     invalid_geometry: Nieprawidłowa geometria
     find_location: Znajdź lokalizację...
     default_template: Używanie domyślnej kolekcji...
+    no_compatible_fields: Brak kompatybilnych pól
 panels:
   metric:
     name: Metryczny
@@ -1556,6 +1696,8 @@ panels:
     description: Renderowanie wykresu liniowego na podstawie wartości w czasie
     date_field: Pole daty
     value_field: Pole wartości
+    fill_type: Typ wypełnienia
+    curve_type: Typ Krzywej
   label:
     name: Etykieta
     description: Pokaż tekst

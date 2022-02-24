@@ -1,5 +1,6 @@
-import { addTokenToURL } from '@/api';
+import { getToken } from '@/api';
 import { i18n } from '@/lang';
+import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { Ref, ref } from 'vue';
 
@@ -40,7 +41,10 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 			if (buttonApi.isActive()) {
 				const node = editor.value.selection.getNode() as HTMLImageElement;
 				const imageUrl = node.getAttribute('src');
+				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
 				const alt = node.getAttribute('alt');
+				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
+				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
 
 				if (imageUrl === null || alt === null) {
 					return;
@@ -49,9 +53,9 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 				imageSelection.value = {
 					imageUrl,
 					alt,
-					width: Number(node.getAttribute('width')) || undefined,
-					height: Number(node.getAttribute('height')) || undefined,
-					previewUrl: imageUrl,
+					width,
+					height,
+					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value ?? getToken()),
 				};
 			} else {
 				imageSelection.value = null;
@@ -78,22 +82,49 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		const imageUrl = addTokenToURL(getPublicURL() + 'assets/' + image.id, imageToken.value);
+		const assetUrl = getPublicURL() + 'assets/' + image.id;
 
 		imageSelection.value = {
-			imageUrl,
+			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 			alt: image.title,
 			width: image.width,
 			height: image.height,
-			previewUrl: imageUrl,
+			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value ?? getToken()),
 		};
 	}
 
 	function saveImage() {
 		const img = imageSelection.value;
 		if (img === null) return;
-		const imageHtml = `<img src="${img.imageUrl}" alt="${img.alt}" width="${img.width}" height="${img.height}" />`;
+		const resizedImageUrl = addQueryToPath(img.imageUrl, {
+			...(img.width ? { width: img.width.toString() } : {}),
+			...(img.height ? { height: img.height.toString() } : {}),
+		});
+		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		editor.value.selection.setContent(imageHtml);
 		closeImageDrawer();
+	}
+
+	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
+		// Only process assets URL
+		if (!url.includes(getPublicURL() + 'assets/')) {
+			return url;
+		}
+		try {
+			const parsedUrl = new URL(url);
+			const params = new URLSearchParams(parsedUrl.search);
+
+			if (!token) {
+				params.delete('access_token');
+			} else {
+				params.set('access_token', token);
+			}
+
+			return Array.from(params).length > 0
+				? `${parsedUrl.origin}${parsedUrl.pathname}?${params.toString()}`
+				: `${parsedUrl.origin}${parsedUrl.pathname}`;
+		} catch {
+			return url;
+		}
 	}
 }

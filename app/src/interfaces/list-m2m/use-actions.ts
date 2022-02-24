@@ -1,4 +1,4 @@
-import { get, has, isEqual } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { Ref } from 'vue';
 import { RelationInfo } from '@/composables/use-m2m';
 
@@ -44,22 +44,26 @@ export default function useActions(
 
 	// Returns all items that do not have an existing junction and related item.
 	function getNewItems() {
-		const { junctionField, relationPkField } = relation.value;
+		const { junctionPkField } = relation.value;
 
-		if (value.value === null || junctionField === null) return [];
+		if (value.value === null || junctionPkField === null) return [];
 
-		return value.value.filter(
-			(item) => typeof get(item, junctionField) === 'object' && has(item, [junctionField, relationPkField]) === false
-		) as Record<string, any>[];
+		return value.value.filter((item: any) => typeof item === 'object' && !item?.[junctionPkField]) as Record<
+			string,
+			any
+		>[];
 	}
 
 	// Returns a list of items which related or junction item does exist but had changes.
 	function getUpdatedItems() {
-		const { junctionField, relationPkField } = relation.value;
+		const { junctionPkField } = relation.value;
 
-		if (value.value === null || junctionField === null) return [];
+		if (value.value === null || junctionPkField === null) return [];
 
-		return value.value.filter((item) => has(item, [junctionField, relationPkField])) as Record<string, any>[];
+		return value.value.filter((item: any) => typeof item === 'object' && item?.[junctionPkField]) as Record<
+			string,
+			any
+		>[];
 	}
 
 	// Returns only items that do not have any changes what so ever.
@@ -136,7 +140,12 @@ export default function useActions(
 
 			return isEqual(item, deletingItem) === false;
 		});
-		emit(newValue);
+
+		if (newValue.length === 0) {
+			emit(null);
+		} else {
+			emit(newValue);
+		}
 	}
 
 	return {

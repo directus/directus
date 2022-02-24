@@ -7,21 +7,22 @@
 
 ## Creating a Collection
 
-1. Click the **Create Collection** action button in the Data Model header
+1. Click <span mi btn>add</span> in the <span mi icon dark>list_alt</span> Data Model header
 2. Enter a unique **Collection Name** to be used as the database table name, API collection key, and App collection name
    default.
 3. Configure the name and type of the **Primary Key**.
    - Auto-Incremented Integer
    - Generated UUID
    - Manually Entered String
-4. Optional: Enable and rename any desired **System Fields**.
+4. Click on <span mi btn>arrow_forward</span>
+5. Optional: Enable and rename any desired **System Fields**.
    - Status
    - Sort
    - Created On
    - Created By
    - Updated On
    - Updated By
-5. Click the **Finish Setup** button
+6. Click the <span mi btn>check</span> **Finish Setup** button
 
 ::: danger Immutable Keys
 
@@ -44,8 +45,8 @@ are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
-  - [Creating a Field](#creating-a-field)
-  - [Updating a Field](#updating-a-field)
+  - [Creating a Field](#creating-a-field-standard)
+  - [Configuring a Field](#configuring-a-field)
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
   - [Changing Field Order & Layout](#adjusting-the-collection-form)
@@ -125,7 +126,7 @@ allows for configuring which parent/relational field values will be copied.
 ## Deleting a Collection
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the red **Delete Collection** action button in the header
+2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change
@@ -136,28 +137,73 @@ This action is permanent and can not be undone. Please proceed with caution.
 
 ## Adjusting the Collection Hierarchy
 
-Collections can be organized in several ways.
+Collections can be organized in several ways, including sorting, custom translations, showing/hiding, and even grouping.
+This organization is reflected in the sidebar navigation, allowing you to control how the users of the app will interact
+with the various collections in your project. Configuring the organization of your collections is done on the
+**Settings > Data Model** page.
+
+### Sorting & Grouping
+
+By using the <span mi icon>drag_indicator</span> drag handles on the left of the collection, you can manually put the
+collections in an order that makes the most sense for your project. By dragging a collection underneath another
+collection, you can turn any collection into a group-parent. Groups can even be nested within other groups.
+
+Additionally, you can add special "folder" collections that are exclusively used for organizational purposes, and don't
+hold any data themselves. This can be done by clicking <span mi btn sec>create_new_folder</span> in the top right of the
+page.
+
+### Renaming Collections
+
+The key of a collection (eg. what's used in the API / database) can't be changed. However, you can alter how a
+collection is displayed in your app by adding custom translations. This can be done by opening the detail page of a
+collection, and modifying the "Collection Naming Translations" option. Make sure to add translations for all the
+languages your app's users might use for the best results!
+
+### Hiding Collections
+
+1. Navigate to **Settings > Data Model**
+2. Click on the <span mi icon>more_vert</span> icon
+3. Select the <span mi icon>visibility_off</span> **Make Collection Hidden** option
+
+Hidden collections can still be accessed by the user by right-clicking on the navigation, and choosing
+<span mi icon>visibility</span> "Show Hidden Collections".
+
+::: tip Permissions
+
+If you want to prevent a user from accessing a collection altogether, you can configure the read permissions for their
+role to prevent them from viewing the collection. Collections that can't be read by the user won't show up in the
+navigation either.
+
+:::
 
 ## Adjusting the Collection Form
 
 The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
-is is highly configurable, with the following field options:
+is highly configurable, with the following field options:
 
-- **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the field's context menu
-  or edit drawer.
+- **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the
+  <span mi icon>more_vert</span> field's context menu or edit drawer.
 - **Width** — Fields have three different width options relative to the form/page. This is adjusted via the field's
   context menu or edit drawer.
-  - Half — The field is shown at half the form width
-  - Full — (Default) The field is shown at the full form width
-  - Fill — The field is shown filling the page width
-- **Sort** — Fields can be rearranged via their drag-and-drop handles.
+  - <span mi icon>border_vertical</span> Half Width — The field is shown at half the form width
+  - <span mi icon>border_right</span> Full Width — (Default) The field is shown at the full form width
+  - <span mi icon>aspect_ratio</span> Fill Width — The field is shown filling the page width
+- **Sort** — Fields can be rearranged via <span mi icon>drag_indicator</span>.
 - **Grouping** — Fields can be organized within different nested groups that are created using the normal Creating a
   Field flow. Different style groupings are available for different use-cases.
 
-## Creating a Field
+## Creating a Field (Standard)
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Under Fields & Layout, click the **Create Field** button
+3. **Choose the desired interface** by clicking on the illustration
+4. Add a **Field Key**, which is also used as the default field name
+5. **Configure the field options**, including the default value, required flag, and interface options
+
+## Creating a Field (Advanced)
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Under Fields & Layout, click the **Create Field in Advanced Mode** button
 3. **Choose the field type**, and follow its setup steps below.
 
 ::: tip Database Columns
@@ -177,7 +223,7 @@ This pane controls the technical details of the field's database column.
   changed once created, however you can use [Field Name Translations](/configuration/data-model/#field) to override how
   it's displayed in the App.
 - **Type** — (Required) How the data is saved to the database; See
-  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown maybe be limited or even
+  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown may be limited or even
   disabled based on your chosen Field category.
 - **Length** — (Only for certain types) For String types this determines the number of characters that can be stored in
   the database. For Float and Decimal types, this control becomes **Precision & Scale**.
@@ -254,6 +300,7 @@ Each field can have one or more _rules_. Each rule has the following configurati
   [Filter Rules](/configuration/filter-rules) spec
 - **Readonly**: Whether or not the field is readonly when the condition is matched
 - **Hidden**: Whether or not the field is hidden when the condition is matched
+- **Required**: Whether or not the field is required when the condition is matched
 - **Interface Options**: Any additional configuration for the selected interface
 
 These changes to the field are merged onto the base configuration of the field. This means you can have the field hidden
@@ -262,6 +309,44 @@ by default, and then only toggle the hidden state of the field in the condition.
 ::: tip Order Matters
 
 The conditions are matched in order. The **last** condition that matches is the one that's used to apply the changes.
+
+:::
+
+## Creating Translated Multilingual Fields
+
+While you could create individual fields for each translation, such as `title_english`, `title_german`, `title_french`,
+and so on, this is not easily extensible, and creates a less than ideal form layout. Instead, you can use the Directus
+_relational_ [Translations O2M](/configuration/relationships/#translations-o2m) interface. This uses a separate
+collection to store an endless number of translations, and a separate collection of languages that can easily be added
+to without having to change the schema.
+
+Let's take a look at a basic example for "Articles":
+
+- **`articles` Collection**
+  - `id` — (Primary Key)
+  - `author` — Field that is not translated
+  - `date_published` — Field that is not translated
+  - `translations` — A O2M relational field to `article_translations`
+- **`article_translations` Collection**
+  - `id` — (Primary Key)
+  - `article` — The key of the article this belongs to
+  - `language` — The language key of this translation
+  - `title` — The translated Article Title
+  - `text` — The translated Article Text
+- **`languages` Collection**
+  - `language_code` — (Primary Key) eg: "en-US"
+  - `name` — The language name, eg: "English"
+
+As you can see above, you add **non-translated** fields, such as the `author` and `publish_date`, to the parent
+collection. Any **multilingual** fields, such as Title or Text, should be added directly to the Translation Collection.
+You can not simply drag or shift fields from the parent to translations, they must be _created_ in the correct
+collection.
+
+::: tip Translating Parent Fields
+
+To make an existing parent field translatable, you can choose "Duplicate Field" from its context menu, move it to the
+translation collection, and then delete the parent field. However, be aware that this does **not** maintain any existing
+field values in the process.
 
 :::
 
@@ -281,8 +366,8 @@ system collections. To get started, expand System Collections from the bottom of
 ## Duplicating a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the **More Options** icon for the field you want to duplicate
-3. Click the **Duplicate Field** option
+2. Click the <span mi icon>more_vert</span> icon for the field you want to duplicate
+3. Click the <span mi icon>content_copy</span> **Duplicate Field** option
 
 ::: warning Relational and Primary Key Fields
 
@@ -293,8 +378,8 @@ It is not currently possible to duplicate relational fields or a collection's pr
 ## Deleting a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the **More Options** icon for the field you want to delete
-3. Click the **Delete Field** option
+2. Click the <span mi icon>more_vert</span> icon for the field you want to delete
+3. Click the <span mi icon>delete</span> **Delete Field** option
 4. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change

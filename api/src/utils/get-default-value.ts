@@ -14,7 +14,7 @@ export default function getDefaultValue(
 	if (defaultValue === 'null') return null;
 	if (defaultValue === 'NULL') return null;
 
-	// Check if the default is wrapped in an extra pair of quotes, this happens in SQLite
+	// Check if the default is wrapped in an extra pair of quotes, this happens in SQLite / MariaDB
 	if (
 		typeof defaultValue === 'string' &&
 		((defaultValue.startsWith(`'`) && defaultValue.endsWith(`'`)) ||
@@ -22,6 +22,8 @@ export default function getDefaultValue(
 	) {
 		defaultValue = defaultValue.slice(1, -1);
 	}
+
+	if (defaultValue === '0000-00-00 00:00:00') return null;
 
 	switch (type) {
 		case 'bigInteger':

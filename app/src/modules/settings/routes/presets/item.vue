@@ -141,11 +141,12 @@ import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useLayout } from '@/composables/use-layout';
+import { useLayout } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
+import { isEqual } from 'lodash';
 
 type FormattedPreset = {
 	id: number;
@@ -204,25 +205,7 @@ export default defineComponent({
 			if (hasEdits.value) save();
 		});
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -245,7 +228,6 @@ export default defineComponent({
 			confirmDelete,
 			updateFilters,
 			search,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
@@ -312,8 +294,8 @@ export default defineComponent({
 				deleting.value = true;
 
 				try {
-					await api.delete(`/presets/${props.id}`);
-					router.push(`/settings/presets`);
+					await presetsStore.delete([Number(props.id)]);
+					router.replace(`/settings/presets`);
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
@@ -378,6 +360,14 @@ export default defineComponent({
 					return values.value.layout_query[values.value.layout];
 				},
 				set(newQuery) {
+					if (
+						values.value.layout_query &&
+						values.value.layout &&
+						isEqual(newQuery, values.value.layout_query[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_query: {
@@ -396,6 +386,14 @@ export default defineComponent({
 					return values.value.layout_options[values.value.layout];
 				},
 				set(newOptions) {
+					if (
+						values.value.layout_options &&
+						values.value.layout &&
+						isEqual(newOptions, values.value.layout_options[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_options: {

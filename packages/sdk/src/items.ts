@@ -49,33 +49,42 @@ export type DeepQueryMany<T> = {
 
 export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
 
-export type FilterOperators =
-	| '_eq'
-	| '_neq'
-	| '_contains'
-	| '_ncontains'
-	| '_in'
-	| '_nin'
-	| '_gt'
-	| '_gte'
-	| '_lt'
-	| '_lte'
-	| '_null'
-	| '_nnull'
-	| '_empty'
-	| '_nempty'
-	| '_intersects'
-	| '_nintersects'
-	| '_intersects_bbox'
-	| '_nintersects_bbox';
-
-export type FilterOperator<T, K extends keyof T> = {
-	[O in FilterOperators]?: Filter<T> | T[K];
+export type FilterOperators<T> = {
+	_eq?: T;
+	_neq?: T;
+	_gt?: T;
+	_gte?: T;
+	_lt?: T;
+	_lte?: T;
+	_in?: T[];
+	_nin?: T[];
+	_between?: [T, T];
+	_nbetween?: [T, T];
+	_contains?: T;
+	_ncontains?: T;
+	_starts_with?: T;
+	_nstarts_with?: T;
+	_ends_with?: T;
+	_nends_with?: T;
+	_empty?: boolean;
+	_nempty?: boolean;
+	_nnull?: boolean;
+	_null?: boolean;
+	_intersects?: T;
+	_nintersects?: T;
+	_intersects_bbox?: T;
+	_nintersects_bbox?: T;
 };
 
-export type Filter<T> = {
-	[K in keyof T]?: FilterOperator<T, K> | string | boolean | number | string[] | Record<string, any>;
+export type LogicalFilterAnd<T> = { _and: Filter<T>[] };
+export type LogicalFilterOr<T> = { _or: Filter<T>[] };
+export type LogicalFilter<T> = LogicalFilterAnd<T> | LogicalFilterOr<T>;
+
+export type FieldFilter<T> = {
+	[K in keyof T]?: FilterOperators<T[K]> | FieldFilter<T[K]>;
 };
+
+export type Filter<T> = LogicalFilter<T> | FieldFilter<T extends Array<unknown> ? T[number] : T>;
 
 /**
  * CRUD at its finest
@@ -85,7 +94,8 @@ export interface IItems<T extends Item> {
 	createMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
 
 	readOne(id: ID, query?: QueryOne<T>): Promise<OneItem<T>>;
-	readMany(query?: QueryMany<T>): Promise<ManyItems<T>>;
+	readMany(ids: ID[], query?: QueryMany<T>): Promise<ManyItems<T>>;
+	readByQuery(query?: QueryMany<T>): Promise<ManyItems<T>>;
 
 	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
 	updateMany(ids: ID[], item: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>>;

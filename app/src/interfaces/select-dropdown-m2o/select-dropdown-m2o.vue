@@ -80,6 +80,7 @@
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
+			:filter="customFilter"
 			@input="stageSelection"
 		/>
 	</div>
@@ -87,7 +88,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
+import { defineComponent, computed, ref, toRefs, watch, PropType, inject } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import { useCollection } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -96,6 +97,11 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { Filter } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
+import { deepMap } from '@directus/shared/utils';
+import { merge } from 'lodash';
 
 /**
  * @NOTE
@@ -132,10 +138,28 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: null,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const values = inject('values', ref<Record<string, any>>({}));
+
+		const customFilter = computed(() => {
+			return parseFilter(
+				deepMap(props.filter, (val: any) => {
+					if (val && typeof val === 'string') {
+						return render(val, values.value);
+					}
+
+					return val;
+				})
+			);
+		});
 
 		const { collection } = toRefs(props);
 
@@ -178,6 +202,7 @@ export default defineComponent({
 			stageEdits,
 			editModalActive,
 			relatedPrimaryKeyField,
+			customFilter,
 		};
 
 		function useCurrent() {
@@ -186,7 +211,7 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				(newValue) => {
+				async (newValue) => {
 					// When the newly configured value is a primitive, assume it's the primary key
 					// of the item and fetch it from the API to render the preview
 					if (
@@ -194,14 +219,28 @@ export default defineComponent({
 						newValue !== currentItem.value?.[relatedPrimaryKeyField.value!.field] &&
 						(typeof newValue === 'string' || typeof newValue === 'number')
 					) {
-						fetchCurrent();
+						fetchCurrent(newValue);
 					}
 
 					// If the value isn't a primary key, the current value will be set by the editing
 					// handlers in useEdit()
-
-					if (newValue === null) {
+					else if (newValue === null) {
 						currentItem.value = null;
+					}
+
+					// If value is already fullfilled, let's fetch all necessary
+					// fields for display template
+					else if (!currentItem.value && typeof newValue === 'object') {
+						if (newValue[relatedPrimaryKeyField.value!.field]) {
+							await fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
+							if (currentItem.value) {
+								// Override with locally updated values
+								Object.assign(currentItem.value, newValue);
+							}
+						} else {
+							// Display newly created entry in nested m2o
+							currentItem.value = newValue;
+						}
 					}
 				},
 				{ immediate: true }
@@ -231,7 +270,7 @@ export default defineComponent({
 				emit('input', item[relatedPrimaryKeyField.value.field]);
 			}
 
-			async function fetchCurrent() {
+			async function fetchCurrent(key: string | number) {
 				if (!relatedPrimaryKeyField.value || !relatedCollection.value) return;
 
 				loading.value = true;
@@ -244,8 +283,8 @@ export default defineComponent({
 
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
-						? `/${relatedCollection.value.collection.substring(9)}/${props.value}`
-						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(props.value!)}`;
+						? `/${relatedCollection.value.collection.substring(9)}/${key}`
+						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(key!)}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -446,10 +485,7 @@ export default defineComponent({
 					emit('input', newEdits);
 				}
 
-				currentItem.value = {
-					...currentItem.value,
-					...newEdits,
-				};
+				currentItem.value = merge({}, currentItem.value, newEdits);
 			}
 		}
 	},

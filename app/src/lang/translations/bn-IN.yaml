@@ -31,6 +31,8 @@ edit_collection: সংগ্রহ সম্পাদনা করুন
 exclusive: একচেটিয়া
 children: শিশু
 fields:
+  directus_settings:
+    module_bar: মডিউল বার
   directus_fields:
     translation: ক্ষেত্রের নাম অনুবাদ
   directus_roles:

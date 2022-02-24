@@ -13,18 +13,6 @@
     comment:
       _nnull: true
 
-- collection: directus_collections
-  action: read
-
-- collection: directus_fields
-  action: read
-
-- collection: directus_permissions
-  action: read
-  permissions:
-    role:
-      _eq: $CURRENT_ROLE
-
 - collection: directus_presets
   action: read
   permissions:
@@ -60,9 +48,6 @@
     user:
       _eq: $CURRENT_USER
 
-- collection: directus_relations
-  action: read
-
 - collection: directus_roles
   action: read
   permissions:
@@ -71,6 +56,26 @@
 
 - collection: directus_settings
   action: read
+
+- collection: directus_notifications
+  action: read
+  permissions:
+    recipient:
+      _eq: $CURRENT_USER
+
+- collection: directus_notifications
+  action: update
+  permissions:
+    recipient:
+      _eq: $CURRENT_USER
+  fields:
+    - status
+
+- collection: directus_shares
+  action: read
+  permissions:
+    user_created:
+      _eq: $CURRENT_USER
 
 - collection: directus_users
   action: read

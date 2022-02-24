@@ -68,7 +68,7 @@
 			</draggable>
 		</v-list>
 
-		<div class="buttons">
+		<div v-if="!disabled" class="buttons">
 			<v-menu v-if="enableCreate" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button @click="toggle">
@@ -148,7 +148,7 @@ import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { isPlainObject, cloneDeep } from 'lodash';
+import { isPlainObject, cloneDeep, isEqual } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
@@ -165,7 +165,7 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: Array as PropType<any[]>,
+			type: Array as PropType<any[] | null>,
 			default: null,
 		},
 		disabled: {
@@ -201,7 +201,7 @@ export default defineComponent({
 			useEdits();
 		const { onSort } = useManualSort();
 
-		watch(props, fetchValues, { immediate: true, deep: true });
+		watch(() => props.value, fetchValues, { immediate: true, deep: true });
 
 		return {
 			t,
@@ -378,8 +378,10 @@ export default defineComponent({
 				relatedItemValues,
 			};
 
-			async function fetchValues() {
+			async function fetchValues(newVal: any, oldVal: any) {
 				if (props.value === null) return;
+
+				if (isEqual(newVal, oldVal)) return;
 
 				loading.value = true;
 
@@ -527,10 +529,13 @@ export default defineComponent({
 			}
 
 			function deselect(item: any) {
-				emit(
-					'input',
-					(props.value || []).filter((current) => current !== item)
-				);
+				const newValue = (props.value || []).filter((current) => current !== item);
+
+				if (newValue.length === 0) {
+					emit('input', null);
+				} else {
+					emit('input', newValue);
+				}
 			}
 		}
 

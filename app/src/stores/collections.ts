@@ -10,7 +10,7 @@ import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { isEqual, orderBy, omit } from 'lodash';
-import { useFieldsStore } from '.';
+import { useRelationsStore } from './relations';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
@@ -54,9 +54,11 @@ export const useCollectionsStore = defineStore({
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : '';
+
 					i18n.global.mergeLocaleMessage(language, {
 						collection_names: {
-							[collection.collection]: translation,
+							[collection.collection]: literalInterpolatedTranslation,
 						},
 						collection_names_singular: {
 							[collection.collection]: singular,
@@ -93,7 +95,6 @@ export const useCollectionsStore = defineStore({
 			});
 		},
 		async upsertCollection(collection: string, values: DeepPartial<Collection & { fields: Field[] }>) {
-			const fieldsStore = useFieldsStore();
 			const existing = this.getCollection(collection);
 
 			// Strip out any fields the app might've auto-generated at some point
@@ -122,8 +123,6 @@ export const useCollectionsStore = defineStore({
 				}
 			} catch (err: any) {
 				unexpectedError(err);
-			} finally {
-				await fieldsStore.hydrate();
 			}
 		},
 		async updateCollection(collection: string, updates: DeepPartial<Collection>) {
@@ -139,9 +138,12 @@ export const useCollectionsStore = defineStore({
 			}
 		},
 		async deleteCollection(collection: string) {
+			const relationsStore = useRelationsStore();
+
 			try {
 				await api.delete(`/collections/${collection}`);
 				await this.hydrate();
+				await relationsStore.hydrate();
 				notify({
 					type: 'success',
 					title: i18n.global.t('delete_collection_success'),
