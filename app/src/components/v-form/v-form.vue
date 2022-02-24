@@ -70,8 +70,8 @@ import { assign, cloneDeep, isNil, omit, pick } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
-import { parseFilter } from '@/utils/parse-filter';
 import { applyConditions } from '@/utils/apply-conditions';
+import { generateConditionsFilterContext } from '@/utils/generate-conditions-filter-context';
 
 type FieldValues = {
 	[field: string]: any;
@@ -141,7 +141,6 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
-		const generatedFilterContext = ref(false);
 
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
@@ -161,7 +160,7 @@ export default defineComponent({
 			}
 		});
 
-		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, generateFilterContext } = useForm();
+		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, updateConditionsFilterContext } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
 		const firstEditableFieldIndex = computed(() => {
@@ -207,8 +206,7 @@ export default defineComponent({
 		(async () => {
 			if (props.requireFilterContext) {
 				// Prevent applying conditions when generating filter context
-				await generateFilterContext();
-				generatedFilterContext.value = true;
+				await updateConditionsFilterContext();
 			}
 		})();
 
@@ -282,7 +280,9 @@ export default defineComponent({
 
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-				return fields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
+				return fields.value.map((field) =>
+					applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field), userStore.cachedFilterContext)
+				);
 			});
 
 			const fieldsInGroup = computed(() =>
@@ -295,45 +295,11 @@ export default defineComponent({
 
 			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.field)));
 
-			async function generateFilterContext() {
-				const requiredPermissionData = {
-					$CURRENT_USER: [] as string[],
-					$CURRENT_ROLE: [] as string[],
-				};
-
-				const extractPermissionData = (val: any) => {
-					if (typeof val === 'string' && val.startsWith('$CURRENT_USER.')) {
-						const fieldString = val.replace('$CURRENT_USER.', '');
-						if (val && !requiredPermissionData.$CURRENT_USER.includes(fieldString)) {
-							requiredPermissionData.$CURRENT_USER.push(fieldString);
-						}
-					}
-
-					if (typeof val === 'string' && val.startsWith('$CURRENT_ROLE.')) {
-						const fieldString = val.replace('$CURRENT_ROLE.', 'role.');
-						if (val && !requiredPermissionData.$CURRENT_ROLE.includes(fieldString)) {
-							requiredPermissionData.$CURRENT_ROLE.push(fieldString);
-						}
-					}
-
-					return val;
-				};
-
-				const processConditions = (field: Field) => {
-					if (field.meta && Array.isArray(field.meta?.conditions)) {
-						deepMap(
-							field.meta.conditions.map((condition) => condition.rule),
-							extractPermissionData
-						);
-					}
-				};
-
-				fields.value.map((field) => processConditions(field));
-
-				await userStore.updateFilterContext(requiredPermissionData);
+			async function updateConditionsFilterContext() {
+				await userStore.updateFilterContext(generateConditionsFilterContext(fields.value));
 			}
 
-			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup, generateFilterContext };
+			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup, updateConditionsFilterContext };
 
 			function isDisabled(field: Field) {
 				return (

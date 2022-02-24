@@ -16,6 +16,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { translate } from '@/utils/translate-object-values';
 import { useUserStore } from '@/stores/';
 import { usePermissions } from '../use-permissions';
+import { generateConditionsFilterContext } from '@/utils/generate-conditions-filter-context';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -325,14 +326,16 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		// Only generate filter context once when required
 		if (!generatedFilterContext.value) {
 			generatedFilterContext.value = true;
-			await generateFilterContext();
+			await userStore.updateFilterContext(generateConditionsFilterContext(fields.value));
 		}
 
 		const validationRules = {
 			_and: [],
 		} as LogicalFilterAND;
 
-		const fieldsWithConditions = fields.value.map((field) => applyConditions(item, field));
+		const fieldsWithConditions = fields.value.map((field) =>
+			applyConditions(item, field, userStore.cachedFilterContext)
+		);
 
 		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
@@ -357,43 +360,5 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				error.details.map((details) => new FailedValidationException(details).extensions)
 			)
 		);
-	}
-
-	async function generateFilterContext() {
-		const requiredPermissionData = {
-			$CURRENT_USER: [] as string[],
-			$CURRENT_ROLE: [] as string[],
-		};
-
-		const extractPermissionData = (val: any) => {
-			if (typeof val === 'string' && val.startsWith('$CURRENT_USER.')) {
-				const fieldString = val.replace('$CURRENT_USER.', '');
-				if (val && !requiredPermissionData.$CURRENT_USER.includes(fieldString)) {
-					requiredPermissionData.$CURRENT_USER.push(fieldString);
-				}
-			}
-
-			if (typeof val === 'string' && val.startsWith('$CURRENT_ROLE.')) {
-				const fieldString = val.replace('$CURRENT_ROLE.', 'role.');
-				if (val && !requiredPermissionData.$CURRENT_ROLE.includes(fieldString)) {
-					requiredPermissionData.$CURRENT_ROLE.push(fieldString);
-				}
-			}
-
-			return val;
-		};
-
-		const processConditions = (field: Field) => {
-			if (field.meta && Array.isArray(field.meta?.conditions)) {
-				deepMap(
-					field.meta.conditions.map((condition) => condition.rule),
-					extractPermissionData
-				);
-			}
-		};
-
-		fields.value.map((field) => processConditions(field));
-
-		await userStore.updateFilterContext(requiredPermissionData);
 	}
 }

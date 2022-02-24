@@ -3,13 +3,17 @@ import { parseFilter } from '@/utils/parse-filter';
 import { validatePayload } from '@directus/shared/utils';
 import { merge } from 'lodash';
 
-export function applyConditions(item: Record<string, any>, field: Field) {
+export function applyConditions(
+	item: Record<string, any>,
+	field: Field,
+	cachedFilterContext: Record<string, any> = {}
+) {
 	if (field.meta && Array.isArray(field.meta?.conditions)) {
 		const conditions = [...field.meta.conditions].reverse();
 
 		const matchingCondition = conditions.find((condition) => {
 			if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
-			const rule = parseFilter(condition.rule);
+			const rule = parseFilter(condition.rule, cachedFilterContext);
 			const errors = validatePayload(rule, item, { requireAll: true });
 			return errors.length === 0;
 		});
