@@ -3,7 +3,7 @@ import { Accountability } from '@directus/shared/types';
 import { parseFilter as parseFilterShared } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
 
-export function parseFilter(filter: Filter | null, , filterContext?: Record<string, any>): Filter {
+export function parseFilter(filter: Filter | null, filterContext?: Record<string, any>): Filter {
 	const userStore = useUserStore();
 
 	if (!userStore.currentUser) return filter ?? {};

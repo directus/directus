@@ -41,7 +41,7 @@ type UsableItem = {
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
 	const userStore = useUserStore();
 	const generatedFilterContext = ref(false);
-	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
