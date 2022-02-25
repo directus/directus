@@ -273,18 +273,20 @@ export default defineComponent({
 		.module-nav-resize-handle {
 			position: absolute;
 			top: 0;
-			right: -6px;
+			right: -3px;
 			bottom: 0;
-			width: 12px;
+			width: 6px;
 			opacity: 0;
 			cursor: e-resize;
 			user-select: none;
 			touch-action: none;
 			background-color: var(--primary);
 			transition: opacity var(--fast) var(--transition);
+			transition-delay: 300ms;
 
+			&:hover,
 			&:active {
-				opacity: 0.25;
+				opacity: 0.5;
 			}
 		}
 
