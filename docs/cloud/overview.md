@@ -5,44 +5,38 @@
 
 [[toc]]
 
-## Teams
-
-![Teams Page](image.webp)
-
-Create a new Team, Invite users and start creating Directus Projects.
-
 ## Projects
 
-![Projects Page](image.webp)
+![Projects Page](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/projects-page-20220225A.webp)
 
 Display and access all Projects managed within a Team.
 
-## Project Dashboard
+### Project Details
 
-![Projects Page](image.webp)
+![Project Details](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/project-details-page-20220225A.webp)
 
-Edit, access, monitor, upgrade and delete your Projects.
+Click to enter the Project Details page and edit, access, monitor, upgrade or delete a Project.
 
 ## Members
 
-![Members Page](image.webp)
+![Members Page](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/members-page-20220225A.webp)
 
 Easily invite and manage Team members on one page.
 
 ## Billing
 
-![Billing Page](image.webp)
+![Billing Page](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/billing-page-20220225A.webp)
 
 The Billing Page is where you view and manage usage, subscriptions, receipts and billing details.
 
 ## Activity
 
-![Activity Page](image.webp)
+![Activity Page](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/activity-page-20220225A.webp)
 
 The Activity Page shows billing changes and other details.
 
 ## Settings
 
-![Teams Page](image.webp)
+![Team Settings Page](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/team-settings-page-20220225A.webp)
 
-The Settings Page allows you to edit the Team Name and Team Slug, as well as delete the Team.
+The Team Settings Page allows you to edit the Team Name and Team Slug, as well as delete the Team.
