@@ -19,6 +19,9 @@
 
 				<div
 					class="module-nav-resize-handle"
+					:class="{ active: handleHover }"
+					@pointerenter="handleHover = true"
+					@pointerleave="handleHover = false"
 					@pointerdown="onResizeHandlePointerDown"
 					@dblclick="onResizeHandleDblClick"
 				></div>
@@ -85,7 +88,6 @@ import { useRouter } from 'vue-router';
 import useEventListener from '@/composables/use-event-listener';
 import useTitle from '@/composables/use-title';
 import { storeToRefs } from 'pinia';
-import { throttle } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -114,7 +116,8 @@ export default defineComponent({
 		const router = useRouter();
 
 		const moduleNavEl = ref<HTMLElement>();
-		const { onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp } = useModuleNavResize();
+		const { handleHover, onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp } =
+			useModuleNavResize();
 		useEventListener(window, 'pointermove', onPointerMove);
 		useEventListener(window, 'pointerup', onPointerUp);
 		// onMounted(() => {
@@ -150,12 +153,13 @@ export default defineComponent({
 		useTitle(title);
 
 		function useModuleNavResize() {
+			const handleHover = ref<boolean>(false);
 			const dragging = ref<boolean>(false);
 			const dragStartX = ref<number>(0);
 			const dragStartWidth = ref<number>(0);
 			const rafId = ref<number | null>(null);
 
-			return { onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp };
+			return { handleHover, onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp };
 
 			function onResizeHandlePointerDown(event: PointerEvent) {
 				dragging.value = true;
@@ -190,6 +194,7 @@ export default defineComponent({
 			t,
 			navOpen,
 			moduleNavEl,
+			handleHover,
 			onResizeHandlePointerDown,
 			onResizeHandleDblClick,
 			contentEl,
@@ -273,20 +278,24 @@ export default defineComponent({
 		.module-nav-resize-handle {
 			position: absolute;
 			top: 0;
-			right: -3px;
+			right: -2px;
 			bottom: 0;
-			width: 6px;
+			width: 4px;
 			opacity: 0;
 			cursor: e-resize;
 			user-select: none;
 			touch-action: none;
 			background-color: var(--primary);
 			transition: opacity var(--fast) var(--transition);
-			transition-delay: 300ms;
+			transition-delay: 0;
 
 			&:hover,
 			&:active {
-				opacity: 0.5;
+				opacity: 1;
+			}
+
+			&.active {
+				transition-delay: 300ms;
 			}
 		}
 
