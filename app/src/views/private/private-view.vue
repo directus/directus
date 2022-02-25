@@ -10,12 +10,18 @@
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
 		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<div class="module-nav alt-colors">
+			<div ref="moduleNavEl" class="module-nav alt-colors">
 				<project-info />
 
 				<div class="module-nav-content">
 					<slot name="navigation" />
 				</div>
+
+				<div
+					class="module-nav-resize-handle"
+					@pointerdown="onResizeHandlePointerDown"
+					@dblclick="onResizeHandleDblClick"
+				></div>
 			</div>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
@@ -65,7 +71,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, provide, toRefs, computed } from 'vue';
+import { defineComponent, ref, provide, toRefs, computed, onMounted } from 'vue';
 import ModuleBar from './components/module-bar.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
@@ -76,8 +82,10 @@ import NotificationDialogs from './components/notification-dialogs/';
 import NotificationsDrawer from './components/notifications-drawer.vue';
 import { useUserStore, useAppStore } from '@/stores';
 import { useRouter } from 'vue-router';
+import useEventListener from '@/composables/use-event-listener';
 import useTitle from '@/composables/use-title';
 import { storeToRefs } from 'pinia';
+import { throttle } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -104,6 +112,14 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const router = useRouter();
+
+		const moduleNavEl = ref<HTMLElement>();
+		const { onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp } = useModuleNavResize();
+		useEventListener(window, 'pointermove', onPointerMove);
+		useEventListener(window, 'pointerup', onPointerUp);
+		// onMounted(() => {
+		// 	moduleNavEl.value!.style.width = '300px';
+		// });
 
 		const { title } = toRefs(props);
 		const navOpen = ref(false);
@@ -133,9 +149,49 @@ export default defineComponent({
 
 		useTitle(title);
 
+		function useModuleNavResize() {
+			const dragging = ref<boolean>(false);
+			const dragStartX = ref<number>(0);
+			const dragStartWidth = ref<number>(0);
+			const rafId = ref<number | null>(null);
+
+			return { onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp };
+
+			function onResizeHandlePointerDown(event: PointerEvent) {
+				dragging.value = true;
+				dragStartX.value = event.pageX;
+				dragStartWidth.value = moduleNavEl.value!.offsetWidth;
+			}
+
+			function onResizeHandleDblClick() {
+				moduleNavEl.value!.style.width = `220px`;
+			}
+
+			function onPointerMove(event: PointerEvent) {
+				if (!dragging.value) return;
+
+				rafId.value = window.requestAnimationFrame(() => {
+					const newWidth = dragStartWidth.value + (event.pageX - dragStartX.value);
+					moduleNavEl.value!.style.width = `${Math.max(220, newWidth)}px`;
+				});
+			}
+
+			function onPointerUp() {
+				if (dragging.value === true) {
+					dragging.value = false;
+					if (rafId.value) {
+						window.cancelAnimationFrame(rafId.value);
+					}
+				}
+			}
+		}
+
 		return {
 			t,
 			navOpen,
+			moduleNavEl,
+			onResizeHandlePointerDown,
+			onResizeHandleDblClick,
 			contentEl,
 			theme,
 			sidebarOpen,
@@ -197,6 +253,7 @@ export default defineComponent({
 		}
 
 		.module-nav {
+			position: relative;
 			display: inline-block;
 			width: 220px;
 			height: 100%;
@@ -210,6 +267,24 @@ export default defineComponent({
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
+			}
+		}
+
+		.module-nav-resize-handle {
+			position: absolute;
+			top: 0;
+			right: -6px;
+			bottom: 0;
+			width: 12px;
+			opacity: 0;
+			cursor: e-resize;
+			user-select: none;
+			touch-action: none;
+			background-color: var(--primary);
+			transition: opacity var(--fast) var(--transition);
+
+			&:active {
+				opacity: 0.25;
 			}
 		}
 
