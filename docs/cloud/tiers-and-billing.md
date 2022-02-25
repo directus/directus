@@ -1,6 +1,6 @@
----
+QUESTIONS
 
-**QUESTIONS**
+SQL vendor options.
 
 Can you up/down grade between Community and Standard? Std. and Enterprise?
 
@@ -10,15 +10,10 @@ In-depth details on General Purpose and Performance tier nodes.
 
 Details on Load Balancing.
 
-Auto-scaling details.
-
----
-
 # Tiers and Billing
 
 > Directus Cloud offers 3 basic service tiers; Community, Standard and Enterprise. Keep in mind all three packages come
-> with everything in Directus Core. The cloud lets Directus take care of the heavy-lifting so you can focus on building
-> your app.
+> with everything in Directus Core.
 
 [[toc]]
 
@@ -36,6 +31,8 @@ run other non-production applications. Here are some key features:
 
 ## Standard
 
+This tier is for "production ready" service and with. Here are the key features.
+
 - **Project Name** – Custom
 - **URL** - Custom _(if it's available of course)_
 - **Datacenter** – United States (East).
@@ -47,11 +44,15 @@ run other non-production applications. Here are some key features:
 
 ### General Purpose Tier
 
-This tier is the entry-level "production ready" server package. This tier will serve the needs for most projects.
+The nodes in the packages will serve the needs for most projects.
+
+**Data-processing** – **Parallel Operations** – **Asset Support** –
 
 ### Performance Tier
 
-#### Details
+Provides higher-powered Node.
+
+**Data-processing** – **Parallel Operations** – **Asset Support** –
 
 ### Enterprise Tier
 
@@ -59,4 +60,4 @@ This tier is the entry-level "production ready" server package. This tier will s
 
 ## Auto-Scaling
 
-### Usage-Based Pricing
+### Standby Node Pricing
