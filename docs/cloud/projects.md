@@ -41,7 +41,7 @@ For more information on Enterprise Project support, [contact Sales](https://dire
 
 ## Managing a Project
 
-![Project Details Page](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/project-details-page-20220225A.webp)
+![Project Details Page](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/project-detail-page-20220225A.webp)
 
 1. Sign in to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.

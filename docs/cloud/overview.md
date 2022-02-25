@@ -13,9 +13,10 @@ Display and access all Projects managed within a Team.
 
 ### Project Details
 
-![Project Details](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/project-details-page-20220225A.webp)
+![Project Details](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220225A/project-detail-page-20220225A.webp)
 
-Click to enter the Project Details page and edit, access, monitor, upgrade or delete a Project.
+Click on a Project to enter the Product Details Page. Here you can edit, access, monitor, upgrade/downgrade or delete
+the Project.
 
 ## Members
 
