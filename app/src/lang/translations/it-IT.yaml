@@ -889,6 +889,7 @@ directus_collection:
   directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
   directus_sessions: Informazioni sulla sessione dell'utente
   directus_settings: Opzioni di configurazione del progetto
+  directus_shares: Traccia gli elementi condivisi esternamente
   directus_users: Utenti di sistema per la piattaforma
   directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:
@@ -1260,6 +1261,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
