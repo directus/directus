@@ -12,9 +12,12 @@ import logger from './logger';
 import emitter from './emitter';
 import checkForUpdate from 'update-check';
 import pkg from '../package.json';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
+
+	Object.assign(server, getConfigFromEnv('SERVER_'));
 
 	server.on('request', function (req: http.IncomingMessage & Request, res: http.ServerResponse) {
 		const startTime = process.hrtime();

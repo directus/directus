@@ -208,6 +208,22 @@ for example. The format for adding LEVELS values is:
 
 :::
 
+## Server
+
+| Variable                    | Description                                        | Default Value                                                                                                |
+| --------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `SERVER_KEEP_ALIVE_TIMEOUT` | Timeout in milliseconds for socket to be destroyed | [server.keepAliveTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverkeepalivetimeout) |
+| `SERVER_HEADERS_TIMEOUT`    | Timeout in milliseconds to parse HTTP headers      | [server.headersTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverheaderstimeout)     |
+
+::: tip Additional Server Variables
+
+All `SERVER_*` environment variables are merged with `server` instance properties created from
+[http.Server](https://github.com/nodejs/node/blob/master/doc/api/http.md#class-httpserver). This allows to configure
+server behind a proxy, a load balancer, etc. Be careful to not override methods of this instance otherwise you may incur
+into unexpected behaviors.
+
+:::
+
 ## Database
 
 | Variable               | Description                                                                                                                                        | Default Value                 |
