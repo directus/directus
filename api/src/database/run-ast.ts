@@ -1,16 +1,15 @@
+import { Item, Query, SchemaOverview } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { clone, cloneDeep, pick, uniq, merge } from 'lodash';
+import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
+import getDatabase from '.';
+import { getHelpers } from '../database/helpers';
 import { PayloadService } from '../services/payload';
-import { Item, SchemaOverview } from '@directus/shared/types';
-import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
+import { AST, FieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
-import { toArray } from '@directus/shared/utils';
-import { Query } from '@directus/shared/types';
-import getDatabase from '.';
-import { getHelpers } from '../database/helpers';
 
 type RunASTOptions = {
 	/**

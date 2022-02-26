@@ -1,8 +1,3 @@
-import { Knex } from 'knex';
-import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
-import { customAlphabet } from 'nanoid';
-import validate from 'uuid-validate';
-import { InvalidQueryException } from '../exceptions';
 import {
 	Aggregate,
 	Filter,
@@ -12,9 +7,14 @@ import {
 	RelationMeta,
 	SchemaOverview,
 } from '@directus/shared/types';
+import { Knex } from 'knex';
+import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
+import { customAlphabet } from 'nanoid';
+import validate from 'uuid-validate';
+import { getHelpers } from '../database/helpers';
+import { InvalidQueryException } from '../exceptions';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
-import { getHelpers } from '../database/helpers';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -640,6 +640,10 @@ export async function applySearch(
 
 export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate, collection: string): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
+		if (operation === 'countRows') {
+			dbQuery.count('*', { as: 'countRows' });
+		}
+
 		if (!fields) continue;
 
 		for (const field of fields) {
