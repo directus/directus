@@ -202,7 +202,7 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/app/flters',
+						path: '/app/filters',
 						title: 'Filters',
 					},
 				],
