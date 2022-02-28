@@ -99,6 +99,13 @@ invitation and join the team.
 6. Enter one or more email(s), comma separated.
 7. Click **"Send Invites"**.
 
+::: tip Adding Members to Projects
+
+By default, Team members are not given user access to the Team's Projects. To manage a Project's users, log in to the
+project as an administrator and navigate to the User Directory.
+
+::
+
 ## Removing a Team Member
 
 ![Removing a Team member](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/leaving-a-team-20220225A.webp)

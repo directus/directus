@@ -1,15 +1,3 @@
-QUESTIONS
-
-SQL vendor options.
-
-Can you up/down grade between Community and Standard? Std. and Enterprise?
-
-How does auto-scale pricing work?
-
-In-depth details on General Purpose and Performance tier nodes.
-
-Details on Load Balancing.
-
 # Tiers and Billing
 
 > Directus Cloud offers 3 basic service tiers; Community, Standard and Enterprise. Keep in mind all three packages come

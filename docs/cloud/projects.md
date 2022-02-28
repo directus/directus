@@ -8,6 +8,8 @@
 
 ## Creating a Community Project
 
+![Creating a Community Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/create-community-project-20220228A.webp)
+
 Learn more about Community Project in [Tiers and Billing](/cloud/tiers-and-billing/).
 
 1. Sign in to the Cloud Dashboard.
@@ -15,9 +17,12 @@ Learn more about Community Project in [Tiers and Billing](/cloud/tiers-and-billi
 3. Click **"Create Project"**.
 4. Set a Project Name.
 5. Select the Community tier.
-6. Click **"Create Project"**.
+6. Scroll to the bottom and select a Standard or Demo project.
+7. Click **"Create Project"**.
 
 ## Creating a Standard Project
+
+![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/create-standard-project-20220228A.webp)
 
 Learn more about Standard Project configuration options in [Tiers and Billing](/cloud/tiers-and-billing/).
 
@@ -58,12 +63,13 @@ You may also change project details or modify the Project's plan. To make change
 
 ## Accessing a Project
 
+![Accessing a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/accessing-a-project-20220228A.webp)
+
 1. Sign in to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
-3. Select the appropriate team from the dropdown.
-4. Navigate to the Projects page.
-5. Click the <span mi icon>launch</span> for the desired project.
-6. You will be directed to your Project.
+3. Navigate to the Projects page.
+4. Click **"Open Project"**.
+5. Your Project will open in a new tab.
 
 ## Destroying a Project
 
@@ -77,10 +83,9 @@ and users from our platform. To destroy a Directus Cloud Project, follow these s
 3. Select the appropriate team from the dropdown.
 4. Navigate to the Projects page.
 5. Click the Project you wish to delete.
-6. Click **"Edit"**.
-7. Scroll to the bottom of the page and click <span mi icon dngr>local_fire_department</span>.
-8. Type in the project name.
-9. Click the **"Destroy Project"** button.
+6. Scroll to the bottom of the page and toggle <span mi icon dngr>local_fire_department</span>.
+7. Type in the project name.
+8. Click the **"Destroy Project"** button.
 
 ::: danger Proceed with extreme caution!
 
