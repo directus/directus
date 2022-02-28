@@ -30,6 +30,7 @@ If the config path has no file extension, or a file extension that's not one of 
 will try reading the file config path as environment variables. This has the following structure:
 
 ```
+HOST="0.0.0.0"
 PORT=8055
 
 DB_CLIENT="pg"
@@ -50,6 +51,7 @@ CONFIG_PATH="/path/to/config.json"
 
 ```json
 {
+	"HOST": "0.0.0.0",
 	"PORT": 8055,
 
 	"DB_CLIENT": "pg",
@@ -69,6 +71,7 @@ CONFIG_PATH="/path/to/config.yaml"
 ```
 
 ```yaml
+HOST: 0.0.0.0
 PORT: 8055
 
 DB_CLIENT: pg
@@ -88,6 +91,7 @@ the environment variable name:
 // Object Sytax
 
 module.exports = {
+	HOST: '0.0.0.0',
 	PORT: 8055,
 
 	DB_CLIENT: 'pg',
@@ -106,6 +110,7 @@ parameter.
 
 module.exports = function (env) {
 	return {
+		HOST: '0.0.0.0',
 		PORT: 8055,
 
 		DB_CLIENT: 'pg',
@@ -183,6 +188,7 @@ prefixing the value with `{type}:`. The following types are available:
 | Variable                   | Description                                                                                                | Default Value |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
 | `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`        |
+| `HOST`                     | IP or host the API listens on.                                                                              | `0.0.0.0`     |
 | `PORT`                     | What port to run the API under.                                                                            | `8055`        |
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
