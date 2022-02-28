@@ -1014,8 +1014,6 @@ interfaces:
     customSyntax_label: Lisa kohandatud süntaksi tüüpe
     customSyntax_add: Lisa kohandatud süntaks
     box: Plokk / Tekstisisene
-    imageToken: Pildi kood
-    imageToken_label: Milline (staatiline) kood lisada piltide allikatele
   map:
     map: Kaart
     description: Vali asukoht kaardil
@@ -1109,8 +1107,6 @@ interfaces:
     custom_formats: Kohandatud vormingud
     options_override: Valikute ülekirjutamine
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
-    imageToken: Pildi kood
-    imageToken_label: Milline (staatiline) kood lisada piltide allikatele
   input-autocomplete-api:
     input-autocomplete-api: Automaatselt täidetav väli (API)
     description: Otsingutulemused välisest APIst

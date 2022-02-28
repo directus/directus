@@ -1080,8 +1080,6 @@ interfaces:
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada
     box: Block / Inline
-    imageToken: Testimoni d'Imatge
-    imageToken_label: Quin testimoni (estàtic) a afegir a els origen de la imatge
   map:
     map: Mapa
     description: Selecciona una localització al mapa
@@ -1180,8 +1178,6 @@ interfaces:
     toolbar: Barra d'eines
     custom_formats: Formats personalitzats
     options_override: Sobreescriptura d'opcions
-    imageToken: Testimoni d'Imatge
-    imageToken_label: Quin testimoni (estàtic) a afegir a els origen de la imatge
   input-autocomplete-api:
     input-autocomplete-api: Entrada autocompleta (API)
     description: Una cerca typeahead per valors d'API externes.

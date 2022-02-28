@@ -30,6 +30,7 @@ If the config path has no file extension, or a file extension that's not one of 
 will try reading the file config path as environment variables. This has the following structure:
 
 ```
+HOST="0.0.0.0"
 PORT=8055
 
 DB_CLIENT="pg"
@@ -50,6 +51,7 @@ CONFIG_PATH="/path/to/config.json"
 
 ```json
 {
+	"HOST": "0.0.0.0",
 	"PORT": 8055,
 
 	"DB_CLIENT": "pg",
@@ -69,6 +71,7 @@ CONFIG_PATH="/path/to/config.yaml"
 ```
 
 ```yaml
+HOST: 0.0.0.0
 PORT: 8055
 
 DB_CLIENT: pg
@@ -88,6 +91,7 @@ the environment variable name:
 // Object Sytax
 
 module.exports = {
+	HOST: '0.0.0.0',
 	PORT: 8055,
 
 	DB_CLIENT: 'pg',
@@ -106,6 +110,7 @@ parameter.
 
 module.exports = function (env) {
 	return {
+		HOST: '0.0.0.0',
 		PORT: 8055,
 
 		DB_CLIENT: 'pg',
@@ -183,6 +188,7 @@ prefixing the value with `{type}:`. The following types are available:
 | Variable                   | Description                                                                                                | Default Value |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
 | `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`        |
+| `HOST`                     | IP or host the API listens on.                                                                              | `0.0.0.0`     |
 | `PORT`                     | What port to run the API under.                                                                            | `8055`        |
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
@@ -208,11 +214,27 @@ for example. The format for adding LEVELS values is:
 
 :::
 
+## Server
+
+| Variable                    | Description                                        | Default Value                                                                                                |
+| --------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `SERVER_KEEP_ALIVE_TIMEOUT` | Timeout in milliseconds for socket to be destroyed | [server.keepAliveTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverkeepalivetimeout) |
+| `SERVER_HEADERS_TIMEOUT`    | Timeout in milliseconds to parse HTTP headers      | [server.headersTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverheaderstimeout)     |
+
+::: tip Additional Server Variables
+
+All `SERVER_*` environment variables are merged with `server` instance properties created from
+[http.Server](https://github.com/nodejs/node/blob/master/doc/api/http.md#class-httpserver). This allows to configure
+server behind a proxy, a load balancer, etc. Be careful to not override methods of this instance otherwise you may incur
+into unexpected behaviors.
+
+:::
+
 ## Database
 
 | Variable               | Description                                                                                                                                        | Default Value                 |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                            |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, `sqlite3`, `cockroachdb`.                      | --                            |
 | `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
 | `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
 | `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
@@ -650,7 +672,8 @@ information and roles will be assigned from Active Directory.
 | `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
 | `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
 
-<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. To bind
+anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
 
 <sup>[2]</sup> The scope defines the following behaviors:
 
