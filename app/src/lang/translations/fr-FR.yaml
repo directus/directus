@@ -353,6 +353,7 @@ interface_label: Interface
 today: Aujourd'hui
 yesterday: Hier
 delete_comment: Supprimer le commentaire
+delete_share: Supprimer le partage
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -533,6 +534,9 @@ errors:
   INTERNAL_SERVER_ERROR: Erreur inconnue
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
   ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
+  VALUE_TOO_LONG: La valeur est trop longue
+  VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
+  INVALID_FOREIGN_KEY: Clé étrangère invalide
   UNKNOWN: Erreur inconnue
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
@@ -563,6 +567,7 @@ update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
 make_collection_visible: Rendre la collection visible
 make_collection_hidden: Masquer la collection
+make_folder_visible: Rendre le dossier visible
 make_folder_hidden: Cacher Le Dossier
 start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
@@ -570,6 +575,7 @@ one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
+delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer ce dossier ? Les dossiers imbriqués et les collections seront déplacés au niveau le plus haut.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -1399,8 +1405,6 @@ interfaces:
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
     box: Bloc / Inline
-    imageToken: Token d'image
-    imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
@@ -1507,8 +1511,6 @@ interfaces:
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
-    imageToken: Token d'image
-    imageToken_label: Quel token (statique) ajouter aux sources d'images
   input-autocomplete-api:
     input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.

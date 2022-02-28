@@ -58,7 +58,7 @@
 		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
 
 		<notifications-drawer />
-		<notifications-group v-if="notificationsPreviewActive === false" :dense="sidebarOpen === false" />
+		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
 		<notification-dialogs />
 	</div>
 </template>

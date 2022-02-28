@@ -208,11 +208,27 @@ for example. The format for adding LEVELS values is:
 
 :::
 
+## Server
+
+| Variable                    | Description                                        | Default Value                                                                                                |
+| --------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `SERVER_KEEP_ALIVE_TIMEOUT` | Timeout in milliseconds for socket to be destroyed | [server.keepAliveTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverkeepalivetimeout) |
+| `SERVER_HEADERS_TIMEOUT`    | Timeout in milliseconds to parse HTTP headers      | [server.headersTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverheaderstimeout)     |
+
+::: tip Additional Server Variables
+
+All `SERVER_*` environment variables are merged with `server` instance properties created from
+[http.Server](https://github.com/nodejs/node/blob/master/doc/api/http.md#class-httpserver). This allows to configure
+server behind a proxy, a load balancer, etc. Be careful to not override methods of this instance otherwise you may incur
+into unexpected behaviors.
+
+:::
+
 ## Database
 
 | Variable               | Description                                                                                                                                        | Default Value                 |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                            |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, `sqlite3`, `cockroachdb`.                      | --                            |
 | `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
 | `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
 | `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
@@ -377,8 +393,8 @@ RATE_LIMITER_REDIS="redis://@127.0.0.1"
 ## Cache
 
 Directus has a built-in data-caching option. Enabling this will cache the output of requests (based on the current user
-and exact query parameters used) into configured cache storage location. This drastically improves API performance,
-as subsequent requests are served straight from this cache. Enabling cache will also make Directus return accurate
+and exact query parameters used) into configured cache storage location. This drastically improves API performance, as
+subsequent requests are served straight from this cache. Enabling cache will also make Directus return accurate
 cache-control headers. Depending on your setup, this will further improve performance by caching the request in
 middleman servers (like CDNs) and even the browser.
 
@@ -650,7 +666,8 @@ information and roles will be assigned from Active Directory.
 | `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
 | `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
 
-<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication.
+<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. To bind
+anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
 
 <sup>[2]</sup> The scope defines the following behaviors:
 
