@@ -1,3 +1,11 @@
+# Filters
+
+> Filters, a utility used extensively throughout Directus, allow you to conditionally select Items from a Collection.
+> Use-cases include limiting Item search results, restricting Item access permissions to Users or Roles, building
+> dashboard analytics in Insights, and more.
+
+## How it Works
+
 ### Filter Options
 
 The filtering options are infinitely customizable. However, they will be limited by the collections, relations, and
