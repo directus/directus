@@ -78,6 +78,8 @@ const defaults: Record<string, any> = {
 	IP_CUSTOM_HEADER: false,
 
 	SERVE_APP: true,
+
+	RELATIONAL_BATCH_SIZE: 25000,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

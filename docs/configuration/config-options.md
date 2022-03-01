@@ -188,7 +188,7 @@ prefixing the value with `{type}:`. The following types are available:
 | Variable                   | Description                                                                                                | Default Value |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
 | `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`        |
-| `HOST`                     | IP or host the API listens on.                                                                              | `0.0.0.0`     |
+| `HOST`                     | IP or host the API listens on.                                                                             | `0.0.0.0`     |
 | `PORT`                     | What port to run the API under.                                                                            | `8055`        |
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
@@ -788,3 +788,11 @@ environment variable:
 | Variable    | Description                                                       | Default Value |
 | ----------- | ----------------------------------------------------------------- | ------------- |
 | `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | `true`        |
+
+## Limits & Optimizations
+
+Allows you to configure hard technical limits, to prevent abuse and optimize for your particular server environment.
+
+| Variable                | Description                                                                               | Default Value |
+| ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
+| `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
