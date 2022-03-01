@@ -640,8 +640,8 @@ export async function applySearch(
 
 export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate, collection: string): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
-		if (operation === 'countRows') {
-			dbQuery.count('*', { as: 'countRows' });
+		if (operation === 'countAll') {
+			dbQuery.count('*', { as: 'countAll' });
 		}
 
 		if (!fields) continue;

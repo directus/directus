@@ -809,8 +809,8 @@ export class GraphQLService {
 						name: 'group',
 						type: GraphQLJSON,
 					},
-					countRows: {
-						name: 'countRows',
+					countAll: {
+						name: 'countAll',
 						type: GraphQLInt,
 					},
 					count: {
