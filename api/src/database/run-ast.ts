@@ -1,16 +1,16 @@
+import { Item, Query, SchemaOverview } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { clone, cloneDeep, pick, uniq, merge } from 'lodash';
+import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
+import getDatabase from '.';
+import { getHelpers } from '../database/helpers';
+import env from '../env';
 import { PayloadService } from '../services/payload';
-import { Item, SchemaOverview } from '@directus/shared/types';
-import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
+import { AST, FieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
-import { toArray } from '@directus/shared/utils';
-import { Query } from '@directus/shared/types';
-import getDatabase from '.';
-import { getHelpers } from '../database/helpers';
 
 type RunASTOptions = {
 	/**
@@ -87,21 +87,21 @@ export default async function runAST(
 			let nestedItems: Item[] | null = [];
 
 			if (nestedNode.type === 'o2m') {
-				const BATCH_SIZE = 75000;
-
 				let hasMore = true;
 
 				let batchCount = 0;
 
 				while (hasMore) {
-					const node = merge({}, nestedNode, { query: { limit: BATCH_SIZE, offset: batchCount * BATCH_SIZE } });
+					const node = merge({}, nestedNode, {
+						query: { limit: env.MAX_RELATIONAL_BATCH_SIZE, offset: batchCount * env.MAX_RELATIONAL_BATCH_SIZE },
+					});
 					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
 						items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
 					}
 
-					if (!nestedItems || nestedItems.length < BATCH_SIZE) {
+					if (!nestedItems || nestedItems.length < env.MAX_RELATIONAL_BATCH_SIZE) {
 						hasMore = false;
 					}
 
