@@ -1,6 +1,6 @@
 import axios from 'axios';
 import request from 'supertest';
-import config from '../../config';
+import config, { getUrl } from '../../config';
 import knex, { Knex } from 'knex';
 import vendors from '../../get-dbs-to-test';
 import { createArtist, createEvent, createMany, seedTable, Item } from '../../setup/utils/factories';
@@ -23,7 +23,6 @@ describe('/items', () => {
 	describe('/:collection/:id GET', () => {
 		describe('retrieves an artist and an event off the artists_events table', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
@@ -43,7 +42,7 @@ describe('/items', () => {
 					}
 				);
 
-				const response = await request(url)
+				const response = await request(getUrl(vendor))
 					.get(
 						`/items/artists_events/${relation[relation.length - 1].id}?fields[]=artists_id.name&fields[]=events_id.cost`
 					)
@@ -61,7 +60,6 @@ describe('/items', () => {
 	describe('/:collection/:id PATCH', () => {
 		describe('updates one artists_events to a different artist', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const insertedArtist = await seedTable(databases.get(vendor)!, 1, 'artists', createArtist(), {
 					select: ['id'],
 				});
@@ -79,7 +77,7 @@ describe('/items', () => {
 					{ select: ['id'], where: ['events_id', insertedEvent[insertedEvent.length - 1].id] }
 				);
 				const body = { artists_id: insertedArtist[0].id };
-				const response: any = await axios.patch(`${url}/items/artists_events/${relation[0].id}`, body, {
+				const response: any = await axios.patch(`${getUrl(vendor)}/items/artists_events/${relation[0].id}`, body, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
@@ -95,7 +93,6 @@ describe('/items', () => {
 	describe('/:collection/:id DELETE', () => {
 		describe('deletes an artists_events without deleting the artist or event', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -114,7 +111,7 @@ describe('/items', () => {
 					},
 					{ select: ['id'], where: ['events_id', event.id] }
 				);
-				const response: any = await axios.delete(`${url}/items/artists_events/${item[item.length - 1].id}`, {
+				const response: any = await axios.delete(`${getUrl(vendor)}/items/artists_events/${item[item.length - 1].id}`, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
@@ -136,7 +133,6 @@ describe('/items', () => {
 	describe('/:collection GET', () => {
 		describe('retrieves artists and events for each entry in artists_events', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -150,7 +146,7 @@ describe('/items', () => {
 					artists_id: artist.id,
 					events_id: event.id,
 				});
-				const response = await request(url)
+				const response = await request(getUrl(vendor))
 					.get(`/items/artists_events?fields[]=artists_id.name&fields[]=events_id.cost`)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
@@ -169,7 +165,6 @@ describe('/items', () => {
 		describe('createOne', () => {
 			describe('creates an artist_events entry', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					const event = createEvent();
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -183,7 +178,7 @@ describe('/items', () => {
 						events_id: event.id,
 					};
 
-					const response: any = await axios.post(`${url}/items/artists_events`, body, {
+					const response: any = await axios.post(`${getUrl(vendor)}/items/artists_events`, body, {
 						headers: {
 							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
@@ -202,7 +197,6 @@ describe('/items', () => {
 		describe('createMany', () => {
 			describe('creates 5 artist_events entries', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 					const artist = createArtist();
 					const event = createEvent();
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -212,7 +206,7 @@ describe('/items', () => {
 						select: ['id'],
 					});
 					const body = createMany({}, 10, { artists_id: artist.id, events_id: event.id });
-					const response: any = await axios.post(`${url}/items/artists_events`, body, {
+					const response: any = await axios.post(`${getUrl(vendor)}/items/artists_events`, body, {
 						headers: {
 							Authorization: 'Bearer AdminToken',
 							'Content-Type': 'application/json',
@@ -231,7 +225,6 @@ describe('/items', () => {
 	describe('/:collection PATCH', () => {
 		describe('updates many artists_events to a different artist', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -258,7 +251,7 @@ describe('/items', () => {
 					keys: keys,
 					data: { events_id: event.id },
 				};
-				const response: any = await axios.patch(`${url}/items/artists_events/?fields=events_id.cost`, body, {
+				const response: any = await axios.patch(`${getUrl(vendor)}/items/artists_events/?fields=events_id.cost`, body, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',
@@ -276,7 +269,6 @@ describe('/items', () => {
 	describe('/:collection DELETE', () => {
 		describe('deletes many artists_events without deleting the artists or events', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const url = `http://localhost:${config.envs[vendor]!.PORT!}`;
 				const artist = createArtist();
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist, {
@@ -303,7 +295,7 @@ describe('/items', () => {
 					.forEach((item: Item) => {
 						body.push(item.id);
 					});
-				const response: any = await axios.delete(`${url}/items/artists_events/`, {
+				const response: any = await axios.delete(`${getUrl(vendor)}/items/artists_events/`, {
 					headers: {
 						Authorization: 'Bearer AdminToken',
 						'Content-Type': 'application/json',

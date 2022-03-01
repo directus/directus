@@ -1,6 +1,7 @@
 const generateHash = require('../utils/setup-utils');
 
 exports.seed = async function (knex) {
+	await knex('directus_users').del();
 	return await knex('directus_users').insert([
 		{
 			id: 'a8057636-9b70-4804-bfec-19c88d1a3273',

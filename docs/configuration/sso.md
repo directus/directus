@@ -64,14 +64,14 @@ AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
 AUTH_GOOGLE_IDENTIFIER_KEY="email"
 AUTH_GOOGLE_ICON="google"
 AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true" # This allows users to be automatically created on logins. Use "false" if you want to create users manually
-AUTH_GOOGLE_DEFAULT_ROLE_ID="XXXX" # Replace XXXX with the role ID you would want for new users. If this is not properly configured, new users will not have access to Directus
+AUTH_GOOGLE_DEFAULT_ROLE_ID="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" # Replace this with the Directus Role ID you would want for new users. If this is not properly configured, new users will not have access to Directus
 ```
 
 8. Now you can see a nice functional `Login with Google` button on Directus login page.
 
 ## Seamless SSO
 
-While sometimes you want your users to directly have access to Directus Application, in other cases you may need to
+While sometimes you want your users to directly have access to the Directus Application, in other cases you may need to
 fetch private data from Directus in your client using external providers. In this cases, it is needed a special
 configuration to work across domains, but is simple as:
 
