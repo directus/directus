@@ -93,7 +93,7 @@ export default async function runAST(
 
 				while (hasMore) {
 					const node = merge({}, nestedNode, {
-						query: { limit: env.MAX_RELATIONAL_BATCH_SIZE, offset: batchCount * env.MAX_RELATIONAL_BATCH_SIZE },
+						query: { limit: env.RELATIONAL_BATCH_SIZE, offset: batchCount * env.RELATIONAL_BATCH_SIZE },
 					});
 					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
@@ -101,7 +101,7 @@ export default async function runAST(
 						items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
 					}
 
-					if (!nestedItems || nestedItems.length < env.MAX_RELATIONAL_BATCH_SIZE) {
+					if (!nestedItems || nestedItems.length < env.RELATIONAL_BATCH_SIZE) {
 						hasMore = false;
 					}
 
