@@ -106,7 +106,7 @@ export default async function getASTFromQuery(
 		if (!fields) return [];
 
 		for (const field of fields) {
-			if (field.split('.').length > env.MAX_FILTER_DEPTH) {
+			if (field.split('.').length > env.MAX_RELATIONAL_DEPTH) {
 				throw new ForbiddenException();
 			}
 		}

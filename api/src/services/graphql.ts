@@ -148,7 +148,7 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
-		const validationErrors = validate(schema, document, [...specifiedRules, depthLimit(env.MAX_FILTER_DEPTH)]);
+		const validationErrors = validate(schema, document, [...specifiedRules, depthLimit(env.MAX_RELATIONAL_DEPTH)]);
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
