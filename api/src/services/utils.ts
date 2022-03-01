@@ -122,7 +122,7 @@ export class UtilsService {
 		}
 
 		emitter.emitAction(
-			['items.sort_update', `${collection}.items.sort_update`],
+			['items.sort', `${collection}.items.sort`],
 			{
 				collection,
 			},
