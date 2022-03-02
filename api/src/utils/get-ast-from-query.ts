@@ -8,7 +8,7 @@ import { AST, FieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import env from '../env';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidQueryException } from '../exceptions';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -98,7 +98,7 @@ export default async function getASTFromQuery(
 		const deepRelationalDepth = calculateDeepDepth(deep);
 
 		if (deepRelationalDepth > env.MAX_RELATIONAL_DEPTH) {
-			throw new ForbiddenException();
+			throw new InvalidQueryException('Max relational depth exceeded.');
 		}
 	}
 
@@ -138,7 +138,7 @@ export default async function getASTFromQuery(
 
 		for (const field of fields) {
 			if (field.split('.').length > env.MAX_RELATIONAL_DEPTH) {
-				throw new ForbiddenException();
+				throw new InvalidQueryException('Max relational depth exceeded.');
 			}
 		}
 
