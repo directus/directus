@@ -71,6 +71,37 @@ export default async function getASTFromQuery(
 
 	const deep = query.deep || {};
 
+	if (deep) {
+		const calculateDeepDepth = (object: any): number => {
+			if (typeof object !== 'object' || object === null) {
+				return 0;
+			}
+
+			const filters = ['_deep', '_filter'];
+
+			const keys = Object.keys(object).filter((key) => {
+				return !key.startsWith('_') || ['_deep', '_filter'].includes(key);
+			});
+
+			return Math.max(
+				0,
+				...keys.map((key: any) => {
+					if (filters.includes(key)) {
+						return calculateDeepDepth(object[key]);
+					} else {
+						return calculateDeepDepth(object[key]) + 1;
+					}
+				})
+			);
+		};
+
+		const deepRelationalDepth = calculateDeepDepth(deep);
+
+		if (deepRelationalDepth > env.MAX_RELATIONAL_DEPTH) {
+			throw new ForbiddenException();
+		}
+	}
+
 	// Prevent fields/deep from showing up in the query object in further use
 	delete query.fields;
 	delete query.deep;
