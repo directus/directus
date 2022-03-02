@@ -69,6 +69,12 @@ export default async function getASTFromQuery(
 
 	fields = uniq(fields);
 
+	for (const field of fields) {
+		if (field.split('.').length > env.MAX_RELATIONAL_DEPTH) {
+			throw new InvalidQueryException('Max relational depth exceeded.');
+		}
+	}
+
 	const deep = query.deep || {};
 
 	if (deep) {
@@ -135,12 +141,6 @@ export default async function getASTFromQuery(
 
 	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, any>) {
 		if (!fields) return [];
-
-		for (const field of fields) {
-			if (field.split('.').length > env.MAX_RELATIONAL_DEPTH) {
-				throw new InvalidQueryException('Max relational depth exceeded.');
-			}
-		}
 
 		fields = await convertWildcards(parentCollection, fields);
 
