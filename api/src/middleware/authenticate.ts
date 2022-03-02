@@ -1,5 +1,5 @@
 import { Accountability } from '@directus/shared/types';
-import { RequestHandler } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { isEqual } from 'lodash';
 import getDatabase from '../database';
@@ -7,14 +7,14 @@ import emitter from '../emitter';
 import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import { DirectusTokenPayload } from '../types';
-import asyncHandler from '../utils/async-handler';
 import { getIPFromReq } from '../utils/get-ip-from-req';
 import isDirectusJWT from '../utils/is-directus-jwt';
+import asyncHandler from '../utils/async-handler';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
+export const handler = async (req: Request, res: Response, next: NextFunction) => {
 	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
@@ -92,6 +92,6 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	}
 
 	return next();
-});
+};
 
-export default authenticate;
+export default asyncHandler(handler);
