@@ -1,6 +1,9 @@
+import { Accountability } from '@directus/shared/types';
 import { RequestHandler } from 'express';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { isEqual } from 'lodash';
 import getDatabase from '../database';
+import emitter from '../emitter';
 import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import { DirectusTokenPayload } from '../types';
@@ -12,7 +15,7 @@ import isDirectusJWT from '../utils/is-directus-jwt';
  * Verify the passed JWT and assign the user ID and role to `req`
  */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
-	req.accountability = {
+	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
 		admin: false,
@@ -20,6 +23,28 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		ip: getIPFromReq(req),
 		userAgent: req.get('user-agent'),
 	};
+
+	const database = getDatabase();
+
+	const customAccountability = await emitter.emitFilter(
+		'authenticate',
+		defaultAccountability,
+		{
+			req,
+		},
+		{
+			database,
+			schema: null,
+			accountability: null,
+		}
+	);
+
+	if (isEqual(req.accountability, defaultAccountability) === false) {
+		req.accountability = customAccountability;
+		return next();
+	}
+
+	req.accountability = defaultAccountability;
 
 	if (req.token) {
 		if (isDirectusJWT(req.token)) {
@@ -44,8 +69,6 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 			req.accountability.admin = payload.admin_access === true || payload.admin_access == 1;
 			req.accountability.app = payload.app_access === true || payload.app_access == 1;
 		} else {
-			const database = getDatabase();
-
 			// Try finding the user with the provided token
 			const user = await database
 				.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
