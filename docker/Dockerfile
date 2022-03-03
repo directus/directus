@@ -36,6 +36,9 @@ RUN \
   # Upgrade system and install 'ssmtp' to be able to send mails
   apk upgrade --no-cache && apk add --no-cache \
   ssmtp \
+  # Add support for specifying the timezone of the container
+  # using the "TZ" environment variable.
+  tzdata \
   # Create directory for Directus with corresponding ownership
   # (can be omitted on newer Docker versions since WORKDIR below will do the same)
   && mkdir /directus && chown node:node /directus
