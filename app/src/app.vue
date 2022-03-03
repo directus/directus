@@ -50,7 +50,7 @@ export default defineComponent({
 
 		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
 			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
-			setFavicon(serverStore.info?.project?.project_color || '#00C897', hasCustomLogo);
+			setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
 		});
 
 		watch(

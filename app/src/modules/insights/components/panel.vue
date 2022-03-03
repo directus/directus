@@ -97,6 +97,7 @@ import { Panel } from '@directus/shared/types';
 import { defineComponent, PropType, computed, ref, reactive } from 'vue';
 import { throttle, omit } from 'lodash';
 import { useI18n } from 'vue-i18n';
+import { cssVar } from '@/utils/css-var';
 
 export default defineComponent({
 	name: 'Panel',
@@ -174,7 +175,7 @@ export default defineComponent({
 		});
 
 		const iconColor = computed(() => ({
-			'--v-icon-color': props.panel.color,
+			'--v-icon-color': props.panel.color || cssVar('--primary'),
 		}));
 
 		return {

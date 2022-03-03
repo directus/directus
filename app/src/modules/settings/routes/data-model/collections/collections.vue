@@ -228,8 +228,8 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--secondary);
+	--v-button-background-color-disabled: var(--secondary-10);
 }
 
 .collection-item.hidden {

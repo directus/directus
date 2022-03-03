@@ -353,7 +353,7 @@ export default defineComponent({
 							showAsDot: true,
 							choices: [
 								{
-									background: '#00C897',
+									background: 'var(--primary)',
 									value: 'published',
 								},
 								{
@@ -361,7 +361,7 @@ export default defineComponent({
 									value: 'draft',
 								},
 								{
-									background: '#F7971C',
+									background: 'var(--warning)',
 									value: 'archived',
 								},
 							],

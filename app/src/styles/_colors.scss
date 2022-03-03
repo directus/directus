@@ -1,7 +1,8 @@
 @import 'themes/mixins/generate-colors';
 
 // Main palette
-$purple: #9e8de4;
+$purple: #6644ff;
+$pink: #ff99dd;
 $blue: #68b0f4;
 $green: #00c897;
 $yellow: #ffb300;
@@ -17,13 +18,14 @@ $dark-theme-shade: #2e3c43;
 // Color variant names -> Color to map to said name
 $color-mapping: (
 	'purple': $purple,
+	'pink': $pink,
 	'blue': $blue,
 	'green': $green,
 	'yellow': $yellow,
 	'orange': $orange,
 	'red': $red,
-	'primary': $green,
-	'secondary': $blue,
+	'primary': $purple,
+	'secondary': $pink,
 	'success': $green,
 	'warning': $yellow,
 	'danger': $red,
