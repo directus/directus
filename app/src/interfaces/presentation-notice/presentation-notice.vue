@@ -30,6 +30,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 :deep(a) {
 	color: var(--primary);
+
 	&:hover {
 		color: var(--primary-125);
 	}
