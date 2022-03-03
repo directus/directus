@@ -986,8 +986,6 @@ interfaces:
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
     box: Blok / Linijski
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   map:
     zoom: Uvеćanjе
   presentation-notice:
@@ -1072,8 +1070,6 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.

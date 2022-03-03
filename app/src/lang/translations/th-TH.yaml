@@ -1150,8 +1150,6 @@ interfaces:
     customSyntax_label: เพิ่ม syntax ที่ออกแบบเอง
     customSyntax_add: เพิ่ม syntax ที่ออกแบบเอง
     box: กล่อง/บรรทัดเดียวกัน
-    imageToken: Image Token
-    imageToken_label: Image Token ที่จะถูกต่อเข้าไปที่แห่งที่มาของรูปภาพ
   map:
     map: แผนที่
     description: กำหนดตำแหน่งบนแผนที่
@@ -1241,8 +1239,6 @@ interfaces:
     toolbar: แถบเครื่องมือ
     custom_formats: รูปแบบที่กำหนดเอง
     options_override: ตัวเลือกแทนที่
-    imageToken: Image Token
-    imageToken_label: Image Token ที่จะถูกต่อเข้าไปที่แห่งที่มาของรูปภาพ
   input-autocomplete-api:
     input-autocomplete-api: ป้อนข้อมูลอัตโนมัติ (API)
     description: การพิมพ์ล่วงหน้าสำหรับค่า API ภายนอก

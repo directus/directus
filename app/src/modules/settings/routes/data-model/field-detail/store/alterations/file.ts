@@ -2,7 +2,7 @@ import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
-	const { hasChanged } = helperFn;
+	const { hasChanged, getCurrent } = helperFn;
 
 	if (hasChanged('localType')) {
 		setTypeToUUID(updates);
@@ -11,6 +11,12 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 
 	if (hasChanged('field.field')) {
 		updateRelationField(updates);
+	}
+
+	if (hasChanged('field.schema.is_nullable')) {
+		if (updates.field?.schema?.is_nullable === false && getCurrent('relations.m2o.schema.on_delete') === 'SET NULL') {
+			set(updates, 'relations.m2o.schema.on_delete', 'NO ACTION');
+		}
 	}
 }
 
