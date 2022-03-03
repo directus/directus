@@ -1,11 +1,11 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { PayloadService } from '../../../src/services';
+import { PayloadService } from '../../src/services';
 
-jest.mock('../../../src/database/index', () => {
+jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../../src/database/index');
+jest.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
 	let db: jest.Mocked<Knex>;
