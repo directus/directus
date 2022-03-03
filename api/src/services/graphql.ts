@@ -33,7 +33,7 @@ import {
 	StringValueNode,
 	validate,
 } from 'graphql';
-import depthLimit from 'graphql-depth-limit';
+import { validateGraphQLDepth } from '../utils/validate-graphql-depth';
 import { Filter, SchemaOverview } from '@directus/shared/types';
 import {
 	GraphQLJSON,
@@ -148,7 +148,8 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
-		const validationErrors = validate(schema, document, [...specifiedRules, depthLimit(env.MAX_RELATIONAL_DEPTH)]);
+		// const validationErrors = validate(schema, document, [...specifiedRules, depthLimit(env.MAX_RELATIONAL_DEPTH)]);
+		const validationErrors = validate(schema, document, [...specifiedRules, validateGraphQLDepth]);
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
