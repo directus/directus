@@ -62,12 +62,19 @@ export default defineModule({
 					async beforeEnter(to) {
 						const collectionsStore = useCollectionsStore();
 						const info = collectionsStore.getCollection(to.params.collection as string);
-						const fieldsStore = useFieldsStore();
+
+						if (!info) {
+							return {
+								name: 'settings-not-found',
+								params: { _: to.path.split('/').slice(1) },
+							};
+						}
 
 						if (!info?.meta) {
 							await api.patch(`/collections/${to.params.collection}`, { meta: {} });
 						}
 
+						const fieldsStore = useFieldsStore();
 						fieldsStore.hydrate();
 					},
 					props: (route) => ({

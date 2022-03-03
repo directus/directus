@@ -21,8 +21,6 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		userAgent: req.get('user-agent'),
 	};
 
-	const database = getDatabase();
-
 	if (req.token) {
 		if (isDirectusJWT(req.token)) {
 			let payload: DirectusTokenPayload;
@@ -46,6 +44,8 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 			req.accountability.admin = payload.admin_access === true || payload.admin_access == 1;
 			req.accountability.app = payload.app_access === true || payload.app_access == 1;
 		} else {
+			const database = getDatabase();
+
 			// Try finding the user with the provided token
 			const user = await database
 				.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')

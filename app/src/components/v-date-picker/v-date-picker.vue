@@ -94,11 +94,11 @@ export default defineComponent({
 				instance.calendarContainer.appendChild(setToNowButton);
 
 				if (!props.use24) {
-					instance.amPM?.addEventListener('keydown', enterToClose);
+					instance.amPM?.addEventListener('keyup', enterToClose);
 				} else if (props.includeSeconds) {
-					instance.secondElement?.addEventListener('keydown', enterToClose);
+					instance.secondElement?.addEventListener('keyup', enterToClose);
 				} else {
-					instance.minuteElement?.addEventListener('keydown', enterToClose);
+					instance.minuteElement?.addEventListener('keyup', enterToClose);
 				}
 			},
 		};
@@ -117,13 +117,22 @@ export default defineComponent({
 
 			switch (props.type) {
 				case 'dateTime':
-					return emit('update:modelValue', format(value, "yyyy-MM-dd'T'HH:mm:ss"));
+					emit('update:modelValue', format(value, "yyyy-MM-dd'T'HH:mm:ss"));
+					break;
 				case 'date':
-					return emit('update:modelValue', format(value, 'yyyy-MM-dd'));
+					emit('update:modelValue', format(value, 'yyyy-MM-dd'));
+					break;
 				case 'time':
-					return emit('update:modelValue', format(value, 'HH:mm:ss'));
+					emit('update:modelValue', format(value, 'HH:mm:ss'));
+					break;
 				case 'timestamp':
-					return emit('update:modelValue', formatISO(value));
+					emit('update:modelValue', formatISO(value));
+					break;
+			}
+
+			// close the calendar on input change if it's only a date picker without time input
+			if (props.type === 'date') {
+				emit('close');
 			}
 		}
 
