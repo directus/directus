@@ -8,7 +8,7 @@ import { AST, FieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import env from '../env';
-import { ForbiddenException, InvalidQueryException } from '../exceptions';
+import { InvalidQueryException } from '../exceptions';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
