@@ -1,34 +1,10 @@
 <template>
 	<div ref="el" class="v-form" :class="gridClass">
-		<v-notice v-if="!nested && validationErrors.length > 0" type="danger" class="full">
-			<div>
-				<p>{{ t('validation_errors_notice') }}</p>
-				<ul class="validation-errors-list">
-					<li v-for="(validationError, index) of validationErrors" :key="index">
-						<strong class="field" @click="scrollToField(validationError.group || validationError.field)">
-							<template v-if="validationError.field && validationError.hidden && validationError.group">
-								{{
-									`${formatTitle(validationError.field)} (${t('hidden_in_group', {
-										group: formatTitle(validationError.group),
-									})}): `
-								}}
-							</template>
-							<template v-else-if="validationError.field && validationError.hidden">
-								{{ `${formatTitle(validationError.field)} (${t('hidden')}): ` }}
-							</template>
-							<template v-else-if="validationError.field">{{ `${formatTitle(validationError.field)}: ` }}</template>
-						</strong>
-						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
-							{{ t('validationError.unique', validationError) }}
-						</template>
-						<template v-else>
-							{{ t(`validationError.${validationError.type}`, validationError) }}
-						</template>
-					</li>
-				</ul>
-			</div>
-		</v-notice>
-
+		<validation-errors
+			v-if="!nested && validationErrors.length > 0"
+			:validation-errors="validationErrors"
+			@scroll-to-field="scrollToField"
+		/>
 		<template v-for="(field, index) in formFields">
 			<component
 				:is="`interface-${field.meta?.interface || 'group-standard'}`"
@@ -92,8 +68,8 @@ import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
+import ValidationErrors from './validation-errors.vue';
 import { applyConditions } from '@/utils/apply-conditions';
-import formatTitle from '@directus/format-title';
 
 type FieldValues = {
 	[field: string]: any;
@@ -101,7 +77,7 @@ type FieldValues = {
 
 export default defineComponent({
 	name: 'VForm',
-	components: { FormField },
+	components: { FormField, ValidationErrors },
 	props: {
 		collection: {
 			type: String,
@@ -237,7 +213,6 @@ export default defineComponent({
 			getFieldsForGroup,
 			fieldsForGroup,
 			isDisabled,
-			formatTitle,
 			scrollToField,
 			formFieldEls,
 		};
@@ -383,18 +358,5 @@ export default defineComponent({
 
 .v-form .first-visible-field :deep(.v-divider) {
 	margin-top: 0;
-}
-
-.validation-errors-list {
-	margin-top: 4px;
-	padding-left: 28px;
-
-	.field {
-		cursor: pointer;
-	}
-
-	li:not(:last-child) {
-		margin-bottom: 4px;
-	}
 }
 </style>
