@@ -18,6 +18,7 @@
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null"
 						@click="on"
 					>
@@ -240,9 +241,7 @@ export default defineComponent({
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 </style>
