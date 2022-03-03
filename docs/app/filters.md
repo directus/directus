@@ -1,19 +1,18 @@
 QUESTIONS:
 
-- Do all Fields support filters??
-- Keep operator table here AND filter-rules... or just here?
+- Any functional difference between multiple Filters versus using `AND` Groups at base level.
+- What's a **validation permission**? `settings > roles & permissions` ? or sthg totally different?
 
 TODO:
 
-- For more technical info, see [Filter-Rules](/configuration/filter-rules/).
 - photos/videos
--
+- Optimize Filter-Rules - Move table to Filter-Rules
 
 # Filters
 
-> Filters, _a utility used extensively throughout Directus_, allow you to conditionally select Items from a Collection.
-> Use-cases include conditionally limiting Item search results, restricting Item access permissions to Users or Roles,
-> building dashboard analytics Insights, and more.
+> Filters, a utility used extensively throughout Directus, allow you to conditionally select Items from a Collection.
+> Use-cases include customizing Item search results, restricting Item access permissions to Users or Roles, building
+> dashboard analytics Insights, and more.
 
 <video autoplay muted loop controls title="What a Filters Look Like">
 	<source src="" type="video/mp4" />
@@ -21,7 +20,18 @@ TODO:
 
 [[toc]]
 
+::: tip There Are Two Filters Documents
+
+This page is a non-technical guide to using Filters. For more technical info, see
+[Filter-Rules](/configuration/filter-rules/).
+
+:::
+
 ## How it Works
+
+Filters are very simple. Choose a Collection to filter; set the Field, Operator and Value; then set more Filters as
+necessary to get granular results. In order to use Filters effectively, you will need a solid understanding of the
+[data model](/configuration/data-model/) for the Field you are trying to Filter.
 
 <video autoplay muted loop controls title="How to Create Filters">
 	<source src="" type="video/mp4" />
@@ -33,64 +43,44 @@ TODO:
 4. Define the value to filter for.
 5. Repeat as needed.
 
-## Overview
+## Filters Overview
 
-![Filter Overview](image.webp)
+![Filters Overview](image.webp)
 
-Filtering options are infinitely customizable. However, you will only be able to filter by the Collections, Collection
-relations, and other information stored in your database. A basic Filter requires a Field, Operator, and Value at the
-very minimum.
+A basic Filter requires a Field, Operator, and Value at the very minimum. From there, filtering options are infinitely
+customizable. However, you will only be able to filter by the Collections, Collection relations, and Configurations
+stored in your database.
 
-From there, Filters can get as complex as your data will allow. Options include:
+Options include:
 
-- [filtering by Fields in related Collections](#filtering-by-fields-in-related-collections)
-- adding multiple Filters at once
-- setting values with [Dynamic Variables](#dynamic-variables) which allow you to set values such as `$CURRENT_USER` and
-  write the same Filter and apply it to every User
-- applying [AND/OR Groups](#and-or-groups) which allow you to group multiple filters together and display Items that
-  meet all Filter conditions or any one of several.
+- Adding multiple Filters at once.
+- Filtering by [Fields in related Collections](#filtering-by-fields-in-related-collections).
+- Setting Values with [Dynamic Variables](#dynamic-variables).
+- Applying [AND/OR Groups](#and-or-groups).
 
 ## Filter Options
 
-![Filter Options](image.jpg)
+<video autoplay muted loop controls title="Filter Options">
+	<source src="" type="video/mp4" />
+</video>
 
-- **Field** - The Collection Field to filter by.
+- **Field** - The Collection Field to filter each Item by.
 - **Operator** - The logical operation to filter by. See more in the following section, [Operators](#operators).
-- **Value** - The field value to filter for. This is typed out by the User, though in some cases you will have a
-  dropdown or no Value option at all.
+- **Value** - The field value to filter for. Note that for some operators (for example `null` and `is not null`) you
+  will not have a Value.
 
 ## Operators
 
-Fields have pre-defined data types, which impacts the kinds of operators that can be used. Each Field type has a
-different. A field's permitted operators will automatically display. Numeric (Int, Float, BigInt), String/text,
-Datetime,
+<video autoplay muted loop controls title="Filter Operators">
+	<source src="" type="video/mp4" />
+</video>
 
-![Numeric Operators](image.webp)
+Fields have pre-defined data types. A Field's data types will change the kinds of operators that can be used on it. Some
+types of Fields cannot be filtered at all (read more in [Unfilterable Fields](#unfilterable-fields)). Once a Field is
+selected, the permitted operators will automatically display. A full list of all operators and what they do can be found
+in the more technical [Filter Rules](/configuration/filter-rules/#filter-operators) document.
 
-The allowed operators will automatically populate, based on the Type of Field.
-
-- **Equals** – Exact match to the input value.
-- **Doesn't equal** - Not an exact match to the input value.
-- **Less than** - less than the input value.
-- **Less than or equal to** - Less than or equal to the input value.
-- **Greater than** - Greater than the input value.
-- **Greater than or equal to** - Greater than or equal to the input value.
-- **Is one of** - A number from a list of input value.
-- **Is not one of** - Not a number from a list of input value.
-- **Is null** - a Field Item without any value assigned.
-- **Isn't null** - A Field Item with set value (can be any value whatsoever).
-- **Contains** - Contains the substring.
-- **Doesn't contain** - Doesn't contain the substring.
-- **Starts with** - Starts with.
-- **Doesn't start with** - Doesn't end with.
-- **Ends with** - Ends with.
-- **Doesn't end with** - Doesn't end with.
-- **Is between** - Between but not including the two input value.
-- **Isn't between** - Not between the two input value.
-- **Is empty** -
-- **Isn't empty** -
-
-| Filter Title                   | Operator                           | Description                            |
+| Filter Title in GUI            | Operator                           | Description                            |
 | ------------------------------ | ---------------------------------- | -------------------------------------- |
 | Equals                         | `_eq`                              | Equal to                               |
 | Doesn't equal                  | `_neq`                             | Not equal to                           |
@@ -119,60 +109,52 @@ The allowed operators will automatically populate, based on the Type of Field.
 
 ## Dynamic Variables
 
-Several dynamic variables are built into Directus.
-
-### timestamp
-
-`_gte $NOW(-7 days)`
-
-### user_created
-
-`_eq $CURRENT_USER`
-
-### allowed_role
-
-`_eq $CURRENT_ROLE`
-
-```
-$CURRENT_USER.first_name
-business_entity _in $CURRENT_USER.business_entities
-```
+Several Dynamic Variables are built into Directus to make Filtering easier. Read more about Dynamic Variables in
+[Filter Rules](/configuration/filter-rules/#dynamic-variables).
 
 ## AND/OR Groups
 
-AND Groups give the option to filter for Items that meet _all of several criteria_ while OR Groups filter for Items that
+`AND` Groups give the option to filter for Items that meet _all of several criteria_. `OR` Groups filter for Items that
 meet _any one of several criteria_.
+
+<video autoplay muted loop controls title="AND / OR Groups">
+	<source src="" type="video/mp4" />
+</video>
 
 1. Click "Add Filter".
 2. Click "And/OR Group" at the very top of the dropdown menu.
-3. Click the filter text to toggle:
-   - `AND` if you wish to include Items that meet every single criteria.
-   - `OR` if you wish to include Items that meet one of several criteria.
+3. Click the text to toggle to:
+   - `AND` to select Items that meet every single criteria.
+   - `OR` to select Items that meet one of several criteria.
 4. Click "Add Filter" again.
 5. Nest this new Filter by clicking and dragging it to the right.
 
 ## Filtering by Fields in Related Collections
 
-Sometimes, you will need to run filters that require information from two or more collections. Here might be a few
-examples:
+Sometimes, you will need to run filters for your current Collection but based on information in another related
+Collection. Here might be a few examples:
 
-- Highest paid authors that wrote 5 or more books (uses `authors` and `books` collections).
-- Products with less than 50 sales monthly (uses `products` and `orders` collections).
-- Blog Posts with the highest number of social shares (uses `blog` and `social share metadata` collections).
+- Highest paid authors that wrote 5 or more books (uses `authors` and `books` Collections).
+- Products with less than 50 sales monthly (uses `products` and `orders` Collections).
+- Blog Posts with the highest number of social shares (uses `blog` and `social share metadata` Collections).
 
-You will notice a <span mi icon>chevron_right</span> icon beside foreign key Fields. When you click on a Foreign Key,
-the associated Collections's Fields pop down. If you select one of these Fields, you can run Filters in teh current
-Collection for value in a related Collection. Here are step-by-step instructions on how to filter by Fields in other
-Collections:
+You will notice a <span mi icon>chevron_right</span> icon beside foreign key Fields. When you click on any
+[Alias](/getting-started/glossary/#alias) Field, the associated Collection's Fields pop down. If you select one of these
+Fields, you can run Filters on the current Collection by Field values in a related Collection. Here are step-by-step
+instructions on how to filter by Fields in other Collections:
+
+<video autoplay muted loop controls title="AND / OR Groups">
+	<source src="" type="video/mp4" />
+</video>
 
 1. Click "Add Filter".
-2. Click the Foreign Key Field to pop down to display the related Collection's Fields.
-3. Select a field from this referenced collection.
+2. Click the Foreign Key Field. This will pop down and display the related Collection Fields.
+3. Select a Field from this related Collection.
 4. Set the rest of your filtering logic as desired.
 
 ::: tip Nested Filtering
 
-Collection relations can go one for multiple tables. For example, you might want to filter and display `articles` by
+Collection relations can span across multiple tables. For example, you might want to filter and display `articles` by
 `authors` that also produced `videos`. This nested Filtering can go on between any two relationally connected
 Collections.
 
@@ -180,16 +162,18 @@ Collections.
 
 ::: tip What's a Foreign Key?
 
-A _foreign key field_ is a field that references the primary key (often times this is the `ID`) field of another
-collection.
+A _Foreign Key Field_ is a Field that references the Primary Key (often times this is the `ID`) field of another
+Collection.
 
 :::
 
 ## Unfilterable Fields
 
-- Relational Fields
+Not all Fields can be filtered. For example, as seen above in
+[Filtering by Fields in Related Collections](#filtering-by-fields-in-related-collections), Alias Field types cannot be
+filtered, but instead provide access to other Field types on a related Collection. Aside from this Presentation and
+Group Fields cannot be filtered at all, and they will not appear in the Filters.
 
 ## Gotchas
 
 - Filtering WYSIWYG/Markdown etc. will include the raw HTML/markdown notation.
-- `is between` on text is alphabetical and case-sensitive.
