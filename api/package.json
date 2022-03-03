@@ -94,7 +94,6 @@
 		"argon2": "^0.28.2",
 		"async": "^3.2.0",
 		"async-mutex": "^0.3.1",
-		"atob": "^2.1.2",
 		"axios": "^0.24.0",
 		"busboy": "^0.3.1",
 		"camelcase": "^6.2.0",
@@ -176,7 +175,6 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@types/async": "3.2.10",
-		"@types/atob": "2.1.2",
 		"@types/body-parser": "1.19.2",
 		"@types/busboy": "0.3.1",
 		"@types/cookie-parser": "1.4.2",
