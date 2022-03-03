@@ -679,11 +679,6 @@ export default defineComponent({
 	--v-button-color-disabled: var(--foreground-normal);
 }
 
-.header-icon.archive {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
-}
-
 .layout {
 	--layout-offset-top: 64px;
 }

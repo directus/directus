@@ -31,6 +31,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							:disabled="preset === null || id === '+'"
 							@click="on"
 						>
@@ -559,10 +560,8 @@ export default defineComponent({
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .preset-item {
@@ -581,9 +580,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--warning);
-	--sidebar-detail-color: var(--warning);
-	--sidebar-detail-color-active: var(--warning);
+	--sidebar-detail-icon-color: var(--secondary);
+	--sidebar-detail-color: var(--secondary);
+	--sidebar-detail-color-active: var(--secondary);
 	--form-vertical-gap: 24px;
 
 	display: contents;
