@@ -18,13 +18,25 @@
 				</div>
 
 				<div
+					v-context-menu="'contextMenu'"
 					class="module-nav-resize-handle"
 					:class="{ active: handleHover }"
 					@pointerenter="handleHover = true"
 					@pointerleave="handleHover = false"
-					@pointerdown="onResizeHandlePointerDown"
-					@dblclick="onResizeHandleDblClick"
-				></div>
+					@pointerdown.self="onResizeHandlePointerDown"
+					@dblclick="resetModuleNavWidth"
+				>
+					<v-menu ref="contextMenu" show-arrow placement="right">
+						<v-list-item clickable @click="resetModuleNavWidth">
+							<v-list-item-icon>
+								<v-icon name="undo" />
+							</v-list-item-icon>
+							<v-list-item-content>
+								<v-text-overflow :text="t('reset_width')" />
+							</v-list-item-content>
+						</v-list-item>
+					</v-menu>
+				</div>
 			</div>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
@@ -127,7 +139,7 @@ export default defineComponent({
 		const { width: sidebarWidth } = useElementSize(sidebarEl);
 
 		const moduleNavEl = ref<HTMLElement>();
-		const { handleHover, onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp } =
+		const { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp } =
 			useModuleNavResize();
 		useEventListener(window, 'pointermove', onPointerMove);
 		useEventListener(window, 'pointerup', onPointerUp);
@@ -208,7 +220,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { handleHover, onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp };
+			return { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp };
 
 			function onResizeHandlePointerDown(event: PointerEvent) {
 				dragging.value = true;
@@ -216,7 +228,7 @@ export default defineComponent({
 				dragStartWidth.value = moduleNavEl.value!.offsetWidth;
 			}
 
-			function onResizeHandleDblClick() {
+			function resetModuleNavWidth() {
 				moduleNavEl.value!.style.width = `220px`;
 			}
 
@@ -247,7 +259,7 @@ export default defineComponent({
 			sidebarEl,
 			handleHover,
 			onResizeHandlePointerDown,
-			onResizeHandleDblClick,
+			resetModuleNavWidth,
 			contentEl,
 			theme,
 			sidebarOpen,
