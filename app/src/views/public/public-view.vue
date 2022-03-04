@@ -167,6 +167,7 @@ const logoURL = computed<string | null>(() => {
 
 		z-index: 2;
 		display: flex;
+		flex-shrink: 0;
 		flex-direction: column;
 		justify-content: space-between;
 		width: 100%;
@@ -202,7 +203,7 @@ const logoURL = computed<string | null>(() => {
 			}
 		}
 
-		@media (min-width: 900px) {
+		@media (min-width: 500px) {
 			padding: 40px 80px;
 		}
 	}
@@ -255,7 +256,7 @@ const logoURL = computed<string | null>(() => {
 			}
 		}
 
-		@media (min-width: 900px) {
+		@media (min-width: 500px) {
 			display: flex;
 		}
 	}
