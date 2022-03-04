@@ -57,7 +57,7 @@ export default defineComponent({
 		return { t, activity, loading, error, refresh, count, userPreviews };
 
 		function useActivity(collection: string, primaryKey: string | number) {
-			const regex = /(\s@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})/gm;
+			const regex = /\s@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
 			const activity = ref<ActivityByDate[] | null>(null);
 			const count = ref(0);
 			const error = ref(null);
@@ -99,17 +99,13 @@ export default defineComponent({
 					userPreviews.value = await loadUserPreviews(response.data.data, regex);
 
 					const activityWithUsersInComments = response.data.data.map((comment: Record<string, any>) => {
-						const matches = comment.comment.match(regex);
-
-						let newCommentText = comment.comment;
-
-						for (const match of matches ?? []) {
-							newCommentText = newCommentText.replace(match, ` <mark>${userPreviews.value[match.substring(2)]}</mark>`);
-						}
-
+						const display = (comment.comment as string).replace(
+							regex,
+							(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`
+						);
 						return {
 							...comment,
-							display: newCommentText.replaceAll('\n', '<br>'),
+							display,
 						};
 					});
 

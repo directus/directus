@@ -18,11 +18,10 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, watch, ComponentPublicInstance } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import CommentInput from './comment-input.vue';
-import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -55,13 +54,9 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const textarea = ref<ComponentPublicInstance>();
-
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
-		useShortcut('meta+enter', saveEdits, textarea);
-
-		return { t, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
+		return { t, edits, editing, savingEdits, saveEdits, cancelEditing };
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);
