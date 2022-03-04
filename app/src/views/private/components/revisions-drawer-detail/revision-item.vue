@@ -149,6 +149,10 @@ export default defineComponent({
 			opacity: 1;
 		}
 	}
+
+	& + & {
+		margin-top: 12px;
+	}
 }
 
 .content {
