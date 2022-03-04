@@ -116,7 +116,6 @@ function flatten(items, res) {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 @require '../styles/wrapper.styl'
 
 .page-nav

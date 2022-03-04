@@ -171,7 +171,6 @@ export default defineComponent({
 			try {
 				await navigator?.clipboard?.writeText(url);
 				notify({
-					type: 'success',
 					title: t('share_copy_link_success'),
 				});
 			} catch (err: any) {
