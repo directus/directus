@@ -404,6 +404,12 @@ export default defineComponent({
 .buttons {
 	margin-top: 4px;
 	display: flex;
+	gap: 4px;
+
+	::v-deep .mention,
+	::v-deep .emoji-button {
+		--v-button-background-color: transparent;
+	}
 
 	.mention .v-icon {
 		color: var(--foreground-subdued);
