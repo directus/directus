@@ -43,7 +43,12 @@
 				<v-divider inline />
 			</template>
 
-			<extension-options type="interface" :extension="chosenInterface" />
+			<extension-options
+				v-model="options"
+				type="interface"
+				:extension="chosenInterface"
+				:options="customOptionsFields"
+			/>
 
 			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
 				{{ t('save') }}
@@ -80,9 +85,10 @@ export default defineComponent({
 	},
 	emits: ['save', 'toggleAdvanced'],
 	setup(props) {
-		const fieldDetail = useFieldDetailStore();
+		const fieldDetailStore = useFieldDetailStore();
 
-		const { readyToSave, saving, localType, collection } = storeToRefs(fieldDetail);
+		const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
+
 		const { t } = useI18n();
 
 		const chosenInterface = computed(() => getInterface(props.chosenInterface));
@@ -110,6 +116,18 @@ export default defineComponent({
 			interfaces.value.filter((inter) => inter.hideLabel === true).map((inter) => inter.id)
 		);
 
+		const extensionInfo = computed(() => {
+			return getInterface(props.chosenInterface);
+		});
+
+		const customOptionsFields = computed(() => {
+			if (typeof extensionInfo.value?.options === 'function') {
+				return extensionInfo.value?.options(fieldDetailStore);
+			}
+
+			return null;
+		});
+
 		watch(
 			chosenInterface,
 			(newVal, oldVal) => {
@@ -127,6 +145,20 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
+		const options = computed({
+			get() {
+				return fieldDetailStore.field.meta?.options ?? {};
+			},
+			set(newOptions: Record<string, any>) {
+				fieldDetailStore.$patch((state) => {
+					state.field.meta = {
+						...(state.field.meta ?? {}),
+						options: newOptions,
+					};
+				});
+			},
+		});
+
 		return {
 			key,
 			t,
@@ -140,7 +172,8 @@ export default defineComponent({
 			readyToSave,
 			saving,
 			localType,
-			collection,
+			customOptionsFields,
+			options,
 		};
 	},
 });
