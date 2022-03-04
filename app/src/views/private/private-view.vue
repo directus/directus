@@ -46,6 +46,7 @@
 		</div>
 		<aside
 			id="sidebar"
+			ref="sidebarEl"
 			role="contentinfo"
 			class="alt-colors"
 			aria-label="Module Sidebar"
@@ -74,7 +75,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, provide, toRefs, computed, onMounted } from 'vue';
+import { defineComponent, ref, provide, toRefs, computed, onMounted, watch } from 'vue';
 import ModuleBar from './components/module-bar.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
@@ -86,8 +87,12 @@ import NotificationsDrawer from './components/notifications-drawer.vue';
 import { useUserStore, useAppStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import useEventListener from '@/composables/use-event-listener';
+import useLocalStorage from '@/composables/use-local-storage';
+import useElementSize from '@/composables/use-element-size';
+import useWindowSize from '@/composables/use-window-size';
 import useTitle from '@/composables/use-title';
 import { storeToRefs } from 'pinia';
+import { debounce } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -115,18 +120,27 @@ export default defineComponent({
 
 		const router = useRouter();
 
+		const contentEl = ref<Element>();
+		const sidebarEl = ref<Element>();
+		const { width: windowWidth } = useWindowSize();
+		const { width: contentWidth } = useElementSize(contentEl);
+		const { width: sidebarWidth } = useElementSize(sidebarEl);
+
 		const moduleNavEl = ref<HTMLElement>();
 		const { handleHover, onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp } =
 			useModuleNavResize();
 		useEventListener(window, 'pointermove', onPointerMove);
 		useEventListener(window, 'pointerup', onPointerUp);
-		// onMounted(() => {
-		// 	moduleNavEl.value!.style.width = '300px';
-		// });
+
+		const { data } = useLocalStorage('module-navigation');
+		onMounted(() => {
+			if (!data.value) return;
+			if (Number.isNaN(data.value)) return;
+			moduleNavEl.value!.style.width = `${data.value}px`;
+		});
 
 		const { title } = toRefs(props);
 		const navOpen = ref(false);
-		const contentEl = ref<Element>();
 		const userStore = useUserStore();
 		const appStore = useAppStore();
 
@@ -157,7 +171,42 @@ export default defineComponent({
 			const dragging = ref<boolean>(false);
 			const dragStartX = ref<number>(0);
 			const dragStartWidth = ref<number>(0);
+			const currentWidth = ref<number | null>(null);
+			const currentWidthLimit = ref<number>(0);
 			const rafId = ref<number | null>(null);
+
+			watch(
+				currentWidth,
+				debounce((newVal) => {
+					if (newVal === 220) {
+						data.value = null;
+					} else {
+						data.value = newVal;
+					}
+				}, 300)
+			);
+
+			watch(
+				[windowWidth, contentWidth, sidebarWidth],
+				() => {
+					if (windowWidth.value > 1260) {
+						// 590 = minimum content width, 60 = module bar width, and dynamic side bar width
+						currentWidthLimit.value = windowWidth.value - (590 + 60 + sidebarWidth.value);
+					} else if (windowWidth.value > 960) {
+						// 590 = minimum content width, 60 = module bar width, 60 = side bar width
+						currentWidthLimit.value = windowWidth.value - (590 + 60 + 60);
+					} else {
+						// first 60 = module bar width, second 60 = room for overlay
+						currentWidthLimit.value = windowWidth.value - (60 + 60);
+					}
+
+					if (currentWidth.value && currentWidth.value > currentWidthLimit.value) {
+						currentWidth.value = Math.max(220, currentWidthLimit.value);
+						moduleNavEl.value!.style.width = `${currentWidth.value}px`;
+					}
+				},
+				{ immediate: true }
+			);
 
 			return { handleHover, onResizeHandlePointerDown, onResizeHandleDblClick, onPointerMove, onPointerUp };
 
@@ -175,8 +224,9 @@ export default defineComponent({
 				if (!dragging.value) return;
 
 				rafId.value = window.requestAnimationFrame(() => {
-					const newWidth = dragStartWidth.value + (event.pageX - dragStartX.value);
-					moduleNavEl.value!.style.width = `${Math.max(220, newWidth)}px`;
+					currentWidth.value = Math.max(220, dragStartWidth.value + (event.pageX - dragStartX.value));
+					if (currentWidth.value >= currentWidthLimit.value) currentWidth.value = currentWidthLimit.value;
+					moduleNavEl.value!.style.width = `${currentWidth.value}px`;
 				});
 			}
 
@@ -194,6 +244,7 @@ export default defineComponent({
 			t,
 			navOpen,
 			moduleNavEl,
+			sidebarEl,
 			handleHover,
 			onResizeHandlePointerDown,
 			onResizeHandleDblClick,
