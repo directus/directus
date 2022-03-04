@@ -345,13 +345,13 @@ export default defineComponent({
 			right: -2px;
 			bottom: 0;
 			width: 4px;
-			opacity: 0;
-			cursor: e-resize;
-			user-select: none;
-			touch-action: none;
 			background-color: var(--primary);
+			cursor: e-resize;
+			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			transition-delay: 0;
+			user-select: none;
+			touch-action: none;
 
 			&:hover,
 			&:active {
