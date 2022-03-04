@@ -83,16 +83,18 @@ export default async function getASTFromQuery(
 				return 0;
 			}
 
-			const filters = ['_deep', '_filter'];
+			// Group keys do not add to depth
+			const groupKeys = ['_filter', '_and', '_or'];
 
 			const keys = Object.keys(object).filter((key) => {
-				return !key.startsWith('_') || ['_deep', '_filter'].includes(key);
+				return !key.startsWith('_') || groupKeys.includes(key);
 			});
 
 			return Math.max(
 				0,
 				...keys.map((key: any) => {
-					if (filters.includes(key)) {
+					// _and & _or are arrays of objects
+					if (groupKeys.includes(key) || Array.isArray(object)) {
 						return calculateDeepDepth(object[key]);
 					} else {
 						return calculateDeepDepth(object[key]) + 1;
