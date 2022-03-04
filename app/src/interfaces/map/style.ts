@@ -6,7 +6,7 @@ export function getMapStyle() {
 		['==', ['get', 'mode'], 'static'],
 		cssVar('--black'),
 		['==', ['get', 'active'], 'true'],
-		cssVar('--warning'),
+		cssVar('--secondary'),
 		cssVar('--primary'),
 	];
 
@@ -40,7 +40,7 @@ export function getMapStyle() {
 			filter: ['all', ['==', '$type', 'Point'], ['==', 'meta', 'midpoint']],
 			paint: {
 				'circle-radius': 3,
-				'circle-color': cssVar('--warning'),
+				'circle-color': cssVar('--secondary'),
 			},
 		},
 		{
@@ -62,9 +62,9 @@ export function getMapStyle() {
 			filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point']],
 			paint: {
 				'circle-radius': 3,
-				'circle-color': cssVar('--warning'),
+				'circle-color': cssVar('--secondary'),
 				'circle-opacity': ['case', ['==', ['get', 'active'], 'true'], 1, 0.2],
-				'circle-stroke-color': ['case', ['==', ['get', 'active'], 'true'], cssVar('--white'), cssVar('--warning')],
+				'circle-stroke-color': ['case', ['==', ['get', 'active'], 'true'], cssVar('--white'), cssVar('--secondary')],
 				'circle-stroke-width': 2,
 			},
 		},

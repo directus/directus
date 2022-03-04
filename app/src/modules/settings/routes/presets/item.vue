@@ -553,10 +553,10 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--secondary-10);
-	--v-button-color: var(--secondary);
-	--v-button-background-color-hover: var(--secondary-25);
-	--v-button-color-hover: var(--secondary);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 
 .action-delete {

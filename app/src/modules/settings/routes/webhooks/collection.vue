@@ -188,8 +188,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--secondary);
-	--v-button-background-color-disabled: var(--secondary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .action-delete {
