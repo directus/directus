@@ -129,14 +129,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 				notify({
 					title: i18n.global.t('item_create_success', isBatch.value ? 2 : 1),
-					type: 'success',
 				});
 			} else {
 				response = await api.patch(itemEndpoint.value, edits.value);
 
 				notify({
 					title: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
-					type: 'success',
 				});
 			}
 
@@ -181,7 +179,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.global.t('item_create_success', 1),
-				type: 'success',
 			});
 
 			// Reset edits to the current item
@@ -251,7 +248,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					value === archiveValue
 						? i18n.global.t('item_delete_success', isBatch.value ? 2 : 1)
 						: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
-				type: 'success',
 			});
 		} catch (err: any) {
 			unexpectedError(err);
@@ -271,7 +267,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
-				type: 'success',
 			});
 		} catch (err: any) {
 			unexpectedError(err);

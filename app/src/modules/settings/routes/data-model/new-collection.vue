@@ -261,7 +261,6 @@ export default defineComponent({
 
 				notify({
 					title: t('collection_created'),
-					type: 'success',
 				});
 
 				router.replace(`/settings/data-model/${collectionName.value}`);

@@ -444,7 +444,6 @@ export default defineComponent({
 
 					notify({
 						title: t('file_moved', { folder }),
-						type: 'success',
 						icon: 'folder_move',
 					});
 				} catch (err: any) {

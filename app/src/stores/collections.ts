@@ -130,7 +130,6 @@ export const useCollectionsStore = defineStore({
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();
 				notify({
-					type: 'success',
 					title: i18n.global.t('update_collection_success'),
 				});
 			} catch (err: any) {
@@ -145,7 +144,6 @@ export const useCollectionsStore = defineStore({
 				await this.hydrate();
 				await relationsStore.hydrate();
 				notify({
-					type: 'success',
 					title: i18n.global.t('delete_collection_success'),
 				});
 			} catch (err: any) {
