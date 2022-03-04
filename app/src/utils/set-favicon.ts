@@ -1,3 +1,5 @@
+import { cssVar } from '@/utils/css-var';
+
 const svg = (color: string, hide: boolean) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
 	<style>
@@ -15,7 +17,9 @@ const svg = (color: string, hide: boolean) => `
 	}
 </svg>`;
 
-export default function setFavicon(color = '#00C897', hide = false): void {
+export default function setFavicon(color: string | null | undefined, hide = false): void {
+	color = color || cssVar('--primary');
+
 	const icon = svg(color, hide);
 	const wrapper = document.createElement('div');
 	wrapper.innerHTML = icon.trim();

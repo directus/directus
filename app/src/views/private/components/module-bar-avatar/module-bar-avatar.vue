@@ -191,7 +191,7 @@ export default defineComponent({
 
 		&:hover {
 			.v-icon {
-				--v-icon-color: var(--warning);
+				--v-icon-color: var(--primary);
 			}
 		}
 	}
