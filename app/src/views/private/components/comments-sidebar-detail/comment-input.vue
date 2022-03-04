@@ -3,6 +3,7 @@
 		<v-menu v-model="showMentionDropDown" attached>
 			<template #activator>
 				<v-template-input
+					ref="commentElement"
 					v-model="newCommentContent"
 					capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
 					multiline
@@ -40,6 +41,14 @@
 		</v-menu>
 
 		<div class="buttons">
+			<v-button x-small secondary icon class="mention" @click="insertText(' @')">
+				<v-icon name="alternate_email" />
+			</v-button>
+
+			<v-emoji-picker @emoji-selected="insertText($event.unicode)" />
+
+			<div class="spacer"></div>
+
 			<v-button v-if="existingComment" class="cancel" x-small secondary @click="$emit('cancel')">
 				{{ t('cancel') }}
 			</v-button>
@@ -58,7 +67,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType, watch } from 'vue';
+import { defineComponent, ref, PropType, watch, ComponentPublicInstance } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
@@ -98,8 +107,8 @@ export default defineComponent({
 	emits: ['cancel'],
 	setup(props) {
 		const { t } = useI18n();
-		const textarea = ref<HTMLElement>();
-		useShortcut('meta+enter', postComment, textarea);
+		const commentElement = ref<ComponentPublicInstance>();
+		useShortcut('meta+enter', postComment, commentElement);
 
 		const newCommentContent = ref<string | null>(props.existingComment?.comment ?? null);
 
@@ -202,7 +211,7 @@ export default defineComponent({
 			newCommentContent,
 			postComment,
 			saving,
-			textarea,
+			commentElement,
 			showMentionDropDown,
 			searchResult,
 			avatarSource,
@@ -214,7 +223,27 @@ export default defineComponent({
 			pressedUp,
 			pressedDown,
 			pressedEnter,
+			insertText,
 		};
+
+		function insertText(text: string) {
+			commentElement.value?.$el.focus();
+
+			if (window.getSelection) {
+				let selection = window.getSelection();
+				if (!selection) return;
+
+				if (selection.getRangeAt && selection.rangeCount) {
+					let range = selection.getRangeAt(0);
+					range.deleteContents();
+					range.insertNode(document.createTextNode(text));
+					range.collapse(false);
+
+					const inputEvent = new Event('input', { bubbles: true });
+					commentElement.value?.$el.dispatchEvent(inputEvent);
+				}
+			}
+		}
 
 		function insertUser(user: Record<string, any>) {
 			const text = newCommentContent.value?.replaceAll(String.fromCharCode(160), ' ');
@@ -373,17 +402,16 @@ export default defineComponent({
 }
 
 .buttons {
-	position: absolute;
-	right: 8px;
-	bottom: 8px;
+	margin-top: 4px;
+	display: flex;
 
-	> * + * {
-		margin-left: 8px;
+	.mention .v-icon {
+		color: var(--foreground-subdued);
 	}
 }
 
 .spacer {
-	margin-inline-start: 10px;
+	flex-grow: 1;
 }
 
 #suggestions {
