@@ -12,7 +12,7 @@
 			@cancel="cancelEditing"
 		/>
 
-		<div v-else v-md="activity.display" class="content selectable" />
+		<div v-else v-md.newtab="activity.display" class="content selectable" />
 	</div>
 </template>
 
