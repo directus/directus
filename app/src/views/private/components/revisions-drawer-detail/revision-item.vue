@@ -97,7 +97,7 @@ export default defineComponent({
 			border-radius: 8px;
 
 			&.create {
-				background-color: var(--success);
+				background-color: var(--primary);
 			}
 
 			&.update {
