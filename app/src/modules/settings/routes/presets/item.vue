@@ -580,9 +580,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--secondary);
-	--sidebar-detail-color: var(--secondary);
-	--sidebar-detail-color-active: var(--secondary);
+	--sidebar-detail-icon-color: var(--primary);
+	--sidebar-detail-color: var(--primary);
+	--sidebar-detail-color-active: var(--primary);
 	--form-vertical-gap: 24px;
 
 	display: contents;
