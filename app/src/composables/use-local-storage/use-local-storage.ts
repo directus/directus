@@ -1,12 +1,13 @@
 import { ref, watch } from 'vue';
 
 export default function useLocalStorage(key: string) {
+	const internalKey = `directus-${key}`;
 	const data = ref<string | number | boolean | object | null>(null);
 
 	function getExistingValue() {
 		let rawExistingValue;
 		try {
-			rawExistingValue = localStorage.getItem(key);
+			rawExistingValue = localStorage.getItem(internalKey);
 		} catch (err: any) {
 			//
 		}
@@ -26,9 +27,9 @@ export default function useLocalStorage(key: string) {
 	watch(data, () => {
 		try {
 			if (data.value == null) {
-				localStorage.removeItem(key);
+				localStorage.removeItem(internalKey);
 			} else {
-				localStorage.setItem(key, JSON.stringify(data.value));
+				localStorage.setItem(internalKey, JSON.stringify(data.value));
 			}
 		} catch (err: any) {
 			//
