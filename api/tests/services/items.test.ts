@@ -1,13 +1,13 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { ItemsService } from '../../../src/services';
-import { sqlFieldFormatter, sqlFieldList } from '../../__test-utils__/items-utils';
-import { systemSchema, userSchema } from '../../__test-utils__/schemas';
+import { ItemsService } from '../../src/services';
+import { sqlFieldFormatter, sqlFieldList } from '../__test-utils__/items-utils';
+import { systemSchema, userSchema } from '../__test-utils__/schemas';
 
-jest.mock('../../../src/database/index', () => {
+jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../../src/database/index');
+jest.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
 	let db: jest.Mocked<Knex>;

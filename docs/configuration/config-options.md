@@ -30,6 +30,7 @@ If the config path has no file extension, or a file extension that's not one of 
 will try reading the file config path as environment variables. This has the following structure:
 
 ```
+HOST="0.0.0.0"
 PORT=8055
 
 DB_CLIENT="pg"
@@ -50,6 +51,7 @@ CONFIG_PATH="/path/to/config.json"
 
 ```json
 {
+	"HOST": "0.0.0.0",
 	"PORT": 8055,
 
 	"DB_CLIENT": "pg",
@@ -69,6 +71,7 @@ CONFIG_PATH="/path/to/config.yaml"
 ```
 
 ```yaml
+HOST: 0.0.0.0
 PORT: 8055
 
 DB_CLIENT: pg
@@ -88,6 +91,7 @@ the environment variable name:
 // Object Sytax
 
 module.exports = {
+	HOST: '0.0.0.0',
 	PORT: 8055,
 
 	DB_CLIENT: 'pg',
@@ -106,6 +110,7 @@ parameter.
 
 module.exports = function (env) {
 	return {
+		HOST: '0.0.0.0',
 		PORT: 8055,
 
 		DB_CLIENT: 'pg',
@@ -183,6 +188,7 @@ prefixing the value with `{type}:`. The following types are available:
 | Variable                   | Description                                                                                                | Default Value |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
 | `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`        |
+| `HOST`                     | IP or host the API listens on.                                                                             | `0.0.0.0`     |
 | `PORT`                     | What port to run the API under.                                                                            | `8055`        |
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
@@ -205,6 +211,22 @@ added, these values will be passed to the logger formatter, as described
 [here](https://github.com/pinojs/pino/blob/master/docs/help.md#mapping-pino-log-levels-to-google-cloud-logging-stackdriver-serverity-levels)
 for example. The format for adding LEVELS values is:
 `LOGGER_LEVELS="trace:DEBUG,debug:DEBUG,info:INFO,warn:WARNING,error:ERROR,fatal:CRITICAL"`
+
+:::
+
+## Server
+
+| Variable                    | Description                                        | Default Value                                                                                                |
+| --------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `SERVER_KEEP_ALIVE_TIMEOUT` | Timeout in milliseconds for socket to be destroyed | [server.keepAliveTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverkeepalivetimeout) |
+| `SERVER_HEADERS_TIMEOUT`    | Timeout in milliseconds to parse HTTP headers      | [server.headersTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverheaderstimeout)     |
+
+::: tip Additional Server Variables
+
+All `SERVER_*` environment variables are merged with `server` instance properties created from
+[http.Server](https://github.com/nodejs/node/blob/master/doc/api/http.md#class-httpserver). This allows to configure
+server behind a proxy, a load balancer, etc. Be careful to not override methods of this instance otherwise you may incur
+into unexpected behaviors.
 
 :::
 
@@ -766,3 +788,11 @@ environment variable:
 | Variable    | Description                                                       | Default Value |
 | ----------- | ----------------------------------------------------------------- | ------------- |
 | `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | `true`        |
+
+## Limits & Optimizations
+
+Allows you to configure hard technical limits, to prevent abuse and optimize for your particular server environment.
+
+| Variable                | Description                                                                               | Default Value |
+| ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
+| `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
