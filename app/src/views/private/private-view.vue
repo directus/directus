@@ -132,7 +132,7 @@ export default defineComponent({
 		useEventListener(window, 'pointermove', onPointerMove);
 		useEventListener(window, 'pointerup', onPointerUp);
 
-		const { data } = useLocalStorage('module-navigation');
+		const { data } = useLocalStorage('module-nav-width');
 		onMounted(() => {
 			if (!data.value) return;
 			if (Number.isNaN(data.value)) return;
