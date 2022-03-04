@@ -60,10 +60,6 @@ export default defineComponent({
 	position: relative;
 	display: inline-block;
 
-	&.bordered {
-		--v-badge-size: 18px;
-	}
-
 	&.dot {
 		--v-badge-size: 8px;
 

@@ -11,22 +11,22 @@
 		)
 	);
 
-	--border-normal: #455a64;
-	--border-normal-alt: #78909c;
-	--border-subdued: #2e3f47;
+	--border-normal: #323136;
+	--border-normal-alt: #454449;
+	--border-subdued: #383543;
 
-	--foreground-normal: #b3c4cc; // Less contrast for improved hierarchy
-	--foreground-normal-alt: #cfd8dc; // More contrast for titles and labels
-	--foreground-subdued: #697a83;
-	--foreground-inverted: #263238;
+	--foreground-normal: #bcbbbe;
+	--foreground-normal-alt: #e8e8e8;
+	--foreground-subdued: #747486;
+	--foreground-inverted: #16151a;
 
-	--background-normal: #2e3c43; // #37474f
-	--background-normal-alt: #3a4b53; // #455a64
-	--background-subdued: #2d3a41;
-	--background-highlight: #2d3a41;
-	--background-page: #263238;
-	--background-input: #263238;
-	--background-page-rgb: 38, 50, 56;
+	--background-normal: #2a292f;
+	--background-normal-alt: #3f3d46;
+	--background-subdued: #1d1d21;
+	--background-highlight: #1d1d21;
+	--background-page: #16151a;
+	--background-input: #16151a;
+	--background-page-rgb: 22, 21, 26;
 	--background-inverted: #fff;
 
 	// --card-shadow-color: 207,216,220;
@@ -34,6 +34,11 @@
 	--card-shadow-color: 0, 0, 0;
 	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 	--overlay-color: rgba(19, 24, 26, 0.9);
+
+	--module-background: var(--background-page);
+	--module-background-alt: var(--background-normal);
+	--module-icon: var(--foreground-subdued);
+	--module-icon-alt: var(--foreground-normal-alt);
 
 	// Generate color variations
 	@include generate-colors($color-mapping, $dark-theme-shade, $dark-theme-tint);
