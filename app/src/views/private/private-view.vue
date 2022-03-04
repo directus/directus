@@ -346,7 +346,7 @@ export default defineComponent({
 			bottom: 0;
 			width: 4px;
 			background-color: var(--primary);
-			cursor: e-resize;
+			cursor: ew-resize;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			transition-delay: 0;
@@ -359,7 +359,7 @@ export default defineComponent({
 			}
 
 			&.active {
-				transition-delay: 300ms;
+				transition-delay: var(--slow);
 			}
 		}
 
