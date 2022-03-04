@@ -48,10 +48,14 @@ export default defineComponent({
 		onMounted(() => startIdleTracking());
 		onUnmounted(() => stopIdleTracking());
 
-		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
-			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
-			setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
-		});
+		watch(
+			[() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo],
+			() => {
+				const hasCustomLogo = !!serverStore.info?.project?.project_logo;
+				setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
+			},
+			{ immediate: true }
+		);
 
 		watch(
 			() => userStore.currentUser,
