@@ -161,7 +161,7 @@ export default defineComponent({
 	input {
 		display: block;
 		flex-grow: 1;
-		width: 20px; // this will auto grow with flex above
+		width: 20px; /* this will auto grow with flex above */
 		margin: 0;
 		margin-left: 8px;
 		padding: 0;

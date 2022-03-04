@@ -222,7 +222,7 @@ export default defineComponent({
 	#main-content {
 		--border-radius: 6px;
 		--input-height: 60px;
-		--input-padding: 16px; // (60 - 4 - 24) / 2
+		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 
 		position: relative;
 		flex-grow: 1;
@@ -231,7 +231,7 @@ export default defineComponent({
 		overflow: auto;
 		scroll-padding-top: 100px;
 
-		// Page Content Spacing (Could be converted to Project Setting toggle)
+		/* Page Content Spacing (Could be converted to Project Setting toggle) */
 		font-size: 15px;
 		line-height: 24px;
 
@@ -239,7 +239,7 @@ export default defineComponent({
 			display: contents;
 		}
 
-		// Offset for partially visible sidebar
+		/* Offset for partially visible sidebar */
 		@media (min-width: 960px) {
 			margin-right: 60px;
 		}

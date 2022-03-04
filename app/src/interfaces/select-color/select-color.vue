@@ -203,42 +203,6 @@ export default defineComponent({
 					name: 'Red',
 					color: '#E35169',
 				},
-				// {
-				// 	name: 'Red',
-				// 	color: '#E35169',
-				// },
-				// {
-				// 	name: 'Orange',
-				// 	color: '#F7971C',
-				// },
-				// {
-				// 	name: 'Yellow',
-				// 	color: '#F2C94C',
-				// },
-				// {
-				// 	name: 'Green',
-				// 	color: '#00C897',
-				// },
-				// {
-				// 	name: 'Blue',
-				// 	color: '#68B0F4',
-				// },
-				// {
-				// 	name: 'Purple',
-				// 	color: '#6644ff',
-				// },
-				// {
-				// 	name: 'Gray',
-				// 	color: '#607D8B',
-				// },
-				// {
-				// 	name: 'Light Gray',
-				// 	color: '#ECEFF1',
-				// },
-				// {
-				// 	name: 'White',
-				// 	color: '#FFFFFF',
-				// },
 			],
 		},
 		width: {

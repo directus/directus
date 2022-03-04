@@ -163,7 +163,7 @@ const logoURL = computed<string | null>(() => {
 	.container {
 		--border-radius: 6px;
 		--input-height: 60px;
-		--input-padding: 16px; // (60 - 4 - 24) / 2
+		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 
 		z-index: 2;
 		display: flex;
@@ -177,7 +177,7 @@ const logoURL = computed<string | null>(() => {
 		overflow-x: hidden;
 		overflow-y: auto;
 
-		// Page Content Spacing
+		/* Page Content Spacing */
 		font-size: 15px;
 		line-height: 24px;
 		background-color: #fff;
