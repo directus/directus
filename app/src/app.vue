@@ -73,14 +73,16 @@ export default defineComponent({
 					// Default to light mode
 					document.body.classList.add('light');
 				}
-			}
+			},
+			{ immediate: true }
 		);
 
 		watch(
 			() => serverStore.info?.project?.project_name,
 			(projectName) => {
 				document.title = projectName || 'Directus';
-			}
+			},
+			{ immediate: true }
 		);
 
 		const customCSS = computed(() => {
