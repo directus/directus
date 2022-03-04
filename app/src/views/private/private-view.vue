@@ -238,6 +238,7 @@ export default defineComponent({
 				rafId.value = window.requestAnimationFrame(() => {
 					currentWidth.value = Math.max(220, dragStartWidth.value + (event.pageX - dragStartX.value));
 					if (currentWidth.value >= currentWidthLimit.value) currentWidth.value = currentWidthLimit.value;
+					if (currentWidth.value > 220 && currentWidth.value <= 230) currentWidth.value = 220; // snap when nearing min width
 					moduleNavEl.value!.style.width = `${currentWidth.value}px`;
 				});
 			}
