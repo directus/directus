@@ -4,11 +4,12 @@
 > Digital Asset Management (DAM) system for storing, organizing, browsing, and transforming your various files and
 > assets.
 
-![File Library](image.webp)
+![File Library](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-library-20220305A.webp)
 
 ::: warning There are two Documents on File Management
 
-This is a non-technical [Files](/reference/files/).
+This is a non-technical, no-code guide to the File Library Module. For information about programmatic File management
+via the API, please see [Files](/reference/files/).
 
 :::
 
@@ -28,8 +29,8 @@ granular on both Folders and Files. Any type of file can be uploaded, _not just 
 the Navigation Bar, the [File Listing Page](#folders) is presented, which has all the same features and functionality as
 the [Collections Page](/app/content-collections/).
 
-<video title="User Directory Options" autoplay muted loop controls>
-	<source src="" />
+<video title="How the File Library Works" autoplay muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/how-it-works-20220305A.mp4" type="video/mp4"/>
 	<p>
 		Your browser is not displaying the video for some reason. Here's a <a href="">link to the video</a> instead.
 	</p>
@@ -43,7 +44,7 @@ the [Collections Page](/app/content-collections/).
    - Drag a file from your desktop to the popup.
    - Click the modal area to manually select a file from your device.
    - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
-4. Fill in any other information as desired.
+4. Optional: Click the File Display to open File Details Page and fill in information as desired.
 
 ## Files
 
@@ -52,7 +53,7 @@ and embeds, with core Fields included out-of-the-box (see below), and the abilit
 custom Fields. This page has the same features and functionality as the
 [Item Details Page](/getting-started/glossary/#items).
 
-![File Overview](https://cdn.directus.io/docs/v9/app-guide/file-library/viewing-or-editing-a-file-20220215A.webp)
+![Files](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/files-20220305A.webp)
 
 ### Action Buttons
 
@@ -73,7 +74,7 @@ Directus will not allow you to delete a File until you remove it from any and al
 
 ### File Details
 
-![File Details](image.webp)
+![File Details](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-details-20220305A.webp)
 
 The Directus Files Collection comes pre-configured with the following Fields, which cannot be deleted or edited.
 However, new Fields can be added and customized as needed in **Settings > Data Model**.
@@ -91,7 +92,7 @@ However, new Fields can be added and customized as needed in **Settings > Data M
 
 The file sidebar also includes the following details:
 
-![File Sidebar](image.webp)
+![File Sidebar](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-sidebar-20220305A.webp)
 
 - **Type** – The MIME type of the file, displayed in the App as a formatted media type.
 - **Dimensions** – (Images Only) The width and height of the image in pixels.
@@ -108,8 +109,8 @@ The file sidebar also includes the following details:
 On the File Details page, click <span mi btn sec>tune</span> to open an image editor for rotating, cropping, or
 mirroring the file.
 
-<video alt="Image Editing" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/editing-an-image-20220215A.mp4" type="video/mp4">
+<video alt="Edit an Image" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/edit-an-image-20220305A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click a file to open its detail page.
@@ -127,8 +128,8 @@ be [uploaded programmatically via the API](/reference/files/).
 
 This is useful if you want to change the file, but keep existing file info and maintain all of the file's relationships.
 
-<video alt="Replacing a File" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replacing-a-file-20220215A.mp4" type="video/mp4">
+<video alt="Replace a File" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/replace-a-file-20220305A.mp4" type="video/mp4">
 </video>
 
 1. Click the Image Preview on the File Detail page. A popup will appear.
@@ -139,7 +140,7 @@ This is useful if you want to change the file, but keep existing file info and m
 
 ## Folders
 
-![Folders](image.webp)
+![Folders](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/folders-20220305A.webp)
 
 Folders provide the File organization system. They can be named/renamed, nested as sub-folders, and moved anywhere in
 the Folder hierarchy _at any time_. Once a Folder is selected from the Navigation Bar, the File Listing Page is
@@ -149,8 +150,8 @@ searching, etc.
 
 ## Create a Folder
 
-<video alt="Creating a Folder" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/create-a-folder-20220215A.mp4" type="video/mp4">
+<video alt="Create a Folder" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/create-a-folder-20220305A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click on the <span mi btn sec>create_new_folder</span> button located in the header.
@@ -170,7 +171,7 @@ searching, etc.
 ## Move a Folder
 
 <video alt="Moving a Folder" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/move-a-folder-20220215A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/move-a-folder20220305A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to move and select **"Move to Folder"**. A popup will
