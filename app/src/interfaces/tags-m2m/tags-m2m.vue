@@ -2,6 +2,7 @@
 	<v-notice v-if="!relationInfo.junctionCollection || !relationInfo.relationCollection" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
+
 	<div v-else class="tags-m2m">
 		<v-menu
 			v-model="menuActive"
@@ -16,8 +17,8 @@
 					:placeholder="placeholder"
 					:disabled="disabled"
 					@keydown="onInputKeyDown"
-					@focus="() => (menuActive = true)"
-					@blur="() => (menuActive = false)"
+					@focus="menuActive = true"
+					@blur="menuActive = false"
 				>
 					<template #prepend>
 						<v-icon v-if="iconLeft" :name="iconLeft" />
@@ -79,16 +80,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, toRefs, watch, computed } from 'vue';
-import { debounce } from 'lodash';
-import { useI18n } from 'vue-i18n';
-import useRelation from '@/composables/use-m2m';
-import { Filter } from '@directus/shared/types';
-import { parseFilter } from '@/utils/parse-filter';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import api from '@/api';
-
+import useRelation from '@/composables/use-m2m';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { parseFilter } from '@/utils/parse-filter';
+import { Filter } from '@directus/shared/types';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { debounce, clone } from 'lodash';
+import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import useActions from '../list-m2m/use-actions';
 import usePreview from '../list-m2m/use-preview';
 
@@ -166,6 +166,7 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (!props.displayTemplate) return getFieldsFromTemplate(props.displayTemplate);
+
 			return adjustFieldsForDisplays(
 				getFieldsFromTemplate(props.displayTemplate),
 				relationInfo.value.relationCollection
@@ -197,8 +198,7 @@ export default defineComponent({
 		const sortedItems = computed(() => {
 			if (!props.alphabetize || !relationInfo.value.junctionField) return items.value;
 
-			// eslint-disable-next-line vue/no-side-effects-in-computed-properties
-			const sorted = items.value.sort(
+			const sorted = clone(items.value).sort(
 				(a: Record<string, Record<string, any>>, b: Record<string, Record<string, any>>) => {
 					const aVal: string = a[relationInfo.value.junctionField][props.referencingField];
 					const bVal: string = b[relationInfo.value.junctionField][props.referencingField];
@@ -256,6 +256,7 @@ export default defineComponent({
 
 			try {
 				const item = await findByKeyword(value);
+
 				if (item) {
 					addItemFromSuggestion(item);
 				} else if (props.allowCustom) {

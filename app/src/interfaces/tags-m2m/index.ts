@@ -54,7 +54,7 @@ export default defineInterface({
 			},
 			{
 				field: 'displayTemplate',
-				name: '$t:display',
+				name: '$t:display_template',
 				type: 'string',
 				meta: {
 					width: 'full',
