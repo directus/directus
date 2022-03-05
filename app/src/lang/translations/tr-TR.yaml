@@ -103,7 +103,7 @@ os_type: OS Tip
 os_version: OS Versiyon
 os_uptime: OS Hizmet Zamanı
 os_totalmem: OS Bellek
-archive: Arşivle
+archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | Seçilen {count} öğeyi arşivlemek istediğinizden emin misiniz?
@@ -597,7 +597,7 @@ divider: Ayırıcı
 color: Renk
 circle: Daire
 empty_item: Boş Öğe
-log_in_with: '{provider} ile giriş yap'
+log_in_with: '{provider} ile Oturum Aç'
 conditional_styles: Koşullu Stiller
 advanced_settings: Gelişmiş Ayarlar
 advanced_filter: Gelişmiş Filtre
@@ -1016,8 +1016,8 @@ fields:
     name: Rol Adı
     icon: Rol İkonu
     description: Açıklama
-    app_access: Uygulama erişimi
-    admin_access: Yönetici erişimi
+    app_access: Uygulama Erişimi
+    admin_access: Yönetici Erişimi
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
@@ -1047,28 +1047,59 @@ field_options:
     storage_asset_presets:
       upscaling: Çözünürlük Arttırma
       fit:
-        contain_text: Kapsa (En/Boy Oranını Koru)
+        contain_text: Kapsa (en/boy oranını koru)
+        cover_text: Kapla (bire bir boyutu zorlar)
+        fit_text: İçine sığdır
+        outside_text: Dışına sığdır
     additional_transforms: Ek Transformasyonlar
     transforms_note: Sharp metod adı ve argümanları. Daha fazla bilgi için https://sharp.pixelplumbing.com/api-constructor bakınız.
     mapbox_key: Mapbox Erişim Anahtarı
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Taban Haritalar
+    basemaps_name_placeholder: Taban harita adını girin...
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Stili
+    files_divider_title: Dosya ve Küçük Resimler
   directus_activity:
-    create: Oluştur
-    update: Güncelle
+    login: Oturum Açma
+    create: Oluşturma
+    update: Güncelleme
+    delete: Silme
   directus_collections:
+    track_activity_revisions: Etkinlik ve Revizyonları Takip Et
+    only_track_activity: Sadece Etkinlikleri Takip Et
+    do_not_track_anything: Hiçbir Şeyi Takip Etme
     collection_setup: Koleksiyon Ayarları
+    note_placeholder: Bu koleksiyonun bir açıklaması...
+    hidden_label: Uygulamada gizle
     singleton: Tekil obje olarak davran
     language: Dil
     translation: Çeviri
+    translation_placeholder: Bir çeviri girin...
     collection_name: Koleksiyon Adı
-    archive_divider: Arşivle
-    sort_divider: Sırala
+    singular_unit: Tekil Birim
+    plural_unit: Çoğul Birim
+    archive_divider: Arşiv
+    archive_field_placeholder: Bir alan seçin...
+    archive_app_filter: Uygulama Arşiv Filtresini Etkinleştir
+    archive_value: Arşivlenirken kullanılan değer...
+    unarchive_value: Arşivden çıkarılırken kullanılan değer...
+    sort_divider: Sıralama
+    sort_field: Bir alan seçin...
+    accountability_divider: İzlenebilirlik
+    duplication_divider: Çoğaltma
   directus_files:
+    title: Benzersiz bir başlık...
     description: Opsiyonel bir açıklama...
     location: Opsiyonel bir konum...
+    storage_divider: Dosya Adlandırma
+    filename_disk: Diskteki adı...
+    filename_download: İndirirkenki adı...
   directus_roles:
+    name: Bu rol için benzersiz bir isim...
+    description: Bu rolün bir açıklaması...
+    ip_access: İzin verilen IP adreslerini ekle, hepsine izin vermek için boş bırakın...
     fields:
       icon_name: İkon
       name_name: İsim
@@ -1091,6 +1122,7 @@ field_options:
     triggers_divider: Tetikler
     actions_create: Oluştur
     actions_update: Güncelle
+    actions_login: Oturum Açma
     headers:
       header: Başlık (Header)
       value: Değer
@@ -1149,6 +1181,7 @@ sort_asc: Artan şekilde sırala
 sort_desc: Azalan şekilde sırala
 template: Şablon
 translation: Çeviri
+translation_placeholder: Bir çeviri girin...
 value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
@@ -1156,6 +1189,8 @@ interfaces:
   filter:
     name: Filtrele
     add_filter: Filtre Ekle
+    logic_type_and: VE
+    logic_type_or: VEYA
     all: Tümü
     any: Herhangi Biri
   presentation-links:
