@@ -576,6 +576,7 @@ one_item: '1 öğe'
 one_filtered_item: '1 filtrelenmiş öğe'
 delete_collection_are_you_sure: >-
   Bu koleksiyonu silmek istediğinizden emin misiniz? Bu işlem, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem geri alınamaz.
+delete_folder_are_you_sure: Bu klasörü silmek istediğinizden emin misiniz? Bu klasörün içindeki klasörler ve koleksiyonlar en üst seviyeye taşınacaktır.
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar
@@ -585,19 +586,19 @@ show_header: Başlığı Göster
 unmanaged_collections: Yapılandırılmamış Koleksiyonlar
 system_collections: Sistem Koleksiyonları
 placeholder: Yertutucu
-icon_left: İkon Sol
-icon_right: İkon Sağ
-count_other_revisions: '{count} Diğer Revizyonlar'
-font: Font
+icon_left: Sol İkon
+icon_right: Sağ İkon
+count_other_revisions: '{count} Diğer Revizyon'
+font: Yazıtipi
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
 divider: Ayırıcı
 color: Renk
 circle: Daire
-empty_item: Boş öğe
+empty_item: Boş Öğe
 log_in_with: '{provider} ile giriş yap'
-conditional_styles: Koşullu Stil
+conditional_styles: Koşullu Stiller
 advanced_settings: Gelişmiş Ayarlar
 advanced_filter: Gelişmiş Filtre
 delete_advanced_filter: Filtreyi Sil
@@ -609,28 +610,28 @@ operators:
   gt: Büyüktür
   lte: Küçüktür veya eşittir
   gte: Büyük veya eşittir
-  in: Bunlardan biri
-  nin: Bunlardan biri değil
-  null: "Null"
-  nnull: Null değil
+  in: Şunlardan biridir
+  nin: Şunlardan biri değildir
+  null: Null'dur
+  nnull: Null değildir
   contains: Şunu içerir
   ncontains: Şunu içermez
-  starts_with: Şununla başlayan
-  nstarts_with: Şununla başlamayan
-  ends_with: Şununla biten
-  nends_with: Şununla bitmeyen
-  between: Arasında
-  nbetween: Arasında değil
-  empty: Boş olabilir
-  nempty: Boş değil
-  all: Bu anahtarları içeren
-  has: Bu anahtarlardan bazılarını içerir
+  starts_with: Şununla başlar
+  nstarts_with: Şununla başlamaz
+  ends_with: Şununla biter
+  nends_with: Şununla bitmez
+  between: Şunların arasındadır
+  nbetween: Şunların arasında değildir
+  empty: Boştur
+  nempty: Boş değildir
+  all: Şu anahtarları içerir
+  has: Şu anahtarlardan bazılarını içerir
   intersects: Kesişen
   nintersects: Kesişmeyen
   intersects_bbox: Sınırlayıcı kutuyla kesişen
   nintersects_bbox: Sınırlayıcı kutuyla kesişmeyen
 loading: Yükleniyor...
-drop_to_upload: Yüklemek için dosyayı buraya bırak
+drop_to_upload: Yüklemek için Dosyayı Buraya Bırakın
 item: Öğe
 items: Öğeler
 upload_file: Dosya Yükle
@@ -639,20 +640,20 @@ upload_file_success: Dosya Yüklendi
 upload_files_indeterminate: 'Dosyalar yükleniyor {done}/{total}'
 upload_files_success: '{count} Dosya Yüklendi'
 upload_pending: Yükleme Bekliyor
-drag_file_here: Dosyayı buraya Sürükle & Bırak
-click_to_browse: Gezinmek için tıkla
+drag_file_here: Dosyayı Buraya Sürükle ve Bırak
+click_to_browse: Gezinmek için Tıkla
 interface_options: Arayüz Ayarları
-layout_options: Sayfa Düzeni Seçenekleri
+layout_options: Sayfa Düzeni Ayarları
 rows: Satırlar
 columns: Sütunlar
-collection_setup: Yığın Ayarları
-optional_system_fields: Opsiyonel Sistem Alanları
+collection_setup: Koleksiyon Ayarları
+optional_system_fields: İsteğe Bağlı Sistem Alanları
 value_unique: Değer benzersiz olmalı
 all_activity: Tüm Etkinlikler
 create_item: Öğe Oluştur
 display_template: Görüntüleme Şablonu
 language_display_template: Dil Görüntüleme Şablonu
-translations_display_template: Çevirilerin Görüntü Şablonu
+translations_display_template: Çeviri Görüntüleme Şablonu
 n_items_selected: 'Seçili Öğe Yok | 1 Öğe Seçildi | {n} Öğe Seçildi'
 per_page: Sayfa Başına
 all_files: Tüm Dosyalar
@@ -667,11 +668,13 @@ replace_file: Dosyayı Değiştir
 no_results: Sonuç Yok
 no_results_copy: Sonuçları görmek için arama filtrelerini ayarlayın veya temizleyin.
 clear_filters: Filtreleri Temizle
-saves_automatically: Otomati̇k Olarak Kaydeder
+saves_automatically: Otomati̇k Olarak Kaydedilir
 role: Rol
 rule: Kural
 user: Kullanıcı
-no_presets: Şablon yok
+no_presets: Hiç Ön Ayar Yok
+no_presets_copy: Henüz kaydedilmiş ön ayar veya yer işareti yok.
+no_presets_cta: Ön Ayar Ekle
 create: Oluştur
 on_create: Oluşturulduğunda
 on_update: Güncellemede (On Update)
@@ -872,7 +875,7 @@ field_options:
     create: Oluştur
     update: Güncelle
   directus_collections:
-    collection_setup: Yığın Ayarları
+    collection_setup: Koleksiyon Ayarları
     language: Dil
     translation: Çeviri
     collection_name: Koleksiyon Adı
@@ -1034,7 +1037,7 @@ displays:
     filesize: Dosya Boyutu
   formatted-value:
     format: Biçim
-    font: Font
+    font: Yazıtipi
     font_serif: Serif
     font_monospace: Monospace
     bold: Kalın
