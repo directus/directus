@@ -125,6 +125,8 @@ export class UtilsService {
 			['items.sort', `${collection}.items.sort`],
 			{
 				collection,
+				item,
+				to,
 			},
 			{
 				database: this.knex,

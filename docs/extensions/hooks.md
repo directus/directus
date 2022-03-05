@@ -158,7 +158,6 @@ export default ({ schedule }) => {
 | `(<collection>.)items.create` | The new item                    | `collection`                         |
 | `(<collection>.)items.update` | The updated item                | `keys`, `collection`                 |
 | `(<collection>.)items.delete` | The keys of the item            | `collection`                         |
-| `(<collection>.)items.sort`   | No payload                      | `collection`                         |
 | `<system-collection>.create`  | The new item                    | `collection`                         |
 | `<system-collection>.update`  | The updated item                | `keys`, `collection`                 |
 | `<system-collection>.delete`  | The keys of the item            | `collection`                         |
@@ -183,6 +182,7 @@ export default ({ schedule }) => {
 | `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
 | `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
 | `(<collection>.)items.delete` | `payload`, `collection`                             |
+| `(<collection>.)items.sort`   | `collection`, `item`, `to`                          |
 | `<system-collection>.create`  | `payload`, `key`, `collection`                      |
 | `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
 | `<system-collection>.delete`  | `payload`, `collection`                             |
