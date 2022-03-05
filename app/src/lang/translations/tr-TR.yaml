@@ -168,7 +168,7 @@ no_relational_data: Unutmayın, ilişkisel veriler buraya dahil değildir.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
-fields_and_layout: Alanlar ve Sayfa Düzeni
+fields_and_layout: Alanlar ve Yerleşim
 field_create_success: 'Oluşturulan alan: "{field}"'
 field_update_success: 'Güncellenen alan: "{field}"'
 duplicate_where_to: Bu alanı nereye çoğaltmak istersiniz?
@@ -643,7 +643,7 @@ upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı Buraya Sürükle ve Bırak
 click_to_browse: Gezinmek için Tıkla
 interface_options: Arayüz Ayarları
-layout_options: Sayfa Düzeni Ayarları
+layout_options: Sayfa Yerleşimi Ayarları
 rows: Satırlar
 columns: Sütunlar
 collection_setup: Koleksiyon Ayarları
@@ -796,24 +796,45 @@ viewing_in: '{collection} Koleksiyonunda Öğe Görüntüleniyor'
 editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
 no_options_available: Hiç seçenek yok
 settings_data_model: Veri Modeli
-settings_permissions: Roller & Yetkiler
+settings_permissions: Roller ve Yetkiler
 settings_project: Proje Ayarları
 settings_webhooks: Webhooklar
 settings_presets: Ön Ayarlar ve Yer İşaretleri
+one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
 scope: Kapsam
+select: Seç...
 layout: Yerleşim
-editing_preset: Önayarı Düzenle
+tree_view: Ağaç Görünümü
+changes_are_permanent: Değişiklikler geri alınamaz
+preset_name_placeholder: Boşken varsayılan olarak sunulur...
+preset_search_placeholder: Arama sorgusu...
+editing_preset: Ön Ayarı Düzenle
+layout_preview: Sayfa Yerleşimi Önizlemesi
+layout_setup: Sayfa Yerleşimi Ayarları
 unsaved_changes: Kaydedilmemiş Değişiklikler
-unsaved_changes_copy: Bu sayfayı terketmek istediğine emin misin?
+unsaved_changes_copy: Bu sayfayı terketmek istediğinize emin misiniz?
 discard_changes: Değişiklikleri İptal Et
+discard_all_changes: Tüm Değişiklikleri İptal Et
+discard_changes_copy: Tüm değişiklikleri iptal etmek istediğinize emin misiniz?
+show_x_axis: X Eksenini Göster
+show_y_axis: Y Eksenini Göster
 keep_editing: Düzenlemeye Devam Et
-add_new: Yeni ekle
+page_help_insights_dashboard: '**Kontrol Paneli** — Bir veya birden fazla paneli kontrol edebileceğin bir çalışma alanı'
+activity_feed: Etkinlik Akışı
+add_new: Yeni Ekle
+create_new: Yeni Oluştur
 all: Tümü
+none: Hiç
+no_layout_collection_selected_yet: Henüz yerleşim/koleksiyon seçilmedi
 batch_delete_confirm: >-
   Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
+no_upscale: Fotoğrafları çözünürlüğünü arttırma
 collection: Koleksiyon
 collections: Koleksiyonlar
+content: İçerik
+singleton: Tekil
+singleton_label: Tekil obje olarak davran
 fields:
   directus_activity:
     item: Öğe Birincil Anahtarı
@@ -832,6 +853,7 @@ fields:
     color: Renk
     display_template: Görüntüleme Şablonu
     hidden: Gizli
+    singleton: Tekil
     sort_field: Sıralama Alanı
   directus_files:
     title: Ünvan
@@ -885,6 +907,7 @@ fields:
     icon: Koleksiyon İkonu
     note: Not
     hidden: Gizli
+    singleton: Tekil
     translation: Alan Adı Çevirileri
     display_template: Şablon
   directus_roles:
@@ -909,6 +932,7 @@ field_options:
     update: Güncelle
   directus_collections:
     collection_setup: Koleksiyon Ayarları
+    singleton: Tekil obje olarak davran
     language: Dil
     translation: Çeviri
     collection_name: Koleksiyon Adı
