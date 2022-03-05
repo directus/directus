@@ -61,7 +61,7 @@ Notice the following Buttons in the Header:
 - <span mi btn >check</span> – Saves any edits made to the file.
 - <span mi btn sec>tune</span> – Please see [Editing an Image](#edit-an-image) to learn more.
 - <span mi btn sec>save_alt</span> – Downloads the file to your current device.
-- <span mi btn sec>drive_file_move</span> – Moves the file to another folder.
+- <span mi btn sec>drive_file_move</span> – Moves selected file(s) to another folder.
 - <span mi btn dngr>delete</span> – Permanently removes the file and its metadata. This action is permanent and cannot
   be undone.
 
@@ -118,10 +118,10 @@ mirroring the file.
 
 ## Upload a File
 
-We covered how to upload files through the File library in [How it Works](#how-it-works). Keep in mind that files can
-also be added through different Interfaces. For example, Users can upload an Avatar image when they fill in their User
+We covered the File Library's 3 upload methods in [How it Works](#how-it-works). Keep in mind that files can also be
+added through different Interfaces as well. For example, Users can upload an Avatar image when they fill in their User
 Details. Similarly, Items with an Image Field will have a file upload Interface on the Item Detail page. Files can also
-be [uploaded via the API](/reference/files/).
+be [uploaded programmatically via the API](/reference/files/).
 
 ## Replace a File
 
@@ -131,15 +131,21 @@ This is useful if you want to change the file, but keep existing file info and m
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replacing-a-file-20220215A.mp4" type="video/mp4">
 </video>
 
-1. Click the image Preview on the File Detail page. A popup will appear.
+1. Click the Image Preview on the File Detail page. A popup will appear.
 2. Upload your file. You have 3 options:
    - Drag a file from your desktop to the popup.
-   - Click the modal area to manually select a file from your device.
+   - Click the popup area to manually select a file from your device.
    - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
 
 ## Folders
 
 ![Folders](image.webp)
+
+Folders provide the File organization system. They can be named/renamed, nested as sub-folders, and moved anywhere in
+the Folder hierarchy _at any time_. Once a Folder is selected from the Navigation Bar, the File Listing Page is
+presented. This File Listing Page displays all Files within a Folder and enables all other features and functionalities
+from the [Collections Page](/app/content-collections/) such as batch editing, batch deleting, sorting, filtering,
+searching, etc.
 
 ## Create a Folder
 
@@ -148,8 +154,8 @@ This is useful if you want to change the file, but keep existing file info and m
 </video>
 
 1. From the **File Library**, click on the <span mi btn sec>create_new_folder</span> button located in the header.
-2. Fill in the folder name.
-3. Click "Save".
+2. Fill in the folder name as desired.
+3. Click **"Save"**.
 
 ## Rename a Folder
 
@@ -158,8 +164,8 @@ This is useful if you want to change the file, but keep existing file info and m
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to rename and select "Rename Folder".
-2. Update the folder name.
-3. Click "Save".
+2. Update the folder name as desired.
+3. Click **"Save"**.
 
 ## Move a Folder
 
@@ -167,9 +173,10 @@ This is useful if you want to change the file, but keep existing file info and m
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/move-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
-1. From the **File Library**, right-click on the folder you wish to move and select "Move to Folder"
-2. Select a folder that will be the new parent folder
-3. Click "Save"
+1. From the **File Library**, right-click on the folder you wish to move and select **"Move to Folder"**. A popup will
+   appear.
+2. Select a Folder to serve as the new Parent Folder.
+3. Click **"Save"**.
 
 ## Delete a Folder
 
@@ -177,8 +184,8 @@ This is useful if you want to change the file, but keep existing file info and m
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/delete-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
-1. From the **File Library**, right-click on the folder you wish to delete and select "Delete Folder"
-2. Click "Delete"
+1. From the **File Library**, right-click on the folder you wish to delete and select **"Delete Folder"**.
+2. Click **"Delete"**.
 
 ::: tip
 
