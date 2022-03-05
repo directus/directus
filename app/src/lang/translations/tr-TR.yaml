@@ -854,7 +854,7 @@ no_layout_collection_selected_yet: Henüz yerleşim/koleksiyon seçilmedi
 batch_delete_confirm: >-
   Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
-no_upscale: Fotoğrafları çözünürlüğünü arttırma
+no_upscale: Fotoğrafların çözünürlüğünü arttırma
 collection: Koleksiyon
 collections: Koleksiyonlar
 content: İçerik
@@ -985,14 +985,25 @@ fields:
     public_foreground: Herkese Açık Ön Plan
     public_background: Herkese Açık Arkaplan
     public_note: Herkese Açık Not
-    auth_password_policy: Oturum Açma — Parola Planı
-    auth_login_attempts: Oturum Açma — Parola Deneme Sayısı
+    auth_password_policy: Kimlik Doğrulama — Parola Planı
+    auth_login_attempts: Kimlik Doğrulama — Oturum Açma Teşebbüs Sayısı
+    files_and_thumbnails: Dosyalar ve Depolama
+    storage_default_folder: Varsayılan Klasör
+    storage_asset_presets: Transformasyon Ön Ayarları
+    storage_asset_transform: İzin Verilen Transformasyonlar
     custom_css: Özel CSS
     module_bar: Kenar Çubuğu
+    transformations_all: Tüm transformasyonlara izin ver
+    transformations_none: Transformasyonları devre dışı bırak
+    transformations_presets: Transformasyonları aşağıdaki ön ayarlar ile sınırla
   directus_shares:
-    name: İsim
+    name: Ad
     role: Rol
     password: Parola
+    date_start: Başlangıç Tarihi
+    date_end: Bitiş Tarihi
+    max_uses: Maksimum Kullanım
+    times_used: Kullanım Sayısı
   directus_fields:
     collection: Koleksiyon Adı
     icon: Koleksiyon İkonu
@@ -1012,16 +1023,31 @@ fields:
     users: Rol'deki Kullanıcılar
   directus_webhooks:
     name: İsim
+    method: Metod
     status: Durum
+    data: Veri
+    header: Başlık (Header)
     value: Değer
+    headers: İstek Başlıkları (Headers)
+    data_label: Olay Verisini Gönder
+    triggers: Tetikler
+    actions: Aksiyonlar
     collections: Koleksiyonlar
 field_options:
   directus_settings:
+    project_name_placeholder: Benim projem...
+    project_color_note: Oturum Açma ve Logo Arkaplanı
+    project_logo_note: Beyaz 40x40 SVG/PNG
+    public_note_placeholder: Herkese açık markdown biçimlendirmesi destekleyen kısa bir mesaj...
     security_divider_title: Güvenlik
     auth_password_policy:
       none_text: Hiç – Önerilmez
       weak_text: Zayıf – Minimum 8 Karakter
       strong_text: Güçlü – Büyük/Küçük Harf / Sayılar / Özel Karakter
+    storage_asset_presets:
+      upscaling: Çözünürlük Arttırma
+      fit:
+        contain_text: Kapsa (En/Boy Oranını Koru)
     additional_transforms: Ek Transformasyonlar
     transforms_note: Sharp metod adı ve argümanları. Daha fazla bilgi için https://sharp.pixelplumbing.com/api-constructor bakınız.
     mapbox_key: Mapbox Erişim Anahtarı
@@ -1061,9 +1087,12 @@ field_options:
   directus_webhooks:
     status_options_active: Aktif
     status_options_inactive: Devre Dışı
+    data_label: Olay Verisini Gönder
+    triggers_divider: Tetikler
     actions_create: Oluştur
     actions_update: Güncelle
     headers:
+      header: Başlık (Header)
       value: Değer
 do_nothing: Hiçbir Şey Yapma
 block: Blok
