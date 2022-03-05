@@ -225,18 +225,18 @@ uuid: UUID
 hash: Hash
 geometry: Geometri (Tümü)
 geometry.Point: Nokta
-geometry.LineString: Çizgi Dizisi
-geometry.Polygon: Çokgen
+geometry.LineString: Nokta Dizisi
+geometry.Polygon: Poligon
 geometry.MultiPoint: Çoklu Nokta
-geometry.MultiLineString: Çoklu Çizgi Dizisi
-geometry.MultiPolygon: Çoklu Çokgen
+geometry.MultiLineString: Çoklu Nokta Dizisi
+geometry.MultiPolygon: Çoklu Poligon
 not_available_for_type: Bu Tip için Mevcut Değil
 create_translations: Çeviriler Oluşturun
 auto_refresh: Otomatik Yenile
 refresh_interval: Yenileme Aralığı
-no_refresh: Yenileme yapma
+no_refresh: Yenileme Yapma
 refresh_interval_seconds: Anında Yenileyin | Her Saniyede | Her {seconds} Saniyede
-refresh_interval_minutes: Her Dakika | Her {minutes} Dakikada bir
+refresh_interval_minutes: Her Dakika | Her {minutes} Dakikada
 auto_generate: Otomatik Oluştur
 this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri otomatik olarak kuracaktır.
 click_here: Buraya tıklayın
@@ -244,97 +244,116 @@ to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
   Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
-no_collections_found: Koleksiyon bulunamadı.
+no_collections_found: Hiç Koleksiyon bulunamadı.
 new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
 search_collection: Koleksiyonu Ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
-add_m2o_to_collection: '"{collection}" Çoktan-Bire İlişki Ekle'
-add_o2m_to_collection: '"{collection}" Birden-Çoka İlişki Ekle'
-add_m2m_to_collection: '"{collection}" Çoktan-Çoka İlişki Ekle'
+add_m2o_to_collection: '"{collection}" Koleksiyonuna M2O İlişki Ekle'
+add_o2m_to_collection: '"{collection}" Koleksiyonuna O2M İlişki Ekle'
+add_m2m_to_collection: '"{collection}" Koleksiyonuna M2M İlişki Ekle'
 choose_a_type: Bir Tür Seçin...
-determined_by_relationship: İlişkiye göre belirlenir
+determined_by_relationship: İlişkiye Göre Belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
-add_link: Bağlantı ekle
-custom_link: Özel bağlantı
-default_value: Öntanımlı Değer
+add_link: Bağlantı Ekle
+custom_link: Özel Bağlantı
+default_value: Varsayılan Değer
 standard_field: Standart Alan
 single_file: Tek Dosya
 multiple_files: Birden Fazla Dosya
 m2o_relationship: Çoktan Bire İlişki
-o2m_relationship: Bire Çok İlişki
+o2m_relationship: Birden Çoka İlişki
 m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bir İlişki
 invalid_item: Geçersiz Öğe
 next: Sonraki
-field_name: Alan adı
+field_name: Alan Adı
 translations: Çeviriler
-no_translations: Çeviri yok
+no_translations: Çeviri Yok
 note: Not
 enter_a_value: Bir değer girin...
-enter_a_placeholder: Placeholder ekle...
+enter_a_placeholder: Yertutucu Ekle...
 length: Uzunluk
-precision_scale: Hassas & Ölçek
+soft_length: Yumuşak Limit
+precision_scale: Hassasiyet & Ölçek
 readonly: Salt-Okunur
 unique: Benzersiz
-updated_on: Güncelleme tarihi
+updated_on: Güncelleme Tarihi
 updated_by: Güncelleyen
-primary_key: Birincil Anahtar (Primary Key)
+primary_key: Birincil Anahtar
 foreign_key: Yabancı Anahtar
 finish_setup: Kurulumu Bitir
 dismiss: Yoksay
-raw_value: Ham veri
-edit_raw_value: Ham Değeri Düzenle
-enter_raw_value: Bir değer girin...
-clear_changes: Değişiklikleri iptal et
+raw_value: İşlenmemiş veri
+copy_raw_value: İşlenmemiş Veriyi Kopyala
+copy_raw_value_success: Kopyalandı
+copy_raw_value_fail: Kopyalama Başarısız
+paste_raw_value: İşlenmemiş Değeri Yapıştır
+paste_raw_value_success: Yapıştırıldı
+paste_raw_value_fail: Yapıştırma Başarısız
+view_raw_value: İşlenmemiş Değeri Görüntüle
+edit_raw_value: İşlenmemiş Değeri Düzenle
+enter_raw_value: İşlenmemiş bir değer girin...
+clear_value: Değeri Temizle
+clear_changes: Değişiklikleri İptal Et
+reset_to_default: Varsayılana Sıfırla
+undo_changes: Değişiklikleri Geri Al
 notifications: Bildirimler
-show_all_activity: Tüm etkinliği göster
+show_all_activity: Tüm Etkinliği Göster
 page_not_found: Sayfa Bulunamadı
 page_not_found_body: Aradığınız sayfa mevcut değil.
 confirm_revert: Geri Alma İşlemini Onayla
-confirm_revert_body: Bu, öğeyi seçilen duruma geri döndürecektir.
+confirm_revert_body: Bu işlem, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
 settings_update_success: Ayarlar güncellendi
 title: Ünvan
-revision_delta_created: Oluşturulma tarihi
+revision_delta_created: Oluşturulma Tarihi
 revision_delta_created_externally: Harici Olarak Oluşturuldu
 revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
 revision_delta_deleted: Silindi
 revision_delta_reverted: Geri Alındı
 revision_delta_other: Revizyon
-revision_delta_by: '{user} tarafından {date}'
+revision_delta_by: '{user} tarafından {date} tarihinde'
 private_user: Gizli Kullanıcı
 creation_preview: Oluşturma Önizlemesi
 revision_preview: Revizyon Önizlemesi
 updates_made: Güncellemeler Uygulandı
 leave_comment: Yorum bırakın...
 post_comment_success: Yorum gönderildi
-item_create_success: Alan(lar) Oluşturuldu
-item_update_success: Alan(lar) Güncellendi
-item_delete_success: Alan(lar) Silindi
+item_create_success: Öğe Oluşturuldu | Öğe Oluşturuldu
+item_update_success: Öğe Güncellendi | Öğe Güncellendi
+item_delete_success: Öğe Silindi | Öğe Silindi
 this_collection: Bu Koleksiyon
 related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
 translations_collection: Çeviri Koleksiyonu
 languages_collection: Dil Koleksiyonu
-label_import: İçe aktar
+import_data_input_placeholder: CSV ya da JSON...
+import_data_button: İçe Aktarmayı Başlat
+import_data_indeterminate: Veri İçe Aktarılıyor...
+import_data_success: Veri {filename} dosyasından başarıyla içe aktarıldı
+import_data_error: Bu dosyanın yapısı koleksiyonun yapısı ile uyuşmuyor.
+label_import: İçe Aktar
+label_export: Dışa Aktar
+import_export: İçe / Dışa Aktar
 format: Biçim
 use_current_filters_settings: Mevcut Filtreleri & Ayarları Kullan
+export_data_button: Dışa Aktarmayı Başlat
 last_page: Son Sayfa
 last_access: Son Erişim
-fill_template: Şablonla Doldur
+fill_template: Şablon Değeri ile Doldur
 a_unique_table_name: Benzersiz bir tablo adı...
 a_unique_column_name: Benzersiz bir sütun adı...
-enable_custom_values: Kişisel başlıklara izin ver
+enable_custom_values: Özel değerlere izin ver
 submit: Gönder
 move_to_folder: Klasöre Taşı
 move: Taşı
 system: Sistem
-add_field_related: Alakalı Koleksiyona Alan Ekle
+add_field_related: İlişkili Koleksiyona Alan Ekle
 interface_label: Arayüz
 today: Bugün
 yesterday: Dün
-delete_comment: Yorumu sil
+delete_comment: Yorumu Sil
 date-fns_date: PPP
 date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
@@ -367,7 +386,7 @@ import_label: İçe aktar
 file_details: Dosya Ayrıntıları
 dimensions: Boyutlar
 size: Boyut
-created: Oluşturulma tarihi
+created: Oluşturulma Tarihi
 modified: Değiştirildi
 checksum: Checksum
 owner: Sahip
