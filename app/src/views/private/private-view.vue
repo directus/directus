@@ -10,12 +10,21 @@
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
 		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<div class="module-nav alt-colors">
+			<div ref="moduleNavEl" class="module-nav alt-colors">
 				<project-info />
 
 				<div class="module-nav-content">
 					<slot name="navigation" />
 				</div>
+
+				<div
+					class="module-nav-resize-handle"
+					:class="{ active: handleHover }"
+					@pointerenter="handleHover = true"
+					@pointerleave="handleHover = false"
+					@pointerdown.self="onResizeHandlePointerDown"
+					@dblclick="resetModuleNavWidth"
+				/>
 			</div>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
@@ -37,6 +46,7 @@
 		</div>
 		<aside
 			id="sidebar"
+			ref="sidebarEl"
 			role="contentinfo"
 			class="alt-colors"
 			aria-label="Module Sidebar"
@@ -63,95 +73,164 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import useElementSize from '@/composables/use-element-size';
+import useEventListener from '@/composables/use-event-listener';
+import useLocalStorage from '@/composables/use-local-storage';
+import useTitle from '@/composables/use-title';
+import useWindowSize from '@/composables/use-window-size';
+import { useAppStore, useUserStore } from '@/stores';
+import { debounce } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed, onMounted, provide, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, provide, toRefs, computed } from 'vue';
-import ModuleBar from './components/module-bar.vue';
-import SidebarDetailGroup from './components/sidebar-detail-group/';
+import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar';
-import ProjectInfo from './components/project-info';
-import NotificationsGroup from './components/notifications-group/';
-import NotificationsPreview from './components/notifications-preview/';
+import ModuleBar from './components/module-bar.vue';
 import NotificationDialogs from './components/notification-dialogs/';
 import NotificationsDrawer from './components/notifications-drawer.vue';
-import { useUserStore, useAppStore } from '@/stores';
-import { useRouter } from 'vue-router';
-import useTitle from '@/composables/use-title';
-import { storeToRefs } from 'pinia';
+import NotificationsGroup from './components/notifications-group/';
+import NotificationsPreview from './components/notifications-preview/';
+import ProjectInfo from './components/project-info';
+import SidebarDetailGroup from './components/sidebar-detail-group/';
 
-export default defineComponent({
-	components: {
-		ModuleBar,
-		SidebarDetailGroup,
-		HeaderBar,
-		ProjectInfo,
-		NotificationsGroup,
-		NotificationsPreview,
-		NotificationDialogs,
-		NotificationsDrawer,
-	},
-	props: {
-		title: {
-			type: String,
-			default: null,
+interface Props {
+	title?: string | null;
+	smallHeader?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false });
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const contentEl = ref<Element>();
+const sidebarEl = ref<Element>();
+const { width: windowWidth } = useWindowSize();
+const { width: contentWidth } = useElementSize(contentEl);
+const { width: sidebarWidth } = useElementSize(sidebarEl);
+
+const moduleNavEl = ref<HTMLElement>();
+const { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp } =
+	useModuleNavResize();
+useEventListener(window, 'pointermove', onPointerMove);
+useEventListener(window, 'pointerup', onPointerUp);
+
+const { data } = useLocalStorage('module-nav-width');
+onMounted(() => {
+	if (!data.value) return;
+	if (Number.isNaN(data.value)) return;
+	moduleNavEl.value!.style.width = `${data.value}px`;
+});
+
+const { title } = toRefs(props);
+const navOpen = ref(false);
+const userStore = useUserStore();
+const appStore = useAppStore();
+
+const appAccess = computed(() => {
+	if (!userStore.currentUser) return true;
+	return userStore.currentUser?.role?.app_access || false;
+});
+
+const notificationsPreviewActive = ref(false);
+
+const { sidebarOpen, fullScreen } = storeToRefs(appStore);
+
+const theme = computed(() => {
+	return userStore.currentUser?.theme || 'auto';
+});
+
+provide('main-element', contentEl);
+
+router.afterEach(async () => {
+	contentEl.value?.scrollTo({ top: 0 });
+	fullScreen.value = false;
+});
+
+useTitle(title);
+
+function useModuleNavResize() {
+	const handleHover = ref<boolean>(false);
+	const dragging = ref<boolean>(false);
+	const dragStartX = ref<number>(0);
+	const dragStartWidth = ref<number>(0);
+	const currentWidth = ref<number | null>(null);
+	const currentWidthLimit = ref<number>(0);
+	const rafId = ref<number | null>(null);
+
+	watch(
+		currentWidth,
+		debounce((newVal) => {
+			if (newVal === 220) {
+				data.value = null;
+			} else {
+				data.value = newVal;
+			}
+		}, 300)
+	);
+
+	watch(
+		[windowWidth, contentWidth, sidebarWidth],
+		() => {
+			if (windowWidth.value > 1260) {
+				// 590 = minimum content width, 60 = module bar width, and dynamic side bar width
+				currentWidthLimit.value = windowWidth.value - (590 + 60 + sidebarWidth.value);
+			} else if (windowWidth.value > 960) {
+				// 590 = minimum content width, 60 = module bar width, 60 = side bar width
+				currentWidthLimit.value = windowWidth.value - (590 + 60 + 60);
+			} else {
+				// first 60 = module bar width, second 60 = room for overlay
+				currentWidthLimit.value = windowWidth.value - (60 + 60);
+			}
+
+			if (currentWidth.value && currentWidth.value > currentWidthLimit.value) {
+				currentWidth.value = Math.max(220, currentWidthLimit.value);
+				moduleNavEl.value!.style.width = `${currentWidth.value}px`;
+			}
 		},
-		smallHeader: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+		{ immediate: true }
+	);
 
-		const router = useRouter();
+	return { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp };
 
-		const { title } = toRefs(props);
-		const navOpen = ref(false);
-		const contentEl = ref<Element>();
-		const userStore = useUserStore();
-		const appStore = useAppStore();
+	function onResizeHandlePointerDown(event: PointerEvent) {
+		dragging.value = true;
+		dragStartX.value = event.pageX;
+		dragStartWidth.value = moduleNavEl.value!.offsetWidth;
+	}
 
-		const appAccess = computed(() => {
-			if (!userStore.currentUser) return true;
-			return userStore.currentUser?.role?.app_access || false;
+	function resetModuleNavWidth() {
+		moduleNavEl.value!.style.width = `220px`;
+	}
+
+	function onPointerMove(event: PointerEvent) {
+		if (!dragging.value) return;
+
+		rafId.value = window.requestAnimationFrame(() => {
+			currentWidth.value = Math.max(220, dragStartWidth.value + (event.pageX - dragStartX.value));
+			if (currentWidth.value >= currentWidthLimit.value) currentWidth.value = currentWidthLimit.value;
+			if (currentWidth.value > 220 && currentWidth.value <= 230) currentWidth.value = 220; // snap when nearing min width
+			moduleNavEl.value!.style.width = `${currentWidth.value}px`;
 		});
+	}
 
-		const notificationsPreviewActive = ref(false);
-
-		const { sidebarOpen, fullScreen } = storeToRefs(appStore);
-
-		const theme = computed(() => {
-			return userStore.currentUser?.theme || 'auto';
-		});
-
-		provide('main-element', contentEl);
-
-		router.afterEach(async () => {
-			contentEl.value?.scrollTo({ top: 0 });
-			fullScreen.value = false;
-		});
-
-		useTitle(title);
-
-		return {
-			t,
-			navOpen,
-			contentEl,
-			theme,
-			sidebarOpen,
-			openSidebar,
-			notificationsPreviewActive,
-			appAccess,
-			fullScreen,
-		};
-
-		function openSidebar(event: PointerEvent) {
-			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
-				sidebarOpen.value = true;
+	function onPointerUp() {
+		if (dragging.value === true) {
+			dragging.value = false;
+			if (rafId.value) {
+				window.cancelAnimationFrame(rafId.value);
 			}
 		}
-	},
-});
+	}
+}
+
+function openSidebar(event: PointerEvent) {
+	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
+		sidebarOpen.value = true;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -197,6 +276,7 @@ export default defineComponent({
 		}
 
 		.module-nav {
+			position: relative;
 			display: inline-block;
 			width: 220px;
 			height: 100%;
@@ -210,6 +290,30 @@ export default defineComponent({
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
+			}
+		}
+
+		.module-nav-resize-handle {
+			position: absolute;
+			top: 0;
+			right: -2px;
+			bottom: 0;
+			width: 4px;
+			background-color: var(--primary);
+			cursor: ew-resize;
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
+			transition-delay: 0;
+			user-select: none;
+			touch-action: none;
+
+			&:hover,
+			&:active {
+				opacity: 1;
+			}
+
+			&.active {
+				transition-delay: var(--slow);
 			}
 		}
 
