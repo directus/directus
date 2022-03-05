@@ -18,25 +18,13 @@
 				</div>
 
 				<div
-					v-context-menu="'contextMenu'"
 					class="module-nav-resize-handle"
 					:class="{ active: handleHover }"
 					@pointerenter="handleHover = true"
 					@pointerleave="handleHover = false"
 					@pointerdown.self="onResizeHandlePointerDown"
 					@dblclick="resetModuleNavWidth"
-				>
-					<v-menu ref="contextMenu" show-arrow placement="right">
-						<v-list-item clickable @click="resetModuleNavWidth">
-							<v-list-item-icon>
-								<v-icon name="undo" />
-							</v-list-item-icon>
-							<v-list-item-content>
-								<v-text-overflow :text="t('reset_width')" />
-							</v-list-item-content>
-						</v-list-item>
-					</v-menu>
-				</div>
+				/>
 			</div>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
