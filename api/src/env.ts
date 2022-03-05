@@ -287,7 +287,11 @@ function processValues(env: Record<string, any>) {
 
 		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
 		// config flags, or custom param names (that aren't camelCased)
-		env[key] = tryJSON(value);
+        if (typeof value === "string") {
+            env[key] = value;
+		} else {
+            env[key] = tryJSON(value);
+		}
 
 		// If '_FILE' variable hasn't been processed yet, store it as it is (string)
 		if (newKey) {
