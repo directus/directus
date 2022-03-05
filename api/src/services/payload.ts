@@ -263,9 +263,9 @@ export class PayloadService {
 
 		// Update specific database type overrides
 		for (const [_name, field] of fieldsInCollection) {
-			if (field.special.includes('sqlite-timestamp-in-datetime')) {
+			if (field.special.includes('cast-timestamp')) {
 				field.type = 'timestamp';
-			} else if (field.special.includes('oracle-datetime-in-timestamp')) {
+			} else if (field.special.includes('cast-datetime')) {
 				field.type = 'dateTime';
 			}
 		}

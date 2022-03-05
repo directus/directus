@@ -12,6 +12,7 @@ import Keyv from 'keyv';
 import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
 import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
+import { addFieldFlag } from '@directus/shared/utils';
 
 export type RawCollection = {
 	collection: string;
@@ -98,28 +99,16 @@ export class CollectionsService {
 						};
 					}
 
-					const addFlag = (flag: string) => {
-						if (!field.meta) {
-							field.meta = {
-								special: [flag],
-							} as FieldMeta;
-						} else if (!field.meta.special) {
-							field.meta.special = [flag];
-						} else {
-							field.meta.special.push(flag);
-						}
-					};
-
 					// Add flags for specific database type overrides
 					switch (getDatabaseClient(this.knex)) {
 						case 'sqlite':
 							if (field.type === 'timestamp') {
-								addFlag('sqlite-timestamp-in-datetime');
+								addFieldFlag(field, 'cast-timestamp');
 							}
 							break;
 						case 'oracle':
 							if (field.type === 'dateTime') {
-								addFlag('oracle-datetime-in-timestamp');
+								addFieldFlag(field, 'cast-datetime');
 							}
 							break;
 					}

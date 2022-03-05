@@ -76,7 +76,7 @@ describe('schema', () => {
 								.patch(`/fields/schema_date_types/timestamp`)
 								.send({
 									meta: {
-										special: ['sqlite-timestamp-in-datetime'],
+										special: ['cast-timestamp'],
 									},
 								})
 								.set('Authorization', 'Bearer AdminToken')
@@ -88,7 +88,7 @@ describe('schema', () => {
 								.patch(`/fields/schema_date_types/datetime`)
 								.send({
 									meta: {
-										special: ['oracle-datetime-in-timestamp'],
+										special: ['cast-datetime'],
 									},
 								})
 								.set('Authorization', 'Bearer AdminToken')

@@ -15,7 +15,7 @@ import { AbstractServiceOptions } from '../types';
 import { Field, FieldMeta, RawField, Type, Accountability, SchemaOverview } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { toArray } from '@directus/shared/utils';
+import { toArray, addFieldFlag } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import { getHelpers, Helpers } from '../database/helpers';
@@ -170,9 +170,9 @@ export class FieldsService {
 
 		// Update specific database type overrides
 		for (const field of result) {
-			if (field.meta?.special?.includes('sqlite-timestamp-in-datetime')) {
+			if (field.meta?.special?.includes('cast-timestamp')) {
 				field.type = 'timestamp';
-			} else if (field.meta?.special?.includes('oracle-datetime-in-timestamp')) {
+			} else if (field.meta?.special?.includes('cast-datetime')) {
 				field.type = 'dateTime';
 			}
 		}
@@ -247,28 +247,16 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
-		const addFlag = (flag: string) => {
-			if (!field.meta) {
-				field.meta = {
-					special: [flag],
-				} as FieldMeta;
-			} else if (!field.meta.special) {
-				field.meta.special = [flag];
-			} else {
-				field.meta.special.push(flag);
-			}
-		};
-
 		// Add flags for specific database type overrides
 		switch (getDatabaseClient(this.knex)) {
 			case 'sqlite':
 				if (field.type === 'timestamp') {
-					addFlag('sqlite-timestamp-in-datetime');
+					addFieldFlag(field, 'cast-timestamp');
 				}
 				break;
 			case 'oracle':
 				if (field.type === 'dateTime') {
-					addFlag('oracle-datetime-in-timestamp');
+					addFieldFlag(field, 'cast-datetime');
 				}
 				break;
 		}
