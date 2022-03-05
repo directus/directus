@@ -6,9 +6,9 @@
 
 ![File Library](image.webp)
 
-::: tip There are two Documents on File Management
+::: warning There are two Documents on File Management
 
-[Files](/reference/files/).
+This is a non-technical [Files](/reference/files/).
 
 :::
 
@@ -18,16 +18,15 @@
 
 ::: tip Required Knowledge
 
-idk yet
+Familiarity with the [Collections Page](<(/app/content-collections/)>) will be helpful but not necessary.
 
 :::
 
-There are no imposed limits on the types of files. `.jpg`, `.mp4`, `.json`, `.pdf`, `.xlsx` or any other file type can
-be stored as needed. This File listing page has the same features and functionality as the
-[Collection Page](/app/content-collections/).
-
-- Any files. See more below in [Files Overview](#files-overview).
-- folders as well as their option.
+The File Library acts as one big [Folder](#folders) to store all uploaded [Files](#files). Sub-folders can be created
+within the File Library to help Files stay organized. User and Role access permissions are fully configurable and
+granular on both Folders and Files. Any type of file can be uploaded, _not just images_. When a Folder is selected from
+the Navigation Bar, the [File Listing Page](#folders) is presented, which has all the same features and functionality as
+the [Collections Page](/app/content-collections/).
 
 <video title="User Directory Options" autoplay muted loop controls>
 	<source src="" />
@@ -38,17 +37,20 @@ be stored as needed. This File listing page has the same features and functional
 
 1. Select a Folder. There are two options:
    - Choose desired Folder from the Navigation Bar.
-   - Click to create
-2. Click to create a File
-3. Fill in info
-4. Optional Edit:
-5. Optional Delete:
+   - Click <span mi btn sec>create_new_folder</span> in the Page Header, name your folder, and click **"Save"**.
+2. Click <span mi btn>add</span> in the Page Header. A popover will appear.
+3. Add your file. You have 3 options:
+   - Drag a file from your desktop to the modal.
+   - Click the modal area to manually select a file from your device.
+   - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
+4. Fill in any other information as desired.
 
 ## Files
 
-Provides a custom form for viewing assets and embeds, with core fields included out-of-the-box (see below), and the
-ability for administrators to add additional custom fields. This page has the same features and functionality as the
-[Item Page](/getting-started/glossary/#items).
+When a file is clicked in the File Listing Page, the File Details Page appears. This is a custom form for viewing assets
+and embeds, with core Fields included out-of-the-box (see below), and the ability for administrators to add additional
+custom Fields. This page has the same features and functionality as the
+[Item Details Page](/getting-started/glossary/#items).
 
 ![File Overview](https://cdn.directus.io/docs/v9/app-guide/file-library/viewing-or-editing-a-file-20220215A.webp)
 
@@ -57,16 +59,15 @@ ability for administrators to add additional custom fields. This page has the sa
 Notice the following Buttons in the Header:
 
 - <span mi btn >check</span> – Saves any edits made to the file.
-- <span mi btn sec>tune</span> – Refer [Editing an Image](#editing-an-image).
+- <span mi btn sec>tune</span> – Please see [Editing an Image](#edit-an-image) to learn more.
 - <span mi btn sec>save_alt</span> – Downloads the file to your current device.
-- <img src="../assets/buttons/move-file.png" alt="Move to Folder" height="32" style="vertical-align: middle; margin: 2px 0; box-shadow: none">
-  – Move the file to another folder.
-- <span mi btn dngr>delete</span> – Permanently removes the file and its metadata. This action is permanent and can not
+- <span mi btn sec>drive_file_move</span> – Moves the file to another folder.
+- <span mi btn dngr>delete</span> – Permanently removes the file and its metadata. This action is permanent and cannot
   be undone.
 
 ::: tip Cannot Delete File When Linked to Another Item
 
-Must remove file from any and all Items in order to delete.
+Directus will not allow you to delete a File until you remove it from any and all related Items.
 
 :::
 
@@ -74,17 +75,17 @@ Must remove file from any and all Items in order to delete.
 
 ![File Details](image.webp)
 
-The Directus Files Collection comes pre-configured with these Fields. The Fields cannot be deleted or edited. However,
-new Fields can be added and customized as needed in **Settings > Data Model**.
+The Directus Files Collection comes pre-configured with the following Fields, which cannot be deleted or edited.
+However, new Fields can be added and customized as needed in **Settings > Data Model**.
 
-- **Preview** – A preview of the image or file.
-- **Title** – A title for the file.
-- **Description** – A description of the file.
+- **Preview** – A preview of the image or File.
+- **Title** – A title for the File.
+- **Description** – A description of the File.
 - **Tags** – Keywords used for search-ability.
-- **Location** – An optional location, eg: where a photo was taken.
+- **Location** – An optional location _(e.g. where a photo was taken)_.
 - **Storage** – Which storage adapter is used to store the file asset.
 - **Filename (Disk)** – LOCKED. This is the actual name of the file in storage.
-- **Filename (Download)** – This allows you to set the name of the file when it is downloaded.
+- **Filename (Download)** – Allows you to set the name of the file when it is downloaded.
 
 ### File Sidebar
 
@@ -95,14 +96,14 @@ The file sidebar also includes the following details:
 - **Type** – The MIME type of the file, displayed in the App as a formatted media type.
 - **Dimensions** – (Images Only) The width and height of the image in pixels.
 - **Size** – The file-size the asset takes up within the storage adapter.
-- **Created** – The timestamp of when the file was uploaded to the project.
-- **Owner** – The Directus user that uploaded the file to the project.
+- **Created** – The timestamp of when the file was uploaded to the Project.
+- **Owner** – The Directus user that uploaded the file to the Project.
 - **Modified** – The timestamp of when the file was last modified.
-- **Edited By** – The Directus user that modified the file.
-- **Folder** – The current parent folder that contains the file.
-- **Metadata** – Metadata JSON dump of the file's EXIF, IPTC, and ICC information.
+- **Edited By** – The Directus user that modified the File.
+- **Folder** – The current parent folder that contains the File.
+- **Metadata** – Metadata JSON dump of the File's EXIF, IPTC, and ICC information.
 
-## Editing an Image
+## Edit an Image
 
 On the File Details page, click <span mi btn sec>tune</span> to open an image editor for rotating, cropping, or
 mirroring the file.
@@ -111,20 +112,11 @@ mirroring the file.
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/editing-an-image-20220215A.mp4" type="video/mp4">
 </video>
 
-1. From the **File Library**, click a file to open it's detail page.
+1. From the **File Library**, click a file to open its detail page.
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor.
-3. Make your changes and hit <span mi btn>check</span> in the top right to save the updates.
+3. Make your changes and click <span mi btn>check</span> in the top right to save the updates.
 
-## Replacing a File
-
-Click the image Preview on the File Detail page. This opens a modal, allowing the file to be replaced. This is useful if
-you want to change the file, but keep existing file info and maintain all of the file's relationships.
-
-<video alt="Replacing a File" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replacing-a-file-20220215A.mp4" type="video/mp4">
-</video>
-
-## Uploading a File
+## Upload a File
 
 There are many ways that a file can be uploaded into Directus via the App. We'll cover the primary method below, but
 keep in mind that files can also be added directly through different Interfaces. _(e.g. Users can upload their own
@@ -140,11 +132,20 @@ Avatar, files with an Image Field will have a file upload Interface on the Item 
    - Click the modal area to manually select a file from your device.
    - Click the <span mi icon>more_vert</span> icon and choose "Import from URL".
 
+## Replace a File
+
+Click the image Preview on the File Detail page. A popup will appear, which will allow the file to be replaced. This is
+useful if you want to change the file, but keep existing file info and maintain all of the file's relationships.
+
+<video alt="Replacing a File" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replacing-a-file-20220215A.mp4" type="video/mp4">
+</video>
+
 ## Folders
 
 ![Folders](image.webp)
 
-## Creating a Folder
+## Create a Folder
 
 <video alt="Creating a Folder" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/create-a-folder-20220215A.mp4" type="video/mp4">
@@ -154,7 +155,7 @@ Avatar, files with an Image Field will have a file upload Interface on the Item 
 2. Fill in the folder name.
 3. Click "Save".
 
-## Renaming a Folder
+## Rename a Folder
 
 <video alt="Renaming a Folder" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/rename-a-folder-20220215A.mp4" type="video/mp4">
@@ -164,7 +165,7 @@ Avatar, files with an Image Field will have a file upload Interface on the Item 
 2. Update the folder name.
 3. Click "Save".
 
-## Moving a Folder
+## Move a Folder
 
 <video alt="Moving a Folder" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/move-a-folder-20220215A.mp4" type="video/mp4">
@@ -174,7 +175,7 @@ Avatar, files with an Image Field will have a file upload Interface on the Item 
 2. Select a folder that will be the new parent folder
 3. Click "Save"
 
-## Deleting a Folder
+## Delete a Folder
 
 <video alt="Deleting a Folder" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/delete-a-folder-20220215A.mp4" type="video/mp4">
