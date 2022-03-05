@@ -416,7 +416,7 @@ creating_new_collection: Yeni Koleksiyon Oluşturuluyor
 created_by: Oluşturan
 created_on: Oluşturulma Tarihi
 creating_collection_info: Koleksiyonu adlandır ve benzersiz "anahtar" alanını ayarla...
-creating_collection_system: İsteğe bağlı alanları etkinleştir ve yeniden adlandır.
+creating_collection_system: Opsiyonel alanları etkinleştir ve yeniden adlandır.
 auto_increment_integer: Otomatik artan tamsayı
 generated_uuid: Otomatik üretilen UUID
 manual_string: Manuel olarak girilmiş metin
@@ -697,7 +697,7 @@ panel: Panel
 panel_options: Panel Seçenekleri
 panel_header: Panel Başlığı
 panel_name_placeholder: Panele bir ad verin...
-panel_note_placeholder: Bu panel hakkında isteğe bağlı detaylar...
+panel_note_placeholder: Bu panel hakkında opsiyonel detaylar...
 panel_delete_confirm: Bu paneli silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 dashboard_delete_confirm: Bu panoyu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 edit_dashboard: Panoyu Düzenle
@@ -827,7 +827,7 @@ page_help_files_collection: >-
   **Dosya Kütüphanesi** —Bu projeye yüklenen tüm dosyaları listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
 page_help_files_item: >-
   **Dosya Detayı** — Dosya metaverilerini yönetmek, orijinal dosyayı düzenlemek ve erişim seçeneklerini güncellemek için bir form/sayfa.
-page_help_settings_project: "**Proje Ayarları** — Projenin genel ayarları."
+page_help_settings_project: "**Proje Ayarları** — Projenin genel konfigürasyon seçenekleri."
 page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-
@@ -967,7 +967,26 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Haritalama
+    basemaps: Taban Haritalar
+    basemaps_style: Mapbox Stili
+    mapbox_key: Mapbox Erişim Anahtarı
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atıf
+    attribution_placeholder: '© OpenStreetMap katkıda bululanlar'
+    transforms_note: Sharp metod adı ve argümanları. Daha fazla bilgi için https://sharp.pixelplumbing.com/api-constructor bakınız.
+    additional_transforms: Ek Transformasyonlar
     project_name: Proje Adı
+    project_descriptor: Proje Açıklaması
+    project_url: Proje URL'si
+    project_color: Proje Rengi
+    project_logo: Proje Logosu
+    branding: Markalama ve Stil
+    public_foreground: Herkese Açık Ön Plan
+    public_background: Herkese Açık Arkaplan
+    public_note: Herkese Açık Not
+    auth_password_policy: Oturum Açma — Parola Planı
+    auth_login_attempts: Oturum Açma — Parola Deneme Sayısı
     custom_css: Özel CSS
     module_bar: Kenar Çubuğu
   directus_shares:
@@ -1003,6 +1022,12 @@ field_options:
       none_text: Hiç – Önerilmez
       weak_text: Zayıf – Minimum 8 Karakter
       strong_text: Güçlü – Büyük/Küçük Harf / Sayılar / Özel Karakter
+    additional_transforms: Ek Transformasyonlar
+    transforms_note: Sharp metod adı ve argümanları. Daha fazla bilgi için https://sharp.pixelplumbing.com/api-constructor bakınız.
+    mapbox_key: Mapbox Erişim Anahtarı
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Taban Haritalar
+    basemaps_style: Mapbox Stili
   directus_activity:
     create: Oluştur
     update: Güncelle
@@ -1106,6 +1131,10 @@ interfaces:
     any: Herhangi Biri
   presentation-links:
     primary: Birincil
+  select-multiple-checkbox:
+    description: İşaret kutucukları ile birden fazla seçenek arasından seçim yap
+  select-multiple-checkbox-tree:
+    description: İç içe işaret kutucukları ile birden fazla seçenek arasından seçim yap
   input-code:
     code: Kod
   system-collection:
@@ -1197,6 +1226,7 @@ displays:
     color: Renk
     icon: İkon
     text: Metin
+    text_placeholder: Opsiyonel değer üstüne yazma...
   icon:
     icon: İkon
     description: Simge olarak görüntüle
@@ -1238,6 +1268,8 @@ layouts:
     comfortable: Geniş
     compact: Sıkışık
     cozy: Normal
+  map:
+    cluster_options: Kümeleme seçenekleri
 panels:
   label:
     name: Etiket
