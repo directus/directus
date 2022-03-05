@@ -28,29 +28,30 @@ draft: Taslak
 archived: Arşivlendi
 modules: Modüller
 module_bar: Kenar Çubuğu
+reset_width: Genişliği Sıfırla
 tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
 maps: Haritalar
-switch_user: Kullanıcı değiştir
+switch_user: Kullanıcı Değiştir
 item_creation: Öğe Oluşturma
 item_revision: Revizyonları Göster
 enter_a_name: Bir isim girin...
-duplicate_field: Yinelenen Alan
+duplicate_field: Alanı Kopyala
 half_width: Yarı Genişlik
 full_width: Tam Genişlik
 group: Grup
 and: Ve
 or: Veya
-fill_width: Tam Genişlik
-field_name_translations: Alan İsim Çevirileri
+fill_width: Genişliği Doldur
+field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
 add_field: Alan Ekle
 role_name: Rol Adı
 branch: Dal
 leaf: Yaprak
 indeterminate: Belirsiz
-edit_collection: Koleksiyonu düzenle
+edit_collection: Koleksiyonu Düzenle
 exclusive: İstisna
 children: Alt
 db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın'
@@ -68,8 +69,8 @@ create_user: Kullanıcı Oluştur
 delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
 invite_users: Kullanıcıları Davet Et
-invite: Davet et
-email_already_invited: '"{email}" bu e-posta zaten davet edildi'
+invite: Davet Et
+email_already_invited: E-posta "{email}" zaten davet edildi
 subject: Konu
 inbox: Gelen Kutusu
 emails: E-postalar
@@ -85,9 +86,9 @@ suffix: Sonek
 reset_bookmark: Yer İşaretini Sıfırla
 rename_bookmark: Yer İşaretini Yeniden Adlandır
 update_bookmark: Yer İşaretini Güncelle
-delete_bookmark: Yer imini kaldır
+delete_bookmark: Yer İşaretini Kaldır
 delete_bookmark_copy: >-
-  {bookmark} yer işareti kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
+  {bookmark} yer işaretini kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
@@ -97,15 +98,15 @@ admin_description: Sınırsız Uygulama/API erişimine sahip ilk yönetici rolü
 not_allowed: İzin Verilmedi
 directus_version: Directus Versiyon
 node_version: Node Versiyon
-node_uptime: Node Uptime
+node_uptime: Node Hizmet Zamanı
 os_type: OS Tip
 os_version: OS Versiyon
-os_uptime: OS Uptime
-os_totalmem: OS Hafıza
-archive: Arşiv
+os_uptime: OS Hizmet Zamanı
+os_totalmem: OS Bellek
+archive: Arşivle
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
-  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
+  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | Seçilen {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 the_following_are_minimum_permissions: Homm
@@ -823,7 +824,7 @@ fields:
     icon: Koleksiyon İkonu
     note: Not
     hidden: Gizli
-    translation: Alan İsim Çevirileri
+    translation: Alan Adı Çevirileri
     display_template: Şablon
   directus_roles:
     name: Rol Adı
@@ -850,7 +851,7 @@ field_options:
     language: Dil
     translation: Çeviri
     collection_name: Koleksiyon Adı
-    archive_divider: Arşiv
+    archive_divider: Arşivle
     sort_divider: Sırala
   directus_roles:
     fields:
