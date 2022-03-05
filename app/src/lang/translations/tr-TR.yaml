@@ -45,7 +45,7 @@ and: Ve
 or: Veya
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
-enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
+enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
 add_field: Alan Ekle
 role_name: Rol Adı
 branch: Dal
@@ -306,7 +306,7 @@ confirm_revert: Geri Alma İşlemini Onayla
 confirm_revert_body: Bu işlem, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
 settings_update_success: Ayarlar güncellendi
-title: Ünvan
+title: Başlık
 revision_delta_created: Oluşturulma Tarihi
 revision_delta_created_externally: Harici Olarak Oluşturuldu
 revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
@@ -522,7 +522,7 @@ errors:
   FIELD_NOT_FOUND: Alan Bulunamadı
   FORBIDDEN: Yetkisiz Erişim
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
-  INVALID_OTP: Tek kullanımlık şifre hatalı
+  INVALID_OTP: Tek kullanımlık parola hatalı
   INVALID_PAYLOAD: Geçersiz yük
   INVALID_QUERY: Geçersiz sorgu
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
@@ -552,7 +552,7 @@ copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
 password_reset_sent: Sana parolanı sıfırlamanı sağlayacak güvenli bir bağlantı gönderdik
-password_reset_successful: Şifre başarıyla sıfırlandı
+password_reset_successful: Parola başarıyla sıfırlandı
 back: Geri
 filter: Filtrele
 editing_image: Fotoğrafı Düzenle
@@ -642,12 +642,12 @@ upload_files_success: '{count} Dosya Yüklendi'
 upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı Buraya Sürükle ve Bırak
 click_to_browse: Gezinmek için Tıkla
-interface_options: Arayüz Ayarları
-layout_options: Sayfa Yerleşimi Ayarları
+interface_options: Arayüz Seçenekleri
+layout_options: Sayfa Yerleşimi Seçenekleri
 rows: Satırlar
 columns: Sütunlar
 collection_setup: Koleksiyon Ayarları
-optional_system_fields: İsteğe Bağlı Sistem Alanları
+optional_system_fields: Opsiyonel Sistem Alanları
 value_unique: Değer benzersiz olmalı
 all_activity: Tüm Etkinlikler
 create_item: Öğe Oluştur
@@ -908,52 +908,72 @@ fields:
     item_duplication_fields: Öğe Çoğaltma Alanları
   directus_files:
     $thumbnail: Küçük Resim
-    title: Ad
+    title: Başlık
     description: Açıklama
     tags: Etiketler
     location: Konum
+    storage: Depolama
+    filename_disk: Dosya Adı (Disk)
+    filename_download: Dosya Adı (İndirme)
     metadata: Metaveri
-    filesize: Dosya boyutu
-    modified_on: Düzenleme Tarihi
+    type: Ortam Türü
+    filesize: Dosya Boyutu
+    modified_by: Modifiye Eden
+    modified_on: Modifiye Tarihi
     created_on: Oluşturulma Tarihi
     created_by: Oluşturan
     embed: Yerleştir
-    uploaded_by: Tarafından Yüklendi
+    uploaded_by: Yükleyen
     folder: Klasör
     width: Genişlik
-    uploaded_on: Tarihinde Yüklendi
+    uploaded_on: Yüklenme Tarihi
     height: Yükseklik
-    charset: Karakter seti
+    charset: Karakter Seti
     duration: Süre
   directus_users:
     first_name: Ad
     last_name: Soyad
     email: E-posta
-    password: Şifre
+    password: Parola
     avatar: Avatar
     location: Konum
-    title: Ünvan
+    title: Başlık
     description: Açıklama
     tags: Etiketler
+    user_preferences: Kullanıcı Tercihleri
     language: Dil
     theme: Tema
+    theme_auto: Otomatik (Sisteme Göre)
+    theme_light: Açık Mod
+    theme_dark: Koyu Mod
     tfa_secret: İki Faktörlü Kimlik Doğrulama
+    admin_options: Yönetici Seçenekleri
     status: Durum
+    status_draft: Taslak
+    status_invited: Davet Edildi
     status_active: Aktif
+    status_suspended: Askıda
+    status_archived: Arşivlenmiş
     role: Rol
+    token: Erişim Anahtarı (Token)
+    token_placeholder: Güvenli bir erişim anahtarı girin...
+    provider: Sağlayıcı
+    external_identifier: Dış Tanımlayıcı
     last_page: Son Sayfa
     last_access: Son Erişim
+    email_notifications: E-posta Bildirimleri
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
+    tiff: Tiff
     project_name: Proje Adı
     custom_css: Özel CSS
     module_bar: Kenar Çubuğu
   directus_shares:
     name: İsim
     role: Rol
-    password: Şifre
+    password: Parola
   directus_fields:
     collection: Koleksiyon Adı
     icon: Koleksiyon İkonu
@@ -979,6 +999,10 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Güvenlik
+    auth_password_policy:
+      none_text: Hiç – Önerilmez
+      weak_text: Zayıf – Minimum 8 Karakter
+      strong_text: Güçlü – Büyük/Küçük Harf / Sayılar / Özel Karakter
   directus_activity:
     create: Oluştur
     update: Güncelle
@@ -990,13 +1014,25 @@ field_options:
     collection_name: Koleksiyon Adı
     archive_divider: Arşivle
     sort_divider: Sırala
+  directus_files:
+    description: Opsiyonel bir açıklama...
+    location: Opsiyonel bir konum...
   directus_roles:
     fields:
       icon_name: İkon
       name_name: İsim
     collections_name: Koleksiyonlar
   directus_users:
+    preferences_divider: Kullanıcı Tercihleri
+    dropdown_auto: Otomatik (Sisteme Göre)
+    dropdown_light: Açık Mod
+    dropdown_dark: Koyu Mod
+    admin_divider: Yönetici Seçenekleri
+    status_dropdown_draft: Taslak
     status_dropdown_active: Aktif
+    status_dropdown_suspended: Askıda
+    status_dropdown_archived: Arşivlenmiş
+    token: Güvenli bir erişim anahtarı girin...
   directus_webhooks:
     status_options_active: Aktif
     status_options_inactive: Devre Dışı
@@ -1020,7 +1056,7 @@ fallback_icon: Temel İkon
 field: Alan | Alanlar
 file: Dosya
 file_library: Dosya Kütüphanesi
-forgot_password: Şifremi Unuttum
+forgot_password: Parolamı Unuttum
 hidden: Gizli
 icon: İkon
 info: Bilgi
@@ -1035,12 +1071,12 @@ my_activity: Aktivitelerim
 not_authenticated: Kimlik Doğrulanamadı
 authenticated: Kimlik doğrulandı
 options: Seçenekler
-otp: Tek Kullanımlık Şifre
-password: Şifre
+otp: Tek Kullanımlık Parola
+password: Parola
 permissions: İzinler
 relationship: İlişki
 reset: Sıfırla
-reset_password: Şifremi Sıfırla
+reset_password: Parolamı Sıfırla
 revisions: Revizyonlar
 revert: Eski Haline Döndür
 save: Kaydet
@@ -1098,12 +1134,16 @@ interfaces:
     icon: İkon
   system-interface:
     interface: Arayüz
+  system-interface-options:
+    interface-options: Arayüz Seçenekleri
+    description: Arayüz seçeneklerini seçmek için bir modal pencere
   select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
   input-rich-text-md:
     edit: Düzenle
   map:
     zoom: Yakınlaş
+    invalid_options: Geçersiz seçenekler
   system-folder:
     folder: Klasör
   slider:
@@ -1189,7 +1229,7 @@ layouts:
     image_fit: Resmi sığdır
     crop: Kırp
     contain: Şunu içerir
-    title: Ünvan
+    title: Başlık
     subtitle: Altyazı
   tabular:
     tabular: Tablo
