@@ -354,6 +354,7 @@ interface_label: Arayüz
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu Sil
+delete_share: Paylaşımı Sil
 date-fns_date: PPP
 date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
@@ -382,7 +383,7 @@ drag_mode: Sürükleme Modu
 cancel_crop: Kırpmayı İptal Et
 original: Orijinal
 url: URL
-import_label: İçe aktar
+import_label: İçe Aktar
 file_details: Dosya Ayrıntıları
 dimensions: Boyutlar
 size: Boyut
@@ -399,24 +400,24 @@ open_in_new_window: Yeni Pencerede Aç
 open_folder: '"{folder}" Klasörünü Aç'
 foreground_color: Ön Plan Rengi
 background_color: Arkaplan Rengi
-upload_from_device: Cihazdan Yükle
-choose_from_library: Kütüphaneden seç
-import_from_url: URL’den Dosya Yükle
+upload_from_device: Cihazdan Dosya Yükle
+choose_from_library: Kütüphaneden Dosya Seç
+import_from_url: URL’den Dosya Aktar
 replace_from_device: Cihazdaki Dosya ile Değiştir
 replace_from_library: Kütüphanedeki Dosya ile Değiştir
 replace_from_url: URL'deki Dosya ile Değiştir
-no_file_selected: Dosya seçilmedi
+no_file_selected: Hiç Dosya Seçilmedi
 download_file: Dosyayı İndir
-collection_key: Koleksiyonlar
+collection_key: Koleksiyon Anahtarı
 name: İsim
 primary_key_field: Birincil Anahtar Alanı
 type: Tür
-creating_new_collection: Yeni Koleksiyon Oluştur
+creating_new_collection: Yeni Koleksiyon Oluşturuluyor
 created_by: Oluşturan
-created_on: Oluşturulma tarihi
-creating_collection_info: Koleksiyonu isimlendir ve onun benzersiz "anahtar" alanını ayarla...
+created_on: Oluşturulma Tarihi
+creating_collection_info: Koleksiyonu adlandır ve benzersiz "anahtar" alanını ayarla...
 creating_collection_system: İsteğe bağlı alanları etkinleştir ve yeniden adlandır.
-auto_increment_integer: Otomatik artan sayı
+auto_increment_integer: Otomatik artan tamsayı
 generated_uuid: Üretilen UUID
 manual_string: Elle girilmiş metin
 save_and_create_new: Kaydet ve Yeni Oluştur
@@ -799,7 +800,7 @@ fields:
     metadata: Metaveri
     filesize: Dosya boyutu
     modified_on: Düzenleme Tarihi
-    created_on: Oluşturulma tarihi
+    created_on: Oluşturulma Tarihi
     created_by: Oluşturan
     embed: Yerleştir
     uploaded_by: Tarafından Yüklendi
