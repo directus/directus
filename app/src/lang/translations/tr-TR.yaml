@@ -108,11 +108,11 @@ archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | Seçilen {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
-reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
+reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinlerin üstüne yazacaktır. Emin misiniz?
 the_following_are_minimum_permissions: Homm
 app_access_minimum: Minimum Uygulama Erişimi
-recommended_defaults: Önerilen Ön Tanımlı Veriler
-unarchive: Arşivden çıkar
+recommended_defaults: Önerilen Varsayılanlar
+unarchive: Arşivden Çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
 nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
 unknown_validation_errors: 'Aşağıdaki gizli alanlar için doğrulama hataları vardı:'
@@ -124,26 +124,26 @@ validationError:
   contains: Değer, {substring} içermelidir
   ncontains: Değer, {substring} içeremez
   gt: Değer, {valid} değerinden büyük olmalıdır
-  gte: Değer, {valid} değerinden büyük veya ona eşit olmalıdır
+  gte: Değer, {valid} değerinden büyük veya eşit olmalıdır
   lt: Değer, {valid} değerinden küçük olmalıdır
   lte: Değer, {valid} değerinden küçük veya eşit olmalıdır
-  empty: Değer boş olmalı
+  empty: Değer boş olmalıdır
   nempty: Değer boş olamaz
-  null: Değer null olmalı
+  null: Değer null olmalıdır
   nnull: Değer null olamaz
   required: Değer gereklidir
   unique: Değer benzersiz olmalı
   regex: Değer doğru biçime sahip değil
 all_access: Tam Erişim
 no_access: Erişim Yok
-use_custom: Özelleştirilmiş kullan
-nullable: Boş (null) olabilir
+use_custom: Özelleştirilmiş
+nullable: Null olabilir
 allow_null_value: NULL değere izin ver
 allow_multiple: Çoklu Seçime İzin Ver
 allow_multiple_to_be_open: Çoklu Açılmasına İzin Ver
-enter_value_to_replace_nulls: Bu alandaki tüm NULLları değiştirecek yeni bir değer girin.
+enter_value_to_replace_nulls: Bu alandaki tüm NULL değerleri değiştirecek yeni bir değer girin.
 field_standard: Standart
-field_presentation: Sunum ve Takma Adlar
+field_presentation: Sunumlar
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_m2o: M2O İlişkisi
@@ -152,19 +152,19 @@ field_o2m: O2M İlişkisi
 field_m2m: M2M İlişkisi
 field_translations: Çeviriler
 field_group: Alan Grubu
-item_permissions: Alan İzinleri
+item_permissions: Öğe İzinleri
 field_permissions: Alan İzinleri
 field_validation: Alan Doğrulama
 field_presets: Alan Hazır Ayarları
-permissions_for_role: '{role} rolünün {action} yapabileceği öğeler.'
-fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
+permissions_for_role: '{role} rolünün, {action} yapabileceği öğeler.'
+fields_for_role: '{role} rolünün, {action} yapabileceği alanlar.'
 validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
 presets_for_role: '{role} rolü için varsayılan alan değeri.'
-presentation_and_aliases: Sunum ve Takma Adlar
+presentation_and_aliases: Sunumlar
 revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
 changes_made: Aşağıda bu revizyonda yapılan belirli değişiklikler bulunmaktadır.
-no_relational_data: Unutmayın ilişkisel veriler buraya dahil değildir.
+no_relational_data: Unutmayın, ilişkisel veriler buraya dahil değildir.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -181,8 +181,8 @@ global: Genel
 admins_have_all_permissions: Yöneticiler tüm izinlere sahiptir
 camera: Kamera
 show_zero: Sıfırı Göster
-create_in_advanced_field_creation_mode: Alanı Gelişmiş Modda Oluştur
-continue_in_advanced_field_creation_mode: Alan Oluşturmaya Gelişmiş Modda Devam Et
+create_in_advanced_field_creation_mode: Alanı Gelişmiş Mod ile Oluştur
+continue_in_advanced_field_creation_mode: Alan Oluşturmaya Gelişmiş Mod ile Devam Et
 sum: Toplam
 sum_distinct: Tekrarsız Toplam
 avg: Ortalama
@@ -196,31 +196,31 @@ shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
 schema_setup_key: Bu alanın veritabanı sütun adı ve API anahtarı
-create_field: Alan Ekle
-creating_new_field: 'Yeni alan ({collection})'
+create_field: Alan Oluştur
+creating_new_field: 'Yeni Alan Oluşturuluyor ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Sayfa tercihlerini sıfırla
+reset_page_preferences: Sayfa Tercihlerini Sıfırla
 hidden_field: Gizli Alan
 hidden_on_detail: Detayda Gizli
-disabled_editing_value: Düzenleme değerini devre dışı bırakın
+disabled_editing_value: Değeri düzenlemeyi devre dışı bırakın
 key: Key
 alias: Takma Ad
 bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
 date_range: Tarih Aralığı
-datetime: Tarih Saat
-dateTime: Tarih Saat
-precision: Ondalık Hassasiyeti
+datetime: Tarih ve Zaman
+dateTime: Tarih ve Zaman
+precision: Hassasiyet
 decimal: Ondalık
-float: Ondalıklı sayı
+float: Ondalıklı Sayı
 integer: Tamsayı
 json: JSON
 xml: XML
 string: Yazı
 text: Metin
 time: Zaman
-timestamp: Zaman damgası
+timestamp: Zaman Damgası
 uuid: UUID
 hash: Hash
 geometry: Geometri (Tümü)
