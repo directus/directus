@@ -819,6 +819,31 @@ discard_changes_copy: Tüm değişiklikleri iptal etmek istediğinize emin misin
 show_x_axis: X Eksenini Göster
 show_y_axis: Y Eksenini Göster
 keep_editing: Düzenlemeye Devam Et
+page_help_activity_collection: >-
+  **Etkinliklere Göz At** — Bütün kullanıcılarının kapsamlı sistem ve içerik etkinliğinin bir listelemesi.
+page_help_docs_global: >-
+  **Dökümantasyon Genel Bakış** — Dökümantasyonlar bu projenin versiyon ve şemasına göre uyarlanmıştır.
+page_help_files_collection: >-
+  **Dosya Kütüphanesi** —Bu projeye yüklenen tüm dosyaları listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
+page_help_files_item: >-
+  **Dosya Detayı** — Dosya metaverilerini yönetmek, orijinal dosyayı düzenlemek ve erişim seçeneklerini güncellemek için bir form/sayfa.
+page_help_settings_project: "**Proje Ayarları** — Projenin genel ayarları."
+page_help_settings_datamodel_collections: >-
+  **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
+page_help_settings_datamodel_fields: >-
+  **Veri Modeli: Koleksiyon** — Bu koleksiyonu ve alanlarını yönetmek için bir form/sayfa.
+page_help_settings_roles_collection: '**Rollere Göz At** — Herkese açık, yönetici ve özel kullanıcı rollerini listeler.'
+page_help_settings_roles_item: "**Rol Detayı** — Bir rolün yetki ve diğer ayarlarını yönet."
+page_help_settings_presets_collection: >-
+  **Ön Ayarlara Göz At** — Projedeki tüm ön ayarları listeler. Buna kullanıcı, rol, genel yer işaretleri ve varsayılan görünüm/yerleşimler dahildir.
+page_help_settings_presets_item: >-
+  **Ön Ayar Detayı** —Yer işaretleri ve varsayılan koleksiyon ön ayarlarını yönetmek için bir form/sayfa.
+page_help_settings_webhooks_collection: '**Webhooklara Göz At** — Projedeki tüm webhookları listeler.'
+page_help_settings_webhooks_item: '**Webhook Detayı** — Projede webhook oluşturmak ve yönetmek için bir form/sayfa.'
+page_help_users_collection: '**Kullanıcı Dizini** — Projedeki tüm sistem kullanıcılarını listeler.'
+page_help_users_item: >-
+  **Kullanıcı Detayı** — Hesap bilgilerini düzenle ya da diğer kullanıcıların detaylarını gör.
+page_help_insights_overview: '**Kontrol Panelleri** — Erişimin olan tüm kontrol panellerinin listelemesi.'
 page_help_insights_dashboard: '**Kontrol Paneli** — Bir veya birden fazla paneli kontrol edebileceğin bir çalışma alanı'
 activity_feed: Etkinlik Akışı
 add_new: Yeni Ekle
