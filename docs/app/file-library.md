@@ -39,8 +39,8 @@ the [Collections Page](/app/content-collections/).
    - Choose desired Folder from the Navigation Bar.
    - Click <span mi btn sec>create_new_folder</span> in the Page Header, name your folder, and click **"Save"**.
 2. Click <span mi btn>add</span> in the Page Header. A popover will appear.
-3. Add your file. You have 3 options:
-   - Drag a file from your desktop to the modal.
+3. Upload your file. You have 3 options:
+   - Drag a file from your desktop to the popup.
    - Click the modal area to manually select a file from your device.
    - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
 4. Fill in any other information as desired.
@@ -118,28 +118,24 @@ mirroring the file.
 
 ## Upload a File
 
-There are many ways that a file can be uploaded into Directus via the App. We'll cover the primary method below, but
-keep in mind that files can also be added directly through different Interfaces. _(e.g. Users can upload their own
-Avatar, files with an Image Field will have a file upload Interface on the Item Detail page, etc.)_
-
-<video alt="Uploading a File" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/upload-a-file-20220215A.mp4" type="video/mp4">
-</video>
-
-1. From the **File Library**, click on the <span mi btn >add</span> button located in the Header.
-2. **Upload** the file. There are three options:
-   - Drag a file from your desktop to the modal.
-   - Click the modal area to manually select a file from your device.
-   - Click the <span mi icon>more_vert</span> icon and choose "Import from URL".
+We covered how to upload files through the File library in [How it Works](#how-it-works). Keep in mind that files can
+also be added through different Interfaces. For example, Users can upload an Avatar image when they fill in their User
+Details. Similarly, Items with an Image Field will have a file upload Interface on the Item Detail page. Files can also
+be [uploaded via the API](/reference/files/).
 
 ## Replace a File
 
-Click the image Preview on the File Detail page. A popup will appear, which will allow the file to be replaced. This is
-useful if you want to change the file, but keep existing file info and maintain all of the file's relationships.
+This is useful if you want to change the file, but keep existing file info and maintain all of the file's relationships.
 
 <video alt="Replacing a File" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replacing-a-file-20220215A.mp4" type="video/mp4">
 </video>
+
+1. Click the image Preview on the File Detail page. A popup will appear.
+2. Upload your file. You have 3 options:
+   - Drag a file from your desktop to the popup.
+   - Click the modal area to manually select a file from your device.
+   - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
 
 ## Folders
 
