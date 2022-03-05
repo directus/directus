@@ -470,7 +470,7 @@ active: Aktif
 move_to: Şuraya Taşı...
 copy: Kopyala
 copy_to: Şuraya Kopyala...
-no_other_dashboards_copy: Henüz başka kontrol panonuz yok.
+no_other_dashboards_copy: Henüz başka panonuz yok.
 inactive: Devre Dışı
 users: Kullanıcılar
 activity: Etkinlik
@@ -692,25 +692,25 @@ icon_on: Açık İkonu
 icon_off: Kapalı İkonu
 label: Etiket
 insights: Kontrol Panelleri
-dashboard: Kontrol Paneli
+dashboard: Pano
 panel: Panel
 panel_options: Panel Seçenekleri
 panel_header: Panel Başlığı
 panel_name_placeholder: Panele bir ad verin...
 panel_note_placeholder: Bu panel hakkında isteğe bağlı detaylar...
 panel_delete_confirm: Bu paneli silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
-dashboard_delete_confirm: Bu kontrol panelini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
-edit_dashboard: Kontrol Panelini Düzenle
-delete_dashboard: Kontrol Panelini Sil
+dashboard_delete_confirm: Bu panoyu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+edit_dashboard: Panoyu Düzenle
+delete_dashboard: Panoyu Sil
 visible: Görünür
 prefix_placeholder: Metinden önceki değer...
 suffix_placeholder: Metinden sonraki değer...
 decimals_placeholder: Ondalık hane sayısı...
-no_dashboards: Hiç Kontrol Paneli Yok
-no_dashboards_copy: Henüz Kontrol Paneliniz yok.
+no_dashboards: Hiç Pano Yok
+no_dashboards_copy: Henüz hiç panonuz yok.
 no_data: Hiç Veri Yok
-create_dashboard: Kontrol Paneli Oluştur
-dashboard_name: Kontrol Paneli Adı
+create_dashboard: Pano Oluştur
+dashboard_name: Pano Adı
 full_screen: Tam Ekran
 edit_panels: Panelleri Düzenle
 fit_to_screen: Ekrana Sığdır
@@ -843,8 +843,8 @@ page_help_settings_webhooks_item: '**Webhook Detayı** — Projede webhook oluş
 page_help_users_collection: '**Kullanıcı Dizini** — Projedeki tüm sistem kullanıcılarını listeler.'
 page_help_users_item: >-
   **Kullanıcı Detayı** — Hesap bilgilerini düzenle ya da diğer kullanıcıların detaylarını gör.
-page_help_insights_overview: '**Kontrol Panelleri** — Erişimin olan tüm kontrol panellerinin listelemesi.'
-page_help_insights_dashboard: '**Kontrol Paneli** — Bir veya birden fazla paneli kontrol edebileceğin bir çalışma alanı'
+page_help_insights_overview: '**Panolar** — Erişimin olan tüm panoların listelemesi.'
+page_help_insights_dashboard: '**Pano** — Bir veya birden fazla paneli kontrol edebileceğin bir çalışma alanı'
 activity_feed: Etkinlik Akışı
 add_new: Yeni Ekle
 create_new: Yeni Oluştur
@@ -860,15 +860,34 @@ collections: Koleksiyonlar
 content: İçerik
 singleton: Tekil
 singleton_label: Tekil obje olarak davran
+system_fields_locked: Sistem alanları kilitlidir ve düzenlenemez
+directus_collection:
+  directus_collections: Ek koleksiyon ayarları ve metaveri
+  directus_dashboards: Panolar modülündeki panolar
+  directus_fields: Ek alan ayarları ve metaveri
+  directus_files: Yönetilen tüm dosyalar için metaveri
+  directus_folders: Dosyalar için sanal klasörler sunar
+  directus_panels: Panolar modülündeki panolardaki tekil paneller
+  directus_permissions: Her bir rol için yetkilere eriş
+  directus_notifications: Bildirimler kullanıcılara gönderildi
+  directus_presets: Koleksiyon varsayılanları ve yer işaretleri için ön ayarlar
+  directus_relations: İlişki ayarı ve metaveri
+  directus_revisions: Tüm etkinlikler için anlık veri görüntüleri
+  directus_roles: Sistem kullanıcıları için yetki grupları
+  directus_sessions: Kullanıcı oturum bilgisi
+  directus_settings: Proje konfigürasyon seçenekleri
+  directus_shares: Dışarı paylaşılan öğeleri takip eder
+  directus_users: Platform için sistem kullanıcıları
+  directus_webhooks: Olay tabanlı HTTP istekleri için konfigürasyon
 fields:
   directus_activity:
     item: Öğe Birincil Anahtarı
     action: İşlem
     collection: Koleksiyon
-    timestamp: Tarihinde Uygulandı
+    timestamp: Uygulama Tarihi
     user: Uygulayan
     comment: Yorum
-    user_agent: Kullanıcı Aracısı
+    user_agent: Kullanıcı Etmeni
     ip: IP Adresi
     revisions: Revizyonlar
   directus_collections:
@@ -879,9 +898,17 @@ fields:
     display_template: Görüntüleme Şablonu
     hidden: Gizli
     singleton: Tekil
+    translations: Koleksiyon Adı Çevirileri
+    archive_app_filter: Arşiv Filtresi
+    archive_value: Arşiv Değeri
+    unarchive_value: Arşivden Çıkarma Değeri
     sort_field: Sıralama Alanı
+    accountability: Etkinlik ve Revizyon Takibi
+    archive_field: Arşiv Alanı
+    item_duplication_fields: Öğe Çoğaltma Alanları
   directus_files:
-    title: Ünvan
+    $thumbnail: Küçük Resim
+    title: Ad
     description: Açıklama
     tags: Etiketler
     location: Konum
