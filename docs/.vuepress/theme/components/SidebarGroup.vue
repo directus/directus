@@ -64,7 +64,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .sidebar-group
   .sidebar-group
     padding-left 0.5em

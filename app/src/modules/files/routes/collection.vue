@@ -35,7 +35,7 @@
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" @click="on">
+						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
 							<v-icon name="folder_move" />
 						</v-button>
 					</template>
@@ -66,6 +66,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
 							<v-icon name="delete" outline />
@@ -91,7 +92,7 @@
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -102,7 +103,6 @@
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
 					icon
-					class="add-new"
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 					:disabled="createAllowed === false"
 				>
@@ -657,24 +657,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.folder {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
