@@ -230,7 +230,6 @@ export default defineComponent({
 				try {
 					await navigator?.clipboard?.writeText(rawValue.value);
 					notify({
-						type: 'success',
 						title: t('copy_raw_value_success'),
 					});
 				} catch (err: any) {
@@ -246,7 +245,6 @@ export default defineComponent({
 					const pasteValue = await navigator?.clipboard?.readText();
 					rawValue.value = pasteValue;
 					notify({
-						type: 'success',
 						title: t('paste_raw_value_success'),
 					});
 				} catch (err: any) {

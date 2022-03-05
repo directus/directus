@@ -75,7 +75,7 @@ export default (router, { services, exceptions }) => {
 		const recipeService = new ItemsService('recipes', { schema: req.schema, accountability: req.accountability });
 
 		recipeService
-			.readByQuery({ sort: [{ column: 'name', order: 'asc' }], fields: ['*'] })
+			.readByQuery({ sort: ['name'], fields: ['*'] })
 			.then((results) => res.json(results))
 			.catch((error) => {
 				return next(new ServiceUnavailableException(error.message));

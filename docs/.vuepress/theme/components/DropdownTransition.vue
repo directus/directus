@@ -22,7 +22,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .dropdown-enter, .dropdown-leave-to
   height 0 !important
 </style>

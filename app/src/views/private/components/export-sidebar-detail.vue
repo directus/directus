@@ -199,7 +199,6 @@ export default defineComponent({
 
 					notify({
 						title: t('import_data_success', { filename: file.name }),
-						type: 'success',
 					});
 				} catch (err: any) {
 					notify({

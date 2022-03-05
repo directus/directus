@@ -4,6 +4,7 @@
 			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				{{ field.name }}
+				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 				<v-icon
 					v-if="!active && validationMessage"
 					v-tooltip="validationMessage"
@@ -150,13 +151,13 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .accordion-section {
 	border-top: var(--border-width) solid var(--border-normal);
-}
 
-.accordion-section:last-child {
-	border-bottom: var(--border-width) solid var(--border-normal);
+	&:last-child {
+		border-bottom: var(--border-width) solid var(--border-normal);
+	}
 }
 
 .label {
@@ -167,34 +168,41 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
-}
 
-.label:hover,
-.label.active {
-	color: var(--foreground-normal);
-}
+	&:hover,
+	&.active {
+		color: var(--foreground-normal);
+	}
 
-.label.edited::before {
-	position: absolute;
-	top: 14px;
-	left: -7px;
-	display: block;
-	width: 4px;
-	height: 4px;
-	background-color: var(--foreground-subdued);
-	border-radius: 4px;
-	content: '';
-	pointer-events: none;
+	.required {
+		--v-icon-color: var(--primary);
+
+		margin-top: -12px;
+		margin-left: 2px;
+	}
+
+	&.edited::before {
+		position: absolute;
+		top: 14px;
+		left: -7px;
+		display: block;
+		width: 4px;
+		height: 4px;
+		background-color: var(--foreground-subdued);
+		border-radius: 4px;
+		content: '';
+		pointer-events: none;
+	}
 }
 
 .icon {
 	margin-right: 12px;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
-}
 
-.icon.active {
-	transform: rotate(0);
+	&.active {
+		transform: rotate(0);
+	}
 }
 
 .warning {
