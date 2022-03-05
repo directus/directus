@@ -53,7 +53,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 					resolve(
 						new issuer.Client({
-							client_id: clientId,
+							client_id: clientId.toString(),
 							client_secret: clientSecret,
 							redirect_uris: [this.redirectUrl],
 							response_types: ['code'],
