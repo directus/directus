@@ -21,7 +21,7 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!relation.meta.sort_field"
+				:disabled="!allowDrag"
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element, index }">
@@ -32,13 +32,7 @@
 						:disabled="disabled || updateAllowed === false"
 						@click="editItem(element, index)"
 					>
-						<v-icon
-							v-if="relation.meta.sort_field"
-							name="drag_handle"
-							class="drag-handle"
-							left
-							@click.stop="() => {}"
-						/>
+						<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template :collection="relation.collection" :item="element" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
@@ -184,6 +178,8 @@ export default defineComponent({
 
 		const { createAllowed, updateAllowed } = usePermissions();
 
+		const allowDrag = computed(() => relation.value.meta?.sort_field && !props.disabled);
+
 		return {
 			t,
 			relation,
@@ -208,6 +204,7 @@ export default defineComponent({
 			createAllowed,
 			updateAllowed,
 			customFilter,
+			allowDrag,
 		};
 
 		function getItemFromIndex(index: number) {
@@ -259,16 +256,19 @@ export default defineComponent({
 			}
 
 			const id = item[relatedPrimKey];
-			emit(
-				'input',
-				props.value.filter((item) => {
-					if (typeof item === 'number' || typeof item === 'string') return item !== id;
-					if (typeof item === 'object' && relatedPrimKey in item) {
-						return item[relatedPrimKey] !== id;
-					}
-					return true;
-				})
-			);
+			const newValue = props.value.filter((item) => {
+				if (typeof item === 'number' || typeof item === 'string') return item !== id;
+				if (typeof item === 'object' && relatedPrimKey in item) {
+					return item[relatedPrimKey] !== id;
+				}
+				return true;
+			});
+
+			if (newValue.length === 0) {
+				emit('input', null);
+			} else {
+				emit('input', newValue);
+			}
 		}
 
 		function useSort() {
