@@ -81,8 +81,8 @@ connection_poor: Kötü Bağlantı
 primary: Birincil
 rename_folder: Klasörü Yeniden Adlandır
 delete_folder: Klasörü Sil
-prefix: Önek
-suffix: Sonek
+prefix: Prefiks
+suffix: Suffiks
 reset_bookmark: Yer İşaretini Sıfırla
 rename_bookmark: Yer İşaretini Yeniden Adlandır
 update_bookmark: Yer İşaretini Güncelle
@@ -168,7 +168,7 @@ no_relational_data: Unutmayın, ilişkisel veriler buraya dahil değildir.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
-fields_and_layout: Alanlar ve Düzen
+fields_and_layout: Alanlar ve Sayfa Düzeni
 field_create_success: 'Oluşturulan alan: "{field}"'
 field_update_success: 'Güncellenen alan: "{field}"'
 duplicate_where_to: Bu alanı nereye çoğaltmak istersiniz?
@@ -275,7 +275,7 @@ enter_a_value: Bir değer girin...
 enter_a_placeholder: Yertutucu Ekle...
 length: Uzunluk
 soft_length: Yumuşak Limit
-precision_scale: Hassasiyet & Ölçek
+precision_scale: Hassasiyet ve Ölçek
 readonly: Salt-Okunur
 unique: Benzersiz
 updated_on: Güncelleme Tarihi
@@ -337,7 +337,7 @@ label_import: İçe Aktar
 label_export: Dışa Aktar
 import_export: İçe / Dışa Aktar
 format: Biçim
-use_current_filters_settings: Mevcut Filtreleri & Ayarları Kullan
+use_current_filters_settings: Mevcut Filtreleri ve Ayarları Kullan
 export_data_button: Dışa Aktarmayı Başlat
 last_page: Son Sayfa
 last_access: Son Erişim
@@ -503,7 +503,7 @@ add_sort_field: Sıralama Alanı Ekle
 sort: Sırala
 status: Durum
 remove: Kaldır
-toggle_manual_sorting: Manuel Sıralamayı Aç/Kapa
+toggle_manual_sorting: Manuel Sıralamayı Aç/Kapat
 bookmark_doesnt_exist: Yer İşareti Yok
 bookmark_doesnt_exist_copy: Açmaya çalıştığınız yer işareti bulunamadı.
 bookmark_doesnt_exist_cta: Koleksiyona dön
@@ -589,7 +589,7 @@ placeholder: Yertutucu
 icon_left: Sol İkon
 icon_right: Sağ İkon
 count_other_revisions: '{count} Diğer Revizyon'
-font: Yazıtipi
+font: Yazı Tipi
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
@@ -675,14 +675,16 @@ user: Kullanıcı
 no_presets: Hiç Ön Ayar Yok
 no_presets_copy: Henüz kaydedilmiş ön ayar veya yer işareti yok.
 no_presets_cta: Ön Ayar Ekle
+presets_only: Sadece Ön Ayarlar
 create: Oluştur
 on_create: Oluşturulduğunda
-on_update: Güncellemede (On Update)
-read: Görüntüleme
+on_update: Güncellendiğinde
+read: Görüntüle
 update: Güncelle
-select_fields: Alan Seçiniz
+select_fields: Alanları Seç
 format_text: Metni Biçimlendir
 format_value: Değeri Biçimlendir
+abbreviate_value: Kısaltma Değer
 operator: Operatör
 bold: Kalın
 toggle: Aç/Kapat
@@ -701,17 +703,38 @@ dashboard_delete_confirm: Bu kontrol panelini silmek istediğinize emin misiniz?
 edit_dashboard: Kontrol Panelini Düzenle
 delete_dashboard: Kontrol Panelini Sil
 visible: Görünür
-prefix_placeholder: Ön ek...
-suffix_placeholder: Son ek...
+prefix_placeholder: Metinden önceki değer...
+suffix_placeholder: Metinden sonraki değer...
 decimals_placeholder: Ondalık hane sayısı...
-no_dashboards: Kontrol paneli yok
-no_dashboards_copy: Henüz bir Kontrol Paneliniz yok.
-no_data: Veri Yok
+no_dashboards: Hiç Kontrol Paneli Yok
+no_dashboards_copy: Henüz Kontrol Paneliniz yok.
+no_data: Hiç Veri Yok
 create_dashboard: Kontrol Paneli Oluştur
 dashboard_name: Kontrol Paneli Adı
 full_screen: Tam Ekran
+edit_panels: Panelleri Düzenle
+fit_to_screen: Ekrana Sığdır
+image_url: Fotoğraf URL'si
+alt_text: Alternatif Metin
+media: Medya
+quality: Kalite
 width: Genişlik
 height: Yükseklik
+source: Kaynak
+url_placeholder: Bir URL girin...
+interface_group_text_and_numbers: Metin ve Sayılar
+interface_group_selection: Seçim
+interface_group_relational: İlişkili
+interface_group_presentation: Sunum
+interface_group_groups: Gruplar
+interface_group_other: Diğer
+tooltip: İpucu
+tooltip_placeholder: Bir ipucu girin...
+unlimited: Limitsiz
+new_tab: Yeni sekme
+current_tab: Mevcut sekme
+save_image: Fotoğrafı Kaydet
+save_media: Medyayı Kaydet
 wysiwyg_options:
   aligncenter: Ortala
   alignjustify: İki Yana Yasla
@@ -722,16 +745,19 @@ wysiwyg_options:
   backcolor: Arkaplan Rengi
   bold: Kalın
   italic: İtalik
-  underline: Alt çizgi
+  underline: Alt Çizgi
   strikethrough: Üstü Çizili
-  subscript: Alt yazı
-  superscript: Üst simge
+  subscript: Alt Yazı
+  superscript: Üst Yazı
   codeblock: Kod
   blockquote: Alıntı
-  bullist: Liste
-  numlist: Sıralı Liste
-  hr: Yatay çizgi
-  unlink: Linki sil
+  bullist: Noktalı Liste
+  numlist: Numaralı Liste
+  hr: Yatay Çizgi
+  link: Link Ekle/Düzenle
+  unlink: Linki Kaldır
+  media: Medya Ekle/Düzenle
+  image: Fotoğraf Ekle/Düzenle
   copy: Kopyala
   cut: Kes
   paste: Yapıştır
@@ -743,30 +769,37 @@ wysiwyg_options:
   h5: Başlık 5
   h6: Başlık 6
   fontselect: Yazı Tipi Seç
-  fontsizeselect: Yazı tipi boyutunu seç
+  fontsizeselect: Yazı Tipi Boyutunu Seç
   indent: Girintile
-  outdent: Girintiyi azalt
+  outdent: Çıkıntıla
   undo: Geri Al
   redo: Yinele
   remove: Kaldır
   removeformat: Biçimi Kaldır
   selectall: Tümünü Seç
   table: Tablo
+  visualaid: Gizli Elementleri Göster
+  source_code: Kaynak Kodunu Düzenle
   fullscreen: Tam Ekran
+  directionality: Yönlülük
 dropdown: Açılır Liste
 choices: Seçenekler
+choices_option_configured_incorrectly: Seçenekler yanlış yapılandırıldı
 deselect: Seçimi Kaldır
 deselect_all: Tüm Seçimi Kaldır
 other: Diğer...
 adding_user: Kullanıcı Ekleniyor
 unknown_user: Bilinmeyen Kullanıcı
-creating_in: 'Öge Oluşturuluyor: {collection}'
-editing_in: 'Öge Düzenleniyor: {collection}'
-editing_in_batch: '{count} Ögeyi Toplu Düzenle'
-no_options_available: Kullanılabilir seçenek yok
-settings_permissions: Roller & İzinler
+creating_in: '{collection} Koleksiyonunda Öğe Oluşturuluyor'
+editing_in: '{collection} Koleksiyonunda Öğe Düzenleniyor'
+viewing_in: '{collection} Koleksiyonunda Öğe Görüntüleniyor'
+editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
+no_options_available: Hiç seçenek yok
+settings_data_model: Veri Modeli
+settings_permissions: Roller & Yetkiler
 settings_project: Proje Ayarları
 settings_webhooks: Webhooklar
+settings_presets: Ön Ayarlar ve Yer İşaretleri
 scope: Kapsam
 layout: Yerleşim
 editing_preset: Önayarı Düzenle
@@ -1037,14 +1070,14 @@ displays:
     filesize: Dosya Boyutu
   formatted-value:
     format: Biçim
-    font: Yazıtipi
+    font: Yazı Tipi
     font_serif: Serif
     font_monospace: Monospace
     bold: Kalın
     bold_label: Kalınlaştır
     italic: İtalik
-    prefix: Önek
-    suffix: Sonek
+    prefix: Prefiks
+    suffix: Suffiks
     color: Renk
     icon: İkon
     text: Metin
