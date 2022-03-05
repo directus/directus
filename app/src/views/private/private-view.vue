@@ -74,25 +74,25 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, provide, toRefs, computed, onMounted, watch } from 'vue';
-import ModuleBar from './components/module-bar.vue';
-import SidebarDetailGroup from './components/sidebar-detail-group/';
-import HeaderBar from './components/header-bar';
-import ProjectInfo from './components/project-info';
-import NotificationsGroup from './components/notifications-group/';
-import NotificationsPreview from './components/notifications-preview/';
-import NotificationDialogs from './components/notification-dialogs/';
-import NotificationsDrawer from './components/notifications-drawer.vue';
-import { useUserStore, useAppStore } from '@/stores';
-import { useRouter } from 'vue-router';
+import useElementSize from '@/composables/use-element-size';
 import useEventListener from '@/composables/use-event-listener';
 import useLocalStorage from '@/composables/use-local-storage';
-import useElementSize from '@/composables/use-element-size';
-import useWindowSize from '@/composables/use-window-size';
 import useTitle from '@/composables/use-title';
-import { storeToRefs } from 'pinia';
+import useWindowSize from '@/composables/use-window-size';
+import { useAppStore, useUserStore } from '@/stores';
 import { debounce } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, onMounted, provide, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import HeaderBar from './components/header-bar';
+import ModuleBar from './components/module-bar.vue';
+import NotificationDialogs from './components/notification-dialogs/';
+import NotificationsDrawer from './components/notifications-drawer.vue';
+import NotificationsGroup from './components/notifications-group/';
+import NotificationsPreview from './components/notifications-preview/';
+import ProjectInfo from './components/project-info';
+import SidebarDetailGroup from './components/sidebar-detail-group/';
 
 export default defineComponent({
 	components: {
