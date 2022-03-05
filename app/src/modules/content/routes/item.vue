@@ -474,7 +474,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.push(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+				if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}

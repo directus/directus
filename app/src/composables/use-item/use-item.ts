@@ -1,5 +1,6 @@
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { APIError } from '@/types';
@@ -164,6 +165,54 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		// Make sure to delete the primary key
 		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
 			delete newItem[primaryKeyField.value.field];
+		}
+
+		// Make sure to delete nested relational primary keys
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+		const relations = relationsStore.getRelationsForCollection(collection.value);
+		for (const relation of relations) {
+			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
+			const existsJunctionRelated = relationsStore.relations.find(
+				(r) => r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field
+			);
+
+			if (relation.meta?.one_field && relation.meta.one_field in newItem) {
+				const fieldsToFetch = fields
+					.filter((field) => field.startsWith(relation.meta!.one_field!))
+					.map((field) => field.split('.').slice(1).join('.'));
+
+				const existingIds = newItem[relation.meta.one_field].filter((item: any) => typeof item !== 'object');
+
+				let existingItems: any[] = [];
+
+				if (existingIds.length > 0) {
+					const response = await api.get(getEndpoint(relation.collection), {
+						params: {
+							fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
+							[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
+						},
+					});
+
+					existingItems = response.data.data;
+				}
+
+				newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
+					if (typeof relatedItem !== 'object' && existingItems.length > 0) {
+						relatedItem = existingItems.find((existingItem: any) => existingItem.id === relatedItem);
+					}
+
+					delete relatedItem[relatedPrimaryKeyField!.field];
+
+					if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
+						const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
+							existsJunctionRelated.related_collection
+						);
+						delete relatedItem[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
+					}
+					return relatedItem;
+				});
+			}
 		}
 
 		const errors = validate(newItem);
