@@ -11,7 +11,6 @@
 </template>
 
 <style lang="stylus">
-/* stylelint-disable */
 .sidebar-button
   cursor pointer
   display none
