@@ -174,7 +174,7 @@ export default defineComponent({
 		});
 
 		const iconColor = computed(() => ({
-			'--v-icon-color': props.panel.color,
+			'--v-icon-color': props.panel.color || 'var(--primary)',
 		}));
 
 		return {

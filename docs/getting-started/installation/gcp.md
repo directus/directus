@@ -2,7 +2,7 @@
 
 While there are many different ways to run Directus on GCP, from single
 [Compute Engine](https://cloud.google.com/compute) instances to a full
-[Kubernetes Enginge](https://cloud.google.com/kubernetes-engine) stack, we like the following combination of services:
+[Kubernetes Engine](https://cloud.google.com/kubernetes-engine) stack, we like the following combination of services:
 
 - [Google Cloud Run](https://cloud.google.com/run)
 - [Google Cloud SQL](https://cloud.google.com/sql)
@@ -220,7 +220,7 @@ prefix.
   [here](https://cloud.google.com/sql/docs/postgres/connect-run#private-ip).
 - You should not store your `.env` file locally and build it into your Dockerfile. Ideally you should save your `.env`
   file in [Google Cloud Secret Manager](https://cloud.google.com/secret-manager) and in your CI/CD pipeline retrieve it
-  and add it to your conainter. Or, even better, let the container pick the `.env` up at runtime from Google Secret
+  and add it to your container. Or, even better, let the container pick the `.env` up at runtime from Google Secret
   Manager.
 - Cloud Run typically allocates resources in a request context. Meaning async hooks etc will get drastically less CPU
   and memory, often even resulting in those processes not completing. You have two options:

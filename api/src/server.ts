@@ -12,9 +12,12 @@ import logger from './logger';
 import emitter from './emitter';
 import checkForUpdate from 'update-check';
 import pkg from '../package.json';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
+
+	Object.assign(server, getConfigFromEnv('SERVER_'));
 
 	server.on('request', function (req: http.IncomingMessage & Request, res: http.ServerResponse) {
 		const startTime = process.hrtime();
@@ -123,10 +126,11 @@ export async function createServer(): Promise<http.Server> {
 export async function startServer(): Promise<void> {
 	const server = await createServer();
 
+	const host = env.HOST;
 	const port = env.PORT;
 
 	server
-		.listen(port, () => {
+		.listen(port, host, () => {
 			checkForUpdate(pkg)
 				.then((update) => {
 					if (update) {
@@ -137,7 +141,7 @@ export async function startServer(): Promise<void> {
 					// No need to log/warn here. The update message is only an informative nice-to-have
 				});
 
-			logger.info(`Server started at http://localhost:${port}`);
+			logger.info(`Server started at http://${host}:${port}`);
 
 			emitter.emitAction(
 				'server.start',

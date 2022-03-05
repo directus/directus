@@ -12,12 +12,12 @@
 	/>
 
 	<component
-		:is="`${type}-options-${extensionInfo.id}`"
+		:is="`${type}-options-${extensionInfo!.id}`"
 		v-else
-		v-model="optionsValues"
 		:value="optionsValues"
 		:collection="collection"
 		:field="field"
+		@input="optionsValues = $event"
 	/>
 </template>
 
@@ -27,7 +27,8 @@ import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
 import { getPanel } from '@/panels';
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/shared/types';
+import { useFieldDetailStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	props: {
@@ -51,18 +52,14 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
-		collection: {
-			type: String,
-			default: '',
-		},
-		field: {
-			type: Object as PropType<Field>,
-			default: null,
-		},
 	},
-	emits: ['update:model-value'],
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const fieldDetailStore = useFieldDetailStore();
+
+		const { collection, field } = storeToRefs(fieldDetailStore);
 
 		const extensionInfo = computed(() => {
 			switch (props.type) {
@@ -112,7 +109,7 @@ export default defineComponent({
 				return props.modelValue;
 			},
 			set(values: Record<string, any>) {
-				emit('update:model-value', values);
+				emit('update:modelValue', values);
 			},
 		});
 
@@ -122,6 +119,8 @@ export default defineComponent({
 			optionsValues,
 			optionsFields,
 			t,
+			collection,
+			field,
 		};
 	},
 });

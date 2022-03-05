@@ -66,12 +66,12 @@ describe('/collections', () => {
 		});
 
 		describe('POST /', () => {
-			const TEST_DB_NAME = 'test_creation';
+			const TEST_COLLECTION_NAME = 'test_creation';
 
 			afterEach(async () => {
 				const db = databases.get(vendor)!;
-				await db.schema.dropTableIfExists(TEST_DB_NAME);
-				await db('directus_collections').del().where({ collection: TEST_DB_NAME });
+				await db.schema.dropTableIfExists(TEST_COLLECTION_NAME);
+				await db('directus_collections').del().where({ collection: TEST_COLLECTION_NAME });
 			});
 
 			test('Creates a new regular collection', async () => {
@@ -79,14 +79,14 @@ describe('/collections', () => {
 
 				const response = await request(getUrl(vendor))
 					.post('/collections')
-					.send({ collection: TEST_DB_NAME, meta: {}, schema: {} })
+					.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: {} })
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(200);
 
-				expect(response.body.data.collection).toBe(TEST_DB_NAME);
-				expect(response.body.data.meta.collection).toBe(TEST_DB_NAME);
-				expect(response.body.data.schema.name).toBe(TEST_DB_NAME);
-				expect(await db.schema.hasTable(TEST_DB_NAME)).toBe(true);
+				expect(response.body.data.collection).toBe(TEST_COLLECTION_NAME);
+				expect(response.body.data.meta.collection).toBe(TEST_COLLECTION_NAME);
+				expect(response.body.data.schema.name).toBe(TEST_COLLECTION_NAME);
+				expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
 			});
 
 			test('Creates a new folder', async () => {
@@ -94,14 +94,58 @@ describe('/collections', () => {
 
 				const response = await request(getUrl(vendor))
 					.post('/collections')
-					.send({ collection: TEST_DB_NAME, meta: {}, schema: null })
+					.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: null })
 					.set('Authorization', 'Bearer AdminToken')
 					.expect(200);
 
-				expect(response.body.data.collection).toBe(TEST_DB_NAME);
+				expect(response.body.data.collection).toBe(TEST_COLLECTION_NAME);
 				expect(response.body.data.schema).toBeNull();
-				expect(response.body.data.meta.collection).toBe(TEST_DB_NAME);
-				expect(await db.schema.hasTable(TEST_DB_NAME)).toBe(false);
+				expect(response.body.data.meta.collection).toBe(TEST_COLLECTION_NAME);
+				expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(false);
+			});
+		});
+
+		describe('DELETE /', () => {
+			const TEST_COLLECTION_NAME = 'test_creation';
+
+			test('Deletes a regular collection', async () => {
+				const db = databases.get(vendor)!;
+
+				await request(getUrl(vendor))
+					.post('/collections')
+					.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: {} })
+					.set('Authorization', 'Bearer AdminToken')
+					.expect(200);
+
+				expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
+
+				const response = await request(getUrl(vendor))
+					.delete('/collections/' + TEST_COLLECTION_NAME)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect(204);
+
+				expect(response.body).toEqual({});
+				expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(false);
+			});
+
+			test('Deletes a folder', async () => {
+				const db = databases.get(vendor)!;
+
+				await request(getUrl(vendor))
+					.post('/collections')
+					.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: null })
+					.set('Authorization', 'Bearer AdminToken')
+					.expect(200);
+
+				expect(await db('directus_collections').select().where({ collection: TEST_COLLECTION_NAME })).toHaveLength(1);
+
+				const response = await request(getUrl(vendor))
+					.delete('/collections/' + TEST_COLLECTION_NAME)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect(204);
+
+				expect(response.body).toEqual({});
+				expect(await db('directus_collections').select().where({ collection: TEST_COLLECTION_NAME })).toHaveLength(0);
 			});
 		});
 	});
