@@ -25,7 +25,7 @@ application: Uygulama
 default_provider: Varsayılan
 published: Yayınlandı
 draft: Taslak
-archived: Arşivlenmiş
+archived: Arşivlendi
 modules: Modüller
 module_bar: Kenar Çubuğu
 tile_size: Blok boyutu
