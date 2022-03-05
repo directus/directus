@@ -98,7 +98,6 @@ function renderExternal(h, to, text) {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .sidebar .sidebar-sub-headers
   padding-left 1rem
   font-size 0.95em
@@ -114,11 +113,11 @@ a.sidebar-link
   width: 100%
   box-sizing: border-box
   &:hover
-    color var(--primary-110)
+    color var(--primary)
   &.active
     font-weight 600
-    color var(--primary-110)
-    border-left-color var(--primary-110)
+    color var(--primary)
+    border-left-color var(--primary)
   .sidebar-group &
     padding-left 2rem
   .sidebar-sub-headers &
