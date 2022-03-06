@@ -25,21 +25,22 @@ relevant [Users, Roles and Permissions](/configuration/users-roles-permissions.m
 
 :::
 
-Set the [Field, Operator, and Value](/configuration/filter-rules/#syntax).
+A basic filter is composed of 3 parts: A **Field** from the Collection being Filtered, a logical
+[Operator](/configuration/filter-rules/#filter-operators), and some specified **Value** to filter for within each Item's
+Field.
 
 <video autoplay muted loop controls title="How Filters Work">
 	<source src="https://cdn.directus.io/docs/v9/app-guide/filters/filters-20220303A/how-filters-work-20220303A.mp4" type="video/mp4" />
 </video>
 
-2. Click <span mi icon>filter*list</span> or **"Add Filter"** *(depending on where the Filter is located)\_.
+2. Click <span mi icon>filter_list</span> or **"Add Filter"**.
 3. Select the Field to filter by.
 4. Select the Operator as desired.
 5. Define the Value to filter for.
-6. Optional: Repeat as needed.
 
-From here, you can make Filters more complex as necessary. Options include using multiple Filters at once, filtering by
-[Fields in related Collections](#filtering-by-related-collections), setting Values with
-[Dynamic Variables](#dynamic-variables), as well as applying [AND/OR Groups](#and-or-groups).
+From here, you can set multiple Filters at once, filter by
+[Fields in related Collections](#filtering-by-related-collections), set Values with
+[Dynamic Variables](#dynamic-variables), as well as apply [AND/OR Groups](#and-or-groups).
 
 :::tip Operators
 
@@ -52,8 +53,8 @@ automatically display. An exhaustive list of Operators and what they do can be f
 
 ## AND/OR Groups
 
-`AND` Groups give the option to filter for Items that meet _all of several criteria_. `OR` Groups filter for Items that
-meet _any one of several criteria_.
+`AND` Groups give the option to filter for Items that meet _all of several criteria_. On the other hand, `OR` Groups
+filter for Items that meet _any one of several criteria_.
 
 ![AND/OR Groups](https://cdn.directus.io/docs/v9/app-guide/filters/filters-20220303A/and-or-groups-20220303A.webp)
 
@@ -68,9 +69,9 @@ meet _any one of several criteria_.
 
 ::: tip Why do we need AND Groups?
 
-Filters actually default to `AND` Group behavior automatically. However, when two Filters are nested inside of an OR
-Group, they of course switch to `OR` Group behavior. So an AND Group is necessary in cases where you want to meet
-multiple conditions inside of OR Groups.
+Filters actually default to `AND` Group behavior automatically. However, when Filters are nested inside of an OR Group,
+they of course switch to `OR` Group behavior. So an AND Group is necessary in cases where you want to meet multiple
+conditions inside of OR Groups.
 
 :::
 
@@ -83,8 +84,8 @@ The following video shows how to filter for Blog posts written within the past 6
 </video>
 
 The following Dynamic Variables are built into Directus to make Filtering easier: `$CURRENT_USER`, `$CURRENT_ROLE`,
-`$NOW` and `$NOW(<adjustment>)`. For more information about Dynamic Variables, please see the related section in
-[Filter Rules](/configuration/filter-rules/#dynamic-variables).
+`$NOW` and `$NOW(<adjustment>)`. For more information, please see the Dynamic Variables section in
+[Filter Rules](/configuration/filter-rules/).
 
 ## Filtering by Related Collections
 
@@ -122,3 +123,25 @@ Not all Fields can be filtered. As seen above in [Filtering by Related Collectio
 Alias Fields cannot be filtered; they instead provide a dropdown menu to access Fields from a related Collection.
 Additionally, the "Presentation" and "Group" Fields cannot be filtered at all and will not appear as an option in
 Filters.
+
+## Extensibility Options
+
+Directus Core is completely open-source, modular and extensible. Extensions allow you to expand or modify any part of
+Directus to fit your needs. Here are some great resources to get started down that track.
+
+- [Extensions > Introduction](/extensions/introduction/)
+- [Extensions > Creating Extensions](/extensions/creating-extensions/)
+- [Contributing > Introduction](/contributing/introduction/)
+- [Contributing > Codebase Overview](/contributing/codebase-overview/)
+
+::: tip Accelerated Development
+
+Working on an enterprise project and looking to outsource or financially sponsor the development of a Shares extension?
+Contact [our team](https://directus.io/contact/)
+
+:::
+
+## More Help
+
+Looking for technical support for your non-enterprise project? Chat with thousands of engineers within our growing
+[Community on Discord](https://discord.com/invite/directus)
