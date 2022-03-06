@@ -36,7 +36,7 @@ maps: Haritalar
 switch_user: Kullanıcı Değiştir
 item_creation: Öğe Oluşturma
 item_revision: Revizyonları Göster
-enter_a_name: Bir isim giriniz...
+enter_a_name: Bir isim girin...
 duplicate_field: Alanı Kopyala
 half_width: Yarı Genişlik
 full_width: Tam Genişlik
@@ -45,7 +45,7 @@ and: Ve
 or: Veya
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
-enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı giriniz
+enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
 add_field: Alan Ekle
 role_name: Rol Adı
 branch: Dal
@@ -141,7 +141,7 @@ nullable: Null olabilir
 allow_null_value: NULL değere izin ver
 allow_multiple: Çoklu Seçime İzin Ver
 allow_multiple_to_be_open: Çoklu Açılmasına İzin Ver
-enter_value_to_replace_nulls: Bu alandaki tüm NULL değerleri değiştirecek yeni bir değer giriniz.
+enter_value_to_replace_nulls: Bu alandaki tüm NULL değerleri değiştirecek yeni bir değer girin.
 field_standard: Standart
 field_presentation: Sunumlar
 field_file: Tek Dosya
@@ -271,7 +271,7 @@ field_name: Alan Adı
 translations: Çeviriler
 no_translations: Çeviri Yok
 note: Not
-enter_a_value: Bir değer giriniz...
+enter_a_value: Bir değer girin...
 enter_a_placeholder: Yertutucu Ekle...
 length: Uzunluk
 soft_length: Yumuşak Limit
@@ -293,7 +293,7 @@ paste_raw_value_success: Yapıştırıldı
 paste_raw_value_fail: Yapıştırma Başarısız
 view_raw_value: İşlenmemiş Değeri Görüntüle
 edit_raw_value: İşlenmemiş Değeri Düzenle
-enter_raw_value: İşlenmemiş bir değer giriniz...
+enter_raw_value: İşlenmemiş değeri girin...
 clear_value: Değeri Temizle
 clear_changes: Değişiklikleri İptal Et
 reset_to_default: Varsayılana Sıfırla
@@ -318,7 +318,7 @@ private_user: Gizli Kullanıcı
 creation_preview: Oluşturma Önizlemesi
 revision_preview: Revizyon Önizlemesi
 updates_made: Güncellemeler Uygulandı
-leave_comment: Yorum bırakın...
+leave_comment: Bir yorum bırakın...
 post_comment_success: Yorum gönderildi
 item_create_success: Öğe Oluşturuldu | Öğe Oluşturuldu
 item_update_success: Öğe Güncellendi | Öğe Güncellendi
@@ -412,7 +412,7 @@ collection_key: Koleksiyon Anahtarı
 name: İsim
 primary_key_field: Birincil Anahtar Alanı
 type: Tür
-creating_new_collection: Yeni Koleksiyon Oluşturuluyor
+creating_new_collection: Yeni Koleksiyon Oluşturma
 created_by: Oluşturan
 created_on: Oluşturulma Tarihi
 creating_collection_info: Koleksiyonu adlandır ve benzersiz "anahtar" alanını ayarla...
@@ -512,7 +512,7 @@ edit: Düzenle
 enabled: Etkin
 disable_tfa: 2FA'yı Devre Dışı Bırak
 tfa_scan_code: 2 Adımlı doğrulama için doğrulayıcı uygulamanızdan kodu taratın
-enter_otp_to_disable_tfa: 2FA'yı devre dışı bırakmak için OTP giriniz
+enter_otp_to_disable_tfa: 2FA'yı devre dışı bırakmak için OTP girin
 create_account: Hesap Oluştur
 account_created_successfully: Hesap Başarıyla Oluşturuldu
 auto_fill: Otomatik Doldur
@@ -721,7 +721,7 @@ quality: Kalite
 width: Genişlik
 height: Yükseklik
 source: Kaynak
-url_placeholder: Bir URL giriniz...
+url_placeholder: Bir URL girin...
 interface_group_text_and_numbers: Metin ve Sayılar
 interface_group_selection: Seçim
 interface_group_relational: İlişkili
@@ -729,7 +729,7 @@ interface_group_presentation: Sunum
 interface_group_groups: Gruplar
 interface_group_other: Diğer
 tooltip: İpucu
-tooltip_placeholder: Bir ipucu giriniz...
+tooltip_placeholder: Bir ipucu girin...
 unlimited: Limitsiz
 new_tab: Yeni sekme
 current_tab: Mevcut sekme
@@ -956,7 +956,7 @@ fields:
     status_archived: Arşivlenmiş
     role: Rol
     token: Erişim Anahtarı (Token)
-    token_placeholder: Güvenli bir erişim anahtarı giriniz...
+    token_placeholder: Güvenli bir erişim anahtarı girin...
     provider: Sağlayıcı
     external_identifier: Dış Tanımlayıcı
     last_page: Son Sayfa
@@ -1057,7 +1057,7 @@ field_options:
     mapbox_key: Mapbox Erişim Anahtarı
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Taban Haritalar
-    basemaps_name_placeholder: Taban harita adını giriniz...
+    basemaps_name_placeholder: Taban harita adını girin...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Stili
@@ -1077,7 +1077,7 @@ field_options:
     singleton: Tekil obje olarak davran
     language: Dil
     translation: Çeviri
-    translation_placeholder: Bir çeviri giriniz...
+    translation_placeholder: Bir çeviri girin...
     collection_name: Koleksiyon Adı
     singular_unit: Tekil Birim
     plural_unit: Çoğul Birim
@@ -1115,7 +1115,7 @@ field_options:
     status_dropdown_active: Aktif
     status_dropdown_suspended: Askıda
     status_dropdown_archived: Arşivlenmiş
-    token: Güvenli bir erişim anahtarı giriniz...
+    token: Güvenli bir erişim anahtarı girin...
   directus_webhooks:
     status_options_active: Aktif
     status_options_inactive: Devre Dışı
@@ -1152,7 +1152,7 @@ upcoming: Yakında
 share: Paylaş
 share_item: Öğeyi Paylaş
 shared_with_you: Sizinle bir öğe paylaşıldı
-shared_enter_passcode: Devam etmek için parolanızı giriniz...
+shared_enter_passcode: Devam etmek için parolanızı girin...
 shared_leave_blank_for_unlimited: Limitsiz olması için boş bırakın
 shared_times_remaining: Bu bağlantı sadece {n} kez kullanılabilir
 shared_last_remaining: Bu bağlantı sadece bir kez kullanılabilir
@@ -1174,16 +1174,23 @@ referential_action_set_null: '{field} alanını NULL yap'
 referential_action_set_default: '{field} alanını varsayılan değerine ayarla'
 choose_action: Eylem Seç
 continue_label: Devam
+continue_as: >-
+  {name} mevcut olarak kimliği doğrulanmış. Eğer bu hesabı tanıyorsanız devam edin.
 editing_role: '{role} Rolü'
-creating_webhook: Webhook Oluştur
+creating_webhook: Webhook Oluşturma
+default_label: Varsayılan
+delete_label: Sil
+delete_are_you_sure: >-
+  Bu işlem kalıcı ve geri alınamaz. Devam etmek istediğinize emin misiniz?
 delete_field_are_you_sure: >-
   "{field}" alanını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 description: Açıklama
 done: Tamam
 duplicate: Çoğalt
+limit: Limit
 email: E-posta
 embed: Yerleştir
-fallback_icon: Temel İkon
+fallback_icon: Yedek İkon
 field: Alan | Alanlar
 file: Dosya
 file_library: Dosya Kütüphanesi
@@ -1199,8 +1206,8 @@ junction_collection: Kesişim Koleksiyonu
 latency: Gecikme
 login: Oturum Aç
 my_activity: Aktivitelerim
-not_authenticated: Kimlik Doğrulanamadı
-authenticated: Kimlik doğrulandı
+not_authenticated: Kimlik Doğrulanmadı
+authenticated: Kimlik Doğrulandı
 options: Seçenekler
 otp: Tek Kullanımlık Parola
 password: Parola
@@ -1209,38 +1216,65 @@ relationship: İlişki
 reset: Sıfırla
 reset_password: Parolamı Sıfırla
 revisions: Revizyonlar
+no_revisions: Henüz Hiç Revizyon Yok
 revert: Eski Haline Döndür
 save: Kaydet
 schema: Şema
 search: Ara
 select_existing: Varolanlar İçinden Seç
-select_field_type: Alan türünü seçin
-select_interface: Arayüz seçiniz...
+select_field_type: Bir alan türü seçin
+select_interface: Bir arayüz seçin
 settings: Ayarlar
 sign_in: Oturum Aç
-sign_out: Oturum Kapat
+sign_out: Oturumu Kapat
 sign_out_confirm: Oturumunuzu kapatmak istediğinize emin misiniz?
-something_went_wrong: Birşeyler ters gitti.
+something_went_wrong: Bir şeyler ters gitti.
 sort_direction: Sıralama Yönü
-sort_asc: Artan şekilde sırala
-sort_desc: Azalan şekilde sırala
+sort_asc: Artan Şekilde Sırala
+sort_desc: Azalan Şekilde Sırala
 template: Şablon
+require_value_to_be_set: Değeri zorunlu kıl
 translation: Çeviri
-translation_placeholder: Bir çeviri giriniz...
+translation_placeholder: Bir çeviri girin...
 value: Değer
 view_project: Projeyi görüntüle
-report_error: Hata bildir
+report_error: Hata Bildir
+start: Başla
 interfaces:
   filter:
     name: Filtrele
+    description: Bir filtre objesi yapılandır.
     add_filter: Filtre Ekle
+    add_group: Ve / Veya
+    add_value: Değer Ekle
     logic_type_and: VE
     logic_type_or: VEYA
     all: Tümü
     any: Herhangi Biri
+    and: ve
+    no_rules: Hiç yapılandırılmış kural yok
+    change_value: Değeri değiştirmek için tıklayın
+    placeholder: Kuralları buraya sürükleyin
+  group-accordion:
+    name: Körüklü Liste
+    description: Alanları veya grupları körüklü liste olarak görüntüle
+    start: Başla
+    all_closed: Hepsi Kapalı
+    first_opened: İlki Açık
+    all_opened: Hepsi Açık
+    accordion_mode: Körüklü Liste Modu
+    max_one_section_open: En Fazla 1 Bölüm Açık
   presentation-links:
+    presentation-links: Buton Bağlantıları
+    links: Bağlantılar
+    description: Dinamik URL'ler girmek için yapılandırılabilir bağlantı butonları
+    style: Stil
     primary: Birincil
+    link: Bağlantılar
+    button: Butonlar
+    error: Eylem gerçekleştirilemiyor
   select-multiple-checkbox:
+    checkboxes: İşaret Kutuları
     description: İşaret kutucukları ile birden fazla seçenek arasından seçim yap
   select-multiple-checkbox-tree:
     description: İç içe işaret kutucukları ile birden fazla seçenek arasından seçim yap
@@ -1261,7 +1295,7 @@ interfaces:
   presentation-divider:
     divider: Ayırıcı
   select-dropdown:
-    choices_value_placeholder: Bir değer giriniz...
+    choices_value_placeholder: Bir değer girin...
   file:
     file: Dosya
   files:
@@ -1350,8 +1384,8 @@ displays:
     labels: Etiketler
     default_foreground: Varsayılan Ön plan
     default_background: Varsayılan Arkaplan
-    choices_value_placeholder: Bir değer giriniz...
-    choices_text_placeholder: Bir metin giriniz...
+    choices_value_placeholder: Bir değer girin...
+    choices_text_placeholder: Bir metin girin...
   mime-type:
     mime-type: MIME Type
     extension_only: Sadece Eklentilerr
