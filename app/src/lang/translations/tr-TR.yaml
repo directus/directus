@@ -1393,15 +1393,53 @@ interfaces:
     description: Haritada bir lokasyon seçin
     zoom: Yakınlaş
     geometry_type: Geometrik Tipi
+    geometry_format: Geometri Biçimi
+    default_view: Varsayılan Görünüm
     invalid_options: Geçersiz seçenekler
+    invalid_format: Geçersiz biçim ({format})
+    unexpected_geometry: '{expected} bekleniyorken {got} alındı.'
+    fit_bounds: Görünümü veriye sığdır
+    native: Native
+    geojson: GeoJSON
+    lnglat: Boylam, Enlem
+    wkt: WKT
+    wkb: WKB
+    click_to_select: '{geometry} seçmek için tıklayın'
+  presentation-notice:
+    notice: Bildiri
+    description: Kısa bir bildiri gösterin
+    text: Bildiri içeriğini buraya gir...
   list-o2m:
     one-to-many: Birden Çoka
+    description: Birden fazla ilişkili öğe seçin
+    no_collection: Koleksiyon bulunamadı
   system-folder:
     folder: Klasör
+    description: Bir klasör seçin
+    field_hint: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
+    root_name: Dosya Kütüphanesi Kökü
+    system_default: Sistem Varsayılanları
+  select-radio:
+    radio-buttons: Çoktan Seçmeli Butonlar
+    description: Birden fazla seçenekten birini seç
+  list:
+    repeater: Tekrarlayıcı
+    description: Aynı yapıda birden çok girdi oluştur
+    edit_fields: Alanları Düzenle
+    add_label: '"Yeni Oluştur" Başlığı'
+    field_name_placeholder: Alan adı girin...
+    field_note_placeholder: Alan notu girin...
   slider:
-    slider: Kaydırıcı
+    slider: Kaydırgaç
+    description: Kaydırgaçı kullanarak bir sayı seçin
+    always_show_value: Değeri her zaman göster
   tags:
     tags: Etiketler
+    description: Etiket seçin veya ekleyin
+    whitespace: Karakter Boşlukları
+    hyphen: Kısa çizgi ile değiştir
+    underscore: Alt çizgi ile değiştir
+    remove: Karakter boşluğunu kaldır
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
@@ -1420,6 +1458,7 @@ interfaces:
       auto: Otomatik
       dropdown: Açılır Liste
   input-rich-text-html:
+    folder_note: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     imageToken: Statik Erişim Anahtarı
     imageToken_label: Statik erişim anahtarı dosyaların URL'lerinin sonuna eklenir
   group-detail:
