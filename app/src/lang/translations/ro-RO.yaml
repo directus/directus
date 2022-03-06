@@ -108,13 +108,13 @@ archive_confirm: Sigur doriți să arhivați acest element?
 archive_confirm_count: >-
   Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
-reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate pe care le-ați aplicat colecțiilor de sistem. Sunteți sigur?
-the_following_are_minimum_permissions: Acestea sunt permisiunile minime necesare atunci când "Acces aplicații" este activat. Poți să extinzi permisiunile mai departe, dar nu mai jos.
-app_access_minimum: Acces aplicație minim
-recommended_defaults: Valori implicite recomandate
-unarchive: Dezarhivare
-unarchive_confirm: Sunteţi sigur că doriţi să dezarhivaţi acest element?
-nested_files_folders_will_be_moved: Fişierele şi folderele suprapuse vor fi mutate cu un nivel mai sus.
+reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
+the_following_are_minimum_permissions: Acestea sunt permisiunile minim necesare pentru activarea opțiunii "Acces aplicații". Puteți extinde aceste permisiuni, dar nu le puteți restrânge.
+app_access_minimum: Minimul necesar pt. acces aplicație
+recommended_defaults: Valorile implicite recomandate
+unarchive: Dezarhivează
+unarchive_confirm: Sigur doriți să dezarhivați acest element?
+nested_files_folders_will_be_moved: Fișierele și dosarele conținute vor fi mutate cu un nivel în sus.
 unknown_validation_errors: 'Au existat erori de validare pentru următoarele câmpuri ascunse:'
 validationError:
   eq: Valoarea trebuie să fie {valid}
@@ -136,7 +136,7 @@ validationError:
   regex: Valoarea nu are formatul corect
 all_access: Acces complet
 no_access: Fără acces
-use_custom: Utilizează valoare personalizată
+use_custom: Acces personalizat
 nullable: Nulabil
 allow_null_value: Permite valoarea NULL
 allow_multiple: Permite mai multe
