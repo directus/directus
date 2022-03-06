@@ -28,6 +28,7 @@ draft: Ciornă
 archived: Arhivat
 modules: Module
 module_bar: Bară module
+reset_width: Resetează lățimea
 tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
@@ -889,6 +890,7 @@ directus_collection:
   directus_roles: Grupuri de permisiuni pentru utilizatorii de sistem
   directus_sessions: Informații sesiune utilizator
   directus_settings: Opțiuni de configurare proiect
+  directus_shares: Contorizează elementele partajate extern
   directus_users: Utilizatorii de sistem pentru platformă
   directus_webhooks: Configurare pentru cereri HTTP bazate pe evenimente
 fields:
@@ -1260,6 +1262,7 @@ translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
 view_project: Vezi proiect
+weeks: { }
 report_error: Raportare eroare
 start: Pornire
 interfaces:
