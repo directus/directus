@@ -1274,34 +1274,82 @@ interfaces:
     button: Butonlar
     error: Eylem gerçekleştirilemiyor
   select-multiple-checkbox:
-    checkboxes: İşaret Kutuları
+    checkboxes: İşaret Kutucukları
     description: İşaret kutucukları ile birden fazla seçenek arasından seçim yap
+    allow_other: Diğer Değerlere İzin Ver
+    show_more: '{count} öğe daha göster'
+    items_shown: Gösterilen Öğeler
   select-multiple-checkbox-tree:
+    name: İşaret Kutucukları (Ağaç)
     description: İç içe işaret kutucukları ile birden fazla seçenek arasından seçim yap
+    value_combining: Değer Birleştirme
+    value_combining_note: İç içe seçimler yapıldığında hangi değerin tutulacağını kontrol eder.
+    show_all: Tümünü Göster
+    show_selected: Seçilenleri Göster
   input-code:
     code: Kod
+    description: Kod parçaları yazın veya paylaşın
+    line_number: Satır Numarası
+    line_wrapping: Satır Kaydırma
+    placeholder: Burada kod girin...
   system-collection:
     collection: Koleksiyon
+    description: Varolan koleksiyonlar arasından seçin
+    include_system_collections: Sistem Koleksiyonlarını Dahil Et
   system-collections:
     collections: Koleksiyonlar
+    description: Varolan koleksiyonlar arasından seçin
+    include_system_collections: Sistem Koleksiyonlarını Dahil Et
   select-color:
     color: Renk
+    description: Bir renk değeri seçin veya girin
+    placeholder: Bir renk seçin...
+    preset_colors: Ön Ayar Renkleri
+    opacity: Opaklık
+    preset_colors_add_label: Yeni renk ekleyin...
+    name_placeholder: Renk adı girin...
   datetime:
-    datetime: Tarih/Saat
+    datetime: Tarih ve Zaman
+    description: Tarih ve zamanı girin
+    include_seconds: Saniyeleri Dahil Et
+    set_to_now: Şimdiye Ayarla
+    use_24: 24 Saat Biçimini Kullan
   system-display-template:
     display-template: Görüntüleme Şablonu
-    collection_field_not_setup: Koleksiyon alan seçenekleri yanlış yapılandırılmış
+    description: Sabit metin ve dinamik alan değerlerini karıştırın
+    collection_field: Koleksiyon alanı
+    collection_field_not_setup: Koleksiyon alanı seçeneği yanlış yapılandırılmış
     select_a_collection: Bir Koleksiyon Seç
   presentation-divider:
     divider: Ayırıcı
+    description: Alanları başlıklandırın ve bölümlere ayırın
+    title_placeholder: Bir başlık girin veya sadece bir çizgi göstermek için boş bırakın...
+    inline_title: Çizgide Başlık
+    inline_title_label: Başlığı çizgi içinde göster
+    margin_top: Üst Kenar Boşluğu
+    margin_top_label: Üst Kenar Boşluğunu Arttır
   select-dropdown:
+    description: Açılır Listeden bir değer seç
+    choices_placeholder: Yeni bir seçim ekle
+    allow_other: Diğerlerine İzin Ver
+    allow_other_label: Diğer Değerlere İzin Ver
+    allow_none: Seçimsizliğe İzin Ver
+    allow_none_label: Seçim Yapılmamasına İzin Ver
+    choices_name_placeholder: Bir isim girin...
     choices_value_placeholder: Bir değer girin...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Açılır Liste (Çoklu)
+    description: Açılır Listeden birden fazla değer seç
   file:
     file: Dosya
+    description: Bir dosya seçin ya da yükleyin
   files:
     files: Dosyalar
+    description: Birden fazla dosya seçin ya da yükleyin
   input-hash:
     hash: Hash
+    description: Hashlenmesi için bir değer girin
+    masked: Maskelenmiş
   select-icon:
     icon: İkon
   system-interface:
@@ -1325,6 +1373,8 @@ interfaces:
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
+  input:
+    mask: Maskelenmiş
   boolean:
     toggle: Aç/Kapat
     label_default: Etkin
@@ -1354,7 +1404,7 @@ displays:
     color: Renk
     default_color: Varsayılan Renk
   datetime:
-    datetime: Tarih/Saat
+    datetime: Tarih ve Zaman
     format: Biçim
   file:
     file: Dosya
