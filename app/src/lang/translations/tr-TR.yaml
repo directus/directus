@@ -59,7 +59,7 @@ show_active_items: Aktif Öğeleri Göster
 show_archived_items: Arşivlenmiş Öğeleri Göster
 show_all_items: Tüm Öğeleri Göster
 edited: Değer Düzenlendi
-required: Gerekli
+required: Gereklilik
 required_for_app_access: Uygulama Erişimi için Gereklidir
 requires_value: Gerekli değer
 create_preset: Ön Ayar Oluştur
@@ -1233,7 +1233,7 @@ sort_direction: Sıralama Yönü
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
-require_value_to_be_set: Değeri zorunlu kıl
+require_value_to_be_set: Değeri gerekli kıl
 translation: Çeviri
 translation_placeholder: Bir çeviri girin...
 value: Değer
@@ -1440,27 +1440,70 @@ interfaces:
     hyphen: Kısa çizgi ile değiştir
     underscore: Alt çizgi ile değiştir
     remove: Karakter boşluğunu kaldır
+    capitalization: Büyük/Küçük Harf Kullanımı
+    uppercase: Büyük Harfe Dönüştür
+    lowercase: Küçük Harfe Dönüştür
+    auto_formatter: Başlık Otomatik Biçimlendiricisini Kullan
     alphabetize: Alfabetik
-    alphabetize_label: Alfabetik olarak sırala
-    add_tags: Etiket ekle...
+    alphabetize_label: Alfabetik Sırayı Zorla
+    add_tags: Etiketler ekle...
   input:
+    input: Girdi
+    description: Manuel olarak bir değer gir
+    trim: Kırpma
+    trim_label: Başı ve sonu kırp
     mask: Maskelenmiş
+    mask_label: Gerçek değeri gizle
+    clear: Temizlenmiş Değer
+    clear_label: Boş yazı olarak kaydet
+    minimum_value: Alt Değer
+    maximum_value: Üst Değer
+    step_interval: Adım Aralığı
+    slug: URL Biçimi
+    slug_label: Girilen değeri URL biçimine uygun hale getir
+  input-multiline:
+    textarea: Metin Alanı
+    description: Birden çok satırlı düz metin gir
   boolean:
     toggle: Aç/Kapat
+    description: Açık ve kapalı arasında geçiş yap
+    color_on: Açık Rengi
+    color_off: Kapalı Rengi
+    label_placeholder: Bir başlık girin...
     label_default: Etkin
   translations:
     display_template: Görüntüleme Şablonu
     no_collection: Koleksiyon Yok
+    toggle_split_view: Parçalı Görünümü Aç/Kapat
+    language_field: Dil Göstergesi Alanı
+  list-o2m-tree-view:
+    description: İç içe özyinelemeli birden çoka öğeler için ağaç görünümü
+    recursive_only: Ağaç görünümü arayüzü sadece özyinelemeli ilişkiler içindir.
   user:
     user: Kullanıcı
+    description: Varolan bir Directus kullanıcısı seç
     select_mode: Mod Seç
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
+      modal: Açılır Pencere
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: HTML içeriği yazmak için zengin bir metin editörü
+    toolbar: Araç Çubuğu
+    custom_formats: Özel Biçimler
+    options_override: Seçeneklerin Üstüne Yazma
     folder_note: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     imageToken: Statik Erişim Anahtarı
     imageToken_label: Statik erişim anahtarı dosyaların URL'lerinin sonuna eklenir
+  input-autocomplete-api:
+    input-autocomplete-api: Otomatik Tamamlamalı Girdi (API)
+    description: Dış API değerleri için otomatik tamamlamalı arama.
+    results_path: Sonuçların Yolu
+    value_path: Değer Yolu
+    text_path: Metin Yolu
+    trigger: Tetikleme
+    rate: Hız
   group-detail:
     show_header: Grup Başlığını Göster
     header_icon: Başlık İkonu
@@ -1468,6 +1511,7 @@ interfaces:
 displays:
   translations:
     translations: Çeviriler
+    language_field: Dil Göstergesi Alanı
   boolean:
     boolean: Evet/Hayır
     icon_on: Açık İkonu
