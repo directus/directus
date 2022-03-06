@@ -35,19 +35,19 @@ conditions: Condiții
 maps: Hărți
 switch_user: Schimbă utilizatorul
 item_creation: Creare element
-item_revision: Revizuire element
+item_revision: Versiune element
 enter_a_name: Introduceți un nume...
-duplicate_field: Duplicare câmp
-half_width: Jumătate de lăţime
+duplicate_field: Duplică câmp
+half_width: Lățime înjumătățită
 full_width: Lățime completă
 group: Grup
 and: Și
 or: Sau
 fill_width: Umple lățimea
-field_name_translations: Traducerile numelui câmpului
-enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
+field_name_translations: Traduceri nume câmp
+enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi pași
 add_field: Adaugă câmp
-role_name: Nume de rol
+role_name: Nume rol
 branch: Ramură
 leaf: Frunză
 indeterminate: Nedeterminat
@@ -56,15 +56,15 @@ exclusive: Exclusiv
 children: Copii
 db_only_click_to_configure: 'Doar baza de date: apăsați pentru configurare'
 show_active_items: Afișează elementele active
-show_archived_items: Arată elementele arhivate
+show_archived_items: Afișează elementele arhivate
 show_all_items: Afișează toate elementele
 edited: Valoare editată
-required: Necesar
-required_for_app_access: Necesar pentru acces aplicaţie
-requires_value: Necesită valoare
+required: Obligativitate
+required_for_app_access: Necesar pentru accesul în aplicație
+requires_value: Completare obligatorie
 create_preset: Creează presetare
 create_panel: Creează panou
-create_role: Creează Rol
+create_role: Creează rol
 create_user: Creează utilizator
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
@@ -73,22 +73,22 @@ invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
 subject: Subiect
 inbox: Inbox
-emails: E-mailuri
+emails: Emailuri
 connection_excellent: Conexiune excelentă
 connection_good: Conexiune bună
 connection_fair: Conexiune rezonabilă
 connection_poor: Conexiune slabă
 primary: Principal
-rename_folder: Redenumeşte folderul
-delete_folder: Şterge folderul
+rename_folder: Redenumește dosarul
+delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
 reset_bookmark: Resetează semnul de carte
-rename_bookmark: Redenumeşte semnul de carte
+rename_bookmark: Redenumește semnul de carte
 update_bookmark: Actualizează semnul de carte
-delete_bookmark: Șterge semn de carte
+delete_bookmark: Șterge semnul de carte
 delete_bookmark_copy: >-
-  Sunteţi sigur că doriţi să ştergeţi semnul de carte "{bookmark}"? Această acţiune nu poate fi modificată ulterior.
+  Sigur doriți să ștergeți semnul de carte "{bookmark}"? Această acțiune nu va putea fi anulată.
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
@@ -98,15 +98,15 @@ admin_description: Rol administrativ inițial cu acces fără restricții la apl
 not_allowed: Nu este permis
 directus_version: Versiune Directus
 node_version: Versiune Node
-node_uptime: Timp de activitate Node
-os_type: Tipul SO
-os_version: Versiunea SO
-os_uptime: Timpul de activitate al SO
-os_totalmem: Memoria SO
+node_uptime: Durată execuție Node
+os_type: Tip SO
+os_version: Versiune SO
+os_uptime: Durată execuție SO
+os_totalmem: Memorie SO
 archive: Arhivează
-archive_confirm: Sunteţi sigur că doriţi să arhivaţi acest element?
+archive_confirm: Sigur doriți să arhivați acest element?
 archive_confirm_count: >-
-  Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi aceste {count} elemente?
+  Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
 reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate pe care le-ați aplicat colecțiilor de sistem. Sunteți sigur?
 the_following_are_minimum_permissions: Acestea sunt permisiunile minime necesare atunci când "Acces aplicații" este activat. Poți să extinzi permisiunile mai departe, dar nu mai jos.
@@ -1027,10 +1027,10 @@ fields:
     note: Notă
     hidden: Ascuns
     singleton: Singleton
-    translation: Traducerile numelui câmpului
+    translation: Traduceri nume câmp
     display_template: Șablon
   directus_roles:
-    name: Nume de rol
+    name: Nume rol
     icon: Pictogramă rol
     description: Descriere
     app_access: Acces aplicație
