@@ -346,7 +346,7 @@ a_unique_table_name: Un nume unic de tabel...
 a_unique_column_name: Un nume unic de coloană...
 enable_custom_values: Activare valori personalizate
 submit: Trimite
-move_to_folder: Mutare în folder
+move_to_folder: Mută într-un dosar
 move: Mutare
 system: Sistem
 add_field_related: Adaugă câmp la colecția conexă
@@ -394,12 +394,12 @@ modified: Modificat
 checksum: Sumă de control
 owner: Proprietar
 edited_by: Editat de
-folder: Folder
+folder: Dosar
 zoom: Zoom
 download: Descărcați
 open: Deschide
 open_in_new_window: Deschide în fereastră nouă
-open_folder: Deschide folderul „{folder}”
+open_folder: Deschide dosarul „{folder}”
 foreground_color: Culoare prim plan
 background_color: Culoare fundal
 upload_from_device: Încarcă fișier de pe dispozitiv
@@ -446,7 +446,7 @@ display_not_found: 'Afișarea "{display}" nu a fost găsită.'
 reset_display: Resetare afişaj
 list-m2a: Constructor (M2A)
 item_count: 'Nu există elemente | Un element | {count} elemente'
-no_items_copy: Nu sunt articole în această colecţie încă.
+no_items_copy: Această colecție nu conține vreun element.
 file_count: 'Nu există fișiere | Un fișiere | {count} fișiere'
 no_files_copy: Nu există fişiere aici.
 user_count: 'Niciun utilizator | Un Utilizator | {count} utilizatori'
@@ -490,7 +490,7 @@ field_width: Lățime câmp
 add_filter: Adaugă filtru
 upper_limit: Limita superioară...
 lower_limit: Limită inferioară...
-user_directory: Folder de utilizatori
+user_directory: Listă utilizatori
 documentation: Documentație
 sidebar: Bară laterală
 duration: Durată
@@ -570,15 +570,15 @@ update_collection_success: Colecție actualizată
 delete_collection_success: Colecție ștearsă
 make_collection_visible: Faceți colecția vizibilă
 make_collection_hidden: Ascundeți colecția
-make_folder_visible: Faceți folderul vizibil
-make_folder_hidden: Ascundeți folderul
+make_folder_visible: Fă vizibil dosarul
+make_folder_hidden: Ascunde dosarul
 start_end_of_count_items: '{start}-{end} din {count} elemente'
 start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
 one_item: '1 element'
 one_filtered_item: '1 element filtrat'
 delete_collection_are_you_sure: >-
   Sigur doriți să ștergeți această colecție? Această acțiune va șterge colecția și toate articolele din ea. Acțiunea este permanentă.
-delete_folder_are_you_sure: Sunteți sigur că doriți să ștergeți acest dosar? Dosarele și colecțiile imbricate vor fi mutate la nivelul cel mai de sus.
+delete_folder_are_you_sure: Sigur doriți să ștergeți acest dosar? Dosarele și colecțiile conținute vor fi mutate la nivelul cel mai de sus.
 collections_shown: Colecții afișate
 visible_collections: Colecții vizibile
 hidden_collections: Colecții ascunse
@@ -652,7 +652,7 @@ collection_setup: Configurare colecție
 optional_system_fields: Câmpuri de sistem opționale
 value_unique: Valoarea trebuie să fie unică
 all_activity: Toată activitatea
-create_item: Creare element
+create_item: Creează element
 display_template: Afişare şablon
 language_display_template: Șablon de afişare a limbii
 translations_display_template: Șablon de afișare a traducerilor
@@ -661,10 +661,10 @@ per_page: Elemente per pagină
 all_files: Toate fişierele
 my_files: Fișierele mele
 recent_files: Fișiere recente
-create_folder: Creare folder
-edit_folder: Editare folder
-folder_name: Nume folder...
-folder_key: Cheie folder...
+create_folder: Adaugă dosar
+edit_folder: Editează dosar
+folder_name: Nume dosar...
+folder_key: Cheie dosar...
 add_file: Adaugă fișier
 replace_file: Înlocuire fişier
 no_results: Niciun rezultat
@@ -852,14 +852,14 @@ page_help_settings_presets_item: >-
   **Detalii presetare** — Un formular pentru gestionarea marcajelor și presetărilor implicite de colectare.
 page_help_settings_webhooks_collection: '**Răsfoiește Webhooks** — Listează toate webhook-urile din cadrul proiectului.'
 page_help_settings_webhooks_item: '**Webhook Detail** - Un formular pentru crearea și gestionarea webhook-urilor proiectului.'
-page_help_users_collection: '**Folderul de utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
+page_help_users_collection: '**Listă utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
 page_help_users_item: >-
   **Detaliile utilizatorului** - Gestionați informațiile despre cont sau vizualizați detaliile altor utilizatori.
 page_help_insights_overview: '**Analize** - Lista tablourilor de bord la care ai acces.'
 page_help_insights_dashboard: '**Tablou de bord** - Spațiu de lucru pentru administrarea unuia sau mai multor panouri'
 activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
-create_new: Creează
+create_new: Adaugă
 all: Tot
 none: Niciunul
 no_layout_collection_selected_yet: Nici un aspect/colecție selectate încă
@@ -938,9 +938,9 @@ fields:
     created_by: Creat De
     embed: Încorporați
     uploaded_by: Încărcat de
-    folder: Folder
+    folder: Dosar
     width: Lățime
-    uploaded_on: Încărcat pe
+    uploaded_on: Încărcat la
     height: Înălţime
     charset: Setul de caractere
     duration: Durată
@@ -1004,7 +1004,7 @@ fields:
     auth_password_policy: Politică setări parole
     auth_login_attempts: Încercări de conectare
     files_and_thumbnails: Fișiere și stocare
-    storage_default_folder: Folder implicit
+    storage_default_folder: Dosar implicit
     storage_asset_presets: Presetări de transformare
     storage_asset_transform: Transformări permise
     overrides: Suprascrieri ale aplicației
@@ -1063,7 +1063,7 @@ field_options:
       weak_text: Slabă – Minim 8 caractere
       strong_text: Puternică – majusculă / minusculă / numere / special
     storage_asset_presets:
-      fit_label: Încadrare
+      fit_label: Potrivire
       upscaling: Suprascalare
       fit:
         contain_text: Încadrează (păstrează proporția)
@@ -1440,9 +1440,9 @@ interfaces:
     description: Selectați mai multe elemente asociate
     no_collection: Colecția nu a putut fi găsită
   system-folder:
-    folder: Folder
-    description: Selectați un folder
-    field_hint: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
+    folder: Dosar
+    description: Selectați un dosar
+    field_hint: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
   select-radio:
@@ -1519,7 +1519,7 @@ interfaces:
     toolbar: Bară de instrumente
     custom_formats: Formate personalizate
     options_override: Suprascriere opțiuni
-    folder_note: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
+    folder_note: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     imageToken: Token acces static
     imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
   input-autocomplete-api:
