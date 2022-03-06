@@ -793,6 +793,8 @@ unknown_user: Bilinmeyen Kullanıcı
 creating_in: '{collection} Koleksiyonunda Öğe Oluşturuluyor'
 editing_in: '{collection} Koleksiyonunda Öğe Düzenleniyor'
 viewing_in: '{collection} Koleksiyonunda Öğe Görüntüleniyor'
+creating_unit: '{unit} Oluşturuluyor'
+editing_unit: '{unit} Düzenleniyor'
 editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
 no_options_available: Hiç seçenek yok
 settings_data_model: Veri Modeli
@@ -819,6 +821,11 @@ discard_changes_copy: Tüm değişiklikleri iptal etmek istediğinize emin misin
 show_x_axis: X Eksenini Göster
 show_y_axis: Y Eksenini Göster
 keep_editing: Düzenlemeye Devam Et
+page_help_collections_overview: '**Koleksiyonlar Genel Bakış** — Erişimin olan tüm koleksiyonları listeler.'
+page_help_collections_collection: >-
+  **Öğelere Göz At** — {collection} koleksiyonundaki öğeleri listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
+page_help_collections_item: >-
+  **Öğe Detayı** — Bu öğeyi görüntülemek ve yönetmek için bir form/sayfa. Ayrıca bu kenar çubuğu tüm revizyon geçmişini ve yorumları içerir.
 page_help_activity_collection: >-
   **Etkinliklere Göz At** — Bütün kullanıcılarının kapsamlı sistem ve içerik etkinliğinin bir listelemesi.
 page_help_docs_global: >-
@@ -862,6 +869,7 @@ singleton: Tekil
 singleton_label: Tekil obje olarak davran
 system_fields_locked: Sistem alanları kilitlidir ve düzenlenemez
 directus_collection:
+  directus_activity: Tüm etkinlikler için izlenebilirlik kayıtları
   directus_collections: Ek koleksiyon ayarları ve metaveri
   directus_dashboards: Panolar modülündeki panolar
   directus_fields: Ek alan ayarları ve metaveri
@@ -1635,17 +1643,47 @@ layouts:
     crop: Kırp
     contain: Koru
     title: Başlık
-    subtitle: Altyazı
+    subtitle: Alt Başlık
   tabular:
     tabular: Tablo
     fields: Alanlar
-    spacing: Aralık
-    comfortable: Geniş
-    compact: Sıkışık
+    spacing: Aralıklandırma
+    comfortable: Rahat
+    compact: Kompakt
     cozy: Normal
+  calendar:
+    calendar: Takvim
+    start_date_field: Başlangıç Tarihi Alanı
+    end_date_field: Bitiş Tarihi Alanı
   map:
     map: Harita
+    basemap: Taban Harita
+    layers: Katmanlar
     cluster_options: Kümeleme seçenekleri
+    cluster: Yakındaki Verileri Kümele
+    cluster_radius: Kümeleme kapsamı
+    cluster_minpoints: Kümeleme minumum boyut
+    cluster_maxzoom: Kümeleme için maksimum yakınlaştırma
+    field: Geospatial Alan
+    invalid_geometry: Geçersiz geometri
+    find_location: Lokasyon bul...
+    default_template: Koleksiyon Varsayılanı Kullanılıyor...
+    no_compatible_fields: Hiç uyumlu alan yok
 panels:
+  metric:
+    name: Metrik
+    description: Sorguya göre tek bir değer gösterir
+    field: Alan
+  time_series:
+    name: Zaman Serileri
+    description: Zamanla değişen değerler üzerinden çizgi grafiği göster
+    date_field: Tarih Alanı
+    value_field: Değer Alanı
+    fill_type: Dolgu Türü
+    curve_type: Eğim Türü
   label:
     name: Etiket
+    description: Biraz metin göster
+  list:
+    name: Liste
+    description: Bir koleksiyondan alanları filtrele ve listele
