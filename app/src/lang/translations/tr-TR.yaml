@@ -722,6 +722,8 @@ width: Genişlik
 height: Yükseklik
 source: Kaynak
 url_placeholder: Bir URL girin...
+display_text: Görüntüleme Metni
+display_text_placeholder: Bir görüntüleme metni girin...
 interface_group_text_and_numbers: Metin ve Sayılar
 interface_group_selection: Seçim
 interface_group_relational: İlişkili
@@ -977,6 +979,8 @@ fields:
     tiff: Tiff
     mapping: Haritalama
     basemaps: Taban Haritalar
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Stili
     mapbox_key: Mapbox Erişim Anahtarı
     mapbox_placeholder: pk.eyJ1Ijo.....
@@ -1112,7 +1116,11 @@ field_options:
     fields:
       icon_name: İkon
       name_name: İsim
+      name_placeholder: Bir ünvan girin...
+      link_name: Bağlantı
+      link_placeholder: Göreceli ya da tam URL...
     collections_name: Koleksiyonlar
+    collections_addLabel: Koleksiyon Ekle...
   directus_users:
     preferences_divider: Kullanıcı Tercihleri
     dropdown_auto: Otomatik (Sisteme Göre)
@@ -1120,6 +1128,7 @@ field_options:
     dropdown_dark: Koyu Mod
     admin_divider: Yönetici Seçenekleri
     status_dropdown_draft: Taslak
+    status_dropdown_invited: Davet Edildi
     status_dropdown_active: Aktif
     status_dropdown_suspended: Askıda
     status_dropdown_archived: Arşivlenmiş
