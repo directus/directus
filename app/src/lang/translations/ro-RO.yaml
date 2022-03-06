@@ -168,7 +168,7 @@ no_relational_data: Rețineți că datele relaționale nu sunt incluse aici.
 hide_field_on_detail: Ascunde câmpul în detalii
 show_field_on_detail: Arată câmpul în detalii
 delete_field: Ștergere câmp
-fields_and_layout: Câmpuri & Layout
+fields_and_layout: Câmpuri și aspect
 field_create_success: 'Câmp creat: „{field}”'
 field_update_success: 'Câmp actualizat: „{field}”'
 duplicate_where_to: Unde doriți să duplicați acest câmp?
@@ -232,11 +232,11 @@ geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
 geometry.MultiPolygon: Multipoligon
 not_available_for_type: Indisponibil pentru acest tip
 create_translations: Creare traduceri
-auto_refresh: Actualizare Automată
+auto_refresh: Actualizare automată
 refresh_interval: Interval de actualizare
-no_refresh: Nu actualiza
-refresh_interval_seconds: Actualizează Instantaneu | În fiecare secundă | La fiecare {seconds} secunde
-refresh_interval_minutes: la fiecare minut | la fiecare {minutes} minute
+no_refresh: Dezactivat
+refresh_interval_seconds: Actualizează imediat | La fiecare secundă | La fiecare {seconds} secunde
+refresh_interval_minutes: La fiecare minut | La fiecare {minutes} minute
 auto_generate: Generare automată
 this_will_auto_setup_fields_relations: Aceasta va configura automat toate câmpurile şi relaţiile obligatorii.
 click_here: Click aici
@@ -299,7 +299,7 @@ clear_changes: Șterge schimbările
 reset_to_default: Resetare la valorile implicite
 undo_changes: Anulează modificările
 notifications: Notificări
-show_all_activity: Arată toată activitatea
+show_all_activity: Afișează toată activitatea
 page_not_found: Pagina nu a fost găsită
 page_not_found_body: Pagina pe care o cauţi nu pare să existe.
 confirm_revert: Confirmare revenire
@@ -333,9 +333,9 @@ import_data_button: Începe importul
 import_data_indeterminate: Se importă datele...
 import_data_success: Date importate cu succes din {filename}
 import_data_error: Structura de date a acestui fișier nu se potrivește cu colecția.
-label_import: Importă
+label_import: Import
 label_export: Exportă
-import_export: Importă / Exportă
+import_export: Import / Export
 format: Format
 use_current_filters_settings: Folosește filtrele și setările curente
 export_data_button: Începe exportul
@@ -645,7 +645,7 @@ upload_pending: Încărcare în așteptare
 drag_file_here: Trageți și plasați un fișier aici
 click_to_browse: Click pentru a naviga
 interface_options: Opțiuni interfață
-layout_options: Opțiuni layout
+layout_options: Opțiuni aspect
 rows: Rânduri
 columns: Coloane
 collection_setup: Configurare colecție
@@ -657,7 +657,7 @@ display_template: Afişare şablon
 language_display_template: Șablon de afişare a limbii
 translations_display_template: Șablon de afișare a traducerilor
 n_items_selected: 'Niciun element selectat | Un element selectat | {n} elemente selectate'
-per_page: Pe fiecare pagină
+per_page: Elemente per pagină
 all_files: Toate fişierele
 my_files: Fișierele mele
 recent_files: Fișiere recente
@@ -859,7 +859,7 @@ page_help_insights_overview: '**Analize** - Lista tablourilor de bord la care ai
 page_help_insights_dashboard: '**Tablou de bord** - Spațiu de lucru pentru administrarea unuia sau mai multor panouri'
 activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
-create_new: Creează nou
+create_new: Creează
 all: Tot
 none: Niciunul
 no_layout_collection_selected_yet: Nici un aspect/colecție selectate încă
@@ -993,7 +993,7 @@ fields:
     transforms_note: Numele metodei Sharp și argumentele sale. Vezi https://sharp.pixelplumbing.com/api-constructor pentru mai multe informații.
     additional_transforms: Transformări suplimentare
     project_name: Nume proiect
-    project_descriptor: Descriptor proiect
+    project_descriptor: Descriere proiect
     project_url: Url proiect
     project_color: Culoare proiect
     project_logo: Logo proiect
@@ -1063,7 +1063,7 @@ field_options:
       weak_text: Slabă – Minim 8 caractere
       strong_text: Puternică – majusculă / minusculă / numere / special
     storage_asset_presets:
-      fit_label: Potrivire
+      fit_label: Încadrare
       upscaling: Suprascalare
       fit:
         contain_text: Încadrează (păstrează proporția)
@@ -1083,7 +1083,7 @@ field_options:
     overrides_divider_title: Suprascrieri peste aplicație
   directus_activity:
     login: Autentificare
-    create: Creează
+    create: Creare
     update: Actualizare
     delete: Ștergere
   directus_collections:
@@ -1100,7 +1100,7 @@ field_options:
     collection_name: Numele colecției
     singular_unit: Unitate la singular
     plural_unit: Unitate la plural
-    archive_divider: Arhivează
+    archive_divider: Arhivare
     archive_field_placeholder: Alegeți un câmp...
     archive_app_filter: Activează filtrul de arhivă al aplicației
     archive_value: Valoare setată la arhivare...
