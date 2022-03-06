@@ -916,7 +916,7 @@ fields:
     filename_disk: Dosya Adı (Disk)
     filename_download: Dosya Adı (İndirme)
     metadata: Metaveri
-    type: Ortam Türü
+    type: Ortam Türü (MIME)
     filesize: Dosya Boyutu
     modified_by: Modifiye Eden
     modified_on: Modifiye Tarihi
@@ -1504,78 +1504,136 @@ interfaces:
     text_path: Metin Yolu
     trigger: Tetikleme
     rate: Hız
+  group-raw:
+    name: İşlenmemiş Grup
+    description: Alanları olduğu gibi ekrana göster
   group-detail:
+    name: Detay Grubu
+    description: Alanları kapatılabilir bölümler halinde göster
     show_header: Grup Başlığını Göster
     header_icon: Başlık İkonu
     header_color: Başlık Rengi
+    start_open: Açık Başla
+    start_closed: Kapalı Başla
 displays:
   translations:
     translations: Çeviriler
+    description: Çevirileri Önizle
+    enable: Etkinleştir
+    user_language: Mevcut Kullanıcı Dilini Kullan
+    default_language: Varsayılan Dil
     language_field: Dil Göstergesi Alanı
   boolean:
     boolean: Evet/Hayır
+    description: Açık ve kapalı durumunu göster
+    label_on: Açık Başlığı
+    label_on_placeholder: Bir başlık girin...
+    label_off: Kapalı Başlığı
+    label_off_placeholder: Bir başlık girin...
     icon_on: Açık İkonu
     icon_off: Kapalı İkonu
+    color_on: Açık Rengi
+    color_off: Kapalı Rengi
   collection:
     collection: Koleksiyon
+    description: Bir koleksiyon göster
+    icon_label: Koleksiyonun ikonunu göster
   color:
     color: Renk
+    description: Renkli bir nokta göster
     default_color: Varsayılan Renk
   datetime:
     datetime: Tarih ve Zaman
+    description: Zamanla ilgili değerleri gösterin
     format: Biçim
+    format_note: >-
+      Özel biçim __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ kullanır
+    long: Uzun
+    short: Kısa
+    relative: Göreceli Zaman
+    relative_label: 'Göreceli zamanı göster, örn: 5 dakika önce'
   file:
     file: Dosya
+    description: Dosyaları görüntüle
   filesize:
     filesize: Dosya Boyutu
+    description: Dosya byoutunu göster
   formatted-value:
+    formatted-value: Biçimlendirilmiş Değer
+    description: Metnin biçimlendirilmiş halini göster
     format: Biçim
+    format_label: Otomatik biçimlendir
     font: Yazı Tipi
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Kalın
     bold_label: Kalınlaştır
     italic: İtalik
+    italic_label: İtalikleştir
     prefix: Prefiks
+    prefix_label: Başına metin ekle
     suffix: Suffiks
+    suffix_label: Sonuna metin ekle
     color: Renk
+    background: Arkaplan
     icon: İkon
+    border: Kenarlık
+    border_label: Kenarlık göster
     text: Metin
     text_placeholder: Opsiyonel değer üstüne yazma...
+  formatted-json-value:
+    formatted-json-value: Biçimlendirilmiş JSON Değeri
+    description: Objenin biçimlendirilmiş bir halini göster
   icon:
     icon: İkon
     description: Simge olarak görüntüle
-    filled: Dolu
+    filled: Doldurulmuş
+    filled_label: Doldurulmuş varyantı kullan
   image:
+    image: Fotoğraf
+    description: Küçük bir fotoğraf önizlemesi göster
     circle: Daire
+    circle_label: Daire olarak göster
   labels:
     labels: Etiketler
+    description: Bir tane ya da bir liste etiket göster
     default_foreground: Varsayılan Ön plan
     default_background: Varsayılan Arkaplan
+    format_label: Her etiketi biçimlendir
+    show_as_dot: Nokta Olarak Göster
     choices_value_placeholder: Bir değer girin...
     choices_text_placeholder: Bir metin girin...
   mime-type:
-    mime-type: MIME Type
-    extension_only: Sadece Eklentilerr
+    mime-type: Ortam Türü (MIME)
+    description: Bir dosyanın Ortam Türünü (MIME) göster
+    extension_only: Sadece Eklentiler
+    extension_only_label: Sadece dosya uzantısını göster
   rating:
     rating: Puanlama
+    description: Bir sayıyı puanlama yıldızı olarak göster
     simple: Basit
+    simple_label: Yıldızları basit bir biçimde göster
   raw:
-    raw: Ham Veri
+    raw: İşlenmemiş Veri
   related-values:
+    related-values: İlgili Değerler
+    description: İlgili Değerleri Göster
     display_template_configure_notice: Görüntüleme şablonunu bu alanı oluşturduktan sonra yapılandırabilirsin.
   user:
     user: Kullanıcı
+    description: Bir Directus kullanıcısı göster
     avatar: Avatar
     name: İsim
     both: İkisi de
+    circle_label: Kullanıcıyı daire içinde göster
 layouts:
   cards:
     cards: Kartlar
-    image_source: Görsel Kaynağı
-    image_fit: Resmi sığdır
+    image_source: Fotoğraf Kaynağı
+    image_fit: Fotoğraf Sığdırma
     crop: Kırp
-    contain: Şunu içerir
+    contain: Koru
     title: Başlık
     subtitle: Altyazı
   tabular:
