@@ -1026,9 +1026,9 @@ fields:
     method: Metod
     status: Durum
     data: Veri
-    header: Başlık (Header)
+    header: Header
     value: Değer
-    headers: İstek Başlıkları (Headers)
+    headers: Request Headers
     data_label: Olay Verisini Gönder
     triggers: Tetikler
     actions: Aksiyonlar
@@ -1045,6 +1045,7 @@ field_options:
       weak_text: Zayıf – Minimum 8 Karakter
       strong_text: Güçlü – Büyük/Küçük Harf / Sayılar / Özel Karakter
     storage_asset_presets:
+      fit_label: Yerleştirme
       upscaling: Çözünürlük Arttırma
       fit:
         contain_text: Kapsa (en/boy oranını koru)
@@ -1120,13 +1121,24 @@ field_options:
     status_options_inactive: Devre Dışı
     data_label: Olay Verisini Gönder
     triggers_divider: Tetikler
-    actions_create: Oluştur
-    actions_update: Güncelle
+    actions_create: Oluşturma
+    actions_update: Güncelleme
+    actions_delete: Silme
     actions_login: Oturum Açma
     headers:
-      header: Başlık (Header)
+      header: Header
       value: Değer
+      add: Header Ekle
+no_fields_in_collection: '{collection} koleksiyonunda henüz hiç öğe yok'
+no_value: Değer yok
 do_nothing: Hiçbir Şey Yapma
+generate_and_save_uuid: UUID Oluştur ve Kaydet
+save_current_user_id: Mevcut Kullanıcı ID'sini Kaydet
+save_current_user_role: Mevcut Kullanıcı Rolünü Kaydet
+save_current_datetime: Mevcut Tarih/Zamanı Kaydet
+always_open: Her Zaman Açık
+start_open: Açık Başla
+start_collapsed: Kapalı Başla
 block: Blok
 comment: Yorum
 editing_role: '{role} Rolü'
@@ -1258,6 +1270,10 @@ interfaces:
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
+  group-detail:
+    show_header: Grup Başlığını Göster
+    header_icon: Başlık İkonu
+    header_color: Başlık Rengi
 displays:
   translations:
     translations: Çeviriler
