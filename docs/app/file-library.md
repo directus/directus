@@ -1,33 +1,34 @@
 # File Library
 
-> The File Library Module aggregates all files within the project into one consolidated library. It is a full-featured
-> Digital Asset Management (DAM) system for storing, organizing, browsing, and transforming your various files and
-> assets.
+> The File Library Module aggregates all files within the Directus Project into one consolidated library. It is a
+> full-featured Digital Asset Management (DAM) system for storing, organizing, browsing, and transforming your various
+> files and assets.
 
 ![File Library](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-library-20220305A.webp)
 
-::: warning There are two Documents on File Management
+[[toc]]
 
-This is a non-technical, no-code guide to the File Library Module. For information about programmatic File management
-via the API, please see [Files](/reference/files/).
+::: warning More Documents on Folder and File Management
+
+This is a non-technical, no-code guide to the File Library Module. Please note there is documentation on programmatic
+[Folder](/reference/system/folders/) and [File](/reference/files/) management via the API.
 
 :::
-
-[[toc]]
 
 ## How it Works
 
 ::: tip Required Knowledge
 
-Familiarity with the [Collections Page](<(/app/content-collections/)>) will be helpful but not necessary.
+Familiarity with the [Collections Page](/app/content-collections/) will be helpful but not necessary.
 
 :::
 
 The File Library acts as one big [Folder](#folders) to store all uploaded [Files](#files). Sub-folders can be created
-within the File Library to help Files stay organized. User and Role access permissions are fully configurable and
-granular on both Folders and Files. Any type of file can be uploaded, _not just images_. When a Folder is selected from
-the Navigation Bar, the [File Listing Page](#folders) is presented, which has all the same features and functionality as
-the [Collections Page](/app/content-collections/).
+within the File Library to help Files stay organized. Folders and Files are stored as Collections, which means
+[User and Role access permissions](/configuration/users-roles-permissions.md) are fully configurable and granular on
+both Folders and Files. Any type of file can be uploaded, _not just images_. When a Folder is selected from the
+Navigation Bar, the [File Listing Page](#folders) is presented. This page has all the same features and functionalities
+as the [Collections Page](/app/content-collections/).
 
 <video title="How the File Library Works" autoplay muted loop controls>
 	<source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/how-it-works-20220305A.mp4" type="video/mp4"/>
@@ -42,7 +43,7 @@ the [Collections Page](/app/content-collections/).
 2. Click <span mi btn>add</span> in the Page Header. A popover will appear.
 3. Upload your file. You have 3 options:
    - Drag a file from your desktop to the popup.
-   - Click the modal area to manually select a file from your device.
+   - Click the popup area to manually select a file from your device.
    - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
 4. Optional: Click the File Display to open File Details Page and fill in information as desired.
 
@@ -60,13 +61,13 @@ custom Fields. This page has the same features and functionality as the
 Notice the following Buttons in the Header:
 
 - <span mi btn >check</span> – Saves any edits made to the file.
-- <span mi btn sec>tune</span> – Please see [Editing an Image](#edit-an-image) to learn more.
+- <span mi btn sec>tune</span> – Please see the [Edit an Image](#edit-an-image) to learn more.
 - <span mi btn sec>save_alt</span> – Downloads the file to your current device.
 - <span mi btn sec>drive_file_move</span> – Moves selected file(s) to another folder.
 - <span mi btn dngr>delete</span> – Permanently removes the file and its metadata. This action is permanent and cannot
   be undone.
 
-::: tip Cannot Delete File When Linked to Another Item
+::: tip Can't Delete Files Linked to Items
 
 Directus will not allow you to delete a File until you remove it from any and all related Items.
 
@@ -74,12 +75,12 @@ Directus will not allow you to delete a File until you remove it from any and al
 
 ### File Details
 
+The Files Collection comes pre-configured with the following Fields out of the box. New Fields can be created and
+customized as needed in **Settings > Data Model**. However the pre-configured Fields cannot be changed or deleted.
+
 ![File Details](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-details-20220305A.webp)
 
-The Directus Files Collection comes pre-configured with the following Fields, which cannot be deleted or edited.
-However, new Fields can be added and customized as needed in **Settings > Data Model**.
-
-- **Preview** – A preview of the image or File.
+- **Preview** – A preview of the image or file.
 - **Title** – A title for the File.
 - **Description** – A description of the File.
 - **Tags** – Keywords used for search-ability.
@@ -90,13 +91,13 @@ However, new Fields can be added and customized as needed in **Settings > Data M
 
 ### File Sidebar
 
-The file sidebar also includes the following details:
+The file sidebar also includes the following details, which are not editable and serve as metadata.
 
 ![File Sidebar](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-sidebar-20220305A.webp)
 
 - **Type** – The MIME type of the file, displayed in the App as a formatted media type.
-- **Dimensions** – (Images Only) The width and height of the image in pixels.
-- **Size** – The file-size the asset takes up within the storage adapter.
+- **Dimensions** – _Images only_. The width and height of the image in pixels.
+- **Size** – The file-size the asset takes up in the storage adapter.
 - **Created** – The timestamp of when the file was uploaded to the Project.
 - **Owner** – The Directus user that uploaded the file to the Project.
 - **Modified** – The timestamp of when the file was last modified.
@@ -106,8 +107,7 @@ The file sidebar also includes the following details:
 
 ## Edit an Image
 
-On the File Details page, click <span mi btn sec>tune</span> to open an image editor for rotating, cropping, or
-mirroring the file.
+Rotate, crop, flip, or adjust aspect ratios of an image.
 
 <video alt="Edit an Image" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/edit-an-image-20220305A.mp4" type="video/mp4">
@@ -126,7 +126,7 @@ be [uploaded programmatically via the API](/reference/files/).
 
 ## Replace a File
 
-This is useful if you want to change the file, but keep existing file info and maintain all of the file's relationships.
+When a file is replaced, its existing info and and all relationships are kept.
 
 <video alt="Replace a File" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/replace-a-file-20220305A.mp4" type="video/mp4">
@@ -140,13 +140,15 @@ This is useful if you want to change the file, but keep existing file info and m
 
 ## Folders
 
+Folders provide the organization system for Files.
+
 ![Folders](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/folders-20220305A.webp)
 
-Folders provide the File organization system. They can be named/renamed, nested as sub-folders, and moved anywhere in
-the Folder hierarchy _at any time_. Once a Folder is selected from the Navigation Bar, the File Listing Page is
-presented. This File Listing Page displays all Files within a Folder and enables all other features and functionalities
-from the [Collections Page](/app/content-collections/) such as batch editing, batch deleting, sorting, filtering,
-searching, etc.
+They can be named/renamed, nested as sub-folders anywhere in the Folder hierarchy. Once a Folder is selected from the
+Navigation Bar, File Listing Page opens. The File Listing Page displays all Files within a Folder. It also enables all
+other features and functionalities from the [Collections Page](/app/content-collections/) such as batch editing, batch
+deleting, sorting, filtering, searching, etc. Folders can also be managed programmatically via the
+API](/docs/reference/system/folders.md).
 
 ## Create a Folder
 
@@ -154,8 +156,8 @@ searching, etc.
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/create-a-folder-20220305A.mp4" type="video/mp4">
 </video>
 
-1. From the **File Library**, click on the <span mi btn sec>create_new_folder</span> button located in the header.
-2. Fill in the folder name as desired.
+1. From the **File Library**, click on the <span mi btn sec>create_new_folder</span> button located in the Header.
+2. Fill in a Folder name as desired.
 3. Click **"Save"**.
 
 ## Rename a Folder
@@ -164,8 +166,8 @@ searching, etc.
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/rename-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
-1. From the **File Library**, right-click on the folder you wish to rename and select "Rename Folder".
-2. Update the folder name as desired.
+1. From the **File Library**, right-click on the Folder you wish to rename and select "Rename Folder".
+2. Update the Folder name as desired.
 3. Click **"Save"**.
 
 ## Move a Folder
@@ -185,12 +187,12 @@ searching, etc.
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/delete-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
-1. From the **File Library**, right-click on the folder you wish to delete and select **"Delete Folder"**.
+1. From the **File Library**, right-click on the Folder you wish to delete and select **"Delete Folder"**.
 2. Click **"Delete"**.
 
 ::: tip
 
-When you delete a folder, any nested files and folders will be moved one level up.
+When you delete a Folder, any nested Files and Folders will be moved one level up.
 
 :::
 
