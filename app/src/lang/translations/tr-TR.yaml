@@ -264,7 +264,7 @@ multiple_files: Birden Fazla Dosya
 m2o_relationship: Çoktan Bire İlişki
 o2m_relationship: Birden Çoka İlişki
 m2m_relationship: Çoktan Çoka İlişki
-m2a_relationship: Çoktan Herhangi Bir İlişki
+m2a_relationship: Çoktan Herhangi Bire İlişki
 invalid_item: Geçersiz Öğe
 next: Sonraki
 field_name: Alan Adı
@@ -1350,20 +1350,52 @@ interfaces:
     hash: Hash
     description: Hashlenmesi için bir değer girin
     masked: Maskelenmiş
+    masked_label: Gerçek değerleri gizle
   select-icon:
     icon: İkon
+    description: Açılır Listeden bir ikon seç
+    search_for_icon: Bir ikon ara...
+  file-image:
+    image: Fotoğraf
+    description: Bir fotoğraf seçin ya da yükleyin
+    crop: Sığdırmak için Kırp
+    crop_label: Gerekirse fotoğrafı sığdırmak için kırp
   system-interface:
     interface: Arayüz
+    description: Varolan bir arayüzü seç
+    placeholder: Bir arayüz seç...
   system-interface-options:
     interface-options: Arayüz Seçenekleri
-    description: Arayüz seçeneklerini seçmek için bir modal pencere
+    description: Arayüz seçeneklerini seçmek için açılır pencere
+  list-m2m:
+    many-to-many: Çoktan Çoka
+    description: Birden fazla ilişkili kesişim öğesi seçin
+    display_template_configure_notice: Görüntüleme şablonunu bu alanı oluşturduktan sonra yapılandırabilirsin.
   select-dropdown-m2o:
+    many-to-one: Çoktan Bire
+    description: Tek ilişkili bir öğe seçin
     display_template: Görüntüleme Şablonu
   input-rich-text-md:
+    markdown: Markdown
+    description: Markdown girin ve önizleyin
     edit: Düzenle
+    preview: Önizleme
+    editorFont: Editör Yazı Tipi
+    previewFont: Önizleme Yazı Tipi
+    customSyntax: Özel Bloklar
+    customSyntax_label: Özel sözdizimi türleri ekle
+    customSyntax_add: Özel sözdizimi ekle
+    box: Blok / Satır İçi
+    imageToken: Statik Erişim Anahtarı
+    imageToken_label: Statik erişim anahtarı dosyaların URL'lerinin sonuna eklenir
   map:
+    map: Harita
+    description: Haritada bir lokasyon seçin
     zoom: Yakınlaş
+    geometry_type: Geometrik Tipi
     invalid_options: Geçersiz seçenekler
+  list-o2m:
+    one-to-many: Birden Çoka
   system-folder:
     folder: Klasör
   slider:
@@ -1387,6 +1419,9 @@ interfaces:
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
+  input-rich-text-html:
+    imageToken: Statik Erişim Anahtarı
+    imageToken_label: Statik erişim anahtarı dosyaların URL'lerinin sonuna eklenir
   group-detail:
     show_header: Grup Başlığını Göster
     header_icon: Başlık İkonu
@@ -1444,6 +1479,8 @@ displays:
     simple: Basit
   raw:
     raw: Ham Veri
+  related-values:
+    display_template_configure_notice: Görüntüleme şablonunu bu alanı oluşturduktan sonra yapılandırabilirsin.
   user:
     user: Kullanıcı
     avatar: Avatar
@@ -1466,6 +1503,7 @@ layouts:
     compact: Sıkışık
     cozy: Normal
   map:
+    map: Harita
     cluster_options: Kümeleme seçenekleri
 panels:
   label:
