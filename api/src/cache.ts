@@ -33,6 +33,7 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 	const { cache, systemCache, lockCache } = getCache();
 	if (forced) {
 		// Flush system cache when forced
+		await lockCache.set('system-cache-lock', true, 10000);
 		await systemCache.clear();
 		await lockCache.delete('system-cache-lock');
 	} else {
