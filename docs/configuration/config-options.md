@@ -280,6 +280,7 @@ All the `DB_POOL_` prefixed options are passed to [`tarn.js`](https://github.com
 | `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                                             | false                    |
 | `CONTENT_SECURITY_POLICY`        | Custom overrides for the Content-Security-Policy header. See [helmet's documentation](https://helmetjs.github.io) for more information.                          | --                       |
 | `ASSETS_CONTENT_SECURITY_POLICY` | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation](https://helmetjs.github.io) for more information. | --                       |
+| `IMPORT_IP_DENY_LIST`            | Deny importing files from these IP addresses. Use `0.0.0.0` for any local IP address                                                                             | `0.0.0.0`                |
 
 ::: tip Cookie Strictness
 
