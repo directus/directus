@@ -17,7 +17,6 @@ type Artist = {
 	id: string;
 	name: string;
 	members: string | Record<string, any>;
-	events: number[] | null;
 };
 
 type Tour = {
@@ -37,7 +36,6 @@ type Event = {
 	cost: number;
 	created_at: Date;
 	tags: string;
-	artists: number[] | null;
 };
 
 type JoinTable = {
@@ -136,7 +134,6 @@ export const createArtist = (): Artist => ({
 	id: uuid(),
 	name: internet.userName(),
 	members: JSON.stringify({ guitar: internet.userName() }),
-	events: null,
 });
 
 export const createEvent = (): Event => ({
@@ -150,7 +147,6 @@ ${music.genre()}
 ${music.genre()}
 ${music.genre()}
 `,
-	artists: null,
 });
 
 export const createTour = (): Tour => ({

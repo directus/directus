@@ -17,12 +17,6 @@ exports.up = async function (knex) {
 		table.float('match_rating');
 		table.boolean('rsvp');
 	});
-	await knex.schema.alterTable('artists', (table) => {
-		table.integer('events').unsigned().references('id').inTable('artists_events');
-	});
-	await knex.schema.alterTable('events', (table) => {
-		table.integer('artists').unsigned().references('id').inTable('artists_events');
-	});
 };
 
 exports.down = async function (knex) {
