@@ -157,6 +157,7 @@ module.exports = {
 						path: '/app/overview',
 						title: 'Overview',
 					},
+					{ type: 'divider' },
 					{
 						type: 'page',
 						path: '/app/content',
@@ -200,6 +201,7 @@ module.exports = {
 						path: '/app/settings',
 						title: 'Settings',
 					},
+					{ type: 'divider' },
 					{
 						type: 'page',
 						path: '/app/filters',

@@ -98,7 +98,6 @@ function renderExternal(h, to, text) {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .sidebar .sidebar-sub-headers
   padding-left 1rem
   font-size 0.95em

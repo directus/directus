@@ -39,6 +39,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
 							<v-icon name="delete" outline />
@@ -64,7 +65,7 @@
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -76,7 +77,7 @@
 					v-tooltip.bottom="t('invite_users')"
 					rounded
 					icon
-					class="invite-user"
+					secondary
 					@click="userInviteModalActive = true"
 				>
 					<v-icon name="person_add" />
@@ -389,17 +390,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
@@ -408,12 +400,5 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
-}
-
-.invite-user {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 </style>

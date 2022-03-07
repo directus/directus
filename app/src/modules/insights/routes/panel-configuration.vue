@@ -111,7 +111,7 @@ export default defineComponent({
 			name: props.panel?.name,
 			note: props.panel?.note,
 			icon: props.panel?.icon ?? 'insert_chart',
-			color: props.panel?.color ?? '#00C897',
+			color: props.panel?.color,
 			width: props.panel?.width ?? undefined,
 			height: props.panel?.height ?? undefined,
 			position_x: props.panel?.position_x ?? 1,
