@@ -39,8 +39,8 @@ const defaults: Record<string, any> = {
 
 	ROOT_REDIRECT: './admin',
 
-	CORS_ENABLED: true,
-	CORS_ORIGIN: true,
+	CORS_ENABLED: false,
+	CORS_ORIGIN: false,
 	CORS_METHODS: 'GET,POST,PATCH,DELETE',
 	CORS_ALLOWED_HEADERS: 'Content-Type,Authorization',
 	CORS_EXPOSED_HEADERS: 'Content-Range',
