@@ -305,10 +305,13 @@ export default defineComponent({
 				params: {
 					limit: 10,
 					fields: [relationInfo.value.relationPkField, ...fields.value],
+					search: keyword,
 					filter: {
-						[props.referencingField]: {
-							_contains: keyword,
-						},
+						...(props.referencingField && {
+							[props.referencingField]: {
+								_contains: keyword,
+							},
+						}),
 						...(currentIds.length > 0 && {
 							[relationInfo.value.relationPkField]: {
 								_nin: currentIds.join(','),
@@ -337,11 +340,14 @@ export default defineComponent({
 				params: {
 					limit: 1,
 					fields: [relationInfo.value.relationPkField, ...fields.value],
-					filter: {
-						[props.referencingField]: {
-							_eq: keyword,
+					search: keyword,
+					...(props.referencingField && {
+						filter: {
+							[props.referencingField]: {
+								_contains: keyword,
+							},
 						},
-					},
+					}),
 				},
 			});
 
