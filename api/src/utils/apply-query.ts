@@ -1,17 +1,9 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
+import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import {
-	Aggregate,
-	Filter,
-	LogicalFilterAND,
-	Query,
-	Relation,
-	RelationMeta,
-	SchemaOverview,
-} from '@directus/shared/types';
+import { Aggregate, Filter, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
@@ -355,7 +347,7 @@ export function applyFilter(
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
-			} else if (subQuery === false) {
+			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
 
 				let pkField: Knex.Raw<any> | string = `${collection}.${

@@ -19,7 +19,7 @@ jobs:
       contents: read
       security-events: write
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         language:
           - javascript
@@ -30,7 +30,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
-          languages: ${{ matrix.language }}
+          config-file: ./.github/codeql/codeql-config.yml
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v1

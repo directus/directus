@@ -29,6 +29,7 @@ draft: Draft
 archived: Archived
 modules: Modules
 module_bar: Module Bar
+reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions

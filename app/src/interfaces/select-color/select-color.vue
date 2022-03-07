@@ -154,11 +154,13 @@
 		</div>
 	</v-menu>
 </template>
+
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, watch, ComponentPublicInstance } from 'vue';
 import { isHex } from '@/utils/color';
 import Color from 'color';
+import { cssVar } from '@/utils/css-var';
 
 export default defineComponent({
 	props: {
@@ -169,50 +171,37 @@ export default defineComponent({
 		value: {
 			type: String,
 			default: null,
-			validator: (val: string) => val === null || val === '' || isHex(val),
 		},
 		placeholder: {
 			type: String,
 			default: null,
 		},
 		presets: {
-			type: Array as PropType<string[]>,
+			type: Array as PropType<{ name: string; color: string }[]>,
 			default: () => [
 				{
-					name: 'Red',
-					color: '#E35169',
-				},
-				{
-					name: 'Orange',
-					color: '#F7971C',
-				},
-				{
-					name: 'Yellow',
-					color: '#F2C94C',
-				},
-				{
-					name: 'Green',
-					color: '#00C897',
+					name: 'Purple',
+					color: '#6644FF',
 				},
 				{
 					name: 'Blue',
-					color: '#68B0F4',
+					color: '#3399FF',
 				},
 				{
-					name: 'Purple',
-					color: '#9E8DE4',
+					name: 'Green',
+					color: '#2ECDA7',
 				},
 				{
-					name: 'Gray',
-					color: '#607D8B',
+					name: 'Yellow',
+					color: '#FFC23B',
 				},
 				{
-					name: 'Light Gray',
-					color: '#ECEFF1',
+					name: 'Orange',
+					color: '#FFA439',
 				},
 				{
-					name: 'White',
-					color: '#FFFFFF',
+					name: 'Red',
+					color: '#E35169',
 				},
 			],
 		},
@@ -228,6 +217,10 @@ export default defineComponent({
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const valueWithoutVariables = computed(() => {
+			return props.value?.startsWith('var(--') ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
+		});
 
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
 		type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
@@ -262,12 +255,12 @@ export default defineComponent({
 			}
 		}
 
-		const isValidColor = computed<boolean>(() => rgb.value !== null && props.value !== null);
+		const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutVariables.value !== null);
 
 		const lowContrast = computed(() => {
 			if (color.value === null) return true;
 
-			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page').trim();
+			const pageColorString = cssVar('--background-page');
 			const pageColor = Color(pageColorString);
 
 			return color.value.contrast(pageColor) < 1.1;
@@ -328,8 +321,8 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				(newValue) => {
-					color.value = newValue !== null ? Color(newValue) : null;
+				() => {
+					color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
 				},
 				{ immediate: true }
 			);

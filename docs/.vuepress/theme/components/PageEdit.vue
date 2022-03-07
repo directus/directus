@@ -93,7 +93,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 @require '../styles/wrapper.styl'
 
 .page-edit

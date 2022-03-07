@@ -22,7 +22,7 @@ export default defineModule({
 	id: 'settings',
 	name: '$t:settings',
 	icon: 'settings',
-	color: 'var(--warning)',
+	color: 'var(--primary)',
 	routes: [
 		{
 			path: '',

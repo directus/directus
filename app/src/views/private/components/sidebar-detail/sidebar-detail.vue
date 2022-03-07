@@ -72,7 +72,7 @@ body {
 
 <style lang="scss" scoped>
 .sidebar-detail {
-	--v-badge-offset-x: 2px;
+	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
 	--v-badge-border-color: var(--background-normal-alt);
 	--v-badge-background-color: var(--primary);

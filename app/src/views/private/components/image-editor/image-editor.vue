@@ -435,7 +435,7 @@ export default defineComponent({
 
 .editor-container {
 	width: 100%;
-	height: calc(100% - (65px + 24px + 24px)); // header height + 2x margin
+	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
 	background-color: var(--background-subdued);
 
@@ -446,7 +446,7 @@ export default defineComponent({
 	}
 
 	img {
-		// Cropper JS will handle this
+		/* Cropper JS will handle this */
 		opacity: 0;
 	}
 }

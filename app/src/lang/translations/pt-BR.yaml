@@ -1226,6 +1226,7 @@ interfaces:
     add_filter: Adicionar filtro
     all: Tudo
     any: Qualquer
+    change_value: Clique para mudar o valor
   group-accordion:
     name: Sanfonada
     description: Exibir campos ou grupos como seções sanfonadas

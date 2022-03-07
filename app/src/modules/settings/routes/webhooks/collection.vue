@@ -28,7 +28,7 @@
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
-						<v-button rounded icon class="action-delete" @click="on">
+						<v-button rounded icon class="action-delete" secondary @click="on">
 							<v-icon name="delete" outline />
 						</v-button>
 					</template>
@@ -47,14 +47,7 @@
 					</v-card>
 				</v-dialog>
 
-				<v-button
-					v-if="selection.length > 0"
-					v-tooltip.bottom="t('edit')"
-					rounded
-					icon
-					class="action-batch"
-					:to="batchLink"
-				>
+				<v-button v-if="selection.length > 0" v-tooltip.bottom="t('edit')" rounded icon secondary :to="batchLink">
 					<v-icon name="edit" outline />
 				</v-button>
 
@@ -195,22 +188,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .layout {
