@@ -347,7 +347,7 @@ export function applyFilter(
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
-			} else if (subQuery === false) {
+			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
 
 				let pkField: Knex.Raw<any> | string = `${collection}.${
