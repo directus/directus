@@ -61,21 +61,18 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, PropType, watch, toRefs, WritableComputedRef } from 'vue';
+import { defineComponent, ref, computed, PropType, watch, toRefs } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview';
 
 import { useCollection } from '@directus/shared/composables';
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import { Field, LogicalFilterAND, Relation } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
-import { applyConditions } from '@/utils/apply-conditions';
-import { validatePayload } from '@directus/shared/utils';
-import { FailedValidationException } from '@directus/shared/exceptions';
-import { flatten, isNil } from 'lodash';
+import { validateItem } from '@/utils/validate-item';
 
 export default defineComponent({
 	components: { FilePreview },
@@ -395,7 +392,7 @@ export default defineComponent({
 			function save() {
 				const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
 				const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fields.value;
-				let errors = validateEdits(editsToValidate || {}, fieldsToValidate);
+				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
 
 				if (errors.length > 0) {
 					validationErrors.value = errors;
@@ -412,41 +409,6 @@ export default defineComponent({
 				internalActive.value = false;
 				internalEdits.value = {};
 			}
-		}
-
-		function validateEdits(item: WritableComputedRef<Record<string, any>>, fields: Field[]) {
-			const validationRules = {
-				_and: [],
-			} as LogicalFilterAND;
-
-			const fieldsWithConditions = fields.map((field) => applyConditions(item, field));
-
-			const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
-
-			for (const field of requiredFields) {
-				if (isNew.value && isNil(field.schema?.default_value)) {
-					validationRules._and.push({
-						[field.field]: {
-							_submitted: true,
-						},
-					});
-				}
-
-				validationRules._and.push({
-					[field.field]: {
-						_nnull: true,
-					},
-				});
-			}
-
-			return flatten(
-				validatePayload(validationRules, item).map((error) =>
-					error.details.map((details) => new FailedValidationException(details).extensions)
-				)
-			).map((error) => {
-				const errorField = fields.find((field) => field.field === error.field);
-				return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };
-			});
 		}
 	},
 });
