@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { toRefs, computed, ref, watch } from 'vue';
 
 import { toGeoJSON, getGeometryFormatForType } from '@/utils/geometry';
-import { layers as directusLayers } from './style';
+import { getMapStyle } from './style';
 import { useRouter } from 'vue-router';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
@@ -275,7 +275,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			collection,
 			geojson,
 			directusSource,
-			directusLayers,
+			directusLayers: getMapStyle(),
 			featureId,
 			geojsonBounds,
 			geojsonLoading,

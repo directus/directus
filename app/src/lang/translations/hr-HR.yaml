@@ -28,6 +28,7 @@ draft: Skica
 archived: Arhivirano
 modules: Moduli
 module_bar: Bočni izbornik
+reset_width: Resetiraj širinu
 tile_size: Veličina pločice
 edit_field: Uredi polje
 conditions: Uvjeti
@@ -359,6 +360,8 @@ delete_share: Izbriši dijeljenje
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -737,6 +740,8 @@ unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
 new_tab: Nova kartica
 current_tab: Trenutna kartica
+save_image: Spremi sliku
+save_media: Spremi medijski zapis
 wysiwyg_options:
   aligncenter: Centriraj
   alignjustify: Poravnaj od ruba do ruba
@@ -887,6 +892,7 @@ directus_collection:
   directus_roles: Grupe dopuštenja za korisnike sustava
   directus_sessions: Informacije o sesiji korisnika
   directus_settings: Opcije konfiguracije projekta
+  directus_shares: Prati vanjske dijeljene stavke
   directus_users: Korisnici sustava za platformu
   directus_webhooks: Konfiguracija za HTTP zahtjeve temeljene na događajima
 fields:
@@ -1408,8 +1414,8 @@ interfaces:
     customSyntax_label: Dodajte prilagođene vrste sintakse
     customSyntax_add: Dodajte prilagođenu sintaksu
     box: Blok / Inline
-    imageToken: Token slike
-    imageToken_label: Koji (statički) token dodati izvorima slike
+    imageToken: Statički pristupni token
+    imageToken_label: Statički pristupni token se dodaje URL-u
   map:
     map: Karta
     description: Odaberite lokaciju na karti
@@ -1516,8 +1522,8 @@ interfaces:
     custom_formats: Prilagođeni formati
     options_override: Nadjačavanje opcija
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
-    imageToken: Token slike
-    imageToken_label: Koji (statički) token dodati izvorima slike
+    imageToken: Statički pristupni token
+    imageToken_label: Statički pristupni token se dodaje URL-u
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete unos (API)
     description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'

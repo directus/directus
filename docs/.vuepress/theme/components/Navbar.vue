@@ -85,7 +85,6 @@ function css(el, property) {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 $navbar-vertical-padding = 0.7rem
 $navbar-horizontal-padding = 30px
 
@@ -140,7 +139,7 @@ $navbar-horizontal-padding = 30px
       .suggestion
         &.focused
           a
-            color var(--primary-110)
+            color var(--primary-dark)
         a
           color var(--foreground-normal-alt)
 

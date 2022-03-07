@@ -247,7 +247,7 @@ export default defineComponent({
 .table-header {
 	.cell {
 		position: relative;
-		height: 50px; // +2px for bottom border
+		height: 50px; /* +2px for bottom border */
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;

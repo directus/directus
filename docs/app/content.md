@@ -5,7 +5,7 @@
 
 ## Collection Page
 
-![Collection Overview](../assets/app/collection-overview.png)
+![Collection Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/collection-page-20220215A.webp)
 
 This is the main gateway to your items, providing highly configurable Layouts for browsing, visualizing, and managing
 the items within a collection. Clicking on an item takes to you to the Item Page.
@@ -13,7 +13,7 @@ the items within a collection. Clicking on an item takes to you to the Item Page
 
 ## Item Page
 
-![Article Overview](../assets/app/article-overview.png)
+![Article Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/item-page-20220215A.webp)
 
 A tailored form for viewing and editing an item's fields. This page also includes options for archiving, reverting,
 deleting, and commenting on the item. [Learn more about the Item Page](/getting-started/glossary/#items)

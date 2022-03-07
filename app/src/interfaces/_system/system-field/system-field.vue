@@ -56,6 +56,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		allowForeignKeys: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -84,6 +88,7 @@ export default defineComponent({
 				let disabled = false;
 
 				if (props.allowPrimaryKey === false && field?.schema?.is_primary_key === true) disabled = true;
+				if (props.allowForeignKeys === false && field?.schema?.foreign_key_table) disabled = true;
 				if (props.typeAllowList.length > 0 && props.typeAllowList.includes(field.type) === false) disabled = true;
 
 				return {

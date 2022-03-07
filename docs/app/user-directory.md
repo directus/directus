@@ -71,7 +71,7 @@ adjust how Users are displayed on the User Directory.
 
 ## Viewing a User
 
-<video title="Descriptive Title Goes Here" autoplay muted loop controls>
+<video autoplay muted loop controls>
 	<source src="https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/viewing-a-user-20220222A.mp4" />
 	<p>
 		Your browser is not displaying the video for some reason. Here's a <a href="https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/viewing-a-user-20220222A.mp4">link to the video</a> instead.

@@ -293,7 +293,6 @@ img {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	// width: 100%;
 	height: 100%;
 	color: var(--foreground-subdued);
 	background-color: var(--background-normal);
