@@ -69,7 +69,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
 
 type Role = {
-	id: number;
+	id: string;
 	name: string;
 	description: string;
 	icon: string;
@@ -176,12 +176,14 @@ export default defineComponent({
 		}
 
 		function navigateToRole({ item }: { item: Role }) {
-			router.push({
-				name: 'settings-roles-item',
-				params: lastAdminRoleId.value
-					? { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value }
-					: { primaryKey: item.id },
-			});
+			if (item.id !== 'public' && lastAdminRoleId.value) {
+				router.push({
+					name: 'settings-roles-item',
+					params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+				});
+			} else {
+				router.push(`/settings/roles/${item.id}`);
+			}
 		}
 	},
 });
@@ -189,8 +191,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .roles {

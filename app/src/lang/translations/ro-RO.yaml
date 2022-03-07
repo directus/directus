@@ -28,25 +28,26 @@ draft: Ciornă
 archived: Arhivat
 modules: Module
 module_bar: Bară module
+reset_width: Resetează lățimea
 tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
 maps: Hărți
 switch_user: Schimbă utilizatorul
 item_creation: Creare element
-item_revision: Revizuire element
+item_revision: Versiune element
 enter_a_name: Introduceți un nume...
-duplicate_field: Duplicare câmp
-half_width: Jumătate de lăţime
+duplicate_field: Duplică câmp
+half_width: Lățime înjumătățită
 full_width: Lățime completă
 group: Grup
 and: Și
 or: Sau
 fill_width: Umple lățimea
-field_name_translations: Traducerile numelui câmpului
-enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
+field_name_translations: Traduceri nume câmp
+enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi pași
 add_field: Adaugă câmp
-role_name: Nume de rol
+role_name: Nume rol
 branch: Ramură
 leaf: Frunză
 indeterminate: Nedeterminat
@@ -55,15 +56,15 @@ exclusive: Exclusiv
 children: Copii
 db_only_click_to_configure: 'Doar baza de date: apăsați pentru configurare'
 show_active_items: Afișează elementele active
-show_archived_items: Arată elementele arhivate
+show_archived_items: Afișează elementele arhivate
 show_all_items: Afișează toate elementele
 edited: Valoare editată
-required: Necesar
-required_for_app_access: Necesar pentru acces aplicaţie
-requires_value: Necesită valoare
+required: Obligativitate
+required_for_app_access: Necesar pentru accesul în aplicație
+requires_value: Completare obligatorie
 create_preset: Creează presetare
 create_panel: Creează panou
-create_role: Creează Rol
+create_role: Creează rol
 create_user: Creează utilizator
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
@@ -72,22 +73,22 @@ invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
 subject: Subiect
 inbox: Inbox
-emails: E-mailuri
+emails: Emailuri
 connection_excellent: Conexiune excelentă
 connection_good: Conexiune bună
 connection_fair: Conexiune rezonabilă
 connection_poor: Conexiune slabă
 primary: Principal
-rename_folder: Redenumeşte folderul
-delete_folder: Şterge folderul
+rename_folder: Redenumește dosarul
+delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
 reset_bookmark: Resetează semnul de carte
-rename_bookmark: Redenumeşte semnul de carte
+rename_bookmark: Redenumește semnul de carte
 update_bookmark: Actualizează semnul de carte
-delete_bookmark: Șterge semn de carte
+delete_bookmark: Șterge semnul de carte
 delete_bookmark_copy: >-
-  Sunteţi sigur că doriţi să ştergeţi semnul de carte "{bookmark}"? Această acţiune nu poate fi modificată ulterior.
+  Sigur doriți să ștergeți semnul de carte "{bookmark}"? Această acțiune nu va putea fi anulată.
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
@@ -97,23 +98,23 @@ admin_description: Rol administrativ inițial cu acces fără restricții la apl
 not_allowed: Nu este permis
 directus_version: Versiune Directus
 node_version: Versiune Node
-node_uptime: Timp de activitate Node
-os_type: Tipul SO
-os_version: Versiunea SO
-os_uptime: Timpul de activitate al SO
-os_totalmem: Memoria SO
+node_uptime: Durată execuție Node
+os_type: Tip SO
+os_version: Versiune SO
+os_uptime: Durată execuție SO
+os_totalmem: Memorie SO
 archive: Arhivează
-archive_confirm: Sunteţi sigur că doriţi să arhivaţi acest element?
+archive_confirm: Sigur doriți să arhivați acest element?
 archive_confirm_count: >-
-  Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi aceste {count} elemente?
+  Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
-reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate pe care le-ați aplicat colecțiilor de sistem. Sunteți sigur?
-the_following_are_minimum_permissions: Acestea sunt permisiunile minime necesare atunci când "Acces aplicații" este activat. Poți să extinzi permisiunile mai departe, dar nu mai jos.
-app_access_minimum: Acces aplicație minim
-recommended_defaults: Valori implicite recomandate
-unarchive: Dezarhivare
-unarchive_confirm: Sunteţi sigur că doriţi să dezarhivaţi acest element?
-nested_files_folders_will_be_moved: Fişierele şi folderele suprapuse vor fi mutate cu un nivel mai sus.
+reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
+the_following_are_minimum_permissions: Acestea sunt permisiunile minim necesare pentru activarea opțiunii "Acces aplicații". Puteți extinde aceste permisiuni, dar nu le puteți restrânge.
+app_access_minimum: Minimul necesar pt. acces aplicație
+recommended_defaults: Valorile implicite recomandate
+unarchive: Dezarhivează
+unarchive_confirm: Sigur doriți să dezarhivați acest element?
+nested_files_folders_will_be_moved: Fișierele și dosarele conținute vor fi mutate cu un nivel în sus.
 unknown_validation_errors: 'Au existat erori de validare pentru următoarele câmpuri ascunse:'
 validationError:
   eq: Valoarea trebuie să fie {valid}
@@ -135,7 +136,7 @@ validationError:
   regex: Valoarea nu are formatul corect
 all_access: Acces complet
 no_access: Fără acces
-use_custom: Utilizează valoare personalizată
+use_custom: Acces personalizat
 nullable: Nulabil
 allow_null_value: Permite valoarea NULL
 allow_multiple: Permite mai multe
@@ -167,7 +168,7 @@ no_relational_data: Rețineți că datele relaționale nu sunt incluse aici.
 hide_field_on_detail: Ascunde câmpul în detalii
 show_field_on_detail: Arată câmpul în detalii
 delete_field: Ștergere câmp
-fields_and_layout: Câmpuri & Layout
+fields_and_layout: Câmpuri și aspect
 field_create_success: 'Câmp creat: „{field}”'
 field_update_success: 'Câmp actualizat: „{field}”'
 duplicate_where_to: Unde doriți să duplicați acest câmp?
@@ -231,11 +232,11 @@ geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
 geometry.MultiPolygon: Multipoligon
 not_available_for_type: Indisponibil pentru acest tip
 create_translations: Creare traduceri
-auto_refresh: Actualizare Automată
+auto_refresh: Actualizare automată
 refresh_interval: Interval de actualizare
-no_refresh: Nu actualiza
-refresh_interval_seconds: Actualizează Instantaneu | În fiecare secundă | La fiecare {seconds} secunde
-refresh_interval_minutes: la fiecare minut | la fiecare {minutes} minute
+no_refresh: Dezactivat
+refresh_interval_seconds: Actualizează imediat | La fiecare secundă | La fiecare {seconds} secunde
+refresh_interval_minutes: La fiecare minut | La fiecare {minutes} minute
 auto_generate: Generare automată
 this_will_auto_setup_fields_relations: Aceasta va configura automat toate câmpurile şi relaţiile obligatorii.
 click_here: Click aici
@@ -298,7 +299,7 @@ clear_changes: Șterge schimbările
 reset_to_default: Resetare la valorile implicite
 undo_changes: Anulează modificările
 notifications: Notificări
-show_all_activity: Arată toată activitatea
+show_all_activity: Afișează toată activitatea
 page_not_found: Pagina nu a fost găsită
 page_not_found_body: Pagina pe care o cauţi nu pare să existe.
 confirm_revert: Confirmare revenire
@@ -332,9 +333,9 @@ import_data_button: Începe importul
 import_data_indeterminate: Se importă datele...
 import_data_success: Date importate cu succes din {filename}
 import_data_error: Structura de date a acestui fișier nu se potrivește cu colecția.
-label_import: Importă
+label_import: Import
 label_export: Exportă
-import_export: Importă / Exportă
+import_export: Import / Export
 format: Format
 use_current_filters_settings: Folosește filtrele și setările curente
 export_data_button: Începe exportul
@@ -345,7 +346,7 @@ a_unique_table_name: Un nume unic de tabel...
 a_unique_column_name: Un nume unic de coloană...
 enable_custom_values: Activare valori personalizate
 submit: Trimite
-move_to_folder: Mutare în folder
+move_to_folder: Mută într-un dosar
 move: Mutare
 system: Sistem
 add_field_related: Adaugă câmp la colecția conexă
@@ -393,12 +394,12 @@ modified: Modificat
 checksum: Sumă de control
 owner: Proprietar
 edited_by: Editat de
-folder: Folder
+folder: Dosar
 zoom: Zoom
 download: Descărcați
 open: Deschide
 open_in_new_window: Deschide în fereastră nouă
-open_folder: Deschide folderul „{folder}”
+open_folder: Deschide dosarul „{folder}”
 foreground_color: Culoare prim plan
 background_color: Culoare fundal
 upload_from_device: Încarcă fișier de pe dispozitiv
@@ -445,7 +446,7 @@ display_not_found: 'Afișarea "{display}" nu a fost găsită.'
 reset_display: Resetare afişaj
 list-m2a: Constructor (M2A)
 item_count: 'Nu există elemente | Un element | {count} elemente'
-no_items_copy: Nu sunt articole în această colecţie încă.
+no_items_copy: Această colecție nu conține vreun element.
 file_count: 'Nu există fișiere | Un fișiere | {count} fișiere'
 no_files_copy: Nu există fişiere aici.
 user_count: 'Niciun utilizator | Un Utilizator | {count} utilizatori'
@@ -489,7 +490,7 @@ field_width: Lățime câmp
 add_filter: Adaugă filtru
 upper_limit: Limita superioară...
 lower_limit: Limită inferioară...
-user_directory: Folder de utilizatori
+user_directory: Listă utilizatori
 documentation: Documentație
 sidebar: Bară laterală
 duration: Durată
@@ -569,15 +570,15 @@ update_collection_success: Colecție actualizată
 delete_collection_success: Colecție ștearsă
 make_collection_visible: Faceți colecția vizibilă
 make_collection_hidden: Ascundeți colecția
-make_folder_visible: Faceți folderul vizibil
-make_folder_hidden: Ascundeți folderul
+make_folder_visible: Fă vizibil dosarul
+make_folder_hidden: Ascunde dosarul
 start_end_of_count_items: '{start}-{end} din {count} elemente'
 start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
 one_item: '1 element'
 one_filtered_item: '1 element filtrat'
 delete_collection_are_you_sure: >-
   Sigur doriți să ștergeți această colecție? Această acțiune va șterge colecția și toate articolele din ea. Acțiunea este permanentă.
-delete_folder_are_you_sure: Sunteți sigur că doriți să ștergeți acest dosar? Dosarele și colecțiile imbricate vor fi mutate la nivelul cel mai de sus.
+delete_folder_are_you_sure: Sigur doriți să ștergeți acest dosar? Dosarele și colecțiile conținute vor fi mutate la nivelul cel mai de sus.
 collections_shown: Colecții afișate
 visible_collections: Colecții vizibile
 hidden_collections: Colecții ascunse
@@ -644,26 +645,26 @@ upload_pending: Încărcare în așteptare
 drag_file_here: Trageți și plasați un fișier aici
 click_to_browse: Click pentru a naviga
 interface_options: Opțiuni interfață
-layout_options: Opțiuni layout
+layout_options: Opțiuni aspect
 rows: Rânduri
 columns: Coloane
 collection_setup: Configurare colecție
 optional_system_fields: Câmpuri de sistem opționale
 value_unique: Valoarea trebuie să fie unică
 all_activity: Toată activitatea
-create_item: Creare element
+create_item: Creează element
 display_template: Afişare şablon
 language_display_template: Șablon de afişare a limbii
 translations_display_template: Șablon de afișare a traducerilor
 n_items_selected: 'Niciun element selectat | Un element selectat | {n} elemente selectate'
-per_page: Pe fiecare pagină
+per_page: Elemente per pagină
 all_files: Toate fişierele
 my_files: Fișierele mele
 recent_files: Fișiere recente
-create_folder: Creare folder
-edit_folder: Editare folder
-folder_name: Nume folder...
-folder_key: Cheie folder...
+create_folder: Adaugă dosar
+edit_folder: Editează dosar
+folder_name: Nume dosar...
+folder_key: Cheie dosar...
 add_file: Adaugă fișier
 replace_file: Înlocuire fişier
 no_results: Niciun rezultat
@@ -851,14 +852,14 @@ page_help_settings_presets_item: >-
   **Detalii presetare** — Un formular pentru gestionarea marcajelor și presetărilor implicite de colectare.
 page_help_settings_webhooks_collection: '**Răsfoiește Webhooks** — Listează toate webhook-urile din cadrul proiectului.'
 page_help_settings_webhooks_item: '**Webhook Detail** - Un formular pentru crearea și gestionarea webhook-urilor proiectului.'
-page_help_users_collection: '**Folderul de utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
+page_help_users_collection: '**Listă utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
 page_help_users_item: >-
   **Detaliile utilizatorului** - Gestionați informațiile despre cont sau vizualizați detaliile altor utilizatori.
 page_help_insights_overview: '**Analize** - Lista tablourilor de bord la care ai acces.'
 page_help_insights_dashboard: '**Tablou de bord** - Spațiu de lucru pentru administrarea unuia sau mai multor panouri'
 activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
-create_new: Creează nou
+create_new: Adaugă
 all: Tot
 none: Niciunul
 no_layout_collection_selected_yet: Nici un aspect/colecție selectate încă
@@ -889,6 +890,7 @@ directus_collection:
   directus_roles: Grupuri de permisiuni pentru utilizatorii de sistem
   directus_sessions: Informații sesiune utilizator
   directus_settings: Opțiuni de configurare proiect
+  directus_shares: Contorizează elementele partajate extern
   directus_users: Utilizatorii de sistem pentru platformă
   directus_webhooks: Configurare pentru cereri HTTP bazate pe evenimente
 fields:
@@ -936,9 +938,9 @@ fields:
     created_by: Creat De
     embed: Încorporați
     uploaded_by: Încărcat de
-    folder: Folder
+    folder: Dosar
     width: Lățime
-    uploaded_on: Încărcat pe
+    uploaded_on: Încărcat la
     height: Înălţime
     charset: Setul de caractere
     duration: Durată
@@ -991,7 +993,7 @@ fields:
     transforms_note: Numele metodei Sharp și argumentele sale. Vezi https://sharp.pixelplumbing.com/api-constructor pentru mai multe informații.
     additional_transforms: Transformări suplimentare
     project_name: Nume proiect
-    project_descriptor: Descriptor proiect
+    project_descriptor: Descriere proiect
     project_url: Url proiect
     project_color: Culoare proiect
     project_logo: Logo proiect
@@ -1002,7 +1004,7 @@ fields:
     auth_password_policy: Politică setări parole
     auth_login_attempts: Încercări de conectare
     files_and_thumbnails: Fișiere și stocare
-    storage_default_folder: Folder implicit
+    storage_default_folder: Dosar implicit
     storage_asset_presets: Presetări de transformare
     storage_asset_transform: Transformări permise
     overrides: Suprascrieri ale aplicației
@@ -1025,10 +1027,10 @@ fields:
     note: Notă
     hidden: Ascuns
     singleton: Singleton
-    translation: Traducerile numelui câmpului
+    translation: Traduceri nume câmp
     display_template: Șablon
   directus_roles:
-    name: Nume de rol
+    name: Nume rol
     icon: Pictogramă rol
     description: Descriere
     app_access: Acces aplicație
@@ -1081,7 +1083,7 @@ field_options:
     overrides_divider_title: Suprascrieri peste aplicație
   directus_activity:
     login: Autentificare
-    create: Creează
+    create: Creare
     update: Actualizare
     delete: Ștergere
   directus_collections:
@@ -1098,7 +1100,7 @@ field_options:
     collection_name: Numele colecției
     singular_unit: Unitate la singular
     plural_unit: Unitate la plural
-    archive_divider: Arhivează
+    archive_divider: Arhivare
     archive_field_placeholder: Alegeți un câmp...
     archive_app_filter: Activează filtrul de arhivă al aplicației
     archive_value: Valoare setată la arhivare...
@@ -1260,6 +1262,7 @@ translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
 view_project: Vezi proiect
+weeks: { }
 report_error: Raportare eroare
 start: Pornire
 interfaces:
@@ -1437,9 +1440,9 @@ interfaces:
     description: Selectați mai multe elemente asociate
     no_collection: Colecția nu a putut fi găsită
   system-folder:
-    folder: Folder
-    description: Selectați un folder
-    field_hint: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
+    folder: Dosar
+    description: Selectați un dosar
+    field_hint: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
   select-radio:
@@ -1516,7 +1519,7 @@ interfaces:
     toolbar: Bară de instrumente
     custom_formats: Formate personalizate
     options_override: Suprascriere opțiuni
-    folder_note: Folder pentru fișierele încărcate. Nu afectează fișierele existente.
+    folder_note: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     imageToken: Token acces static
     imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
   input-autocomplete-api:

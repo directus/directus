@@ -362,7 +362,7 @@ export default defineComponent({
 				menubar: false,
 				convert_urls: false,
 				image_dimensions: false,
-				extended_valid_elements: 'audio[loop|controls],source',
+				extended_valid_elements: 'audio[loop|controls],source[src|type]',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
 				file_picker_types: 'customImage customMedia image media',
