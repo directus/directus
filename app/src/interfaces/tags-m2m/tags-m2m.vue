@@ -42,6 +42,7 @@
 						v-for="(item, index) in suggestedItems"
 						:key="item[relationInfo.relationPkField]"
 						:active="index === suggestedItemsSelected"
+						clickable
 						@click="() => addItemFromSuggestion(item)"
 					>
 						<v-list-item-content>
@@ -431,6 +432,10 @@ export default defineComponent({
 			:deep(.chip-content .close-outline .close:hover) {
 				--v-icon-color: var(--danger);
 			}
+		}
+
+		.render-template {
+			padding-right: 0;
 		}
 	}
 }
