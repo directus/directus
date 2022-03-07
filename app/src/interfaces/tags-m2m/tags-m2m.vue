@@ -4,13 +4,7 @@
 	</v-notice>
 
 	<div v-else class="tags-m2m">
-		<v-menu
-			v-model="menuActive"
-			:close-on-click="true"
-			:close-on-content-click="closeOnSelect"
-			:disabled="disabled"
-			attached
-		>
+		<v-menu v-model="menuActive" :close-on-click="true" :disabled="disabled" attached>
 			<template #activator>
 				<v-input
 					v-model="localInput"
@@ -127,10 +121,6 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
-		closeOnSelect: {
-			type: Boolean,
-			default: false,
-		},
 		displayTemplate: {
 			type: String,
 			default: '',
@@ -243,9 +233,7 @@ export default defineComponent({
 		}
 
 		function addItemFromSuggestion(item: any) {
-			if (props.closeOnSelect) {
-				menuActive.value = false;
-			}
+			menuActive.value = false;
 
 			const { junctionField } = relationInfo.value;
 			emitter([...(props.value || []), { [junctionField]: item }]);

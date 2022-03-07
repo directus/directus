@@ -92,18 +92,6 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'closeOnSelect',
-				name: '$t:interfaces.tags-m2m.close-on-select',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'toggle',
-				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
 				field: 'alphabetize',
 				name: '$t:interfaces.tags.alphabetize',
 				type: 'boolean',
