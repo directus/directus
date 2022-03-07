@@ -15,7 +15,6 @@
 					:disabled="disabled"
 					@keydown="onInputKeyDown"
 					@focus="menuActive = true"
-					@blur="menuActive = false"
 				>
 					<template #prepend>
 						<v-icon v-if="iconLeft" :name="iconLeft" />
