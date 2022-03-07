@@ -143,7 +143,7 @@ router.post(
 			throw new ForbiddenException();
 		}
 
-		await flushCaches();
+		await flushCaches(true);
 
 		res.status(200).end();
 	})
