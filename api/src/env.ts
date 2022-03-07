@@ -77,6 +77,8 @@ const defaults: Record<string, any> = {
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
+	IMPORT_IP_DENY_LIST: '0.0.0.0',
+
 	SERVE_APP: true,
 
 	RELATIONAL_BATCH_SIZE: 25000,
@@ -95,6 +97,7 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 
 	DB_EXCLUDE_TABLES: 'array',
+	IMPORT_IP_DENY_LIST: 'array',
 };
 
 let env: Record<string, any> = {
