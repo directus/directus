@@ -92,6 +92,7 @@ export async function createCli(): Promise<Command> {
 		.command('apply')
 		.description('Apply a snapshot file to the current database')
 		.option('-y, --yes', `Assume "yes" as answer to all prompts and run non-interactively`)
+		.option('-d, --dry-run', 'Plan and log changes to be applied', false)
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
 
