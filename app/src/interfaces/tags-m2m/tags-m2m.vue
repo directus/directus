@@ -198,7 +198,7 @@ export default defineComponent({
 					const aVal: string = a[relationInfo.value.junctionField][props.referencingField];
 					const bVal: string = b[relationInfo.value.junctionField][props.referencingField];
 
-					return aVal.localeCompare(bVal);
+					return props.sortDirection === 'desc' ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
 				}
 			);
 
