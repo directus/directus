@@ -30,22 +30,16 @@ export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: 
 }
 
 export async function flushCaches(forced?: boolean): Promise<void> {
-	const { cache, systemCache, lockCache } = getCache();
-	if (forced) {
-		// Flush system cache when forced
-		await lockCache.set('system-cache-lock', true, 10000);
-		await systemCache.clear();
-		await lockCache.delete('system-cache-lock');
-	} else {
-		await clearSystemCache();
-	}
+	const { cache } = getCache();
+	await clearSystemCache(forced);
 	await cache?.clear();
 }
 
-export async function clearSystemCache(): Promise<void> {
+export async function clearSystemCache(forced?: boolean): Promise<void> {
 	const { systemCache, lockCache } = getCache();
 
-	if (!(await lockCache.get('system-cache-lock'))) {
+	// Flush system cache when forced or when system cache lock not set
+	if (forced || !(await lockCache.get('system-cache-lock'))) {
 		await lockCache.set('system-cache-lock', true, 10000);
 		await systemCache.clear();
 		await lockCache.delete('system-cache-lock');
