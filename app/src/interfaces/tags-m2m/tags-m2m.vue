@@ -64,7 +64,7 @@
 				small
 				label
 				clickable
-				@click="() => deleteItem(item)"
+				@click="deleteItem(item)"
 			>
 				<render-template
 					:template="template"
@@ -217,7 +217,17 @@ export default defineComponent({
 			);
 		});
 
-		watch(localInput, debounce(refreshSuggestions, 500));
+		watch(
+			localInput,
+			debounce((val) => {
+				refreshSuggestions(val);
+				menuActive.value = true;
+			}, 300)
+		);
+		watch(
+			() => props.value,
+			debounce(() => refreshSuggestions(localInput.value), 300)
+		);
 
 		return {
 			menuActive,
@@ -317,7 +327,6 @@ export default defineComponent({
 			const response = await api.get(`items/${relationInfo.value.relationCollection}`, query);
 			if (response?.data?.data && Array.isArray(response.data.data)) {
 				suggestedItems.value = response.data.data;
-				menuActive.value = true;
 			} else {
 				suggestedItems.value = [];
 			}
