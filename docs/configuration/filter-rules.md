@@ -140,7 +140,7 @@ allowing for more complex filtering.
 
 ## Dynamic Variables
 
-In addition to static values, you can also filter against Dynamic Variables. The image below shows
+In addition to static values, you can also filter against _dynamic_ values using the following variables.
 
 - `$CURRENT_USER` — The primary key of the currently authenticated user
 - `$CURRENT_ROLE` — The primary key of the role for the currently authenticated user
