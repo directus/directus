@@ -159,7 +159,6 @@ router.get(
 		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Content-Security-Policy', 'sandbox');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
 
 		if (range) {
