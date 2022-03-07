@@ -125,9 +125,13 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
-		alphabetize: {
-			type: Boolean,
-			default: false,
+		sortField: {
+			type: String,
+			default: undefined,
+		},
+		sortDirection: {
+			type: String,
+			default: 'desc',
 		},
 		iconLeft: {
 			type: String,
@@ -187,7 +191,7 @@ export default defineComponent({
 		);
 
 		const sortedItems = computed(() => {
-			if (!props.alphabetize || !relationInfo.value.junctionField) return items.value;
+			if (!relationInfo.value.junctionField) return items.value;
 
 			const sorted = clone(items.value).sort(
 				(a: Record<string, Record<string, any>>, b: Record<string, Record<string, any>>) => {
@@ -298,7 +302,11 @@ export default defineComponent({
 						}),
 						...filter,
 					},
-					sort: props.alphabetize ? props.referencingField : '-' + relationInfo.value.relationPkField,
+					sort: props.sortField
+						? props.sortDirection === 'desc'
+							? `-${props.sortField}`
+							: props.sortField
+						: `-${relationInfo.value.relationPkField}`,
 				},
 			};
 

@@ -77,6 +77,44 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'sortField',
+				type: 'string',
+				name: '$t:sort_field',
+				collection: relations.m2o?.related_collection,
+				meta: {
+					width: 'half',
+					interface: 'system-field',
+					options: {
+						allowPrimaryKey: true,
+						allowNone: true,
+					},
+				},
+			},
+			{
+				field: 'sortDirection',
+				type: 'string',
+				name: '$t:sort_direction',
+				schema: {
+					default_value: 'desc',
+				},
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:sort_asc',
+								value: 'asc',
+							},
+							{
+								text: '$t:sort_desc',
+								value: 'desc',
+							},
+						],
+					},
+				},
+			},
+			{
 				field: 'allowCustom',
 				name: '$t:interfaces.select-dropdown.allow_other',
 				type: 'boolean',
@@ -92,26 +130,11 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'alphabetize',
-				name: '$t:interfaces.tags.alphabetize',
-				type: 'boolean',
-				meta: {
-					width: 'half-left',
-					interface: 'toggle',
-					options: {
-						label: '$t:interfaces.tags.alphabetize_label',
-					},
-				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
 				field: 'iconLeft',
 				name: '$t:icon_left',
 				type: 'string',
 				meta: {
-					width: 'half',
+					width: 'half-left',
 					interface: 'select-icon',
 				},
 			},
@@ -120,7 +143,7 @@ export default defineInterface({
 				name: '$t:icon_right',
 				type: 'string',
 				meta: {
-					width: 'half',
+					width: 'half-right',
 					interface: 'select-icon',
 				},
 				schema: {
