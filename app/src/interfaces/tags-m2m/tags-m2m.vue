@@ -4,7 +4,7 @@
 	</v-notice>
 
 	<div v-else class="tags-m2m">
-		<v-menu v-model="menuActive" :close-on-click="true" :disabled="disabled" attached>
+		<v-menu v-model="menuActive" :disabled="disabled" attached>
 			<template #activator>
 				<v-input
 					v-model="localInput"
@@ -16,7 +16,7 @@
 					@keydown="onInputKeyDown"
 					@focus="menuActive = true"
 				>
-					<template #prepend>
+					<template v-if="iconLeft" #prepend>
 						<v-icon v-if="iconLeft" :name="iconLeft" />
 					</template>
 
