@@ -114,13 +114,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		let errors = validate(edits.value);
+		const errors = validate(edits.value);
 
 		if (errors.length > 0) {
-			errors = errors.map((error) => {
-				const errorField = fields.value.find((field) => field.field === error.field);
-				return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };
-			});
 			validationErrors.value = errors;
 			saving.value = false;
 			throw errors;
@@ -395,6 +391,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			validatePayload(validationRules, item).map((error) =>
 				error.details.map((details) => new FailedValidationException(details).extensions)
 			)
-		);
+		).map((error) => {
+			const errorField = fields.value.find((field) => field.field === error.field);
+			return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };
+		});
 	}
 }
