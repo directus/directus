@@ -80,7 +80,7 @@ conditions inside of OR Groups.
 The following video shows how to filter for Blog posts written within the past 60 days.
 
 <video autoplay muted loop controls title="How Filters Work">
-	<source src="https://cdn.directus.io/docs/v9/app-guide/filters/filters-20220303A/dynamic-variables-20220303A.mp4" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/filters/filters-20220303A/dynamic-variables-20220307A.mp4" type="video/mp4" />
 </video>
 
 The following Dynamic Variables are built into Directus to make Filtering easier: `$CURRENT_USER`, `$CURRENT_ROLE`,
