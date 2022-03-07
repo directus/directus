@@ -1492,6 +1492,7 @@ interfaces:
     reference-field: Referencing Field
     close-on-select: Close on select
     new-item-with: Add new item "{argument}"...
+    add_placeholder: Add {collection}...
   input:
     input: Input
     description: Manually enter a value

@@ -8,7 +8,10 @@
 			<template #activator>
 				<v-input
 					v-model="localInput"
-					:placeholder="placeholder"
+					:placeholder="
+						placeholder ||
+						t('interfaces.tags-m2m.add_placeholder', { collection: formatTitle(relationInfo.relationCollection) })
+					"
 					:disabled="disabled"
 					@keydown="onInputKeyDown"
 					@focus="menuActive = true"
@@ -81,6 +84,7 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
 import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
+import formatTitle from '@directus/format-title';
 import { debounce, clone } from 'lodash';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -230,6 +234,7 @@ export default defineComponent({
 			addItemFromSuggestion,
 			deleteItem,
 			t,
+			formatTitle,
 		};
 
 		function emitter(newVal: any[] | null) {
