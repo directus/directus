@@ -167,10 +167,10 @@ export class FilesService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		let url;
+		let resolvedUrl;
 
 		try {
-			url = new URL(importURL);
+			resolvedUrl = new URL(importURL);
 		} catch (err: any) {
 			logger.warn(err, `Requested URL ${importURL} isn't a valid URL`);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
@@ -178,7 +178,7 @@ export class FilesService extends ItemsService {
 			});
 		}
 
-		let ip = url.hostname;
+		let ip = resolvedUrl.hostname;
 
 		if (net.isIP(ip) === 0) {
 			try {
