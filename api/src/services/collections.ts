@@ -250,8 +250,25 @@ export class CollectionsService {
 			}
 		}
 
+		if (
+				env.DB_EXCLUDE_TABLES &&
+				env.DB_INCLUDE_TABLES && !(env.DB_INCLUDE_TABLES.length === 1 && env.DB_INCLUDE_TABLES[0] === '')
+		) {
+			return collections
+				.filter((collection) => env.DB_EXCLUDE_TABLES.includes(collection.collection) === false)
+				.filter((collection) =>
+					collection.collection.startsWith("directus_") ||
+					env.DB_INCLUDE_TABLES.includes(collection.collection) === true);
+		}
+
 		if (env.DB_EXCLUDE_TABLES) {
 			return collections.filter((collection) => env.DB_EXCLUDE_TABLES.includes(collection.collection) === false);
+		}
+
+		if (env.DB_INCLUDE_TABLES && !(env.DB_INCLUDE_TABLES.length === 1 && env.DB_INCLUDE_TABLES[0] === '')) {
+			return collections.filter((collection) =>
+				collection.collection.startsWith("directus_") ||
+				env.DB_INCLUDE_TABLES.includes(collection.collection) === true);
 		}
 
 		return collections;

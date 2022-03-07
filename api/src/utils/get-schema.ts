@@ -69,7 +69,16 @@ async function getDatabaseSchema(
 	];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
-		if (toArray(env.DB_EXCLUDE_TABLES).includes(collection)) {
+		if (env.DB_EXCLUDE_TABLES.includes(collection)) {
+			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
+			continue;
+		}
+
+		if (
+			!collection.startsWith("directus_") &&
+			env.DB_INCLUDE_TABLES && !(env.DB_INCLUDE_TABLES.length === 1 && env.DB_INCLUDE_TABLES[0] === '') &&
+			!env.DB_INCLUDE_TABLES.includes(collection)
+		) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
 		}

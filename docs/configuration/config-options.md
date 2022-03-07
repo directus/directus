@@ -244,6 +244,7 @@ into unexpected behaviors.
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                            |
 | `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
+| `DB_INCLUDE_TABLES`    | CSV of tables you want Directus to **not** ignore (all other tables will be ignored completely)                                                    | --                            |
 | `DB_CHARSET`           | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
 | `DB_VERSION`           | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
 

@@ -26,6 +26,7 @@ export default function getDatabase(): Knex {
 		'DB_CONNECTION_STRING',
 		'DB_POOL',
 		'DB_EXCLUDE_TABLES',
+		'DB_INCLUDE_TABLES',
 		'DB_VERSION',
 	]);
 
