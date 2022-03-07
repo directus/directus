@@ -65,6 +65,7 @@
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
@@ -98,7 +99,7 @@
 						v-tooltip.bottom="archiveTooltip"
 						rounded
 						icon
-						class="action-archive"
+						secondary
 						:disabled="item === null || archiveAllowed !== true"
 						@click="on"
 					>
@@ -473,7 +474,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.push(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+				if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -527,17 +528,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-archive {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {

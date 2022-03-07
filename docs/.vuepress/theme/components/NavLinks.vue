@@ -101,7 +101,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .nav-links
   display inline-block
   a

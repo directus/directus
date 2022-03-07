@@ -85,7 +85,6 @@ function css(el, property) {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 $navbar-vertical-padding = 0.7rem
 $navbar-horizontal-padding = 30px
 

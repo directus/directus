@@ -85,15 +85,6 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
-	--module-background: #18222f;
-	--module-background-alt: var(--background-normal);
-	--module-icon: #8196b1;
-	--module-icon-alt: var(--foreground-normal-alt);
-}
-</style>
-
 <style lang="scss" scoped>
 .module-bar {
 	display: flex;

@@ -14,6 +14,7 @@ import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { addWeeks } from 'date-fns';
+import { cssVar } from '@/utils/css-var';
 
 export default defineComponent({
 	props: {
@@ -66,7 +67,7 @@ export default defineComponent({
 		},
 		color: {
 			type: String,
-			default: '#00C897',
+			default: cssVar('--primary'),
 		},
 		fillType: {
 			type: String,
@@ -258,7 +259,7 @@ export default defineComponent({
 
 		function setupChart() {
 			chart.value = new ApexCharts(chartEl.value, {
-				colors: [props.color ? props.color : '#00C897'],
+				colors: [props.color ? props.color : cssVar('--primary')],
 				chart: {
 					type: props.fillType === 'disabled' ? 'line' : 'area',
 					height: '100%',
@@ -293,12 +294,12 @@ export default defineComponent({
 							[
 								{
 									offset: 0,
-									color: props.color ? props.color : '#00C897',
+									color: props.color ? props.color : cssVar('--primary'),
 									opacity: 0.25,
 								},
 								{
 									offset: 100,
-									color: props.color ? props.color : '#00C897',
+									color: props.color ? props.color : cssVar('--primary'),
 									opacity: 0,
 								},
 							],
