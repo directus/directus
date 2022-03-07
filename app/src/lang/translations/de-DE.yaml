@@ -28,13 +28,14 @@ draft: Entwurf
 archived: Archiviert
 modules: Module
 module_bar: Modulleiste
+reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
 switch_user: Benutzer wechseln
 item_creation: Element erstellt
-item_revision: Element überarbeitet
+item_revision: Artikelversion
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -1261,6 +1262,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
