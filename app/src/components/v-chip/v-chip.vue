@@ -2,7 +2,7 @@
 	<span
 		v-if="internalActive"
 		class="v-chip"
-		:class="[sizeClass, { outlined, label, disabled, close }]"
+		:class="[sizeClass, { clickable, outlined, label, disabled, close }]"
 		@click="onClick"
 	>
 		<span class="chip-content">
@@ -23,6 +23,10 @@ export default defineComponent({
 		active: {
 			type: Boolean,
 			default: null,
+		},
+		clickable: {
+			type: Boolean,
+			default: false,
 		},
 		close: {
 			type: Boolean,
