@@ -10,6 +10,9 @@ import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
 import { TransformationParams, TransformationMethods, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
+import helmet from 'helmet';
+import { merge } from 'lodash';
+import { getConfigFromEnv } from '../utils/get-config-from-env';
 
 const router = Router();
 
@@ -106,6 +109,18 @@ router.get(
 		}
 	}),
 
+	helmet.contentSecurityPolicy(
+		merge(
+			{
+				useDefaults: false,
+				directives: {
+					defaultSrc: ['none'],
+				},
+			},
+			getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+		)
+	),
+
 	// Return file
 	asyncHandler(async (req, res) => {
 		const id = req.params.pk?.substring(0, 36);
@@ -144,6 +159,7 @@ router.get(
 		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
+		res.setHeader('Content-Security-Policy', 'sandbox');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
 
 		if (range) {
