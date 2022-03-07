@@ -302,9 +302,11 @@ export default defineComponent({
 						[props.referencingField]: {
 							_contains: keyword,
 						},
-						[relationInfo.value.relationPkField]: {
-							_nin: currentIds.join(','),
-						},
+						...(currentIds.length > 0 && {
+							[relationInfo.value.relationPkField]: {
+								_nin: currentIds.join(','),
+							},
+						}),
 						...filter,
 					},
 					sort: props.alphabetize ? props.referencingField : '-' + relationInfo.value.relationPkField,
