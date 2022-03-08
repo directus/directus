@@ -28,7 +28,7 @@ our Password Reset page.
 You can update your account information at any time by following these steps:
 
 1. Sign in to the Cloud Dashboard.
-2. Click <span mi icon>account_circle</span> in the Dashboard Header.
+2. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 3. Toggle <span mi icon prmry>edit</span> to allow edits.
 4. Make your changes as desired.
 5. Click the **"Save"** button.
@@ -41,7 +41,7 @@ This action is permanent and irreversible. Destroying your Directus Cloud Accoun
 assets from our platform. To destroy your Directus Cloud account, follow these steps:
 
 1. Sign in to the Cloud Dashboard using the account you would like to destroy.
-2. Click <span mi icon>account_circle</span> in the Dashboard Header.
+2. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 3. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.
 4. Confirm your password, and then click the **"Destroy Account"** button.
 
@@ -74,11 +74,11 @@ like! To create a new team...
 
 ![Managing a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/managing-a-team-20220225A.webp)
 
-After signing in to the Dashboard, you will be taken to your default team (see Account Settings).
+After signing in to the Dashboard, you will be taken to your default Team (see Account Settings).
 
 1. Sign in to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
-3. In the dropdown, select the team you wish to manage.
+3. In the dropdown, select the Team you wish to manage.
 4. Navigate to the Settings page.
 5. Toggle <span mi icon prmry>edit</span> to allow edits.
 6. Make your changes as desired.
@@ -88,8 +88,8 @@ After signing in to the Dashboard, you will be taken to your default team (see A
 
 ![Inviting a Team Member](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/inviting-a-team-member-20220225A.webp)
 
-All members of a team can invite new members via email. Each invited user will be emailed with a link to accept the
-invitation and join the team.
+All members of a Team can invite new Members via email. Each invited user will be emailed with a link to accept the
+invitation and join the Team.
 
 1. Sign in to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -104,7 +104,7 @@ invitation and join the team.
 By default, Team members are not given user access to the Team's Projects. To manage a Project's users, log in to the
 project as an administrator and navigate to the User Directory.
 
-::
+:::
 
 ## Removing a Team Member
 
