@@ -14,6 +14,7 @@ To run Directus, you currently need Node 12.20 or newer, and one of the followin
 | SQLite                                | 3+          |
 | MS SQL Server                         | 13+         |
 | MariaDB <sup>[2]</sup>                | 10.2.7+     |
+| CockroachDB <sup>[2]</sup>            | 21.1.13+    |
 | OracleDB<sup>[2]</sup> <sup>[3]</sup> | 19+         |
 
 <sup>[1]</sup> MySQL 8+ requires

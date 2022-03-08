@@ -23,7 +23,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .sidebar
   ul
     padding 0

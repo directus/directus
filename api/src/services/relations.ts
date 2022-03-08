@@ -143,6 +143,13 @@ export class RelationsService {
 			);
 		}
 
+		// A primary key should not be a foreign key
+		if (this.schema.collections[relation.collection].primary === relation.field) {
+			throw new InvalidPayloadException(
+				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
+			);
+		}
+
 		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
 			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
 		}

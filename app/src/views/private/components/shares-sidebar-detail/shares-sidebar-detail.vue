@@ -27,7 +27,7 @@
 
 		<v-dialog :model-value="!!shareToDelete" @update:model-value="shareToDelete = null" @esc="shareToDelete = null">
 			<v-card>
-				<v-card-title>{{ t('delete_comment') }}</v-card-title>
+				<v-card-title>{{ t('delete_share') }}</v-card-title>
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
 
 				<v-card-actions>
@@ -171,7 +171,6 @@ export default defineComponent({
 			try {
 				await navigator?.clipboard?.writeText(url);
 				notify({
-					type: 'success',
 					title: t('share_copy_link_success'),
 				});
 			} catch (err: any) {

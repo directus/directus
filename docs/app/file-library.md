@@ -7,14 +7,14 @@
 
 ## Browsing Files
 
-![File Library Overview](../assets/app/file-library-overview.png)
+![File Library Overview](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-overview-20220215A.webp)
 
 This module aggregates all files within the project into one consolidated library. This listing page has the same
 features and functionality as the [Collection Page](/app/content-collections/).
 
 ## Viewing or Editing a File
 
-![File Overview](../assets/app/file-overview.png)
+![File Overview](https://cdn.directus.io/docs/v9/app-guide/file-library/viewing-or-editing-a-file-20220215A.webp)
 
 Provides a custom form for viewing assets and embeds, with core fields included out-of-the-box (see below), and the
 ability for administrators to add additional custom fields. This page has the same features and functionality as the
@@ -62,7 +62,7 @@ or mirroring the file.
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor
 
 <video alt="Image Editing" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/image-editing-220129A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/editing-an-image-20220215A.mp4" type="video/mp4">
 </video>
 
 3. Make your changes and hit <span mi btn>check</span> in the top right to save the updates to the file.
@@ -73,7 +73,7 @@ Clicking the image Preview on the File Detail page opens a modal where you can r
 want to change the file, but keep existing file info and maintain all of the file's relationships.
 
 <video alt="Replacing a File" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replace-file-220129A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/replacing-a-file-20220215A.mp4" type="video/mp4">
 </video>
 
 ## Uploading a File
@@ -82,7 +82,7 @@ There are many ways that a file can be uploaded into Directus via the App. We'll
 keep in mind that files can also be added directly through different interfaces.
 
 <video alt="Uploading a File" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/upload-file-220129A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/upload-a-file-20220215A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click on the <span mi btn >add</span> button located in the header
@@ -94,7 +94,7 @@ keep in mind that files can also be added directly through different interfaces.
 ## Creating a Folder
 
 <video alt="Creating a Folder" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/create-folder-220129A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/create-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click on the <span mi btn sec>create_new_folder</span> button located in the header
@@ -104,7 +104,7 @@ keep in mind that files can also be added directly through different interfaces.
 ## Renaming a Folder
 
 <video alt="Renaming a Folder" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/rename-folder-220129A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/rename-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to rename and select "Rename Folder"
@@ -114,7 +114,7 @@ keep in mind that files can also be added directly through different interfaces.
 ## Moving a Folder
 
 <video alt="Moving a Folder" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/move-folder-220129A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/move-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to move and select "Move to Folder"
@@ -124,7 +124,7 @@ keep in mind that files can also be added directly through different interfaces.
 ## Deleting a Folder
 
 <video alt="Deleting a Folder" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/delete-folder-220129A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/delete-a-folder-20220215A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, right-click on the folder you wish to delete and select "Delete Folder"

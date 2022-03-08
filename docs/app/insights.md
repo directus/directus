@@ -5,7 +5,7 @@
 > able to setup key data metrics in just a few clicks.
 
 <video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboard-220123A.mp4" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/insights-dashboards-20220216A.mp4" type="video/mp4" />
 </video>
 
 [[toc]]
@@ -16,7 +16,7 @@ First, create a Dashboard, then fill the Dashboard with Panels. Each Panel provi
 insight.
 
 <video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/app-guide/insights/create-dashboards-and-panels-220123A.mp4" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/insights-how-it-works-20220216A_1.mp4" type="video/mp4" />
 </video>
 
 1. Click the "Create Dashboard" action button <span mi btn >add</span> in the page header.
@@ -36,11 +36,11 @@ large as the screen they will be viewing on. You are able to create as many Dash
 Dashboard view, edit, and create permissions are
 [fully configurable](/configuration/users-roles-permissions/#configuring-permissions) by User Role.
 
-![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/dashboards-grid-area-220123A.webp)
+![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/dashboards-overview-20220216A.webp)
 
 ## Create, Edit, and Delete Dashboards
 
-![How to Add, Edit and Delete Dashboards in Directus Insights](https://cdn.directus.io/docs/v9/app-guide/insights/add-edit-delete-dashboards-220123A.webp)
+![How to Add, Edit and Delete Dashboards in Directus Insights](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/create-edit-delete-dashboards-20220216A.webp)
 
 1. Click the <span mi btn >add</span> icon in the page header to create a new Dashboard.
 2. Click the item option to edit or delete a Dashboard.
@@ -50,7 +50,7 @@ Dashboard view, edit, and create permissions are
 Panels are the building-blocks we add onto Insights dashboards to create, save and display data analytics. There are 4
 types of Panels.
 
-![Directus Dashboard Panels](https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboard-store-220123A.webp)
+![Directus Dashboard Panels](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/panels-overview-20220216A.webp)
 
 1. **Label** – Displays simple header text to describe other groups of panels. Doesn't actually provide data analysis.
 2. **List** – Sortable, filterable list of items within a collection.
@@ -63,7 +63,7 @@ types of Panels.
 All 4 panel types let you set custom text to provide quick and clear context about what a Panel represents. Panel Header
 options are exactly the same for all four Panel types. Headers are also totally optional and can be hidden.
 
-![Panel Header Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-header-options-220123A.webp)
+![Panel Header Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/panel-header-options-20220216A.webp)
 
 - **Visible** – Determines if the header is visible or not.
 - **Name** – Sets a name in the header area.
@@ -78,7 +78,7 @@ Labels simply help visually group the other panels (_which do provide analytics_
 
 ### Label Panel Options
 
-![Label Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-label-options-220123A.webp)
+![Label Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/label-panel-options-20220216A.webp)
 
 - **Label** – Sets the label text.
 - **Color** – Sets the label text color.
@@ -92,7 +92,7 @@ list that could be generated from your dataset.
 
 ### List Panel Options
 
-![List Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-list-options-220123A.webp)
+![List Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/list-panel-options-20220216A.webp)
 
 - **Collection** – Selects the Collection to rank.
 - **Limit** – Limits the number of Items that will appear in the Dashboard.
@@ -108,7 +108,7 @@ Metrics Panels allow you to aggregate all Items in a Field down to a single valu
 
 ### Metrics Panel Options
 
-![Metrics Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-metrics-options-220123A.webp)
+![Metrics Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/metric-panel-options-20220216A.webp)
 
 - **Collection** – Selects the Collection.
 - **Field** – Selects the Field to run aggregate function on.
@@ -165,7 +165,7 @@ In order to use this Panel, your Collection will need a datetime Field.
 
 :::
 
-![Time Series Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-time-series-options-220123A.webp)
+![Time Series Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/time-series-panel-options-20220216A.webp)
 
 - **Collection** – Selects the Collection you want to analyze.
 - **Color** – Sets color of your graph curve.

@@ -252,7 +252,7 @@ within a [Dashboard](#dashboards) and can be positioned and resized as needed.
 
 ## Permissions
 
-Permissions are attached directly to a Role, defining what a user can can create, read, update, and delete within the
+Permissions are attached directly to a Role, defining what a user can create, read, update, and delete within the
 platform. Extremely granular, these filter-based permissions control access for the entire system.
 
 ## Presets

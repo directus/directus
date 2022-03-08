@@ -161,7 +161,7 @@ body {
 	.content {
 		--border-radius: 6px;
 		--input-height: 60px;
-		--input-padding: 16px; // (60 - 4 - 24) / 2
+		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 		--form-vertical-gap: 52px;
 
 		position: relative;
@@ -169,7 +169,7 @@ body {
 		flex-grow: 1;
 		overflow: hidden;
 
-		// Page Content Spacing (Could be converted to Project Setting toggle)
+		/* Page Content Spacing (Could be converted to Project Setting toggle) */
 		font-size: 15px;
 		line-height: 24px;
 
