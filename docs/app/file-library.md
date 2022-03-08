@@ -4,7 +4,7 @@
 > full-featured Digital Asset Management (DAM) system for storing, organizing, browsing, and transforming your various
 > files and assets.
 
-![File Library](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-library-20220305A.webp)
+![File Library](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/file-library-20220307A.webp)
 
 [[toc]]
 
@@ -117,6 +117,12 @@ Rotate, crop, flip, or adjust aspect ratios of an image.
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor.
 3. Make your changes and click <span mi btn>check</span> in the top right to save the updates.
 
+::: danger Irreversible Change
+
+Edits made will overwrite the original file on disk, and can't be reversed.
+
+:::
+
 ## Upload a File
 
 We covered the File Library's 3 upload methods in [How it Works](#how-it-works). Keep in mind that files can also be
@@ -193,23 +199,6 @@ API](/docs/reference/system/folders.md).
 ::: tip
 
 When you delete a Folder, any nested Files and Folders will be moved one level up.
-
-:::
-
-## Extensibility Options
-
-Directus Core is completely open-source, modular and extensible. Extensions allow you to expand or modify any part of
-Directus to fit your needs. Here are some great resources to get started down that track.
-
-- [Extensions > Introduction](/extensions/introduction/)
-- [Extensions > Creating Extensions](/extensions/creating-extensions/)
-- [Contributing > Introduction](/contributing/introduction/)
-- [Contributing > Codebase Overview](/contributing/codebase-overview/)
-
-::: tip Accelerated Development
-
-Working on an enterprise project and looking to outsource or financially sponsor the development of a Shares extension?
-Contact [our team](https://directus.io/contact/)
 
 :::
 
