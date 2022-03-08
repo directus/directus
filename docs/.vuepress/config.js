@@ -509,8 +509,9 @@ module.exports = {
 					},
 				],
 			},
+			{ type: 'divider' },
 			{
-				title: 'Cloud',
+				title: 'Directus Cloud',
 				children: [
 					{
 						type: 'page',
