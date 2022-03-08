@@ -32,7 +32,7 @@
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="editActive" persistent @esc="editActive = false">
+		<v-dialog v-model="editActive" persistent @esc="editCancel">
 			<v-card>
 				<v-card-title>{{ t('edit_bookmark') }}</v-card-title>
 				<v-card-text>
@@ -43,7 +43,7 @@
 					</div>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="editActive = false">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="editCancel">{{ t('cancel') }}</v-button>
 					<v-button :disabled="editValue.name === null" :loading="editSaving" @click="editSave">
 						{{ t('save') }}
 					</v-button>
@@ -91,7 +91,7 @@ export default defineComponent({
 
 		const isMine = computed(() => props.bookmark.user === userStore.currentUser!.id);
 
-		const { editActive, editValue, editSave, editSaving } = useEditBookmark();
+		const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
 
 		return {
@@ -101,6 +101,7 @@ export default defineComponent({
 			editValue,
 			editSave,
 			editSaving,
+			editCancel,
 			deleteActive,
 			deleteSave,
 			deleteSaving,
@@ -115,7 +116,7 @@ export default defineComponent({
 			});
 			const editSaving = ref(false);
 
-			return { editActive, editValue, editSave, editSaving };
+			return { editActive, editValue, editSave, editSaving, editCancel };
 
 			async function editSave() {
 				editSaving.value = true;
@@ -134,6 +135,13 @@ export default defineComponent({
 				} finally {
 					editSaving.value = false;
 				}
+			}
+
+			function editCancel() {
+				editActive.value = false;
+				editValue.name = props.bookmark.bookmark;
+				editValue.icon = props.bookmark?.icon ?? 'bookmark_outline';
+				editValue.color = props.bookmark?.color ?? null;
 			}
 		}
 
