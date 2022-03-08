@@ -8,23 +8,25 @@
 			<v-card-title>{{ t('create_bookmark') }}</v-card-title>
 
 			<v-card-text>
-				<v-input
-					v-model="bookmarkName"
-					autofocus
-					:placeholder="t('bookmark_name')"
-					@keyup.enter="$emit('save', bookmarkName)"
-				/>
+				<div class="fields">
+					<v-input
+						v-model="bookmarkValue.name"
+						class="full"
+						autofocus
+						trim
+						:placeholder="t('bookmark_name')"
+						@keyup.enter="$emit('save', bookmarkValue)"
+					/>
+					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
+					<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
+				</div>
 			</v-card-text>
 
 			<v-card-actions>
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button
-					:disabled="bookmarkName === null || bookmarkName.length === 0"
-					:loading="saving"
-					@click="$emit('save', bookmarkName)"
-				>
+				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="$emit('save', bookmarkValue)">
 					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
@@ -34,7 +36,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, reactive } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -51,14 +53,40 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const bookmarkName = ref(null);
+		const bookmarkValue = reactive({
+			name: null,
+			icon: 'bookmark_outline',
+			color: null,
+		});
 
-		return { t, bookmarkName, cancel };
+		return { t, bookmarkValue, setIcon, setColor, cancel };
+
+		function setIcon(icon: any) {
+			bookmarkValue.icon = icon;
+		}
+
+		function setColor(color: any) {
+			bookmarkValue.color = color;
+		}
 
 		function cancel() {
-			bookmarkName.value = null;
+			bookmarkValue.name = null;
+			bookmarkValue.icon = 'bookmark_outline';
+			bookmarkValue.color = null;
 			emit('update:modelValue', false);
 		}
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+
+	.full {
+		grid-column: 1 / span 2;
+	}
+}
+</style>

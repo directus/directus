@@ -6,19 +6,19 @@
 		class="bookmark"
 		clickable
 	>
-		<v-list-item-icon><v-icon name="bookmark_outline" /></v-list-item-icon>
+		<v-list-item-icon><v-icon :name="bookmark.icon" :color="bookmark.color" /></v-list-item-icon>
 		<v-list-item-content>
 			<v-text-overflow :text="bookmark.bookmark" />
 		</v-list-item-content>
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item clickable :disabled="isMine === false" @click="renameActive = true">
+				<v-list-item clickable :disabled="isMine === false" @click="editActive = true">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="t('rename_bookmark')" />
+						<v-text-overflow :text="t('edit_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item clickable class="danger" :disabled="isMine === false" @click="deleteActive = true">
@@ -32,15 +32,19 @@
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
+		<v-dialog v-model="editActive" persistent @esc="editActive = false">
 			<v-card>
-				<v-card-title>{{ t('rename_bookmark') }}</v-card-title>
+				<v-card-title>{{ t('edit_bookmark') }}</v-card-title>
 				<v-card-text>
-					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
+					<div class="fields">
+						<v-input v-model="editValue.name" class="full" autofocus @keyup.enter="editSave" />
+						<interface-select-icon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
+						<interface-select-color width="half" :value="editValue.color" @input="editValue.color = $event" />
+					</div>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
-					<v-button :disabled="renameValue === null" :loading="renameSaving" @click="renameSave">
+					<v-button secondary @click="editActive = false">{{ t('cancel') }}</v-button>
+					<v-button :disabled="editValue.name === null" :loading="editSaving" @click="editSave">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -63,7 +67,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, PropType, ref, computed, reactive } from 'vue';
 import { Preset } from '@directus/shared/types';
 import { useUserStore, usePresetsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -87,53 +91,57 @@ export default defineComponent({
 
 		const isMine = computed(() => props.bookmark.user === userStore.currentUser!.id);
 
-		const { renameActive, renameValue, renameSave, renameSaving } = useRenameBookmark();
-		const { deleteActive, deleteValue, deleteSave, deleteSaving } = useDeleteBookmark();
+		const { editActive, editValue, editSave, editSaving } = useEditBookmark();
+		const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
 
 		return {
 			t,
 			isMine,
-			renameActive,
-			renameValue,
-			renameSave,
-			renameSaving,
+			editActive,
+			editValue,
+			editSave,
+			editSaving,
 			deleteActive,
-			deleteValue,
 			deleteSave,
 			deleteSaving,
 		};
 
-		function useRenameBookmark() {
-			const renameActive = ref(false);
-			const renameValue = ref(props.bookmark.bookmark);
-			const renameSaving = ref(false);
+		function useEditBookmark() {
+			const editActive = ref(false);
+			const editValue = reactive({
+				name: props.bookmark.bookmark,
+				icon: props.bookmark?.icon ?? 'bookmark_outline',
+				color: props.bookmark?.color ?? null,
+			});
+			const editSaving = ref(false);
 
-			return { renameActive, renameValue, renameSave, renameSaving };
+			return { editActive, editValue, editSave, editSaving };
 
-			async function renameSave() {
-				renameSaving.value = true;
+			async function editSave() {
+				editSaving.value = true;
 
 				try {
 					await presetsStore.savePreset({
 						...props.bookmark,
-						bookmark: renameValue.value,
+						bookmark: editValue.name,
+						icon: editValue.icon,
+						color: editValue.color,
 					});
 
-					renameActive.value = false;
+					editActive.value = false;
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
-					renameSaving.value = false;
+					editSaving.value = false;
 				}
 			}
 		}
 
 		function useDeleteBookmark() {
 			const deleteActive = ref(false);
-			const deleteValue = ref(props.bookmark.bookmark);
 			const deleteSaving = ref(false);
 
-			return { deleteActive, deleteValue, deleteSave, deleteSaving };
+			return { deleteActive, deleteSave, deleteSaving };
 
 			async function deleteSave() {
 				deleteSaving.value = true;
@@ -141,7 +149,7 @@ export default defineComponent({
 				try {
 					let navigateTo: string | null = null;
 
-					if (+route.query?.bookmark === props.bookmark.id) {
+					if (route.query?.bookmark && +route.query.bookmark === props.bookmark.id) {
 						navigateTo = `/content/${props.bookmark.collection}`;
 					}
 
@@ -166,5 +174,15 @@ export default defineComponent({
 .danger {
 	--v-list-item-color: var(--danger);
 	--v-list-item-icon-color: var(--danger);
+}
+
+.fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+
+	.full {
+		grid-column: 1 / span 2;
+	}
 }
 </style>
