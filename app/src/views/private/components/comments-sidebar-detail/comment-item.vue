@@ -16,9 +16,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, watch } from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import CommentInput from './comment-input.vue';
@@ -26,74 +25,57 @@ import CommentInput from './comment-input.vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export default defineComponent({
-	components: { CommentItemHeader, CommentInput },
-	props: {
-		activity: {
-			type: Object as PropType<Activity>,
-			required: true,
-		},
-		refresh: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		userPreviews: {
-			type: Object,
-			require: true,
-			default: () => ({}),
-		},
-		primaryKey: {
-			type: [Number, String],
-			required: true,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		activity: Activity & {
+			display: string;
+		};
+		refresh: () => void;
+		collection: string;
+		primaryKey: string | number;
+		userPreviews: Record<string, any>;
+	}>(),
+	{
+		userPreviews: () => ({}),
+	}
+);
 
-		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
+const { editing, cancelEditing } = useEdits();
 
-		return { t, edits, editing, savingEdits, saveEdits, cancelEditing };
+function useEdits() {
+	const edits = ref(props.activity.comment);
+	const editing = ref(false);
+	const savingEdits = ref(false);
 
-		function useEdits() {
-			const edits = ref(props.activity.comment);
-			const editing = ref(false);
-			const savingEdits = ref(false);
+	watch(
+		() => props.activity,
+		() => (edits.value = props.activity.comment)
+	);
 
-			watch(
-				() => props.activity,
-				() => (edits.value = props.activity.comment)
-			);
+	return { edits, editing, savingEdits, saveEdits, cancelEditing };
 
-			return { edits, editing, savingEdits, saveEdits, cancelEditing };
+	async function saveEdits() {
+		savingEdits.value = true;
 
-			async function saveEdits() {
-				savingEdits.value = true;
+		try {
+			await api.patch(`/activity/comment/${props.activity.id}`, {
+				comment: edits.value,
+			});
 
-				try {
-					await api.patch(`/activity/comment/${props.activity.id}`, {
-						comment: edits.value,
-					});
-
-					props.refresh();
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					savingEdits.value = false;
-					editing.value = false;
-				}
-			}
-
-			function cancelEditing() {
-				edits.value = props.activity.comment;
-				editing.value = false;
-			}
+			props.refresh();
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			savingEdits.value = false;
+			editing.value = false;
 		}
-	},
-});
+	}
+
+	function cancelEditing() {
+		edits.value = props.activity.comment;
+		editing.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>

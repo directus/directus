@@ -33,9 +33,7 @@
 						</v-avatar>
 					</v-list-item-icon>
 
-					<v-list-item-content>
-						{{ userName(user) }}
-					</v-list-item-content>
+					<v-list-item-content>{{ userName(user) }}</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
@@ -65,9 +63,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType, watch, ComponentPublicInstance } from 'vue';
+import { ref, watch, ComponentPublicInstance } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
@@ -79,257 +77,226 @@ import { User } from '@directus/shared/types';
 import { getRootPath } from '@/utils/get-root-path';
 import vTemplateInput from '@/components/v-template-input.vue';
 import { cloneDeep } from 'lodash';
+import { Activity } from './types';
 
-export default defineComponent({
-	components: { vTemplateInput },
-	props: {
-		refresh: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-		primaryKey: {
-			type: [Number, String],
-			required: true,
-		},
-		existingComment: {
-			type: Object,
-			default: null,
-		},
-		previews: {
-			type: Object as PropType<Record<string, string>>,
-			default: null,
-		},
+const props = withDefaults(
+	defineProps<{
+		refresh: () => void;
+		collection: string;
+		primaryKey: string | number;
+		existingComment?: Activity | null;
+		previews?: Record<string, string> | null;
+	}>(),
+	{
+		existingComment: () => null,
+		previews: () => null,
+	}
+);
+
+const emit = defineEmits(['cancel']);
+
+const { t } = useI18n();
+const commentElement = ref<ComponentPublicInstance>();
+useShortcut('meta+enter', postComment, commentElement);
+
+const newCommentContent = ref<string | null>(props.existingComment?.comment ?? null);
+
+watch(
+	() => props.existingComment,
+	() => {
+		if (props.existingComment?.comment) {
+			newCommentContent.value = props.existingComment.comment;
+		}
 	},
-	emits: ['cancel'],
-	setup(props) {
-		const { t } = useI18n();
-		const commentElement = ref<ComponentPublicInstance>();
-		useShortcut('meta+enter', postComment, commentElement);
+	{ immediate: true }
+);
 
-		const newCommentContent = ref<string | null>(props.existingComment?.comment ?? null);
+const saving = ref(false);
+const showMentionDropDown = ref(false);
 
-		watch(
-			() => props.existingComment,
-			() => {
-				if (props.existingComment?.comment) {
-					newCommentContent.value = props.existingComment.comment;
-				}
-			},
-			{ immediate: true }
-		);
+const searchResult = ref<User[]>([]);
+const userPreviews = ref<Record<string, string>>({});
 
-		const saving = ref(false);
-		const showMentionDropDown = ref(false);
-
-		const searchResult = ref<User[]>([]);
-		const userPreviews = ref<Record<string, string>>({});
-
-		watch(
-			() => props.previews,
-			() => {
-				if (props.previews) {
-					userPreviews.value = {
-						...userPreviews.value,
-						...props.previews,
-					};
-				}
-			},
-			{ immediate: true }
-		);
-
-		let triggerCaretPosition = 0;
-		let selectedKeyboardIndex = ref<number>(0);
-
-		let cancelToken: CancelTokenSource | null = null;
-
-		const loadUsers = throttle(async (name: string) => {
-			if (cancelToken !== null) {
-				cancelToken.cancel();
-			}
-
-			cancelToken = axios.CancelToken.source();
-
-			const regex = /\s@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;
-
-			let filter: Record<string, any> = {
-				_or: [
-					{
-						first_name: {
-							_starts_with: name,
-						},
-					},
-					{
-						last_name: {
-							_starts_with: name,
-						},
-					},
-					{
-						email: {
-							_starts_with: name,
-						},
-					},
-				],
+watch(
+	() => props.previews,
+	() => {
+		if (props.previews) {
+			userPreviews.value = {
+				...userPreviews.value,
+				...props.previews,
 			};
-
-			if (name.match(regex)) {
-				filter = {
-					id: {
-						_in: name,
-					},
-				};
-			}
-
-			try {
-				const result = await api.get('/users', {
-					params: {
-						filter: name === '' || !name ? undefined : filter,
-						fields: ['first_name', 'last_name', 'email', 'id', 'avatar'],
-					},
-					cancelToken: cancelToken.token,
-				});
-
-				const newUsers = cloneDeep(userPreviews.value);
-
-				result.data.data.forEach((user: any) => {
-					newUsers[user.id] = userName(user);
-				});
-
-				userPreviews.value = newUsers;
-
-				searchResult.value = result.data.data;
-			} catch (e) {
-				return e;
-			}
-		}, 200);
-
-		return {
-			t,
-			newCommentContent,
-			postComment,
-			saving,
-			commentElement,
-			showMentionDropDown,
-			searchResult,
-			avatarSource,
-			userName,
-			triggerSearch,
-			insertUser,
-			userPreviews,
-			selectedKeyboardIndex,
-			pressedUp,
-			pressedDown,
-			pressedEnter,
-			insertText,
-		};
-
-		function insertText(text: string) {
-			commentElement.value?.$el.focus();
-
-			if (window.getSelection) {
-				let selection = window.getSelection();
-				if (!selection) return;
-
-				if (selection.getRangeAt && selection.rangeCount) {
-					let range = selection.getRangeAt(0);
-					range.deleteContents();
-					range.insertNode(document.createTextNode(text));
-					range.collapse(false);
-
-					const inputEvent = new Event('input', { bubbles: true });
-					commentElement.value?.$el.dispatchEvent(inputEvent);
-				}
-			}
-		}
-
-		function insertUser(user: Record<string, any>) {
-			const text = newCommentContent.value?.replaceAll(String.fromCharCode(160), ' ');
-			if (!text) return;
-
-			let countBefore = triggerCaretPosition - 1;
-			let countAfter = triggerCaretPosition;
-
-			if (text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
-				while (countBefore >= 0 && text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
-					countBefore--;
-				}
-			}
-
-			while (countAfter < text.length && text.charAt(countAfter) !== ' ' && text.charAt(countAfter) !== '\n') {
-				countAfter++;
-			}
-
-			const before = text.substring(0, countBefore + (text.charAt(countBefore) === '\n' ? 1 : 0));
-			const after = text.substring(countAfter);
-
-			newCommentContent.value = before + ' @' + user.id + after;
-		}
-
-		function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; caretPosition: number }) {
-			triggerCaretPosition = caretPosition;
-
-			showMentionDropDown.value = true;
-			loadUsers(searchQuery);
-			selectedKeyboardIndex.value = 0;
-		}
-
-		function avatarSource(url: string) {
-			if (url === null) return '';
-			return addTokenToURL(getRootPath() + `assets/${url}?key=system-small-cover`);
-		}
-
-		async function postComment() {
-			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
-			saving.value = true;
-
-			try {
-				if (props.existingComment) {
-					await api.patch(`/activity/comment/${props.existingComment.id}`, {
-						comment: newCommentContent.value,
-					});
-				} else {
-					await api.post(`/activity/comment`, {
-						collection: props.collection,
-						item: props.primaryKey,
-						comment: newCommentContent.value,
-					});
-				}
-
-				props.refresh();
-
-				newCommentContent.value = '';
-
-				notify({
-					title: t('post_comment_success'),
-				});
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				saving.value = false;
-			}
-		}
-
-		function pressedUp() {
-			if (selectedKeyboardIndex.value > 0) {
-				selectedKeyboardIndex.value--;
-			}
-		}
-
-		function pressedDown() {
-			if (selectedKeyboardIndex.value < searchResult.value.length - 1) {
-				selectedKeyboardIndex.value++;
-			}
-		}
-
-		function pressedEnter() {
-			insertUser(searchResult.value[selectedKeyboardIndex.value]);
-			showMentionDropDown.value = false;
 		}
 	},
-});
+	{ immediate: true }
+);
+
+let triggerCaretPosition = 0;
+let selectedKeyboardIndex = ref<number>(0);
+
+let cancelToken: CancelTokenSource | null = null;
+
+const loadUsers = throttle(async (name: string) => {
+	if (cancelToken !== null) {
+		cancelToken.cancel();
+	}
+
+	cancelToken = axios.CancelToken.source();
+
+	const regex = /\s@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;
+
+	let filter: Record<string, any> = {
+		_or: [
+			{
+				first_name: {
+					_starts_with: name,
+				},
+			},
+			{
+				last_name: {
+					_starts_with: name,
+				},
+			},
+			{
+				email: {
+					_starts_with: name,
+				},
+			},
+		],
+	};
+
+	if (name.match(regex)) {
+		filter = {
+			id: {
+				_in: name,
+			},
+		};
+	}
+
+	try {
+		const result = await api.get('/users', {
+			params: {
+				filter: name === '' || !name ? undefined : filter,
+				fields: ['first_name', 'last_name', 'email', 'id', 'avatar'],
+			},
+			cancelToken: cancelToken.token,
+		});
+
+		const newUsers = cloneDeep(userPreviews.value);
+
+		result.data.data.forEach((user: any) => {
+			newUsers[user.id] = userName(user);
+		});
+
+		userPreviews.value = newUsers;
+
+		searchResult.value = result.data.data;
+	} catch (e) {
+		return e;
+	}
+}, 200);
+
+function insertText(text: string) {
+	commentElement.value?.$el.focus();
+
+	if (window.getSelection) {
+		let selection = window.getSelection();
+		if (!selection) return;
+
+		if (selection.getRangeAt && selection.rangeCount) {
+			let range = selection.getRangeAt(0);
+			range.deleteContents();
+			range.insertNode(document.createTextNode(text));
+			range.collapse(false);
+
+			const inputEvent = new Event('input', { bubbles: true });
+			commentElement.value?.$el.dispatchEvent(inputEvent);
+		}
+	}
+}
+
+function insertUser(user: Record<string, any>) {
+	const text = newCommentContent.value?.replaceAll(String.fromCharCode(160), ' ');
+	if (!text) return;
+
+	let countBefore = triggerCaretPosition - 1;
+	let countAfter = triggerCaretPosition;
+
+	if (text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
+		while (countBefore >= 0 && text.charAt(countBefore) !== ' ' && text.charAt(countBefore) !== '\n') {
+			countBefore--;
+		}
+	}
+
+	while (countAfter < text.length && text.charAt(countAfter) !== ' ' && text.charAt(countAfter) !== '\n') {
+		countAfter++;
+	}
+
+	const before = text.substring(0, countBefore + (text.charAt(countBefore) === '\n' ? 1 : 0));
+	const after = text.substring(countAfter);
+
+	newCommentContent.value = before + ' @' + user.id + after;
+}
+
+function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; caretPosition: number }) {
+	triggerCaretPosition = caretPosition;
+
+	showMentionDropDown.value = true;
+	loadUsers(searchQuery);
+	selectedKeyboardIndex.value = 0;
+}
+
+function avatarSource(url: string) {
+	if (url === null) return '';
+	return addTokenToURL(getRootPath() + `assets/${url}?key=system-small-cover`);
+}
+
+async function postComment() {
+	if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
+	saving.value = true;
+
+	try {
+		if (props.existingComment) {
+			await api.patch(`/activity/comment/${props.existingComment.id}`, {
+				comment: newCommentContent.value,
+			});
+		} else {
+			await api.post(`/activity/comment`, {
+				collection: props.collection,
+				item: props.primaryKey,
+				comment: newCommentContent.value,
+			});
+		}
+
+		props.refresh();
+
+		newCommentContent.value = '';
+
+		notify({
+			title: t('post_comment_success'),
+		});
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		saving.value = false;
+	}
+}
+
+function pressedUp() {
+	if (selectedKeyboardIndex.value > 0) {
+		selectedKeyboardIndex.value--;
+	}
+}
+
+function pressedDown() {
+	if (selectedKeyboardIndex.value < searchResult.value.length - 1) {
+		selectedKeyboardIndex.value++;
+	}
+}
+
+function pressedEnter() {
+	insertUser(searchResult.value[selectedKeyboardIndex.value]);
+	showMentionDropDown.value = false;
+}
 </script>
 
 <style scoped lang="scss">
