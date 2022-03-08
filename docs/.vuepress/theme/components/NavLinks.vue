@@ -101,7 +101,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .nav-links
   display inline-block
   a
@@ -131,5 +130,5 @@ export default {
   .nav-item > a:not(.external)
     &:hover, &.router-link-active
       margin-bottom -2px
-      border-bottom 2px solid var(--primary-90)
+      border-bottom 2px solid var(--primary)
 </style>

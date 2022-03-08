@@ -115,12 +115,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				{ code: payload.code, state: payload.state },
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
+			userInfo = tokenSet.claims();
 
-			const issuer = client.issuer;
-			if (issuer.metadata.userinfo_endpoint) {
-				userInfo = await client.userinfo(tokenSet.access_token!);
-			} else {
-				userInfo = tokenSet.claims();
+			if (client.issuer.metadata.userinfo_endpoint) {
+				userInfo = {
+					...userInfo,
+					...(await client.userinfo(tokenSet.access_token!)),
+				};
 			}
 		} catch (e) {
 			throw handleError(e);

@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { computed, defineComponent, reactive, watch, PropType, ref } from 'vue';
+import { computed, defineComponent, reactive, watch, PropType } from 'vue';
 import { getPanels, getPanel } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@directus/shared/types';
@@ -111,7 +111,7 @@ export default defineComponent({
 			name: props.panel?.name,
 			note: props.panel?.note,
 			icon: props.panel?.icon ?? 'insert_chart',
-			color: props.panel?.color ?? '#00C897',
+			color: props.panel?.color,
 			width: props.panel?.width ?? undefined,
 			height: props.panel?.height ?? undefined,
 			position_x: props.panel?.position_x ?? 1,

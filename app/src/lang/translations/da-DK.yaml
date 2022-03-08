@@ -1232,7 +1232,6 @@ interfaces:
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
     box: Blokér / Inline
-    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   map:
     map: Kort
     description: Vælg en placering på et kort
@@ -1332,7 +1331,6 @@ interfaces:
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
     options_override: Tilsidesæt
-    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater
