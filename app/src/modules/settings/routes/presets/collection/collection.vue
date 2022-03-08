@@ -61,11 +61,11 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -316,19 +316,6 @@ export default defineComponent({
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-active: var(--background-normal);
-	--v-button-background-color-hover: var(--background-normal-alt);
 }
 
 .layout {
