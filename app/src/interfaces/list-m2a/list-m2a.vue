@@ -714,6 +714,10 @@ export default defineComponent({
 
 .buttons {
 	margin-top: 8px;
+
+	.v-icon.right {
+		margin-right: -6px;
+	}
 }
 
 .existing {
