@@ -1,54 +1,55 @@
 <template>
-	<v-menu full-height :close-on-content-click="false" @update:modelValue="update">
-		<template #activator="{ toggle }">
-			<v-button class="emoji-button" x-small secondary icon @click="toggle">
-				<v-icon name="insert_emoticon" />
-			</v-button>
-		</template>
-
-		<div ref="picker" class="picker"></div>
-	</v-menu>
+	<v-button class="emoji-button" x-small secondary icon @click="emojiPicker.togglePicker($event.target as HTMLElement)">
+		<v-icon name="insert_emoticon" />
+	</v-button>
 </template>
 
 <script setup lang="ts">
-import { Picker } from 'emoji-picker-element';
-import { ref, nextTick } from 'vue';
+import { EmojiButton } from '@joeattardi/emoji-button';
+import { onUnmounted } from 'vue';
 
+const emojiPicker = new EmojiButton({
+	theme: 'auto',
+	zIndex: 10000,
+});
 const emit = defineEmits(['emoji-selected']);
 
-const picker = ref<HTMLElement | null>(null);
-const emojiPicker = new Picker();
-
-emojiPicker.addEventListener('emoji-click', (event) => {
-	emit('emoji-selected', event.detail);
+emojiPicker.on('emoji', (event) => {
+	emit('emoji-selected', event.emoji);
 });
 
-function update(active: boolean) {
-	if (active === false) return;
-
-	nextTick(() => {
-		picker.value?.appendChild(emojiPicker);
-	});
-}
+onUnmounted(() => {
+	emojiPicker.destroyPicker();
+});
 </script>
 
-<style scoped lang="scss">
-.emoji-button .v-icon {
-	color: var(--foreground-subdued);
-}
+<style scoped lang="scss"></style>
 
-.picker ::v-deep emoji-picker {
-	--background: transparent;
-	--border-color: transparent;
-	--button-active-background: var(--background-normal-alt);
-	--button-hover-background: var(--background-normal-alt);
-	--input-border-color: var(--border-normal);
-	--input-border-size: var(--border-width);
-	--outline-color: var(--border-normal-alt);
-	--input-font-color: var(--foreground-normal);
-	--input-placeholder-color: var(--foreground-subdued);
-	--input-border-radius: var(--border-radius);
-	--indicator-color: var(--primary);
-	--indicator-height: 2px;
+<style lang="scss">
+.emoji-picker__wrapper {
+	.emoji-picker {
+		--category-button-active-color: var(--primary);
+		--font: var(--family-sans-serif);
+		--text-color: var(--foreground-normal);
+		--dark-text-color: var(--foreground-normal);
+		--secondary-text-color: var(--foreground-normal-alt);
+		--dark-secondary-text-color: var(--foreground-normal-alt);
+
+		border-radius: var(--border-radius);
+		border: var(--border-width) solid var(--border-normal);
+		background-color: var(--background-page);
+	}
+
+	.emoji-picker__search {
+		border-radius: var(--border-radius);
+		border: var(--border-width) solid var(--border-normal);
+	}
+
+	.emoji-picker__emoji {
+		&:hover {
+			background-color: var(--background-normal);
+			border-radius: var(--border-radius);
+		}
+	}
 }
 </style>

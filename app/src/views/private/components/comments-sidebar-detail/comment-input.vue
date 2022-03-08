@@ -39,11 +39,11 @@
 		</v-menu>
 
 		<div class="buttons">
-			<v-button x-small secondary icon class="mention" @click="insertText(' @')">
+			<v-button x-small secondary icon class="mention" @click="insertAt">
 				<v-icon name="alternate_email" />
 			</v-button>
 
-			<v-emoji-picker @emoji-selected="insertText($event.unicode)" />
+			<v-emoji-picker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
 
 			<div class="spacer"></div>
 
@@ -78,6 +78,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import vTemplateInput from '@/components/v-template-input.vue';
 import { cloneDeep } from 'lodash';
 import { Activity } from './types';
+import { nextTick } from 'process';
 
 const props = withDefaults(
 	defineProps<{
@@ -97,7 +98,13 @@ const emit = defineEmits(['cancel']);
 
 const { t } = useI18n();
 const commentElement = ref<ComponentPublicInstance>();
+let lastCaretPosition = 0;
+
 useShortcut('meta+enter', postComment, commentElement);
+
+defineExpose({
+	commentElement,
+});
 
 const newCommentContent = ref<string | null>(props.existingComment?.comment ?? null);
 
@@ -195,23 +202,37 @@ const loadUsers = throttle(async (name: string) => {
 	}
 }, 200);
 
-function insertText(text: string) {
-	commentElement.value?.$el.focus();
-
-	if (window.getSelection) {
-		let selection = window.getSelection();
-		if (!selection) return;
-
-		if (selection.getRangeAt && selection.rangeCount) {
-			let range = selection.getRangeAt(0);
-			range.deleteContents();
-			range.insertNode(document.createTextNode(text));
-			range.collapse(false);
-
-			const inputEvent = new Event('input', { bubbles: true });
-			commentElement.value?.$el.dispatchEvent(inputEvent);
-		}
+function saveCursorPosition() {
+	if (document.getSelection) {
+		const selection = document.getSelection();
+		if (selection) lastCaretPosition = selection.anchorOffset;
 	}
+}
+
+// TODO: fix this
+function insertAt() {
+	saveCursorPosition();
+	lastCaretPosition += 1;
+	insertText(' @');
+}
+
+function insertText(text: string) {
+	if (newCommentContent.value === null) {
+		newCommentContent.value = text;
+		return;
+	}
+
+	newCommentContent.value = [
+		newCommentContent.value.slice(0, lastCaretPosition),
+		text,
+		newCommentContent.value.slice(lastCaretPosition),
+	].join('');
+
+	setTimeout(() => {
+		commentElement.value?.$el.focus();
+
+		document.getSelection()?.setPosition(document.getSelection()?.anchorNode ?? null, lastCaretPosition + 1);
+	}, 1);
 }
 
 function insertUser(user: Record<string, any>) {
@@ -372,12 +393,13 @@ function pressedEnter() {
 	display: flex;
 	gap: 4px;
 
-	::v-deep .mention,
-	::v-deep .emoji-button {
+	.mention,
+	.emoji-button {
 		--v-button-background-color: transparent;
 	}
 
-	.mention .v-icon {
+	.mention .v-icon,
+	::v-deep(.emoji-button .v-icon) {
 		color: var(--foreground-subdued);
 	}
 }
