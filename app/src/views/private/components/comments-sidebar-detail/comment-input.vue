@@ -209,17 +209,16 @@ function saveCursorPosition() {
 	}
 }
 
-// TODO: fix this
 function insertAt() {
 	saveCursorPosition();
-	lastCaretPosition += 1;
+	document.getSelection()?.removeAllRanges();
 	insertText(' @');
 }
 
 function insertText(text: string) {
 	if (newCommentContent.value === null) {
-		newCommentContent.value = text;
-		return;
+		lastCaretPosition = 0;
+		newCommentContent.value = '';
 	}
 
 	newCommentContent.value = [
@@ -231,8 +230,11 @@ function insertText(text: string) {
 	setTimeout(() => {
 		commentElement.value?.$el.focus();
 
-		document.getSelection()?.setPosition(document.getSelection()?.anchorNode ?? null, lastCaretPosition + 1);
-	}, 1);
+		document.getSelection()?.setPosition(document.getSelection()?.anchorNode ?? null, lastCaretPosition + text.length);
+
+		const inputEvent = new Event('input', { bubbles: true });
+		commentElement.value?.$el.dispatchEvent(inputEvent);
+	}, 10);
 }
 
 function insertUser(user: Record<string, any>) {
