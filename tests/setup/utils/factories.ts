@@ -1,4 +1,4 @@
-import { music, internet, name, datatype, lorem } from 'faker';
+import faker from '@faker-js/faker/locale/en';
 import { v4 as uuid } from 'uuid';
 import { Knex } from 'knex';
 
@@ -132,20 +132,20 @@ export const seedTable = async function (
 
 export const createArtist = (): Artist => ({
 	id: uuid(),
-	name: internet.userName(),
-	members: JSON.stringify({ guitar: internet.userName() }),
+	name: faker.internet.userName(),
+	members: JSON.stringify({ guitar: faker.internet.userName() }),
 });
 
 export const createEvent = (): Event => ({
 	id: uuid(),
 	cost: 1504.04,
-	description: lorem.paragraphs(2),
+	description: faker.lorem.paragraphs(2),
 	created_at: randomDateTime(),
 	time: randomDateTime(),
 	tags: `tags
-${music.genre()}
-${music.genre()}
-${music.genre()}
+${faker.music.genre()}
+${faker.music.genre()}
+${faker.music.genre()}
 `,
 });
 
@@ -157,16 +157,16 @@ export const createTour = (): Tour => ({
 export const createGuest = (): Guest => ({
 	id: uuid(),
 	birthday: randomDateTime(),
-	name: `${name.firstName()} ${name.lastName()}`,
+	name: `${faker.name.firstName()} ${faker.name.lastName()}`,
 	earliest_events_to_show: randomDateTime(),
 	latest_events_to_show: randomDateTime(),
 	password: getRandomString(32),
-	shows_attended: datatype.number(),
+	shows_attended: faker.datatype.number(),
 });
 
 export const createOrganizer = (): Organizer => ({
 	id: uuid(),
-	company_name: `${name.firstName()} ${name.lastName()}`,
+	company_name: `${faker.name.firstName()} ${faker.name.lastName()}`,
 });
 
 export const createMany = (factory: (() => Item) | Record<string, any>, count: number, options?: CreateManyOptions) => {

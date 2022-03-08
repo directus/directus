@@ -4,7 +4,7 @@ import config, { getUrl } from '../../config';
 import vendors from '../../get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { createArtist, createGuest, createMany, seedTable } from '../../setup/utils/factories';
-import { internet } from 'faker';
+import faker from '@faker-js/faker/locale/en';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -45,7 +45,7 @@ describe('/items', () => {
 		describe('retrieves all items from guest table with favorite_artist', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				const artist = createArtist();
-				const name = internet.userName();
+				const name = faker.internet.userName();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 				const guests = createMany(createGuest, 10, { name, favorite_artist: artist.id });
 				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
