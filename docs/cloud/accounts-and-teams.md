@@ -11,7 +11,7 @@
 ![Register Account Page](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/register-20220225A.webp)
 
 Directus Cloud Accounts are how individual users access the platform. Creating a new account is easy and free. You may
-create your account via Github or enter a username, email, and password manually. Simply go to the
+create your account via GitHub or enter a username, email, and password manually. Simply go to the
 [login page](https://directus.cloud/login) and follow the prompts.
 
 ## Signing In to Your Account
