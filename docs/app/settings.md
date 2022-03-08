@@ -26,14 +26,14 @@ Settings are split into five distinct sections, each described below.
 Aside from the above pages, there are three shorthand links:
 
 - **Report Bug**\
-  The Settings Navigation Bar includes a direct link to report a bug in the platform. When using this button, helpful debugging
-  information about your project is automatically included, such as: version number, operating system, and environment type.
+  A direct link to report a bug in the platform. When using this button, helpful debugging information about your project
+  is automatically included, such as: version number, operating system, and environment type.
 
 - **Request Feature**\
-  The Settings Navigation Bar includes a link to [submit a new feature request](https://github.com/directus/directus/discussions/new)
-  on Github. Feature requests are a great way to let our team know what should be prioritized next. Learn more about making
-  feature requests in the [Contributing > Introduction](/contributing/introduction/#feature-requests).
+  A direct link to [submit a new feature request](https://github.com/directus/directus/discussions/new) on Github. Feature
+  requests are a great way to let our team know what should be prioritized next. Learn more about making feature requests
+  in the [Contributing > Introduction](/contributing/introduction/#feature-requests).
 
 - **Platform Version**\
-  The Settings Navigation Bar displays the exact version of your platform. Click this button to go to the GitHub releases
-  page, which includes the full change logs.
+  Displays the exact version of your platform. Click this button to go to the GitHub releases page, which includes the full
+  change logs.
