@@ -63,6 +63,7 @@ export default defineInterface({
 					width: 'half',
 					interface: 'input',
 					options: {
+						placeholder: '$t:no_limit',
 						min: 0,
 					},
 				},

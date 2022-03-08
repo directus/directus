@@ -12,12 +12,12 @@
 
 		<div class="grid-element half">
 			<p class="type-label">{{ t('min_items') }}</p>
-			<v-input v-model="minItems" type="number" min="0" class="input" />
+			<v-input v-model="minItems" type="number" min="0" :placeholder="t('no_limit')" class="input" />
 		</div>
 
 		<div class="grid-element half-right">
 			<p class="type-label">{{ t('max_items') }}</p>
-			<v-input v-model="maxItems" type="number" :min="minItems || 0" class="input" />
+			<v-input v-model="maxItems" type="number" :min="minItems || 0" :placeholder="t('no_limit')" class="input" />
 		</div>
 
 		<div class="grid-element full">
