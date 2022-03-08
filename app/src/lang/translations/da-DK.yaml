@@ -31,6 +31,7 @@ edit_collection: Rediger Samling
 exclusive: Eksklusiv
 children: Underordnede
 db_only_click_to_configure: 'Kun database: Klik for at indstille'
+show_active_items: Vis Aktive Elementer
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
 required: Påkrævet
@@ -249,10 +250,7 @@ dismiss: Afvis
 raw_value: Rå værdi
 edit_raw_value: Rediger Rå Værdi
 enter_raw_value: Indtast rå værdi...
-clear_value: Nulstil værdi
 clear_changes: Ryd Ændringer
-reset_to_default: Nulstil til standard
-undo_changes: Fortryd ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
@@ -283,10 +281,9 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
-export_data: Eksporter data
+label_import: Importér
 format: Format
 use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi
@@ -628,6 +625,7 @@ toggle: Skift
 icon_on: Ikon Til
 icon_off: Ikon Fra
 label: Etiket
+insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
 panel_options: Panel Indstillinger
@@ -1234,7 +1232,6 @@ interfaces:
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
     box: Blokér / Inline
-    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   map:
     map: Kort
     description: Vælg en placering på et kort
@@ -1334,7 +1331,6 @@ interfaces:
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
     options_override: Tilsidesæt
-    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater

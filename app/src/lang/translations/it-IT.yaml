@@ -28,6 +28,7 @@ draft: Bozza
 archived: Archiviato
 modules: Moduli
 module_bar: Barra del modulo
+reset_width: Reimposta larghezza
 tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
@@ -155,9 +156,9 @@ item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
-permissions_for_role: 'Campi che il ruolo {role} può {action}.'
-fields_for_role: 'Campi che il ruolo {role} può {action}.'
-validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
+permissions_for_role: 'Oggetti per cui è abilitata l''azione {action} per il ruolo {role}.'
+fields_for_role: 'Campi per cui è abilitata l''azione {action} per il ruolo {role}.'
+validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare all''azione {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
 revision_post_create: Ecco come appariva questo elemento quando è stato creato.
@@ -273,6 +274,7 @@ note: Nota
 enter_a_value: Inserisci un valore...
 enter_a_placeholder: Inserisci un segnaposto...
 length: Lunghezza
+soft_length: Limite consigliato
 precision_scale: Precisione & Scala
 readonly: Sola lettura
 unique: Unico
@@ -283,12 +285,19 @@ foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
 raw_value: Valore grezzo
+copy_raw_value: Copia il valore grezzo
+copy_raw_value_success: Copiato
+copy_raw_value_fail: Copia non riuscito
+paste_raw_value: Incolla il valore grezzo
+paste_raw_value_success: Incolla
+paste_raw_value_fail: Incolla non riuscito
+view_raw_value: Visualizza il valore grezzo
 edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
-clear_value: Cancella valore
+clear_value: Cancella il valore
 clear_changes: Annulla modifiche
-reset_to_default: Reimposta a predefinito
-undo_changes: Annulla modifica
+reset_to_default: Reimposta al valore predefinito
+undo_changes: Annulla le modifiche
 notifications: Notifiche
 show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
@@ -319,10 +328,17 @@ related_collection: Raccolta Correlata
 related_collections: Raccolte Correlate
 translations_collection: Raccolta di traduzioni
 languages_collection: Raccolta di Lingue
-export_data: Esporta Dati
+import_data_input_placeholder: CSV o JSON...
+import_data_button: Avvia l'importazione
+import_data_indeterminate: Importazione dei dati...
+import_data_success: Dati importati con successo da {filename}
+import_data_error: La struttura dei dati di questo file non corrisponde alla raccolta.
+label_import: Importa
+label_export: Esporta
+import_export: Importa / Esporta
 format: Formato
 use_current_filters_settings: Usa i filtri e le impostazioni correnti
-export_collection: 'Esporta {collection}'
+export_data_button: Avvia l'esportazione
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
 fill_template: Riempi con il valore del modello
@@ -338,9 +354,12 @@ interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
+delete_share: Elimina condivisione
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -422,7 +441,7 @@ information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta funzionalità
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
-reset_interface: '"Reimposta interfaccia"'
+reset_interface: Reimposta interfaccia
 display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
 list-m2a: Costruttore (M2A)
@@ -518,6 +537,9 @@ errors:
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
   ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
+  VALUE_TOO_LONG: Il valore è troppo lungo
+  VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
+  INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
@@ -548,12 +570,15 @@ update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 make_collection_visible: Rendi visibile la raccolta
 make_collection_hidden: Rendi nascosta la raccolta
+make_folder_visible: Rendi visibile la cartella
+make_folder_hidden: Rendi nascosta la cartella
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione è permanente.
+delete_folder_are_you_sure: Sei sicuro di voler eliminare questa cartella? Le cartelle e le collezioni annidate verranno spostate al livello più alto.
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
@@ -713,6 +738,8 @@ unlimited: Illimitato
 open_link_in: Apri collegamento in
 new_tab: Nuova scheda
 current_tab: Scheda corrente
+save_image: Salva immagine
+save_media: Salva media
 wysiwyg_options:
   aligncenter: Centrato
   alignjustify: Giustificato
@@ -863,6 +890,7 @@ directus_collection:
   directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
   directus_sessions: Informazioni sulla sessione dell'utente
   directus_settings: Opzioni di configurazione del progetto
+  directus_shares: Traccia gli elementi condivisi esternamente
   directus_users: Utenti di sistema per la piattaforma
   directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:
@@ -947,6 +975,7 @@ fields:
     external_identifier: Identificatore esterno
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
+    email_notifications: Notifiche email
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1157,6 +1186,8 @@ share_access_not_found: Questa pagina condivisa non esiste o ha già raggiunto i
 share_access_not_found_desc: Contatta un utente autorizzato di questo progetto per richiedere l'accesso.
 share_access_not_found_title: Pagina della condivisione sconosciuta
 share_copy_link: Copia link
+share_copy_link_success: Collegamento copiato
+share_copy_link_error: Impossibile copiare il collegamento
 share_send_link: Invia link
 relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
@@ -1169,7 +1200,7 @@ choose_action: Scegli azione
 continue_label: Continua
 continue_as: >-
   {name} è attualmente autenticato. Se riconosci questo account, premi continua.
-editing_role: '{role} Ruolo'
+editing_role: 'Ruolo {role}'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
 delete_label: Elimina
@@ -1241,6 +1272,8 @@ interfaces:
     add_filter: Aggiungi Filtro
     add_group: Gruppo And / Or
     add_value: Aggiungi valore
+    logic_type_and: E
+    logic_type_or: O
     all: Tutti
     any: Qualsiasi
     and: e
@@ -1379,8 +1412,8 @@ interfaces:
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
-    imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
@@ -1487,8 +1520,8 @@ interfaces:
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
-    imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.

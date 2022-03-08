@@ -5,7 +5,7 @@ module.exports = {
 	ga: 'UA-24637628-7',
 	head: [
 		['link', { rel: 'manifest', href: '/manifest.json' }],
-		['link', { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#00C897' }],
+		['link', { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#6644ff' }],
 		['link', { rel: 'shortcut icon', type: 'image/svg+xml', href: '/favicon.svg' }],
 		[
 			'link',
@@ -35,9 +35,9 @@ module.exports = {
 			},
 		],
 		['meta', { name: 'application-name', content: 'Directus Docs' }],
-		['meta', { name: 'theme-color', content: '#00C897' }],
+		['meta', { name: 'theme-color', content: '#6644ff' }],
 		['meta', { name: 'apple-mobile-web-app-title', content: 'Directus Docs' }],
-		['meta', { name: 'msapplication-TileColor', content: '#00C897' }],
+		['meta', { name: 'msapplication-TileColor', content: '#6644ff' }],
 		['meta', { name: 'msapplication-config', content: '/browserconfig.xml' }],
 	],
 	themeConfig: {
@@ -107,6 +107,11 @@ module.exports = {
 							},
 							{
 								type: 'page',
+								path: '/getting-started/installation/gcp',
+								title: 'Google Cloud Platform',
+							},
+							{
+								type: 'page',
 								path: '/getting-started/installation/iis',
 								title: 'IIS',
 							},
@@ -152,6 +157,7 @@ module.exports = {
 						path: '/app/overview',
 						title: 'Overview',
 					},
+					{ type: 'divider' },
 					{
 						type: 'page',
 						path: '/app/content',
@@ -194,6 +200,12 @@ module.exports = {
 						type: 'page',
 						path: '/app/settings',
 						title: 'Settings',
+					},
+					{ type: 'divider' },
+					{
+						type: 'page',
+						path: '/app/filters',
+						title: 'Filters',
 					},
 				],
 			},
@@ -247,6 +259,11 @@ module.exports = {
 						type: 'page',
 						path: '/configuration/activity-log',
 						title: 'Activity Log',
+					},
+					{
+						type: 'page',
+						path: '/configuration/sso',
+						title: 'Single Sign-On (SSO)',
 					},
 					{
 						type: 'divider',
@@ -466,16 +483,6 @@ module.exports = {
 						type: 'page',
 						path: '/extensions/themes',
 						title: 'Themes',
-					},
-				],
-			},
-			{
-				title: 'Guides',
-				children: [
-					{
-						type: 'page',
-						path: '/guides/sso',
-						title: 'Single Sign-On (SSO)',
 					},
 				],
 			},

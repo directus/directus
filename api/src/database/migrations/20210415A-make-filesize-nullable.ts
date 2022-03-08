@@ -1,13 +1,20 @@
 import { Knex } from 'knex';
+import { getHelpers } from '../helpers';
 
 export async function up(knex: Knex): Promise<void> {
-	await knex.schema.alterTable('directus_files', (table) => {
-		table.integer('filesize').nullable().defaultTo(null).alter();
+	const helper = getHelpers(knex).schema;
+
+	await helper.changeToInteger('directus_files', 'filesize', {
+		nullable: true,
+		default: null,
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.alterTable('directus_files', (table) => {
-		table.integer('filesize').notNullable().defaultTo(0).alter();
+	const helper = getHelpers(knex).schema;
+
+	await helper.changeToInteger('directus_files', 'filesize', {
+		nullable: false,
+		default: 0,
 	});
 }

@@ -1,6 +1,6 @@
 <template>
-	<div class="share-item">
-		<div class="share-item-header">
+	<div class="item">
+		<div class="item-header">
 			<span class="type-label">{{ share.name }}</span>
 
 			<div class="header-right">
@@ -26,7 +26,7 @@
 							<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 							<v-list-item-content>{{ t('edit') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item v-if="deleteAllowed" clickable @click="$emit('delete')">
+						<v-list-item v-if="deleteAllowed" clickable class="danger" @click="$emit('delete')">
 							<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 							<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
 						</v-list-item>
@@ -35,7 +35,7 @@
 			</div>
 		</div>
 
-		<div class="share-item-info">
+		<div class="item-info">
 			<span class="share-uses" :class="{ 'no-left': usesLeft === 0 }">
 				<template v-if="usesLeft === null">{{ t('unlimited_usage') }}</template>
 				<template v-else>{{ t('uses_left', usesLeft) }}</template>
@@ -103,25 +103,31 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.share-item {
+.item {
 	margin-bottom: 8px;
 	padding: 8px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 }
 
-.share-item-date {
+.item-date {
 	color: var(--foreground-subdued);
 	font-size: 12px;
 }
 
-.share-item-header {
+.item-header {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 0;
 }
 
-.share-item-info {
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
+}
+
+.item-info {
 	display: flex;
 	align-items: center;
 	color: var(--foreground-subdued);
@@ -189,7 +195,7 @@ export default defineComponent({
 	}
 }
 
-.share-item:hover {
+.item:hover {
 	&:hover {
 		.header-right .date {
 			opacity: 0;

@@ -275,7 +275,6 @@ export default defineComponent({
 
 				notify({
 					title: t('post_comment_success'),
-					type: 'success',
 				});
 			} catch (err: any) {
 				unexpectedError(err);

@@ -33,7 +33,7 @@ import {
 	StringValueNode,
 	validate,
 } from 'graphql';
-import { Filter } from '@directus/shared/types';
+import { Filter, SchemaOverview } from '@directus/shared/types';
 import {
 	GraphQLJSON,
 	InputTypeComposer,
@@ -53,7 +53,7 @@ import { BaseException } from '@directus/shared/exceptions';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
 import { Accountability, Query, Aggregate } from '@directus/shared/types';
-import { AbstractServiceOptions, Action, GraphQLParams, Item, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
@@ -1701,10 +1701,10 @@ export class GraphQLService {
 					const extensionManager = getExtensionManager();
 
 					return {
-						interfaces: extensionManager.listExtensions('interface'),
-						displays: extensionManager.listExtensions('display'),
-						layouts: extensionManager.listExtensions('layout'),
-						modules: extensionManager.listExtensions('module'),
+						interfaces: extensionManager.getExtensionsList('interface'),
+						displays: extensionManager.getExtensionsList('display'),
+						layouts: extensionManager.getExtensionsList('layout'),
+						modules: extensionManager.getExtensionsList('module'),
 					};
 				},
 			},

@@ -25,7 +25,7 @@ ARG REPOSITORY=directus/directus
 LABEL directus.version="${VERSION}"
 
 # Default environment variables
-# (see https://docs.directus.io/reference/environment-variables/)
+# (see https://docs.directus.io/reference/environment-variables/)
 ENV \
   DB_CLIENT="sqlite3" \
   DB_FILENAME="/directus/database/database.sqlite" \
@@ -36,6 +36,9 @@ RUN \
   # Upgrade system and install 'ssmtp' to be able to send mails
   apk upgrade --no-cache && apk add --no-cache \
   ssmtp \
+  # Add support for specifying the timezone of the container
+  # using the "TZ" environment variable.
+  tzdata \
   # Create directory for Directus with corresponding ownership
   # (can be omitted on newer Docker versions since WORKDIR below will do the same)
   && mkdir /directus && chown node:node /directus

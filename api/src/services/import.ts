@@ -1,8 +1,8 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
-import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { AbstractServiceOptions } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
+import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
 import StreamArray from 'stream-json/streamers/StreamArray';
 import { ItemsService } from './items';
 import { queue } from 'async';
@@ -40,9 +40,10 @@ export class ImportService {
 			case 'application/json':
 				return await this.importJSON(collection, stream);
 			case 'text/csv':
+			case 'application/vnd.ms-excel':
 				return await this.importCSV(collection, stream);
 			default:
-				throw new InvalidPayloadException(`Can't import files of type "${mimetype}"`);
+				throw new UnsupportedMediaTypeException(`Can't import files of type "${mimetype}"`);
 		}
 	}
 

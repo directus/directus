@@ -1,29 +1,31 @@
 @import 'themes/mixins/generate-colors';
 
 // Main palette
-$purple: #9e8de4;
-$blue: #68b0f4;
-$green: #00c897;
-$yellow: #ffb300;
-$orange: #ee9746;
+$purple: #6644ff;
+$pink: #ff99dd;
+$blue: #3399ff;
+$green: #2ecda7;
+$yellow: #ffc23b;
+$orange: #ffa439;
 $red: #e35169;
 
 // Mixing colors
 $light-theme-tint: #fff;
 $light-theme-shade: #2e3c43;
 $dark-theme-tint: #fff;
-$dark-theme-shade: #2e3c43;
+$dark-theme-shade: #16151a;
 
 // Color variant names -> Color to map to said name
 $color-mapping: (
 	'purple': $purple,
+	'pink': $pink,
 	'blue': $blue,
 	'green': $green,
 	'yellow': $yellow,
 	'orange': $orange,
 	'red': $red,
-	'primary': $green,
-	'secondary': $blue,
+	'primary': $purple,
+	'secondary': $pink,
 	'success': $green,
 	'warning': $yellow,
 	'danger': $red,

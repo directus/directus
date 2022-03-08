@@ -280,10 +280,7 @@ dismiss: Hylkää
 raw_value: Raaka-arvo
 edit_raw_value: Muokkaa raaka-arvoa
 enter_raw_value: Syötä raakaarvo...
-clear_value: Tyhjennä
 clear_changes: Tyhjennä muutokset
-reset_to_default: Palauta oletukseksi
-undo_changes: Peru muutokset
 notifications: Ilmoitukset
 show_all_activity: Näytä kaikki toiminta
 page_not_found: Sivua ei löydy
@@ -314,10 +311,9 @@ related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
 translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
-export_data: Vie tiedot
+label_import: Tuo
 format: Muoto
 use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
-export_collection: 'Vie {collection}'
 last_page: Viimeinen sivu
 last_access: Viimeksi käytetty
 fill_template: Täytä mallin arvolla
@@ -1308,8 +1304,6 @@ interfaces:
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
     box: Lohko / rivillä
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   map:
     map: Kartta
     description: Valitse sijainti kartalla
@@ -1416,8 +1410,6 @@ interfaces:
     custom_formats: Mukautetut muodot
     options_override: Valintojen ohitus
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.

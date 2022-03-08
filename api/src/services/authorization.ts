@@ -4,19 +4,18 @@ import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { validatePayload } from '@directus/shared/utils';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, PrimaryKey } from '../types';
 import {
-	AbstractServiceOptions,
-	AST,
-	FieldNode,
-	Item,
-	NestedCollectionNode,
-	PrimaryKey,
+	Query,
+	Aggregate,
+	Permission,
+	PermissionsAction,
+	Accountability,
 	SchemaOverview,
-} from '../types';
-import { Query, Aggregate, Permission, PermissionsAction } from '@directus/shared/types';
+} from '@directus/shared/types';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
+import { stripFunction } from '../utils/strip-function';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -130,7 +129,7 @@ export class AuthorizationService {
 
 					if (allowedFields.includes('*')) continue;
 
-					const fieldKey = childNode.name;
+					const fieldKey = stripFunction(childNode.name);
 
 					if (allowedFields.includes(fieldKey) === false) {
 						throw new ForbiddenException();

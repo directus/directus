@@ -4,7 +4,7 @@ import express from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
@@ -113,6 +113,10 @@ router.post(
 	'/',
 	multipartHandler,
 	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false) {
+			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+		}
+
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,

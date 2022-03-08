@@ -163,8 +163,22 @@
 		</div>
 
 		<div ref="codemirrorEl"></div>
-
-		<div v-if="view[0] === 'preview'" v-md="markdownString" class="preview-box"></div>
+		<template v-if="softLength">
+			<span
+				class="remaining"
+				:class="{
+					warning: percRemaining < 10,
+					danger: percRemaining < 5,
+				}"
+			>
+				{{ softLength - count }}
+			</span>
+		</template>
+		<div
+			v-md="markdownString"
+			class="preview-box"
+			:style="view[0] === 'preview' ? 'display:block' : 'display:none'"
+		></div>
 
 		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
 			<v-card>
@@ -190,10 +204,9 @@ import 'codemirror/addon/display/placeholder.js';
 
 import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
-import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
+import { percentage } from '@/utils/percentage';
 
 export default defineComponent({
 	props: {
@@ -243,6 +256,10 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		softLength: {
+			type: Number,
+			default: undefined,
+		},
 		folder: {
 			type: String,
 			default: undefined,
@@ -259,6 +276,8 @@ export default defineComponent({
 		const view = ref(['editor']);
 
 		const imageDialogOpen = ref(false);
+
+		let count = ref(0);
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {
@@ -277,6 +296,18 @@ export default defineComponent({
 
 					emit('input', content);
 				});
+			}
+
+			if (markdownInterface.value) {
+				const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+
+				const observer = new MutationObserver(() => {
+					count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
+				});
+
+				const config = { characterData: true, childList: true, subtree: true };
+
+				observer.observe(previewBox, config);
 			}
 		});
 
@@ -305,20 +336,7 @@ export default defineComponent({
 		});
 
 		const markdownString = computed(() => {
-			let mdString = props.value || '';
-
-			if (!props.imageToken) {
-				const baseUrl = getPublicURL() + 'assets/';
-				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
-
-				const images = Array.from(mdString.matchAll(regex));
-
-				for (const image of images) {
-					mdString = mdString.replace(image[1], addTokenToURL(image[1]));
-				}
-			}
-
-			return mdString;
+			return props.value || '';
 		});
 
 		const table = reactive({
@@ -326,6 +344,7 @@ export default defineComponent({
 			columns: 4,
 		});
 
+		const percRemaining = computed(() => percentage(count.value, props.softLength));
 		useShortcut('meta+b', () => edit('bold'), markdownInterface);
 		useShortcut('meta+i', () => edit('italic'), markdownInterface);
 		useShortcut('meta+k', () => edit('link'), markdownInterface);
@@ -341,6 +360,8 @@ export default defineComponent({
 
 		return {
 			t,
+			percRemaining,
+			count,
 			codemirrorEl,
 			edit,
 			view,
@@ -364,7 +385,7 @@ export default defineComponent({
 				url += '?access_token=' + props.imageToken;
 			}
 
-			codemirror.replaceSelection(`![](${url})`);
+			codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
 
 			imageDialogOpen.value = false;
 		}
@@ -399,6 +420,7 @@ textarea {
 }
 
 .preview-box {
+	display: none;
 	padding: 20px;
 }
 
@@ -482,6 +504,25 @@ textarea {
 	font-size: 15px;
 	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
+}
+
+.remaining {
+	position: absolute;
+	right: 10px;
+	bottom: 5px;
+	color: var(--foreground-subdued);
+	font-weight: 600;
+	text-align: right;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.warning {
+	color: var(--warning);
+}
+
+.danger {
+	color: var(--danger);
 }
 
 .preview-box :deep(ul ul),

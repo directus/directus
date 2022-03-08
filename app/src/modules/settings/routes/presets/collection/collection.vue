@@ -11,7 +11,7 @@
 		<template #actions>
 			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" @click="on">
+					<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
@@ -91,7 +91,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore, usePresetsStore } from '@/stores/';
 import { getLayout } from '@/layouts';
 import { useRouter } from 'vue-router';
 import ValueNull from '@/views/private/components/value-null';
@@ -131,6 +131,7 @@ export default defineComponent({
 		const { loading, presets, getPresets } = usePresets();
 		const { headers } = useTable();
 		const { confirmDelete, deleting, deleteSelection } = useDelete();
+		const presetsStore = usePresetsStore();
 
 		getPresets();
 
@@ -277,7 +278,7 @@ export default defineComponent({
 
 				try {
 					const IDs = selection.value.map((item) => item.id);
-					await api.delete(`/presets`, { data: IDs });
+					await presetsStore.delete(IDs);
 					selection.value = [];
 					await getPresets();
 					confirmDelete.value = false;
@@ -292,15 +293,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .presets-collection {

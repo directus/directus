@@ -33,7 +33,7 @@ Learn more at...
 
 ## Installing
 
-Directus requires NodeJS 10+. Create a new project with our simple CLI tool:
+Directus requires NodeJS 10+. Create a new project with our simple CLI tool:
 
 ```
 npm init directus-project my-project

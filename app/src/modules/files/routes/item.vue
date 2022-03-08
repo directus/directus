@@ -19,6 +19,7 @@
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null || deleteAllowed === false"
 						@click="on"
 					>
@@ -42,14 +43,7 @@
 
 			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="t('move_to_folder')"
-						rounded
-						icon
-						:disabled="item === null"
-						class="folder"
-						@click="on"
-					>
+					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon :disabled="item === null" secondary @click="on">
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
@@ -72,7 +66,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('download')" rounded icon class="download" @click="downloadFile">
+			<v-button v-tooltip.bottom="t('download')" rounded icon secondary @click="downloadFile">
 				<v-icon name="save_alt" />
 			</v-button>
 
@@ -81,7 +75,7 @@
 				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
-				class="edit"
+				secondary
 				@click="editActive = true"
 			>
 				<v-icon name="tune" />
@@ -92,15 +86,15 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true && saveAllowed === true"
-						:disabled-options="['save-and-add-new']"
+						v-if="isSavable"
+						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 						@discard-and-stay="discardAndStay"
@@ -180,7 +174,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -198,7 +192,7 @@ import ReplaceFile from '../components/replace-file.vue';
 import { usePermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'FilesItem',
@@ -235,6 +229,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -248,9 +243,9 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(ref('directus_files'), primaryKey);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
-		unsavedChanges(hasEdits);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		const confirmDelete = ref(false);
 		const editActive = ref(false);
@@ -286,24 +281,11 @@ export default defineComponent({
 			else return '/files';
 		});
 
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		useShortcut('meta+s', saveAndStay, form);
 
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
-
-		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
+		const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			ref('directus_files'),
 			item,
 			isNew
@@ -347,6 +329,7 @@ export default defineComponent({
 			to,
 			replaceFileDialogActive,
 			refresh,
+			createAllowed,
 			deleteAllowed,
 			saveAllowed,
 			updateAllowed,
@@ -354,6 +337,7 @@ export default defineComponent({
 			fieldsFiltered,
 			revisionsAllowed,
 			validationErrors,
+			isSavable,
 		};
 
 		function useBreadcrumb() {
@@ -460,7 +444,6 @@ export default defineComponent({
 
 					notify({
 						title: t('file_moved', { folder }),
-						type: 'success',
 						icon: 'folder_move',
 					});
 				} catch (err: any) {
@@ -477,23 +460,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {
 	--v-button-background-color: var(--background-normal);
-}
-
-.edit,
-.folder,
-.download {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 
 .file-item {

@@ -101,6 +101,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
 							<v-icon name="delete" outline />
@@ -137,7 +138,7 @@
 							:disabled="batchArchiveAllowed !== true"
 							rounded
 							icon
-							class="action-archive"
+							secondary
 							@click="on"
 						>
 							<v-icon name="archive" outline />
@@ -159,11 +160,11 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -247,6 +248,7 @@
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
+					@refresh="refresh"
 				/>
 			</template>
 
@@ -276,6 +278,7 @@ import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -303,6 +306,7 @@ export default defineComponent({
 		DrawerBatch,
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
+		ExportSidebarDetail,
 	},
 	props: {
 		collection: {
@@ -403,20 +407,7 @@ export default defineComponent({
 			if (archiveValue === 'false') archiveValue = false;
 
 			if (props.archive === 'all') {
-				return {
-					_or: [
-						{
-							[field]: {
-								_eq: archiveValue,
-							},
-						},
-						{
-							[field]: {
-								_neq: archiveValue,
-							},
-						},
-					],
-				};
+				return null;
 			} else if (props.archive === 'archived') {
 				return {
 					[field]: {
@@ -680,39 +671,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-archive {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-active: var(--background-normal);
-	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
-}
-
-.header-icon.archive {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .layout {

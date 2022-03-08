@@ -268,7 +268,7 @@ export default defineComponent({
 	width: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
-	background-color: var(--background-inverted);
+	background-color: var(--background-normal-alt);
 	border-radius: var(--border-radius);
 }
 
@@ -282,7 +282,6 @@ img {
 
 .is-svg {
 	padding: 32px;
-	background-color: var(--background-normal-alt);
 
 	img {
 		object-fit: contain;
@@ -294,7 +293,6 @@ img {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	// width: 100%;
 	height: 100%;
 	color: var(--foreground-subdued);
 	background-color: var(--background-normal);
