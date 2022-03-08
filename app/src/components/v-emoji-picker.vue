@@ -40,9 +40,18 @@ onUnmounted(() => {
 		background-color: var(--background-page);
 	}
 
-	.emoji-picker__search {
+	.emoji-picker__search-container input.emoji-picker__search {
 		border-radius: var(--border-radius);
 		border: var(--border-width) solid var(--border-normal);
+		background-color: var(--background-page);
+
+		&:hover {
+			border-color: var(--border-normal-alt);
+		}
+
+		&:focus {
+			border-color: var(--primary);
+		}
 	}
 
 	.emoji-picker__emoji {
