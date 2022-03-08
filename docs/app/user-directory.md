@@ -1,8 +1,8 @@
 # User Directory
 
-> [Users](/getting-started/glossary#users) are the individual accounts for logging in to the App. Each user belongs to a
-> [Role](/getting-started/glossary#roles) which defines its [Permissions](/getting-started/glossary#permissions). The
-> User Directory is the management system for all Users within a Project.
+> The User Directory is the management system for all Users within a Project. [Users](/getting-started/glossary#users)
+> are the individual accounts for logging in to the App. Each user belongs to a [Role](/getting-started/glossary#roles)
+> which defines its [Permissions](/getting-started/glossary#permissions).
 
 ![User Directory Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-directory-20220222A.webp)
 
@@ -10,22 +10,21 @@
 
 ## How it Works
 
-This module is a management system that enables one to View, Invite, Create, Edit, and Delete Users. In order to
-understand and use this module effectively, you will need to understand
+This Module is a management system that enables one to view, invite, create, edit, and delete Users. In order to
+understand and use this Module effectively, you will need to understand
 [Users, Roles, and Permissions](/configuration/users-roles-permissions.md).
 
 ## Access Permissions
 
-The permissions configured for your Role will determine what you can see and do inside the User Directory.
-Administrators have full permissions. By default, Public has no access permissions _(to anything)_ and other _User_
-Roles have limited access permissions. These permissions can be fully configured in **Settings > Roles & Permissions**
-with all but one exception... A User must at the very least have read permissions for itself on the Directus Users
-Collection, so that is actually hard-wired and unchangeable in every new Role created. By default, new Roles also allow
-Users to Edit their own information, but this can be reconfigured.
+The permissions configured for your Role will determine what you can see and do inside the User Directory. Roles with
+_Admin Access_ enabled are created with full Permissions. Roles with _App Access_ enabled are created with some limited
+Permissions configured by default. Roles that have neither _Admin_ nor _App Access_ enabled (such as the built-in
+_Public_ Role) are created with no access permissions _(to anything)_ by default. Default permissions can be fully
+configured in **Settings > Roles & Permissions**.
 
 ## User Directory Page
 
-Lists all Users in a project, with a navigation that allows quick access to Users by Role. This page has the same
+Lists all Users in a Project, with a navigation that allows quick access to Users by Role. This page has the same
 functionality as other [Content Pages](/app/content-collections/).
 
 <video title="User Directory Options" autoplay muted loop controls>
@@ -38,7 +37,7 @@ functionality as other [Content Pages](/app/content-collections/).
 - **Select All** – Selects all Users currently in queue.
 - **Card Size** – Toggles size of User Displays.
 - **Sort Field** – Selects Field used to Users by.
-- **Sort Direction** – Toggles Ascending & Descending sort order.
+- **Sort Direction** – Toggles ascending & descending sort order.
 - **Search** – Enables classic type-based searching.
 - **Filter** – Enables advanced query-based search.
 - <span mi btn sec>person_add</span> – [Invite people](/configuration/users-roles-permissions/#inviting-a-user) to
@@ -78,8 +77,8 @@ adjust how Users are displayed on the User Directory.
 	</p>
 </video>
 
-Users are referenced throughout the app, often for accountability purposes. Hovering over a user in this context will
-provide a popover with basic information. Clicking that popover will navigate you to a view of that user's profile page.
+Users are referenced throughout the app, often for accountability purposes. Hovering over a User in this context will
+provide a popover with basic information. Clicking that popover will navigate you to a view of that User's profile page.
 
 ## User Profile Page
 
@@ -87,7 +86,7 @@ provide a popover with basic information. Clicking that popover will navigate yo
 
 A User's profile page can be accessed from the User Directory or by clicking the User Menu at the bottom of the
 [Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
-[Item Page](/app/content-items/). Administrators can customize the fields on this page, but the following are available
+[Item Page](/app/content-items/). Administrators can customize the Fields on this page, but the following are available
 by default.
 
 ### User Details
@@ -98,7 +97,7 @@ by default.
 - **Last Name** – The family/surname.
 - **Email** – A unique email address.
 - **Password** – A hashed system password.
-- **Avatar** – An image to represent the user.
+- **Avatar** – An image to represent the User.
 - **Location** – The city, country, office, or branch name.
 - **Title** – The professional staff title.
 - **Description** – A freeform text description.
@@ -117,11 +116,11 @@ by default.
 
 ![Admin Options](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/admin-options-20220222A.webp)
 
-- **Status** – Set User status Draft, Invited, Active, Suspended, Archived.
+- **Status** – Sets User status as Draft, Invited, Active, Suspended, Archived.
 - **Role** – Defines the User's Role.
-- **Token** – Accepts any string as user access token. At least 19-20 characters recommended, but we give you the tools
+- **Token** – Accepts any string as User access token. At least 19-20 characters recommended, but we give you the tools
   and flexibility to set this according to you own internal security policies.
-- **Provider** – _read-only:_ SSO provider associated with user. See our built-in [SSO options](/configuration/sso).
+- **Provider** – _read-only:_ SSO provider associated with User. See our built-in [SSO options](/configuration/sso).
 - **External Identifier** – Displays external identifier generated by SSO provider.
 
 ### Read-only Info
@@ -131,26 +130,9 @@ by default.
 Information in the Sidebar _(denoted by <span mi icon dark>info</span> when Sidebar is minimized)_ also includes the
 following read-only details:
 
-- **User Key** – The primary key of the user.
+- **User Key** – The Primary Key of the Usser.
 - **Last Page** – The last App page accessed by the user.
-- **Last Access** – The timestamp of the user's last App or API action.
-
-## Extensibility Options
-
-Directus Core is completely open-source, modular and extensible. Extensions allow you to expand or modify any part of
-Directus to fit your needs. Here are some great resources to get started down that track.
-
-- [Extensions > Introduction](/extensions/introduction/)
-- [Extensions > Creating Extensions](/extensions/creating-extensions/)
-- [Contributing > Introduction](/contributing/introduction/)
-- [Contributing > Codebase Overview](/contributing/codebase-overview/)
-
-::: tip Accelerated Development
-
-Working on an enterprise project and looking to outsource or financially sponsor the development of a Shares extension?
-Contact [our team](https://directus.io/contact/)
-
-:::
+- **Last Access** – The timestamp of the User's last App or API action.
 
 ## More Help
 
