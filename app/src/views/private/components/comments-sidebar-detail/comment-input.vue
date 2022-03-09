@@ -47,7 +47,7 @@
 
 			<div class="spacer"></div>
 
-			<v-button v-if="existingComment" class="cancel" x-small secondary @click="$emit('cancel')">
+			<v-button class="cancel" x-small secondary @click="cancel">
 				{{ t('cancel') }}
 			</v-button>
 			<v-button
@@ -201,6 +201,14 @@ const loadUsers = throttle(async (name: string) => {
 		return e;
 	}
 }, 200);
+
+function cancel() {
+	if (props.existingComment) {
+		emit('cancel');
+	} else {
+		newCommentContent.value = '';
+	}
+}
 
 function saveCursorPosition() {
 	if (document.getSelection) {
