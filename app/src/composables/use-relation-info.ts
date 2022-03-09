@@ -7,19 +7,19 @@ type RelationInfo = {
 	relatedCollection: Collection;
 	relatedPrimaryKeyField: Field;
 };
-type RelationO2M = RelationInfo;
-type RelationM2O = RelationInfo & {
+export type RelationO2M = RelationInfo;
+export type RelationM2O = RelationInfo & {
 	sortField?: string;
 };
 
-type RelationM2M = RelationO2M & {
+export type RelationM2M = RelationO2M & {
 	junctionCollection: Collection;
 	junctionPrimaryKeyField: Field;
 	junctionFields: Field[];
 	junction: Relation;
 };
 
-type RelationM2A = {
+export type RelationM2A = {
 	allowedCollections: string[];
 	collectionField: Field;
 	junctionCollection: Collection;
