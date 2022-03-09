@@ -1,7 +1,15 @@
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-input :active="active" clickable readonly :model-value="displayValue" :disabled="disabled" @click="toggle">
+			<v-input
+				:active="active"
+				clickable
+				readonly
+				:model-value="displayValue"
+				:disabled="disabled"
+				:placeholder="t('enter_a_value')"
+				@click="toggle"
+			>
 				<template v-if="!disabled" #append>
 					<v-icon
 						:name="value ? 'clear' : 'today'"
@@ -103,7 +111,7 @@ export default defineComponent({
 			emit('input', null);
 		}
 
-		return { displayValue, unsetValue, dateTimeMenu };
+		return { t, displayValue, unsetValue, dateTimeMenu };
 	},
 });
 </script>
