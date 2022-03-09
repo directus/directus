@@ -13,20 +13,25 @@
 			</v-list-item>
 		</template>
 
-		<v-list-item v-for="{ name, id, icon } in roles" :key="id" :to="`/users/roles/${id}`" :active="currentRole === id">
-			<v-list-item-icon><v-icon :name="icon" outline /></v-list-item-icon>
-			<v-list-item-content>{{ name }}</v-list-item-content>
-		</v-list-item>
+		<navigation-role
+			v-for="role in roles"
+			:key="role.id"
+			:role="role"
+			:last-admin="lastAdminRoleId === role.id"
+			:active="currentRole === role.id"
+		/>
 	</v-list>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 import useNavigation from '../composables/use-navigation';
+import NavigationRole from './navigation-role.vue';
 
 export default defineComponent({
+	components: { NavigationRole },
 	props: {
 		currentRole: {
 			type: String,
@@ -38,7 +43,13 @@ export default defineComponent({
 
 		const { roles, loading } = useNavigation();
 
-		return { t, roles, loading };
+		const lastAdminRoleId = computed(() => {
+			if (!roles.value) return null;
+			const adminRoles = roles.value.filter((role) => role.admin_access === true);
+			return adminRoles.length === 1 ? adminRoles[0].id : null;
+		});
+
+		return { t, roles, loading, lastAdminRoleId };
 	},
 });
 </script>
