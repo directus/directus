@@ -28,7 +28,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, watch } from 'vue';
 import formatLocalized from '@/utils/localized-format';
-import { parse, parseISO } from 'date-fns';
+import { isValid, parse, parseISO } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -70,7 +70,7 @@ export default defineComponent({
 			return { displayValue };
 
 			async function setDisplayValue() {
-				if (!props.value) {
+				if (!props.value || !isValid(parseValue(props.value))) {
 					displayValue.value = null;
 					return;
 				}
