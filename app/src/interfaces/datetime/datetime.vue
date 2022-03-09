@@ -7,7 +7,7 @@
 				readonly
 				:model-value="displayValue"
 				:disabled="disabled"
-				:placeholder="t('enter_a_value')"
+				:placeholder="isValidDefaultValue ? value : t('enter_a_value')"
 				@click="toggle"
 			>
 				<template v-if="!disabled" #append>
@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import formatLocalized from '@/utils/localized-format';
 import { isValid, parse, parseISO } from 'date-fns';
 
@@ -67,6 +67,14 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const dateTimeMenu = ref();
+
+		const isValidDefaultValue = computed(() => {
+			if (isValid(props.value)) return false;
+
+			if (['CURRENT_TIMESTAMP', 'NOW'].includes(props.value)) return true;
+
+			return false;
+		});
 
 		const { displayValue } = useDisplayValue();
 
@@ -111,7 +119,7 @@ export default defineComponent({
 			emit('input', null);
 		}
 
-		return { t, displayValue, unsetValue, dateTimeMenu };
+		return { t, displayValue, unsetValue, dateTimeMenu, isValidDefaultValue };
 	},
 });
 </script>
