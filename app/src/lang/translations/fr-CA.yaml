@@ -114,7 +114,6 @@ recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
-unknown_validation_errors: 'Des erreurs de validation se sont produites pour les champs masqués suivants :'
 validationError:
   eq: La valeur doit être {valid}
   neq: La valeur ne peut pas être {invalid}
