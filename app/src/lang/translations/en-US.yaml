@@ -679,6 +679,7 @@ no_results_copy: Adjust or clear search filters to see results.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+edit_role: Edit Role
 rule: Rule
 user: User
 no_presets: No Presets

@@ -13,10 +13,7 @@
 			</v-list-item>
 		</template>
 
-		<v-list-item v-for="{ name, id, icon } in roles" :key="id" :to="`/users/roles/${id}`" :active="currentRole === id">
-			<v-list-item-icon><v-icon :name="icon" outline /></v-list-item-icon>
-			<v-list-item-content>{{ name }}</v-list-item-content>
-		</v-list-item>
+		<navigation-role v-for="role in roles" :key="role.id" :role="role" :active="currentRole === role.id" />
 	</v-list>
 </template>
 
@@ -25,8 +22,10 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
 
 import useNavigation from '../composables/use-navigation';
+import NavigationRole from './navigation-role.vue';
 
 export default defineComponent({
+	components: { NavigationRole },
 	props: {
 		currentRole: {
 			type: String,
