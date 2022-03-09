@@ -363,6 +363,13 @@ export class UsersService extends ItemsService {
 		const service = new UsersService({
 			knex: this.knex,
 			schema: this.schema,
+			accountability: {
+				role: null,
+				user: user!.id,
+				admin: true,
+				ip: this.accountability!.ip,
+				userAgent: this.accountability!.userAgent,
+			},
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' });
