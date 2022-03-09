@@ -28,6 +28,7 @@ draft: Szkic
 archived: Zarchiwizowany
 modules: Moduły
 module_bar: Pasek modułu
+reset_width: Zresetuj szerokość
 tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
@@ -671,6 +672,7 @@ no_results_copy: Dostosuj lub wyczyść filtry wyszukiwania, aby zobaczyć wynik
 clear_filters: Wyczyść filtry
 saves_automatically: Zapisuje automatycznie
 role: Rola
+edit_role: Edytuj rolę
 rule: Reguła
 user: Użytkownik
 no_presets: Brak szablonów
@@ -1261,6 +1263,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
