@@ -111,7 +111,6 @@ recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
 unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
 nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
-unknown_validation_errors: 'Có một số lỗi xảy ra với những trường ẩn sau:'
 validationError:
   eq: Dữ liệu phải là {valid}
   neq: Dữ liệu không thể là {invalid}
