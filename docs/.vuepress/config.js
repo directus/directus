@@ -520,13 +520,13 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/cloud/accounts-and-teams',
-						title: 'Accounts & Teams',
+						path: '/cloud/accounts',
+						title: 'Accounts',
 					},
 					{
 						type: 'page',
-						path: '/cloud/tiers-and-billing',
-						title: 'Tiers & Billing',
+						path: '/cloud/teams',
+						title: 'Teams',
 					},
 					{
 						type: 'page',
@@ -535,8 +535,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/cloud/cloud-api',
-						title: 'Cloud API',
+						path: '/cloud/options',
+						title: 'Options',
 					},
 				],
 			},
