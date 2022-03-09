@@ -1,32 +1,48 @@
 <template>
 	<v-list-item
-		v-context-menu="'contextMenu'"
 		:to="`/content/${bookmark.collection}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"
 		clickable
+		@contextmenu.stop=""
 	>
 		<v-list-item-icon><v-icon :name="bookmark.icon" :color="bookmark.color" /></v-list-item-icon>
 		<v-list-item-content>
 			<v-text-overflow :text="bookmark.bookmark" />
 		</v-list-item-content>
 
-		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+		<v-menu placement="bottom-start" show-arrow>
+			<template #activator="{ toggle }">
+				<v-icon :name="isMine || isAdmin ? 'more_vert' : 'lock'" clickable class="ctx-toggle" @click.prevent="toggle" />
+			</template>
 			<v-list>
-				<v-list-item clickable :disabled="isMine === false" @click="editActive = true">
+				<v-list-item
+					v-if="isMine || isAdmin"
+					clickable
+					:to="scope !== 'personal' ? `/settings/presets/${bookmark.id}` : undefined"
+					@click="scope === 'personal' ? (editActive = true) : undefined"
+				>
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="t('edit_bookmark')" />
+						<v-text-overflow :text="t(`edit_${scope}_bookmark`)" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item clickable class="danger" :disabled="isMine === false" @click="deleteActive = true">
+				<v-list-item v-if="isMine || isAdmin" clickable class="danger" @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="t('delete_bookmark')" />
+						<v-text-overflow :text="t(`delete_${scope}_bookmark`)" />
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item v-if="!isAdmin && scope !== 'personal'">
+					<v-list-item-icon>
+						<v-icon name="edit_off" outline />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t(`cannot_edit_${scope}_bookmarks`)" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -34,7 +50,7 @@
 
 		<v-dialog v-model="editActive" persistent @esc="editCancel">
 			<v-card>
-				<v-card-title>{{ t('edit_bookmark') }}</v-card-title>
+				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
 				<v-card-text>
 					<div class="fields">
 						<v-input v-model="editValue.name" class="full" autofocus @keyup.enter="editSave" />
@@ -86,10 +102,16 @@ export default defineComponent({
 		const router = useRouter();
 		const route = useRoute();
 
-		const userStore = useUserStore();
+		const { currentUser, isAdmin } = useUserStore();
 		const presetsStore = usePresetsStore();
 
-		const isMine = computed(() => props.bookmark.user === userStore.currentUser!.id);
+		const isMine = computed(() => props.bookmark.user === currentUser!.id);
+
+		const scope = computed(() => {
+			if (props.bookmark.user && !props.bookmark.role) return 'personal';
+			if (!props.bookmark.user && props.bookmark.role) return 'role';
+			return 'global';
+		});
 
 		const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
@@ -97,6 +119,8 @@ export default defineComponent({
 		return {
 			t,
 			isMine,
+			isAdmin,
+			scope,
 			editActive,
 			editValue,
 			editSave,
@@ -182,6 +206,27 @@ export default defineComponent({
 .danger {
 	--v-list-item-color: var(--danger);
 	--v-list-item-icon-color: var(--danger);
+}
+
+.v-list-item {
+	.ctx-toggle {
+		--v-icon-color: var(--foreground-subdued);
+
+		opacity: 0;
+		user-select: none;
+		transition: opacity var(--fast) var(--transition);
+
+		&:hover {
+			--v-icon-color: var(--foreground-normal);
+		}
+	}
+
+	&:hover {
+		.ctx-toggle {
+			opacity: 1;
+			user-select: auto;
+		}
+	}
 }
 
 .fields {
