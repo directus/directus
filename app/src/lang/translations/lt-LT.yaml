@@ -68,7 +68,6 @@ recommended_defaults: Rekomenduojami "Pagal nutylėjimą"
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
-unknown_validation_errors: 'Šie paslėpti laukai turi validavimo klaidų:'
 validationError:
   eq: Reikšmė turi būti {valid}
   neq: Reikšmė negali būti {invalid}

@@ -115,7 +115,6 @@ recommended_defaults: Zalecane ustawienia domyślne
 unarchive: Przywróć z archiwum
 unarchive_confirm: Jesteś pewien, że chcesz przywrócić ten element?
 nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
-unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
 validationError:
   eq: Wartość musi być {valid}
   neq: Wartość nie może być {invalid}
@@ -1263,7 +1262,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:

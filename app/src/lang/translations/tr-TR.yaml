@@ -115,7 +115,6 @@ recommended_defaults: Önerilen Varsayılanlar
 unarchive: Arşivden Çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
 nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
-unknown_validation_errors: 'Aşağıdaki gizli alanlar için doğrulama hataları vardı:'
 validationError:
   eq: Değer {valid} olmalıdır
   neq: Değer {invalid} olamaz

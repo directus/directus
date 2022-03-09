@@ -114,7 +114,6 @@ recommended_defaults: Препоръчителни
 unarchive: Разархивиране
 unarchive_confirm: Сигурни ли сте, че искате да разархивирате записа?
 nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
-unknown_validation_errors: 'Има грешки при валидацията на следните скрити полета:'
 validationError:
   eq: Стойността трябва да е {valid}
   neq: Стойността не трябва да е {invalid}

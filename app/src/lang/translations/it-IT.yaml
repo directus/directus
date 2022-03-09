@@ -115,7 +115,6 @@ recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
-unknown_validation_errors: 'Si sono verificati errori di validazione per i seguenti campi nascosti:'
 validationError:
   eq: Il valore deve essere {valid}
   neq: Il valore non può essere {invalid}

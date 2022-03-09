@@ -115,7 +115,6 @@ recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene nach oben verschoben.
-unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
 validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein

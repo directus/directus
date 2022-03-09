@@ -114,7 +114,6 @@ recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
 unarchive_confirm: Você tem certeza que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
-unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}

@@ -115,7 +115,6 @@ recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
 unarchive_confirm: Sigur doriți să dezarhivați acest element?
 nested_files_folders_will_be_moved: Fișierele și dosarele conținute vor fi mutate cu un nivel în sus.
-unknown_validation_errors: 'Au existat erori de validare pentru următoarele câmpuri ascunse:'
 validationError:
   eq: Valoarea trebuie să fie {valid}
   neq: Valoarea nu poate fi {invalid}

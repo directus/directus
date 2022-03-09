@@ -109,7 +109,6 @@ recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirretään yksi taso ylöspäin.
-unknown_validation_errors: 'Validointivirheitä seuraavissa piilotetuissa kentissä:'
 validationError:
   eq: Arvon on oltava {valid}
   neq: Arvo ei voi olla {invalid}
