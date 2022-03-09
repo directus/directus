@@ -115,7 +115,6 @@ recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
 unarchive_confirm: Jeste li sigurni da želite poništiti arhiviranje ove stavke?
 nested_files_folders_will_be_moved: Ugniježđene datoteke i mape bit će premještene za jednu razinu gore.
-unknown_validation_errors: 'Došlo je do pogrešaka provjere valjanosti za sljedeća skrivena polja:'
 validationError:
   eq: Vrijednost mora biti {valid}
   neq: Vrijednost ne može biti {invalid}
