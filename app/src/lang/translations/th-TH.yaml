@@ -103,7 +103,6 @@ recommended_defaults: ค่าตั้งต้นที่แนะนำ
 unarchive: ยกเลิกการเก็บ
 unarchive_confirm: คุณแน่ใจที่จะเลิกจัดเก็บไอเท็มนี้?
 nested_files_folders_will_be_moved: ไฟล์และโฟลเดอร์ที่อยู่ข้างในจะถูกเอาออกมาข้างนอกอีกขั้น
-unknown_validation_errors: 'มีข้อผิดพลาดกับฟิลด์ที่ถูกซ่อนเหล่านี้'
 validationError:
   eq: ค่าต้องเท่ากับ {valid}
   neq: ค่าต้องไม่เท่ากับ {invalid}
