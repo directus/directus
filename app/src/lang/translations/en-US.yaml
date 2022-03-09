@@ -120,7 +120,7 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
-unknown_validation_errors: 'There were validation errors for the following hidden fields:'
+validation_errors_notice: 'The following fields have invalid values:'
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -1234,6 +1234,7 @@ file: File
 file_library: File Library
 forgot_password: Forgot Password
 hidden: Hidden
+hidden_in_group: Hidden in {group}
 icon: Icon
 info: Info
 normal: Normal
