@@ -107,7 +107,6 @@ recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
 unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
 nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
-unknown_validation_errors: 'Det är fel i valideringen av följande dolda fält:'
 validationError:
   eq: Värdet måste vara {valid}
   neq: Värdet kan inte vara {invalid}
