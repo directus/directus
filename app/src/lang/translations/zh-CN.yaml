@@ -114,7 +114,6 @@ recommended_defaults: 推荐设置
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此条目吗？
 nested_files_folders_will_be_moved: 文件和文件夹将被上移一级。
-unknown_validation_errors: '以下隐藏字段的验证错误：'
 validationError:
   eq: 值必须是 {valid}
   neq: 值不能为 {invalid}
