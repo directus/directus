@@ -26,9 +26,10 @@ Familiarity with the [Collections Page](/app/content-collections/) will be helpf
 The File Library acts as one big [Folder](#folders) to store all uploaded [Files](#files). Sub-folders can be created
 within the File Library to help Files stay organized. Folders and Files are stored as Collections, which means
 [User and Role access permissions](/configuration/users-roles-permissions.md) are fully configurable and granular on
-both Folders and Files. Any type of file can be uploaded, _not just images_. When a Folder is selected from the
-Navigation Bar, the [File Listing Page](#folders) is presented. This page has all the same features and functionalities
-as the [Collections Page](/app/content-collections/).
+both Folders and Files. Multiple files can be uploaded at once through the app and also programmatically via the API.
+Any type of file can be uploaded, _not just images_. When a Folder is selected from the Navigation Bar, the
+[File Listing Page](#folders) is presented. This page has all the same features and functionalities as the
+[Collections Page](/app/content-collections/).
 
 <video title="How the File Library Works" autoplay muted loop controls>
 	<source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/how-it-works-20220305A.mp4" type="video/mp4"/>
