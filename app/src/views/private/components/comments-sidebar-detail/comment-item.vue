@@ -96,15 +96,18 @@ function useEdits() {
 	max-height: 300px;
 	overflow-y: auto;
 	min-width: 100%;
+	max-width: 100%;
 	margin-bottom: -6px;
 	line-height: 1.4;
 }
 
-.comment-item .content :deep(> *:first-child) {
+.comment-item .content :deep(> *:first-child),
+.comment-item .content :deep(p > *:first-child) {
 	margin-top: 0;
 }
 
-.comment-item .content :deep(> *:last-child) {
+.comment-item .content :deep(> *:last-child),
+.comment-item .content :deep(p > *:last-child) {
 	margin-bottom: 0;
 }
 
@@ -123,6 +126,8 @@ function useEdits() {
 .comment-item .content :deep(img) {
 	max-width: 100%;
 	margin: 8px 0;
+	border-radius: var(--border-radius);
+	display: block;
 }
 
 .comment-item .content :deep(hr) {
@@ -143,10 +148,38 @@ function useEdits() {
 	pointer-events: none;
 }
 
+.comment-item .content :deep(pre) {
+	padding: 2px 4px;
+	color: var(--foreground-normal);
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
+	margin: 2px 0;
+	font-family: var(--family-monospace);
+	white-space: nowrap;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.comment-item .content :deep(code) {
+	padding: 2px 4px;
+	color: var(--foreground-normal);
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
+	margin: 2px 0;
+	font-family: var(--family-monospace);
+}
+
+.comment-item .content :deep(pre > code) {
+	padding: 0;
+	margin: 0;
+	white-space: pre;
+}
+
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
 	margin-top: 12px;
 	font-weight: 600;
 	font-size: 16px;
+	color: var(--foreground-normal-alt);
 }
 
 .comment-item.expand .content::after {
