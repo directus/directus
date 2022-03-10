@@ -341,6 +341,9 @@ function mergeWithParentItems(
 			});
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
+			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);
+			}
 			if (nestedNode.query.limit && nestedNode.query.limit >= 0) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
 			}
