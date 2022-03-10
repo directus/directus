@@ -330,7 +330,7 @@ export default defineComponent({
 
 	:deep(.preview) {
 		display: inline-block;
-		margin: 2px;
+		margin: 0px;
 		padding: 2px 4px;
 		color: var(--primary);
 		font-size: 0;

@@ -81,7 +81,7 @@ function useEdits() {
 <style lang="scss" scoped>
 .comment-item {
 	position: relative;
-	margin-bottom: 16px;
+	margin-bottom: 8px;
 	padding: 8px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
@@ -95,6 +95,17 @@ function useEdits() {
 	display: inline-block;
 	max-height: 300px;
 	overflow-y: auto;
+	min-width: 100%;
+	margin-bottom: -6px;
+	line-height: 1.4;
+}
+
+.comment-item .content :deep(> *:first-child) {
+	margin-top: 0;
+}
+
+.comment-item .content :deep(> *:last-child) {
+	margin-bottom: 0;
 }
 
 .comment-item .content :deep(a) {

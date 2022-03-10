@@ -190,12 +190,13 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	position: sticky;
 	top: 0;
 	z-index: 2;
-	margin-top: 8px;
-	margin-bottom: 8px;
-	padding-top: 8px;
-	padding-bottom: 8px;
+	margin-top: 12px;
+	margin-bottom: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 	background-color: var(--background-normal);
 	box-shadow: 0 0 4px 2px var(--background-normal);
+	--v-divider-label-color: var(--foreground-subdued);
 }
 
 .empty {
