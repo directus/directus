@@ -428,11 +428,12 @@ function pressedEnter() {
 	.mention,
 	.emoji-button {
 		--v-button-background-color: transparent;
+		--v-button-color: var(--foreground-subdued);
+		--v-button-color-hover: var(--primary);
 	}
 
-	.mention .v-icon,
-	::v-deep(.emoji-button .v-icon) {
-		color: var(--foreground-subdued);
+	.cancel {
+		--v-button-color: var(--foreground-subdued);
 	}
 
 	.post-comment {
