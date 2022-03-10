@@ -1,15 +1,17 @@
 - Connect Overview to Docs
-- Team Projects, Team Members, Team Billing, Team etc.
 
-- 10 projects in the screenshots\
-  Sandbox, dev environment, production, IOT Fleet A, iOT fleet B, etc.
-- 5-6 Teams 10 Members
+* **MEDIA**
+  - 10 projects in the screenshots\
+    Sandbox, dev environment, production, IOT Fleet A, iOT fleet B, etc.
+  - 5-6 Teams
+  - 10 Members
+  - Community, std, and enterprise (do this in chrome dev tools) Sort By: enterprise std community
 
-- Community, std, and enterprise (do this in chrome dev tools)\
-  Sort By: enterprise std community
-- Superadmin panel
+- Superadmin Panel
 - Members vs. Users
 - Fake 1 month of Project activity or get an instance with a full month @rijk
+
+Talk about all the things we offer: - Load balancing - Cloud exclusive extensions
 
 ---
 
@@ -24,38 +26,55 @@
 
 ## How it Works
 
-    - Intro Paragraph (directus.io/pricing)(upsell github login)
-    - Account: free and each person has acct
-    - Team: a way to organize projects and billings
-    - Project: Directus Instance
+The Cloud Dashboard contains three key components: Accounts, Teams and Projects. A person creates an Account _(these
+Accounts are completely free)_. Accounts then create or join Teams, whereupon the Account becomes a Member of the Team.
+Teams are how projects and billings are organized on Directus Cloud. Team Members create Projects, which are individual
+Instances of Directus. Accounts are able to be Members on multiple Teams. Teams are able contain multiple Directus
+Projects and multiple Members. All Team Members have Super Admin privileges on all Team Projects.
+
+There are 3 tiers of Cloud Projects: Community, Standard, and Enterprise. All 3 tiers come with everything in Directus
+Core as well as all [Cloud Exclusive Extensions](). The Community Tier offer a completely free Directus Project, perfect
+to spin-up hobby projects, demo Directus Cloud, test a proof of concept or get started on any other non-production
+activity. The Standard Tier provides Projects with custom URLs, upgraded server power and many configuration options;
+perfect for most production-ready use cases. The Enterprise Tier allows custom-tailored Projects, fit for massive scale
+as well as other unique use-cases.
+
+To make life easy, you have the option to create and login to your free Cloud Account automatically with Github. If you
+have no Github or do not wish to use this login method, email-and-password login is available as well. Once logged-in,
+create a new Team or Select an existing Team to access and manage its associated Projects, Billing, Members, Activity,
+and Settings. Here is an overview of the Cloud Dashboard.
+
+<video alt="Cloud Dashboard Overview" loop muted controls autoplay>
+  <source src="" type="video/mp4">
+</video>
 
 ::: tip Dashboard or API Login
 
-All actions can be don via the API.
+All actions on Directus Cloud can be performed via the Cloud API. The API will be released soon!
 
 :::
 
-## Projects
+### Team Projects
 
 Display and access all Projects managed within a Team.
 
-### Project Details
+## Project Details
 
 Click on a Project to enter the Product Details Page. Here you can edit, access, monitor, upgrade/downgrade or delete
 the Project.
 
-## Members
+## Team Members
 
 Easily invite and manage Team members on one page.
 
-## Billing
+## Team Billing
 
 The Billing Page is where you view and manage usage, subscriptions, receipts and billing details.
 
-## Activity
+## Team Activity
 
 The Activity Page shows billing changes and other details.
 
-## Settings
+## Team Settings
 
 The Team Settings Page allows you to edit the Team Name and Team Slug, as well as delete the Team.

@@ -1,3 +1,11 @@
+Make each section more robust Add an Activity Page
+
+### Managing Team Settings
+
+Reviewing Team Activity Move Billing into Accounts and Teams Screenshot the payment page!
+
+---
+
 # Accounts
 
 > You must create a user Account and join a Team to access a Directus Project. Your Directus Account is as it sounds, a
@@ -5,6 +13,8 @@
 > Account can create and join multiple Teams. Teams can have multiple Projects.
 
 [[toc]]
+
+---> Merge Creating and Signing in
 
 ## Creating an Account
 

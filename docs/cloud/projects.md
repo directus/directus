@@ -2,15 +2,15 @@
 
 List all projects
 
-::: tip Up/down-grade Community, Standard and Enterprise
+::: tip Up/Down-Grade Community, Standard and Enterprise
 
-Will be a feature. Can always go to enterprise.
+Switching from Community to Standard will be a feature. Can always go to Enterprise.
 
 :::
 
 ## Billing Cycles
 
-Terms of service. Not billed by teams or accounts. When std project is created, that’s the beginning of billing cycle.
+Terms of Service. Not billed by teams or accounts. When std project is created, that’s the beginning of billing cycle.
 Hourly metered. pricing per hour per node. 5 days = 5 days. 100 days = monthly bill. You can go 16 days. Point to
 pricing page on dashboard. Active + standby nodes. Node hours running.
 
