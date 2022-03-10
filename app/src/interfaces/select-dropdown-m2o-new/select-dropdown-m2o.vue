@@ -45,6 +45,7 @@
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
 			:selection="selection"
+			:filter="customFilter"
 			@input="onSelection"
 		/>
 	</div>
@@ -56,12 +57,14 @@ import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relati
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { useCollection } from '@directus/shared/composables';
 import { Filter } from '@directus/shared/types';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { get } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
+import { parseFilter } from '@/utils/parse-filter';
+import { render } from 'micromustache';
 
 const props = withDefaults(
 	defineProps<{
@@ -83,6 +86,20 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
+
+const values = inject('values', ref<Record<string, any>>({}));
+
+const customFilter = computed(() => {
+	return parseFilter(
+		deepMap(props.filter, (val: any) => {
+			if (val && typeof val === 'string') {
+				return render(val, values.value);
+			}
+
+			return val;
+		})
+	);
+});
 
 const { t } = useI18n();
 const { collection, field } = toRefs(props);
