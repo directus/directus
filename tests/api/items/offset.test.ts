@@ -52,7 +52,7 @@ describe('/items', () => {
 
 				const offset = 5;
 				const response = await request(getUrl(vendor))
-					.get(`/items/artist/${artist.id}?deep[events][_offset]=${offset}`)
+					.get(`/items/artists?filter={"id":{"_eq":"${artist.id}"}}&deep[events][_offset]=${offset}`)
 					.set('Authorization', 'Bearer AdminToken')
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
