@@ -316,7 +316,7 @@ async function postComment() {
 		newCommentContent.value = '';
 
 		notify({
-			title: t('post_comment_success'),
+			title: props.existingComment ? t('post_comment_updated') : t('post_comment_success'),
 		});
 	} catch (err: any) {
 		unexpectedError(err);
