@@ -9,6 +9,7 @@
 					multiline
 					trigger-character="@"
 					:items="userPreviews"
+					:placeholder="t('leave_comment')"
 					@trigger="triggerSearch"
 					@deactivate="showMentionDropDown = false"
 					@up="pressedUp"
@@ -349,7 +350,8 @@ function pressedEnter() {
 }
 
 .collapsed .v-template-input {
-	height: 0px;
+	height: 48px;
+	padding-bottom: 0px;
 }
 
 .new-comment {
