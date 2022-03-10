@@ -319,7 +319,8 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
-	&:empty:not(:focus)::before {
+	&:empty::before {
+		pointer-events: none;
 		content: attr(placeholder);
 		color: var(--foreground-subdued);
 	}
