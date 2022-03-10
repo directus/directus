@@ -114,7 +114,6 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
-unknown_validation_errors: 'There were validation errors for the following hidden fields:'
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -1376,8 +1375,6 @@ interfaces:
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
     box: Block / Inline
-    imageToken: Image Token
-    imageToken_label: What (static) token to append to image sources
   map:
     map: Map
     description: Select a location on a map
@@ -1484,8 +1481,6 @@ interfaces:
     custom_formats: Custom Formats
     options_override: Options Override
     folder_note: Folder for uploaded files. Does not affect existing files.
-    imageToken: Image Token
-    imageToken_label: What (static) token to append to image sources
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.

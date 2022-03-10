@@ -35,6 +35,7 @@ const directusConfig = {
 	RATE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: 'error',
 	SERVE_APP: 'false',
+	DB_EXCLUDE_TABLES: 'knex_migrations,knex_migrations_lock,spatial_ref_sys,sysdiagrams',
 };
 
 const config: Config = {

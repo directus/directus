@@ -67,12 +67,10 @@ import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
+import { Role } from '@directus/shared/types';
 
-type Role = {
-	id: number;
-	name: string;
-	description: string;
-	count: number;
+type RoleItem = Partial<Role> & {
+	count?: number;
 };
 
 export default defineComponent({
@@ -84,8 +82,13 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const roles = ref<Role[]>([]);
+		const roles = ref<RoleItem[]>([]);
 		const loading = ref(false);
+
+		const lastAdminRoleId = computed(() => {
+			const adminRoles = roles.value.filter((role) => role.admin_access === true);
+			return adminRoles.length === 1 ? adminRoles[0].id : null;
+		});
 
 		const tableHeaders: TableHeader[] = [
 			{
@@ -133,7 +136,7 @@ export default defineComponent({
 				const response = await api.get(`/roles`, {
 					params: {
 						limit: -1,
-						fields: ['id', 'name', 'description', 'icon', 'users'],
+						fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
 						deep: {
 							users: {
 								_aggregate: { count: 'id' },
@@ -169,7 +172,14 @@ export default defineComponent({
 		}
 
 		function navigateToRole({ item }: { item: Role }) {
-			router.push(`/settings/roles/${item.id}`);
+			if (item.id !== 'public' && lastAdminRoleId.value) {
+				router.push({
+					name: 'settings-roles-item',
+					params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+				});
+			} else {
+				router.push(`/settings/roles/${item.id}`);
+			}
 		}
 	},
 });
@@ -177,8 +187,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .roles {

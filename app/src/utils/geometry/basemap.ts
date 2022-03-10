@@ -111,7 +111,7 @@ function getDefaultMapboxBasemap(): BasemapSource {
 	};
 
 	if (getTheme() === 'dark') {
-		defaultMapboxBasemap.url = 'mapbox://styles/directus/cktaixyhk2joh17lrb5i8zs22';
+		defaultMapboxBasemap.url = 'mapbox://styles/directus/cl0bombrr001115taz5ilsynw';
 	}
 
 	return defaultMapboxBasemap;

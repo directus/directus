@@ -71,7 +71,6 @@ reset_system_permissions_copy: 此動作會取代你先前自設的系統權限�
 unarchive: 取消封存
 unarchive_confirm: 您確定要解除封存這個項目嗎？
 nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
-unknown_validation_errors: '下列的隱藏欄位驗證錯誤：'
 validationError:
   eq: 值必須為 {valid}
   neq: 值不能為 {invalid}

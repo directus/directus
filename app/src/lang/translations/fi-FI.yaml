@@ -109,7 +109,6 @@ recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirretään yksi taso ylöspäin.
-unknown_validation_errors: 'Validointivirheitä seuraavissa piilotetuissa kentissä:'
 validationError:
   eq: Arvon on oltava {valid}
   neq: Arvo ei voi olla {invalid}
@@ -1304,8 +1303,6 @@ interfaces:
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
     box: Lohko / rivillä
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   map:
     map: Kartta
     description: Valitse sijainti kartalla
@@ -1412,8 +1409,6 @@ interfaces:
     custom_formats: Mukautetut muodot
     options_override: Valintojen ohitus
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.

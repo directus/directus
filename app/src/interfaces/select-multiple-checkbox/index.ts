@@ -74,9 +74,6 @@ export default defineInterface({
 				width: 'half',
 				interface: 'select-color',
 			},
-			schema: {
-				default_value: '#00C897',
-			},
 		},
 		{
 			field: 'iconOn',
