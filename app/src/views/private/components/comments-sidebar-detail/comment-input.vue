@@ -1,5 +1,5 @@
 <template>
-	<div class="input-container">
+	<div class="input-container" :class="{ collapsed }">
 		<v-menu v-model="showMentionDropDown" attached>
 			<template #activator>
 				<v-template-input
@@ -14,6 +14,7 @@
 					@up="pressedUp"
 					@down="pressedDown"
 					@enter="pressedEnter"
+					@focus="focused = true"
 				/>
 			</template>
 
@@ -65,7 +66,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, watch, ComponentPublicInstance } from 'vue';
+import { ref, watch, ComponentPublicInstance, computed } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
@@ -78,7 +79,6 @@ import { getRootPath } from '@/utils/get-root-path';
 import vTemplateInput from '@/components/v-template-input.vue';
 import { cloneDeep } from 'lodash';
 import { Activity } from './types';
-import { nextTick } from 'process';
 
 const props = withDefaults(
 	defineProps<{
@@ -99,6 +99,7 @@ const emit = defineEmits(['cancel']);
 const { t } = useI18n();
 const commentElement = ref<ComponentPublicInstance>();
 let lastCaretPosition = 0;
+let lastCaretOffset = 0;
 
 useShortcut('meta+enter', postComment, commentElement);
 
@@ -107,6 +108,8 @@ defineExpose({
 });
 
 const newCommentContent = ref<string | null>(props.existingComment?.comment ?? null);
+const focused = ref(false);
+const collapsed = computed(() => !newCommentContent.value && !focused.value);
 
 watch(
 	() => props.existingComment,
@@ -207,13 +210,23 @@ function cancel() {
 		emit('cancel');
 	} else {
 		newCommentContent.value = '';
+		focused.value = false;
 	}
 }
 
+// Why are selections so weird?
 function saveCursorPosition() {
 	if (document.getSelection) {
 		const selection = document.getSelection();
-		if (selection) lastCaretPosition = selection.anchorOffset;
+		if (selection) {
+			lastCaretOffset = selection.anchorOffset;
+
+			const range = selection?.getRangeAt(0);
+			range?.setStart(commentElement.value?.$el, 0);
+			lastCaretPosition = range?.cloneContents().textContent?.length ?? 0;
+
+			selection.removeAllRanges();
+		}
 	}
 }
 
@@ -237,8 +250,7 @@ function insertText(text: string) {
 
 	setTimeout(() => {
 		commentElement.value?.$el.focus();
-
-		document.getSelection()?.setPosition(document.getSelection()?.anchorNode ?? null, lastCaretPosition + text.length);
+		document.getSelection()?.setPosition(document.getSelection()?.anchorNode ?? null, lastCaretOffset + text.length);
 
 		const inputEvent = new Event('input', { bubbles: true });
 		commentElement.value?.$el.dispatchEvent(inputEvent);
@@ -336,6 +348,10 @@ function pressedEnter() {
 	padding: 0px;
 }
 
+.collapsed .v-template-input {
+	height: 0px;
+}
+
 .new-comment {
 	display: block;
 	flex-grow: 1;
@@ -412,6 +428,14 @@ function pressedEnter() {
 	::v-deep(.emoji-button .v-icon) {
 		color: var(--foreground-subdued);
 	}
+
+	.post-comment {
+		--v-button-background-color-disabled: var(--background-normal-alt);
+	}
+}
+
+.collapsed:not(:focus) .buttons {
+	display: none;
 }
 
 .spacer {

@@ -11,6 +11,8 @@ import { onUnmounted } from 'vue';
 const emojiPicker = new EmojiButton({
 	theme: 'auto',
 	zIndex: 10000,
+	position: 'bottom',
+	emojisPerRow: 8,
 });
 const emit = defineEmits(['emoji-selected']);
 
@@ -27,6 +29,8 @@ onUnmounted(() => {
 
 <style lang="scss">
 .emoji-picker__wrapper {
+	box-shadow: var(--card-shadow);
+
 	.emoji-picker {
 		--category-button-active-color: var(--primary);
 		--font: var(--family-sans-serif);
@@ -40,18 +44,43 @@ onUnmounted(() => {
 		background-color: var(--background-page);
 	}
 
-	.emoji-picker__search-container input.emoji-picker__search {
-		border-radius: var(--border-radius);
-		border: var(--border-width) solid var(--border-normal);
-		background-color: var(--background-page);
-
-		&:hover {
-			border-color: var(--border-normal-alt);
+	.emoji-picker__search-container {
+		.emoji-picker__search-icon {
+			top: 10px;
 		}
 
-		&:focus {
-			border-color: var(--primary);
+		input.emoji-picker__search {
+			border-radius: var(--border-radius);
+			border: var(--border-width) solid var(--border-normal);
+			background-color: var(--background-page);
+
+			height: 40px;
+
+			&:hover {
+				border-color: var(--border-normal-alt);
+			}
+
+			&:focus {
+				border-color: var(--primary);
+			}
+
+			&::placeholder {
+				color: var(--foreground-subdued);
+			}
 		}
+	}
+
+	.emoji-picker__content {
+		padding: 8px 0 0 0;
+
+		.emoji-picker__emojis {
+			border-top: 2px solid var(--border-normal);
+			border-bottom: 2px solid var(--border-normal);
+		}
+	}
+
+	.emoji-picker__preview {
+		border-top: none;
 	}
 
 	.emoji-picker__emoji {
