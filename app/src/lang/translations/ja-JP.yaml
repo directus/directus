@@ -1,12 +1,17 @@
 ---
 avatar: プロフィール画像
+application: アプリケーション
+default_provider: デフォルト
+draft: 下書き
 archived: アーカイブ済み
+modules: モジュール
 edit_field: フィールドの編集
 maps: 地図
 item_creation: アイテム作成
 item_revision: 履歴
 enter_a_name: 名前を入力...
 full_width: 最大幅
+group: グループ
 field_name_translations: 項目名の翻訳を追加する
 add_field: フィールドの追加
 role_name: 権限名
