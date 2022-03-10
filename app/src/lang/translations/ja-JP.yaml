@@ -13,6 +13,7 @@ enter_a_name: 名前を入力...
 full_width: 最大幅
 group: グループ
 field_name_translations: 項目名の翻訳を追加する
+enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
 add_field: フィールドの追加
 role_name: 権限名
 indeterminate: 不確定
@@ -26,6 +27,7 @@ create_user: ユーザーの作成
 create_webhook: Webhookの作成
 invite_users: ユーザーを招待
 invite: 招待する
+email_already_invited: このメールアドレス ({email}) は招待済みです
 inbox: 受信トレイ
 emails: メールアドレス
 rename_folder: フォルダ名の変更
@@ -39,10 +41,12 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: ログアウト
   SESSION_EXPIRED: セッションが期限切れです
+public_description: 認証せずに利用できる API データを制御します。
 not_allowed: 許可されていない
 directus_version: Directus Version
 os_version: OSバージョン
 archive: アーカイブ
+archive_confirm: この項目をアーカイブしてよろしいですか？
 recommended_defaults: 推奨されるデフォルト値
 validationError:
   eq: 値は {valid} でなければなりません
@@ -88,6 +92,10 @@ hash: ハッシュ値
 auto_generate: 自動生成
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
+click_to_manage_translated_fields: >-
+  翻訳されたフィールドはまだありません。ここをクリックして作成してください。| 翻訳されたフィールドが1つあります。 ここをクリックして管理します。| {count} 項が翻訳されています。ここをクリックして管理します。
+fields_group: フィールドグループ
+no_collections_found: コレクションが見つかりません
 new_field: '新規フィールド'
 new_collection: '新しいコレクション'
 add_note: ユーザーに有益な注釈を追加...
@@ -97,6 +105,7 @@ multiple_files: 複数のファイル
 next: 次
 field_name: 項目名
 translations: 翻訳
+no_translations: 翻訳なし
 note: 備考
 enter_a_value: 値を入力...
 length: 長さ
