@@ -4,6 +4,9 @@
 - Add an Activity Page
 - -> ### Managing Team Settings
 - Reviewing Team Activity
+- ### Managing Team Settings
+
+Reviewing Team Activity Move Billing into Accounts and Teams Screenshot the payment page!
 
 ---
 
