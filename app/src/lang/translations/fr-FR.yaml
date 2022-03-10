@@ -28,6 +28,7 @@ draft: Brouillon
 archived: Archivé
 modules: Modules
 module_bar: Barre de modules
+reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
@@ -114,6 +115,7 @@ recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
+validation_errors_notice: 'Les champs suivants contiennent des valeurs invalides:'
 validationError:
   eq: La valeur doit être {valid}
   neq: La valeur ne peut pas être {invalid}
@@ -356,6 +358,8 @@ delete_share: Supprimer le partage
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -668,6 +672,7 @@ no_results_copy: Ajuster ou effacer les filtres de recherche pour voir les résu
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
+edit_role: Editer le rôle
 rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
@@ -734,6 +739,8 @@ unlimited: Illimité
 open_link_in: Ouvrir le lien dans
 new_tab: Nouvel onglet
 current_tab: Onglet actif
+save_image: Enregistrer l'image
+save_media: Enregistrer le média
 wysiwyg_options:
   aligncenter: Centrer
   alignjustify: Justifier
@@ -884,6 +891,7 @@ directus_collection:
   directus_roles: Groupes de permissions pour les utilisateurs système
   directus_sessions: Informations sur la session utilisateur
   directus_settings: Options de configuration du projet
+  directus_shares: Trace les éléments externes partagés
   directus_users: Utilisateurs du système pour la plateforme
   directus_webhooks: Configuration des requêtes HTTP basées sur des événements
 fields:
@@ -1213,6 +1221,7 @@ file: Fichier
 file_library: Bibliothèque de fichiers
 forgot_password: Mot de passe oublié
 hidden: Masqué
+hidden_in_group: Masqué dans {group}
 icon: Icône
 info: Information
 normal: Normal
@@ -1255,6 +1264,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1404,6 +1414,8 @@ interfaces:
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
     box: Bloc / Inline
+    imageToken: Jeton d'accès statique
+    imageToken_label: Le jeton d’accès statique est ajouté à l’URL des ressources
   map:
     map: Carte
     description: Sélectionnez un emplacement sur une carte
@@ -1510,6 +1522,8 @@ interfaces:
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
+    imageToken: Jeton d'accès statique
+    imageToken_label: Le jeton d’accès statique est ajouté à l’URL des ressources
   input-autocomplete-api:
     input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.
