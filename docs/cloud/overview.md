@@ -24,6 +24,12 @@ Talk about all the things we offer: - Load balancing - Cloud exclusive extension
 
 [[toc]]
 
+::: tip Dashboard or API Login
+
+All actions on Directus Cloud can be performed via the Cloud API. The API will be released soon!
+
+:::
+
 ## How it Works
 
 The Cloud Dashboard contains three key components: Accounts, Teams and Projects. A person creates an Account _(these
@@ -48,33 +54,17 @@ and Settings. Here is an overview of the Cloud Dashboard.
   <source src="" type="video/mp4">
 </video>
 
-::: tip Dashboard or API Login
+- **Team Projects** — View and access all Projects managed within a Team. Click a Project to enter the Product Details
+  Page.
 
-All actions on Directus Cloud can be performed via the Cloud API. The API will be released soon!
+- **Project Details** — Access, monitor, edit or delete a Project.
 
-:::
+- **Team Members** — View, invite and remove other Team Members or leave a Team yourself.
 
-### Team Projects
+- **Team Billing** — View and manage billing details such as credit card information, usage, subscriptions, and
+  receipts. Billing is Project-based, so learn more in the Projects documentation.
 
-Display and access all Projects managed within a Team.
+- **Team Activity** — View Team activity like Project creation and deletion, billing information changes, Member
+  invitations and removals, etc.
 
-## Project Details
-
-Click on a Project to enter the Product Details Page. Here you can edit, access, monitor, upgrade/downgrade or delete
-the Project.
-
-## Team Members
-
-Easily invite and manage Team members on one page.
-
-## Team Billing
-
-The Billing Page is where you view and manage usage, subscriptions, receipts and billing details.
-
-## Team Activity
-
-The Activity Page shows billing changes and other details.
-
-## Team Settings
-
-The Team Settings Page allows you to edit the Team Name and Team Slug, as well as delete the Team.
+- **Team Settings** — Edit the Team Name and Team Slug, as well as delete the Team.
