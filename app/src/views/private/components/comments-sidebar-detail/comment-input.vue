@@ -53,7 +53,7 @@
 				{{ t('cancel') }}
 			</v-button>
 			<v-button
-				:disabled="!newCommentContent || newCommentContent.length === 0"
+				:disabled="!newCommentContent || newCommentContent.length === 0 || newCommentContent.trim() === ''"
 				:loading="saving"
 				class="post-comment"
 				x-small
