@@ -26,11 +26,9 @@ Talk about all the things we offer: - Load balancing - Cloud exclusive extension
 
 ::: tip Dashboard or API Login
 
-All actions on Directus Cloud can be performed via the Cloud API. The API will be released soon!
+All actions on Directus Cloud can be done on the Cloud API, which will be released soon!
 
 :::
-
-## How it Works
 
 The Cloud Dashboard contains three key components: Accounts, Teams and Projects. A person creates an Account _(these
 Accounts are completely free)_. Accounts then create or join Teams, whereupon the Account becomes a Member of the Team.
@@ -54,15 +52,28 @@ and Settings. Here is an overview of the Cloud Dashboard.
   <source src="" type="video/mp4">
 </video>
 
-- **Team Projects** — View and access all Projects managed within a Team. Click a Project to enter the Product Details
-  Page.
+The Dashboard has 6 key navigation areas: the Dashboard Header, Projects, Members, Billing, Activity and Settings.
+Here's how these navigation areas relate to Accounts, Projects, and Teams.
 
-- **Project Details** — Access, monitor, edit or delete a Project.
+## Accounts
 
-- **Team Members** — View, invite and remove other Team Members or leave a Team yourself.
+- **Cloud Dashboard Header**
+  - <span mi icon>check</span> — View Directus Cloud status
+  - <span mi icon>notifications</span> — check notifications
+  - Change Teams in the Team Dropdown menu.
+  - <span mi icon>account_circle</span> — Access personal Account information or delete Account.
+
+## Projects
+
+- **Team Projects** — View and access all [Projects](/cloud/projects) managed within a Team. Click a Project to enter
+  the [Product Details Page]() and access, monitor, edit or delete a Project.
 
 - **Team Billing** — View and manage billing details such as credit card information, usage, subscriptions, and
-  receipts. Billing is Project-based, so learn more in the Projects documentation.
+  receipts.
+
+## Teams
+
+- **Team Members** — View, invite and remove other Team Members or leave a Team yourself.
 
 - **Team Activity** — View Team activity like Project creation and deletion, billing information changes, Member
   invitations and removals, etc.
