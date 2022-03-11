@@ -426,15 +426,128 @@ errors:
   INVALID_OTP: رمزعبور یکبار مصرف اشتباه است
   INVALID_PAYLOAD: مجموعه داده نامعتبر
   INVALID_QUERY: کوئریِ نامعتبر
+  ITEM_LIMIT_REACHED: رسیدن به حد مجاز
+  ITEM_NOT_FOUND: آیتم پیدا نشد
+  ROUTE_NOT_FOUND: یافت نشد
+  RECORD_NOT_UNIQUE: موارد تکراری یافت شد
+  USER_SUSPENDED: کاربر معلق شد
+  CONTAINS_NULL_VALUES: فیلد حاوی مقدار نال است
+  UNPROCESSABLE_ENTITY: موجودیت غیرقابل پردازش
+  INTERNAL_SERVER_ERROR: خطای غیر منتظره
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
+  ILLEGAL_ASSET_TRANSFORMATION: منبع تصویر برای پیش نمایش بیش از حد بزرگ است
+  VALUE_TOO_LONG: مقدار، بسیار طولانی است
+  VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
+  INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
+  UNKNOWN: خطای غیر منتظره
+unexpected_error: خطای غیر منتظره
+serif: فونت Serif
+monospace: فونت Monospace
+divider: جدا کننده
+color: رنگ
+circle: دایره
+empty_item: آیتم خالی
+log_in_with: 'ورود توسط {provider}'
+conditional_styles: استایل شرطی
+advanced_settings: تنظیمات پیشرفته
+advanced_filter: فیلتر پیشرفته
+delete_advanced_filter: حذف فیلتر
+change_advanced_filter_operator: تغییر اپراتور
+operators:
+  eq: برابر است با
+  neq: برابر نیست با
+  lt: کمتر است از
+  gt: بیشتر است از
+  lte: کمتر یا مساوی است با
+  gte: بیشتر یا مساوی است با
+  in: یکی از این موارد است
+  nin: هیچ یک از این موارد نیست
+  null: نال است
+  nnull: نال نیست
+  contains: حاوی این مقدار است
+  ncontains: حاوی این مقدار نیست
+  starts_with: با این مقدار شروع می شود
+  nstarts_with: با این مقدار شروع نمی شود
+  ends_with: با این مقدار پایان می یابد
+  nends_with: با این مقدار پایان نمی یابد
+  between: بین این مقادیر است
+  nbetween: بین این مقادیر نیست
+  empty: خالی است
+  nempty: خالی نیست
+  all: حاوی این کلید هاست
+  has: حاوی برخی از این کلید هاست
+  intersects: تقاطع دارد با
+  nintersects: تقاطع ندارد با
+  intersects_bbox: با جعبه محدود کننده تقاطع دارد
+  nintersects_bbox: با جعبه محدود کننده تقاطع ندارد
+loading: در حال بارگذاری...
+drop_to_upload: برای آپلود، در اینجا، رها کنید
+item: آیتم
+items: آیتمها
+upload_file: آپلود فایل
+upload_file_indeterminate: در حال آپلود فایل...
+upload_file_success: فایل آپلود شد
+upload_files_indeterminate: 'در حال آپلود فایلها {done}/{total}'
+upload_files_success: '{count} فایل آپلود شد'
+upload_pending: آپلود متوقف شده
+drag_file_here: فایلها را بکشید و در اینجا رها کنید
+click_to_browse: برای مرور، کلید کنید
 value_unique: مقدار باید یکتا باشد
+dashboard: پیشخوان
+panel: پنل
+panel_options: تنظیمات پنل
+panel_header: هدرِ پنل
+panel_name_placeholder: این پنل را نامگذاری کنید...
+panel_note_placeholder: جزییات اختیاری در رابطه با این پنل...
+panel_delete_confirm: آیا مطمئن هستید می خواهید این پنل را حذف کنید؟ این عمل قابل بازگشت نیست.
+dashboard_delete_confirm: آیا مطمئن هستید می خواهید این پیشخوان را حذف کنید؟ این عمل قابل بازگشت نیست.
+edit_dashboard: ویرایش پیشخوان
+delete_dashboard: حذف پیشخوان
+visible: قابل مشاهده
+prefix_placeholder: متن پیش از مقدار...
+suffix_placeholder: متن پس از مقدار...
+decimals_placeholder: تعداد ارقام اعشاری...
+no_dashboards: هیچ پیشخوانی وجود ندارد
+no_dashboards_copy: هنوز هیچ پیشخوانی ندارید.
+no_data: داده‌ای موجود نیست
+create_dashboard: ایجاد پیشخوان جدید
+dashboard_name: نام پیشخوان
+full_screen: تمام صفحه
+edit_panels: ادیت پنلها
+fit_to_screen: هم اندازه با صفحه نمایش
+image_url: آدرس تصویر
+alt_text: متن جایگزین
+media: رسانه
+quality: کیفیت
+width: عرض
+height: ارتفاع
+source: منبع
+url_placeholder: یک آدرس اینترنی را وارد کنید...
+display_text: متن قابل نمایش
+display_text_placeholder: یک متن قابل نمایش وارد کنید...
+interface_group_text_and_numbers: متن و اعداد
+interface_group_selection: انتخابی
+interface_group_relational: ارتباطی
+interface_group_presentation: نمایشی
+interface_group_groups: گروه ها
+interface_group_other: انواع دیگر
+tooltip: راهنما
+tooltip_placeholder: یک مقدار برای راهنما وارد کنید...
+unlimited: بدون محدودیت
+open_link_in: باز کردن پیوند در
+new_tab: پنجره جدید
+current_tab: پنجره فعلی
+save_image: ذخیره تصویر
+save_media: ذخیره رسانه
 wysiwyg_options:
+  aligncenter: تراز به مرکز
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
   selectall: انتخاب همه
 fields:
   directus_collections:
     note: شرح
+    color: رنگ
     sort_field: فیلد مرتب سازی
   directus_files:
     title: عنوان
@@ -472,6 +585,10 @@ limit: محدوده
 interfaces:
   presentation-links:
     primary: اصلی
+  select-color:
+    color: رنگ
+  presentation-divider:
+    divider: جدا کننده
   select-dropdown:
     choices_value_placeholder: یک مقدار وارد کنید...
   input-hash:
@@ -489,10 +606,17 @@ displays:
     translations: ترجمه‌ها
   boolean:
     boolean: بولین
+  color:
+    color: رنگ
   formatted-value:
+    font_serif: فونت Serif
+    font_monospace: فونت Monospace
     prefix: پيشوند
     suffix: پسوند
+    color: رنگ
     text: متن
+  image:
+    circle: دایره
   labels:
     choices_value_placeholder: یک مقدار وارد کنید...
   user:
