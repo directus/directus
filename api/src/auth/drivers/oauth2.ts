@@ -18,6 +18,7 @@ import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getConfigFromEnv } from '../../utils/get-config-from-env';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -47,11 +48,18 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			issuer: additionalConfig.provider,
 		});
 
+		const clientOptionsOverrides = getConfigFromEnv(
+			`AUTH_${config.provider.toUpperCase()}_CLIENT_`,
+			[`AUTH_${config.provider.toUpperCase()}_CLIENT_ID`, `AUTH_${config.provider.toUpperCase()}_CLIENT_SECRET`],
+			'underscore'
+		);
+
 		this.client = new issuer.Client({
 			client_id: clientId,
 			client_secret: clientSecret,
 			redirect_uris: [this.redirectUrl],
 			response_types: ['code'],
+			...clientOptionsOverrides,
 		});
 	}
 
