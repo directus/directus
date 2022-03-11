@@ -541,9 +541,49 @@ save_image: ذخیره تصویر
 save_media: ذخیره رسانه
 wysiwyg_options:
   aligncenter: تراز به مرکز
+  alignjustify: تراز با فاصله مساوی از طرفین
+  alignleft: تراز به چپ
+  alignnone: بدون تراز
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
   selectall: انتخاب همه
+creating_unit: 'در حال ساخت {unit}'
+editing_unit: 'در حال ویرایش {unit}'
+editing_in_batch: 'در حال ویرایش جمعی {count} آیتم'
+no_options_available: هیچ گزینه ای وجود ندارد
+settings_data_model: مدل داده
+settings_permissions: نقش ها و اجازه ها
+settings_project: تنظیمات پروژه
+settings_webhooks: هوک های تحت وب
+settings_presets: الگوها و نشانک ها
+one_or_more_options_are_missing: یک یا چند مورد از تنظیمات، وجود ندارد
+scope: محدوده در دسترس
+select: انتخاب...
+layout: چیدمان
+tree_view: نمایش درختی
+changes_are_permanent: تغییرات دائمی خواهند بود
+preset_name_placeholder: اگر خالی باشد، به عنوان الگوی پیش فرض در نظر گرفته می شود...
+preset_search_placeholder: عبارت جستجو...
+editing_preset: ویرایش الگو
+layout_preview: پیش نمایش چیدمان
+layout_setup: ایجاد چیدمان
+unsaved_changes: تغییرات ذخیره نشده
+unsaved_changes_copy: آيا مطمئن هستيد که می خواهيد این صفحه را ترک کنيد؟
+discard_changes: لغو تغییرات
+discard_all_changes: لغو تمام تغییرات
+discard_changes_copy: آیا مطمئن هستید که می‌خواهید تمام تغییرات خود را لغو کنید؟
+show_x_axis: نمایش محور X
+show_y_axis: نمایش محور Y
+keep_editing: ادامه دادن ویرایش
+page_help_collections_overview: '**کلیات مجموعه ها** - لیستی از کلیه مجموعه هایی که به آنها دسترسی دارید.'
+page_help_collections_collection: >-
+  **مرور موارد** - تمام موارد مربوط به مجموعه {collection} که به آن دسترسی دارید را لیست میکند. چیدمان، فیلترها و تنظیمات مرتب سازی را بر اساس نیاز خود تنظیم کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
+page_help_collections_item: >-
+  **جزئیات آیتم** - فرمی برای نمایش و مدیریت این آیتم. همچنین، این نوار کناری شامل تاریخچه کاملی از نسخه ها و نظرات مرتبط است.
+page_help_activity_collection: >-
+  **مرور فعالیتها** - لیستی جامع از تمامی تنظیمات سیستمی کاربر شما و فعالیتهای محتوایی.
+page_help_docs_global: >-
+  **بررسی اجمالی مستندات** - مستنداتی صرفاً تنظیم شده با نسخه پروژه و شماتیک مربوطه.
 fields:
   directus_collections:
     note: شرح
