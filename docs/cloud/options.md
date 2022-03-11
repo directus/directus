@@ -1,4 +1,4 @@
-- Tiers: cmnty std enterprise
+- Tiers: cmnty, std, enterprise
 - Node Type: (aka vertical scaling)
 - Load Balancing
 - Auto-scaling - standby nodes - Not paying unless you use them.  https://directus.io/cloud-policies/
@@ -7,7 +7,8 @@
 - Caching
 - Rate Limiting
 - Overages
-- System Status
+- System Status It's reduced performance (in case of slowdowns), though that hasn't really happened ever, and total
+  outage.
 - Support - Community, Basic, Premium
 - Cloud Notifications (bell @ top)
 - System Monitoring

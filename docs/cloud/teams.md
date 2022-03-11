@@ -15,14 +15,14 @@ Move Billing into Accounts and Teams Screenshot the payment page!
 ![Create Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/creating-a-team-20220225A.webp)
 
 Teams are how you organize Projects and share them across multiple accounts. They're free, so create as many as you'd
-like! To create a new team...
+like!
 
 1. Sign in to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
 3. In the dropdown, click <span mi icon prmry>add</span> to create Team.
 4. Enter a Team Name, Team Slug, and click **"Save"**.
 
-## Manage Team Settings
+## Edit Team Name and Slug
 
 ![Managing a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/managing-a-team-20220225A.webp)
 
@@ -36,6 +36,35 @@ Projects within.
 5. Toggle <span mi icon prmry>edit</span> to allow edits.
 6. Make your changes as desired.
 7. Click the **"Save"** button.
+
+## Destroy a Team
+
+![Destroying a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/destroy-a-team-20220225A.webp)
+
+This action is permanent and irreversible. Destroying a Directus Cloud Team completely removes all its data from our
+platform (for all team members). To destroy a Directus Cloud Team, follow these steps:
+
+1. Sign in to the Cloud Dashboard.
+2. Open the Team Menu in the Dashboard Header.
+3. Select the team you wish to destroy from the dropdown.
+4. Navigate to the **Settings** page.
+5. Scroll down to the "Destroy this Team" section.
+6. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.
+7. Enter the team name into the input box.
+8. Click **"Destroy Team"**.
+
+::: tip
+
+You cannot destroy a Team if it contains one or more Projects. So you must destroy any contained Projects before
+destroying your Team.
+
+:::
+
+::: danger DANGER!
+
+Action is permanent and irreversible, proceed with caution.
+
+:::
 
 ## View Team Activity
 
@@ -84,34 +113,5 @@ yourself, follow these steps:
 
 Be Careful! If an Account leaves or is removed from a Team, it will be fully "locked out" of the Team until re-invited
 by another team Member.
-
-:::
-
-## Destroy a Team
-
-![Destroying a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/destroy-a-team-20220225A.webp)
-
-This action is permanent and irreversible. Destroying a Directus Cloud Team completely removes all its data from our
-platform (for all team members). To destroy a Directus Cloud Team, follow these steps:
-
-1. Sign in to the Cloud Dashboard.
-2. Open the Team Menu in the Dashboard Header.
-3. Select the team you wish to destroy from the dropdown.
-4. Navigate to the **Settings** page.
-5. Scroll down to the "Destroy this Team" section.
-6. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.
-7. Enter the team name into the input box.
-8. Click **"Destroy Team"**.
-
-::: tip
-
-You cannot destroy a Team if it contains one or more Projects. So you must destroy any contained Projects before
-destroying your Team.
-
-:::
-
-::: danger DANGER!
-
-Action is permanent and irreversible, proceed with caution.
 
 :::
