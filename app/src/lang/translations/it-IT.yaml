@@ -58,7 +58,7 @@ db_only_click_to_configure: 'Solo Database: click per configurare'
 show_active_items: Mostra gli elementi attivi
 show_archived_items: Mostra gli elementi archiviati
 show_all_items: Mostra tutti gli elementi
-edited: Valore Modificato
+edited: Valore modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
