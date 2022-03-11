@@ -411,6 +411,7 @@ bookmark_doesnt_exist_cta: بازگشت به مجموعه
 select_an_item: یک آیتم را انتخاب کنید...
 edit: ویرایش
 enabled: فعال شده
+disable_tfa: غیرفعالسازی احراز هویت دو عاملی
 errors:
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
 value_unique: مقدار باید یکتا باشد
