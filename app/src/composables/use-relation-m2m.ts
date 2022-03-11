@@ -8,9 +8,11 @@ export type RelationM2M = {
 	relatedPrimaryKeyField: Field;
 	junctionCollection: Collection;
 	junctionPrimaryKeyField: Field;
-	junctionFields: Field[];
+	junctionField: Field;
+	reverseJunctionField: Field;
 	junction: Relation;
 	sortField?: string;
+	type: 'm2m';
 };
 
 export function useRelationM2M(collection: Ref<string>, field: Ref<string>) {
@@ -43,8 +45,9 @@ export function useRelationM2M(collection: Ref<string>, field: Ref<string>) {
 			sortField: relation.meta?.sort_field ?? undefined,
 			junctionCollection: collectionsStore.getCollection(junction.collection),
 			junctionPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(junction.collection),
-			junctionFields: fieldsStore.getFieldsForCollection(junction.collection),
+			junctionField: fieldsStore.getField(junction.collection, junction.meta?.junction_field as string),
 			junction: junction,
+			type: 'm2m',
 		} as RelationM2M;
 	});
 

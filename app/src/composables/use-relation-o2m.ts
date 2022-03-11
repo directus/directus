@@ -6,7 +6,9 @@ export type RelationO2M = {
 	relation: Relation;
 	relatedCollection: Collection;
 	relatedPrimaryKeyField: Field;
+	reverseJunctionField: Field;
 	sortField?: string;
+	type: 'o2m';
 };
 
 export function useRelationO2M(collection: Ref<string>, field: Ref<string>) {
@@ -25,7 +27,9 @@ export function useRelationO2M(collection: Ref<string>, field: Ref<string>) {
 			relation: relation,
 			relatedCollection: collectionsStore.getCollection(relation.collection),
 			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.collection),
+			reverseJunctionField: fieldsStore.getField(relation.collection, relation.meta?.many_field as string),
 			sortField: relation.meta?.sort_field ?? undefined,
+			type: 'o2m',
 		} as RelationO2M;
 	});
 

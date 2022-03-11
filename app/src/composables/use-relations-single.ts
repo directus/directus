@@ -1,4 +1,5 @@
 import api from '@/api';
+import { getEndpoint } from '@/utils/get-endpoint';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { ref, Ref, watch } from 'vue';
@@ -60,11 +61,8 @@ export function useRelationSingle(
 		loading.value = true;
 
 		try {
-			const endpoint = relatedCollection.startsWith('directus_')
-				? `/${relatedCollection.substring(9)}/${id}`
-				: `/items/${relatedCollection}/${encodeURIComponent(id)}`;
 
-			const response = await api.get(endpoint, {
+			const response = await api.get(getEndpoint(relatedCollection) + `/${encodeURIComponent(id)}`, {
 				params: {
 					fields: Array.from(fields),
 				},

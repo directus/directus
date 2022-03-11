@@ -6,6 +6,7 @@ export type RelationM2O = {
 	relation: Relation;
 	relatedCollection: Collection;
 	relatedPrimaryKeyField: Field;
+	type: 'm2o';
 };
 
 export function useRelationM2O(collection: Ref<string>, field: Ref<string>) {
@@ -24,6 +25,7 @@ export function useRelationM2O(collection: Ref<string>, field: Ref<string>) {
 			relation: relation,
 			relatedCollection: collectionsStore.getCollection(relation.related_collection as string),
 			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection as string),
+			type: 'm2o',
 		} as RelationM2O;
 	});
 

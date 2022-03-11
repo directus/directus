@@ -7,10 +7,12 @@ export type RelationM2A = {
 	collectionField: Field;
 	junctionCollection: Collection;
 	junctionPrimaryKeyField: Field;
-	junctionFields: Field[];
+	junctionField: Field;
+	reverseJunctionField: Field;
 	junction: Relation;
 	relation: Relation;
 	sortField?: string;
+	type: 'm2a';
 };
 
 export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
@@ -41,10 +43,12 @@ export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
 			collectionField: fieldsStore.getField(junction.collection, relation.meta?.one_collection_field as string),
 			junctionCollection: collectionsStore.getCollection(junction.collection),
 			junctionPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(junction.collection),
-			junctionFields: fieldsStore.getFieldsForCollection(junction.collection),
+			junctionField: fieldsStore.getField(junction.collection, junction.meta?.junction_field as string),
+			reverseJunctionField: fieldsStore.getField(junction.collection, relation.meta?.junction_field as string),
 			junction: junction,
 			relation: relation,
 			sortField: relation.meta?.sort_field ?? undefined,
+			type: 'm2a',
 		} as RelationM2A;
 	});
 
