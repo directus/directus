@@ -1,27 +1,3 @@
-### Organizing Projects
-
-List all projects
-
-::: tip Up/Down-Grade Community, Standard and Enterprise
-
-Switching from Community to Standard will be a feature. Can always go to Enterprise.
-
-:::
-
-## Billing Cycles
-
-Terms of Service. Not billed by teams or accounts. When std project is created, that’s the beginning of billing cycle.
-Hourly metered. pricing per hour per node. 5 days = 5 days. 100 days = monthly bill. You can go 16 days. Point to
-pricing page on dashboard. Active + standby nodes. Node hours running.
-
-- 3 example billing cycles.
-
-## Monitor a Project
-
-![Project Monitor Page](image.webp) Explanation
-
----
-
 # Projects
 
 > Cloud Projects are on-demand instances of Directus contained within a parent Team. There 3 basic service tiers;
@@ -29,78 +5,64 @@ pricing page on dashboard. Active + standby nodes. Node hours running.
 
 [[toc]]
 
-## CRUD
+In additon to simply listing all Projects within a Team, the Projects Page serves as the entry-point to creating,
+editing and deleting Projects as well as monitoring overall server performance and accessing the Project itself.
 
-<video></video>
+## Create a Project
 
-1. instructions ->link options
+Only Standard and Community Projects can be spun-up from the Directus Dashboard. The process for both is almost
+identical and the only difference is that Community Projects just have fewer configuration options.
 
-## Community
+![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/create-standard-project-20220228A.webp)
 
-Community projects are totally free and perfect to start hobby projects, demo Directus, create a proof-of-concept, or
-run other non-production applications. Here are some key features:
+1. Sign in to the Cloud Dashboard.
+2. Navigate to the Projects Page.
+3. Click **"Create Project"**.
+4. Set a Project Name.
+5. Select the Tier: Community or Standard.
+
+#### For Standard Projects:
+
+6. Set the following as desired.
+   - [Project URL]() - Custom _(if it's available of course)_.
+   - [Datacenter]() – Options are `United States, East` or `Europe, Frankfurt`.
+   - [Node Type]() – Choose General Purpose or Performance Tier.
+   - [Load Balancing]() – Choose from 1-6 active nodes.
+   - [Auto-Scaling]() – Choose from 0-6 standby nodes.
+7. Click **"Proceed to Checkout"**. You will be taken to a checkout page.
+8. Enter payment information and hit **"Subscribe"**.
+
+#### For Community Projects:
+
+6. Scroll to the bottom and Choose:
+   - **"Empty Project"** to spinup a blank Project with no data.
+   - **"Demo Project"** to spinup a Project with dummy data to get a concrete example of how Directus works and some of
+     the things it can do.
+
+:::tip Community Tier
 
 - **Project Name** – Custom.
 - **URL** – Randomized.
 - **Datacenter** – United States (East).
-- **Node Type** – Smaller non-production servers. Learn about [Node Types](#node-type).
+- **Node Type** – Smaller non-production servers.
 - **Load Balancing** – 1 Auto-Sleep Node.
 - **Auto-Scaling** – No Standby Nodes.
 
-## Standard
+:::
 
-This tier is "production ready". Here are the key features.
+:::tip Enterprise Tier
 
-- **Project Name** – Custom
-- **URL** - Custom _(if it's available of course)_
-- **Datacenter** – United States (East).
-- **Node Type** – Production-level servers with options to upgrade. Learn about [Node Types](#node-type).
-- **Load Balancing** – Choose from 1-6 active Nodes.
-- **Auto-Scaling** – Choose from 0-6 standby nodes.
+Please [contact us]() if you need more power, customization, or scale.
 
-## Enterprise Projects
+:::
 
-- link to more info. Enterprise - if you need more power, customization or scale, contact us.
-- Enterprise: Remote database access coming soon! Contact us.
-- 15+ regions
-- Use copy from website/cloud etc.
-- (Read PDF)
+::: tip Can I Upgrade or Downgrade Projects?
 
-## Creating a Community Project
+Switching from Community to Standard will be a feature in the future. Projects can always be upgraded to Enterprise.
 
-![Creating a Community Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/create-community-project-20220228A.webp)
+:::
 
-Learn more about Community Project in [Tiers and Billing](/cloud/tiers-and-billing/).
-
-1. Sign in to the Cloud Dashboard.
-2. Navigate to the Projects Page.
-3. Click **"Create Project"**.
-4. Set a Project Name.
-5. Select the Community tier.
-6. Scroll to the bottom and select a Standard or Demo project.
-7. Click **"Create Project"**.
-
-## Creating a Standard Project
-
-![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/create-standard-project-20220228A.webp)
-
-Learn more about Standard Project configuration options in [Tiers and Billing](/cloud/tiers-and-billing/).
-
-1. Sign in to the Cloud Dashboard.
-2. Navigate to the Projects Page.
-3. Click **"Create Project"**.
-4. Set a Project Name.
-5. Select the Standard Tier.
-6. Set the following as desired:
-   - Project URL
-   - Datacenter Region
-   - Node Type
-   - Load Balancing
-   - Auto-Scaling
-7. Click **"Proceed to Checkout"**. You will be taken to a checkout page.
-8. Enter payment information and hit **"Subscribe"**.
-
-## Managing a Project
+## Edit a Project
 
 ![Project Details Page](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/project-detail-page-20220225A.webp)
 
@@ -117,7 +79,23 @@ You may also change project details or modify the Project's plan. To make change
 7. Make node changes as desired.
 8. Click **"Update Project"**.
 
-## Accessing a Project
+## Monitor a Project
+
+Graphs on the Project Monitor Page display traffic and performance information and help inform configuration decisions.
+
+<video alt="Create Account and Login" loop muted controls autoplay>
+  <source src="" type="video/mp4">
+</video>
+
+### Combined Node Usage
+
+### Horizontal Scaling
+
+### API Requests
+
+### API Bandwidth
+
+## Access Project
 
 ![Accessing a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/accessing-a-project-20220228A.webp)
 

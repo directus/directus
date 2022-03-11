@@ -27,6 +27,18 @@
 
 ---
 
+## Billing Cycles
+
+Terms of Service. Not billed by Teams or Accounts. When a Standard Project is created, that’s the beginning of the
+billing cycle. Hourly metered. pricing per hour per node. 5 days = 5 days. 100 days = monthly bill. You can go 16 days.
+Point to pricing page on dashboard. Active + standby nodes. Node hours running.
+
+:::tip Examples
+
+- 3 example billing cycles.
+
+:::
+
 ## Node Type
 
 ### General Purpose Tier
@@ -40,8 +52,6 @@ The nodes in the packages will serve the needs for most projects.
 Provides higher-powered Node.
 
 **Data-processing** – **Parallel Operations** – **Asset Support** –
-
-### Enterprise Tier
 
 ## Load Balancing
 
@@ -57,3 +67,14 @@ Details on Load Balancing
 ## Auto-Scaling
 
 ### Standby Node Pricing
+
+## Enterprise Tier
+
+as Enterprise Projects cannot be created directly from the Cloud Dashboard.
+
+However, here are some basic options on Enterprise Projects.
+
+- Enterprise: Remote database access coming soon! Contact us.
+- 15+ regions
+- Use copy from website/cloud etc.
+- (Read PDF)

@@ -1,12 +1,4 @@
-- Remove default team
-- Combine Remove a Team Member and Leave a Team
-- Make each section more robust
-- Add an Activity Page
-- -> ### Managing Team Settings
-- Reviewing Team Activity
-- ### Managing Team Settings
-
-Reviewing Team Activity Move Billing into Accounts and Teams Screenshot the payment page!
+Move Billing into Accounts and Teams Screenshot the payment page!
 
 ---
 
@@ -18,7 +10,7 @@ Reviewing Team Activity Move Billing into Accounts and Teams Screenshot the paym
 
 [[toc]]
 
-## Creating a Team
+## Create a Team
 
 ![Create Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/creating-a-team-20220225A.webp)
 
@@ -30,11 +22,12 @@ like! To create a new team...
 3. In the dropdown, click <span mi icon prmry>add</span> to create Team.
 4. Enter a Team Name, Team Slug, and click **"Save"**.
 
-## Managing a Team
+## Manage Team Settings
 
 ![Managing a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/managing-a-team-20220225A.webp)
 
-After signing in to the Dashboard, you will be taken to your default Team (see Account Settings).
+The Settings Page enables changes to the Team Name and Team Slug. These can be changed at any time without effecting
+Projects within.
 
 1. Sign in to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -44,7 +37,14 @@ After signing in to the Dashboard, you will be taken to your default Team (see A
 6. Make your changes as desired.
 7. Click the **"Save"** button.
 
-## Inviting a Team Member
+## View Team Activity
+
+![View Team Activity](image.webp)
+
+Team Activity Page displays created and destroyed Projects, billing information changes, Team Members added or removed,
+name and slug changes, as well as changes to any other major Team-oriented information.
+
+## Invite Team Member(s)
 
 ![Inviting a Team Member](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/inviting-a-team-member-20220225A.webp)
 
@@ -66,34 +66,28 @@ project as an administrator and navigate to the User Directory.
 
 :::
 
-## Removing a Team Member
+## Remove Members and Leave Team
 
 ![Removing a Team member](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/leaving-a-team-20220225A.webp)
 
-All team members have the ability to remove other members or invites from the team.
+All Team Members have the ability to remove other members or invites from a Team. To Remove Members or leave a team
+yourself, follow these steps:
 
 1. Sign in to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
 3. Select the appropriate Team from the dropdown.
 4. Navigate to the "Members" page.
-5. Click <span mi icon>exit_to_app</span> or <span icon>close</span> button for your account.
+5. Click <span mi icon>exit_to_app</span> or <span icon>close</span> button on the desired Member(s).
 6. Click confirm to remove.
 
-## Leaving a Team
+:::warning Removed Accounts are "Locked Out"
 
-![Leaving a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/leaving-a-team-20220225A.webp)
+Be Careful! If an Account leaves or is removed from a Team, it will be fully "locked out" of the Team until re-invited
+by another team Member.
 
-You can leave a team if you no longer want access, but you cannot get access again without being re-invited by another
-member. To leave a team, follow these steps:
+:::
 
-1. Sign in to the Cloud Dashboard.
-2. Open the Team Menu in the Dashboard Header.
-3. Select the appropriate Team from the dropdown.
-4. Navigate to the "Members" page.
-5. Click <span mi icon>exit_to_app</span> for your account.
-6. Confirm and exit group.
-
-## Destroying a Team
+## Destroy a Team
 
 ![Destroying a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/destroy-a-team-20220225A.webp)
 
