@@ -28,6 +28,7 @@ draft: پیش‌نویس
 archived: بایگانی‌شده
 modules: ماژول‌ها
 module_bar: ماژول
+reset_width: تنظیم مجدد عرض
 tile_size: اندازه آجر
 edit_field: ویرایش فیلد
 conditions: مزایای همکاری
@@ -114,6 +115,7 @@ recommended_defaults: پیش‌فرض‌های توصیه شده
 unarchive: خارج کردن از بایگانی
 unarchive_confirm: از خارج کردن از بایگانی این مورد مطمئنید؟
 nested_files_folders_will_be_moved: فایل‌ها و پوشه‌های تو در تو یک سطح به بالا منتقل می‌شوند.
+validation_errors_notice: 'فیلدهای زیر مقادیر غیرقابل قبولی دارند:'
 validationError:
   eq: مقدار باید {valid} باشد
   neq: مقدار نمی‌تواند {invalid} باشد
@@ -157,7 +159,9 @@ field_presets: ایستگاه از پیش تنظیم شده
 permissions_for_role: 'مواردی که نقش {role} میتواند {action}'
 fields_for_role: 'فیلدهایی که نقش {role} میتواند {action}'
 validation_for_role: 'قوانین {action} مربوط به فیلد که نقش {role} باید رعایت کند.'
+presets_for_role: 'مقادیر پیش فرض فیلد برای نقش {role}.'
 presentation_and_aliases: ارائه و نام مستعار
+revision_post_create: شکل ظاهری این آیتم وقتی که ساخته شده به این صورت بوده است.
 revision_post_update: در اینجا این مورد پس از بروزرسانی چگونه بود.
 changes_made: در زیر تغییرات خاصی است که در این تجدید نظر ایجاد شده است.
 no_relational_data: به خاطر داشته باشید که داده های رابطه ای در اینجا گنجانده نشده است.
@@ -165,8 +169,11 @@ hide_field_on_detail: مخفی کردن زمینه در جزئیات
 show_field_on_detail: نمایش قسمت روی جزئیات
 delete_field: حذف فیلد
 fields_and_layout: ویرایش فیلد
+field_create_success: 'فید ساخته شده: "{field}"'
+field_update_success: 'فیلد بروزرسانی شده: "{field}"'
 duplicate_where_to: دوست دارید این قسمت را به کجا کپی کنید?
 language: زبان
+aggregate_function: تابع تجمیع
 global: سراسری
 admins_have_all_permissions: مدیران همه مجوزها را دارند
 camera: دوربین
