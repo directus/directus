@@ -22,7 +22,7 @@
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
@@ -56,7 +56,7 @@
 						:disabled="item === null || archiveAllowed !== true"
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
 					</v-button>
 				</template>
 
@@ -111,7 +111,7 @@
 						:alt="t('avatar')"
 						@error="avatarError = $event"
 					/>
-					<v-icon v-else name="account_circle" outline x-large />
+					<v-icon v-else name="account_circle" x-large />
 				</div>
 				<div class="user-box-content">
 					<template v-if="loading">
@@ -125,11 +125,11 @@
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
 						<div v-if="item.email" class="email">
-							<v-icon name="alternate_email" small outline />
+							<v-icon name="alternate_email" small />
 							{{ item.email }}
 						</div>
 						<div v-if="item.location" class="location">
-							<v-icon name="place" small outline />
+							<v-icon name="place" small />
 							{{ item.location }}
 						</div>
 						<v-chip v-if="roleName" :class="item.status" small>{{ roleName }}</v-chip>

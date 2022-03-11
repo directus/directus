@@ -20,7 +20,7 @@
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="people_alt" outline />
+					<v-icon name="people_alt" />
 				</v-button>
 			</template>
 
@@ -42,7 +42,7 @@
 							secondary
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" />
 						</v-button>
 					</template>
 
@@ -69,7 +69,7 @@
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" />
 				</v-button>
 
 				<v-button
