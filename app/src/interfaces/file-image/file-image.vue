@@ -125,7 +125,9 @@ export default defineComponent({
 				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 			}
 			if (image.value.type.includes('image')) {
-				const url = getRootPath() + `assets/${image.value.id}?cache-buster=${cacheBuster.value}`;
+				const url =
+					getRootPath() +
+					`assets/${image.value.id}?width=800&height=800&fit=inside&withoutEnlargement=true&cache-buster=${cacheBuster.value}`;
 				return addTokenToURL(url);
 			}
 
@@ -140,8 +142,6 @@ export default defineComponent({
 					props.crop
 				) {
 					return 'cover';
-				} else if (!props.crop) {
-					return 'contain';
 				}
 			}
 			return null;
@@ -427,10 +427,6 @@ img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
-		}
-		&.contain {
-			max-height: inherit;
-			max-width: 100%;
 		}
 	}
 }
