@@ -104,10 +104,6 @@ let lastCaretOffset = 0;
 
 useShortcut('meta+enter', postComment, commentElement);
 
-defineExpose({
-	commentElement,
-});
-
 const newCommentContent = ref<string | null>(props.existingComment?.comment ?? null);
 const focused = ref(false);
 const collapsed = computed(() => !newCommentContent.value && !focused.value);

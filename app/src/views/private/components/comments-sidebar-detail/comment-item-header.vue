@@ -75,7 +75,7 @@ const props = defineProps<{
 	refresh: () => void;
 }>();
 
-const emit = defineEmits(['edit']);
+defineEmits(['edit']);
 
 const { t } = useI18n();
 

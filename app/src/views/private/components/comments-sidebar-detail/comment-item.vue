@@ -12,7 +12,7 @@
 			@cancel="cancelEditing"
 		/>
 
-		<div v-else v-md.newtab="activity.display" class="content selectable" />
+		<div v-else v-md="{ value: activity.display, target: '_blank' }" class="content selectable" />
 	</div>
 </template>
 
@@ -25,20 +25,19 @@ import CommentInput from './comment-input.vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-const props = withDefaults(
-	defineProps<{
-		activity: Activity & {
-			display: string;
-		};
-		refresh: () => void;
-		collection: string;
-		primaryKey: string | number;
-		userPreviews: Record<string, any>;
-	}>(),
-	{
-		userPreviews: () => ({}),
-	}
-);
+interface Props {
+	activity: Activity & {
+		display: string;
+	};
+	refresh: () => void;
+	collection: string;
+	primaryKey: string | number;
+	userPreviews: Record<string, any>;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	userPreviews: () => ({}),
+});
 
 const { editing, cancelEditing } = useEdits();
 
