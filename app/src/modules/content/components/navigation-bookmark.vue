@@ -13,11 +13,16 @@
 
 		<v-menu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
-				<v-icon :name="isMine || isAdmin ? 'more_vert' : 'lock'" clickable class="ctx-toggle" @click.prevent="toggle" />
+				<v-icon
+					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
+					:name="hasPermission ? 'more_vert' : 'lock'"
+					:clickable="hasPermission"
+					class="ctx-toggle"
+					@click.prevent="hasPermission ? toggle() : null"
+				/>
 			</template>
 			<v-list>
 				<v-list-item
-					v-if="isMine || isAdmin"
 					clickable
 					:to="scope !== 'personal' ? `/settings/presets/${bookmark.id}` : undefined"
 					@click="scope === 'personal' ? (editActive = true) : undefined"
@@ -29,20 +34,12 @@
 						<v-text-overflow :text="t(`edit_${scope}_bookmark`)" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item v-if="isMine || isAdmin" clickable class="danger" @click="deleteActive = true">
+				<v-list-item clickable class="danger" @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
 						<v-text-overflow :text="t(`delete_${scope}_bookmark`)" />
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item v-if="!isAdmin && scope !== 'personal'">
-					<v-list-item-icon>
-						<v-icon name="edit_off" outline />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t(`cannot_edit_${scope}_bookmarks`)" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -107,6 +104,8 @@ export default defineComponent({
 
 		const isMine = computed(() => props.bookmark.user === currentUser!.id);
 
+		const hasPermission = computed(() => isMine.value || isAdmin);
+
 		const scope = computed(() => {
 			if (props.bookmark.user && !props.bookmark.role) return 'personal';
 			if (!props.bookmark.user && props.bookmark.role) return 'role';
@@ -119,7 +118,7 @@ export default defineComponent({
 		return {
 			t,
 			isMine,
-			isAdmin,
+			hasPermission,
 			scope,
 			editActive,
 			editValue,
@@ -215,10 +214,6 @@ export default defineComponent({
 		opacity: 0;
 		user-select: none;
 		transition: opacity var(--fast) var(--transition);
-
-		&:hover {
-			--v-icon-color: var(--foreground-normal);
-		}
 	}
 
 	&:hover {
