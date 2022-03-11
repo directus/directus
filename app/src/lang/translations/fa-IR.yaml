@@ -412,7 +412,20 @@ select_an_item: یک آیتم را انتخاب کنید...
 edit: ویرایش
 enabled: فعال شده
 disable_tfa: غیرفعالسازی احراز هویت دو عاملی
+tfa_scan_code: کد را در نرم افزار احراز هویت خود، برای اتمام تنظیمات احراز هویت دو عاملی، اسکن کنید
+enter_otp_to_disable_tfa: پسورد یکبار مصرف خود را برای غیرفعالسازی احراز هویت دو عاملیِ خود، وارد کنید
+create_account: ساخت حساب کاربری
+account_created_successfully: حساب کاربری با موفقیت ساخته شد
+auto_fill: پر کردن خودکار
+corresponding_field: فیلد متناظر
 errors:
+  COLLECTION_NOT_FOUND: "مجموعه مد نظر، وجود ندارد"
+  FIELD_NOT_FOUND: فیلد یافت نشد
+  FORBIDDEN: عدم اجازه دسترسی
+  INVALID_CREDENTIALS: نام کاربری یا کلمه عبور اشتباه است
+  INVALID_OTP: رمزعبور یکبار مصرف اشتباه است
+  INVALID_PAYLOAD: مجموعه داده نامعتبر
+  INVALID_QUERY: کوئریِ نامعتبر
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
 value_unique: مقدار باید یکتا باشد
 wysiwyg_options:
