@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { useRelationM2O } from '@/composables/use-relation-m2o';
-import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relations-single';
+import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { useCollection } from '@directus/shared/composables';
 import { Filter } from '@directus/shared/types';

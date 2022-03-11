@@ -61,7 +61,6 @@ export function useRelationSingle(
 		loading.value = true;
 
 		try {
-
 			const response = await api.get(getEndpoint(relatedCollection) + `/${encodeURIComponent(id)}`, {
 				params: {
 					fields: Array.from(fields),
