@@ -5,7 +5,7 @@
 		@click="handleClick"
 	>
 		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
-		<div class="header">
+		<div ref="imgContainer" class="header">
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
@@ -14,6 +14,7 @@
 					<img
 						v-if="imageSource"
 						class="image"
+						:class="fit"
 						loading="lazy"
 						:src="imageSource"
 						alt=""
@@ -34,17 +35,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { defineComponent, PropType, computed, watch, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import api from '@/api';
 
 type File = {
 	[key: string]: any;
 	id: string;
 	type: string;
 	modified_on: Date;
+};
+type ImgMeasurements = {
+	width: number;
+	height: number;
 };
 
 export default defineComponent({
@@ -95,6 +101,8 @@ export default defineComponent({
 		const router = useRouter();
 
 		const imgError = ref(false);
+		const imgMeasurements = ref<ImgMeasurements | null>(null);
+		const imgContainer = ref<HTMLDivElement | null>(null);
 
 		const type = computed(() => {
 			if (!props.file || !props.file.type) return null;
@@ -107,14 +115,51 @@ export default defineComponent({
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg')) return null;
 
-			let key = 'system-medium-cover';
-
-			if (props.crop === false) {
-				key = 'system-medium-contain';
-			}
-
-			const url = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+			const fitParam = props.crop ? 'cover' : 'inside';
+			const url =
+				getRootPath() +
+				`assets/${props.file.id}?width=300&height=300&fit=${fitParam}&withoutEnlargement=true&modified=${props.file.modified_on}`;
 			return addTokenToURL(url);
+		});
+
+		watch(
+			() => props.file.id,
+			(newValue, oldValue) => {
+				if (newValue === oldValue) return;
+
+				if (newValue) {
+					fetchImgMeasurements();
+				}
+			},
+			{ immediate: true }
+		);
+
+		async function fetchImgMeasurements() {
+			try {
+				const response = await api.get(`/files/${props.file.id}`, {
+					params: {
+						fields: ['width', 'height'],
+					},
+				});
+				imgMeasurements.value = response.data.data;
+			} catch (err: any) {
+				imgMeasurements.value = null;
+			}
+		}
+
+		const fit = computed(() => {
+			if (imgMeasurements.value && imgContainer.value) {
+				if (
+					imgMeasurements.value.width >= imgContainer.value.clientWidth &&
+					imgMeasurements.value.height >= imgContainer.value.clientHeight &&
+					props.crop
+				) {
+					return 'cover';
+				} else if (!props.crop) {
+					return 'contain';
+				}
+			}
+			return null;
 		});
 
 		const svgSource = computed(() => {
@@ -132,7 +177,7 @@ export default defineComponent({
 			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
-		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick, imgError };
+		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick, imgError, imgContainer, fit };
 
 		function toggleSelection() {
 			if (!props.item) return null;
@@ -192,11 +237,19 @@ export default defineComponent({
 
 		.image {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			object-fit: contain;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+
+			&.cover {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+			&.contain {
+				max-height: 100%;
+				max-width: 100%;
+			}
 		}
 
 		.svg {
