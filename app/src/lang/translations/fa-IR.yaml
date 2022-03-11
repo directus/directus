@@ -174,11 +174,21 @@ field_update_success: 'فیلد بروزرسانی شده: "{field}"'
 duplicate_where_to: دوست دارید این قسمت را به کجا کپی کنید?
 language: زبان
 aggregate_function: تابع تجمیع
+aggregate_precision: دقت تجمیع
+group_aggregation: تجمیع گروهی
+group_precision: دقت گروهی
 global: سراسری
 admins_have_all_permissions: مدیران همه مجوزها را دارند
 camera: دوربین
+show_zero: نمایش صفر
+create_in_advanced_field_creation_mode: ساخت فیلد در حالا پیشرفته
+continue_in_advanced_field_creation_mode: ادامه دادن در حالت پیشرفته ساخت فیلد
 sum: مجموع
+sum_distinct: جمع مقادیر یکتا
+avg: میانگین
+avg_distinct: میانگین مقادیر یکتا
 count: تعداد
+count_distinct: جمع مقادیر یکتا
 min: حداقل
 max: حداکثر
 exposure: نوردهی
@@ -187,6 +197,8 @@ iso: ISO
 focal_length: درێژیی تیشکۆیی
 schema_setup_key: نام ستون پایگاه داده این فیلد و کلید API
 create_field: ایجاد فیلد(Field)
+creating_new_field: 'فیلد جدید ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: بازنشانی تنظیمات برنامه
 hidden_field: فیلدهای غیرفعال
 hidden_on_detail: مخفی کردن زمینه در جزئیات
@@ -195,7 +207,38 @@ key: کلید
 alias: نام مستعار
 bigInteger: عدد صحیح بزرگ
 boolean: بولین
+date: تاریخ
+date_range: بازه تاریخ
+datetime: تاریخ و ساعت
+dateTime: تاریخ و ساعت
+precision: دقت
+decimal: اعشاری
+float: اعشاری شناور
+integer: عدد صحیح
+json: JSON
+xml: XML
+string: رشته
+text: متن
+time: زمان
+timestamp: الگوی زمانی
+uuid: شماره شناسایی یکتا (UUID)
+hash: هش
+geometry: هندسی (تمام)
+geometry.Point: نقطه
+geometry.LineString: رشته مسیر
+geometry.Polygon: چندضلعی
+geometry.MultiPoint: چندنقطه ای
+geometry.MultiLineString: مجموعه ای از رشته مسیرها
+geometry.MultiPolygon: مجموعه ای از چندضلعی ها
+not_available_for_type: برای این نوع در دسترس نیست
+create_translations: ایجاد ترجمه
 auto_refresh: تازه نمودن خودکار
+refresh_interval: فاصله به روز رسانی
+no_refresh: بروزرسانی نشود
+refresh_interval_seconds: بروزرسانی در لحظه | هر ثانیه | هر {seconds} ثانیه
+refresh_interval_minutes: هر دقیقه | هر {minutes} دقیقه
+auto_generate: تولید خودکار
+this_will_auto_setup_fields_relations: کلیه فیلدها و روابط مورد نیاز بدینوسیله بروزرسانی خواهد شد.
 click_here: اینجا کلیک کنید
 single_file: فیلتر تک
 multiple_files: چندین فیلتر
@@ -243,9 +286,32 @@ updates_made: حالت ارتقاء
 leave_comment: درج پیغام...
 post_comment_success: دیدگاه منتشر شد
 label_import: وارد کردن
+use_current_filters_settings: از فیلترها و تنظیمات موجود استفاده شود
+export_data_button: آغاز عملیات استخراج
+last_page: صفحه آخر
+last_access: آخرین دسترسی
+fill_template: پر کردن با مقدار الگو
+a_unique_table_name: نامی یکتا برای جدول...
+a_unique_column_name: نامی یکتا برای ستون...
+enable_custom_values: فعالسازی مقادیر سفارشی
+submit: ارسال
+move_to_folder: انتقال به پوشه
+move: انتقال
+system: سیستم
+add_field_related: افزودن فیلد به مجموعه مرتبط
+interface_label: رابط کاربری
 today: امروز
 yesterday: دیروز
 delete_comment: حذف دیدگاه
+delete_share: حذف به اشتراک گذاری
+date-fns_date: فرمت PPP برای تاریخ
+date-fns_time: 'فرمت زمان h:mm:ss a'
+date-fns_time_no_seconds: 'فرمت زمان h:mm a'
+date-fns_time_24hour: 'فرمت زمان HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'فرمت زمان HH:mm'
+date-fns_date_short: 'فرمت تاریخ MMM d, u'
+date-fns_time_short: 'فرمت زمان h:mma'
+date-fns_date_short_no_year: فرمت تاریخ MMM d
 minutes: دقیقه
 hours: ساعت
 month: ماه
@@ -256,7 +322,14 @@ months:
   february: اردیبهشت
   march: اسفند
   april: تیر
+  may: می
+  june: ژوئن
+  july: جولای
+  august: آگوست
+  september: سپتامبر
   october: مهر
+  november: نوامبر
+  december: دسامبر
 cancel_crop: لغو برش
 original: اصیل و اصلی
 url: نشانی ‌URL
@@ -274,6 +347,7 @@ zoom: بزرگنمايی
 download: بارگیری
 open: باز
 open_in_new_window: باز کردن در پنجره جدید
+open_folder: باز کردن پوشه "{folder}"
 foreground_color: رنگ روی‌زمینه
 background_color: رنگ زمینه
 upload_from_device: بارگذاری فایل از دستگاه
@@ -296,6 +370,47 @@ creating_collection_system: هر یک از این زمینه های اختیار
 auto_increment_integer: عدد صحیح افزایش خودکار
 generated_uuid: UUID تولید شده
 manual_string: رشته به صورت دستی وارد شده است
+save_and_create_new: ساخت و ذخیره مورد جدید
+save_and_stay: ذخیره و ماندن
+save_as_copy: ذخیره به عنوان کپی
+add_existing: اضافه کردن مورد موجود
+creating_items: ساختن موارد
+enable_create_button: فعالسازی ساخت دکمه
+selecting_items: انتخاب موارد
+enable_select_button: فعالسازی دکمه انتخاب
+comments: نظرات
+no_comments: هنوز نظری ارسال نشده
+click_to_expand: برای بازکردن، کلیک کنید
+select_item: انتخاب آیتم
+no_items: آیتمی وجود ندارد
+search_items: جستجوی آیتمها...
+disabled: غیرفعال شده
+information: اطلاعات
+report_bug: گزارش باگ
+request_feature: درخواست قابلیت جدید
+lower_limit: حد پایینی...
+user_directory: فهرست کاربران
+documentation: مستندات
+sidebar: نوار کناری
+duration: مدت زمان
+charset: مجموعه کاراکتر
+second: ثانیه
+file_moved: فایل منتقل شد
+collection_created: مجموعه ساخته شد
+modified_on: ویرایش شده در
+card_size: سایز کارت
+sort_field: فیلد مرتب سازی
+add_sort_field: افزودن فیلد مرتب سازی
+sort: مرتب سازی
+status: وضعیت
+remove: حذف
+toggle_manual_sorting: تغییر به مرتب سازی دستی
+bookmark_doesnt_exist: نشانکی وجود ندارد
+bookmark_doesnt_exist_copy: نشانکی که میخواهید باز کنید وجود ندارد.
+bookmark_doesnt_exist_cta: بازگشت به مجموعه
+select_an_item: یک آیتم را انتخاب کنید...
+edit: ویرایش
+enabled: فعال شده
 errors:
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
 value_unique: مقدار باید یکتا باشد
@@ -306,14 +421,20 @@ wysiwyg_options:
 fields:
   directus_collections:
     note: شرح
+    sort_field: فیلد مرتب سازی
   directus_files:
     title: عنوان
+    modified_on: ویرایش شده در
     created_on: ایجاد شده در
     created_by: ایجاد شده توسط
     folder: Folder
+    charset: مجموعه کاراکتر
+    duration: مدت زمان
   directus_users:
     title: عنوان
     language: زبان
+    last_page: صفحه آخر
+    last_access: آخرین دسترسی
   directus_settings:
     module_bar: ماژول
   directus_shares:
@@ -329,6 +450,7 @@ field_options:
   directus_collections:
     language: زبان
     archive_divider: بایگانی
+    sort_divider: مرتب سازی
   directus_roles:
     fields:
       name_name: نام
@@ -338,10 +460,16 @@ interfaces:
     primary: اصلی
   select-dropdown:
     choices_value_placeholder: یک مقدار وارد کنید...
+  input-hash:
+    hash: هش
+  input-rich-text-md:
+    edit: ویرایش
   map:
     zoom: بزرگنمايی
   system-folder:
     folder: Folder
+  boolean:
+    label_default: فعال شده
 displays:
   translations:
     translations: ترجمه‌ها
@@ -350,6 +478,7 @@ displays:
   formatted-value:
     prefix: پيشوند
     suffix: پسوند
+    text: متن
   labels:
     choices_value_placeholder: یک مقدار وارد کنید...
   user:
