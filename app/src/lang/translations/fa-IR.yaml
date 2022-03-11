@@ -402,10 +402,10 @@ open_folder: باز کردن پوشه "{folder}"
 foreground_color: رنگ روی‌زمینه
 background_color: رنگ زمینه
 upload_from_device: بارگذاری فایل از دستگاه
-choose_from_library: گزینش از کتاب‌خانه
+choose_from_library: گزینش از مجموعه فایلها
 import_from_url: درون‌برد فایل از
 replace_from_device: بارگذاری فایل از دستگاه
-replace_from_library: گزینش از کتاب‌خانه
+replace_from_library: جایگزینی فایل از مجموعه
 replace_from_url: بارگذاری فایل از دستگاه
 no_file_selected: هیچ فایلی انتخاب نشده است
 download_file: دانلود فایل
@@ -439,6 +439,11 @@ disabled: غیرفعال شده
 information: اطلاعات
 report_bug: گزارش باگ
 request_feature: درخواست قابلیت جدید
+item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
+no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
+no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
+copy: کپی
+add_filter: افزودن فیلتر
 lower_limit: حد پایینی...
 user_directory: فهرست کاربران
 documentation: مستندات
@@ -492,7 +497,57 @@ errors:
   INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
   UNKNOWN: خطای غیر منتظره
 security: امنیت
+value_hashed: این مقدار به طور امن، هش شده است
+bookmark_name: نام نشانک...
+create_bookmark: ساخت نشانک
+edit_bookmark: ویرایش نشانک
+bookmarks: نشانک‌ها
+presets: الگوها
 unexpected_error: خطای غیر منتظره
+unexpected_error_copy: یک خطای غیر منتظره رخ داده است، لطفا بعدا دوباره تلاش کنید.
+copy_details: کپی کردنِ جزئیات
+no_app_access: عدم دسترسی به برنامه
+no_app_access_copy: کاربر اجازه دسترسی به سامانه مدیریت را ندارد.
+password_reset_sent: ما پیوندی ایمن را برای شما ایمیل کردیم تا به کمک آن رمز عبور خود را بازنشانی کنید
+password_reset_successful: رمز عبور با موفقیت بازنشانی شد
+back: بازگشت
+filter: فیلتر
+editing_image: ویرایش تصویر
+square: مربع
+free: بدون محدودیت
+flip_horizontal: پشت و رو کردن بصورت افقی
+flip_vertical: پشت و رو کردن به صورت عمودی
+aspect_ratio: نسبت ابعاد
+rotate: چرخش
+all_users: همه کابران
+delete_collection: حذف مجموعه
+update_collection_success: مجموعه های بروزرسانی شده
+delete_collection_success: مجموعه‌های حذف شده
+make_collection_visible: این مجموعه را هویدا کن
+make_collection_hidden: این مجموعه را پنهان کن
+make_folder_visible: این پوشه را هویدا کن
+make_folder_hidden: این پوشه را پنهان کن
+start_end_of_count_items: '{start}-{end} از {count} آیتم'
+start_end_of_count_filtered_items: '{start}-{end} از {count} آیتم فیلتر شده'
+one_item: '۱ آیتم'
+one_filtered_item: '۱ آیتم فیلتر شده'
+delete_collection_are_you_sure: >-
+  آیا مطمئنید که میخواهید این مجموعه را حذف کنید؟ این عمل، مجموعه مورد نظر و تمامی آیتمهای آن را حذف خواهد کرد و نتیجه غیرقابل بازگشت خواهد بود.
+delete_folder_are_you_sure: آیا مطمئنید که میخواهید این پوشه را حذف کنید؟ پوشه ها و مجموعه های موجود در این پوشه به بالاترین سطح منتقل خواهد شد.
+collections_shown: مجموعه های نشان داده شده
+visible_collections: مجموعه های هویدا
+hidden_collections: مجموعه های پنهان
+show_hidden_collections: نمایش مجموعه های پنهان
+hide_hidden_collections: پنهان کردن مجموعه های پنهان
+show_header: نمایش هِدِر
+unmanaged_collections: مجموعه های تنظیم نشده
+system_collections: مجموعه های سیستمی
+placeholder: متن نمایشی
+icon_left: آیکن سمت چپ
+icon_right: آیکن سمت راست
+count_other_revisions: '{count} نسخه دیگر'
+font: فونت
+sans_serif: فونت Sans Serif
 serif: فونت Serif
 monospace: فونت Monospace
 divider: جدا کننده
@@ -543,8 +598,12 @@ upload_files_indeterminate: 'در حال آپلود فایلها {done}/{total}'
 upload_files_success: '{count} فایل آپلود شد'
 upload_pending: آپلود متوقف شده
 drag_file_here: فایلها را بکشید و در اینجا رها کنید
-click_to_browse: برای مرور، کلید کنید
+click_to_browse: برای انتخاب فایل، کلید کنید
 value_unique: مقدار باید یکتا باشد
+create_item: ساخت آیتم
+n_items_selected: 'هیچ آیتمی انتخاب نشده است | یک آیتم انتخاب شده | {n} آیتم انتخاب شده اند'
+role: نقش
+edit_role: ویرایش نقش
 dashboard: پیشخوان
 panel: پنل
 panel_options: تنظیمات پنل
@@ -596,9 +655,41 @@ wysiwyg_options:
   alignjustify: تراز با فاصله مساوی از طرفین
   alignleft: تراز به چپ
   alignnone: بدون تراز
+  alignright: تراز به راست
   forecolor: رنگ روی‌زمینه
   backcolor: رنگ زمینه
+  bold: بولد
+  italic: ایتالیک
+  underline: زیر خطدار
+  strikethrough: خط خورده
+  subscript: زیرنویس
+  superscript: بالانویس
+  codeblock: کد
+  blockquote: نقل قول
+  bullist: فهرست نقطه دار
+  numlist: فهرست شماره‌دار
+  hr: خط افقی
+  link: اضافه/ویرایش لینک
+  unlink: حذف لینک
+  media: اضافه/ویرایش رسانه
+  image: اضافه/ویرایش تصویر
+  copy: کپی
+  cut: کات
+  paste: چسباندن
+  heading: سرتیتر
+  h1: سرتیتر ۱
+  h2: سرتیتر ۲
+  h3: سرتیتر ۳
+  h4: سرتیتر ۴
+  h5: سرتیتر ۵
+  h6: سرتیتر ۶
+  fontselect: انتخاب فونت
+  fontsizeselect: انتخاب سایز فونت
+  indent: تورفتگی
+  outdent: بیرون امدگی
   selectall: انتخاب همه
+creating_in: 'ساخت یک آیتم در {collection}'
+editing_in: 'ویرایش یک آیتم در {collection}'
 creating_unit: 'در حال ساخت {unit}'
 editing_unit: 'در حال ویرایش {unit}'
 editing_in_batch: 'در حال ویرایش جمعی {count} آیتم'
@@ -637,7 +728,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **بررسی اجمالی مستندات** - مستنداتی صرفاً تنظیم شده با نسخه پروژه و شماتیک مربوطه.
 page_help_files_collection: >-
-  **کتابخانه فایلها** - تمامی محتوای آپلود شده برای این پروژه را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
+  **مجموعه فایلها** - تمامی محتوای آپلود شده برای این پروژه را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
 page_help_files_item: >-
   **جزئیات فایل** - فرمی برای مدیریت متادیتای فایل، ویرایش محتوای اصلی و بروزرسانی تنظیمات دسترسی.
 page_help_settings_project: "**تنظیمات پروژه** - گزینه های مربوط به بالاترین سطح تنظیمات پروژه شما."
@@ -649,6 +740,12 @@ page_help_settings_roles_collection: '**مرور نقش های کاربری** - 
 page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
 page_help_settings_presets_collection: >-
   **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
+create_new: ساخت آیتم جدید
+batch_delete_confirm: >-
+  هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
+directus_collection:
+  directus_permissions: دسترسی به اجازه های این نقش
+  directus_roles: گروههای اجازه برای کاربران سیستم
 fields:
   directus_collections:
     note: شرح
@@ -656,42 +753,130 @@ fields:
     sort_field: فیلد مرتب سازی
   directus_files:
     title: عنوان
+    description: توضیحات
+    tags: برچسب ها
+    location: موقعیت
     modified_on: ویرایش شده در
     created_on: ایجاد شده در
     created_by: ایجاد شده توسط
     folder: Folder
+    uploaded_on: بارگذاری شده در تاریخ
     charset: مجموعه کاراکتر
     duration: مدت زمان
   directus_users:
+    first_name: نام
+    last_name: نام خانوادگی
+    email: ایمیل
+    password: رمز عبور
+    avatar: آواتار
+    location: موقعیت
     title: عنوان
+    description: توضیحات
+    tags: برچسب ها
+    user_preferences: تنظیمات مربوط به کاربر
     language: زبان
+    theme: پوسته
+    theme_auto: انتخاب خودکار پوسته (توسط سیستم)
+    theme_light: تم روشن
+    theme_dark: تم شبانه (تاریک)
+    tfa_secret: احراز هویت دو عاملی
+    status: وضعیت
+    status_draft: پیش‌نویس
+    status_invited: دعوت شده
+    status_active: فعال
+    status_suspended: تعلیق شده
+    status_archived: بایگانی شده
+    role: نقش
     last_page: صفحه آخر
     last_access: آخرین دسترسی
+    email_notifications: اعلان های ایمیلی
   directus_settings:
+    auth_password_policy: سیاست کلمه‌ی عبور جدید
     module_bar: ماژول
   directus_shares:
     name: نام
+    role: نقش
+    password: رمز عبور
   directus_fields:
     note: شرح
     translation: ترجمه‌های نام فیلد
   directus_roles:
     name: نام نقش
+    icon: آیکن نقش
+    description: توضیحات
+    app_access: دسترسی به برنامه
+    admin_access: دسترسی به سامانه مدیریت
+    ip_access: محدودیت IP
+    enforce_tfa: اجبار به احراز هویت دو عاملی
+    users: کاربران دارای این نقش
+    module_list: نویگیشن مربوط به ماژول
   directus_webhooks:
     name: نام
+    status: وضعیت
 field_options:
   directus_settings:
     security_divider_title: امنیت
+    auth_password_policy:
+      none_text: هیچ کدام - این مورد توصیه نمیشود
+      weak_text: ضعیف - حداقل ۸ کاراکتر
+      strong_text: قوی - حروف بزرگ / کوچک / اعداد/ خاص
   directus_collections:
+    note_placeholder: توضیحات مربوط به این مجموعه...
     language: زبان
     archive_divider: بایگانی
     sort_divider: مرتب سازی
+  directus_files:
+    description: توضیحات اختیاری...
+    location: موقعیت اختیاری...
   directus_roles:
+    name: نامی یکتا برای این نقش...
+    description: توضیحات مربوط به این نقش...
+    ip_access: IP های مورد تأیید را وارد کنید، برای اجازه دسترسی به تمامی IP ها فیلد را خالی بگذارید...
     fields:
+      icon_name: آیکن
       name_name: نام
+      name_placeholder: عنوانی را وارد نمایید...
+      link_name: لینک
+      link_placeholder: لینک نسبی یا کامل...
+    collections_name: مجموعه‌ها
+    collections_addLabel: مجموعه جدید...
+  directus_users:
+    preferences_divider: تنظیمات مربوط به کاربر
+    dropdown_auto: انتخاب خودکار پوسته (توسط سیستم)
+    dropdown_light: تم روشن
+    dropdown_dark: تم شبانه (تاریک)
+    status_dropdown_draft: پیش‌نویس
+    status_dropdown_invited: دعوت شده
+    status_dropdown_active: فعال
+    status_dropdown_suspended: تعلیق شده
+    status_dropdown_archived: بایگانی شده
+  directus_webhooks:
+    status_options_active: فعال
+    status_options_inactive: غیر فعال
+save_current_user_role: ذخیره نقش کاربر فعلی
+editing_role: 'نقشِ {role}'
+creating_webhook: ساخت وب هوک
+description: توضیحات
 limit: محدوده
+email: ایمیل
+file_library: مجموعه فایلها
+forgot_password: فراموشی رمز عبور
+otp: رمز عبور یکبار مصرف
+password: رمز عبور
+reset_password: بازنشانی رمز عبور
 interfaces:
+  filter:
+    name: فیلتر
+    description: یک فیلتر را پیکربندی کنید.
+    add_filter: افزودن فیلتر
+    add_group: گروه و / یا
+    add_value: افزودن مقدار
   presentation-links:
     primary: اصلی
+  select-multiple-checkbox:
+    items_shown: آیتمهای نشان داده شده
+  input-code:
+    code: کد
   select-color:
     color: رنگ
   presentation-divider:
@@ -700,12 +885,29 @@ interfaces:
     choices_value_placeholder: یک مقدار وارد کنید...
   input-hash:
     hash: هش
+  list-m2m:
+    description: انتخاب چندین آیتم تقاطعی مرتبط
+  select-dropdown-m2o:
+    description: انتخاب یک آیتم مرتبط
   input-rich-text-md:
     edit: ویرایش
   map:
+    description: یک موقعیت را روی نقشه انتخاب کنید
     zoom: بزرگنمايی
+  list-o2m:
+    description: انتخاب چندین آیتم مرتبط
   system-folder:
     folder: Folder
+    root_name: پوشه اصلی مجموعه فایلها
+  list:
+    add_label: 'برچسب "ساخت مورد جدید"'
+  tags:
+    tags: برچسب ها
+    description: انتخاب یا افزودن برچسب ها
+    whitespace: فضای خالی
+    hyphen: جایگزینی با نشان اتصال
+    underscore: جایگزینی با زیرین خط
+    add_tags: افزودن برچسب ها...
   boolean:
     label_default: فعال شده
 displays:
@@ -719,8 +921,10 @@ displays:
     format: فرمت
   formatted-value:
     format: فرمت
+    font: فونت
     font_serif: فونت Serif
     font_monospace: فونت Monospace
+    italic: ایتالیک
     prefix: پيشوند
     suffix: پسوند
     color: رنگ
@@ -730,7 +934,10 @@ displays:
   labels:
     choices_value_placeholder: یک مقدار وارد کنید...
   user:
+    avatar: آواتار
     name: نام
 layouts:
   cards:
     title: عنوان
+  map:
+    find_location: پیدا کردن موفعیت...
