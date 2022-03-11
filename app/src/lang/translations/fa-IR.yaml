@@ -90,7 +90,7 @@ delete_bookmark: حذف نشانک
 delete_bookmark_copy: >-
   آیا مطمئن هستید که می‌خواهید «{bookmark}» را حذف کنید؟ این عملیات قابل بازگردانی نیست.
 logoutReason:
-  SIGN_OUT: از حساب خارج شده
+  SIGN_OUT: از سیستم خارج شده
   SESSION_EXPIRED: نشست به پایان رسیده
 public_label: عمومی
 public_description: داده API موجود را بدون احراز هویت کنترل می‌کند.
@@ -381,8 +381,9 @@ months:
   october: مهر
   november: نوامبر
   december: دسامبر
+drag_mode: حالت کشیدن
 cancel_crop: لغو برش
-original: اصیل و اصلی
+original: مقدار اولیه
 url: نشانی ‌URL
 import_label: وارد کردن
 file_details: جزئیات فایل
@@ -442,7 +443,11 @@ request_feature: درخواست قابلیت جدید
 item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
+no_notifications: اعلانی موجود نیست
+no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
+activity_log: لاگ فعالیت ها
 copy: کپی
+action: فعالیت
 add_filter: افزودن فیلتر
 lower_limit: حد پایینی...
 user_directory: فهرست کاربران
@@ -513,7 +518,7 @@ password_reset_successful: رمز عبور با موفقیت بازنشانی ش
 back: بازگشت
 filter: فیلتر
 editing_image: ویرایش تصویر
-square: مربع
+square: مربعی
 free: بدون محدودیت
 flip_horizontal: پشت و رو کردن بصورت افقی
 flip_vertical: پشت و رو کردن به صورت عمودی
@@ -599,11 +604,19 @@ upload_files_success: '{count} فایل آپلود شد'
 upload_pending: آپلود متوقف شده
 drag_file_here: فایلها را بکشید و در اینجا رها کنید
 click_to_browse: برای انتخاب فایل، کلید کنید
+layout_options: تنظیمات چیدمان
 value_unique: مقدار باید یکتا باشد
+all_activity: تمام فعالیت ها
 create_item: ساخت آیتم
 n_items_selected: 'هیچ آیتمی انتخاب نشده است | یک آیتم انتخاب شده | {n} آیتم انتخاب شده اند'
+all_files: تمامی فایلها
+my_files: فایلهای من
+recent_files: فایل‌های اخیر
 role: نقش
 edit_role: ویرایش نقش
+create: ایجاد
+update: بروزرسانی
+insights: بینش های داده ای
 dashboard: پیشخوان
 panel: پنل
 panel_options: تنظیمات پنل
@@ -688,6 +701,7 @@ wysiwyg_options:
   indent: تورفتگی
   outdent: بیرون امدگی
   selectall: انتخاب همه
+  table: جدول
 creating_in: 'ساخت یک آیتم در {collection}'
 editing_in: 'ویرایش یک آیتم در {collection}'
 creating_unit: 'در حال ساخت {unit}'
@@ -709,7 +723,7 @@ preset_name_placeholder: اگر خالی باشد، به عنوان الگوی �
 preset_search_placeholder: عبارت جستجو...
 editing_preset: ویرایش الگو
 layout_preview: پیش نمایش چیدمان
-layout_setup: ایجاد چیدمان
+layout_setup: تنظیمات چیدمان
 unsaved_changes: تغییرات ذخیره نشده
 unsaved_changes_copy: آيا مطمئن هستيد که می خواهيد این صفحه را ترک کنيد؟
 discard_changes: لغو تغییرات
@@ -740,25 +754,40 @@ page_help_settings_roles_collection: '**مرور نقش های کاربری** - 
 page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
 page_help_settings_presets_collection: >-
   **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
+activity_feed: گزارش فعالیت ها
 create_new: ساخت آیتم جدید
 batch_delete_confirm: >-
   هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
+cancel: انصراف
 directus_collection:
   directus_permissions: دسترسی به اجازه های این نقش
+  directus_notifications: اعلانهای ارسالی به کاربر
   directus_roles: گروههای اجازه برای کاربران سیستم
 fields:
+  directus_activity:
+    action: فعالیت
+    timestamp: فعالیت در تاریخ
+    user: فعالیت توسط
   directus_collections:
     note: شرح
     color: رنگ
     sort_field: فیلد مرتب سازی
   directus_files:
+    $thumbnail: تصویر کوچک
     title: عنوان
     description: توضیحات
     tags: برچسب ها
     location: موقعیت
+    storage: محل ذخیره سازی
+    filename_disk: نام فایل (برروی دیسک)
+    filename_download: نام (دانلودی) فایل
+    metadata: متادیتا
+    filesize: انداره فایل
+    modified_by: ویرایش شده توسط
     modified_on: ویرایش شده در
     created_on: ایجاد شده در
     created_by: ایجاد شده توسط
+    uploaded_by: بارگذاری شده توسط
     folder: Folder
     uploaded_on: بارگذاری شده در تاریخ
     charset: مجموعه کاراکتر
@@ -792,6 +821,7 @@ fields:
     email_notifications: اعلان های ایمیلی
   directus_settings:
     auth_password_policy: سیاست کلمه‌ی عبور جدید
+    files_and_thumbnails: فایلها و ذخیره سازی
     module_bar: ماژول
   directus_shares:
     name: نام
@@ -813,6 +843,7 @@ fields:
   directus_webhooks:
     name: نام
     status: وضعیت
+    actions: فعالیت ها
 field_options:
   directus_settings:
     security_divider_title: امنیت
@@ -820,6 +851,13 @@ field_options:
       none_text: هیچ کدام - این مورد توصیه نمیشود
       weak_text: ضعیف - حداقل ۸ کاراکتر
       strong_text: قوی - حروف بزرگ / کوچک / اعداد/ خاص
+    storage_asset_presets:
+      fit:
+        contain_text: در برگرفتن تصویر (با حفظ نسبت ابعاد)
+    files_divider_title: فایلها و تصاویر کوچک
+  directus_activity:
+    create: ایجاد
+    update: بروزرسانی
   directus_collections:
     note_placeholder: توضیحات مربوط به این مجموعه...
     language: زبان
@@ -828,6 +866,9 @@ field_options:
   directus_files:
     description: توضیحات اختیاری...
     location: موقعیت اختیاری...
+    storage_divider: نحوه نام گذاری فایل
+    filename_disk: نام برروی دیسک...
+    filename_download: نام فایل به هنگام دانلود...
   directus_roles:
     name: نامی یکتا برای این نقش...
     description: توضیحات مربوط به این نقش...
@@ -853,7 +894,10 @@ field_options:
   directus_webhooks:
     status_options_active: فعال
     status_options_inactive: غیر فعال
+    actions_create: ایجاد
+    actions_update: بروزرسانی
 save_current_user_role: ذخیره نقش کاربر فعلی
+choose_action: انتخاب فعالیت
 editing_role: 'نقشِ {role}'
 creating_webhook: ساخت وب هوک
 description: توضیحات
@@ -861,9 +905,12 @@ limit: محدوده
 email: ایمیل
 file_library: مجموعه فایلها
 forgot_password: فراموشی رمز عبور
+my_activity: فعالیت های من
 otp: رمز عبور یکبار مصرف
 password: رمز عبور
 reset_password: بازنشانی رمز عبور
+sign_out: خروج از سیستم
+sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
 interfaces:
   filter:
     name: فیلتر
@@ -885,6 +932,9 @@ interfaces:
     choices_value_placeholder: یک مقدار وارد کنید...
   input-hash:
     hash: هش
+  file-image:
+    crop: تناسب با برش تصویر
+    crop_label: برش تصویر در صورت نیاز
   list-m2m:
     description: انتخاب چندین آیتم تقاطعی مرتبط
   select-dropdown-m2o:
@@ -892,6 +942,7 @@ interfaces:
   input-rich-text-md:
     edit: ویرایش
   map:
+    map: نقشه
     description: یک موقعیت را روی نقشه انتخاب کنید
     zoom: بزرگنمايی
   list-o2m:
@@ -919,6 +970,9 @@ displays:
     color: رنگ
   datetime:
     format: فرمت
+  filesize:
+    filesize: اندازه فایل
+    description: نمایش سایز فایل
   formatted-value:
     format: فرمت
     font: فونت
@@ -938,6 +992,17 @@ displays:
     name: نام
 layouts:
   cards:
+    cards: کارت
+    image_source: منبع تصویر
+    image_fit: حالت تناسب تصویر
+    crop: برش
+    contain: دربرگرفتن تصویر
     title: عنوان
+    subtitle: زیرعنوان
+  tabular:
+    tabular: جدول
+  calendar:
+    calendar: تقویم
   map:
+    map: نقشه
     find_location: پیدا کردن موفعیت...
