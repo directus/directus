@@ -1,12 +1,18 @@
 <template>
-	<div class="image" :class="[width, { crop }]">
+	<div class="image" :class="width">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
 			{{ t('disabled') }}
 		</v-notice>
 
-		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
+		<div
+			v-else-if="image"
+			ref="imageContainer"
+			class="image-preview"
+			:class="{ 'is-svg': image.type && image.type.includes('svg') }"
+			:style="{ maxHeight: 400 + 'px' }"
+		>
 			<div v-if="imageError" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
 
@@ -14,7 +20,7 @@
 					{{ t(`errors.${imageError}`) }}
 				</span>
 			</div>
-			<img v-else :src="src" alt="" role="presentation" @error="imageErrorHandler" />
+			<img v-else :src="src" alt="" role="presentation" :class="fit" @error="imageErrorHandler" />
 
 			<div class="shadow" />
 
@@ -100,10 +106,12 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
+		const imageMaxHeightPx = 400;
 		const { t, n, te } = useI18n();
 
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
+		const imageContainer = ref<HTMLDivElement | null>(null);
 		const lightboxActive = ref(false);
 		const editDrawerActive = ref(false);
 		const imageError = ref<string | null>(null);
@@ -117,12 +125,25 @@ export default defineComponent({
 				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 			}
 			if (image.value.type.includes('image')) {
-				const fit = props.crop ? 'cover' : 'contain';
-				const url =
-					getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
+				const url = getRootPath() + `assets/${image.value.id}?cache-buster=${cacheBuster.value}`;
 				return addTokenToURL(url);
 			}
 
+			return null;
+		});
+
+		const fit = computed(() => {
+			if (image.value && imageContainer.value) {
+				if (
+					image.value.width >= imageContainer.value.clientWidth &&
+					image.value.height >= imageMaxHeightPx &&
+					props.crop
+				) {
+					return 'cover';
+				} else if (!props.crop) {
+					return 'contain';
+				}
+			}
 			return null;
 		});
 
@@ -164,6 +185,8 @@ export default defineComponent({
 			t,
 			loading,
 			image,
+			imageContainer,
+			fit,
 			src,
 			imageError,
 			imageErrorHandler,
@@ -176,6 +199,7 @@ export default defineComponent({
 			downloadSrc,
 			edits,
 			stageEdits,
+			imageMaxHeightPx,
 		};
 
 		async function fetchImage() {
@@ -266,18 +290,18 @@ export default defineComponent({
 .image-preview {
 	position: relative;
 	width: 100%;
-	height: var(--input-height-tall);
+	min-height: var(--input-height-tall);
 	overflow: hidden;
 	background-color: var(--background-normal-alt);
 	border-radius: var(--border-radius);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 img {
 	z-index: 1;
-	width: 100%;
-	height: 100%;
-	max-height: inherit;
-	object-fit: contain;
+	display: block;
 }
 
 .is-svg {
@@ -395,20 +419,18 @@ img {
 	}
 }
 
-.image {
-	&.full,
-	&.fill {
-		.image-preview {
-			height: auto;
-			max-height: 400px;
-		}
-	}
+.image .image-preview {
+	height: auto;
 
-	&.crop {
-		.image-preview {
-			img {
-				object-fit: cover;
-			}
+	img {
+		&.cover {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+		&.contain {
+			max-height: inherit;
+			max-width: 100%;
 		}
 	}
 }
