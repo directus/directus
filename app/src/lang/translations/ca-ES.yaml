@@ -76,7 +76,6 @@ recommended_defaults: Predeterminats recomanats
 unarchive: Desarxiva
 unarchive_confirm: Segur que vols desarxivar aquest element?
 nested_files_folders_will_be_moved: Els fitxers i carpetes anidats es mouran un nivell amunt.
-unknown_validation_errors: 'Hi ha errors de validació pels següents camps amagats:'
 validationError:
   eq: El valor ha de ser {valid}
   neq: El valor no pot ser {invalid}

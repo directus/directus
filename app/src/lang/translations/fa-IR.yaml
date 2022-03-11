@@ -114,7 +114,6 @@ recommended_defaults: پیش‌فرض‌های توصیه شده
 unarchive: خارج کردن از بایگانی
 unarchive_confirm: از خارج کردن از بایگانی این مورد مطمئنید؟
 nested_files_folders_will_be_moved: فایل‌ها و پوشه‌های تو در تو یک سطح به بالا منتقل می‌شوند.
-unknown_validation_errors: 'خطاهای تأیید اعتبار برای موردهای پنهان زیر وجود دارد:'
 validationError:
   eq: مقدار باید {valid} باشد
   neq: مقدار نمی‌تواند {invalid} باشد

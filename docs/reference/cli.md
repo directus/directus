@@ -127,6 +127,12 @@ To run non-interactively (e.g. when running in a CI/CD workflow), run
 npx directus schema apply --yes ./path/to/snapshot.yaml
 ```
 
+To diff the schema and database and print out the planned changes, run
+
+```
+npx directus schema apply --dry-run ./path/to/snapshot.yaml
+```
+
 ### Creating Users
 
 To create a new user with a specific role, run

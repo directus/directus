@@ -114,7 +114,6 @@ recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 nested_files_folders_will_be_moved: Berkas dan folder yang disarang akan dipindahkan satu tingkat keatas.
-unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'
 validationError:
   eq: Nilai harus {valid}
   neq: Nilai tidak boleh {invalid}

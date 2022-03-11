@@ -114,7 +114,6 @@ recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
 unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
 nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
-unknown_validation_errors: 'Er waren validatie-fouten voor de volgende verborgen velden:'
 validationError:
   eq: Waarde moet {valid} zijn
   neq: Waarde kan niet {invalid} zijn
