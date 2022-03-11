@@ -189,7 +189,7 @@ export default ({ schedule }) => {
 
 ::: tip System Collections
 
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`, `files` (exept create/update),
+`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`, `files` (except create/update),
 `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
 
 :::
