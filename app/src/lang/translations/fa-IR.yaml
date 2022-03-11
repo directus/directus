@@ -768,6 +768,7 @@ fields:
     action: فعالیت
     timestamp: فعالیت در تاریخ
     user: فعالیت توسط
+    comment: نظر
   directus_collections:
     note: شرح
     color: رنگ
@@ -856,8 +857,10 @@ field_options:
         contain_text: در برگرفتن تصویر (با حفظ نسبت ابعاد)
     files_divider_title: فایلها و تصاویر کوچک
   directus_activity:
+    login: ورود به سیستم
     create: ایجاد
     update: بروزرسانی
+    delete: حذف
   directus_collections:
     note_placeholder: توضیحات مربوط به این مجموعه...
     language: زبان
@@ -896,19 +899,25 @@ field_options:
     status_options_inactive: غیر فعال
     actions_create: ایجاد
     actions_update: بروزرسانی
+    actions_delete: حذف
+    actions_login: ورود به سیستم
 save_current_user_role: ذخیره نقش کاربر فعلی
+comment: نظر
 choose_action: انتخاب فعالیت
 editing_role: 'نقشِ {role}'
 creating_webhook: ساخت وب هوک
+delete_label: حذف
 description: توضیحات
 limit: محدوده
 email: ایمیل
 file_library: مجموعه فایلها
 forgot_password: فراموشی رمز عبور
+login: ورود به سیستم
 my_activity: فعالیت های من
 otp: رمز عبور یکبار مصرف
 password: رمز عبور
 reset_password: بازنشانی رمز عبور
+save: ذخیره
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
 interfaces:
