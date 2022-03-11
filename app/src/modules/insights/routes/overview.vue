@@ -53,7 +53,7 @@
 					<v-list>
 						<v-list-item class="warning" clickable @click="editDashboard = item">
 							<v-list-item-icon>
-								<v-icon name="edit" outline />
+								<v-icon name="edit" />
 							</v-list-item-icon>
 							<v-list-item-content>
 								{{ t('edit_dashboard') }}
@@ -62,7 +62,7 @@
 
 						<v-list-item class="danger" clickable @click="confirmDelete = item.id">
 							<v-list-item-icon>
-								<v-icon name="delete" outline />
+								<v-icon name="delete" />
 							</v-list-item-icon>
 							<v-list-item-content>
 								{{ t('delete_dashboard') }}
