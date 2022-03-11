@@ -240,6 +240,25 @@ refresh_interval_minutes: هر دقیقه | هر {minutes} دقیقه
 auto_generate: تولید خودکار
 this_will_auto_setup_fields_relations: کلیه فیلدها و روابط مورد نیاز بدینوسیله بروزرسانی خواهد شد.
 click_here: اینجا کلیک کنید
+to_manually_setup_translations: راه اندازی دستی ترجمه ها.
+click_to_manage_translated_fields: >-
+  هنوز هیچ فیلد ترجمه شده ای وجود ندارد. برای ساخت آن، اینجا را کلیک کنید. | هیچ فیلد ترجمه شده ای وجود ندارد. برای مدیرت آن، اینجا را کلیک کنید. | تعداد {count} فیلد ترجمه شده وجود دارد. برای مدیریت آنها اینجا را کلیک کنید.
+fields_group: گروه فیلدها
+no_collections_found: مجموعه ای یافت نشد.
+new_data_alert: 'فیلدهای زیر به مدل داده ای شما اضافه خواهند شد:'
+search_collection: جستجوی مجموعه...
+new_field: 'فیلد جدید'
+new_collection: 'مجموعه جدید'
+add_m2o_to_collection: 'اضافه کردن چند-به-یک به "{collection}"'
+add_o2m_to_collection: 'اضافه کردن یک-به-چند به "{collection}"'
+add_m2m_to_collection: 'اضافه کردن چند-به-چند به "{collection}"'
+choose_a_type: یک نوع را انتخاب کنید...
+determined_by_relationship: توسط نوع رابطه تعیین می شود
+add_note: توضیحاتی کارا برای کاربران اضافه کنید...
+add_link: اضافه کردن لینک
+custom_link: پیوند سفارشی
+default_value: مقدار پیش فرض
+standard_field: فیلد استاندارد
 single_file: فیلتر تک
 multiple_files: چندین فیلتر
 m2o_relationship: رابطه بسیار به یک
@@ -250,10 +269,12 @@ invalid_item: نامعتبر است
 next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
+no_translations: ترجمه ای وجود ندارد
 note: شرح
 enter_a_value: یک مقدار وارد کنید...
 enter_a_placeholder: محل نگهدار را وارد کنید...
 length: طول
+soft_length: طول کاراکتر مجاز
 precision_scale: دقت و مقیاس
 readonly: فقط خواندنی
 unique: منحصربه‌فرد
@@ -264,8 +285,19 @@ foreign_key: کلید خارجی
 finish_setup: پایان راه‌اندازی
 dismiss: نادیده گرفتن
 raw_value: مقدار خام
+copy_raw_value: کپی مقدار خام
+copy_raw_value_success: کپی شد
+copy_raw_value_fail: کپی ناموفق بود
+paste_raw_value: چسباندن مقدار خام
+paste_raw_value_success: چسبانده شد
+paste_raw_value_fail: چسباندن ناموفق بود
+view_raw_value: نمایش مقدار خام
 edit_raw_value: ویرایش مقدار
 enter_raw_value: یک مقدار وارد کنید...
+clear_value: پاک کردن مقدار
+clear_changes: پاک کردن تغییرات
+reset_to_default: بازنشانی به تنظیمات پیش فرض
+undo_changes: برگرداندن تغییرات به حالت قبل
 notifications: اعلانات
 show_all_activity: نمایش فعالیت های اخیر
 page_not_found: برگه یافت نشد
@@ -277,15 +309,34 @@ settings_update_success: تنظیمات بروزرسانی شد
 title: عنوان
 revision_delta_created: ایجاد شد
 revision_delta_created_externally: ایجاد شده در خارج
+revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
 revision_delta_deleted: حذف شده
 revision_delta_reverted: بازگردانده شد
 revision_delta_other: نسخه جدید
+revision_delta_by: 'در {date} توسط {user}'
 private_user: کاربر خصوصی
+creation_preview: پیش نمایش ساخت
 revision_preview: پیش نمایش ویرایش
 updates_made: حالت ارتقاء
 leave_comment: درج پیغام...
 post_comment_success: دیدگاه منتشر شد
+item_create_success: آیتم ساخته شد | آیتمها ساخته شدند
+item_update_success: آیتم بروزرسانی شد | آیتمها بروزرسانی شدند
+item_delete_success: آیتم حذف شد | آیتمها حذف شدند
+this_collection: این مجموعه
+related_collection: مجموعه مرتبط
+related_collections: مجموعه های مرتبط
+translations_collection: مجموعه ترجمه ها
+languages_collection: مجموعه زبانها
+import_data_input_placeholder: CSV یا JSON...
+import_data_button: شروع وارد سازی
+import_data_indeterminate: وارد سازی داده ها...
+import_data_success: داده ها با موفقیت از {filename} وارد شد
+import_data_error: ساختار داده فایل با مجموعه همخوانی ندارد.
 label_import: وارد کردن
+label_export: استخراج
+import_export: واردسازی / استحراج
+format: فرمت
 use_current_filters_settings: از فیلترها و تنظیمات موجود استفاده شود
 export_data_button: آغاز عملیات استخراج
 last_page: صفحه آخر
@@ -440,6 +491,7 @@ errors:
   VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
   INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
   UNKNOWN: خطای غیر منتظره
+security: امنیت
 unexpected_error: خطای غیر منتظره
 serif: فونت Serif
 monospace: فونت Monospace
@@ -577,13 +629,26 @@ show_y_axis: نمایش محور Y
 keep_editing: ادامه دادن ویرایش
 page_help_collections_overview: '**کلیات مجموعه ها** - لیستی از کلیه مجموعه هایی که به آنها دسترسی دارید.'
 page_help_collections_collection: >-
-  **مرور موارد** - تمام موارد مربوط به مجموعه {collection} که به آن دسترسی دارید را لیست میکند. چیدمان، فیلترها و تنظیمات مرتب سازی را بر اساس نیاز خود تنظیم کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
+  **مرور موارد** - تمام موارد مربوط به مجموعه {collection} که به آن دسترسی دارید را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
 page_help_collections_item: >-
   **جزئیات آیتم** - فرمی برای نمایش و مدیریت این آیتم. همچنین، این نوار کناری شامل تاریخچه کاملی از نسخه ها و نظرات مرتبط است.
 page_help_activity_collection: >-
   **مرور فعالیتها** - لیستی جامع از تمامی تنظیمات سیستمی کاربر شما و فعالیتهای محتوایی.
 page_help_docs_global: >-
   **بررسی اجمالی مستندات** - مستنداتی صرفاً تنظیم شده با نسخه پروژه و شماتیک مربوطه.
+page_help_files_collection: >-
+  **کتابخانه فایلها** - تمامی محتوای آپلود شده برای این پروژه را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
+page_help_files_item: >-
+  **جزئیات فایل** - فرمی برای مدیریت متادیتای فایل، ویرایش محتوای اصلی و بروزرسانی تنظیمات دسترسی.
+page_help_settings_project: "**تنظیمات پروژه** - گزینه های مربوط به بالاترین سطح تنظیمات پروژه شما."
+page_help_settings_datamodel_collections: >-
+  **مدل داده: مجموعه ها** - تمامی مجموعه های موجود را لیست می کند. این شامل مجموعه های پیدا و نهان و مجموعه های سیستمی و همچنین جداول پایگاه داده مدیریت نشده ای است که میتوانند اضافه شوند.
+page_help_settings_datamodel_fields: >-
+  **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
+page_help_settings_roles_collection: '**مرور نقش های کاربری** - لیستی از نقشهای ادمین، عمومی و نقشهای کاربری سفارشی.'
+page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
+page_help_settings_presets_collection: >-
+  **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
 fields:
   directus_collections:
     note: شرح
@@ -614,6 +679,8 @@ fields:
   directus_webhooks:
     name: نام
 field_options:
+  directus_settings:
+    security_divider_title: امنیت
   directus_collections:
     language: زبان
     archive_divider: بایگانی
@@ -648,7 +715,10 @@ displays:
     boolean: بولین
   color:
     color: رنگ
+  datetime:
+    format: فرمت
   formatted-value:
+    format: فرمت
     font_serif: فونت Serif
     font_monospace: فونت Monospace
     prefix: پيشوند
