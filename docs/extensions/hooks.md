@@ -164,7 +164,7 @@ export default ({ schedule }) => {
 
 ::: tip System Collections
 
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
+`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`, `files` (exept create/update),
 `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
 
 :::
@@ -181,15 +181,15 @@ export default ({ schedule }) => {
 | `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
 | `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
 | `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
-| `(<collection>.)items.delete` | `payload`, `collection`                             |
+| `(<collection>.)items.delete` | `keys`, `collection`                     	      |
 | `(<collection>.)items.sort`   | `collection`, `item`, `to`                          |
 | `<system-collection>.create`  | `payload`, `key`, `collection`                      |
 | `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
-| `<system-collection>.delete`  | `payload`, `collection`                             |
+| `<system-collection>.delete`  | `keys`, `collection`                                |
 
 ::: tip System Collections
 
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
+`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`, `files` (except create/update),
 `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
 
 :::
