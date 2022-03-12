@@ -20,4 +20,7 @@ export abstract class DateHelper extends DatabaseHelper {
 	writeTimestamp(date: string): Date {
 		return parseISO(date);
 	}
+	fieldFlagForField(_fieldType: string): string {
+		return '';
+	}
 }

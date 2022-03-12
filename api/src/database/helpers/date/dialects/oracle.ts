@@ -33,4 +33,13 @@ export class DateHelperOracle extends DateHelper {
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw("TO_CHAR(??.??, 'SS')", [table, column]);
 	}
+
+	fieldFlagForField(fieldType: string): string {
+		switch (fieldType) {
+			case 'dateTime':
+				return 'cast-datetime';
+			default:
+				return '';
+		}
+	}
 }

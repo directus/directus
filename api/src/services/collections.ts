@@ -13,6 +13,7 @@ import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } f
 import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
+import { getHelpers, Helpers } from '../database/helpers';
 
 export type RawCollection = {
 	collection: string;
@@ -23,6 +24,7 @@ export type RawCollection = {
 
 export class CollectionsService {
 	knex: Knex;
+	helpers: Helpers;
 	accountability: Accountability | null;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
@@ -31,6 +33,7 @@ export class CollectionsService {
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
+		this.helpers = getHelpers(this.knex);
 		this.accountability = options.accountability || null;
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
@@ -99,18 +102,10 @@ export class CollectionsService {
 						};
 					}
 
-					// Add flags for specific database type overrides
-					switch (getDatabaseClient(this.knex)) {
-						case 'sqlite':
-							if (field.type === 'timestamp') {
-								addFieldFlag(field, 'cast-timestamp');
-							}
-							break;
-						case 'oracle':
-							if (field.type === 'dateTime') {
-								addFieldFlag(field, 'cast-datetime');
-							}
-							break;
+					// Add flag for specific database type overrides
+					const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+					if (flagToAdd) {
+						addFieldFlag(field, flagToAdd);
 					}
 
 					return field;
