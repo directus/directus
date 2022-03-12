@@ -1,7 +1,7 @@
 <template>
 	<div class="layout-tabular">
 		<v-table
-			v-if="loading || itemCount > 0"
+			v-if="loading || (itemCount && itemCount > 0)"
 			ref="table"
 			v-model="selectionWritable"
 			v-model:headers="tableHeadersWritable"
@@ -15,7 +15,7 @@
 			:loading="loading"
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
-			:item-key="primaryKeyField.field"
+			:item-key="primaryKeyField?.field"
 			:show-manual-sort="sortField !== null"
 			:manual-sort-key="sortField"
 			selection-use-keys
@@ -84,150 +84,85 @@
 </template>
 
 <script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ComponentPublicInstance, defineComponent, PropType, ref, inject, Ref, watch } from 'vue';
+import { ComponentPublicInstance, ref, inject, Ref, watch } from 'vue';
 import { useSync } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
 import { Collection } from '@/types';
 import { Field, Item, Filter, ShowSelect } from '@directus/shared/types';
 import { HeaderRaw } from '@/components/v-table/types';
 
-export default defineComponent({
-	inheritAttrs: false,
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		selection: {
-			type: Array as PropType<Item[]>,
-			default: () => [],
-		},
-		readonly: {
-			type: Boolean,
-			required: true,
-		},
-		tableHeaders: {
-			type: Array as PropType<HeaderRaw[]>,
-			required: true,
-		},
-		showSelect: {
-			type: String as PropType<ShowSelect>,
-			default: 'none',
-		},
-		items: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
-		loading: {
-			type: Boolean,
-			required: true,
-		},
-		error: {
-			type: Object as PropType<any>,
-			default: null,
-		},
-		totalPages: {
-			type: Number,
-			required: true,
-		},
-		tableSort: {
-			type: Object as PropType<{ by: string; desc: boolean }>,
-			required: true,
-		},
-		onRowClick: {
-			type: Function as PropType<(item: Item) => void>,
-			required: true,
-		},
-		onSortChange: {
-			type: Function as PropType<(newSort: { by: string; desc: boolean }) => void>,
-			required: true,
-		},
-		tableRowHeight: {
-			type: Number,
-			required: true,
-		},
-		page: {
-			type: Number,
-			required: true,
-		},
-		toPage: {
-			type: Function as PropType<(newPage: number) => void>,
-			required: true,
-		},
-		itemCount: {
-			type: Number,
-			default: null,
-		},
-		fields: {
-			type: Array as PropType<string[]>,
-			required: true,
-		},
-		limit: {
-			type: Number,
-			required: true,
-		},
-		primaryKeyField: {
-			type: Object as PropType<Field>,
-			default: null,
-		},
-		info: {
-			type: Object as PropType<Collection>,
-			default: null,
-		},
-		sortField: {
-			type: String,
-			default: null,
-		},
-		changeManualSort: {
-			type: Function as PropType<(data: any) => Promise<void>>,
-			required: true,
-		},
-		resetPresetAndRefresh: {
-			type: Function as PropType<() => Promise<void>>,
-			required: true,
-		},
-		selectAll: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		filterUser: {
-			type: Object as PropType<Filter>,
-			default: null,
-		},
-		search: {
-			type: String,
-			default: null,
-		},
-	},
-	emits: ['update:selection', 'update:tableHeaders', 'update:limit'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	collection: string;
+	selection?: Item[];
+	readonly: boolean;
+	tableHeaders: HeaderRaw[];
+	showSelect?: ShowSelect;
+	items: Item[];
+	loading: boolean;
+	error?: any;
+	totalPages: number;
+	tableSort: { by: string; desc: boolean };
+	onRowClick: (item: Item) => void;
+	onSortChange: (newSort: { by: string; desc: boolean }) => void;
+	tableRowHeight: number;
+	page: number;
+	toPage: (newPage: number) => void;
+	itemCount?: number;
+	fields: string[];
+	limit: number;
+	primaryKeyField?: Field;
+	info?: Collection;
+	sortField?: string;
+	changeManualSort: (data: any) => Promise<void>;
+	resetPresetAndRefresh: () => Promise<void>;
+	selectAll: () => void;
+	filterUser?: Filter;
+	search?: string;
+}
 
-		const selectionWritable = useSync(props, 'selection', emit);
-		const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
-		const limitWritable = useSync(props, 'limit', emit);
-
-		const mainElement = inject<Ref<Element | undefined>>('main-element');
-
-		const table = ref<ComponentPublicInstance>();
-
-		watch(
-			() => props.page,
-			() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
-		);
-
-		useShortcut(
-			'meta+a',
-			() => {
-				props.selectAll();
-			},
-			table
-		);
-
-		return { t, selectionWritable, tableHeadersWritable, limitWritable, table };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	selection: () => [],
+	showSelect: 'none',
+	error: null,
+	itemCount: undefined,
+	primaryKeyField: undefined,
+	info: undefined,
+	sortField: undefined,
+	filterUser: undefined,
+	search: undefined,
 });
+
+const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit']);
+
+const { t } = useI18n();
+
+const selectionWritable = useSync(props, 'selection', emit);
+const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
+const limitWritable = useSync(props, 'limit', emit);
+
+const mainElement = inject<Ref<Element | undefined>>('main-element');
+
+const table = ref<ComponentPublicInstance>();
+
+watch(
+	() => props.page,
+	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+);
+
+useShortcut(
+	'meta+a',
+	() => {
+		props.selectAll();
+	},
+	table
+);
 </script>
 
 <style lang="scss" scoped>

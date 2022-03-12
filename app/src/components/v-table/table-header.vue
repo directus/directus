@@ -57,7 +57,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
 import useEventListener from '@/composables/use-event-listener';
-import { Header, Sort } from '../types';
+import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 
 export default defineComponent({

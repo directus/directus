@@ -49,7 +49,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
-import { Header } from '../types';
+import { Header } from './types';
 
 export default defineComponent({
 	props: {

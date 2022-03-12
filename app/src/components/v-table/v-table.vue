@@ -92,8 +92,8 @@
 import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
-import TableHeader from './table-header/';
-import TableRow from './table-row/';
+import TableHeader from './table-header.vue';
+import TableRow from './table-row.vue';
 import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import Draggable from 'vuedraggable';
