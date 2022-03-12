@@ -68,7 +68,6 @@ recommended_defaults: Talvoudoù dre ziouer aliet
 unarchive: Adsevel
 unarchive_confirm: Sur oc'h e fell deoc'h adsevel an elfenn-mañ ?
 nested_files_folders_will_be_moved: Dalc'had an teuliad a vo dilec'hiet en teuliad tad.
-unknown_validation_errors: 'Fazioù kadarnaat a zo bet er maeziennoù kuzhet da heul :'
 validationError:
   eq: An talvoud a zle bezañ {valid}
   neq: Arabat e vije {invalid} an talvoud

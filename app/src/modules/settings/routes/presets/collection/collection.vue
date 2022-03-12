@@ -12,7 +12,7 @@
 			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 

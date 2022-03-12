@@ -275,6 +275,12 @@ function openSidebar(event: PointerEvent) {
 			transform: translateX(0);
 		}
 
+		&:not(.is-open) {
+			.module-nav-resize-handle {
+				display: none;
+			}
+		}
+
 		.module-nav {
 			position: relative;
 			display: inline-block;
@@ -320,6 +326,12 @@ function openSidebar(event: PointerEvent) {
 		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
+
+			&:not(.is-open) {
+				.module-nav-resize-handle {
+					display: block;
+				}
+			}
 		}
 	}
 

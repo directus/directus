@@ -35,7 +35,7 @@
 							:disabled="preset === null || id === '+'"
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" />
 						</v-button>
 					</template>
 

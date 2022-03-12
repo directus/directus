@@ -77,7 +77,6 @@ recommended_defaults: Priporočene privzete vrednosti
 unarchive: Dearhiviraj
 unarchive_confirm: Ste prepričani, da želite dearhivirati ta zapis?
 nested_files_folders_will_be_moved: Vsebovane datoteke in mape bodo prestavljene en nivo višje.
-unknown_validation_errors: 'Vsebinske napake na naslednjih skritih poljih:'
 validationError:
   eq: Vrednost mora biti {valid}
   neq: Vrednost ne more biti {invalid}

@@ -137,9 +137,8 @@ is an excellent Digital Asset Management system.
 
 ### Material Icons
 
-Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
-outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
-`account_circle_outline`.
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus supports both filled & outlined
+variants of Material icons.
 
 ### Social Icons
 

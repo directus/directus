@@ -28,13 +28,14 @@ draft: Entwurf
 archived: Archiviert
 modules: Module
 module_bar: Modulleiste
+reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
 switch_user: Benutzer wechseln
 item_creation: Element erstellt
-item_revision: Element überarbeitet
+item_revision: Artikelversion
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -114,7 +115,6 @@ recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene nach oben verschoben.
-unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
 validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein

@@ -110,7 +110,6 @@ recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
-unknown_validation_errors: 'Det oppstod valideringsfeil for følgende skjulte felter:'
 validationError:
   eq: Verdien må være {valid}
   neq: Verdien kan ikke være {invalid}
