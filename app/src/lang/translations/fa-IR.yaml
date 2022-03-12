@@ -76,7 +76,7 @@ inbox: پیغام‌های دریافتی
 emails: پست الکترونیکی
 connection_excellent: کیفیت اتصال، عالی است
 connection_good: کیفیت اتصال، خوب است
-connection_fair: اتصال عادلانه
+connection_fair: کیفیت اتصال، قابل قبول است.
 connection_poor: کیفیت اتصال، ضعیف است
 primary: اصلی
 rename_folder: تغییر نام پوشه
@@ -92,7 +92,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: از سیستم خارج شده
   SESSION_EXPIRED: نشست به پایان رسیده
-public_label: عمومی
+public_label: در دسترس عموم
 public_description: اینکه کدام داده مربوط به API، بدون احراز هویت، قابل دسترسی باشد را کنترل میکند.
 admin_description: نقش مدیریتی اولیه با سطح دسترسی بدون محدودیت به برنامه و API
 not_allowed: مجاز نیست
@@ -264,22 +264,22 @@ multiple_files: چند فایلی
 m2o_relationship: رابطه چند-به-یک
 o2m_relationship: رابطه یک-به-چند
 m2m_relationship: رابطه چند-به-چند
-m2a_relationship: رابطه بسیار به یک
-invalid_item: نامعتبر است
+m2a_relationship: رابطه یک-به-هر-مجموعه-ای
+invalid_item: آیتمِ نامعتبر
 next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
 no_translations: ترجمه ای وجود ندارد
 note: شرح
-enter_a_value: یک مقدار وارد کنید...
-enter_a_placeholder: محل نگهدار را وارد کنید...
+enter_a_value: یک مقدار را وارد کنید...
+enter_a_placeholder: متنی جهت توضیح را وارد کنید...
 length: طول
 soft_length: طول کاراکتر مجاز
 precision_scale: دقت و مقیاس
 readonly: فقط خواندنی
-unique: منحصربه‌فرد
-updated_on: به روز شده در
-updated_by: به روز شده توسط
+unique: یکتا
+updated_on: به روزرسانی شده در
+updated_by: به روزرسانی شده توسط
 primary_key: کلید اصلی
 foreign_key: کلید خارجی
 finish_setup: پایان راه‌اندازی
@@ -299,12 +299,12 @@ clear_changes: پاک کردن تغییرات
 reset_to_default: بازنشانی به تنظیمات پیش فرض
 undo_changes: برگرداندن تغییرات به حالت قبل
 notifications: اعلانات
-show_all_activity: نمایش فعالیت های اخیر
+show_all_activity: نمایش تمام فعالیتها
 page_not_found: برگه مد نظر یافت نشد
 page_not_found_body: ظاهراً صفحه ای که بدنبال آن هستید وجود ندارد.
 confirm_revert: بازگشت به نسخه قبلی را تأیید کنید
 confirm_revert_body: با این کار، آیتم به وضعیت انتخاب شده برمی گردد.
-display: نمایش
+display: نحوه نمایش
 settings_update_success: تنظیمات بروزرسانی شد
 title: عنوان
 revision_delta_created: ایجاد شد
@@ -391,7 +391,7 @@ dimensions: ابعاد
 size: سایز
 created: ایجاد شد
 modified: دستکاری شده
-checksum: کنترلی
+checksum: Checksum
 owner: مالک
 edited_by: ویرایش شده توسط
 folder: پوشه
@@ -422,7 +422,7 @@ creating_collection_system: هر یک از این فیلدهای اختیاری 
 auto_increment_integer: عدد صحیح با افزایش خودکار
 generated_uuid: UUID تولید شده
 manual_string: رشته حرفیِ وارد شده به صورت دستی
-save_and_create_new: ساخت و ذخیره مورد جدید
+save_and_create_new: ذخیره و ساخت آیتم جدید
 save_and_stay: ذخیره و ماندن
 save_as_copy: ذخیره به عنوان کپی
 add_existing: اضافه کردن مورد موجود
@@ -430,7 +430,7 @@ creating_items: ساختن موارد
 enable_create_button: فعالسازی ساخت دکمه
 selecting_items: انتخاب موارد
 enable_select_button: فعالسازی دکمه انتخاب
-comments: نظرات
+comments: دیدگاهها
 no_comments: هنوز دیدگاهی ارسال نشده
 click_to_expand: برای بازکردن، کلیک کنید
 select_item: انتخاب آیتم
@@ -492,7 +492,7 @@ errors:
   ROUTE_NOT_FOUND: یافت نشد
   RECORD_NOT_UNIQUE: موارد تکراری یافت شد
   USER_SUSPENDED: کاربر معلق شد
-  CONTAINS_NULL_VALUES: فیلد حاوی مقدار نال است
+  CONTAINS_NULL_VALUES: فیلد حاوی مقدار null است
   UNPROCESSABLE_ENTITY: موجودیت غیرقابل پردازش
   INTERNAL_SERVER_ERROR: خطای غیر منتظره
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
@@ -622,7 +622,7 @@ panel: پنل
 panel_options: تنظیمات پنل
 panel_header: هدرِ پنل
 panel_name_placeholder: این پنل را نامگذاری کنید...
-panel_note_placeholder: جزییات اختیاری در رابطه با این پنل...
+panel_note_placeholder: جزئیات اختیاری در رابطه با این پنل...
 panel_delete_confirm: آیا مطمئن هستید می خواهید این پنل را حذف کنید؟ این عمل قابل بازگشت نیست.
 dashboard_delete_confirm: آیا مطمئن هستید می خواهید این پیشخوان را حذف کنید؟ این عمل قابل بازگشت نیست.
 edit_dashboard: ویرایش پیشخوان
@@ -938,7 +938,7 @@ interfaces:
   presentation-divider:
     divider: جدا کننده
   select-dropdown:
-    choices_value_placeholder: یک مقدار وارد کنید...
+    choices_value_placeholder: یک مقدار را وارد کنید...
   input-hash:
     hash: هش
   file-image:
@@ -995,7 +995,7 @@ displays:
   image:
     circle: دایره
   labels:
-    choices_value_placeholder: یک مقدار وارد کنید...
+    choices_value_placeholder: یک مقدار را وارد کنید...
   user:
     avatar: آواتار
     name: نام
