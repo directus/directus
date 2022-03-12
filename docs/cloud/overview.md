@@ -1,20 +1,3 @@
-- Connect Overview to Docs
-
-* **MEDIA**
-  - 10 projects in the screenshots\
-    Sandbox, dev environment, production, IOT Fleet A, iOT fleet B, etc.
-  - 5-6 Teams
-  - 10 Members
-  - Community, std, and enterprise (do this in chrome dev tools) Sort By: enterprise std community
-
-- Superadmin Panel
-- Members vs. Users
-- Fake 1 month of Project activity or get an instance with a full month @rijk
-
-Talk about all the things we offer: - Load balancing - Cloud exclusive extensions
-
----
-
 # Overview
 
 > Create and manage Teams and Projects, Invite Users, and set billing information with the easy-to-use Cloud Dashboard
@@ -57,16 +40,18 @@ Here's how these navigation areas relate to Accounts, Projects, and Teams.
 
 ## Accounts
 
-- **Cloud Dashboard Header**
-  - <span mi icon>check</span> — View Directus Cloud status
-  - <span mi icon>notifications</span> — check notifications
-  - Change Teams in the Team Dropdown menu.
-  - <span mi icon>account_circle</span> — Access personal Account information or delete Account.
+### Cloud Dashboard Header
+
+- <span mi icon>check</span> — View Directus Cloud system status.
+- <span mi icon>notifications</span> — Notifications such as version upgrades, platform upgrades, etc.
+- <span mi icon>help_outline</span> — Documentation, Community Support and Request for Premium Support.
+- **Team Dropdown Menu** — Create new Teams and Switch between existing Teams.
+- <span mi icon>account_circle</span> — Access, edit and destroy Account.
 
 ## Projects
 
 - **Team Projects** — View and access all [Projects](/cloud/projects) managed within a Team. Click a Project to enter
-  the [Product Details Page]() and access, monitor, edit or delete a Project.
+  the Product Details Page and access, monitor, edit or delete a Project.
 
 - **Team Billing** — View and manage billing details such as credit card information, usage, subscriptions, and
   receipts.
@@ -79,3 +64,13 @@ Here's how these navigation areas relate to Accounts, Projects, and Teams.
   invitations and removals, etc.
 
 - **Team Settings** — Edit the Team Name and Team Slug, as well as delete the Team.
+
+## System Status
+
+Click <span mi icon>check</span> in the Dashboard Header to check system status. This page displays the current status
+of Directus Cloud, status on individual Projects by URL, as well as a daily Incidents log. This Page is where to _find
+out what happened_ in the super rare event that the network slows down or goes down.
+
+<video alt="Cloud Dashboard Overview" loop muted controls autoplay>
+  <source src="" type="video/mp4">
+</video>

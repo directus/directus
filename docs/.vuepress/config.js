@@ -535,8 +535,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/cloud/options',
-						title: 'Options',
+						path: '/cloud/glossary',
+						title: 'Glossary',
 					},
 				],
 			},
