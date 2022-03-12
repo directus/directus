@@ -22,7 +22,7 @@
 
 			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">
 				<div class="content" @click="changeSort(header)">
-					<span v-show="header.width > 90 || header.width === null">
+					<span v-show="header.width === null || header.width > 90">
 						<slot :name="`header.${header.value}`" :header="header">
 							{{ header.text }}
 						</slot>
@@ -44,7 +44,7 @@
 			</th>
 
 			<th class="spacer cell" scope="col" />
-			<td v-if="$slots['header-append']" class="append cell" @click.stop>
+			<td v-if="$slots['header-append']" class="manual append cell" @click.stop>
 				<slot name="header-append" />
 			</td>
 			<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
@@ -52,198 +52,159 @@
 	</thead>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType } from 'vue';
+import { ref } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
 import useEventListener from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 
-export default defineComponent({
-	props: {
-		headers: {
-			type: Array as PropType<Header[]>,
-			required: true,
-		},
-		sort: {
-			type: Object as PropType<Sort>,
-			required: true,
-		},
-		showSelect: {
-			type: String as PropType<ShowSelect>,
-			default: 'none',
-		},
-		showResize: {
-			type: Boolean,
-			default: false,
-		},
-		showManualSort: {
-			type: Boolean,
-			default: false,
-		},
-		someItemsSelected: {
-			type: Boolean,
-			default: false,
-		},
-		allItemsSelected: {
-			type: Boolean,
-			default: false,
-		},
-		fixed: {
-			type: Boolean,
-			default: false,
-		},
-		mustSort: {
-			type: Boolean,
-			default: false,
-		},
-		hasItemAppendSlot: {
-			type: Boolean,
-			default: false,
-		},
-		manualSortKey: {
-			type: String,
-			default: null,
-		},
-	},
-	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	headers: Header[];
+	sort: Sort;
+	showSelect?: ShowSelect;
+	showResize?: boolean;
+	showManualSort?: boolean;
+	someItemsSelected?: boolean;
+	allItemsSelected?: boolean;
+	fixed?: boolean;
+	mustSort?: boolean;
+	hasItemAppendSlot?: boolean;
+	manualSortKey?: string;
+}
 
-		const dragging = ref<boolean>(false);
-		const dragStartX = ref<number>(0);
-		const dragStartWidth = ref<number>(0);
-		const dragHeader = ref<Header | null>(null);
+const props = withDefaults(defineProps<Props>(), {
+	showSelect: 'none',
+	showResize: false,
+	showManualSort: false,
+	someItemsSelected: false,
+	allItemsSelected: false,
+	fixed: false,
+	mustSort: false,
+	hasItemAppendSlot: false,
+	manualSortKey: undefined,
+});
 
-		useEventListener(window, 'pointermove', throttle(onMouseMove, 40));
-		useEventListener(window, 'pointerup', onMouseUp);
+const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers']);
+const { t } = useI18n();
 
-		return {
-			t,
-			changeSort,
-			dragging,
-			dragHeader,
-			dragStartWidth,
-			dragStartX,
-			getClassesForHeader,
-			onMouseMove,
-			onResizeHandleMouseDown,
-			toggleManualSort,
-			toggleSelectAll,
-			getTooltipForSortIcon,
-		};
+const dragging = ref<boolean>(false);
+const dragStartX = ref<number>(0);
+const dragStartWidth = ref<number>(0);
+const dragHeader = ref<Header | null>(null);
 
-		function getClassesForHeader(header: Header) {
-			const classes: string[] = [];
+useEventListener(window, 'pointermove', throttle(onMouseMove, 40));
+useEventListener(window, 'pointerup', onMouseUp);
 
-			if (header.align) {
-				classes.push(`align-${header.align}`);
-			}
+function getClassesForHeader(header: Header) {
+	const classes: string[] = [];
 
-			if (header.sortable) {
-				classes.push('sortable');
-			}
+	if (header.align) {
+		classes.push(`align-${header.align}`);
+	}
 
-			if (props.sort.by === header.value) {
-				if (props.sort.desc === false) {
-					classes.push('sort-asc');
-				} else {
-					classes.push('sort-desc');
-				}
-			}
+	if (header.sortable) {
+		classes.push('sortable');
+	}
 
-			return classes;
+	if (props.sort.by === header.value) {
+		if (props.sort.desc === false) {
+			classes.push('sort-asc');
+		} else {
+			classes.push('sort-desc');
 		}
+	}
 
-		function getTooltipForSortIcon(header: Header) {
-			return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'sort_asc';
-		}
+	return classes;
+}
 
-		function changeSort(header: Header) {
-			if (header.sortable === false) return;
-			if (dragging.value === true) return;
+function getTooltipForSortIcon(header: Header) {
+	return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'sort_asc';
+}
 
-			if (header.value === props.sort.by) {
-				if (props.mustSort) {
-					return emit('update:sort', {
-						by: props.sort.by,
-						desc: !props.sort.desc,
-					});
-				}
+function changeSort(header: Header) {
+	if (header.sortable === false) return;
+	if (dragging.value === true) return;
 
-				if (props.sort.desc === false) {
-					return emit('update:sort', {
-						by: props.sort.by,
-						desc: true,
-					});
-				}
-
-				return emit('update:sort', {
-					by: null,
-					desc: false,
-				});
-			}
-
+	if (header.value === props.sort.by) {
+		if (props.mustSort) {
 			return emit('update:sort', {
-				by: header.value,
-				desc: false,
+				by: props.sort.by,
+				desc: !props.sort.desc,
 			});
 		}
 
-		function toggleSelectAll() {
-			emit('toggle-select-all', !props.allItemsSelected);
+		if (props.sort.desc === false) {
+			return emit('update:sort', {
+				by: props.sort.by,
+				desc: true,
+			});
 		}
 
-		function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
-			const target = event.target as HTMLDivElement;
-			const parent = target.parentElement as HTMLTableHeaderCellElement;
+		return emit('update:sort', {
+			by: null,
+			desc: false,
+		});
+	}
 
-			dragging.value = true;
-			dragStartX.value = event.pageX;
-			dragStartWidth.value = parent.offsetWidth;
-			dragHeader.value = header;
-		}
+	return emit('update:sort', {
+		by: header.value,
+		desc: false,
+	});
+}
 
-		function onMouseMove(event: PointerEvent) {
-			if (dragging.value === true) {
-				const newWidth = dragStartWidth.value + (event.pageX - dragStartX.value);
-				const currentHeaders = clone(props.headers);
-				const newHeaders = currentHeaders.map((existing: Header) => {
-					if (existing.value === dragHeader.value?.value) {
-						return {
-							...existing,
-							width: Math.max(32, newWidth),
-						};
-					}
+function toggleSelectAll() {
+	emit('toggle-select-all', !props.allItemsSelected);
+}
 
-					return existing;
-				});
-				emit('update:headers', newHeaders);
+function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
+	const target = event.target as HTMLDivElement;
+	const parent = target.parentElement as HTMLTableHeaderCellElement;
+
+	dragging.value = true;
+	dragStartX.value = event.pageX;
+	dragStartWidth.value = parent.offsetWidth;
+	dragHeader.value = header;
+}
+
+function onMouseMove(event: PointerEvent) {
+	if (dragging.value === true) {
+		const newWidth = dragStartWidth.value + (event.pageX - dragStartX.value);
+		const currentHeaders = clone(props.headers);
+		const newHeaders = currentHeaders.map((existing: Header) => {
+			if (existing.value === dragHeader.value?.value) {
+				return {
+					...existing,
+					width: Math.max(32, newWidth),
+				};
 			}
-		}
 
-		function onMouseUp() {
-			if (dragging.value === true) {
-				dragging.value = false;
-			}
-		}
+			return existing;
+		});
+		emit('update:headers', newHeaders);
+	}
+}
 
-		function toggleManualSort() {
-			if (props.sort.by === props.manualSortKey) {
-				emit('update:sort', {
-					by: null,
-					desc: false,
-				});
-			} else {
-				emit('update:sort', {
-					by: props.manualSortKey,
-					desc: false,
-				});
-			}
-		}
-	},
-});
+function onMouseUp() {
+	if (dragging.value === true) {
+		dragging.value = false;
+	}
+}
+
+function toggleManualSort() {
+	if (props.sort.by === props.manualSortKey) {
+		emit('update:sort', {
+			by: null,
+			desc: false,
+		});
+	} else {
+		emit('update:sort', {
+			by: props.manualSortKey,
+			desc: false,
+		});
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -365,5 +326,9 @@ export default defineComponent({
 	&:hover .resize-handle {
 		opacity: 1;
 	}
+}
+
+.spacer.cell {
+	padding: 0;
 }
 </style>
