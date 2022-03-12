@@ -11,7 +11,7 @@
 			ref="imageContainer"
 			class="image-preview"
 			:class="{ 'is-svg': image.type && image.type.includes('svg') }"
-			:style="{ maxHeight: 400 + 'px' }"
+			:style="{ maxHeight: imageMaxHeightPx + 'px' }"
 		>
 			<div v-if="imageError" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
