@@ -67,7 +67,7 @@ create_panel: ایجاد پنل
 create_role: افزودن نقش
 create_user: ایجاد کاربر
 delete_panel: حذف پنل
-create_webhook: به روزرسانی webhook
+create_webhook: ساخت وب هوک
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: قبلاً برای ایمیل {email}، دعوت نامه ارسال شده است
@@ -77,28 +77,28 @@ emails: پست الکترونیکی
 connection_excellent: کیفیت اتصال، عالی است
 connection_good: کیفیت اتصال، خوب است
 connection_fair: اتصال عادلانه
-connection_poor: اتصال ضعیف
+connection_poor: کیفیت اتصال، ضعیف است
 primary: اصلی
-rename_folder: Rename Folder
+rename_folder: تغییر نام پوشه
 delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
 reset_bookmark: بازنشانی نشانک
 rename_bookmark: تغییر نام نشانک
-update_bookmark: به روز کردن نشانک
+update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
 delete_bookmark_copy: >-
-  آیا مطمئن هستید که می‌خواهید «{bookmark}» را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+  آیا مطمئن هستید که می‌خواهید نشانکِ {bookmark} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
 logoutReason:
   SIGN_OUT: از سیستم خارج شده
   SESSION_EXPIRED: نشست به پایان رسیده
 public_label: عمومی
-public_description: داده API موجود را بدون احراز هویت کنترل می‌کند.
+public_description: اینکه کدام داده مربوط به API، بدون احراز هویت، قابل دسترسی باشد را کنترل میکند.
 admin_description: نقش مدیریتی اولیه با سطح دسترسی بدون محدودیت به برنامه و API
 not_allowed: مجاز نیست
 directus_version: نسخه دایرکتوس
-node_version: نسخه نود
-node_uptime: زمان به کار نود
+node_version: نسخه node
+node_uptime: مدت زمان اجرای node تاکنون
 os_type: نوع سیستم عامل
 os_version: نسخه سیستم عامل
 os_uptime: زمان به کار سیستم عامل
@@ -106,11 +106,11 @@ os_totalmem: حافظه سیستم عامل
 archive: بایگانی
 archive_confirm: از بایگانی شدن این مورد مطمئنید؟
 archive_confirm_count: >-
-  هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید {count} موارد را بایگانی کنید؟
+  هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
 reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
-reset_system_permissions_copy: این عمل مجوزهای سفارشی را که ممکن است برای مجموعه‌های سیستم اعمال کرده باشید بازنویسی کند. مطمئن هستید؟
-the_following_are_minimum_permissions: موارد زیر حداقل مجوزهای مورد نیاز هنگام فعال بودن "دسترسی به برنامه" است. شما می توانید مجوزها را فراتر از این بسازید ، اما نه در زیر.
-app_access_minimum: حداقل دسترسی به برنامه
+reset_system_permissions_copy: این عمل، مجوزهای سفارشی که ممکن است برای مجموعه‌های سیستمی اعمال کرده باشید را بازنویسی می کند. مطمئن هستید؟
+the_following_are_minimum_permissions: موارد زیر، حداقل مجوزهای مورد نیاز جهت دسترسی به برنامه است. شما می توانید مجوزهای بیشتری را در این قسمت در نظر بگیرید اما نه کمتر از حداقل مجوز مورد نیاز.
+app_access_minimum: حداقل مجوزها برای دسترسی به برنامه
 recommended_defaults: پیش‌فرض‌های مورد تأیید
 unarchive: خارج کردن از بایگانی
 unarchive_confirm: آیا از خارج کردن این آیتم از بایگانی، اطمینان دارید؟
@@ -178,7 +178,7 @@ aggregate_precision: دقت تجمیع
 group_aggregation: تجمیع گروهی
 group_precision: دقت گروهی
 global: سراسری
-admins_have_all_permissions: مدیران همه مجوزها را دارند
+admins_have_all_permissions: مدیران سیستم، همه مجوزها را دارند
 camera: دوربین
 show_zero: نمایش صفر
 create_in_advanced_field_creation_mode: ساخت فیلد در حالا پیشرفته
@@ -317,8 +317,8 @@ revision_delta_by: 'در {date} توسط {user}'
 private_user: کاربر خصوصی
 creation_preview: پیش نمایش ساخت
 revision_preview: پیش نمایش ویرایش
-updates_made: حالت ارتقاء
-leave_comment: درج پیغام...
+updates_made: بروزرسانی ها
+leave_comment: درج دیدگاه...
 post_comment_success: دیدگاه منتشر شد
 item_create_success: آیتم ساخته شد | آیتمها ساخته شدند
 item_update_success: آیتم بروزرسانی شد | آیتمها بروزرسانی شدند
@@ -394,34 +394,34 @@ modified: دستکاری شده
 checksum: کنترلی
 owner: مالک
 edited_by: ویرایش شده توسط
-folder: Folder
+folder: پوشه
 zoom: بزرگنمايی
-download: بارگیری
+download: دانلود
 open: باز
 open_in_new_window: باز کردن در پنجره جدید
 open_folder: باز کردن پوشه "{folder}"
 foreground_color: رنگ روی‌زمینه
-background_color: رنگ زمینه
+background_color: رنگ پس زمینه
 upload_from_device: بارگذاری فایل از دستگاه
 choose_from_library: گزینش از مجموعه فایلها
-import_from_url: درون‌برد فایل از
-replace_from_device: بارگذاری فایل از دستگاه
+import_from_url: استخراج فایل از URL
+replace_from_device: جایگزینی فایل از دستگاه
 replace_from_library: جایگزینی فایل از مجموعه
-replace_from_url: بارگذاری فایل از دستگاه
+replace_from_url: جایگزینی فایل از URL
 no_file_selected: هیچ فایلی انتخاب نشده است
 download_file: دانلود فایل
-collection_key: مجموعه (Automatic Translation)
+collection_key: کلید اصلی مجموعه
 name: نام
-primary_key_field: '~فیلدهای کلید اصلی'
+primary_key_field: فیلد کلید اصلی
 type: نوع
 creating_new_collection: ایجاد مجموعه جدید
 created_by: ایجاد شده توسط
 created_on: ایجاد شده در
-creating_collection_info: نام مجموعه را بگذارید و قسمت "کلید" منحصر به فرد آن را تنظیم کنید...
-creating_collection_system: هر یک از این زمینه های اختیاری را فعال و تغییر نام دهید.
-auto_increment_integer: عدد صحیح افزایش خودکار
+creating_collection_info: مجموعه را نامگذاری کنید و "کلید" یکتای آن را معین کنید...
+creating_collection_system: هر یک از این فیلدهای اختیاری را فعال کرده و یا تغییر نام دهید.
+auto_increment_integer: عدد صحیح با افزایش خودکار
 generated_uuid: UUID تولید شده
-manual_string: رشته به صورت دستی وارد شده است
+manual_string: رشته حرفیِ وارد شده به صورت دستی
 save_and_create_new: ساخت و ذخیره مورد جدید
 save_and_stay: ذخیره و ماندن
 save_as_copy: ذخیره به عنوان کپی
@@ -431,7 +431,7 @@ enable_create_button: فعالسازی ساخت دکمه
 selecting_items: انتخاب موارد
 enable_select_button: فعالسازی دکمه انتخاب
 comments: نظرات
-no_comments: هنوز نظری ارسال نشده
+no_comments: هنوز دیدگاهی ارسال نشده
 click_to_expand: برای بازکردن، کلیک کنید
 select_item: انتخاب آیتم
 no_items: آیتمی وجود ندارد
@@ -670,7 +670,7 @@ wysiwyg_options:
   alignnone: بدون تراز
   alignright: تراز به راست
   forecolor: رنگ روی‌زمینه
-  backcolor: رنگ زمینه
+  backcolor: رنگ پس زمینه
   bold: بولد
   italic: ایتالیک
   underline: زیر خطدار
@@ -789,7 +789,7 @@ fields:
     created_on: ایجاد شده در
     created_by: ایجاد شده توسط
     uploaded_by: بارگذاری شده توسط
-    folder: Folder
+    folder: پوشه
     uploaded_on: بارگذاری شده در تاریخ
     charset: مجموعه کاراکتر
     duration: مدت زمان
@@ -957,7 +957,7 @@ interfaces:
   list-o2m:
     description: انتخاب چندین آیتم مرتبط
   system-folder:
-    folder: Folder
+    folder: پوشه
     root_name: پوشه اصلی مجموعه فایلها
   list:
     add_label: 'برچسب "ساخت مورد جدید"'
