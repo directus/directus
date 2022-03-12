@@ -48,7 +48,7 @@ export class PayloadService {
 	}
 
 	public transformers: Transformers = {
-		async hash({ action, value }) {
+		async 'cast-hash'({ action, value }) {
 			if (!value) return;
 			if (action === 'create' || action === 'update') {
 				return await generateHash(String(value));
@@ -56,14 +56,14 @@ export class PayloadService {
 
 			return value;
 		},
-		async uuid({ action, value }) {
+		async 'cast-uuid'({ action, value }) {
 			if (action === 'create' && !value) {
 				return uuidv4();
 			}
 
 			return value;
 		},
-		async boolean({ action, value }) {
+		async 'cast-boolean'({ action, value }) {
 			if (action === 'read') {
 				if (value === true || value === 1 || value === '1') {
 					return true;
@@ -76,7 +76,7 @@ export class PayloadService {
 
 			return value;
 		},
-		async json({ action, value }) {
+		async 'cast-json'({ action, value }) {
 			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
@@ -117,7 +117,7 @@ export class PayloadService {
 			if (action === 'update') return new Date();
 			return value;
 		},
-		async csv({ action, value }) {
+		async 'cast-csv'({ action, value }) {
 			if (Array.isArray(value) === false && typeof value !== 'string') return;
 
 			if (action === 'read' && Array.isArray(value) === false) {

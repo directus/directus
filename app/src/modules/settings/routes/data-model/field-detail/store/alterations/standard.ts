@@ -19,6 +19,8 @@ function setSpecialForType(updates: StateUpdates) {
 		case 'json':
 		case 'csv':
 		case 'boolean':
+			set(updates, 'field.meta.special', ['cast-' + type]);
+			break;
 		case 'geometry':
 			set(updates, 'field.meta.special', [type]);
 			break;
