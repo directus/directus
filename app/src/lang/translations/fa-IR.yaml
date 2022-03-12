@@ -27,25 +27,25 @@ published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
 modules: ماژول‌ها
-module_bar: ماژول
+module_bar: نوار ماژول ها
 reset_width: تنظیم مجدد عرض
-tile_size: اندازه آجر
+tile_size: اندازه هر مربع در نقشه
 edit_field: ویرایش فیلد
-conditions: مزایای همکاری
+conditions: شرایط
 maps: نقشه ها
 switch_user: تغییر کاربر
-item_creation: ایجاد مورد
-item_revision: مشاهده ویرایش ها
-enter_a_name: یک نام وارد کنید
-duplicate_field: زمینه های تکراری (Automatic Translation)
+item_creation: ساخت یک آیتم
+item_revision: نسخه های آیتم
+enter_a_name: عنوانی را وارد نمایید...
+duplicate_field: فیلد تکراری
 half_width: نصف عرض
-full_width: پهنای کامل
+full_width: عرض کامل
 group: گروه
 and: و
 or: یا
-fill_width: پهنای کامل
+fill_width: عرض کامل
 field_name_translations: ترجمه‌های نام فیلد
-enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی ، رمز عبور خود را وارد کنید
+enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی، رمز عبور خود را وارد کنید
 add_field: افزودن فیلد
 role_name: نام نقش
 branch: شاخه
@@ -823,7 +823,7 @@ fields:
   directus_settings:
     auth_password_policy: سیاست کلمه‌ی عبور جدید
     files_and_thumbnails: فایلها و ذخیره سازی
-    module_bar: ماژول
+    module_bar: نوار ماژول ها
   directus_shares:
     name: نام
     role: نقش
