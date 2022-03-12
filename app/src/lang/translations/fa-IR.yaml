@@ -144,8 +144,8 @@ allow_multiple_to_be_open: چند مورد میتوانند باهم باز شو
 enter_value_to_replace_nulls: لطفاً یک مقدار جدید برای جایگزینی هر گونه NULL موجود در این فیلد وارد کنید.
 field_standard: استاندارد
 field_presentation: نحوه نمایش و نامهای مستعار
-field_file: فیلتر تک
-field_files: چندین فیلتر
+field_file: تک فایل
+field_files: چند فایلی
 field_m2o: رابطه چند-به-یک
 field_m2a: رابطه چند-به-هر-مجموعه-ای
 field_o2m: رابطه یک-به-چند
@@ -188,15 +188,15 @@ sum_distinct: جمع مقادیر یکتا
 avg: میانگین
 avg_distinct: میانگین مقادیر یکتا
 count: تعداد
-count_distinct: جمع مقادیر یکتا
+count_distinct: تعداد مقادیر یکتا
 min: حداقل
 max: حداکثر
-exposure: نوردهی
+exposure: مدت زمان نورپردازی شده
 shutter: شاتر
 iso: ISO
-focal_length: درێژیی تیشکۆیی
+focal_length: فاصله کانونی
 schema_setup_key: نام ستون پایگاه داده این فیلد و کلید API
-create_field: ایجاد فیلد(Field)
+create_field: ایجاد فیلد
 creating_new_field: 'فیلد جدید ({collection})'
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: بازنشانی تنظیمات صفحه
@@ -249,9 +249,9 @@ new_data_alert: 'فیلدهای زیر به مدل داده ای شما اضاف
 search_collection: جستجوی مجموعه...
 new_field: 'فیلد جدید'
 new_collection: 'مجموعه جدید'
-add_m2o_to_collection: 'اضافه کردن چند-به-یک به "{collection}"'
-add_o2m_to_collection: 'اضافه کردن یک-به-چند به "{collection}"'
-add_m2m_to_collection: 'اضافه کردن چند-به-چند به "{collection}"'
+add_m2o_to_collection: 'اضافه کردن رابطه چند-به-یک به "{collection}"'
+add_o2m_to_collection: 'اضافه کردن رابطه یک-به-چند به "{collection}"'
+add_m2m_to_collection: 'اضافه کردن رابطه چند-به-چند به "{collection}"'
 choose_a_type: یک نوع را انتخاب کنید...
 determined_by_relationship: توسط نوع رابطه تعیین می شود
 add_note: توضیحاتی کارا برای کاربران اضافه کنید...
@@ -259,11 +259,11 @@ add_link: اضافه کردن لینک
 custom_link: پیوند سفارشی
 default_value: مقدار پیش فرض
 standard_field: فیلد استاندارد
-single_file: فیلتر تک
-multiple_files: چندین فیلتر
-m2o_relationship: رابطه بسیار به یک
-o2m_relationship: رابطه بسیار به یک
-m2m_relationship: رابطه بسیار به یک
+single_file: تک فایل
+multiple_files: چند فایلی
+m2o_relationship: رابطه چند-به-یک
+o2m_relationship: رابطه یک-به-چند
+m2m_relationship: رابطه چند-به-چند
 m2a_relationship: رابطه بسیار به یک
 invalid_item: نامعتبر است
 next: بعدی
@@ -292,8 +292,8 @@ paste_raw_value: چسباندن مقدار خام
 paste_raw_value_success: چسبانده شد
 paste_raw_value_fail: چسباندن ناموفق بود
 view_raw_value: نمایش مقدار خام
-edit_raw_value: ویرایش مقدار
-enter_raw_value: یک مقدار وارد کنید...
+edit_raw_value: ویرایش مقدار خام
+enter_raw_value: مقدار خامی را وارد کنید...
 clear_value: پاک کردن مقدار
 clear_changes: پاک کردن تغییرات
 reset_to_default: بازنشانی به تنظیمات پیش فرض
@@ -369,22 +369,22 @@ month: ماه
 year: سال
 select_all: انتخاب همه
 months:
-  january: فروردین
-  february: اردیبهشت
-  march: اسفند
-  april: تیر
+  january: ژانویه
+  february: فوریه
+  march: مارس
+  april: آوریل
   may: می
   june: ژوئن
   july: جولای
   august: آگوست
   september: سپتامبر
-  october: مهر
+  october: اکتبر
   november: نوامبر
   december: دسامبر
 drag_mode: حالت کشیدن
 cancel_crop: لغو برش
 original: مقدار اولیه
-url: نشانی ‌URL
+url: URL
 import_label: وارد کردن
 file_details: جزئیات فایل
 dimensions: ابعاد
