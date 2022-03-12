@@ -23,6 +23,10 @@
 				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
 					<slot :header="header" :name="`header.${header.value}`" />
 				</template>
+
+				<template v-if="hasHeaderAppendSlot" #header-append>
+					<slot name="header-append" />
+				</template>
 			</table-header>
 			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
 				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
@@ -84,8 +88,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, ref, PropType } from 'vue';
+<script lang="ts" setup>
+import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
@@ -103,290 +107,231 @@ const HeaderDefaults: Header = {
 	width: null,
 };
 
-export default defineComponent({
-	components: {
-		TableHeader,
-		TableRow,
-		Draggable,
-	},
-	props: {
-		headers: {
-			type: Array as PropType<HeaderRaw[]>,
-			required: true,
-		},
-		items: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
-		itemKey: {
-			type: String,
-			default: 'id',
-		},
-		sort: {
-			type: Object as PropType<Sort>,
-			default: null,
-		},
-		mustSort: {
-			type: Boolean,
-			default: false,
-		},
-		showSelect: {
-			type: String as PropType<ShowSelect>,
-			default: 'none',
-		},
-		showResize: {
-			type: Boolean,
-			default: false,
-		},
-		showManualSort: {
-			type: Boolean,
-			default: false,
-		},
-		manualSortKey: {
-			type: String,
-			default: null,
-		},
-		modelValue: {
-			type: Array as PropType<any>,
-			default: () => [],
-		},
-		fixedHeader: {
-			type: Boolean,
-			default: false,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		loadingText: {
-			type: String,
-			default: i18n.global.t('loading'),
-		},
-		noItemsText: {
-			type: String,
-			default: i18n.global.t('no_items'),
-		},
-		serverSort: {
-			type: Boolean,
-			default: false,
-		},
-		rowHeight: {
-			type: Number,
-			default: 48,
-		},
-		selectionUseKeys: {
-			type: Boolean,
-			default: false,
-		},
-		inline: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		clickable: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: [
-		'click:row',
-		'update:sort',
-		'update:items',
-		'item-selected',
-		'update:modelValue',
-		'manual-sort',
-		'update:headers',
-	],
-	setup(props, { emit, slots }) {
-		const internalHeaders = computed({
-			get: () => {
-				return props.headers
-					.map((header: HeaderRaw) => ({
-						...HeaderDefaults,
-						...header,
-					}))
-					.map((header) => {
-						if (header.width && header.width < 24) {
-							header.width = 24;
-						}
+interface Props {
+	headers: HeaderRaw[];
+	items: Item[];
+	itemKey?: string;
+	sort?: Sort | null;
+	mustSort?: boolean;
+	showSelect?: ShowSelect;
+	showResize?: boolean;
+	showManualSort?: boolean;
+	manualSortKey?: string;
+	modelValue?: any[];
+	fixedHeader?: boolean;
+	loading?: boolean;
+	loadingText?: string;
+	noItemsText?: string;
+	serverSort?: boolean;
+	rowHeight?: number;
+	selectionUseKeys?: boolean;
+	inline?: boolean;
+	disabled?: boolean;
+	clickable?: boolean;
+}
 
-						return header;
-					});
-			},
-			set: (newHeaders: Header[]) => {
-				emit(
-					'update:headers',
-					// We'll return the original headers with the updated values, so we don't stage
-					// all the default values
-					newHeaders.map((header) => {
-						const keysThatArentDefault: string[] = [];
+const props = withDefaults(defineProps<Props>(), {
+	itemKey: 'id',
+	sort: undefined,
+	mustSort: false,
+	showSelect: 'none',
+	showResize: false,
+	showManualSort: false,
+	manualSortKey: undefined,
+	modelValue: () => [],
+	fixedHeader: false,
+	loading: false,
+	loadingText: i18n.global.t('loading'),
+	noItemsText: i18n.global.t('no_items'),
+	serverSort: false,
+	rowHeight: 48,
+	selectionUseKeys: false,
+	inline: false,
+	disabled: false,
+	clickable: true,
+});
 
-						forEach(header, (value, key: string) => {
-							const objKey = key as keyof Header;
+const emit = defineEmits([
+	'click:row',
+	'update:sort',
+	'update:items',
+	'item-selected',
+	'update:modelValue',
+	'manual-sort',
+	'update:headers',
+]);
 
-							if (value !== HeaderDefaults[objKey]) {
-								keysThatArentDefault.push(key);
-							}
-						});
+const slots = useSlots();
 
-						return pick(header, keysThatArentDefault);
-					})
-				);
-			},
-		});
-
-		// In case the sort prop isn't used, we'll use this local sort state as a fallback.
-		// This allows the table to allow inline sorting on column ootb without the need for
-		const internalLocalSort = ref<Sort>({
-			by: null,
-			desc: false,
-		});
-
-		const internalSort = computed({
-			get: () => props.sort || internalLocalSort.value,
-			set: (newSort: Sort) => {
-				emit('update:sort', newSort);
-				internalLocalSort.value = newSort;
-			},
-		});
-
-		const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
-
-		const fullColSpan = computed<string>(() => {
-			let length = internalHeaders.value.length + 1; // +1 account for spacer
-			if (props.showSelect !== 'none') length++;
-			if (props.showManualSort) length++;
-			if (hasItemAppendSlot.value) length++;
-
-			return `1 / span ${length}`;
-		});
-
-		const internalItems = computed({
-			get: () => {
-				if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
-					return props.items;
+const internalHeaders = computed({
+	get: () => {
+		return props.headers
+			.map((header: HeaderRaw) => ({
+				...HeaderDefaults,
+				...header,
+			}))
+			.map((header) => {
+				if (header.width && header.width < 24) {
+					header.width = 24;
 				}
 
-				if (internalSort.value.by === null) return props.items;
+				return header;
+			});
+	},
+	set: (newHeaders: Header[]) => {
+		emit(
+			'update:headers',
+			// We'll return the original headers with the updated values, so we don't stage
+			// all the default values
+			newHeaders.map((header) => {
+				const keysThatArentDefault: string[] = [];
 
-				const itemsSorted = sortBy(props.items, [internalSort.value.by]);
-				if (internalSort.value.desc === true) return itemsSorted.reverse();
-				return itemsSorted;
-			},
-			set: (value: Item[]) => {
-				emit('update:items', value);
-			},
-		});
+				forEach(header, (value, key: string) => {
+					const objKey = key as keyof Header;
 
-		const allItemsSelected = computed<boolean>(() => {
-			return props.loading === false && props.modelValue.length === props.items.length;
-		});
-
-		const someItemsSelected = computed<boolean>(() => {
-			return props.modelValue.length > 0 && allItemsSelected.value === false;
-		});
-
-		const columnStyle = computed<string>(() => {
-			let gridTemplateColumns = internalHeaders.value
-				.map((header) => {
-					return header.width ? `${header.width}px` : '160px';
-				})
-				.reduce((acc, val) => (acc += ' ' + val), '');
-
-			if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
-			if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
-
-			gridTemplateColumns = gridTemplateColumns + ' 1fr';
-
-			if (hasItemAppendSlot.value) gridTemplateColumns += ' auto';
-
-			return gridTemplateColumns;
-		});
-
-		return {
-			internalHeaders,
-			internalItems,
-			internalSort,
-			allItemsSelected,
-			getSelectedState,
-			onItemSelected,
-			onToggleSelectAll,
-			someItemsSelected,
-			onSortChange,
-			fullColSpan,
-			columnStyle,
-			hasItemAppendSlot,
-			hideDragImage,
-		};
-
-		function onItemSelected(event: ItemSelectEvent) {
-			if (props.disabled) return;
-
-			emit('item-selected', event);
-
-			let selection = clone(props.modelValue) as any[];
-
-			if (event.value === true) {
-				if (props.selectionUseKeys) {
-					selection.push(event.item[props.itemKey]);
-				} else {
-					selection.push(event.item);
-				}
-			} else {
-				selection = selection.filter((item) => {
-					if (props.selectionUseKeys) {
-						return item !== event.item[props.itemKey];
+					if (value !== HeaderDefaults[objKey]) {
+						keysThatArentDefault.push(key);
 					}
-
-					return item[props.itemKey] !== event.item[props.itemKey];
 				});
-			}
 
-			emit('update:modelValue', selection);
-		}
-
-		function getSelectedState(item: Item) {
-			const selectedKeys = props.selectionUseKeys
-				? props.modelValue
-				: props.modelValue.map((item: any) => item[props.itemKey]);
-			return selectedKeys.includes(item[props.itemKey]);
-		}
-
-		function onToggleSelectAll(value: boolean) {
-			if (props.disabled) return;
-
-			if (value === true) {
-				if (props.selectionUseKeys) {
-					emit(
-						'update:modelValue',
-						clone(props.items).map((item) => item[props.itemKey])
-					);
-				} else {
-					emit('update:modelValue', clone(props.items));
-				}
-			} else {
-				emit('update:modelValue', []);
-			}
-		}
-
-		interface EndEvent extends CustomEvent {
-			oldIndex: number;
-			newIndex: number;
-		}
-
-		function onSortChange(event: EndEvent) {
-			if (props.disabled) return;
-
-			const item = internalItems.value[event.oldIndex][props.itemKey];
-			const to = internalItems.value[event.newIndex][props.itemKey];
-
-			emit('manual-sort', { item, to });
-		}
+				return pick(header, keysThatArentDefault);
+			})
+		);
 	},
 });
+
+// In case the sort prop isn't used, we'll use this local sort state as a fallback.
+// This allows the table to allow inline sorting on column ootb without the need for
+const internalLocalSort = ref<Sort>({
+	by: null,
+	desc: false,
+});
+
+const internalSort = computed({
+	get: () => props.sort || internalLocalSort.value,
+	set: (newSort: Sort) => {
+		emit('update:sort', newSort);
+		internalLocalSort.value = newSort;
+	},
+});
+
+const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
+const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
+
+const fullColSpan = computed<string>(() => {
+	let length = internalHeaders.value.length + 1; // +1 account for spacer
+	if (props.showSelect !== 'none') length++;
+	if (props.showManualSort) length++;
+	if (hasItemAppendSlot.value) length++;
+
+	return `1 / span ${length}`;
+});
+
+const internalItems = computed({
+	get: () => {
+		if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
+			return props.items;
+		}
+
+		if (internalSort.value.by === null) return props.items;
+
+		const itemsSorted = sortBy(props.items, [internalSort.value.by]);
+		if (internalSort.value.desc === true) return itemsSorted.reverse();
+		return itemsSorted;
+	},
+	set: (value: Item[]) => {
+		emit('update:items', value);
+	},
+});
+
+const allItemsSelected = computed<boolean>(() => {
+	return props.loading === false && props.modelValue.length === props.items.length;
+});
+
+const someItemsSelected = computed<boolean>(() => {
+	return props.modelValue.length > 0 && allItemsSelected.value === false;
+});
+
+const columnStyle = computed<string>(() => {
+	let gridTemplateColumns = internalHeaders.value
+		.map((header) => {
+			return header.width ? `${header.width}px` : '160px';
+		})
+		.reduce((acc, val) => (acc += ' ' + val), '');
+
+	if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
+	if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
+
+	gridTemplateColumns = gridTemplateColumns + ' 1fr';
+
+	if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' auto';
+
+	return gridTemplateColumns;
+});
+
+function onItemSelected(event: ItemSelectEvent) {
+	if (props.disabled) return;
+
+	emit('item-selected', event);
+
+	let selection = clone(props.modelValue) as any[];
+
+	if (event.value === true) {
+		if (props.selectionUseKeys) {
+			selection.push(event.item[props.itemKey]);
+		} else {
+			selection.push(event.item);
+		}
+	} else {
+		selection = selection.filter((item) => {
+			if (props.selectionUseKeys) {
+				return item !== event.item[props.itemKey];
+			}
+
+			return item[props.itemKey] !== event.item[props.itemKey];
+		});
+	}
+
+	emit('update:modelValue', selection);
+}
+
+function getSelectedState(item: Item) {
+	const selectedKeys = props.selectionUseKeys
+		? props.modelValue
+		: props.modelValue.map((item: any) => item[props.itemKey]);
+	return selectedKeys.includes(item[props.itemKey]);
+}
+
+function onToggleSelectAll(value: boolean) {
+	if (props.disabled) return;
+
+	if (value === true) {
+		if (props.selectionUseKeys) {
+			emit(
+				'update:modelValue',
+				clone(props.items).map((item) => item[props.itemKey])
+			);
+		} else {
+			emit('update:modelValue', clone(props.items));
+		}
+	} else {
+		emit('update:modelValue', []);
+	}
+}
+
+interface EndEvent extends CustomEvent {
+	oldIndex: number;
+	newIndex: number;
+}
+
+function onSortChange(event: EndEvent) {
+	if (props.disabled) return;
+
+	const item = internalItems.value[event.oldIndex][props.itemKey];
+	const to = internalItems.value[event.newIndex][props.itemKey];
+
+	emit('manual-sort', { item, to });
+}
 </script>
 
 <style scoped>

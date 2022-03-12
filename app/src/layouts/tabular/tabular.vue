@@ -36,6 +36,10 @@
 				/>
 			</template>
 
+			<template #header-append>
+				<v-icon name="add" />
+			</template>
+
 			<template #footer>
 				<div class="footer">
 					<div class="pagination">

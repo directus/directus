@@ -44,7 +44,10 @@
 			</th>
 
 			<th class="spacer cell" scope="col" />
-			<th v-if="hasItemAppendSlot" class="spacer cell" scope="col" />
+			<td v-if="$slots['header-append']" class="append cell" @click.stop>
+				<slot name="header-append" />
+			</td>
+			<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
 		</tr>
 	</thead>
 </template>
