@@ -315,9 +315,13 @@ export default defineComponent({
 		}
 
 		function apply(updates: { [field: string]: any }) {
-			if (isDisabled(field)) return;
+			const updatableKeys = Object.keys(updates).filter((key) => {
+				const field = props.fields?.find((field) => field.field === key);
+				if (!field) return false;
+				return !isDisabled(field);
+			});
 
-			emit('update:modelValue', pick(assign({}, props.modelValue, updates), Object.keys(updates)));
+			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
 		}
 
 		function unsetValue(field: Field) {
