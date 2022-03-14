@@ -1660,7 +1660,6 @@ layouts:
     subtitle: Подзаглавие
   tabular:
     tabular: Таблица
-    fields: Полета
     spacing: Отстояние
     comfortable: Удобно
     compact: Компактно
