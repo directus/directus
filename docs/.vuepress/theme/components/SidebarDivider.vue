@@ -3,7 +3,6 @@
 </template>
 
 <style lang="stylus">
-/* stylelint-disable */
 hr.sidebar-divider
   font-size 1em
   font-weight 400

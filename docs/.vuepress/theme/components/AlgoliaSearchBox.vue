@@ -69,7 +69,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .algolia-search-wrapper
   & > span
     vertical-align middle

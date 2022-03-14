@@ -108,7 +108,6 @@ recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu
 unarchive_confirm: Skutečně chcete tuto položku obnovit z archivu?
 nested_files_folders_will_be_moved: Vnořené soubory a složky budou přesunuty o úroveň výše.
-unknown_validation_errors: 'Došlo k chybám validace pro následující skrytá pole:'
 validationError:
   eq: Hodnota musí být {valid}
   neq: Hodnota nemůže být {invalid}

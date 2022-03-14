@@ -111,7 +111,6 @@ recommended_defaults: الإعدادات الافتراضية الافضل
 unarchive: إزالة من الأرشيف
 unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
 nested_files_folders_will_be_moved: سيتم نقل الملفات والمجلدات الداخلية إلى درجة إلى الأعلى.
-unknown_validation_errors: 'حدثت أخطاء في التحقق من صحة الحقول المخفية التالية:'
 validationError:
   eq: القيمة يجب أن تكون {valid}
   neq: لا يمكن أن تكون القيمة {invalid}

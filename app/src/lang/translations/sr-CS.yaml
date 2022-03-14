@@ -63,7 +63,6 @@ recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
 unarchive_confirm: Da li ste sigurni da želite da vratite iz arhive ovu stavku?
 nested_files_folders_will_be_moved: Ugnježđeni fajlovi i fascikle će biti pomjereni na jedan nivo iznad.
-unknown_validation_errors: 'Došlo je do greške u validaciji kod sljedećih sakrivenih polja:'
 validationError:
   eq: Vrijednost treba biti {valid}
   neq: Vrijednost ne može biti {invalid}

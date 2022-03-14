@@ -393,7 +393,7 @@ body {
 
 	input {
 		flex-grow: 1;
-		width: 20px; // allows flex to grow/shrink to allow for slots
+		width: 20px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
 		padding: var(--input-padding);
 		padding-right: 0px;

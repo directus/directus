@@ -113,7 +113,6 @@ recommended_defaults: Valores recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Está seguro que desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos anidados y las carpetas se moverán un nivel superior.
-unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
 validationError:
   eq: El valor tiene que ser {valid}
   neq: El valor no puede ser {invalid}

@@ -36,6 +36,10 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 		icon: 'image',
 		tooltip: i18n.global.t('wysiwyg_options.image'),
 		onAction: (buttonApi: any) => {
+			if (editor.value.plugins.fullscreen.isFullscreen()) {
+				editor.value.execCommand('mceFullScreen');
+			}
+
 			imageDrawerOpen.value = true;
 
 			if (buttonApi.isActive()) {

@@ -86,7 +86,6 @@ recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
-unknown_validation_errors: 'A következő rejtett mezőknél érvényesítési hibák merültek fel:'
 validationError:
   eq: Az érték {valid} kell legyen
   neq: Az érték nem lehet {invalid}
