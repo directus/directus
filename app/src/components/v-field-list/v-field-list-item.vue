@@ -8,8 +8,10 @@
 		<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
 	</v-list-item>
 
-	<v-list-group v-else :value="field.key" :disabled="field.disabled" clickable @click="$emit('add', field.key)">
-		<template #activator>{{ field.name || formatTitle(field.field) }}</template>
+	<v-list-group v-else :value="field.key" :clickable="!field.disabled" @click="$emit('add', field.key)">
+		<template #activator>
+			<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
+		</template>
 
 		<v-field-list-item
 			v-for="childField in field.children"
