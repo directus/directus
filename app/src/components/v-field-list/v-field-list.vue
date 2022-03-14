@@ -5,26 +5,45 @@
 			:key="field.field"
 			:field="field"
 			:depth="depth"
-			@add="$emit('select', $event)"
+			@add="$emit('select-field', $event)"
 		/>
 	</v-list>
 </template>
 
 <script lang="ts" setup>
 import { useFieldTree } from '@/composables/use-field-tree';
-import { toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import VFieldListItem from './v-field-list-item.vue';
 
 interface Props {
 	collection: string;
 	depth?: number;
+	disabledFields?: string[];
 }
 
 const props = defineProps<Props>();
 
 const { collection } = toRefs(props);
 
-const { treeList, loadFieldRelations } = useFieldTree(collection);
+const { treeList: treeListOriginal, loadFieldRelations } = useFieldTree(collection);
 
-defineEmits(['select']);
+const treeList = computed(() => {
+	return treeListOriginal.value.map(setDisabled);
+
+	function setDisabled(
+		field: typeof treeListOriginal.value[number]
+	): typeof treeListOriginal.value[number] & { disabled: boolean } {
+		let disabled = false;
+
+		if (props.disabledFields?.includes(field.key)) disabled = true;
+
+		return {
+			...field,
+			disabled,
+			children: field.children?.map(setDisabled),
+		};
+	}
+});
+
+defineEmits(['select-field']);
 </script>

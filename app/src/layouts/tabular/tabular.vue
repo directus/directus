@@ -49,7 +49,7 @@
 						/>
 					</template>
 
-					<v-field-list :collection="collection" />
+					<v-field-list :collection="collection" :disabled-fields="fields" @select-field="addField" />
 				</v-menu>
 			</template>
 
@@ -152,7 +152,7 @@ const props = withDefaults(defineProps<Props>(), {
 	search: undefined,
 });
 
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit']);
+const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
 const { t } = useI18n();
 
@@ -176,6 +176,12 @@ useShortcut(
 	},
 	table
 );
+
+const fieldsWritable = useSync(props, 'fields', emit);
+
+function addField(fieldKey: string) {
+	fieldsWritable.value = [...fieldsWritable.value, fieldKey];
+}
 </script>
 
 <style lang="scss" scoped>
