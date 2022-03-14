@@ -1624,7 +1624,6 @@ layouts:
     subtitle: Подзаголовок
   tabular:
     tabular: Таблица
-    fields: Поля
     spacing: Отступы
     comfortable: Удобный
     compact: Компактный
