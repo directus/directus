@@ -24,10 +24,10 @@ Familiarity with the [Collections Page](/app/content-collections/) will be helpf
 :::
 
 The File Library acts as one big [Folder](#folders) to store all uploaded [Files](#files). Sub-folders can be created
-within the File Library to help Files stay organized. Folders and Files are stored as Collections, which means
-[User and Role access permissions](/configuration/users-roles-permissions.md) are fully configurable and granular on
-both Folders and Files. Multiple files can be uploaded at once through the app and also programmatically via the API.
-Any type of file can be uploaded, _not just images_. When a Folder is selected from the Navigation Bar, the
+within the File Library to help Files stay organized. Folders and File information are stored in regular Collections,
+which means [User and Role access permissions](/configuration/users-roles-permissions.md) are fully configurable and
+granular on both Folders and Files. Multiple files can be uploaded at once through the app and also programmatically via
+the API. Any type of file can be uploaded, _not just images_. When a Folder is selected from the Navigation Bar, the
 [File Listing Page](#folders) is presented. This page has all the same features and functionalities as the
 [Collections Page](/app/content-collections/).
 
@@ -46,12 +46,12 @@ Any type of file can be uploaded, _not just images_. When a Folder is selected f
    - Drag a file from your desktop to the popup.
    - Click the popup area to manually select a file from your device.
    - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
-4. Optional: Click the File Display to open File Details Page and fill in information as desired.
+4. Optional: Click the File Display to open the File Details Page and fill in information as desired.
 
 ## Files
 
 When a file is clicked in the File Listing Page, the File Details Page appears. This is a custom form for viewing assets
-and embeds, with core Fields included out-of-the-box (see below), and the ability for administrators to add additional
+and embeds, with core Fields included out-of-the-box (see below), and the ability for Administrators to add additional
 custom Fields. This page has the same features and functionality as the
 [Item Details Page](/getting-started/glossary/#items).
 
@@ -62,15 +62,17 @@ custom Fields. This page has the same features and functionality as the
 Notice the following Buttons in the Header:
 
 - <span mi btn >check</span> – Saves any edits made to the file.
-- <span mi btn sec>tune</span> – Please see the [Edit an Image](#edit-an-image) to learn more.
+- <span mi btn sec>tune</span> – Please see [Edit an Image](#edit-an-image) to learn more.
 - <span mi btn sec>save_alt</span> – Downloads the file to your current device.
-- <span mi btn sec>drive_file_move</span> – Moves selected file(s) to another folder.
-- <span mi btn dngr>delete</span> – Permanently removes the file and its metadata. This action is permanent and cannot
+- <span mi btn sec>drive_file_move</span> – Moves selected File(s) to another Folder.
+- <span mi btn dngr>delete</span> – Permanently removes the File and its metadata. This action is permanent and cannot
   be undone.
 
-::: tip Can't Delete Files Linked to Items
+::: tip Deleting Files Linked to Items
 
-Directus will not allow you to delete a File until you remove it from any and all related Items.
+By default, Directus will not allow you to delete a File until you remove it from any and all related Items. However,
+this behavior can be reconfigured so that Files automatically update when the image is deleted by setting the relational
+constraint of your File Field to `SET NULL` or `CASCADE` when the File is deleted.
 
 :::
 
@@ -100,9 +102,9 @@ The file sidebar also includes the following details, which are not editable and
 - **Dimensions** – _Images only_. The width and height of the image in pixels.
 - **Size** – The file-size the asset takes up in the storage adapter.
 - **Created** – The timestamp of when the file was uploaded to the Project.
-- **Owner** – The Directus user that uploaded the file to the Project.
+- **Owner** – The User that uploaded the file to the Project.
 - **Modified** – The timestamp of when the file was last modified.
-- **Edited By** – The Directus user that modified the File.
+- **Edited By** – The User that modified the File.
 - **Folder** – The current parent folder that contains the File.
 - **Metadata** – Metadata JSON dump of the File's EXIF, IPTC, and ICC information.
 
@@ -120,13 +122,13 @@ Rotate, crop, flip, or adjust aspect ratios of an image.
 
 ::: danger Irreversible Change
 
-Edits made will overwrite the original file on disk, and can't be reversed.
+Edits overwrite the original file on disk. This can't be reversed.
 
 :::
 
 ## Upload a File
 
-We covered the File Library's 3 upload methods in [How it Works](#how-it-works). Keep in mind that files can also be
+We covered the File Library's three upload methods in [How it Works](#how-it-works). Keep in mind that files can also be
 added through different Interfaces as well. For example, Users can upload an Avatar image when they fill in their User
 Details. Similarly, Items with an Image Field will have a file upload Interface on the Item Detail page. Files can also
 be [uploaded programmatically via the API](/reference/files/).
@@ -151,11 +153,11 @@ Folders provide the organization system for Files.
 
 ![Folders](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/folders-20220305A.webp)
 
-They can be named/renamed, nested as sub-folders anywhere in the Folder hierarchy. Once a Folder is selected from the
-Navigation Bar, File Listing Page opens. The File Listing Page displays all Files within a Folder. It also enables all
-other features and functionalities from the [Collections Page](/app/content-collections/) such as batch editing, batch
-deleting, sorting, filtering, searching, etc. Folders can also be managed programmatically via the
-API](/docs/reference/system/folders.md).
+They can be named, renamed, and nested as sub-folders anywhere in the Folder hierarchy. Once a Folder is selected from
+the Navigation Bar, File Listing Page opens. The File Listing Page displays all Files within a Folder. It also enables
+all other features and functionalities from the [Collections Page](/app/content-collections/) such as batch editing,
+batch deleting, sorting, filtering, searching, etc. Folders can also be managed
+[programmatically via the API](/docs/reference/system/folders.md).
 
 ## Create a Folder
 
