@@ -263,18 +263,6 @@ function toggleManualSort() {
 				text-overflow: ellipsis;
 			}
 		}
-
-		&.align-left .content {
-			justify-content: start;
-		}
-
-		&.align-center .content {
-			justify-content: center;
-		}
-
-		&.align-right .content {
-			justify-content: end;
-		}
 	}
 
 	.actionable {
@@ -343,7 +331,6 @@ function toggleManualSort() {
 		width: 5px;
 		height: 100%;
 		cursor: ew-resize;
-		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 
 		&::after {
@@ -355,15 +342,12 @@ function toggleManualSort() {
 			height: 60%;
 			background-color: var(--border-subdued);
 			content: '';
+			transition: background-color var(--fast) var(--transition);
 		}
 
 		&:hover::after {
-			background-color: var(--foreground-subdued);
+			background-color: var(--primary);
 		}
-	}
-
-	&:hover .resize-handle {
-		opacity: 1;
 	}
 }
 

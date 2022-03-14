@@ -77,8 +77,7 @@ const cssHeight = computed(() => props.height + 2 + 'px');
 	.cell {
 		display: flex;
 		align-items: center;
-		padding: 8px 0;
-		padding-left: 12px;
+		padding: 8px 12px;
 		overflow: hidden;
 		line-height: 1;
 		white-space: nowrap;
