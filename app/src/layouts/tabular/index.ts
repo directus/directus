@@ -18,6 +18,7 @@ import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
 import { syncRefProperty } from '@/utils/sync-ref-property';
+import { useFieldsStore } from '@/stores';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -33,6 +34,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { t, n } = useI18n();
 
 		const router = useRouter();
+
+		const fieldsStore = useFieldsStore();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -91,10 +94,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
-		const availableFields = computed(() => {
-			return fieldsInCollection.value.filter((field: Field) => field.meta?.special?.includes('no-data') !== true);
-		});
-
 		return {
 			tableHeaders,
 			items,
@@ -124,7 +123,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			refresh,
 			resetPresetAndRefresh,
 			selectAll,
-			availableFields,
 			filter,
 			search,
 		};
@@ -197,11 +195,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				});
 			}, 350);
 
-			const activeFields = computed<Field[]>({
+			const activeFields = computed<(Field & { key: string })[]>({
 				get() {
+					if (!collection.value) return [];
+
 					return fields.value
-						.map((key) => fieldsInCollection.value.find((field: Field) => field.field === key))
-						.filter((f) => f) as Field[];
+						.map((key) => ({ ...fieldsStore.getField(collection.value!, key), key }))
+						.filter((f) => f && f.meta?.special?.includes('no-data') !== true) as (Field & { key: string })[];
 				},
 				set(val) {
 					fields.value = val.map((field) => field.field);
@@ -212,9 +212,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				get() {
 					return activeFields.value.map((field) => ({
 						text: field.name,
-						value: field.field,
-						width: localWidths.value[field.field] || layoutOptions.value?.widths?.[field.field] || null,
-						align: layoutOptions.value?.align?.[field.field] || 'left',
+						value: field.key,
+						width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
+						align: layoutOptions.value?.align?.[field.key] || 'left',
 						field: {
 							display: field.meta?.display || getDefaultDisplayForType(field.type),
 							displayOptions: field.meta?.display_options,
@@ -222,6 +222,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							interfaceOptions: field.meta?.options,
 							type: field.type,
 							field: field.field,
+							collection: field.collection,
 						},
 						sortable:
 							['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(

@@ -36,8 +36,6 @@ interface Props {
 	fields: string[];
 	activeFields: Field[];
 	tableSpacing: 'compact' | 'cozy' | 'comfortable';
-	hideDragImage: (dataTransfer: DataTransfer) => void;
-	availableFields: Field[];
 }
 
 const props = defineProps<Props>();

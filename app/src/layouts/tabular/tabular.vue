@@ -26,14 +26,14 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="item[header.value]"
+					:value="get(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="collection"
-					:field="header.field.field"
+					:collection="header.field.collection"
+					:field="header.value"
 				/>
 			</template>
 
@@ -181,6 +181,7 @@ import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { get } from 'lodash';
 
 interface Props {
 	collection: string;
