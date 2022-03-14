@@ -1,6 +1,7 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@directus/shared/types';
 import { getRelationType } from '@directus/shared/utils';
+import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 
 export type FieldNode = {
@@ -35,14 +36,18 @@ export function useFieldTree(
 	function refresh(collection?: string | null) {
 		visitedPaths.value = new Set();
 		treeList.value = getTree(collection) ?? [];
+
 		for (const node of treeList.value) {
-			node.children = getTree(node.relatedCollection, node);
+			if (node.relatedCollection) {
+				node.children = getTree(node.relatedCollection, node);
+			}
 		}
 	}
 
 	function getTree(collection?: string | null, parent?: FieldNode) {
 		const injectedFields = inject?.value?.fields.filter((field) => field.collection === collection);
-		const fields = fieldsStore
+
+		const allFields = fieldsStore
 			.getFieldsForCollectionSorted(collection!)
 			.concat(injectedFields || [])
 			.filter(
@@ -50,15 +55,35 @@ export function useFieldTree(
 					field.meta?.special?.includes('group') ||
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
 			)
-			.filter(filter)
-			.flatMap((field) => makeNode(field, parent));
+			.filter(filter);
 
-		return fields.length ? fields : undefined;
+		const topLevelFields = allFields.filter((field) => isNil(field.meta?.group));
+
+		const fieldNodes = topLevelFields.flatMap((field) => makeNode(field, allFields, parent));
+
+		return fieldNodes.length ? fieldNodes : undefined;
 	}
 
-	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
+	function makeNode(field: Field, allFields: Field[], parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
 		const context = parent ? parent.key + '.' : '';
+
+		if (field?.meta?.special?.includes('group')) {
+			const groupChildrenNodes = allFields
+				.filter(
+					(existingField) => existingField.meta?.group === field.field && existingField.collection === field.collection
+				)
+				.flatMap((field) => makeNode(field, allFields, parent));
+
+			return {
+				name: field.name,
+				field: field.field,
+				collection: field.collection,
+				relatedCollection: undefined,
+				key: context + field.field,
+				children: groupChildrenNodes,
+			};
+		}
 
 		if (relatedCollections.length <= 1) {
 			return {
@@ -69,6 +94,7 @@ export function useFieldTree(
 				key: context + field.field,
 			};
 		}
+
 		return relatedCollections.map((collection) => {
 			return {
 				name: `${field.name} (${collection})`,
@@ -84,11 +110,12 @@ export function useFieldTree(
 		const relation = getRelationForField(field);
 		if (!relation?.meta) return [];
 		const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
+
 		switch (relationType) {
 			case 'o2m':
 				return [relation!.meta!.many_collection];
 			case 'm2o':
-				return [relation!.meta!.one_collection];
+				return [relation!.meta!.one_collection!];
 			case 'm2a':
 				return relation!.meta!.one_allowed_collections!;
 			default:
@@ -101,6 +128,7 @@ export function useFieldTree(
 			...relationsStore.getRelationsForField(field.collection, field.field),
 			...(inject?.value?.relations || []),
 		];
+
 		return relations.find(
 			(relation: Relation) =>
 				(relation.collection === field.collection && relation.field === field.field) ||
@@ -123,9 +151,13 @@ export function useFieldTree(
 	function loadFieldRelations(path: string) {
 		if (!visitedPaths.value.has(path)) {
 			visitedPaths.value.add(path);
+
 			const node = getNodeAtPath(path.split('.'), treeList.value);
+
 			for (const child of node?.children || []) {
-				child.children = getTree(child.relatedCollection, child);
+				if (child?.relatedCollection) {
+					child.children = getTree(child.relatedCollection, child);
+				}
 			}
 		}
 	}
