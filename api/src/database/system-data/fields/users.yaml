@@ -20,7 +20,7 @@ fields:
     width: half
 
   - field: password
-    special: hash,conceal
+    special: cast-hash,conceal
     interface: input-hash
     options:
       iconRight: lock
@@ -50,7 +50,7 @@ fields:
 
   - field: tags
     interface: tags
-    special: json
+    special: cast-json
     width: full
     options:
       iconRight: local_offer
@@ -93,7 +93,7 @@ fields:
   - field: email_notifications
     interface: boolean
     width: half
-    special: boolean
+    special: cast-boolean
 
   - field: admin_divider
     interface: presentation-divider
@@ -140,7 +140,7 @@ fields:
     width: full
 
   - field: id
-    special: uuid
+    special: cast-uuid
     interface: input
     options:
       iconRight: vpn_key

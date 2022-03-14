@@ -2,7 +2,7 @@ table: directus_shares
 
 fields:
   - field: id
-    special: uuid
+    special: cast-uuid
     readonly: true
     hidden: true
 
@@ -26,7 +26,7 @@ fields:
           _eq: false
 
   - field: password
-    special: hash,conceal
+    special: cast-hash,conceal
     interface: input-hash
     options:
       iconRight: lock

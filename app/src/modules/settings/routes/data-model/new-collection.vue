@@ -280,7 +280,7 @@ export default defineComponent({
 						hidden: true,
 						readonly: true,
 						interface: 'input',
-						special: ['uuid'],
+						special: ['cast-uuid'],
 					},
 					schema: {
 						is_primary_key: true,

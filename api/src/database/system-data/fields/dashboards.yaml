@@ -2,7 +2,7 @@ table: directus_dashboards
 
 fields:
   - field: id
-    special: uuid
+    special: cast-uuid
   - field: name
   - field: icon
   - field: panels
