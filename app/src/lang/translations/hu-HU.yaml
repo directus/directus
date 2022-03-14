@@ -1473,7 +1473,6 @@ layouts:
     subtitle: Alcím
   tabular:
     tabular: Táblázat
-    fields: Mezők
     spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
