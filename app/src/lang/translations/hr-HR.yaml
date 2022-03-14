@@ -28,6 +28,7 @@ draft: Skica
 archived: Arhivirano
 modules: Moduli
 module_bar: Bočni izbornik
+reset_width: Resetiraj širinu
 tile_size: Veličina pločice
 edit_field: Uredi polje
 conditions: Uvjeti
@@ -114,7 +115,6 @@ recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
 unarchive_confirm: Jeste li sigurni da želite poništiti arhiviranje ove stavke?
 nested_files_folders_will_be_moved: Ugniježđene datoteke i mape bit će premještene za jednu razinu gore.
-unknown_validation_errors: 'Došlo je do pogrešaka provjere valjanosti za sljedeća skrivena polja:'
 validationError:
   eq: Vrijednost mora biti {valid}
   neq: Vrijednost ne može biti {invalid}
@@ -891,6 +891,7 @@ directus_collection:
   directus_roles: Grupe dopuštenja za korisnike sustava
   directus_sessions: Informacije o sesiji korisnika
   directus_settings: Opcije konfiguracije projekta
+  directus_shares: Prati vanjske dijeljene stavke
   directus_users: Korisnici sustava za platformu
   directus_webhooks: Konfiguracija za HTTP zahtjeve temeljene na događajima
 fields:
@@ -1663,7 +1664,6 @@ layouts:
     subtitle: Podnaslov
   tabular:
     tabular: Tablica
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno

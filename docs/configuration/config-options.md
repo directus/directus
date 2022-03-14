@@ -280,6 +280,7 @@ All the `DB_POOL_` prefixed options are passed to [`tarn.js`](https://github.com
 | `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                                             | false                    |
 | `CONTENT_SECURITY_POLICY`        | Custom overrides for the Content-Security-Policy header. See [helmet's documentation](https://helmetjs.github.io) for more information.                          | --                       |
 | `ASSETS_CONTENT_SECURITY_POLICY` | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation](https://helmetjs.github.io) for more information. | --                       |
+| `IMPORT_IP_DENY_LIST`            | Deny importing files from these IP addresses. Use `0.0.0.0` for any local IP address                                                                             | `0.0.0.0`                |
 
 ::: tip Cookie Strictness
 
@@ -319,8 +320,8 @@ multiplied. This may cause out of memory errors, especially when running in cont
 
 | Variable               | Description                                                                                                                                            | Default Value                |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
-| `CORS_ENABLED`         | Whether or not to enable the CORS headers.                                                                                                             | `true`                       |
-| `CORS_ORIGIN`          | Value for the `Access-Control-Allow-Origin` header. Use `true` to match the Origin header, or provide a domain or a CSV of domains for specific access | `true`                       |
+| `CORS_ENABLED`         | Whether or not to enable the CORS headers.                                                                                                             | `false`                      |
+| `CORS_ORIGIN`          | Value for the `Access-Control-Allow-Origin` header. Use `true` to match the Origin header, or provide a domain or a CSV of domains for specific access | `false`                      |
 | `CORS_METHODS`         | Value for the `Access-Control-Allow-Methods` header.                                                                                                   | `GET,POST,PATCH,DELETE`      |
 | `CORS_ALLOWED_HEADERS` | Value for the `Access-Control-Allow-Headers` header.                                                                                                   | `Content-Type,Authorization` |
 | `CORS_EXPOSED_HEADERS` | Value for the `Access-Control-Expose-Headers` header.                                                                                                  | `Content-Range`              |

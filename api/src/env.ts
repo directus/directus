@@ -39,8 +39,8 @@ const defaults: Record<string, any> = {
 
 	ROOT_REDIRECT: './admin',
 
-	CORS_ENABLED: true,
-	CORS_ORIGIN: true,
+	CORS_ENABLED: false,
+	CORS_ORIGIN: false,
 	CORS_METHODS: 'GET,POST,PATCH,DELETE',
 	CORS_ALLOWED_HEADERS: 'Content-Type,Authorization',
 	CORS_EXPOSED_HEADERS: 'Content-Range',
@@ -77,6 +77,8 @@ const defaults: Record<string, any> = {
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
+	IMPORT_IP_DENY_LIST: '0.0.0.0',
+
 	SERVE_APP: true,
 
 	RELATIONAL_BATCH_SIZE: 25000,
@@ -95,6 +97,7 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 
 	DB_EXCLUDE_TABLES: 'array',
+	IMPORT_IP_DENY_LIST: 'array',
 };
 
 let env: Record<string, any> = {
