@@ -37,7 +37,20 @@
 			</template>
 
 			<template #header-append>
-				<v-icon name="add" />
+				<v-menu placement="bottom-end" show-arrow>
+					<template #activator="{ toggle, active }">
+						<v-icon
+							v-tooltip="t('add_field')"
+							class="add-field"
+							name="add"
+							:class="{ active }"
+							clickable
+							@click="toggle"
+						/>
+					</template>
+
+					<v-field-list :collection="collection" />
+				</v-menu>
 			</template>
 
 			<template #footer>
@@ -90,13 +103,13 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { ComponentPublicInstance, ref, inject, Ref, watch } from 'vue';
-import { useSync } from '@directus/shared/composables';
+import { HeaderRaw } from '@/components/v-table/types';
 import useShortcut from '@/composables/use-shortcut';
 import { Collection } from '@/types';
-import { Field, Item, Filter, ShowSelect } from '@directus/shared/types';
-import { HeaderRaw } from '@/components/v-table/types';
+import { useSync } from '@directus/shared/composables';
+import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
+import { ComponentPublicInstance, inject, ref, Ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	collection: string;
@@ -220,5 +233,13 @@ useShortcut(
 
 .reset-preset {
 	margin-top: 24px;
+}
+
+.add-field {
+	--v-icon-color-hover: var(--foreground-normal);
+
+	&.active {
+		--v-icon-color: var(--foreground-normal);
+	}
 }
 </style>
