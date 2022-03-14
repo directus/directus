@@ -46,7 +46,7 @@
 						@click="onSortChange?.({ by: header.value, desc: false })"
 					>
 						<v-list-item-icon>
-							<v-icon name="sort" />
+							<v-icon name="sort" class="flip" />
 						</v-list-item-icon>
 						<v-list-item-content>
 							{{ t('sort_asc') }}
@@ -327,5 +327,9 @@ function removeField(fieldKey: string) {
 	&.active {
 		--v-icon-color: var(--foreground-normal);
 	}
+}
+
+.flip {
+	transform: scaleY(-1);
 }
 </style>
