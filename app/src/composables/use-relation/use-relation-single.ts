@@ -3,7 +3,7 @@ import { getEndpoint } from '@/utils/get-endpoint';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { ref, Ref, watch } from 'vue';
-import { RelationM2O } from './use-relation-m2o';
+import { RelationM2O } from '@/composables/use-relation';
 
 export type RelationQuerySingle = {
 	fields: string[];

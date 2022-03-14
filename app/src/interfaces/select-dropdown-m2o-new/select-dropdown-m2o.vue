@@ -36,7 +36,7 @@
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
-			:circular-field="relationInfo.relation.meta?.one_field"
+			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
 			@input="update"
 		/>
 
@@ -52,8 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationM2O } from '@/composables/use-relation-m2o';
-import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
+import { useRelationM2O, useRelationSingle, RelationQuerySingle } from '@/composables/use-relation';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { useCollection } from '@directus/shared/composables';
 import { Filter } from '@directus/shared/types';

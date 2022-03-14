@@ -1,0 +1,303 @@
+import api from '@/api';
+import { getEndpoint } from '@/utils/get-endpoint';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { cloneDeep, isEqual, merge } from 'lodash';
+import { computed, ref, Ref, watch } from 'vue';
+import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
+
+export type RelationQueryMultiple = {
+	page: number;
+	limit: number;
+	fields: string[];
+};
+
+export type DisplayItem = {
+	[key: string]: any;
+	$index?: number;
+	$type?: 'created' | 'updated' | 'deleted';
+};
+
+type Item = {
+	create: Record<string, any>[];
+	update: Record<string, any>[];
+	delete: (string | number)[];
+};
+
+export function useRelationMultiple(
+	value: Ref<Record<string, any> | any[]>,
+	previewQuery: Ref<RelationQueryMultiple>,
+	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
+	itemId: Ref<string | number | null>
+) {
+	const loading = ref(false);
+	const fetchedItems = ref<Record<string, any>[]>([]);
+	const existingItemCount = ref(0);
+	const totalItemCount = ref(0);
+
+	const _value = computed<Item>({
+		get() {
+			if (Array.isArray(value.value))
+				return {
+					create: [],
+					update: [],
+					delete: [],
+				};
+			return value.value as Item;
+		},
+		set(newValue) {
+			value.value = newValue;
+		},
+	});
+
+	const relationInfo = computed(() => {
+		if (!relation.value) return;
+
+		let targetCollection: string;
+		let targetPKField: string;
+		let reverseJunctionField: string;
+		const fields = new Set(previewQuery.value.fields);
+
+		switch (relation.value.type) {
+			case 'm2a':
+				targetCollection = relation.value.junctionCollection.collection;
+				targetPKField = relation.value.junctionPrimaryKeyField.field;
+				reverseJunctionField = relation.value.reverseJunctionField.field;
+				fields.add(relation.value.junctionPrimaryKeyField.field);
+				fields.add(relation.value.collectionField.field);
+				fields.add(relation.value.junctionField.field);
+				break;
+			case 'm2m':
+				targetCollection = relation.value.junctionCollection.collection;
+				targetPKField = relation.value.junctionPrimaryKeyField.field;
+				reverseJunctionField = relation.value.reverseJunctionField.field;
+				fields.add(relation.value.junctionPrimaryKeyField.field);
+				fields.add(`${relation.value.junctionField.field}.${relation.value.relatedPrimaryKeyField.field}`);
+				break;
+			case 'o2m':
+				targetCollection = relation.value.relatedCollection.collection;
+				targetPKField = relation.value.relatedPrimaryKeyField.field;
+				reverseJunctionField = relation.value.reverseJunctionField.field;
+				fields.add(relation.value.relatedPrimaryKeyField.field);
+				break;
+		}
+
+		return { targetCollection, targetPKField, reverseJunctionField, fields };
+	});
+
+	watch(previewQuery, updateFetchedItems, { immediate: true });
+
+	const { fetchedSelectItems, selected } = useSelected();
+
+	const displayItems = computed(() => {
+		if (!relation.value) return [];
+
+		const targetPKField =
+			relation.value.type === 'o2m'
+				? relation.value.relatedPrimaryKeyField.field
+				: relation.value.junctionPrimaryKeyField.field;
+
+		const items: DisplayItem[] = fetchedItems.value.map((item: Record<string, any>) => {
+			const editsIndex = _value.value.update.findIndex(
+				(edit) => typeof edit === 'object' && edit[targetPKField] === item[targetPKField]
+			);
+			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
+
+			if (editsIndex !== -1) {
+				return merge({ $type: 'updated', $index: editsIndex }, item, _value.value.update[editsIndex]);
+			} else if (deleteIndex !== -1) {
+				return merge({ $type: 'deleted', $index: deleteIndex }, item);
+			} else {
+				return item;
+			}
+		});
+
+		const selectedOnPage = fetchedSelectItems.value.map((item) => {
+			const edits = selected.value.find((edit) => edit[targetPKField] === item[targetPKField]);
+
+			if (!edits) return item;
+			return merge({}, item, edits);
+		});
+
+		//TODO: This has to use the proper formel
+		const createdStart = Math.min(
+			Math.max(
+				(previewQuery.value.page - 1) * previewQuery.value.limit - existingItemCount.value - selected.value.length,
+				0
+			),
+			_value.value.create.length
+		);
+		const createdEnd = Math.min(createdStart + previewQuery.value.limit, _value.value.create.length);
+
+		items.push(
+			...selectedOnPage,
+			..._value.value.create.slice(createdStart, createdEnd).map((item, index) => {
+				return {
+					...item,
+					$type: 'created',
+					$index: index,
+				} as DisplayItem;
+			})
+		);
+
+		return items;
+	});
+
+	return { create, update, remove, displayItems, totalItemCount, loading, selected, fetchedSelectItems };
+
+	function updateValue() {
+		_value.value = cloneDeep(_value.value);
+	}
+
+	function cleanItem(item: DisplayItem) {
+		if (item.$type !== undefined) delete item.$type;
+		if (item.$index !== undefined) delete item.$index;
+
+		return item;
+	}
+
+	function create(item: Record<string, any>) {
+		_value.value.create.push(item);
+		updateValue();
+	}
+
+	function update(item: DisplayItem) {
+		if (!relation.value) return;
+
+		if (item.$type === undefined || item.$index === undefined) {
+			_value.value.update.push(item);
+		} else if (item.$type === 'created') {
+			_value.value.create[item.$index] = cleanItem(item);
+		} else if (item.$type === 'updated') {
+			_value.value.update[item.$index] = cleanItem(item);
+		}
+		updateValue();
+	}
+
+	function remove(item: DisplayItem) {
+		if (!relation.value) return;
+
+		if (item.$type === undefined || item.$index === undefined) {
+			const pkField =
+				relation.value.type === 'o2m'
+					? relation.value.relatedPrimaryKeyField.field
+					: relation.value.junctionPrimaryKeyField.field;
+			_value.value.delete.push(item[pkField]);
+		} else if (item.$type === 'created') {
+			_value.value.create.splice(item.$index, 1);
+		} else if (item.$type === 'updated') {
+			_value.value.update.splice(item.$index, 1);
+		} else if (item.$type === 'deleted') {
+			_value.value.delete.splice(item.$index, 1);
+		}
+		updateValue();
+	}
+
+	async function updateFetchedItems() {
+		if (!relationInfo.value) return;
+
+		const { fields, reverseJunctionField, targetCollection } = relationInfo.value;
+
+		try {
+			loading.value = true;
+
+			await updateItemCount();
+
+			const response = await api.get(getEndpoint(targetCollection), {
+				params: {
+					fields: Array.from(fields),
+					filter: {
+						[reverseJunctionField]: itemId.value,
+					},
+					page: previewQuery.value.page,
+					limit: previewQuery.value.limit,
+				},
+			});
+
+			fetchedItems.value = response.data.data;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			loading.value = false;
+		}
+	}
+
+	async function updateItemCount() {
+		if (!relationInfo.value) return;
+
+		const { reverseJunctionField, targetCollection, targetPKField } = relationInfo.value;
+
+		const response = await api.get(getEndpoint(targetCollection), {
+			params: {
+				aggregate: {
+					count: targetPKField,
+				},
+				filter: {
+					[reverseJunctionField]: itemId.value,
+				},
+			},
+		});
+
+		existingItemCount.value = response.data.data[0].count[targetPKField];
+		totalItemCount.value = existingItemCount.value + _value.value.create.length + selected.value.length;
+	}
+
+	function useSelected() {
+		const fetchedSelectItems = ref<Record<string, any>[]>([]);
+
+		const selected = computed(() => {
+			if (!relation.value) return [];
+
+			return _value.value.update
+				.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
+				.filter((item) => {
+					switch (relation.value?.type) {
+						case 'o2m':
+							return relation.value.relation.field in item;
+						case 'm2a':
+						case 'm2m':
+							return relation.value.reverseJunctionField.field in item;
+					}
+				});
+		});
+
+		const selectedOnPage = computed(() => {
+			const start = Math.min(
+				Math.max((previewQuery.value.page - 1) * previewQuery.value.limit - existingItemCount.value, 0),
+				selected.value.length
+			);
+			const end = Math.min(start + previewQuery.value.limit, selected.value.length);
+
+			return selected.value.slice(start, end);
+		});
+
+		watch(
+			selectedOnPage,
+			(newVal, oldVal) => {
+				if (!isEqual(newVal, oldVal)) loadSelectedDisplay();
+			},
+			{ immediate: true }
+		);
+
+		return { fetchedSelectItems, selected };
+
+		async function loadSelectedDisplay() {
+			if (!relationInfo.value || selectedOnPage.value.length === 0) {
+				fetchedSelectItems.value = [];
+				return;
+			}
+
+			const { targetCollection, targetPKField } = relationInfo.value;
+			const response = await api.get(getEndpoint(targetCollection), {
+				params: {
+					filter: {
+						[targetPKField]: {
+							_in: selectedOnPage.value.map((item) => item[targetPKField]),
+						},
+					},
+				},
+			});
+
+			fetchedSelectItems.value = response.data.data;
+		}
+	}
+}
