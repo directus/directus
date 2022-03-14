@@ -69,6 +69,7 @@ create_role: Create Role
 create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
+create_translation_string: Create Translation String
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -815,6 +816,7 @@ settings_permissions: Roles & Permissions
 settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
+settings_translation_strings: Translation Strings
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 select: Select...
@@ -865,6 +867,7 @@ page_help_settings_presets_item: >-
   **Preset Detail** — A form for managing bookmarks and default collection presets.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
+page_help_settings_translation_strings_collection: '**Browse Translation Strings** — Lists all translation strings within the project.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
@@ -1505,6 +1508,11 @@ interfaces:
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
+  input-translated-string:
+    input-translated-string: Translated Strings
+    description: Select or add translation string
+    search_placeholder: Search...
+    new_translation_string: New Translation String
   boolean:
     toggle: Toggle
     description: Switch between on and off

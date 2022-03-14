@@ -1,0 +1,249 @@
+<template>
+	<div class="input-translated-string">
+		<v-menu ref="menuEl" :disabled="disabled" :close-on-content-click="false" attached>
+			<template #activator="{ toggle, active }">
+				<v-input
+					class="translation-input"
+					:model-value="localValue"
+					:placeholder="placeholder"
+					:disabled="disabled"
+					:active="active"
+					@update:model-value="localValue = $event"
+				>
+					<template v-if="hasValidKey" #input>
+						<button :disabled="disabled" @click.stop="setValue(null)">{{ value && getKeyWithoutPrefix(value) }}</button>
+					</template>
+					<template #append>
+						<v-icon
+							name="translate"
+							class="translate-icon"
+							:class="{ active }"
+							clickable
+							:disabled="disabled"
+							@click="toggle"
+						/>
+					</template>
+				</v-input>
+			</template>
+
+			<div v-if="translationKeys.length >= 10" class="search">
+				<v-input
+					class="search-input"
+					type="text"
+					:model-value="searchValue"
+					autofocus
+					:placeholder="t('interfaces.input-translated-string.search_placeholder')"
+					@update:model-value="searchValue = $event"
+				>
+					<template #append>
+						<v-icon name="search" class="search-icon" />
+					</template>
+				</v-input>
+			</div>
+
+			<v-list>
+				<v-list-item
+					v-for="key in translationKeys"
+					:key="key"
+					class="translation-key"
+					:class="{ selected: localValue && key === localValueWithoutPrefix }"
+					clickable
+					@click="selectKey(key)"
+				>
+					<v-list-item-icon>
+						<v-icon name="translate" />
+					</v-list-item-icon>
+					<v-list-item-content><v-highlight :text="key" :query="searchValue" /></v-list-item-content>
+					<v-list-item-icon class="info">
+						<v-icon name="info" @click.stop />
+					</v-list-item-icon>
+				</v-list-item>
+				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDialog">
+					<v-list-item-icon>
+						<v-icon name="add" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('interfaces.input-translated-string.new_translation_string') }}
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+
+		<TranslationStringsDialog
+			:model-value="isTranslationStringDialogOpen"
+			:translation-string="editingTranslationString"
+			@update:model-value="isTranslationStringDialogOpen = $event"
+		/>
+	</div>
+</template>
+
+<script lang="ts" setup>
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useTranslationStrings, TranslationString } from '@/modules/settings/composables/use-translation-strings';
+import TranslationStringsDialog from '@/modules/settings/routes/translation-strings/translation-strings-dialog.vue';
+
+const translationPrefix = '$t:';
+
+interface Props {
+	value?: string | null;
+	disabled?: boolean;
+	placeholder?: string | null;
+}
+
+const props = withDefaults(defineProps<Props>(), { value: () => null, disabled: false, placeholder: () => null });
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const menuEl = ref();
+const hasValidKey = ref<boolean>(false);
+const searchValue = ref<string | null>(null);
+
+const { translationStrings } = useTranslationStrings();
+
+const isTranslationStringDialogOpen = ref<boolean>(false);
+
+const editingTranslationString = ref<TranslationString | null>(null);
+
+const translationKeys = computed(() => {
+	const keys = translationStrings.value?.map((v) => v.key) ?? [];
+
+	return !searchValue.value ? keys : keys.filter((key) => key!.includes(searchValue.value!));
+});
+
+const localValue = computed<string | null>({
+	get() {
+		return props.value;
+	},
+	set(val) {
+		emit('input', val);
+	},
+});
+
+watch(
+	() => props.value,
+	(newVal) => setValue(newVal),
+	{ immediate: true }
+);
+
+const localValueWithoutPrefix = computed(() => (localValue.value ? getKeyWithoutPrefix(localValue.value) : null));
+
+function getKeyWithoutPrefix(val: string) {
+	return val.substring(translationPrefix.length);
+}
+
+function selectKey(key: string) {
+	setValue(`${translationPrefix}${key}`);
+	menuEl.value.deactivate();
+	searchValue.value = null;
+}
+
+function setValue(newValue: any) {
+	hasValidKey.value = false;
+
+	if (
+		newValue &&
+		newValue.startsWith(translationPrefix) &&
+		translationKeys.value.includes(getKeyWithoutPrefix(newValue))
+	) {
+		hasValidKey.value = true;
+	}
+
+	localValue.value = newValue;
+}
+
+function openNewTranslationStringDialog() {
+	menuEl.value.deactivate();
+	isTranslationStringDialogOpen.value = true;
+}
+</script>
+
+<style lang="scss" scoped>
+.translation-input {
+	:deep(button) {
+		margin-right: auto;
+		padding: 2px 4px 0;
+		color: var(--primary);
+		background-color: var(--primary-alt);
+		border-radius: var(--border-radius);
+		transition: var(--fast) var(--transition);
+		transition-property: background-color, color;
+		user-select: none;
+	}
+
+	:deep(button:not(:disabled):hover) {
+		color: var(--white);
+		background-color: var(--danger);
+	}
+
+	.translate-icon {
+		&:hover,
+		&.active {
+			--v-icon-color-hover: var(--primary);
+			--v-icon-color: var(--primary);
+		}
+	}
+}
+
+.search {
+	padding: 12px 8px 6px 8px;
+
+	.search-input {
+		--input-height: 48px;
+	}
+
+	.search-icon {
+		pointer-events: none;
+	}
+}
+
+.translation-key {
+	transition: color var(--fast) var(--transition);
+
+	.info {
+		transition: opacity var(--fast) var(--transition);
+		opacity: 0;
+	}
+
+	&:hover .info {
+		opacity: 1;
+	}
+
+	:deep(mark) {
+		flex-basis: auto;
+		flex-grow: 0;
+		flex-shrink: 1;
+		color: var(--primary);
+	}
+
+	&.selected {
+		--v-list-item-color-active: var(--foreground-inverted);
+		--v-list-item-background-color-active: var(--primary);
+		--v-list-item-color-hover: var(--foreground-inverted);
+		--v-list-item-background-color-hover: var(--primary);
+
+		background-color: var(--primary);
+		color: var(--foreground-inverted);
+
+		.v-list-item-icon {
+			--v-icon-color: var(--foreground-inverted);
+		}
+
+		.info {
+			opacity: 1;
+		}
+	}
+}
+
+.new-translation-string {
+	--v-list-item-color-hover: var(--primary-125);
+
+	color: var(--primary);
+
+	.v-list-item-icon {
+		--v-icon-color: var(--primary);
+	}
+}
+</style>

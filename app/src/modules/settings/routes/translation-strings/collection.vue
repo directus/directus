@@ -1,0 +1,131 @@
+<template>
+	<private-view :title="t('settings_translation_strings')">
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded disabled icon secondary>
+				<v-icon name="translate" />
+			</v-button>
+		</template>
+
+		<template #actions>
+			<v-button v-tooltip.bottom="t('create_translation_string')" rounded icon @click="openTranslationStringDialog">
+				<v-icon name="add" />
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_settings_translation_strings_collection')" class="page-description" />
+			</sidebar-detail>
+		</template>
+
+		<div class="translation-strings">
+			<v-table
+				:headers="tableHeaders"
+				fixed-header
+				item-key="key"
+				:items="tableItems"
+				:loading="loading"
+				@click:row="openTranslationStringDialog"
+			>
+				<template #[`item.key`]="{ item }">
+					<span class="key">
+						{{ item.key }}
+					</span>
+				</template>
+				<template #[`item.translations`]="{ item }">
+					<span v-if="item.translations" class="translations">{{ item.translations }}</span>
+					<ValueNull v-else />
+				</template>
+			</v-table>
+		</div>
+
+		<TranslationStringsDialog
+			:model-value="isTranslationStringDialogOpen"
+			:translation-string="editingTranslationString"
+			@update:model-value="isTranslationStringDialogOpen = $event"
+		/>
+	</private-view>
+</template>
+
+<script lang="ts" setup>
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Header as TableHeader } from '@/components/v-table/types';
+import SettingsNavigation from '../../components/navigation.vue';
+import { TranslationString, useTranslationStrings } from '../../composables/use-translation-strings';
+import TranslationStringsDialog from './translation-strings-dialog.vue';
+import ValueNull from '@/views/private/components/value-null';
+
+const { t } = useI18n();
+
+const tableHeaders: TableHeader[] = [
+	{
+		text: t('key'),
+		value: 'key',
+		sortable: false,
+		width: 250,
+		align: 'left',
+	},
+	{
+		text: t('translations'),
+		value: 'translations',
+		sortable: false,
+		width: 800,
+		align: 'left',
+	},
+];
+
+const isTranslationStringDialogOpen = ref<boolean>(false);
+
+const editingTranslationString = ref<TranslationString | null>(null);
+
+const { loading, translationStrings } = useTranslationStrings();
+
+const tableItems = computed(() => (translationStrings.value ? translationStrings.value : []));
+
+function openTranslationStringDialog({ item }: { item?: TranslationString }) {
+	editingTranslationString.value = item ? item : null;
+
+	isTranslationStringDialogOpen.value = true;
+}
+</script>
+
+<style lang="scss" scoped>
+.header-icon {
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
+}
+
+.translation-strings {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding-bottom);
+}
+
+.search-input {
+	--input-height: 44px;
+
+	:deep(.input) {
+		border-radius: 22px !important;
+	}
+
+	&.active {
+		width: 300px;
+		border-color: var(--border-normal);
+
+		.icon-empty {
+			display: block;
+		}
+	}
+}
+
+.key {
+	font-family: var(--family-monospace);
+}
+</style>
