@@ -41,11 +41,12 @@
 					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle" @click="toggle">
-								<span class="name">
+								<div class="name">
+									<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
 									<slot :name="`header.${header.value}`" :header="header">
 										{{ header.text }}
 									</slot>
-								</span>
+								</div>
 
 								<v-icon
 									v-if="hasHeaderContextMenuSlot"
@@ -60,11 +61,12 @@
 					</v-menu>
 
 					<div v-else class="content reorder-handle" @click="changeSort(header)">
-						<span class="name">
+						<div class="name">
+							<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
 							<slot :name="`header.${header.value}`" :header="header">
 								{{ header.text }}
 							</slot>
-						</span>
+						</div>
 
 						<v-icon
 							v-if="header.sortable"
@@ -427,5 +429,15 @@ function toggleManualSort() {
 
 :deep(.sortable-fallback) {
 	display: none;
+}
+
+.description-dot {
+	width: 8px;
+	height: 8px;
+	background-color: var(--foreground-subdued);
+	display: inline-block;
+	border-radius: 50%;
+	margin-right: 8px;
+	vertical-align: middle;
 }
 </style>

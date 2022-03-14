@@ -210,25 +210,42 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
-					return activeFields.value.map((field) => ({
-						text: field.name,
-						value: field.key,
-						width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
-						align: layoutOptions.value?.align?.[field.key] || 'left',
-						field: {
-							display: field.meta?.display || getDefaultDisplayForType(field.type),
-							displayOptions: field.meta?.display_options,
-							interface: field.meta?.interface,
-							interfaceOptions: field.meta?.options,
-							type: field.type,
-							field: field.field,
-							collection: field.collection,
-						},
-						sortable:
-							['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
-								field.type
-							) === false,
-					}));
+					return activeFields.value.map((field) => {
+						let description: string | null = null;
+
+						const fieldParts = field.key.split('.');
+
+						if (fieldParts.length > 1) {
+							const fieldNames = fieldParts.map((fieldKey, index) => {
+								const pathPrefix = fieldParts.slice(0, index);
+								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
+								return field?.name ?? fieldKey;
+							});
+
+							description = fieldNames.join(' -> ');
+						}
+
+						return {
+							text: field.name,
+							value: field.key,
+							description,
+							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
+							align: layoutOptions.value?.align?.[field.key] || 'left',
+							field: {
+								display: field.meta?.display || getDefaultDisplayForType(field.type),
+								displayOptions: field.meta?.display_options,
+								interface: field.meta?.interface,
+								interfaceOptions: field.meta?.options,
+								type: field.type,
+								field: field.field,
+								collection: field.collection,
+							},
+							sortable:
+								['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
+									field.type
+								) === false,
+						} as HeaderRaw;
+					});
 				},
 				set(val) {
 					const widths = {} as { [field: string]: number };
