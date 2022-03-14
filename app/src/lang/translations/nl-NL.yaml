@@ -1229,7 +1229,6 @@ layouts:
     subtitle: Ondertitel
   tabular:
     tabular: Tabel
-    fields: Velden
     spacing: Ruimte
     comfortable: Comfortabel
     compact: Compact
