@@ -1221,6 +1221,7 @@ file: File
 file_library: Libreria File
 forgot_password: Ha dimenticato la password
 hidden: Nascosto
+hidden_in_group: Nascosto in {group}
 icon: Icona
 info: Informazioni
 normal: Normale
@@ -1263,6 +1264,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
