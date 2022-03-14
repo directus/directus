@@ -1221,7 +1221,6 @@ layouts:
     subtitle: Alampealkiri
   tabular:
     tabular: Tabel
-    fields: Väljad
     spacing: Vahed
     comfortable: Mugav
     compact: Kompaktne
