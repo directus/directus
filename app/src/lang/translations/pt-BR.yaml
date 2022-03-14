@@ -1594,7 +1594,6 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabela
-    fields: Campos
     spacing: Espaçamento
     comfortable: Confortável
     compact: Compacto
