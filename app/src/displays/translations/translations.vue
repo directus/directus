@@ -137,7 +137,7 @@ export default defineComponent({
 }
 
 .display-translations {
-	display: flex;
+	display: inline-block;
 
 	.icon {
 		color: var(--foreground-subdued);
