@@ -1,76 +1,97 @@
 <template>
-	<thead class="table-header" :class="{ dragging }">
-		<tr :class="{ fixed }">
-			<th
-				v-if="showManualSort"
-				class="manual cell"
-				:class="{ 'sorted-manually': sort.by === manualSortKey }"
-				scope="col"
-				@click="toggleManualSort"
-			>
-				<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
-			</th>
+	<thead class="table-header" :class="{ resizing, reordering }">
+		<draggable
+			v-model="headersWritable"
+			:force-fallback="true"
+			:class="{ fixed }"
+			item-key="value"
+			tag="tr"
+			:disabled="!allowHeaderReorder"
+			:set-data="hideDragImage"
+			handle=".reorder-handle"
+			animation="150"
+			ghost-class="header-order-ghost"
+			swap-threshold="0.5"
+			@start="$emit('update:reordering', true)"
+			@end="$emit('update:reordering', false)"
+		>
+			<template #header>
+				<th
+					v-if="showManualSort"
+					class="manual cell"
+					:class="{ 'sorted-manually': sort.by === manualSortKey }"
+					scope="col"
+					@click="toggleManualSort"
+				>
+					<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
+				</th>
 
-			<th v-if="showSelect !== 'none'" class="select cell" scope="col">
-				<v-checkbox
-					v-if="showSelect === 'multiple'"
-					:model-value="allItemsSelected"
-					:indeterminate="someItemsSelected"
-					@update:model-value="toggleSelectAll"
-				/>
-			</th>
-
-			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">
-				<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
-					<template #activator="{ toggle }">
-						<div class="content" @click="toggle">
-							<span v-show="header.width === null || header.width > 90">
-								<slot :name="`header.${header.value}`" :header="header">
-									{{ header.text }}
-								</slot>
-							</span>
-
-							<v-icon
-								v-if="hasHeaderContextMenuSlot"
-								:name="sort.by === header.value ? 'sort' : 'arrow_drop_down'"
-								class="action-icon"
-								small
-							/>
-						</div>
-					</template>
-
-					<slot name="header-context-menu" v-bind="{ header }" />
-				</v-menu>
-
-				<div v-else class="content" @click="changeSort(header)">
-					<span v-show="header.width === null || header.width > 90">
-						<slot :name="`header.${header.value}`" :header="header">
-							{{ header.text }}
-						</slot>
-					</span>
-
-					<v-icon
-						v-if="header.sortable"
-						v-tooltip.top="t(getTooltipForSortIcon(header))"
-						name="sort"
-						class="action-icon"
-						small
+				<th v-if="showSelect !== 'none'" class="select cell" scope="col">
+					<v-checkbox
+						v-if="showSelect === 'multiple'"
+						:model-value="allItemsSelected"
+						:indeterminate="someItemsSelected"
+						@update:model-value="toggleSelectAll"
 					/>
-				</div>
-				<span
-					v-if="showResize"
-					class="resize-handle"
-					@click.stop
-					@pointerdown="onResizeHandleMouseDown(header, $event)"
-				/>
-			</th>
+				</th>
+			</template>
 
-			<th class="spacer cell" scope="col" />
-			<td v-if="$slots['header-append']" class="manual append cell" @click.stop>
-				<slot name="header-append" />
-			</td>
-			<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
-		</tr>
+			<template #item="{ element: header }">
+				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ width: header.width + 'px' }">
+					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
+						<template #activator="{ toggle }">
+							<div class="content reorder-handle" @click="toggle">
+								<span class="name">
+									<slot :name="`header.${header.value}`" :header="header">
+										{{ header.text }}
+									</slot>
+								</span>
+
+								<v-icon
+									v-if="hasHeaderContextMenuSlot"
+									:name="sort.by === header.value ? 'sort' : 'arrow_drop_down'"
+									class="action-icon"
+									small
+								/>
+							</div>
+						</template>
+
+						<slot name="header-context-menu" v-bind="{ header }" />
+					</v-menu>
+
+					<div v-else class="content reorder-handle" @click="changeSort(header)">
+						<span class="name">
+							<slot :name="`header.${header.value}`" :header="header">
+								{{ header.text }}
+							</slot>
+						</span>
+
+						<v-icon
+							v-if="header.sortable"
+							v-tooltip.top="t(getTooltipForSortIcon(header))"
+							name="sort"
+							class="action-icon"
+							small
+						/>
+					</div>
+					<span
+						v-if="showResize"
+						class="resize-handle"
+						@click.stop
+						@pointerdown="onResizeHandleMouseDown(header, $event)"
+					/>
+				</th>
+			</template>
+
+			<template #footer>
+				<th class="spacer cell" scope="col" />
+				<td v-if="$slots['header-append']" class="manual append cell" @click.stop>
+					<slot name="header-append" />
+				</td>
+				<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
+			</template>
+		</draggable>
+		<!-- </tr> -->
 	</thead>
 </template>
 
@@ -81,6 +102,9 @@ import { ShowSelect } from '@directus/shared/types';
 import useEventListener from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
+import Draggable from 'vuedraggable';
+import hideDragImage from '@/utils/hide-drag-image';
+import { useSync } from '@directus/shared/composables';
 
 interface Props {
 	headers: Header[];
@@ -88,6 +112,8 @@ interface Props {
 	showSelect?: ShowSelect;
 	showResize?: boolean;
 	showManualSort?: boolean;
+	allowHeaderReorder: boolean;
+	reordering: boolean;
 	someItemsSelected?: boolean;
 	allItemsSelected?: boolean;
 	fixed?: boolean;
@@ -108,13 +134,13 @@ const props = withDefaults(defineProps<Props>(), {
 	manualSortKey: undefined,
 });
 
-const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers']);
+const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers', 'update:reordering']);
 const { t } = useI18n();
 
-const dragging = ref<boolean>(false);
-const dragStartX = ref<number>(0);
-const dragStartWidth = ref<number>(0);
-const dragHeader = ref<Header | null>(null);
+const resizing = ref<boolean>(false);
+const resizeStartX = ref<number>(0);
+const resizeStartWidth = ref<number>(0);
+const resizeHeader = ref<Header | null>(null);
 
 const slots = useSlots();
 
@@ -122,6 +148,8 @@ const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !==
 
 useEventListener(window, 'pointermove', throttle(onMouseMove, 40));
 useEventListener(window, 'pointerup', onMouseUp);
+
+const headersWritable = useSync(props, 'headers', emit);
 
 function getClassesForHeader(header: Header) {
 	const classes: string[] = [];
@@ -132,6 +160,10 @@ function getClassesForHeader(header: Header) {
 
 	if (header.sortable || hasHeaderContextMenuSlot.value) {
 		classes.push('actionable');
+	}
+
+	if (header.width && header.width < 90) {
+		classes.push('small');
 	}
 
 	if (props.sort.by === header.value) {
@@ -151,7 +183,7 @@ function getTooltipForSortIcon(header: Header) {
 
 function changeSort(header: Header) {
 	if (header.sortable === false) return;
-	if (dragging.value === true) return;
+	if (resizing.value === true) return;
 
 	if (header.value === props.sort.by) {
 		if (props.mustSort) {
@@ -188,18 +220,18 @@ function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
 	const target = event.target as HTMLDivElement;
 	const parent = target.parentElement as HTMLTableHeaderCellElement;
 
-	dragging.value = true;
-	dragStartX.value = event.pageX;
-	dragStartWidth.value = parent.offsetWidth;
-	dragHeader.value = header;
+	resizing.value = true;
+	resizeStartX.value = event.pageX;
+	resizeStartWidth.value = parent.offsetWidth;
+	resizeHeader.value = header;
 }
 
 function onMouseMove(event: PointerEvent) {
-	if (dragging.value === true) {
-		const newWidth = dragStartWidth.value + (event.pageX - dragStartX.value);
+	if (resizing.value === true) {
+		const newWidth = resizeStartWidth.value + (event.pageX - resizeStartX.value);
 		const currentHeaders = clone(props.headers);
 		const newHeaders = currentHeaders.map((existing: Header) => {
-			if (existing.value === dragHeader.value?.value) {
+			if (existing.value === resizeHeader.value?.value) {
 				return {
 					...existing,
 					width: Math.max(32, newWidth),
@@ -213,8 +245,8 @@ function onMouseMove(event: PointerEvent) {
 }
 
 function onMouseUp() {
-	if (dragging.value === true) {
-		dragging.value = false;
+	if (resizing.value === true) {
+		resizing.value = false;
 	}
 }
 
@@ -263,6 +295,25 @@ function toggleManualSort() {
 				text-overflow: ellipsis;
 			}
 		}
+
+		&.small {
+			padding: 0;
+			.content {
+				justify-content: center;
+
+				.name {
+					display: none;
+				}
+
+				.action-icon {
+					margin: 0;
+				}
+			}
+		}
+	}
+
+	&.reordering {
+		cursor: grabbing;
 	}
 
 	.actionable {
@@ -295,7 +346,7 @@ function toggleManualSort() {
 		}
 	}
 
-	:not(&.dragging) .sortable {
+	:not(&.resizing) .sortable {
 		cursor: pointer;
 	}
 
@@ -336,7 +387,7 @@ function toggleManualSort() {
 		&::after {
 			position: relative;
 			top: 20%;
-			left: 2px;
+			left: 3px;
 			display: block;
 			width: var(--border-width);
 			height: 60%;
@@ -353,5 +404,28 @@ function toggleManualSort() {
 
 .spacer.cell {
 	padding: 0;
+}
+
+:deep(.header-order-ghost) {
+	&::after,
+	&::before {
+		width: 2px;
+		content: '';
+		display: block;
+		position: absolute;
+		right: 0;
+		top: 20%;
+		height: 60%;
+		background-color: var(--primary);
+	}
+
+	&::before {
+		right: auto;
+		left: 0;
+	}
+}
+
+:deep(.sortable-fallback) {
+	display: none;
 }
 </style>

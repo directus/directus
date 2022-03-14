@@ -18,8 +18,10 @@
 			:item-key="primaryKeyField?.field"
 			:show-manual-sort="sortField !== null"
 			:manual-sort-key="sortField"
+			allow-header-reorder
 			selection-use-keys
 			@click:row="onRowClick"
+			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
@@ -39,7 +41,7 @@
 				<v-list>
 					<v-list-item
 						:disabled="!header.sortable"
-						:active="tableSort.by === header.value && tableSort.desc === false"
+						:active="tableSort?.by === header.value && tableSort?.desc === false"
 						clickable
 						@click="onSortChange?.({ by: header.value, desc: false })"
 					>
@@ -52,7 +54,7 @@
 					</v-list-item>
 
 					<v-list-item
-						:active="tableSort.by === header.value && tableSort.desc === true"
+						:active="tableSort?.by === header.value && tableSort?.desc === true"
 						:disabled="!header.sortable"
 						clickable
 						@click="onSortChange?.({ by: header.value, desc: true })"
@@ -190,7 +192,7 @@ interface Props {
 	loading: boolean;
 	error?: any;
 	totalPages: number;
-	tableSort: { by: string; desc: boolean };
+	tableSort?: { by: string; desc: boolean } | null;
 	onRowClick: (item: Item) => void;
 	tableRowHeight: number;
 	page: number;
@@ -215,6 +217,7 @@ const props = withDefaults(defineProps<Props>(), {
 	showSelect: 'none',
 	error: null,
 	itemCount: undefined,
+	tableSort: undefined,
 	primaryKeyField: undefined,
 	info: undefined,
 	sortField: undefined,

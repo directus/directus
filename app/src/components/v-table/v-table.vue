@@ -4,6 +4,7 @@
 			<table-header
 				v-model:headers="internalHeaders"
 				v-model:sort="internalSort"
+				v-model:reordering="reordering"
 				:show-select="showSelect"
 				:show-resize="showResize"
 				:some-items-selected="someItemsSelected"
@@ -13,6 +14,7 @@
 				:must-sort="mustSort"
 				:has-item-append-slot="hasItemAppendSlot"
 				:manual-sort-key="manualSortKey"
+				:allow-header-reorder="allowHeaderReorder"
 				@toggle-select-all="onToggleSelectAll"
 			>
 				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
@@ -60,7 +62,7 @@
 						:show-select="!disabled && showSelect"
 						:show-manual-sort="!disabled && showManualSort"
 						:is-selected="getSelectedState(element)"
-						:subdued="loading"
+						:subdued="loading || reordering"
 						:sorted-manually="internalSort.by === manualSortKey"
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
@@ -116,6 +118,7 @@ interface Props {
 	showResize?: boolean;
 	showManualSort?: boolean;
 	manualSortKey?: string;
+	allowHeaderReorder?: boolean;
 	modelValue?: any[];
 	fixedHeader?: boolean;
 	loading?: boolean;
@@ -137,6 +140,7 @@ const props = withDefaults(defineProps<Props>(), {
 	showResize: false,
 	showManualSort: false,
 	manualSortKey: undefined,
+	allowHeaderReorder: false,
 	modelValue: () => [],
 	fixedHeader: false,
 	loading: false,
@@ -183,17 +187,17 @@ const internalHeaders = computed({
 			// We'll return the original headers with the updated values, so we don't stage
 			// all the default values
 			newHeaders.map((header) => {
-				const keysThatArentDefault: string[] = [];
+				const keysThatAreNotAtDefaultValue: string[] = [];
 
 				forEach(header, (value, key: string) => {
 					const objKey = key as keyof Header;
 
 					if (value !== HeaderDefaults[objKey]) {
-						keysThatArentDefault.push(key);
+						keysThatAreNotAtDefaultValue.push(key);
 					}
 				});
 
-				return pick(header, keysThatArentDefault);
+				return pick(header, keysThatAreNotAtDefaultValue);
 			})
 		);
 	},
@@ -213,6 +217,8 @@ const internalSort = computed({
 		internalLocalSort.value = newSort;
 	},
 });
+
+const reordering = ref<boolean>(false);
 
 const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
 const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
@@ -253,20 +259,27 @@ const someItemsSelected = computed<boolean>(() => {
 });
 
 const columnStyle = computed<string>(() => {
-	let gridTemplateColumns = internalHeaders.value
-		.map((header) => {
-			return header.width ? `${header.width}px` : '160px';
-		})
-		.reduce((acc, val) => (acc += ' ' + val), '');
+	return {
+		header: generate('auto'),
+		rows: generate(),
+	};
 
-	if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
-	if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
+	function generate(useVal?: 'auto') {
+		let gridTemplateColumns = internalHeaders.value
+			.map((header) => {
+				return header.width ? useVal ?? `${header.width}px` : '160px';
+			})
+			.reduce((acc, val) => (acc += ' ' + val), '');
 
-	gridTemplateColumns = gridTemplateColumns + ' 1fr';
+		if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
+		if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
 
-	if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' auto';
+		gridTemplateColumns = gridTemplateColumns + ' 1fr';
 
-	return gridTemplateColumns;
+		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' auto';
+
+		return gridTemplateColumns;
+	}
 });
 
 function onItemSelected(event: ItemSelectEvent) {
@@ -352,15 +365,17 @@ table {
 	min-width: 100%;
 	border-collapse: collapse;
 	border-spacing: 0;
-
-	--grid-columns: v-bind(columnStyle);
 }
 
 table tbody {
+	--grid-columns: v-bind(columnStyle.rows);
+
 	display: contents;
 }
 
 table :deep(thead) {
+	--grid-columns: v-bind(columnStyle.header);
+
 	display: contents;
 }
 

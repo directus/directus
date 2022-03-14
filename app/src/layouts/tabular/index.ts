@@ -241,6 +241,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					localWidths.value = widths;
 
 					saveWidthsToLayoutOptions();
+
+					fields.value = val.map((header) => header.value);
 				},
 			});
 
