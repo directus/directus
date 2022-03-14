@@ -1504,7 +1504,6 @@ layouts:
     subtitle: Underrubrik
   tabular:
     tabular: Tabell
-    fields: Fält
     spacing: Mellanrum
     comfortable: Bekväm
     compact: Kompakt
