@@ -1453,7 +1453,6 @@ layouts:
     subtitle: Undertitel
   tabular:
     tabular: Tabel
-    fields: Felter
     spacing: Afstand
     comfortable: Behageligt
     compact: Kompakt
