@@ -1651,7 +1651,6 @@ layouts:
     subtitle: Subtitle
   tabular:
     tabular: Table
-    fields: Fields
     spacing: Spacing
     comfortable: Comfortable
     compact: Compact

@@ -1662,7 +1662,6 @@ layouts:
     subtitle: Untertitel
   tabular:
     tabular: Tabelle
-    fields: Felder
     spacing: Abstand
     comfortable: Groß
     compact: Kompakt

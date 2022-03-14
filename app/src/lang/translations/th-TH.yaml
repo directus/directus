@@ -1356,7 +1356,6 @@ layouts:
     subtitle: คำบรรยาย
   tabular:
     tabular: ตาราง
-    fields: ฟิลด์
     spacing: ระยะห่าง
     comfortable: สบายตา
     compact: กระชับ

@@ -1539,7 +1539,6 @@ layouts:
     subtitle: Alaotsikko
   tabular:
     tabular: Taulukko
-    fields: Kentät
     spacing: Väli
     comfortable: Mukava
     compact: Kompakti

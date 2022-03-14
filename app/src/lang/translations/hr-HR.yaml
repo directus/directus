@@ -1664,7 +1664,6 @@ layouts:
     subtitle: Podnaslov
   tabular:
     tabular: Tablica
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno

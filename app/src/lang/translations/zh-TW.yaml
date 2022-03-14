@@ -835,7 +835,6 @@ layouts:
     subtitle: 副標題
   tabular:
     tabular: 表格
-    fields: 欄位
     spacing: 間距
     comfortable: 舒適
     compact: 精簡

@@ -1652,7 +1652,6 @@ layouts:
     subtitle: 副标题
   tabular:
     tabular: 表
-    fields: 字段
     spacing: 间距
     comfortable: 宽松
     compact: 紧凑
