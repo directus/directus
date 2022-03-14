@@ -21,17 +21,39 @@
 			</th>
 
 			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">
-				<div class="content" @click="changeSort(header)">
+				<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
+					<template #activator="{ toggle }">
+						<div class="content" @click="toggle">
+							<span v-show="header.width === null || header.width > 90">
+								<slot :name="`header.${header.value}`" :header="header">
+									{{ header.text }}
+								</slot>
+							</span>
+
+							<v-icon
+								v-if="hasHeaderContextMenuSlot"
+								:name="sort.by === header.value ? 'sort' : 'arrow_drop_down'"
+								class="action-icon"
+								small
+							/>
+						</div>
+					</template>
+
+					<slot name="header-context-menu" v-bind="{ header }" />
+				</v-menu>
+
+				<div v-else class="content" @click="changeSort(header)">
 					<span v-show="header.width === null || header.width > 90">
 						<slot :name="`header.${header.value}`" :header="header">
 							{{ header.text }}
 						</slot>
 					</span>
+
 					<v-icon
 						v-if="header.sortable"
 						v-tooltip.top="t(getTooltipForSortIcon(header))"
 						name="sort"
-						class="sort-icon"
+						class="action-icon"
 						small
 					/>
 				</div>
@@ -54,7 +76,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
 import useEventListener from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
@@ -94,6 +116,10 @@ const dragStartX = ref<number>(0);
 const dragStartWidth = ref<number>(0);
 const dragHeader = ref<Header | null>(null);
 
+const slots = useSlots();
+
+const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
+
 useEventListener(window, 'pointermove', throttle(onMouseMove, 40));
 useEventListener(window, 'pointerup', onMouseUp);
 
@@ -104,8 +130,8 @@ function getClassesForHeader(header: Header) {
 		classes.push(`align-${header.align}`);
 	}
 
-	if (header.sortable) {
-		classes.push('sortable');
+	if (header.sortable || hasHeaderContextMenuSlot.value) {
+		classes.push('actionable');
 	}
 
 	if (props.sort.by === header.value) {
@@ -237,32 +263,45 @@ function toggleManualSort() {
 				text-overflow: ellipsis;
 			}
 		}
+
+		&.align-left .content {
+			justify-content: start;
+		}
+
+		&.align-center .content {
+			justify-content: center;
+		}
+
+		&.align-right .content {
+			justify-content: end;
+		}
 	}
 
-	.sortable {
+	.actionable {
 		cursor: pointer;
+		position: relative;
 
-		.sort-icon {
+		.action-icon {
 			margin-left: 4px;
 			color: var(--foreground-subdued);
-			transform: scaleY(-1);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 		}
 
-		&:hover .sort-icon {
+		&:hover .action-icon {
 			opacity: 1;
 		}
 
 		&.sort-asc,
 		&.sort-desc {
-			.sort-icon {
+			.action-icon {
 				opacity: 1;
+				transform: scaleY(-1);
 			}
 		}
 
 		&.sort-desc {
-			.sort-icon {
+			.action-icon {
 				transform: scaleY(1);
 			}
 		}

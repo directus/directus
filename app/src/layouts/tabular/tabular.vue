@@ -20,7 +20,6 @@
 			:manual-sort-key="sortField"
 			selection-use-keys
 			@click:row="onRowClick"
-			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
@@ -34,6 +33,76 @@
 					:collection="collection"
 					:field="header.field.field"
 				/>
+			</template>
+
+			<template #header-context-menu="{ header }">
+				<v-list>
+					<v-list-item
+						:disabled="!header.sortable"
+						:active="tableSort.by === header.value && tableSort.desc === false"
+						clickable
+						@click="onSortChange?.({ by: header.value, desc: false })"
+					>
+						<v-list-item-icon>
+							<v-icon name="sort" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('sort_asc') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item
+						:active="tableSort.by === header.value && tableSort.desc === true"
+						:disabled="!header.sortable"
+						clickable
+						@click="onSortChange?.({ by: header.value, desc: true })"
+					>
+						<v-list-item-icon>
+							<v-icon name="sort" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('sort_desc') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-divider />
+
+					<v-list-item :active="header.align === 'left'" clickable @click="onAlignChange?.(header.value, 'left')">
+						<v-list-item-icon>
+							<v-icon name="format_align_left" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('left_align') }}
+						</v-list-item-content>
+					</v-list-item>
+					<v-list-item :active="header.align === 'center'" clickable @click="onAlignChange?.(header.value, 'center')">
+						<v-list-item-icon>
+							<v-icon name="format_align_center" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('center_align') }}
+						</v-list-item-content>
+					</v-list-item>
+					<v-list-item :active="header.align === 'right'" clickable @click="onAlignChange?.(header.value, 'right')">
+						<v-list-item-icon>
+							<v-icon name="format_align_right" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('right_align') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-divider />
+
+					<v-list-item :active="header.align === 'right'" clickable @click="removeField(header.value)">
+						<v-list-item-icon>
+							<v-icon name="remove" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('hide_field') }}
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
 			</template>
 
 			<template #header-append>
@@ -123,7 +192,6 @@ interface Props {
 	totalPages: number;
 	tableSort: { by: string; desc: boolean };
 	onRowClick: (item: Item) => void;
-	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	tableRowHeight: number;
 	page: number;
 	toPage: (newPage: number) => void;
@@ -138,6 +206,8 @@ interface Props {
 	selectAll: () => void;
 	filterUser?: Filter;
 	search?: string;
+	onSortChange?: (newSort: { by: string; desc: boolean }) => void;
+	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -150,6 +220,8 @@ const props = withDefaults(defineProps<Props>(), {
 	sortField: undefined,
 	filterUser: undefined,
 	search: undefined,
+	onSortChange: () => undefined,
+	onAlignChange: () => undefined,
 });
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
@@ -181,6 +253,10 @@ const fieldsWritable = useSync(props, 'fields', emit);
 
 function addField(fieldKey: string) {
 	fieldsWritable.value = [...fieldsWritable.value, fieldKey];
+}
+
+function removeField(fieldKey: string) {
+	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
 }
 </script>
 

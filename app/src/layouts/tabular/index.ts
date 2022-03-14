@@ -56,8 +56,16 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		);
 
-		const { tableSort, tableHeaders, tableRowHeight, onRowClick, onSortChange, activeFields, tableSpacing } =
-			useTable();
+		const {
+			tableSort,
+			tableHeaders,
+			tableRowHeight,
+			onRowClick,
+			onSortChange,
+			onAlignChange,
+			activeFields,
+			tableSpacing,
+		} = useTable();
 
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
@@ -96,6 +104,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			tableSort,
 			onRowClick,
 			onSortChange,
+			onAlignChange,
 			tableRowHeight,
 			page,
 			toPage,
@@ -182,7 +191,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 			);
 
-			const saveWidthsTolayoutOptions = debounce(() => {
+			const saveWidthsToLayoutOptions = debounce(() => {
 				layoutOptions.value = Object.assign({}, layoutOptions.value, {
 					widths: localWidths.value,
 				});
@@ -205,6 +214,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						text: field.name,
 						value: field.field,
 						width: localWidths.value[field.field] || layoutOptions.value?.widths?.[field.field] || null,
+						align: layoutOptions.value?.align?.[field.field] || 'left',
 						field: {
 							display: field.meta?.display || getDefaultDisplayForType(field.type),
 							displayOptions: field.meta?.display_options,
@@ -230,7 +240,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 					localWidths.value = widths;
 
-					saveWidthsTolayoutOptions();
+					saveWidthsToLayoutOptions();
 				},
 			});
 
@@ -255,6 +265,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				tableRowHeight,
 				onRowClick,
 				onSortChange,
+				onAlignChange,
 				activeFields,
 				getFieldDisplay,
 			};
@@ -288,6 +299,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					sortString = '-' + sortString;
 				}
 				sort.value = [sortString];
+			}
+
+			function onAlignChange(field: string, align: 'left' | 'center' | 'right') {
+				layoutOptions.value = Object.assign({}, layoutOptions.value, {
+					align: {
+						...(layoutOptions.value?.align ?? {}),
+						[field]: align,
+					},
+				});
 			}
 
 			function getFieldDisplay(fieldKey: string) {

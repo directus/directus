@@ -1,11 +1,6 @@
 <template>
 	<div class="v-table" :class="{ loading, inline, disabled }">
-		<table
-			:summary="internalHeaders.map((header) => header.text).join(', ')"
-			:style="{
-				'--grid-columns': columnStyle,
-			}"
-		>
+		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
 			<table-header
 				v-model:headers="internalHeaders"
 				v-model:sort="internalSort"
@@ -26,6 +21,10 @@
 
 				<template v-if="hasHeaderAppendSlot" #header-append>
 					<slot name="header-append" />
+				</template>
+
+				<template v-if="hasHeaderContextMenuSlot" #header-context-menu="{ header }">
+					<slot name="header-context-menu" v-bind="{ header }" />
 				</template>
 			</table-header>
 			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
@@ -216,6 +215,7 @@ const internalSort = computed({
 });
 
 const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
+const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
 const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
 
 const fullColSpan = computed<string>(() => {
@@ -352,6 +352,8 @@ table {
 	min-width: 100%;
 	border-collapse: collapse;
 	border-spacing: 0;
+
+	--grid-columns: v-bind(columnStyle);
 }
 
 table tbody {
@@ -376,16 +378,19 @@ table :deep(.loading-indicator) {
 table :deep(td.align-left),
 table :deep(th.align-left) {
 	text-align: left;
+	justify-content: start;
 }
 
 table :deep(td.align-center),
 table :deep(th.align-center) {
 	text-align: center;
+	justify-content: center;
 }
 
 table :deep(td.align-right),
 table :deep(th.align-right) {
 	text-align: right;
+	justify-content: end;
 }
 
 table :deep(.loading-indicator) {
