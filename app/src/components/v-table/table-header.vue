@@ -41,12 +41,12 @@
 					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle" @click="toggle">
-								<div class="name">
+								<span class="name">
 									<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
 									<slot :name="`header.${header.value}`" :header="header">
 										{{ header.text }}
 									</slot>
-								</div>
+								</span>
 
 								<v-icon
 									v-if="hasHeaderContextMenuSlot"
@@ -61,12 +61,12 @@
 					</v-menu>
 
 					<div v-else class="content reorder-handle" @click="changeSort(header)">
-						<div class="name">
+						<span class="name">
 							<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
 							<slot :name="`header.${header.value}`" :header="header">
 								{{ header.text }}
 							</slot>
-						</div>
+						</span>
 
 						<v-icon
 							v-if="header.sortable"
