@@ -23,7 +23,6 @@ import VDivider from './v-divider';
 import VDrawer from './v-drawer/';
 import VError from './v-error';
 import VFancySelect from './v-fancy-select';
-import VFieldSelect from './v-field-select';
 import VFieldTemplate from './v-field-template';
 import VForm from './v-form';
 import VHover from './v-hover/';
@@ -72,7 +71,6 @@ export function registerComponents(app: App): void {
 	app.component('VError', VError);
 	app.component('VFancySelect', VFancySelect);
 	app.component('VFieldTemplate', VFieldTemplate);
-	app.component('VFieldSelect', VFieldSelect);
 	app.component('VForm', VForm);
 	app.component('VHover', VHover);
 	app.component('VHighlight', VHighlight);
