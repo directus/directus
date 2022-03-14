@@ -115,6 +115,7 @@ recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
+validation_errors_notice: 'I seguenti campi contengono valori non validi:'
 validationError:
   eq: Il valore deve essere {valid}
   neq: Il valore non può essere {invalid}
@@ -671,6 +672,7 @@ no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risult
 clear_filters: Pulisci filtri
 saves_automatically: Salvataggio automatico
 role: Ruolo
+edit_role: Modifica ruolo
 rule: Regola
 user: Utente
 no_presets: Nessuna Preset
