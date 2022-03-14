@@ -1,7 +1,3 @@
-Move Billing into Accounts and Teams Screenshot the payment page!
-
----
-
 # Teams
 
 > Intro

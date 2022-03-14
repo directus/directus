@@ -7,7 +7,7 @@
 
 [[toc]]
 
-::: tip Dashboard or API Login
+::: tip Cloud API Management
 
 All actions on Directus Cloud can be done on the Cloud API, which will be released soon!
 
@@ -64,13 +64,3 @@ Here's how these navigation areas relate to Accounts, Projects, and Teams.
   invitations and removals, etc.
 
 - **Team Settings** — Edit the Team Name and Team Slug, as well as delete the Team.
-
-## System Status
-
-Click <span mi icon>check</span> in the Dashboard Header to check system status. This page displays the current status
-of Directus Cloud, status on individual Projects by URL, as well as a daily Incidents log. This Page is where to _find
-out what happened_ in the super rare event that the network slows down or goes down.
-
-<video alt="Cloud Dashboard Overview" loop muted controls autoplay>
-  <source src="" type="video/mp4">
-</video>

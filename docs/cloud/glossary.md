@@ -2,8 +2,6 @@
 
 [[toc]]
 
-## [Cloud Policies](https://directus.io/cloud-policies/#)
-
 ## Accounts vs Users
 
 ## Asset Storage
@@ -21,6 +19,8 @@
 ## Billing
 
 ## Caching
+
+## Cloud API
 
 ## Cloud Exclusives
 
@@ -63,11 +63,23 @@ Encryption in transit is included on all Cloud Projects
 
 ## Premium SLA
 
+## Premium Support
+
 ## Pricing
 
 ## Projects
 
 ## Rate Limiting
+
+## System Status
+
+Click <span mi icon>check</span> in the Dashboard Header to check system status. This page displays the current status
+of Directus Cloud, status on individual Projects by URL, as well as a daily Incidents log. This Page is where to _find
+out what happened_ in the super rare event that the network slows down or goes down.
+
+<video alt="Cloud Dashboard Overview" loop muted controls autoplay>
+  <source src="" type="video/mp4">
+</video>
 
 ## Teams
 
