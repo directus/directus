@@ -161,7 +161,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 		const fields = collectionInfo.value?.meta?.item_duplication_fields || ['*'];
 
-		const itemData = await api.get(itemEndpoint.value, { params: { fields } });
+		const itemData = await api.post(itemEndpoint.value, { fields });
 
 		const newItem: { [field: string]: any } = {
 			...(itemData.data.data || {}),

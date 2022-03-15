@@ -113,6 +113,30 @@ router.get(
 	respond
 );
 
+router.post(
+	'/:collection/:pk',
+	collectionExists,
+	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
+		const query = req.body ?? { fields: ['*'] };
+
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const result = await service.readOne(req.params.pk, query);
+
+		res.locals.payload = {
+			data: result || null,
+		};
+
+		return next();
+	}),
+	respond
+);
+
 router.patch(
 	'/:collection',
 	collectionExists,
