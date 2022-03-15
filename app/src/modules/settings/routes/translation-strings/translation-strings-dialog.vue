@@ -36,7 +36,7 @@
 							},
 							{
 								field: 'translation',
-								name: '$t:field_options.directus_collections.collection_name',
+								name: '$t:translation',
 								type: 'string',
 								meta: {
 									interface: 'input',
