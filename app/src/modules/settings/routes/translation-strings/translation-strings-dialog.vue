@@ -123,6 +123,8 @@ function onListInput(val: Translation[]) {
 }
 
 function closeDialog() {
+	values.key = null;
+	values.translations = null;
 	emit('update:modelValue', false);
 }
 
