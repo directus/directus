@@ -26,7 +26,7 @@
 				</v-input>
 			</template>
 
-			<div v-if="translationKeys.length >= 25" class="search">
+			<div v-if="searchValue !== null || translations.length >= 25" class="search">
 				<v-input
 					class="search-input"
 					type="text"
