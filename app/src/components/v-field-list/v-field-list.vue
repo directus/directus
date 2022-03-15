@@ -50,7 +50,7 @@ const search = ref('');
 
 const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, undefined, filter);
 
-const debouncedRefresh = debounce(() => refresh(), 150);
+const debouncedRefresh = debounce(() => refresh(), 250);
 
 watch(search, () => debouncedRefresh());
 
@@ -80,7 +80,10 @@ function filter(field: Field): boolean {
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
 
 	function matchesSearch(field: Field) {
-		return field.field.includes(search.value) || field.name.includes(search.value);
+		return (
+			field.field.toLowerCase().includes(search.value.toLowerCase()) ||
+			field.name.toLowerCase().includes(search.value.toLowerCase())
+		);
 	}
 }
 </script>
