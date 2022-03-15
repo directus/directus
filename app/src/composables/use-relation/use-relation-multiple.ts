@@ -4,6 +4,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { clamp, cloneDeep, isEqual, merge } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
+import { Method } from 'axios';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -200,14 +201,18 @@ export function useRelationMultiple(
 
 			await updateItemCount();
 
-			const response = await api.get(getEndpoint(targetCollection), {
-				params: {
-					fields: Array.from(fields),
-					filter: {
-						[reverseJunctionField]: itemId.value,
+			const response = await api.request({
+				url: getEndpoint(targetCollection),
+				method: 'SEARCH' as Method,
+				data: {
+					query: {
+						fields: Array.from(fields),
+						filter: {
+							[reverseJunctionField]: itemId.value,
+						},
+						page: previewQuery.value.page,
+						limit: previewQuery.value.limit,
 					},
-					page: previewQuery.value.page,
-					limit: previewQuery.value.limit,
 				},
 			});
 
@@ -283,6 +288,7 @@ export function useRelationMultiple(
 							_in: selectedOnPage.value.map((item) => item[targetPKField]),
 						},
 					},
+					limit: -1,
 				},
 			});
 
