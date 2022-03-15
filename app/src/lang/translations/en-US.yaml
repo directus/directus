@@ -70,6 +70,9 @@ create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 create_translation_string: Create Translation String
+edit_translation_string: Edit Translation String
+delete_translation_string_copy: >-
+  Are you sure you want to delete the translation string "{key}"? This action can not be undone.
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
