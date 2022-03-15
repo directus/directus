@@ -26,7 +26,7 @@
 				</v-input>
 			</template>
 
-			<div v-if="translationKeys.length >= 10" class="search">
+			<div v-if="translationKeys.length >= 25" class="search">
 				<v-input
 					class="search-input"
 					type="text"
@@ -43,19 +43,19 @@
 
 			<v-list>
 				<v-list-item
-					v-for="key in translationKeys"
-					:key="key"
+					v-for="translation in translations"
+					:key="translation.key"
 					class="translation-key"
-					:class="{ selected: localValue && key === localValueWithoutPrefix }"
+					:class="{ selected: localValue && translation.key === localValueWithoutPrefix }"
 					clickable
-					@click="selectKey(key)"
+					@click="selectKey(translation.key!)"
 				>
 					<v-list-item-icon>
 						<v-icon name="translate" />
 					</v-list-item-icon>
-					<v-list-item-content><v-highlight :text="key" :query="searchValue" /></v-list-item-content>
+					<v-list-item-content><v-highlight :text="translation.key" :query="searchValue" /></v-list-item-content>
 					<v-list-item-icon class="info">
-						<v-icon name="info" @click.stop />
+						<TranslationStringsTooltip :translations="translation.translations" hide-display-text />
 					</v-list-item-icon>
 				</v-list-item>
 				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDialog">
@@ -72,7 +72,8 @@
 		<TranslationStringsDialog
 			:model-value="isTranslationStringDialogOpen"
 			:translation-string="editingTranslationString"
-			@update:model-value="isTranslationStringDialogOpen = $event"
+			@update:model-value="updateTranslationStringsDialog"
+			@saved-key="setValue(`${translationPrefix}${$event}`)"
 		/>
 	</div>
 </template>
@@ -82,6 +83,7 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTranslationStrings, TranslationString } from '@/modules/settings/composables/use-translation-strings';
 import TranslationStringsDialog from '@/modules/settings/routes/translation-strings/translation-strings-dialog.vue';
+import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
 
 const translationPrefix = '$t:';
 
@@ -107,10 +109,10 @@ const isTranslationStringDialogOpen = ref<boolean>(false);
 
 const editingTranslationString = ref<TranslationString | null>(null);
 
-const translationKeys = computed(() => {
-	const keys = translationStrings.value?.map((v) => v.key) ?? [];
+const translations = computed(() => {
+	const keys = translationStrings.value ?? [];
 
-	return !searchValue.value ? keys : keys.filter((key) => key!.includes(searchValue.value!));
+	return !searchValue.value ? keys : keys.filter((key) => key.key?.includes(searchValue.value!));
 });
 
 const localValue = computed<string | null>({
@@ -118,6 +120,7 @@ const localValue = computed<string | null>({
 		return props.value;
 	},
 	set(val) {
+		if (props.value === val) return;
 		emit('input', val);
 	},
 });
@@ -146,7 +149,7 @@ function setValue(newValue: any) {
 	if (
 		newValue &&
 		newValue.startsWith(translationPrefix) &&
-		translationKeys.value.includes(getKeyWithoutPrefix(newValue))
+		translations.value.find((t) => t.key?.includes(getKeyWithoutPrefix(newValue)))
 	) {
 		hasValidKey.value = true;
 	}
@@ -157,6 +160,13 @@ function setValue(newValue: any) {
 function openNewTranslationStringDialog() {
 	menuEl.value.deactivate();
 	isTranslationStringDialogOpen.value = true;
+}
+
+function updateTranslationStringsDialog(val: boolean) {
+	if (val) return;
+
+	editingTranslationString.value = null;
+	isTranslationStringDialogOpen.value = val;
 }
 </script>
 
@@ -202,12 +212,12 @@ function openNewTranslationStringDialog() {
 .translation-key {
 	transition: color var(--fast) var(--transition);
 
-	.info {
+	.info :deep(.icon) {
 		transition: opacity var(--fast) var(--transition);
 		opacity: 0;
 	}
 
-	&:hover .info {
+	&:hover .info :deep(.icon) {
 		opacity: 1;
 	}
 
@@ -231,7 +241,8 @@ function openNewTranslationStringDialog() {
 			--v-icon-color: var(--foreground-inverted);
 		}
 
-		.info {
+		.info :deep(.icon) {
+			color: var(--foreground-inverted);
 			opacity: 1;
 		}
 	}

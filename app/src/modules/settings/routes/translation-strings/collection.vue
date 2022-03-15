@@ -39,8 +39,7 @@
 					</span>
 				</template>
 				<template #[`item.translations`]="{ item }">
-					<span v-if="item.translations" class="translations">{{ item.translations }}</span>
-					<ValueNull v-else />
+					<TranslationStringsTooltip :translations="item.translations" />
 				</template>
 			</v-table>
 		</div>
@@ -48,7 +47,7 @@
 		<TranslationStringsDialog
 			:model-value="isTranslationStringDialogOpen"
 			:translation-string="editingTranslationString"
-			@update:model-value="isTranslationStringDialogOpen = $event"
+			@update:model-value="updateTranslationStringsDialog"
 		/>
 	</private-view>
 </template>
@@ -60,6 +59,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import SettingsNavigation from '../../components/navigation.vue';
 import { TranslationString, useTranslationStrings } from '../../composables/use-translation-strings';
 import TranslationStringsDialog from './translation-strings-dialog.vue';
+import TranslationStringsTooltip from './translation-strings-tooltip.vue';
 import ValueNull from '@/views/private/components/value-null';
 
 const { t } = useI18n();
@@ -91,8 +91,14 @@ const tableItems = computed(() => (translationStrings.value ? translationStrings
 
 function openTranslationStringDialog({ item }: { item?: TranslationString }) {
 	editingTranslationString.value = item ? item : null;
-
 	isTranslationStringDialogOpen.value = true;
+}
+
+function updateTranslationStringsDialog(val: boolean) {
+	if (val) return;
+
+	editingTranslationString.value = null;
+	isTranslationStringDialogOpen.value = val;
 }
 </script>
 
