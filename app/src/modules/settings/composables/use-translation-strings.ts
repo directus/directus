@@ -2,6 +2,7 @@ import { ref, Ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Language, i18n } from '@/lang';
+import { useUserStore } from '@/stores';
 
 export type Translation = {
 	language: string;
@@ -104,6 +105,13 @@ export function useTranslationStrings(): UsableTranslationStrings {
 					key: p.key,
 					translations: getTranslationsFromKeyValues(p.translations ?? null),
 				}));
+
+				const { currentUser } = useUserStore();
+				if (currentUser && 'language' in currentUser && currentUser.language) {
+					mergeTranslationStringsForLanguage(currentUser.language);
+				} else {
+					mergeTranslationStringsForLanguage('en-US');
+				}
 			}
 		} catch (err: any) {
 			unexpectedError(err);
