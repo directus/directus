@@ -60,7 +60,6 @@ import SettingsNavigation from '../../components/navigation.vue';
 import { TranslationString, useTranslationStrings } from '../../composables/use-translation-strings';
 import TranslationStringsDialog from './translation-strings-dialog.vue';
 import TranslationStringsTooltip from './translation-strings-tooltip.vue';
-import ValueNull from '@/views/private/components/value-null';
 
 const { t } = useI18n();
 
