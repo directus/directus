@@ -4,17 +4,18 @@ version=$(shell git describe --tags --abbrev=0)
 tag=latest
 cmd=
 user=directus
-registry=docker.io
-repository=directus/directus
+registry=gcr.io
+repository=uncoil-io/directus
 
 .PHONY: build-images
 
 build-images:
 	npm run build
 	npm run pack
-	docker build \
+	docker buildx build --platform linux/amd64 \
 		--build-arg VERSION=$(version) \
 		--build-arg REPOSITORY=$(repository) \
+		--load \
 		-t directus:temp \
 		-f ./Dockerfile \
 		..
