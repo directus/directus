@@ -30,6 +30,7 @@
 						clickable
 						:dense="totalItemCount > 4"
 						:disabled="disabled || updateAllowed === false"
+						:class="{ deleted: element.$type === 'deleted' }"
 						@click="editItem(element)"
 					>
 						<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
@@ -39,7 +40,11 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
+						<v-icon
+							v-if="!disabled && updateAllowed"
+							:name="element.$type === 'deleted' ? 'settings_backup_restore' : 'close'"
+							@click.stop="deleteItem(element)"
+						/>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -317,6 +322,17 @@ const updateAllowed = computed(() => {
 <style lang="scss" scoped>
 .v-list {
 	--v-list-padding: 0 0 4px;
+
+	.v-list-item.deleted {
+		--v-list-item-border-color: var(--danger-25);
+		--v-list-item-border-color-hover: var(--danger-50);
+		--v-list-item-background-color: var(--danger-10);
+		--v-list-item-background-color-hover: var(--danger-25);
+
+		::v-deep(.v-icon) {
+			color: var(--danger-75);
+		}
+	}
 }
 
 .actions {
