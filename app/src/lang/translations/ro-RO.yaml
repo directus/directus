@@ -1662,7 +1662,6 @@ layouts:
     subtitle: Subtitlu
   tabular:
     tabular: Tabel
-    fields: Câmpuri
     spacing: Spațiere
     comfortable: Confortabil
     compact: Compact

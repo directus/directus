@@ -1444,7 +1444,6 @@ layouts:
     subtitle: Підзаголовок
   tabular:
     tabular: Таблиця
-    fields: Поля
     spacing: Відступ
     comfortable: Комфортна
     compact: Компактна

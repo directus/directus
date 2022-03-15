@@ -1184,7 +1184,6 @@ layouts:
     subtitle: Pod naslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno

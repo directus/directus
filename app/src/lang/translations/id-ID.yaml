@@ -1277,7 +1277,6 @@ layouts:
     subtitle: Subjudul
   tabular:
     tabular: Tabel
-    fields: Bidang
     spacing: Spasi
     comfortable: Longgar
     compact: Rapat

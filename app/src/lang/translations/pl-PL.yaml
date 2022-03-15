@@ -1264,7 +1264,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1666,7 +1665,6 @@ layouts:
     subtitle: Subtytuł
   tabular:
     tabular: Tabela
-    fields: Pola
     spacing: Odstępy
     comfortable: Wygodny
     compact: Kompaktowy

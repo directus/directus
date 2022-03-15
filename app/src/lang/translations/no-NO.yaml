@@ -719,7 +719,6 @@ layouts:
     subtitle: Undertittel
   tabular:
     tabular: Tabell
-    fields: Felter
     spacing: Mellomrom
     comfortable: Komfortabel
     compact: Kompakt

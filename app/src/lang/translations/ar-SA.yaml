@@ -1133,7 +1133,6 @@ layouts:
     subtitle: الترجمة
   tabular:
     tabular: الجدول
-    fields: حقول
     spacing: المسافة
     comfortable: مريحة
     compact: مضغوط

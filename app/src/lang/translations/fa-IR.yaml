@@ -64,7 +64,7 @@ required_for_app_access: برای دسترسی به برنامه مورد نیا
 requires_value: به مقدار نیاز دارد
 create_preset: ایجاد الگو
 create_panel: ایجاد پنل
-create_role: افزودن نقش
+create_role: ایجاد نقش
 create_user: ایجاد کاربر
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک

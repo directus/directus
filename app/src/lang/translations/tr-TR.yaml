@@ -1654,7 +1654,6 @@ layouts:
     subtitle: Alt Başlık
   tabular:
     tabular: Tablo
-    fields: Alanlar
     spacing: Aralıklandırma
     comfortable: Rahat
     compact: Kompakt
