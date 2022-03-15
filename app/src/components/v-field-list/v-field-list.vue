@@ -1,6 +1,6 @@
 <template>
 	<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
-		<v-list-item>
+		<v-list-item v-if="treeList.length > 20">
 			<v-list-item-content>
 				<v-input v-model="search" autofocus small :placeholder="t('search')">
 					<template #append>
