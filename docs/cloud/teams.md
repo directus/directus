@@ -69,14 +69,14 @@ Action is permanent and irreversible, proceed with caution.
 Team Activity Page displays created and destroyed Projects, billing information changes, Team Members added or removed,
 name and slug changes, as well as changes to any other major Team-oriented information.
 
-## Manage Billing Information
+## Manage Billing
 
-Bills are project-based, accrued on an hourly basis and invoiced monthly. Terms of Service. Teams and Accounts are free
-and not billable. When a Standard Project is created, that’s the beginning of the billing cycle. Priced and metered per
-hour per node. 5 days = 5 days. 100 days = monthly bill. Point to pricing page on dashboard. Active + standby nodes.
-Node hours running. For more information, refer to [Cloud Policies](https://directus.io/cloud-policies/#) for detailed
-breakdown of node costs and the [Pricing Page](https://directus.io/pricing/) for side-by side comparisons of Community,
-Standard and Enterprise offerings.
+Bills are project-based, accrued on an hourly basis and invoiced monthly. Teams and Accounts are free. When a Standard
+Project is created, that’s the beginning of the billing cycle. Priced and metered per hour per node. 5 days = 5 days.
+100 days = monthly bill. Point to pricing page on dashboard. Active + standby nodes. Node hours running. For more
+information, refer to [Cloud Policies](https://directus.io/cloud-policies/#) for detailed breakdown of node costs and
+the [Pricing Page](https://directus.io/pricing/) for side-by side comparisons of Community, Standard and Enterprise
+offerings.
 
 ## Invite Team Member(s)
 

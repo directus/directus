@@ -19,12 +19,8 @@ Teams are how projects and billings are organized on Directus Cloud. Team Member
 Instances of Directus. Accounts are able to be Members on multiple Teams. Teams are able contain multiple Directus
 Projects and multiple Members. All Team Members have Super Admin privileges on all Team Projects.
 
-There are 3 tiers of Cloud Projects: Community, Standard, and Enterprise. All 3 tiers come with everything in Directus
-Core as well as all [Cloud Exclusive Extensions](). The Community Tier offer a completely free Directus Project, perfect
-to spin-up hobby projects, demo Directus Cloud, test a proof of concept or get started on any other non-production
-activity. The Standard Tier provides Projects with custom URLs, upgraded server power and many configuration options;
-perfect for most production-ready use cases. The Enterprise Tier allows custom-tailored Projects, fit for massive scale
-as well as other unique use-cases.
+There are 3 [tiers](/cloud/glossary/#project-tiers) of Cloud Projects: Community, Standard, and Enterprise. All 3 tiers
+come with everything in Directus Core as well as all [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives).
 
 To make life easy, you have the option to create and login to your free Cloud Account automatically with Github. If you
 have no Github or do not wish to use this login method, email-and-password login is available as well. Once logged-in,
