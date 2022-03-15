@@ -1,7 +1,7 @@
 import api from '@/api';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep, isEqual, merge } from 'lodash';
+import { clamp, cloneDeep, isEqual, merge } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
 
@@ -32,7 +32,8 @@ export function useRelationMultiple(
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
-	const totalItemCount = ref(0);
+
+	const { cleanItem, getPage, updateValue } = useUtil();
 
 	const _value = computed<Item>({
 		get() {
@@ -81,12 +82,16 @@ export function useRelationMultiple(
 				break;
 		}
 
+		if (relation.value.sortField) fields.add(relation.value.sortField);
+
 		return { targetCollection, targetPKField, reverseJunctionField, fields };
 	});
 
 	watch(previewQuery, updateFetchedItems, { immediate: true });
 
 	const { fetchedSelectItems, selected } = useSelected();
+
+	const totalItemCount = computed(() => existingItemCount.value + _value.value.create.length + selected.value.length);
 
 	const displayItems = computed(() => {
 		if (!relation.value) return [];
@@ -118,19 +123,11 @@ export function useRelationMultiple(
 			return merge({}, item, edits);
 		});
 
-		//TODO: This has to use the proper formel
-		const createdStart = Math.min(
-			Math.max(
-				(previewQuery.value.page - 1) * previewQuery.value.limit - existingItemCount.value - selected.value.length,
-				0
-			),
-			_value.value.create.length
-		);
-		const createdEnd = Math.min(createdStart + previewQuery.value.limit, _value.value.create.length);
+		const newItems = getPage(existingItemCount.value + selected.value.length, _value.value.create);
 
 		items.push(
 			...selectedOnPage,
-			..._value.value.create.slice(createdStart, createdEnd).map((item, index) => {
+			...newItems.map((item, index) => {
 				return {
 					...item,
 					$type: 'created',
@@ -139,55 +136,56 @@ export function useRelationMultiple(
 			})
 		);
 
-		return items;
+		const sortField = relation.value.sortField;
+
+		if (totalItemCount.value > previewQuery.value.limit || !sortField) return items;
+
+		return items.sort((a, b) => {
+			return a[sortField] - b[sortField];
+		});
 	});
 
 	return { create, update, remove, displayItems, totalItemCount, loading, selected, fetchedSelectItems };
 
-	function updateValue() {
-		_value.value = cloneDeep(_value.value);
-	}
-
-	function cleanItem(item: DisplayItem) {
-		if (item.$type !== undefined) delete item.$type;
-		if (item.$index !== undefined) delete item.$index;
-
-		return item;
-	}
-
-	function create(item: Record<string, any>) {
-		_value.value.create.push(item);
-		updateValue();
-	}
-
-	function update(item: DisplayItem) {
-		if (!relation.value) return;
-
-		if (item.$type === undefined || item.$index === undefined) {
-			_value.value.update.push(item);
-		} else if (item.$type === 'created') {
-			_value.value.create[item.$index] = cleanItem(item);
-		} else if (item.$type === 'updated') {
-			_value.value.update[item.$index] = cleanItem(item);
+	function create(...items: Record<string, any>[]) {
+		for (const item of items) {
+			_value.value.create.push(item);
 		}
 		updateValue();
 	}
 
-	function remove(item: DisplayItem) {
+	function update(...items: DisplayItem[]) {
 		if (!relation.value) return;
 
-		if (item.$type === undefined || item.$index === undefined) {
-			const pkField =
-				relation.value.type === 'o2m'
-					? relation.value.relatedPrimaryKeyField.field
-					: relation.value.junctionPrimaryKeyField.field;
-			_value.value.delete.push(item[pkField]);
-		} else if (item.$type === 'created') {
-			_value.value.create.splice(item.$index, 1);
-		} else if (item.$type === 'updated') {
-			_value.value.update.splice(item.$index, 1);
-		} else if (item.$type === 'deleted') {
-			_value.value.delete.splice(item.$index, 1);
+		for (const item of items) {
+			if (item.$type === undefined || item.$index === undefined) {
+				_value.value.update.push(item);
+			} else if (item.$type === 'created') {
+				_value.value.create[item.$index] = cleanItem(item);
+			} else if (item.$type === 'updated') {
+				_value.value.update[item.$index] = cleanItem(item);
+			}
+		}
+		updateValue();
+	}
+
+	function remove(...items: DisplayItem[]) {
+		if (!relation.value) return;
+
+		for (const item of items) {
+			if (item.$type === undefined || item.$index === undefined) {
+				const pkField =
+					relation.value.type === 'o2m'
+						? relation.value.relatedPrimaryKeyField.field
+						: relation.value.junctionPrimaryKeyField.field;
+				_value.value.delete.push(item[pkField]);
+			} else if (item.$type === 'created') {
+				_value.value.create.splice(item.$index, 1);
+			} else if (item.$type === 'updated') {
+				_value.value.update.splice(item.$index, 1);
+			} else if (item.$type === 'deleted') {
+				_value.value.delete.splice(item.$index, 1);
+			}
 		}
 		updateValue();
 	}
@@ -238,7 +236,6 @@ export function useRelationMultiple(
 		});
 
 		existingItemCount.value = response.data.data[0].count[targetPKField];
-		totalItemCount.value = existingItemCount.value + _value.value.create.length + selected.value.length;
 	}
 
 	function useSelected() {
@@ -260,15 +257,7 @@ export function useRelationMultiple(
 				});
 		});
 
-		const selectedOnPage = computed(() => {
-			const start = Math.min(
-				Math.max((previewQuery.value.page - 1) * previewQuery.value.limit - existingItemCount.value, 0),
-				selected.value.length
-			);
-			const end = Math.min(start + previewQuery.value.limit, selected.value.length);
-
-			return selected.value.slice(start, end);
-		});
+		const selectedOnPage = computed(() => getPage(existingItemCount.value, selected.value));
 
 		watch(
 			selectedOnPage,
@@ -298,6 +287,27 @@ export function useRelationMultiple(
 			});
 
 			fetchedSelectItems.value = response.data.data;
+		}
+	}
+
+	function useUtil() {
+		return { updateValue, cleanItem, getPage };
+
+		function updateValue() {
+			_value.value = cloneDeep(_value.value);
+		}
+
+		function cleanItem(item: DisplayItem) {
+			if (item.$type !== undefined) delete item.$type;
+			if (item.$index !== undefined) delete item.$index;
+
+			return item;
+		}
+
+		function getPage<T>(offset: number, items: T[]) {
+			const start = clamp((previewQuery.value.page - 1) * previewQuery.value.limit - offset, 0, items.length);
+			const end = clamp(previewQuery.value.page * previewQuery.value.limit - offset, 0, items.length);
+			return items.slice(start, end);
 		}
 	}
 }

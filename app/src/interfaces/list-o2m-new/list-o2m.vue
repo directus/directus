@@ -5,9 +5,9 @@
 	<div v-else class="one-to-many">
 		<template v-if="loading">
 			<v-skeleton-loader
-				v-for="n in (value || []).length || 3"
+				v-for="n in clamp(totalItemCount - (page - 1) * limit, 0, limit)"
 				:key="n"
-				:type="(value || []).length > 4 ? 'block-list-item-dense' : 'block-list-item'"
+				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 			/>
 		</template>
 
@@ -25,7 +25,13 @@
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
-					<v-list-item dense block clickable :disabled="disabled || updateAllowed === false" @click="editItem(element)">
+					<v-list-item
+						block
+						clickable
+						:dense="totalItemCount > 4"
+						:disabled="disabled || updateAllowed === false"
+						@click="editItem(element)"
+					>
 						<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template
 							:collection="relationInfo.relatedCollection.collection"
@@ -33,7 +39,7 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="remove(element)" />
+						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
 					</v-list-item>
 				</template>
 			</draggable>
@@ -46,9 +52,9 @@
 			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
-		</div>
 
-		<v-pagination v-model="page" :length="pageCount" :total-visible="5" />
+			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+		</div>
 
 		<drawer-item
 			v-if="!disabled"
@@ -84,7 +90,8 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { isEmpty } from 'lodash';
+import { isEmpty, clamp } from 'lodash';
+import { usePermissionsStore, useUserStore } from '@/stores';
 
 const props = withDefaults(
 	defineProps<{
@@ -135,8 +142,8 @@ const fields = computed(() =>
 	)
 );
 
-const limit = ref(5);
-const page = ref(0);
+const limit = ref(15);
+const page = ref(1);
 
 const query = computed<RelationQueryMultiple>(() => ({
 	fields: fields.value,
@@ -152,10 +159,20 @@ const { create, update, remove, displayItems, totalItemCount, loading, selected 
 );
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
-const allowDrag = ref(false);
 
-function sortItems(event: any) {
-	event + 1;
+const allowDrag = computed(
+	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
+);
+
+function sortItems(items: DisplayItem[]) {
+	const sortField = relationInfo.value?.sortField;
+	if (!sortField) return;
+
+	const sortedItems = items.map((item, index) => ({
+		...item,
+		[sortField]: index,
+	}));
+	update(...sortedItems);
 }
 
 const selectedPrimaryKeys = computed(() => {
@@ -164,9 +181,6 @@ const selectedPrimaryKeys = computed(() => {
 
 	return selected.value.map((item) => item[pkField]);
 });
-
-const createAllowed = ref(true);
-const updateAllowed = ref(true);
 
 const currentlyEditing = ref<string | null>(null);
 const selectModalActive = ref(false);
@@ -207,14 +221,26 @@ function cancelEdit() {
 }
 
 function stageSelections(items: (string | number)[]) {
-	items.forEach((item) => {
-		if (!relationInfo.value) return;
+	const selected = items.map((item) => {
+		if (!relationInfo.value) return {};
 
-		update({
+		return {
 			[relationInfo.value.relatedPrimaryKeyField.field]: item,
 			[relationInfo.value.reverseJunctionField.field]: props.primaryKey,
-		});
+		};
 	});
+	update(...selected);
+}
+
+function deleteItem(item: DisplayItem) {
+	if (
+		page.value === Math.ceil(totalItemCount.value / limit.value) &&
+		page.value !== Math.ceil((totalItemCount.value - 1) / limit.value)
+	) {
+		page.value = Math.max(0, page.value - 1);
+	}
+
+	remove(item);
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
@@ -263,6 +289,29 @@ const customFilter = computed(() => {
 
 	return filter;
 });
+
+const userStore = useUserStore();
+const permissionsStore = usePermissionsStore();
+
+const createAllowed = computed(() => {
+	const admin = userStore.currentUser?.role.admin_access === true;
+	if (admin) return true;
+
+	return !!permissionsStore.permissions.find(
+		(permission) =>
+			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
+	);
+});
+
+const updateAllowed = computed(() => {
+	const admin = userStore.currentUser?.role.admin_access === true;
+	if (admin) return true;
+
+	return !!permissionsStore.permissions.find(
+		(permission) =>
+			permission.action === 'update' && permission.collection === relationInfo.value?.relatedCollection.collection
+	);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -272,9 +321,11 @@ const customFilter = computed(() => {
 
 .actions {
 	margin-top: 8px;
+	display: flex;
+	gap: 8px;
 
-	.v-button + .v-button {
-		margin-left: 8px;
+	.v-pagination ::v-deep(.v-button) {
+		display: inline-flex;
 	}
 }
 
