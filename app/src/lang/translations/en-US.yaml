@@ -182,6 +182,7 @@ field_create_success: 'Created Field: "{field}"'
 field_update_success: 'Updated Field: "{field}"'
 duplicate_where_to: Where would you like to duplicate this field to?
 language: Language
+language_placeholder: Select a language...
 aggregate_function: Aggregate Function
 aggregate_precision: Aggregate Precision
 group_aggregation: Group Aggregation
