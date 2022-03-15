@@ -1,6 +1,7 @@
 import { ref, Ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { Language, i18n } from '@/lang';
 
 export type Translation = {
 	language: string;
@@ -21,9 +22,10 @@ type UsableTranslationStrings = {
 	loading: Ref<boolean>;
 	error: Ref<any>;
 	translationStrings: Ref<TranslationString[] | null>;
-	refresh: () => void;
+	refresh: () => Promise<void>;
 	updating: Ref<boolean>;
 	update: (newTranslationStrings: TranslationString[]) => Promise<void>;
+	mergeTranslationStringsForLanguage: (lang: Language) => void;
 };
 
 let loading: Ref<boolean> | null = null;
@@ -36,15 +38,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	if (translationStrings === null) translationStrings = ref<TranslationString[] | null>(null);
 	const updating = ref(false);
 
-	if (!translationStrings.value) {
-		fetchTranslationStrings();
-	}
-
-	if (translationStrings.value === null && loading.value === false) {
-		fetchTranslationStrings();
-	}
-
-	return { loading, error, translationStrings, refresh, updating, update };
+	return { loading, error, translationStrings, refresh, updating, update, mergeTranslationStringsForLanguage };
 
 	async function fetchTranslationStrings() {
 		if (loading === null) return;
@@ -76,7 +70,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		}
 	}
 
-	function refresh() {
+	async function refresh() {
 		if (loading === null) return;
 		if (translationStrings === null) return;
 		if (error === null) return;
@@ -84,7 +78,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		loading.value = false;
 		error.value = null;
 
-		fetchTranslationStrings();
+		await fetchTranslationStrings();
 	}
 
 	async function update(newTranslationStrings: TranslationString[]) {
@@ -116,6 +110,17 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		} finally {
 			updating.value = false;
 		}
+	}
+
+	function mergeTranslationStringsForLanguage(lang: Language) {
+		if (!translationStrings?.value) return;
+		const localeMessages: Record<string, any> = translationStrings.value.reduce((acc, cur) => {
+			if (!cur.key || !cur.translations) return acc;
+			const translationForCurrentLang = cur.translations.find((t) => t.language === lang);
+			if (!translationForCurrentLang) return acc;
+			return { ...acc, [cur.key]: translationForCurrentLang.translation };
+		}, {});
+		i18n.global.mergeLocaleMessage(lang, localeMessages);
 	}
 
 	function getUniqueTranslationStrings(arr: TranslationString[]): TranslationString[] {
