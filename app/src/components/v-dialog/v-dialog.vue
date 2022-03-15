@@ -132,10 +132,17 @@ export default defineComponent({
 	--v-card-min-width: calc(100vw - 40px);
 	--v-card-padding: 28px;
 	--v-card-background-color: var(--background-page);
+
+	display: flex;
+	flex-direction: column;
 }
 
 .container :slotted(.v-card) .v-card-title {
 	padding-bottom: 8px;
+}
+
+.container :slotted(.v-card) .v-card-text {
+	overflow-y: auto;
 }
 
 .container :slotted(.v-card) .v-card-actions {
@@ -171,7 +178,7 @@ export default defineComponent({
 	}
 
 	.container :slotted(.v-card) .v-card-actions {
-		flex-direction: inherit;
+		flex-direction: row;
 		flex-wrap: nowrap;
 	}
 
