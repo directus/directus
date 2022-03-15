@@ -136,12 +136,8 @@ export default defineComponent({
 	width: 300px;
 }
 
-.vertical-aligner + .display-translations {
-	display: inline-block;
-}
-
 .display-translations {
-	display: flex;
+	display: inline-flex;
 
 	.icon {
 		color: var(--foreground-subdued);
