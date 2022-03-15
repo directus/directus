@@ -181,7 +181,7 @@ import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from 'lodash';
+import { get } from '@/utils/get-with-arrays';
 
 interface Props {
 	collection: string;
