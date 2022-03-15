@@ -62,7 +62,7 @@ Switching from Community to Standard will be a feature in the future. Projects c
 
 :::
 
-## Edit a Project
+## Manage a Project
 
 Navigate to the Project Details Page to edit a Standard Project's Name, number of active nodes, standby nodes, and
 switch between General Purpose and Performance Nodes. Community projects can also be edited, but the only option will be
@@ -104,6 +104,17 @@ decisions. Charts aggregate information by day.
 3. Navigate to the Projects page.
 4. Click **"Open Project"**.
 5. Your Project will open in a new tab.
+
+## Resume Paused Project
+
+To resume a [paused Project](/cloud/glossary/#paused-project):
+
+![Resume Paused Project](image.webp)
+
+1. Sign in to the Cloud Dashboard.
+2. Open the Team Menu in the Dashboard Header.
+3. Navigate to the Projects page.
+4. Click the Project which is paused.
 
 ## Destroy a Project
 
