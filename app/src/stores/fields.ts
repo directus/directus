@@ -296,6 +296,12 @@ export const useFieldsStore = defineStore({
 			}
 		},
 		/**
+		 * Retrieve nested fields for a given group field
+		 */
+		getFieldGroupChildren(collection: string, fieldKey: string): Field[] | null {
+			return this.fields.filter((field) => field.collection === collection && field.meta?.group === fieldKey) || null;
+		},
+		/**
 		 * Retrieve field info for a (deeply) nested field
 		 * Recursively searches through the relationships to find the field info that matches the
 		 * dot notation.

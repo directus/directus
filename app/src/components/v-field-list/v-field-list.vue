@@ -76,7 +76,12 @@ const treeList = computed(() => {
 
 function filter(field: Field): boolean {
 	if (!search.value) return true;
-	return field.field.includes(search.value) || field.name.includes(search.value);
+	const children = fieldsStore.getFieldGroupChildren(collection.value, field.field);
+	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
+
+	function matchesSearch(field: Field) {
+		return field.field.includes(search.value) || field.name.includes(search.value);
+	}
 }
 </script>
 
