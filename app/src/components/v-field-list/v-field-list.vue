@@ -1,10 +1,21 @@
 <template>
 	<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
+		<v-list-item>
+			<v-list-item-content>
+				<v-input v-model="search" autofocus small :placeholder="t('search')">
+					<template #append>
+						<v-icon small name="search" />
+					</template>
+				</v-input>
+			</v-list-item-content>
+		</v-list-item>
+
 		<v-field-list-item
 			v-for="field in treeList"
 			:key="field.field"
 			:field="field"
 			:depth="depth"
+			:search="search"
 			@add="$emit('select-field', $event)"
 		/>
 	</v-list>
@@ -12,8 +23,11 @@
 
 <script lang="ts" setup>
 import { useFieldTree } from '@/composables/use-field-tree';
-import { computed, toRefs } from 'vue';
+import { Field } from '@directus/shared/types';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
+import { debounce } from 'lodash';
 
 interface Props {
 	collection: string;
@@ -23,9 +37,19 @@ interface Props {
 
 const props = defineProps<Props>();
 
+defineEmits(['select-field']);
+
 const { collection } = toRefs(props);
 
-const { treeList: treeListOriginal, loadFieldRelations } = useFieldTree(collection);
+const search = ref('');
+
+const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, undefined, filter);
+
+const debouncedRefresh = debounce(() => refresh(), 150);
+
+watch(search, () => debouncedRefresh());
+
+const { t } = useI18n();
 
 const treeList = computed(() => {
 	return treeListOriginal.value.map(setDisabled);
@@ -45,5 +69,14 @@ const treeList = computed(() => {
 	}
 });
 
-defineEmits(['select-field']);
+function filter(field: Field): boolean {
+	if (!search.value) return true;
+	return field.field.includes(search.value) || field.name.includes(search.value);
+}
 </script>
+
+<style lang="scss" scoped>
+.v-list {
+	--v-list-min-width: 300px;
+}
+</style>

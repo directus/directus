@@ -108,7 +108,7 @@
 			</template>
 
 			<template #header-append>
-				<v-menu placement="bottom-end" show-arrow>
+				<v-menu placement="bottom-end" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle, active }">
 						<v-icon
 							v-tooltip="t('add_field')"

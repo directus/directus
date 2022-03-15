@@ -5,12 +5,16 @@
 		clickable
 		@click="$emit('add', field.key)"
 	>
-		<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
+		<v-list-item-content>
+			<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
+		</v-list-item-content>
 	</v-list-item>
 
 	<v-list-group v-else :value="field.key" :clickable="!field.disabled" @click="$emit('add', field.key)">
 		<template #activator>
-			<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
+			<v-list-item-content>
+				<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
+			</v-list-item-content>
 		</template>
 
 		<v-field-list-item
@@ -18,6 +22,7 @@
 			:key="childField.key"
 			:field="childField"
 			:depth="depth && depth - 1"
+			:search="search"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
@@ -43,9 +48,10 @@ type FieldInfo = {
 interface Props {
 	field: FieldInfo;
 	depth?: number;
+	search?: string;
 }
 
-withDefaults(defineProps<Props>(), { depth: undefined });
+withDefaults(defineProps<Props>(), { depth: undefined, search: undefined });
 
 defineEmits(['add']);
 </script>

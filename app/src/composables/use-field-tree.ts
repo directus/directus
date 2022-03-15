@@ -16,6 +16,7 @@ export type FieldNode = {
 export type FieldTreeContext = {
 	treeList: Ref<FieldNode[]>;
 	loadFieldRelations: (fieldPath: string, root?: FieldNode) => void;
+	refresh: (collection?: string) => void;
 };
 
 export function useFieldTree(
@@ -31,11 +32,11 @@ export function useFieldTree(
 
 	watch(() => collection.value, refresh, { immediate: true });
 
-	return { treeList, loadFieldRelations };
+	return { treeList, loadFieldRelations, refresh };
 
-	function refresh(collection?: string | null) {
+	function refresh() {
 		visitedPaths.value = new Set();
-		treeList.value = getTree(collection) ?? [];
+		treeList.value = getTree(collection.value) ?? [];
 
 		for (const node of treeList.value) {
 			if (node.relatedCollection) {
@@ -55,7 +56,7 @@ export function useFieldTree(
 					field.meta?.special?.includes('group') ||
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
 			)
-			.filter(filter);
+			.filter((field) => filter(field));
 
 		const topLevelFields = allFields.filter((field) => isNil(field.meta?.group));
 
