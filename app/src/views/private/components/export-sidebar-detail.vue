@@ -86,18 +86,29 @@
 
 				<v-divider />
 
-				<!-- SORT -->
 				<div class="field half-left">
 					<p class="type-label">{{ t('sort_field') }}</p>
+					<interface-system-field
+						:value="sortField"
+						:collection="collection"
+						allow-primary-key
+						@input="sortField = $event"
+					/>
 				</div>
 				<div class="field half-right">
 					<p class="type-label">{{ t('sort_direction') }}</p>
+					<v-select
+						v-model="sortDirection"
+						:items="[
+							{ value: 'ASC', text: t('sort_asc') },
+							{ value: 'DESC', text: t('sort_desc') },
+						]"
+					/>
 				</div>
-				<!-- ENDSORT -->
 
 				<div class="field full">
 					<p class="type-label">{{ t('full_text_search') }}</p>
-					<v-input v-model="exportSettings.search" :placeholder="search" />
+					<v-input v-model="exportSettings.search" :placeholder="t('search')" />
 				</div>
 				<div class="field full">
 					<p class="type-label">{{ t('filter') }}</p>
@@ -165,15 +176,38 @@ const fileExtension = computed(() => {
 	return readableMimeType(file.value.type, true);
 });
 
-const { primaryKeyField } = useCollection(props.collection);
+const { primaryKeyField, fields } = useCollection(props.collection);
 
 const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? 25,
 	format: 'csv',
 	filter: props.filter,
 	search: props.search,
-	fields: props.layoutQuery?.fields ?? [primaryKeyField.value!.field],
+	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
 	sort: props.layoutQuery?.sort ?? `${primaryKeyField.value!.field}`,
+});
+
+const sortDirection = computed({
+	get() {
+		return exportSettings.sort.startsWith('-') ? 'ASC' : 'DESC';
+	},
+	set(newDirection: 'ASC' | 'DESC') {
+		if (exportSettings.sort.startsWith('-')) {
+			exportSettings.sort = exportSettings.sort.substring(1);
+		} else {
+			exportSettings.sort = `-${exportSettings.sort}`;
+		}
+	},
+});
+
+const sortField = computed({
+	get() {
+		if (exportSettings.sort.startsWith('-')) return exportSettings.sort.substring(1);
+		return exportSettings.sort;
+	},
+	set(newSortField: string) {
+		exportSettings.sort = newSortField;
+	},
 });
 
 function onChange(event: Event) {
