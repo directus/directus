@@ -416,6 +416,7 @@ replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
 no_file_selected: No File Selected
 download_file: Download File
+not_available_for_local_downloads: Not available for local downloads
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -1273,6 +1274,7 @@ sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
 something_went_wrong: Something went wrong.
 sort_direction: Sort Direction
+export_location: Export Location
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template

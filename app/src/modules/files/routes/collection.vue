@@ -191,7 +191,7 @@ import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
 import SearchInput from '@/views/private/components/search-input';
-import FolderPicker from '../components/folder-picker.vue';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import emitter, { Events } from '@/events';
 import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';

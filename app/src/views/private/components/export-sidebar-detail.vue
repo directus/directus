@@ -59,7 +59,7 @@
 
 		<v-drawer v-model="exportDialogActive" :title="t('export_items')">
 			<div class="export-fields">
-				<div class="field half">
+				<div class="field half-left">
 					<p class="type-label">{{ t('format') }}</p>
 					<v-select
 						v-model="exportSettings.format"
@@ -79,9 +79,27 @@
 						]"
 					/>
 				</div>
-				<div class="field half">
+
+				<div class="field half-right">
 					<p class="type-label">{{ t('limit') }}</p>
 					<v-input v-model="exportSettings.limit" type="number" :placeholder="t('unlimited')" />
+				</div>
+
+				<div class="field half-left">
+					<p class="type-label">{{ t('export_location') }}</p>
+					<v-select
+						v-model="location"
+						:items="[
+							{ value: 'download', text: t('download_file') },
+							{ value: 'files', text: t('file_library') },
+						]"
+					/>
+				</div>
+
+				<div class="field half-right">
+					<p class="type-label">{{ t('folder') }}</p>
+					<folder-picker v-if="location === 'files'" v-model="folder" />
+					<v-notice v-else>Not available for local downloads</v-notice>
 				</div>
 
 				<v-divider />
@@ -140,6 +158,7 @@ import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollection } from '@directus/shared/composables';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -187,12 +206,15 @@ const exportSettings = reactive({
 	sort: props.layoutQuery?.sort ?? `${primaryKeyField.value!.field}`,
 });
 
+const location = ref('download');
+const folder = ref<string>();
+
 const sortDirection = computed({
 	get() {
 		return exportSettings.sort.startsWith('-') ? 'ASC' : 'DESC';
 	},
 	set(newDirection: 'ASC' | 'DESC') {
-		if (exportSettings.sort.startsWith('-')) {
+		if (newDirection) {
 			exportSettings.sort = exportSettings.sort.substring(1);
 		} else {
 			exportSettings.sort = `-${exportSettings.sort}`;
@@ -320,6 +342,9 @@ function exportDataLocal() {
 }
 
 .export-fields {
+	--folder-picker-background-color: var(--background-subdued);
+	--folder-picker-color: var(--background-normal);
+
 	margin-top: 24px;
 	padding: var(--content-padding);
 }
