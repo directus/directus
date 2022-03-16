@@ -171,7 +171,11 @@ export class AuthorizationService {
 							}
 						}
 					} else {
-						if (allowedFields.includes('*') === false && allowedFields.includes(key) === false) {
+						if (
+							allowedFields.length !== 0 &&
+							allowedFields.includes('*') === false &&
+							allowedFields.includes(key) === false
+						) {
 							throw new ForbiddenException();
 						}
 
