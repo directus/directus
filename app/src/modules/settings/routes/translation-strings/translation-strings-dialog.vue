@@ -31,7 +31,7 @@
 			<v-button
 				v-tooltip.bottom="t('save')"
 				:loading="updating"
-				:disabled="values.key === null || values.translations === null"
+				:disabled="!values.key || !values.translations || isEqual(values, initialValues)"
 				icon
 				rounded
 				@click="saveNewTranslationString"
@@ -49,6 +49,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { isEqual } from 'lodash';
 import { Field, DeepPartial } from '@directus/shared/types';
 import { useTranslationStrings, TranslationString } from '../../composables/use-translation-strings';
 
@@ -75,6 +76,8 @@ const formValues = computed<TranslationString>({
 		return values.value;
 	},
 	set(val) {
+		values.value.key = val.key;
+
 		if (!val.translations) {
 			values.value.translations = null;
 			return;
@@ -109,6 +112,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 		{
 			field: 'translations',
 			name: '$t:translations',
+			type: 'json',
 			meta: {
 				interface: 'list',
 				width: 'full',
