@@ -345,7 +345,6 @@ label_import: Import
 label_export: Export
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Use Current Filters & Settings
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -723,6 +722,7 @@ no_data: No Data
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
 full_screen: Full Screen
+full_text_search: Full-Text Search
 edit_panels: Edit Panels
 center_align: Center Align
 left_align: Left Align
@@ -1300,6 +1300,8 @@ interfaces:
     no_rules: No configured rules
     change_value: Click to change value
     placeholder: Drag rules here
+  fields:
+    name: Fields
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections

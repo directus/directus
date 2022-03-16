@@ -57,63 +57,74 @@
 			</div>
 		</div>
 
-		<v-dialog v-model="exportDialogActive">
-			<v-card>
-				<v-card-title>{{ t('export_items') }}</v-card-title>
-				<v-card-text>
-					<div class="fields">
-						<div class="field half">
-							<p class="type-label">{{ t('format') }}</p>
-							<v-select
-								v-model="exportSettings.format"
-								:items="[
-									{
-										text: t('csv'),
-										value: 'csv',
-									},
-									{
-										text: t('json'),
-										value: 'json',
-									},
-									{
-										text: t('xml'),
-										value: 'xml',
-									},
-								]"
-							/>
-						</div>
-						<div class="field half">
-							<p class="type-label">{{ t('limit') }}</p>
-							<v-select
-								v-model="exportSettings.limit"
-								:items="['25', '50', '100', '250', '500', ' 1000']"
-								allow-other
-							/>
-						</div>
-						<div class="field full">
-							<p class="type-label">{{ t('field', 2) }}</p>
-							<v-field-select v-model="exportSettings.fields" />
-						</div>
-					</div>
-				</v-card-text>
-				<v-card-actions>
-					<!-- <v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-								{{ t('export_items') }}
-							</v-button> -->
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<v-drawer v-model="exportDialogActive" :title="t('export_items')">
+			<div class="export-fields">
+				<div class="field half">
+					<p class="type-label">{{ t('format') }}</p>
+					<v-select
+						v-model="exportSettings.format"
+						:items="[
+							{
+								text: t('csv'),
+								value: 'csv',
+							},
+							{
+								text: t('json'),
+								value: 'json',
+							},
+							{
+								text: t('xml'),
+								value: 'xml',
+							},
+						]"
+					/>
+				</div>
+				<div class="field half">
+					<p class="type-label">{{ t('limit') }}</p>
+					<v-input v-model="exportSettings.limit" type="number" />
+				</div>
+
+				<v-divider />
+
+				<!-- SORT -->
+				<div class="field half-left">
+					<p class="type-label">{{ t('sort_field') }}</p>
+				</div>
+				<div class="field half-right">
+					<p class="type-label">{{ t('sort_direction') }}</p>
+				</div>
+				<!-- ENDSORT -->
+
+				<div class="field full">
+					<p class="type-label">{{ t('full_text_search') }}</p>
+					<v-input v-model="exportSettings.search" :placeholder="search" />
+				</div>
+				<div class="field full">
+					<p class="type-label">{{ t('filter') }}</p>
+					<interface-system-filter
+						:value="exportSettings.filter"
+						:collection-name="collection"
+						@input="exportSettings.filter = $event"
+					/>
+				</div>
+				<div class="field full">
+					<p class="type-label">{{ t('field', 2) }}</p>
+					<interface-system-fields
+						:value="exportSettings.fields"
+						:collection-name="collection"
+						@input="exportSettings.fields = $event"
+					/>
+				</div>
+			</div>
+		</v-drawer>
 	</sidebar-detail>
 </template>
 
 <script lang="ts" setup>
-import api from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
-import { notify } from '@/utils/notify';
-import readableMimeType from '@/utils/readable-mime-type';
+import api from '../../../api';
+import { getRootPath } from '../../../utils/get-root-path';
+import { notify } from '../../../utils/notify';
+import readableMimeType from '../../../utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -257,18 +268,26 @@ function exportDataLocal() {
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.fields {
-	--form-vertical-gap: 24px;
-
+.fields,
+.export-fields {
 	@include form-grid;
-
-	.type-label {
-		font-size: 1rem;
-	}
 
 	.v-divider {
 		grid-column: 1 / span 2;
 	}
+}
+
+.fields {
+	--form-vertical-gap: 24px;
+
+	.type-label {
+		font-size: 1rem;
+	}
+}
+
+.export-fields {
+	margin-top: 24px;
+	padding: var(--content-padding);
 }
 
 .v-checkbox {
