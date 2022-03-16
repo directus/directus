@@ -108,7 +108,7 @@
 			</template>
 
 			<template #header-append>
-				<v-menu placement="bottom-end" show-arrow>
+				<v-menu placement="bottom-end" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle, active }">
 						<v-icon
 							v-tooltip="t('add_field')"
@@ -181,7 +181,7 @@ import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from 'lodash';
+import { get } from '@/utils/get-with-arrays';
 
 interface Props {
 	collection: string;

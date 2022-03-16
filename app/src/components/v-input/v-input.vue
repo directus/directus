@@ -13,14 +13,14 @@
 					ref="input"
 					v-focus="autofocus"
 					v-bind="attributes"
-					:placeholder="placeholder"
+					:placeholder="placeholder ? String(placeholder) : undefined"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue === null ? '' : String(modelValue)"
+					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
 					v-on="listeners"
 				/>
 			</slot>
@@ -56,230 +56,198 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script lang="ts" setup>
+import { computed, ref, useAttrs } from 'vue';
 import { omit } from 'lodash';
 import slugify from '@sindresorhus/slugify';
 
-export default defineComponent({
-	inheritAttrs: false,
-	props: {
-		autofocus: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		clickable: {
-			type: Boolean,
-			default: false,
-		},
-		prefix: {
-			type: String,
-			default: null,
-		},
-		suffix: {
-			type: String,
-			default: null,
-		},
-		fullWidth: {
-			type: Boolean,
-			default: true,
-		},
-		placeholder: {
-			type: [String, Number],
-			default: null,
-		},
-		modelValue: {
-			type: [String, Number],
-			default: null,
-		},
-		nullable: {
-			type: Boolean,
-			default: true,
-		},
-		slug: {
-			type: Boolean,
-			default: false,
-		},
-		slugSeparator: {
-			type: String,
-			default: '-',
-		},
-		type: {
-			type: String,
-			default: 'text',
-		},
-		// For number inputs only
-		hideArrows: {
-			type: Boolean,
-			default: false,
-		},
-		max: {
-			type: Number,
-			default: null,
-		},
-		min: {
-			type: Number,
-			default: null,
-		},
-		step: {
-			type: Number,
-			default: 1,
-		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-		dbSafe: {
-			type: Boolean,
-			default: false,
-		},
-		trim: {
-			type: Boolean,
-			default: false,
-		},
-		autocomplete: {
-			type: String,
-			default: 'off',
-		},
-	},
-	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
-	setup(props, { emit, attrs }) {
-		const input = ref<HTMLInputElement | null>(null);
+interface Props {
+	autofocus?: boolean;
+	disabled?: boolean;
+	clickable?: boolean;
+	prefix?: string;
+	suffix?: string;
+	fullWidth?: boolean;
+	placeholder?: string | number;
+	modelValue?: string | number;
+	nullable?: boolean;
+	slug?: boolean;
+	slugSeparator?: string;
+	type?: string;
+	hideArrows?: boolean;
+	max?: number;
+	min?: number;
+	step?: number;
+	active?: boolean;
+	dbSafe?: boolean;
+	trim?: boolean;
+	autocomplete?: string;
+	small?: boolean;
+}
 
-		const listeners = computed(() => ({
-			input: emitValue,
-			keydown: processValue,
-			blur: (e: Event) => {
-				trimIfEnabled();
-				if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
-			},
-			focus: (e: PointerEvent) => emit('focus', e),
-		}));
-		const attributes = computed(() => omit(attrs, ['class']));
-
-		const classes = computed(() => [
-			{
-				'full-width': props.fullWidth,
-				'has-click': props.clickable,
-				disabled: props.disabled,
-			},
-			...((attrs.class || '') as string).split(' '),
-		]);
-
-		const isStepUpAllowed = computed(() => {
-			return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
-		});
-
-		const isStepDownAllowed = computed(() => {
-			return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
-		});
-
-		return { listeners, attributes, classes, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
-
-		function processValue(event: KeyboardEvent) {
-			if (!event.key) return;
-			const key = event.key.toLowerCase();
-			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
-			const value = (event.target as HTMLInputElement).value;
-
-			if (props.slug === true) {
-				const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
-
-				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
-
-				if (isAllowed === false) {
-					event.preventDefault();
-				}
-
-				if (key === ' ' && value.endsWith(props.slugSeparator)) {
-					event.preventDefault();
-				}
-			}
-
-			if (props.dbSafe === true) {
-				const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890_ '.split('');
-
-				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
-
-				if (isAllowed === false) {
-					event.preventDefault();
-				}
-
-				// Prevent leading number
-				if (value.length === 0 && '0123456789'.split('').includes(key)) {
-					event.preventDefault();
-				}
-			}
-
-			emit('keydown', event);
-		}
-
-		function trimIfEnabled() {
-			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
-				emit('update:modelValue', String(props.modelValue).trim());
-			}
-		}
-
-		function emitValue(event: InputEvent) {
-			let value = (event.target as HTMLInputElement).value;
-
-			if (props.nullable === true && value === '') {
-				emit('update:modelValue', null);
-				return;
-			}
-
-			if (props.type === 'number') {
-				const parsedNumber = Number(value);
-
-				// Ignore if numeric value remains unchanged
-				if (props.modelValue !== parsedNumber) {
-					emit('update:modelValue', parsedNumber);
-				}
-			} else {
-				if (props.slug === true) {
-					const endsWithSpace = value.endsWith(' ');
-					value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
-					if (endsWithSpace) value += props.slugSeparator;
-				}
-
-				if (props.dbSafe === true) {
-					value = value.replace(/\s/g, '_');
-					// Replace é -> e etc
-					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-				}
-
-				emit('update:modelValue', value);
-			}
-		}
-
-		function stepUp() {
-			if (!input.value) return;
-			if (isStepUpAllowed.value === false) return;
-
-			input.value.stepUp();
-
-			if (input.value.value != null) {
-				return emit('update:modelValue', Number(input.value.value));
-			}
-		}
-
-		function stepDown() {
-			if (!input.value) return;
-			if (isStepDownAllowed.value === false) return;
-
-			input.value.stepDown();
-
-			if (input.value.value) {
-				return emit('update:modelValue', Number(input.value.value));
-			} else {
-				return emit('update:modelValue', props.min || 0);
-			}
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	autofocus: false,
+	disabled: false,
+	clickable: false,
+	prefix: undefined,
+	suffix: undefined,
+	fullWidth: true,
+	placeholder: undefined,
+	modelValue: undefined,
+	nullable: true,
+	slug: false,
+	slugSeparator: '-',
+	type: 'text',
+	hideArrows: false,
+	max: undefined,
+	min: undefined,
+	step: 1,
+	active: false,
+	dbSafe: false,
+	trim: false,
+	autocomplete: 'off',
+	small: false,
 });
+
+const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
+
+const attrs = useAttrs();
+
+const input = ref<HTMLInputElement | null>(null);
+
+const listeners = computed(() => ({
+	input: emitValue,
+	keydown: processValue,
+	blur: (e: Event) => {
+		trimIfEnabled();
+		if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
+	},
+	focus: (e: PointerEvent) => emit('focus', e),
+}));
+const attributes = computed(() => omit(attrs, ['class']));
+
+const classes = computed(() => [
+	{
+		'full-width': props.fullWidth,
+		'has-click': props.clickable,
+		disabled: props.disabled,
+		small: props.small,
+	},
+	...((attrs.class || '') as string).split(' '),
+]);
+
+const isStepUpAllowed = computed(() => {
+	return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
+});
+
+const isStepDownAllowed = computed(() => {
+	return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
+});
+
+function processValue(event: KeyboardEvent) {
+	if (!event.key) return;
+	const key = event.key.toLowerCase();
+	const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
+	const value = (event.target as HTMLInputElement).value;
+
+	if (props.slug === true) {
+		const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
+
+		const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
+
+		if (isAllowed === false) {
+			event.preventDefault();
+		}
+
+		if (key === ' ' && value.endsWith(props.slugSeparator)) {
+			event.preventDefault();
+		}
+	}
+
+	if (props.dbSafe === true) {
+		const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890_ '.split('');
+
+		const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
+
+		if (isAllowed === false) {
+			event.preventDefault();
+		}
+
+		// Prevent leading number
+		if (value.length === 0 && '0123456789'.split('').includes(key)) {
+			event.preventDefault();
+		}
+	}
+
+	emit('keydown', event);
+}
+
+function trimIfEnabled() {
+	if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
+		emit('update:modelValue', String(props.modelValue).trim());
+	}
+}
+
+function emitValue(event: InputEvent) {
+	let value = (event.target as HTMLInputElement).value;
+
+	if (props.nullable === true && value === '') {
+		emit('update:modelValue', null);
+		return;
+	}
+
+	if (props.type === 'number') {
+		const parsedNumber = Number(value);
+
+		// Ignore if numeric value remains unchanged
+		if (props.modelValue !== parsedNumber) {
+			emit('update:modelValue', parsedNumber);
+		}
+	} else {
+		if (props.slug === true) {
+			const endsWithSpace = value.endsWith(' ');
+			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
+			if (endsWithSpace) value += props.slugSeparator;
+		}
+
+		if (props.dbSafe === true) {
+			value = value.replace(/\s/g, '_');
+			// Replace é -> e etc
+			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		}
+
+		emit('update:modelValue', value);
+	}
+}
+
+function stepUp() {
+	if (!input.value) return;
+	if (isStepUpAllowed.value === false) return;
+
+	input.value.stepUp();
+
+	if (input.value.value != null) {
+		return emit('update:modelValue', Number(input.value.value));
+	}
+}
+
+function stepDown() {
+	if (!input.value) return;
+	if (isStepDownAllowed.value === false) return;
+
+	input.value.stepDown();
+
+	if (input.value.value) {
+		return emit('update:modelValue', Number(input.value.value));
+	} else {
+		return emit('update:modelValue', props.min || 0);
+	}
+}
 </script>
 
 <style>
@@ -421,6 +389,14 @@ body {
 
 		&[type='number'] {
 			appearance: textfield;
+		}
+	}
+
+	&.small {
+		height: 38px;
+
+		.input {
+			padding: 8px 12px;
 		}
 	}
 
