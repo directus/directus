@@ -43,7 +43,7 @@
 
 		<div v-if="!disabled" class="actions">
 			<v-button v-if="enableCreate && createAllowed" @click="showUpload = true">{{ t('upload_file') }}</v-button>
-			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
+			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
@@ -346,20 +346,29 @@ const createAllowed = computed(() => {
 	const admin = userStore.currentUser?.role.admin_access === true;
 	if (admin) return true;
 
-	return !!permissionsStore.permissions.find(
+	const hasJunctionPermissions = !!permissionsStore.permissions.find(
+		(permission) =>
+			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
+	);
+
+	const hasRelatedPermissions = !!permissionsStore.permissions.find(
 		(permission) =>
 			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
 	);
+
+	return hasJunctionPermissions && hasRelatedPermissions;
 });
 
-const updateAllowed = computed(() => {
+const selectAllowed = computed(() => {
 	const admin = userStore.currentUser?.role.admin_access === true;
 	if (admin) return true;
 
-	return !!permissionsStore.permissions.find(
+	const hasJunctionPermissions = !!permissionsStore.permissions.find(
 		(permission) =>
-			permission.action === 'update' && permission.collection === relationInfo.value?.relatedCollection.collection
+			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
 	);
+
+	return hasJunctionPermissions;
 });
 </script>
 

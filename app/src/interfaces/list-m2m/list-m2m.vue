@@ -1,7 +1,5 @@
 <template>
-	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
-	</v-notice>
+	<v-notice v-if="!relationInfo" type="warning">{{ t('relationship_not_setup') }}</v-notice>
 	<div v-else class="many-to-many">
 		<template v-if="loading">
 			<v-skeleton-loader
@@ -11,9 +9,7 @@
 			/>
 		</template>
 
-		<v-notice v-else-if="displayItems.length === 0">
-			{{ t('no_items') }}
-		</v-notice>
+		<v-notice v-else-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
 		<v-list v-else>
 			<draggable
@@ -51,7 +47,7 @@
 
 		<div v-if="!disabled" class="actions">
 			<v-button v-if="enableCreate && createAllowed" @click="createItem">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
+			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
@@ -333,20 +329,29 @@ const createAllowed = computed(() => {
 	const admin = userStore.currentUser?.role.admin_access === true;
 	if (admin) return true;
 
-	return !!permissionsStore.permissions.find(
+	const hasJunctionPermissions = !!permissionsStore.permissions.find(
+		(permission) =>
+			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
+	);
+
+	const hasRelatedPermissions = !!permissionsStore.permissions.find(
 		(permission) =>
 			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
 	);
+
+	return hasJunctionPermissions && hasRelatedPermissions;
 });
 
-const updateAllowed = computed(() => {
+const selectAllowed = computed(() => {
 	const admin = userStore.currentUser?.role.admin_access === true;
 	if (admin) return true;
 
-	return !!permissionsStore.permissions.find(
+	const hasJunctionPermissions = !!permissionsStore.permissions.find(
 		(permission) =>
-			permission.action === 'update' && permission.collection === relationInfo.value?.relatedCollection.collection
+			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
 	);
+
+	return hasJunctionPermissions;
 });
 </script>
 
