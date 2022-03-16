@@ -22,6 +22,8 @@ import env from '../env';
 import { FilesService } from './files';
 import { getDateFormatted } from '../utils/get-date-formatted';
 import { toArray } from '@directus/shared/utils';
+import { NotificationsService } from './notifications';
+import logger from '../logger';
 
 export class ImportService {
 	knex: Knex;
@@ -174,80 +176,128 @@ export class ExportService {
 			file?: Partial<File>;
 		}
 	) {
-		const mimeTypes = {
-			xml: 'text/xml',
-			csv: 'text/csv',
-			json: 'application/json',
-		};
+		try {
+			const mimeTypes = {
+				xml: 'text/xml',
+				csv: 'text/csv',
+				json: 'application/json',
+			};
 
-		const database = getDatabase();
+			const database = getDatabase();
 
-		const { path, cleanup } = await createTmpFile();
+			const { path, cleanup } = await createTmpFile();
 
-		await database.transaction(async (trx) => {
-			const service = new ItemsService(collection, {
-				accountability: this.accountability,
-				schema: this.schema,
-				knex: trx,
-			});
-
-			let hasMore = true;
-			let page = 0;
-			let readCount = 0;
-			const requestedLimit = query.limit ?? -1;
-
-			while (hasMore) {
-				let limit = env.EXPORT_BATCH_SIZE;
-
-				if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
-					limit = requestedLimit - readCount;
-				}
-
-				const result = await service.readByQuery({
-					...query,
-					limit,
-					page,
+			await database.transaction(async (trx) => {
+				const service = new ItemsService(collection, {
+					accountability: this.accountability,
+					schema: this.schema,
+					knex: trx,
 				});
 
-				readCount += result.length;
+				const count = await service
+					.readByQuery({
+						...query,
+						aggregate: {
+							count: ['*'],
+						},
+					})
+					.then((result) => Number(result?.[0]?.count ?? 0));
 
-				if (result.length) {
-					await appendFile(path, this.transform(result, type));
+				const batchesRequired = Math.ceil(count / env.EXPORT_BATCH_SIZE);
+				const requestedLimit = query.limit ?? -1;
+
+				let readCount = 0;
+
+				for (let batch = 0; batch <= batchesRequired; batch++) {
+					let limit = env.EXPORT_BATCH_SIZE;
+
+					if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
+						limit = requestedLimit - readCount;
+					}
+
+					const result = await service.readByQuery({
+						...query,
+						limit,
+						page: batch,
+					});
+
+					readCount += result.length;
+
+					if (result.length) {
+						await appendFile(
+							path,
+							this.transform(result, type, { includeHeader: batch === 0, includeFooter: batch === batchesRequired })
+						);
+					}
 				}
+			});
 
-				page++;
-				hasMore = result.length >= env.EXPORT_BATCH_SIZE;
-				if (requestedLimit > 0 && readCount >= requestedLimit) hasMore = false;
+			const filesService = new FilesService({
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			const storage: string = toArray(env.STORAGE_LOCATIONS)[0];
+
+			const title = `Export of ${collection} at ${getDateFormatted()}`;
+			const filename = `${title}.${type}`;
+
+			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
+				...(options?.file ?? {}),
+				title: options?.file?.title ?? title,
+				filename_download: options?.file?.filename_download ?? filename,
+				storage: options?.file?.storage ?? storage,
+				type: mimeTypes[type],
+			};
+
+			const savedFile = await filesService.uploadOne(createReadStream(path), fileWithDefaults);
+
+			if (this.accountability?.user) {
+				const notificationsService = new NotificationsService({
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				await notificationsService.createOne({
+					recipient: this.accountability.user,
+					sender: this.accountability.user,
+					subject: `Your export of ${collection} is ready`,
+					collection: `directus_files`,
+					item: savedFile,
+				});
 			}
-		});
 
-		const filesService = new FilesService({
-			accountability: this.accountability,
-			schema: this.schema,
-		});
+			await cleanup();
+		} catch (err: any) {
+			logger.error(err, `Couldn't export ${collection}: ${err.message}`);
 
-		const storage: string = toArray(env.STORAGE_LOCATIONS)[0];
+			if (this.accountability?.user) {
+				const notificationsService = new NotificationsService({
+					accountability: this.accountability,
+					schema: this.schema,
+				});
 
-		const title = `Export of ${collection} at ${getDateFormatted()}`;
-		const filename = `${title}.${type}`;
-
-		const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
-			...(options?.file ?? {}),
-			title: options?.file?.title ?? title,
-			filename_download: options?.file?.filename_download ?? filename,
-			storage: options?.file?.storage ?? storage,
-			type: mimeTypes[type],
-		};
-
-		await filesService.uploadOne(createReadStream(path), fileWithDefaults);
-
-		await cleanup();
+				await notificationsService.createOne({
+					recipient: this.accountability.user,
+					sender: this.accountability.user,
+					subject: `Your export of ${collection} failed`,
+					message: `Please contact your system administrator for more information.`,
+				});
+			}
+		}
 	}
 
 	/**
 	 * Transform a given input object / array to the given type
 	 */
-	transform(input: Record<string, any> | Record<string, any>[], type: 'xml' | 'csv' | 'json'): string {
+	transform(
+		input: Record<string, any> | Record<string, any>[],
+		type: 'xml' | 'csv' | 'json',
+		options?: {
+			includeHeader?: boolean;
+			includeFooter?: boolean;
+		}
+	): string {
 		if (type === 'json') {
 			return JSON.stringify(input || null, null, '\t');
 		}
@@ -257,7 +307,10 @@ export class ExportService {
 		}
 
 		if (type === 'csv') {
-			const parser = new CSVParser({ transforms: [CSVTransforms.flatten({ separator: '.' })] });
+			const parser = new CSVParser({
+				transforms: [CSVTransforms.flatten({ separator: '.' })],
+				header: options?.includeHeader !== false,
+			});
 			return parser.parse(input);
 		}
 
