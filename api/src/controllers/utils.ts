@@ -144,8 +144,8 @@ router.post(
 			throw new InvalidPayloadException(`"query" is required.`);
 		}
 
-		if (!req.body.type) {
-			throw new InvalidPayloadException(`"type" is required.`);
+		if (!req.body.format) {
+			throw new InvalidPayloadException(`"format" is required.`);
 		}
 
 		const service = new ExportService({
@@ -154,7 +154,9 @@ router.post(
 		});
 
 		// We're not awaiting this, as it's supposed to run async in the background
-		service.exportToFile(req.params.collection, req.body.query, req.body.type, req.body.file);
+		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
+			file: req.body.file,
+		});
 
 		return next();
 	}),

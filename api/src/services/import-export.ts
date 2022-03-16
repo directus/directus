@@ -239,7 +239,7 @@ export class ExportService {
 
 			const storage: string = toArray(env.STORAGE_LOCATIONS)[0];
 
-			const title = `Export of ${collection} at ${getDateFormatted()}`;
+			const title = `export-${collection}-${getDateFormatted()}`;
 			const filename = `${title}.${type}`;
 
 			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {

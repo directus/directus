@@ -63,7 +63,8 @@
 					v-tooltip.bottom="location === 'download' ? t('download_file') : t('start_export')"
 					rounded
 					icon
-					@click="exportDataLocal"
+					:loading="exporting"
+					@click="startExport"
 				>
 					<v-icon :name="location === 'download' ? 'download' : 'start'" />
 				</v-button>
@@ -72,7 +73,7 @@
 				<div class="field half-left">
 					<p class="type-label">{{ t('format') }}</p>
 					<v-select
-						v-model="exportSettings.format"
+						v-model="format"
 						:items="[
 							{
 								text: t('csv'),
@@ -99,6 +100,7 @@
 					<p class="type-label">{{ t('export_location') }}</p>
 					<v-select
 						v-model="location"
+						:disabled="lockedToFiles"
 						:items="[
 							{ value: 'download', text: t('download_file') },
 							{ value: 'files', text: t('file_library') },
@@ -111,6 +113,8 @@
 					<folder-picker v-if="location === 'files'" v-model="folder" />
 					<v-notice v-else>Not available for local downloads</v-notice>
 				</div>
+
+				<v-notice class="full">Not available for local downloads</v-notice>
 
 				<v-divider />
 
@@ -165,10 +169,11 @@ import { getRootPath } from '../../../utils/get-root-path';
 import { notify } from '../../../utils/notify';
 import readableMimeType from '../../../utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollection } from '@directus/shared/composables';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -209,25 +214,40 @@ const { primaryKeyField, fields } = useCollection(props.collection);
 
 const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? 25,
-	format: 'csv',
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
 	sort: props.layoutQuery?.sort ?? `${primaryKeyField.value!.field}`,
 });
 
+const format = ref('csv');
 const location = ref('download');
 const folder = ref<string>();
 
+const lockedToFiles = computed(() => exportSettings.limit > 2500);
+
+watch(
+	() => exportSettings.limit,
+	() => {
+		if (lockedToFiles.value) {
+			location.value = 'files';
+		}
+	}
+);
+
 const sortDirection = computed({
 	get() {
-		return exportSettings.sort.startsWith('-') ? 'ASC' : 'DESC';
+		return exportSettings.sort.startsWith('-') ? 'DESC' : 'ASC';
 	},
 	set(newDirection: 'ASC' | 'DESC') {
-		if (newDirection) {
-			exportSettings.sort = exportSettings.sort.substring(1);
+		if (newDirection === 'ASC') {
+			if (exportSettings.sort.startsWith('-')) {
+				exportSettings.sort = exportSettings.sort.substring(1);
+			}
 		} else {
-			exportSettings.sort = `-${exportSettings.sort}`;
+			if (exportSettings.sort.startsWith('-') === false) {
+				exportSettings.sort = `-${exportSettings.sort}`;
+			}
 		}
 	},
 });
@@ -241,6 +261,8 @@ const sortField = computed({
 		exportSettings.sort = newSortField;
 	},
 });
+
+const exporting = ref(false);
 
 function onChange(event: Event) {
 	const files = (event.target as HTMLInputElement)?.files;
@@ -303,6 +325,14 @@ function useUpload() {
 	}
 }
 
+function startExport() {
+	if (location.value === 'download') {
+		exportDataLocal();
+	} else {
+		exportDataFiles();
+	}
+}
+
 function exportDataLocal() {
 	const endpoint = props.collection.startsWith('directus_')
 		? `${props.collection.substring(9)}`
@@ -312,7 +342,7 @@ function exportDataLocal() {
 
 	let params: Record<string, unknown> = {
 		access_token: api.defaults.headers.common['Authorization'].substring(7),
-		export: exportSettings.format,
+		export: format,
 	};
 
 	if (exportSettings.sort) params.sort = exportSettings.sort;
@@ -328,6 +358,36 @@ function exportDataLocal() {
 	});
 
 	window.open(exportUrl);
+}
+
+async function exportDataFiles() {
+	exporting.value = true;
+
+	try {
+		await api.post(`/utils/export/${props.collection}`, {
+			query: {
+				...exportSettings,
+				sort: [exportSettings.sort],
+			},
+			format: format.value,
+			file: {
+				folder: folder.value,
+			},
+		});
+
+		exportDialogActive.value = false;
+
+		notify({
+			title: t('export_started'),
+			text: t('export_started_copy'),
+			type: 'success',
+			icon: 'file_download',
+		});
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		exporting.value = false;
+	}
 }
 </script>
 

@@ -7,5 +7,5 @@ export function getDateFormatted() {
 	let day = String(date.getDate());
 	if (day.length === 1) day = '0' + day;
 
-	return `${date.getFullYear()}-${month}-${day} at ${date.getHours()}.${date.getMinutes()}.${date.getSeconds()}`;
+	return `${date.getFullYear()}${month}${day}-${date.getHours()}${date.getMinutes()}${date.getSeconds()}`;
 }
