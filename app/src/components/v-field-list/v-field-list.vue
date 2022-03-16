@@ -14,7 +14,6 @@
 			v-for="field in treeList"
 			:key="field.field"
 			:field="field"
-			:depth="depth"
 			:search="search"
 			@add="$emit('select-field', $event)"
 		/>
@@ -32,7 +31,6 @@ import { useFieldsStore } from '@/stores';
 
 interface Props {
 	collection: string;
-	depth?: number;
 	disabledFields?: string[];
 }
 

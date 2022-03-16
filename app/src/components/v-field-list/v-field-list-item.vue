@@ -1,6 +1,6 @@
 <template>
 	<v-list-item
-		v-if="field.children === undefined || depth === 0"
+		v-if="field.children === undefined"
 		:disabled="field.disabled"
 		clickable
 		@click="$emit('add', field.key)"
@@ -10,7 +10,7 @@
 		</v-list-item-content>
 	</v-list-item>
 
-	<v-list-group v-else :value="field.key" :clickable="!field.disabled" @click="$emit('add', field.key)">
+	<v-list-group v-else :clickable="!field.disabled" :value="field.key" @click="$emit('add', field.key)">
 		<template #activator>
 			<v-list-item-content>
 				<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
@@ -21,7 +21,6 @@
 			v-for="childField in field.children"
 			:key="childField.key"
 			:field="childField"
-			:depth="depth && depth - 1"
 			:search="search"
 			@add="$emit('add', $event)"
 		/>
@@ -47,7 +46,6 @@ type FieldInfo = {
 
 interface Props {
 	field: FieldInfo;
-	depth?: number;
 	search?: string;
 }
 

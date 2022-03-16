@@ -11,6 +11,7 @@ export type FieldNode = {
 	relatedCollection?: string;
 	key: string;
 	children?: FieldNode[];
+	group?: boolean;
 };
 
 export type FieldTreeContext = {
@@ -58,7 +59,10 @@ export function useFieldTree(
 			)
 			.filter((field) => filter(field));
 
-		const topLevelFields = allFields.filter((field) => isNil(field.meta?.group));
+		const topLevelFields = allFields.filter((field) => {
+			if (parent?.group === true) return field.meta?.group === parent?.field;
+			return isNil(field.meta?.group);
+		});
 
 		const fieldNodes = topLevelFields.flatMap((field) => makeNode(field, allFields, parent));
 
@@ -70,19 +74,18 @@ export function useFieldTree(
 		const context = parent ? parent.key + '.' : '';
 
 		if (field?.meta?.special?.includes('group')) {
-			const groupChildrenNodes = allFields
-				.filter(
-					(existingField) => existingField.meta?.group === field.field && existingField.collection === field.collection
-				)
-				.flatMap((field) => makeNode(field, allFields, parent));
-
-			return {
+			const node: FieldNode = {
 				name: field.name,
 				field: field.field,
 				collection: field.collection,
 				relatedCollection: undefined,
 				key: context + field.field,
-				children: groupChildrenNodes,
+				group: true,
+			};
+
+			return {
+				...node,
+				children: getTree(field.collection, node),
 			};
 		}
 
