@@ -58,6 +58,16 @@
 		</div>
 
 		<v-drawer v-model="exportDialogActive" :title="t('export_items')">
+			<template #actions>
+				<v-button
+					v-tooltip.bottom="location === 'download' ? t('download_file') : t('start_export')"
+					rounded
+					icon
+					@click="exportDataLocal"
+				>
+					<v-icon :name="location === 'download' ? 'download' : 'start'" />
+				</v-button>
+			</template>
 			<div class="export-fields">
 				<div class="field half-left">
 					<p class="type-label">{{ t('format') }}</p>
