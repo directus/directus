@@ -6,7 +6,7 @@ import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { set, filter, includes, isNull, isEmpty } from 'lodash';
-import { DiffNew } from 'deep-diff';
+import { DiffDeleted, DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
 import { Diff } from 'deep-diff';
@@ -26,15 +26,26 @@ export async function applySnapshot(
 		diff: Diff<Collection | undefined>[];
 	};
 
-	const topLevelCollections = filter(
+	const toBeCreateCollections = filter(
 		snapshotDiff.collections,
 		({ diff }) => diff[0].kind === 'N' && isNull((diff[0] as DiffNew<Collection>).rhs.meta?.group)
 	).map((item) => item as CollectionDelta);
+	const toBeDeleteCollections = filter(
+		snapshotDiff.collections,
+		({ diff }) => diff[0].kind === 'D' && isNull((diff[0] as DiffDeleted<Collection>).lhs.meta?.group)
+	).map((item) => item as CollectionDelta);
 
-	const getLowerLevelCollection = function (currentLevelCollections: string[]) {
+	const getToBeCreateCollection = function (currentLevelCollections: string[]) {
 		return filter(snapshotDiff.collections, ({ diff }) => {
 			if ((diff[0] as DiffNew<Collection>).rhs) {
 				return includes(currentLevelCollections, (diff[0] as DiffNew<Collection>).rhs.meta?.group);
+			}
+		}).map((item) => item as CollectionDelta);
+	};
+	const getToBeDeleteCollection = function (currentLevelCollections: string[]) {
+		return filter(snapshotDiff.collections, ({ diff }) => {
+			if ((diff[0] as DiffDeleted<Collection>).lhs) {
+				return includes(currentLevelCollections, (diff[0] as DiffDeleted<Collection>).lhs.meta?.group);
 			}
 		}).map((item) => item as CollectionDelta);
 	};
@@ -60,23 +71,32 @@ export async function applySnapshot(
 							throw err;
 						}
 						snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== item.collection);
-						await createCollections(getLowerLevelCollection([item.collection]));
+						await createCollections(getToBeCreateCollection([item.collection]));
 					}
 				}
 			}
 		};
-		await createCollections(topLevelCollections);
-
-		for (const { collection, diff } of snapshotDiff.collections) {
-			if (diff?.[0].kind === 'D') {
-				try {
-					await collectionsService.deleteOne(collection);
-				} catch (err) {
-					logger.error(`Failed to delete collection "${collection}"`);
-					throw err;
+		const deleteCollections = async function (collections: CollectionDelta[]) {
+			if (!isEmpty(collections)) {
+				for (const item of collections) {
+					if (item.diff?.[0].kind === 'D') {
+						const child = getToBeDeleteCollection([item.collection]);
+						logger.debug('Finding child..', child);
+						await deleteCollections(child);
+						try {
+							logger.debug('Deleting collection...', item.collection);
+							await collectionsService.deleteOne(item.collection);
+						} catch (err) {
+							logger.error(`Failed to delete collection "${item.collection}"`);
+							throw err;
+						}
+					}
 				}
 			}
-
+		};
+		await createCollections(toBeCreateCollections);
+		await deleteCollections(toBeDeleteCollections);
+		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
 				const newValues = snapshot.collections.find((field) => {
 					return field.collection === collection;
