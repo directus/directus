@@ -51,33 +51,61 @@
 			<v-divider />
 
 			<div class="field full">
-				<p class="type-label">{{ t('label_export') }}</p>
-				<v-select
-					v-model="format"
-					:items="[
-						{
-							text: t('csv'),
-							value: 'csv',
-						},
-						{
-							text: t('json'),
-							value: 'json',
-						},
-						{
-							text: t('xml'),
-							value: 'xml',
-						},
-					]"
-				/>
-				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
-			</div>
-
-			<div class="field full">
-				<v-button small full-width @click="exportData">
-					{{ t('export_data_button') }}
+				<v-button small full-width @click="exportDialogActive = true">
+					{{ t('export_items') }}
 				</v-button>
 			</div>
 		</div>
+
+		<v-dialog v-model="exportDialogActive">
+			<v-card>
+				<v-card-title>{{ t('export_items') }}</v-card-title>
+				<v-card-text>
+					<div class="fields">
+						<div class="field half">
+							<p class="type-label">{{ t('format') }}</p>
+							<v-select
+								v-model="exportSettings.format"
+								:items="[
+									{
+										text: t('csv'),
+										value: 'csv',
+									},
+									{
+										text: t('json'),
+										value: 'json',
+									},
+									{
+										text: t('xml'),
+										value: 'xml',
+									},
+								]"
+							/>
+						</div>
+						<div class="field half">
+							<p class="type-label">{{ t('limit') }}</p>
+							<v-select
+								v-model="exportSettings.limit"
+								:items="['25', '50', '100', '250', '500', ' 1000']"
+								allow-other
+							/>
+						</div>
+						<div class="field full">
+							<p class="type-label">{{ t('field', 2) }}</p>
+							<v-field-select v-model="exportSettings.fields" />
+						</div>
+					</div>
+				</v-card-text>
+				<v-card-actions>
+					<!-- <v-button :disabled="urlLoading" secondary @click="activeDialog = null">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+								{{ t('export_items') }}
+							</v-button> -->
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</sidebar-detail>
 </template>
 
@@ -87,8 +115,9 @@ import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import readableMimeType from '@/utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useCollection } from '@directus/shared/composables';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -113,17 +142,27 @@ const emit = defineEmits(['refresh']);
 
 const { t } = useI18n();
 
-const format = ref('csv');
-const useFilters = ref(true);
-
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const file = ref<File | null>(null);
 const { uploading, progress, importing, uploadFile } = useUpload();
 
+const exportDialogActive = ref(false);
+
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
 	return readableMimeType(file.value.type, true);
+});
+
+const { primaryKeyField } = useCollection(props.collection);
+
+const exportSettings = reactive({
+	limit: props.layoutQuery?.limit ?? 25,
+	format: 'csv',
+	filter: props.filter,
+	search: props.search,
+	fields: props.layoutQuery?.fields ?? [primaryKeyField.value!.field],
+	sort: props.layoutQuery?.sort ?? `${primaryKeyField.value!.field}`,
 });
 
 function onChange(event: Event) {
@@ -187,32 +226,24 @@ function useUpload() {
 	}
 }
 
-function exportData() {
+function exportDataLocal() {
 	const endpoint = props.collection.startsWith('directus_')
 		? `${props.collection.substring(9)}`
 		: `items/${props.collection}`;
+
 	const url = getRootPath() + endpoint;
 
 	let params: Record<string, unknown> = {
 		access_token: api.defaults.headers.common['Authorization'].substring(7),
-		export: format.value || 'json',
+		export: exportSettings.format,
 	};
 
-	if (useFilters.value === true) {
-		if (props.layoutQuery?.sort) params.sort = props.layoutQuery.sort;
-		if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
-		if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
-
-		if (props.search) params.search = props.search;
-
-		if (props.filter) {
-			params.filter = props.filter;
-		}
-
-		if (props.search) {
-			params.search = props.search;
-		}
-	}
+	if (exportSettings.sort) params.sort = exportSettings.sort;
+	if (exportSettings.fields) params.fields = exportSettings.fields;
+	if (exportSettings.limit) params.limit = props.layoutQuery.limit;
+	if (exportSettings.search) params.search = exportSettings.search;
+	if (exportSettings.filter) params.filter = exportSettings.filter;
+	if (exportSettings.search) params.search = exportSettings.search;
 
 	const exportUrl = api.getUri({
 		url,

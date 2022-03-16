@@ -42,6 +42,7 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+export_items: Export Items
 and: And
 or: Or
 fill_width: Fill Width
@@ -345,7 +346,6 @@ label_export: Export
 import_export: Import / Export
 format: Format
 use_current_filters_settings: Use Current Filters & Settings
-export_data_button: Start Export
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
