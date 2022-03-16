@@ -81,15 +81,14 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType, computed } from 'vue';
-import { Filter } from '@directus/shared/types';
+<script lang="ts" setup>
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { useCollectionsStore } from '@/stores/';
-import readableMimeType from '@/utils/readable-mime-type';
 import { notify } from '@/utils/notify';
+import readableMimeType from '@/utils/readable-mime-type';
+import { Filter } from '@directus/shared/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -97,158 +96,131 @@ type LayoutQuery = {
 	limit?: number;
 };
 
-export default defineComponent({
-	props: {
-		layoutQuery: {
-			type: Object as PropType<LayoutQuery>,
-			default: (): LayoutQuery => ({}),
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: null,
-		},
-		search: {
-			type: String as PropType<string | null>,
-			default: null,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-	},
-	emits: ['refresh'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	collection: string;
+	layoutQuery?: LayoutQuery;
+	filter?: Filter;
+	search?: string;
+}
 
-		const format = ref('csv');
-		const useFilters = ref(true);
-		const collectionsStore = useCollectionsStore();
-		const collectionName = computed(() => collectionsStore.getCollection(props.collection)?.name);
+const props = withDefaults(defineProps<Props>(), {
+	layoutQuery: undefined,
+	filter: undefined,
+	search: undefined,
+});
 
-		const fileInput = ref<HTMLInputElement | null>(null);
+const emit = defineEmits(['refresh']);
 
-		const file = ref<File | null>(null);
-		const { uploading, progress, importing, uploadFile } = useUpload();
+const { t } = useI18n();
 
-		const fileExtension = computed(() => {
-			if (file.value === null) return null;
-			return readableMimeType(file.value.type, true);
-		});
+const format = ref('csv');
+const useFilters = ref(true);
 
-		return {
-			t,
-			fileInput,
-			file,
-			fileExtension,
-			onChange,
-			clearFileInput,
-			importData,
-			uploading,
-			progress,
-			importing,
-			format,
-			useFilters,
-			exportData,
-			collectionName,
-		};
+const fileInput = ref<HTMLInputElement | null>(null);
 
-		function onChange(event: Event) {
-			const files = (event.target as HTMLInputElement)?.files;
+const file = ref<File | null>(null);
+const { uploading, progress, importing, uploadFile } = useUpload();
 
-			if (files && files.length > 0) {
-				file.value = files.item(0)!;
-			}
-		}
+const fileExtension = computed(() => {
+	if (file.value === null) return null;
+	return readableMimeType(file.value.type, true);
+});
 
-		function clearFileInput() {
-			if (fileInput.value) fileInput.value.value = '';
-			file.value = null;
-		}
+function onChange(event: Event) {
+	const files = (event.target as HTMLInputElement)?.files;
 
-		function importData() {
-			uploadFile(file.value!);
-		}
+	if (files && files.length > 0) {
+		file.value = files.item(0)!;
+	}
+}
 
-		function useUpload() {
-			const uploading = ref(false);
-			const importing = ref(false);
-			const progress = ref(0);
+function clearFileInput() {
+	if (fileInput.value) fileInput.value.value = '';
+	file.value = null;
+}
 
-			return { uploading, progress, importing, uploadFile };
+function importData() {
+	uploadFile(file.value!);
+}
 
-			async function uploadFile(file: File) {
-				uploading.value = true;
-				importing.value = false;
-				progress.value = 0;
+function useUpload() {
+	const uploading = ref(false);
+	const importing = ref(false);
+	const progress = ref(0);
 
-				const formData = new FormData();
-				formData.append('file', file);
+	return { uploading, progress, importing, uploadFile };
 
-				try {
-					await api.post(`/utils/import/${props.collection}`, formData, {
-						onUploadProgress: (progressEvent: ProgressEvent) => {
-							const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-							progress.value = percentCompleted;
-							importing.value = percentCompleted === 100 ? true : false;
-						},
-					});
+	async function uploadFile(file: File) {
+		uploading.value = true;
+		importing.value = false;
+		progress.value = 0;
 
-					clearFileInput();
+		const formData = new FormData();
+		formData.append('file', file);
 
-					emit('refresh');
-
-					notify({
-						title: t('import_data_success', { filename: file.name }),
-					});
-				} catch (err: any) {
-					notify({
-						title: t('import_data_error'),
-						type: 'error',
-					});
-				} finally {
-					uploading.value = false;
-					importing.value = false;
-					progress.value = 0;
-				}
-			}
-		}
-
-		function exportData() {
-			const endpoint = props.collection.startsWith('directus_')
-				? `${props.collection.substring(9)}`
-				: `items/${props.collection}`;
-			const url = getRootPath() + endpoint;
-
-			let params: Record<string, unknown> = {
-				access_token: api.defaults.headers.common['Authorization'].substring(7),
-				export: format.value || 'json',
-			};
-
-			if (useFilters.value === true) {
-				if (props.layoutQuery?.sort) params.sort = props.layoutQuery.sort;
-				if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
-				if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
-
-				if (props.search) params.search = props.search;
-
-				if (props.filter) {
-					params.filter = props.filter;
-				}
-
-				if (props.search) {
-					params.search = props.search;
-				}
-			}
-
-			const exportUrl = api.getUri({
-				url,
-				params,
+		try {
+			await api.post(`/utils/import/${props.collection}`, formData, {
+				onUploadProgress: (progressEvent: ProgressEvent) => {
+					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+					progress.value = percentCompleted;
+					importing.value = percentCompleted === 100 ? true : false;
+				},
 			});
 
-			window.open(exportUrl);
+			clearFileInput();
+
+			emit('refresh');
+
+			notify({
+				title: t('import_data_success', { filename: file.name }),
+			});
+		} catch (err: any) {
+			notify({
+				title: t('import_data_error'),
+				type: 'error',
+			});
+		} finally {
+			uploading.value = false;
+			importing.value = false;
+			progress.value = 0;
 		}
-	},
-});
+	}
+}
+
+function exportData() {
+	const endpoint = props.collection.startsWith('directus_')
+		? `${props.collection.substring(9)}`
+		: `items/${props.collection}`;
+	const url = getRootPath() + endpoint;
+
+	let params: Record<string, unknown> = {
+		access_token: api.defaults.headers.common['Authorization'].substring(7),
+		export: format.value || 'json',
+	};
+
+	if (useFilters.value === true) {
+		if (props.layoutQuery?.sort) params.sort = props.layoutQuery.sort;
+		if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
+		if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
+
+		if (props.search) params.search = props.search;
+
+		if (props.filter) {
+			params.filter = props.filter;
+		}
+
+		if (props.search) {
+			params.search = props.search;
+		}
+	}
+
+	const exportUrl = api.getUri({
+		url,
+		params,
+	});
+
+	window.open(exportUrl);
+}
 </script>
 
 <style lang="scss" scoped>
