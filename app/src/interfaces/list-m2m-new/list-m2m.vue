@@ -44,6 +44,7 @@
 			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
+			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
 		</div>
 
 		<drawer-item
@@ -83,7 +84,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { isEmpty, clamp, get } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { usePermissionsStore, useUserStore } from '@/stores';
 
 const props = withDefaults(
@@ -121,17 +122,35 @@ const value = computed({
 });
 
 const templateWithDefaults = computed(() => {
-	return (
-		props.template ||
-		relationInfo.value?.relatedCollection.meta?.display_template ||
-		`{{${relationInfo.value?.relatedPrimaryKeyField.field ?? 'id'}}}`
-	);
+	if (!relationInfo.value) return null;
+
+	if (props.template) return props.template;
+	if (relationInfo.value.junctionCollection.meta?.display_template)
+		return relationInfo.value.junctionCollection.meta?.display_template;
+
+	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
+	if (relatedDisplayTemplate) {
+		const regex = /({{.*?}})/g;
+		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
+
+		for (const part of parts) {
+			if (part.startsWith('{{') === false) continue;
+			const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+			const newPart = `{{${relationInfo.value.relation.field}.${key}}}`;
+
+			relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
+		}
+
+		return relatedDisplayTemplate;
+	}
+
+	return `{{${relationInfo.value.relation.field}.${relationInfo.value.relatedPrimaryKeyField.field}}}`;
 });
 
 const fields = computed(() =>
 	adjustFieldsForDisplays(
 		getFieldsFromTemplate(templateWithDefaults.value),
-		relationInfo.value?.relatedCollection.collection ?? ''
+		relationInfo.value?.junctionCollection.collection ?? ''
 	)
 );
 
@@ -219,7 +238,7 @@ function stageEdits(item: Record<string, any>) {
 }
 
 function cancelEdit() {
-	editModalActive.value = true;
+	editModalActive.value = false;
 }
 
 function stageSelections(items: (string | number)[]) {
@@ -227,8 +246,10 @@ function stageSelections(items: (string | number)[]) {
 		if (!relationInfo.value) return {};
 
 		return {
-			[relationInfo.value.relatedPrimaryKeyField.field]: item,
-			[relationInfo.value.reverseJunctionField.field]: props.primaryKey,
+			[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
+			[relationInfo.value.junctionField.field]: {
+				[relationInfo.value.relatedPrimaryKeyField.field]: item,
+			},
 		};
 	});
 	update(...selected);
@@ -265,29 +286,29 @@ const customFilter = computed(() => {
 
 	if (!relationInfo.value) return filter;
 
-	const selectFilter: Filter = {
-		_or: [
-			{
-				[relationInfo.value.reverseJunctionField.field]: {
-					_neq: props.primaryKey,
-				},
-			},
-			{
-				[relationInfo.value.reverseJunctionField.field]: {
-					_null: true,
-				},
-			},
-		],
-	};
+	// const selectFilter: Filter = {
+	// 	_or: [
+	// 		{
+	// 			[relationInfo.value.reverseJunctionField.field]: {
+	// 				_neq: props.primaryKey,
+	// 			},
+	// 		},
+	// 		{
+	// 			[relationInfo.value.reverseJunctionField.field]: {
+	// 				_null: true,
+	// 			},
+	// 		},
+	// 	],
+	// };
 
-	if (selectedPrimaryKeys.value.length > 0)
-		filter._and.push({
-			[relationInfo.value.relatedPrimaryKeyField.field]: {
-				_nin: selectedPrimaryKeys.value,
-			},
-		});
+	// if (selectedPrimaryKeys.value.length > 0)
+	// 	filter._and.push({
+	// 		[relationInfo.value.relatedPrimaryKeyField.field]: {
+	// 			_nin: selectedPrimaryKeys.value,
+	// 		},
+	// 	});
 
-	filter._and.push(selectFilter);
+	// filter._and.push(selectFilter);
 
 	return filter;
 });
