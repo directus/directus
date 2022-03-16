@@ -1,14 +1,27 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
-import { AbstractServiceOptions } from '../types';
-import { Accountability, SchemaOverview } from '@directus/shared/types';
-import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
+import { AbstractServiceOptions, File } from '../types';
+import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import {
+	ForbiddenException,
+	InvalidPayloadException,
+	ServiceUnavailableException,
+	UnsupportedMediaTypeException,
+} from '../exceptions';
 import StreamArray from 'stream-json/streamers/StreamArray';
 import { ItemsService } from './items';
 import { queue } from 'async';
 import destroyStream from 'destroy';
 import csv from 'csv-parser';
 import { set, transform } from 'lodash';
+import { parse as toXML } from 'js2xmlparser';
+import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
+import { appendFile, createReadStream } from 'fs-extra';
+import { file as createTmpFile } from 'tmp-promise';
+import env from '../env';
+import { FilesService } from './files';
+import { getDateFormatted } from '../utils/get-date-formatted';
+import { toArray } from '@directus/shared/utils';
 
 export class ImportService {
 	knex: Knex;
@@ -134,5 +147,120 @@ export class ImportService {
 				});
 			});
 		});
+	}
+}
+
+export class ExportService {
+	knex: Knex;
+	accountability: Accountability | null;
+	schema: SchemaOverview;
+
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || getDatabase();
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
+	}
+
+	/**
+	 * Export the query results as a named file. Will query in batches, and keep appending a tmp file
+	 * until all the data is retrieved. Uploads the result as a new file using the regular
+	 * FilesService upload method.
+	 */
+	async exportToFile(
+		collection: string,
+		query: Partial<Query>,
+		type: 'xml' | 'csv' | 'json',
+		options?: {
+			file?: Partial<File>;
+		}
+	) {
+		const mimeTypes = {
+			xml: 'text/xml',
+			csv: 'text/csv',
+			json: 'application/json',
+		};
+
+		const database = getDatabase();
+
+		const { path, cleanup } = await createTmpFile();
+
+		await database.transaction(async (trx) => {
+			const service = new ItemsService(collection, {
+				accountability: this.accountability,
+				schema: this.schema,
+				knex: trx,
+			});
+
+			let hasMore = true;
+			let page = 0;
+			let readCount = 0;
+			const requestedLimit = query.limit ?? -1;
+
+			while (hasMore) {
+				let limit = env.EXPORT_BATCH_SIZE;
+
+				if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
+					limit = requestedLimit - readCount;
+				}
+
+				const result = await service.readByQuery({
+					...query,
+					limit,
+					page,
+				});
+
+				readCount += result.length;
+
+				if (result.length) {
+					await appendFile(path, this.transform(result, type));
+				}
+
+				page++;
+				hasMore = result.length >= env.EXPORT_BATCH_SIZE;
+				if (requestedLimit > 0 && readCount >= requestedLimit) hasMore = false;
+			}
+		});
+
+		const filesService = new FilesService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const storage: string = toArray(env.STORAGE_LOCATIONS)[0];
+
+		const title = `Export of ${collection} at ${getDateFormatted()}`;
+		const filename = `${title}.${type}`;
+
+		const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
+			...(options?.file ?? {}),
+			title: options?.file?.title ?? title,
+			filename_download: options?.file?.filename_download ?? filename,
+			storage: options?.file?.storage ?? storage,
+			type: mimeTypes[type],
+		};
+
+		await filesService.uploadOne(createReadStream(path), fileWithDefaults);
+
+		await cleanup();
+	}
+
+	/**
+	 * Transform a given input object / array to the given type
+	 */
+	transform(input: Record<string, any> | Record<string, any>[], type: 'xml' | 'csv' | 'json'): string {
+		if (type === 'json') {
+			return JSON.stringify(input || null, null, '\t');
+		}
+
+		if (type === 'xml') {
+			return toXML('data', input);
+		}
+
+		if (type === 'csv') {
+			const parser = new CSVParser({ transforms: [CSVTransforms.flatten({ separator: '.' })] });
+			return parser.parse(input);
+		}
+
+		throw new ServiceUnavailableException(`Illegal export type used: "${type}"`, { service: 'export' });
 	}
 }
