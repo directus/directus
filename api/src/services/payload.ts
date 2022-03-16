@@ -532,7 +532,7 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-			if (!relation.meta || !payload[relation.meta.one_field!]) continue;
+			if (!relation.meta) continue;
 
 			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!].primary;
 			const relatedPrimaryKeyField = this.schema.collections[relation.collection].primary;
@@ -547,9 +547,11 @@ export class PayloadService {
 			const savedPrimaryKeys: PrimaryKey[] = [];
 
 			// Nested array of individual items
-			if (Array.isArray(payload[relation.meta!.one_field!])) {
-				for (let i = 0; i < (payload[relation.meta!.one_field!] || []).length; i++) {
-					const relatedRecord = (payload[relation.meta!.one_field!] || [])[i];
+			const field = payload[relation.meta!.one_field!];
+			if (!field || Array.isArray(field)) {
+				const updates = field || []; // treat falsey values as removing all children
+				for (let i = 0; i < updates.length; i++) {
+					const relatedRecord = updates[i];
 
 					let record = cloneDeep(relatedRecord);
 
@@ -629,7 +631,7 @@ export class PayloadService {
 			}
 			// "Updates" object w/ create/update/delete
 			else {
-				const alterations = payload[relation.meta!.one_field!] as Alterations;
+				const alterations = field as Alterations;
 				const { error } = nestedUpdateSchema.validate(alterations);
 				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
 
