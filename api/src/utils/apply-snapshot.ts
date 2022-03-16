@@ -1,14 +1,15 @@
-import { Snapshot, SnapshotDiff } from '../types';
+import { Collection, Snapshot, SnapshotDiff } from '../types';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
 import { Knex } from 'knex';
 import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { set, uniq, map, get, isString, filter, includes } from 'lodash';
+import { set, filter, includes, isNull, isEmpty } from 'lodash';
 import { DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
+import { Diff } from 'deep-diff';
 
 export async function applySnapshot(
 	snapshot: Snapshot,
@@ -20,37 +21,53 @@ export async function applySnapshot(
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
 
-	const parentCollections = uniq(
-		map(snapshotDiff.collections, (item) => get(item, 'diff.0.rhs.meta.group')).filter((collection) =>
-			isString(collection)
-		)
-	);
+	type CollectionDelta = {
+		collection: string;
+		diff: Diff<Collection | undefined>[];
+	};
+
+	const topLevelCollections = filter(
+		snapshotDiff.collections,
+		({ diff }) => diff[0].kind === 'N' && isNull((diff[0] as DiffNew<Collection>).rhs.meta?.group)
+	).map((item) => item as CollectionDelta);
+
+	const getLowerLevelCollection = function (currentLevelCollections: string[]) {
+		return filter(snapshotDiff.collections, ({ diff }) => {
+			if ((diff[0] as DiffNew<Collection>).rhs) {
+				return includes(currentLevelCollections, (diff[0] as DiffNew<Collection>).rhs.meta?.group);
+			}
+		}).map((item) => item as CollectionDelta);
+	};
 
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
-		for (const item of filter(snapshotDiff.collections, ({ collection }) => includes(parentCollections, collection))) {
-			if (item.diff?.[0].kind === 'N' && item.diff[0].rhs) {
-				const fields = snapshotDiff.fields
-					.filter((fieldDiff) => fieldDiff.collection === item.collection)
-					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
-
-				try {
-					await collectionsService.createOne({
-						...item.diff[0].rhs,
-						fields,
-					});
-				} catch (err: any) {
-					logger.error(`Failed to create collection "${item.collection}"`);
-					throw err;
+		const createCollections = async function (collections: CollectionDelta[]) {
+			if (!isEmpty(collections)) {
+				for (const item of collections) {
+					logger.debug('Applying collection...', item.collection);
+					if (item.diff?.[0].kind === 'N' && item.diff[0].rhs) {
+						const fields = snapshotDiff.fields
+							.filter((fieldDiff) => fieldDiff.collection === item.collection)
+							.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
+						try {
+							await collectionsService.createOne({
+								...item.diff[0].rhs,
+								fields,
+							});
+						} catch (err: any) {
+							logger.error(`Failed to create collection "${item.collection}"`);
+							throw err;
+						}
+						snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== item.collection);
+						await createCollections(getLowerLevelCollection([item.collection]));
+					}
 				}
 			}
-		}
+		};
+		await createCollections(topLevelCollections);
 
-		for (const { collection, diff } of filter(
-			snapshotDiff.collections,
-			({ collection }) => !includes(parentCollections, collection)
-		)) {
+		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0].kind === 'D') {
 				try {
 					await collectionsService.deleteOne(collection);
@@ -58,28 +75,6 @@ export async function applySnapshot(
 					logger.error(`Failed to delete collection "${collection}"`);
 					throw err;
 				}
-			}
-
-			if (diff?.[0].kind === 'N' && diff[0].rhs) {
-				// We'll nest the to-be-created fields in the same collection creation, to prevent
-				// creating a collection without a primary key
-				const fields = snapshotDiff.fields
-					.filter((fieldDiff) => fieldDiff.collection === collection)
-					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
-
-				try {
-					await collectionsService.createOne({
-						...diff[0].rhs,
-						fields,
-					});
-				} catch (err: any) {
-					logger.error(`Failed to create collection "${collection}"`);
-					throw err;
-				}
-
-				// Now that the fields are in for this collection, we can strip them from the field
-				// edits
-				snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
 			}
 
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
