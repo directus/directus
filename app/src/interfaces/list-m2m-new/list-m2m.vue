@@ -5,9 +5,9 @@
 	<div v-else class="many-to-many">
 		<template v-if="loading">
 			<v-skeleton-loader
-				v-for="n in (value || []).length || 3"
+				v-for="n in clamp(totalItemCount - (page - 1) * limit, 0, limit)"
 				:key="n"
-				:type="(value || []).length > 4 ? 'block-list-item-dense' : 'block-list-item'"
+				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 			/>
 		</template>
 
@@ -25,7 +25,13 @@
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
-					<v-list-item :dense="displayItems.length > 4" block clickable @click="editItem(element)">
+					<v-list-item
+						:class="{ deleted: element.$type === 'deleted' }"
+						:dense="totalItemCount > 4"
+						block
+						clickable
+						@click="editItem(element)"
+					>
 						<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template
 							:collection="relationInfo.junctionCollection.collection"
@@ -33,7 +39,11 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(element)" />
+						<v-icon
+							v-if="!disabled"
+							:name="element.$type === 'deleted' ? 'settings_backup_restore' : 'close'"
+							@click.stop="deleteItem(element)"
+						/>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -84,7 +94,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, clamp } from 'lodash';
 import { usePermissionsStore, useUserStore } from '@/stores';
 
 const props = withDefaults(
@@ -189,9 +199,10 @@ function sortItems(items: DisplayItem[]) {
 
 const selectedPrimaryKeys = computed(() => {
 	if (!relationInfo.value) return [];
-	const pkField = relationInfo.value?.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
+	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
 
-	return selected.value.map((item) => item[pkField]);
+	return selected.value.map((item) => item[junctionField][relationPkField]);
 });
 
 const editModalActive = ref(false);
@@ -242,16 +253,18 @@ function cancelEdit() {
 }
 
 function stageSelections(items: (string | number)[]) {
-	const selected = items.map((item) => {
-		if (!relationInfo.value) return {};
+	const selected = items
+		.filter((item) => !selectedPrimaryKeys.value.includes(item))
+		.map((item) => {
+			if (!relationInfo.value) return {};
 
-		return {
-			[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
-			[relationInfo.value.junctionField.field]: {
-				[relationInfo.value.relatedPrimaryKeyField.field]: item,
-			},
-		};
-	});
+			return {
+				[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
+				[relationInfo.value.junctionField.field]: {
+					[relationInfo.value.relatedPrimaryKeyField.field]: item,
+				},
+			};
+		});
 	update(...selected);
 }
 
@@ -340,6 +353,17 @@ const updateAllowed = computed(() => {
 <style lang="scss" scoped>
 .v-list {
 	--v-list-padding: 0 0 4px;
+
+	.v-list-item.deleted {
+		--v-list-item-border-color: var(--danger-25);
+		--v-list-item-border-color-hover: var(--danger-50);
+		--v-list-item-background-color: var(--danger-10);
+		--v-list-item-background-color-hover: var(--danger-25);
+
+		::v-deep(.v-icon) {
+			color: var(--danger-75);
+		}
+	}
 }
 
 .actions {

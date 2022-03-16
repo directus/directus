@@ -87,7 +87,7 @@ export function useRelationMultiple(
 						return edit[targetPKField] === item[targetPKField];
 					case 'm2m':
 						return (
-							edit[relation.value.junctionField.field] ===
+							edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
 							item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field]
 						);
 				}

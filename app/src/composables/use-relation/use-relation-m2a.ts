@@ -47,7 +47,7 @@ export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
 			reverseJunctionField: fieldsStore.getField(junction.collection, relation.meta?.junction_field as string),
 			junction: junction,
 			relation: relation,
-			sortField: relation.meta?.sort_field ?? undefined,
+			sortField: junction.meta?.sort_field ?? undefined,
 			type: 'm2a',
 		} as RelationM2A;
 	});
