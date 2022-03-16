@@ -10,7 +10,7 @@
 		</v-list-item-content>
 	</v-list-item>
 
-	<v-list-group v-else :clickable="!field.disabled" :value="field.key" @click="$emit('add', field.key)">
+	<v-list-group v-else :clickable="!field.disabled" :value="field.path" @click="$emit('add', field.key)">
 		<template #activator>
 			<v-list-item-content>
 				<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
@@ -40,6 +40,7 @@ type FieldInfo = {
 	field: string;
 	name: string;
 	key: string;
+	path: string;
 	disabled?: boolean;
 	children?: FieldInfo[];
 };

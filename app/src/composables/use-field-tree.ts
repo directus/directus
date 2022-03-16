@@ -10,6 +10,7 @@ export type FieldNode = {
 	collection: string;
 	relatedCollection?: string;
 	key: string;
+	path: string;
 	children?: FieldNode[];
 	group?: boolean;
 };
@@ -71,7 +72,8 @@ export function useFieldTree(
 
 	function makeNode(field: Field, allFields: Field[], parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
-		const context = parent ? parent.key + '.' : '';
+		const pathContext = parent ? parent.path + '.' : '';
+		const keyContext = parent && !parent.group ? parent.key + '.' : '';
 
 		if (field?.meta?.special?.includes('group')) {
 			const node: FieldNode = {
@@ -79,7 +81,8 @@ export function useFieldTree(
 				field: field.field,
 				collection: field.collection,
 				relatedCollection: undefined,
-				key: context + field.field,
+				key: field.field,
+				path: pathContext + field.field,
 				group: true,
 			};
 
@@ -95,7 +98,8 @@ export function useFieldTree(
 				field: field.field,
 				collection: field.collection,
 				relatedCollection: relatedCollections[0],
-				key: context + field.field,
+				key: keyContext + field.field,
+				path: pathContext + field.field,
 			};
 		}
 
@@ -105,7 +109,8 @@ export function useFieldTree(
 				field: `${field.field}:${collection}`,
 				collection: field.collection,
 				relatedCollection: collection,
-				key: context + `${field.field}:${collection}`,
+				key: keyContext + `${field.field}:${collection}`,
+				path: pathContext + `${field.field}:${collection}`,
 			};
 		});
 	}
