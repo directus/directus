@@ -44,7 +44,7 @@
 			</v-table>
 		</div>
 
-		<TranslationStringsDialog
+		<TranslationStringsDrawer
 			:model-value="isTranslationStringDialogOpen"
 			:translation-string="editingTranslationString"
 			@update:model-value="updateTranslationStringsDialog"
@@ -55,10 +55,10 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Header as TableHeader } from '@/components/v-table/types';
+import { HeaderRaw as TableHeader } from '@/components/v-table/types';
 import SettingsNavigation from '../../components/navigation.vue';
 import { TranslationString, useTranslationStrings } from '../../composables/use-translation-strings';
-import TranslationStringsDialog from './translation-strings-dialog.vue';
+import TranslationStringsDrawer from './translation-strings-drawer.vue';
 import TranslationStringsTooltip from './translation-strings-tooltip.vue';
 
 const { t } = useI18n();

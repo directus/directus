@@ -69,7 +69,7 @@
 			</v-list>
 		</v-menu>
 
-		<TranslationStringsDialog
+		<TranslationStringsDrawer
 			:model-value="isTranslationStringDialogOpen"
 			:translation-string="editingTranslationString"
 			@update:model-value="updateTranslationStringsDialog"
@@ -82,7 +82,7 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTranslationStrings, TranslationString } from '@/modules/settings/composables/use-translation-strings';
-import TranslationStringsDialog from '@/modules/settings/routes/translation-strings/translation-strings-dialog.vue';
+import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
 import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
 
 const translationPrefix = '$t:';
