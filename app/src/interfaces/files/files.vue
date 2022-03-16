@@ -375,13 +375,26 @@ const selectAllowed = computed(() => {
 <style lang="scss" scoped>
 .v-list {
 	--v-list-padding: 0 0 4px;
+
+	.v-list-item.deleted {
+		--v-list-item-border-color: var(--danger-25);
+		--v-list-item-border-color-hover: var(--danger-50);
+		--v-list-item-background-color: var(--danger-10);
+		--v-list-item-background-color-hover: var(--danger-25);
+
+		::v-deep(.v-icon) {
+			color: var(--danger-75);
+		}
+	}
 }
 
 .actions {
 	margin-top: 8px;
+	display: flex;
+	gap: 8px;
 
-	.v-button + .v-button {
-		margin-left: 8px;
+	.v-pagination ::v-deep(.v-button) {
+		display: inline-flex;
 	}
 }
 

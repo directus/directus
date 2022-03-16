@@ -373,9 +373,11 @@ const selectAllowed = computed(() => {
 
 .actions {
 	margin-top: 8px;
+	display: flex;
+	gap: 8px;
 
-	.v-button + .v-button {
-		margin-left: 8px;
+	.v-pagination ::v-deep(.v-button) {
+		display: inline-flex;
 	}
 }
 
