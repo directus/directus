@@ -125,7 +125,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		const localeMessages: Record<string, any> = translationStrings.value.reduce((acc, cur) => {
 			if (!cur.key || !cur.translations) return acc;
 			const translationForCurrentLang = cur.translations.find((t) => t.language === lang);
-			if (!translationForCurrentLang) return acc;
+			if (!translationForCurrentLang || !translationForCurrentLang.translation) return acc;
 			return { ...acc, [cur.key]: translationForCurrentLang.translation };
 		}, {});
 		i18n.global.mergeLocaleMessage(lang, localeMessages);
