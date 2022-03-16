@@ -70,6 +70,8 @@ create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 create_translation_string: Create Translation String
+translation_string_key_placeholder: Translation string key...
+translation_string_translations_placeholder: Add a new translation
 edit_translation_string: Edit Translation String
 delete_translation_string_copy: >-
   Are you sure you want to delete the translation string "{key}"? This action can not be undone.
