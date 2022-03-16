@@ -15,6 +15,16 @@ export type RelationM2M = {
 	type: 'm2m';
 };
 
+/*
+One1              Many|Many: junctionCollection         One2: relatedCollection
+┌─────────┐       ┌─────────────────────────────┐       ┌─────────────────────┐
+│id       ├───┐   │id: junctionPKField          │   ┌───┤id: relatedPKField   │
+│many     │   └──►│one1_id: reverseJunctionField│   │   │                     │
+└─────────┘       │one2_id: junctionField       │◄──┘   └─────────────────────┘
+                  │sort: sortField              │
+                  └─────────────────────────────┘
+ */
+
 export function useRelationM2M(collection: Ref<string>, field: Ref<string>) {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();

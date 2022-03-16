@@ -9,6 +9,14 @@ export type RelationM2O = {
 	type: 'm2o';
 };
 
+/*
+One                  Many: relatedCollection
+┌──────────┐         ┌───────────────────┐
+│id        │    ┌────┤id: relatedPKField │
+│many_id   │◄───┘    │                   │
+└──────────┘         └───────────────────┘
+ */
+
 export function useRelationM2O(collection: Ref<string>, field: Ref<string>) {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
