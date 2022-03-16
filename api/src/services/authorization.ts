@@ -56,7 +56,7 @@ export class AuthorizationService {
 		}
 
 		validateFields(ast);
-		validateFilter(ast, this.schema, this.accountability);
+		validateFilterPermissions(ast, this.schema, this.accountability);
 		applyFilters(ast, this.accountability);
 
 		return ast;
@@ -140,7 +140,7 @@ export class AuthorizationService {
 			}
 		}
 
-		function validateFilter(
+		function validateFilterPermissions(
 			ast: AST | NestedCollectionNode | FieldNode,
 			schema: SchemaOverview,
 			accountability: Accountability | null
@@ -149,9 +149,17 @@ export class AuthorizationService {
 				if (ast.type === 'a2o') {
 					for (const collection of Object.keys(ast.children)) {
 						checkFilter(collection, ast.query?.[collection]?.filter ?? {});
+
+						for (const child of ast.children[collection]) {
+							validateFilterPermissions(child, schema, accountability);
+						}
 					}
 				} else {
 					checkFilter(ast.name, ast.query?.filter ?? {});
+
+					for (const child of ast.children) {
+						validateFilterPermissions(child, schema, accountability);
+					}
 				}
 			}
 
