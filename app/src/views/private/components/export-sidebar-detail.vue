@@ -81,7 +81,7 @@
 				</div>
 				<div class="field half">
 					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" />
+					<v-input v-model="exportSettings.limit" type="number" :placeholder="t('unlimited')" />
 				</div>
 
 				<v-divider />
