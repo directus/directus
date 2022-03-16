@@ -90,6 +90,18 @@ export function useRelationMultiple(
 							edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
 							item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field]
 						);
+					case 'm2a': {
+						const itemCollection = item[relation.value.collectionField.field];
+						const editCollection = edit[relation.value.collectionField.field];
+						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection].field;
+						const editPkField = relation.value.relationPrimaryKeyFields[editCollection].field;
+
+						return (
+							itemCollection === editCollection &&
+							edit[relation.value.junctionField.field][editPkField] ===
+								item[relation.value.junctionField.field][itemPkField]
+						);
+					}
 				}
 			});
 
@@ -179,7 +191,10 @@ export function useRelationMultiple(
 				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(relation.value.collectionField.field);
-				fields.add(relation.value.junctionField.field);
+				for (const collection of relation.value.allowedCollections) {
+					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
+					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);
+				}
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
@@ -278,6 +293,8 @@ export function useRelationMultiple(
 					return loadSelectedDisplayO2M(relation.value);
 				case 'm2m':
 					return loadSelectedDisplayM2M(relation.value);
+				case 'm2a':
+					return loadSelectedDisplayM2A(relation.value);
 			}
 		}
 
@@ -326,6 +343,50 @@ export function useRelationMultiple(
 			fetchedSelectItems.value = response.data.data.map((item: Record<string, any>) => ({
 				[relation.junctionField.field]: item,
 			}));
+		}
+
+		async function loadSelectedDisplayM2A(relation: RelationM2A) {
+			if (selectedOnPage.value.length === 0) {
+				fetchedSelectItems.value = [];
+				return;
+			}
+
+			const collectionField = relation.collectionField.field;
+
+			const selectGrouped = selectedOnPage.value.reduce((acc, item) => {
+				const collection = item[collectionField];
+				if (!(collection in acc)) acc[collection] = [];
+				acc[collection].push(item);
+
+				return acc;
+			}, {} as Record<string, DisplayItem[]>);
+
+			const responses = await Promise.all(
+				Object.entries(selectGrouped).map(([collection, items]) => {
+					const pkField = relation.relationPrimaryKeyFields[collection].field;
+
+					return api.get(getEndpoint(collection), {
+						params: {
+							filter: {
+								[pkField]: {
+									_in: items.map((item) => item[relation.junctionField.field][pkField]),
+								},
+							},
+							limit: -1,
+						},
+					});
+				})
+			);
+
+			fetchedSelectItems.value = responses.reduce((acc, item, index) => {
+				acc.push(
+					...item.data.data.map((item: Record<string, any>) => ({
+						[relation.collectionField.field]: Object.keys(selectGrouped)[index],
+						[relation.junctionField.field]: item,
+					}))
+				);
+				return acc;
+			}, [] as Record<string, any>[]);
 		}
 	}
 

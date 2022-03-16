@@ -1,9 +1,11 @@
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
-import { Collection, Field, Relation } from '@directus/shared/types';
+import { Collection } from '@/types';
+import { Field, Relation } from '@directus/shared/types';
 import { computed, Ref } from 'vue';
 
 export type RelationM2A = {
 	allowedCollections: Collection[];
+	relationPrimaryKeyFields: Record<string, Field>;
 	collectionField: Field;
 	junctionCollection: Collection;
 	junctionPrimaryKeyField: Field;
@@ -25,8 +27,8 @@ One1              Many|Any: junctionCollection          ┌─One2
                   │collection: collectionField  │◄───┼──┤
                   └─────────────────────────────┘    │  │
                                                      │  └─One3
-                  AllowedCollection: [One2,One3]     │    ┌─────────┐
-                                                     └────┤id       │
+                AllowedCollection: [One2,One3]		 │    ┌─────────┐
+                relatedPKFields: {One2: id,One3: id} └────┤id       │
                                                           │         │
                                                           └─────────┘
  */
@@ -54,10 +56,21 @@ export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
 
 		if (!relation) return undefined;
 
+		const allowedCollections = (relation.meta?.one_allowed_collections ?? []).reduce((acc, collection) => {
+			const collectionInfo = collectionsStore.getCollection(collection);
+			if (collectionInfo) acc.push(collectionInfo);
+			return acc;
+		}, [] as Collection[]);
+
+		const relationPrimaryKeyFields = allowedCollections.reduce((acc, collection) => {
+			const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection?.collection);
+			if (pkField) acc[collection.collection] = pkField;
+			return acc;
+		}, {} as Record<string, Field>);
+
 		return {
-			allowedCollections: (relation.meta?.one_allowed_collections ?? []).map((collection) =>
-				collectionsStore.getCollection(collection)
-			),
+			allowedCollections,
+			relationPrimaryKeyFields,
 			collectionField: fieldsStore.getField(junction.collection, relation.meta?.one_collection_field as string),
 			junctionCollection: collectionsStore.getCollection(junction.collection),
 			junctionPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(junction.collection),
