@@ -165,6 +165,7 @@ revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
 revision_post_update: Oto jak wyglądał ten element po aktualizacji.
 changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
+hide_field: Ukryj pole
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
@@ -716,6 +717,9 @@ create_dashboard: Utwórz pulpit
 dashboard_name: Nazwa Pulpitu
 full_screen: Pełny ekran
 edit_panels: Edytuj pulpit
+center_align: Wyśrodkuj
+left_align: Wyrównaj do lewej
+right_align: Wyrównaj do prawej
 fit_to_screen: Dopasuj do ekranu
 image_url: Adres Url obrazu
 alt_text: Tekst alternatywny
@@ -1264,6 +1268,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
