@@ -56,8 +56,9 @@ export async function applySnapshot(
 		const createCollections = async function (collections: CollectionDelta[]) {
 			if (!isEmpty(collections)) {
 				for (const item of collections) {
-					logger.debug('Applying collection...', item.collection);
 					if (item.diff?.[0].kind === 'N' && item.diff[0].rhs) {
+						// We'll nest the to-be-created fields in the same collection creation, to prevent
+						// creating a collection without a primary key
 						const fields = snapshotDiff.fields
 							.filter((fieldDiff) => fieldDiff.collection === item.collection)
 							.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
@@ -80,11 +81,8 @@ export async function applySnapshot(
 			if (!isEmpty(collections)) {
 				for (const item of collections) {
 					if (item.diff?.[0].kind === 'D') {
-						const child = getToBeDeleteCollection([item.collection]);
-						logger.debug('Finding child..', child);
-						await deleteCollections(child);
+						await deleteCollections(getToBeDeleteCollection([item.collection]));
 						try {
-							logger.debug('Deleting collection...', item.collection);
 							await collectionsService.deleteOne(item.collection);
 						} catch (err) {
 							logger.error(`Failed to delete collection "${item.collection}"`);
