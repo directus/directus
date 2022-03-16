@@ -6,14 +6,16 @@
 		@click="$emit('add', field.key)"
 	>
 		<v-list-item-content>
-			<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
+			{{ field.key }}
+			<!-- <v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" /> -->
 		</v-list-item-content>
 	</v-list-item>
 
-	<v-list-group v-else :clickable="!field.disabled" :value="field.key" @click="$emit('add', field.key)">
+	<v-list-group v-else :clickable="!field.disabled" :value="field.path" @click="$emit('add', field.key)">
 		<template #activator>
 			<v-list-item-content>
-				<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
+				{{ field.key }}
+				<!-- <v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" /> -->
 			</v-list-item-content>
 		</template>
 
@@ -40,6 +42,7 @@ type FieldInfo = {
 	field: string;
 	name: string;
 	key: string;
+	path: string;
 	disabled?: boolean;
 	children?: FieldInfo[];
 };
