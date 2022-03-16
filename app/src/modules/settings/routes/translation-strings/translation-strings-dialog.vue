@@ -1,67 +1,19 @@
 <template>
-	<v-dialog :model-value="modelValue" persistent @esc="closeDialog">
-		<v-card>
-			<v-card-title>
-				{{ translationString ? t('edit_translation_string') : t('create_translation_string') }}
-			</v-card-title>
-			<v-card-text>
-				<div class="fields">
-					<v-input
-						v-model="values.key"
-						class="full translation-key"
-						:autofocus="!values.key"
-						:placeholder="t('key') + '...'"
-						@keyup.enter="saveNewTranslationString"
-					/>
-					<interface-list
-						class="full"
-						:value="values.translations"
-						:placeholder="t('no_translations')"
-						template="{{ language }} {{ translation }}"
-						:fields="[
-							{
-								field: 'language',
-								name: '$t:language',
-								type: 'string',
-								meta: {
-									interface: 'system-language',
-									width: 'half',
-									display: 'formatted-value',
-									display_options: {
-										font: 'monospace',
-										color: 'var(--primary)',
-										background: 'var(--primary-alt)',
-									},
-								},
-							},
-							{
-								field: 'translation',
-								name: '$t:translation',
-								type: 'string',
-								meta: {
-									interface: 'input',
-									width: 'half',
-									options: {
-										placeholder: '$t:field_options.directus_collections.translation_placeholder',
-									},
-								},
-							},
-						]"
-						@input="onListInput"
-					/>
-				</div>
-			</v-card-text>
-			<v-card-actions>
-				<v-button secondary @click="closeDialog">{{ t('cancel') }}</v-button>
-				<v-button v-if="translationString" class="delete-action" secondary @click="confirmDelete = true">
-					{{ t('delete_label') }}
-				</v-button>
-				<v-button :disabled="values.key === null" :loading="updating" @click="saveNewTranslationString">
-					{{ t('save') }}
-				</v-button>
-			</v-card-actions>
+	<v-drawer
+		:title="translationString ? t('edit_translation_string') : t('create_translation_string')"
+		icon="translate"
+		:model-value="modelValue"
+		@update:modelValue="closeDialog"
+		@cancel="closeDialog"
+	>
+		<template #actions>
+			<v-dialog v-if="translationString" v-model="confirmDelete" @esc="confirmDelete = false">
+				<template #activator="{ on }">
+					<v-button class="delete-action" rounded icon secondary @click="on">
+						<v-icon name="delete" />
+					</v-button>
+				</template>
 
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<v-card>
 					<v-card-title>{{ t('delete_translation_string_copy', { key: values.key }) }}</v-card-title>
 
@@ -75,14 +27,30 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-		</v-card>
-	</v-dialog>
+
+			<v-button
+				v-tooltip.bottom="t('save')"
+				:loading="updating"
+				:disabled="values.key === null || values.translations === null"
+				icon
+				rounded
+				@click="saveNewTranslationString"
+			>
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<div class="drawer-content">
+			<v-form v-model="formValues" :autofocus="!translationString" :initial-values="initialValues" :fields="fields" />
+		</div>
+	</v-drawer>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTranslationStrings, TranslationString, Translation } from '../../composables/use-translation-strings';
+import { Field, DeepPartial } from '@directus/shared/types';
+import { useTranslationStrings, TranslationString } from '../../composables/use-translation-strings';
 
 interface Props {
 	modelValue: boolean;
@@ -97,42 +65,118 @@ const { t } = useI18n();
 
 const confirmDelete = ref<boolean>(false);
 
-const { translationStrings, updating, update } = useTranslationStrings();
-
-const values = reactive<TranslationString>({
+const values = ref<TranslationString>({
 	key: null,
 	translations: null,
 });
 
+const formValues = computed<TranslationString>({
+	get() {
+		return values.value;
+	},
+	set(val) {
+		if (!val.translations) {
+			values.value.translations = null;
+			return;
+		}
+
+		// make sure translations are unique, and new ones will rewrite existing ones
+		values.value.translations = [...new Map(val.translations.map((item) => [item.language, item])).values()];
+	},
+});
+
+const initialValues = ref<TranslationString>({
+	key: null,
+	translations: null,
+});
+
+const fields = computed<DeepPartial<Field>[]>(() => {
+	return [
+		{
+			field: 'key',
+			name: '$t:key',
+			type: 'string',
+			meta: {
+				interface: 'input',
+				width: 'full',
+				required: true,
+				options: {
+					placeholder: '$t:translation_string_key_placeholder',
+					font: 'monospace',
+				},
+			},
+		},
+		{
+			field: 'translations',
+			name: '$t:translations',
+			meta: {
+				interface: 'list',
+				width: 'full',
+				required: true,
+				options: {
+					placeholder: '$t:translation_string_translations_placeholder',
+					template: '{{ language }} {{ translation }}',
+					fields: [
+						{
+							field: 'language',
+							name: '$t:language',
+							type: 'string',
+							meta: {
+								interface: 'system-language',
+								width: 'half',
+								display: 'formatted-value',
+								display_options: {
+									font: 'monospace',
+									color: 'var(--primary)',
+									background: 'var(--primary-alt)',
+								},
+							},
+						},
+						{
+							field: 'translation',
+							name: '$t:translation',
+							type: 'string',
+							meta: {
+								interface: 'input',
+								width: 'half',
+								options: {
+									placeholder: '$t:field_options.directus_collections.translation_placeholder',
+								},
+							},
+						},
+					],
+				},
+			},
+		},
+	];
+});
+
+const { translationStrings, updating, update } = useTranslationStrings();
+
 watch(
 	() => props.translationString,
 	(newVal: TranslationString) => {
-		values.key = newVal?.key ?? null;
-		values.translations = newVal?.translations ?? null;
+		values.value.key = newVal?.key ?? null;
+		values.value.translations = newVal?.translations ?? null;
+		initialValues.value.key = newVal?.key ?? null;
+		initialValues.value.translations = newVal?.translations ?? null;
 	},
 	{ immediate: true }
 );
 
-function onListInput(val: Translation[]) {
-	if (!val) {
-		values.translations = null;
-		return;
-	}
-
-	values.translations = [...new Map(val.map((item) => [item.language, item])).values()];
-}
-
 function closeDialog() {
-	values.key = null;
-	values.translations = null;
+	values.value.key = null;
+	values.value.translations = null;
+	initialValues.value.key = null;
+	initialValues.value.translations = null;
 	emit('update:modelValue', false);
 }
 
 async function saveNewTranslationString() {
-	const newTranslationStrings = translationStrings.value ? [...translationStrings.value, values] : [values];
+	const newTranslationStrings = translationStrings.value ? [...translationStrings.value, values.value] : [values.value];
 	try {
 		await update(newTranslationStrings);
-		emit('savedKey', values.key);
+		emit('savedKey', values.value.key);
 		closeDialog();
 	} catch {
 		// Update shows unexpected error dialog
@@ -141,7 +185,7 @@ async function saveNewTranslationString() {
 
 async function deleteCurrentTranslationString() {
 	const newTranslationStrings = translationStrings.value
-		? translationStrings.value.filter((val) => val.key !== values.key)
+		? translationStrings.value.filter((val) => val.key !== values.value.key)
 		: [];
 	try {
 		await update(newTranslationStrings);
@@ -154,20 +198,10 @@ async function deleteCurrentTranslationString() {
 </script>
 
 <style lang="scss" scoped>
-.fields {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 12px;
+.drawer-content {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
-
-.full {
-	grid-column: 1 / span 2;
-}
-
-.translation-key {
-	--v-input-font-family: var(--family-monospace);
-}
-
 .v-button.delete-action {
 	--v-button-background-color-hover: var(--danger);
 	--v-button-color-hover: var(--foreground-inverted);
