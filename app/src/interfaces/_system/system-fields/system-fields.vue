@@ -14,7 +14,7 @@
 	<v-menu placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
 			<button class="toggle" @click="toggle">
-				Add Field
+				{{ t('add_field') }}
 				<v-icon name="expand_more" />
 			</button>
 		</template>
@@ -28,6 +28,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/shared/types';
 import { computed } from 'vue';
 import Draggable from 'vuedraggable';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	collectionName: string;
@@ -54,6 +55,8 @@ const fields = computed<(Field & { key: string })[]>({
 		emit('input', newFields);
 	},
 });
+
+const { t } = useI18n();
 
 function addField(fieldKey: string) {
 	emit('input', [...(props.value ?? []), fieldKey]);

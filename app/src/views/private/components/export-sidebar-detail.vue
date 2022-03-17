@@ -60,6 +60,7 @@
 		<v-drawer
 			v-model="exportDialogActive"
 			:title="t('export_items')"
+			icon="import_export"
 			persistent
 			@esc="exportDialogActive = false"
 			@cancel="exportDialogActive = false"
@@ -209,10 +210,10 @@
 </template>
 
 <script lang="ts" setup>
-import api from '../../../api';
-import { getRootPath } from '../../../utils/get-root-path';
-import { notify } from '../../../utils/notify';
-import readableMimeType from '../../../utils/readable-mime-type';
+import api from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
+import { notify } from '@/utils/notify';
+import readableMimeType from '@/utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -220,6 +221,7 @@ import { useCollection } from '@directus/shared/composables';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
+import { getEndpoint } from '@/utils/get-endpoint';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -263,7 +265,7 @@ const exportSettings = reactive({
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: props.layoutQuery?.sort ?? `${primaryKeyField.value!.field}`,
+	sort: props.layoutQuery?.sort?.[0] ?? `${primaryKeyField.value!.field}`,
 });
 
 const format = ref('csv');
@@ -292,7 +294,7 @@ const getItemCount = debounce(async () => {
 
 	try {
 		const count = await api
-			.get(`/items/${props.collection}`, {
+			.get(getEndpoint(props.collection), {
 				params: {
 					...exportSettings,
 					aggregate: {

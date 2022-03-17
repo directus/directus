@@ -167,6 +167,7 @@
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 				<export-sidebar-detail
 					collection="directus_files"
+					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, folderTypeFilter)"
 					:search="search"
 				/>
