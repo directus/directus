@@ -338,8 +338,6 @@ label_import: Uvoz
 label_export: Izvoz
 import_export: Uvoz / Izvoz
 format: Format
-use_current_filters_settings: Koristite trenutne filtere i postavke
-export_data_button: Pokreni izvoz
 last_page: Zadnja stranica
 last_access: Zadnji pristup
 fill_template: Ispunite vrijednošću predloška
