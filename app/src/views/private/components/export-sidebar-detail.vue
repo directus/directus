@@ -114,7 +114,46 @@
 					<v-notice v-else>{{ t('not_available_for_local_downloads') }}</v-notice>
 				</div>
 
-				<v-notice class="full">Not available for local downloads</v-notice>
+				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
+					<div>
+						<p>
+							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
+
+							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit > itemCount)">
+								{{
+									t('exporting_all_items_in_collection', {
+										total: itemCount ? n(itemCount) : '??',
+										collection: collectionInfo?.name,
+									})
+								}}
+							</template>
+
+							<template v-else-if="itemCount && itemCount > exportSettings.limit">
+								{{
+									t('exporting_limited_items_in_collection', {
+										limit: exportSettings.limit ? n(exportSettings.limit) : '??',
+										total: itemCount ? n(itemCount) : '??',
+										collection: collectionInfo?.name,
+									})
+								}}
+							</template>
+						</p>
+
+						<p>
+							<template v-if="lockedToFiles">
+								{{ t('exporting_batch_hint_forced', { format }) }}
+							</template>
+
+							<template v-else-if="location === 'files'">
+								{{ t('exporting_batch_hint', { format }) }}
+							</template>
+
+							<template v-else>
+								{{ t('exporting_download_hint', { format }) }}
+							</template>
+						</p>
+					</div>
+				</v-notice>
 
 				<v-divider />
 
@@ -174,6 +213,7 @@ import { useI18n } from 'vue-i18n';
 import { useCollection } from '@directus/shared/composables';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { debounce } from 'lodash';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -196,7 +236,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['refresh']);
 
-const { t } = useI18n();
+const { t, n } = useI18n();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -210,7 +250,7 @@ const fileExtension = computed(() => {
 	return readableMimeType(file.value.type, true);
 });
 
-const { primaryKeyField, fields } = useCollection(props.collection);
+const { primaryKeyField, fields, info: collectionInfo } = useCollection(props.collection);
 
 const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? 25,
@@ -224,7 +264,10 @@ const format = ref('csv');
 const location = ref('download');
 const folder = ref<string>();
 
-const lockedToFiles = computed(() => exportSettings.limit > 2500);
+const lockedToFiles = computed(() => {
+	const toBeDownloaded = exportSettings.limit ?? itemCount.value;
+	return toBeDownloaded >= 2500;
+});
 
 watch(
 	() => exportSettings.limit,
@@ -234,6 +277,40 @@ watch(
 		}
 	}
 );
+
+const itemCount = ref<number>();
+const itemCountLoading = ref(false);
+
+const getItemCount = debounce(async () => {
+	itemCountLoading.value = true;
+
+	try {
+		const count = await api
+			.get(`/items/${props.collection}`, {
+				params: {
+					...exportSettings,
+					aggregate: {
+						count: ['*'],
+					},
+				},
+			})
+			.then((response) => {
+				if (response.data.data?.[0]?.count) {
+					return Number(response.data.data[0].count);
+				}
+			});
+
+		itemCount.value = count;
+	} finally {
+		itemCountLoading.value = false;
+	}
+}, 250);
+
+getItemCount();
+
+watch(exportSettings, () => {
+	getItemCount();
+});
 
 const sortDirection = computed({
 	get() {
