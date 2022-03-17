@@ -13,7 +13,9 @@ RUN \
   build-base \
   && ln -sf /usr/bin/python3 /usr/bin/python \
   ; fi
-RUN npm i --only=production --no-package-lock
+
+# Do not install optional dependencies as the necessary ones are already specified in the root package.json
+RUN npm i --only=production --no-package-lock --no-optional
 RUN rm *.tgz
 
 # Directus image
@@ -66,4 +68,6 @@ VOLUME \
   /directus/uploads
 
 EXPOSE 8055
-CMD npx directus bootstrap && npx directus start
+ENV BOOTSTRAP_ENABLED=true
+COPY /docker/files/ .
+CMD ["./run.sh"]

@@ -131,15 +131,16 @@ export async function startServer(): Promise<void> {
 
 	server
 		.listen(port, host, () => {
-			checkForUpdate(pkg)
-				.then((update) => {
-					if (update) {
-						logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
-					}
-				})
-				.catch(() => {
-					// No need to log/warn here. The update message is only an informative nice-to-have
-				});
+			// No reason to check for updates, even though this is async
+			// checkForUpdate(pkg)
+			// 	.then((update) => {
+			// 		if (update) {
+			// 			logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
+			// 		}
+			// 	})
+			// 	.catch(() => {
+			// 		// No need to log/warn here. The update message is only an informative nice-to-have
+			// 	});
 
 			logger.info(`Server started at http://${host}:${port}`);
 
