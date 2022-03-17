@@ -70,10 +70,9 @@
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
-			:selection="selectedPrimaryKeys"
 			:filter="customFilter"
 			multiple
-			@input="stageSelections"
+			@input="select"
 		/>
 	</div>
 </template>
@@ -169,7 +168,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
+const { create, update, remove, select, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -248,22 +247,6 @@ function cancelEdit() {
 	editModalActive.value = false;
 }
 
-function stageSelections(items: (string | number)[]) {
-	const selected = items
-		.filter((item) => !selectedPrimaryKeys.value.includes(item))
-		.map((item) => {
-			if (!relationInfo.value) return {};
-
-			return {
-				[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
-				[relationInfo.value.junctionField.field]: {
-					[relationInfo.value.relatedPrimaryKeyField.field]: item,
-				},
-			};
-		});
-	update(...selected);
-}
-
 function deleteItem(item: DisplayItem) {
 	if (
 		page.value === Math.ceil(totalItemCount.value / limit.value) &&
@@ -295,29 +278,31 @@ const customFilter = computed(() => {
 
 	if (!relationInfo.value) return filter;
 
-	// const selectFilter: Filter = {
-	// 	_or: [
-	// 		{
-	// 			[relationInfo.value.reverseJunctionField.field]: {
-	// 				_neq: props.primaryKey,
-	// 			},
-	// 		},
-	// 		{
-	// 			[relationInfo.value.reverseJunctionField.field]: {
-	// 				_null: true,
-	// 			},
-	// 		},
-	// 	],
-	// };
+	const reverseRelation = `$FOLLOW(${relationInfo.value.junctionCollection.collection},${relationInfo.value.junctionField.field})`;
 
-	// if (selectedPrimaryKeys.value.length > 0)
-	// 	filter._and.push({
-	// 		[relationInfo.value.relatedPrimaryKeyField.field]: {
-	// 			_nin: selectedPrimaryKeys.value,
-	// 		},
-	// 	});
+	const selectFilter: Filter = {
+		_or: [
+			{
+				[reverseRelation]: {
+					_neq: props.primaryKey,
+				},
+			},
+			{
+				[reverseRelation]: {
+					_null: true,
+				},
+			},
+		],
+	};
 
-	// filter._and.push(selectFilter);
+	if (selectedPrimaryKeys.value.length > 0)
+		filter._and.push({
+			[relationInfo.value.relatedPrimaryKeyField.field]: {
+				_nin: selectedPrimaryKeys.value,
+			},
+		});
+
+	filter._and.push(selectFilter);
 
 	return filter;
 });

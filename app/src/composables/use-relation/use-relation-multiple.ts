@@ -28,7 +28,7 @@ export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[]>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
-	itemId: Ref<string | number | null>
+	itemId: Ref<string | number>
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
@@ -55,7 +55,11 @@ export function useRelationMultiple(
 
 	const { fetchedSelectItems, selected } = useSelected();
 
-	const totalItemCount = computed(() => existingItemCount.value + _value.value.create.length + selected.value.length);
+	const totalItemCount = computed(() => {
+		if (relation.value?.type === 'o2m')
+			return existingItemCount.value + _value.value.create.length + selected.value.length;
+		return existingItemCount.value + _value.value.create.length;
+	});
 
 	const displayItems = computed(() => {
 		if (!relation.value) return [];
@@ -131,7 +135,7 @@ export function useRelationMultiple(
 		});
 	});
 
-	return { create, update, remove, displayItems, totalItemCount, loading, selected, fetchedSelectItems };
+	return { create, update, remove, select, displayItems, totalItemCount, loading, selected, fetchedSelectItems };
 
 	function create(...items: Record<string, any>[]) {
 		for (const item of items) {
@@ -140,14 +144,6 @@ export function useRelationMultiple(
 		updateValue();
 	}
 
-	/**
-	 * Update or Select existing items.
-	 * When selecting items, you have to make sure the object has the following keys set:
-	 * @example
-	 * o2m - reverseJunctionField, relatedPrimaryKeyField
-	 * m2m - reverseJunctionField, junctionField.relatedPrimaryKeyField
-	 * m2a - reverseJunctionField, collectionField, junctionField.relatedPrimaryKeyField
-	 */
 	function update(...items: DisplayItem[]) {
 		if (!relation.value) return;
 
@@ -182,6 +178,42 @@ export function useRelationMultiple(
 			}
 		}
 		updateValue();
+	}
+
+	function select(items: (string | number)[], collection?: string) {
+		const info = relation.value;
+		if (!info) return;
+
+		const selected = items.map((item) => {
+			switch (info.type) {
+				case 'o2m':
+					return {
+						[info.reverseJunctionField.field]: itemId.value,
+						[info.relatedPrimaryKeyField.field]: item,
+					};
+				case 'm2m':
+					return {
+						[info.reverseJunctionField.field]: itemId.value,
+						[info.junctionField.field]: {
+							[info.relatedPrimaryKeyField.field]: item,
+						},
+					};
+				case 'm2a': {
+					if (!collection) throw new Error('You need to provide a collection on an m2a');
+
+					return {
+						[info.reverseJunctionField.field]: itemId.value,
+						[info.collectionField.field]: collection,
+						[info.junctionField.field]: {
+							[info.relationPrimaryKeyFields[collection].field]: item,
+						},
+					};
+				}
+			}
+		});
+
+		if (relation.value?.type === 'o2m') update(...selected);
+		else create(...selected);
 	}
 
 	async function updateFetchedItems() {
@@ -271,7 +303,7 @@ export function useRelationMultiple(
 			const info = relation.value;
 			if (!info) return [];
 
-			return _value.value.update
+			return (relation.value?.type === 'o2m' ? _value.value.update : _value.value.create)
 				.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
 				.filter((item) => info.reverseJunctionField.field in item);
 		});

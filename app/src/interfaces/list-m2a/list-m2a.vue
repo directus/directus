@@ -115,8 +115,8 @@
 			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
-			:selection="[]"
-			@input="stageSelections"
+			:filter="customFilter"
+			@input="select($event, selectingFrom ?? undefined)"
 			@update:active="selectingFrom = null"
 		/>
 
@@ -139,7 +139,7 @@
 import { useRelationM2A, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
 import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
@@ -215,7 +215,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, displayItems, totalItemCount, loading } = useRelationMultiple(
+const { create, update, remove, select, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -293,23 +293,6 @@ function cancelEdit() {
 	editModalActive.value = false;
 }
 
-function stageSelections(items: (string | number)[]) {
-	const selected = items.map((item) => {
-		if (!relationInfo.value || !selectingFrom.value) return {};
-		const relatedPkField = relationInfo.value.relationPrimaryKeyFields[selectingFrom.value].field;
-		if (!relatedPkField) return {};
-
-		return {
-			[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
-			[relationInfo.value.collectionField.field]: selectingFrom.value,
-			[relationInfo.value.junctionField.field]: {
-				[relatedPkField]: item,
-			},
-		};
-	});
-	update(...selected);
-}
-
 function deleteItem(item: DisplayItem) {
 	if (
 		page.value === Math.ceil(totalItemCount.value / limit.value) &&
@@ -337,36 +320,48 @@ function getCollectionName(item: DisplayItem) {
 	return info.allowedCollections.find((coll) => coll.collection === item[info.collectionField.field])?.name;
 }
 
-const _customFilter = computed(() => {
+const customFilter = computed(() => {
+	const info = relationInfo.value;
+
 	const filter: Filter = {
 		_and: [],
 	};
 
-	if (!relationInfo.value) return filter;
+	if (!info || !selectingFrom.value) return filter;
 
-	// const selectFilter: Filter = {
-	// 	_or: [
-	// 		{
-	// 			[relationInfo.value.reverseJunctionField.field]: {
-	// 				_neq: props.primaryKey,
-	// 			},
-	// 		},
-	// 		{
-	// 			[relationInfo.value.reverseJunctionField.field]: {
-	// 				_null: true,
-	// 			},
-	// 		},
-	// 	],
-	// };
+	const reverseRelation = `$FOLLOW(${info.junctionCollection.collection},${info.junctionField.field},${info.collectionField.field})`;
 
-	// if (selectedPrimaryKeys.value.length > 0)
-	// 	filter._and.push({
-	// 		[relationInfo.value.relatedPrimaryKeyField.field]: {
-	// 			_nin: selectedPrimaryKeys.value,
-	// 		},
-	// 	});
+	const selectFilter: Filter = {
+		_or: [
+			{
+				[reverseRelation]: {
+					_neq: props.primaryKey,
+				},
+			},
+			{
+				[reverseRelation]: {
+					_null: true,
+				},
+			},
+		],
+	};
 
-	// filter._and.push(selectFilter);
+	const junctionField = info.junctionField.field;
+
+	const selectedPrimaryKeys = selected.value.reduce((acc, item) => {
+		const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.collection]].field;
+		if (item[info.collectionField.field] === selectingFrom.value) acc.push(item[junctionField][relatedPKField]);
+		return acc;
+	}, [] as (string | number)[]);
+
+	if (selectedPrimaryKeys.length > 0)
+		filter._and.push({
+			[info.relationPrimaryKeyFields[selectingFrom.value].field]: {
+				_nin: selectedPrimaryKeys,
+			},
+		});
+
+	filter._and.push(selectFilter);
 
 	return filter;
 });

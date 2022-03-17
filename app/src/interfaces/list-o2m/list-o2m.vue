@@ -78,7 +78,7 @@
 			:collection="relationInfo.relatedCollection.collection"
 			:filter="customFilter"
 			multiple
-			@input="stageSelections"
+			@input="select"
 		/>
 	</div>
 </template>
@@ -156,7 +156,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
+const { create, update, remove, select, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -223,18 +223,6 @@ function stageEdits(item: Record<string, any>) {
 
 function cancelEdit() {
 	currentlyEditing.value = null;
-}
-
-function stageSelections(items: (string | number)[]) {
-	const selected = items.map((item) => {
-		if (!relationInfo.value) return {};
-
-		return {
-			[relationInfo.value.relatedPrimaryKeyField.field]: item,
-			[relationInfo.value.reverseJunctionField.field]: props.primaryKey,
-		};
-	});
-	update(...selected);
 }
 
 function deleteItem(item: DisplayItem) {
