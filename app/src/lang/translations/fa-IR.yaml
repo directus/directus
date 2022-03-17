@@ -337,8 +337,6 @@ label_import: وارد کردن
 label_export: استخراج
 import_export: واردسازی / استحراج
 format: فرمت
-use_current_filters_settings: از فیلترها و تنظیمات موجود استفاده شود
-export_data_button: آغاز عملیات استخراج
 last_page: صفحه آخر
 last_access: آخرین دسترسی
 fill_template: پر کردن با مقدار الگو

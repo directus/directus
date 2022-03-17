@@ -338,8 +338,6 @@ label_import: Importuj
 label_export: Eksportuj
 import_export: Import / Eksport
 format: Formatowanie
-use_current_filters_settings: Użyj obecnych filtrów i ustawień
-export_data_button: Rozpocznij eksport
 last_page: Ostatnia strona
 last_access: Ostatni dostęp
 fill_template: Wypełnij wartością szablonu
@@ -1268,7 +1266,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:

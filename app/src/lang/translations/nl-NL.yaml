@@ -313,8 +313,6 @@ label_import: Importeren
 label_export: Exporteren
 import_export: Importeren / Exporteren
 format: Format
-use_current_filters_settings: Gebruik huidige filters & instellingen
-export_data_button: Start exporteren
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde

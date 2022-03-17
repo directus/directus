@@ -333,8 +333,6 @@ label_import: Impor
 label_export: Ekspor
 import_export: Impor / Ekspor
 format: Format
-use_current_filters_settings: Gunakan Filter Saat Ini & Pengaturan
-export_data_button: Mulai Ekspor
 last_page: Halaman Terakhir
 last_access: Akses Terakhir
 fill_template: Isi dengan Nilai Template

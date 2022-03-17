@@ -337,8 +337,6 @@ label_import: Importer
 label_export: Exportation
 import_export: Importer/Exporter
 format: Format
-use_current_filters_settings: Utiliser les filtres et paramètres actuels
-export_data_button: Démarrer l'exportation
 last_page: Dernière page
 last_access: Dernier accès
 fill_template: Remplir avec un exemple
