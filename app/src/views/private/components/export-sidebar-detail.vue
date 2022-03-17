@@ -111,7 +111,7 @@
 				<div class="field half-right">
 					<p class="type-label">{{ t('folder') }}</p>
 					<folder-picker v-if="location === 'files'" v-model="folder" />
-					<v-notice v-else>Not available for local downloads</v-notice>
+					<v-notice v-else>{{ t('not_available_for_local_downloads') }}</v-notice>
 				</div>
 
 				<v-notice class="full">Not available for local downloads</v-notice>
