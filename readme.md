@@ -14,7 +14,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
-**[Learn more about Directus on our website.](https://directus.io)**
+**[Learn more about Directus](https://directus.io)**
 
 <br>
 
@@ -89,8 +89,7 @@ _Other operating systems may also work, but are not officially supported._
 
 ## 🤔 Community Help
 
-In addition to the [Directus Documentation](https://docs.directus.io), you can also request help via the following
-channels:
+[The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
 - [Discord](https://directus.chat) (Live Discussions)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
