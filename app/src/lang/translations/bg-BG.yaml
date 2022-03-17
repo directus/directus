@@ -335,8 +335,6 @@ label_import: Импортиране
 label_export: Експортиране
 import_export: Импорт / Експорт
 format: Формат
-use_current_filters_settings: Прилагане на текущите филтри
-export_data_button: Започване на експортирането
 last_page: Последна страница
 last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
