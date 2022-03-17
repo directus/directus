@@ -3,6 +3,7 @@ export * from './items';
 export * from './activity';
 export * from './assets';
 export * from './authentication';
+export * from './authorization';
 export * from './collections';
 export * from './dashboards';
 export * from './fields';
