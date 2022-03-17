@@ -85,7 +85,7 @@
 			:primary-key="displayItem.id"
 			:edits="edits"
 			:disabled="disabled"
-			@input="stageEdits"
+			@input="update"
 		/>
 
 		<v-dialog
@@ -270,15 +270,6 @@ function useURLImport() {
 			loading.value = false;
 		}
 	}
-}
-
-function stageEdits(newEdits: Record<string, any>) {
-	if (!displayItem.value) return;
-
-	update({
-		id: displayItem.value.id,
-		...newEdits,
-	});
 }
 </script>
 

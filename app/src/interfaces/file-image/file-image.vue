@@ -2,11 +2,15 @@
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
+		<v-notice v-else-if="disabled && !displayItem" class="disabled-placeholder" center icon="block">
 			{{ t('disabled') }}
 		</v-notice>
 
-		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
+		<div
+			v-else-if="displayItem"
+			class="image-preview"
+			:class="{ 'is-svg': displayItem.type && displayItem.type.includes('svg') }"
+		>
 			<div v-if="imageError" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
 
@@ -22,7 +26,7 @@
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
+				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="displayItem.filename_download">
 					<v-icon name="get_app" />
 				</v-button>
 				<v-button v-tooltip="t('edit')" icon rounded @click="editDrawerActive = true">
@@ -34,231 +38,137 @@
 			</div>
 
 			<div class="info">
-				<div class="title">{{ image.title }}</div>
+				<div class="title">{{ displayItem.title }}</div>
 				<div class="meta">{{ meta }}</div>
 			</div>
 
 			<drawer-item
-				v-if="!disabled && image"
+				v-if="!disabled && displayItem"
 				v-model:active="editDrawerActive"
 				collection="directus_files"
-				:primary-key="image.id"
+				:primary-key="displayItem.id"
 				:edits="edits"
-				@input="stageEdits"
+				@input="update"
 			/>
 
-			<file-lightbox :id="image.id" v-model="lightboxActive" />
+			<file-lightbox :id="displayItem.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url :folder="folder" @input="setImage" />
+		<v-upload v-else from-library from-url :folder="folder" @input="update($event.id)" />
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed, PropType } from 'vue';
+import { ref, computed, toRefs } from 'vue';
 import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
+import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
 
-type Image = {
-	id: string; // uuid
-	type: string;
-	filesize: number;
-	width: number;
-	height: number;
-	filename_download: string;
-};
+const props = withDefaults(
+	defineProps<{
+		value?: string | Record<string, any> | null;
+		disabled?: boolean;
+		folder?: string;
+		collection: string;
+		field: string;
+		width: string;
+		crop?: boolean;
+	}>(),
+	{
+		value: () => null,
+		disabled: false,
+		crop: true,
+	}
+);
 
-export default defineComponent({
-	components: { FileLightbox, DrawerItem },
-	props: {
-		value: {
-			type: [String, Object] as PropType<string | Record<string, any>>,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		folder: {
-			type: String,
-			default: undefined,
-		},
-		width: {
-			type: String,
-			required: true,
-		},
-		crop: {
-			type: Boolean,
-			default: true,
-		},
+const emit = defineEmits(['input']);
+
+const value = computed({
+	get: () => props.value ?? null,
+	set: (value) => {
+		emit('input', value);
 	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t, n, te } = useI18n();
+});
 
-		const loading = ref(false);
-		const image = ref<Image | null>(null);
-		const lightboxActive = ref(false);
-		const editDrawerActive = ref(false);
-		const imageError = ref<string | null>(null);
+const query = ref<RelationQuerySingle>({
+	fields: ['id', 'title', 'type', 'filename_download'],
+});
 
-		const cacheBuster = ref(nanoid());
+const { collection, field } = toRefs(props);
+const { relationInfo } = useRelationM2O(collection, field);
+const { displayItem, loading, update, remove } = useRelationSingle(value, query, relationInfo);
 
-		const src = computed(() => {
-			if (!image.value) return null;
+const { t, n, te } = useI18n();
 
-			if (image.value.type.includes('svg')) {
-				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
-			}
-			if (image.value.type.includes('image')) {
-				const fit = props.crop ? 'cover' : 'contain';
-				const url =
-					getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
-				return addTokenToURL(url);
-			}
+const lightboxActive = ref(false);
+const editDrawerActive = ref(false);
+const imageError = ref<string | null>(null);
 
-			return null;
-		});
+const cacheBuster = ref(nanoid());
 
-		const downloadSrc = computed(() => {
-			if (!image.value) return null;
-			return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
-		});
+const src = computed(() => {
+	if (!displayItem.value) return undefined;
 
-		const meta = computed(() => {
-			if (!image.value) return null;
-			const { filesize, width, height, type } = image.value;
+	if (displayItem.value.type.includes('svg')) {
+		return addTokenToURL(getRootPath() + `assets/${displayItem.value.id}`);
+	}
+	if (displayItem.value.type.includes('displayItem')) {
+		const fit = props.crop ? 'cover' : 'contain';
+		const url =
+			getRootPath() + `assets/${displayItem.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
+		return addTokenToURL(url);
+	}
 
-			if (width && height) {
-				return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
-			}
+	return undefined;
+});
 
-			return `${formatFilesize(filesize)} • ${type}`;
-		});
+const downloadSrc = computed(() => {
+	if (!displayItem.value) return null;
+	return addTokenToURL(getRootPath() + `assets/${displayItem.value.id}`);
+});
 
-		watch(
-			() => props.value,
-			(newValue, oldValue) => {
-				if (newValue === oldValue) return;
+const meta = computed(() => {
+	if (!displayItem.value) return null;
+	const { filesize, width, height, type } = displayItem.value;
 
-				if (newValue) {
-					fetchImage();
-				}
+	if (width && height) {
+		return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
+	}
 
-				if (oldValue && newValue === null) {
-					deselect();
-				}
-			},
-			{ immediate: true }
-		);
+	return `${formatFilesize(filesize)} • ${type}`;
+});
 
-		const { edits, stageEdits } = useEdits();
+async function imageErrorHandler() {
+	if (!src.value) return;
+	try {
+		await api.get(src.value);
+	} catch (err: any) {
+		imageError.value = err.response?.data?.errors[0]?.extensions?.code;
 
-		return {
-			t,
-			loading,
-			image,
-			src,
-			imageError,
-			imageErrorHandler,
-			meta,
-			lightboxActive,
-			editDrawerActive,
-			changeCacheBuster,
-			setImage,
-			deselect,
-			downloadSrc,
-			edits,
-			stageEdits,
-		};
-
-		async function fetchImage() {
-			loading.value = true;
-
-			try {
-				const id = typeof props.value === 'string' ? props.value : props.value?.id;
-
-				const response = await api.get(`/files/${id}`, {
-					params: {
-						fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
-					},
-				});
-
-				if (props.value !== null && typeof props.value === 'object') {
-					image.value = {
-						...response.data.data,
-						...props.value,
-					};
-				} else {
-					image.value = response.data.data;
-				}
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
+		if (!imageError.value || !te('errors.' + imageError.value)) {
+			imageError.value = 'UNKNOWN';
 		}
+	}
+}
 
-		async function imageErrorHandler() {
-			if (!src.value) return;
-			try {
-				await api.get(src.value);
-			} catch (err: any) {
-				imageError.value = err.response?.data?.errors[0]?.extensions?.code;
+function deselect() {
+	remove();
 
-				if (!imageError.value || !te('errors.' + imageError.value)) {
-					imageError.value = 'UNKNOWN';
-				}
-			}
-		}
+	loading.value = false;
+	displayItem.value = null;
+	lightboxActive.value = false;
+	editDrawerActive.value = false;
+}
 
-		function changeCacheBuster() {
-			cacheBuster.value = nanoid();
-		}
+const edits = computed(() => {
+	if (!props.value || typeof props.value !== 'object') return {};
 
-		function setImage(data: Image) {
-			image.value = data;
-			emit('input', data.id);
-		}
-
-		function deselect() {
-			emit('input', null);
-
-			loading.value = false;
-			image.value = null;
-			lightboxActive.value = false;
-			editDrawerActive.value = false;
-		}
-
-		function useEdits() {
-			const edits = computed(() => {
-				// If the current value isn't a primitive, it means we've already staged some changes
-				// This ensures we continue on those changes instead of starting over
-				if (props.value && typeof props.value === 'object') {
-					return props.value;
-				}
-
-				return {};
-			});
-
-			return { edits, stageEdits };
-
-			function stageEdits(newEdits: Record<string, any>) {
-				if (!image.value) return;
-
-				emit('input', {
-					id: image.value.id,
-					...newEdits,
-				});
-			}
-		}
-	},
+	return props.value;
 });
 </script>
 
