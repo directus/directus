@@ -5,7 +5,6 @@ import { generateJoi, Joi, JoiOptions, StringSchema } from './generate-joi';
 describe(`generateJoi`, () => {
 	const date = new Date(1632431505992);
 	const compareDate = new Date(1632431605992);
-	const missingStringValue = '==directus_missing_conditional_string==';
 
 	it(`returns an error when no key is passed`, () => {
 		const mockFieldFilter = {} as FieldFilter;
@@ -80,7 +79,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for an _ncontains with null value`, () => {
 		const mockFieldFilter = { field: { _ncontains: null } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: (Joi.string() as StringSchema).ncontains(missingStringValue),
+			field: Joi.any().equal(true),
 		})
 			.unknown()
 			.describe();
@@ -100,7 +99,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for an _contains with null value`, () => {
 		const mockFieldFilter = { field: { _contains: null } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: (Joi.string() as StringSchema).contains(missingStringValue),
+			field: Joi.any().equal(true),
 		})
 			.unknown()
 			.describe();
@@ -148,9 +147,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for a _starts_with with null value`, () => {
 		const mockFieldFilter = { field: { _starts_with: null } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`^${escapeRegExp(missingStringValue)}.*`), {
-				name: 'starts_with',
-			}),
+			field: Joi.any().equal(true),
 		})
 			.unknown()
 			.describe();
@@ -173,10 +170,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for a _nstarts_with with null value`, () => {
 		const mockFieldFilter = { field: { _nstarts_with: null } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`^${escapeRegExp(missingStringValue)}.*`), {
-				name: 'starts_with',
-				invert: true,
-			}),
+			field: Joi.any().equal(true),
 		})
 			.unknown()
 			.describe();
@@ -198,9 +192,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for an ends_with with null value`, () => {
 		const mockFieldFilter = { field: { _ends_with: null } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`.*${missingStringValue}$`), {
-				name: 'ends_with',
-			}),
+			field: Joi.any().equal(true),
 		})
 			.unknown()
 			.describe();
@@ -223,10 +215,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for a doesnt _nends_with with null value`, () => {
 		const mockFieldFilter = { field: { _nends_with: null } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: Joi.string().pattern(new RegExp(`.*${missingStringValue}$`), {
-				name: 'ends_with',
-				invert: true,
-			}),
+			field: Joi.any().equal(true),
 		})
 			.unknown()
 			.describe();
@@ -446,7 +435,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for an _regex match with null value`, () => {
 		const mockFieldFilter = { field: { _regex: null } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: Joi.string().regex(new RegExp(missingStringValue)),
+			field: Joi.any().equal(true),
 		})
 			.unknown()
 			.describe();
