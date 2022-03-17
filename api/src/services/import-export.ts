@@ -171,7 +171,7 @@ export class ExportService {
 	async exportToFile(
 		collection: string,
 		query: Partial<Query>,
-		type: 'xml' | 'csv' | 'json',
+		format: 'xml' | 'csv' | 'json',
 		options?: {
 			file?: Partial<File>;
 		}
@@ -194,7 +194,7 @@ export class ExportService {
 					knex: trx,
 				});
 
-				const count = await service
+				const totalCount = await service
 					.readByQuery({
 						...query,
 						aggregate: {
@@ -203,8 +203,10 @@ export class ExportService {
 					})
 					.then((result) => Number(result?.[0]?.count ?? 0));
 
-				const batchesRequired = Math.ceil(count / env.EXPORT_BATCH_SIZE);
+				const count = query.limit ? Math.min(totalCount, query.limit) : totalCount;
+
 				const requestedLimit = query.limit ?? -1;
+				const batchesRequired = Math.ceil(count / env.EXPORT_BATCH_SIZE);
 
 				let readCount = 0;
 
@@ -226,7 +228,10 @@ export class ExportService {
 					if (result.length) {
 						await appendFile(
 							path,
-							this.transform(result, type, { includeHeader: batch === 0, includeFooter: batch === batchesRequired })
+							this.transform(result, format, {
+								includeHeader: batch === 0,
+								includeFooter: batch + 1 === batchesRequired,
+							})
 						);
 					}
 				}
@@ -240,14 +245,14 @@ export class ExportService {
 			const storage: string = toArray(env.STORAGE_LOCATIONS)[0];
 
 			const title = `export-${collection}-${getDateFormatted()}`;
-			const filename = `${title}.${type}`;
+			const filename = `${title}.${format}`;
 
 			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
 				...(options?.file ?? {}),
 				title: options?.file?.title ?? title,
 				filename_download: options?.file?.filename_download ?? filename,
 				storage: options?.file?.storage ?? storage,
-				type: mimeTypes[type],
+				type: mimeTypes[format],
 			};
 
 			const savedFile = await filesService.uploadOne(createReadStream(path), fileWithDefaults);
@@ -291,29 +296,40 @@ export class ExportService {
 	 * Transform a given input object / array to the given type
 	 */
 	transform(
-		input: Record<string, any> | Record<string, any>[],
-		type: 'xml' | 'csv' | 'json',
+		input: Record<string, any>[],
+		format: 'xml' | 'csv' | 'json',
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
 		}
 	): string {
-		if (type === 'json') {
-			return JSON.stringify(input || null, null, '\t');
+		if (format === 'json') {
+			let string = JSON.stringify(input || null, null, '\t');
+
+			if (options?.includeHeader === false) string = string.split('\n').slice(1).join('\n');
+
+			if (options?.includeFooter === false) {
+				const lines = string.split('\n');
+				string = lines.slice(0, lines.length - 1).join('\n');
+				string += ',\n';
+			}
+
+			return string;
 		}
 
-		if (type === 'xml') {
+		if (format === 'xml') {
 			return toXML('data', input);
 		}
 
-		if (type === 'csv') {
+		if (format === 'csv') {
 			const parser = new CSVParser({
 				transforms: [CSVTransforms.flatten({ separator: '.' })],
 				header: options?.includeHeader !== false,
 			});
+
 			return parser.parse(input);
 		}
 
-		throw new ServiceUnavailableException(`Illegal export type used: "${type}"`, { service: 'export' });
+		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });
 	}
 }
