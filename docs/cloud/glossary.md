@@ -4,27 +4,37 @@
 
 ## Accounts
 
-Accounts are the term for your Super Administrator Cloud Dashboard Profile to create and join Teams, pay bills, and
-manage Projects. In contrast, "User" is the term for Profiles within a Directus Project. Accounts on the Cloud Dashboard
-and the Users created within a Directus Project are two separate systems. See the [Overview](#cloud/overview) to learn
-how Accounts, Teams and Projects inter-relate. Read the [Accounts documentation](/cloud/accounts) to learn how to manage
-Accounts.
+Accounts are the term for your super-administrator Cloud Dashboard Profile, used to create and join Teams, pay bills,
+and manage Projects. See the [Overview](#cloud/overview) to learn how Accounts, Teams and Projects inter-relate. Read
+the [Accounts documentation](/cloud/accounts) to learn how to manage Accounts.
+
+:::tip Accounts vs Users
+
+To avoid confusion, "User" is the term for user profiles inside a Directus Project. The terms Account and Team Member
+are used on the context of Directus Cloud login. Accounts made on the Cloud Dashboard and the Users created within a
+Directus Project are two separate systems.
+
+:::
 
 ## Asset Storage
 
-Support for any type of file is included on all Cloud Projects. Certain technical limits apply to file uploads such as
-limits on size per asset and total asset storage per Project. For all limitation details, see
-[Cloud Policies](https://directus.io/cloud-policies/#).
+Directus Core allows file uploads/downloads for any type of file. This applies on all Cloud Projects. However, on
+Directus Cloud, certain technical limits apply to file uploads such as limits on size per asset and total asset storage
+per Project. For all limitation details, see [Cloud Policies](https://directus.io/cloud-policies/#).
 
 Asset Storage space varies by Project Tier. For details, see [Cloud Policies](https://directus.io/cloud-policies/#).
 
-- Storage device details? @rijk -> Performance
-
 ## Automatic Software Updates
 
-- Upgrade latest version every two weeks, all dependencies, security patches,
-- How time consuming it would be to do on your own!
-- All done with no downtime (rolling releases)
+Software updates can be a time-consuming chore, taking developer energy and focus away from core business logic. Cloud
+Projects are updated every two weeks in rolling releases _(i.e. done with no downtime)_. These updates keep your Project
+on the latest version and fully up-to-date with all Cloud Exclusives, dependencies, and security patches.
+
+::: tip Version-locking
+
+Version-locking is available on Enterprise Projects.
+
+:::
 
 ## Auto-Scaling
 
@@ -35,75 +45,94 @@ information, see [Nodes](#nodes).
 
 ## Backups
 
-Data backups are enabled for Standard and Enterprise Projects.
-
-- Backup Frequency -> nightly for std and nightly for enterprise (but is configurable)
-- :::tip
-- How to access backup info -> internal use. if needed, open support ticket and request. In future available through
-  dashboard.
+By default, Standard and Enterprise Project data is backed up once per day, but the frequency can be configured as
+needed on Enterprise Projects. In the event of an emergency, your data will be safe.
 
 ## Billing
 
-Community Projects are free of charge. Enterprise Projects are custom-tailored and set case-by-case. Standard billing
-charges are determined by 2 factors:
+Community Projects are free. Each Enterprise Project is custom-tailored and so is the bill.
 
-- The rate based on [Node Type](#nodes) _(General Purpose vs Performance Tier)_.
-- Cumulative Node hours within billing cycle.
+Standard Project billing is based on the total number of hours that all Active and Standby nodes were utilized during
+the billing period. All usage is measured on a calendar monthly basis, with usage reset on the first day of each new
+billing period. For example, if you signed up on the 15th, your usage period is set to be from 15th of this month to the
+14th of the following month.
 
-The Node Type selected applies to all Nodes in a Project _(both Active and Standby)_.
+Billing works such that you can upgrade, downgrade, modify or cancel your Project anytime. At the end of the day, no
+matter what, you only pay for what was used.
 
-Note that for Active Nodes, a flat-rate monthly price is given on the
-[Create a Project](/cloud/projects/#create-a-project) section. In actuality, this "monthly fee" is just the hourly node
-rate for the Node Type selected multiplied by the number of hours in a month. Bills are invoiced monthly or at Project
-deletion. So for example:
+### Node Pricing Details
 
-The [Project Monitor Page](/cloud/projects/#monitor-a-project) provides analytics on Node performance to help inform
-decisions to add or remove Active and Standby Nodes. To manage billing, see
-[Manage Billing](/cloud/teams/#manage-billing). For information on specific hourly rates and refunds, see
-[Cloud Policies](https://directus.io/cloud-policies/).
+:::tip Pricing
 
-### Example 1 hrly pricing
+**General Purpose Nodes:** $0.03424657534 / hour
 
-- Less than a month -> illustrate it is all done hourly.
+**Performance Nodes:** $0.06849315068 / hour
 
-### Example 2- active nodes
+:::
 
-- 2 nodes, no standby's with exact pricing system.
+Once the [Node Type](#nodes) is selected, the associated hourly rate will apply to both Active and Standby Nodes. Note
+that Active Nodes are shown as a monthly rate _(General Purpose being $25/month and Performance are $50/month)_.
+However, this "flat monthly rate" is actually just the hourly rate for the Node Type multiplied by 730 hours
+`$0.03424657534 x 730hrs = $24.99999`
 
-### Example 3 - overages on standby
+The following four examples demonstrate how billing works:
 
-- 2 nodes, 2 standby nodes. 2 spikes: 1 w/1 node, 1 w/2 nodes.
+### Hourly Pricing
 
-### Example 4 - pro-rated changes
+A Project is configured to use General Purpose Nodes, with 1 Active Node and 0 Standby Nodes. The Project runs for 3
+days 3.5 hours (75.5 hours total, rounds to 76 hours) and is then destroyed.
 
-- pro-rated billing (change infrastructure) - change from 1 GP to 2 Performance mid-month.
+The bill will be `$0.03424657534 x 76 hours = $2.60` plus Tax/VAT.
 
----
+### Active Nodes
 
-Project billing is based on the total number of hours across all active/standby nodes utilized during the billing
-period. All usage is measured on a calendar monthly basis, with usage reset on the first day of each new billing period.
-For example, if you signed up on the 15th, your usage period is set to be from 15th to 14th of a calendar month.
+A Project is configured to use Performance Tier Nodes, with 2 Active Nodes and 0 Standby Nodes. The Project runs the
+full month (730 hours) and the fee for 2 Nodes at $50/month will be
+`2 Nodes x $0.06849315068 per hour x 730 hours = $99.99999` which of course rounds up to $100.
 
-For example, if your project is configured to use 2 General Purpose Nodes ($0.03424657534 / hour / node), and it is
-active for the entire month (730 hours), then your base monthly fee will be $50.00. If you have a spike of usage during
-a month that causes one standby node to be activated for 19.5 consecutive hours (rounds up to 20 hours), then an
-additional $0.69 will be added to your monthly fee. This brings your total fee for the month to $50.69 + Tax/VAT.
+The monthly bill will be `$100` plus Tax/VAT.
+
+### Overages on Standby Nodes
+
+A Project is configured to use General Purpose Nodes, with 3 Active Nodes and 2 Standby Nodes. The Project runs the full
+month (730 hours). There are two traffic spikes. The first spike is smaller and activates 1 Standby Node for 6.5 hours.
+The second spike is larger but gradual and activates the first Node from 4pm to 12am (8 hours) then the second Node from
+6pm to 11pm (5 hours) for a total of `8 + 5 = 13` hours. Between both spikes, Standby Nodes run for a total of 19.5
+hours (rounds to 20 hrs). The Active Nodes will cost `3 Nodes x $0.03424657534 per hour x 730 hours = $75` and Standby
+Nodes will cost `20hrs x $0.03424657534 = $0.68`.
+
+The monthly bill will be `$75.68` plus VAT/Tax.
+
+### Pro-rated Changes
+
+A Project begins the billing cycle configured to use General Purpose Nodes, 1 Active and 0 Standby.
+
+A massive traffic spike is expected from marketing activities this month and 200 hours into the month, the Project is
+reconfigured to use 2 Performance Tier Nodes and 5 Standby Nodes. In the end, Standby Nodes were not needed and never
+activated. The portion of the bill before reconfiguration will be
+`(1 general purpose node x $0.03424657534 x 200hrs) = $6.849` and then adding in reconfigured costs
+`(2 Performance Nodes x $0.06849315068 per hour x 530 hours) = 72.60`.
+
+The monthly bill will be `$79.45` plus VAT/Tax.
+
+### How to Determine Required Nodes
+
+As stated in the beginning of this section and as shown by the examples above, you are never locked-in to a specific
+node configuration. So, to help inform decisions on ideal Node configurations for your Project, the
+[Project Monitor Page](/cloud/projects/#monitor-a-project) provides performance analytics.
+
+### Manage Billing Info
+
+To manage payment methods and other billing details, see [Manage Billing](/cloud/teams/#manage-billing).
+
+### Refunds
+
+For information on refunds, see [Cloud Policies](https://directus.io/cloud-policies/).
 
 ## Caching
 
-- Community and Standard Projects? @rijk
-- Directus Core's [default caching strategy](configuration/config-options/#cache), which leaves caching disabled.
-- Enterprise Projects offers advanced caching.
-
-* schema, content, global CDN
-
-## Cloud API
-
-Any action in the Directus Cloud Dashboard can be performed programmatically via the Cloud API.
-
-- advantages and possibilities @rijk
-
-* Release date - coming soon
+Caching is enabled on Cloud Projects. Public data is cached in the CDN for short period of time. The of whole Directus
+is running behind the [Global CDN](#global-cdn). Enterprise Projects offer other advanced caching strategies.
 
 ## Cloud Exclusives
 
@@ -114,87 +143,116 @@ newer Versions are released. Cloud Exclusive development is managed by the Core 
 
 ## Community Support
 
-As an open-source Project, you are encouraged to reach out to the Community for help on Projects, and of course to help
-others as well. To join the thousands of other developers all discussing and guiding the future of the Directus
+As an open-source Project, you are encouraged to reach out to the Community for help on Projects, _and of course help
+others as well_. To join the thousands of other developers all discussing and guiding the future of the Directus
 platform, the two primary channels to engage with the community would be
-[Github](https://github.com/directus/directus/discussions) and [Discord](https://directus.chat/). Most common questions
-have already been asked and answered and can easily be found in Github Discussions and Issues. Note that while the
-Directus Core Team plays an active and engaged role in community discussions, there is no guaranteed turnaround time on
-official answers.
+[Github](https://github.com/directus/directus/discussions) and [Discord](https://directus.chat/).
+
+Most common questions have already been asked and answered and can easily be found in Github Discussions and Issues.
+Note that while the Directus Core Team plays an active and engaged role in community discussions, there is no guaranteed
+turnaround time on official answers.
 
 ## Data Portability
 
-- Import/Export of data
-- Migration in and out of the platform (currently manual and only for enterprise, will
+Directus Core is totally detached from the database itself. Data can be cleanly imported and exported on Projects with
+the API via the schema endpoints. For Enterprise clients, the Directus team will work with you to help you with this
+process.
 
 ## Data Processing
 
-- No info found in context of Directus @rijk
-
-* Info. on GDPR - all paid instances = data in GDPR compliant region
+In order to optimize your project and you help meet any local data compliance laws such as GDPR, Standard and Enterprise
+Projects allows you to choose the region your Project is hosted in.
 
 ## Encryption and Security
 
-Data-storage and in-transit encryptions is included on all Cloud Projects. All data at rest remains encrypted. HTTPS/TLS
-protocols are enabled on all in-transit data.
+[Asset Storage](#asset-storage), data storage and in-transit encryption is included on all Cloud Projects. All data at
+rest remains encrypted. HTTPS/TLS protocols are enabled on all in-transit data.
 
-- data at rest encryption type? @rijk
-- Encryption of file assets?
-- Minimum Password requirements: 2FA
+:::tip Directus Core Security Features
+
+-> whitelabeling IP, 2FA, Password Rules - prjct settings, Access Tokens
+
+:::
 
 ## Extensions
 
 Directus has been architected to be [completely modular and extensible](/extensions/introduction). This ensures you will
-never hit a hard feature ceiling within the platform. However, as new versions of Directus are released, it is not
-possible to make sure all future versions of Directus are compatible with all self-developed Extensions. For this
-reason, Community and Standard Projects only have access to the [Cloud Exclusive](#cloud-exclusives) Extensions managed
-by the Core Team. Enterprise Projects get all Cloud Exclusives and can also build custom Extensions.
+never hit a hard feature ceiling within the platform.
+
+However, in order to maintain automatic software updates as new versions of Directus are released, it is not possible to
+make sure all future versions of Directus are compatible with all Extensions. For this reason, Community and Standard
+Projects only have access to the officially supported and maintained [Cloud Exclusive Extensions](#cloud-exclusives)
+managed by the Core Team. Enterprise Projects get all Cloud Exclusives and also have the option to implement any other
+Extensions as needed.
 
 ## Global CDN
 
-A global CDN is provided on all Cloud Projects, out-of-the-box.
-
-- Specifics on our CDN. @rijk
-- Should we tie this into caching?
-- AWS cloudfront/cloudflare, 300+ nodes.
+A Global CDN is provided on all Cloud Projects, out-of-the-box, with over 300 cache locations, which means assets and
+data will be delivered with the lowest latency.
 
 ## Inactivity
 
 If there is no user app activity for 3 days on a Community Project, the [Infrastructure](#infrastructure) is paused.
 Projects which remain paused for a certain duration will be automatically deleted, see details in
 [Cloud Policies](https://directus.io/cloud-policies/#). To avoid deletion, you must manually
-[resume the Project](/cloud/projects/#resume-paused-project) within the Cloud Dashboard. User requests will not resume
-the Project.
+[resume the Project](/cloud/projects/#resume-paused-project) within the Cloud Dashboard. App activity/requests will not
+resume the Project.
 
 ## Infrastructure
 
 In the context of these docs, Infrastructure refers to the hard and soft tech specs to the equipment running your
-Directus Project. This includes the database (and database tenancy), chosen [Node Type](#nodes), Datacenter region
-selection, rate limiting, etc. Infrastructure differs Tier to Tier. Standard has numerous Infrastructure configuration
-options. Refer to the Infrastructure section on the [pricing page](https://directus.io/pricing/) for side-by-side
-comparison between Tiers.
+Directus Project. This includes the database (and database tenancy), chosen [Node Type](#nodes), data storage region,
+rate limiting, etc.
+
+Infrastructure configuration options differ by Project Tier. Refer to [Projects](#project) as well as the Infrastructure
+section on the [pricing page](https://directus.io/pricing/) for side-by-side comparison between Tiers.
 
 ## Load Balancing
 
 Load balancing allows you to configure the minimum number of [Active Nodes](#nodes) your Project is running, so as to
 instantaneously distribute load across multiple servers. This is essentially the same concept as Horizontal Scaling.
 Note that the total number of Active Nodes can be changed at any time _(see
-[Manage a Project](/cloud/projects/#manage-a-project))._ The [Project Monitor Page](/cloud/projects/#monitor-a-project)
-provides analytics on Node performance, which helps inform the decision on whether or not to add or remove Active and
-Standby Nodes. So don't feel tied to a single decision up front.
+[Manage a Project](/cloud/projects/#manage-a-project))._
+
+:::tip Configure Load Balancing
+
+The [Project Monitor Page](/cloud/projects/#monitor-a-project) provides analytics on Node performance to help inform
+configuration decisions. As noted under [Billing](#billing), Projects can be reconfigured at anytime.
+
+:::
 
 ## Nodes
 
-When creating a Standard Project, you will be prompted to choose Node Type (General Purpose or Performance Tier), then
-select a number of Active Nodes and Standby Nodes. Here is a clarification of these terms.
+Nodes can be configured to meet traffic needs at any scale. There are two approaches to scale-up Project performance,
+vertical-scaling and horizontal-scaling. Vertical-scaling is the concept of increasing Node processing power to improve
+performance. In Directus Cloud, vertical-scaling is handled by configuring the Node Type. Horizontal-scaling is the
+concept of increasing performance by adding more nodes to handle incoming requests. In Directus Cloud,
+horizontal-scaling is handled by setting the number of Active and Standby Nodes.
 
-### General Purpose vs Performance Tier
+### Node Type
 
-These terms refer to the Node processing power, _also known as vertical scaling_. General Purpose Nodes are the right
-choice for most common use-cases. Performance Tier Nodes provide higher processing power. This choice is applied to all
-Nodes on a Project, both Active and Standby.
+As stated above, the Node Type refers to its configured processing power. Vertical Scaling is the concept of improving
+scalabiltiy by increasing Node processing power. Directus Cloud offers several Node Types to help your Project scale.
 
-### Active Nodes vs Standby Nodes
+- **Community**\
+  Community Projects come equipped with one Node, which can handle basic web traffic required for hobby-projects, learning/demoing
+  Directus Cloud, and other non-production use cases. Community Nodes will pause after 3 days of [inactivity](#inactivity).
+
+- **General Purpose**\
+  General Purpose Nodes are the right choice for most small-to-medium scale, production-ready use-cases.
+
+- **Performance Tier**\
+  Performance Tier Nodes provide higher processing power and may need to be implemented on Projects which will have requests
+  for larger files or data sets.
+
+- **Enterprise**\
+  Enterprise Node configuration options are totally flexible.
+
+### Active Nodes
+
+## Standby Nodes (Auto-scaling)
+
+Standby Nodes stay turned-off and provide
 
 These two options set the number of Nodes available to take requests, _known as [Load Balancing](#load-balancing) as
 well as horizontal scaling_. Active Nodes are always on and available to handle incoming requests, regardless of
@@ -224,14 +282,6 @@ both the Active and Standby nodes.
 
 Overages, in the context of the Directus Cloud, refer to fees generated when Standby Nodes are powered on during high
 spikes in traffic/activity. To learn more, see [Nodes](#nodes), [Billing](#billing) and [Auto-scaling](#auto-scaling).
-
-## Parallel Operations
-
-Parallel operations refers to breaking up different parts of a task among multiple processors (CPUs) to help reduce the
-amount of computation time.
-
-- Parallel operations in Directus Cloud @rijk
-- maybe SQLite???
 
 ## Support Options
 
@@ -312,10 +362,20 @@ The database for Community projects is single-tenant but file-based and limited 
 - while Enterprise projects are single-tenant.
 - Single tenant = you need Enterprise. dedicated to you. noe security concerns. 100% ur stuff.
 
-* () needs a fact-check @rijk
+- We run your Project as single-tenant. But you can implement multi-tennancy within your Project.
+
+- each project in Cloud is scoped and there is no bleeding into other Proejcts. If your neighbor is busy, it will not
+  impact your Project.
+
+One container per Project. For std we share a database cluster. For Enterprise projects, as an added security measure,
+are ran on fully separately.
 
 ## Quotas
 
+Don't impose any _arbitrary_ limits on things like Collections, Roles or Users. Actual performance is based on the Nodes
+configured, so there are hard technical Limits.
+
+- ex: limited 100 Fields
 - no functional quotas
-- resources of Nodes and whatever you can do with that.
+- resources of Nodes and whatever you can do with that
 - ::: tip Technical Limits

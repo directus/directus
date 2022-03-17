@@ -1,3 +1,5 @@
+-> Clearly delineate Directus Cloud and Directus Core
+
 # Overview
 
 > Create and manage Teams and Projects, Invite Users, and set billing information with the easy-to-use Cloud Dashboard
@@ -6,12 +8,6 @@
 ![Hero Image](image.webp)
 
 [[toc]]
-
-::: tip Cloud API Management
-
-All actions on Directus Cloud can be done on the Cloud API, which will be released soon!
-
-:::
 
 The Cloud Dashboard contains three key components: Accounts, Teams and Projects. A person creates an Account _(these
 Accounts are completely free)_. Accounts then create or join Teams, whereupon the Account becomes a Member of the Team.
