@@ -57,7 +57,13 @@
 			</div>
 		</div>
 
-		<v-drawer v-model="exportDialogActive" :title="t('export_items')">
+		<v-drawer
+			v-model="exportDialogActive"
+			:title="t('export_items')"
+			persistent
+			@esc="exportDialogActive = false"
+			@cancel="exportDialogActive = false"
+		>
 			<template #actions>
 				<v-button
 					v-tooltip.bottom="location === 'download' ? t('download_file') : t('start_export')"
@@ -419,12 +425,12 @@ function exportDataLocal() {
 
 	let params: Record<string, unknown> = {
 		access_token: api.defaults.headers.common['Authorization'].substring(7),
-		export: format,
+		export: format.value,
 	};
 
 	if (exportSettings.sort) params.sort = exportSettings.sort;
 	if (exportSettings.fields) params.fields = exportSettings.fields;
-	if (exportSettings.limit) params.limit = props.layoutQuery.limit;
+	if (exportSettings.limit) params.limit = exportSettings.limit;
 	if (exportSettings.search) params.search = exportSettings.search;
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
