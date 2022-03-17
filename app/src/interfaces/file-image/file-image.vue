@@ -96,7 +96,7 @@ const value = computed({
 });
 
 const query = ref<RelationQuerySingle>({
-	fields: ['id', 'title', 'type', 'filename_download'],
+	fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
 });
 
 const { collection, field } = toRefs(props);
@@ -117,7 +117,7 @@ const src = computed(() => {
 	if (displayItem.value.type.includes('svg')) {
 		return addTokenToURL(getRootPath() + `assets/${displayItem.value.id}`);
 	}
-	if (displayItem.value.type.includes('displayItem')) {
+	if (displayItem.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
 		const url =
 			getRootPath() + `assets/${displayItem.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
