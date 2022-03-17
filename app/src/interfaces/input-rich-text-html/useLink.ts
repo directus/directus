@@ -32,19 +32,20 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		newTab: true,
 	};
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
+	const linkNode = ref<HTMLLinkElement | null>(null);
 
 	const linkButton = {
 		icon: 'link',
 		tooltip: i18n.global.t('wysiwyg_options.link'),
-		onAction: (buttonApi: any) => {
+		onAction: () => {
 			if (editor.value.plugins.fullscreen.isFullscreen()) {
 				editor.value.execCommand('mceFullScreen');
 			}
 
 			linkDrawerOpen.value = true;
 
-			if (buttonApi.isActive()) {
-				const node = editor.value.selection.getNode() as HTMLLinkElement;
+			if (linkNode.value) {
+				const node = linkNode.value;
 				editor.value.selection.select(node);
 
 				const url = node.getAttribute('href');
@@ -69,7 +70,19 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		},
 		onSetup: (buttonApi: any) => {
 			const onLinkNodeSelect = (eventApi: any) => {
-				buttonApi.setActive(eventApi.element.tagName === 'A');
+				let element = eventApi.element;
+				linkNode.value = null;
+
+				while (element && element.id !== 'tinymce') {
+					if (element.tagName === 'A') {
+						linkNode.value = element;
+						break;
+					}
+
+					element = element.parentElement;
+				}
+
+				buttonApi.setActive(!!linkNode.value);
 			};
 
 			editor.value.on('NodeChange', onLinkNodeSelect);

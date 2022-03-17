@@ -416,6 +416,13 @@ export default defineComponent({
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 			editor.ui.registry.addToggleButton('customLink', linkButton);
 			editor.ui.registry.addButton('customCode', sourceCodeButton);
+
+			editor.on('init', function () {
+				editor.shortcuts.remove('meta+k');
+				editor.addShortcut('meta+k', 'Insert Link', () => {
+					editor.ui.registry.getAll().buttons.customlink.onAction();
+				});
+			});
 		}
 
 		function setFocus(val: boolean) {
