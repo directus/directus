@@ -1,4 +1,4 @@
-<p align="center"><img alt="Logo" src="https://user-images.githubusercontent.com/522079/127886783-ae6b4ec6-e2ad-4615-8df9-d77c33e92d7e.png"></p>
+<p align="center"><img alt="Directus Logo" src="https://user-images.githubusercontent.com/522079/158864859-0fbeae62-9d7a-4619-b35e-f8fa5f68e0c8.png"></p>
 
 <br>
 
@@ -6,15 +6,31 @@
 
 Directus is a real-time API and App dashboard for managing SQL database content.
 
-- **Free & open-source.** No artificial limitations, vendor lock-in, or hidden pricing.
-- **REST & GraphQL API.** Instantly adds a blazingly fast Node.js API layer to your database.
-- **Manage pure SQL.** Works with existing SQL databases, or helps build new architectures from scratch.
-- **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, MariaDB and MS-SQL.
-- **Allows self-hosting.** Choose your hosting and infrastructure, run locally, or deeply integrate on-premises.
+- **Free & open-source.** No artificial limitations, vendor lock-in, or hidden paywalls.
+- **REST & GraphQL API.** Instantly layers a blazingly fast Node.js API on top of any SQL database.
+- **Manage pure SQL.** Works with new or existing SQL databases, no migration required.
+- **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
+- **On-Prem or Cloud.** Run locally, install on-premises, or use our [self-service Cloud service](https://directus.io/pricing) (free tier available).
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
-- **A modern dashboard.** A Vue.js Admin App so safe and intuitive, non-technical users require no training.
+- **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
 **[Learn more about Directus on our website.](https://directus.io)**
+
+<br>
+
+
+## 🚀 Directus Cloud
+
+[Directus Cloud](https://directus.io/pricing) allows you to create free Community Cloud projects in 90 seconds.
+
+- **Free Community Cloud tier available (no credit card required)**
+- **No product limitations or service usage quotas (unlimited users, API requests, etc)**
+- A modern self-service dashboard to create and monitor all your projects in one place
+- End-to-end solution: Directus, database, serverless auto-scaling, storage, and a global CDN
+- Hourly usage-based pricing for our Standard Cloud allows you to pay-as-you-go
+- Select your desired region and provision a new project in ~90 seconds
+
+**[Create your Free Project](https://directus.cloud)**
 
 <br>
 
@@ -35,18 +51,6 @@ yarn create directus-project my-project
 Simply follow the setup prompts and the CLI will create your new project directory (eg: `my-project`), configuration
 file, and initial database. To get the most out of Directus, and to ensure you have the latest security patches, it is
 important to keep your projects up-to-date.
-
-<br>
-
-## 🚀 One-Click Deployments
-
-If you would like to completely avoid the manual installation process, the following self-hosted one-click apps will
-handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these
-services.
-
-| Google Cloud                                                                                                                                        | Cleavr                                                                                                                                | Cloudron                                                                                                                                  | DigitalOcean                                                                                                                            | Heroku                                                                                                                                                                                              | Platform.sh                                                                                                                                                                                                                                                                                                                                                                             | Zeet                                                                                                                                                                               | Koyeb                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/directus-community/gcp-example) | <a href="https://docs.cleavr.io/guides/directus"><img src="https://docs.cleavr.io/images/deploy-with-cleavr.png" width="180px" /></a> | <a href="https://cloudron.io/button.html?app=io.directus9.cloudronapp"><img src="https://cloudron.io/img/button.svg" width="180px" /></a> | <a href="https://marketplace.digitalocean.com/apps/directus"><img src="https://www.deploytodo.com/do-btn-blue.svg" width="180px" /></a> | <a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy on Heroku" width="180px"></a> | <a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px"></a> | <a href="https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template"><img src="https://deploy.zeet.co/directus.svg" alt="Deploy on Zeet" width="180px"></a> | <a href="https://app.koyeb.com/deploy?type=docker&name=directus&ports=8055;http;/&env[PORT]=8055&env[KEY]=A%20random%20string&env[SECRET]=A%20random%20string&env[PUBLIC_URL]=https://myURL.com/&env[DB_CLIENT]=DB%20client&env[DB_HOST]=DB%20host&env[DB_PORT]=DB%20Port&env[DB_DATABASE]=Database%20name&env[DB_USER]=DB%20user&env[DB_PASSWORD]=DB%20Password&image=directus/directus"><img src="https://www.koyeb.com/static/images/deploy/button.svg" alt="Deploy on Koyeb" width="180px"></a> |
 
 <br>
 
