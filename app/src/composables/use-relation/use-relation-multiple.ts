@@ -140,6 +140,14 @@ export function useRelationMultiple(
 		updateValue();
 	}
 
+	/**
+	 * Update or Select existing items.
+	 * When selecting items, you have to make sure the object has the following keys set:
+	 * @example
+	 * o2m - reverseJunctionField, relatedPrimaryKeyField
+	 * m2m - reverseJunctionField, junctionField.relatedPrimaryKeyField
+	 * m2a - reverseJunctionField, collectionField, junctionField.relatedPrimaryKeyField
+	 */
 	function update(...items: DisplayItem[]) {
 		if (!relation.value) return;
 
@@ -260,19 +268,12 @@ export function useRelationMultiple(
 		const fetchedSelectItems = ref<Record<string, any>[]>([]);
 
 		const selected = computed(() => {
-			if (!relation.value) return [];
+			const info = relation.value;
+			if (!info) return [];
 
 			return _value.value.update
 				.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
-				.filter((item) => {
-					switch (relation.value?.type) {
-						case 'o2m':
-							return relation.value.relation.field in item;
-						case 'm2a':
-						case 'm2m':
-							return relation.value.reverseJunctionField.field in item;
-					}
-				});
+				.filter((item) => info.reverseJunctionField.field in item);
 		});
 
 		const selectedOnPage = computed(() => getPage(existingItemCount.value, selected.value));
