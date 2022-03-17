@@ -165,6 +165,7 @@ revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
+hide_field: Nascondi campo
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
@@ -337,8 +338,6 @@ label_import: Importa
 label_export: Esporta
 import_export: Importa / Esporta
 format: Formato
-use_current_filters_settings: Usa i filtri e le impostazioni correnti
-export_data_button: Avvia l'esportazione
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
 fill_template: Riempi con il valore del modello
@@ -716,6 +715,9 @@ create_dashboard: Crea bacheca
 dashboard_name: Nome della bacheca
 full_screen: Schermo Intero
 edit_panels: Modifica pannelli
+center_align: Allinea al centro
+left_align: Allinea a sinistra
+right_align: Allinea a destra
 fit_to_screen: Adatta allo schermo
 image_url: URL immagine
 alt_text: Testo alternativo

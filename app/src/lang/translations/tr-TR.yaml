@@ -336,8 +336,6 @@ label_import: İçe Aktar
 label_export: Dışa Aktar
 import_export: İçe / Dışa Aktar
 format: Biçim
-use_current_filters_settings: Mevcut Filtreleri ve Ayarları Kullan
-export_data_button: Dışa Aktarmayı Başlat
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablon Değeri ile Doldur

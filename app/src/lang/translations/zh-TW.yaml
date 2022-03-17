@@ -223,7 +223,6 @@ related_collections: 關聯的集合
 languages_collection: 語系集合
 label_import: 匯入
 format: 格式
-use_current_filters_settings: 使用當前篩選器及設置
 last_page: 最後一頁
 last_access: 最後存取
 fill_template: 使用範本填充
