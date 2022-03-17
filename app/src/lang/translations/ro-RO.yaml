@@ -336,8 +336,6 @@ label_import: Import
 label_export: Exportă
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Folosește filtrele și setările curente
-export_data_button: Începe exportul
 last_page: Ultima Pagină
 last_access: Ultima accesare
 fill_template: Completează cu valoarea din șablon
