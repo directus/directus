@@ -2,15 +2,11 @@
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !displayItem" class="disabled-placeholder" center icon="block">
+		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
 			{{ t('disabled') }}
 		</v-notice>
 
-		<div
-			v-else-if="displayItem"
-			class="image-preview"
-			:class="{ 'is-svg': displayItem.type && displayItem.type.includes('svg') }"
-		>
+		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
 			<div v-if="imageError" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
 
@@ -26,7 +22,7 @@
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="displayItem.filename_download">
+				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
 					<v-icon name="get_app" />
 				</v-button>
 				<v-button v-tooltip="t('edit')" icon rounded @click="editDrawerActive = true">
@@ -38,20 +34,20 @@
 			</div>
 
 			<div class="info">
-				<div class="title">{{ displayItem.title }}</div>
+				<div class="title">{{ image.title }}</div>
 				<div class="meta">{{ meta }}</div>
 			</div>
 
 			<drawer-item
-				v-if="!disabled && displayItem"
+				v-if="!disabled && image"
 				v-model:active="editDrawerActive"
 				collection="directus_files"
-				:primary-key="displayItem.id"
+				:primary-key="image.id"
 				:edits="edits"
 				@input="update"
 			/>
 
-			<file-lightbox :id="displayItem.id" v-model="lightboxActive" />
+			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
 		<v-upload v-else from-library from-url :folder="folder" @input="update($event.id)" />
 	</div>
@@ -101,7 +97,7 @@ const query = ref<RelationQuerySingle>({
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem, loading, update, remove } = useRelationSingle(value, query, relationInfo);
+const { displayItem: image, loading, update, remove } = useRelationSingle(value, query, relationInfo);
 
 const { t, n, te } = useI18n();
 
@@ -112,15 +108,14 @@ const imageError = ref<string | null>(null);
 const cacheBuster = ref(nanoid());
 
 const src = computed(() => {
-	if (!displayItem.value) return undefined;
+	if (!image.value) return undefined;
 
-	if (displayItem.value.type.includes('svg')) {
-		return addTokenToURL(getRootPath() + `assets/${displayItem.value.id}`);
+	if (image.value.type.includes('svg')) {
+		return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 	}
-	if (displayItem.value.type.includes('image')) {
+	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url =
-			getRootPath() + `assets/${displayItem.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
+		const url = getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
 		return addTokenToURL(url);
 	}
 
@@ -128,13 +123,13 @@ const src = computed(() => {
 });
 
 const downloadSrc = computed(() => {
-	if (!displayItem.value) return null;
-	return addTokenToURL(getRootPath() + `assets/${displayItem.value.id}`);
+	if (!image.value) return null;
+	return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 });
 
 const meta = computed(() => {
-	if (!displayItem.value) return null;
-	const { filesize, width, height, type } = displayItem.value;
+	if (!image.value) return null;
+	const { filesize, width, height, type } = image.value;
 
 	if (width && height) {
 		return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
@@ -160,7 +155,7 @@ function deselect() {
 	remove();
 
 	loading.value = false;
-	displayItem.value = null;
+	image.value = null;
 	lightboxActive.value = false;
 	editDrawerActive.value = false;
 }

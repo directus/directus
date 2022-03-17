@@ -10,21 +10,21 @@
 						readonly
 						:disabled="disabled"
 						:placeholder="t('no_file_selected')"
-						:model-value="displayItem && displayItem.title"
+						:model-value="file && file.title"
 						@click="toggle"
 					>
 						<template #prepend>
 							<div
 								class="preview"
 								:class="{
-									'has-file': displayItem,
-									'is-svg': displayItem?.type?.includes('svg'),
+									'has-file': file,
+									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
 								<img
 									v-if="imageThumbnail && !imageThumbnailError"
 									:src="imageThumbnail"
-									:alt="displayItem?.title"
+									:alt="file?.title"
 									@error="imageThumbnailError = $event"
 								/>
 								<span v-else-if="fileExtension" class="extension">
@@ -34,7 +34,7 @@
 							</div>
 						</template>
 						<template #append>
-							<template v-if="displayItem">
+							<template v-if="file">
 								<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editDrawerActive = true" />
 								<v-icon v-if="!disabled" v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="remove" />
 							</template>
@@ -45,8 +45,8 @@
 			</template>
 
 			<v-list>
-				<template v-if="displayItem">
-					<v-list-item :download="displayItem.filename_download" :href="assetURL">
+				<template v-if="file">
+					<v-list-item :download="file.filename_download" :href="assetURL">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -57,21 +57,21 @@
 					<v-list-item clickable @click="activeDialog = 'upload'">
 						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ t(displayItem ? 'replace_from_device' : 'upload_from_device') }}
+							{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
 						</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item clickable @click="activeDialog = 'choose'">
 						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ t(displayItem ? 'replace_from_library' : 'choose_from_library') }}
+							{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
 						</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item clickable @click="activeDialog = 'url'">
 						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ t(displayItem ? 'replace_from_url' : 'import_from_url') }}
+							{{ t(file ? 'replace_from_url' : 'import_from_url') }}
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -79,10 +79,10 @@
 		</v-menu>
 
 		<drawer-item
-			v-if="displayItem"
+			v-if="file"
 			v-model:active="editDrawerActive"
 			collection="directus_files"
-			:primary-key="displayItem.id"
+			:primary-key="file.id"
 			:edits="edits"
 			:disabled="disabled"
 			@input="update"
@@ -184,15 +184,15 @@ const query = ref<RelationQuerySingle>({
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem, loading, update, remove } = useRelationSingle(value, query, relationInfo);
+const { displayItem: file, loading, update, remove } = useRelationSingle(value, query, relationInfo);
 
 const { t } = useI18n();
 
 const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
 const fileExtension = computed(() => {
-	if (displayItem.value === null) return null;
-	return readableMimeType(displayItem.value.type, true);
+	if (file.value === null) return null;
+	return readableMimeType(file.value.type, true);
 });
 
 const assetURL = computed(() => {
@@ -201,9 +201,9 @@ const assetURL = computed(() => {
 });
 
 const imageThumbnail = computed(() => {
-	if (displayItem.value === null || props.value === null) return null;
-	if (displayItem.value.type.includes('svg')) return assetURL.value;
-	if (displayItem.value.type.includes('image') === false) return null;
+	if (file.value === null || props.value === null) return null;
+	if (file.value.type.includes('svg')) return assetURL.value;
+	if (file.value.type.includes('image') === false) return null;
 	return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
 });
 
@@ -228,7 +228,7 @@ function setSelection(selection: number[]) {
 }
 
 function onUpload(fileInfo: FileInfo) {
-	displayItem.value = fileInfo;
+	file.value = fileInfo;
 	activeDialog.value = null;
 	update(fileInfo.id);
 }
@@ -259,11 +259,11 @@ function useURLImport() {
 				},
 			});
 
-			displayItem.value = response.data.data;
+			file.value = response.data.data;
 
 			activeDialog.value = null;
 			url.value = '';
-			update(displayItem.value?.id);
+			update(file.value?.id);
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
