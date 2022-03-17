@@ -10,7 +10,7 @@ export * from './fields';
 export * from './files';
 export * from './folders';
 export * from './graphql';
-export * from './import';
+export * from './import-export';
 export * from './mail';
 export * from './meta';
 export * from './notifications';

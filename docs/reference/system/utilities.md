@@ -270,6 +270,75 @@ n/a
 
 ---
 
+## Export Data to a File
+
+Export a larger data set to a file in the File Library
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Doesn't use any query parameters.
+
+### Request Body
+
+<div class="definitions">
+
+`format` **Required**\
+What file format to save the export to. One of `csv`, `xml`, `json`.
+
+`query` **Required**\
+The query object to use for the export. Supports the [global query parameters](/reference/query).
+
+`file` **File Object**\
+Partial file object to tweak where / how the export file is saved.
+
+</div>
+
+### Returns
+
+Empty body
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /utils/export/:collection
+```
+
+##### Example
+
+```
+POST /utils/export/articles
+```
+
+```json
+{
+	"query": {
+		"filter": {
+			"status": {
+				"_eq": "published"
+			}
+		}
+	},
+	"file": {
+		"folder": "34e95c19-cc50-42f2-83c8-b97616ac2390"
+	}
+}
+```
+
+### GraphQL
+
+n/a
+
+</div>
+</div>
+
+---
+
 ## Clear the Internal Cache
 
 Resets both the data and schema cache of Directus. This endpoint is only available to admin users.
