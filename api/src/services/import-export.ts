@@ -318,7 +318,17 @@ export class ExportService {
 		}
 
 		if (format === 'xml') {
-			return toXML('data', input);
+			let string = toXML('data', input);
+
+			if (options?.includeHeader === false) string = string.split('\n').slice(2).join('\n');
+
+			if (options?.includeFooter === false) {
+				const lines = string.split('\n');
+				string = lines.slice(0, lines.length - 1).join('\n');
+				string += '\n';
+			}
+
+			return string;
 		}
 
 		if (format === 'csv') {
