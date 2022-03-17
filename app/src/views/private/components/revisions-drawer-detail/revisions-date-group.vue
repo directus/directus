@@ -33,8 +33,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.revisions-date-group .scroll-container {
-	padding-bottom: 24px;
-}
-</style>
+<style scoped></style>

@@ -28,6 +28,7 @@ draft: Bozza
 archived: Archiviato
 modules: Moduli
 module_bar: Barra del modulo
+reset_width: Reimposta larghezza
 tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
@@ -57,7 +58,7 @@ db_only_click_to_configure: 'Solo Database: click per configurare'
 show_active_items: Mostra gli elementi attivi
 show_archived_items: Mostra gli elementi archiviati
 show_all_items: Mostra tutti gli elementi
-edited: Valore Modificato
+edited: Valore modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
@@ -114,7 +115,6 @@ recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
-unknown_validation_errors: 'Si sono verificati errori di validazione per i seguenti campi nascosti:'
 validationError:
   eq: Il valore deve essere {valid}
   neq: Il valore non può essere {invalid}
@@ -440,7 +440,7 @@ information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta funzionalità
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
-reset_interface: '"Reimposta interfaccia"'
+reset_interface: Reimposta interfaccia
 display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
 list-m2a: Costruttore (M2A)
@@ -889,6 +889,7 @@ directus_collection:
   directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
   directus_sessions: Informazioni sulla sessione dell'utente
   directus_settings: Opzioni di configurazione del progetto
+  directus_shares: Traccia gli elementi condivisi esternamente
   directus_users: Utenti di sistema per la piattaforma
   directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:

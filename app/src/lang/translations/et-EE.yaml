@@ -87,7 +87,6 @@ recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
-unknown_validation_errors: 'Olid valideerimise vead nende peidetud väljadele:'
 validationError:
   eq: Väärtus peab olema {valid}
   neq: Väärtus ei saa olla {invalid}

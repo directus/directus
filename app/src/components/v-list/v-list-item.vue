@@ -177,7 +177,7 @@ body {
 
 	&.dashed {
 		&::after {
-			// Borders normally render outside the element, this is a way of showing it as inner
+			/* Borders normally render outside the element, this is a way of showing it as inner */
 			position: absolute;
 			top: 0;
 			left: 0;

@@ -30,6 +30,13 @@ module.exports = {
 				sourceType: 'module',
 			},
 		},
+		{
+			files: ['**/*.test.js'],
+			env: {
+				jest: true,
+			},
+			plugins: ['jest'],
+		},
 		// Configuration for ts/vue files
 		{
 			files: ['*.ts', '*.vue'],
