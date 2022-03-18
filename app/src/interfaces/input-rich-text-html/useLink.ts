@@ -126,8 +126,8 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			editor.value.selection.select(linkNode.value);
 			editor.value.selection.setNode(linkNode.value);
 		}
-    
-    editor.value.undoManager.add();
+
+		editor.value.undoManager.add();
 		closeLinkDrawer();
 	}
 }
