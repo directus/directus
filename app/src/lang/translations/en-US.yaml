@@ -1505,7 +1505,7 @@ interfaces:
     auto_formatter: Use Title Auto-Formatter
     alphabetize: Alphabetize
     alphabetize_label: Force Alphabetical Order
-    add_tags: Add tags...
+    add_tags: Add a tag and press Enter...
   input:
     input: Input
     description: Manually enter a value
