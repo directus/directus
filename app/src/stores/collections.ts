@@ -54,18 +54,24 @@ export const useCollectionsStore = defineStore({
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 
-					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : '';
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
 
 					i18n.global.mergeLocaleMessage(language, {
-						collection_names: {
-							[collection.collection]: literalInterpolatedTranslation,
-						},
-						collection_names_singular: {
-							[collection.collection]: singular,
-						},
-						collection_names_plural: {
-							[collection.collection]: plural,
-						},
+						...(literalInterpolatedTranslation && {
+							collection_names: {
+								[collection.collection]: literalInterpolatedTranslation,
+							},
+						}),
+						...(singular && {
+							collection_names_singular: {
+								[collection.collection]: singular,
+							},
+						}),
+						...(plural && {
+							collection_names_plural: {
+								[collection.collection]: plural,
+							},
+						}),
 					});
 				}
 			}

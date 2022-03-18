@@ -42,6 +42,7 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+export_items: Export Items
 and: And
 or: Or
 fill_width: Fill Width
@@ -120,7 +121,7 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
-unknown_validation_errors: 'There were validation errors for the following hidden fields:'
+validation_errors_notice: 'The following fields have invalid values:'
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -170,6 +171,7 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
 delete_field: Delete Field
@@ -343,8 +345,6 @@ label_import: Import
 label_export: Export
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Use Current Filters & Settings
-export_data_button: Start Export
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -416,6 +416,15 @@ replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
 no_file_selected: No File Selected
 download_file: Download File
+open_file_in_tab: Open file in new tab
+start_export: Start Export
+not_available_for_local_downloads: Not available for local downloads
+exporting_all_items_in_collection: Exporting all {total} items within {collection}.
+exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
+exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
+exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
+exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
+exporting_batch_hint_forced: Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will be saved to the File Library.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -679,6 +688,7 @@ no_results_copy: Adjust or clear search filters to see results.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+edit_role: Edit Role
 rule: Rule
 user: User
 no_presets: No Presets
@@ -721,7 +731,11 @@ no_data: No Data
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
 full_screen: Full Screen
+full_text_search: Full-Text Search
 edit_panels: Edit Panels
+center_align: Center Align
+left_align: Left Align
+right_align: Right Align
 fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
@@ -1233,12 +1247,23 @@ file: File
 file_library: File Library
 forgot_password: Forgot Password
 hidden: Hidden
+hidden_in_group: Hidden in {group}
 icon: Icon
 info: Info
 normal: Normal
 success: Success
 warning: Warning
 danger: Danger
+colors:
+  purple: Purple
+  blue: Blue
+  green: Green
+  yellow: Yellow
+  orange: Orange
+  red: Red
+  black: Black
+  gray: Gray
+  white: White
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
@@ -1267,6 +1292,9 @@ sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
 something_went_wrong: Something went wrong.
 sort_direction: Sort Direction
+export_location: Export Location
+export_started: Export Started
+export_started_copy: Your export has started. You'll be notified when it's ready to download.
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
@@ -1294,6 +1322,8 @@ interfaces:
     no_rules: No configured rules
     change_value: Click to change value
     placeholder: Drag rules here
+  fields:
+    name: Fields
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections
@@ -1353,6 +1383,7 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
+    placeholder: Choose a datetime...
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1485,7 +1516,7 @@ interfaces:
     auto_formatter: Use Title Auto-Formatter
     alphabetize: Alphabetize
     alphabetize_label: Force Alphabetical Order
-    add_tags: Add tags...
+    add_tags: Add a tag and press Enter...
   input:
     input: Input
     description: Manually enter a value
@@ -1678,7 +1709,6 @@ layouts:
     subtitle: Subtitle
   tabular:
     tabular: Table
-    fields: Fields
     spacing: Spacing
     comfortable: Comfortable
     compact: Compact

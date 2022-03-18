@@ -114,7 +114,6 @@ recommended_defaults: Препоръчителни
 unarchive: Разархивиране
 unarchive_confirm: Сигурни ли сте, че искате да разархивирате записа?
 nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
-unknown_validation_errors: 'Има грешки при валидацията на следните скрити полета:'
 validationError:
   eq: Стойността трябва да е {valid}
   neq: Стойността не трябва да е {invalid}
@@ -336,8 +335,6 @@ label_import: Импортиране
 label_export: Експортиране
 import_export: Импорт / Експорт
 format: Формат
-use_current_filters_settings: Прилагане на текущите филтри
-export_data_button: Започване на експортирането
 last_page: Последна страница
 last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
@@ -1469,7 +1466,6 @@ interfaces:
     auto_formatter: Форматиране като заглавие
     alphabetize: По азбучен ред
     alphabetize_label: Винаги в азбучен ред
-    add_tags: Добавяне на етикет...
   input:
     input: Текстово поле
     description: Ръчно въвеждане на стойност
@@ -1661,7 +1657,6 @@ layouts:
     subtitle: Подзаглавие
   tabular:
     tabular: Таблица
-    fields: Полета
     spacing: Отстояние
     comfortable: Удобно
     compact: Компактно

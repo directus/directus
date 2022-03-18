@@ -10,7 +10,7 @@ import {
 } from '../exceptions';
 import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
-import { RevisionsService, UtilsService, ImportService } from '../services';
+import { RevisionsService, UtilsService, ImportService, ExportService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import Busboy, { BusboyHeaders } from 'busboy';
 import { flushCaches } from '../cache';
@@ -134,6 +134,33 @@ router.post(
 
 		req.pipe(busboy);
 	})
+);
+
+router.post(
+	'/export/:collection',
+	collectionExists,
+	asyncHandler(async (req, res, next) => {
+		if (!req.body.query) {
+			throw new InvalidPayloadException(`"query" is required.`);
+		}
+
+		if (!req.body.format) {
+			throw new InvalidPayloadException(`"format" is required.`);
+		}
+
+		const service = new ExportService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// We're not awaiting this, as it's supposed to run async in the background
+		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
+			file: req.body.file,
+		});
+
+		return next();
+	}),
+	respond
 );
 
 router.post(
