@@ -1192,7 +1192,6 @@ interfaces:
     auto_formatter: ใช้การจัดรูปแบบชื่อเรื่องอัตโนมัติ
     alphabetize: เรียงตามตัวอักษร
     alphabetize_label: บังคับเรียงตามตัวอักษร
-    add_tags: เพิ่มแท็ก...
   input:
     input: Input
     description: ป้อนค่าด้วยตนเอง
