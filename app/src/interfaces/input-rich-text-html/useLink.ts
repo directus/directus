@@ -33,6 +33,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	};
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
 	const linkNode = ref<HTMLLinkElement | null>(null);
+	const currentSelectionNode = ref<HTMLElement | null>(null);
 
 	const linkButton = {
 		icon: 'link',
@@ -45,13 +46,12 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			linkDrawerOpen.value = true;
 
 			if (linkNode.value) {
-				const node = linkNode.value;
-				editor.value.selection.select(node);
+				editor.value.selection.select(currentSelectionNode.value);
 
-				const url = node.getAttribute('href');
-				const title = node.getAttribute('title');
-				const displayText = node.innerText;
-				const target = node.getAttribute('target');
+				const url = linkNode.value.getAttribute('href');
+				const title = linkNode.value.getAttribute('title');
+				const displayText = linkNode.value.innerText;
+				const target = linkNode.value.getAttribute('target');
 
 				if (url === null || displayText === null) {
 					return;
@@ -71,6 +71,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		onSetup: (buttonApi: any) => {
 			const onLinkNodeSelect = (eventApi: any) => {
 				let element = eventApi.element;
+				currentSelectionNode.value = eventApi.element;
 				linkNode.value = null;
 
 				while (element && element.id !== 'tinymce') {
@@ -111,7 +112,21 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			link.displayText || link.url
 		}</a>`;
 
-		editor.value.selection.setContent(linkHtml);
+		// New anchor tag or current selection node is an anchor tag
+		if (!linkNode.value || currentSelectionNode.value === linkNode.value) {
+			editor.value.selection.setContent(linkHtml);
+		}
+		// Parent node is an anchor tag
+		else if (currentSelectionNode.value) {
+			currentSelectionNode.value.innerHTML = link.displayText || link.url;
+			linkNode.value.setAttribute('data-mce-href', link.url); // Required for tinymce to update changes
+			linkNode.value.setAttribute('href', link.url);
+			linkNode.value.setAttribute('title', link.title || '');
+			linkNode.value.setAttribute('target', link.newTab ? '_blank' : '_self');
+			editor.value.selection.select(linkNode.value);
+			editor.value.selection.setNode(linkNode.value);
+		}
+
 		closeLinkDrawer();
 	}
 }
