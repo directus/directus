@@ -1283,7 +1283,6 @@ interfaces:
     auto_formatter: Brug Titel Auto-Formatter
     alphabetize: Alphabetize
     alphabetize_label: Gennemtving Alfabetisk Ordre
-    add_tags: Tilføj tags...
   input:
     input: Input
     description: Indtast en værdi manuelt
