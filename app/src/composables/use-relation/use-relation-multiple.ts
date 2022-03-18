@@ -128,7 +128,7 @@ export function useRelationMultiple(
 
 		const sortField = relation.value.sortField;
 
-		if (totalItemCount.value > previewQuery.value.limit || !sortField) return items;
+		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
 
 		return items.sort((a, b) => {
 			return a[sortField] - b[sortField];
@@ -438,6 +438,7 @@ export function useRelationMultiple(
 		}
 
 		function getPage<T>(offset: number, items: T[]) {
+			if (previewQuery.value.limit === -1) return items;
 			const start = clamp((previewQuery.value.page - 1) * previewQuery.value.limit - offset, 0, items.length);
 			const end = clamp(previewQuery.value.page * previewQuery.value.limit - offset, 0, items.length);
 			return items.slice(start, end);

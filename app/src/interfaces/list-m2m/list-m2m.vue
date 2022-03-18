@@ -284,12 +284,16 @@ const customFilter = computed(() => {
 		_or: [
 			{
 				[reverseRelation]: {
-					_neq: props.primaryKey,
+					[relationInfo.value.reverseJunctionField.field]: {
+						_neq: props.primaryKey,
+					},
 				},
 			},
 			{
 				[reverseRelation]: {
-					_null: true,
+					[relationInfo.value.reverseJunctionField.field]: {
+						_null: true,
+					},
 				},
 			},
 		],

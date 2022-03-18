@@ -12,20 +12,20 @@ export type RelationO2M = {
 	type: 'o2m';
 };
 
-/*
-Many                 One: relatedCollection
-┌──────────┐         ┌──────────────────────────────┐
-│id        ├────┐    │id: relatedPKField            │
-│many      │    └───►│many_id: reverseJunctionField │
-└──────────┘         │sort: sortField               │
-                     └──────────────────────────────┘
- */
-
 export function useRelationO2M(collection: Ref<string>, field: Ref<string>) {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 
+	/**
+	@example
+	Many                 One: relatedCollection
+	┌──────────┐         ┌──────────────────────────────┐
+	│id        ├────┐    │id: relatedPKField            │
+	│many      │    └───►│many_id: reverseJunctionField │
+	└──────────┘         │sort: sortField               │
+		     			 └──────────────────────────────┘
+	*/
 	const relationInfo = computed<RelationO2M | undefined>(() => {
 		const relations = relationsStore.getRelationsForField(collection.value, field.value);
 
