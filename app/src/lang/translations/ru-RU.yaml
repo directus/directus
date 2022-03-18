@@ -1442,7 +1442,6 @@ interfaces:
     auto_formatter: Использовать Авто-Форматирование Заголовка
     alphabetize: По алфавиту
     alphabetize_label: Принудительный Порядок по Алфавиту
-    add_tags: Добавить метки...
   input:
     input: Ввод
     description: Ввести значение вручную

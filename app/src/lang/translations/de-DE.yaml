@@ -1475,7 +1475,6 @@ interfaces:
     auto_formatter: Auto-Formatierung für Titel verwenden
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
-    add_tags: Tags hinzufügen...
   input:
     input: Eingabe
     description: Wert manuell eingeben

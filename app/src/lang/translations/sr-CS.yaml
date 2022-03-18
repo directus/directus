@@ -1023,7 +1023,6 @@ interfaces:
     auto_formatter: Koristi automatski format naslova
     alphabetize: Po abecedi
     alphabetize_label: Abecedni red
-    add_tags: Dodaj tagove...
   input:
     input: Unos
     description: Ručno unesite vrijednost

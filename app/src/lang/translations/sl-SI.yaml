@@ -1176,7 +1176,6 @@ interfaces:
     auto_formatter: Uporabi avtomatsko oblikovanje naslova
     alphabetize: Po abecedi
     alphabetize_label: Vedno uredi po abecedi
-    add_tags: Dodaj značke ...
   input:
     input: Vnos
     description: Ročno vnesite vrednost

@@ -100,11 +100,11 @@ export default defineComponent({
 		},
 		min: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		max: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		step: {
 			type: Number,
