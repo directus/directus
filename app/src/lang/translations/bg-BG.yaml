@@ -1466,7 +1466,6 @@ interfaces:
     auto_formatter: Форматиране като заглавие
     alphabetize: По азбучен ред
     alphabetize_label: Винаги в азбучен ред
-    add_tags: Добавяне на етикет...
   input:
     input: Текстово поле
     description: Ръчно въвеждане на стойност

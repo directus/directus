@@ -1460,7 +1460,6 @@ interfaces:
     auto_formatter: 自动格式化标题
     alphabetize: 按字母表排序
     alphabetize_label: 强制按字母顺序排序
-    add_tags: 添加标签...
   input:
     input: Input
     description: 手动输入一个值

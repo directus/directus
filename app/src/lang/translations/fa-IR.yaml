@@ -965,7 +965,6 @@ interfaces:
     whitespace: فضای خالی
     hyphen: جایگزینی با نشان اتصال
     underscore: جایگزینی با زیرین خط
-    add_tags: افزودن برچسب ها...
   boolean:
     label_default: فعال شده
 displays:

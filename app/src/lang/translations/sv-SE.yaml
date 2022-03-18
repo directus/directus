@@ -1335,7 +1335,6 @@ interfaces:
     auto_formatter: Använd titel Auto-Formatter
     alphabetize: Alfabetisera
     alphabetize_label: Tvinga alfabetisk ordning
-    add_tags: Lägg till taggar...
   input:
     input: Inmatning
     description: Ange ett värde manuellt

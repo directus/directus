@@ -1468,7 +1468,6 @@ interfaces:
     auto_formatter: Folosește formatarea automată pentru titlu
     alphabetize: Așează în ordine alfabetică
     alphabetize_label: Forțează ordinea alfabetică
-    add_tags: Adaugă etichete...
   input:
     input: Input
     description: Introduceți manual o valoare

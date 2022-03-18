@@ -1475,7 +1475,6 @@ interfaces:
     auto_formatter: Użyj automatycznego formatowania
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
-    add_tags: Dodaj tagi...
   input:
     input: Wprowadź
     description: Ręcznie wprowadź wartość

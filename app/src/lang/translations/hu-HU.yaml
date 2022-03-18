@@ -1301,7 +1301,6 @@ interfaces:
     auto_formatter: Cím automatikus formázó használata
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
-    add_tags: Címkék hozzáadása...
   input:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!
