@@ -41,6 +41,7 @@ duplicate_field: Duplica campo
 half_width: Metà larghezza
 full_width: Larghezza Massima
 group: Gruppo
+export_items: Esporta elementi
 and: E
 or: O
 fill_width: Riempi larghezza
@@ -409,6 +410,15 @@ replace_from_library: Sostituisci File dalla Libreria
 replace_from_url: Sostituisci File da URL
 no_file_selected: Nessun File Selezionato
 download_file: Scarica File
+open_file_in_tab: Apri il file in una nuova scheda
+start_export: Avvia l'esportazione
+not_available_for_local_downloads: Non disponibile per i download locali
+exporting_all_items_in_collection: Esportazione di tutti i {total} elementi in {collection}.
+exporting_limited_items_in_collection: Esportazione di {limit} su {total} elementi in {collection}.
+exporting_no_items_to_export: Nessun elemento da esportare. Modifica la configurazione di esportazione qui sotto.
+exporting_download_hint: Una volta completato, questo file {format} verrà automaticamente scaricato sul tuo dispositivo.
+exporting_batch_hint: Questa esportazione verrà elaborata in batch e una volta completata il file {format} verrà salvato nella libreria file.
+exporting_batch_hint_forced: A causa del gran numero di elementi questa esportazione deve essere elaborata in batch e una volta completata il file {format} verrà salvato nella libreria file.
 collection_key: Chiave Di Raccolta
 name: Nome
 primary_key_field: Campo Chiave Primaria
@@ -714,6 +724,7 @@ no_data: Nessun dato
 create_dashboard: Crea bacheca
 dashboard_name: Nome della bacheca
 full_screen: Schermo Intero
+full_text_search: Ricerca full-text
 edit_panels: Modifica pannelli
 center_align: Allinea al centro
 left_align: Allinea a sinistra
@@ -1258,6 +1269,8 @@ sign_out: Disconnessione
 sign_out_confirm: Sei sicuro di voler uscire?
 something_went_wrong: Qualcosa è andato storto.
 sort_direction: Direzione ordine
+export_started: Esportazione iniziata
+export_started_copy: La tua esportazione è iniziata. Sarai avvisato quando sarà pronta per il download.
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
 template: Template
@@ -1284,6 +1297,8 @@ interfaces:
     no_rules: Nessuna regola configurata
     change_value: Clicca per cambiare il valore
     placeholder: Trascina qui le regole
+  fields:
+    name: Campi
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
