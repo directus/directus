@@ -64,14 +64,23 @@
 	padding: 0;
 	font-weight: inherit;
 	font-size: 16px;
+	font-weight: 600;
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months {
 	border-radius: var(--border-radius);
 	appearance: none;
 	text-align: right;
-	font-size: 1rem;
+	font-size: 16px;
 	height: 20px;
+	font-weight: 600;
+	color: var(--primary);
+}
+
+.flatpickr-current-month input.cur-year {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--primary);
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
@@ -89,7 +98,7 @@
 }
 
 .flatpickr-current-month .numInputWrapper input {
-	font-size: 1rem;
+	font-size: 16px;
 	height: 20px;
 	vertical-align: 4px;
 }
