@@ -389,7 +389,9 @@ function useColor() {
 	margin: 0px 4px;
 
 	&.low-contrast {
-		border: 2px solid hotpink;
+		--v-button-height: 18px;
+		--v-button-width: 18px;
+		border: 1px solid var(--border-normal-alt);
 	}
 }
 
