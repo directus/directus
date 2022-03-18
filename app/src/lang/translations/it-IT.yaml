@@ -1269,6 +1269,7 @@ sign_out: Disconnessione
 sign_out_confirm: Sei sicuro di voler uscire?
 something_went_wrong: Qualcosa è andato storto.
 sort_direction: Direzione ordine
+export_location: Posizione di esportazione
 export_started: Esportazione iniziata
 export_started_copy: La tua esportazione è iniziata. Sarai avvisato quando sarà pronta per il download.
 sort_asc: Ordinamento Crescente
@@ -1279,6 +1280,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
