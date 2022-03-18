@@ -1280,7 +1280,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1492,7 +1491,6 @@ interfaces:
     auto_formatter: Usa la formattazione automatica del titolo
     alphabetize: Ordine alfabetico
     alphabetize_label: Forza Ordine Alfabetico
-    add_tags: Aggiungi tag...
   input:
     input: Input
     description: Inserisci manualmente un valore
