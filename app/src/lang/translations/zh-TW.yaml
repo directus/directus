@@ -751,7 +751,6 @@ interfaces:
     auto_formatter: 使用標題自動格式化
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
-    add_tags: 新增標籤...
   boolean:
     toggle: 切換
     label_default: 已啟用

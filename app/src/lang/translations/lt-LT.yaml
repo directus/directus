@@ -868,7 +868,6 @@ interfaces:
     auto_formatter: Naudoti automatinį antraštės formatavimą
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
-    add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
     color_on: Spalva, kai įjungta

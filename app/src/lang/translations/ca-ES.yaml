@@ -1131,7 +1131,6 @@ interfaces:
     auto_formatter: Utilitza autoformatador del títol
     alphabetize: Alfabètic
     alphabetize_label: Força ordre alfabètic
-    add_tags: Afegeix etiquetes...
   input:
     input: Entrada
     description: Entra manualment un valor

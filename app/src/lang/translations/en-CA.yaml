@@ -1432,7 +1432,6 @@ interfaces:
     auto_formatter: Use Title Auto-Formatter
     alphabetize: Alphabetise
     alphabetize_label: Force Alphabetical Order
-    add_tags: Add tags...
   input:
     input: Input
     description: Manually enter a value

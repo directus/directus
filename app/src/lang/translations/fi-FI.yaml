@@ -1360,7 +1360,6 @@ interfaces:
     auto_formatter: Käytä otsikon automaattimuotoilua
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
-    add_tags: Lisää tunnisteita...
   input:
     input: Syöte
     description: Manuaalisesti syötetty arvo

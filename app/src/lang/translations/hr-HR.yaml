@@ -1470,7 +1470,6 @@ interfaces:
     auto_formatter: Koristite automatsko oblikovanje naslova
     alphabetize: Abecedno
     alphabetize_label: Nametni abecedno razvrstavanje
-    add_tags: Dodajte oznake...
   input:
     input: Unos
     description: Ručno unesite vrijednost

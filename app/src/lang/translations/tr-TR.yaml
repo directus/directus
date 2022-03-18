@@ -1460,7 +1460,6 @@ interfaces:
     auto_formatter: Başlık Otomatik Biçimlendiricisini Kullan
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik Sırayı Zorla
-    add_tags: Etiketler ekle...
   input:
     input: Girdi
     description: Manuel olarak bir değer gir
