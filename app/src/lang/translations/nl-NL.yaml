@@ -1090,7 +1090,6 @@ interfaces:
     auto_formatter: Automatische titel formatter gebruiken
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
-    add_tags: Tags toevoegen...
   input:
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
