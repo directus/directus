@@ -277,7 +277,7 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.field)));
+			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta?.field)));
 
 			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
 

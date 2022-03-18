@@ -250,7 +250,6 @@ related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
 format: Vorming
-use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
 last_page: Viimane leht
 last_access: Viimati vaadatud
 fill_template: Täida mallist
@@ -1221,7 +1220,6 @@ layouts:
     subtitle: Alampealkiri
   tabular:
     tabular: Tabel
-    fields: Väljad
     spacing: Vahed
     comfortable: Mugav
     compact: Kompaktne
