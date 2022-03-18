@@ -276,7 +276,7 @@ export default defineComponent({
 			const observer = new MutationObserver((_mutations) => {
 				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
 
-				emit('input', editorRef.value.getContent());
+				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
 			});
 
 			const config = { characterData: true, childList: true, subtree: true };
