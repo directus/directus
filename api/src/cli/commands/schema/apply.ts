@@ -11,7 +11,7 @@ import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
 import { applySnapshot } from '../../../utils/apply-snapshot';
 import { flushCaches } from '../../../cache';
 
-export async function apply(snapshotPath: string, options?: { yes: boolean }): Promise<void> {
+export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
 
 	const database = getDatabase();
@@ -50,7 +50,9 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 			process.exit(0);
 		}
 
-		if (options?.yes !== true) {
+		const dryRun = options?.dryRun === true;
+		const promptForChanges = !dryRun && options?.yes !== true;
+		if (dryRun || promptForChanges) {
 			let message = '';
 
 			if (snapshotDiff.collections.length > 0) {
@@ -129,15 +131,17 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 				}
 			}
 
+			message += 'The following changes will be applied:\n\n' + chalk.black(message);
+			if (dryRun) {
+				logger.info(message);
+				process.exit(0);
+			}
+
 			const { proceed } = await inquirer.prompt([
 				{
 					type: 'confirm',
 					name: 'proceed',
-					message:
-						'The following changes will be applied:\n\n' +
-						chalk.black(message) +
-						'\n\n' +
-						'Would you like to continue?',
+					message: message + '\n\n' + 'Would you like to continue?',
 				},
 			]);
 

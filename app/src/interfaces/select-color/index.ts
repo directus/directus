@@ -27,7 +27,7 @@ export default defineInterface({
 		{
 			field: 'presets',
 			name: '$t:interfaces.select-color.preset_colors',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'list',

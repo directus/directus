@@ -36,6 +36,10 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 		icon: 'image',
 		tooltip: i18n.global.t('wysiwyg_options.image'),
 		onAction: (buttonApi: any) => {
+			if (editor.value.plugins.fullscreen.isFullscreen()) {
+				editor.value.execCommand('mceFullScreen');
+			}
+
 			imageDrawerOpen.value = true;
 
 			if (buttonApi.isActive()) {
@@ -102,6 +106,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 		});
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		editor.value.selection.setContent(imageHtml);
+		editor.value.undoManager.add();
 		closeImageDrawer();
 	}
 

@@ -177,7 +177,7 @@ export default defineComponent({
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--background-normal-alt);
 		border-color: var(--primary-50);
 		border-style: solid;
 		border-width: 0px;
@@ -201,8 +201,8 @@ export default defineComponent({
 
 		.svg {
 			position: absolute;
-			width: 50%;
-			height: 50%;
+			width: 75%;
+			height: 75%;
 			object-fit: contain;
 		}
 

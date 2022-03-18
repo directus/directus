@@ -293,13 +293,16 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(newVal, oldVal) => {
-					if (newVal && !oldVal && !isEqual(newVal, oldVal) && isUndo.value === false) {
-						loadItems();
-					}
-
 					if (newVal === null || newVal.length === 0) {
 						items.value = [];
 					}
+
+					if (!newVal && oldVal) return; // when user clears whole translations value
+					if (newVal?.some((item) => typeof item === 'object')) return; // when there's any new edits since edits are objects
+					if (newVal?.some((item) => typeof item === 'object') && isEqual(newVal, oldVal)) return; // when user unfocus/blur inputs so they will be equal
+					if (isUndo.value) return; // when user undo to the original value
+
+					loadItems();
 				},
 				{ immediate: true }
 			);
@@ -455,12 +458,12 @@ export default defineComponent({
 	}
 
 	.secondary {
-		--v-divider-color: var(--blue-50);
+		--v-divider-color: var(--secondary-50);
 
 		.v-form {
-			--primary: var(--blue);
-			--v-chip-color: var(--blue);
-			--v-chip-background-color: var(--blue-alt);
+			--primary: var(--secondary);
+			--v-chip-color: var(--secondary);
+			--v-chip-background-color: var(--secondary-alt);
 		}
 	}
 

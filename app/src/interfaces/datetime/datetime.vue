@@ -1,9 +1,21 @@
 <template>
-	<v-menu :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-input :active="active" clickable readonly :model-value="displayValue" :disabled="disabled" @click="toggle">
+			<v-input
+				:active="active"
+				clickable
+				readonly
+				:model-value="displayValue"
+				:placeholder="t('interfaces.datetime.placeholder')"
+				:disabled="disabled"
+				@click="toggle"
+			>
 				<template v-if="!disabled" #append>
-					<v-icon :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
+					<v-icon
+						:name="value ? 'clear' : 'today'"
+						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
+						v-on="{ click: value ? unsetValue : null }"
+					/>
 				</template>
 			</v-input>
 		</template>
@@ -15,6 +27,7 @@
 			:use-24="use24"
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
+			@close="dateTimeMenu?.deactivate"
 		/>
 	</v-menu>
 </template>
@@ -53,6 +66,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const dateTimeMenu = ref();
+
 		const { displayValue } = useDisplayValue();
 
 		function useDisplayValue() {
@@ -67,7 +82,8 @@ export default defineComponent({
 					displayValue.value = null;
 					return;
 				}
-				const timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
+				let timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
+				if (props.use24) timeFormat = props.includeSeconds ? 'date-fns_time_24hour' : 'date-fns_time_no_seconds_24hour';
 				let format = `${t('date-fns_date')} ${t(timeFormat)}`;
 				if (props.type === 'date') format = String(t('date-fns_date'));
 				if (props.type === 'time') format = String(t(timeFormat));
@@ -89,17 +105,31 @@ export default defineComponent({
 			}
 		}
 
-		function unsetValue() {
+		function unsetValue(e: any) {
+			e.preventDefault();
+			e.stopPropagation();
 			emit('input', null);
 		}
 
-		return { displayValue, unsetValue };
+		return { displayValue, unsetValue, dateTimeMenu, t };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.v-icon.active {
-	--v-icon-color: var(--primary);
+.v-icon {
+	&.today-icon {
+		&:hover,
+		&.active {
+			--v-icon-color: var(--primary);
+		}
+	}
+
+	&.clear-icon {
+		&:hover,
+		&.active {
+			--v-icon-color: var(--danger);
+		}
+	}
 }
 </style>
