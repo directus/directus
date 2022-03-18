@@ -9,7 +9,7 @@ import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache';
 import Keyv from 'keyv';
 import { AbstractServiceOptions } from '../types';
 
@@ -201,7 +201,7 @@ export class RelationsService {
 			await relationsItemService.createOne(metaRow);
 		});
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 	}
 
 	/**
@@ -279,7 +279,7 @@ export class RelationsService {
 			}
 		});
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 	}
 
 	/**
@@ -324,7 +324,7 @@ export class RelationsService {
 			}
 		});
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 	}
 
 	/**
