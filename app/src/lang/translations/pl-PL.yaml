@@ -41,6 +41,7 @@ duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
 group: Grupa
+export_items: Eksportuj elementy
 and: I
 or: Lub
 fill_width: Szerokość wypełnienia
@@ -409,6 +410,15 @@ replace_from_library: Zastąp plik z biblioteki
 replace_from_url: Zastąp plik z URL
 no_file_selected: Nie wybrano pliku
 download_file: Pobierz plik
+open_file_in_tab: Otwórz plik w nowej karcie
+start_export: Rozpocznij eksport
+not_available_for_local_downloads: Niedostępne dla lokalnych plików
+exporting_all_items_in_collection: Eksportowanie wszystkich {total} elementów w {collection}.
+exporting_limited_items_in_collection: Eksportowanie {limit} z {total} przedmiotów w {collection}.
+exporting_no_items_to_export: Brak elementów do wyeksportowania. Dostosuj konfigurację eksportu poniżej.
+exporting_download_hint: Po zakończeniu, ten plik {format} zostanie automatycznie pobrany na twoje urządzenie.
+exporting_batch_hint: Ten eksport będzie przetwarzany w partiach, a po ukończeniu plik {format} zostanie zapisany do biblioteki plików.
+exporting_batch_hint_forced: Ze względu na dużą liczbę produktów, wywóz ten musi być przetwarzany w partiach, i po zakończeniu, plik {format} zostanie zapisany do biblioteki plików.
 collection_key: Klucz kolekcji
 name: Nazwa
 primary_key_field: Pole klucza podstawowego
@@ -714,6 +724,7 @@ no_data: Brak danych
 create_dashboard: Utwórz pulpit
 dashboard_name: Nazwa Pulpitu
 full_screen: Pełny ekran
+full_text_search: Wyszukiwanie pełnotekstowe
 edit_panels: Edytuj pulpit
 center_align: Wyśrodkuj
 left_align: Wyrównaj do lewej
@@ -1230,6 +1241,16 @@ normal: Normalny
 success: Sukces
 warning: Ostrzeżenie
 danger: Niebezpieczeństwo
+colors:
+  purple: Fioletowy
+  blue: Niebieski
+  green: Zielony
+  yellow: Żółty
+  orange: Pomarańczowy
+  red: Czerwony
+  black: Czarny
+  gray: Szary
+  white: Biały
 junction_collection: Kolekcja Junction
 latency: Opóźnienie
 login: Zaloguj się
@@ -1258,6 +1279,9 @@ sign_out: Wyloguj się
 sign_out_confirm: Na pewno chcesz się wylogować?
 something_went_wrong: Coś poszło nie tak.
 sort_direction: Kierunek sortowania
+export_location: Eksportuj lokalizację
+export_started: Eksport rozpoczęty
+export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy będzie gotowy do pobrania.
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
@@ -1266,6 +1290,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1284,6 +1309,8 @@ interfaces:
     no_rules: Brak skonfigurowanych reguł
     change_value: Kliknij, aby zmienić wartość
     placeholder: Przeciągnij tutaj reguły
+  fields:
+    name: Pola
   group-accordion:
     name: Akordion
     description: Wyświetlaj pola lub grupy jako sekcje akordionu
@@ -1343,6 +1370,7 @@ interfaces:
     include_seconds: Uwzględnij sekundy
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
+    placeholder: Wybierz datę...
   system-display-template:
     display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
@@ -1475,6 +1503,7 @@ interfaces:
     auto_formatter: Użyj automatycznego formatowania
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
+    add_tags: Dodaj tag i naciśnij Enter...
   input:
     input: Wprowadź
     description: Ręcznie wprowadź wartość
