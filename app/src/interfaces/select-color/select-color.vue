@@ -148,6 +148,7 @@
 				class="preset"
 				rounded
 				icon
+				:class="{ 'low-contrast': getPresetContrast(preset.color) }"
 				:style="{ '--v-button-background-color': preset.color }"
 				@click="() => (hex = preset.color)"
 			/>
@@ -231,14 +232,6 @@ type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
 let colorTypes = props.opacity ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
 const colorType = ref<ColorType>(props.opacity ? 'RGBA' : 'RGB');
 
-function unsetColor() {
-	emit('input', null);
-}
-
-function activateColorPicker() {
-	(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
-}
-
 const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutVariables.value !== null);
 
 const lowContrast = computed(() => {
@@ -249,6 +242,12 @@ const lowContrast = computed(() => {
 
 	return color.value.contrast(pageColor) < 1.1;
 });
+
+const getPresetContrast = (hex: string) => {
+	if (hex.startsWith('--')) hex = cssVar(hex);
+	const color = Color(hex);
+	return color.contrast(Color(cssVar('--card-face-color'))) < 1.1;
+};
 
 const { hsl, rgb, hex, alpha, color } = useColor();
 
@@ -268,6 +267,14 @@ function setValue(type: 'rgb' | 'hsl' | 'alpha', i: number, val: number) {
 
 function setSwatchValue(color: string) {
 	hex.value = `${color}${hex.value !== null && hex.value.length === 9 ? hex.value.substr(-2) : ''}`;
+}
+
+function unsetColor() {
+	emit('input', null);
+}
+
+function activateColorPicker() {
+	(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
 }
 
 function useColor() {
@@ -353,7 +360,7 @@ function useColor() {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .swatch {
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;
@@ -380,6 +387,10 @@ function useColor() {
 	--v-button-width: 20px;
 
 	padding: 0px 4px;
+
+	&.low-contrast {
+		border: 10px solid hotpink;
+	}
 }
 
 .presets .preset:first-child {
