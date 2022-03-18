@@ -684,8 +684,9 @@ export default defineComponent({
 
 .v-list-item {
 	.collection {
-		margin-right: 1ch;
 		color: var(--primary);
+		white-space: nowrap;
+		margin-right: 1ch;
 	}
 }
 

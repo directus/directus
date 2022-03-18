@@ -115,6 +115,7 @@ recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
+validation_errors_notice: 'I seguenti campi contengono valori non validi:'
 validationError:
   eq: Il valore deve essere {valid}
   neq: Il valore non può essere {invalid}
@@ -164,6 +165,7 @@ revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
+hide_field: Nascondi campo
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
@@ -336,8 +338,6 @@ label_import: Importa
 label_export: Esporta
 import_export: Importa / Esporta
 format: Formato
-use_current_filters_settings: Usa i filtri e le impostazioni correnti
-export_data_button: Avvia l'esportazione
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
 fill_template: Riempi con il valore del modello
@@ -671,6 +671,7 @@ no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risult
 clear_filters: Pulisci filtri
 saves_automatically: Salvataggio automatico
 role: Ruolo
+edit_role: Modifica ruolo
 rule: Regola
 user: Utente
 no_presets: Nessuna Preset
@@ -714,6 +715,9 @@ create_dashboard: Crea bacheca
 dashboard_name: Nome della bacheca
 full_screen: Schermo Intero
 edit_panels: Modifica pannelli
+center_align: Allinea al centro
+left_align: Allinea a sinistra
+right_align: Allinea a destra
 fit_to_screen: Adatta allo schermo
 image_url: URL immagine
 alt_text: Testo alternativo
@@ -1219,6 +1223,7 @@ file: File
 file_library: Libreria File
 forgot_password: Ha dimenticato la password
 hidden: Nascosto
+hidden_in_group: Nascosto in {group}
 icon: Icona
 info: Informazioni
 normal: Normale
@@ -1662,7 +1667,6 @@ layouts:
     subtitle: Sottotitolo
   tabular:
     tabular: Tabella
-    fields: campi
     spacing: Spaziatura
     comfortable: Confortevole
     compact: Compatto

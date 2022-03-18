@@ -337,8 +337,6 @@ label_import: Importer
 label_export: Exportation
 import_export: Importer/Exporter
 format: Format
-use_current_filters_settings: Utiliser les filtres et paramètres actuels
-export_data_button: Démarrer l'exportation
 last_page: Dernière page
 last_access: Dernier accès
 fill_template: Remplir avec un exemple
@@ -1264,7 +1262,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1666,7 +1663,6 @@ layouts:
     subtitle: Sous-titre
   tabular:
     tabular: Tableau
-    fields: Champs
     spacing: Espacement
     comfortable: Confortable
     compact: Compact
