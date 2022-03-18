@@ -1407,7 +1407,6 @@ interfaces:
     auto_formatter: Utilizar auto formatação de título
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
-    add_tags: Adicionar tags...
   input:
     input: Entrada
     description: Digite manualmente um valor
