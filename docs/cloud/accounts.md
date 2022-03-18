@@ -1,7 +1,6 @@
 # Accounts
 
-> You must create a user Account and join a Team to access a Directus Project. Your Directus Account is as it sounds, a
-> typical user account.
+> Create an Account to join Team(s) and manage Directus Cloud Projects.
 
 [[toc]]
 
@@ -35,7 +34,7 @@ Update your name and email at any time by following these steps:
 1. Login to the Cloud Dashboard.
 2. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 3. Click **"Send Reset Link"**. An email will be sent to reset password.
-4. Login in to your associated email.
+4. Login in to the email associated with your Account.
 5. Open the email and click **"Reset Password"**. You will be directed to the Password Reset Page.
 6. Reset the password as desired and click **"Reset Password"**.
 
@@ -49,7 +48,7 @@ assets from our platform. To destroy your Directus Cloud account, follow these s
 1. Login to the Cloud Dashboard using the Account you would like to destroy.
 2. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 3. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.
-4. Type your password, then click the **"Destroy Account"** button.
+4. Type in your password, then click the **"Destroy Account"** button.
 
 ::: danger DANGER!
 
