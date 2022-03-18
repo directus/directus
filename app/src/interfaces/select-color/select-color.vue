@@ -378,7 +378,7 @@ function useColor() {
 .presets {
 	display: flex;
 	width: 100%;
-	padding: 0px 8px 14px;
+	margin: 0px 8px 14px;
 }
 
 .presets .preset {
@@ -386,10 +386,10 @@ function useColor() {
 	--v-button-height: 20px;
 	--v-button-width: 20px;
 
-	padding: 0px 4px;
+	margin: 0px 4px;
 
 	&.low-contrast {
-		border: 10px solid hotpink;
+		border: 2px solid hotpink;
 	}
 }
 
