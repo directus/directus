@@ -1254,6 +1254,16 @@ normal: Normal
 success: Success
 warning: Warning
 danger: Danger
+colors:
+  purple: Purple
+  blue: Blue
+  green: Green
+  yellow: Yellow
+  orange: Orange
+  red: Red
+  black: Black
+  gray: Gray
+  white: White
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
