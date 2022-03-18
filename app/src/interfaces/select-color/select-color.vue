@@ -203,6 +203,18 @@ export default defineComponent({
 					name: 'Red',
 					color: '#E35169',
 				},
+				{
+					name: 'Black',
+					color: '#18222F',
+				},
+				{
+					name: 'Gray',
+					color: '#A2B5CD',
+				},
+				{
+					name: 'White',
+					color: '#FFFFFF',
+				},
 			],
 		},
 		width: {
