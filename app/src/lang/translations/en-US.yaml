@@ -1383,7 +1383,7 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
-    placeholder: Click to select...
+    placeholder: Choose a datetime...
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
