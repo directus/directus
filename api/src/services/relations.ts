@@ -307,7 +307,13 @@ export class RelationsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
-			if (existingRelation.schema?.constraint_name) {
+			const existingConstraints = await this.schemaInspector.foreignKeys();
+			const constraintNames = existingConstraints.map((key) => key.constraint_name);
+
+			if (
+				existingRelation.schema?.constraint_name &&
+				constraintNames.includes(existingRelation.schema.constraint_name)
+			) {
 				await trx.schema.alterTable(existingRelation.collection, (table) => {
 					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 				});
