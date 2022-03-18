@@ -1,7 +1,15 @@
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-input :active="active" clickable readonly :model-value="displayValue" :placeholder="t('interfaces.datetime.placeholder')" :disabled="disabled" @click="toggle">
+			<v-input
+				:active="active"
+				clickable
+				readonly
+				:model-value="displayValue"
+				:placeholder="t('interfaces.datetime.placeholder')"
+				:disabled="disabled"
+				@click="toggle"
+			>
 				<template v-if="!disabled" #append>
 					<v-icon
 						:name="value ? 'clear' : 'today'"
