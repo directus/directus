@@ -48,6 +48,8 @@ const type = computed<'image' | 'video' | 'audio' | null>(() => {
 });
 
 const isSVG = computed(() => props.mime.includes('svg'));
+
+const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
 </script>
 
 <style lang="scss" scoped>
@@ -59,9 +61,10 @@ const isSVG = computed(() => props.mime.includes('svg'));
 	img,
 	video,
 	audio {
-		width: 100%;
+		width: auto;
+		max-width: 100%;
 		height: auto;
-		max-height: 528px; // this matches the common aspect ratio 1.5 for photos with the form width
+		max-height: v-bind(maxHeight);
 		object-fit: contain;
 		border-radius: var(--border-radius);
 	}
