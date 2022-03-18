@@ -142,11 +142,11 @@ const classes = computed(() => [
 ]);
 
 const isStepUpAllowed = computed(() => {
-	return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
+	return props.disabled === false && (props.max === undefined || parseInt(String(props.modelValue), 10) < props.max);
 });
 
 const isStepDownAllowed = computed(() => {
-	return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
+	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
 function processValue(event: KeyboardEvent) {
