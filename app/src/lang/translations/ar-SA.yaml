@@ -1016,7 +1016,6 @@ interfaces:
     auto_formatter: استخدام التنسيق التلقائي للعنوان
     alphabetize: رتب أبجديا
     alphabetize_label: فرض الترتيب الأبجدي
-    add_tags: إضافة وسوم...
   input:
     description: أدخل قيمة يدوياً
     mask: مقنع
