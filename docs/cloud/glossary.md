@@ -4,9 +4,9 @@
 
 ## Accounts
 
-Accounts are the term for your super-administrator Cloud Dashboard Profile, used to create and join Teams, pay bills,
-and manage Projects. See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects inter-relate. Read
-the [Accounts documentation](/cloud/accounts) to learn how to manage Accounts.
+Accounts are the term for your SuperAdmin cloud dashboard profile, used to create and join Teams, pay bills, and manage
+Projects. See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects inter-relate. Read the
+[Accounts documentation](/cloud/accounts) to learn how to manage Accounts.
 
 :::tip Accounts vs Users
 
