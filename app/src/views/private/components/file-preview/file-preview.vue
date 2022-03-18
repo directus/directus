@@ -1,6 +1,6 @@
 <template>
-	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal }">
-		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG }" @click="$emit('click')">
+	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }">
+		<div v-if="type === 'image'" class="image" @click="$emit('click')">
 			<img :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 			<v-icon v-if="inModal === false" name="upload" />
 		</div>
@@ -50,6 +50,7 @@ const type = computed<'image' | 'video' | 'audio' | null>(() => {
 const isSVG = computed(() => props.mime.includes('svg'));
 
 const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
+const isSmall = computed(() => props.height < 528);
 </script>
 
 <style lang="scss" scoped>
@@ -99,14 +100,10 @@ const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
 		}
 	}
 
-	.svg {
-		padding: 64px;
-		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
-
-		&.max-size img {
-			/* Max height - padding * 2 */
-			max-height: calc(75vh - 128px);
+	&.svg,
+	&.small {
+		.image {
+			padding: 64px;
 		}
 	}
 
