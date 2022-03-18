@@ -338,6 +338,7 @@ body {
 			color: var(--v-input-color);
 			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
+			box-shadow: 0 0 16px -8px var(--primary);
 		}
 
 		&.disabled {

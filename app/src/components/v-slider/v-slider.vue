@@ -63,7 +63,7 @@ export default defineComponent({
 		},
 		alwaysShowValue: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		modelValue: {
 			type: Number,

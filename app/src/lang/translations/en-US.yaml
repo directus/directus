@@ -1254,6 +1254,16 @@ normal: Normal
 success: Success
 warning: Warning
 danger: Danger
+colors:
+  purple: Purple
+  blue: Blue
+  green: Green
+  yellow: Yellow
+  orange: Orange
+  red: Red
+  black: Black
+  gray: Gray
+  white: White
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
@@ -1373,6 +1383,7 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
+    placeholder: Choose a datetime...
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
