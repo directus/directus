@@ -13,8 +13,8 @@
 completely free to download and use, with no artificial or arbitrary [quotas](/cloud/glossary/#quotas) on things like
 Roles or Users.
 
-Directus Cloud is a hosting platform for [Directus Projects](/cloud/glossary/#projects) offering
-[Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), bi-weekly
+[Directus Cloud](https://directus.cloud/) is a hosting platform for [Directus Projects](/cloud/glossary/#projects)
+offering [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), bi-weekly
 [automatic software updates](/cloud/glossary/#automatic-software-updates),
 [horizontal and vertical scaling](/cloud/glossary/#nodes) at the click of a button, hosting options to fit any project
 scope and budget, and a [pricing system](/cloud/glossary/#billing) that allows you to scale up or down anytime as you

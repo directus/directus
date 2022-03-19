@@ -44,17 +44,45 @@ needed on Enterprise Projects. In the event of an emergency, your data will be s
 
 ## Billing
 
-Community Projects are free. Each Enterprise Project is custom-tailored and so is the bill.
+Community Projects are free. Each Enterprise Project is custom-tailored and so is the bill. For more information on
+Enterprise billing, [contact sales](https://directus.io/contact/). The rest of this section will focus on billing
+details for Standard Projects.
 
-Standard Project billing is based on the total number of hours that all Active and Standby nodes were utilized during
-the billing period. All usage is measured on a calendar monthly basis, with usage reset on the first day of each new
-billing period. For example, if you signed up on the 15th, your usage period is set to be from the 15th of this month to
-the 14th of the following month.
+### Manage Billing
 
-Billing works such that you can upgrade, downgrade, modify or destroy your Project anytime. Furthermore, no matter what,
-_you only pay for the actual Node-hours used by your Project_.
+Team Members are SuperAdmins. As such, they have full access to manage billing information and payment methods,
+including what is from other Team Members. Team Members should be highly trusted individuals. All Team Projects will be
+billed to the default payment method. You may notice that it is possible to
+[add multiple payment methods](/cloud/teams/#manage-billing), and it may be a good idea to do so as keeping multiple
+payment methods on file provides a fail-safe to help make sure your Project stays running. In the event that there is an
+issue processing the default payment method, the other methods on file will be attempted. If the bill is not paid, the
+Nodes are paused, halting web-traffic, until a successful payment is made. If a pause Project is not repaid, it will
+eventually be deleted along with all its data! For more details see,
+[Cloud Policies](https://directus.io/cloud-policies/).
 
-### Node Pricing Details
+To manage payment methods and other billing details, see how to [manage Team Billing](/cloud/teams/#manage-billing).
+
+For information on refunds, see [Cloud Policies](https://directus.io/cloud-policies/).
+
+:::tip Create Multiple Teams
+
+Teams are free. Use them to create separation appropriately between Project invoices, payment methods and Team Members.
+
+:::
+
+### Billing Periods
+
+Bills are invoiced on a calendar monthly basis, with usage reset on the first day of each new billing period. For
+example, if you created a Project on the 15th at 4pm, the usage period will be set from the 15th at 4pm of this month to
+the 14th at 4pm on the following month. When a Project is destroyed, the bill is processed immediately. Bills are
+invoiced per-Project. For example if a Team has 4 Projects, it will get 4 bills each month.
+
+### How Bills Are Calculated
+
+Project billing is based on the total number of hours Active and Standby Nodes are utilized during the billing period.
+Nodes equipped on a Standard Project can be reconfigured at any time. Billing also works such that you can upgrade,
+downgrade, modify or destroy your Project anytime. No matter what, _you only pay for the actual Node-hours used by your
+Project_.
 
 :::tip Pricing
 
@@ -67,63 +95,54 @@ _you only pay for the actual Node-hours used by your Project_.
 Once the [Node Type](#nodes) is selected, the associated hourly rate will apply to both Active and Standby Nodes. Note
 that while Active Nodes are priced at a monthly rate _(General Purpose being $25/month and Performance are $50/month)_,
 this "flat monthly rate" is actually just the hourly rate for the Node Type multiplied by 730 hours
-`$0.03424657534 x 730hrs = $25`.
+`$0.03424657534 x 730hrs = $25`. The following four examples demonstrate how billing works:
 
-**The following four examples demonstrate how billing works:**
+**Hourly Pricing**\
+A Project is configured to use General Purpose Nodes, with 1 Active Node and 0 Standby Nodes. The Project runs for 3 days
+3.5 hours (75.5 hours total, rounds to 76 hours) and is then destroyed, costing `1 Node x $0.03424657534/hour x 76 hours = $2.60`.
 
-### Hourly Pricing
+The bill will be `$2.60` plus Tax/VAT, billed at the moment of project destruction.
 
-A Project is configured to use General Purpose Nodes, with 1 Active Node and 0 Standby Nodes. The Project runs for 3
-days 3.5 hours (75.5 hours total, rounds to 76 hours) and is then destroyed.
-
-The bill will be `1 Node x $0.03424657534/hour x 76 hours = $2.60` plus Tax/VAT, billed at the moment of project
-destruction.
-
-### Active Nodes
-
-A Project is configured to use Performance Tier Nodes, with 2 Active Nodes and 0 Standby Nodes. The Project runs the
-full month (730 hours). Charges will run `2 Nodes x $0.06849315068/hour x 730 hours = $100`.
+**Active Nodes**\
+A Project is configured to use Performance Tier Nodes, with 2 Active Nodes and 0 Standby Nodes. The Project runs the full
+month (730 hours). Charges will run `2 Nodes x $0.06849315068/hour x 730 hours = $100`.
 
 The monthly bill will be `$100` plus Tax/VAT.
 
-### Overages on Standby Nodes
-
+**Overages on Standby Nodes**\
 A Project is configured to use General Purpose Nodes, with 3 Active Nodes and 2 Standby Nodes. The Project runs the full
-month (730 hours). There are 2 traffic spikes. The first spike is smaller and activates 1 Standby Node for 6.5 hours.
-The second spike is larger but gradual and activates the first Node from 4pm to 12am (8 hours) then the second Node from
-6pm to 11pm (5 hours) for a total of `8 + 5 = 13` hours. Between both spikes, Standby Nodes run for a total of 19.5
-hours (rounds to 20 hrs). The Active Nodes will cost `3 Nodes x $0.03424657534/hour x 730 hours = $75.00` and Standby
-Node overages will total `20 Node-hours x $0.03424657534/hour = $0.68`.
+month (730 hours). There are 2 traffic spikes. The first spike is smaller and activates 1 Standby Node for 6.5 hours. The
+second spike is larger but gradual and activates the first Node from 4pm to 12am (8 hours) then the second Node from 6pm
+to 11pm (5 hours) for a total of `8 + 5 = 13` hours. Between both spikes, Standby Nodes run for a total of 19.5 hours (rounds
+to 20 hrs). The Active Nodes will cost `3 Nodes x $0.03424657534/hour x 730 hours = $75.00` and Standby Node overages will
+total `20 Node-hours x $0.03424657534/hour = $0.68`.
 
 The monthly bill will be `$75.68` plus VAT/Tax.
 
-### Pro-rated Changes
-
-A Project begins the billing cycle configured to use General Purpose Nodes, 1 Active and 0 Standby.
-
-A massive traffic spike is expected from marketing activities this month and 200 hours into the month, the Project is
-reconfigured to use 2 Performance Tier Nodes and 5 Standby Nodes. In the end, Standby Nodes were not needed and never
-activated. The portion of the bill before reconfiguration will be
-`(1 General Purpose Node x $0.03424657534/hour x 200hrs) = $6.85` and then adding in reconfigured costs
-`(2 Performance Nodes x $0.06849315068/hour x 530 hours) = 72.60`.
+**Pro-rated Changes**\
+A Project begins the billing cycle configured to use General Purpose Nodes, 1 Active and 0 Standby. A massive traffic spike
+is expected from marketing activities this month and 200 hours into the month, the Project is reconfigured to use 2 Performance
+Tier Nodes and 5 Standby Nodes. In the end, Standby Nodes were not needed and never activated. The portion of the bill before
+reconfiguration will be `(1 General Purpose Node x $0.03424657534/hour x 200hrs) = $6.85` and then adding in reconfigured
+costs `(2 Performance Nodes x $0.06849315068/hour x 530 hours) = 72.60`.
 
 The monthly bill will be `$79.45` plus VAT/Tax.
 
 ### Optimize Node Configuration
 
 As stated in the beginning of this section and as shown by the examples above, you are never locked-in to a specific
-node configuration. As Project needs change, you are free to reconfigure capacity and scale up or down as needed _at the
-click of a button_. However, you will need to monitor overall system traffic to make informed decisions on Node
+Node configuration. As Project needs change, you are free to reconfigure capacity and scale up or down as needed _at the
+click of a button_. However, you may need to monitor overall system traffic to make informed decisions on Node
 configuration. The [Project Monitor Page](/cloud/projects/#monitor-a-project) provides performance analytics, which can
 be used to help inform these decisions.
 
-### Manage Billing Info
+:::tip Standby Nodes
 
-To manage payment methods and other billing details, see [Manage Billing](/cloud/teams/#manage-billing).
+For production-ready Projects of any kind, it is probably a good idea to have one or more Standby Nodes. These do not
+activate and you do not pay unless these are needed. Alternatively, as with any web app or site, if you do not have the
+processing power to handle traffic spikes, it can crash your Node(s)!
 
-### Refunds
-
-For information on refunds, see [Cloud Policies](https://directus.io/cloud-policies/).
+:::
 
 ## Caching
 
