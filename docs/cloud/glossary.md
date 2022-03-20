@@ -53,11 +53,11 @@ details for Standard Projects.
 Team Members are SuperAdmins. As such, they have full access to manage billing information and payment methods,
 including what is from other Team Members. Team Members should be highly trusted individuals. All Team Projects will be
 billed to the default payment method. You may notice that it is possible to
-[add multiple payment methods](/cloud/teams/#manage-billing), and it may be a good idea to do so as keeping multiple
+[add multiple payment methods](/cloud/teams/#manage-billing), and it may be a good idea to do so, as keeping multiple
 payment methods on file provides a fail-safe to help make sure your Project stays running. In the event that there is an
-issue processing the default payment method, the other methods on file will be attempted. If the bill is not paid, the
-Nodes are paused, halting web-traffic, until a successful payment is made. If a pause Project is not repaid, it will
-eventually be deleted along with all its data! For more details see,
+issue processing the default payment method, the other payment methods on file will be attempted. If the bill is not
+paid, the Nodes are paused, halting web-traffic, until a successful payment is made. If the paused Project is never
+repaid, it will eventually be deleted along with all its data and assets! For more details see,
 [Cloud Policies](https://directus.io/cloud-policies/).
 
 To manage payment methods and other billing details, see how to [manage Team Billing](/cloud/teams/#manage-billing).
@@ -72,17 +72,23 @@ Teams are free. Use them to create separation appropriately between Project invo
 
 ### Billing Periods
 
-Bills are invoiced on a calendar monthly basis, with usage reset on the first day of each new billing period. For
-example, if you created a Project on the 15th at 4pm, the usage period will be set from the 15th at 4pm of this month to
-the 14th at 4pm on the following month. When a Project is destroyed, the bill is processed immediately. Bills are
-invoiced per-Project. For example if a Team has 4 Projects, it will get 4 bills each month.
+Bills are invoiced on a calendar monthly basis, so each new billing period begins after exactly one month. For example,
+if you created a Project on the 15th at 4pm, then the usage period will be set from the 15th at 4pm of this month to the
+15th at 4pm on the following month. When a Project is destroyed, the bill is processed immediately. Bills are invoiced
+per-Project. So, if a Team has Standard 4 Projects, it will be charged 4 times each month.
+
+:::tip What's a Calendar Monthly Basis?
+
+This is the period from a day of one month to the corresponding day of the next month, if such exists. If not, it runs
+to the last day of the next month _(e.g. January 3 to February 3 or from January 31 to February 29)_.
+
+:::
 
 ### How Bills Are Calculated
 
-Project billing is based on the total number of hours Active and Standby Nodes are utilized during the billing period.
-Nodes equipped on a Standard Project can be reconfigured at any time. Billing also works such that you can upgrade,
-downgrade, modify or destroy your Project anytime. No matter what, _you only pay for the actual Node-hours used by your
-Project_.
+Project billing is calculated based on the total number of hours that Active and Standby Nodes are utilized during the
+billing period. Once the [Node Type](#nodes) is selected, the associated hourly rate will apply to both Active and
+Standby Nodes.
 
 :::tip Pricing
 
@@ -92,16 +98,22 @@ Project_.
 
 :::
 
-Once the [Node Type](#nodes) is selected, the associated hourly rate will apply to both Active and Standby Nodes. Note
-that while Active Nodes are priced at a monthly rate _(General Purpose being $25/month and Performance are $50/month)_,
-this "flat monthly rate" is actually just the hourly rate for the Node Type multiplied by 730 hours
-`$0.03424657534 x 730hrs = $25`. The following four examples demonstrate how billing works:
+Therefore, the monthly pricing given for Active Nodes, _$25/month for General Purpose and $50/month for Performance
+Tier_, are actually estimates based on the cost per hour times the average length of a month (730 hours). So, the
+pricing shown for one Active General Purpose Node is `$0.03424657534 x 730hrs = $25`, however the actual bill will vary
+slightly month-to-month.
+
+Furthermore, a Standard Project's Nodes can be reconfigured at any time. You can upgrade, downgrade, add Nodes, remove
+Nodes or destroy your Project as you please. No matter what, _you only pay for the actual Node-hours used by your
+Project_.
+
+The following four examples demonstrate this billing system:
 
 **Hourly Pricing**\
 A Project is configured to use General Purpose Nodes, with 1 Active Node and 0 Standby Nodes. The Project runs for 3 days
 3.5 hours (75.5 hours total, rounds to 76 hours) and is then destroyed, costing `1 Node x $0.03424657534/hour x 76 hours = $2.60`.
 
-The bill will be `$2.60` plus Tax/VAT, billed at the moment of project destruction.
+The bill will be `$2.60` plus Tax/VAT, charged at the moment of project destruction.
 
 **Active Nodes**\
 A Project is configured to use Performance Tier Nodes, with 2 Active Nodes and 0 Standby Nodes. The Project runs the full
@@ -164,7 +176,8 @@ process.
 ## Data Processing
 
 In order to optimize your Project and help you meet any local data compliance laws such as GDPR, Standard and Enterprise
-Projects allow you to choose the region your Project is hosted in.
+Projects allow you to choose the region your Project is hosted in. There are 15 Datacenter regions available to
+Enterprise Project, 2 available to Standard Projects and 1 for Community.
 
 ## Encryption and Security
 
@@ -270,17 +283,17 @@ one-by-one as needed to handle the traffic spike. Activation occurs within just 
 Standby Nodes are not required and you do not pay when Standby Nodes are disabled. For more pricing information, see
 [billing](#billing).
 
-### Auto-scaling
-
-Standby Nodes automatically activate and de-activate, scaling performance and power up and down based on traffic spikes
-and system capacity, providing on-demand horizontal scaling. Thus, this is referred to as auto-scaling.
-
-### Load Balancing and Horizontal Scaling
+### Load Balancing
 
 _Horizontal-scaling_ is the concept of using a greater number of Nodes to scale up. Load balancing refers to configured
 minimum number of Active Nodes your Project is running, and the instantaneous distribution of load across these servers.
 These are quite similar concepts, and in the context of Directus Cloud, they both simply refer to the number of Active
 Nodes.
+
+### Auto-scaling
+
+Standby Nodes automatically activate and de-activate, scaling performance and power up and down based on traffic spikes
+and system capacity, providing on-demand horizontal scaling. Thus, this is referred to as auto-scaling.
 
 :::tip Configure Load Balancing
 
@@ -288,6 +301,26 @@ The [Project Monitor Page](/cloud/projects/#monitor-a-project) provides analytic
 decisions about Node configuration. As noted under [Billing](#billing), Projects can be reconfigured at anytime.
 
 :::
+
+## Project Monitor Page
+
+![Project Monitor Page](image.webp)
+
+On this page, 4 graphs are shown:
+
+- **Combined Node Usage** — Total load placed on all Nodes.
+- **Horizontal Scaling** — Indicates number of Standby Nodes that get activated.
+- **API Requests** — Average API requests.
+- **API Bandwidth** — Average read/write bandwidth.
+
+This information may help inform Node configuration decisions.
+
+## Project URL
+
+Project URLs are randomized for Community Cloud Projects. Standard Projects offer custom URLs, which are displayed as
+follows: `some-custom-url.directus.app`. Of course, your desired URL must be available.
+
+For Enterprise Projects, [contact sales](https://directus.io/contact/)
 
 ## Projects
 
@@ -305,26 +338,28 @@ found on the [Pricing Page](https://directus.io/pricing/). Here is a general ove
 The Community Tier is a completely free Directus Project, perfect to spin-up hobby projects, demo Directus Cloud, test a
 proof of concept or get started on any other non-production activity.
 
-- **Project URLs and/or Slug** — Random.
-- **Node Type** — [Community Node](#nodes).
-- **Load Balancing** — 1 [Active Node](#nodes).
-- **Auto-scaling** — Not Available.
-- **Datacenter Region** — Eastern USA.
+- [Project URL](/cloud/glossary/#project-url) — Random.`
+- [Datacenter](/cloud/glossary/#data-processing) — `United States, East`
+- [Node Type](/cloud/glossary/#nodes) — Community Node. _Note: pauses on [inactivity](#inactivity)._
+- [Load Balancing](/cloud/glossary/#nodes) — 1 Active Node.
+- [Auto-Scaling](/cloud/glossary/#nodes) — Not Available.
 
 ### Standard
 
 The Standard Tier is perfect for most production-ready use cases, providing Projects with custom URLs, upgraded server
 power and the following configuration options:
 
-- **Project URLs and/or Slug** — Customize URL slug _(if available of course)_.
-- **Node Type** — Choose between [General Purpose and Performance Nodes](#nodes).
-- **Load Balancing** — Select 1-6 [Active Nodes](#nodes) to run 24/7.
-- **Auto-scaling** — Select 0-5 [Standby Nodes](#nodes) to run only during traffic spikes.
-- **Datacenter Region** — Two choices: `United States, East` or `Europe, Frankfurt`.
+- [Project URL](#project-url) — Customize URL slug _(if available of course)_.
+- [Datacenter](#data-processing) — Two choices: `United States, East` or `Europe, Frankfurt`.
+- [Node Type](#nodes) — Choose between General Purpose and Performance Nodes.
+- [Load Balancing](#nodes) — Select 1-6 Active Nodes.
+- [Auto-Scaling](#nodes) — Select 0-5 Standby Nodes.
 
 ### Enterprise
 
-The Enterprise Tier provides power and scale to meet any Project's needs.
+The Enterprise Tier provides power and scale to meet any Project's needs, offers 15+
+[Datacenter regions](#data-processing), and [Premium Support](#support-options) options. For more information,
+[contact sales](https://directus.io/contact/)
 
 ## Quotas
 
@@ -394,16 +429,12 @@ Please note, this section is about how your Cloud Project is stored among other 
 you design your Project's data model. You can implement single or multi-tenant architecture within any Directus Cloud
 Project.
 
-### Community
-
+**Community Tenancy**\
 Community project databases are technically single-tenant, but also file-based, and therefore limited on power.
 
-### Standard
+**Standard Tenancy**\
+Standard Projects are created using multi-tenant architecture. However, each Standard Project is scoped- one container per
+Project, with no bleeding into other Projects. If your neighbor's Project gets busy, it will not impact your Project.
 
-Standard Projects are created using multi-tenant architecture. However, each Standard Project is scoped- one container
-per Project, with no bleeding into other Projects. If your neighbor's Project gets busy, it will not impact your
-Project.
-
-### Enterprise
-
+**Enterprise Tenancy**\
 Databases on Enterprise Projects are single-tenant, offering 100% isolation. No Neighbors.
