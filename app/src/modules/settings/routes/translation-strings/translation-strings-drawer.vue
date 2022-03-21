@@ -106,6 +106,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 				options: {
 					placeholder: '$t:translation_string_key_placeholder',
 					font: 'monospace',
+					dbSafe: true,
 				},
 			},
 		},
