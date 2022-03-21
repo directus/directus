@@ -17,7 +17,6 @@
 			:enableCreate="enableCreate"
 			:enableSelect="enableSelect"
 			:customFilter="customFilter"
-			:conflictItems="conflictItems"
 			root
 		/>
 	</div>
@@ -55,8 +54,16 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits(['input']);
 const { collection, field, primaryKey } = toRefs(props);
 
-const value = computed({
-	get: () => props.value,
+const value = computed<ChangesItem>({
+	get() {
+		if (Array.isArray(props.value))
+			return {
+				create: [],
+				update: [],
+				delete: [],
+			};
+		return props.value as ChangesItem;
+	},
 	set: (val) => {
 		emit('input', val);
 	},

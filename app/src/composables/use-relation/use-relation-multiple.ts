@@ -34,7 +34,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage, updateValue } = useUtil();
+	const { cleanItem, getPage } = useUtil();
 
 	const _value = computed<Item>({
 		get() {
@@ -135,6 +135,8 @@ export function useRelationMultiple(
 		});
 	});
 
+	const {create, remove, select, update} = useActions(_value)
+
 	return {
 		create,
 		update,
@@ -146,86 +148,94 @@ export function useRelationMultiple(
 		selected,
 		fetchedSelectItems,
 		fetchedItems,
-		cleanItem
+		useActions
 	};
 
-	function create(...items: Record<string, any>[]) {
-		for (const item of items) {
-			_value.value.create.push(cleanItem(item));
-		}
-		updateValue();
-	}
+	function useActions(target: Ref<Item>) {
+		return {create, update, remove, select}
 
-	function update(...items: DisplayItem[]) {
-		if (!relation.value) return;
-
-		for (const item of items) {
-			if (item.$type === undefined || item.$index === undefined) {
-				_value.value.update.push(item);
-			} else if (item.$type === 'created') {
-				_value.value.create[item.$index] = cleanItem(item);
-			} else if (item.$type === 'updated') {
-				_value.value.update[item.$index] = cleanItem(item);
+		function create(...items: Record<string, any>[]) {
+			for (const item of items) {
+				target.value.create.push(cleanItem(item));
 			}
+			updateValue();
 		}
-		updateValue();
-	}
 
-	function remove(...items: DisplayItem[]) {
-		if (!relation.value) return;
+		function update(...items: DisplayItem[]) {
+			if (!relation.value) return;
 
-		for (const item of items) {
-			if (item.$type === undefined || item.$index === undefined) {
-				const pkField =
-					relation.value.type === 'o2m'
-						? relation.value.relatedPrimaryKeyField.field
-						: relation.value.junctionPrimaryKeyField.field;
-				_value.value.delete.push(item[pkField]);
-			} else if (item.$type === 'created') {
-				_value.value.create.splice(item.$index, 1);
-			} else if (item.$type === 'updated') {
-				_value.value.update.splice(item.$index, 1);
-			} else if (item.$type === 'deleted') {
-				_value.value.delete.splice(item.$index, 1);
-			}
-		}
-		updateValue();
-	}
-
-	function select(items: (string | number)[], collection?: string) {
-		const info = relation.value;
-		if (!info) return;
-
-		const selected = items.map((item) => {
-			switch (info.type) {
-				case 'o2m':
-					return {
-						[info.reverseJunctionField.field]: itemId.value,
-						[info.relatedPrimaryKeyField.field]: item,
-					};
-				case 'm2m':
-					return {
-						[info.reverseJunctionField.field]: itemId.value,
-						[info.junctionField.field]: {
-							[info.relatedPrimaryKeyField.field]: item,
-						},
-					};
-				case 'm2a': {
-					if (!collection) throw new Error('You need to provide a collection on an m2a');
-
-					return {
-						[info.reverseJunctionField.field]: itemId.value,
-						[info.collectionField.field]: collection,
-						[info.junctionField.field]: {
-							[info.relationPrimaryKeyFields[collection].field]: item,
-						},
-					};
+			for (const item of items) {
+				if (item.$type === undefined || item.$index === undefined) {
+					target.value.update.push(item);
+				} else if (item.$type === 'created') {
+					target.value.create[item.$index] = cleanItem(item);
+				} else if (item.$type === 'updated') {
+					target.value.update[item.$index] = cleanItem(item);
 				}
 			}
-		});
+			updateValue();
+		}
 
-		if (relation.value?.type === 'o2m') update(...selected);
-		else create(...selected);
+		function remove(...items: DisplayItem[]) {
+			if (!relation.value) return;
+
+			for (const item of items) {
+				if (item.$type === undefined || item.$index === undefined) {
+					const pkField =
+						relation.value.type === 'o2m'
+							? relation.value.relatedPrimaryKeyField.field
+							: relation.value.junctionPrimaryKeyField.field;
+					target.value.delete.push(item[pkField]);
+				} else if (item.$type === 'created') {
+					target.value.create.splice(item.$index, 1);
+				} else if (item.$type === 'updated') {
+					target.value.update.splice(item.$index, 1);
+				} else if (item.$type === 'deleted') {
+					target.value.delete.splice(item.$index, 1);
+				}
+			}
+			updateValue();
+		}
+
+		function select(items: (string | number)[], collection?: string) {
+			const info = relation.value;
+			if (!info) return;
+
+			const selected = items.map((item) => {
+				switch (info.type) {
+					case 'o2m':
+						return {
+							[info.reverseJunctionField.field]: itemId.value,
+							[info.relatedPrimaryKeyField.field]: item,
+						};
+					case 'm2m':
+						return {
+							[info.reverseJunctionField.field]: itemId.value,
+							[info.junctionField.field]: {
+								[info.relatedPrimaryKeyField.field]: item,
+							},
+						};
+					case 'm2a': {
+						if (!collection) throw new Error('You need to provide a collection on an m2a');
+
+						return {
+							[info.reverseJunctionField.field]: itemId.value,
+							[info.collectionField.field]: collection,
+							[info.junctionField.field]: {
+								[info.relationPrimaryKeyFields[collection].field]: item,
+							},
+						};
+					}
+				}
+			});
+
+			if (relation.value?.type === 'o2m') update(...selected);
+			else create(...selected);
+		}
+
+		function updateValue() {
+			target.value = cloneDeep(target.value)
+		}
 	}
 
 	async function updateFetchedItems() {
@@ -436,11 +446,7 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		return { updateValue, cleanItem, getPage };
-
-		function updateValue() {
-			_value.value = cloneDeep(_value.value);
-		}
+		return { cleanItem, getPage };
 
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {

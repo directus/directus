@@ -4,10 +4,10 @@
 		class="drag-area"
 		:class="{ root, drag }"
 		tag="ul"
-		:list="filteredDisplayItems"
+		:model-value="filteredDisplayItems"
 		:group="{ name: 'g1' }"
 		item-key="id"
-		draggable=".row"
+		draggable=".draggable"
 		:set-data="hideDragImage"
 		:disabled="disabled"
 		:force-fallback="true"
@@ -16,7 +16,7 @@
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<li class="row">
+			<li class="row" :class="{draggable: element.$type !== 'deleted'}">
 				<item-preview
 					:item="element"
 					:template="template"
@@ -26,12 +26,12 @@
 					:open="open[index] ?? false"
 					:deleted="element.$type === 'deleted'"
 					@update:open="open[index] = $event"
-					@input="replaceItem(index, $event)"
+					@input="update"
 					@deselect="remove(element)"
 				/>
 				<nested-draggable
 					v-if="open[index]"
-					:model-value="element[field]"
+					v-model="globalValue"
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"
@@ -42,8 +42,6 @@
 					:customFilter="customFilter"
 					:relationInfo="relationInfo"
 					:primaryKey="element[relationInfo.relatedPrimaryKeyField.field]"
-					:conflictItems="conflictItems"
-					@update:modelValue="updateModelValue($event, index)"
 				/>
 			</li>
 		</template>
@@ -73,7 +71,7 @@
 			:selection="[]"
 			:filter="customFilter"
 			multiple
-			@input="stageSelection"
+			@input="select"
 		/>
 	</template>
 </template>
@@ -115,7 +113,7 @@ type ChangeEvent = {
 }
 
 const props = withDefaults(defineProps<{
-	modelValue?: (number | string | Record<string, any>)[] | Record<string, any>
+	modelValue: ChangesItem
 	template: string
 	disabled?: boolean
 	collection: string
@@ -128,9 +126,7 @@ const props = withDefaults(defineProps<{
 	enableCreate: boolean
 	enableSelect: boolean
 	customFilter: Filter
-	conflictItems: (string | number)[]
 }>(), {
-	modelValue: () => [],
 	disabled: false,
 	filter: () => null,
 	root: false,
@@ -139,7 +135,22 @@ const props = withDefaults(defineProps<{
 const { t } = useI18n();
 const emit = defineEmits(['update:modelValue'])
 
-const value = useSync(props, 'modelValue', emit)
+const globalValue = useSync(props, 'modelValue', emit)
+
+const value = computed<ChangesItem>(() => {
+	if(!('create' in globalValue.value)) return {
+		create: [],
+		update: [],
+		delete: []
+	}
+
+	const parentField = relationInfo.value.reverseJunctionField.field
+	return {
+		create: globalValue.value.create.filter(item => item[parentField] === primaryKey.value),
+		update: globalValue.value.update.filter(item => item[parentField] === primaryKey.value),
+		delete: globalValue.value.delete
+	}
+})
 
 const {collection, field, primaryKey, relationInfo, root, fields, template, customFilter} = toRefs(props)
 
@@ -158,14 +169,8 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const {create, update, remove, select, displayItems, loading, cleanItem} = useRelationMultiple(value, query, relationInfo, primaryKey)
-
-const filteredDisplayItems = computed(() => {
-	return displayItems.value.filter(item => {
-		if(props.conflictItems.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined) return false
-		return true
-	})
-})
+const {displayItems, loading, useActions} = useRelationMultiple(value, query, relationInfo, primaryKey)
+const {create, update, remove, select} = useActions(globalValue)
 
 const selectDrawer = ref(false);
 
@@ -183,64 +188,36 @@ const selectedPrimaryKeys = computed<(number | string)[]>(() => {
 	return []
 });
 
+const existingMoved = computed<(string | number)[]>(() => {
+	return globalValue.value.update.filter(item => relationInfo.value.reverseJunctionField.field in item).map(item => item[relationInfo.value.relatedPrimaryKeyField.field])
+})
+
+const filteredDisplayItems = computed(() => {
+	return displayItems.value.filter(item => !existingMoved.value.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) || item.$type !== undefined)
+})
+
 function change(event: ChangeEvent) {
-	console.log("change", event)
 	if('added' in event) {
-		switch(event.added.element.$type) {
-			case 'created':
-				create(cleanItem(event.added.element))
-				break;
-			case 'updated': {
-				const pkField = relationInfo.value.relatedPrimaryKeyField.field
-				const exists = displayItems.value.find(item => item[pkField] === event.added.element[pkField])
-				if(!exists) update(cleanItem(event.added.element))
-				break;
-			}
-			case 'deleted':
-				remove(cleanItem(event.added.element))
-				break;
-			default:
-				update({
-					...event.added.element,
-					[relationInfo.value.reverseJunctionField.field]: primaryKey.value
-				})
+		const pkField = relationInfo.value.relatedPrimaryKeyField.field
+		if(existingMoved.value.includes(event.added.element[pkField]) && displayItems.value.find(item => item[pkField] === event.added.element[pkField])) {
+			remove(event.added.element)
+		} else {
+			update({
+				...event.added.element,
+				[relationInfo.value.reverseJunctionField.field]: primaryKey.value
+			})
 		}
-	} else if('removed' in event && '$type' in event.removed.element) {
-		remove(event.removed.element)
+		
 	}
-}
-
-function updateModelValue(changes: ChangesItem, index: number) {
-	update({
-		...displayItems.value[index],
-		[field.value]: changes
-
-	})
-	console.log("updateModelValue", changes, index)
-}
-
-function stageSelection(items: (number | string)[]) {
-	console.log("stageSelection: ", items)
-	select(items)
+	
 }
 
 const addNewActive = ref(false);
 
 function addNew(item: Record<string, any>) {
+	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value
 	console.log("create ", item)
 	create(item)
-}
-
-function replaceItem(index: number, item: Record<string, any>) {
-	console.log("replaceItem", index, item)
-}
-
-function removeItem(index: number) {
-	console.log("removeItem", index)
-}
-
-function replaceChildren(index: number, tree: Record<string, any>[]) {
-	console.log("replaceChildren", index, tree)
 }
 </script>
 
@@ -271,6 +248,10 @@ function replaceChildren(index: number, tree: Record<string, any>[]) {
 		& + .drag-area {
 			padding-top: 12px;
 		}
+	}
+
+	&:not(.draggable) .preview {
+		cursor: not-allowed;
 	}
 }
 

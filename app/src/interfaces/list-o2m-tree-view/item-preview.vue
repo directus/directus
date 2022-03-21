@@ -44,15 +44,11 @@ const editActive = ref(false);
 </script>
 
 <style lang="scss" scoped>
-.preview {
+div.preview {
 	display: flex;
 	
 	&:not(.open) {
 		margin-bottom: 12px;
-	}
-
-	&.deleted {
-		border-color: var(red);
 	}
 
 	.spacer {
@@ -65,6 +61,16 @@ const editActive = ref(false);
 
 		.v-icon + .v-icon {
 			margin-left: 4px;
+		}
+	}
+
+	&.deleted {
+		color: var(--danger);
+		background-color: var(--danger-10);
+
+		.actions {
+			--v-icon-color: var(--danger-50);
+			--v-icon-color-hover: var(--danger);
 		}
 	}
 }
