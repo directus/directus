@@ -4,8 +4,8 @@
 	$color-mapping: map-merge(
 		$color-mapping,
 		(
-			'primary': $pink,
-			'secondary': $purple,
+			'primary': $purple,
+			'secondary': $pink,
 		)
 	);
 
@@ -17,7 +17,7 @@
 
 	--foreground-normal: #c9d1d9;
 	--foreground-normal-alt: #f0f6fc;
-	--foreground-subdued: #8b949e;
+	--foreground-subdued: #666672;
 	--foreground-inverted: #0d1117;
 
 	--background-normal: #21262e;
@@ -48,7 +48,7 @@
 	--yellow-alt: var(--yellow-10);
 	--orange-alt: var(--orange-10);
 	--red-alt: var(--red-10);
-	--primary-alt: var(--pink-10);
+	--primary-alt: var(--primary-10);
 	--secondary-alt: var(--secondary-10);
 	--success-alt: var(--green-10);
 	--warning-alt: var(--yellow-10);

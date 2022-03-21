@@ -82,6 +82,8 @@ const defaults: Record<string, any> = {
 	SERVE_APP: true,
 
 	RELATIONAL_BATCH_SIZE: 25000,
+
+	EXPORT_BATCH_SIZE: 5000,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

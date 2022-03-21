@@ -64,7 +64,7 @@ required_for_app_access: برای دسترسی به برنامه مورد نیا
 requires_value: به مقدار نیاز دارد
 create_preset: ایجاد الگو
 create_panel: ایجاد پنل
-create_role: افزودن نقش
+create_role: ایجاد نقش
 create_user: ایجاد کاربر
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک
@@ -337,8 +337,6 @@ label_import: وارد کردن
 label_export: استخراج
 import_export: واردسازی / استحراج
 format: فرمت
-use_current_filters_settings: از فیلترها و تنظیمات موجود استفاده شود
-export_data_button: آغاز عملیات استخراج
 last_page: صفحه آخر
 last_access: آخرین دسترسی
 fill_template: پر کردن با مقدار الگو
@@ -967,7 +965,6 @@ interfaces:
     whitespace: فضای خالی
     hyphen: جایگزینی با نشان اتصال
     underscore: جایگزینی با زیرین خط
-    add_tags: افزودن برچسب ها...
   boolean:
     label_default: فعال شده
 displays:

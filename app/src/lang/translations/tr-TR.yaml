@@ -336,8 +336,6 @@ label_import: İçe Aktar
 label_export: Dışa Aktar
 import_export: İçe / Dışa Aktar
 format: Biçim
-use_current_filters_settings: Mevcut Filtreleri ve Ayarları Kullan
-export_data_button: Dışa Aktarmayı Başlat
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablon Değeri ile Doldur
@@ -1462,7 +1460,6 @@ interfaces:
     auto_formatter: Başlık Otomatik Biçimlendiricisini Kullan
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik Sırayı Zorla
-    add_tags: Etiketler ekle...
   input:
     input: Girdi
     description: Manuel olarak bir değer gir
@@ -1654,7 +1651,6 @@ layouts:
     subtitle: Alt Başlık
   tabular:
     tabular: Tablo
-    fields: Alanlar
     spacing: Aralıklandırma
     comfortable: Rahat
     compact: Kompakt

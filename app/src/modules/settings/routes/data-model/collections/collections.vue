@@ -27,7 +27,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')">
+			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>

@@ -898,7 +898,6 @@ layouts:
     subtitle: Tiêu đề phụ
   tabular:
     tabular: Bảng
-    fields: Các trường
     spacing: Khoảng cách
     comfortable: Thoải mái
     compact: Thu gọn

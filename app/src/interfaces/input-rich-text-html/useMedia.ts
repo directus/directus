@@ -195,6 +195,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		} else {
 			editor.value.selection.setContent(embed.value);
 		}
+		editor.value.undoManager.add();
 		closeMediaDrawer();
 	}
 
