@@ -248,6 +248,7 @@
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
+					:layout-query="layoutQuery"
 					@refresh="refresh"
 				/>
 			</template>

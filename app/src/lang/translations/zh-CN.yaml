@@ -335,8 +335,6 @@ label_import: 导入
 label_export: 导出
 import_export: 导入 / 导出
 format: 格式
-use_current_filters_settings: 使用当前筛选器和设置
-export_data_button: 开始导出
 last_page: 尾页
 last_access: 上次访问
 fill_template: 使用模板填入
@@ -1462,7 +1460,6 @@ interfaces:
     auto_formatter: 自动格式化标题
     alphabetize: 按字母表排序
     alphabetize_label: 强制按字母顺序排序
-    add_tags: 添加标签...
   input:
     input: Input
     description: 手动输入一个值
@@ -1652,7 +1649,6 @@ layouts:
     subtitle: 副标题
   tabular:
     tabular: 表
-    fields: 字段
     spacing: 间距
     comfortable: 宽松
     compact: 紧凑

@@ -27,25 +27,25 @@ published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
 modules: ماژول‌ها
-module_bar: ماژول
+module_bar: نوار ماژول ها
 reset_width: تنظیم مجدد عرض
-tile_size: اندازه آجر
+tile_size: اندازه هر مربع در نقشه
 edit_field: ویرایش فیلد
-conditions: مزایای همکاری
+conditions: شرایط
 maps: نقشه ها
 switch_user: تغییر کاربر
-item_creation: ایجاد مورد
-item_revision: مشاهده ویرایش ها
-enter_a_name: یک نام وارد کنید
-duplicate_field: زمینه های تکراری (Automatic Translation)
+item_creation: ساخت یک آیتم
+item_revision: نسخه های آیتم
+enter_a_name: عنوانی را وارد نمایید...
+duplicate_field: فیلد تکراری
 half_width: نصف عرض
-full_width: پهنای کامل
+full_width: عرض کامل
 group: گروه
 and: و
 or: یا
-fill_width: پهنای کامل
+fill_width: عرض کامل
 field_name_translations: ترجمه‌های نام فیلد
-enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی ، رمز عبور خود را وارد کنید
+enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی، رمز عبور خود را وارد کنید
 add_field: افزودن فیلد
 role_name: نام نقش
 branch: شاخه
@@ -53,52 +53,52 @@ leaf: برگ
 indeterminate: نامشخص
 edit_collection: ویرایش مجموعه
 exclusive: انحصاری
-children: همراه با کودک
-db_only_click_to_configure: 'فقط پایگاه داده: برای پیکربندی کلیک کنید'
+children: زیرکنترل ها
+db_only_click_to_configure: 'جدول خام در پایگاه داده: برای پیکربندی کلیک کنید'
 show_active_items: نمایش آیتم های فعال
 show_archived_items: نشان دادن یادداشت‌های بایگانی شده
 show_all_items: نمایش تمامی موارد
-edited: ارزش ویرایش شد
+edited: مقدار ویرایش شد
 required: الزامی
 required_for_app_access: برای دسترسی به برنامه مورد نیاز است
-requires_value: مقدار موردنیاز
-create_preset: ایجاد ایستگاه از پیش تنظیم شده
+requires_value: به مقدار نیاز دارد
+create_preset: ایجاد الگو
 create_panel: ایجاد پنل
-create_role: افزودن نقش
+create_role: ایجاد نقش
 create_user: ایجاد کاربر
 delete_panel: حذف پنل
-create_webhook: به روزرسانی webhook
+create_webhook: ساخت وب هوک
 invite_users: دعوت کاربران
 invite: دعوت
-email_already_invited: این آدرس ایمیل قبلا دعوت شده است
+email_already_invited: قبلاً برای ایمیل {email}، دعوت نامه ارسال شده است
 subject: موضوع
 inbox: پیغام‌های دریافتی
 emails: پست الکترونیکی
-connection_excellent: اتصال عالی
-connection_good: اتصال خوب
-connection_fair: اتصال عادلانه
-connection_poor: اتصال ضعیف
+connection_excellent: کیفیت اتصال، عالی است
+connection_good: کیفیت اتصال، خوب است
+connection_fair: کیفیت اتصال، قابل قبول است.
+connection_poor: کیفیت اتصال، ضعیف است
 primary: اصلی
-rename_folder: Rename Folder
+rename_folder: تغییر نام پوشه
 delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
 reset_bookmark: بازنشانی نشانک
 rename_bookmark: تغییر نام نشانک
-update_bookmark: به روز کردن نشانک
+update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
 delete_bookmark_copy: >-
-  آیا مطمئن هستید که می‌خواهید «{bookmark}» را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+  آیا مطمئن هستید که می‌خواهید نشانکِ {bookmark} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
 logoutReason:
   SIGN_OUT: از سیستم خارج شده
   SESSION_EXPIRED: نشست به پایان رسیده
-public_label: عمومی
-public_description: داده API موجود را بدون احراز هویت کنترل می‌کند.
+public_label: در دسترس عموم
+public_description: اینکه کدام داده مربوط به API، بدون احراز هویت، قابل دسترسی باشد را کنترل میکند.
 admin_description: نقش مدیریتی اولیه با سطح دسترسی بدون محدودیت به برنامه و API
 not_allowed: مجاز نیست
 directus_version: نسخه دایرکتوس
-node_version: نسخه نود
-node_uptime: زمان به کار نود
+node_version: نسخه node
+node_uptime: مدت زمان اجرای node تاکنون
 os_type: نوع سیستم عامل
 os_version: نسخه سیستم عامل
 os_uptime: زمان به کار سیستم عامل
@@ -106,20 +106,20 @@ os_totalmem: حافظه سیستم عامل
 archive: بایگانی
 archive_confirm: از بایگانی شدن این مورد مطمئنید؟
 archive_confirm_count: >-
-  هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید {count} موارد را بایگانی کنید؟
+  هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
 reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
-reset_system_permissions_copy: این عمل مجوزهای سفارشی را که ممکن است برای مجموعه‌های سیستم اعمال کرده باشید بازنویسی کند. مطمئن هستید؟
-the_following_are_minimum_permissions: موارد زیر حداقل مجوزهای مورد نیاز هنگام فعال بودن "دسترسی به برنامه" است. شما می توانید مجوزها را فراتر از این بسازید ، اما نه در زیر.
-app_access_minimum: حداقل دسترسی به برنامه
-recommended_defaults: پیش‌فرض‌های توصیه شده
+reset_system_permissions_copy: این عمل، مجوزهای سفارشی که ممکن است برای مجموعه‌های سیستمی اعمال کرده باشید را بازنویسی می کند. مطمئن هستید؟
+the_following_are_minimum_permissions: موارد زیر، حداقل مجوزهای مورد نیاز جهت دسترسی به برنامه است. شما می توانید مجوزهای بیشتری را در این قسمت در نظر بگیرید اما نه کمتر از حداقل مجوز مورد نیاز.
+app_access_minimum: حداقل مجوزها برای دسترسی به برنامه
+recommended_defaults: پیش‌فرض‌های مورد تأیید
 unarchive: خارج کردن از بایگانی
-unarchive_confirm: از خارج کردن از بایگانی این مورد مطمئنید؟
-nested_files_folders_will_be_moved: فایل‌ها و پوشه‌های تو در تو یک سطح به بالا منتقل می‌شوند.
+unarchive_confirm: آیا از خارج کردن این آیتم از بایگانی، اطمینان دارید؟
+nested_files_folders_will_be_moved: فایل‌ها و پوشه‌های زیرمجموعه به یک سطح بالاتر منتقل می‌شوند.
 validation_errors_notice: 'فیلدهای زیر مقادیر غیرقابل قبولی دارند:'
 validationError:
   eq: مقدار باید {valid} باشد
   neq: مقدار نمی‌تواند {invalid} باشد
-  in: مقدار باید یکی از {valid} باشد
+  in: 'مقدار باید یکی از این مقادیر باشد: {valid}'
   nin: مقدار نمی‌تواند یکی از {invalid} باشد
   contains: مقدار باید حاوی {substring} باشد
   ncontains: مقدار نمی‌تواند حاوی {substring} باشد
@@ -129,7 +129,7 @@ validationError:
   lte: مقدار باید کمتر یا مساوی {valid} باشد
   empty: مقدار باید خالی باشد
   nempty: مقدار نمی تواند خالی باشد
-  null: مقدار باید خالی باشد
+  null: مقدار باید null باشد
   nnull: مقدار نمی تواند خالی (نال) باشد
   required: مقدار الزامی است
   unique: مقدار باید یکتا باشد
@@ -137,48 +137,48 @@ validationError:
 all_access: دسترسی کامل
 no_access: بدون دسترسی
 use_custom: استفاده از حالت سفارشی
-nullable: قابل خواندن
-allow_null_value: مقدار NULL را مجاز کنید
-allow_multiple: امکان چندین انتخاب
-allow_multiple_to_be_open: اجازه دهید Multiple باز شود
-enter_value_to_replace_nulls: لطفاً یک مقدار جدید برای جایگزینی هر گونه NULL موجود در این قسمت وارد کنید.
+nullable: میتواند null باشد
+allow_null_value: اجازه NULL بودن دارد
+allow_multiple: چند انتخابی بودن
+allow_multiple_to_be_open: چند مورد میتوانند باهم باز شوند
+enter_value_to_replace_nulls: لطفاً یک مقدار جدید برای جایگزینی هر گونه NULL موجود در این فیلد وارد کنید.
 field_standard: استاندارد
-field_presentation: ارائه و نام مستعار
-field_file: فیلتر تک
-field_files: چندین فیلتر
-field_m2o: نسبت
-field_m2a: نسبت
-field_o2m: نسبت
-field_m2m: نسبت
+field_presentation: نحوه نمایش و نامهای مستعار
+field_file: تک فایل
+field_files: چند فایلی
+field_m2o: رابطه چند-به-یک
+field_m2a: رابطه چند-به-هر-مجموعه-ای
+field_o2m: رابطه یک-به-چند
+field_m2m: رابطه چند-به-چند
 field_translations: ترجمه‌ها
-field_group: گروه میدانی
-item_permissions: مجوزهای مورد
-field_permissions: مجوزهای مورد
-field_validation: اعتبار سنجی فیلد
-field_presets: ایستگاه از پیش تنظیم شده
+field_group: گروه فیلد
+item_permissions: مجوزهای آیتم
+field_permissions: مجوزهای فیلدها
+field_validation: اعتبار سنجی فیلدها
+field_presets: الگوهای فیلدها
 permissions_for_role: 'مواردی که نقش {role} میتواند {action}'
 fields_for_role: 'فیلدهایی که نقش {role} میتواند {action}'
 validation_for_role: 'قوانین {action} مربوط به فیلد که نقش {role} باید رعایت کند.'
 presets_for_role: 'مقادیر پیش فرض فیلد برای نقش {role}.'
-presentation_and_aliases: ارائه و نام مستعار
+presentation_and_aliases: نحوه نمایش و نامهای مستعار
 revision_post_create: شکل ظاهری این آیتم وقتی که ساخته شده به این صورت بوده است.
-revision_post_update: در اینجا این مورد پس از بروزرسانی چگونه بود.
-changes_made: در زیر تغییرات خاصی است که در این تجدید نظر ایجاد شده است.
-no_relational_data: به خاطر داشته باشید که داده های رابطه ای در اینجا گنجانده نشده است.
-hide_field_on_detail: مخفی کردن زمینه در جزئیات
-show_field_on_detail: نمایش قسمت روی جزئیات
+revision_post_update: شکل ظاهری این آیتم پس از بروزرسانی، به این صورت بوده است.
+changes_made: ذیلاً، تغییرات خاصی که در این نسخه انجام شده، قابل مشاهده است.
+no_relational_data: به خاطر داشته باشید که داده های مربوط به ارتباطات، در اینجا گنجانده نشده است.
+hide_field_on_detail: مخفی کردن فیلد در بخش جزییات آیتم
+show_field_on_detail: نمایش فیلد در بخش جزییات آیتم
 delete_field: حذف فیلد
-fields_and_layout: ویرایش فیلد
-field_create_success: 'فید ساخته شده: "{field}"'
+fields_and_layout: فیلدها و چیدمان
+field_create_success: 'فیلد ساخته شده: "{field}"'
 field_update_success: 'فیلد بروزرسانی شده: "{field}"'
-duplicate_where_to: دوست دارید این قسمت را به کجا کپی کنید?
+duplicate_where_to: کپیِ این فیلد را در کجا میخواهید استفاده کنید؟
 language: زبان
 aggregate_function: تابع تجمیع
 aggregate_precision: دقت تجمیع
 group_aggregation: تجمیع گروهی
 group_precision: دقت گروهی
 global: سراسری
-admins_have_all_permissions: مدیران همه مجوزها را دارند
+admins_have_all_permissions: مدیران سیستم، همه مجوزها را دارند
 camera: دوربین
 show_zero: نمایش صفر
 create_in_advanced_field_creation_mode: ساخت فیلد در حالا پیشرفته
@@ -188,21 +188,21 @@ sum_distinct: جمع مقادیر یکتا
 avg: میانگین
 avg_distinct: میانگین مقادیر یکتا
 count: تعداد
-count_distinct: جمع مقادیر یکتا
+count_distinct: تعداد مقادیر یکتا
 min: حداقل
 max: حداکثر
-exposure: نوردهی
+exposure: مدت زمان نورپردازی شده
 shutter: شاتر
 iso: ISO
-focal_length: درێژیی تیشکۆیی
+focal_length: فاصله کانونی
 schema_setup_key: نام ستون پایگاه داده این فیلد و کلید API
-create_field: ایجاد فیلد(Field)
+create_field: ایجاد فیلد
 creating_new_field: 'فیلد جدید ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: بازنشانی تنظیمات برنامه
-hidden_field: فیلدهای غیرفعال
-hidden_on_detail: مخفی کردن زمینه در جزئیات
-disabled_editing_value: غیرفعال کردن مقدار ویرایش
+reset_page_preferences: بازنشانی تنظیمات صفحه
+hidden_field: فیلد مخفی
+hidden_on_detail: مخفی کردن فیلد در بخش جزییات آیتم
+disabled_editing_value: غیرفعال کردنِ ویرایش مقدار
 key: کلید
 alias: نام مستعار
 bigInteger: عدد صحیح بزرگ
@@ -249,9 +249,9 @@ new_data_alert: 'فیلدهای زیر به مدل داده ای شما اضاف
 search_collection: جستجوی مجموعه...
 new_field: 'فیلد جدید'
 new_collection: 'مجموعه جدید'
-add_m2o_to_collection: 'اضافه کردن چند-به-یک به "{collection}"'
-add_o2m_to_collection: 'اضافه کردن یک-به-چند به "{collection}"'
-add_m2m_to_collection: 'اضافه کردن چند-به-چند به "{collection}"'
+add_m2o_to_collection: 'اضافه کردن رابطه چند-به-یک به "{collection}"'
+add_o2m_to_collection: 'اضافه کردن رابطه یک-به-چند به "{collection}"'
+add_m2m_to_collection: 'اضافه کردن رابطه چند-به-چند به "{collection}"'
 choose_a_type: یک نوع را انتخاب کنید...
 determined_by_relationship: توسط نوع رابطه تعیین می شود
 add_note: توضیحاتی کارا برای کاربران اضافه کنید...
@@ -259,27 +259,27 @@ add_link: اضافه کردن لینک
 custom_link: پیوند سفارشی
 default_value: مقدار پیش فرض
 standard_field: فیلد استاندارد
-single_file: فیلتر تک
-multiple_files: چندین فیلتر
-m2o_relationship: رابطه بسیار به یک
-o2m_relationship: رابطه بسیار به یک
-m2m_relationship: رابطه بسیار به یک
-m2a_relationship: رابطه بسیار به یک
-invalid_item: نامعتبر است
+single_file: تک فایل
+multiple_files: چند فایلی
+m2o_relationship: رابطه چند-به-یک
+o2m_relationship: رابطه یک-به-چند
+m2m_relationship: رابطه چند-به-چند
+m2a_relationship: رابطه یک-به-هر-مجموعه-ای
+invalid_item: آیتمِ نامعتبر
 next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
 no_translations: ترجمه ای وجود ندارد
 note: شرح
-enter_a_value: یک مقدار وارد کنید...
-enter_a_placeholder: محل نگهدار را وارد کنید...
+enter_a_value: یک مقدار را وارد کنید...
+enter_a_placeholder: متنی جهت توضیح را وارد کنید...
 length: طول
 soft_length: طول کاراکتر مجاز
 precision_scale: دقت و مقیاس
 readonly: فقط خواندنی
-unique: منحصربه‌فرد
-updated_on: به روز شده در
-updated_by: به روز شده توسط
+unique: یکتا
+updated_on: به روزرسانی شده در
+updated_by: به روزرسانی شده توسط
 primary_key: کلید اصلی
 foreign_key: کلید خارجی
 finish_setup: پایان راه‌اندازی
@@ -292,33 +292,33 @@ paste_raw_value: چسباندن مقدار خام
 paste_raw_value_success: چسبانده شد
 paste_raw_value_fail: چسباندن ناموفق بود
 view_raw_value: نمایش مقدار خام
-edit_raw_value: ویرایش مقدار
-enter_raw_value: یک مقدار وارد کنید...
+edit_raw_value: ویرایش مقدار خام
+enter_raw_value: مقدار خامی را وارد کنید...
 clear_value: پاک کردن مقدار
 clear_changes: پاک کردن تغییرات
 reset_to_default: بازنشانی به تنظیمات پیش فرض
 undo_changes: برگرداندن تغییرات به حالت قبل
 notifications: اعلانات
-show_all_activity: نمایش فعالیت های اخیر
-page_not_found: برگه یافت نشد
+show_all_activity: نمایش تمام فعالیتها
+page_not_found: برگه مد نظر یافت نشد
 page_not_found_body: ظاهراً صفحه ای که بدنبال آن هستید وجود ندارد.
-confirm_revert: بازگشت را تأیید کنید
-confirm_revert_body: با این کار مورد به حالت انتخاب شده برمی گردد.
-display: نمایش
+confirm_revert: بازگشت به نسخه قبلی را تأیید کنید
+confirm_revert_body: با این کار، آیتم به وضعیت انتخاب شده برمی گردد.
+display: نحوه نمایش
 settings_update_success: تنظیمات بروزرسانی شد
 title: عنوان
 revision_delta_created: ایجاد شد
-revision_delta_created_externally: ایجاد شده در خارج
+revision_delta_created_externally: به شکل خارجی ایجاد شد
 revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
 revision_delta_deleted: حذف شده
 revision_delta_reverted: بازگردانده شد
-revision_delta_other: نسخه جدید
+revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
 private_user: کاربر خصوصی
 creation_preview: پیش نمایش ساخت
 revision_preview: پیش نمایش ویرایش
-updates_made: حالت ارتقاء
-leave_comment: درج پیغام...
+updates_made: بروزرسانی ها
+leave_comment: درج دیدگاه...
 post_comment_success: دیدگاه منتشر شد
 item_create_success: آیتم ساخته شد | آیتمها ساخته شدند
 item_update_success: آیتم بروزرسانی شد | آیتمها بروزرسانی شدند
@@ -337,8 +337,6 @@ label_import: وارد کردن
 label_export: استخراج
 import_export: واردسازی / استحراج
 format: فرمت
-use_current_filters_settings: از فیلترها و تنظیمات موجود استفاده شود
-export_data_button: آغاز عملیات استخراج
 last_page: صفحه آخر
 last_access: آخرین دسترسی
 fill_template: پر کردن با مقدار الگو
@@ -369,60 +367,60 @@ month: ماه
 year: سال
 select_all: انتخاب همه
 months:
-  january: فروردین
-  february: اردیبهشت
-  march: اسفند
-  april: تیر
+  january: ژانویه
+  february: فوریه
+  march: مارس
+  april: آوریل
   may: می
   june: ژوئن
   july: جولای
   august: آگوست
   september: سپتامبر
-  october: مهر
+  october: اکتبر
   november: نوامبر
   december: دسامبر
 drag_mode: حالت کشیدن
 cancel_crop: لغو برش
 original: مقدار اولیه
-url: نشانی ‌URL
+url: URL
 import_label: وارد کردن
 file_details: جزئیات فایل
 dimensions: ابعاد
 size: سایز
 created: ایجاد شد
 modified: دستکاری شده
-checksum: کنترلی
+checksum: Checksum
 owner: مالک
 edited_by: ویرایش شده توسط
-folder: Folder
+folder: پوشه
 zoom: بزرگنمايی
-download: بارگیری
+download: دانلود
 open: باز
 open_in_new_window: باز کردن در پنجره جدید
 open_folder: باز کردن پوشه "{folder}"
 foreground_color: رنگ روی‌زمینه
-background_color: رنگ زمینه
+background_color: رنگ پس زمینه
 upload_from_device: بارگذاری فایل از دستگاه
 choose_from_library: گزینش از مجموعه فایلها
-import_from_url: درون‌برد فایل از
-replace_from_device: بارگذاری فایل از دستگاه
+import_from_url: استخراج فایل از URL
+replace_from_device: جایگزینی فایل از دستگاه
 replace_from_library: جایگزینی فایل از مجموعه
-replace_from_url: بارگذاری فایل از دستگاه
+replace_from_url: جایگزینی فایل از URL
 no_file_selected: هیچ فایلی انتخاب نشده است
 download_file: دانلود فایل
-collection_key: مجموعه (Automatic Translation)
+collection_key: کلید اصلی مجموعه
 name: نام
-primary_key_field: '~فیلدهای کلید اصلی'
+primary_key_field: فیلد کلید اصلی
 type: نوع
 creating_new_collection: ایجاد مجموعه جدید
 created_by: ایجاد شده توسط
 created_on: ایجاد شده در
-creating_collection_info: نام مجموعه را بگذارید و قسمت "کلید" منحصر به فرد آن را تنظیم کنید...
-creating_collection_system: هر یک از این زمینه های اختیاری را فعال و تغییر نام دهید.
-auto_increment_integer: عدد صحیح افزایش خودکار
+creating_collection_info: مجموعه را نامگذاری کنید و "کلید" یکتای آن را معین کنید...
+creating_collection_system: هر یک از این فیلدهای اختیاری را فعال کرده و یا تغییر نام دهید.
+auto_increment_integer: عدد صحیح با افزایش خودکار
 generated_uuid: UUID تولید شده
-manual_string: رشته به صورت دستی وارد شده است
-save_and_create_new: ساخت و ذخیره مورد جدید
+manual_string: رشته حرفیِ وارد شده به صورت دستی
+save_and_create_new: ذخیره و ساخت آیتم جدید
 save_and_stay: ذخیره و ماندن
 save_as_copy: ذخیره به عنوان کپی
 add_existing: اضافه کردن مورد موجود
@@ -430,8 +428,8 @@ creating_items: ساختن موارد
 enable_create_button: فعالسازی ساخت دکمه
 selecting_items: انتخاب موارد
 enable_select_button: فعالسازی دکمه انتخاب
-comments: نظرات
-no_comments: هنوز نظری ارسال نشده
+comments: دیدگاهها
+no_comments: هنوز دیدگاهی ارسال نشده
 click_to_expand: برای بازکردن، کلیک کنید
 select_item: انتخاب آیتم
 no_items: آیتمی وجود ندارد
@@ -492,7 +490,7 @@ errors:
   ROUTE_NOT_FOUND: یافت نشد
   RECORD_NOT_UNIQUE: موارد تکراری یافت شد
   USER_SUSPENDED: کاربر معلق شد
-  CONTAINS_NULL_VALUES: فیلد حاوی مقدار نال است
+  CONTAINS_NULL_VALUES: فیلد حاوی مقدار null است
   UNPROCESSABLE_ENTITY: موجودیت غیرقابل پردازش
   INTERNAL_SERVER_ERROR: خطای غیر منتظره
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
@@ -622,7 +620,7 @@ panel: پنل
 panel_options: تنظیمات پنل
 panel_header: هدرِ پنل
 panel_name_placeholder: این پنل را نامگذاری کنید...
-panel_note_placeholder: جزییات اختیاری در رابطه با این پنل...
+panel_note_placeholder: جزئیات اختیاری در رابطه با این پنل...
 panel_delete_confirm: آیا مطمئن هستید می خواهید این پنل را حذف کنید؟ این عمل قابل بازگشت نیست.
 dashboard_delete_confirm: آیا مطمئن هستید می خواهید این پیشخوان را حذف کنید؟ این عمل قابل بازگشت نیست.
 edit_dashboard: ویرایش پیشخوان
@@ -670,7 +668,7 @@ wysiwyg_options:
   alignnone: بدون تراز
   alignright: تراز به راست
   forecolor: رنگ روی‌زمینه
-  backcolor: رنگ زمینه
+  backcolor: رنگ پس زمینه
   bold: بولد
   italic: ایتالیک
   underline: زیر خطدار
@@ -789,7 +787,7 @@ fields:
     created_on: ایجاد شده در
     created_by: ایجاد شده توسط
     uploaded_by: بارگذاری شده توسط
-    folder: Folder
+    folder: پوشه
     uploaded_on: بارگذاری شده در تاریخ
     charset: مجموعه کاراکتر
     duration: مدت زمان
@@ -823,7 +821,7 @@ fields:
   directus_settings:
     auth_password_policy: سیاست کلمه‌ی عبور جدید
     files_and_thumbnails: فایلها و ذخیره سازی
-    module_bar: ماژول
+    module_bar: نوار ماژول ها
   directus_shares:
     name: نام
     role: نقش
@@ -938,7 +936,7 @@ interfaces:
   presentation-divider:
     divider: جدا کننده
   select-dropdown:
-    choices_value_placeholder: یک مقدار وارد کنید...
+    choices_value_placeholder: یک مقدار را وارد کنید...
   input-hash:
     hash: هش
   file-image:
@@ -957,7 +955,7 @@ interfaces:
   list-o2m:
     description: انتخاب چندین آیتم مرتبط
   system-folder:
-    folder: Folder
+    folder: پوشه
     root_name: پوشه اصلی مجموعه فایلها
   list:
     add_label: 'برچسب "ساخت مورد جدید"'
@@ -967,7 +965,6 @@ interfaces:
     whitespace: فضای خالی
     hyphen: جایگزینی با نشان اتصال
     underscore: جایگزینی با زیرین خط
-    add_tags: افزودن برچسب ها...
   boolean:
     label_default: فعال شده
 displays:
@@ -995,7 +992,7 @@ displays:
   image:
     circle: دایره
   labels:
-    choices_value_placeholder: یک مقدار وارد کنید...
+    choices_value_placeholder: یک مقدار را وارد کنید...
   user:
     avatar: آواتار
     name: نام

@@ -799,3 +799,4 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | Variable                | Description                                                                               | Default Value |
 | ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
 | `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
+| `EXPORT_BATCH_SIZE`     | How many rows are read into memory at a time when constructing exports                    | 5000          |

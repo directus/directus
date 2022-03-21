@@ -4,8 +4,8 @@
 	$color-mapping: map-merge(
 		$color-mapping,
 		(
-			'primary': $pink,
-			'secondary': $purple,
+			'primary': $purple,
+			'secondary': $pink,
 		)
 	);
 
@@ -17,7 +17,7 @@
 
 	--foreground-normal: #c9d1d9;
 	--foreground-normal-alt: #f0f6fc;
-	--foreground-subdued: #8b949e;
+	--foreground-subdued: #666672;
 	--foreground-inverted: #0d1117;
 
 	--background-normal: #21262e;
