@@ -92,7 +92,7 @@ If you want to keep the folder in in a version controll like git, create a empty
 
 :::
 
-## Activate and configure node.js
+## 6. Activate and configure node.js
 
 In Plesk, choose your website and click "Node.js". You should then see a button "Enable Node.js" and click on it.
 
@@ -103,7 +103,7 @@ file" must point to the `index.js` file from the former step. The screen should 
 
 You can now install the dependencies by clicking on the button "NPM install".
 
-## Bootstrap Directus
+## 7. Bootstrap Directus
 
 To set up the database tables (and the first user) for Directus, click on the button "Run script" and input `bootstrap`.
 You get the console output after the script has run through.
@@ -124,6 +124,15 @@ script entry to your package.json:
 Afterwards try `bootstrap` again.
 
 :::
+
+## 8. Clean up .env file
+
+It is good security practice not to leave emails and passwords stored in plain text, so if you had to create login details through the .env file you should no remove those details from the file.
+
+## 9. Test Directus Access
+
+The Directus app should now work under your configured url. If not, try changing the development mode and wait a couple
+of seconds.
 
 ## Use snapshots
 
@@ -147,7 +156,3 @@ After that you can apply a snapshot by entering the following command to plesk:
 apply-snapshot--noninteractive --filename=[file.yaml]
 ```
 
-## Test Directus Access
-
-The Directus app should now work under your configured url. If not, try changing the development mode and wait a couple
-of seconds.
