@@ -135,7 +135,18 @@ export function useRelationMultiple(
 		});
 	});
 
-	return { create, update, remove, select, displayItems, totalItemCount, loading, selected, fetchedSelectItems };
+	return {
+		create,
+		update,
+		remove,
+		select,
+		displayItems,
+		totalItemCount,
+		loading,
+		selected,
+		fetchedSelectItems,
+		fetchedItems,
+	};
 
 	function create(...items: Record<string, any>[]) {
 		for (const item of items) {
