@@ -129,6 +129,8 @@ fields:
 
   - field: collections
     interface: system-collections
+    options:
+      includeSystem: true
     special: csv
     width: full
     display: labels
