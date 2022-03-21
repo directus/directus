@@ -65,12 +65,12 @@ export function useFieldTree(
 			return isNil(field.meta?.group);
 		});
 
-		const fieldNodes = topLevelFields.flatMap((field) => makeNode(field, allFields, parent));
+		const fieldNodes = topLevelFields.flatMap((field) => makeNode(field, parent));
 
 		return fieldNodes.length ? fieldNodes : undefined;
 	}
 
-	function makeNode(field: Field, allFields: Field[], parent?: FieldNode): FieldNode | FieldNode[] {
+	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
 		const pathContext = parent?.path ? parent.path + '.' : '';
 		const keyContext = parent?.key ? parent.key + '.' : '';

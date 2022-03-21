@@ -74,7 +74,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	}
 
 	async function down() {
-		const lastAppliedMigration = orderBy(completedMigrations, ['timestamp'], ['desc'])[0];
+		const lastAppliedMigration = orderBy(completedMigrations, ['timestamp', 'version'], ['desc', 'desc'])[0];
 
 		if (!lastAppliedMigration) {
 			throw Error('Nothing to downgrade');
