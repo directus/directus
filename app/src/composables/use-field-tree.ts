@@ -73,7 +73,7 @@ export function useFieldTree(
 	function makeNode(field: Field, allFields: Field[], parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
 		const pathContext = parent ? parent.path + '.' : '';
-		const keyContext = parent && !parent.group ? parent.key + '.' : '';
+		const keyContext = parent ? parent.key + '.' : '';
 
 		if (field?.meta?.special?.includes('group')) {
 			const node: FieldNode = {
@@ -81,7 +81,7 @@ export function useFieldTree(
 				field: field.field,
 				collection: field.collection,
 				relatedCollection: undefined,
-				key: field.field,
+				key: parent ? parent.key : '',
 				path: pathContext + field.field,
 				group: true,
 			};
