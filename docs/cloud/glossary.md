@@ -338,11 +338,12 @@ found on the [Pricing Page](https://directus.io/pricing/). Here is a general ove
 The Community Tier is a completely free Directus Project, perfect to spin-up hobby projects, demo Directus Cloud, test a
 proof of concept or get started on any other non-production activity.
 
-- [Project URL](/cloud/glossary/#project-url) — Random.`
-- [Datacenter](/cloud/glossary/#data-processing) — `United States, East`
-- [Node Type](/cloud/glossary/#nodes) — Community Node. _Note: pauses on [inactivity](#inactivity)._
+- [Project URL](/cloud/glossary/#project-url) — Random.
+- [Datacenter](/cloud/glossary/#data-processing) — `United States, East`.
+- [Node Type](/cloud/glossary/#nodes) — Community Node. Pauses on [inactivity](#inactivity).
 - [Load Balancing](/cloud/glossary/#nodes) — 1 Active Node.
 - [Auto-Scaling](/cloud/glossary/#nodes) — Not Available.
+- **Starting Template** — Create an Empty Project or a Demo Project with dummy data.
 
 ### Standard
 

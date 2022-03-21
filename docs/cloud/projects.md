@@ -13,20 +13,20 @@ All Team Projects are listed on the Projects page.
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
-3. Click to select the Team you wish to view Projects for.
+3. Click the Team you wish to view Projects for.
 4. Navigate to the Projects Page.
 
 ## Create a Project
 
 Only Standard and Community Projects can be spun-up from the Directus Dashboard. The process for both is almost
-identical and the only difference is that Community Projects have fewer configuration options and an option to create a
-Demo Project with dummy data to get a better feel for how Directus works.
+identical and the only difference is that Community Projects have fewer configuration options. To learn more, see
+[Projects](/cloud/glossary/#projects) in the Glossary.
 
 ![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/create-standard-project-20220228A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
-3. Click to select the Team you wish to create a Project for.
+3. Click the Team you wish to create a Project under.
 4. Click **"Create Project"**.
 5. Set a Project Name.
 6. Select the [Project](#projects) tier: Community or Standard.
@@ -44,11 +44,7 @@ Demo Project with dummy data to get a better feel for how Directus works.
 9. Enter payment information and hit **"Subscribe"**.
 
 **For a Community Project:**\
-7. Scroll to the bottom of the screen and choose a Starting Template:
-
-- **"Empty Project"** — Spins up a blank Project with no data.
-- **"Demo Project"** — Spins up a Project with dummy data.
-
+7. Scroll to the bottom of the screen and choose a [Starting Template](/cloud/glossary/#projects).\
 8. Click **"Create Project"**.
 
 :::tip Enterprise Tier
@@ -56,6 +52,20 @@ Demo Project with dummy data to get a better feel for how Directus works.
 Please [contact sales](https://directus.io/contact/) if you need more power, customization, or scale.
 
 :::
+
+## Monitor a Project
+
+Graphs on the [Project Monitor Page](/cloud/glossary/#project-monitor-page) display traffic and performance information.
+
+<video alt="Monitor a Project" loop muted controls autoplay>
+  <source src="" type="video/mp4">
+</video>
+
+1. Login to the Cloud Dashboard.
+2. Open the Team Menu in the Dashboard Header.
+3. Select the appropriate Team from the dropdown.
+4. Click **"Projects"** to enter the Projects Page.
+5. Click the Project to enter the Project Monitor Page.
 
 ## Manage a Project
 
@@ -70,25 +80,11 @@ only option available is to edit the Project's Name.
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
 3. Select the appropriate Team from the dropdown.
-4. Navigate to the Projects Page.
+4. Click **"Projects"** to enter the Projects Page.
 5. Click the Project to enter the Project Monitor Page.
 6. Click **"Edit"** to enter the Project Details Page.
 7. Make changes as desired.
 8. Click **"Update Project"**.
-
-## Monitor a Project
-
-Graphs on the [Project Monitor Page](/cloud/glossary/#project-monitor-page) display traffic and performance information.
-
-<video alt="Monitor a Project" loop muted controls autoplay>
-  <source src="" type="video/mp4">
-</video>
-
-1. Login to the Cloud Dashboard.
-2. Open the Team Menu in the Dashboard Header.
-3. Select the appropriate Team from the dropdown.
-4. Navigate to the Projects Page.
-5. Click the Project to enter the Project Monitor Page.
 
 ## Access Project
 
@@ -96,10 +92,10 @@ Graphs on the [Project Monitor Page](/cloud/glossary/#project-monitor-page) disp
 
 To access the Project, follow these steps:
 
-1. Sign in to the Cloud Dashboard.
+1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
 3. Select the appropriate Team from the dropdown.
-4. Navigate to the Projects page.
+4. Click **"Projects"** to enter the Projects Page.
 5. Click the Project to enter the Project Monitor Page.
 6. Click **"Open Project"**.
 
@@ -111,24 +107,24 @@ Your Project login page will open in a new tab.
 
 To resume a [paused Project](/cloud/glossary/#paused-project), follow these steps:
 
-1. Sign in to the Cloud Dashboard.
+1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
 3. Select the appropriate Team from the dropdown.
-4. Navigate to the Projects page.
-5. Click the _paused_ Project to enter the Project Monitor Page.
+4. Click **"Projects"** to enter the Projects Page.
+5. Click the paused Project to enter the Project Monitor Page.
 6. Click **"Resume Project"**.
 
 ## Destroy a Project
 
 ![Destroying a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/destroy-project-20220225A.webp)
 
-This action is permanent and irreversible. Destroying a Directus Cloud Project completely removes all its data, files,
+This action is permanent and irreversible. Destroying a Directus Cloud Project completely removes all its data, assets,
 and users from our platform. To destroy a Directus Cloud Project, follow these steps:
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
-3. Select the appropriate team from the dropdown.
-4. Navigate to the Projects page.
+3. Select the appropriate Team from the dropdown.
+4. Click **"Projects"** to enter the Projects Page.
 5. Click the Project you wish to delete.
 6. Scroll to the bottom of the page and toggle <span mi icon dngr>local_fire_department</span>.
 7. Type in the Project Name.

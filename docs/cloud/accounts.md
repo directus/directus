@@ -43,7 +43,7 @@ Update your name and email at any time by following these steps:
 ![Destroy Account](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/destroying-your-account-20220225A.webp)
 
 This action is permanent and irreversible. Destroying your Directus Cloud Account completely removes all your data and
-from our platform. To destroy your Directus Cloud account, follow these steps:
+from our platform. To destroy your Directus Cloud Account, follow these steps:
 
 1. Login to the Cloud Dashboard using the Account you would like to destroy.
 2. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
@@ -59,6 +59,6 @@ from our platform. To destroy your Directus Cloud account, follow these steps:
 ::: tip
 
 You cannot destroy your Account if you are a Member of one or more Teams. Leave all associated Teams before destroying
-your account.
+your Account.
 
 :::
