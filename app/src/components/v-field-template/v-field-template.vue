@@ -164,15 +164,11 @@ export default defineComponent({
 			}
 		}
 
-		function addField(fieldKey: string) {
+		function addField(field: FieldTree) {
 			if (!contentEl.value) return;
 
-			const field = findTree(treeList.value, fieldKey.split('.'));
-
-			if (!field) return;
-
 			const button = document.createElement('button');
-			button.dataset.field = fieldKey;
+			button.dataset.field = field.key;
 			button.setAttribute('contenteditable', 'false');
 			button.innerText = String(field.name);
 
