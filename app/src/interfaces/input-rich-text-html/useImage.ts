@@ -106,6 +106,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 		});
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		editor.value.selection.setContent(imageHtml);
+		editor.value.undoManager.add();
 		closeImageDrawer();
 	}
 

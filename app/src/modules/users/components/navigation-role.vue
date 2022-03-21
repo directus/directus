@@ -1,6 +1,6 @@
 <template>
 	<v-list-item v-context-menu="'contextMenu'" :to="`/users/roles/${role.id}`">
-		<v-list-item-icon><v-icon :name="role.icon" outline /></v-list-item-icon>
+		<v-list-item-icon><v-icon :name="role.icon" /></v-list-item-icon>
 		<v-list-item-content>{{ role.name }}</v-list-item-content>
 
 		<v-menu v-if="isAdmin" ref="contextMenu" show-arrow placement="bottom-start">
