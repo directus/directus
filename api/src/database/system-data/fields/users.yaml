@@ -50,7 +50,7 @@ fields:
 
   - field: tags
     interface: tags
-    special: json
+    special: cast-json
     width: full
     options:
       iconRight: local_offer
@@ -93,7 +93,7 @@ fields:
   - field: email_notifications
     interface: boolean
     width: half
-    special: boolean
+    special: cast-boolean
 
   - field: admin_divider
     interface: presentation-divider
