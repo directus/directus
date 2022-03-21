@@ -11,7 +11,7 @@ if (env.CORS_ENABLED === true) {
 	corsMiddleware = cors({
 		origin: function (origin, callback) {
 			if (!originWhitelist) {
-				callback(null, true);
+				callback(null, '*');
 			} else if (originWhitelist.indexOf(origin) !== -1) {
 				callback(null, origin);
 			} else {
