@@ -292,7 +292,7 @@ export default defineComponent({
 
 			if (
 				!primaryKeyField.value?.schema?.has_auto_increment &&
-				!primaryKeyField.value?.meta?.special?.includes('cast-uuid')
+				!primaryKeyField.value?.meta?.special?.includes('uuid')
 			) {
 				return !!edits.value?.[primaryKeyField.value.field];
 			}

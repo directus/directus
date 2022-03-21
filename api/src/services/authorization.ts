@@ -241,7 +241,7 @@ export class AuthorizationService {
 		for (const field of Object.values(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
 
-			const hasGenerateSpecial = ['cast-uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
+			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
 				specials.includes(name)
 			);
 

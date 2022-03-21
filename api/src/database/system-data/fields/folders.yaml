@@ -3,7 +3,7 @@ table: directus_folders
 fields:
   - field: id
     interface: input
-    special: cast-uuid
+    special: uuid
     width: half
 
   - field: parent

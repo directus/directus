@@ -116,9 +116,9 @@ export default function getLocalType(
 
 	if (special) {
 		if (special.includes('cast-json')) return 'json';
-		if (special.includes('cast-hash')) return 'hash';
+		if (special.includes('hash')) return 'hash';
 		if (special.includes('cast-csv')) return 'csv';
-		if (special.includes('cast-uuid') || special.includes('file')) return 'uuid';
+		if (special.includes('uuid') || special.includes('file')) return 'uuid';
 		if (type?.startsWith('geometry')) {
 			return (special[0] as Type) || 'geometry';
 		}

@@ -48,7 +48,7 @@ export class PayloadService {
 	}
 
 	public transformers: Transformers = {
-		async 'cast-hash'({ action, value }) {
+		async hash({ action, value }) {
 			if (!value) return;
 			if (action === 'create' || action === 'update') {
 				return await generateHash(String(value));
@@ -56,7 +56,7 @@ export class PayloadService {
 
 			return value;
 		},
-		async 'cast-uuid'({ action, value }) {
+		async uuid({ action, value }) {
 			if (action === 'create' && !value) {
 				return uuidv4();
 			}

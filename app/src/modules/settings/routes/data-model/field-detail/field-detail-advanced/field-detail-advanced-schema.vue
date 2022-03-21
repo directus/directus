@@ -317,7 +317,7 @@ export default defineComponent({
 		};
 
 		function useOnCreate() {
-			const onCreateSpecials = ['cast-uuid', 'user-created', 'role-created', 'date-created'];
+			const onCreateSpecials = ['uuid', 'user-created', 'role-created', 'date-created'];
 
 			const onCreateOptions = computed(() => {
 				if (type.value === 'uuid') {
@@ -328,7 +328,7 @@ export default defineComponent({
 						},
 						{
 							text: t('generate_and_save_uuid'),
-							value: 'cast-uuid',
+							value: 'uuid',
 						},
 						{
 							text: t('save_current_user_id'),

@@ -25,9 +25,7 @@ export async function up(knex: Knex): Promise<void> {
 				switch (special) {
 					case 'boolean':
 					case 'csv':
-					case 'hash':
 					case 'json':
-					case 'uuid':
 						updateRequired = true;
 						return 'cast-' + special;
 					default:
@@ -64,9 +62,7 @@ export async function down(knex: Knex): Promise<void> {
 				switch (special) {
 					case 'cast-boolean':
 					case 'cast-csv':
-					case 'cast-hash':
 					case 'cast-json':
-					case 'cast-uuid':
 						updateRequired = true;
 						return special.replace('cast-', '');
 					default:

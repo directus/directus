@@ -2,7 +2,7 @@ table: directus_panels
 
 fields:
   - field: id
-    special: cast-uuid
+    special: uuid
   - field: name
   - field: icon
   - field: color

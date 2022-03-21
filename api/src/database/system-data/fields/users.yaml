@@ -20,7 +20,7 @@ fields:
     width: half
 
   - field: password
-    special: cast-hash,conceal
+    special: hash,conceal
     interface: input-hash
     options:
       iconRight: lock
@@ -140,7 +140,7 @@ fields:
     width: full
 
   - field: id
-    special: cast-uuid
+    special: uuid
     interface: input
     options:
       iconRight: vpn_key
