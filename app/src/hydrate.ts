@@ -16,7 +16,7 @@ import {
 	useUserStore,
 	useNotificationsStore,
 } from '@/stores';
-import { useTranslationStrings } from '@/modules/settings/composables/use-translation-strings';
+import { useTranslationStrings } from '@/composables/use-translation-strings';
 
 type GenericStore = {
 	$id: string;

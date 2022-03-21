@@ -7,7 +7,7 @@ import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { translate } from '@/utils/translate-object-values';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
-import { useTranslationStrings } from '@/modules/settings/composables/use-translation-strings';
+import { useTranslationStrings } from '@/composables/use-translation-strings';
 
 const { modules, modulesRaw } = getModules();
 const { layouts, layoutsRaw } = getLayouts();

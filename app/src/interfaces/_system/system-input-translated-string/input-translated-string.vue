@@ -81,7 +81,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTranslationStrings, TranslationString } from '@/modules/settings/composables/use-translation-strings';
+import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
 import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
 

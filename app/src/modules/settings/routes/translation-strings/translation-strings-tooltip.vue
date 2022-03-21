@@ -39,7 +39,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores';
 import ValueNull from '@/views/private/components/value-null';
-import { TranslationString } from '../../composables/use-translation-strings';
+import { TranslationString } from '@/composables/use-translation-strings';
 
 interface Props {
 	translations?: TranslationString['translations'];

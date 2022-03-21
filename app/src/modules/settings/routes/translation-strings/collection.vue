@@ -57,7 +57,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { HeaderRaw as TableHeader } from '@/components/v-table/types';
 import SettingsNavigation from '../../components/navigation.vue';
-import { TranslationString, useTranslationStrings } from '../../composables/use-translation-strings';
+import { TranslationString, useTranslationStrings } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from './translation-strings-drawer.vue';
 import TranslationStringsTooltip from './translation-strings-tooltip.vue';
 
