@@ -3,7 +3,7 @@ import InterfaceInputTranslatedString from './input-translated-string.vue';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
-	id: 'input-translated-string',
+	id: 'system-input-translated-string',
 	name: '$t:interfaces.input-translated-string.input-translated-string',
 	description: '$t:interfaces.input-translated-string.description',
 	icon: 'translate',
