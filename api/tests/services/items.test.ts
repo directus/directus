@@ -1,3 +1,4 @@
+import { Filter, Query } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../src/services';
@@ -64,13 +65,14 @@ describe('Integration Tests', () => {
 				const table = schemas[schema].tables[0];
 
 				tracker.on.select(table).responseOnce(rawItems);
+				// tracker.on.select(schemas[schema].tables[1]).responseOnce([]);
 
 				const itemsService = new ItemsService(table, {
 					knex: db,
 					accountability: { role: 'admin', admin: true },
 					schema: schemas[schema].schema,
 				});
-				const response = await itemsService.readOne(rawItems[0].id);
+				const response = await itemsService.readOne(rawItems[0].id, { fields: ['id', 'name'] });
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
@@ -120,6 +122,296 @@ describe('Integration Tests', () => {
 					);
 
 					expect(response).toStrictEqual(rawItems[0].id);
+				}
+			);
+
+			it.each(Object.keys(schemas))('%s returns one item with filter from tables as admin', async (schema) => {
+				const table = schemas[schema].tables[0];
+
+				tracker.on.select(table).responseOnce(rawItems);
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: { role: 'admin', admin: true },
+					schema: schemas[schema].schema,
+				});
+				const response = await itemsService.readOne(rawItems[0].id, {
+					fields: ['id', 'name'],
+					filter: { name: { _eq: 'something' } },
+				});
+
+				expect(tracker.history.select.length).toBe(1);
+				expect(tracker.history.select[0].bindings).toStrictEqual(['something', rawItems[0].id, 100]);
+				expect(tracker.history.select[0].sql).toBe(
+					`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? and "${table}"."id" = ? order by "${table}"."id" asc limit ?`
+				);
+
+				expect(response).toStrictEqual({ id: rawItems[0].id });
+			});
+
+			it.each(Object.keys(schemas))(
+				'%s returns one item with filter from tables not as admin but has field permissions',
+				async (schema) => {
+					const table = schemas[schema].tables[0];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					const itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: table,
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['id', 'name'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+					const response = await itemsService.readOne(rawItems[0].id, {
+						fields: ['id', 'name'],
+						filter: { name: { _eq: 'something' } },
+					});
+
+					expect(tracker.history.select.length).toBe(1);
+					expect(tracker.history.select[0].bindings).toStrictEqual(['something', rawItems[0].id, 100]);
+					expect(tracker.history.select[0].sql).toBe(
+						`select "${table}"."id", "${table}"."name" from "${table}" where ("${table}"."name" = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					);
+
+					expect(response).toStrictEqual({ id: rawItems[0].id });
+				}
+			);
+
+			it.each(Object.keys(schemas))(
+				'%s denies one item with filter from tables not as admin and has no field permissions',
+				async (schema) => {
+					let table = schemas[schema].tables[1];
+					const item = {
+						id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
+						uploaded_by: '6107c897-9182-40f7-b22e-4f044d1258d2',
+					};
+					let itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: { role: 'admin', admin: true },
+						schema: schemas[schema].schema,
+					});
+
+					tracker.on.insert(table).responseOnce(item);
+
+					await itemsService.createOne(item, { emitEvents: false });
+
+					table = schemas[schema].tables[0];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: table,
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['id'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+
+					expect(() =>
+						itemsService.readOne(rawItems[0].id, { filter: { name: { _eq: 'something' } } })
+					).rejects.toThrow("You don't have permission to access this.");
+					expect(tracker.history.select.length).toBe(0);
+				}
+			);
+
+			it.each(Object.keys(schemas))('%s returns one item with deep filter from tables as admin', async (schema) => {
+				const childTable = schemas[schema].tables[1];
+
+				const childItems = [
+					{
+						id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
+						title: 'A new child item',
+						uploaded_by: 1,
+					},
+				];
+
+				tracker.on.select(childTable).response(childItems);
+
+				const table = schemas[schema].tables[0];
+
+				tracker.on.select(table).responseOnce(rawItems);
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: { role: 'admin', admin: true },
+					schema: schemas[schema].schema,
+				});
+				const response = await itemsService.readOne(rawItems[0].id, {
+					fields: ['id', 'items.*'],
+					deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+				});
+
+				expect(tracker.history.select.length).toBe(2);
+				expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
+				expect(tracker.history.select[0].sql).toBe(
+					`select "${table}"."id" from "${table}" where "${table}"."id" = ? order by "${table}"."id" asc limit ?`
+				);
+				expect(tracker.history.select[1].bindings).toStrictEqual([
+					childItems[0].title,
+					...rawItems.map((item) => item.id),
+					25000,
+				]);
+				expect(tracker.history.select[1].sql).toBe(
+					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where "${childTable}"."title" = ? and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`
+				);
+				expect(response).toStrictEqual({ id: rawItems[0].id, items: childItems });
+			});
+
+			it.each(Object.keys(schemas))(
+				'%s returns one item with deep filter from tables not as admin but has field permissions',
+				async (schema) => {
+					const childTable = schemas[schema].tables[1];
+
+					const childItems = [
+						{
+							id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
+							title: 'A new child item',
+							uploaded_by: 1,
+						},
+					];
+
+					tracker.on.select(childTable).response(childItems);
+
+					const table = schemas[schema].tables[0];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					const itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['id', 'items'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['id', 'title', 'uploaded_by'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+					const response = await itemsService.readOne(rawItems[0].id, {
+						fields: ['id', 'items.*'],
+						deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+					});
+
+					expect(tracker.history.select.length).toBe(2);
+					expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
+					expect(tracker.history.select[0].sql).toBe(
+						`select "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					);
+					expect(tracker.history.select[1].bindings).toStrictEqual([
+						childItems[0].title,
+						...rawItems.map((item) => item.id),
+						25000,
+					]);
+					expect(tracker.history.select[1].sql).toBe(
+						`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where ("${childTable}"."title" = ?) and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`
+					);
+					expect(response).toStrictEqual({ id: rawItems[0].id, items: childItems });
+				}
+			);
+
+			it.each(Object.keys(schemas))(
+				'%s denies one item with deep filter from tables not as admin and has no field permissions',
+				async (schema) => {
+					const childTable = schemas[schema].tables[1];
+
+					const childItems = [
+						{
+							id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
+							title: 'A new child item',
+							uploaded_by: 1,
+						},
+					];
+
+					tracker.on.select(childTable).response(childItems);
+
+					const table = schemas[schema].tables[0];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					const itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['id', 'items'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['id', 'uploaded_by'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+
+					expect(() =>
+						itemsService.readOne(rawItems[0].id, {
+							fields: ['id', 'items.*'],
+							deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+						})
+					).rejects.toThrow("You don't have permission to access this.");
+					expect(tracker.history.select.length).toBe(0);
 				}
 			);
 
@@ -197,7 +489,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
-			const response = await itemsService.readMany([1, 2]);
+			const response = await itemsService.readMany([1, 2], { fields: ['id', 'name'] });
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0].bindings).toStrictEqual([1, 2, 100]);
@@ -222,7 +514,10 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 					schema: schemas[schema].schema,
 				});
-				const response = await itemsService.readMany([], { filter: { id: { _eq: items[1].id } } });
+				const response = await itemsService.readMany([], {
+					fields: ['id', 'name'],
+					filter: { id: { _eq: items[1].id } },
+				});
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0].bindings).toStrictEqual([0, items[1].id, 100]);
@@ -247,6 +542,7 @@ describe('Integration Tests', () => {
 					schema: schemas[schema].schema,
 				});
 				const response = await itemsService.readMany([], {
+					fields: ['id', 'name'],
 					filter: { _or: [{ id: { _eq: items[1].id } }, { name: { _eq: items[1].name } }] },
 				});
 

@@ -9,7 +9,7 @@ import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache';
 import Keyv from 'keyv';
 import { AbstractServiceOptions } from '../types';
 
@@ -201,7 +201,7 @@ export class RelationsService {
 			await relationsItemService.createOne(metaRow);
 		});
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 	}
 
 	/**
@@ -279,7 +279,7 @@ export class RelationsService {
 			}
 		});
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 	}
 
 	/**
@@ -307,7 +307,13 @@ export class RelationsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
-			if (existingRelation.schema?.constraint_name) {
+			const existingConstraints = await this.schemaInspector.foreignKeys();
+			const constraintNames = existingConstraints.map((key) => key.constraint_name);
+
+			if (
+				existingRelation.schema?.constraint_name &&
+				constraintNames.includes(existingRelation.schema.constraint_name)
+			) {
 				await trx.schema.alterTable(existingRelation.collection, (table) => {
 					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 				});
@@ -318,7 +324,7 @@ export class RelationsService {
 			}
 		});
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 	}
 
 	/**

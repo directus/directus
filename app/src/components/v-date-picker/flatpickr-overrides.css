@@ -64,14 +64,23 @@
 	padding: 0;
 	font-weight: inherit;
 	font-size: 16px;
+	font-weight: 600;
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months {
 	border-radius: var(--border-radius);
 	appearance: none;
 	text-align: right;
-	font-size: 1rem;
+	font-size: 16px;
 	height: 20px;
+	font-weight: 600;
+	color: var(--primary);
+}
+
+.flatpickr-current-month input.cur-year {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--primary);
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
@@ -89,7 +98,7 @@
 }
 
 .flatpickr-current-month .numInputWrapper input {
-	font-size: 1rem;
+	font-size: 16px;
 	height: 20px;
 	vertical-align: 4px;
 }
@@ -146,6 +155,7 @@ span.flatpickr-weekday {
 	max-width: none;
 	color: var(--foreground-normal-alt);
 	line-height: 36px;
+	font-weight: 500;
 	transition: var(--fast) var(--transition);
 	transition-property: background, border-color, color;
 }
@@ -270,7 +280,7 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-time input.numInput {
-	font-weight: inherit;
+	font-weight: 500;
 }
 
 .flatpickr-calendar.hasTime .flatpickr-time {

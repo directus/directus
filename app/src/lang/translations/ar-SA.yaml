@@ -306,7 +306,6 @@ translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
 label_import: إستيراد
 format: التنسيق
-use_current_filters_settings: استخدام التصفية و الإعدادات الحالية
 last_page: آخر صفحة
 last_access: آخر وصول
 fill_template: املأ بقيمة النموذج
@@ -1017,7 +1016,6 @@ interfaces:
     auto_formatter: استخدام التنسيق التلقائي للعنوان
     alphabetize: رتب أبجديا
     alphabetize_label: فرض الترتيب الأبجدي
-    add_tags: إضافة وسوم...
   input:
     description: أدخل قيمة يدوياً
     mask: مقنع

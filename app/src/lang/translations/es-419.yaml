@@ -328,8 +328,6 @@ label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
 format: Formato
-use_current_filters_settings: Use Filtros y Ajustes Corrientes
-export_data_button: Comenzar exportación
 last_page: Última página
 last_access: Último acceso
 fill_template: Llenar Con Valores de Plantilla
@@ -1377,7 +1375,6 @@ interfaces:
     auto_formatter: Usar Auto-Formateador de Título
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
-    add_tags: Agregar etiquetas...
   input:
     input: Entrada
     description: Introduzca manualmente un valor
