@@ -252,7 +252,7 @@ export default defineComponent({
 }
 
 .interface.active .preview {
-	background-color: var(--primary-10);
+	background-color: var(--primary-alt);
 	border-color: var(--primary);
 }
 
