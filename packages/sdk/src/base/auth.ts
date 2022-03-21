@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import { IAuth, AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthTokenType } from '../auth';
 import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
@@ -33,8 +34,12 @@ export class Auth extends IAuth {
 		if (options?.staticToken) {
 			this.staticToken = options?.staticToken;
 			this.updateStorage<'StaticToken'>({ access_token: this.staticToken, expires: null, refresh_token: null });
-		} else if (this.autoRefresh) {
-			this.autoRefreshJob();
+		} else {
+			if (this.autoRefresh) {
+				this.autoRefreshJob();
+			}
+
+			this.addRefreshTokenInterceptor(this._transport.axios);
 		}
 	}
 
@@ -81,6 +86,37 @@ export class Auth extends IAuth {
 
 			this.autoRefreshJob();
 		}, msWaitUntilRefresh);
+	}
+
+	private addRefreshTokenInterceptor(axiosInstance: AxiosInstance) {
+		const interceptor = axiosInstance.interceptors.response.use(
+			(response) => response,
+			async (error) => {
+				if (error.response.status !== 403) {
+					return Promise.reject(error);
+				}
+
+				// eject the interceptor to prevent infinite loop when facing error during token refresh
+				axiosInstance.interceptors.response.eject(interceptor);
+
+				try {
+					const result = await this.refresh();
+					if (!result) return Promise.reject('Failed to refresh token');
+
+					// retry the original request with new access token
+					const originalRequestWithNewAccessToken = {
+						...error.config,
+						headers: { Authorization: `Bearer ${result.access_token}` },
+					};
+					return axiosInstance(originalRequestWithNewAccessToken);
+				} catch (e) {
+					return Promise.reject(e);
+				} finally {
+					// re-attach refresh token interceptor
+					this.addRefreshTokenInterceptor(axiosInstance);
+				}
+			}
+		);
 	}
 
 	async refresh(): Promise<AuthResult | false> {

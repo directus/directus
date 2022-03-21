@@ -5,7 +5,7 @@ import { ITransport, TransportMethods, TransportResponse, TransportError, Transp
  * Transport implementation
  */
 export class Transport extends ITransport {
-	private axios: AxiosInstance;
+	axios: AxiosInstance;
 	private config: TransportOptions;
 
 	constructor(config: TransportOptions) {

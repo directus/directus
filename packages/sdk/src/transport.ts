@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ItemMetadata } from './items';
 
 export type TransportErrorDescription = {
@@ -32,6 +32,7 @@ export type TransportOptions = TransportRequestOptions & {
 };
 
 export abstract class ITransport {
+	abstract axios: AxiosInstance;
 	abstract get<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
 	abstract head<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
 	abstract options<T = any, R = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T, R>>;
