@@ -182,39 +182,39 @@ const props = withDefaults(defineProps<Props>(), {
 	opacity: false,
 	presets: () => [
 		{
-			name: i18n.global.t('purple'),
+			name: i18n.global.t('colors.purple'),
 			color: '#6644FF',
 		},
 		{
-			name: i18n.global.t('blue'),
+			name: i18n.global.t('colors.blue'),
 			color: '#3399FF',
 		},
 		{
-			name: i18n.global.t('green'),
+			name: i18n.global.t('colors.green'),
 			color: '#2ECDA7',
 		},
 		{
-			name: i18n.global.t('yellow'),
+			name: i18n.global.t('colors.yellow'),
 			color: '#FFC23B',
 		},
 		{
-			name: i18n.global.t('orange'),
+			name: i18n.global.t('colors.orange'),
 			color: '#FFA439',
 		},
 		{
-			name: i18n.global.t('red'),
+			name: i18n.global.t('colors.red'),
 			color: '#E35169',
 		},
 		{
-			name: i18n.global.t('black'),
+			name: i18n.global.t('colors.black'),
 			color: '#18222F',
 		},
 		{
-			name: i18n.global.t('gray'),
+			name: i18n.global.t('colors.gray'),
 			color: '#A2B5CD',
 		},
 		{
-			name: i18n.global.t('white'),
+			name: i18n.global.t('colors.white'),
 			color: '#FFFFFF',
 		},
 	],
