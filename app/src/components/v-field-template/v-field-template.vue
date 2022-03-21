@@ -204,7 +204,16 @@ export default defineComponent({
 		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
 			if (tree === undefined) return undefined;
 
-			const fieldObject = tree.find((f) => f.field === fieldSections[0]);
+			let fieldObject = tree.find((f) => {
+				if (f.group) {
+					return f.children?.find((f) => f.field === fieldSections[0]);
+				}
+				return f.field === fieldSections[0];
+			});
+
+			if (fieldObject?.group) {
+				fieldObject = findTree(fieldObject.children, fieldSections);
+			}
 
 			if (fieldObject === undefined) return undefined;
 			if (fieldSections.length === 1) return fieldObject;
