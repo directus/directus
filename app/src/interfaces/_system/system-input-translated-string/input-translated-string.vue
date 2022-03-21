@@ -174,13 +174,14 @@ function updateTranslationStringsDialog(val: boolean) {
 .translation-input {
 	:deep(button) {
 		margin-right: auto;
-		padding: 2px 4px 0;
+		padding: 2px 8px 0;
 		color: var(--primary);
 		background-color: var(--primary-alt);
 		border-radius: var(--border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
 		user-select: none;
+		font-family: var(--family-monospace);
 	}
 
 	:deep(button:not(:disabled):hover) {

@@ -50,7 +50,7 @@ export default defineDisplay({
 							name: '$t:text',
 							type: 'string',
 							meta: {
-								interface: 'input',
+								interface: 'system-input-translated-string',
 								width: 'half',
 								options: {
 									placeholder: '$t:displays.labels.choices_text_placeholder',
