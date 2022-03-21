@@ -1,6 +1,6 @@
 # Projects
 
-> Cloud Projects are on-demand instances of Directus. A Cloud Project is contained and managed by one Team. There 3
+> Cloud Projects are on-demand instances of Directus. A Cloud Project is contained and managed by one Team. There are 3
 > Project tiers: Community, Standard and Enterprise.
 
 [[toc]]
