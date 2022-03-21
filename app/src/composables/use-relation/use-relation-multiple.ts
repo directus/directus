@@ -18,7 +18,7 @@ export type DisplayItem = {
 	$type?: 'created' | 'updated' | 'deleted';
 };
 
-type Item = {
+export type Item = {
 	create: Record<string, any>[];
 	update: Record<string, any>[];
 	delete: (string | number)[];
@@ -146,11 +146,12 @@ export function useRelationMultiple(
 		selected,
 		fetchedSelectItems,
 		fetchedItems,
+		cleanItem
 	};
 
 	function create(...items: Record<string, any>[]) {
 		for (const item of items) {
-			_value.value.create.push(item);
+			_value.value.create.push(cleanItem(item));
 		}
 		updateValue();
 	}
@@ -442,10 +443,10 @@ export function useRelationMultiple(
 		}
 
 		function cleanItem(item: DisplayItem) {
-			if (item.$type !== undefined) delete item.$type;
-			if (item.$index !== undefined) delete item.$index;
-
-			return item;
+			return Object.entries(item).reduce((acc, [key, value]) => {
+				if(!key.startsWith('$')) acc[key] = value;
+				return acc;
+			}, {} as DisplayItem);
 		}
 
 		function getPage<T>(offset: number, items: T[]) {

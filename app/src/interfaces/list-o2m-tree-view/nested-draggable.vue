@@ -4,7 +4,7 @@
 		class="drag-area"
 		:class="{ root, drag }"
 		tag="ul"
-		:list="tree"
+		:list="filteredDisplayItems"
 		:group="{ name: 'g1' }"
 		item-key="id"
 		draggable=".row"
@@ -13,7 +13,7 @@
 		:force-fallback="true"
 		@start="drag = true"
 		@end="drag = false"
-		@change="$emit('change', $event)"
+		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
 			<li class="row">
@@ -21,22 +21,29 @@
 					:item="element"
 					:template="template"
 					:collection="collection"
-					:primary-key-field="primaryKeyField"
 					:disabled="disabled"
-					:parent-field="parentField"
+					:relation-info="relationInfo"
+					:open="open[index] ?? false"
+					:deleted="element.$type === 'deleted'"
+					@update:open="open[index] = $event"
 					@input="replaceItem(index, $event)"
-					@deselect="removeItem(index)"
+					@deselect="remove(element)"
 				/>
 				<nested-draggable
-					:tree="element[childrenField] || []"
+					v-if="open[index]"
+					:model-value="element[field]"
 					:template="template"
 					:collection="collection"
-					:primary-key-field="primaryKeyField"
-					:parent-field="parentField"
-					:children-field="childrenField"
 					:disabled="disabled"
-					@change="$emit('change', $event)"
-					@input="replaceChildren(index, $event)"
+					:field="field"
+					:fields="fields"
+					:enableCreate="enableCreate"
+					:enableSelect="enableSelect"
+					:customFilter="customFilter"
+					:relationInfo="relationInfo"
+					:primaryKey="element[relationInfo.relatedPrimaryKeyField.field]"
+					:conflictItems="conflictItems"
+					@update:modelValue="updateModelValue($event, index)"
 				/>
 			</li>
 		</template>
@@ -83,36 +90,61 @@ import { computed, ref, toRefs } from 'vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 import { Filter } from '@directus/shared/types';
-import { RelationO2M, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation';
+import { DisplayItem, RelationO2M, RelationQueryMultiple, useRelationMultiple, ChangesItem } from '@/composables/use-relation';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { useSync } from '@directus/shared/composables';
+import { useI18n } from 'vue-i18n';
+
+type ChangeEvent = {
+	added: {
+		newIndex: number
+		element: DisplayItem
+	}
+} | {
+	removed: {
+		oldIndex: number
+		element: DisplayItem
+	}
+} | {
+	moved: {
+		newIndex: number
+		oldIndex: number
+		element: DisplayItem
+	}
+}
 
 const props = withDefaults(defineProps<{
-	value?: (number | string | Record<string, any>)[] | Record<string, any>
-	template?: string
+	modelValue?: (number | string | Record<string, any>)[] | Record<string, any>
+	template: string
 	disabled?: boolean
 	collection: string
 	field: string
 	primaryKey: string | number
 	filter?: Filter | null
 	fields: string[]
-	relationInfo?: RelationO2M
+	relationInfo: RelationO2M
 	root?: boolean
+	enableCreate: boolean
+	enableSelect: boolean
+	customFilter: Filter
+	conflictItems: (string | number)[]
 }>(), {
-	value: () => [],
+	modelValue: () => [],
 	disabled: false,
 	filter: () => null,
-	root: false
+	root: false,
 })
 
-const emit = defineEmits(['change', 'update:input'])
+const { t } = useI18n();
+const emit = defineEmits(['update:modelValue'])
 
-const value = useSync(props, 'value', emit)
+const value = useSync(props, 'modelValue', emit)
 
-const {collection, field, primaryKey, relationInfo, root, fields} = toRefs(props)
+const {collection, field, primaryKey, relationInfo, root, fields, template, customFilter} = toRefs(props)
 
 const drag = ref(false);
+const open = ref<boolean[]>([])
 
 const editActive = ref(false);
 const dragging = ref(false);
@@ -126,33 +158,69 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const {create, update, remove, select, displayItems, loading} = useRelationMultiple(value, query, relationInfo, primaryKey)
+const {create, update, remove, select, displayItems, loading, cleanItem} = useRelationMultiple(value, query, relationInfo, primaryKey)
+
+const filteredDisplayItems = computed(() => {
+	return displayItems.value.filter(item => {
+		if(props.conflictItems.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined) return false
+		return true
+	})
+})
 
 const selectDrawer = ref(false);
+
+const dragOptions = {
+	animation: 150,
+	group: 'description',
+	disabled: false,
+	ghostClass: 'ghost',
+}
 
 const selectedPrimaryKeys = computed<(number | string)[]>(() => {
 	const pkField = relationInfo.value?.relatedPrimaryKeyField.field
 	if (!pkField || !props.primaryKey) return [];
 
-	return [props.primaryKey, ...getPKs(displayItems.value)];
-
-	function getPKs(values: Record<string, any>[]): (string | number)[] {
-		const pks = [];
-
-		if (pkField)
-			for (const value of values) {
-				if (!value[pkField]) continue;
-				pks.push(value[pkField]);
-				const childPKs = getPKs(value[relationInfo.value.]);
-				pks.push(...childPKs);
-			}
-
-		return pks;
-	}
+	return []
 });
 
-async function stageSelection(items: (number | string)[]) {
-	console.log(items)
+function change(event: ChangeEvent) {
+	console.log("change", event)
+	if('added' in event) {
+		switch(event.added.element.$type) {
+			case 'created':
+				create(cleanItem(event.added.element))
+				break;
+			case 'updated': {
+				const pkField = relationInfo.value.relatedPrimaryKeyField.field
+				const exists = displayItems.value.find(item => item[pkField] === event.added.element[pkField])
+				if(!exists) update(cleanItem(event.added.element))
+				break;
+			}
+			case 'deleted':
+				remove(cleanItem(event.added.element))
+				break;
+			default:
+				update({
+					...event.added.element,
+					[relationInfo.value.reverseJunctionField.field]: primaryKey.value
+				})
+		}
+	} else if('removed' in event && '$type' in event.removed.element) {
+		remove(event.removed.element)
+	}
+}
+
+function updateModelValue(changes: ChangesItem, index: number) {
+	update({
+		...displayItems.value[index],
+		[field.value]: changes
+
+	})
+	console.log("updateModelValue", changes, index)
+}
+
+function stageSelection(items: (number | string)[]) {
+	console.log("stageSelection: ", items)
 	select(items)
 }
 
@@ -164,38 +232,15 @@ function addNew(item: Record<string, any>) {
 }
 
 function replaceItem(index: number, item: Record<string, any>) {
-	emit(
-		'input',
-		props.tree.map((child, childIndex) => {
-			if (childIndex === index) {
-				return item;
-			}
-			return child;
-		})
-	);
+	console.log("replaceItem", index, item)
 }
 
 function removeItem(index: number) {
-	emit(
-		'input',
-		props.tree.filter((child, childIndex) => childIndex !== index)
-	);
+	console.log("removeItem", index)
 }
 
 function replaceChildren(index: number, tree: Record<string, any>[]) {
-	emit(
-		'input',
-		props.tree.map((child, childIndex) => {
-			if (childIndex === index) {
-				return {
-					...child,
-					[props.childrenField]: tree,
-				};
-			}
-
-			return child;
-		})
-	);
+	console.log("replaceChildren", index, tree)
 }
 </script>
 
@@ -223,7 +268,7 @@ function replaceChildren(index: number, tree: Record<string, any>[]) {
 		transition: var(--fast) var(--transition);
 		transition-property: box-shadow, background-color;
 
-		& + .drag-area:not(:empty) {
+		& + .drag-area {
 			padding-top: 12px;
 		}
 	}

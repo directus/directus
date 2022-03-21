@@ -10,7 +10,7 @@ import type { RelationM2M } from './use-relation-m2m';
 import type { RelationM2O } from './use-relation-m2o';
 import type { RelationO2M } from './use-relation-o2m';
 import type { RelationQuerySingle } from './use-relation-single';
-import type { RelationQueryMultiple, DisplayItem } from './use-relation-multiple';
+import type { RelationQueryMultiple, DisplayItem, Item as ChangesItem } from './use-relation-multiple';
 
 export {
 	useRelationM2A,
@@ -19,6 +19,7 @@ export {
 	RelationM2O,
 	RelationO2M,
 	DisplayItem,
+	ChangesItem, 
 	useRelationM2M,
 	RelationQueryMultiple,
 	RelationQuerySingle,
