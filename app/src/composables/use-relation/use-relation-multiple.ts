@@ -16,6 +16,7 @@ export type DisplayItem = {
 	[key: string]: any;
 	$index?: number;
 	$type?: 'created' | 'updated' | 'deleted';
+	$edits?: number;
 };
 
 export type Item = {
@@ -53,7 +54,7 @@ export function useRelationMultiple(
 
 	watch(previewQuery, updateFetchedItems, { immediate: true });
 
-	const { fetchedSelectItems, selected } = useSelected();
+	const { fetchedSelectItems, selected, isItemSelected } = useSelected();
 
 	const totalItemCount = computed(() => {
 		if (relation.value?.type === 'o2m')
@@ -75,13 +76,20 @@ export function useRelationMultiple(
 			);
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
+			const updatedItem = cloneDeep(item);
+
 			if (editsIndex !== -1) {
-				return merge({ $type: 'updated', $index: editsIndex }, item, _value.value.update[editsIndex]);
-			} else if (deleteIndex !== -1) {
-				return merge({ $type: 'deleted', $index: deleteIndex }, item);
-			} else {
-				return item;
+				merge(
+					updatedItem,
+					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
+					_value.value.update[editsIndex]
+				);
 			}
+			if (deleteIndex !== -1) {
+				merge(updatedItem, { $type: 'deleted', $index: deleteIndex });
+			}
+
+			return updatedItem;
 		});
 
 		const selectedOnPage = fetchedSelectItems.value.map((item) => {
@@ -135,7 +143,7 @@ export function useRelationMultiple(
 		});
 	});
 
-	const {create, remove, select, update} = useActions(_value)
+	const { create, remove, select, update } = useActions(_value);
 
 	return {
 		create,
@@ -148,11 +156,12 @@ export function useRelationMultiple(
 		selected,
 		fetchedSelectItems,
 		fetchedItems,
-		useActions
+		useActions,
+		cleanItem,
 	};
 
 	function useActions(target: Ref<Item>) {
-		return {create, update, remove, select}
+		return { create, update, remove, select };
 
 		function create(...items: Record<string, any>[]) {
 			for (const item of items) {
@@ -171,6 +180,12 @@ export function useRelationMultiple(
 					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {
 					target.value.update[item.$index] = cleanItem(item);
+				} else if (item.$type === 'deleted') {
+					if (item.$edits !== undefined) {
+						target.value.update[item.$edits] = cleanItem(item);
+					} else {
+						target.value.update.push(cleanItem(item));
+					}
 				}
 			}
 			updateValue();
@@ -179,17 +194,22 @@ export function useRelationMultiple(
 		function remove(...items: DisplayItem[]) {
 			if (!relation.value) return;
 
+			const pkField =
+				relation.value.type === 'o2m'
+					? relation.value.relatedPrimaryKeyField.field
+					: relation.value.junctionPrimaryKeyField.field;
+
 			for (const item of items) {
 				if (item.$type === undefined || item.$index === undefined) {
-					const pkField =
-						relation.value.type === 'o2m'
-							? relation.value.relatedPrimaryKeyField.field
-							: relation.value.junctionPrimaryKeyField.field;
 					target.value.delete.push(item[pkField]);
 				} else if (item.$type === 'created') {
 					target.value.create.splice(item.$index, 1);
 				} else if (item.$type === 'updated') {
-					target.value.update.splice(item.$index, 1);
+					if (isItemSelected(item)) {
+						target.value.update.splice(item.$index, 1);
+					} else {
+						target.value.delete.push(item[pkField]);
+					}
 				} else if (item.$type === 'deleted') {
 					target.value.delete.splice(item.$index, 1);
 				}
@@ -234,7 +254,7 @@ export function useRelationMultiple(
 		}
 
 		function updateValue() {
-			target.value = cloneDeep(target.value)
+			target.value = cloneDeep(target.value);
 		}
 	}
 
@@ -327,7 +347,7 @@ export function useRelationMultiple(
 
 			return (relation.value?.type === 'o2m' ? _value.value.update : _value.value.create)
 				.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
-				.filter((item) => info.reverseJunctionField.field in item);
+				.filter(isItemSelected);
 		});
 
 		const selectedOnPage = computed(() => getPage(existingItemCount.value, selected.value));
@@ -340,7 +360,11 @@ export function useRelationMultiple(
 			{ immediate: true }
 		);
 
-		return { fetchedSelectItems, selected };
+		return { fetchedSelectItems, selected, isItemSelected };
+
+		function isItemSelected(item: DisplayItem) {
+			return relation.value && item[relation.value.reverseJunctionField.field] !== undefined;
+		}
 
 		async function loadSelectedDisplay() {
 			switch (relation.value?.type) {
@@ -450,7 +474,7 @@ export function useRelationMultiple(
 
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {
-				if(!key.startsWith('$')) acc[key] = value;
+				if (!key.startsWith('$')) acc[key] = value;
 				return acc;
 			}, {} as DisplayItem);
 		}

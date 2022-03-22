@@ -1,22 +1,22 @@
 <template>
-	<v-notice
-		v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection"
-		type="warning"
-	>{{ t('interfaces.list-o2m-tree-view.recursive_only') }}</v-notice>
+	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
+		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
+	</v-notice>
 
 	<div v-else class="tree-view">
 		<nested-draggable
-			v-model="value"
+			v-model="_value"
 			:template="template"
 			:collection="collection"
 			:field="field"
-			:primaryKey="primaryKey"
-			:relationInfo="relationInfo"
+			:primary-key="primaryKey"
+			:relation-info="relationInfo"
 			:disabled="disabled"
 			:fields="fields"
-			:enableCreate="enableCreate"
-			:enableSelect="enableSelect"
-			:customFilter="customFilter"
+			:enable-create="enableCreate"
+			:enable-select="enableSelect"
+			:custom-filter="customFilter"
+			:items-moved="itemsMoved"
 			root
 		/>
 	</div>
@@ -33,28 +33,32 @@ import { render } from 'micromustache';
 import { deepMap } from '@directus/shared/utils';
 import { ChangesItem, useRelationO2M } from '@/composables/use-relation';
 
-const props = withDefaults(defineProps<{
-	value?: (number | string | Record<string, any>)[] | Record<string, any>
-	displayTemplate?: string
-	disabled?: boolean
-	collection: string
-	field: string
-	primaryKey: string | number
-	enableCreate?: boolean
-	enableSelect?: boolean
-	filter?: Filter | null
-}>(), {
-	value: () => [],
-	disabled: false,
-	enableCreate: true,
-	enableSelect: true,
-	filter: () => null
-})
+const props = withDefaults(
+	defineProps<{
+		value?: (number | string | Record<string, any>)[] | Record<string, any>;
+		displayTemplate?: string;
+		disabled?: boolean;
+		collection: string;
+		field: string;
+		primaryKey: string | number;
+		enableCreate?: boolean;
+		enableSelect?: boolean;
+		filter?: Filter | null;
+	}>(),
+	{
+		value: () => [],
+		disabled: false,
+		enableCreate: true,
+		enableSelect: true,
+		filter: () => null,
+		displayTemplate: undefined,
+	}
+);
 
 const emit = defineEmits(['input']);
 const { collection, field, primaryKey } = toRefs(props);
 
-const value = computed<ChangesItem>({
+const _value = computed<ChangesItem>({
 	get() {
 		if (Array.isArray(props.value))
 			return {
@@ -85,30 +89,41 @@ const customFilter = computed(() => {
 	);
 });
 
-const conflictItems = computed(() => {
-	return getConflicts(value.value as ChangesItem)
+const itemsMoved = computed(() => {
+	const pkField = relationInfo.value?.relatedPrimaryKeyField.field;
+	if (!pkField) return [];
 
-	function getConflicts(item: ChangesItem | undefined): (string | number)[] {
-		const pkField = relationInfo.value?.relatedPrimaryKeyField.field
+	return map(_value.value, (item) => {
+		if (typeof item === 'object') {
+			return item[pkField] as string | number;
+		}
+		return item;
+	});
+});
 
-		if(item === undefined || Array.isArray(item ?? []) || !pkField) return []
-		return [...item.update.map(i => i[pkField]), ...item.delete, ...item.create.map(i => getConflicts(i[field.value])).flat(), ...item.update.map(i => getConflicts(i[field.value])).flat()]
-	}
-})
+function map<T>(item: ChangesItem | undefined, fn: (v: Record<string, any> | string | number) => T): T[] {
+	if (item === undefined || Array.isArray(item ?? [])) return [];
+	return [
+		...item.update.map(fn),
+		...item.delete.map(fn),
+		...item.create.map((i) => map(i[field.value], fn)).flat(),
+		...item.update.map((i) => map(i[field.value], fn)).flat(),
+	];
+}
 
-const {relationInfo} = useRelationO2M(collection, field)
+const { relationInfo } = useRelationO2M(collection, field);
 
 const template = computed(() => {
-	return props.displayTemplate || relationInfo.value?.relatedCollection?.meta?.display_template || `{{${relationInfo.value?.relatedPrimaryKeyField.field}}}`;
+	return (
+		props.displayTemplate ||
+		relationInfo.value?.relatedCollection?.meta?.display_template ||
+		`{{${relationInfo.value?.relatedPrimaryKeyField.field}}}`
+	);
 });
 
 const fields = computed(() => {
 	return getFieldsFromTemplate(template.value);
-})
-
-function onDraggableChange() {
-	console.log("Drag ")
-}
+});
 </script>
 
 <style scoped>

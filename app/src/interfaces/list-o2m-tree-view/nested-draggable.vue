@@ -16,7 +16,7 @@
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<li class="row" :class="{draggable: element.$type !== 'deleted'}">
+			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
 				<item-preview
 					:item="element"
 					:template="template"
@@ -31,17 +31,19 @@
 				/>
 				<nested-draggable
 					v-if="open[index]"
-					v-model="globalValue"
+					:model-value="element[field]"
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"
 					:field="field"
 					:fields="fields"
-					:enableCreate="enableCreate"
-					:enableSelect="enableSelect"
-					:customFilter="customFilter"
-					:relationInfo="relationInfo"
-					:primaryKey="element[relationInfo.relatedPrimaryKeyField.field]"
+					:enable-create="enableCreate"
+					:enable-select="enableSelect"
+					:custom-filter="customFilter"
+					:relation-info="relationInfo"
+					:primary-key="element[relationInfo.relatedPrimaryKeyField.field]"
+					:items-moved="itemsMoved"
+					@update:model-value="updateModelValue($event, index)"
 				/>
 			</li>
 		</template>
@@ -79,7 +81,7 @@
 <script lang="ts">
 export default {
 	name: 'NestedDraggable',
-}
+};
 </script>
 
 <script setup lang="ts">
@@ -88,77 +90,85 @@ import { computed, ref, toRefs } from 'vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 import { Filter } from '@directus/shared/types';
-import { DisplayItem, RelationO2M, RelationQueryMultiple, useRelationMultiple, ChangesItem } from '@/composables/use-relation';
+import {
+	DisplayItem,
+	RelationO2M,
+	RelationQueryMultiple,
+	useRelationMultiple,
+	ChangesItem,
+} from '@/composables/use-relation';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
-import { useSync } from '@directus/shared/composables';
 import { useI18n } from 'vue-i18n';
 
-type ChangeEvent = {
-	added: {
-		newIndex: number
-		element: DisplayItem
-	}
-} | {
-	removed: {
-		oldIndex: number
-		element: DisplayItem
-	}
-} | {
-	moved: {
-		newIndex: number
-		oldIndex: number
-		element: DisplayItem
-	}
-}
+type ChangeEvent =
+	| {
+			added: {
+				newIndex: number;
+				element: DisplayItem;
+			};
+	  }
+	| {
+			removed: {
+				oldIndex: number;
+				element: DisplayItem;
+			};
+	  }
+	| {
+			moved: {
+				newIndex: number;
+				oldIndex: number;
+				element: DisplayItem;
+			};
+	  };
 
-const props = withDefaults(defineProps<{
-	modelValue: ChangesItem
-	template: string
-	disabled?: boolean
-	collection: string
-	field: string
-	primaryKey: string | number
-	filter?: Filter | null
-	fields: string[]
-	relationInfo: RelationO2M
-	root?: boolean
-	enableCreate: boolean
-	enableSelect: boolean
-	customFilter: Filter
-}>(), {
-	disabled: false,
-	filter: () => null,
-	root: false,
-})
+const props = withDefaults(
+	defineProps<{
+		modelValue?: ChangesItem;
+		template: string;
+		disabled?: boolean;
+		collection: string;
+		field: string;
+		primaryKey: string | number;
+		filter?: Filter | null;
+		fields: string[];
+		relationInfo: RelationO2M;
+		root?: boolean;
+		enableCreate: boolean;
+		enableSelect: boolean;
+		customFilter: Filter;
+		itemsMoved: (string | number)[];
+	}>(),
+	{
+		disabled: false,
+		filter: () => null,
+		root: false,
+		modelValue: undefined,
+	}
+);
 
 const { t } = useI18n();
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue']);
 
-const globalValue = useSync(props, 'modelValue', emit)
+const value = computed<ChangesItem>({
+	get() {
+		if (props.modelValue === undefined)
+			return {
+				create: [],
+				update: [],
+				delete: [],
+			};
+		return props.modelValue as ChangesItem;
+	},
+	set: (val) => {
+		emit('update:modelValue', val);
+	},
+});
 
-const value = computed<ChangesItem>(() => {
-	if(!('create' in globalValue.value)) return {
-		create: [],
-		update: [],
-		delete: []
-	}
-
-	const parentField = relationInfo.value.reverseJunctionField.field
-	return {
-		create: globalValue.value.create.filter(item => item[parentField] === primaryKey.value),
-		update: globalValue.value.update.filter(item => item[parentField] === primaryKey.value),
-		delete: globalValue.value.delete
-	}
-})
-
-const {collection, field, primaryKey, relationInfo, root, fields, template, customFilter} = toRefs(props)
+const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter } = toRefs(props);
 
 const drag = ref(false);
-const open = ref<boolean[]>([])
-
-const editActive = ref(false);
-const dragging = ref(false);
+const open = ref<boolean[]>([]);
 
 const limit = ref(-1);
 const page = ref(1);
@@ -169,8 +179,12 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const {displayItems, loading, useActions} = useRelationMultiple(value, query, relationInfo, primaryKey)
-const {create, update, remove, select} = useActions(globalValue)
+const { displayItems, create, update, remove, select, cleanItem } = useRelationMultiple(
+	value,
+	query,
+	relationInfo,
+	primaryKey
+);
 
 const selectDrawer = ref(false);
 
@@ -179,45 +193,60 @@ const dragOptions = {
 	group: 'description',
 	disabled: false,
 	ghostClass: 'ghost',
-}
-
-const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-	const pkField = relationInfo.value?.relatedPrimaryKeyField.field
-	if (!pkField || !props.primaryKey) return [];
-
-	return []
-});
-
-const existingMoved = computed<(string | number)[]>(() => {
-	return globalValue.value.update.filter(item => relationInfo.value.reverseJunctionField.field in item).map(item => item[relationInfo.value.relatedPrimaryKeyField.field])
-})
+};
 
 const filteredDisplayItems = computed(() => {
-	return displayItems.value.filter(item => !existingMoved.value.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) || item.$type !== undefined)
-})
+	return displayItems.value.filter(
+		(item) =>
+			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined)
+	);
+});
+
+function updateModelValue(changes: ChangesItem, index: number) {
+	const pkField = relationInfo.value?.relatedPrimaryKeyField.field;
+	if (!pkField) return;
+
+	update({
+		...displayItems.value[index],
+		[field.value]: changes,
+	});
+}
 
 function change(event: ChangeEvent) {
-	if('added' in event) {
-		const pkField = relationInfo.value.relatedPrimaryKeyField.field
-		if(existingMoved.value.includes(event.added.element[pkField]) && displayItems.value.find(item => item[pkField] === event.added.element[pkField])) {
-			remove(event.added.element)
-		} else {
-			update({
-				...event.added.element,
-				[relationInfo.value.reverseJunctionField.field]: primaryKey.value
-			})
+	if ('added' in event) {
+		switch (event.added.element.$type) {
+			case 'created':
+				create(cleanItem(event.added.element));
+				break;
+			case 'updated': {
+				const pkField = relationInfo.value.relatedPrimaryKeyField.field;
+				const exists = displayItems.value.find((item) => item[pkField] === event.added.element[pkField]);
+				// We have to make sure we remove the reverseJunctionField when we move it back to its initial position as otherwise it will be selected.
+				update({
+					...cleanItem(event.added.element),
+					[relationInfo.value.reverseJunctionField.field]: exists ? undefined : primaryKey.value,
+				});
+				break;
+			}
+			default:
+				update({
+					...event.added.element,
+					[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
+				});
 		}
-		
+	} else if ('removed' in event && '$type' in event.removed.element) {
+		remove({
+			...event.removed.element,
+			[relationInfo.value.reverseJunctionField.field]: undefined,
+		});
 	}
-	
 }
 
 const addNewActive = ref(false);
 
 function addNew(item: Record<string, any>) {
-	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value
-	console.log("create ", item)
-	create(item)
+	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value;
+	create(item);
 }
 </script>
 
