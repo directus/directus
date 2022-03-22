@@ -62,6 +62,14 @@ export function useRelationMultiple(
 		return existingItemCount.value + _value.value.create.length;
 	});
 
+	const createdItems = computed(() => {
+		const info = relation.value;
+		if (info?.type === undefined) return [];
+
+		if (info.type === 'o2m') return _value.value.create;
+		return _value.value.create.filter((item) => item[info.reverseJunctionField.field] === undefined);
+	});
+
 	const displayItems = computed(() => {
 		if (!relation.value) return [];
 
@@ -121,7 +129,7 @@ export function useRelationMultiple(
 			return merge({}, item, edits);
 		});
 
-		const newItems = getPage(existingItemCount.value + selected.value.length, _value.value.create);
+		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
 
 		items.push(
 			...selectedOnPage,

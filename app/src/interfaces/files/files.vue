@@ -82,7 +82,7 @@
 			:selection="selectedPrimaryKeys"
 			:filter="customFilter"
 			multiple
-			@input="stageSelections"
+			@input="select"
 		/>
 
 		<v-dialog v-if="!disabled" v-model="showUpload">
@@ -189,7 +189,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { update, remove, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
+const { update, remove, select, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -250,22 +250,6 @@ function editItem(item: DisplayItem) {
 
 function cancelEdit() {
 	editModalActive.value = false;
-}
-
-function stageSelections(items: (string | number)[]) {
-	const selected = items
-		.filter((item) => !selectedPrimaryKeys.value.includes(item))
-		.map((item) => {
-			if (!relationInfo.value) return {};
-
-			return {
-				[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
-				[relationInfo.value.junctionField.field]: {
-					[relationInfo.value.relatedPrimaryKeyField.field]: item,
-				},
-			};
-		});
-	update(...selected);
 }
 
 function deleteItem(item: DisplayItem) {
