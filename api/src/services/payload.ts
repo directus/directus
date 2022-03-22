@@ -261,15 +261,6 @@ export class PayloadService {
 	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
-		// Update specific database type overrides
-		for (const [_name, field] of fieldsInCollection) {
-			if (field.special.includes('cast-timestamp')) {
-				field.type = 'timestamp';
-			} else if (field.special.includes('cast-datetime')) {
-				field.type = 'dateTime';
-			}
-		}
-
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
 			['dateTime', 'date', 'timestamp'].includes(field.type)
 		);
