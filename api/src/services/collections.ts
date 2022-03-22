@@ -2,7 +2,7 @@ import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import { getCache, clearSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
-import getDatabase, { getSchemaInspector, getDatabaseClient } from '../database';
+import getDatabase, { getSchemaInspector } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';

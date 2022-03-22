@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { getCache, clearSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
-import getDatabase, { getSchemaInspector, getDatabaseClient } from '../database';
+import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
 import emitter from '../emitter';
 import env from '../env';
