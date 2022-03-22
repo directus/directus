@@ -247,18 +247,10 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
-		// Add flags for specific database type overrides
-		switch (getDatabaseClient(this.knex)) {
-			case 'sqlite':
-				if (field.type === 'timestamp') {
-					addFieldFlag(field, 'cast-timestamp');
-				}
-				break;
-			case 'oracle':
-				if (field.type === 'dateTime') {
-					addFieldFlag(field, 'cast-datetime');
-				}
-				break;
+		// Add flag for specific database type overrides
+		const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+		if (flagToAdd) {
+			addFieldFlag(field, flagToAdd);
 		}
 
 		await this.knex.transaction(async (trx) => {
