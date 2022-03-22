@@ -378,3 +378,6 @@ fields:
             interface: input
             options:
               placeholder: $t:fields.directus_settings.attribution_placeholder
+
+  - field: translation_strings
+    hidden: true
