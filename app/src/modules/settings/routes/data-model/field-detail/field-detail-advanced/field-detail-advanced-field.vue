@@ -17,7 +17,7 @@
 
 		<div v-if="type !== 'group'" class="field full">
 			<div class="label type-label">{{ t('note') }}</div>
-			<v-input v-model="note" :placeholder="t('add_note')" />
+			<interface-system-input-translated-string :value="note" :placeholder="t('add_note')" @input="note = $event" />
 		</div>
 
 		<div class="field full">
@@ -72,20 +72,15 @@ import { storeToRefs } from 'pinia';
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
-
 		const fieldDetailStore = useFieldDetailStore();
-
 		const readonly = syncFieldDetailStoreProperty('field.meta.readonly', false);
 		const hidden = syncFieldDetailStoreProperty('field.meta.hidden', false);
 		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 		const translations = syncFieldDetailStoreProperty('field.meta.translations');
-
 		const { field } = storeToRefs(fieldDetailStore);
-
 		const type = computed(() => field.value.type);
 		const isGenerated = computed(() => field.value.schema?.is_generated);
-
 		return { t, readonly, hidden, required, note, translations, type, isGenerated };
 	},
 });

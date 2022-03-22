@@ -10,7 +10,7 @@ import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import getDatabase from '../database';
-import { getCache } from '../cache';
+import { getCache, setSystemCache } from '../cache';
 import env from '../env';
 
 export async function getSchema(options?: {
@@ -38,7 +38,7 @@ export async function getSchema(options?: {
 			result = await getDatabaseSchema(database, schemaInspector);
 
 			try {
-				await systemCache.set('schema', result);
+				await setSystemCache('schema', result);
 			} catch (err: any) {
 				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
 			}

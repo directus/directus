@@ -115,7 +115,6 @@ recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
 unarchive_confirm: Sigur doriți să dezarhivați acest element?
 nested_files_folders_will_be_moved: Fișierele și dosarele conținute vor fi mutate cu un nivel în sus.
-unknown_validation_errors: 'Au existat erori de validare pentru următoarele câmpuri ascunse:'
 validationError:
   eq: Valoarea trebuie să fie {valid}
   neq: Valoarea nu poate fi {invalid}
@@ -337,8 +336,6 @@ label_import: Import
 label_export: Exportă
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Folosește filtrele și setările curente
-export_data_button: Începe exportul
 last_page: Ultima Pagină
 last_access: Ultima accesare
 fill_template: Completează cu valoarea din șablon
@@ -1262,7 +1259,6 @@ translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
 view_project: Vezi proiect
-weeks: { }
 report_error: Raportare eroare
 start: Pornire
 interfaces:
@@ -1472,7 +1468,6 @@ interfaces:
     auto_formatter: Folosește formatarea automată pentru titlu
     alphabetize: Așează în ordine alfabetică
     alphabetize_label: Forțează ordinea alfabetică
-    add_tags: Adaugă etichete...
   input:
     input: Input
     description: Introduceți manual o valoare
@@ -1664,7 +1659,6 @@ layouts:
     subtitle: Subtitlu
   tabular:
     tabular: Tabel
-    fields: Câmpuri
     spacing: Spațiere
     comfortable: Confortabil
     compact: Compact

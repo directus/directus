@@ -114,7 +114,6 @@ recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
 unarchive_confirm: Você tem certeza que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
-unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -336,8 +335,6 @@ label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
 format: Formato
-use_current_filters_settings: Usar filtros e configurações atuais
-export_data_button: Iniciar Exportação
 last_page: Última página
 last_access: Último acesso
 fill_template: Preencher com valor de template
@@ -1410,7 +1407,6 @@ interfaces:
     auto_formatter: Utilizar auto formatação de título
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
-    add_tags: Adicionar tags...
   input:
     input: Entrada
     description: Digite manualmente um valor
@@ -1595,7 +1591,6 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabela
-    fields: Campos
     spacing: Espaçamento
     comfortable: Confortável
     compact: Compacto
