@@ -35,7 +35,23 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(element)" />
+						<v-icon v-if="!disabled" name="close" class="remove" @click.stop="deleteItem(element)" />
+						<v-menu show-arrow placement="bottom-end">
+							<template #activator="{ toggle }">
+								<v-icon name="more_vert" clickable @click.stop="toggle" />
+							</template>
+
+							<v-list>
+								<v-list-item clickable :href="getUrl(element)">
+									<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
+									<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
+								</v-list-item>
+								<v-list-item clickable :href="getUrl(element, true)">
+									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
+									<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -289,6 +305,18 @@ const downloadUrl = computed(() => {
 	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
 });
 
+function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
+	const junctionField = relationInfo.value?.junctionField.field;
+	if (!junctionField) return;
+
+	const key = junctionRow[junctionField]?.id ?? junctionRow[junctionField] ?? null;
+	if (!key) return null;
+	if (addDownload) {
+		return addTokenToURL(getRootPath() + `assets/${key}?download`);
+	}
+	return addTokenToURL(getRootPath() + `assets/${key}`);
+}
+
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
@@ -388,5 +416,9 @@ const selectAllowed = computed(() => {
 	&:hover {
 		--v-icon-color: var(--danger);
 	}
+}
+
+.remove {
+	margin-right: 4px;
 }
 </style>
