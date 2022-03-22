@@ -23,6 +23,7 @@ type Transformers = {
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 		specials: string[];
+		helpers: Helpers;
 	}) => Promise<any>;
 };
 
@@ -109,12 +110,12 @@ export class PayloadService {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'({ action, value }) {
-			if (action === 'create') return new Date();
+		async 'date-created'({ action, value, helpers }) {
+			if (action === 'create') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
-		async 'date-updated'({ action, value }) {
-			if (action === 'update') return new Date();
+		async 'date-updated'({ action, value, helpers }) {
+			if (action === 'update') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
 		async 'cast-csv'({ action, value }) {
@@ -222,6 +223,7 @@ export class PayloadService {
 					payload,
 					accountability,
 					specials: fieldSpecials,
+					helpers: this.helpers,
 				});
 			}
 		}
