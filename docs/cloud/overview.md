@@ -1,7 +1,6 @@
 # Overview
 
-> Create and manage Teams and Projects, Invite users, and set billing information with the easy-to-use Directus Cloud
-> Dashboard.
+> Manage Teams, Team Members, Projects, and billing with the easy-to-use Directus Cloud Dashboard.
 
 ![Hero Image](image.webp)
 
@@ -33,6 +32,8 @@ Team. All Team Members have SuperAdmin privileges to manage Projects, Project [b
 Team Members, and the Team itself. Accounts can be Members on multiple Teams. Teams can have multiple Team Members and
 multiple Projects. Projects can only be managed by one Team. Projects cannot be transferred to new Teams.
 
+![Cloud Hierarchy](image.webp)
+
 ## Getting Started
 
 There are 3 [tiers of Cloud Projects](/cloud/glossary/#projects): Community, Standard, and Enterprise. All 3 tiers come
@@ -42,10 +43,10 @@ To make life easy, you have the option to
 [create and login to your free Cloud Account](/cloud/accounts/#create-account-and-login) automatically with Github. If
 you have no Github or do not wish to use this login method, email-and-password login is available as well. Once
 logged-in, create a new Team or Select an existing Team to access and manage its associated Projects, billing details,
-Team Members, Activity, and Settings. Here is an overview of the Cloud Dashboard.
+Team Members, Activity, and Settings.
 
 <video alt="Cloud Dashboard Overview" loop muted controls autoplay>
-  <source src="" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/cloud-dashboard-overview-20220322A.mp4" type="video/mp4">
 </video>
 
 The Dashboard has 6 key navigation areas: the Dashboard Header, Projects, Members, Billing, Activity and Settings.

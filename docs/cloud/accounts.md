@@ -6,9 +6,7 @@
 
 ## Create Account and Login
 
-<video alt="Create Account and Login" loop muted controls autoplay>
-  <source src="" type="video/mp4">
-</video>
+![Create Account and Login](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/login-page-20220225A.webp)
 
 Creating an Account is easy and free. As mentioned in the [Overview](/cloud/overview/), to make life easy, you have the
 option to create and login to your free Cloud Account automatically with Github. If you have no Github or do not wish to
@@ -17,7 +15,7 @@ use this login method, email-and-password login is available as well. In either 
 
 ## Manage Account
 
-![User Account](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/managing-your-account-20220225A.webp)
+![Manage Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/managing-your-account-20220225A.webp)
 
 Update your name and email at any time by following these steps:
 
@@ -29,7 +27,7 @@ Update your name and email at any time by following these steps:
 
 ## Reset Password
 
-![User Account](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/managing-your-account-20220225A.webp)
+![User Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/reset-password-20220322A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
@@ -40,7 +38,7 @@ Update your name and email at any time by following these steps:
 
 ## Destroy Account
 
-![Destroy Account](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/destroying-your-account-20220225A.webp)
+![Destroy Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/destroying-your-account-20220225A.webp)
 
 This action is permanent and irreversible. Destroying your Directus Cloud Account completely removes all your data and
 from our platform. To destroy your Directus Cloud Account, follow these steps:

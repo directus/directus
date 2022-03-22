@@ -6,7 +6,7 @@
 
 ## Create a Team
 
-![Create Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/creating-a-team-20220225A.webp)
+![Create Team](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/creating-a-team-20220225A.webp)
 
 Teams are how you organize Projects and share them across multiple Accounts. They're free, so create as many as you'd
 like! Just follow these steps:
@@ -18,7 +18,7 @@ like! Just follow these steps:
 
 ## Edit Team Name and Slug
 
-![Managing a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/managing-a-team-20220225A.webp)
+![Managing a Team](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/managing-a-team-20220225A.webp)
 
 The Settings Page enables changes to the Team Name and Team Slug. These can be changed at any time without affecting
 Projects within.
@@ -33,7 +33,7 @@ Projects within.
 
 ## Destroy a Team
 
-![Destroying a Team](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/destroy-a-team-20220225A.webp)
+![Destroying a Team](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/destroy-a-team-20220225A.webp)
 
 This action is permanent and irreversible. Destroying a Directus Cloud Team completely removes all its data from our
 platform. To destroy a Team, follow these steps:
@@ -61,7 +61,7 @@ Action is permanent and irreversible, proceed with caution.
 
 ## View Team Activity
 
-![View Team Activity](image.webp)
+![View Team Activity](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/view-team-activity-20220322A.webp)
 
 The Team Activity Page displays created and destroyed Projects, billing information changes, Team Members added or
 removed, name and slug changes, as well as any other major Team-oriented activities.
@@ -73,7 +73,7 @@ removed, name and slug changes, as well as any other major Team-oriented activit
 
 ## View Billing Details
 
-![View Billing Details](image.webp)
+![View Billing Details](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/view-billing-details-20220322A.webp)
 
 Please follow these steps see billing details such as credit available to Team Projects, total active subscriptions (to
 Standard Projects), and invoice receipts:
@@ -87,9 +87,7 @@ Learn more about [Billing](/cloud/glossary/#billing).
 
 ## Manage Billing
 
-<video alt="Manage Billing" loop muted controls autoplay>
-  <source src="" type="video/mp4">
-</video>
+![Manage Billing](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/manage-billing-20220322A.webp)
 
 To change a default payment method, add or remove additional payment methods, and change other billing details follow
 these steps:
@@ -106,7 +104,7 @@ Learn more about [Billing](/cloud/glossary/#billing).
 
 ## Invite Team Members
 
-![Inviting a Team Member](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/inviting-a-team-member-20220225A.webp)
+![Inviting a Team Member](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/inviting-a-team-member-20220225A.webp)
 
 All Team Members can invite new Members via email. Each invitee will be emailed a link to accept invitation and join the
 Team. Just follow these steps:
@@ -121,7 +119,7 @@ Team. Just follow these steps:
 
 ## Remove Members or Leave Team
 
-![Removing a Team member](https://cdn.directus.io/docs/v9/cloud/accounts-and-teams/accounts-and-teams-20220228A/leaving-a-team-20220225A.webp)
+![Removing a Team member](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/leaving-a-team-20220225A.webp)
 
 All Team Members have the ability to remove other Members or invites from a Team. To remove Members or leave a Team
 yourself, follow these steps:

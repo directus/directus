@@ -9,7 +9,7 @@
 
 All Team Projects are listed on the Projects page.
 
-![View Projects](image.webp)
+![View Projects](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/view-projects-20220322A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -22,7 +22,7 @@ Only Standard and Community Projects can be spun-up from the Directus Dashboard.
 identical and the only difference is that Community Projects have fewer configuration options. To learn more, see
 [Projects](/cloud/glossary/#projects) in the Glossary.
 
-![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/create-standard-project-20220228A.webp)
+![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/create-a-project-20220228A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -53,13 +53,26 @@ Please [contact sales](https://directus.io/contact/) if you need more power, cus
 
 :::
 
+## Access Project
+
+![Accessing a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/access-a-project-20220322A.webp)
+
+To access the Project, follow these steps:
+
+1. Login to the Cloud Dashboard.
+2. Open the Team Menu in the Dashboard Header.
+3. Select the appropriate Team from the dropdown.
+4. Click **"Projects"** to enter the Projects Page.
+5. Click the Project to enter the Project Monitor Page.
+6. Click **"Open Project"**.
+
+Your Project login page will open in a new tab.
+
 ## Monitor a Project
 
 Graphs on the [Project Monitor Page](/cloud/glossary/#project-monitor-page) display traffic and performance information.
 
-<video alt="Monitor a Project" loop muted controls autoplay>
-  <source src="" type="video/mp4">
-</video>
+![Project Monitor Page](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/monitor-a-project-20220322A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -73,9 +86,7 @@ On Standard Projects, it is possible to change the Project Name as well as recon
 [the Node Type, number of Active Nodes and number of Standby Nodes](/cloud/glossary/#nodes). On Community Projects, the
 only option available is to edit the Project's Name.
 
-<video alt="Edit a Project" loop muted controls autoplay>
-  <source src="" type="video/mp4">
-</video>
+![Manage a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/manage-a-project-20220322A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -86,24 +97,9 @@ only option available is to edit the Project's Name.
 7. Make changes as desired.
 8. Click **"Update Project"**.
 
-## Access Project
-
-![Accessing a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/accessing-a-project-20220228A.webp)
-
-To access the Project, follow these steps:
-
-1. Login to the Cloud Dashboard.
-2. Open the Team Menu in the Dashboard Header.
-3. Select the appropriate Team from the dropdown.
-4. Click **"Projects"** to enter the Projects Page.
-5. Click the Project to enter the Project Monitor Page.
-6. Click **"Open Project"**.
-
-Your Project login page will open in a new tab.
-
 ## Resume Paused Project
 
-![Resume Paused Project](image.webp)
+![Resume Paused Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/resume-paused-project-20220322A.webp)
 
 To resume a [paused Project](/cloud/glossary/#paused-project), follow these steps:
 
@@ -116,7 +112,7 @@ To resume a [paused Project](/cloud/glossary/#paused-project), follow these step
 
 ## Destroy a Project
 
-![Destroying a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220225A/destroy-project-20220225A.webp)
+![Destroying a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/destroy-a-project-20220225A.webp)
 
 This action is permanent and irreversible. Destroying a Directus Cloud Project completely removes all its data, assets,
 and users from our platform. To destroy a Directus Cloud Project, follow these steps:

@@ -79,7 +79,7 @@ Teams are free. Use them to create separation appropriately between Project invo
 
 Bills are invoiced on a calendar monthly basis, so each new billing period begins after exactly one month. When a
 Project is destroyed, the bill is processed immediately. As mentioned in the previous section, bills are invoiced
-per-Project. So, if a Team has Standard 4 Projects, it will be charged 4 times each month.
+per-Project. So, if a Team has 4 Standard Projects, it will be charged 4 times each month.
 
 :::tip What's a Calendar Monthly Basis?
 
@@ -179,7 +179,7 @@ via the schema endpoints. For Enterprise clients, the Directus team will work wi
 
 In order to optimize your Project and help you meet any local data compliance laws such as GDPR, Standard and Enterprise
 Projects allow you to choose the region your Project is hosted in. There are 15 datacenter regions available to
-Enterprise Project and 2 Datacenter regions available to Standard Projects.
+Enterprise Projects and 2 Datacenter regions available to Standard Projects.
 
 ## Encryption and Security
 
@@ -297,7 +297,9 @@ decisions.
 
 ## Project Monitor Page
 
-![Project Monitor Page](image.webp)
+<video alt="Project Monitor Page" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/monitor-a-project-20220322A.mp4" type="video/mp4">
+</video>
 
 On this page, 4 graphs are shown:
 
@@ -360,9 +362,9 @@ The Enterprise Tier provides power and scale to meet any Project's needs, offers
 ## Quotas
 
 Directus does not impose _arbitrary_ software-based limits of any kind. So for things like Collections, Roles, or Users-
-whether you have 1 or 10,000 you are free to do what you need. However, actual Project performance is going to depend on
-Node configuration, so there are of course hard technical Limits. For more details, please refer to
-[Cloud Policies](https://directus.io/cloud-policies/).
+whether you have 1 or 10,000 of these, you are free to do what you need, with no upcharge. However, actual Project
+performance is going to depend on Node configuration, so there are of course hard technical Limits. For more details,
+please refer to [Cloud Policies](https://directus.io/cloud-policies/).
 
 ## Rate Limiting
 
