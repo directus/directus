@@ -47,10 +47,8 @@ type File = {
 	id: string;
 	type: string;
 	modified_on: Date;
-};
-type ImgMeasurements = {
-	width: number;
-	height: number;
+	width: number | null;
+	height: number | null;
 };
 
 export default defineComponent({
@@ -101,7 +99,6 @@ export default defineComponent({
 		const router = useRouter();
 
 		const imgError = ref(false);
-		const imgMeasurements = ref<ImgMeasurements | null>(null);
 		const imgContainer = ref<HTMLDivElement | null>(null);
 
 		const type = computed(() => {
@@ -122,36 +119,11 @@ export default defineComponent({
 			return addTokenToURL(url);
 		});
 
-		watch(
-			() => props.file.id,
-			(newValue, oldValue) => {
-				if (newValue === oldValue) return;
-
-				if (newValue) {
-					fetchImgMeasurements();
-				}
-			},
-			{ immediate: true }
-		);
-
-		async function fetchImgMeasurements() {
-			try {
-				const response = await api.get(`/files/${props.file.id}`, {
-					params: {
-						fields: ['width', 'height'],
-					},
-				});
-				imgMeasurements.value = response.data.data;
-			} catch (err: any) {
-				imgMeasurements.value = null;
-			}
-		}
-
 		const fit = computed(() => {
-			if (imgMeasurements.value && imgContainer.value) {
+			if (props.file.height && props.file.width && imgContainer.value) {
 				if (
-					imgMeasurements.value.width >= imgContainer.value.clientWidth &&
-					imgMeasurements.value.height >= imgContainer.value.clientHeight &&
+					props.file.width >= imgContainer.value.clientWidth &&
+					props.file.height >= imgContainer.value.clientHeight &&
 					props.crop
 				) {
 					return 'cover';

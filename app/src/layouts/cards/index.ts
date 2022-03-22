@@ -183,11 +183,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					fields.push(`${imageSource.value}.filename_disk`);
 					fields.push(`${imageSource.value}.storage`);
 					fields.push(`${imageSource.value}.id`);
+					fields.push(`${imageSource.value}.height`);
+					fields.push(`${imageSource.value}.width`);
 				}
 
 				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
 					fields.push('modified_on');
 					fields.push('type');
+					fields.push('height');
+					fields.push('width');
 				}
 
 				const titleSubtitleFields: string[] = [];
