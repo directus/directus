@@ -23,14 +23,14 @@
 					:collection="collection"
 					:disabled="disabled"
 					:relation-info="relationInfo"
-					:open="open[index] ?? false"
+					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
 					:deleted="element.$type === 'deleted'"
-					@update:open="open[index] = $event"
+					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
 					@input="update"
 					@deselect="remove(element)"
 				/>
 				<nested-draggable
-					v-if="open[index]"
+					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
 					:model-value="element[field]"
 					:template="template"
 					:collection="collection"
@@ -100,6 +100,8 @@ import {
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { useI18n } from 'vue-i18n';
+import { moveInArray } from '@directus/shared/utils';
+import { cloneDeep } from 'lodash';
 
 type ChangeEvent =
 	| {
@@ -168,7 +170,7 @@ const value = computed<ChangesItem>({
 const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter } = toRefs(props);
 
 const drag = ref(false);
-const open = ref<boolean[]>([]);
+const open = ref<Record<string, boolean>>({});
 
 const limit = ref(-1);
 const page = ref(1);
@@ -237,9 +239,23 @@ function change(event: ChangeEvent) {
 	} else if ('removed' in event && '$type' in event.removed.element) {
 		remove({
 			...event.removed.element,
-			[relationInfo.value.reverseJunctionField.field]: undefined,
+			[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
 		});
+	} else if ('moved' in event) {
+		sort(event.moved.oldIndex, event.moved.newIndex);
 	}
+}
+
+function sort(from: number, to: number) {
+	const sortField = relationInfo.value.sortField;
+	if (!sortField) return;
+
+	const sortedItems = moveInArray(cloneDeep(filteredDisplayItems.value), from, to).map((item, index) => ({
+		...item,
+		[sortField]: index,
+	}));
+
+	update(...sortedItems);
 }
 
 const addNewActive = ref(false);
