@@ -46,7 +46,7 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, set, uniq, pick, transform, isObject, omit } from 'lodash';
 import ms from 'ms';
-import { getCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
 import { BaseException } from '@directus/shared/exceptions';
@@ -2033,10 +2033,10 @@ export class GraphQLService {
 						throw new ForbiddenException();
 					}
 
-					const { cache, systemCache } = getCache();
+					const { cache } = getCache();
 
 					await cache?.clear();
-					await systemCache.clear();
+					await clearSystemCache();
 
 					return;
 				},

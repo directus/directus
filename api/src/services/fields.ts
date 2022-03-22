@@ -1,7 +1,7 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { getCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector, getDatabaseClient } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
@@ -321,7 +321,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 	}
 
 	async updateField(collection: string, field: RawField): Promise<string> {
@@ -389,7 +389,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		emitter.emitAction(
 			`fields.update`,
@@ -517,7 +517,7 @@ export class FieldsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		emitter.emitAction(
 			'fields.delete',

@@ -1,6 +1,6 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
-import { getCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector, getDatabaseClient } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
@@ -151,7 +151,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		return payload.collection;
 	}
@@ -181,7 +181,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		return collections;
 	}
@@ -335,7 +335,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		return collectionKey;
 	}
@@ -364,7 +364,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		return collectionKeys;
 	}
@@ -465,7 +465,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		return collectionKey;
 	}
@@ -494,7 +494,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		await this.systemCache.clear();
+		await clearSystemCache();
 
 		return collectionKeys;
 	}

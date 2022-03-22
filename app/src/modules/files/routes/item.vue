@@ -183,7 +183,7 @@ import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { Field } from '@directus/shared/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FolderPicker from '../components/folder-picker.vue';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilesNotFound from './not-found.vue';

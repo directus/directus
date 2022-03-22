@@ -63,7 +63,7 @@ export class PayloadService {
 
 			return value;
 		},
-		async boolean({ action, value }) {
+		async 'cast-boolean'({ action, value }) {
 			if (action === 'read') {
 				if (value === true || value === 1 || value === '1') {
 					return true;
@@ -76,7 +76,7 @@ export class PayloadService {
 
 			return value;
 		},
-		async json({ action, value }) {
+		async 'cast-json'({ action, value }) {
 			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
@@ -117,7 +117,7 @@ export class PayloadService {
 			if (action === 'update') return new Date();
 			return value;
 		},
-		async csv({ action, value }) {
+		async 'cast-csv'({ action, value }) {
 			if (Array.isArray(value) === false && typeof value !== 'string') return;
 
 			if (action === 'read' && Array.isArray(value) === false) {

@@ -17,7 +17,7 @@ fields:
   - collection: directus_fields
     field: special
     hidden: true
-    special: csv
+    special: cast-csv
     width: half
 
   - collection: directus_fields
@@ -27,7 +27,7 @@ fields:
   - collection: directus_fields
     field: options
     hidden: true
-    special: json
+    special: cast-json
     width: half
 
   - collection: directus_fields
@@ -37,25 +37,25 @@ fields:
   - collection: directus_fields
     field: display_options
     hidden: true
-    special: json
+    special: cast-json
     width: half
 
   - collection: directus_fields
     field: readonly
     hidden: true
-    special: boolean
+    special: cast-boolean
     width: half
 
   - collection: directus_fields
     field: hidden
     hidden: true
-    special: boolean
+    special: cast-boolean
     width: half
 
   - collection: directus_fields
     field: required
     hidden: true
-    special: boolean
+    special: cast-boolean
     width: half
 
   - collection: directus_fields
@@ -73,7 +73,7 @@ fields:
   - collection: directus_fields
     field: translations
     hidden: true
-    special: json
+    special: cast-json
     width: half
 
   - collection: directus_fields
@@ -83,4 +83,4 @@ fields:
   - collection: directus_fields
     field: conditions
     hidden: true
-    special: json
+    special: cast-json
