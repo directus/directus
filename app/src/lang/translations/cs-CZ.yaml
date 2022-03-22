@@ -490,7 +490,6 @@ layouts:
     title: Název
   tabular:
     tabular: Tabulka
-    fields: Sloupce
     spacing: Odsazení
     comfortable: Komfortní
     compact: Kompaktní

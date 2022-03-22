@@ -33,7 +33,7 @@ describe('Integration Tests', () => {
 
 			describe('csv', () => {
 				it('Returns undefined for illegal values', async () => {
-					const result = await service.transformers.csv({
+					const result = await service.transformers['cast-csv']({
 						value: 123,
 						action: 'read',
 						payload: {},
@@ -45,7 +45,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Returns [] for empty strings', async () => {
-					const result = await service.transformers.csv({
+					const result = await service.transformers['cast-csv']({
 						value: '',
 						action: 'read',
 						payload: {},
@@ -57,7 +57,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Splits the CSV string', async () => {
-					const result = await service.transformers.csv({
+					const result = await service.transformers['cast-csv']({
 						value: 'test,directus',
 						action: 'read',
 						payload: {},
@@ -69,7 +69,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Saves array values as joined string', async () => {
-					const result = await service.transformers.csv({
+					const result = await service.transformers['cast-csv']({
 						value: ['test', 'directus'],
 						action: 'create',
 						payload: {},
@@ -81,7 +81,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Saves string values as is', async () => {
-					const result = await service.transformers.csv({
+					const result = await service.transformers['cast-csv']({
 						value: 'test,directus',
 						action: 'create',
 						payload: {},

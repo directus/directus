@@ -1,13 +1,5 @@
 <template>
-	<tr
-		class="table-row"
-		:class="{ subdued: subdued, clickable: hasClickListener }"
-		:style="{
-			'--table-row-height': height + 2 + 'px',
-			'--table-row-line-height': 1,
-		}"
-		@click="$emit('click', $event)"
-	>
+	<tr class="table-row" :class="{ subdued: subdued, clickable: hasClickListener }" @click="$emit('click', $event)">
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
@@ -46,65 +38,48 @@
 	</tr>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
-import { Header } from '../types';
+import { Header, Item } from './types';
 
-export default defineComponent({
-	props: {
-		headers: {
-			type: Array as PropType<Header[]>,
-			required: true,
-		},
-		item: {
-			type: Object,
-			required: true,
-		},
-		showSelect: {
-			type: String as PropType<ShowSelect>,
-			default: 'none',
-		},
-		showManualSort: {
-			type: Boolean,
-			default: false,
-		},
-		isSelected: {
-			type: Boolean,
-			default: false,
-		},
-		subdued: {
-			type: Boolean,
-			default: false,
-		},
-		sortedManually: {
-			type: Boolean,
-			default: false,
-		},
-		hasClickListener: {
-			type: Boolean,
-			default: false,
-		},
-		height: {
-			type: Number,
-			default: 48,
-		},
-	},
-	emits: ['click', 'item-selected'],
+interface Props {
+	headers: Header[];
+	item: Item;
+	showSelect: ShowSelect;
+	showManualSort?: boolean;
+	isSelected?: boolean;
+	subdued?: boolean;
+	sortedManually?: boolean;
+	hasClickListener?: boolean;
+	height?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	showSelect: 'none',
+	showManualSort: false,
+	isSelected: false,
+	subdued: false,
+	sortedManually: false,
+	hasClickListener: false,
+	height: 48,
 });
+
+defineEmits(['click', 'item-selected']);
+
+const cssHeight = computed(() => props.height + 2 + 'px');
 </script>
 
 <style lang="scss" scoped>
 .table-row {
-	height: var(--table-row-height);
+	height: v-bind(cssHeight);
 
 	.cell {
 		display: flex;
 		align-items: center;
-		padding: 8px 0;
-		padding-left: 12px;
+		padding: 8px 12px;
 		overflow: hidden;
-		line-height: var(--table-row-line-height);
+		line-height: 1;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color);
