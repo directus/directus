@@ -637,7 +637,7 @@ export class PayloadService {
 					await itemsService.createMany(
 						alterations.create.map((item) => ({
 							...item,
-							[relation.field]: item[relation.field] || parent || payload[currentPrimaryKeyField],
+							[relation.field]: parent || payload[currentPrimaryKeyField],
 						})),
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
@@ -653,7 +653,7 @@ export class PayloadService {
 							item[primaryKeyField],
 							{
 								...item,
-								[relation.field]: item[relation.field] || parent || payload[currentPrimaryKeyField],
+								[relation.field]: parent || payload[currentPrimaryKeyField],
 							},
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
