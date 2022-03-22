@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.label_on',
 			type: 'string',
 			meta: {
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_on_placeholder',
@@ -26,7 +26,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.label_off',
 			type: 'string',
 			meta: {
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_off_placeholder',

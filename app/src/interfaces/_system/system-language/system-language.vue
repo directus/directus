@@ -1,11 +1,17 @@
 <template>
-	<v-select :model-value="value" :items="languages" :disabled="disabled" @update:model-value="$emit('input', $event)" />
+	<v-select
+		:model-value="value"
+		:items="languages"
+		:disabled="disabled"
+		:placeholder="t('language_placeholder')"
+		@update:model-value="$emit('input', $event)"
+	/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import availableLanguages from '@/lang/available-languages.yaml';
 import { useI18n } from 'vue-i18n';
+import availableLanguages from '@/lang/available-languages.yaml';
 
 export default defineComponent({
 	props: {
@@ -35,7 +41,7 @@ export default defineComponent({
 			languages.splice(0, 0, { text: t('fields.directus_settings.project_language'), value: null });
 		}
 
-		return { languages };
+		return { t, languages };
 	},
 });
 </script>
