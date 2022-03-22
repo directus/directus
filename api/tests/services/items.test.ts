@@ -1,4 +1,4 @@
-import { Filter, Query } from '@directus/shared/types';
+import { Query } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { ItemsService } from '../../src/services';
