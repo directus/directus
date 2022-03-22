@@ -84,7 +84,7 @@ export default defineDisplay({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						label: '$t:displays.formatted-value.prefix_label',
 						trim: false,
@@ -97,7 +97,7 @@ export default defineDisplay({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						label: '$t:displays.formatted-value.suffix_label',
 						trim: false,
@@ -209,7 +209,7 @@ export default defineDisplay({
 								name: '$t:displays.formatted-value.text',
 								type: 'string',
 								meta: {
-									interface: 'input',
+									interface: 'system-input-translated-string',
 									width: 'half',
 									options: {
 										placeholder: '$t:displays.formatted-value.text_placeholder',
