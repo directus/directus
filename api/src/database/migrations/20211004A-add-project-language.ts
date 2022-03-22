@@ -28,7 +28,7 @@ export async function down(knex: Knex): Promise<void> {
 		knex.schema.raw("ALTER TABLE directus_users ALTER COLUMN language SET DEFAULT 'en-US'");
 	} else {
 		await knex.schema.alterTable('directus_users', (table) => {
-			table.string('language').nullable().defaultTo('en-US');
+			table.string('language').nullable().defaultTo('en-US').alter();
 		});
 	}
 }
