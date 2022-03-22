@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, watch, ref } from 'vue';
+import { defineComponent, PropType, computed, onMounted, ref, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
@@ -99,6 +99,11 @@ export default defineComponent({
 
 		const imgError = ref(false);
 		const imgContainer = ref<HTMLDivElement | null>(null);
+		const containerDim = {
+			width: ref<number | null>(null),
+			height: ref<number | null>(null),
+		};
+		const resizeObserver = ref<ResizeObserver | null>(null);
 
 		const type = computed(() => {
 			if (!props.file || !props.file.type) return null;
@@ -119,10 +124,10 @@ export default defineComponent({
 		});
 
 		const fit = computed(() => {
-			if (props.file.height && props.file.width && imgContainer.value) {
+			if (props.file.height && props.file.width && containerDim.height.value && containerDim.width.value) {
 				if (
-					props.file.width >= imgContainer.value.clientWidth &&
-					props.file.height >= imgContainer.value.clientHeight &&
+					props.file.width >= containerDim.width.value &&
+					props.file.height >= containerDim.height.value &&
 					props.crop
 				) {
 					return 'cover';
@@ -146,6 +151,25 @@ export default defineComponent({
 			if (!props.item) return 'radio_button_unchecked';
 
 			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
+		});
+
+		onMounted(() => {
+			resizeObserver.value = new ResizeObserver(() => {
+				if (imgContainer.value) {
+					containerDim.width.value = imgContainer.value.clientWidth;
+					containerDim.height.value = imgContainer.value.clientHeight;
+				}
+			});
+
+			if (imgContainer.value) {
+				resizeObserver.value.observe(imgContainer.value);
+			}
+		});
+
+		onBeforeUnmount(() => {
+			if (imgContainer.value) {
+				resizeObserver.value!.unobserve(imgContainer.value);
+			}
 		});
 
 		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick, imgError, imgContainer, fit };
