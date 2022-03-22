@@ -8,6 +8,7 @@ export default defineInterface({
 	description: '$t:interfaces.input-translated-string.description',
 	icon: 'translate',
 	component: InterfaceInputTranslatedString,
+	system: true,
 	types: ['string', 'text'],
 	group: 'standard',
 	preview: PreviewSVG,
