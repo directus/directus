@@ -40,7 +40,6 @@ import { useRouter } from 'vue-router';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import api from '@/api';
 
 type File = {
 	[key: string]: any;
