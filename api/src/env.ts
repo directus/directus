@@ -288,6 +288,7 @@ function processValues(env: Record<string, any>) {
 
 		if (String(value).includes(',')) {
 			env[key] = toArray(value);
+			continue;
 		}
 
 		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
