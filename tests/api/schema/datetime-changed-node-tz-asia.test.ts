@@ -299,7 +299,7 @@ describe('schema', () => {
 							validateDateDifference(
 								insertionStartTimestamp,
 								dateCreated,
-								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
+								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000
 							).toISOString()
 						);
 						expect(responseObj.date_updated).toBeNull();

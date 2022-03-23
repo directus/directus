@@ -194,6 +194,15 @@ describe('schema', () => {
 							expect(responseObj.timestamp.substring(0, 19)).toBe(
 								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 							);
+							const dateCreated = new Date(responseObj.date_created);
+							expect(dateCreated.toISOString()).toBe(
+								validateDateDifference(
+									insertionStartTimestamp,
+									dateCreated,
+									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
+								).toISOString()
+							);
+							expect(responseObj.date_updated).toBeNull();
 							continue;
 						}
 
@@ -208,7 +217,7 @@ describe('schema', () => {
 							validateDateDifference(
 								insertionStartTimestamp,
 								dateCreated,
-								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
+								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000
 							).toISOString()
 						);
 						expect(responseObj.date_updated).toBeNull();
