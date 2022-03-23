@@ -5,12 +5,12 @@
 				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<v-list>
-				<v-list-item clickable class="danger" @click="deleteActive = true">
+				<v-list-item v-if="collection.schema" clickable :to="`/content/${collection.collection}`">
 					<v-list-item-icon>
-						<v-icon name="delete" />
+						<v-icon name="box" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+						{{ t('goto_collection_content') }}
 					</v-list-item-content>
 				</v-list-item>
 
@@ -27,6 +27,15 @@
 							{{ collection.schema ? t('make_collection_visible') : t('make_folder_visible') }}
 						</v-list-item-content>
 					</template>
+				</v-list-item>
+
+				<v-list-item clickable class="danger" @click="deleteActive = true">
+					<v-list-item-icon>
+						<v-icon name="delete" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+					</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
