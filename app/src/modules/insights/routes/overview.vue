@@ -51,7 +51,7 @@
 					</template>
 
 					<v-list>
-						<v-list-item class="warning" clickable @click="editDashboard = item">
+						<v-list-item class="warning" :disabled="!updateAllowed" clickable @click="editDashboard = item">
 							<v-list-item-icon>
 								<v-icon name="edit" />
 							</v-list-item-icon>
@@ -60,7 +60,7 @@
 							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item class="danger" clickable @click="confirmDelete = item.id">
+						<v-list-item class="danger" :disabled="!deleteAllowed" clickable @click="confirmDelete = item.id">
 							<v-list-item-icon>
 								<v-icon name="delete" />
 							</v-list-item-icon>
@@ -131,6 +131,14 @@ export default defineComponent({
 			return permissionsStore.hasPermission('directus_dashboards', 'create');
 		});
 
+		const updateAllowed = computed<boolean>(() => {
+			return permissionsStore.hasPermission('directus_dashboards', 'update');
+		});
+
+		const deleteAllowed = computed<boolean>(() => {
+			return permissionsStore.hasPermission('directus_dashboards', 'delete');
+		});
+
 		const tableHeaders = [
 			{
 				text: '',
@@ -155,6 +163,8 @@ export default defineComponent({
 		return {
 			dashboards,
 			createAllowed,
+			updateAllowed,
+			deleteAllowed,
 			tableHeaders,
 			navigateToDashboard,
 			createDialogActive,
