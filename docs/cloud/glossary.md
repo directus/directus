@@ -285,7 +285,7 @@ see [billing](#billing).
 ### Auto-scaling
 
 Standby Nodes automatically activate and de-activate, scaling performance and power up and down based on traffic spikes
-and system capacity, providing on-demand horizontal scaling.
+and system capacity, providing on-demand horizontal-scaling.
 
 :::tip Optimal Node Configuration
 
@@ -379,7 +379,7 @@ There are two tiers of Support for Directus.
 ### Community Support
 
 As an open-source Project, everyone is encouraged to reach out to the Community for help on Projects, _and of course
-help others as well_. Find us on [Github](https://github.com/directus/directus/discussions) and
+help others as well_. Find us on [GitHub](https://github.com/directus/directus/discussions) and
 [Discord](https://directus.chat/) to join the thousands of other developers all discussing and guiding the future of the
 Directus platform. Most common questions have already been asked and answered and can be easily searched.
 

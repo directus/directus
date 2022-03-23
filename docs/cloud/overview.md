@@ -15,10 +15,9 @@ Roles or Users.
 [Directus Cloud](https://directus.cloud/) is a hosting platform for [Directus Projects](/cloud/glossary/#projects),
 offering [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), bi-weekly
 [automatic software updates](/cloud/glossary/#automatic-software-updates),
-[horizontal and vertical scaling](/cloud/glossary/#nodes) at the click of a button, hosting options to fit any project
-scope and budget, and a [pricing system](/cloud/glossary/#billing) that allows you to scale up or down anytime as you
-need. Directus Cloud handles data storage, hosting, updates and scalability so developers can focus on building their
-app.
+[horizontal and vertical scaling](/cloud/glossary/#nodes) at the click of a button, hosting options to fit any
+budget-and-scale, and a [pricing system](/cloud/glossary/#billing) that allows you to scale up or down at anytime.
+Directus Cloud handles data storage, hosting, updates and scalability so developers can focus on building their app.
 
 :::
 
@@ -40,7 +39,7 @@ There are 3 [tiers of Cloud Projects](/cloud/glossary/#projects): Community, Sta
 with everything in Directus Core as well as all [Cloud Exclusive](/cloud/glossary/#cloud-exclusives) Extensions.
 
 To make life easy, you have the option to
-[create and login to your free Cloud Account](/cloud/accounts/#create-account-and-login) automatically with Github. If
+[create and login to your free Cloud Account](/cloud/accounts/#create-account-and-login) automatically with GitHub. If
 you have no Github or do not wish to use this login method, email-and-password login is available as well. Once
 logged-in, create a new Team or Select an existing Team to access and manage its associated Projects, billing details,
 Team Members, Activity, and Settings.
