@@ -34,11 +34,8 @@ export class Auth extends IAuth {
 		if (options?.staticToken) {
 			this.staticToken = options?.staticToken;
 			this.updateStorage<'StaticToken'>({ access_token: this.staticToken, expires: null, refresh_token: null });
-		} else {
-			if (this.autoRefresh) {
-				this.autoRefreshJob();
-			}
-
+		} else if (this.autoRefresh) {
+			this.autoRefreshJob();
 			this.addRefreshTokenInterceptor(this._transport.axios);
 		}
 	}
