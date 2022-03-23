@@ -52,7 +52,6 @@ import { useI18n } from 'vue-i18n';
 import { Filter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
-import { useFieldTree } from '@/composables/use-field-tree';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { useFieldsStore } from '@/stores';
 
@@ -97,8 +96,6 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 
-		const { treeList, loadFieldRelations } = useFieldTree(collection);
-
 		const innerValue = computed<Filter[]>({
 			get() {
 				if (!props.value || isEmpty(props.value)) return [];
@@ -120,17 +117,11 @@ export default defineComponent({
 			},
 		});
 
-		const fieldOptions = computed(() => {
-			return [{ key: '$group', name: t('interfaces.filter.add_group') }, { divider: true }, ...treeList.value];
-		});
-
 		return {
 			t,
 			addNode,
 			removeNode,
 			innerValue,
-			fieldOptions,
-			loadFieldRelations,
 			emitValue,
 			collection,
 		};
@@ -164,7 +155,7 @@ export default defineComponent({
 
 			let list = get(innerValue.value, ids.join('.')) as Filter[];
 
-			list = list.filter((node, index) => index !== Number(id));
+			list = list.filter((_node, index) => index !== Number(id));
 
 			innerValue.value = set(innerValue.value, ids.join('.'), list);
 		}
