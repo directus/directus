@@ -5,8 +5,8 @@ exports.up = async function (knex) {
 		table.time('time');
 		table.datetime('datetime', { useTz: false });
 		table.timestamp('timestamp', { useTz: true });
-		table.timestamp('date_created', { useTz: true });
-		table.timestamp('date_updated', { useTz: true });
+		table.timestamp('date_created', { useTz: true }).nullable();
+		table.timestamp('date_updated', { useTz: true }).nullable();
 	});
 };
 
