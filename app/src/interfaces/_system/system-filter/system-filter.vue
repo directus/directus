@@ -21,25 +21,26 @@
 			/>
 		</v-list>
 		<div class="buttons">
-			<v-select
-				:inline="!inline"
-				item-text="name"
-				item-value="key"
-				placement="bottom-start"
-				class="add-filter"
-				:placeholder="t('interfaces.filter.add_filter')"
-				:full-width="inline"
-				:model-value="null"
-				:items="fieldOptions"
-				:mandatory="false"
-				:groups-clickable="true"
-				@group-toggle="loadFieldRelations($event.value)"
-				@update:modelValue="addNode($event)"
-			>
-				<template v-if="inline" #prepend>
-					<v-icon name="add" small />
+			<v-menu placement="bottom-start" show-arrow>
+				<template #activator="{ toggle, active }">
+					<button class="add-filter" :class="{ active }" @click="toggle">
+						<v-icon v-if="inline" name="add" class="add" small />
+						<span>{{ t('interfaces.filter.add_filter') }}</span>
+						<v-icon name="expand_more" class="expand_more" />
+					</button>
 				</template>
-			</v-select>
+
+				<v-field-list :collection="collectionName" @select-field="addNode($event)">
+					<template #append>
+						<v-list-item clickable @click="addNode('$group')">
+							<v-list-item-content>
+								<v-text-overflow :text="t('interfaces.filter.add_group')" />
+							</v-list-item-content>
+						</v-list-item>
+						<v-divider />
+					</template>
+				</v-field-list>
+			</v-menu>
 		</div>
 	</div>
 </template>
@@ -218,7 +219,7 @@ export default defineComponent({
 	}
 
 	.add-filter {
-		--v-select-placeholder-color: var(--primary);
+		color: var(--primary);
 	}
 
 	&.inline {
@@ -238,28 +239,37 @@ export default defineComponent({
 		}
 
 		.add-filter {
+			display: flex;
+			align-items: center;
 			width: 100%;
+			height: 30px;
+			padding: 0;
+			color: var(--foreground-subdued);
+			background-color: var(--background-page);
+			border: var(--border-width) solid var(--border-subdued);
+			border-radius: 100px;
+			transition: border-color var(--fast) var(--transition);
 
-			:deep(.v-input) {
-				position: relative;
-				width: 100%;
-				height: 30px;
-				padding: 0;
-				background-color: var(--background-page);
-				border: var(--border-width) solid var(--border-subdued);
-				border-radius: 100px;
-				transition: border-color var(--fast) var(--transition);
+			&:hover,
+			&.active {
+				border-color: var(--border-normal);
+			}
 
-				.input {
-					padding-right: 5px;
-					padding-left: 6px;
-					background: transparent;
-					border: 0;
-
-					.prepend {
-						margin-right: 4px;
-					}
+			&.active {
+				.expand_more {
+					transform: scaleY(-1);
+					transition-timing-function: var(--transition-in);
 				}
+			}
+
+			.add {
+				margin-left: 6px;
+				margin-right: 4px;
+			}
+			.expand_more {
+				margin-left: auto;
+				margin-right: 6px;
+				transition: transform var(--medium) var(--transition-out);
 			}
 		}
 	}
