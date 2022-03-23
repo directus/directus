@@ -12,6 +12,7 @@ import {
 	ServiceUnavailableException,
 	InvalidConfigException,
 	InvalidTokenException,
+	TokenExpiredException,
 } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
@@ -281,7 +282,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
-				if (error instanceof InvalidTokenException && !prompt) {
+				if ((error instanceof TokenExpiredException || error instanceof InvalidTokenException) && !prompt) {
 					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
 				}
 
@@ -292,6 +293,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						reason = 'SERVICE_UNAVAILABLE';
 					} else if (error instanceof InvalidCredentialsException) {
 						reason = 'INVALID_USER';
+					} else if (error instanceof TokenExpiredException) {
+						reason = 'TOKEN_EXPIRED';
 					} else if (error instanceof InvalidTokenException) {
 						reason = 'INVALID_TOKEN';
 					} else {
