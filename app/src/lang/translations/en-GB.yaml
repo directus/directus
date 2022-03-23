@@ -28,6 +28,7 @@ draft: Draft
 archived: Archived
 modules: Modules
 module_bar: Module Bar
+reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
@@ -40,6 +41,7 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+export_items: Export Items
 and: And
 or: Or
 fill_width: Fill Width
@@ -67,6 +69,12 @@ create_role: Create Role
 create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
+create_translation_string: Create Translation String
+translation_string_key_placeholder: Translation string key...
+translation_string_translations_placeholder: Add a new translation
+edit_translation_string: Edit Translation String
+delete_translation_string_copy: >-
+  Are you sure you want to delete the translation string "{key}"? This action can not be undone.
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -114,6 +122,7 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+validation_errors_notice: 'The following fields have invalid values:'
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -163,6 +172,7 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
 delete_field: Delete Field
@@ -171,6 +181,7 @@ field_create_success: 'Created Field: "{field}"'
 field_update_success: 'Updated Field: "{field}"'
 duplicate_where_to: Where would you like to duplicate this field to?
 language: Language
+language_placeholder: Select a language...
 aggregate_function: Aggregate Function
 aggregate_precision: Aggregate Precision
 group_aggregation: Group Aggregation
@@ -350,9 +361,12 @@ interface_label: Interface
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
+delete_share: Delete Share
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -403,6 +417,15 @@ replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
 no_file_selected: No File Selected
 download_file: Download File
+open_file_in_tab: Open file in new tab
+start_export: Start Export
+not_available_for_local_downloads: Not available for local downloads
+exporting_all_items_in_collection: Exporting all {total} items within {collection}.
+exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
+exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
+exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
+exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
+exporting_batch_hint_forced: Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will be saved to the File Library.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -666,6 +689,7 @@ no_results_copy: Adjust or clear search filters to see results.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+edit_role: Edit Role
 rule: Rule
 user: User
 no_presets: No Presets
@@ -708,7 +732,11 @@ no_data: No Data
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
 full_screen: Full Screen
+full_text_search: Full-Text Search
 edit_panels: Edit Panels
+center_align: Centre Align
+left_align: Left Align
+right_align: Right Align
 fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
@@ -732,6 +760,8 @@ unlimited: Unlimited
 open_link_in: Open link in
 new_tab: New tab
 current_tab: Current tab
+save_image: Save Image
+save_media: Save Media
 wysiwyg_options:
   aligncenter: Align Centre
   alignjustify: Align Justify
@@ -799,6 +829,7 @@ settings_permissions: Roles & Permissions
 settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
+settings_translation_strings: Translation Strings
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 select: Select...
@@ -844,6 +875,7 @@ page_help_settings_presets_item: >-
   **Preset Detail** — A form for managing bookmarks and default collection presets.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
+page_help_settings_translation_strings_collection: '**Browse Translation Strings** — Lists all translation strings within the project.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
@@ -882,6 +914,7 @@ directus_collection:
   directus_roles: Permission groups for system users
   directus_sessions: User session information
   directus_settings: Project configuration options
+  directus_shares: Tracks externally shared items
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
 fields:
@@ -1211,12 +1244,23 @@ file: File
 file_library: File Library
 forgot_password: Forgot Password
 hidden: Hidden
+hidden_in_group: Hidden in {group}
 icon: Icon
 info: Info
 normal: Normal
 success: Success
 warning: Warning
 danger: Danger
+colors:
+  purple: Purple
+  blue: Blue
+  green: Green
+  yellow: Yellow
+  orange: Orange
+  red: Red
+  black: Black
+  gray: Grey
+  white: White
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
@@ -1245,6 +1289,9 @@ sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
 something_went_wrong: Something went wrong.
 sort_direction: Sort Direction
+export_location: Export Location
+export_started: Export Started
+export_started_copy: Your export has started. You'll be notified when it's ready to download.
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
@@ -1253,6 +1300,7 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 interfaces:
@@ -1271,6 +1319,8 @@ interfaces:
     no_rules: No configured rules
     change_value: Click to change value
     placeholder: Drag rules here
+  fields:
+    name: Fields
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections
@@ -1330,6 +1380,7 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
+    placeholder: Choose a datetime...
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1402,6 +1453,8 @@ interfaces:
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
     box: Block / Inline
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   map:
     map: Map
     description: Select a location on a map
@@ -1460,6 +1513,7 @@ interfaces:
     auto_formatter: Use Title Auto-Formatter
     alphabetize: Alphabetise
     alphabetize_label: Force Alphabetical Order
+    add_tags: Add a tag and press Enter...
   input:
     input: Input
     description: Manually enter a value
@@ -1477,6 +1531,11 @@ interfaces:
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
+  input-translated-string:
+    input-translated-string: Translated Strings
+    description: Select or add translation string
+    search_placeholder: Search...
+    new_translation_string: New Translation String
   boolean:
     toggle: Toggle
     description: Switch between on and off
@@ -1507,6 +1566,8 @@ interfaces:
     custom_formats: Custom Formats
     options_override: Options Override
     folder_note: Folder for uploaded files. Does not affect existing files.
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
