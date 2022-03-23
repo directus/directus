@@ -28,6 +28,7 @@ draft: 草稿
 archived: 已存档
 modules: 模块
 module_bar: 模块栏
+reset_width: 重置宽度
 tile_size: 图块大小：
 edit_field: 编辑
 conditions: 条件
@@ -40,6 +41,7 @@ duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
 group: 群组
+export_items: 导出条目
 and: 和
 or: 或
 fill_width: 填充宽度
@@ -67,6 +69,12 @@ create_role: 创建角色
 create_user: 创建用户
 delete_panel: 删除
 create_webhook: 创建Web钩子
+create_translation_string: 创建翻译字符串
+translation_string_key_placeholder: 翻译字符串键..
+translation_string_translations_placeholder: 添加新翻译
+edit_translation_string: 编辑翻译字符串
+delete_translation_string_copy: >-
+  您确定要删除翻译字符串"{key}" 吗? 此操作无法撤消。
 invite_users: 邀请用户
 invite: 邀请
 email_already_invited: 电子邮件 "{email}" 已被邀请
@@ -114,6 +122,7 @@ recommended_defaults: 推荐设置
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此条目吗？
 nested_files_folders_will_be_moved: 文件和文件夹将被上移一级。
+validation_errors_notice: '以下字段含有无效值:'
 validationError:
   eq: 值必须是 {valid}
   neq: 值不能为 {invalid}
@@ -163,6 +172,7 @@ revision_post_create: 这是新建条目后看起来的样子。
 revision_post_update: 这是更新后该条目的外观。
 changes_made: 下面是本次修订中所作的具体修改。
 no_relational_data: 请记住，此处不包括关系数据。
+hide_field: 隐藏字段
 hide_field_on_detail: 在详情中隐藏该字段
 show_field_on_detail: 在详情中显示
 delete_field: 删除
@@ -171,6 +181,7 @@ field_create_success: '创建字段: "{field}"'
 field_update_success: '更新字段: "{field}"'
 duplicate_where_to: 您想要复制此字段到哪？
 language: 语言
+language_placeholder: 选择语言...
 aggregate_function: 聚合函数
 aggregate_precision: 聚合精度
 group_aggregation: Group聚合
@@ -354,6 +365,8 @@ delete_share: 删除分享
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -404,6 +417,10 @@ replace_from_library: 从库中替换文件
 replace_from_url: 从 URL 中替换文件
 no_file_selected: 未选择文件
 download_file: 下载文件
+open_file_in_tab: 在新标签页中打开文件
+start_export: 开始导出
+not_available_for_local_downloads: 本地下载不可用
+exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项 。
 collection_key: 模型的主键
 name: 名称
 primary_key_field: 主键字段
@@ -799,6 +816,7 @@ settings_permissions: 角色与权限
 settings_project: 项目设置
 settings_webhooks: Webhook
 settings_presets: 预设&书签
+settings_translation_strings: 翻译字符串
 one_or_more_options_are_missing: 缺少一个或多个选项
 scope: Scope
 select: 选择...
@@ -844,6 +862,7 @@ page_help_settings_presets_item: >-
   **预设详细信息** - 管理书签和默认模型预设的表单。
 page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
 page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
+page_help_settings_translation_strings_collection: '**浏览翻译字符串** - 列出项目中的所有翻译字符串。'
 page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
 page_help_users_item: >-
   **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
@@ -882,6 +901,7 @@ directus_collection:
   directus_roles: 系统用户权限组
   directus_sessions: 用户会话信息
   directus_settings: 项目配置
+  directus_shares: 跟踪外部共享条目
   directus_users: 平台系统用户
   directus_webhooks: 基于事件的 HTTP 请求配置
 fields:
@@ -1271,6 +1291,8 @@ interfaces:
     no_rules: 无已配置的规则
     change_value: 点击修改名称
     placeholder: 拖拽规则到此处
+  fields:
+    name: 字段
   group-accordion:
     name: 折叠
     description: 在折叠面板中显示字段或分组
@@ -1477,6 +1499,9 @@ interfaces:
   input-multiline:
     textarea: Textarea
     description: 输入多行纯文本
+  input-translated-string:
+    description: 选择或添加翻译字符串
+    new_translation_string: 新翻译字符串
   boolean:
     toggle: 切换
     description: 开启或关闭
