@@ -43,8 +43,6 @@ import { getSchema } from './utils/get-schema';
 import * as services from './services';
 import { schedule, validate } from 'node-cron';
 import { rollup } from 'rollup';
-// @TODO Remove this once a new version of @rollup/plugin-virtual has been released
-// @ts-expect-error
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';

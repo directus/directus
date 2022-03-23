@@ -28,6 +28,7 @@ draft: Szkic
 archived: Zarchiwizowany
 modules: Moduły
 module_bar: Pasek modułu
+reset_width: Zresetuj szerokość
 tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
@@ -114,7 +115,7 @@ recommended_defaults: Zalecane ustawienia domyślne
 unarchive: Przywróć z archiwum
 unarchive_confirm: Jesteś pewien, że chcesz przywrócić ten element?
 nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
-unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
+validation_errors_notice: 'Następujące pola mają nieprawidłowe wartości:'
 validationError:
   eq: Wartość musi być {valid}
   neq: Wartość nie może być {invalid}
@@ -671,6 +672,7 @@ no_results_copy: Dostosuj lub wyczyść filtry wyszukiwania, aby zobaczyć wynik
 clear_filters: Wyczyść filtry
 saves_automatically: Zapisuje automatycznie
 role: Rola
+edit_role: Edytuj rolę
 rule: Reguła
 user: Użytkownik
 no_presets: Brak szablonów
@@ -889,6 +891,7 @@ directus_collection:
   directus_roles: Grupy uprawnień dla użytkowników systemu
   directus_sessions: Informacje o sesji użytkownika
   directus_settings: Opcje konfiguracji projektu
+  directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
   directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
 fields:
@@ -1218,6 +1221,7 @@ file: Plik
 file_library: Biblioteka plików
 forgot_password: Zapomniałem hasła
 hidden: Ukryte
+hidden_in_group: Ukryte w {group}
 icon: Ikona
 info: Informacja
 normal: Normalny
@@ -1260,7 +1264,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1662,7 +1665,6 @@ layouts:
     subtitle: Subtytuł
   tabular:
     tabular: Tabela
-    fields: Pola
     spacing: Odstępy
     comfortable: Wygodny
     compact: Kompaktowy

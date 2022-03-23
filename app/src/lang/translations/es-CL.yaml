@@ -54,7 +54,9 @@ edit_collection: Editar Colección
 exclusive: Exclusivo
 children: Niños
 db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
+show_active_items: Mostrar elementos activos
 show_archived_items: Mostrar ítems archivados
+show_all_items: Mostrar todos los elementos
 edited: Campo editado
 required: Necesario
 required_for_app_access: Necesario para acceder a la aplicación
@@ -111,7 +113,6 @@ recommended_defaults: Valores recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Está seguro que desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos anidados y las carpetas se moverán un nivel superior.
-unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
 validationError:
   eq: El valor tiene que ser {valid}
   neq: El valor no puede ser {invalid}
@@ -1537,7 +1538,6 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabular
-    fields: Campos
     spacing: Espaciado
     comfortable: Cómoda
     compact: Compactar

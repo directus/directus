@@ -258,7 +258,7 @@ export default defineComponent({
 		}
 
 		@media (min-width: 1260px) {
-			width: 420px; // blaze it
+			width: 420px; /* blaze it */
 		}
 	}
 
@@ -321,7 +321,7 @@ export default defineComponent({
 }
 
 .filter-input {
-	// Use margin instead of padding to make sure transition expand takes it into account
+	/* Use margin instead of padding to make sure transition expand takes it into account */
 	margin: 10px 8px;
 }
 </style>

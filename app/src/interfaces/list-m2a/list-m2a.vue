@@ -165,7 +165,7 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: Array as PropType<any[]>,
+			type: Array as PropType<any[] | null>,
 			default: null,
 		},
 		disabled: {
@@ -529,10 +529,13 @@ export default defineComponent({
 			}
 
 			function deselect(item: any) {
-				emit(
-					'input',
-					(props.value || []).filter((current) => current !== item)
-				);
+				const newValue = (props.value || []).filter((current) => current !== item);
+
+				if (newValue.length === 0) {
+					emit('input', null);
+				} else {
+					emit('input', newValue);
+				}
 			}
 		}
 
@@ -681,8 +684,9 @@ export default defineComponent({
 
 .v-list-item {
 	.collection {
-		margin-right: 1ch;
 		color: var(--primary);
+		white-space: nowrap;
+		margin-right: 1ch;
 	}
 }
 

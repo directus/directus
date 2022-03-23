@@ -28,7 +28,7 @@ export function useCollection(collectionKey: string | Ref<string | null>): Usabl
 
 	const fields = computed(() => {
 		if (!collection.value) return [];
-		return fieldsStore.getFieldsForCollection(collection.value) as Field[];
+		return fieldsStore.getFieldsForCollectionSorted(collection.value) as Field[];
 	});
 
 	const defaults = computed(() => {

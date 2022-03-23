@@ -29,6 +29,7 @@ draft: Draft
 archived: Archived
 modules: Modules
 module_bar: Module Bar
+reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
@@ -119,7 +120,7 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
-unknown_validation_errors: 'There were validation errors for the following hidden fields:'
+validation_errors_notice: 'The following fields have invalid values:'
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -169,6 +170,7 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
 delete_field: Delete Field
@@ -678,6 +680,7 @@ no_results_copy: Adjust or clear search filters to see results.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+edit_role: Edit Role
 rule: Rule
 user: User
 no_presets: No Presets
@@ -731,6 +734,9 @@ dashboard_name: Dashboard Name
 no_data: No Data
 full_screen: Full Screen
 edit_panels: Edit Panels
+center_align: Center Align
+left_align: Left Align
+right_align: Right Align
 fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
@@ -915,6 +921,7 @@ directus_collection:
   directus_roles: Permission groups for system users
   directus_sessions: User session information
   directus_settings: Project configuration options
+  directus_shares: Tracks externally shared items
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
 fields:
@@ -1244,6 +1251,7 @@ file: File
 file_library: File Library
 forgot_password: Forgot Password
 hidden: Hidden
+hidden_in_group: Hidden in {group}
 icon: Icon
 info: Info
 normal: Normal
@@ -1689,7 +1697,6 @@ layouts:
     subtitle: Subtitle
   tabular:
     tabular: Table
-    fields: Fields
     spacing: Spacing
     comfortable: Comfortable
     compact: Compact

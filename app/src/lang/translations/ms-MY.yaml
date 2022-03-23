@@ -245,5 +245,4 @@ layouts:
   cards:
     title: Tajuk
   tabular:
-    fields: Medan-medan
     compact: Padat
