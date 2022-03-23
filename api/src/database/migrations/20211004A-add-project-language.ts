@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('project_language').notNullable().defaultTo('en-US');
 	});
 
-	if (helper.isOneOfClients(['cockroachdb'])) {
+	if (helper.isOneOfClients(['cockroachdb', 'oracle'])) {
 		knex.schema.raw('ALTER TABLE directus_users ALTER COLUMN language SET DEFAULT NULL');
 	} else {
 		await knex.schema.alterTable('directus_users', (table) => {
@@ -24,7 +24,7 @@ export async function down(knex: Knex): Promise<void> {
 		table.dropColumn('project_language');
 	});
 
-	if (helper.isOneOfClients(['cockroachdb'])) {
+	if (helper.isOneOfClients(['cockroachdb', 'oracle'])) {
 		knex.schema.raw("ALTER TABLE directus_users ALTER COLUMN language SET DEFAULT 'en-US'");
 	} else {
 		await knex.schema.alterTable('directus_users', (table) => {
