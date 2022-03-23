@@ -91,7 +91,10 @@ export default defineModule({
 				);
 
 				const { data } = useLocalStorage('last-accessed-collection');
-				if (data.value && rootCollections.find((rootCollection) => rootCollection.collection === data.value)) {
+				if (
+					data.value &&
+					collectionsStore.visibleCollections.find((visibleCollection) => visibleCollection.collection === data.value)
+				) {
 					return `/content/${data.value}`;
 				}
 
