@@ -19,7 +19,7 @@ export default defineInterface({
 					name: '$t:placeholder',
 					meta: {
 						width: 'full',
-						interface: 'input',
+						interface: 'system-input-translated-string',
 						options: {
 							placeholder: '$t:enter_a_placeholder',
 						},
@@ -178,7 +178,7 @@ export default defineInterface({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						placeholder: '$t:enter_a_placeholder',
 					},

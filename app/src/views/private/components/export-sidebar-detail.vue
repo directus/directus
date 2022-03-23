@@ -267,8 +267,22 @@ const exportSettings = reactive({
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: props.layoutQuery?.sort?.[0] ?? `${primaryKeyField.value!.field}`,
+	sort: `${primaryKeyField.value!.field}`,
 });
+
+watch(
+	() => props.layoutQuery,
+	() => {
+		if (props.layoutQuery?.sort) {
+			if (Array.isArray(props.layoutQuery.sort)) {
+				exportSettings.sort = props.layoutQuery.sort[0];
+			} else {
+				exportSettings.sort = props.layoutQuery.sort;
+			}
+		}
+	},
+	{ immediate: true }
+);
 
 const format = ref('csv');
 const location = ref('download');
