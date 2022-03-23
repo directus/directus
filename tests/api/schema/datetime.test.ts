@@ -226,5 +226,46 @@ describe('schema', () => {
 				10000
 			);
 		});
+
+		describe('stores the correct timestamp when updated', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const payload = {
+					date: sampleDates[0]!.date,
+				};
+
+				const updateStartTimestamp = new Date();
+
+				await request(getUrl(vendor))
+					.patch(`/items/schema_date_types/${sampleDates[0]!.id}`)
+					.send(payload)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const updateEndTimestamp = new Date();
+
+				const response = await request(getUrl(vendor))
+					.get(`/items/schema_date_types/${sampleDates[0]!.id}?fields=*`)
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const responseObj = response.body.data as SchemaDateTypesResponse;
+
+				expect(responseObj.date).toBe(sampleDates[0]!.date);
+				expect(responseObj.date_created).not.toBeNull();
+				expect(responseObj.date_updated).not.toBeNull();
+				const dateCreated = new Date(responseObj.date_created);
+				const dateUpdated = new Date(responseObj.date_updated);
+				expect(dateUpdated.toISOString()).not.toBe(dateCreated.toISOString());
+				expect(dateUpdated.toISOString()).toBe(
+					validateDateDifference(
+						updateStartTimestamp,
+						dateUpdated,
+						updateEndTimestamp.getTime() - updateStartTimestamp.getTime() + 1000
+					).toISOString()
+				);
+			});
+		});
 	});
 });
