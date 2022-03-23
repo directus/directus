@@ -69,6 +69,12 @@ create_role: Създаване на роля
 create_user: Създаване на потребител
 delete_panel: Изтриване на панела
 create_webhook: Създаване на уеб-кука
+create_translation_string: Създаване на нов превод на низ
+translation_string_key_placeholder: Ключ на низа на превода...
+translation_string_translations_placeholder: Добавяне на нов превод
+edit_translation_string: Редакция на превода на низа
+delete_translation_string_copy: >-
+  Сигурни ли сте, че искате да изтриете превода на низа „{key}“? Действието не може да бъде отменено.
 invite_users: Покана до потребители
 invite: Поканване
 email_already_invited: Вече е изпратена покана в пощата на „{email}“
@@ -175,6 +181,7 @@ field_create_success: 'Създадено поле: „{field}“'
 field_update_success: 'Обновено поле: „{field}“'
 duplicate_where_to: Къде искате да дублирате полето?
 language: Език
+language_placeholder: Избор на език...
 aggregate_function: Агрегираща функция
 aggregate_precision: Точност при агрегация
 group_aggregation: Групираща агрегация
@@ -821,6 +828,7 @@ settings_permissions: Роли и позволения
 settings_project: Настройки на проекта
 settings_webhooks: Уеб-куки
 settings_presets: Заготовки и отметки
+settings_translation_strings: Преводи на низове
 one_or_more_options_are_missing: Липсват една или повече настройки
 scope: Обхват
 select: Избор...
@@ -866,6 +874,7 @@ page_help_settings_presets_item: >-
   **Детайли за заготовка** — Формуляр за управление на отметките и заготовките от изгледи по подразбиране отнасящи се за колекциите.
 page_help_settings_webhooks_collection: '**Преглед на уеб-куки** — Показване на всички уеб-куки в проекта.'
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
+page_help_settings_translation_strings_collection: '**Преглед на преводите на низовете** — Показва пълен списък на низовете в проекта.'
 page_help_users_collection: '**Потребители** — Показване на всички потребители в системата на проекта.'
 page_help_users_item: >-
   **Детайли за потребител** — Управление на информацията на вашия потребителския профил, или преглед на детайли за други потребители.
@@ -1290,6 +1299,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1520,6 +1530,11 @@ interfaces:
   input-multiline:
     textarea: Поле за текст
     description: Редактор на многоредов текст в суров вид
+  input-translated-string:
+    input-translated-string: Преведени низове
+    description: Избор или добавяне на превод на низ
+    search_placeholder: Търсене...
+    new_translation_string: Нов превод на низ
   boolean:
     toggle: Превключвател
     description: Превключване между вкл. и изкл.
