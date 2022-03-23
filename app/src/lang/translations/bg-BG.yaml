@@ -454,7 +454,7 @@ no_items: Няма записи
 search_items: Търсене в записите...
 disabled: Изключване
 information: Информация
-report_bug: Доклад за проблем
+report_bug: Докладване на проблеми
 request_feature: Заявка за функционалност
 interface_not_found: 'Интерфейсът „{interface}“ не е намерен.'
 reset_interface: Нулиране на интерфейс
@@ -701,7 +701,7 @@ on_update: При промяна
 read: Четене
 update: Обновяване
 select_fields: Избор на полета
-format_text: Форматиране на текст
+format_text: Форматиране на текста
 format_value: Форматиране на стойност
 abbreviate_value: Абревиатура
 operator: Оператор
@@ -709,7 +709,7 @@ bold: Удебеляване
 toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
-label: Етикет
+label: Надпис
 insights: Задълбочен анализ
 dashboard: Табло
 panel: Панел
@@ -947,7 +947,7 @@ fields:
     $thumbnail: Умалена картинка
     title: Заглавие
     description: Описание
-    tags: Тагове
+    tags: Етикети
     location: Местоположение
     storage: Хранилище
     filename_disk: Име на файл (на диска)
@@ -976,7 +976,7 @@ fields:
     location: Местоположение
     title: Звание
     description: Описание
-    tags: Тагове
+    tags: Етикети
     user_preferences: Потребителски настройки
     language: Език
     theme: Тема
@@ -1500,16 +1500,16 @@ interfaces:
     description: Избор на число чрез плъзгач
     always_show_value: Показване на стойностите винаги
   tags:
-    tags: Тагове
+    tags: Етикети
     description: Избор или добавяне на етикети
     whitespace: Интервали
     hyphen: Замяна с тире
     underscore: Замяна с долна черта
     remove: Премахване на интервали
-    capitalization: Първа-главна буква
-    uppercase: Обръщане към големи букви
-    lowercase: Обръщане към малки букви
-    auto_formatter: Форматиране като заглавие
+    capitalization: Текстов регистър
+    uppercase: Превръщане в главни букви
+    lowercase: Превръщане в малки букви
+    auto_formatter: Всяка Дума С Главна Буква
     alphabetize: По азбучен ред
     alphabetize_label: Винаги в азбучен ред
     add_tags: Добавете етикет и натиснете Enter...
@@ -1540,7 +1540,7 @@ interfaces:
     description: Превключване между вкл. и изкл.
     color_on: Активен цвят
     color_off: Неактивен цвят
-    label_placeholder: Въвеждане на етикет...
+    label_placeholder: Въвеждане на надпис...
     label_default: Включване
   translations:
     display_template: Шаблон при показване
@@ -1744,7 +1744,7 @@ panels:
     fill_type: Вид на запълване
     curve_type: Вид на кривата
   label:
-    name: Етикет
+    name: Надпис
     description: Показване на някакъв текст
   list:
     name: Списък
