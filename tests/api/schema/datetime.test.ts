@@ -3,6 +3,7 @@ import vendors from '../../get-dbs-to-test';
 import request from 'supertest';
 import knex, { Knex } from 'knex';
 import { find, cloneDeep } from 'lodash';
+import { validateDateDifference } from '../utils/validate-date-difference';
 
 type SchemaDateTypesObject = {
 	id: number;
@@ -10,6 +11,11 @@ type SchemaDateTypesObject = {
 	time?: string;
 	datetime: string;
 	timestamp: string;
+};
+
+type SchemaDateTypesResponse = SchemaDateTypesObject & {
+	date_created: string;
+	date_updated: string;
 };
 
 describe('schema', () => {
@@ -70,6 +76,28 @@ describe('schema', () => {
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
+					await request(getUrl(vendor))
+						.patch(`/fields/schema_date_types/date_created`)
+						.send({
+							meta: {
+								special: ['date-created'],
+							},
+						})
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					await request(getUrl(vendor))
+						.patch(`/fields/schema_date_types/date_updated`)
+						.send({
+							meta: {
+								special: ['date-updated'],
+							},
+						})
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
 					switch (vendor) {
 						case 'sqlite3':
 							await request(getUrl(vendor))
@@ -77,6 +105,27 @@ describe('schema', () => {
 								.send({
 									meta: {
 										special: ['cast-timestamp'],
+									},
+								})
+								.set('Authorization', 'Bearer AdminToken')
+								.expect('Content-Type', /application\/json/)
+								.expect(200);
+							await request(getUrl(vendor))
+								.patch(`/fields/schema_date_types/date_created`)
+								.send({
+									meta: {
+										special: ['date-created', 'cast-timestamp'],
+									},
+								})
+								.set('Authorization', 'Bearer AdminToken')
+								.expect('Content-Type', /application\/json/)
+								.expect(200);
+
+							await request(getUrl(vendor))
+								.patch(`/fields/schema_date_types/date_updated`)
+								.send({
+									meta: {
+										special: ['date-updated', 'cast-timestamp'],
 									},
 								})
 								.set('Authorization', 'Bearer AdminToken')
@@ -94,6 +143,8 @@ describe('schema', () => {
 								.set('Authorization', 'Bearer AdminToken')
 								.expect('Content-Type', /application\/json/)
 								.expect(200);
+							break;
+						default:
 							break;
 					}
 				},
@@ -113,12 +164,16 @@ describe('schema', () => {
 						}
 					}
 
+					const insertionStartTimestamp = new Date();
+
 					await request(getUrl(vendor))
 						.post(`/items/schema_date_types`)
 						.send(dates)
 						.set('Authorization', 'Bearer AdminToken')
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
+
+					const insertionEndTimestamp = new Date();
 
 					const response = await request(getUrl(vendor))
 						.get(`/items/schema_date_types?fields=*`)
@@ -131,7 +186,7 @@ describe('schema', () => {
 					for (let index = 0; index < sampleDates.length; index++) {
 						const responseObj = find(response.body.data, (o) => {
 							return o.id === sampleDates[index]!.id;
-						}) as SchemaDateTypesObject;
+						}) as SchemaDateTypesResponse;
 
 						if (vendor === 'oracle') {
 							expect(responseObj.date).toBe(sampleDates[index]!.date);
@@ -148,6 +203,15 @@ describe('schema', () => {
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
+						const dateCreated = new Date(responseObj.date_created);
+						expect(dateCreated.toISOString()).toBe(
+							validateDateDifference(
+								insertionStartTimestamp,
+								dateCreated,
+								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
+							).toISOString()
+						);
+						expect(responseObj.date_updated).toBeNull();
 					}
 				},
 				10000

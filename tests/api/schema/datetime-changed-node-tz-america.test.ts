@@ -5,6 +5,7 @@ import knex, { Knex } from 'knex';
 import { find, cloneDeep } from 'lodash';
 import { spawn, ChildProcess } from 'child_process';
 import { awaitDirectusConnection } from '../../setup/utils/await-connection';
+import { validateDateDifference } from '../utils/validate-date-difference';
 
 type SchemaDateTypesObject = {
 	id: number;
@@ -12,6 +13,11 @@ type SchemaDateTypesObject = {
 	time?: string;
 	datetime: string;
 	timestamp: string;
+};
+
+type SchemaDateTypesResponse = SchemaDateTypesObject & {
+	date_created: string;
+	date_updated: string;
 };
 
 describe('schema', () => {
@@ -101,6 +107,8 @@ describe('schema', () => {
 	describe('Date Types (Changed Node Timezone America)', () => {
 		describe('returns existing datetime data correctly', () => {
 			it.each(vendors)('%s', async (vendor) => {
+				const currentTimestamp = new Date();
+
 				const response = await request(getUrl(vendor))
 					.get(`/items/schema_date_types?fields=*`)
 					.set('Authorization', 'Bearer AdminToken')
@@ -112,7 +120,7 @@ describe('schema', () => {
 				for (let index = 0; index < sampleDates.length; index++) {
 					const responseObj = find(response.body.data, (o) => {
 						return o.id === sampleDates[index]!.id;
-					}) as SchemaDateTypesObject;
+					}) as SchemaDateTypesResponse;
 
 					if (vendor === 'sqlite3') {
 						// Dates are saved in milliseconds at 00:00:00
@@ -130,12 +138,20 @@ describe('schema', () => {
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
+						const dateCreated = new Date(responseObj.date_created);
+						expect(dateCreated.toISOString()).toBe(
+							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+						);
 						continue;
 					} else if (vendor === 'oracle') {
 						expect(responseObj.date).toBe(sampleDates[index]!.date);
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+						);
+						const dateCreated = new Date(responseObj.date_created);
+						expect(dateCreated.toISOString()).toBe(
+							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
 						);
 						continue;
 					}
@@ -145,6 +161,10 @@ describe('schema', () => {
 					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
 						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+					);
+					const dateCreated = new Date(responseObj.date_created);
+					expect(dateCreated.toISOString()).toBe(
+						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
 					);
 				}
 			});
@@ -162,12 +182,16 @@ describe('schema', () => {
 						}
 					}
 
+					const insertionStartTimestamp = new Date();
+
 					await request(getUrl(vendor))
 						.post(`/items/schema_date_types`)
 						.send(dates)
 						.set('Authorization', 'Bearer AdminToken')
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
+
+					const insertionEndTimestamp = new Date();
 
 					const response = await request(getUrl(vendor))
 						.get(`/items/schema_date_types?fields=*&offset=${sampleDates.length}`)
@@ -180,7 +204,7 @@ describe('schema', () => {
 					for (let index = 0; index < sampleDatesAmerica.length; index++) {
 						const responseObj = find(response.body.data, (o) => {
 							return o.id === sampleDatesAmerica[index]!.id;
-						}) as SchemaDateTypesObject;
+						}) as SchemaDateTypesResponse;
 
 						if (vendor === 'oracle') {
 							expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
@@ -188,6 +212,15 @@ describe('schema', () => {
 							expect(responseObj.timestamp.substring(0, 19)).toBe(
 								new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
 							);
+							const dateCreated = new Date(responseObj.date_created);
+							expect(dateCreated.toISOString()).toBe(
+								validateDateDifference(
+									insertionStartTimestamp,
+									dateCreated,
+									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
+								).toISOString()
+							);
+							expect(responseObj.date_updated).toBeNull();
 							continue;
 						}
 
@@ -197,6 +230,15 @@ describe('schema', () => {
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
 						);
+						const dateCreated = new Date(responseObj.date_created);
+						expect(dateCreated.toISOString()).toBe(
+							validateDateDifference(
+								insertionStartTimestamp,
+								dateCreated,
+								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
+							).toISOString()
+						);
+						expect(responseObj.date_updated).toBeNull();
 					}
 				},
 				10000
