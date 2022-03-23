@@ -171,8 +171,9 @@ const directus = new Directus(url, init);
 
       <a name="options.auth.autoRefresh"></a>
 
-    - `autoRefresh` [optional] _Boolean_ - Tells SDK if it should handle refresh tokens automatically. Defaults to
-      `true`.
+    - `autoRefresh` [optional] _Boolean_ - Tells SDK if it should handle refresh tokens automatically. The SDK will
+      periodically refresh the token when it's active, whereas it will attempt to refresh whenever it receives a
+      `TOKEN_EXPIRED` error and retry the previous failed request. Defaults to `true`.
     - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
       before the refresh token expires and needs to be refreshed. Defaults to `30000`.
     - `staticToken` [optional] _String_ - Defines the static token to use. It is not compatible with the options above
