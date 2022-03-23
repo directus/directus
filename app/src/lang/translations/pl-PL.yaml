@@ -874,6 +874,7 @@ page_help_settings_presets_item: >-
   **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
 page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
+page_help_settings_translation_strings_collection: '**Przeglądaj Tłumaczenie** — Wyświetla wszystkie ciągi tłumaczeń w projekcie.'
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
@@ -1298,6 +1299,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1528,6 +1530,11 @@ interfaces:
   input-multiline:
     textarea: Obszar tekstowy
     description: Wprowadź wieloliniowy zwykły tekst
+  input-translated-string:
+    input-translated-string: Przetłumaczone ciągi
+    description: Wybierz lub dodaj tłumaczenia
+    search_placeholder: Szukaj...
+    new_translation_string: Nowe tłumaczenia
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
