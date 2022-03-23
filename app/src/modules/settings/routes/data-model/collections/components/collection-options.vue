@@ -31,7 +31,7 @@
 
 				<v-list-item clickable class="danger" @click="deleteActive = true">
 					<v-list-item-icon>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-list-item-icon>
 					<v-list-item-content>
 						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}

@@ -121,7 +121,7 @@ fields:
 
   - field: module_bar
     interface: system-modules
-    special: json
+    special: cast-json
 
   - field: security_divider
     interface: presentation-divider
@@ -297,7 +297,7 @@ fields:
                 ]
             width: full
       template: '{{key}}'
-    special: json
+    special: cast-json
     width: full
 
   - field: map_divider
@@ -322,7 +322,7 @@ fields:
 
   - field: basemaps
     interface: list
-    special: json
+    special: cast-json
     options:
       template: '{{name}}'
       fields:

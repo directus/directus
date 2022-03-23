@@ -95,6 +95,7 @@ export default async function runAST(
 					const node = merge({}, nestedNode, {
 						query: { limit: env.RELATIONAL_BATCH_SIZE, offset: batchCount * env.RELATIONAL_BATCH_SIZE },
 					});
+
 					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
@@ -108,7 +109,11 @@ export default async function runAST(
 					batchCount++;
 				}
 			} else {
-				nestedItems = (await runAST(nestedNode, schema, { knex, nested: true })) as Item[] | null;
+				const node = merge({}, nestedNode, {
+					query: { limit: -1 },
+				});
+
+				nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items
@@ -341,12 +346,13 @@ function mergeWithParentItems(
 			});
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
+
 			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);
 			}
-			if (nestedNode.query.limit && nestedNode.query.limit >= 0) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
-			}
+
+			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
+
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {
 				// This is pre-filled in get-ast-from-query
 				const sortField = nestedNode.query.sort![0]!;

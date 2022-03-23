@@ -335,8 +335,6 @@ label_import: Import
 label_export: Export
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Use Current Filters & Settings
-export_data_button: Start Export
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -1462,7 +1460,6 @@ interfaces:
     auto_formatter: Use Title Auto-Formatter
     alphabetize: Alphabetise
     alphabetize_label: Force Alphabetical Order
-    add_tags: Add tags...
   input:
     input: Input
     description: Manually enter a value
@@ -1652,7 +1649,6 @@ layouts:
     subtitle: Subtitle
   tabular:
     tabular: Table
-    fields: Fields
     spacing: Spacing
     comfortable: Comfortable
     compact: Compact

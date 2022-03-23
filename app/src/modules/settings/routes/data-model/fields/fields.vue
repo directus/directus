@@ -22,7 +22,7 @@
 						:disabled="item === null"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
@@ -79,7 +79,7 @@
 		</div>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_datamodel_fields')" class="page-description" />
 			</sidebar-detail>
 		</template>

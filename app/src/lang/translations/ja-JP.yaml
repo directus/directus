@@ -544,7 +544,6 @@ layouts:
     subtitle: サブタイトル
   tabular:
     tabular: テーブル
-    fields: 入力欄
     spacing: 間隔
     comfortable: 広め
     compact: コンパクト

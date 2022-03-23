@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { cloneDeep, merge, uniq, uniqWith, flatten, isNil } from 'lodash';
+import { cloneDeep, merge, uniq, uniqWith, flatten, isNil, isArray } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
@@ -12,6 +12,7 @@ import {
 	PermissionsAction,
 	Accountability,
 	SchemaOverview,
+	Filter,
 } from '@directus/shared/types';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
@@ -55,6 +56,7 @@ export class AuthorizationService {
 		}
 
 		validateFields(ast);
+		validateFilterPermissions(ast, this.schema, this.accountability);
 		applyFilters(ast, this.accountability);
 
 		return ast;
@@ -133,6 +135,73 @@ export class AuthorizationService {
 
 					if (allowedFields.includes(fieldKey) === false) {
 						throw new ForbiddenException();
+					}
+				}
+			}
+		}
+
+		function validateFilterPermissions(
+			ast: AST | NestedCollectionNode | FieldNode,
+			schema: SchemaOverview,
+			accountability: Accountability | null
+		) {
+			if (ast.type !== 'field') {
+				if (ast.type === 'a2o') {
+					for (const collection of Object.keys(ast.children)) {
+						checkFilter(collection, ast.query?.[collection]?.filter ?? {});
+
+						for (const child of ast.children[collection]) {
+							validateFilterPermissions(child, schema, accountability);
+						}
+					}
+				} else {
+					checkFilter(ast.name, ast.query?.filter ?? {});
+
+					for (const child of ast.children) {
+						validateFilterPermissions(child, schema, accountability);
+					}
+				}
+			}
+
+			function checkFilter(collection: string, filter: Filter) {
+				const permissions = accountability?.permissions?.find((permission) => permission.collection === collection);
+
+				if (!permissions) throw new ForbiddenException();
+
+				const allowedFields = permissions.fields || [];
+
+				for (const [key, value] of Object.entries(filter)) {
+					if (key.startsWith('_')) {
+						// Continue checking for _and and _or
+						if (isArray(value)) {
+							for (const val of value) {
+								checkFilter(collection, val);
+							}
+						}
+					} else {
+						if (
+							allowedFields.length !== 0 &&
+							allowedFields.includes('*') === false &&
+							allowedFields.includes(key) === false
+						) {
+							throw new ForbiddenException();
+						}
+
+						const relation = schema.relations.find((relation) => {
+							return (
+								(relation.collection === collection && relation.field === key) ||
+								(relation.related_collection === collection && relation.meta?.one_field === key)
+							);
+						});
+
+						// Field is a relation
+						if (relation) {
+							if (relation.related_collection === collection) {
+								checkFilter(relation.collection, value);
+							} else {
+								checkFilter(relation.related_collection!, value);
+							}
+						}
 					}
 				}
 			}

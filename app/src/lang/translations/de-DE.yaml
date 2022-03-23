@@ -115,6 +115,7 @@ recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene nach oben verschoben.
+validation_errors_notice: 'Die folgenden Felder sind ungültig:'
 validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein
@@ -164,6 +165,7 @@ revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
+hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
@@ -336,8 +338,6 @@ label_import: Import
 label_export: Export
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Aktuelle Filter & Einstellungen verwenden
-export_data_button: Export starten
 last_page: Letzte Seite
 last_access: Letzter Zugriff
 fill_template: Mit Vorlagenwert füllen
@@ -672,6 +672,7 @@ no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
 clear_filters: Filter löschen
 saves_automatically: Wird automatisch gespeichert
 role: Rolle
+edit_role: Rolle bearbeiten
 rule: Regel
 user: Benutzer
 no_presets: Keine Vorlagen
@@ -715,6 +716,9 @@ create_dashboard: Dashboard erstellen
 dashboard_name: Name des Dashboards
 full_screen: Vollbild
 edit_panels: Panel bearbeiten
+center_align: Zentriert
+left_align: Linksbündig
+right_align: Rechtsbündig
 fit_to_screen: An Bildschirmgröße anpassen
 image_url: Bild-Url
 alt_text: Alternativ-Text
@@ -1220,6 +1224,7 @@ file: Datei
 file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
+hidden_in_group: Versteckt in {group}
 icon: Symbol
 info: Information
 normal: Normal
@@ -1471,7 +1476,6 @@ interfaces:
     auto_formatter: Auto-Formatierung für Titel verwenden
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
-    add_tags: Tags hinzufügen...
   input:
     input: Eingabe
     description: Wert manuell eingeben
@@ -1663,7 +1667,6 @@ layouts:
     subtitle: Untertitel
   tabular:
     tabular: Tabelle
-    fields: Felder
     spacing: Abstand
     comfortable: Groß
     compact: Kompakt

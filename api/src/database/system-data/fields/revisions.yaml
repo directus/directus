@@ -15,11 +15,11 @@ fields:
 
   - field: data
     hidden: true
-    special: json
+    special: cast-json
 
   - field: delta
     hidden: true
-    special: json
+    special: cast-json
 
   - field: parent
     width: half

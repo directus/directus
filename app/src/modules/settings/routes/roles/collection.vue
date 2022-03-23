@@ -4,7 +4,7 @@
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="admin_panel_settings" outline />
+				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
 
