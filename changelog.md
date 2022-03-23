@@ -2,6 +2,53 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.7.1 (March 23, 2022)
+
+### :rocket: Improvements
+
+- **App**
+  - [#12170](https://github.com/directus/directus/pull/12170) Add App Translation Strings in Settings (by @azrikahar)
+  - [#12324](https://github.com/directus/directus/pull/12324) Add shortcut from data model to collection content (by
+    @Tummerhore)
+  - [#12310](https://github.com/directus/directus/pull/12310) Save last accessed collection in Content Module (by
+    @azrikahar)
+  - [#12276](https://github.com/directus/directus/pull/12276) Fix field preview background color (by @azrikahar)
+- **API**
+  - [#12141](https://github.com/directus/directus/pull/12141) Prefix existing field typecasting flags with "cast-" (by
+    @licitdev)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#12330](https://github.com/directus/directus/pull/12330) Fix auto-casting of array like values in env (by
+    @rijkvanzanten)
+  - [#12328](https://github.com/directus/directus/pull/12328) Fix inconsistent delete action payload (by @rijkvanzanten)
+  - [#12190](https://github.com/directus/directus/pull/12190) Add query filter validation with permissions (by
+    @licitdev)
+  - [#12130](https://github.com/directus/directus/pull/12130) Fix incorrect order of migrations when reverting (by
+    @licitdev)
+- **App**
+  - [#12316](https://github.com/directus/directus/pull/12316) Disable dashboard/panel actions based on permissions (by
+    @azrikahar)
+  - [#12312](https://github.com/directus/directus/pull/12312) Prevent M2M item edits without permission via app (by
+    @azrikahar)
+  - [#12302](https://github.com/directus/directus/pull/12302) Handle array vs string based sorting in export (by
+    @rijkvanzanten)
+  - [#12284](https://github.com/directus/directus/pull/12284) Fix groups in v-field-template (by @rijkvanzanten)
+  - [#12280](https://github.com/directus/directus/pull/12280) Fix start setting of detail group (by @rijkvanzanten)
+  - [#12279](https://github.com/directus/directus/pull/12279) Fix color translation keys (by @rijkvanzanten)
+  - [#12277](https://github.com/directus/directus/pull/12277) Add fields to directus_user app recommended permission (by
+    @licitdev)
+  - [#12274](https://github.com/directus/directus/pull/12274) fix export sidebar's collection not updating (by
+    @azrikahar)
+  - [#12260](https://github.com/directus/directus/pull/12260) Fix being able to export a relational field that is within
+    a group (by @u12206050)
+  - [#11836](https://github.com/directus/directus/pull/11836) Prevent errors when using string filters with empty values
+    (by @licitdev)
+- **shared**
+  - [#11836](https://github.com/directus/directus/pull/11836) Prevent errors when using string filters with empty values
+    (by @licitdev)
+
 ## v9.7.0 (March 18, 2022)
 
 ### :sparkles: New Features
