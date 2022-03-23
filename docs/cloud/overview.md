@@ -40,7 +40,7 @@ with everything in Directus Core as well as all [Cloud Exclusive](/cloud/glossar
 
 To make life easy, you have the option to
 [create and login to your free Cloud Account](/cloud/accounts/#create-account-and-login) automatically with GitHub. If
-you have no Github or do not wish to use this login method, email-and-password login is available as well. Once
+you have no GitHub or do not wish to use this login method, email-and-password login is available as well. Once
 logged-in, create a new Team or Select an existing Team to access and manage its associated Projects, billing details,
 Team Members, Activity, and Settings.
 
