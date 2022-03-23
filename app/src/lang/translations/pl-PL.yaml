@@ -69,6 +69,12 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
+create_translation_string: Utwórz tłumaczenia
+translation_string_key_placeholder: Klucz tłumaczenia...
+translation_string_translations_placeholder: Dodaj nowe tłumaczenie
+edit_translation_string: Edytuj tłumaczenia
+delete_translation_string_copy: >-
+  Czy na pewno chcesz usunąć tłumaczenia "{key}"? Tej akcji nie można cofnąć.
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
@@ -175,6 +181,7 @@ field_create_success: 'Utworzono pole: "{field}"'
 field_update_success: 'Zaktualizowano pole: "{field}"'
 duplicate_where_to: Gdzie chcesz zduplikować to pole?
 language: Język
+language_placeholder: Wybierz język...
 aggregate_function: Funkcja agregacji
 aggregate_precision: Precyzja agregacji
 group_aggregation: Agregacja grup
@@ -821,6 +828,7 @@ settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
+settings_translation_strings: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 select: Wybierz...
