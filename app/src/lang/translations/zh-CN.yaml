@@ -420,7 +420,12 @@ download_file: 下载文件
 open_file_in_tab: 在新标签页中打开文件
 start_export: 开始导出
 not_available_for_local_downloads: 本地下载不可用
-exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项 。
+exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项。
+exporting_limited_items_in_collection: 正在导出 {collection} 内 {total} 项中的 {limit} 项。
+exporting_no_items_to_export: 没有要导出的条目。调整下面的导出配置。
+exporting_download_hint: 完成后，此 {format} 文件将自动下载到您的设备。
+exporting_batch_hint: 此导出将分批处理，完成后 {format} 文件将被保存到文件库。
+exporting_batch_hint_forced: 由于条目数量过大，导出必须分批处理，完成后 {format} 文件将被保存到文件库。
 collection_key: 模型的主键
 name: 名称
 primary_key_field: 主键字段
@@ -683,6 +688,7 @@ no_results_copy: 调整或清除搜索过滤器以查看结果。
 clear_filters: 清除过滤器
 saves_automatically: 自动保存
 role: 角色
+edit_role: 编辑角色
 rule: 规则
 user: 用户
 no_presets: 无预设
@@ -725,7 +731,11 @@ no_data: 没有数据
 create_dashboard: 创建Dashboard
 dashboard_name: Dashboard名称
 full_screen: 全屏显示
+full_text_search: 全文搜索
 edit_panels: 编辑面板
+center_align: 居中对齐
+left_align: 左对齐
+right_align: 右对齐
 fit_to_screen: 自适应
 image_url: 图片 Url
 alt_text: 替代文本
@@ -749,6 +759,8 @@ unlimited: 无限制
 open_link_in: 打开链接于
 new_tab: 新的选项卡
 current_tab: 当前选项卡
+save_image: 保存图像
+save_media: 保存媒体
 wysiwyg_options:
   aligncenter: 居中对齐
   alignjustify: 两端对齐
@@ -1231,12 +1243,23 @@ file: 文件
 file_library: 文件管理
 forgot_password: 忘记密码
 hidden: 隐藏
+hidden_in_group: 在 {group} 中隐藏
 icon: 图标
 info: 更多信息
 normal: 标准
 success: 成功
 warning: 警示
 danger: 危险
+colors:
+  purple: 紫色
+  blue: 蓝色
+  green: 绿色
+  yellow: 黄色
+  orange: 橙色
+  red: 红色
+  black: 黑色
+  gray: 灰色
+  white: 白色
 junction_collection: 交叉模型
 latency: 延迟
 login: 登录
@@ -1265,6 +1288,9 @@ sign_out: 退出登录
 sign_out_confirm: 您确定要退出登录吗?
 something_went_wrong: 出了点问题。
 sort_direction: 排序
+export_location: 导出位置
+export_started: 导出已开始
+export_started_copy: 您的导出已经开始。当准备下载时，您会收到通知。
 sort_asc: 升序
 sort_desc: 降序
 template: 模板
@@ -1273,6 +1299,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:
@@ -1352,6 +1379,7 @@ interfaces:
     include_seconds: 包括秒数
     set_to_now: 设置为现在
     use_24: 使用24小时格式
+    placeholder: 选择日期时间...
   system-display-template:
     display-template: 显示模板
     description: 混合静态文本和动态字段值
@@ -1424,6 +1452,8 @@ interfaces:
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
     box: Block / Inline
+    imageToken: 静态访问令牌
+    imageToken_label: 静态访问令牌已被附加到资源的 URL
   map:
     map: 地图
     description: 选择地图上的位置
@@ -1482,6 +1512,7 @@ interfaces:
     auto_formatter: 自动格式化标题
     alphabetize: 按字母表排序
     alphabetize_label: 强制按字母顺序排序
+    add_tags: 添加标签并按回车键...
   input:
     input: Input
     description: 手动输入一个值
@@ -1500,7 +1531,9 @@ interfaces:
     textarea: Textarea
     description: 输入多行纯文本
   input-translated-string:
+    input-translated-string: 已翻译的字符串
     description: 选择或添加翻译字符串
+    search_placeholder: 搜索...
     new_translation_string: 新翻译字符串
   boolean:
     toggle: 切换
@@ -1532,6 +1565,8 @@ interfaces:
     custom_formats: 自定义格式
     options_override: 覆盖选项
     folder_note: 用于上传文件的文件夹。不影响现有文件。
+    imageToken: 静态访问令牌
+    imageToken_label: 静态访问令牌已被附加到资源的 URL
   input-autocomplete-api:
     input-autocomplete-api: 自动完成 Input (API)
     description: 一个事先搜索的外部API
