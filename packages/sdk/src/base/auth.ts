@@ -74,7 +74,10 @@ export class Auth extends IAuth {
 
 		if (this.timer) clearTimeout(this.timer);
 
-		const msWaitUntilRefresh = this._storage.auth_expires - this.msRefreshBeforeExpires;
+		const msWaitUntilRefresh = Math.max(
+			this._storage.auth_expires - this.msRefreshBeforeExpires,
+			this.msRefreshBeforeExpires
+		);
 
 		this.timer = setTimeout(async () => {
 			await this.refresh().catch(() => {
@@ -89,7 +92,7 @@ export class Auth extends IAuth {
 		const interceptor = axiosInstance.interceptors.response.use(
 			(response) => response,
 			async (error) => {
-				if (error.response.status !== 403) {
+				if (error.response?.status !== 401 && error.response?.data?.errors?.[0]?.extensions?.code !== 'TOKEN_EXPIRED') {
 					return Promise.reject(error);
 				}
 
