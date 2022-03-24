@@ -30,26 +30,19 @@
 	</v-notice>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
-import { ValidationError } from '@directus/shared/types';
+import { ValidationError, Field } from '@directus/shared/types';
 import formatTitle from '@directus/format-title';
 
-export default defineComponent({
-	props: {
-		validationErrors: {
-			type: Array as PropType<ValidationError[]>,
-			required: true,
-		},
-	},
-	emits: ['scroll-to-field'],
-	setup() {
-		const { t } = useI18n();
+interface Props {
+	validationErrors: ValidationError[];
+}
 
-		return { t, formatTitle };
-	},
-});
+defineProps<Props>();
+defineEmits(['scroll-to-field']);
+
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>

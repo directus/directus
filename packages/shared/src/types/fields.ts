@@ -37,6 +37,7 @@ export type FieldMeta = {
 	note: string | null;
 	conditions: Condition[] | null;
 	validation: Filter | null;
+	validation_message: string | null;
 	system?: true;
 };
 
