@@ -13,7 +13,7 @@
 				<template #prepend>
 					<v-input
 						ref="htmlColorInput"
-						:model-value="hex ? hex.substr(0, 7) : null"
+						:model-value="hex ? hex.slice(0, 7) : null"
 						type="color"
 						class="html-color-select"
 						@update:model-value="setSwatchValue($event)"
@@ -266,7 +266,7 @@ function setValue(type: 'rgb' | 'hsl' | 'alpha', i: number, val: number) {
 }
 
 function setSwatchValue(color: string) {
-	hex.value = `${color}${hex.value !== null && hex.value.length === 9 ? hex.value.substr(-2) : ''}`;
+	hex.value = `${color}${hex.value !== null && hex.value.length === 9 ? hex.value.slice(-2) : ''}`;
 }
 
 function unsetColor() {
