@@ -1,7 +1,6 @@
 import { Knex } from 'knex';
 import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
-import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import { Aggregate, Filter, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
 import { getColumn } from './get-column';
@@ -600,7 +599,7 @@ export async function applySearch(
 			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
 				const number = Number(searchQuery);
 				if (!isNaN(number)) this.orWhere({ [`${collection}.${name}`]: number });
-			} else if (field.type === 'uuid' && validate(searchQuery)) {
+			} else if (field.type === 'uuid') {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
 			}
 		});
