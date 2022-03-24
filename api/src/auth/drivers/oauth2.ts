@@ -12,7 +12,6 @@ import {
 	ServiceUnavailableException,
 	InvalidConfigException,
 	InvalidTokenException,
-	TokenExpiredException,
 } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
