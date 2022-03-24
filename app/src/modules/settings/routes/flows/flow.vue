@@ -70,7 +70,7 @@
 			<v-progress-circular v-if="loading" class="loading" indeterminate />
 			<v-workspace v-else :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
-					<task
+					<operation
 						:edit-mode="editMode"
 						:panel="panel"
 						type="trigger"
@@ -127,7 +127,7 @@ import { nanoid } from 'nanoid';
 
 import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
-import Task from './components/task.vue';
+import Operation from './components/operation.vue';
 import { AppPanel } from '@/components/v-workspace-panel.vue';
 
 const { t } = useI18n();

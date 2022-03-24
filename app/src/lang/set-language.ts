@@ -7,12 +7,14 @@ import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { translate } from '@/utils/translate-object-values';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
+import { getOperations } from '@/operations';
 
 const { modules, modulesRaw } = getModules();
 const { layouts, layoutsRaw } = getLayouts();
 const { interfaces, interfacesRaw } = getInterfaces();
 const { panels, panelsRaw } = getPanels();
 const { displays, displaysRaw } = getDisplays();
+const { operations, operationsRaw } = getOperations();
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
@@ -43,6 +45,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	interfaces.value = translate(interfacesRaw.value);
 	panels.value = translate(panelsRaw.value);
 	displays.value = translate(displaysRaw.value);
+	operations.value = translate(operationsRaw.value);
 
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();

@@ -19,7 +19,7 @@ import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
 import FlowsOverview from './routes/flows/overview.vue';
 import FlowsDetail from './routes/flows/flow.vue';
-import FlowTaskDetail from './routes/flows/components/task-detail.vue'
+import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 
 export default defineModule({
 	id: 'settings',
@@ -196,10 +196,10 @@ export default defineModule({
 						{
 							name: 'settings-flows-operation',
 							path: ':operationKey',
-							component: FlowTaskDetail,
-							props: true
-						}
-					]
+							component: FlowOperationDetail,
+							props: true,
+						},
+					],
 				},
 			],
 		},

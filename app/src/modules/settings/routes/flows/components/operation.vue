@@ -11,26 +11,34 @@
 		@delete="$emit('delete', panel.id)"
 		@duplicate="$emit('duplicate', panel)"
 	>
-		<template #body v-if="editMode">
-			<v-button class="add-resolve" x-small icon rounded><v-icon name="add" small @click="$emit('create', 'resolve')"></v-icon></v-button>
-			<v-button v-if="type !== 'trigger'" class="add-reject" @click="$emit('create', 'reject')"><v-icon name="add"></v-icon></v-button>
+		<template v-if="editMode" #body>
+			<v-button class="add-resolve" x-small icon rounded>
+				<v-icon name="add" small @click="$emit('create', 'resolve')"></v-icon>
+			</v-button>
+			<v-button v-if="type !== 'trigger'" class="add-reject" @click="$emit('create', 'reject')">
+				<v-icon name="add"></v-icon>
+			</v-button>
 		</template>
 		<div class="block">{{ type }}</div>
 	</v-workspace-panel>
 </template>
 
-<script lang="ts" setup>import { AppPanel } from '@/components/v-workspace-panel.vue';
+<script lang="ts" setup>
+import { AppPanel } from '@/components/v-workspace-panel.vue';
 
-const props = withDefaults(defineProps<{
-	panel: AppPanel
-	type?: 'trigger' | 'operation' | 'error'
-	editMode?: boolean
-}>(), {
-	type: 'operation',
-	editMode: false
-});
+const props = withDefaults(
+	defineProps<{
+		panel: AppPanel;
+		type?: 'trigger' | 'operation' | 'error';
+		editMode?: boolean;
+	}>(),
+	{
+		type: 'operation',
+		editMode: false,
+	}
+);
 
-const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplicate'])
+const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplicate']);
 </script>
 
 <style lang="scss" scoped>
@@ -48,7 +56,7 @@ const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplica
 		&::before {
 			position: absolute;
 			pointer-events: none;
-			content: "";
+			content: '';
 			top: 0;
 			bottom: 0;
 			left: 0;
@@ -69,7 +77,8 @@ const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplica
 		}
 	}
 
-	.add-resolve, .add-reject {
+	.add-resolve,
+	.add-reject {
 		transform: translate(-50%, -50%);
 		z-index: 10;
 	}

@@ -448,6 +448,7 @@ information: Information
 report_bug: Report Bug
 request_feature: Request Feature
 interface_not_found: 'Interface "{interface}" not found.'
+operation_not_found: 'Operation "{operation}" not found.'
 reset_interface: Reset Interface
 display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display

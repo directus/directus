@@ -1,17 +1,17 @@
 import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getOperations } from './index';
-import { operationConfig } from '@directus/shared/types';
+import { OperationAppConfig } from '@directus/shared/types';
 
 const { operationsRaw } = getOperations();
 
 export async function registerOperations(app: App): Promise<void> {
 	const operationModules = import.meta.globEager('./*/**/index.ts');
 
-	const operations: operationConfig[] = Object.values(operationModules).map((module) => module.default);
+	const operations: OperationAppConfig[] = Object.values(operationModules).map((module) => module.default);
 
 	try {
-		const customOperations: { default: operationConfig[] } = import.meta.env.DEV
+		const customOperations: { default: OperationAppConfig[] } = import.meta.env.DEV
 			? await import('@directus-extensions-operation')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/operations/index.js`);
 
@@ -25,13 +25,21 @@ export async function registerOperations(app: App): Promise<void> {
 
 	operationsRaw.value = operations;
 
-	operationsRaw.value.forEach((inter: operationConfig) => {
-		if (typeof inter.preview !== 'function' && Array.isArray(inter.preview) === false && inter.preview !== null) {
-			app.component(`operation-${inter.id}`, inter.preview);
+	operationsRaw.value.forEach((operation: OperationAppConfig) => {
+		if (
+			typeof operation.preview !== 'function' &&
+			Array.isArray(operation.preview) === false &&
+			operation.preview !== null
+		) {
+			app.component(`operation-${operation.id}`, operation.preview);
 		}
 
-		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false && inter.options !== null) {
-			app.component(`operation-options-${inter.id}`, inter.options);
+		if (
+			typeof operation.options !== 'function' &&
+			Array.isArray(operation.options) === false &&
+			operation.options !== null
+		) {
+			app.component(`operation-options-${operation.id}`, operation.options);
 		}
 	});
 }
