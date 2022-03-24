@@ -658,6 +658,7 @@ operators:
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
   regex: Matches RegExp
+custom_validation_message: Custom Validation Message
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item

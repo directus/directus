@@ -58,6 +58,10 @@
 
 		<small v-if="validationError" class="validation-error">
 			{{ validationMessage }}
+			<template v-if="field.meta?.validation_message">
+				<br />
+				{{ field.meta?.validation_message }}
+			</template>
 		</small>
 	</div>
 </template>

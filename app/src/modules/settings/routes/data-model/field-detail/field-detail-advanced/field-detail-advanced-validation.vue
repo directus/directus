@@ -9,6 +9,11 @@
 				@input="validation = $event"
 			/>
 		</div>
+
+		<div class="field full">
+			<div class="label type-label">{{ t('custom_validation_message') }}</div>
+			<interface-system-input-translated-string :value="validationMessage" @input="validationMessage = $event" />
+		</div>
 	</div>
 </template>
 
@@ -24,6 +29,7 @@ const { collection, field } = storeToRefs(fieldDetailStore);
 const { t } = useI18n();
 
 const validation = syncFieldDetailStoreProperty('field.meta.validation');
+const validationMessage = syncFieldDetailStoreProperty('field.meta.validation_message');
 </script>
 
 <style lang="scss" scoped>
