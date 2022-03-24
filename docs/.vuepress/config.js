@@ -641,38 +641,39 @@ module.exports = {
 			title = pageTitleInMenu;
 		}
 
+
 		// === 2. Build thumbnail url
 		const imageUrl = getImageUrl({
-			username: 'directus',
+			account: 'directus',
 			template: 'docs',
-			props: { title, lastUpdated, readTime, breadcrumb },
+			data: { title, lastUpdated, readTime, breadcrumb },
 			type: 'png',
 		});
 
 
-		
 		// === 3. Build dynamic meta tags
 
 		const pageUrl = `https://docs.directus.io${path}`;
 		const description = $page._context.siteConfig.description;
 		const meta = [
 			// Open Graph meta tags (facebook, linkedin, discord, slack, etc...)
-			{ property: 'og:url', content: pageUrl },
-			{ property: 'og:type', content: 'website' },
 			{ property: 'og:title', content: title },
 			{ property: 'og:description', content: description },
+			{ property: 'og:url', content: pageUrl },
+			{ property: 'og:type', content: 'website' },
 			{ property: 'og:image', content: imageUrl },
+			{ property: 'og:image:width', content: 1200 },
+			{ property: 'og:image:height', content: 630 },
 
 			// Twitter meta tags
-			{ name: 'twitter:url', content: pageUrl },
-			{ name: 'twitter:site', content: '@directus' },
 			{ name: 'twitter:title', content: title },
 			{ name: 'twitter:description', content: description },
-			{ name: 'twitter:image', content: imageUrl },
+			{ name: 'twitter:url', content: pageUrl },
+			{ name: 'twitter:site', content: '@directus' },
 			{ name: 'twitter:card', content: 'summary_large_image' },
-			
-			// Other
-			{ name: 'theme-color', content: '#745EFF' },
+			{ name: 'twitter:image', content: imageUrl },
+			{ name: 'twitter:image:width', content: 1200 },
+			{ name: 'twitter:image:height', content: 630 },
 		];
 
 		// === 4. Append custom metadata to frontmatter meta
