@@ -3,21 +3,14 @@
 > This Content Module is the primary way for interacting with Items in a Collection _(i.e. database content)_. Here you
 > can browse/visualize, create, upload, edit, share and delete Items.
 
-## How it Works
-
 ::: tip Assumed Knowledge
 
-tbd
+The controls to create, view, edit and delete Items in this Module are quite intuitive. However, to use the Module
+effectively in all its nuances, you will need to know about creating [Collections](/configuration/data-model) and
+[Filters](/app/filters), as well as understand how configuration of
+[Users, Roles and Permissions](/configuration/users-roles-permissions/) impacts content access for non-Administrators.
 
 :::
-
-Introductory sentence.
-
-<video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/insights-dashboards-20220216A.mp4" type="video/mp4" />
-</video>
-
-1. Navigate to the Content Module
 
 ## Collection Page
 

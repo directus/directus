@@ -1,17 +1,21 @@
 # Collection Page
 
-> This is the main gateway to your content items, providing a highly configurable Layout for browsing and visualizing
-> the items within a collection. The header of this page includes key action buttons for creating, deleting, and batch
-> editing items.
+> This is the main gateway to your content Items, providing a highly configurable Layout for browsing and visualizing
+> the Items within a Collection. The Page Header includes key action buttons for sorting, filtering, creating, deleting,
+> and batch editing Items.
 
 [[toc]]
 
-## Creating an Item
+## Create an Item
 
-1. Navigate to the collection where you want to add an item
-2. Click on the "Create Item" (+ icon) button located in the header
-3. Complete the Item Detail form
-4. Click the "Save Item" (✓ icon) button located in the header
+<video autoplay muted loop controls title="Create an Item">
+	<source src="" type="video/mp4" />
+</video>
+
+1. Navigate to the Collection that you want to add an Item to.
+2. Click <span mi btn>add</span> in the Page Header.
+3. Fill in the Item Details Form as desired.
+4. Click <span mi btn>check</span> in the Page Header.
 
 ::: tip Singletons
 
@@ -20,51 +24,99 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 :::
 
-## Manually Sorting Items
+## Batch Edit or Delete Items
 
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
-2. Navigate to the collection of the items you want to sort
-3. Choose a layout that supports manual sorting (eg: the default "table" mode)
-4. Enable manual sorting. (eg: for the table layout, click on the Sort column's header)
-5. Drag items by their handle into a new position
+It is possible to select multiple Items to batch edit/delete from the Collections Page. Deletion will permanently delete
+Items from the database, this cannot be reverted. On batch editing, the Item Details Form opens, allowing you to make
+the same edit across multiple Items.
+
+<video autoplay muted loop controls title="Batch Edit Items">
+	<source src="" type="video/mp4" />
+</video>
+
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar).
+2. Navigate to the Collection you wish to sort.
+3. In the [Sidebar](/app/overview/#_4-sidebar), choose a [Layout](/#adjust-item-layouts) that supports multiple
+   selection (e.g. "table" or "card" mode).
+4. Click the Items you wish to select.
+   - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the far left column to select Items.
+   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the top left hand corner to select Items.
+
+Once Items are selected, <span mi btn dngr>delete</span> and <span mi btn warning>edit</span> appear in the Page Header.
+There are two options:
+
+**Edit**\
+5. Click <span mi btn warning>edit</span> and the Item Details Form will open.\
+6. Make edits to Fields as desired.\
+7. Click <span mi btn>check</span> to confirm batch edits on all Items.
+
+**Delete**\
+5. Click <span mi btn dngr>delete</span> and a popup will appear.\
+6. Click **"Delete"**.
+
+:::danger DANGER!
+
+These actions are destructive, proceed with caution.
+
+:::
+
+## Manually Sort Items
+
+<video autoplay muted loop controls title="Batch Edit Items">
+	<source src="" type="video/mp4" />
+</video>
+
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar).
+2. Navigate to the Collection you want to sort Items in.
+3. In the [Sidebar](/app/overview/#_4-sidebar), choose a [Layout](#adjust-item-layouts) that supports manual sorting
+   (e.g. the default "table" mode).
+4. Enable manual sorting. (eg: for the table Layout, click on the Sort column's header).
+5. Drag Items by their handle into a new position.
 
 The new sort order is saved automatically, so make sure you wait until the App's loading indicator finishes before
 navigating away from the page.
 
 ::: warning Requires Configuration
 
-This feature is only available if a Sort column has been configured in the Collection's data model settings.
+This feature is only available if a Sort column has been configured in the Collection's Data Model Settings.
 
 :::
 
-## Ordering Items
+## Order Items
 
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
-2. Navigate to a collection of items
-3. Choose a layout that supports manual ordering (eg: the default "table" mode)
-4. Set the Order Field and Order Direction
-   - Table Layout: Click on the field's column header, clicking again changes order direction
-   - Card Layout: Adjust the two dropdowns in the layout's subheader
+![Order Items](image.webp)
+
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar).
+2. Navigate to the Collection you wish to sort.
+3. In the [Sidebar](/app/overview/#_4-sidebar), choose a [Layout](/#adjust-item-layouts) that supports ordering (e.g.
+   "table" or "card" mode).
+4. Set the Order Field and Order Direction.
+   - **Table Layout:** Click on the Field's column Header, clicking again changes order direction.
+   - **Card Layout:** Adjust the Sort Field and Sort Direction dropdowns in the Layout's Subheader.
 
 ::: tip Sort vs Order
 
-**Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or
-numerically. **Sorting** (when enabled) saves a value in a [Sort](/reference/query/#sort) field, which can then be used
+**Ordering** is a non-destructive action (does _not_ change your data) used to browse Items alphabetically or
+numerically. **Sorting** (when enabled) saves a value in a [Sort Field](/reference/query/#sort), which can then be used
 to return data in a custom order.
 
 :::
 
-## Adjusting Item Layouts
+## Adjust Item Layouts
 
 **[Learn more about Layouts](/getting-started/glossary/#layouts)**
 
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
-2. Navigate to the collection of the items you want to browse
-3. Click "Layout Options" in the page sidebar
-4. Choose the desired "Layout" you want to use
-5. Configure any other layout options
+![Adjust Item Layouts](image.webp)
+
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar).
+2. Navigate to the Collection of the Items you want to browse.
+3. In the page Sidebar, click **"Layout Options"**.
+4. Choose the desired Layout you want to use.
+5. Configure any other Layout options as desired.
 
 ### Table Layout
+
+![Table Layout](image.webp)
 
 Supports all forms of data, and is therefore the default within the Content module. It includes the following
 features/options:
@@ -77,6 +129,8 @@ features/options:
 - Select All
 
 ### Card Layout
+
+![Card Layout](image.webp)
 
 This tiled layout is ideal for collections that prioritize an image, and is the default for both the
 [User Directory](/app/user-directory/) and [File Library](/reference/files/). It includes the following
@@ -93,6 +147,8 @@ features/options:
 
 ### Calendar Layout
 
+![Calendar Layout](image.webp)
+
 An excellent choice for temporal (date/time) data, this Layout allows you to choose between a Month, Week, Day, and List
 view. The following options are included:
 
@@ -101,6 +157,8 @@ view. The following options are included:
 - End Date Field
 
 ### Map Layout
+
+![Map Layout](image.webp)
 
 For geospatial/geographic data, the Map Layout provides a world map for points, lines, and other geometry. The following
 options are available:
@@ -128,16 +186,20 @@ options are available:
 6. Enter a value in the field filter's input(s)
 7. Remove unwanted filters by hovering over the field and clicking "X"
 
-## Viewing Archived Items
+## View Archived Items
 
 **[Learn more about Archive](/configuration/data-model/#archive).**
+
+![View Archived Items](image.webp)
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to view
 3. Click "Archive" in the page sidebar
 4. Choose the desired view: `Show Items` (default), `Show Archived Items`, or `Show Items + Archived Items`
 
-## Bookmarking Item Presets
+## Bookmark Item Presets
+
+![Bookmark Item Presets](image.webp)
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to bookmark
@@ -146,7 +208,7 @@ options are available:
 5. Rename bookmarks by right-clicking them in the navigation sidebar and selecting "Rename Bookmark"
 6. Delete bookmarks by right-clicking them in the navigation sidebar and selecting "Delete Bookmark"
 
-## Importing / Exporting Items
+## Import / Export Items
 
 ### Import
 

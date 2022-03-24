@@ -18,7 +18,7 @@ disabled or hidden based on permissions.
 2. Navigate to the collection of the item you want to update
 3. Click on the item within the current layout (eg: on the row of the table)
 4. Update the Item Detail form
-5. Click the "Save Item" (✓ icon) button located in the header
+5. Click <span mi btn>check</span> in the header.
 
 ::: tip Other Save Options
 
@@ -96,3 +96,7 @@ icon) button located in the header.
 
 You can also mention any user by typing `@` along with their name or email in your comment. They will then receive a
 notification which will direct them to your comment.
+
+## Data Sharing
+
+Please refer to the documentation on [Data Sharing]().
