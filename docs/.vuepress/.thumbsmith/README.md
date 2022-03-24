@@ -11,3 +11,5 @@ To deploy changes:
 ```
 thumbsmith deploy docs.thumbnail.html --api-token={{THUMBSMITH_API_TOKEN}}
 ```
+
+See the [docs](https://thumbsmith.com/docs/create-a-template) for more info.
