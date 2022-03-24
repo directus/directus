@@ -18,6 +18,7 @@
 				:collection="collection"
 				:field="field"
 				:depth="1"
+				:include-validation="includeValidation"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
@@ -70,6 +71,7 @@ interface Props {
 	collectionField?: string;
 	field?: string;
 	inline?: boolean;
+	includeValidation?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -79,6 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
 	collectionField: undefined,
 	field: undefined,
 	inline: false,
+	includeValidation: false,
 });
 
 const emit = defineEmits(['input']);

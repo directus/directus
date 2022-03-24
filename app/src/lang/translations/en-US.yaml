@@ -657,6 +657,7 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  regex: Matches RegExp
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item

@@ -135,12 +135,14 @@ interface Props {
 	field?: string;
 	depth?: number;
 	inline?: boolean;
+	includeValidation?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	field: undefined,
 	depth: 1,
 	inline: false,
+	includeValidation: false,
 });
 
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);
@@ -299,7 +301,7 @@ function getCompareOptions(name: string) {
 	const fieldInfo = fieldsStore.getField(props.collection, name);
 	if (fieldInfo === null) return [];
 
-	return getFilterOperatorsForType(fieldInfo.type).map((type) => ({
+	return getFilterOperatorsForType(fieldInfo.type, { includeValidation: true }).map((type) => ({
 		text: t(`operators.${type}`),
 		value: `_${type}`,
 	}));
