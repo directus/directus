@@ -1,15 +1,20 @@
 # Projects
 
-> Cloud Projects are on-demand instances of Directus. A Cloud Project is contained and managed by one Team. There are 3
-> Project tiers: Community, Standard and Enterprise.
+> Cloud Projects are individual instances of the Directus platform managed within a team. Three Project tiers are
+> available, each offering different options for infrastructure, configuration, and professional services.
 
 [[toc]]
 
-## View Projects
-
-All Team Projects are listed on the Projects page.
+## View a Team's Projects
 
 ![View Projects](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/view-projects-20220322A.webp)
+
+All Team Projects are listed on the Projects page. For each Project, the following information and shortcuts are
+provided. On Project creation, the provisioning progress will be displayed until fully complete. The icon on the far
+left indicates whether it is online, offline or [inactive](/cloud/glossary/#inactivity). Next to this, the Project Name
+and Project Slug are given. On the right, the Project Tier is displayed, followed by shortcuts which allow you to
+<span mi icon>edit</span> [edit](#manage-a-project) and <span mi icon>launch</span> [access](#access-a-project) the
+Project. To view a Team's Projects, follow the steps below.
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -18,11 +23,11 @@ All Team Projects are listed on the Projects page.
 
 ## Create a Project
 
+![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/create-a-project-20220228A.webp)
+
 Only Standard and Community Projects can be spun-up from the Directus Dashboard. The process for both is almost
 identical and the only difference is that Community Projects have fewer configuration options. To learn more, see
 [Projects](/cloud/glossary/#projects) in the Glossary.
-
-![Creating a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/create-a-project-20220228A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -64,15 +69,13 @@ To access the Project, follow these steps:
 3. Select the appropriate Team from the dropdown.
 4. Click **"Projects"** to enter the Projects Page.
 5. Click the Project to enter the Project Monitor Page.
-6. Click **"Open Project"**.
-
-Your Project login page will open in a new tab.
+6. Click **"Open Project"**. Your Project login page will open in a new tab.
 
 ## Monitor a Project
 
-Graphs on the [Project Monitor Page](/cloud/glossary/#project-monitor-page) display traffic and performance information.
-
 ![Project Monitor Page](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/monitor-a-project-20220322A.webp)
+
+Graphs on the [Project Monitor Page](/cloud/glossary/#project-monitor-page) display traffic and performance information.
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.
@@ -82,11 +85,11 @@ Graphs on the [Project Monitor Page](/cloud/glossary/#project-monitor-page) disp
 
 ## Manage a Project
 
+![Manage a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/manage-a-project-20220322A.webp)
+
 On Standard Projects, it is possible to change the Project Name as well as reconfigure
 [the Node Type, number of Active Nodes and number of Standby Nodes](/cloud/glossary/#nodes). On Community Projects, the
 only option available is to edit the Project's Name.
-
-![Manage a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/manage-a-project-20220322A.webp)
 
 1. Login to the Cloud Dashboard.
 2. Open the Team Menu in the Dashboard Header.

@@ -1,16 +1,11 @@
 # Overview
 
-> Manage Teams, Team Members, Projects, and billing with the easy-to-use Directus Cloud Dashboard.
+> Our Cloud service manages all infrastructure and software updates on your Directus Projects. From hobbyists and
+> startups to Fortune 500 companies, our flexible cloud service offers fair and predictable usage-based pricing.
 
 ![Hero Image](image.webp)
 
 [[toc]]
-
-:::tip Directus Core vs Directus Cloud
-
-[Directus Core](/getting-started/introduction/) is scalable, modular and extensible open-source software that is
-completely free to download and use, with no artificial or arbitrary [quotas](/cloud/glossary/#quotas) on things like
-Roles or Users.
 
 [Directus Cloud](https://directus.cloud/) is a hosting platform for [Directus Projects](/cloud/glossary/#projects),
 offering [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), bi-weekly
@@ -18,10 +13,6 @@ offering [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), bi-wee
 [horizontal and vertical scaling](/cloud/glossary/#nodes) at the click of a button, hosting options to fit any
 budget-and-scale, and a [pricing system](/cloud/glossary/#billing) that allows you to scale up or down at anytime.
 Directus Cloud handles data storage, hosting, updates and scalability so developers can focus on building their app.
-
-:::
-
-## Cloud Hierarchy
 
 The Cloud Dashboard contains three key components: [Accounts](/cloud/glossary/#accounts),
 [Teams](/cloud/glossary/#teams) and [Projects](/cloud/glossary/#projects).
@@ -35,9 +26,6 @@ multiple Projects. Projects can only be managed by one Team. Projects cannot be 
 
 ## Getting Started
 
-There are 3 [tiers of Cloud Projects](/cloud/glossary/#projects): Community, Standard, and Enterprise. All 3 tiers come
-with everything in Directus Core as well as all [Cloud Exclusive](/cloud/glossary/#cloud-exclusives) Extensions.
-
 To make life easy, you have the option to
 [create and login to your free Cloud Account](/cloud/accounts/#create-account-and-login) automatically with GitHub. If
 you have no GitHub or do not wish to use this login method, email-and-password login is available as well. Once
@@ -48,8 +36,11 @@ Team Members, Activity, and Settings.
   <source src="https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/cloud-dashboard-overview-20220322A.mp4" type="video/mp4">
 </video>
 
-The Dashboard has 6 key navigation areas: the Dashboard Header, Projects, Members, Billing, Activity and Settings.
-Here's how these navigation areas relate to Accounts, Projects, and Teams.
+There are 3 [tiers of Cloud Projects](/cloud/glossary/#projects): Community, Standard, and Enterprise. All 3 tiers come
+with everything in Directus Core as well as all [Cloud Exclusive](/cloud/glossary/#cloud-exclusives) Extensions.
+
+The Dashboard layout itself is designed to manage [Accounts](/cloud/glossary/#accounts), [Teams](/cloud/glossary/#teams)
+and [Projects](/cloud/glossary/#projects):
 
 ## Accounts
 
@@ -58,7 +49,8 @@ Here's how these navigation areas relate to Accounts, Projects, and Teams.
 - <span mi icon>check</span> — View Directus Cloud [system status](/cloud/glossary/#system-status).
 - <span mi icon>notifications</span> — Notifications such as version upgrades, platform upgrades, etc.
 - <span mi icon>help_outline</span> — Documentation, Community Support and Request for Premium Support.
-- **Team Dropdown Menu** — [Create new Teams](/cloud/teams/#create-a-team) and navigate between Teams you are on.
+- <span mi icon>expand_more</span> — [Create new Teams](/cloud/teams/#create-a-team) and navigate between Teams you are
+  on.
 - <span mi icon>account_circle</span> — [Access, edit or destroy Account](/cloud/accounts).
 
 ## Projects
