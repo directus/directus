@@ -136,7 +136,7 @@ async function getDatabaseSchema(
 		const column = schemaOverview[field.collection].columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
 		const type = (existing && getLocalType(column, { special })) || 'alias';
-		const validation = field.validation ?? null;
+		let validation = field.validation ?? null;
 
 		if (validation && typeof validation === 'string') validation = JSON.parse(validation);
 
