@@ -106,6 +106,7 @@ async function getDatabaseSchema(
 					scale: column.numeric_scale || null,
 					special: [],
 					note: null,
+					validation: null,
 					alias: false,
 				};
 			}),
@@ -114,13 +115,16 @@ async function getDatabaseSchema(
 
 	const fields = [
 		...(await database
-			.select<{ id: number; collection: string; field: string; special: string; note: string | null }[]>(
-				'id',
-				'collection',
-				'field',
-				'special',
-				'note'
-			)
+			.select<
+				{
+					id: number;
+					collection: string;
+					field: string;
+					special: string;
+					note: string | null;
+					validation: string | Record<string, any> | null;
+				}[]
+			>('id', 'collection', 'field', 'special', 'note', 'validation')
 			.from('directus_fields')),
 		...systemFieldRows,
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
@@ -132,6 +136,9 @@ async function getDatabaseSchema(
 		const column = schemaOverview[field.collection].columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
 		const type = (existing && getLocalType(column, { special })) || 'alias';
+		const validation = field.validation ?? null;
+
+		if (validation && typeof validation === 'string') validation = JSON.parse(validation);
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,
@@ -145,6 +152,7 @@ async function getDatabaseSchema(
 			special: special,
 			note: field.note,
 			alias: existing?.alias ?? true,
+			validation: field.validation ?? null,
 		};
 	}
 

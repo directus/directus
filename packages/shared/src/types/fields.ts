@@ -1,4 +1,4 @@
-import { FilterOperator } from './filter';
+import { Filter, FilterOperator } from './filter';
 import { DeepPartial } from './misc';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS } from '../constants';
@@ -36,6 +36,7 @@ export type FieldMeta = {
 	width: Width | null;
 	note: string | null;
 	conditions: Condition[] | null;
+	validation: Filter | null;
 	system?: true;
 };
 
