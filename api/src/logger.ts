@@ -24,7 +24,7 @@ const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
 if (loggerEnvConfig.levels) {
 	const customLogLevels: { [key: string]: string } = {};
 
-	for (const el of loggerEnvConfig.levels.split(',')) {
+	for (const el of loggerEnvConfig.levels) {
 		const key_val = el.split(':');
 		customLogLevels[key_val[0].trim()] = key_val[1].trim();
 	}
