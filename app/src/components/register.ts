@@ -52,8 +52,8 @@ import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
 import VDatePicker from './v-date-picker';
-import VWorkspace from './v-workspace';
-import VWorkspacePanel from './v-workspace-panel';
+import VWorkspace from './v-workspace.vue';
+import VWorkspacePanel from './v-workspace-panel.vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);

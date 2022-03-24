@@ -85,14 +85,14 @@
 			@delete="deletePanel"
 			@duplicate="duplicatePanel"
 		>
-			<template #default="props">
+			<template #default="{panel}">
 				<component
-					:is="`panel-${props.panel.type}`"
-					v-bind="props.panel.options"
-					:id="props.panel.id"
-					:show-header="props.panel.show_header"
-					:height="props.panel.height"
-					:width="props.panel.width"
+					:is="`panel-${panel.type}`"
+					v-bind="panel.options"
+					:id="panel.id"
+					:show-header="panel.show_header"
+					:height="panel.height"
+					:width="panel.width"
 					:now="now"
 				/>
 			</template>
@@ -171,6 +171,7 @@ import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
+import { AppPanel } from '@/components/v-workspace-panel.vue';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -285,8 +286,10 @@ export default defineComponent({
 
 				return {
 					...panel,
+					x: panel.position_x,
+					y: panel.position_y,
 					borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
-				};
+				} as AppPanel;
 			});
 
 			return withBorderRadii;
