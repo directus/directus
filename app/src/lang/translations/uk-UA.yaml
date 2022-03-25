@@ -237,6 +237,8 @@ geometry.Point: Аспект
 geometry.LineString: Лінія
 geometry.Polygon: Полігон
 geometry.MultiPoint: Багатоточковий
+geometry.MultiLineString: Багаторядковий рядок
+geometry.MultiPolygon: Мультимногокутник
 not_available_for_type: Не доступно для цього типу
 create_translations: Створити переклади
 auto_refresh: Автооновлення
@@ -281,6 +283,7 @@ note: Примітка
 enter_a_value: Введіть значення...
 enter_a_placeholder: Введіть заповнювач...
 length: Довжина
+soft_length: Несувора квота
 precision_scale: Точність і шкала
 readonly: Тільки читання
 unique: Унікальне
@@ -291,6 +294,8 @@ foreign_key: Чужерідна клавіша
 finish_setup: Завершити налаштування
 dismiss: Відмінити
 raw_value: Необроблене значення
+copy_raw_value: Скопіювати необроблене значення
+copy_raw_value_success: Скопійовано
 edit_raw_value: Змінити необроблене значення
 enter_raw_value: Введіть необроблене значення...
 clear_changes: Очистити зміни
