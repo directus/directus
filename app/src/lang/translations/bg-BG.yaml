@@ -659,7 +659,7 @@ upload_file_success: Файлът е качен
 upload_files_indeterminate: 'Качване на файлове {done}/{total}'
 upload_files_success: '{count} файла са качени'
 upload_pending: Качване в изчакване
-drag_file_here: За да качите файловете, пуснете ги тук
+drag_file_here: За да качите файлове, пуснете ги тук
 click_to_browse: Натиснете за избор
 interface_options: Настройки на интерфейса
 layout_options: Оформление и настройки
