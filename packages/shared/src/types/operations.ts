@@ -1,4 +1,4 @@
-import { Component } from 'vue';
+import { ComponentOptions } from 'vue';
 import { Accountability } from './accountability';
 import { ApiExtensionContext } from './extensions';
 import { Field } from './fields';
@@ -19,8 +19,8 @@ export interface OperationAppConfig {
 	name: string;
 	icon: string;
 	description?: string;
-	preview: (options: Record<string, any>) => Record<string, any> | Component | null;
-	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]) | Component | null;
+	preview: (options: Record<string, any>) => Record<string, any> | ComponentOptions | null;
+	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]) | ComponentOptions | null;
 }
 
 export interface OperationApiConfig<Options = Record<string, unknown>> {

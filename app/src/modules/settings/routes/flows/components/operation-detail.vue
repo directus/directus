@@ -37,7 +37,9 @@
 
 			<extension-options
 				v-if="operationId && selectedOperation"
+				v-model="options"
 				:extension="operationId"
+				:options="operationOptions"
 				type="operation"
 			></extension-options>
 		</div>
@@ -65,6 +67,7 @@ const emit = defineEmits(['save']);
 const isOpen = useDialogRoute();
 const { t } = useI18n();
 
+const options = ref<Record<string, any>>({})
 const operationId = ref<string | undefined>();
 
 const selectedOperation = computed(() => getOperation(operationId.value));
@@ -79,6 +82,17 @@ const displayOperations = computed(() => {
 		description: operation.description,
 	}));
 });
+
+const extensionInfo = computed(() => {
+	return getOperation(operationId.value);
+});
+
+const operationOptions = computed(() => {
+	if(typeof extensionInfo.value?.options === 'function') {
+		return extensionInfo.value.options(options.value)
+	}
+	return
+})
 
 function close() {
 	router.push({ path: `/settings/flows/${props.primaryKey}` });
