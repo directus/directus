@@ -1,6 +1,6 @@
 <template>
 	<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
-		<slot name="append" />
+		<slot name="prepend" />
 		<v-list-item v-if="fieldsCount > 20">
 			<v-list-item-content>
 				<v-input v-model="search" autofocus small :placeholder="t('search')">

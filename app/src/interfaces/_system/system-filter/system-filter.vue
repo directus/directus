@@ -31,7 +31,7 @@
 				</template>
 
 				<v-field-list :collection="collectionName" @select-field="addNode($event)">
-					<template #append>
+					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
 							<v-list-item-content>
 								<v-text-overflow :text="t('interfaces.filter.add_group')" />
