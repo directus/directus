@@ -16,24 +16,20 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-select
-							inline
-							class="name"
-							:class="{ disabled: !!field }"
-							item-text="name"
-							item-value="key"
-							placement="bottom-start"
-							:full-width="false"
-							:model-value="filterInfo[index].field"
-							:items="fieldOptions"
-							:mandatory="false"
-							:groups-clickable="true"
-							:disabled="!!field"
-							@group-toggle="loadFieldRelations($event.value)"
-							@update:modelValue="updateField(index, $event)"
-						>
-							<template #preview>{{ getFieldPreview(element) }}</template>
-						</v-select>
+						<v-menu placement="bottom-start" show-arrow :disabled="!!field === false">
+							<template #activator="{ toggle }">
+								<button
+									class="name"
+									:disabled="!!field === false"
+									:class="{ disabled: !!field === false }"
+									@click="toggle"
+								>
+									<span>{{ getFieldPreview(element) }}</span>
+								</button>
+							</template>
+
+							<v-field-list :collection="collection" @select-field="updateField(index, $event)" />
+						</v-menu>
 						<v-select
 							inline
 							class="comparator"
@@ -357,6 +353,10 @@ function getCompareOptions(name: string) {
 		.v-icon {
 			display: none;
 		}
+	}
+
+	.name {
+		white-space: nowrap;
 	}
 
 	.name,

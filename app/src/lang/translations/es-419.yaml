@@ -411,7 +411,7 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_as_copy: Guardar como Copia
-add_existing: Agregar Existente
+add_existing: Seleccionar
 creating_items: Registros Creados
 enable_create_button: Habilitar Botón de Crear
 selecting_items: Registros Seleccionados
@@ -621,7 +621,7 @@ loading: Cargando...
 drop_to_upload: Soltar para subir
 item: Ítem
 items: Ítems
-upload_file: Subir archivo
+upload_file: Nuevo
 upload_file_indeterminate: Subiendo archivo...
 upload_file_success: Archivo subido
 upload_files_indeterminate: 'Subiendo archivos{done}/{total}'
@@ -842,7 +842,7 @@ page_help_users_item: >-
 page_help_insights_overview: '**Diseños** — Lista de paneles a los que tienes acceso.'
 page_help_insights_dashboard: '**Panel de control** — Espacio de trabajo para administrar uno o más paneles'
 activity_feed: Actividad
-add_new: Agregar Nuevo
+add_new: Nuevo
 create_new: Crear Nuevo
 all: Todos
 none: Nada
