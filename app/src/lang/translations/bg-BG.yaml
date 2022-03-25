@@ -454,7 +454,7 @@ no_items: Няма записи
 search_items: Търсене в записите...
 disabled: Изключване
 information: Информация
-report_bug: Докладване на проблеми
+report_bug: Докладване за проблем
 request_feature: Заявка за функционалност
 interface_not_found: 'Интерфейсът „{interface}“ не е намерен.'
 reset_interface: Нулиране на интерфейс
@@ -588,6 +588,7 @@ make_collection_visible: Показване на колекцията
 make_collection_hidden: Скриване на колекцията
 make_folder_visible: Папката е видима
 make_folder_hidden: Папката е скрита
+goto_collection_content: Преглед на съдържанието
 start_end_of_count_items: '{start}-{end} от {count} записа'
 start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
 one_item: '1 запис'
@@ -1299,6 +1300,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
