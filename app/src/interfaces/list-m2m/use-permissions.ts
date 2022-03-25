@@ -50,7 +50,7 @@ export default function usePermissions(
 		);
 
 		const hasRelatedPermissions = !!permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === relationCollection.value.collection
+			(permission) => permission.action === 'update' && permission.collection === relationCollection.value.collection
 		);
 
 		return hasJunctionPermissions && hasRelatedPermissions;
