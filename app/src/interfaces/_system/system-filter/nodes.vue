@@ -16,22 +16,15 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-select
-							inline
-							class="name"
-							item-text="name"
-							item-value="key"
-							placement="bottom-start"
-							:full-width="false"
-							:model-value="filterInfo[index].field"
-							:items="fieldOptions"
-							:mandatory="false"
-							:groups-clickable="true"
-							@group-toggle="loadFieldRelations($event.value)"
-							@update:modelValue="updateField(index, $event)"
-						>
-							<template #preview>{{ getFieldPreview(element) }}</template>
-						</v-select>
+						<v-menu placement="bottom-start" show-arrow>
+							<template #activator="{ toggle }">
+								<button class="name" @click="toggle">
+									<span>{{ getFieldPreview(element) }}</span>
+								</button>
+							</template>
+
+							<v-field-list :collection="collectionName" @select-field="updateField(index, $event)" />
+						</v-menu>
 						<v-select
 							inline
 							class="comparator"
@@ -98,7 +91,6 @@
 </template>
 
 <script lang="ts">
-import { useFieldTree } from '@/composables/use-field-tree';
 import { computed, defineComponent, PropType, toRefs } from 'vue';
 import InputGroup from './input-group.vue';
 import Draggable from 'vuedraggable';
@@ -153,9 +145,8 @@ export default defineComponent({
 	},
 	emits: ['remove-node', 'update:filter', 'change'],
 	setup(props, { emit }) {
-		const { collection } = toRefs(props);
+		const { collection: collectionName } = toRefs(props);
 		const filterSync = useSync(props, 'filter', emit);
-		const { treeList: fieldOptions, loadFieldRelations } = useFieldTree(collection);
 		const fieldsStore = useFieldsStore();
 		const { t } = useI18n();
 
@@ -186,14 +177,13 @@ export default defineComponent({
 		});
 
 		return {
-			fieldOptions,
+			collectionName,
 			getCompareOptions,
 			updateField,
 			updateComparator,
 			t,
 			replaceNode,
 			toggleLogic,
-			loadFieldRelations,
 			getNodeName,
 			getField,
 			getComparator,
@@ -383,6 +373,10 @@ export default defineComponent({
 		.v-icon {
 			display: none;
 		}
+	}
+
+	.name {
+		white-space: nowrap;
 	}
 
 	.name,
