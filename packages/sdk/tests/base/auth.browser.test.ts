@@ -71,7 +71,7 @@ describe('auth (browser)', function () {
 		expect(scope.pendingMocks().length).toBe(2);
 
 		await timers(async ({ tick, flush }) => {
-			const sdk = new Directus(url, { auth: { autoRefresh: true, msRefreshBeforeExpires: 2500 } });
+			const sdk = new Directus(url, { auth: { autoRefresh: true } });
 
 			const loginPromise = sdk.auth.login({
 				email: 'wolfulus@gmail.com',
