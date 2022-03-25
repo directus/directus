@@ -1,17 +1,17 @@
 import SchemaInspector from '@directus/schema';
+import { Accountability, SchemaOverview, Filter } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
+import { getCache, setSystemCache } from '../cache';
+import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
+import env from '../env';
 import logger from '../logger';
 import { RelationsService } from '../services';
-import { Accountability, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
-import getDatabase from '../database';
-import { getCache, setSystemCache } from '../cache';
-import env from '../env';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -152,7 +152,7 @@ async function getDatabaseSchema(
 			special: special,
 			note: field.note,
 			alias: existing?.alias ?? true,
-			validation: field.validation ?? null,
+			validation: (field.validation as Filter) ?? null,
 		};
 	}
 
