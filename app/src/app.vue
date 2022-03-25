@@ -86,34 +86,6 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		async function setAppLanguage() {
-			let lang = 'en-US'; // fallback language, if no language is set
-			if (userStore.currentUser && userStore.currentUser.language) {
-				// prefer dedicated user language
-				lang = userStore.currentUser.language;
-			} else if (serverStore.info?.project?.default_language) {
-				// otherwise use project's default language
-				lang = serverStore.info.project.default_language;
-			}
-			await setLanguage(lang);
-		}
-
-		// set language on login screen
-		watch(
-			() => serverStore.info?.project?.default_language,
-			async () => {
-				await setAppLanguage();
-			}
-		);
-
-		// set language after login (incorporate user's language)
-		watch(
-			() => appStore.hydrating,
-			async () => {
-				if (!appStore.hydrating) await setAppLanguage();
-			}
-		);
-
 		const customCSS = computed(() => {
 			return serverStore.info?.project?.custom_css || '';
 		});
