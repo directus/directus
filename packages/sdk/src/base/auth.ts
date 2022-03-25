@@ -66,6 +66,7 @@ export class Auth extends IAuth {
 	}
 
 	async refreshIfExpired() {
+		if (this.staticToken) return;
 		if (!this.autoRefresh) return;
 		if (!this._storage.auth_expires_at) return;
 
