@@ -1741,27 +1741,27 @@ panels:
     description: Filter and list fields from a collection
 triggers:
   filter: 
-    name: Filter
-    description: Will be triggered before an event is fired
+    name: Event Filter
+    description: Triggers before an event is fired, to check, modify, or cancel the event
     event: Event
   action:
-    name: Action
-    description: Will be triggered after an event is completed
+    name: Event Action
+    description: Triggers after an event is fired, to automate responses to the event
     event: Event
   init:
-    name: Initial
-    description: Will be triggered when the api starts
+    name: Event Init
+    description: Triggered by broader internal services where custom logic can be injected
     event: Event
   operation:
     name: Operation
-    description: Will be triggered by another operation
+    description: Triggered by an operation in a different Flow, to chain or reuse Flows
   schedule:
     name: Schedule
-    description: Will be triggered in given intervals
+    description: Triggers at certain points of time
     cron: Interval
   webhook:
     name: Webhook
-    description: Will be triggered upon the call of a certain url
+    description: Triggers based on an incoming HTTP request
 operations:
   auth:
     name: Authenticate
