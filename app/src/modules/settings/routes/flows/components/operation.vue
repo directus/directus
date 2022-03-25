@@ -13,11 +13,11 @@
 		@duplicate="$emit('duplicate', panel)"
 	>
 		<template v-if="editMode" #body>
-			<v-button class="add-resolve" x-small icon rounded>
-				<v-icon name="add" small @click="$emit('create', 'resolve')"></v-icon>
+			<v-button v-if="!('resolve' in panel)" class="add-resolve" x-small icon rounded @click="$emit('create', panel.id, 'resolve')">
+				<v-icon name="add" small></v-icon>
 			</v-button>
-			<v-button v-if="type !== 'trigger'" class="add-reject" @click="$emit('create', 'reject')">
-				<v-icon name="add"></v-icon>
+			<v-button v-if="type !== 'trigger' && !('reject' in panel)" x-small icon rounded class="add-reject" @click="$emit('create', panel.id, 'reject')">
+				<v-icon name="add" small></v-icon>
 			</v-button>
 		</template>
 		<div class="block">{{ type }}</div>

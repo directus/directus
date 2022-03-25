@@ -40,7 +40,7 @@
 			</template>
 
 			<template v-else>
-				<v-button v-tooltip.bottom="t('delete')" rounded icon secondary @click="deleteFlow">
+				<v-button v-tooltip.bottom="t('delete_flow')" rounded icon secondary @click="deleteFlow">
 					<v-icon name="delete" />
 				</v-button>
 
@@ -83,10 +83,10 @@
 					<operation
 						:edit-mode="editMode"
 						:panel="panel"
-						type="trigger"
+						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
 						@create="createPanel"
 						@edit="editPanel"
-						@update="stagePanelEdits"
+						@update="stageOperationEdits"
 						@delete="deletePanel"
 						@duplicate="duplicatePanel"
 					/>
@@ -118,7 +118,7 @@
 			</v-card>
 		</v-dialog>
 
-		<router-view />
+		<router-view @save="stageOperation" @cancel="$router.replace(`/settings/flows/${primaryKey}`)" />
 	</private-view>
 </template>
 
@@ -144,14 +144,21 @@ import TriggerDetail from './components/trigger-detail.vue';
 
 const { t } = useI18n();
 
+const PANEL_WIDTH = 14
+const PANEL_HEIGHT = 14
+
 const props = defineProps<{
 	primaryKey: string;
+	operationId?: string;
 }>();
 
 const { primaryKey } = toRefs(props);
 
 const editMode = ref(false);
 const saving = ref(false);
+
+let parentId: string | undefined = undefined
+let attachType: 'resolve' | 'reject' | undefined = undefined
 
 const zoomToFit = ref(false);
 
@@ -204,28 +211,33 @@ const panels = computed(() => {
 		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')),
 	];
 
-	const panels = raw.map(
+	const panels: Record<string, any>[] = raw.map(
 		(panel) =>
 		({
 			...panel,
-			width: 10,
-			height: 10,
+			width: PANEL_WIDTH,
+			height: PANEL_HEIGHT,
 			x: panel.position_x,
 			y: panel.position_y,
-		} as AppPanel)
+			name: t(`operations.${panel.type}.name`),
+		})
 	);
 
-	panels.push({
+	const trigger: Record<string, any> = {
 		id: '$trigger',
 		name: t(`triggers.${flow.value?.trigger}.name`),
 		icon: 'offline_bolt',
 		x: 1,
 		y: 1,
-		width: 14,
-		height: 14,
+		width: PANEL_WIDTH,
+		height: PANEL_HEIGHT,
 		showHeader: true,
 		draggable: false,
-	});
+	}
+
+	if(flow.value?.operation) trigger.resolve = flow.value.operation
+
+	panels.push(trigger);
 
 	return panels;
 });
@@ -238,6 +250,7 @@ const editsGuard: NavigationGuard = (to) => {
 	const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
 
 	if (editMode.value && to.params.primaryKey !== props.primaryKey) {
+		console.log(editMode.value, to.params.primaryKey , props.primaryKey)
 		if (hasEdits) {
 			confirmLeave.value = true;
 			leaveTo.value = to.fullPath;
@@ -251,16 +264,43 @@ const editsGuard: NavigationGuard = (to) => {
 onBeforeRouteUpdate(editsGuard);
 onBeforeRouteLeave(editsGuard);
 
-function stagePanelEdits(event: { edits: Partial<OperationRaw>; id?: string }) {
-	const key = event.id;
+function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string }) {
+	const key = event.id ?? props.operationId;
 
 	if (key === '+') {
+		const attach: Record<string, any> = {}
+		const tempId = `_${nanoid()}`
+
+		if(parentId !== undefined && attachType !== undefined) {
+			const parent = panels.value.find(panel => panel.id === parentId)
+
+			if(parent) {
+				if(parentId === '$trigger') {
+					stagedFlow.value = {...stagedFlow.value, operation: tempId}
+				} else {
+					stageOperationEdits({edits: {[attachType]: tempId}, id: parentId})
+				}
+
+
+				if(attachType === 'resolve') {
+					attach.position_x = parent.x + PANEL_WIDTH + 5
+					attach.position_y = parent.y
+				} else {
+					attach.position_x = parent.x
+					attach.position_y = parent.y + PANEL_HEIGHT + 5
+				}
+			}
+		}
+
 		stagedPanels.value = [
 			...stagedPanels.value,
 			{
-				id: `_${nanoid()}`,
+				id: tempId,
 				flow: props.primaryKey,
+				position_x: 15,
+				position_y: 15,
 				...event.edits,
+				...attach
 			},
 		];
 	} else {
@@ -278,9 +318,9 @@ function stagePanelEdits(event: { edits: Partial<OperationRaw>; id?: string }) {
 	}
 }
 
-function stageConfiguration(edits: Partial<OperationRaw>) {
-	stagePanelEdits({ edits });
-	router.replace(`/flows/${props.primaryKey}`);
+function stageOperation(edits: Partial<OperationRaw>) {
+	stageOperationEdits({ edits });
+	router.replace(`/settings/flows/${props.primaryKey}`);
 }
 
 async function saveChanges() {
@@ -293,32 +333,30 @@ async function saveChanges() {
 
 	saving.value = true;
 
-	const currentIDs = flow.value.operations.map((panel) => panel.id);
-
-	const updatedPanels = [
-		...currentIDs.map((id) => {
-			return stagedPanels.value.find((panel) => panel.id === id) || id;
-		}),
-		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
-	];
-
 	try {
 		if (stagedPanels.value.length > 0) {
-			await api.patch(`/flows/${props.primaryKey}`, {
-				operations: updatedPanels,
-			});
-		}
+			// TODO: Clean reject / resolve values
+			const changes: Record<string, any> = {
+				operations: {
+					create: stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
+					update: stagedPanels.value.filter((panel) => !panel.id?.startsWith('_')),
+					delete: panelsToBeDeleted.value
+				},
+			}
 
-		if (panelsToBeDeleted.value.length > 0) {
-			await api.delete(`/operations`, { data: panelsToBeDeleted.value });
+			if(flow.value.operation?.startsWith('_')) {
+				changes.operation = stagedPanels.value.find((panel) => panel.id === flow.value?.operation)
+			}
+
+			await api.patch(`/flows/${props.primaryKey}`, changes);
 		}
 
 		await flowsStore.hydrate()
 
 		stagedPanels.value = [];
 		editMode.value = false;
-	} catch (err) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error as Error);
 	} finally {
 		saving.value = false;
 	}
@@ -355,7 +393,9 @@ function discardAndLeave() {
 	router.push(leaveTo.value);
 }
 
-function createPanel(type: 'resolve' | 'reject') {
+function createPanel(parent: string, type: 'resolve' | 'reject') {
+	parentId = parent
+	attachType = type
 	router.push(`/settings/flows/${props.primaryKey}/+`);
 }
 
@@ -363,7 +403,7 @@ function duplicatePanel(panel: OperationRaw) {
 	const newPanel = omit(merge({}, panel), 'id');
 	newPanel.position_x = newPanel.position_x + 2;
 	newPanel.position_y = newPanel.position_y + 2;
-	stagePanelEdits({ edits: newPanel, id: '+' });
+	stageOperationEdits({ edits: newPanel, id: '+' });
 }
 
 function editPanel(panel: AppPanel) {

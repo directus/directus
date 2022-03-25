@@ -5,10 +5,10 @@
 		:subtitle="t('panel_options')"
 		:icon="'insert_chart'"
 		persistent
-		@cancel="close"
+		@cancel="$emit('cancel')"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded @click="saveOperation">
+			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!operationType" @click="saveOperation">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -48,7 +48,6 @@
 
 <script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { router } from '@/router';
 import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { computed, ref, watch } from 'vue';
@@ -62,7 +61,7 @@ const props = withDefaults(
 	{}
 );
 
-const emit = defineEmits(['save']);
+const emit = defineEmits(['save', 'cancel']);
 
 const isOpen = useDialogRoute();
 const { t } = useI18n();
@@ -96,19 +95,12 @@ const operationOptions = computed(() => {
 	return
 })
 
-function close() {
-	router.push({ path: `/settings/flows/${props.primaryKey}` });
-}
-
 function saveOperation() {
 	emit('save', {
-		id: props.operationId,
 		flow: props.primaryKey,
 		name: operationName.value,
 		key: operationKey.value,
 		type: operationType.value,
-		position_x: 0,
-		position_y: 0,
 		options: options.value,
 	})
 }

@@ -19,15 +19,15 @@ export default defineOperationApp({
                 options: {
                     choices: [
                         {
-                            text: '$t:operations.read.one',
+                            text: '$t:operations.read.mode.one',
                             value: 'one'
                         },
                         {
-                            text: '$t:operations.read.many',
+                            text: '$t:operations.read.mode.many',
                             value: 'many'
                         },
                         {
-                            text: '$t:operations.read.query',
+                            text: '$t:operations.read.mode.query',
                             value: 'query'
                         }
                     ]

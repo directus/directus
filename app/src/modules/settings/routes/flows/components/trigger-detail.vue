@@ -42,7 +42,10 @@ const emit = defineEmits(['update:open', 'update:flow'])
 const flowEdits = ref<{
     trigger?: TriggerType,
     options?: Record<string, any>
-}>({})
+}>({
+    trigger: props.flow?.trigger ?? undefined,
+    options: props.flow?.options
+})
 
 function saveTrigger() {
     emit('update:flow', {

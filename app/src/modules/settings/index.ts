@@ -195,7 +195,7 @@ export default defineModule({
 					children: [
 						{
 							name: 'settings-flows-operation',
-							path: ':operationKey',
+							path: ':operationId',
 							component: FlowOperationDetail,
 							props: true,
 						},
