@@ -14,7 +14,6 @@ import { cloneDeep, flatten, isArray, isNil, merge, uniq, uniqWith } from 'lodas
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, PrimaryKey } from '../types';
-import { mergePermissions } from '../utils/merge-permissions';
 import { stripFunction } from '../utils/strip-function';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
