@@ -23,7 +23,7 @@ identifier: Идентификатор
 avatar: Аватар
 application: Приложение
 default_provider: По подразбиране
-published: Публичен
+published: Публикуван
 draft: Чернова
 archived: Архивиран
 modules: Модули
@@ -70,7 +70,7 @@ create_user: Създаване на потребител
 delete_panel: Изтриване на панела
 create_webhook: Създаване на уеб-кука
 create_translation_string: Създаване на нов превод на низ
-translation_string_key_placeholder: Ключ на низа на превода...
+translation_string_key_placeholder: Ключ на низа за превод...
 translation_string_translations_placeholder: Добавяне на нов превод
 edit_translation_string: Редакция на превода на низа
 delete_translation_string_copy: >-
@@ -328,7 +328,7 @@ creation_preview: Първоначален вид
 revision_preview: Преглед на ревизията
 updates_made: Направени промени
 leave_comment: Коментар...
-post_comment_success: Коментарът е публикуван
+post_comment_success: Коментарът е изпратен
 item_create_success: Създаден запис | Създадени записи
 item_update_success: Обновен запис | Обновени записи
 item_delete_success: Изтрит запис | Изтрити записи
@@ -418,7 +418,7 @@ replace_from_url: Замяна на файл от URL
 no_file_selected: Не е избран файл
 download_file: Изтегляне на файл
 open_file_in_tab: Отваряне в нов таб
-start_export: Започване на експортирането
+start_export: Започване на експорта
 not_available_for_local_downloads: Не е налично за локално изтегляне
 exporting_all_items_in_collection: Експортиране на всичките {total} записи от {collection}.
 exporting_limited_items_in_collection: Експортиране на {limit} от {total} записи от {collection}.
@@ -462,11 +462,11 @@ display_not_found: 'Изгледът „{display}“ не е намерен.'
 reset_display: Нулиране на изглед
 list-m2a: M2A строител
 item_count: 'Няма записи | Един запис | {count} записа'
-no_items_copy: Все още няма записи в тази колекция.
+no_items_copy: Все още няма записи в колекцията.
 file_count: 'Няма файлове | Един файл | {count} файла'
 no_files_copy: Тук не са открити файлове.
 user_count: 'Няма потребители | Един потребител | {count} потребителя'
-no_users_copy: Все още няма потребители в тази роля.
+no_users_copy: Все още няма потребители към ролята.
 webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
 no_webhooks_copy: Няма зададени уеб-куки. Натиснете бутона по-долу за да започнете.
 no_notifications: Няма известия
@@ -717,8 +717,8 @@ panel: Панел
 panel_options: Настройки на панела
 panel_header: Заглавие на панела
 panel_name_placeholder: Име на панела...
-panel_note_placeholder: Незадължително описание за този панел...
-panel_delete_confirm: Сигурни ли сте, че искате да изтриете този панел? Това действие не може да бъде отменено.
+panel_note_placeholder: Незадължително описание на панела...
+panel_delete_confirm: Сигурни ли сте, че искате да изтриете панела? Това действие не може да бъде отменено.
 dashboard_delete_confirm: Сигурни ли сте, че искате да изтриете това табло? Това действие не може да бъде отменено.
 edit_dashboard: Промяна на таблото
 delete_dashboard: Изтриване на таблото
@@ -842,7 +842,7 @@ editing_preset: Редактиране на заготовка
 layout_preview: Предварителен преглед
 layout_setup: Настройка на оформление
 unsaved_changes: Има незапазени промени
-unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
+unsaved_changes_copy: Сигурни ли сте, че искате да напуснете страницата?
 discard_changes: Отмяна на промените
 discard_all_changes: Отмяна на промените
 discard_changes_copy: Сигурни ли сте, че искате да отхвърлите тези промени?
@@ -862,7 +862,7 @@ page_help_files_collection: >-
   **Файлова библиотека** — Показване на всички налични файлове, добавени към проекта. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите заготовка от тази конфигурация за по-бърз достъп.
 page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
-page_help_settings_project: "**Настройки за проекта** — Глобални конфигурация и настройки на вашият проект."
+page_help_settings_project: "**Настройки за проекта** — Глобална конфигурация и общи настройки за вашият проект."
 page_help_settings_datamodel_collections: >-
   **Модел на данните: Колекции** — Показване на всички налични колекции. Това включва всички видими, невидими, системни, както и все още неконфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
@@ -943,7 +943,7 @@ fields:
     sort_field: Поле за сортиране
     accountability: Следене за активност и ревизии
     archive_field: Поле за архивен статус
-    item_duplication_fields: Полета за копиране при дублиране
+    item_duplication_fields: Дублиране на полета от запис
   directus_files:
     $thumbnail: Умалена картинка
     title: Заглавие
@@ -952,7 +952,7 @@ fields:
     location: Местоположение
     storage: Хранилище
     filename_disk: Име на файл (на диска)
-    filename_download: Име на файл (при сваляне)
+    filename_download: Име на файл (при изтегляне)
     metadata: Метаданни
     type: MIME тип
     filesize: Размер на файла
@@ -975,7 +975,7 @@ fields:
     password: Парола
     avatar: Аватар
     location: Местоположение
-    title: Звание
+    title: Титла
     description: Описание
     tags: Етикети
     user_preferences: Потребителски настройки
@@ -987,7 +987,7 @@ fields:
     tfa_secret: Двуфакторна автентикация
     admin_options: Административни настройки
     status: Статус
-    status_draft: В чернова
+    status_draft: Чернова
     status_invited: Поканен
     status_active: Активен
     status_suspended: Спрян
@@ -1158,7 +1158,7 @@ field_options:
     dropdown_light: Светъл режим
     dropdown_dark: Тъмен режим
     admin_divider: Административни настройки
-    status_dropdown_draft: В чернова
+    status_dropdown_draft: Чернова
     status_dropdown_invited: Поканен
     status_dropdown_active: Активен
     status_dropdown_suspended: Спрян
@@ -1202,8 +1202,8 @@ share_item: Споделяне на запис
 shared_with_you: Запис е споделен с вас
 shared_enter_passcode: Въведете паролата си, за да продължите...
 shared_leave_blank_for_unlimited: Оставете празно за без ограничение
-shared_times_remaining: Тази връзка може да бъде използвана само {n} пъти
-shared_last_remaining: Тази връзка може да бъде използвана само веднъж
+shared_times_remaining: Връзката може да бъде използвана само {n} пъти
+shared_last_remaining: Връзката може да бъде използвана само веднъж
 shared_uses_left: За допълнителна сигурност, споделената страница е настроена с ограничение в броя на прегледите. В момента остават {n} прегледи, след това страницата няма да бъде достъпна.
 share_access_page: Достъп до споделена страница
 share_access_not_found: Споделената страница не съществува или квотата за използване от потребители вече е просрочена.
@@ -1216,7 +1216,7 @@ share_send_link: Изпращане на връзката
 relational_triggers: Релационни действия
 referential_action_field_label_m2o: При изтриване на {collection}...
 referential_action_field_label_o2m: При размаркиране от {collection}...
-referential_action_no_action: Предотвратяване на изтриването
+referential_action_no_action: Предотвратяване на изтривания
 referential_action_cascade: Каскадно изтриване на {collection}
 referential_action_set_null: Зануляване на {field}
 referential_action_set_default: Задаване на {field} към стойността по подразбиране
@@ -1634,7 +1634,7 @@ displays:
     formatted-value: Форматирана стойност
     description: Форматиране на текстовата стойност
     format: Формат
-    format_label: Заглавен Чикаго стил
+    format_label: Всяка Дума С Главна Буква
     font: Шрифт
     font_sans_serif: Безсерифен
     font_serif: Серифен
@@ -1669,7 +1669,7 @@ displays:
     circle_label: Показване като кръг
   labels:
     labels: Етикети
-    description: Въвеждане както на единичен, така и на множество етикети
+    description: Показване на един или списък от от много етикети
     default_foreground: Основен цвят по подразбиране
     default_background: Фонов цвят по подразбиране
     format_label: Форматиране на всеки етикет
@@ -1697,7 +1697,7 @@ displays:
     description: Показване на потребител от Directus
     avatar: Аватар
     name: Име
-    both: И двете
+    both: Всички
     circle_label: Показване на потребител в кръг
 layouts:
   cards:
