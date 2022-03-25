@@ -62,7 +62,7 @@ export class Auth extends IAuth {
 		this._storage.auth_token = result.access_token;
 		this._storage.auth_refresh_token = result.refresh_token ?? null;
 		this._storage.auth_expires = expires;
-		this._storage.auth_expires_at = new Date().getTime() + (expires ?? 0);
+		this._storage.auth_expires_at = new Date().getTime() + (expires ?? 0) / 1000;
 	}
 
 	async refreshIfExpired() {
