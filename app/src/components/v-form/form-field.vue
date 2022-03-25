@@ -57,7 +57,11 @@
 		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
 		<small v-if="validationError" class="validation-error">
-			{{ validationMessage }}
+			<template v-if="field.meta?.validation_message">
+				{{ field.meta?.validation_message }}
+				<v-icon v-tooltip="validationMessage" small right name="help_outline" />
+			</template>
+			<template v-else>{{ validationMessage }}</template>
 		</small>
 	</div>
 </template>

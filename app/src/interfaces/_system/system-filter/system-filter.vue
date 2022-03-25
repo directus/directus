@@ -6,21 +6,29 @@
 		{{ t('select_a_collection') }}
 	</v-notice>
 
-	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0 }">
+	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field }">
 		<v-list :mandatory="true">
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
+
 			<nodes
 				v-else
 				v-model:filter="innerValue"
 				:collection="collection"
+				:field="field"
 				:depth="1"
+				:include-validation="includeValidation"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
 		</v-list>
-		<div class="buttons">
+
+		<div v-if="field" class="buttons">
+			<button @click="addNode(field!)">{{ t('interfaces.filter.add_filter') }}</button>
+			<button @click="addNode('$group')">{{ t('interfaces.filter.add_group') }}</button>
+		</div>
+		<div v-else class="buttons">
 			<v-menu placement="bottom-start" show-arrow>
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
@@ -45,9 +53,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { get, set, isEmpty, cloneDeep } from 'lodash';
-import { defineComponent, PropType, computed, inject, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
@@ -55,112 +63,94 @@ import { getNodeName } from './utils';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { useFieldsStore } from '@/stores';
 
-export default defineComponent({
-	components: {
-		Nodes,
-	},
-	props: {
-		value: {
-			type: Object as PropType<Record<string, any>>,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		collectionName: {
-			type: String,
-			default: null,
-		},
-		collectionField: {
-			type: String,
-			default: null,
-		},
-		// Inline = stylistic rendering without borders. Used inside search-input
-		inline: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	value?: Record<string, any>;
+	disabled?: boolean;
+	collectionName?: string;
+	collectionField?: string;
+	field?: string;
+	inline?: boolean;
+	includeValidation?: boolean;
+}
 
-		const values = inject('values', ref<Record<string, any>>({}));
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
+	disabled: false,
+	collectionName: undefined,
+	collectionField: undefined,
+	field: undefined,
+	inline: false,
+	includeValidation: false,
+});
 
-		const collection = computed(() => {
-			if (props.collectionName) return props.collectionName;
+const emit = defineEmits(['input']);
 
-			return values.value[props.collectionField] ?? null;
-		});
+const { t } = useI18n();
 
-		const fieldsStore = useFieldsStore();
+const values = inject('values', ref<Record<string, any>>({}));
 
-		const innerValue = computed<Filter[]>({
-			get() {
-				if (!props.value || isEmpty(props.value)) return [];
+const collection = computed(() => {
+	if (props.collectionName) return props.collectionName;
 
-				const name = getNodeName(props.value);
+	return values.value[props.collectionField] ?? null;
+});
 
-				if (name === '_and') {
-					return cloneDeep(props.value['_and']);
-				} else {
-					return cloneDeep([props.value]);
-				}
-			},
-			set(newVal) {
-				if (newVal.length === 0) {
-					emit('input', null);
-				} else {
-					emit('input', { _and: newVal });
-				}
-			},
-		});
+const fieldsStore = useFieldsStore();
 
-		return {
-			t,
-			addNode,
-			removeNode,
-			innerValue,
-			emitValue,
-			collection,
-		};
+const innerValue = computed<Filter[]>({
+	get() {
+		if (!props.value || isEmpty(props.value)) return [];
 
-		function emitValue() {
-			if (innerValue.value.length === 0) {
-				emit('input', null);
-			} else {
-				emit('input', { _and: innerValue.value });
-			}
+		const name = getNodeName(props.value);
+
+		if (name === '_and') {
+			return cloneDeep(props.value['_and']);
+		} else {
+			return cloneDeep([props.value]);
 		}
-
-		function addNode(key: string) {
-			if (key === '$group') {
-				innerValue.value = innerValue.value.concat({ _and: [] });
-			} else {
-				const field = fieldsStore.getField(collection.value, key)!;
-				const operator = getFilterOperatorsForType(field.type)[0];
-				const node = set({}, key, { ['_' + operator]: null });
-				innerValue.value = innerValue.value.concat(node);
-			}
-		}
-
-		function removeNode(ids: string[]) {
-			const id = ids.pop();
-
-			if (ids.length === 0) {
-				innerValue.value = innerValue.value.filter((node, index) => index !== Number(id));
-				return;
-			}
-
-			let list = get(innerValue.value, ids.join('.')) as Filter[];
-
-			list = list.filter((_node, index) => index !== Number(id));
-
-			innerValue.value = set(innerValue.value, ids.join('.'), list);
+	},
+	set(newVal) {
+		if (newVal.length === 0) {
+			emit('input', null);
+		} else {
+			emit('input', { _and: newVal });
 		}
 	},
 });
+
+function emitValue() {
+	if (innerValue.value.length === 0) {
+		emit('input', null);
+	} else {
+		emit('input', { _and: innerValue.value });
+	}
+}
+
+function addNode(key: string) {
+	if (key === '$group') {
+		innerValue.value = innerValue.value.concat({ _and: [] });
+	} else {
+		const field = fieldsStore.getField(collection.value, key)!;
+		const operator = getFilterOperatorsForType(field.type)[0];
+		const node = set({}, key, { ['_' + operator]: null });
+		innerValue.value = innerValue.value.concat(node);
+	}
+}
+
+function removeNode(ids: string[]) {
+	const id = ids.pop();
+
+	if (ids.length === 0) {
+		innerValue.value = innerValue.value.filter((node, index) => index !== Number(id));
+		return;
+	}
+
+	let list = get(innerValue.value, ids.join('.')) as Filter[];
+
+	list = list.filter((_node, index) => index !== Number(id));
+
+	innerValue.value = set(innerValue.value, ids.join('.'), list);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -240,19 +230,16 @@ export default defineComponent({
 			border: var(--border-width) solid var(--border-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);
-
 			&:hover,
 			&.active {
 				border-color: var(--border-normal);
 			}
-
 			&.active {
 				.expand_more {
 					transform: scaleY(-1);
 					transition-timing-function: var(--transition-in);
 				}
 			}
-
 			.add {
 				margin-left: 6px;
 				margin-right: 4px;
@@ -263,6 +250,18 @@ export default defineComponent({
 				transition: transform var(--medium) var(--transition-out);
 			}
 		}
+	}
+}
+
+.field .buttons {
+	button {
+		color: var(--primary);
+		display: inline-block;
+		cursor: pointer;
+	}
+
+	button + button {
+		margin-left: 24px;
 	}
 }
 </style>

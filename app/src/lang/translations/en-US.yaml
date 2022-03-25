@@ -197,6 +197,7 @@ camera: Camera
 show_zero: Show Zero
 create_in_advanced_field_creation_mode: Create Field in Advanced Mode
 continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
+validation: Validation
 sum: Sum
 sum_distinct: Sum Distinct
 avg: Average
@@ -656,6 +657,8 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  regex: Matches RegExp
+custom_validation_message: Custom Validation Message
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item

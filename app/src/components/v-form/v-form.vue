@@ -3,6 +3,7 @@
 		<validation-errors
 			v-if="!nested && validationErrors.length > 0"
 			:validation-errors="validationErrors"
+			:fields="formFields"
 			@scroll-to-field="scrollToField"
 		/>
 		<template v-for="(field, index) in formFields">
