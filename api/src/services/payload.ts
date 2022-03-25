@@ -305,7 +305,7 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'date') {
-						const [year, month, day] = value.toISOString().substr(0, 10).split('-');
+						const [year, month, day] = value.toISOString().slice(0, 10).split('-');
 
 						// Strip off the time / timezone information from a date-only value
 						const newValue = `${year}-${month}-${day}`;
