@@ -571,7 +571,6 @@ make_collection_visible: Sammlung sichtbar machen
 make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
-goto_collection_content: Inhalt anzeigen
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
