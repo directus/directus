@@ -21,12 +21,14 @@
 #'Proxy', 'Intl'
 identifier: Ідентифікатор
 avatar: Аватар
+application: Додаток
 default_provider: За замовчуванням
 published: Опубліковано
 draft: Чернетка
 archived: Архівовано
 modules: Модулі
 module_bar: Панель модулів
+reset_width: Скинути ширину
 tile_size: Розмір плитки
 edit_field: Редагувати поле
 conditions: Умови
