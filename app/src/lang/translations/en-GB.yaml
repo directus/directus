@@ -1300,7 +1300,6 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
-weeks: { }
 report_error: Report Error
 start: Start
 interfaces:
