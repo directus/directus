@@ -38,7 +38,7 @@ export class Url {
 		return this.protocol === null && this.host === null;
 	}
 
-	public addPath(...paths: string[]): Url {
+	public addPath(...paths: (string | number)[]): Url {
 		const pathToAdd = paths.flatMap((p) => p.split('/')).filter((p) => p !== '');
 
 		for (const pathSegment of pathToAdd) {
