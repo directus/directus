@@ -38,7 +38,7 @@
 					</button>
 				</template>
 
-				<v-field-list :collection="collectionName" @select-field="addNode($event)">
+				<v-field-list :collection="collection" @select-field="addNode($event)">
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
 							<v-list-item-content>
@@ -91,7 +91,6 @@ const values = inject('values', ref<Record<string, any>>({}));
 
 const collection = computed(() => {
 	if (props.collectionName) return props.collectionName;
-
 	return values.value[props.collectionField] ?? null;
 });
 
