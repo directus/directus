@@ -375,6 +375,10 @@ export default defineComponent({
 		}
 	}
 
+	.name {
+		white-space: nowrap;
+	}
+
 	.name,
 	.comparator {
 		position: relative;
