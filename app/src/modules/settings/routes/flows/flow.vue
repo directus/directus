@@ -1,9 +1,9 @@
 <template>
-	<settings-not-found v-if="!currentFlow && !loading" />
-	<private-view v-else :title="currentFlow?.name ?? t('loading')">
+	<settings-not-found v-if="!flow" />
+	<private-view v-else :title="flow?.name ?? t('loading')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon :name="currentFlow?.icon ?? 'account_tree'" />
+				<v-icon :name="flow?.icon ?? 'account_tree'" />
 			</v-button>
 		</template>
 
@@ -24,7 +24,13 @@
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/settings/flows/${primaryKey}/+`">
+				<v-button
+					v-tooltip.bottom="t('create_panel')"
+					rounded
+					icon
+					outlined
+					:to="`/settings/flows/${primaryKey}/+`"
+				>
 					<v-icon name="add" />
 				</v-button>
 
@@ -40,7 +46,6 @@
 
 				<v-button
 					v-tooltip.bottom="t('full_screen')"
-					:active="fullScreen"
 					class="fullscreen"
 					rounded
 					icon
@@ -50,7 +55,13 @@
 					<v-icon name="slow_motion_video" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
+				<v-button
+					v-tooltip.bottom="t('edit_panels')"
+					rounded
+					icon
+					outlined
+					@click="editMode = !editMode"
+				>
 					<v-icon name="edit" />
 				</v-button>
 			</template>
@@ -67,8 +78,7 @@
 		</template>
 
 		<div class="container">
-			<v-progress-circular v-if="loading" class="loading" indeterminate />
-			<v-workspace v-else :panels="panels" :edit-mode="editMode">
+			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
 					<operation
 						:edit-mode="editMode"
@@ -77,13 +87,14 @@
 						@create="createPanel"
 						@edit="editPanel"
 						@update="stagePanelEdits"
-						@move="movePanelID = $event"
 						@delete="deletePanel"
 						@duplicate="duplicatePanel"
 					/>
 				</template>
 			</v-workspace>
 		</div>
+
+		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" />
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -116,7 +127,7 @@ import { FlowRaw, OperationRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 
 import { computed, ref, toRefs, watch } from 'vue';
-import { useAppStore } from '@/stores';
+import { useFlowsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import useShortcut from '@/composables/use-shortcut';
@@ -129,6 +140,7 @@ import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import Operation from './components/operation.vue';
 import { AppPanel } from '@/components/v-workspace-panel.vue';
+import TriggerDetail from './components/trigger-detail.vue';
 
 const { t } = useI18n();
 
@@ -136,27 +148,16 @@ const props = defineProps<{
 	primaryKey: string;
 }>();
 
-const appStore = useAppStore();
-
-const { fullScreen } = toRefs(appStore);
 const { primaryKey } = toRefs(props);
-
-const currentFlow = ref<FlowRaw>();
-const loading = ref(true);
 
 const editMode = ref(false);
 const saving = ref(false);
-const movePanelLoading = ref(false);
-
-const movePanelID = ref<string | null>();
 
 const zoomToFit = ref(false);
 
 useShortcut('meta+s', () => {
 	saveChanges();
 });
-
-watch(primaryKey, fetchFlow, { immediate: true });
 
 watch(editMode, (editModeEnabled) => {
 	if (editModeEnabled) {
@@ -167,11 +168,26 @@ watch(editMode, (editModeEnabled) => {
 	}
 });
 
+const triggerDetailOpen = ref(false)
+
+const flowsStore = useFlowsStore()
+
+const stagedFlow = ref<Partial<FlowRaw>>({})
+const flow = computed<FlowRaw | undefined>({
+	get() {
+		const existing = flowsStore.flows.find(flow => flow.id === primaryKey.value)
+		return merge({}, existing, stagedFlow.value)
+	},
+	set(newFlow) {
+		stagedFlow.value = newFlow ?? {}
+	}
+})
+
 const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 const panelsToBeDeleted = ref<string[]>([]);
 
 const panels = computed(() => {
-	const savedPanels = (currentFlow.value?.operations || []).filter(
+	const savedPanels = (flow.value?.operations || []).filter(
 		(panel) => panelsToBeDeleted.value.includes(panel.id) === false
 	);
 
@@ -190,18 +206,19 @@ const panels = computed(() => {
 
 	const panels = raw.map(
 		(panel) =>
-			({
-				...panel,
-				width: 10,
-				height: 10,
-				x: panel.position_x,
-				y: panel.position_y,
-			} as AppPanel)
+		({
+			...panel,
+			width: 10,
+			height: 10,
+			x: panel.position_x,
+			y: panel.position_y,
+		} as AppPanel)
 	);
 
 	panels.push({
-		id: '1',
-		name: 'Trigger',
+		id: '$trigger',
+		name: t(`flow_trigger_${flow.value?.trigger}`),
+		icon: 'offline_bolt',
 		x: 1,
 		y: 1,
 		width: 14,
@@ -267,7 +284,7 @@ function stageConfiguration(edits: Partial<OperationRaw>) {
 }
 
 async function saveChanges() {
-	if (!currentFlow.value) return;
+	if (!flow.value) return;
 
 	if (stagedPanels.value.length === 0 && panelsToBeDeleted.value.length === 0) {
 		editMode.value = false;
@@ -276,7 +293,7 @@ async function saveChanges() {
 
 	saving.value = true;
 
-	const currentIDs = currentFlow.value.operations.map((panel) => panel.id);
+	const currentIDs = flow.value.operations.map((panel) => panel.id);
 
 	const updatedPanels = [
 		...currentIDs.map((id) => {
@@ -296,7 +313,7 @@ async function saveChanges() {
 			await api.delete(`/operations`, { data: panelsToBeDeleted.value });
 		}
 
-		fetchFlow();
+		await flowsStore.hydrate()
 
 		stagedPanels.value = [];
 		editMode.value = false;
@@ -308,7 +325,7 @@ async function saveChanges() {
 }
 
 async function deletePanel(id: string) {
-	if (!currentFlow.value) return;
+	if (!flow.value) return;
 
 	stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
 	if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
@@ -349,8 +366,11 @@ function duplicatePanel(panel: OperationRaw) {
 	stagePanelEdits({ edits: newPanel, id: '+' });
 }
 
-function editPanel(panel: OperationRaw) {
-	router.push(`/settings/flows/${panel.flow}/${panel.id}`);
+function editPanel(panel: AppPanel) {
+	if (panel.id === '$trigger')
+		triggerDetailOpen.value = true
+	else
+		router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
 }
 
 function startDebug() {
@@ -359,22 +379,6 @@ function startDebug() {
 
 function deleteFlow() {
 	// TODO: Delete flow
-}
-
-async function fetchFlow() {
-	try {
-		const response = await api.get(`/flows/${props.primaryKey}`, {
-			params: {
-				fields: '*.*',
-			},
-		});
-
-		currentFlow.value = response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
 }
 </script>
 

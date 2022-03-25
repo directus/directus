@@ -36,6 +36,7 @@ import { router } from '@/router';
 import { FlowRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
+import { useFlowsStore } from '@/stores';
 
 export default defineComponent({
 	name: 'FlowDialog',
@@ -52,6 +53,8 @@ export default defineComponent({
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const flowsStore = useFlowsStore()
 
 		const values = reactive({
 			name: props.flow?.name ?? null,
@@ -85,9 +88,16 @@ export default defineComponent({
 				if (props.flow) {
 					await api.patch(`/flows/${props.flow.id}`, values, { params: { fields: ['id'] } });
 				} else {
-					const response = await api.post('/flows', values, { params: { fields: ['id'] } });
+					const response = await api.post('/flows', {
+						...values,
+						trigger: 'action',
+						options: {
+							hi: 'hi'
+						}
+					}, { params: { fields: ['id'] } });
 					router.push(`/flows/${response.data.data.id}`);
 				}
+				await flowsStore.hydrate()
 
 				emit('update:modelValue', false);
 			} catch (err: any) {

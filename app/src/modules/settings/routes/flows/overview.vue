@@ -32,7 +32,7 @@
 			</sidebar-detail>
 		</template>
 
-		<v-info v-if="flows.length === 0 && !loading" icon="account_tree" :title="t('no_flows')" center>
+		<v-info v-if="flows.length === 0" icon="account_tree" :title="t('no_flows')" center>
 			{{ t('no_flows_copy') }}
 		</v-info>
 
@@ -40,7 +40,6 @@
 			v-else
 			v-model:headers="tableHeaders"
 			:items="flows"
-			:loading="loading"
 			show-resize
 			fixed-header
 			@click:row="navigateToFlow"
@@ -107,7 +106,7 @@ import flowDialog from './components/flow-dialog.vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { md } from '@/utils/md';
-import { usePermissionsStore } from '@/stores';
+import { useFlowsStore, usePermissionsStore } from '@/stores';
 
 const { t } = useI18n();
 
@@ -142,22 +141,9 @@ const tableHeaders = [
 	},
 ];
 
-const flows = ref<FlowRaw[]>([]);
-const loading = ref(false);
-const error = ref();
+const flowsStore = useFlowsStore()
 
-fetchFlows();
-
-async function fetchFlows() {
-	try {
-		const response = await api.get('/flows');
-		flows.value = response.data.data;
-	} catch (err) {
-		error.value = err;
-	} finally {
-		loading.value = false;
-	}
-}
+const flows = computed(() => flowsStore.flows)
 
 function navigateToFlow({ item: flow }: { item: FlowRaw }) {
 	router.push(`/settings/flows/${flow.id}`);
@@ -170,7 +156,7 @@ async function deleteFlow() {
 
 	try {
 		await api.delete(`/flows/${confirmDelete.value}`);
-		await fetchFlows();
+		await flowsStore.hydrate()
 		confirmDelete.value = null;
 	} catch (err: any) {
 		unexpectedError(err);
@@ -181,7 +167,7 @@ async function deleteFlow() {
 
 async function toggleFlowCreation(active: boolean) {
 	if (active === false) {
-		await fetchFlows();
+		await flowsStore.hydrate()
 	}
 
 	createDialogActive.value = active;

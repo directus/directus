@@ -8,7 +8,7 @@
 		@cancel="close"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded @click="emitSave">
+			<v-button v-tooltip.bottom="t('done')" icon rounded @click="saveOperation">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -17,28 +17,28 @@
 			<div class="grid">
 				<div class="field half">
 					<div class="type-label">{{ t('name') }}</div>
-					<v-input></v-input>
+					<v-input v-model="operationName"></v-input>
 				</div>
 				<div class="field half">
-					<div class="type-label">{{ t('name') }}</div>
-					<v-input></v-input>
+					<div class="type-label">{{ t('key') }}</div>
+					<v-input v-model="operationKey"></v-input>
 				</div>
 			</div>
 
 			<v-divider />
 
-			<v-fancy-select v-model="operationId" class="select" :items="displayOperations" />
+			<v-fancy-select v-model="operationType" class="select" :items="displayOperations" />
 
-			<v-notice v-if="operationId && !selectedOperation" class="not-found" type="danger">
-				{{ t('operation_not_found', { operation: operationId }) }}
+			<v-notice v-if="operationType && !selectedOperation" class="not-found" type="danger">
+				{{ t('operation_not_found', { operation: operationType }) }}
 				<div class="spacer" />
-				<button @click="operationId = undefined">{{ t('reset_interface') }}</button>
+				<button @click="operationType = undefined">{{ t('reset_interface') }}</button>
 			</v-notice>
 
 			<extension-options
-				v-if="operationId && selectedOperation"
+				v-if="operationType && selectedOperation"
 				v-model="options"
-				:extension="operationId"
+				:extension="operationType"
 				:options="operationOptions"
 				type="operation"
 			></extension-options>
@@ -51,13 +51,13 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { router } from '@/router';
 import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { getOperation, getOperations } from '@/operations';
 
 const props = withDefaults(
 	defineProps<{
 		primaryKey: string;
-		operationKey: string;
+		operationId: string;
 	}>(),
 	{}
 );
@@ -68,11 +68,17 @@ const isOpen = useDialogRoute();
 const { t } = useI18n();
 
 const options = ref<Record<string, any>>({})
-const operationId = ref<string | undefined>();
+const operationType = ref<string | undefined>();
+const operationKey = ref<string>('')
+const operationName = ref('')
 
-const selectedOperation = computed(() => getOperation(operationId.value));
+watch(operationType, () => {
+	options.value = {}
+})
 
-const { operations, operationsRaw } = getOperations();
+const selectedOperation = computed(() => getOperation(operationType.value));
+
+const { operations } = getOperations();
 
 const displayOperations = computed(() => {
 	return operations.value.map((operation) => ({
@@ -83,13 +89,9 @@ const displayOperations = computed(() => {
 	}));
 });
 
-const extensionInfo = computed(() => {
-	return getOperation(operationId.value);
-});
-
 const operationOptions = computed(() => {
-	if(typeof extensionInfo.value?.options === 'function') {
-		return extensionInfo.value.options(options.value)
+	if(typeof selectedOperation.value?.options === 'function') {
+		return selectedOperation.value.options(options.value)
 	}
 	return
 })
@@ -98,8 +100,17 @@ function close() {
 	router.push({ path: `/settings/flows/${props.primaryKey}` });
 }
 
-function emitSave() {
-	emit('save');
+function saveOperation() {
+	emit('save', {
+		id: props.operationId,
+		flow: props.primaryKey,
+		name: operationName.value,
+		key: operationKey.value,
+		type: operationType.value,
+		position_x: 0,
+		position_y: 0,
+		options: options.value,
+	})
 }
 </script>
 

@@ -5,6 +5,7 @@
 		:class="type"
 		:edit-mode="editMode"
 		:resizable="false"
+		:show-options="type !== 'trigger'"
 		@edit="$emit('edit', panel)"
 		@update="$emit('update', { edits: $event, id: panel.id })"
 		@move="$emit('move', panel.id)"
@@ -29,7 +30,7 @@ import { AppPanel } from '@/components/v-workspace-panel.vue';
 const props = withDefaults(
 	defineProps<{
 		panel: AppPanel;
-		type?: 'trigger' | 'operation' | 'error';
+		type?: 'trigger' | 'operation';
 		editMode?: boolean;
 	}>(),
 	{

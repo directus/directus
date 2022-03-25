@@ -24,7 +24,7 @@
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
 			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click.stop="$emit('edit')" />
 
-			<v-menu placement="bottom-end" show-arrow>
+			<v-menu placement="bottom-end" show-arrow v-if="showOptions">
 				<template #activator="{ toggle }">
 					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
 				</template>
@@ -119,6 +119,7 @@ type Props = {
 	borderRadius?: [boolean, boolean, boolean, boolean]
 	resizable?: boolean
 	editMode?: boolean
+	showOptions?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -132,7 +133,8 @@ const props = withDefaults(defineProps<Props>(), {
 	resizable: true,
 	editMode: false,
 	draggable: true,
-	borderRadius: () => [true, true, true, true]
+	borderRadius: () => [true, true, true, true],
+	showOptions: true
 })
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit'])

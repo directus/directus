@@ -1,4 +1,4 @@
-type TriggerType = 'filter' | 'action' | 'init' | 'schedule' | 'operation' | 'webhook';
+export type TriggerType = 'filter' | 'action' | 'init' | 'schedule' | 'operation' | 'webhook';
 type Status = 'active' | 'inactive';
 
 export interface Flow {
