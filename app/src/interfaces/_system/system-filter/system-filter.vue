@@ -16,7 +16,7 @@
 				v-else
 				v-model:filter="innerValue"
 				:collection="collection"
-				:field="field"
+				:field="fieldName"
 				:depth="1"
 				:include-validation="includeValidation"
 				@remove-node="removeNode($event)"
@@ -24,8 +24,8 @@
 			/>
 		</v-list>
 
-		<div v-if="field" class="buttons">
-			<button @click="addNode(field!)">{{ t('interfaces.filter.add_filter') }}</button>
+		<div v-if="fieldName" class="buttons">
+			<button @click="addNode(fieldName!)">{{ t('interfaces.filter.add_filter') }}</button>
 			<button @click="addNode('$group')">{{ t('interfaces.filter.add_group') }}</button>
 		</div>
 		<div v-else class="buttons">
@@ -68,7 +68,7 @@ interface Props {
 	disabled?: boolean;
 	collectionName?: string;
 	collectionField?: string;
-	field?: string;
+	fieldName?: string;
 	inline?: boolean;
 	includeValidation?: boolean;
 }
@@ -78,7 +78,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	collectionName: undefined,
 	collectionField: undefined,
-	field: undefined,
+	fieldName: undefined,
 	inline: false,
 	includeValidation: false,
 });
