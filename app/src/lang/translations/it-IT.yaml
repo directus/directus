@@ -69,6 +69,12 @@ create_role: Crea ruolo
 create_user: Crea utente
 delete_panel: Elimina Pannello
 create_webhook: Crea webhook
+create_translation_string: Crea stringa di traduzione
+translation_string_key_placeholder: Chiave della stringa di traduzione...
+translation_string_translations_placeholder: Aggiungi una nuova traduzione
+edit_translation_string: Modifica stringa di traduzione
+delete_translation_string_copy: >-
+  Sei sicuro di voler eliminare la stringa di traduzione "{key}"? Questa azione non può essere annullata.
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
@@ -175,6 +181,7 @@ field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Lingua
+language_placeholder: Seleziona una lingua...
 aggregate_function: Funzione di aggregazione
 aggregate_precision: Precisione dell'aggregazione
 group_aggregation: Raggruppamento
@@ -581,6 +588,7 @@ make_collection_visible: Rendi visibile la raccolta
 make_collection_hidden: Rendi nascosta la raccolta
 make_folder_visible: Rendi visibile la cartella
 make_folder_hidden: Rendi nascosta la cartella
+goto_collection_content: Visualizza contenuto
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
@@ -821,6 +829,7 @@ settings_permissions: Ruoli e permessi
 settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
+settings_translation_strings: Stringhe di Traduzione
 one_or_more_options_are_missing: Mancano una o più opzioni
 scope: Ambito
 select: Seleziona...
@@ -866,6 +875,7 @@ page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
 page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
 page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
+page_help_settings_translation_strings_collection: '**Sfoglia le stringhe di traduzione** — Elenca tutte le stringhe di traduzione nel progetto.'
 page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
 page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
@@ -1241,6 +1251,16 @@ normal: Normale
 success: Successo
 warning: Avviso
 danger: Pericolo
+colors:
+  purple: Viola
+  blue: Blu
+  green: Verde
+  yellow: Giallo
+  orange: Arancione
+  red: Rosso
+  black: Nero
+  gray: Grigio
+  white: Bianco
 junction_collection: Raccolta di Giunzione
 latency: Latenza
 login: Accesso
@@ -1280,6 +1300,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1359,6 +1380,7 @@ interfaces:
     include_seconds: Includi Secondi
     set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
+    placeholder: Scegli data e ora...
   system-display-template:
     display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
@@ -1491,6 +1513,7 @@ interfaces:
     auto_formatter: Usa la formattazione automatica del titolo
     alphabetize: Ordine alfabetico
     alphabetize_label: Forza Ordine Alfabetico
+    add_tags: Aggiungi un tag e premi invio...
   input:
     input: Input
     description: Inserisci manualmente un valore
@@ -1508,6 +1531,11 @@ interfaces:
   input-multiline:
     textarea: Area di testo
     description: Inserisci testo su più righe
+  input-translated-string:
+    input-translated-string: Stringhe tradotte
+    description: Seleziona o aggiungi stringa di traduzione
+    search_placeholder: Cerca...
+    new_translation_string: Nuova stringa di traduzione
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato
