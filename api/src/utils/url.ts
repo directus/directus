@@ -39,7 +39,7 @@ export class Url {
 	}
 
 	public addPath(...paths: (string | number)[]): Url {
-		const pathToAdd = paths.flatMap((p) => p.split('/')).filter((p) => p !== '');
+		const pathToAdd = paths.flatMap((p) => String(p).split('/')).filter((p) => p !== '');
 
 		for (const pathSegment of pathToAdd) {
 			if (pathSegment === '..') {
