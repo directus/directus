@@ -1,4 +1,6 @@
+import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
+import { isArray } from 'lodash';
 
 export async function up(knex: Knex): Promise<void> {
 	const fields = await knex
@@ -12,14 +14,33 @@ export async function up(knex: Knex): Promise<void> {
 
 		try {
 			if (special.includes('{')) {
-				parsedSpecial = special.replace(/{/g, '').replace(/}/g, '').replace(/"/g, '');
+				// Fix invalid data in Postgres
+				parsedSpecial = toArray(special.replace(/{/g, '').replace(/}/g, '').replace(/"/g, ''));
+			} else {
+				parsedSpecial = toArray(special);
 			}
 		} catch {
 			continue;
 		}
 
-		if (parsedSpecial && parsedSpecial !== special) {
-			await knex('directus_fields').update({ special: parsedSpecial }).where({ id });
+		if (parsedSpecial && isArray(parsedSpecial)) {
+			// Perform the update again in case it was not performed prior
+			parsedSpecial = parsedSpecial.map((special) => {
+				switch (special) {
+					case 'boolean':
+					case 'csv':
+					case 'json':
+						return 'cast-' + special;
+					default:
+						return special;
+				}
+			});
+
+			const parsedSpecialString = parsedSpecial.join(',');
+
+			if (parsedSpecialString !== special) {
+				await knex('directus_fields').update({ special: parsedSpecialString }).where({ id });
+			}
 		}
 	}
 }
