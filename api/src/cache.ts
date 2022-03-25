@@ -17,7 +17,7 @@ export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: 
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(undefined, '_system');
+		systemCache = getKeyvInstance(ms(env.CACHE_SYSTEM_TTL as string), '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
