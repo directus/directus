@@ -217,7 +217,7 @@ const panels = computed(() => {
 
 	panels.push({
 		id: '$trigger',
-		name: t(`flow_trigger_${flow.value?.trigger}`),
+		name: t(`triggers.${flow.value?.trigger}.name`),
 		icon: 'offline_bolt',
 		x: 1,
 		y: 1,

@@ -1739,3 +1739,80 @@ panels:
   list:
     name: List
     description: Filter and list fields from a collection
+triggers:
+  filter: 
+    name: Filter
+    description: Will be triggered before an event is fired
+    event: Event
+  action:
+    name: Action
+    description: Will be triggered after an event is completed
+    event: Event
+  init:
+    name: Initial
+    description: Will be triggered when the api starts
+    event: Event
+  operation:
+    name: Operation
+    description: Will be triggered by another operation
+  schedule:
+    name: Schedule
+    description: Will be triggered in given intervals
+    cron: Interval
+  webhook:
+    name: Webhook
+    description: Will be triggered upon the call of a certain url
+operations:
+  auth:
+    name: Authenticate
+    description: Check if something can be performed with a given filter
+  log:
+    name: Log to Console
+    description: Log something in the console
+    message: Message
+    message_placeholder: Enter a message to show in the console
+  mail:
+    name: E-Mail
+    description: Send emails to other humans
+    to: Recipients
+    template: Template
+    data: Data
+  notification:
+    name: Notification
+    description: Send a notification to someone
+    recipient: Recipient
+    message: Message
+  read:
+    name: Read
+    description: Read items from the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Many Items
+      query: Items by Query
+    key: Ids
+    query: Query
+  request:
+    name: Request
+    description: Make a request to an url
+    url: Url
+    url_placeholder: https://example.com/example
+    method: Method
+    data: Data
+    headers: Headers
+  sleep:
+    name: Sleep
+    description: Wait for a given amount of milliseconds.
+    milliseconds: Milliseconds
+  transform:
+    name: Transform,
+    description: Insert JSON into the flow
+  trigger:
+    name: Trigger
+    description: Start another flow
+    flows: Flows
+    flow: Flow
+    data: Data
+  validate:
+    name: Validate
+    description: Validate an item with a filter

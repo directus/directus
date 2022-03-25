@@ -3,8 +3,8 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'auth',
 	icon: 'lock_open',
-	name: '$t:auth',
-	description: 'Check if something can be performed with a given filter!',
+	name: '$t:operations.auth.name',
+	description: '$t:operations.auth.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),

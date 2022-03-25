@@ -54,40 +54,40 @@ function saveTrigger() {
 
 const triggerTypes = ref<{ text: string, value: TriggerType, icon: string, description: string }[]>([
     {
-        text: t('triggers.filter'),
+        text: t('triggers.filter.name'),
         value: 'filter',
         icon: 'add',
-        description: t('triggers.filter_description')
+        description: t('triggers.filter.description')
     },
     {
-        text: t('triggers.action'),
+        text: t('triggers.action.name'),
         value: 'action',
         icon: 'add',
-        description: t('triggers.action_description')
+        description: t('triggers.action.description')
     },
     {
-        text: t('triggers.init'),
+        text: t('triggers.init.name'),
         value: 'init',
         icon: 'add',
-        description: t('triggers.init_description')
+        description: t('triggers.init.description')
     },
     {
-        text: t('triggers.operation'),
+        text: t('triggers.operation.name'),
         value: 'operation',
         icon: 'add',
-        description: t('triggers.operation_description')
+        description: t('triggers.operation.description')
     },
     {
-        text: t('triggers.schedule'),
+        text: t('triggers.schedule.name'),
         value: 'schedule',
         icon: 'add',
-        description: t('triggers.schedule_description')
+        description: t('triggers.schedule.description')
     },
     {
-        text: t('triggers.webhook'),
+        text: t('triggers.webhook.name'),
         value: 'webhook',
         icon: 'add',
-        description: t('triggers.webhook_description')
+        description: t('triggers.webhook.description')
     }
 ])
 
@@ -95,49 +95,45 @@ const triggerFields = ref<Record<TriggerType, DeepPartial<Field>[]>>({
     filter: [
         {
             field: 'event',
-            name: t('event'),
+            name: t('triggers.filter.event'),
             type: 'string',
             meta: {
                 width: 'full',
                 interface: 'input'
             }
-
         }
     ],
     action: [
         {
             field: 'event',
-            name: t('event'),
+            name: t('triggers.action.event'),
             type: 'string',
             meta: {
                 width: 'full',
                 interface: 'input'
             }
-
         }
     ],
     init: [
         {
             field: 'event',
-            name: t('event'),
+            name: t('triggers.init.event'),
             type: 'string',
             meta: {
                 width: 'full',
                 interface: 'input'
             }
-
         }
     ],
     schedule: [
         {
             field: 'cron',
-            name: t('cron'),
+            name: t('triggers.schedule.cron'),
             type: 'string',
             meta: {
                 width: 'full',
                 interface: 'input'
             }
-
         }
     ],
     operation: [],

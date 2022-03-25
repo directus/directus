@@ -3,8 +3,8 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'mail',
 	icon: 'mail',
-	name: '$t:email',
-	description: 'Send emails to other humans!',
+	name: '$t:operations.mail.name',
+	description: '$t:operations.mail.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),
@@ -20,7 +20,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'to',
-			name: '$t:to',
+			name: '$t:operations.mail.to',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -29,7 +29,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'template',
-			name: '$t:template',
+			name: '$t:operations.mail.template',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -38,7 +38,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'data',
-			name: '$t:data',
+			name: '$t:operations.mail.data',
 			type: 'string',
 			meta: {
 				interface: 'input-code',

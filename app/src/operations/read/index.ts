@@ -3,15 +3,15 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'read',
 	icon: 'download',
-	name: '$t:read',
-	description: 'Load items from the database!',
+	name: '$t:operations.read.name',
+	description: '$t:operations.read.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),
 	options: [
 		{
 			field: 'mode',
-			name: '$t:mode',
+			name: '$t:operations.read.mode.field',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -19,15 +19,15 @@ export default defineOperationApp({
                 options: {
                     choices: [
                         {
-                            text: '$t:one',
+                            text: '$t:operations.read.one',
                             value: 'one'
                         },
                         {
-                            text: '$t:many',
+                            text: '$t:operations.read.many',
                             value: 'many'
                         },
                         {
-                            text: '$t:query',
+                            text: '$t:operations.read.query',
                             value: 'query'
                         }
                     ]
@@ -45,7 +45,7 @@ export default defineOperationApp({
         },
         {
             field: 'key',
-            name: '$t:key',
+            name: '$t:operations.read.key',
             type: 'csv',
             meta: {
                 width: 'full',
@@ -54,7 +54,7 @@ export default defineOperationApp({
         },
         {
             field: 'query',
-            name: '$t:query',
+            name: '$t:operations.read.query',
             type: 'string',
             meta: {
                 width: 'full',

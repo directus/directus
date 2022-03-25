@@ -3,8 +3,8 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'transform',
 	icon: 'move_down',
-	name: '$t:transform',
-	description: 'Insert Json into the flow!',
+	name: '$t:operations.transform.name',
+	description: '$t:operations.transform.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),

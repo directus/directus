@@ -3,8 +3,8 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'validate',
 	icon: 'beenhere',
-	name: '$t:validate',
-	description: 'Validate item with a filter!',
+	name: '$t:operations.validate.name',
+	description: '$t:operations.validate.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),

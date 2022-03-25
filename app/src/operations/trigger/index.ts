@@ -3,15 +3,15 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'trigger',
 	icon: 'flag',
-	name: '$t:trigger',
-	description: 'Start another flow!',
+	name: '$t:operations.trigger.name',
+	description: '$t:operations.trigger.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),
 	options: [
 		{
 			field: 'flows',
-			name: '$t:flows',
+			name: '$t:operations.trigger.flows',
 			type: 'json',
 			meta: {
 				width: 'full',
@@ -20,7 +20,7 @@ export default defineOperationApp({
                     fields: [
                         {
                             field: 'flow',
-                            name: '$t:flow',
+                            name: '$t:operations.trigger.flow',
                             type: 'string',
                             meta: {
                                 width: 'half',
@@ -29,7 +29,7 @@ export default defineOperationApp({
                         },
                         {
                             field: 'data',
-                            name: '$t:data',
+                            name: '$t:operations.trigger.data',
                             type: 'string',
                             meta: {
                                 width: 'full',

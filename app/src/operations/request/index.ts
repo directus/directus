@@ -3,24 +3,27 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'request',
 	icon: 'cloud_download',
-	name: '$t:request',
-	description: 'Make a request!',
+	name: '$t:operations.request.name',
+	description: '$t:operations.request.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),
 	options: [
 		{
 			field: 'url',
-			name: '$t:url',
+			name: '$t:operations.request.url',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'input',
+				options: {
+					placeholder: '$t:operations.request.url_placeholder'
+				}
 			},
 		},
         {
 			field: 'method',
-			name: '$t:method',
+			name: '$t:operations.request.method',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -43,7 +46,7 @@ export default defineOperationApp({
 		},
         {
 			field: 'data',
-			name: '$t:data',
+			name: '$t:operations.request.data',
 			type: 'json',
 			meta: {
 				width: 'full',
@@ -52,7 +55,7 @@ export default defineOperationApp({
 		},
         {
 			field: 'headers',
-			name: '$t:headers',
+			name: '$t:operations.request.headers',
 			type: 'string',
 			meta: {
 				width: 'full',

@@ -3,15 +3,15 @@ import { defineOperationApp } from '@directus/shared/utils';
 export default defineOperationApp({
 	id: 'sleep',
 	icon: 'schedule',
-	name: '$t:sleep',
-	description: 'Wait for x miliseconds!',
+	name: '$t:operations.sleep.name',
+	description: '$t:operations.sleep.description',
 	preview: (options) => ({
 		test: 'Hi',
 	}),
 	options: [
 		{
 			field: 'milliseconds',
-			name: '$t:milliseconds',
+			name: '$t:operations.sleep.milliseconds',
 			type: 'integer',
 			meta: {
 				width: 'full',
@@ -19,6 +19,7 @@ export default defineOperationApp({
 				options: {
 					min: 0,
 					type: 'integer',
+					placeholder: '1000'
 				},
 			},
 		},
