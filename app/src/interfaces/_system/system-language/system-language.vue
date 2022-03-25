@@ -38,7 +38,7 @@ export default defineComponent({
 		}));
 
 		if (props.includeProjectDefault) {
-			languages.splice(0, 0, { text: t('fields.directus_settings.project_language'), value: null });
+			languages.splice(0, 0, { text: t('fields.directus_settings.default_language'), value: null });
 		}
 
 		return { t, languages };

@@ -34,7 +34,7 @@ columns:
   language:
     type: string
     length: 8
-    default: null
+    default: 'en-US'
   theme:
     type: string
     length: 20

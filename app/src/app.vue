@@ -89,35 +89,28 @@ export default defineComponent({
 		async function setAppLanguage() {
 			let lang = 'en-US'; // fallback language, if no language is set
 			if (userStore.currentUser && userStore.currentUser.language) {
-				// if user has set it's own language, prefer user language
+				// prefer dedicated user language
 				lang = userStore.currentUser.language;
-			} else if (serverStore.info?.project?.project_language) {
-				// otherwise use project language
-				lang = serverStore.info.project.project_language;
+			} else if (serverStore.info?.project?.default_language) {
+				// otherwise use project's default language
+				lang = serverStore.info.project.default_language;
 			}
 			await setLanguage(lang);
 		}
 
+		// set language on login screen
+		watch(
+			() => serverStore.info?.project?.default_language,
+			async () => {
+				await setAppLanguage();
+			}
+		);
+
+		// set language after login (incorporate user's language)
 		watch(
 			() => appStore.hydrating,
 			async () => {
-				// initially set app language after hydration
 				if (!appStore.hydrating) await setAppLanguage();
-			}
-		);
-
-		watch(
-			() => userStore.currentUser?.language,
-			async (userLanguage) => {
-				// set project language if user's language was reset to project language (null)
-				if (!appStore.hydrating && !userLanguage) await setAppLanguage();
-			}
-		);
-
-		watch(
-			() => serverStore.info?.project?.project_language,
-			async () => {
-				await setAppLanguage();
 			}
 		);
 

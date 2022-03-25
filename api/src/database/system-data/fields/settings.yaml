@@ -34,7 +34,7 @@ fields:
       translations: Website
     width: half
 
-  - field: project_language
+  - field: default_language
     interface: system-language
     options:
       iconRight: language
@@ -42,7 +42,7 @@ fields:
       includeProjectDefault: false
     translations:
       language: en-US
-      translations: Project Language
+      translations: Default Language
     width: half
 
   - field: branding_divider

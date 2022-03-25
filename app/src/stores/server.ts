@@ -7,7 +7,7 @@ type Info = {
 		project_descriptor: string | null;
 		project_logo: string | null;
 		project_color: string | null;
-		project_language: string | null;
+		default_language: string | null;
 		public_foreground: string | null;
 		public_background: string | null;
 		public_note: string | null;
