@@ -650,6 +650,7 @@ operators:
   nintersects: Non interseca
   intersects_bbox: Interseca il riquadro di delimitazione
   nintersects_bbox: Non interseca il riquadro di delimitazione
+  regex: Corrisponde all'espressione regolare
 custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
 drop_to_upload: Rilascia per caricare
@@ -1302,6 +1303,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
