@@ -28,6 +28,7 @@ draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
+reset_width: Restablecer ancho
 tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
@@ -40,6 +41,7 @@ duplicate_field: Duplicar Campo
 half_width: Anchura 50%
 full_width: Ancho Completo
 group: Grupo
+export_items: Exportar elementos
 and: "Y"
 or: O
 fill_width: Llenar Ancho
@@ -67,6 +69,10 @@ create_role: Crear Rol
 create_user: Crear Usuario
 delete_panel: Eliminar Panel
 create_webhook: Crear Webhook
+create_translation_string: Crear Traducciones
+translation_string_key_placeholder: Clave de cadena de traducción...
+translation_string_translations_placeholder: Añadir una nueva traducción
+edit_translation_string: Editar traducción
 invite_users: Invitar Usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
