@@ -192,6 +192,7 @@ camera: Camera
 show_zero: Mostra zero
 create_in_advanced_field_creation_mode: Crea campo in modalità avanzata
 continue_in_advanced_field_creation_mode: Continua in modalità avanzata di creazione del campo
+validation: Validazione
 sum: Somma
 sum_distinct: Somma valori unici
 avg: Media
@@ -649,6 +650,7 @@ operators:
   nintersects: Non interseca
   intersects_bbox: Interseca il riquadro di delimitazione
   nintersects_bbox: Non interseca il riquadro di delimitazione
+custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
 drop_to_upload: Rilascia per caricare
 item: Elemento
