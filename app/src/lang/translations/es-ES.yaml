@@ -73,6 +73,8 @@ create_translation_string: Crear Traducciones
 translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
 edit_translation_string: Editar traducción
+delete_translation_string_copy: >-
+  ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
