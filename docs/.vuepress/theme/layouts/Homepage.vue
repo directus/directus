@@ -24,7 +24,6 @@
 				</svg>
 				<h2>Getting Started</h2>
 				<span>Installation, an overview of basic concepts, and understanding the Directus ecosystem.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/app/overview/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +35,6 @@
 				</svg>
 				<h2>The App Guide</h2>
 				<span>A non-technical overview of the Directus no-code App and its various features.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/configuration/config-options/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +46,6 @@
 				</svg>
 				<h2>Configuration</h2>
 				<span>Administrator guides for tailoring the Directus platform to fit your exact project needs.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/reference/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,9 +55,8 @@
 						fill="#fff"
 					/>
 				</svg>
-				<h2>Connecting Data</h2>
+				<h2>API Reference</h2>
 				<span>A toolkit for connecting your data, including the REST API, GraphQL, CLI, SDK, and more.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/extensions/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,9 +66,8 @@
 						fill="#fff"
 					/>
 				</svg>
-				<h2>Extending the Platform</h2>
+				<h2>Extensions</h2>
 				<span>Tutorials for creating your own custom extensions within the Directus ecosystem.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/contributing/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,7 +79,6 @@
 				</svg>
 				<h2>Contributing</h2>
 				<span>Ready to start working on Directus Core? These Wikis will provide the tools needed to contribute.</span>
-				<u>Learn More</u>
 			</a>
 		</div>
 
@@ -203,7 +197,7 @@ export default {
 .panel {
 	width: calc((100% - 60px - (40px * 6) - (2px * 6)) / 3);
 	margin-bottom: 30px;
-	padding: 40px;
+	padding: 30px 40px 40px;
 	overflow: hidden;
 	border: 2px solid var(--border-subdued);
 	border-radius: 4px;
@@ -229,7 +223,7 @@ export default {
 }
 
 .panel h2 {
-	margin: 24px 0 16px !important;
+	margin: 24px 0 4px !important;
 	color: var(--foreground-normal-alt);
 	font-weight: 800;
 	line-height: 1.3;
