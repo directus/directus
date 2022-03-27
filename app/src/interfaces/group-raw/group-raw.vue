@@ -9,6 +9,7 @@
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:disabled="disabled"
+			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</div>

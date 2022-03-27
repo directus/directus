@@ -18,6 +18,7 @@ import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getConfigFromEnv } from '../../utils/get-config-from-env';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -35,6 +36,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		}
 
 		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', additionalConfig.provider, 'callback');
+
+		const clientOptionsOverrides = getConfigFromEnv(
+			`AUTH_${config.provider.toUpperCase()}_CLIENT_`,
+			[`AUTH_${config.provider.toUpperCase()}_CLIENT_ID`, `AUTH_${config.provider.toUpperCase()}_CLIENT_SECRET`],
+			'underscore'
+		);
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
@@ -57,6 +64,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 							client_secret: clientSecret,
 							redirect_uris: [this.redirectUrl],
 							response_types: ['code'],
+							...clientOptionsOverrides,
 						})
 					);
 				})
@@ -115,12 +123,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				{ code: payload.code, state: payload.state },
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
+			userInfo = tokenSet.claims();
 
-			const issuer = client.issuer;
-			if (issuer.metadata.userinfo_endpoint) {
-				userInfo = await client.userinfo(tokenSet.access_token!);
-			} else {
-				userInfo = tokenSet.claims();
+			if (client.issuer.metadata.userinfo_endpoint) {
+				userInfo = {
+					...userInfo,
+					...(await client.userinfo(tokenSet.access_token!)),
+				};
 			}
 		} catch (e) {
 			throw handleError(e);

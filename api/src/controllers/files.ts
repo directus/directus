@@ -18,8 +18,7 @@ const router = express.Router();
 router.use(useCollection('directus_files'));
 
 const multipartHandler = asyncHandler(async (req, res, next) => {
-	if (req.is('multipart/form-data') === false)
-		throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+	if (req.is('multipart/form-data') === false) return next();
 
 	let headers: BusboyHeaders;
 
@@ -114,6 +113,10 @@ router.post(
 	'/',
 	multipartHandler,
 	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false) {
+			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+		}
+
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,

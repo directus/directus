@@ -29,7 +29,7 @@
 			</div>
 
 			<template #actions>
-				<v-button v-if="hasPastRevision" v-tooltip.bottom="t('revert')" class="revert" icon rounded @click="revert">
+				<v-button v-if="hasPastRevision" v-tooltip.bottom="t('revert')" secondary icon rounded @click="revert">
 					<v-icon name="restore" />
 				</v-button>
 				<v-button v-tooltip.bottom="t('done')" icon rounded @click="internalActive = false">
@@ -138,11 +138,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.revert {
-	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-125);
-}
-
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;

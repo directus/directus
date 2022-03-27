@@ -218,14 +218,19 @@ export default defineComponent({
 				return result;
 			}
 
-			function emitValue(value: Record<string, any>[]) {
-				stagedValues.value = value;
+			function emitValue(value: Record<string, any>[] | null) {
+				if (!value || value.length === 0) {
+					stagedValues.value = [];
+					emit('input', null);
+				} else {
+					stagedValues.value = value;
 
-				if (relation.value.meta?.sort_field) {
-					return emit('input', addSort(value));
+					if (relation.value.meta?.sort_field) {
+						return emit('input', addSort(value));
+					}
+
+					emit('input', value);
 				}
-
-				emit('input', value);
 
 				function addSort(value: Record<string, any>[]): Record<string, any>[] {
 					return (value || []).map((item, index) => {
@@ -315,7 +320,7 @@ export default defineComponent({
 
 				const newVal = [...response.data.data, ...stagedValues.value];
 
-				if (newVal.length === 0) emitValue([]);
+				if (newVal.length === 0) emitValue(null);
 				else emitValue(newVal);
 
 				loading.value = false;

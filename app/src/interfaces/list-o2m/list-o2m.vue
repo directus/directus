@@ -21,24 +21,18 @@
 				:model-value="sortedItems"
 				item-key="id"
 				handle=".drag-handle"
-				:disabled="!relation.meta.sort_field"
+				:disabled="!allowDrag"
 				@update:model-value="sortItems($event)"
 			>
-				<template #item="{ element }">
+				<template #item="{ element, index }">
 					<v-list-item
 						:dense="sortedItems.length > 4"
 						block
 						clickable
 						:disabled="disabled || updateAllowed === false"
-						@click="editItem(element)"
+						@click="editItem(element, index)"
 					>
-						<v-icon
-							v-if="relation.meta.sort_field"
-							name="drag_handle"
-							class="drag-handle"
-							left
-							@click.stop="() => {}"
-						/>
+						<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template :collection="relation.collection" :item="element" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
@@ -74,7 +68,7 @@
 			:selection="selectedPrimaryKeys"
 			:filter="customFilter"
 			multiple
-			@input="$emit('input', $event.length > 0 ? $event : null)"
+			@input="stageSelections"
 		/>
 	</div>
 </template>
@@ -178,11 +172,13 @@ export default defineComponent({
 		);
 
 		const { items, loading } = usePreview();
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, stageSelections, cancelEdit } = useEdits();
 		const { selectModalActive, selectedPrimaryKeys } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
 
 		const { createAllowed, updateAllowed } = usePermissions();
+
+		const allowDrag = computed(() => relation.value.meta?.sort_field && !props.disabled);
 
 		return {
 			t,
@@ -193,6 +189,7 @@ export default defineComponent({
 			relatedCollection,
 			editsAtStart,
 			stageEdits,
+			stageSelections,
 			cancelEdit,
 			selectModalActive,
 			deleteItem,
@@ -207,6 +204,7 @@ export default defineComponent({
 			createAllowed,
 			updateAllowed,
 			customFilter,
+			allowDrag,
 		};
 
 		function getItemFromIndex(index: number) {
@@ -258,16 +256,19 @@ export default defineComponent({
 			}
 
 			const id = item[relatedPrimKey];
-			emit(
-				'input',
-				props.value.filter((item) => {
-					if (typeof item === 'number' || typeof item === 'string') return item !== id;
-					if (typeof item === 'object' && relatedPrimKey in item) {
-						return item[relatedPrimKey] !== id;
-					}
-					return true;
-				})
-			);
+			const newValue = props.value.filter((item) => {
+				if (typeof item === 'number' || typeof item === 'string') return item !== id;
+				if (typeof item === 'object' && relatedPrimKey in item) {
+					return item[relatedPrimKey] !== id;
+				}
+				return true;
+			});
+
+			if (newValue.length === 0) {
+				emit('input', null);
+			} else {
+				emit('input', newValue);
+			}
 		}
 
 		function useSort() {
@@ -394,21 +395,20 @@ export default defineComponent({
 			// This keeps track of the starting values so we can match with it
 			const editsAtStart = ref({});
 
-			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
+			return { currentlyEditing, editItem, editsAtStart, stageEdits, stageSelections, cancelEdit };
 
-			function editItem(item: any) {
+			function editItem(item: any, index: number) {
 				const pkField = relatedPrimaryKeyField.value?.field;
-				if (!pkField) return;
+				if (!pkField || !props.value || index === -1) return;
 				const hasPrimaryKey = pkField in item;
 
-				const edits = (props.value || []).find(
-					(edit: any) =>
-						typeof edit === 'object' &&
-						relatedPrimaryKeyField.value?.field &&
-						edit[relatedPrimaryKeyField.value?.field] === item[relatedPrimaryKeyField.value?.field]
-				);
+				const foundItem = props.value[index];
+				if (typeof foundItem === 'object' && pkField in foundItem) {
+					editsAtStart.value = foundItem;
+				} else {
+					editsAtStart.value = hasPrimaryKey ? { [pkField]: item[pkField] || {} } : foundItem;
+				}
 
-				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';
 			}
 
@@ -444,6 +444,11 @@ export default defineComponent({
 
 				if (newValue.length === 0) emit('input', null);
 				else emit('input', newValue);
+			}
+
+			function stageSelections(selectedKeys: any) {
+				const newValues = [...selectedKeys, ...(props.value || []).filter((item) => typeof item === 'object')];
+				emit('input', newValues);
 			}
 
 			function cancelEdit() {

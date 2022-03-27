@@ -5,7 +5,9 @@ import { clone } from 'lodash';
 import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
-import url from 'url';
+import url, { URL } from 'url';
+import { promisify } from 'util';
+import { lookup } from 'dns';
 import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
@@ -14,6 +16,10 @@ import storage from '../storage';
 import { AbstractServiceOptions, File, PrimaryKey, MutationOptions } from '../types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
+import net from 'net';
+import os from 'os';
+
+const lookupDNS = promisify(lookup);
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -161,6 +167,54 @@ export class FilesService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
+		let resolvedUrl;
+
+		try {
+			resolvedUrl = new URL(importURL);
+		} catch (err: any) {
+			logger.warn(err, `Requested URL ${importURL} isn't a valid URL`);
+			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+				service: 'external-file',
+			});
+		}
+
+		let ip = resolvedUrl.hostname;
+
+		if (net.isIP(ip) === 0) {
+			try {
+				ip = (await lookupDNS(ip)).address;
+			} catch (err: any) {
+				logger.warn(err, `Couldn't lookup the DNS for url ${importURL}`);
+				throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+					service: 'external-file',
+				});
+			}
+		}
+
+		if (env.IMPORT_IP_DENY_LIST.includes('0.0.0.0')) {
+			const networkInterfaces = os.networkInterfaces();
+
+			for (const networkInfo of Object.values(networkInterfaces)) {
+				if (!networkInfo) continue;
+
+				for (const info of networkInfo) {
+					if (info.address === ip) {
+						logger.warn(`Requested URL ${importURL} resolves to localhost.`);
+						throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+							service: 'external-file',
+						});
+					}
+				}
+			}
+		}
+
+		if (env.IMPORT_IP_DENY_LIST.includes(ip)) {
+			logger.warn(`Requested URL ${importURL} resolves to a denied IP address.`);
+			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+				service: 'external-file',
+			});
+		}
+
 		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
 
 		try {
@@ -168,8 +222,7 @@ export class FilesService extends ItemsService {
 				responseType: 'stream',
 			});
 		} catch (err: any) {
-			logger.warn(`Couldn't fetch file from url "${importURL}"`);
-			logger.warn(err);
+			logger.warn(err, `Couldn't fetch file from url "${importURL}"`);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
 				service: 'external-file',
 			});

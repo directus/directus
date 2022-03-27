@@ -77,7 +77,6 @@ recommended_defaults: Priporočene privzete vrednosti
 unarchive: Dearhiviraj
 unarchive_confirm: Ste prepričani, da želite dearhivirati ta zapis?
 nested_files_folders_will_be_moved: Vsebovane datoteke in mape bodo prestavljene en nivo višje.
-unknown_validation_errors: 'Vsebinske napake na naslednjih skritih poljih:'
 validationError:
   eq: Vrednost mora biti {valid}
   neq: Vrednost ne more biti {invalid}
@@ -245,7 +244,6 @@ translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
 label_import: Uvoz
 format: Oblika
-use_current_filters_settings: Uporabi trenutne filtre in nastavitve
 last_page: Zadnja stran
 last_access: Zadnji dostop
 fill_template: Izpolni z vrednostjo obrazca
@@ -1125,8 +1123,6 @@ interfaces:
     customSyntax_label: Dodaj posebno vrsto sintakse
     customSyntax_add: Dodaj prilagojeno sintakso
     box: Blok / v vrstici
-    imageToken: Žeton slike
-    imageToken_label: Kateri statični žeton se naj doda k sliki
   map:
     map: Zemljevid
     description: Izberite lokacijo
@@ -1180,7 +1176,6 @@ interfaces:
     auto_formatter: Uporabi avtomatsko oblikovanje naslova
     alphabetize: Po abecedi
     alphabetize_label: Vedno uredi po abecedi
-    add_tags: Dodaj značke ...
   input:
     input: Vnos
     description: Ročno vnesite vrednost
@@ -1225,8 +1220,6 @@ interfaces:
     toolbar: Orodna vrstica
     custom_formats: Prilagojene oblike
     options_override: Preglasitev opcij
-    imageToken: Žeton slike
-    imageToken_label: Kateri statični žeton se naj doda k sliki
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Iskalnik za zunanje API vrednosti.
@@ -1353,7 +1346,6 @@ layouts:
     subtitle: Podnaslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmik
     comfortable: Udobno
     compact: Zgoščeno

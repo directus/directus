@@ -1,5 +1,3 @@
-/* stylelint-disable */
-
 // Default / Light Mode
 @mixin light {
 	--border-normal: #d3dae4;
@@ -25,6 +23,11 @@
 	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 	--overlay-color: rgba(38, 50, 56, 0.8);
 
+	--module-background: #18222f;
+	--module-background-alt: var(--background-normal);
+	--module-icon: #8196b1;
+	--module-icon-alt: var(--foreground-normal-alt);
+
 	// Generate color variations
 	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
 
@@ -34,8 +37,8 @@
 	--yellow-alt: var(--yellow-10);
 	--orange-alt: var(--orange-10);
 	--red-alt: var(--red-10);
-	--primary-alt: var(--green-10);
-	--secondary-alt: var(--blue-10);
+	--primary-alt: var(--purple-10);
+	--secondary-alt: var(--pink-10);
 	--success-alt: var(--green-10);
 	--warning-alt: var(--yellow-10);
 	--danger-alt: var(--red-10);

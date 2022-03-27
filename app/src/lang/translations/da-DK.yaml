@@ -31,6 +31,7 @@ edit_collection: Rediger Samling
 exclusive: Eksklusiv
 children: Underordnede
 db_only_click_to_configure: 'Kun database: Klik for at indstille'
+show_active_items: Vis Aktive Elementer
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
 required: Påkrævet
@@ -86,7 +87,6 @@ recommended_defaults: Anbefalede Standarder
 unarchive: Fjern fra arkiv
 unarchive_confirm: Er du sikker på, at du vil fjerne arkiveringen af dette element?
 nested_files_folders_will_be_moved: Indlejrede filer og mapper vil blive flyttet et niveau op.
-unknown_validation_errors: 'Der var valideringsfejl for følgende skjulte felter:'
 validationError:
   eq: Værdien skal være {valid}
   neq: Værdi kan ikke være {invalid}
@@ -282,7 +282,6 @@ translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
 label_import: Importér
 format: Format
-use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi
@@ -624,6 +623,7 @@ toggle: Skift
 icon_on: Ikon Til
 icon_off: Ikon Fra
 label: Etiket
+insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
 panel_options: Panel Indstillinger
@@ -1230,7 +1230,6 @@ interfaces:
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
     box: Blokér / Inline
-    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   map:
     map: Kort
     description: Vælg en placering på et kort
@@ -1284,7 +1283,6 @@ interfaces:
     auto_formatter: Brug Titel Auto-Formatter
     alphabetize: Alphabetize
     alphabetize_label: Gennemtving Alfabetisk Ordre
-    add_tags: Tilføj tags...
   input:
     input: Input
     description: Indtast en værdi manuelt
@@ -1330,7 +1328,6 @@ interfaces:
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
     options_override: Tilsidesæt
-    imageToken_label: Hvad (statisk) token til at tilføje til billedkilder
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater
@@ -1454,7 +1451,6 @@ layouts:
     subtitle: Undertitel
   tabular:
     tabular: Tabel
-    fields: Felter
     spacing: Afstand
     comfortable: Behageligt
     compact: Kompakt
