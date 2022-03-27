@@ -192,6 +192,7 @@ camera: Камера
 show_zero: Показати нуль
 create_in_advanced_field_creation_mode: Створити поле в розширеному режимі
 continue_in_advanced_field_creation_mode: Продовжити у розширеному режимі створення поля
+validation: Перевірка
 sum: Сума
 sum_distinct: Зіткнення
 avg: Середнє
@@ -421,6 +422,8 @@ open_file_in_tab: Відкрити файл у новій вкладці
 start_export: Розпочати експорт
 not_available_for_local_downloads: Недоступний для локальних завантажень
 exporting_all_items_in_collection: Експорт усіх {total} елементів в межах {collection}.
+exporting_limited_items_in_collection: Експорт {limit} з {total} елементів в рамках {collection}.
+exporting_no_items_to_export: Немає елементів для експорту. Налаштуйте конфігурацію для експорту нижче.
 collection_key: Клавіша колекції
 name: Назва
 primary_key_field: Первинне ключове поле
