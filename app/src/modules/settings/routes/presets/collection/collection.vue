@@ -1,291 +1,307 @@
 <template>
-	<private-view :title="t('settings_presets')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+	<component
+		:is="layoutWrapper"
+		v-if="currentCollection"
+		ref="layoutRef"
+		v-slot="{ layoutState }"
+		v-model:selection="selection"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		:filter-user="filter"
+		:filter="filter"
+		:search="search"
+		:collection="collection"
+		:clear-filters="clearFilters"
+	>
+		<private-view :title="t('settings_presets')" :small-header="currentLayout?.smallHeader">
+			<template #headline>
+				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+			</template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="bookmark_border" />
-			</v-button>
-		</template>
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded disabled icon secondary>
+					<v-icon name="bookmark_border" />
+				</v-button>
+			</template>
 
-		<template #actions>
-			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
-						<v-icon name="delete" />
-					</v-button>
+			<template #actions:prepend>
+				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
+			</template>
+
+			<template #actions>
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+							:disabled="batchDeleteAllowed !== true"
+							rounded
+							icon
+							class="action-delete"
+							secondary
+							@click="on"
+						>
+							<v-icon name="delete" outline />
+						</v-button>
+					</template>
+
+					<v-card>
+						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-if="selection.length > 0"
+					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
+					rounded
+					icon
+					secondary
+					:disabled="batchEditAllowed === false"
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="createAllowed ? t('create_preset') : t('not_allowed')"
+					rounded
+					icon
+					to="/settings/presets/+"
+					:disabled="createAllowed === false"
+				>
+					<v-icon name="add" />
+				</v-button>
+			</template>
+
+			<template #navigation>
+				<settings-navigation />
+			</template>
+
+			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
+				<template #no-results>
+					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+						{{ t('no_presets_copy') }}
+
+						<template #append>
+							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+						</template>
+					</v-info>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+				<template #no-items>
+					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+						{{ t('no_presets_copy') }}
 
+						<template v-if="createAllowed" #append>
+							<v-button :to="`/settings/presets/+`">{{ t('create_preset') }}</v-button>
+						</template>
+					</v-info>
+				</template>
+			</component>
+
+			<drawer-batch
+				v-model:active="batchEditActive"
+				:primary-keys="selection"
+				:collection="collection"
+				@refresh="drawerBatchRefresh"
+			/>
+
+			<template #sidebar>
+				<presets-info-sidebar-detail />
+				<layout-sidebar-detail v-model="layout">
+					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
+				</layout-sidebar-detail>
+				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
+				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
+				<export-sidebar-detail :collection="collection" :filter="filter" :search="search" />
+			</template>
+
+			<v-dialog :model-value="deleteError !== null">
+				<v-card>
+					<v-card-title>{{ t('something_went_wrong') }}</v-card-title>
+					<v-card-text>
+						<v-error :error="deleteError" />
+					</v-card-text>
 					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteSelection">
-							{{ t('delete_label') }}
-						</v-button>
+						<v-button @click="deleteError = null">{{ t('done') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-
-			<v-button v-tooltip.bottom="t('create_preset')" rounded icon :to="addNewLink">
-				<v-icon name="add" />
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<div class="presets-collection">
-			<v-info v-if="!loading && presets.length === 0" center type="warning" :title="t('no_presets')" icon="bookmark">
-				{{ t('no_presets_copy') }}
-
-				<template #append>
-					<v-button :to="addNewLink">
-						{{ t('no_presets_cta') }}
-					</v-button>
-				</template>
-			</v-info>
-			<v-table
-				v-else
-				v-model="selection"
-				:headers="headers"
-				fixed-header
-				:items="presets"
-				:loading="loading"
-				show-select="multiple"
-				@click:row="onRowClick"
-			>
-				<template #[`item.scope`]="{ item }">
-					<span :class="{ all: item.scope === 'all' }">
-						{{ item.scope === 'all' ? t('all') : item.scope }}
-					</span>
-				</template>
-
-				<template #[`item.layout`]="{ item }">
-					<value-null v-if="!item.layout" />
-					<span v-else>{{ item.layout }}</span>
-				</template>
-
-				<template #[`item.name`]="{ item }">
-					<span :class="{ default: item.name === null }">
-						{{ item.name === null ? t('default_label') : item.name }}
-					</span>
-				</template>
-			</v-table>
-		</div>
-
-		<template #sidebar>
-			<presets-info-sidebar-detail />
-		</template>
-	</private-view>
+		</private-view>
+	</component>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
-
-import api from '@/api';
-import { Header } from '@/components/v-table/types';
-import { useCollectionsStore, usePresetsStore } from '@/stores/';
-import { getLayout } from '@/layouts';
-import { useRouter } from 'vue-router';
-import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
-import { userName } from '@/utils/user-name';
-import { unexpectedError } from '@/utils/unexpected-error';
 
-type PresetRaw = {
-	id: number;
-	bookmark: null | string;
-	user: null | { email: string; first_name: string; last_name: string };
-	role: null | { name: string };
-	collection: string;
-	layout: string;
-};
-
-type Preset = {
-	id: number;
-	name: null | string;
-	scope: string;
-	collection: string;
-	layout: string;
-};
+import { useCollection, useLayout } from '@directus/shared/composables';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
+import SearchInput from '@/views/private/components/search-input';
+import { usePermissionsStore, useUserStore, usePresetsStore } from '@/stores';
+import DrawerBatch from '@/views/private/components/drawer-batch';
+import { getLayouts } from '@/layouts';
+import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
-	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
+	name: 'ContentCollection',
+	components: {
+		SettingsNavigation,
+		PresetsInfoSidebarDetail,
+		LayoutSidebarDetail,
+		SearchInput,
+		DrawerBatch,
+		RefreshSidebarDetail,
+	},
 	setup() {
+		const layout = ref('tabular');
+		const collection = ref('directus_presets');
+		const layoutOptions = ref<Record<string, any>>({});
+		const layoutQuery = ref<Record<string, any>>({});
+		const filter = ref<Filter | null>(null);
+		const search = ref<string | null>(null);
+		const refreshInterval = ref<number | null>(null);
 		const { t } = useI18n();
 
-		const router = useRouter();
+		const { layouts } = getLayouts();
+		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
+		const layoutRef = ref();
 
-		const collectionsStore = useCollectionsStore();
+		const { selection } = useSelection();
+		const { info: currentCollection } = useCollection(collection);
 
-		const selection = ref<Preset[]>([]);
+		const { layoutWrapper } = useLayout(layout);
 
-		const { addNewLink } = useLinks();
-		const { loading, presets, getPresets } = usePresets();
-		const { headers } = useTable();
-		const { confirmDelete, deleting, deleteSelection } = useDelete();
+		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+
+		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
+
+		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+
 		const presetsStore = usePresetsStore();
-
-		getPresets();
 
 		return {
 			t,
-			addNewLink,
-			usePresets,
-			loading,
-			presets,
-			getPresets,
-			headers,
-			selection,
-			onRowClick,
+			batchDelete,
+			batchEditActive,
 			confirmDelete,
+			currentCollection,
 			deleting,
-			deleteSelection,
+			filter,
+			layoutRef,
+			layoutWrapper,
+			selection,
+			layoutOptions,
+			layoutQuery,
+			layout,
+			search,
+			clearFilters,
+			batchEditAllowed,
+			batchDeleteAllowed,
+			deleteError,
+			createAllowed,
+			drawerBatchRefresh,
+			refresh,
+			refreshInterval,
+			currentLayout,
+			collection,
 		};
 
-		function useLinks() {
-			const addNewLink = computed(() => {
-				return `/settings/presets/+`;
-			});
-
-			return { addNewLink };
+		async function refresh() {
+			await layoutRef.value?.state?.refresh?.();
 		}
 
-		function usePresets() {
-			const loading = ref(false);
-			const presetsRaw = ref<PresetRaw[] | null>(null);
-
-			const presets = computed<Preset[]>(() => {
-				return (presetsRaw.value || []).map((preset) => {
-					let scope = 'all';
-
-					if (preset.role) {
-						scope = preset.role.name;
-					}
-
-					if (preset.user) {
-						scope = userName(preset.user);
-					}
-
-					const collection = collectionsStore.getCollection(preset.collection)?.name;
-					const layout = getLayout(preset.layout)?.name;
-
-					return {
-						id: preset.id,
-						scope: scope,
-						collection: collection,
-						layout: layout,
-						name: preset.bookmark,
-					} as Preset;
-				});
-			});
-
-			return { loading, presetsRaw, getPresets, presets };
-
-			async function getPresets() {
-				loading.value = true;
-
-				try {
-					const response = await api.get(`/presets`, {
-						params: {
-							fields: [
-								'id',
-								'bookmark',
-								'user.email',
-								'user.first_name',
-								'user.last_name',
-								'role.name',
-								'collection',
-								'layout',
-							],
-							limit: -1,
-						},
-					});
-					presetsRaw.value = response.data.data;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
-			}
+		async function drawerBatchRefresh() {
+			selection.value = [];
+			await refresh();
 		}
 
-		function useTable() {
-			const headers: Header[] = [
-				{
-					text: t('collection'),
-					value: 'collection',
-					align: 'left',
-					sortable: true,
-					width: 200,
-				},
-				{
-					text: t('scope'),
-					value: 'scope',
-					align: 'left',
-					sortable: true,
-					width: 200,
-				},
-				{
-					text: t('layout'),
-					value: 'layout',
-					align: 'left',
-					sortable: true,
-					width: 200,
-				},
-				{
-					text: t('name'),
-					value: 'name',
-					align: 'left',
-					sortable: true,
-					width: 200,
-				},
-			];
+		function useSelection() {
+			const selection = ref<number[]>([]);
 
-			return { headers };
+			return { selection };
 		}
 
-		function onRowClick({ item }: { item: Preset }) {
-			// This ensures that the type signature the item matches the ones in selection
-			item = ref(item).value;
-
-			if (selection.value.length === 0) {
-				router.push(`/settings/presets/${item.id}`);
-			} else {
-				if (selection.value.includes(item)) {
-					selection.value = selection.value.filter((i) => i !== item);
-				} else {
-					selection.value = [...selection.value, item];
-				}
-			}
-		}
-
-		function useDelete() {
+		function useBatch() {
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
 
-			return { confirmDelete, deleting, deleteSelection };
+			const batchEditActive = ref(false);
 
-			async function deleteSelection() {
+			const error = ref<any>(null);
+
+			return { batchEditActive, confirmDelete, deleting, batchDelete, error };
+
+			async function batchDelete() {
 				deleting.value = true;
 
 				try {
-					const IDs = selection.value.map((item) => item.id);
-					await presetsStore.delete(IDs);
+					const batchPrimaryKeys = selection.value;
+					await presetsStore.delete(batchPrimaryKeys);
+
 					selection.value = [];
-					await getPresets();
+					await refresh();
+
 					confirmDelete.value = false;
+				} catch (err: any) {
+					error.value = err;
 				} finally {
 					deleting.value = false;
 				}
 			}
+		}
+
+		function clearFilters() {
+			filter.value = null;
+			search.value = null;
+		}
+
+		function usePermissions() {
+			const batchEditAllowed = computed(() => {
+				const admin = userStore?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const updatePermissions = permissionsStore.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === collection.value
+				);
+				return !!updatePermissions;
+			});
+
+			const batchDeleteAllowed = computed(() => {
+				const admin = userStore?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const deletePermissions = permissionsStore.permissions.find(
+					(permission) => permission.action === 'delete' && permission.collection === collection.value
+				);
+				return !!deletePermissions;
+			});
+
+			const createAllowed = computed(() => {
+				const admin = userStore?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const createPermissions = permissionsStore.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === collection.value
+				);
+				return !!createPermissions;
+			});
+
+			return { batchEditAllowed, batchDeleteAllowed, createAllowed };
 		}
 	},
 });
@@ -302,16 +318,7 @@ export default defineComponent({
 	--v-button-color-hover: var(--white) !important;
 }
 
-.presets-collection {
-	padding: var(--content-padding);
-	padding-top: 0;
-}
-
-.all {
-	color: var(--primary);
-}
-
-.default {
-	color: var(--foreground-subdued);
+.layout {
+	--layout-offset-top: 64px;
 }
 </style>

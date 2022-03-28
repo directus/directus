@@ -15,9 +15,17 @@ fields:
 
   - field: role
     width: half
+    special: m2o
+    display: related-values
+    display_options:
+      template: '{{ name }}'
 
   - field: user
     width: half
+    special: m2o
+    display: related-values
+    display_options:
+      template: '{{ email }}'
 
   - field: id
     width: half
