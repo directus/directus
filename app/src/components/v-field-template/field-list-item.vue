@@ -3,11 +3,11 @@
 		v-if="field.children === undefined || depth === 0"
 		:disabled="field.disabled"
 		clickable
-		@click="$emit('add', field.key)"
+		@click="$emit('add', field)"
 	>
 		<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
 	</v-list-item>
-	<v-list-group v-else :value="field.key" clickable @click="$emit('add', field.key)">
+	<v-list-group v-else :value="field.key" clickable @click="$emit('add', field)">
 		<template #activator>{{ field.name || formatTitle(field.field) }}</template>
 		<field-list-item
 			v-for="childField in field.children"

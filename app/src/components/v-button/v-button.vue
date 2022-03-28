@@ -1,5 +1,5 @@
 <template>
-	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth }">
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
 		<slot name="prepend-outer" />
 		<component
 			:is="component"
@@ -11,7 +11,6 @@
 				`align-${align}`,
 				{
 					active: isActiveRoute,
-					rounded,
 					icon,
 					outlined,
 					loading,
@@ -330,8 +329,9 @@ export default defineComponent({
 	cursor: not-allowed;
 }
 
-.rounded {
-	border-radius: calc(var(--v-button-height) / 2);
+.rounded,
+.rounded .button {
+	border-radius: 50%;
 }
 
 .outlined {
@@ -340,8 +340,8 @@ export default defineComponent({
 	background-color: transparent;
 }
 
-.outlined:not(.active):focus,
-.outlined:not(.active):hover {
+.outlined:not(.active):not(:disabled):focus,
+.outlined:not(.active):not(:disabled):hover {
 	color: var(--v-button-background-color-hover);
 	background-color: transparent;
 	border-color: var(--v-button-background-color-hover);

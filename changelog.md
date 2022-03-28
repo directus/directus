@@ -2,6 +2,135 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.7.1 (March 23, 2022)
+
+### :rocket: Improvements
+
+- **App**
+  - [#12170](https://github.com/directus/directus/pull/12170) Add App Translation Strings in Settings (by @azrikahar)
+  - [#12324](https://github.com/directus/directus/pull/12324) Add shortcut from data model to collection content (by
+    @Tummerhore)
+  - [#12310](https://github.com/directus/directus/pull/12310) Save last accessed collection in Content Module (by
+    @azrikahar)
+  - [#12276](https://github.com/directus/directus/pull/12276) Fix field preview background color (by @azrikahar)
+- **API**
+  - [#12141](https://github.com/directus/directus/pull/12141) Prefix existing field typecasting flags with "cast-" (by
+    @licitdev)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#12330](https://github.com/directus/directus/pull/12330) Fix auto-casting of array like values in env (by
+    @rijkvanzanten)
+  - [#12328](https://github.com/directus/directus/pull/12328) Fix inconsistent delete action payload (by @rijkvanzanten)
+  - [#12190](https://github.com/directus/directus/pull/12190) Add query filter validation with permissions (by
+    @licitdev)
+  - [#12130](https://github.com/directus/directus/pull/12130) Fix incorrect order of migrations when reverting (by
+    @licitdev)
+- **App**
+  - [#12316](https://github.com/directus/directus/pull/12316) Disable dashboard/panel actions based on permissions (by
+    @azrikahar)
+  - [#12312](https://github.com/directus/directus/pull/12312) Prevent M2M item edits without permission via app (by
+    @azrikahar)
+  - [#12302](https://github.com/directus/directus/pull/12302) Handle array vs string based sorting in export (by
+    @rijkvanzanten)
+  - [#12284](https://github.com/directus/directus/pull/12284) Fix groups in v-field-template (by @rijkvanzanten)
+  - [#12280](https://github.com/directus/directus/pull/12280) Fix start setting of detail group (by @rijkvanzanten)
+  - [#12279](https://github.com/directus/directus/pull/12279) Fix color translation keys (by @rijkvanzanten)
+  - [#12277](https://github.com/directus/directus/pull/12277) Add fields to directus_user app recommended permission (by
+    @licitdev)
+  - [#12274](https://github.com/directus/directus/pull/12274) fix export sidebar's collection not updating (by
+    @azrikahar)
+  - [#12260](https://github.com/directus/directus/pull/12260) Fix being able to export a relational field that is within
+    a group (by @u12206050)
+  - [#11836](https://github.com/directus/directus/pull/11836) Prevent errors when using string filters with empty values
+    (by @licitdev)
+- **shared**
+  - [#11836](https://github.com/directus/directus/pull/11836) Prevent errors when using string filters with empty values
+    (by @licitdev)
+
+## v9.7.0 (March 18, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#12201](https://github.com/directus/directus/pull/12201) Add new export experience (by @rijkvanzanten)
+  - [#12088](https://github.com/directus/directus/pull/12088) Allow configuring overrides for the openid-client (by
+    @rijkvanzanten)
+  - [#12025](https://github.com/directus/directus/pull/12025) Add support for import ip deny list (by @rijkvanzanten)
+  - [#12006](https://github.com/directus/directus/pull/12006) add --dry-run flag to `schema apply` CLI command (by
+    @sjones6)
+- **App**
+  - [#12201](https://github.com/directus/directus/pull/12201) Add new export experience (by @rijkvanzanten)
+  - [#12154](https://github.com/directus/directus/pull/12154) Upgrade table layout (by @rijkvanzanten)
+
+### :rocket: Improvements
+
+- **App**
+  - [#12229](https://github.com/directus/directus/pull/12229) Style updates (by @benhaynes)
+  - [#12223](https://github.com/directus/directus/pull/12223) Tweak tags placeholder for clarity (by @azrikahar)
+  - [#12220](https://github.com/directus/directus/pull/12220) Add direct download option to files interface (by
+    @rijkvanzanten)
+  - [#12157](https://github.com/directus/directus/pull/12157) Group groups in field select, add search when number of
+    fields exceeds 20 (by @rijkvanzanten)
+  - [#12085](https://github.com/directus/directus/pull/12085) Add Croatian to available-languages.yaml (by @nrozic)
+  - [#12050](https://github.com/directus/directus/pull/12050) Hide nav resize handle when it is not open (by @azrikahar)
+  - [#12048](https://github.com/directus/directus/pull/12048) Add Edit Role context menu in User Directory (by
+    @azrikahar)
+  - [#12001](https://github.com/directus/directus/pull/12001) Form error validation improvements (by @azrikahar)
+- **API**
+  - [#12020](https://github.com/directus/directus/pull/12020) Allow configuring /assets endpoint CSP separately (by
+    @rijkvanzanten)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#12235](https://github.com/directus/directus/pull/12235) Fix nested relational limit for m2o fetching (by
+    @rijkvanzanten)
+  - [#12216](https://github.com/directus/directus/pull/12216) Improvements to WYSIWYG interface (by @licitdev)
+  - [#12208](https://github.com/directus/directus/pull/12208) Export authorization service (by @licitdev)
+  - [#12193](https://github.com/directus/directus/pull/12193) add cdn domain in CSP directives for in app docs (by
+    @azrikahar)
+  - [#12087](https://github.com/directus/directus/pull/12087) Make sure mysql error extraction won't error on slice (by
+    @rijkvanzanten)
+  - [#12076](https://github.com/directus/directus/pull/12076) Fix deep relational offset (by @licitdev)
+  - [#12017](https://github.com/directus/directus/pull/12017) Add lock for system cache (by @licitdev)
+  - [#12011](https://github.com/directus/directus/pull/12011) Fix query limit -1 for o2m queries (by @azrikahar)
+  - [#11538](https://github.com/directus/directus/pull/11538) fix M2O field deletion (by @azrikahar)
+- **App**
+  - [#12222](https://github.com/directus/directus/pull/12222) fix number input step up/down when undefined (by
+    @azrikahar)
+  - [#12218](https://github.com/directus/directus/pull/12218) Fix WYSIWYG link keyboard shortcut and add parent anchor
+    tag detection (by @licitdev)
+  - [#12192](https://github.com/directus/directus/pull/12192) use type json for select-color presets options field (by
+    @azrikahar)
+  - [#12169](https://github.com/directus/directus/pull/12169) M2A interface collection name layout fix (by @d1rOn)
+  - [#12162](https://github.com/directus/directus/pull/12162) Prevent null field/collection translations from being
+    merged (by @azrikahar)
+  - [#12153](https://github.com/directus/directus/pull/12153) fix: display related translations (by @yassilah)
+  - [#12060](https://github.com/directus/directus/pull/12060) Fix cropper aspect ratio not activating crop (by
+    @licitdev)
+  - [#12047](https://github.com/directus/directus/pull/12047) Fix user info sidebar last access timestamp (by
+    @azrikahar)
+  - [#12037](https://github.com/directus/directus/pull/12037) Close WYSIWYG fullscreen when opening drawer or dialog (by
+    @licitdev)
+  - [#12034](https://github.com/directus/directus/pull/12034) Hide raw value copy paste button if unsupported by browser
+    (by @licitdev)
+  - [#11990](https://github.com/directus/directus/pull/11990) Rich-text-html interface fix (by @d1rOn)
+
+### :sponge: Optimizations
+
+- **App**
+  - [#12092](https://github.com/directus/directus/pull/12092) Remove outline prop from v-icons (by @azrikahar)
+
+### :memo: Documentation
+
+- [#12094](https://github.com/directus/directus/pull/12094) Update hooks.md - add system collection "files", fix payload
+  parameter (by @Dominic-Marcelino)
+- [#12038](https://github.com/directus/directus/pull/12038) Docs: Settings (by @erondpowell)
+- [#11728](https://github.com/directus/directus/pull/11728) Docs: User Directory (by @erondpowell)
+- [#11330](https://github.com/directus/directus/pull/11330) Docs: Filters (by @erondpowell)
+
 ## v9.6.0 (March 4, 2022)
 
 ### :sparkles: New Features

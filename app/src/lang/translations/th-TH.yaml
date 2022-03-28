@@ -103,7 +103,6 @@ recommended_defaults: ค่าตั้งต้นที่แนะนำ
 unarchive: ยกเลิกการเก็บ
 unarchive_confirm: คุณแน่ใจที่จะเลิกจัดเก็บไอเท็มนี้?
 nested_files_folders_will_be_moved: ไฟล์และโฟลเดอร์ที่อยู่ข้างในจะถูกเอาออกมาข้างนอกอีกขั้น
-unknown_validation_errors: 'มีข้อผิดพลาดกับฟิลด์ที่ถูกซ่อนเหล่านี้'
 validationError:
   eq: ค่าต้องเท่ากับ {valid}
   neq: ค่าต้องไม่เท่ากับ {invalid}
@@ -247,6 +246,7 @@ dismiss: ปิด
 raw_value: ข้อมูลดิบ
 edit_raw_value: แก้ไขข้อมูลดิบ
 enter_raw_value: กรุณาใส่ข้อมูลดิบ
+reset_to_default: รีเซ็ตเป็นค่าเริ่มต้น
 notifications: การแจ้งเตือน
 show_all_activity: แสดงทุกกิจกรรม
 page_not_found: ไม่พบหน้านี้
@@ -276,9 +276,9 @@ related_collection: คอลเลกชันที่เกี่ยวข้
 related_collections: คอลเลกชันที่เกี่ยวข้อง
 translations_collection: การแปลตาราง
 languages_collection: คอลเลกชันภาษา
+import_data_input_placeholder: CSV หรือ JSON
 label_import: นำ​เข้า
 format: รูปแบบ
-use_current_filters_settings: ใช้ตัวกรองและการตั้งค่าปัจจุบัน
 last_page: หน้าสุดท้าย
 last_access: การเข้าถึงล่าสุด
 fill_template: กรอกด้วยค่าจากแม่แบบ
@@ -297,6 +297,8 @@ delete_comment: ลบความคิดเห็น
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -857,6 +859,7 @@ fields:
   directus_settings:
     jpg: JPEG
     png: PNG
+    webP: WebP
     project_name: ชื่อโครงการ
     project_url: URL ของโครงการ
     project_color: สีของโปรเจ็ค
@@ -1194,7 +1197,6 @@ interfaces:
     auto_formatter: ใช้การจัดรูปแบบชื่อเรื่องอัตโนมัติ
     alphabetize: เรียงตามตัวอักษร
     alphabetize_label: บังคับเรียงตามตัวอักษร
-    add_tags: เพิ่มแท็ก...
   input:
     input: Input
     description: ป้อนค่าด้วยตนเอง
@@ -1357,7 +1359,6 @@ layouts:
     subtitle: คำบรรยาย
   tabular:
     tabular: ตาราง
-    fields: ฟิลด์
     spacing: ระยะห่าง
     comfortable: สบายตา
     compact: กระชับ
