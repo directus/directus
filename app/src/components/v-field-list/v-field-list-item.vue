@@ -59,7 +59,7 @@ export default {
 <script lang="ts" setup>
 import formatTitle from '@directus/format-title';
 import { Type } from '@directus/shared/types';
-import { getSupportedFunctionsForType } from '@directus/shared/utils';
+import { getFunctionsForType } from '@directus/shared/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -87,7 +87,7 @@ const { t } = useI18n();
 
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions) return [];
-	return getSupportedFunctionsForType(props.field.type);
+	return getFunctionsForType(props.field.type);
 });
 </script>
 

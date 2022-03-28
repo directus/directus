@@ -1,6 +1,6 @@
-import { Type } from '../types/fields';
+import { Type, ApiFunction } from '../types/fields';
 
-export function getSupportedFunctionsForType(type: Type): string[] {
+export function getFunctionsForType(type: Type): ApiFunction[] {
 	switch (type) {
 		case 'dateTime':
 		case 'timestamp':

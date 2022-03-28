@@ -96,17 +96,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, toRefs } from 'vue';
-import InputGroup from './input-group.vue';
-import Draggable from 'vuedraggable';
 import { useFieldsStore } from '@/stores';
-import { useI18n } from 'vue-i18n';
-import { getFilterOperatorsForType } from '@directus/shared/utils';
-import { get } from 'lodash';
-import { FieldFilter, Filter, FieldFilterOperator, LogicalFilterAND, LogicalFilterOR } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { fieldToFilter, getField, getNodeName, getComparator } from './utils';
-import { toArray } from '@directus/shared/utils';
+import {
+	FieldFilter,
+	FieldFilterOperator,
+	Filter,
+	LogicalFilterAND,
+	LogicalFilterOR,
+	Type,
+} from '@directus/shared/types';
+import { getFilterOperatorsForType, toArray, getOutputTypeForFunction } from '@directus/shared/utils';
+import { get } from 'lodash';
+import { computed, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import InputGroup from './input-group.vue';
+import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
 
 type FilterInfo =
 	| {
@@ -292,10 +298,17 @@ function replaceNode(index: number, newFilter: Filter) {
 }
 
 function getCompareOptions(name: string) {
-	const fieldInfo = fieldsStore.getField(props.collection, name);
-	if (fieldInfo === null) return [];
+	let type: Type;
 
-	return getFilterOperatorsForType(fieldInfo.type, { includeValidation: true }).map((type) => ({
+	if (name.includes('(') && name.includes(')')) {
+		const functionName = name.split('(')[0];
+		type = getOutputTypeForFunction(functionName);
+	} else {
+		const fieldInfo = fieldsStore.getField(props.collection, name);
+		type = fieldInfo?.type || 'unknown';
+	}
+
+	return getFilterOperatorsForType(type, { includeValidation: true }).map((type) => ({
 		text: t(`operators.${type}`),
 		value: `_${type}`,
 	}));
