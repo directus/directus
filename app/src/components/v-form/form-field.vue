@@ -57,7 +57,11 @@
 		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
 		<small v-if="validationError" class="validation-error">
-			{{ validationMessage }}
+			<template v-if="field.meta?.validation_message">
+				{{ field.meta?.validation_message }}
+				<v-icon v-tooltip="validationMessage" small right name="help_outline" />
+			</template>
+			<template v-else>{{ validationMessage }}</template>
 		</small>
 	</div>
 </template>
@@ -230,7 +234,6 @@ export default defineComponent({
 				try {
 					await navigator?.clipboard?.writeText(rawValue.value);
 					notify({
-						type: 'success',
 						title: t('copy_raw_value_success'),
 					});
 				} catch (err: any) {
@@ -246,7 +249,6 @@ export default defineComponent({
 					const pasteValue = await navigator?.clipboard?.readText();
 					rawValue.value = pasteValue;
 					notify({
-						type: 'success',
 						title: t('paste_raw_value_success'),
 					});
 				} catch (err: any) {

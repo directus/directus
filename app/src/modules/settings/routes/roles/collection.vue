@@ -4,7 +4,7 @@
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="admin_panel_settings" outline />
+				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
 
@@ -67,14 +67,10 @@ import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
+import { Role } from '@directus/shared/types';
 
-type Role = {
-	id: string;
-	name: string;
-	description: string;
-	icon: string;
-	admin_access: boolean;
-	count: number;
+type RoleItem = Partial<Role> & {
+	count?: number;
 };
 
 export default defineComponent({
@@ -86,7 +82,7 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const roles = ref<Role[]>([]);
+		const roles = ref<RoleItem[]>([]);
 		const loading = ref(false);
 
 		const lastAdminRoleId = computed(() => {
@@ -191,8 +187,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .roles {

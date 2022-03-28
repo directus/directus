@@ -46,8 +46,7 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, isObject, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
-import { getCache } from '../cache';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import { getCache, clearSystemCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
@@ -2051,10 +2050,10 @@ export class GraphQLService {
 						throw new ForbiddenException();
 					}
 
-					const { cache, systemCache } = getCache();
+					const { cache } = getCache();
 
 					await cache?.clear();
-					await systemCache.clear();
+					await clearSystemCache();
 
 					return;
 				},

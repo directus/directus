@@ -19,6 +19,7 @@
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null || deleteAllowed === false"
 						@click="on"
 					>
@@ -42,14 +43,7 @@
 
 			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="t('move_to_folder')"
-						rounded
-						icon
-						:disabled="item === null"
-						class="folder"
-						@click="on"
-					>
+					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon :disabled="item === null" secondary @click="on">
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
@@ -72,7 +66,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('download')" rounded icon class="download" @click="downloadFile">
+			<v-button v-tooltip.bottom="t('download')" rounded icon secondary @click="downloadFile">
 				<v-icon name="save_alt" />
 			</v-button>
 
@@ -81,7 +75,7 @@
 				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
-				class="edit"
+				secondary
 				@click="editActive = true"
 			>
 				<v-icon name="tune" />
@@ -189,7 +183,7 @@ import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { Field } from '@directus/shared/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FolderPicker from '../components/folder-picker.vue';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilesNotFound from './not-found.vue';
@@ -450,7 +444,6 @@ export default defineComponent({
 
 					notify({
 						title: t('file_moved', { folder }),
-						type: 'success',
 						icon: 'folder_move',
 					});
 				} catch (err: any) {
@@ -467,23 +460,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {
 	--v-button-background-color: var(--background-normal);
-}
-
-.edit,
-.folder,
-.download {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 
 .file-item {

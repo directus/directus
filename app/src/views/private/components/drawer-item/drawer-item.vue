@@ -38,6 +38,7 @@
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
+					:validation-errors="junctionField ? validationErrors : undefined"
 					autofocus
 					@update:model-value="setJunctionEdits"
 				/>
@@ -52,6 +53,7 @@
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:validation-errors="!junctionField ? validationErrors : undefined"
 			/>
 		</div>
 	</v-drawer>
@@ -70,6 +72,7 @@ import { Field, Relation } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
+import { validateItem } from '@/utils/validate-item';
 
 export default defineComponent({
 	components: { FilePreview },
@@ -117,6 +120,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t, te } = useI18n();
 
+		const validationErrors = ref<any[]>([]);
+
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
@@ -130,12 +135,13 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(collection);
 
+		const isNew = computed(() => props.primaryKey === '+');
+
 		const title = computed(() => {
 			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
-			const isNew = props.primaryKey === '+';
 
 			if (te(`collection_names_singular.${collection.collection}`)) {
-				return isNew
+				return isNew.value
 					? t('creating_unit', {
 							unit: t(`collection_names_singular.${collection.collection}`),
 					  })
@@ -144,7 +150,7 @@ export default defineComponent({
 					  });
 			}
 
-			return isNew
+			return isNew.value
 				? t('creating_in', { collection: collection.name })
 				: t('editing_in', { collection: collection.name });
 		});
@@ -200,6 +206,7 @@ export default defineComponent({
 			internalEdits,
 			loading,
 			item,
+			validationErrors,
 			save,
 			cancel,
 			title,
@@ -383,12 +390,22 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
+				const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
+				const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fields.value;
+				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
+
+				if (errors.length > 0) {
+					validationErrors.value = errors;
+					return;
+				}
+
 				emit('input', internalEdits.value);
 				internalActive.value = false;
 				internalEdits.value = {};
 			}
 
 			function cancel() {
+				validationErrors.value = [];
 				internalActive.value = false;
 				internalEdits.value = {};
 			}

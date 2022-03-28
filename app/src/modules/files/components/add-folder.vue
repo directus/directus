@@ -5,7 +5,7 @@
 				v-tooltip.bottom="disabled ? t('not_allowed') : t('create_folder')"
 				rounded
 				icon
-				class="add-new"
+				secondary
 				:disabled="disabled"
 				@click="on"
 			>
@@ -84,12 +84,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.add-new {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
-}
-</style>

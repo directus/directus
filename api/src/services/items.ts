@@ -648,6 +648,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
 				{
 					payload: keys,
+					keys: keys,
 					collection: this.collection,
 				},
 				{

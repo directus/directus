@@ -17,12 +17,13 @@ import RolesPermissionsDetail from './routes/roles/permissions-detail/permission
 import RolesPublicItem from './routes/roles/public-item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
+import TranslationStringsCollection from './routes/translation-strings/collection.vue';
 
 export default defineModule({
 	id: 'settings',
 	name: '$t:settings',
 	icon: 'settings',
-	color: 'var(--warning)',
+	color: 'var(--primary)',
 	routes: [
 		{
 			path: '',
@@ -172,6 +173,17 @@ export default defineModule({
 					path: ':primaryKey',
 					component: WebhooksItem,
 					props: true,
+				},
+			],
+		},
+		{
+			path: 'translation-strings',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-translation-strings-collection',
+					path: '',
+					component: TranslationStringsCollection,
 				},
 			],
 		},
