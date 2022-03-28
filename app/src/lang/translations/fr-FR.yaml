@@ -91,7 +91,6 @@ delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
 reset_bookmark: Réinitialiser le favori
-rename_bookmark: Renommer le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
 delete_bookmark_copy: >-
@@ -1303,7 +1302,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
