@@ -84,7 +84,6 @@ delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
 reset_bookmark: Resetează semnul de carte
-rename_bookmark: Redenumește semnul de carte
 update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
 delete_bookmark_copy: >-

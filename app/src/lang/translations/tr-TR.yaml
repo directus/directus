@@ -84,7 +84,6 @@ delete_folder: Klasörü Sil
 prefix: Prefiks
 suffix: Suffiks
 reset_bookmark: Yer İşaretini Sıfırla
-rename_bookmark: Yer İşaretini Yeniden Adlandır
 update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer İşaretini Kaldır
 delete_bookmark_copy: >-

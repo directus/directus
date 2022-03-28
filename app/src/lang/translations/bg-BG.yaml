@@ -91,7 +91,6 @@ delete_folder: Изтриване на папката
 prefix: Представка
 suffix: Наставка
 reset_bookmark: Нулиране на отметки
-rename_bookmark: Преименуване на отметката
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
 delete_bookmark_copy: >-

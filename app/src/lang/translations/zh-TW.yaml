@@ -46,7 +46,6 @@ delete_folder: 刪除資料夾
 prefix: 前綴
 suffix: 後綴
 reset_bookmark: 重設書籤
-rename_bookmark: 重新命名書籤
 update_bookmark: 更新書籤
 delete_bookmark: 刪除書籤
 delete_bookmark_copy: >-

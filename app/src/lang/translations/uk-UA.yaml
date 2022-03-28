@@ -91,7 +91,6 @@ delete_folder: Видалити папку
 prefix: Префікс
 suffix: Суфікс
 reset_bookmark: Скинути закладку
-rename_bookmark: Перейменувати закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
 delete_bookmark_copy: >-

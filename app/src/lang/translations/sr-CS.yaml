@@ -34,7 +34,6 @@ delete_folder: Obriši Fasciklu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi postavljanje oznake
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-

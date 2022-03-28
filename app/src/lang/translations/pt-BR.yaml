@@ -83,7 +83,6 @@ delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
 reset_bookmark: Redefinir Favoritos
-rename_bookmark: Renomear Favorito
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-

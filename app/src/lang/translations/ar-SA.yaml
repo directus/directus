@@ -81,7 +81,6 @@ delete_folder: حذف المجلد
 prefix: بادئة
 suffix: لاحقة
 reset_bookmark: إعادة تعيين المفضلة
-rename_bookmark: إعادة تسمية المفضلة
 update_bookmark: تحديث المفضلة
 delete_bookmark: حذف إشارة مرجعية
 delete_bookmark_copy: >-

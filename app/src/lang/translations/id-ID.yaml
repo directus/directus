@@ -83,7 +83,6 @@ delete_folder: Hapus Folder
 prefix: Awalan
 suffix: Akhiran
 reset_bookmark: Hapus Markah
-rename_bookmark: Ubah Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
 delete_bookmark_copy: >-

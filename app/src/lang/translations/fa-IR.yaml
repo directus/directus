@@ -84,7 +84,6 @@ delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
 reset_bookmark: بازنشانی نشانک
-rename_bookmark: تغییر نام نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
 delete_bookmark_copy: >-

@@ -41,7 +41,6 @@ delete_folder: Eliminar pasta
 prefix: Prefixo
 suffix: Sufixo
 reset_bookmark: Restaurar marcador
-rename_bookmark: Mudar o nome do marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
 delete_bookmark_copy: >-

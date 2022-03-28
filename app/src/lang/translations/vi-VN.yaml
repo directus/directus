@@ -81,7 +81,6 @@ delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
 reset_bookmark: Đặt lại Dấu trang
-rename_bookmark: Đổi tên Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-

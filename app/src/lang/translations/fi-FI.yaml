@@ -79,7 +79,6 @@ delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
 reset_bookmark: Nollaa kirjanmerkki
-rename_bookmark: Uudelleennimeä kirjanmerkki
 update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
 delete_bookmark_copy: >-

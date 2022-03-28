@@ -69,6 +69,12 @@ create_role: Créer un rôle
 create_user: Créer un utilisateur
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
+create_translation_string: Créer une chaîne de traduction
+translation_string_key_placeholder: Traduction de la clé...
+translation_string_translations_placeholder: Ajouter une nouvelle traduction
+edit_translation_string: Modifier la chaîne de traduction
+delete_translation_string_copy: >-
+  Êtes-vous sûr de vouloir supprimer la chaîne de traduction "{key}" ? Cette action ne peut pas être annulée.
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
@@ -85,7 +91,6 @@ delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
 reset_bookmark: Réinitialiser le favori
-rename_bookmark: Renommer le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
 delete_bookmark_copy: >-
@@ -166,6 +171,7 @@ revision_post_create: Voici à quoi ressemblait cet article lors de sa création
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
 changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
 no_relational_data: Attention, les données relationnelles ne sont pas incluses.
+hide_field: Masquer le champ
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
 delete_field: Supprimer le champ
@@ -174,6 +180,7 @@ field_create_success: 'Champ créé : "{field}"'
 field_update_success: 'Champ mis à jour : "{field}"'
 duplicate_where_to: Vers où souhaitez-vous dupliquer ce champ ?
 language: Langue
+language_placeholder: Sélectionnez un langage...
 aggregate_function: Fonction d'agrégat
 aggregate_precision: Précision globale
 group_aggregation: Agrégation de groupe
@@ -184,6 +191,7 @@ camera: Appareil photo
 show_zero: Afficher zéro
 create_in_advanced_field_creation_mode: Créer un champ en Mode Avancé
 continue_in_advanced_field_creation_mode: Continuer en mode de création de champ avancé
+validation: Validation
 sum: Somme
 sum_distinct: Somme distincte
 avg: Moyenne
@@ -409,6 +417,15 @@ replace_from_library: Remplacer le fichier par un fichier de la bibliothèque
 replace_from_url: Remplacer le fichier à partir d'une URL
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
+open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
+start_export: Démarrer l'exportation
+not_available_for_local_downloads: Indisponible pour les téléchargements en local
+exporting_all_items_in_collection: Exportation de tous les {total} éléments dans {collection}.
+exporting_limited_items_in_collection: Exportation de {limit} éléments sur {total} dans le cadre du {collection}.
+exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export ci-dessous.
+exporting_download_hint: Une fois terminé, ce fichier {format} sera automatiquement téléchargé sur votre appareil.
+exporting_batch_hint: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
+exporting_batch_hint_forced: En raison du grand nombre d'éléments, cette exportation doit être traitée en lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -571,6 +588,7 @@ make_collection_visible: Rendre la collection visible
 make_collection_hidden: Masquer la collection
 make_folder_visible: Rendre le dossier visible
 make_folder_hidden: Cacher Le Dossier
+goto_collection_content: Voir le Contenu
 start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
 one_item: '1 élément'
@@ -631,6 +649,8 @@ operators:
   nintersects: Ne recoupe pas
   intersects_bbox: Recoupe les délimitations
   nintersects_bbox: Ne recoupe pas les limitations
+  regex: Correspondances RegExp
+custom_validation_message: Message de validation personnalisé
 loading: Chargement…
 drop_to_upload: Déposer pour téléverser
 item: Élément
@@ -714,7 +734,11 @@ no_data: Pas de donnée
 create_dashboard: Créer un tableau de bord
 dashboard_name: Nom du Tableau de bord
 full_screen: Plein écran
+full_text_search: Recherche dans l'intégralité du texte
 edit_panels: Modifier le panneau
+center_align: Alignement centré
+left_align: Aligné à gauche
+right_align: Aligné à droite
 fit_to_screen: Ajuster à l'écran
 image_url: Url de l’image
 alt_text: Texte alternatif
@@ -807,6 +831,7 @@ settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
 settings_presets: Préréglages et favoris
+settings_translation_strings: Chaînes de traduction
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 select: Sélectionner...
@@ -852,6 +877,7 @@ page_help_settings_presets_item: >-
   **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
+page_help_settings_translation_strings_collection: '**Parcourir les chaînes de traduction** — Liste toutes les chaînes de traduction du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
@@ -1227,6 +1253,16 @@ normal: Normal
 success: Succès
 warning: Avertissement
 danger: Danger
+colors:
+  purple: Violet
+  blue: Bleu
+  green: Vert
+  yellow: Jaune
+  orange: Orange
+  red: Rouge
+  black: Black
+  gray: Gris
+  white: Blanc
 junction_collection: Collection de jointure
 latency: Latence
 login: Se connecter
@@ -1255,6 +1291,9 @@ sign_out: Déconnexion
 sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
 something_went_wrong: Quelque chose s’est mal passé.
 sort_direction: Ordre de tri
+export_location: Emplacement d'exportation
+export_started: L'exportation a commencé
+export_started_copy: Votre exportation a commencé. Vous serez notifié quand elle sera prête à être téléchargée.
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
@@ -1281,6 +1320,8 @@ interfaces:
     no_rules: Configurer les règles
     change_value: Cliquez pour modifier le nom
     placeholder: Glisser les fichiers ici
+  fields:
+    name: Champs
   group-accordion:
     name: Accordéon
     description: Afficher les champs ou les groupes en tant que sections d'accordéon
@@ -1340,6 +1381,7 @@ interfaces:
     include_seconds: Inclure les secondes
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
+    placeholder: Choisissez une date et heure...
   system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
@@ -1472,6 +1514,7 @@ interfaces:
     auto_formatter: Utiliser le formatteur automatique de titre
     alphabetize: Alphabétiser
     alphabetize_label: Forcer l'ordre alphabétique
+    add_tags: Ajouter un tag et appuyer sur Entrée...
   input:
     input: Texte simple
     description: Entrer manuellement une valeur
@@ -1489,6 +1532,11 @@ interfaces:
   input-multiline:
     textarea: Multi-lignes
     description: Entrez le texte brut en multiligne
+  input-translated-string:
+    input-translated-string: Chaînes traduites
+    description: Sélectionner ou ajouter une chaîne de traduction
+    search_placeholder: Rechercher...
+    new_translation_string: Nouvelle chaîne de traduction
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
