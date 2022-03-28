@@ -47,7 +47,6 @@ delete_folder: Izbriši mapo
 prefix: Predpona
 suffix: Pripona
 reset_bookmark: Ponastavi zaznamek
-rename_bookmark: Preimenuj zaznamek
 update_bookmark: Posodobi zaznamek
 delete_bookmark: Izbriši zaznamek
 delete_bookmark_copy: >-
