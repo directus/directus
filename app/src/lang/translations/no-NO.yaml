@@ -80,7 +80,6 @@ delete_folder: Slett mappe
 prefix: Prefiks
 suffix: Suffiks
 reset_bookmark: Tilbakestill bokmerke
-rename_bookmark: Endre navn på bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
 delete_bookmark_copy: >-
