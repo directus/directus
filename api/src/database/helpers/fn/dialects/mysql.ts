@@ -33,4 +33,8 @@ export class FnHelperMySQL extends FnHelper {
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw('SECOND(??.??)', [table, column]);
 	}
+
+	count(table: string, column: string): Knex.Raw {
+		return this.knex.raw('JSON_LENGTH(??.??)', [table, column]);
+	}
 }

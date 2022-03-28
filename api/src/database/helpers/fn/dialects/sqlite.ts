@@ -33,4 +33,8 @@ export class FnHelperSQLite extends FnHelper {
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw("strftime('%S', ??.?? / 1000, 'unixepoch')", [table, column]);
 	}
+
+	count(table: string, column: string): Knex.Raw {
+		return this.knex.raw(`json_array_length(??.??, '$')`, [table, column]);
+	}
 }

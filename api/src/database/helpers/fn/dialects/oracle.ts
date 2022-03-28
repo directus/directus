@@ -33,4 +33,8 @@ export class FnHelperOracle extends FnHelper {
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw("TO_CHAR(??.??, 'SS')", [table, column]);
 	}
+
+	count(table: string, column: string): Knex.Raw {
+		return this.knex.raw("json_value(??.??, '$.size()')", [table, column]);
+	}
 }
