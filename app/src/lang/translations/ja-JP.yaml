@@ -33,7 +33,6 @@ emails: メールアドレス
 rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
 reset_bookmark: ブックマークをリセット
-rename_bookmark: ブックマークの名前を変更
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
 delete_bookmark_copy: >-
