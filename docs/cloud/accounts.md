@@ -12,7 +12,7 @@
 Creating an Account is easy and free. As mentioned in the [Overview](/cloud/overview/), to make life easy, you have the
 option to create and login to your free Cloud Account automatically with Github. If you have no Github or do not wish to
 use this login method, email-and-password login is available as well. In either case, simply go to the
-[Login Page](https://directus.cloud/login) and follow the prompts as desired.
+[Login Page](https://directus.cloud/login) and follow the prompts.
 
 ## Manage Account
 
@@ -22,7 +22,7 @@ Update your name and email at any time by following these steps:
 
 1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 2. Toggle <span mi icon prmry>edit</span> to allow edits.
-3. Make your changes as desired.
+3. Change your name and email as desired.
 4. Click the **"Save"** button.
 
 ## Reset Password
@@ -45,10 +45,10 @@ To destroy your Directus Cloud Account, follow these steps:
 2. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.
 3. Type in your password, then click the **"Destroy Account"** button.
 
-::: danger DANGER!
+::: danger
 
-This action is permanent and irreversible. Destroying your Directus Cloud Account completely removes your Account and
-data from our platform. Proceed with caution!
+Destroying your Account completely removes your Account and data from Directus Cloud. This action is permanent and
+irreversible. Proceed with caution!
 
 :::
 

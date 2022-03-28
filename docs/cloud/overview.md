@@ -9,7 +9,7 @@
 
 [Directus Cloud](https://directus.cloud/) is a hosting platform for [Directus Projects](/cloud/glossary/#projects),
 offering [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), bi-weekly
-[automatic software updates](/cloud/glossary/#automatic-software-updates),
+[automatic software updates](/cloud/glossary/#automatic-updates),
 [horizontal and vertical scaling](/cloud/glossary/#nodes) at the click of a button, hosting options to fit any
 budget-and-scale, and a [pricing system](/cloud/glossary/#billing) that allows you to scale up or down at anytime.
 Directus Cloud handles data storage, hosting, updates and scalability so developers can focus on building their app.
@@ -53,14 +53,6 @@ and [Projects](/cloud/glossary/#projects):
   on.
 - <span mi icon>account_circle</span> — [Access, edit or destroy Account](/cloud/accounts).
 
-## Projects
-
-- **Team Projects** — View and access all Projects managed within a Team. Click a Project to enter the Product Details
-  Page and [access, monitor, edit or delete a Project](/cloud/projects).
-
-- **Team Billing** — [View and manage billing details](/cloud/teams/#manage-billing) such as credit card information,
-  usage, subscriptions, and receipts.
-
 ## Teams
 
 - **Team Members** — [View, invite and remove](/cloud/teams) other Team Members or leave a Team yourself.
@@ -68,5 +60,13 @@ and [Projects](/cloud/glossary/#projects):
 - **Team Activity** — [View Team activity](/cloud/teams/#view-team-activity) like Project creation and deletion, billing
   information changes, Member invitations and removals, etc.
 
-- **Team Settings** — [Edit the Team Name and Team Slug](/cloud/teams/#edit-team-name-and-slug), as well as delete the
+- **Team Settings** — [Edit the Team Name and Team Slug](/cloud/teams/#update-team-settings), as well as delete the
   Team.
+
+## Projects
+
+- **Team Projects** — View and access all Projects managed within a Team. Click a Project to enter the Product Details
+  Page and [access, monitor, edit or delete a Project](/cloud/projects).
+
+- **Team Billing** — [View and manage billing details](/cloud/teams/#manage-billing) such as credit card information,
+  usage, subscriptions, and receipts.
