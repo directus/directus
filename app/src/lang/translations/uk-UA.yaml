@@ -1471,22 +1471,48 @@ displays:
     description: Показати розмір файлу
   formatted-value:
     format: Формат
+    format_label: Автоматичний формат
     font: Шрифт
+    font_sans_serif: Без зарубок
     font_serif: Некарбований
     font_monospace: Моноширинний шрифт
     bold: Напівжирний
+    bold_label: Використовувати жирний шрифт
     italic: Курсив
+    italic_label: Використовувати курсив
     prefix: Префікс
+    prefix_label: Підготувати текст
     suffix: Суфікс
+    suffix_label: Доданий текст
     color: Колір
+    background: Тло
     icon: Іконка
+    border: Межа
+    border_label: Показати межу
     text: Текст
+    text_placeholder: Необов'язкове перевизначення значення...
+  formatted-json-value:
+    formatted-json-value: Форматоване значення JSON
+    description: Відобразити форматовану версію об'єкту
   icon:
     icon: Іконка
+    description: Відображати як значок
+    filled: Наповнений
+    filled_label: Використовувати заповнений варіант
   image:
+    image: Зображення
+    description: Відобразити невеликий попередній перегляд зображення
     circle: Коло
+    circle_label: Відобразити у вигляді кола
   labels:
+    labels: Мітки
+    description: Відображення однієї або списку міток
+    default_foreground: Стандартний Передній план
+    default_background: Стандартне тло
+    format_label: Форматувати кожну мітку
+    show_as_dot: Показати як крапку
     choices_value_placeholder: Введіть значення...
+    choices_text_placeholder: Введіть текст для відображення...
   mime-type:
     mime-type: Тип MIME
     description: Показати MIME-тип файлу
