@@ -8,8 +8,8 @@ import { applyFunctionToColumnName } from './apply-function-to-column-name';
  * column is replaced with the appropriate SQL)
  *
  * @param knex Current knex / transaction instance
- * @param collection Collection or alias in which column resides
- * @param field name of the column
+ * @param table Collection or alias in which column resides
+ * @param column name of the column
  * @param alias Whether or not to add a SQL AS statement
  * @returns Knex raw instance
  */
@@ -19,7 +19,7 @@ export function getColumn(
 	column: string,
 	alias: string | false = applyFunctionToColumnName(column)
 ): Knex.Raw {
-	const { date: fn } = getHelpers(knex);
+	const { fn } = getHelpers(knex);
 
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0];
