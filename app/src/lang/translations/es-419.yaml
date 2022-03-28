@@ -28,6 +28,7 @@ draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
+reset_width: Restablecer ancho
 tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
@@ -40,6 +41,7 @@ duplicate_field: Campo duplicado
 half_width: Ancho a la Mitad
 full_width: Ancho completo
 group: Grupo
+export_items: Exportar elementos
 and: "Y"
 or: O
 fill_width: Ajustar ancho
@@ -67,6 +69,12 @@ create_role: Crear rol
 create_user: Crear Usuario
 delete_panel: Borrar_Panel
 create_webhook: Crear un Webhook
+create_translation_string: Crear Traducciones
+translation_string_key_placeholder: Clave de cadena de traducción...
+translation_string_translations_placeholder: Añadir una nueva traducción
+edit_translation_string: Editar traducción
+delete_translation_string_copy: >-
+  ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
@@ -83,7 +91,6 @@ delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
 reset_bookmark: Restablecer marcador
-rename_bookmark: Renombrar marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
