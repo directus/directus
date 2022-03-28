@@ -16,12 +16,12 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-menu placement="bottom-start" show-arrow :disabled="!!field === false">
+						<v-menu placement="bottom-start" show-arrow :disabled="field !== undefined">
 							<template #activator="{ toggle }">
 								<button
 									class="name"
-									:disabled="!!field === false"
-									:class="{ disabled: !!field === false }"
+									:disabled="field !== undefined"
+									:class="{ disabled: field !== undefined }"
 									@click="toggle"
 								>
 									<span>{{ getFieldPreview(element) }}</span>
@@ -96,7 +96,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useFieldTree } from '@/composables/use-field-tree';
 import { computed, toRefs } from 'vue';
 import InputGroup from './input-group.vue';
 import Draggable from 'vuedraggable';
@@ -145,7 +144,6 @@ const emit = defineEmits(['remove-node', 'update:filter', 'change']);
 
 const { collection } = toRefs(props);
 const filterSync = useSync(props, 'filter', emit);
-const { treeList: fieldOptions, loadFieldRelations } = useFieldTree(collection);
 const fieldsStore = useFieldsStore();
 const { t } = useI18n();
 

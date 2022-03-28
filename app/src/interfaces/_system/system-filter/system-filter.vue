@@ -38,7 +38,7 @@
 					</button>
 				</template>
 
-				<v-field-list :collection="collection" @select-field="addNode($event)">
+				<v-field-list :collection="collection" include-functions @select-field="addNode($event)">
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
 							<v-list-item-content>

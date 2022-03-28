@@ -7,6 +7,7 @@ export * from './get-fields-from-template';
 export * from './get-filter-operators-for-type';
 export * from './get-relation-type';
 export * from './get-simple-hash';
+export * from './get-supported-functions-for-type';
 export * from './is-dynamic-variable';
 export * from './is-extension';
 export * from './merge-filters';

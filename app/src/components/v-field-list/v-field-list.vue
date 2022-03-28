@@ -16,6 +16,7 @@
 			:key="field.field"
 			:field="field"
 			:search="search"
+			:include-functions="includeFunctions"
 			@add="$emit('select-field', $event)"
 		/>
 	</v-list>
@@ -33,9 +34,13 @@ import { useFieldsStore } from '@/stores';
 interface Props {
 	collection: string;
 	disabledFields?: string[];
+	includeFunctions?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+	disabledFields: () => [],
+	includeFunctions: false,
+});
 
 defineEmits(['select-field']);
 
