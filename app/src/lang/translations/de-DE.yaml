@@ -84,7 +84,6 @@ delete_folder: Ordner löschen
 prefix: Präfix
 suffix: Suffix
 reset_bookmark: Lesezeichen zurücksetzen
-rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
 delete_bookmark_copy: >-
