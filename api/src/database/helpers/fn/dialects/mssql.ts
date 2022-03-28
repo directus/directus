@@ -33,4 +33,8 @@ export class FnHelperMSSQL extends FnHelper {
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw('DATEPART(second, ??.??)', [table, column]);
 	}
+
+	count(table: string, column: string): Knex.Raw {
+		return this.knex.raw(`(SELECT COUNT(*) FROM OPENJSON(??.??, '$'))`, [table, column]);
+	}
 }
