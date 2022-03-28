@@ -77,7 +77,6 @@ delete_folder: Ta bort mapp
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Återställ bokmärke
-rename_bookmark: Döp om bokmärke
 update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
 delete_bookmark_copy: >-
