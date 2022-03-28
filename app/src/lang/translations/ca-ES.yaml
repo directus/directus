@@ -46,7 +46,6 @@ delete_folder: Suprimeix carpeta
 prefix: Prefix
 suffix: Sufix
 reset_bookmark: Reinicia marcador
-rename_bookmark: Renombra marcador
 update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
 delete_bookmark_copy: >-
