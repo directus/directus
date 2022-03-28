@@ -78,6 +78,7 @@
 		</template>
 
 		<div class="container">
+			<arrows :panels="panels" :attachments="attachments" :edit-mode="editMode" />
 			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
 					<operation
@@ -118,7 +119,22 @@
 			</v-card>
 		</v-dialog>
 
-		<router-view @save="stageOperation" @cancel="$router.replace(`/settings/flows/${primaryKey}`)" />
+		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
+			<v-card>
+				<v-card-title>{{ t('flow_delete_confirm') }}</v-card-title>
+
+				<v-card-actions>
+					<v-button secondary @click="confirmDelete = null">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button danger :loading="deletingFlow" @click="deleteFlow">
+						{{ t('delete_label') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<router-view :operation="panels.find(panel => panel.id === props.operationId)" @save="stageOperation" @cancel="$router.replace(`/settings/flows/${primaryKey}`)" />
 	</private-view>
 </template>
 
@@ -132,7 +148,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
-import { merge, omit } from 'lodash';
+import { clone, merge, omit, set } from 'lodash';
 import { router } from '@/router';
 import { nanoid } from 'nanoid';
 
@@ -141,11 +157,13 @@ import SettingsNavigation from '../../components/navigation.vue';
 import Operation from './components/operation.vue';
 import { AppPanel } from '@/components/v-workspace-panel.vue';
 import TriggerDetail from './components/trigger-detail.vue';
+import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
+import Arrows from './components/arrows.vue';
+
+// Maps the x and y coordinates of attachments of panels to their id
+export type Attachments = Record<number, Record<number, string>>
 
 const { t } = useI18n();
-
-const PANEL_WIDTH = 14
-const PANEL_HEIGHT = 14
 
 const props = defineProps<{
 	primaryKey: string;
@@ -219,13 +237,13 @@ const panels = computed(() => {
 			height: PANEL_HEIGHT,
 			x: panel.position_x,
 			y: panel.position_y,
-			name: t(`operations.${panel.type}.name`),
+			panel_name: t(`operations.${panel.type}.name`),
 		})
 	);
 
 	const trigger: Record<string, any> = {
 		id: '$trigger',
-		name: t(`triggers.${flow.value?.trigger}.name`),
+		panel_name: t(`triggers.${flow.value?.trigger}.name`),
 		icon: 'offline_bolt',
 		x: 1,
 		y: 1,
@@ -242,27 +260,13 @@ const panels = computed(() => {
 	return panels;
 });
 
-const confirmCancel = ref(false);
-const confirmLeave = ref(false);
-const leaveTo = ref<string | null>(null);
-
-const editsGuard: NavigationGuard = (to) => {
-	const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
-
-	if (editMode.value && to.params.primaryKey !== props.primaryKey) {
-		console.log(editMode.value, to.params.primaryKey , props.primaryKey)
-		if (hasEdits) {
-			confirmLeave.value = true;
-			leaveTo.value = to.fullPath;
-			return false;
-		} else {
-			editMode.value = false;
-		}
+const attachments = computed(() => {
+	const attachments: Attachments = {}
+	for(const panel of panels.value) {
+		set(attachments, `${panel.x + ATTACHMENT_OFFSET.x}.${panel.y + ATTACHMENT_OFFSET.y}`, panel.id)
 	}
-};
-
-onBeforeRouteUpdate(editsGuard);
-onBeforeRouteLeave(editsGuard);
+	return attachments
+})
 
 function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string }) {
 	const key = event.id ?? props.operationId;
@@ -324,6 +328,8 @@ function stageOperation(edits: Partial<OperationRaw>) {
 }
 
 async function saveChanges() {
+	const trees = getTrees().map(addChangesToTree)
+
 	if (!flow.value) return;
 
 	if (stagedPanels.value.length === 0 && panelsToBeDeleted.value.length === 0) {
@@ -334,19 +340,19 @@ async function saveChanges() {
 	saving.value = true;
 
 	try {
-		if (stagedPanels.value.length > 0) {
-			// TODO: Clean reject / resolve values
+		if (trees.length > 0) {
 			const changes: Record<string, any> = {
+				...stagedFlow.value,
 				operations: {
-					create: stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
-					update: stagedPanels.value.filter((panel) => !panel.id?.startsWith('_')),
+					create: trees.filter((tree) => !('id' in tree)),
+					update: trees.filter((tree) => 'id' in tree && tree.id !== '$trigger'),
 					delete: panelsToBeDeleted.value
 				},
 			}
 
-			if(flow.value.operation?.startsWith('_')) {
-				changes.operation = stagedPanels.value.find((panel) => panel.id === flow.value?.operation)
-			}
+			const trigger = trees.find((tree) => tree.id === '$trigger')
+
+			if(trigger) changes.operation = trigger.resolve
 
 			await api.patch(`/flows/${props.primaryKey}`, changes);
 		}
@@ -362,12 +368,75 @@ async function saveChanges() {
 	}
 }
 
+type Tree = {
+	id: string,
+	reject?: Tree,
+	resolve?: Tree
+}
+
+function getTrees() {
+	const rejectResolveIds = panels.value.reduce<Set<string>>((acc, panel) => {
+		if(panel.resolve) acc.add(panel.resolve)
+		if(panel.reject) acc.add(panel.reject)
+		return acc
+	}, new Set())
+
+	const topOperations = panels.value.filter(panel => !rejectResolveIds.has(panel.id))
+	const trees = topOperations.map(constructTree)
+
+	return trees
+	
+	function constructTree(root: Record<string, any>): Tree {
+		const resolve = panels.value.find(panel => panel.id === root.resolve)
+		const reject = panels.value.find(panel => panel.id === root.reject)
+
+		return {id: root.id, reject: reject? constructTree(reject) : undefined, resolve: resolve? constructTree(resolve) : undefined}
+	}
+}
+
+function addChangesToTree(tree: Tree): Record<string, any> {
+	const edits = stagedPanels.value.find(panel => panel.id === tree.id)
+
+	const newTree = edits ?? {id: tree.id} as Record<string, any>
+
+	delete newTree.reject
+	delete newTree.resolve
+
+	if(tree.reject) newTree.reject = addChangesToTree(tree.reject)
+	if(tree.resolve) newTree.resolve = addChangesToTree(tree.resolve)
+	if(tree.id.startsWith('_')) delete newTree.id
+
+	return newTree
+}
+
 async function deletePanel(id: string) {
 	if (!flow.value) return;
 
 	stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
 	if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
 }
+
+const confirmCancel = ref(false);
+const confirmLeave = ref(false);
+const leaveTo = ref<string | null>(null);
+
+const editsGuard: NavigationGuard = (to) => {
+	const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
+
+	if (editMode.value && to.params.primaryKey !== props.primaryKey) {
+		console.log(editMode.value, to.params.primaryKey , props.primaryKey)
+		if (hasEdits) {
+			confirmLeave.value = true;
+			leaveTo.value = to.fullPath;
+			return false;
+		} else {
+			editMode.value = false;
+		}
+	}
+};
+
+onBeforeRouteUpdate(editsGuard);
+onBeforeRouteLeave(editsGuard);
 
 function attemptCancelChanges(): void {
 	const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
@@ -417,8 +486,23 @@ function startDebug() {
 	// TODO: Start debugger
 }
 
-function deleteFlow() {
-	// TODO: Delete flow
+const deletingFlow = ref(false);
+const confirmDelete = ref<string | null>(null);
+
+async function deleteFlow() {
+	if (!confirmDelete.value) return;
+
+	deletingFlow.value = true;
+
+	try {
+		await api.delete(`/flows/${confirmDelete.value}`);
+		await flowsStore.hydrate()
+		confirmDelete.value = null;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		deletingFlow.value = false;
+	}
 }
 </script>
 
@@ -431,8 +515,6 @@ function deleteFlow() {
 	--column-size: 200px;
 	--row-size: 100px;
 	--gap-size: 40px;
-
-	padding: var(--content-padding);
 }
 
 .grid {

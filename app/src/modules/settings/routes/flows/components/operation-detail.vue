@@ -57,6 +57,7 @@ const props = withDefaults(
 	defineProps<{
 		primaryKey: string;
 		operationId: string;
+		operation?: Record<string, any>
 	}>(),
 	{}
 );
@@ -66,10 +67,10 @@ const emit = defineEmits(['save', 'cancel']);
 const isOpen = useDialogRoute();
 const { t } = useI18n();
 
-const options = ref<Record<string, any>>({})
-const operationType = ref<string | undefined>();
-const operationKey = ref<string>('')
-const operationName = ref('')
+const options = ref<Record<string, any>>(props.operation?.options ?? {})
+const operationType = ref<string | undefined>(props.operation?.type);
+const operationKey = ref<string>(props.operation?.key ?? '')
+const operationName = ref(props.operation?.name ?? '')
 
 watch(operationType, () => {
 	options.value = {}

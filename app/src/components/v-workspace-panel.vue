@@ -120,6 +120,7 @@ type Props = {
 	resizable?: boolean
 	editMode?: boolean
 	showOptions?: boolean
+	alwaysUpdatePosition?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -134,7 +135,8 @@ const props = withDefaults(defineProps<Props>(), {
 	editMode: false,
 	draggable: true,
 	borderRadius: () => [true, true, true, true],
-	showOptions: true
+	showOptions: true,
+	alwaysUpdatePosition: false
 })
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit'])
@@ -259,6 +261,8 @@ function useDragDrop() {
 			if (editedPosition.width && editedPosition.width < minWidth) editedPosition.width = minWidth;
 			if (editedPosition.height && editedPosition.height < minHeight) editedPosition.height = minHeight;
 		}
+
+		if(props.alwaysUpdatePosition) emit('update', editedPosition);
 	}, 20);
 
 	return { dragging, onPointerDown, onPointerUp, onPointerMove };
