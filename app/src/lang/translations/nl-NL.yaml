@@ -83,7 +83,6 @@ delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
 reset_bookmark: Reset Bladwijzer
-rename_bookmark: Hernoem Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
 delete_bookmark_copy: >-
