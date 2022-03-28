@@ -17,6 +17,7 @@
 					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
 					:name="hasPermission ? 'more_vert' : 'lock'"
 					:clickable="hasPermission"
+					small
 					class="ctx-toggle"
 					@click.prevent="hasPermission ? toggle() : null"
 				/>
