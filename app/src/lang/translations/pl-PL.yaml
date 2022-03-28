@@ -91,7 +91,6 @@ delete_folder: Usuń folder
 prefix: Przedrostek
 suffix: Przyrostek
 reset_bookmark: Zresetuj zakładkę
-rename_bookmark: Zmień nazwę zakładki
 update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
 delete_bookmark_copy: >-
