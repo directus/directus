@@ -56,7 +56,6 @@ delete_folder: Mappa törlése
 prefix: Előtag
 suffix: Utótag
 reset_bookmark: Könyvjelző visszaállítása
-rename_bookmark: Könyvjelző átnevezése
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
 delete_bookmark_copy: >-
