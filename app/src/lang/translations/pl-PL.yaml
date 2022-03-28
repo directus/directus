@@ -95,6 +95,9 @@ update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
 delete_bookmark_copy: >-
   Czy na pewno chcesz usunąć zakładkę "{bookmark}"? Tej akcji nie można cofnąć.
+delete_personal_bookmark: Usuń Osobistą Zakładkę
+delete_role_bookmark: Usuń zakładkę roli
+delete_global_bookmark: Usuń globalną zakładkę
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
@@ -191,6 +194,7 @@ camera: Aparat
 show_zero: Pokaż zerowy
 create_in_advanced_field_creation_mode: Utwórz pole w trybie zaawansowanym
 continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
+validation: Walidacja
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
 avg: Średnia
@@ -561,6 +565,11 @@ value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
 edit_bookmark: Edytuj zakładkę
+edit_personal_bookmark: Edytuj Osobistą Zakładkę
+edit_role_bookmark: Edytuj zakładkę roli
+edit_global_bookmark: Edytuj globalną zakładkę
+cannot_edit_role_bookmarks: Nie można edytować zakładek roli
+cannot_edit_global_bookmarks: Nie można edytować globalnych zakładek
 bookmarks: Zakładki
 presets: Ustawienia
 unexpected_error: Nieoczekiwany błąd
@@ -648,6 +657,8 @@ operators:
   nintersects: Nie przecina się
   intersects_bbox: Przecina pole ograniczające
   nintersects_bbox: Nie przecina pola ograniczającego
+  regex: Wyrażenie dopasowania
+custom_validation_message: Niestandardowy komunikat walidacyjny
 loading: Wczytywanie...
 drop_to_upload: Upuść, aby przesłać
 item: Element
@@ -1299,6 +1310,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
