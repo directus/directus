@@ -25,7 +25,6 @@ delete_folder: 폴더 삭제
 prefix: 접두사
 suffix: 접미사
 reset_bookmark: 북마크 초기화
-rename_bookmark: 북마크 이름 변경
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
 delete_bookmark_copy: >-
