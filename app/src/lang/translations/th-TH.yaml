@@ -73,7 +73,6 @@ delete_folder: ลบโฟลเดอร์
 prefix: คำนำหน้า
 suffix: คำต่อท้าย
 reset_bookmark: รีเซ็ตบุ๊คมาร์ค
-rename_bookmark: เปลี่ยนชื่อบุ๊คมาร์ค
 update_bookmark: ปรับปรุงบุ๊คมาร์ค
 delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
 delete_bookmark_copy: >-
