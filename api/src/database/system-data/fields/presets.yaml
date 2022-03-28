@@ -33,6 +33,12 @@ fields:
   - field: bookmark
     width: half
 
+  - field: icon
+    width: half
+
+  - field: color
+    width: half
+
   - field: search
     width: half
 

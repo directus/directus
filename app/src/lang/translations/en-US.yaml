@@ -92,11 +92,13 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Reset Bookmark
-rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
   Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
+delete_personal_bookmark: Delete Personal Bookmark
+delete_role_bookmark: Delete Role Bookmark
+delete_global_bookmark: Delete Global Bookmark
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
@@ -569,6 +571,11 @@ value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
 edit_bookmark: Edit Bookmark
+edit_personal_bookmark: Edit Personal Bookmark
+edit_role_bookmark: Edit Role Bookmark
+edit_global_bookmark: Edit Global Bookmark
+cannot_edit_role_bookmarks: Can't Edit Role Bookmarks
+cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error

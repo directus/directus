@@ -242,6 +242,8 @@ export default defineComponent({
 
 				if (edits.value.name) editsParsed.bookmark = edits.value.name;
 				if (edits.value.name?.length === 0) editsParsed.bookmark = null;
+				if (edits.value.icon) editsParsed.icon = edits.value.icon;
+				if (edits.value.color) editsParsed.color = edits.value.color;
 				if (edits.value.collection) editsParsed.collection = edits.value.collection;
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
@@ -332,6 +334,8 @@ export default defineComponent({
 					collection: preset.value.collection,
 					layout: preset.value.layout,
 					name: preset.value.bookmark,
+					icon: preset.value.icon,
+					color: preset.value.color,
 					search: preset.value.search,
 					scope: scope,
 					layout_query: preset.value.layout_query,
@@ -515,6 +519,27 @@ export default defineComponent({
 						options: {
 							placeholder: t('preset_name_placeholder'),
 						},
+					},
+				},
+				{
+					field: 'icon',
+					name: '$t:icon',
+					type: 'string',
+					meta: {
+						interface: 'select-icon',
+						width: 'half',
+					},
+					schema: {
+						default_value: 'bookmark_outline',
+					},
+				},
+				{
+					field: 'color',
+					name: '$t:color',
+					type: 'string',
+					meta: {
+						interface: 'select-color',
+						width: 'half',
 					},
 				},
 				{
