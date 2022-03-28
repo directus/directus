@@ -95,10 +95,6 @@
 				</sidebar-detail>
 
 				<div class="layout-sidebar">
-					<sidebar-detail icon="search" :title="t('search')">
-						<v-input v-model="search" :placeholder="t('preset_search_placeholder')"></v-input>
-					</sidebar-detail>
-
 					<component
 						:is="`layout-sidebar-${values.layout}`"
 						v-if="values.layout && values.collection"
@@ -518,6 +514,30 @@ export default defineComponent({
 						width: 'half',
 						options: {
 							placeholder: t('preset_name_placeholder'),
+						},
+					},
+				},
+				{
+					field: 'search',
+					name: t('search'),
+					type: 'string',
+					meta: {
+						interface: 'input',
+						width: 'half',
+						options: {
+							placeholder: t('search_items'),
+						},
+					},
+				},
+				{
+					field: 'filter',
+					name: t('filter'),
+					type: 'string',
+					meta: {
+						interface: 'system-filter',
+						width: 'half',
+						options: {
+							collectionField: 'collection',
 						},
 					},
 				},
