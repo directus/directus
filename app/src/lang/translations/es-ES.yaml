@@ -91,7 +91,6 @@ delete_folder: Eliminar Directorio
 prefix: Prefijo
 suffix: Sufijo
 reset_bookmark: Restablecer Marcador
-rename_bookmark: Renombrar Marcador
 update_bookmark: Actualizar Marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
