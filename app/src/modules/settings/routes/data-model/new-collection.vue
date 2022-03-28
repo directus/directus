@@ -352,16 +352,22 @@ export default defineComponent({
 							showAsDot: true,
 							choices: [
 								{
-									background: 'var(--primary)',
+									text: '$t:published',
 									value: 'published',
+									foreground: '#FFFFFF',
+									background: 'var(--primary)',
 								},
 								{
-									background: '#D3DAE4',
+									text: '$t:draft',
 									value: 'draft',
+									foreground: '#18222F',
+									background: '#D3DAE4',
 								},
 								{
-									background: 'var(--warning)',
+									text: '$t:archived',
 									value: 'archived',
+									foreground: '#FFFFFF',
+									background: 'var(--warning)',
 								},
 							],
 						},

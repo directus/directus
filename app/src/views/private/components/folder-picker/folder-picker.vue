@@ -151,12 +151,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+:global(body) {
+	--folder-picker-background-color: var(--background-normal);
+	--folder-picker-color: var(--background-normal-alt);
+}
+
 .folder-picker {
-	--v-list-item-background-color-hover: var(--background-normal-alt);
-	--v-list-item-background-color-active: var(--background-normal-alt);
+	--v-list-item-background-color-hover: var(--folder-picker-color);
+	--v-list-item-background-color-active: var(--folder-picker-color);
 
 	padding: 12px;
-	background-color: var(--background-normal);
+	background-color: var(--folder-picker-background-color);
 	border-radius: var(--border-radius);
 }
 </style>

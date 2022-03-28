@@ -125,7 +125,5 @@ layouts:
   cards:
     title: כותרת
     subtitle: כותרת משנית
-  tabular:
-    fields: שדות
   calendar:
     calendar: לוח שנה

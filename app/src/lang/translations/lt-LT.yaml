@@ -68,7 +68,6 @@ recommended_defaults: Rekomenduojami "Pagal nutylėjimą"
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
-unknown_validation_errors: 'Šie paslėpti laukai turi validavimo klaidų:'
 validationError:
   eq: Reikšmė turi būti {valid}
   neq: Reikšmė negali būti {invalid}
@@ -231,7 +230,6 @@ related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 languages_collection: Kalbų kolekcija
 format: Formatas
-use_current_filters_settings: Naudoti dabartinius filtrus ir nustatymus
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
 fill_template: Užpildyti reikšme iš ruošinio
@@ -870,7 +868,6 @@ interfaces:
     auto_formatter: Naudoti automatinį antraštės formatavimą
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
-    add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
     color_on: Spalva, kai įjungta
