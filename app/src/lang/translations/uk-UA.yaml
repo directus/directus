@@ -1487,9 +1487,22 @@ displays:
     circle: Коло
   labels:
     choices_value_placeholder: Введіть значення...
+  mime-type:
+    mime-type: Тип MIME
+    description: Показати MIME-тип файлу
+    extension_only: Лише розширення
+    extension_only_label: Показати лише розширення файлу
+  rating:
+    rating: Оцінка
+    description: Візуалізувати число як зірочку відносно максимального значення
+    simple: Звичайний
+    simple_label: Відображати зірки у звичайному форматі
+  raw:
+    raw: Необроблене значення
   related-values:
     related-values: Пов'язані значення
     description: Показати пов'язані значення
+    display_template_configure_notice: Ви можете налаштувати шаблон відображення після створення цього поля.
   user:
     user: Користувач
     description: Показати користувача
@@ -1501,6 +1514,7 @@ layouts:
   cards:
     cards: Картки
     image_source: Джерело зображення
+    image_fit: Коригування зображення
     crop: Обрізати
     contain: Містить
     title: Заголовок
@@ -1513,13 +1527,21 @@ layouts:
     cozy: Зручна
   calendar:
     calendar: Календар
+    start_date_field: Поле дати початку
+    end_date_field: Поле дати завершення
   map:
     map: Карта
     basemap: Карта-схема
     layers: Шари
     cluster_options: Параметри кластеризації
+    cluster: Найближчі дані кластеру
+    cluster_radius: Радіус кластеру
+    cluster_minpoints: Мінімальний розмір кластеру
+    cluster_maxzoom: Максимальний масштаб для кластерів
+    field: Геопросторове поле
     invalid_geometry: Неприпустима геометрія
     find_location: Знайти локацію...
+    default_template: Використання колекції за замовчуванням...
     no_compatible_fields: Немає сумісних полів
 panels:
   metric:
@@ -1528,6 +1550,7 @@ panels:
     field: Поле
   time_series:
     name: Серії часу
+    description: Відображення лінійного графіку на основі значень з часом
     date_field: Поле даних
     value_field: Поле значення
     fill_type: Тип заповнення
