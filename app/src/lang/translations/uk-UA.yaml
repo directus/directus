@@ -95,6 +95,9 @@ update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
 delete_bookmark_copy: >-
   Ви впевнені, що хочете видалити закладку "{bookmark}"? Цю дію не можливо буде скасувати.
+delete_personal_bookmark: Видалити особисту закладку
+delete_role_bookmark: Видалити функцію закладки
+delete_global_bookmark: Видалити глобальну закладку
 logoutReason:
   SIGN_OUT: Виконано вихід
   SESSION_EXPIRED: Час сеансу минув
@@ -562,6 +565,8 @@ value_hashed: Значення надійно видалені
 bookmark_name: Назва закладки...
 create_bookmark: Створити закладку
 edit_bookmark: Редагувати закладку
+edit_personal_bookmark: Редагувати особисту закладку
+edit_role_bookmark: Редагувати функцію закладки
 bookmarks: Закладки
 presets: Шаблони
 unexpected_error: Неочікувана помилка
