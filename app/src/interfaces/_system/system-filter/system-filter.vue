@@ -6,7 +6,7 @@
 		{{ t('select_a_collection') }}
 	</v-notice>
 
-	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field }">
+	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
 		<v-list :mandatory="true">
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
