@@ -95,6 +95,9 @@ update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
 delete_bookmark_copy: >-
   Сигурни ли сте, че искате да изтриете „{bookmark}“ отметката? Действието не може да бъде отменено.
+delete_personal_bookmark: Изтриване на лична отметка
+delete_role_bookmark: Изтриване на отметка за роля
+delete_global_bookmark: Изтриване на глобална отметка
 logoutReason:
   SIGN_OUT: Излязъл
   SESSION_EXPIRED: Сесията е изтекла
@@ -562,6 +565,11 @@ value_hashed: Хеширана стойност
 bookmark_name: Име на отметката...
 create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
+edit_personal_bookmark: Редактиране на лична отметка
+edit_role_bookmark: Редактиране на отметка за роля
+edit_global_bookmark: Редактиране на глобална отметка
+cannot_edit_role_bookmarks: Отметката за роля, не може да бъде променяна
+cannot_edit_global_bookmarks: Глобалната отметката, не може да бъде променяна
 bookmarks: Отметки
 presets: Заготовки
 unexpected_error: Неочаквана грешка
@@ -1302,6 +1310,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
