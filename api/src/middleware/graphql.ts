@@ -5,7 +5,7 @@ import { GraphQLParams } from '../types';
 import asyncHandler from '../utils/async-handler';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (req.method === 'OPTIONS') return req.sendStatus(200); // all we need for options calls, since a prior middleware missed it
+	if (req.method === 'OPTIONS') return req.sendStatus(200); // if prior/security middleware allowed it, send a 200 here
 	if (req.method !== 'GET' && req.method !== 'POST') {
 		throw new MethodNotAllowedException('OPTIONS, GET and POST only for GraphQL.', { allow: ['OPTIONS','GET', 'POST'] });
 	}
