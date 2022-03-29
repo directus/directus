@@ -98,6 +98,7 @@
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores';
 import { useSync } from '@directus/shared/composables';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import {
 	FieldFilter,
 	FieldFilterOperator,
@@ -106,7 +107,7 @@ import {
 	LogicalFilterOR,
 	Type,
 } from '@directus/shared/types';
-import { getFilterOperatorsForType, toArray, getOutputTypeForFunction } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/shared/utils';
 import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -185,9 +186,26 @@ function getFieldPreview(node: Record<string, any>) {
 	const fieldParts = fieldKey.split('.');
 
 	const fieldNames = fieldParts.map((fieldKey, index) => {
+		const hasFunction = fieldKey.includes('(') && fieldKey.includes(')');
+
+		let key = fieldKey;
+		let functionName;
+
+		if (hasFunction) {
+			functionName = fieldKey.split('(')[0];
+			key = fieldKey.match(REGEX_BETWEEN_PARENS)![1];
+		}
+
 		const pathPrefix = fieldParts.slice(0, index);
-		const field = fieldsStore.getField(props.collection, [...pathPrefix, fieldKey].join('.'));
-		return field?.name ?? fieldKey;
+		const field = fieldsStore.getField(props.collection, [...pathPrefix, key].join('.'));
+
+		const name = field?.name ?? key;
+
+		if (hasFunction) {
+			return t(`functions.${functionName}`) + ` (${name})`;
+		}
+
+		return key;
 	});
 
 	return fieldNames.join(' -> ');
