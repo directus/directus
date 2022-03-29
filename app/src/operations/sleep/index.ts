@@ -5,9 +5,7 @@ export default defineOperationApp({
 	icon: 'schedule',
 	name: '$t:operations.sleep.name',
 	description: '$t:operations.sleep.description',
-	preview: (options) => ({
-		test: 'Hi',
-	}),
+	preview: (options) => `# ${options.name}`,
 	options: [
 		{
 			field: 'milliseconds',
@@ -19,7 +17,7 @@ export default defineOperationApp({
 				options: {
 					min: 0,
 					type: 'integer',
-					placeholder: '1000'
+					placeholder: '1000',
 				},
 			},
 		},

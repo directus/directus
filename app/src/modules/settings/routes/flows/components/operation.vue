@@ -2,13 +2,14 @@
 	<v-workspace-panel
 		v-bind="panel"
 		:name="panel.panel_name"
+		:icon="currentOperation?.icon"
 		class="block-container"
 		:class="type"
 		:edit-mode="editMode"
 		:resizable="false"
 		:show-options="type !== 'trigger'"
 		:style="styleVars"
-		alwaysUpdatePosition
+		always-update-position
 		@edit="$emit('edit', panel)"
 		@update="$emit('update', { edits: $event, id: panel.id })"
 		@move="$emit('move', panel.id)"
@@ -17,10 +18,17 @@
 	>
 		<template #body>
 			<template v-if="editMode">
-				<div class="button add-resolve" x-small icon rounded @click="$emit('create', panel.id, 'resolve')">
-				<v-icon name="check" small></v-icon>
+				<div class="button add-resolve" x-small icon rounded @pointerdown.stop="pointerdown('resolve')">
+					<v-icon name="check" small></v-icon>
 				</div>
-				<div x-small icon rounded class="button add-reject" @click="$emit('create', panel.id, 'reject')">
+				<div
+					v-if="panel.id !== '$trigger'"
+					x-small
+					icon
+					rounded
+					class="button add-reject"
+					@pointerdown.stop="pointerdown('reject')"
+				>
 					<v-icon name="close" small></v-icon>
 				</div>
 				<div v-if="panel.id !== '$trigger'" x-small icon rounded class="button attachment">
@@ -28,12 +36,27 @@
 				</div>
 			</template>
 		</template>
-		<div class="block">{{ panel.name }}</div>
+		<div
+			v-if="typeof currentOperation?.preview === 'function'"
+			v-md="currentOperation?.preview(panel)"
+			class="block"
+		></div>
 	</v-workspace-panel>
 </template>
 
 <script lang="ts" setup>
+import { getOperations } from '@/operations';
+import { Vector2 } from '@/utils/vector2';
+import { throttle } from 'lodash';
+import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+
+export type Target = 'resolve' | 'reject';
+export type ArrowInfo = {
+	id: string;
+	pos: Vector2;
+	type: Target;
+};
 
 const props = withDefaults(
 	defineProps<{
@@ -47,7 +70,9 @@ const props = withDefaults(
 	}
 );
 
-defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplicate']);
+const { operations } = getOperations();
+
+const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplicate', 'arrow-move', 'arrow-stop']);
 
 const styleVars = {
 	'--reject-top': REJECT_OFFSET.x + 'px',
@@ -55,9 +80,51 @@ const styleVars = {
 	'--resolve-top': RESOLVE_OFFSET.x + 'px',
 	'--resolve-left': RESOLVE_OFFSET.y + 'px',
 	'--attachment-x': ATTACHMENT_OFFSET.x + 'px',
-	'--attachment-y': ATTACHMENT_OFFSET.y + 'px'
+	'--attachment-y': ATTACHMENT_OFFSET.y + 'px',
+};
+
+const currentOperation = computed(() => operations.value.find((operation) => operation.id === props.panel.type));
+
+let down: Target | undefined = undefined;
+let moving = false;
+let workspaceOffset: Vector2 = new Vector2(0, 0);
+
+function pointerdown(target: Target) {
+	down = target;
+
+	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
+	if (rect) {
+		workspaceOffset = new Vector2(rect.left, rect.top);
+	}
+
+	window.addEventListener('pointermove', pointermove);
+	window.addEventListener('pointerup', pointerup);
 }
 
+const pointermove = throttle((event: PointerEvent) => {
+	moving = true;
+	if (!down) return;
+	const arrowInfo: ArrowInfo = {
+		id: props.panel.id,
+		type: down,
+		pos: new Vector2(
+			Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
+			Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+		),
+	};
+
+	emit('arrow-move', arrowInfo);
+}, 20);
+
+function pointerup() {
+	if (!moving && (down === 'reject' || down === 'resolve')) emit('create', props.panel.id, down);
+	moving = false;
+
+	emit('arrow-stop');
+
+	window.removeEventListener('pointermove', pointermove);
+	window.removeEventListener('pointerup', pointerup);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -68,8 +135,18 @@ const styleVars = {
 	background-color: var(--background-page);
 	overflow: visible;
 
-	.block {
+	::v-deep(.header .name) {
+		color: var(--primary);
+	}
+
+	::v-deep(.block) {
 		padding: 0px 20px;
+
+		h1 {
+			font-size: 20px;
+			color: var(--foreground-normal-alt);
+			font-weight: 600;
+		}
 	}
 
 	&.trigger {

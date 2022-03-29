@@ -5,11 +5,9 @@ export default defineOperationApp({
 	icon: 'beenhere',
 	name: '$t:operations.validate.name',
 	description: '$t:operations.validate.description',
-	preview: (options) => ({
-		test: 'Hi',
-	}),
+	preview: (options) => `# ${options.name}`,
 	options: (options: Record<string, any>) => [
-        {
+		{
 			field: 'collection',
 			name: '$t:collection',
 			type: 'string',
@@ -25,21 +23,21 @@ export default defineOperationApp({
 			meta: {
 				width: 'full',
 				interface: 'system-filter',
-                options: {
-                    collectionName: options['collection']
-                }
+				options: {
+					collectionName: options['collection'],
+				},
 			},
 		},
-        {
+		{
 			field: 'item',
 			name: '$t:item',
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'input-code',
-                options: {
-                    language: 'json'
-                }
+				options: {
+					language: 'json',
+				},
 			},
 		},
 	],

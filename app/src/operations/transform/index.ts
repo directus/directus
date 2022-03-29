@@ -5,9 +5,7 @@ export default defineOperationApp({
 	icon: 'move_down',
 	name: '$t:operations.transform.name',
 	description: '$t:operations.transform.description',
-	preview: (options) => ({
-		test: 'Hi',
-	}),
+	preview: (options) => `# ${options.name}`,
 	options: [
 		{
 			field: 'json',
@@ -16,9 +14,9 @@ export default defineOperationApp({
 			meta: {
 				width: 'full',
 				interface: 'input-code',
-                options: {
-                    language: 'json'
-                }
+				options: {
+					language: 'json',
+				},
 			},
 		},
 	],

@@ -10,12 +10,12 @@
 import { Vector2 } from '@/utils/vector2';
 import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
-import { Attachments } from '../flow.vue';
+import { ArrowInfo } from './operation.vue';
 
 const props = defineProps<{
 	panels: Record<string, any>[];
-	attachments: Attachments;
 	editMode: boolean;
+	arrowInfo?: ArrowInfo;
 }>();
 
 const endOffset = computed(() => (props.editMode ? 12 : 2));
@@ -27,6 +27,11 @@ const size = computed(() => {
 		width = Math.max(width, (panel.x + PANEL_WIDTH) * 20);
 		height = Math.max(height, (panel.y + PANEL_HEIGHT) * 20);
 	}
+	if (props.arrowInfo) {
+		width = Math.max(width, props.arrowInfo.pos.x + 10);
+		height = Math.max(height, props.arrowInfo.pos.y + 10);
+	}
+
 	return { width: width + 100, height: height + 100 };
 });
 
@@ -35,26 +40,41 @@ const arrows = computed(() => {
 
 	for (const panel of props.panels) {
 		const resolveChild = props.panels.find((pan) => pan.id === panel.resolve);
-		if (resolveChild) {
-			const { x, y, toX, toY } = getPoints(panel, Vector2.from(RESOLVE_OFFSET), resolveChild);
-			arrows.push(createLine(x, y, toX, toY));
+		const rejectChild = props.panels.find((pan) => pan.id === panel.reject);
+
+		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
+			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
+			arrows.push(createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y));
+		} else if (resolveChild) {
+			const { x, y, toX, toY } = getPoints(panel, RESOLVE_OFFSET, resolveChild);
+			arrows.push(createLine(x, y, toX as number, toY as number));
 		}
 
-		const rejectChild = props.panels.find((pan) => pan.id === panel.reject);
-		if (rejectChild) {
-			const { x, y, toX, toY } = getPoints(panel, Vector2.from(REJECT_OFFSET), rejectChild);
-			arrows.push(createLine(x, y, toX, toY));
+		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
+			const { x, y } = getPoints(panel, REJECT_OFFSET);
+			arrows.push(createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y));
+		} else if (rejectChild) {
+			const { x, y, toX, toY } = getPoints(panel, REJECT_OFFSET, rejectChild);
+			arrows.push(createLine(x, y, toX as number, toY as number));
 		}
+	}
+
+	if (props.arrowInfo) {
+		arrows.push();
 	}
 	return arrows;
 
-	function getPoints(panel: Record<string, any>, offset: Vector2, to: Record<string, any>) {
+	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
 		const x = (panel.x - 1) * 20 + offset.y;
 		const y = (panel.y - 1) * 20 + offset.x;
-		const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x;
-		const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
+		if (to) {
+			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x;
+			const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
 
-		return { x, y, toX, toY };
+			return { x, y, toX, toY };
+		}
+
+		return { x, y };
 	}
 
 	function createLine(x: number, y: number, toX: number, toY: number) {

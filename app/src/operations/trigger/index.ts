@@ -5,9 +5,7 @@ export default defineOperationApp({
 	icon: 'flag',
 	name: '$t:operations.trigger.name',
 	description: '$t:operations.trigger.description',
-	preview: (options) => ({
-		test: 'Hi',
-	}),
+	preview: (options) => `# ${options.name}`,
 	options: [
 		{
 			field: 'flows',
@@ -16,31 +14,31 @@ export default defineOperationApp({
 			meta: {
 				width: 'full',
 				interface: 'list',
-                options: {
-                    fields: [
-                        {
-                            field: 'flow',
-                            name: '$t:operations.trigger.flow',
-                            type: 'string',
-                            meta: {
-                                width: 'half',
-                                interface: 'input'
-                            }
-                        },
-                        {
-                            field: 'data',
-                            name: '$t:operations.trigger.data',
-                            type: 'string',
-                            meta: {
-                                width: 'full',
-                                interface: 'input-code',
-                                options: {
-                                    language: 'json'
-                                }
-                            }
-                        }
-                    ]
-                }
+				options: {
+					fields: [
+						{
+							field: 'flow',
+							name: '$t:operations.trigger.flow',
+							type: 'string',
+							meta: {
+								width: 'half',
+								interface: 'input',
+							},
+						},
+						{
+							field: 'data',
+							name: '$t:operations.trigger.data',
+							type: 'string',
+							meta: {
+								width: 'full',
+								interface: 'input-code',
+								options: {
+									language: 'json',
+								},
+							},
+						},
+					],
+				},
 			},
 		},
 	],

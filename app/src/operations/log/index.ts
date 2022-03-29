@@ -5,9 +5,7 @@ export default defineOperationApp({
 	icon: 'print',
 	name: '$t:operations.log.name',
 	description: '$t:operations.log.description',
-	preview: (options) => ({
-		test: 'Hi',
-	}),
+	preview: (options) => `# ${options.name}`,
 	options: [
 		{
 			field: 'message',
@@ -17,8 +15,8 @@ export default defineOperationApp({
 				width: 'full',
 				interface: 'input',
 				options: {
-					placeholder: '$t:operations.log.message_placeholder'
-				}
+					placeholder: '$t:operations.log.message_placeholder',
+				},
 			},
 		},
 	],

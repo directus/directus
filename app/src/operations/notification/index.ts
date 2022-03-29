@@ -5,9 +5,7 @@ export default defineOperationApp({
 	icon: 'notifications',
 	name: '$t:operations.notification.name',
 	description: '$t:operations.notification.description',
-	preview: (options) => ({
-		test: 'Hi',
-	}),
+	preview: (options) => `# ${options.name}`,
 	options: [
 		{
 			field: 'subject',
@@ -18,7 +16,7 @@ export default defineOperationApp({
 				interface: 'input',
 			},
 		},
-        {
+		{
 			field: 'recipient',
 			name: '$t:operations.notification.recipient',
 			type: 'string',

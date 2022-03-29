@@ -5,9 +5,7 @@ export default defineOperationApp({
 	icon: 'download',
 	name: '$t:operations.read.name',
 	description: '$t:operations.read.description',
-	preview: (options) => ({
-		test: 'Hi',
-	}),
+	preview: (options) => `# ${options.name}`,
 	options: [
 		{
 			field: 'mode',
@@ -16,53 +14,53 @@ export default defineOperationApp({
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
-                options: {
-                    choices: [
-                        {
-                            text: '$t:operations.read.mode.one',
-                            value: 'one'
-                        },
-                        {
-                            text: '$t:operations.read.mode.many',
-                            value: 'many'
-                        },
-                        {
-                            text: '$t:operations.read.mode.query',
-                            value: 'query'
-                        }
-                    ]
-                }
+				options: {
+					choices: [
+						{
+							text: '$t:operations.read.mode.one',
+							value: 'one',
+						},
+						{
+							text: '$t:operations.read.mode.many',
+							value: 'many',
+						},
+						{
+							text: '$t:operations.read.mode.query',
+							value: 'query',
+						},
+					],
+				},
 			},
 		},
-        {
-            field: 'collection',
-            name: '$t:collection',
-            type: 'string',
-            meta: {
-                width: 'half',
-                interface: 'system-collection'
-            }
-        },
-        {
-            field: 'key',
-            name: '$t:operations.read.key',
-            type: 'csv',
-            meta: {
-                width: 'full',
-                interface: 'tags',
-            }
-        },
-        {
-            field: 'query',
-            name: '$t:operations.read.query',
-            type: 'string',
-            meta: {
-                width: 'full',
-                interface: 'input-code',
-                options: {
-                    language: 'json'
-                }
-            }
-        }
+		{
+			field: 'collection',
+			name: '$t:collection',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'system-collection',
+			},
+		},
+		{
+			field: 'key',
+			name: '$t:operations.read.key',
+			type: 'csv',
+			meta: {
+				width: 'full',
+				interface: 'tags',
+			},
+		},
+		{
+			field: 'query',
+			name: '$t:operations.read.query',
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'input-code',
+				options: {
+					language: 'json',
+				},
+			},
+		},
 	],
 });
