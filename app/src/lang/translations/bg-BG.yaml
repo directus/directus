@@ -191,6 +191,7 @@ camera: Камера
 show_zero: Показване на нули
 create_in_advanced_field_creation_mode: Създаване на поле в разширен режим
 continue_in_advanced_field_creation_mode: Продълважане в разширен режим
+validation: Валидиране
 sum: Сумиране
 sum_distinct: Сумиране на уникалните
 avg: Усредняване
@@ -648,6 +649,8 @@ operators:
   nintersects: Няма пресичане
   intersects_bbox: Прилежащи към границите
   nintersects_bbox: Не са прилежащи към границите
+  regex: Отговаря на RegExp
+custom_validation_message: Собствено съобщение при валидация
 loading: Зареждане...
 drop_to_upload: Пускане за качване
 item: Запис
