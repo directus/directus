@@ -28,7 +28,7 @@
 								</button>
 							</template>
 
-							<v-field-list :collection="collection" @select-field="updateField(index, $event)" />
+							<v-field-list :collection="collection" include-functions @select-field="updateField(index, $event)" />
 						</v-menu>
 						<v-select
 							inline
@@ -205,7 +205,7 @@ function getFieldPreview(node: Record<string, any>) {
 			return t(`functions.${functionName}`) + ` (${name})`;
 		}
 
-		return key;
+		return name;
 	});
 
 	return fieldNames.join(' -> ');
