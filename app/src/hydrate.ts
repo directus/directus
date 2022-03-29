@@ -17,6 +17,7 @@ import {
 	useUserStore,
 	useNotificationsStore,
 } from '@/stores';
+import { useTranslationStrings } from '@/composables/use-translation-strings';
 
 type GenericStore = {
 	$id: string;
@@ -52,6 +53,7 @@ export async function hydrate(): Promise<void> {
 	const appStore = useAppStore();
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
+	const { refresh: hydrateTranslationStrings } = useTranslationStrings();
 
 	if (appStore.hydrated) return;
 	if (appStore.hydrating) return;
@@ -73,6 +75,7 @@ export async function hydrate(): Promise<void> {
 
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
 			await registerModules();
+			await hydrateTranslationStrings();
 
 			await setLanguage(userStore.currentUser?.language ?? 'en-US');
 		}

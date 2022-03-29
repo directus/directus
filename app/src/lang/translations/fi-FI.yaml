@@ -79,7 +79,6 @@ delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
 reset_bookmark: Nollaa kirjanmerkki
-rename_bookmark: Uudelleennimeä kirjanmerkki
 update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
 delete_bookmark_copy: >-
@@ -312,7 +311,6 @@ translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
 label_import: Tuo
 format: Muoto
-use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
 last_page: Viimeinen sivu
 last_access: Viimeksi käytetty
 fill_template: Täytä mallin arvolla
@@ -1361,7 +1359,6 @@ interfaces:
     auto_formatter: Käytä otsikon automaattimuotoilua
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
-    add_tags: Lisää tunnisteita...
   input:
     input: Syöte
     description: Manuaalisesti syötetty arvo

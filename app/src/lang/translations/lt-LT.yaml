@@ -39,7 +39,6 @@ delete_folder: Trinti aplanką
 prefix: Priešdėlis
 suffix: Priesaga
 reset_bookmark: Atstatyti skirtuką
-rename_bookmark: Pervadinti žymę
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
 delete_bookmark_copy: >-
@@ -230,7 +229,6 @@ related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 languages_collection: Kalbų kolekcija
 format: Formatas
-use_current_filters_settings: Naudoti dabartinius filtrus ir nustatymus
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
 fill_template: Užpildyti reikšme iš ruošinio
@@ -869,7 +867,6 @@ interfaces:
     auto_formatter: Naudoti automatinį antraštės formatavimą
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
-    add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
     color_on: Spalva, kai įjungta

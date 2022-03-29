@@ -41,6 +41,7 @@ duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
 group: Grupa
+export_items: Eksportuj elementy
 and: I
 or: Lub
 fill_width: Szerokość wypełnienia
@@ -68,6 +69,12 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
+create_translation_string: Utwórz tłumaczenia
+translation_string_key_placeholder: Klucz tłumaczenia...
+translation_string_translations_placeholder: Dodaj nowe tłumaczenie
+edit_translation_string: Edytuj tłumaczenia
+delete_translation_string_copy: >-
+  Czy na pewno chcesz usunąć tłumaczenia "{key}"? Tej akcji nie można cofnąć.
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
@@ -84,11 +91,13 @@ delete_folder: Usuń folder
 prefix: Przedrostek
 suffix: Przyrostek
 reset_bookmark: Zresetuj zakładkę
-rename_bookmark: Zmień nazwę zakładki
 update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
 delete_bookmark_copy: >-
   Czy na pewno chcesz usunąć zakładkę "{bookmark}"? Tej akcji nie można cofnąć.
+delete_personal_bookmark: Usuń Osobistą Zakładkę
+delete_role_bookmark: Usuń zakładkę roli
+delete_global_bookmark: Usuń globalną zakładkę
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
@@ -165,6 +174,7 @@ revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
 revision_post_update: Oto jak wyglądał ten element po aktualizacji.
 changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
+hide_field: Ukryj pole
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
@@ -173,6 +183,7 @@ field_create_success: 'Utworzono pole: "{field}"'
 field_update_success: 'Zaktualizowano pole: "{field}"'
 duplicate_where_to: Gdzie chcesz zduplikować to pole?
 language: Język
+language_placeholder: Wybierz język...
 aggregate_function: Funkcja agregacji
 aggregate_precision: Precyzja agregacji
 group_aggregation: Agregacja grup
@@ -183,6 +194,7 @@ camera: Aparat
 show_zero: Pokaż zerowy
 create_in_advanced_field_creation_mode: Utwórz pole w trybie zaawansowanym
 continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
+validation: Walidacja
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
 avg: Średnia
@@ -337,8 +349,6 @@ label_import: Importuj
 label_export: Eksportuj
 import_export: Import / Eksport
 format: Formatowanie
-use_current_filters_settings: Użyj obecnych filtrów i ustawień
-export_data_button: Rozpocznij eksport
 last_page: Ostatnia strona
 last_access: Ostatni dostęp
 fill_template: Wypełnij wartością szablonu
@@ -410,6 +420,15 @@ replace_from_library: Zastąp plik z biblioteki
 replace_from_url: Zastąp plik z URL
 no_file_selected: Nie wybrano pliku
 download_file: Pobierz plik
+open_file_in_tab: Otwórz plik w nowej karcie
+start_export: Rozpocznij eksport
+not_available_for_local_downloads: Niedostępne dla lokalnych plików
+exporting_all_items_in_collection: Eksportowanie wszystkich {total} elementów w {collection}.
+exporting_limited_items_in_collection: Eksportowanie {limit} z {total} przedmiotów w {collection}.
+exporting_no_items_to_export: Brak elementów do wyeksportowania. Dostosuj konfigurację eksportu poniżej.
+exporting_download_hint: Po zakończeniu, ten plik {format} zostanie automatycznie pobrany na twoje urządzenie.
+exporting_batch_hint: Ten eksport będzie przetwarzany w partiach, a po ukończeniu plik {format} zostanie zapisany do biblioteki plików.
+exporting_batch_hint_forced: Ze względu na dużą liczbę produktów, wywóz ten musi być przetwarzany w partiach, i po zakończeniu, plik {format} zostanie zapisany do biblioteki plików.
 collection_key: Klucz kolekcji
 name: Nazwa
 primary_key_field: Pole klucza podstawowego
@@ -546,6 +565,11 @@ value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
 edit_bookmark: Edytuj zakładkę
+edit_personal_bookmark: Edytuj Osobistą Zakładkę
+edit_role_bookmark: Edytuj zakładkę roli
+edit_global_bookmark: Edytuj globalną zakładkę
+cannot_edit_role_bookmarks: Nie można edytować zakładek roli
+cannot_edit_global_bookmarks: Nie można edytować globalnych zakładek
 bookmarks: Zakładki
 presets: Ustawienia
 unexpected_error: Nieoczekiwany błąd
@@ -572,6 +596,7 @@ make_collection_visible: Spraw, aby kolekcja była widoczna
 make_collection_hidden: Spraw, aby kolekcja była ukryta
 make_folder_visible: Uwidocznij folder
 make_folder_hidden: Ukryj folder
+goto_collection_content: Zobacz zawartość
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
@@ -632,6 +657,8 @@ operators:
   nintersects: Nie przecina się
   intersects_bbox: Przecina pole ograniczające
   nintersects_bbox: Nie przecina pola ograniczającego
+  regex: Wyrażenie dopasowania
+custom_validation_message: Niestandardowy komunikat walidacyjny
 loading: Wczytywanie...
 drop_to_upload: Upuść, aby przesłać
 item: Element
@@ -715,7 +742,11 @@ no_data: Brak danych
 create_dashboard: Utwórz pulpit
 dashboard_name: Nazwa Pulpitu
 full_screen: Pełny ekran
+full_text_search: Wyszukiwanie pełnotekstowe
 edit_panels: Edytuj pulpit
+center_align: Wyśrodkuj
+left_align: Wyrównaj do lewej
+right_align: Wyrównaj do prawej
 fit_to_screen: Dopasuj do ekranu
 image_url: Adres Url obrazu
 alt_text: Tekst alternatywny
@@ -808,6 +839,7 @@ settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
+settings_translation_strings: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 select: Wybierz...
@@ -853,6 +885,7 @@ page_help_settings_presets_item: >-
   **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
 page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
+page_help_settings_translation_strings_collection: '**Przeglądaj Tłumaczenie** — Wyświetla wszystkie ciągi tłumaczeń w projekcie.'
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
@@ -1228,6 +1261,16 @@ normal: Normalny
 success: Sukces
 warning: Ostrzeżenie
 danger: Niebezpieczeństwo
+colors:
+  purple: Fioletowy
+  blue: Niebieski
+  green: Zielony
+  yellow: Żółty
+  orange: Pomarańczowy
+  red: Czerwony
+  black: Czarny
+  gray: Szary
+  white: Biały
 junction_collection: Kolekcja Junction
 latency: Opóźnienie
 login: Zaloguj się
@@ -1256,6 +1299,9 @@ sign_out: Wyloguj się
 sign_out_confirm: Na pewno chcesz się wylogować?
 something_went_wrong: Coś poszło nie tak.
 sort_direction: Kierunek sortowania
+export_location: Eksportuj lokalizację
+export_started: Eksport rozpoczęty
+export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy będzie gotowy do pobrania.
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
@@ -1264,6 +1310,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1282,6 +1329,8 @@ interfaces:
     no_rules: Brak skonfigurowanych reguł
     change_value: Kliknij, aby zmienić wartość
     placeholder: Przeciągnij tutaj reguły
+  fields:
+    name: Pola
   group-accordion:
     name: Akordion
     description: Wyświetlaj pola lub grupy jako sekcje akordionu
@@ -1341,6 +1390,7 @@ interfaces:
     include_seconds: Uwzględnij sekundy
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
+    placeholder: Wybierz datę...
   system-display-template:
     display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
@@ -1473,7 +1523,7 @@ interfaces:
     auto_formatter: Użyj automatycznego formatowania
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
-    add_tags: Dodaj tagi...
+    add_tags: Dodaj tag i naciśnij Enter...
   input:
     input: Wprowadź
     description: Ręcznie wprowadź wartość
@@ -1491,6 +1541,11 @@ interfaces:
   input-multiline:
     textarea: Obszar tekstowy
     description: Wprowadź wieloliniowy zwykły tekst
+  input-translated-string:
+    input-translated-string: Przetłumaczone ciągi
+    description: Wybierz lub dodaj tłumaczenia
+    search_placeholder: Szukaj...
+    new_translation_string: Nowe tłumaczenia
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz

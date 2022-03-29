@@ -56,7 +56,6 @@ delete_folder: Mappa törlése
 prefix: Előtag
 suffix: Utótag
 reset_bookmark: Könyvjelző visszaállítása
-rename_bookmark: Könyvjelző átnevezése
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
 delete_bookmark_copy: >-
@@ -274,7 +273,6 @@ translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
 label_import: Importálás
 format: Formátum
-use_current_filters_settings: Aktuális szűrők és beállítások használata
 last_page: Utolsó oldal
 last_access: Utolsó hozzáférés
 fill_template: Kitöltés sablon értékkel
@@ -1302,7 +1300,6 @@ interfaces:
     auto_formatter: Cím automatikus formázó használata
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
-    add_tags: Címkék hozzáadása...
   input:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!

@@ -20,6 +20,7 @@ import WebhooksItem from './routes/webhooks/item.vue';
 import FlowsOverview from './routes/flows/overview.vue';
 import FlowsDetail from './routes/flows/flow.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
+import TranslationStringsCollection from './routes/translation-strings/collection.vue';
 
 export default defineModule({
 	id: 'settings',
@@ -200,6 +201,17 @@ export default defineModule({
 							props: true,
 						},
 					],
+				},
+			],
+		},
+		{
+			path: 'translation-strings',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-translation-strings-collection',
+					path: '',
+					component: TranslationStringsCollection,
 				},
 			],
 		},

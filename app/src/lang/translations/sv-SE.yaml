@@ -77,7 +77,6 @@ delete_folder: Ta bort mapp
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Återställ bokmärke
-rename_bookmark: Döp om bokmärke
 update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
 delete_bookmark_copy: >-
@@ -309,7 +308,6 @@ translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
 label_import: Importera
 format: Format
-use_current_filters_settings: Använd befintliga filter & inställningar
 last_page: Sista sidan
 last_access: Senaste åtkomsten
 fill_template: Fyll med mallens värden
@@ -1336,7 +1334,6 @@ interfaces:
     auto_formatter: Använd titel Auto-Formatter
     alphabetize: Alfabetisera
     alphabetize_label: Tvinga alfabetisk ordning
-    add_tags: Lägg till taggar...
   input:
     input: Inmatning
     description: Ange ett värde manuellt

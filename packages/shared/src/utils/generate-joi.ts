@@ -113,37 +113,61 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_contains') {
-			schema[key] = getStringSchema().contains(compareValue);
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().contains(compareValue);
+			}
 		}
 
 		if (operator === '_ncontains') {
-			schema[key] = getStringSchema().ncontains(compareValue);
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().ncontains(compareValue);
+			}
 		}
 
 		if (operator === '_starts_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
-				name: 'starts_with',
-			});
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`), {
+					name: 'starts_with',
+				});
+			}
 		}
 
 		if (operator === '_nstarts_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
-				name: 'starts_with',
-				invert: true,
-			});
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`), {
+					name: 'starts_with',
+					invert: true,
+				});
+			}
 		}
 
 		if (operator === '_ends_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
-				name: 'ends_with',
-			});
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`), {
+					name: 'ends_with',
+				});
+			}
 		}
 
 		if (operator === '_nends_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
-				name: 'ends_with',
-				invert: true,
-			});
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`), {
+					name: 'ends_with',
+					invert: true,
+				});
+			}
 		}
 
 		if (operator === '_in') {
@@ -219,8 +243,13 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_regex') {
-			const wrapped = compareValue.startsWith('/') && compareValue.endsWith('/');
-			schema[key] = getStringSchema().regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				const wrapped =
+					typeof compareValue === 'string' ? compareValue.startsWith('/') && compareValue.endsWith('/') : false;
+				schema[key] = getStringSchema().regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
+			}
 		}
 	}
 

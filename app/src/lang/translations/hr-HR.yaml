@@ -84,7 +84,6 @@ delete_folder: Izbriši mapu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi oznaku
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
@@ -338,8 +337,6 @@ label_import: Uvoz
 label_export: Izvoz
 import_export: Uvoz / Izvoz
 format: Format
-use_current_filters_settings: Koristite trenutne filtere i postavke
-export_data_button: Pokreni izvoz
 last_page: Zadnja stranica
 last_access: Zadnji pristup
 fill_template: Ispunite vrijednošću predloška
@@ -1472,7 +1469,6 @@ interfaces:
     auto_formatter: Koristite automatsko oblikovanje naslova
     alphabetize: Abecedno
     alphabetize_label: Nametni abecedno razvrstavanje
-    add_tags: Dodajte oznake...
   input:
     input: Unos
     description: Ručno unesite vrijednost

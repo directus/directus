@@ -83,7 +83,6 @@ delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
 reset_bookmark: Reset Bladwijzer
-rename_bookmark: Hernoem Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
 delete_bookmark_copy: >-
@@ -313,8 +312,6 @@ label_import: Importeren
 label_export: Exporteren
 import_export: Importeren / Exporteren
 format: Format
-use_current_filters_settings: Gebruik huidige filters & instellingen
-export_data_button: Start exporteren
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde
@@ -1092,7 +1089,6 @@ interfaces:
     auto_formatter: Automatische titel formatter gebruiken
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
-    add_tags: Tags toevoegen...
   input:
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde

@@ -47,7 +47,6 @@ delete_folder: Izbriši mapo
 prefix: Predpona
 suffix: Pripona
 reset_bookmark: Ponastavi zaznamek
-rename_bookmark: Preimenuj zaznamek
 update_bookmark: Posodobi zaznamek
 delete_bookmark: Izbriši zaznamek
 delete_bookmark_copy: >-
@@ -244,7 +243,6 @@ translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
 label_import: Uvoz
 format: Oblika
-use_current_filters_settings: Uporabi trenutne filtre in nastavitve
 last_page: Zadnja stran
 last_access: Zadnji dostop
 fill_template: Izpolni z vrednostjo obrazca
@@ -1177,7 +1175,6 @@ interfaces:
     auto_formatter: Uporabi avtomatsko oblikovanje naslova
     alphabetize: Po abecedi
     alphabetize_label: Vedno uredi po abecedi
-    add_tags: Dodaj značke ...
   input:
     input: Vnos
     description: Ročno vnesite vrednost

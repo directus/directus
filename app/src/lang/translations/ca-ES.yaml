@@ -46,7 +46,6 @@ delete_folder: Suprimeix carpeta
 prefix: Prefix
 suffix: Sufix
 reset_bookmark: Reinicia marcador
-rename_bookmark: Renombra marcador
 update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
 delete_bookmark_copy: >-
@@ -243,7 +242,6 @@ translations_collection: Col·lecció de traduccions
 languages_collection: Col·lecció de idiomes
 label_import: Importa
 format: Format
-use_current_filters_settings: Utilitza els filtres i ajustaments actuals
 last_page: Última pàgina
 last_access: Últim accés
 fill_template: Emplena amb el valor de plantilla
@@ -1132,7 +1130,6 @@ interfaces:
     auto_formatter: Utilitza autoformatador del títol
     alphabetize: Alfabètic
     alphabetize_label: Força ordre alfabètic
-    add_tags: Afegeix etiquetes...
   input:
     input: Entrada
     description: Entra manualment un valor

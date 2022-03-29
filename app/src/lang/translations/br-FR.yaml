@@ -39,7 +39,6 @@ delete_folder: Dilemel ar restr
 prefix: Rakger
 suffix: Lostger
 reset_bookmark: Adderaouiñ ar pennroll
-rename_bookmark: Adenvel ar pennroll
 update_bookmark: Kemm ar pennroll
 delete_bookmark: Tennañ ar pennrolloù kuit
 delete_bookmark_copy: >-
@@ -231,7 +230,6 @@ related_collections: Dastumadoù liammet
 translations_collection: Dastumad troidigezhioù
 languages_collection: Dastumad yezhoù
 format: Furmad
-use_current_filters_settings: Ober gant ar siloù hag an arventennoù war-implij
 last_page: Pajenn ziwezhañ
 last_access: Mont diwezhañ
 fill_template: Leuniañ gant talvoudegezh ar patrom
@@ -1021,7 +1019,6 @@ interfaces:
     auto_formatter: Implij furmad emgefreek an titl
     alphabetize: Alfabetekaat
     alphabetize_label: Rediañ an urzh alfabetek
-    add_tags: Ouzhpennañ tagoù...
   input:
     input: Enkas
     description: Bizskrivañ un talvoud gant an dorn

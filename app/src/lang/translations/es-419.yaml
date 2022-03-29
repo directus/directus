@@ -28,6 +28,7 @@ draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
+reset_width: Restablecer ancho
 tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
@@ -40,6 +41,7 @@ duplicate_field: Campo duplicado
 half_width: Ancho a la Mitad
 full_width: Ancho completo
 group: Grupo
+export_items: Exportar elementos
 and: "Y"
 or: O
 fill_width: Ajustar ancho
@@ -67,6 +69,12 @@ create_role: Crear rol
 create_user: Crear Usuario
 delete_panel: Borrar_Panel
 create_webhook: Crear un Webhook
+create_translation_string: Crear Traducciones
+translation_string_key_placeholder: Clave de cadena de traducción...
+translation_string_translations_placeholder: Añadir una nueva traducción
+edit_translation_string: Editar traducción
+delete_translation_string_copy: >-
+  ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
@@ -83,7 +91,6 @@ delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
 reset_bookmark: Restablecer marcador
-rename_bookmark: Renombrar marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
@@ -328,8 +335,6 @@ label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
 format: Formato
-use_current_filters_settings: Use Filtros y Ajustes Corrientes
-export_data_button: Comenzar exportación
 last_page: Última página
 last_access: Último acceso
 fill_template: Llenar Con Valores de Plantilla
@@ -413,7 +418,7 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_as_copy: Guardar como Copia
-add_existing: Agregar Existente
+add_existing: Seleccionar
 creating_items: Registros Creados
 enable_create_button: Habilitar Botón de Crear
 selecting_items: Registros Seleccionados
@@ -623,7 +628,7 @@ loading: Cargando...
 drop_to_upload: Soltar para subir
 item: Ítem
 items: Ítems
-upload_file: Subir archivo
+upload_file: Nuevo
 upload_file_indeterminate: Subiendo archivo...
 upload_file_success: Archivo subido
 upload_files_indeterminate: 'Subiendo archivos{done}/{total}'
@@ -844,7 +849,7 @@ page_help_users_item: >-
 page_help_insights_overview: '**Diseños** — Lista de paneles a los que tienes acceso.'
 page_help_insights_dashboard: '**Panel de control** — Espacio de trabajo para administrar uno o más paneles'
 activity_feed: Actividad
-add_new: Agregar Nuevo
+add_new: Nuevo
 create_new: Crear Nuevo
 all: Todos
 none: Nada
@@ -1377,7 +1382,6 @@ interfaces:
     auto_formatter: Usar Auto-Formateador de Título
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
-    add_tags: Agregar etiquetas...
   input:
     input: Entrada
     description: Introduzca manualmente un valor

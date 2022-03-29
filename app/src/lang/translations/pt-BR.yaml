@@ -83,7 +83,6 @@ delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
 reset_bookmark: Redefinir Favoritos
-rename_bookmark: Renomear Favorito
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-
@@ -335,8 +334,6 @@ label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
 format: Formato
-use_current_filters_settings: Usar filtros e configurações atuais
-export_data_button: Iniciar Exportação
 last_page: Última página
 last_access: Último acesso
 fill_template: Preencher com valor de template
@@ -1409,7 +1406,6 @@ interfaces:
     auto_formatter: Utilizar auto formatação de título
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
-    add_tags: Adicionar tags...
   input:
     input: Entrada
     description: Digite manualmente um valor

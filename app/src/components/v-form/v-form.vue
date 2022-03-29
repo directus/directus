@@ -3,6 +3,7 @@
 		<validation-errors
 			v-if="!nested && validationErrors.length > 0"
 			:validation-errors="validationErrors"
+			:fields="formFields"
 			@scroll-to-field="scrollToField"
 		/>
 		<template v-for="(field, index) in formFields">
@@ -277,7 +278,7 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.field)));
+			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta?.field)));
 
 			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
 
@@ -307,16 +308,26 @@ export default defineComponent({
 		}
 
 		function setValue(field: Field, value: any) {
+			if (isDisabled(field)) return;
+
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
 			edits[field.field] = value;
 			emit('update:modelValue', edits);
 		}
 
 		function apply(updates: { [field: string]: any }) {
-			emit('update:modelValue', pick(assign({}, props.modelValue, updates), Object.keys(updates)));
+			const updatableKeys = Object.keys(updates).filter((key) => {
+				const field = props.fields?.find((field) => field.field === key);
+				if (!field) return false;
+				return !isDisabled(field);
+			});
+
+			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
 		}
 
 		function unsetValue(field: Field) {
+			if (isDisabled(field)) return;
+
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };
 				delete newEdits[field.field];
