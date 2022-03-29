@@ -1,6 +1,9 @@
-import { Knex } from 'knex';
-import { getHelpers } from '../database/helpers';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { SchemaOverview } from '@directus/shared/types';
+import { getFunctionsForType } from '@directus/shared/utils';
+import { Knex } from 'knex';
+import { getFunctions } from '../database/helpers';
+import { InvalidQueryException } from '../exceptions';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 
 /**
@@ -17,15 +20,23 @@ export function getColumn(
 	knex: Knex,
 	table: string,
 	column: string,
-	alias: string | false = applyFunctionToColumnName(column)
+	alias: string | false = applyFunctionToColumnName(column),
+	schema: SchemaOverview
 ): Knex.Raw {
-	const { fn } = getHelpers(knex);
+	const fn = getFunctions(knex, schema);
 
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0];
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
 
 		if (functionName in fn) {
+			const type = schema?.collections[table]?.fields?.[columnName]?.type ?? 'unknown';
+			const allowedFunctions = getFunctionsForType(type);
+
+			if (allowedFunctions.includes(functionName) === false) {
+				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
+			}
+
 			const result = fn[functionName as keyof typeof fn](table, columnName) as Knex.Raw;
 
 			if (alias) {
@@ -34,7 +45,7 @@ export function getColumn(
 
 			return result;
 		} else {
-			throw new Error(`Invalid function specified "${functionName}"`);
+			throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 		}
 	}
 
