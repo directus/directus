@@ -11,6 +11,8 @@ export function getFunctionsForType(type: Type): ApiFunction[] {
 			return ['hour', 'minute', 'second'];
 		case 'json':
 			return ['count'];
+		case 'alias': // o2m/m2m/m2a
+			return ['count'];
 		default:
 			return [];
 	}

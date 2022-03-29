@@ -34,7 +34,17 @@ export class FnHelperMSSQL extends FnHelper {
 		return this.knex.raw('DATEPART(second, ??.??)', [table, column]);
 	}
 
-	count(table: string, column: string): Knex.Raw {
-		return this.knex.raw(`(SELECT COUNT(*) FROM OPENJSON(??.??, '$'))`, [table, column]);
+	count(table: string, column: string): Knex.Raw<any> {
+		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+
+		if (type === 'json') {
+			return this.knex.raw(`(SELECT COUNT(*) FROM OPENJSON(??.??, '$'))`, [table, column]);
+		}
+
+		if (type === 'alias') {
+			return this._relationalCount(table, column);
+		}
+
+		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 }

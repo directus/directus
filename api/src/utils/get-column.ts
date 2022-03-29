@@ -7,8 +7,8 @@ import { InvalidQueryException } from '../exceptions';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 
 /**
- * Return column prefixed by table. If column includes functions (like `year(date_created)`, the
- * column is replaced with the appropriate SQL)
+ * Return column prefixed by table. If column includes functions (like `year(date_created)`), the
+ * column is replaced with the appropriate SQL
  *
  * @param knex Current knex / transaction instance
  * @param table Collection or alias in which column resides

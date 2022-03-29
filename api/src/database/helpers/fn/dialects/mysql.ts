@@ -35,6 +35,16 @@ export class FnHelperMySQL extends FnHelper {
 	}
 
 	count(table: string, column: string): Knex.Raw {
-		return this.knex.raw('JSON_LENGTH(??.??)', [table, column]);
+		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+
+		if (type === 'json') {
+			return this.knex.raw('JSON_LENGTH(??.??)', [table, column]);
+		}
+
+		if (type === 'alias') {
+			return this._relationalCount(table, column);
+		}
+
+		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 }

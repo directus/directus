@@ -34,7 +34,17 @@ export class FnHelperOracle extends FnHelper {
 		return this.knex.raw("TO_CHAR(??.??, 'SS')", [table, column]);
 	}
 
-	count(table: string, column: string): Knex.Raw {
-		return this.knex.raw("json_value(??.??, '$.size()')", [table, column]);
+	count(table: string, column: string): Knex.Raw<any> {
+		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+
+		if (type === 'json') {
+			return this.knex.raw("json_value(??.??, '$.size()')", [table, column]);
+		}
+
+		if (type === 'alias') {
+			return this._relationalCount(table, column);
+		}
+
+		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 }

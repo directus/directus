@@ -17,4 +17,26 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract minute(table: string, column: string): Knex.Raw;
 	abstract second(table: string, column: string): Knex.Raw;
 	abstract count(table: string, column: string): Knex.Raw;
+
+	protected _relationalCount(table: string, column: string): Knex.Raw {
+		const relation = this.schema.relations.find(
+			(relation) => relation.related_collection === table && relation?.meta?.one_field === column
+		);
+
+		const currentPrimary = this.schema.collections[table].primary;
+
+		if (!relation) {
+			throw new Error(`Field ${table}.${column} isn't a nested relational collection`);
+		}
+
+		return this.knex.raw(
+			'(' +
+				this.knex
+					.count('*')
+					.from(relation.collection)
+					.where(relation.field, '=', this.knex.raw(`??.??`, [table, currentPrimary]))
+					.toQuery() +
+				')'
+		);
+	}
 }

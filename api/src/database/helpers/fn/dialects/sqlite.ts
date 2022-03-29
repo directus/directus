@@ -34,7 +34,17 @@ export class FnHelperSQLite extends FnHelper {
 		return this.knex.raw("strftime('%S', ??.?? / 1000, 'unixepoch')", [table, column]);
 	}
 
-	count(table: string, column: string): Knex.Raw {
-		return this.knex.raw(`json_array_length(??.??, '$')`, [table, column]);
+	count(table: string, column: string): Knex.Raw<any> {
+		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+
+		if (type === 'json') {
+			return this.knex.raw(`json_array_length(??.??, '$')`, [table, column]);
+		}
+
+		if (type === 'alias') {
+			return this._relationalCount(table, column);
+		}
+
+		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 }
