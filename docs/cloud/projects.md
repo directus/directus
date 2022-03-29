@@ -21,7 +21,7 @@ steps below.
 
 ## Create a Community Project
 
-![Create a Community Project](image.webp)
+![Create a Community Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/create-a-community-project-20220329A.webp)
 
 The Community tier offers a completely free Directus Project, perfect to spin-up hobby projects, demo Directus Cloud,
 test a proof of concept or any other non-production activity. To create a Community Project, follow the steps below.
@@ -96,7 +96,7 @@ Enterprise tier offers power and scale to meet any Project's needs, 15+ [Datacen
 ## Access a Project
 
 <video alt="Access a Project" loop muted controls autoplay>
-  <source src="" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/access-a-project-20220329A.mp4" type="video/mp4">
 </video>
 
 At some point you will want to login and access the actual managed Project. You can type in the Project's URL directly,
@@ -146,7 +146,7 @@ To access the Project Monitor Page, follow the steps below.
 
 ## Manage a Community Project
 
-![Manage a Project]()
+![Manage a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/manage-a-community-project-20220329A.webp)
 
 On Community Projects, the only option available is to change the Project's Name. To manage a Community Project, follow
 the steps below. [Learn More](/cloud/glssary/#projects).

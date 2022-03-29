@@ -12,8 +12,6 @@ To avoid confusion, "User" is the term for users in a Directus Project, while th
 used in the context of Directus Cloud. Accounts on Directus Cloud and Users in a Directus Project are two separate
 systems.
 
-:::
-
 ## Asset Storage
 
 Directus Core allows asset storage for any type of file. This applies on all Cloud Projects. However, on Directus Cloud,
@@ -345,7 +343,9 @@ Looking for Basic or Premium Support on a self-hosted Project? [Contact Sales](h
 
 ## System Status
 
-![System Status](image.webp)
+<video alt="System Status" loop muted controls autoplay>
+  <source src="https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/system-status-20220329A.mp4" type="video/mp4">
+</video>
 
 Click <span mi icon>check</span> in the Dashboard Header to navigate to the System Status Page. This page displays the
 current connectivity status of Directus Cloud, status on individual Projects by URL, and also provides a daily Incidents
@@ -377,7 +377,8 @@ Databases on Enterprise Projects are single-tenant, offering 100% isolation. No 
 
 :::tip
 
-This section refers to how your Cloud Project is stored among other Projects and has nothing to do with how you design
-your Project's data model. You can implement single or multi-tenant architecture within any Directus Cloud Project.
+This section refers to how your Cloud Project is stored among other Cloud Projects and has nothing to do with how you
+design your Project's data model. You can implement single or multi-tenant architecture within any Directus Cloud
+Project.
 
 :::

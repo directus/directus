@@ -7,7 +7,7 @@
 
 ## Create a Team
 
-![Create Team](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/creating-a-team-20220225A.webp)
+![Create Team](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/create-a-team-20220329A.webp)
 
 Teams are how you organize Projects and share them across multiple Accounts. They're free, so create as many as you'd
 like! To create a Team, follow the steps below.
@@ -127,6 +127,13 @@ Team. To invite Team Members, follow the steps below.
 3. Scroll down to the Invite New Members section.
 4. Enter one or more email(s), comma separated.
 5. Click **"Send Invites"**.
+
+:::tip Must Create Account Before Joining a Team
+
+Clicking the emailed invitation link does not automatically create an Account for you. Invitees will need to
+[create an Account](/cloud/accounts/#create-account-and-login) manually before accepting invitation to join a Team.
+
+:::
 
 ## Manage Team Members
 

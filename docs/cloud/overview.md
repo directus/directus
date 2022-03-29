@@ -33,7 +33,7 @@ logged-in, create a new Team or Select an existing Team to access and manage its
 Team Members, Activity, and Settings.
 
 <video alt="Cloud Dashboard Overview" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/cloud-dashboard-overview-20220322A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/cloud-dashboard-overview-20220329A.mp4" type="video/mp4">
 </video>
 
 There are 3 [tiers of Cloud Projects](/cloud/glossary/#projects): Community, Standard, and Enterprise. All 3 tiers come
