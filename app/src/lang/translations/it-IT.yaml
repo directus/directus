@@ -95,6 +95,9 @@ update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
 delete_bookmark_copy: >-
   Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione è irreversibile.
+delete_personal_bookmark: Elimina segnalibro personale
+delete_role_bookmark: Elimina segnalibro del ruolo
+delete_global_bookmark: Elimina segnalibro globale
 logoutReason:
   SIGN_OUT: Disconnesso
   SESSION_EXPIRED: Sessione scaduta
@@ -562,6 +565,11 @@ value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
+edit_personal_bookmark: Modifica segnalibro personale
+edit_role_bookmark: Modifica segnalibro del ruolo
+edit_global_bookmark: Modifica segnalibro globale
+cannot_edit_role_bookmarks: Impossibile modificare i segnalibri del ruolo
+cannot_edit_global_bookmarks: Impossibile modificare i segnalibri globali
 bookmarks: Segnalibri
 presets: Preset
 unexpected_error: Errore Imprevisto
@@ -1302,6 +1310,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
