@@ -2,9 +2,9 @@
 	<v-workspace-panel
 		v-bind="panel"
 		:name="panel.panel_name"
-		:icon="currentOperation?.icon"
+		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
 		class="block-container"
-		:class="type"
+		:class="{ [type]: true, 'edit-mode': editMode }"
 		:edit-mode="editMode"
 		:resizable="false"
 		:show-options="type !== 'trigger'"
@@ -88,6 +88,7 @@ let moving = false;
 let workspaceOffset: Vector2 = new Vector2(0, 0);
 
 function pointerdown(target: Target) {
+	if (!props.editMode) return;
 	down = target;
 
 	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
@@ -127,7 +128,6 @@ function pointerup() {
 
 <style lang="scss" scoped>
 .v-workspace-panel.block-container {
-	z-index: 2;
 	position: relative;
 	box-shadow: none;
 	border: var(--border-width) solid var(--border-normal);
@@ -174,6 +174,10 @@ function pointerup() {
 				}
 			}
 		}
+	}
+
+	&:not(.edit-mode) .button {
+		cursor: default;
 	}
 
 	.button {

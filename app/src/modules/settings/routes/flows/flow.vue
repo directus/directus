@@ -24,17 +24,13 @@
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/settings/flows/${primaryKey}/+`">
-					<v-icon name="add" />
-				</v-button>
-
 				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 
 			<template v-else>
-				<v-button v-tooltip.bottom="t('delete_flow')" rounded icon secondary @click="deleteFlow">
+				<v-button v-tooltip.bottom="t('delete_flow')" rounded icon secondary @click="confirmDelete = true">
 					<v-icon name="delete" />
 				</v-button>
 
@@ -102,13 +98,13 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
+		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
 			<v-card>
 				<v-card-title>{{ t('flow_delete_confirm') }}</v-card-title>
 
 				<v-card-actions>
-					<v-button secondary @click="confirmDelete = null">{{ t('cancel') }}</v-button>
-					<v-button danger :loading="deletingFlow" @click="deleteFlow">{{ t('delete_label') }}</v-button>
+					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
+					<v-button danger @click="deleteFlow">{{ t('delete_label') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -456,22 +452,18 @@ function startDebug() {
 	// TODO: Start debugger
 }
 
-const deletingFlow = ref(false);
-const confirmDelete = ref<string | null>(null);
+const confirmDelete = ref(false);
 
 async function deleteFlow() {
 	if (!confirmDelete.value) return;
 
-	deletingFlow.value = true;
-
 	try {
 		await api.delete(`/flows/${confirmDelete.value}`);
 		await flowsStore.hydrate();
-		confirmDelete.value = null;
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
-		deletingFlow.value = false;
+		router.push('/settings/flows');
 	}
 }
 

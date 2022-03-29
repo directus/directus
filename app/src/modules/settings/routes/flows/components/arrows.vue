@@ -183,7 +183,6 @@ const arrows = computed(() => {
 
 <style scoped lang="scss">
 .arrow-container {
-	z-index: 1;
 	position: relative;
 
 	.arrows {
