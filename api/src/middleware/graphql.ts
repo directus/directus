@@ -5,8 +5,9 @@ import { GraphQLParams } from '../types';
 import asyncHandler from '../utils/async-handler';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (req.method !== 'GET' && req.method !== 'POST') {
-		throw new MethodNotAllowedException('GraphQL only supports GET and POST requests.', { allow: ['GET', 'POST'] });
+	// TODO: add this to config
+	if (req.method !== 'OPTIONS' && req.method !== 'GET' && req.method !== 'POST') {
+		throw new MethodNotAllowedException('GraphQL only supports GET and POST requests.', { allow: ['GET', 'POST', 'OPTIONS'] });
 	}
 
 	let query: string | null = null;
