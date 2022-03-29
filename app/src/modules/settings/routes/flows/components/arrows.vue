@@ -18,7 +18,7 @@ const props = defineProps<{
 	arrowInfo?: ArrowInfo;
 }>();
 
-const endOffset = computed(() => (props.editMode ? 12 : 2));
+const endOffset = 12;
 
 const size = computed(() => {
 	let width = 0,
@@ -65,10 +65,10 @@ const arrows = computed(() => {
 	return arrows;
 
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
-		const x = (panel.x - 1) * 20 + offset.y;
+		const x = (panel.x - 1) * 20 + offset.y + 2;
 		const y = (panel.y - 1) * 20 + offset.x;
 		if (to) {
-			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x;
+			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x + 2;
 			const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
 
 			return { x, y, toX, toY };
@@ -78,17 +78,12 @@ const arrows = computed(() => {
 	}
 
 	function createLine(x: number, y: number, toX: number, toY: number) {
-		if (y === toY) return generatePath(Vector2.fromMany({ x, y }, { x: toX - endOffset.value, y: toY }));
+		if (y === toY) return generatePath(Vector2.fromMany({ x, y }, { x: toX - endOffset, y: toY }));
 
 		if (x + 3 * 20 < toX) {
 			const centerX = findBestPosition(new Vector2(x, y), new Vector2(toX, toY), 'x');
 			return generatePath(
-				Vector2.fromMany(
-					{ x, y },
-					{ x: x + centerX, y },
-					{ x: x + centerX, y: toY },
-					{ x: toX - endOffset.value, y: toY }
-				)
+				Vector2.fromMany({ x, y }, { x: x + centerX, y }, { x: x + centerX, y: toY }, { x: toX - endOffset, y: toY })
 			);
 		}
 
@@ -101,7 +96,7 @@ const arrows = computed(() => {
 				{ x: x + offsetBox, y: y + centerY },
 				{ x: toX - offsetBox, y: y + centerY },
 				{ x: toX - offsetBox, y: toY },
-				{ x: toX - endOffset.value, y: toY }
+				{ x: toX - endOffset, y: toY }
 			)
 		);
 	}
@@ -188,6 +183,7 @@ const arrows = computed(() => {
 
 <style scoped lang="scss">
 .arrow-container {
+	z-index: 1;
 	position: relative;
 
 	.arrows {

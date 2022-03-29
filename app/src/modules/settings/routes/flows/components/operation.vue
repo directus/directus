@@ -17,24 +17,22 @@
 		@duplicate="$emit('duplicate', panel)"
 	>
 		<template #body>
-			<template v-if="editMode">
-				<div class="button add-resolve" x-small icon rounded @pointerdown.stop="pointerdown('resolve')">
-					<v-icon name="check" small></v-icon>
-				</div>
-				<div
-					v-if="panel.id !== '$trigger'"
-					x-small
-					icon
-					rounded
-					class="button add-reject"
-					@pointerdown.stop="pointerdown('reject')"
-				>
-					<v-icon name="close" small></v-icon>
-				</div>
-				<div v-if="panel.id !== '$trigger'" x-small icon rounded class="button attachment">
-					<div class="dot" />
-				</div>
-			</template>
+			<div class="button add-resolve" x-small icon rounded @pointerdown.stop="pointerdown('resolve')">
+				<v-icon name="check" small></v-icon>
+			</div>
+			<div
+				v-if="panel.id !== '$trigger'"
+				x-small
+				icon
+				rounded
+				class="button add-reject"
+				@pointerdown.stop="pointerdown('reject')"
+			>
+				<v-icon name="close" small></v-icon>
+			</div>
+			<div v-if="panel.id !== '$trigger'" x-small icon rounded class="button attachment">
+				<div class="dot" />
+			</div>
 		</template>
 		<div
 			v-if="typeof currentOperation?.preview === 'function'"
@@ -129,6 +127,7 @@ function pointerup() {
 
 <style lang="scss" scoped>
 .v-workspace-panel.block-container {
+	z-index: 2;
 	position: relative;
 	box-shadow: none;
 	border: var(--border-width) solid var(--border-normal);
