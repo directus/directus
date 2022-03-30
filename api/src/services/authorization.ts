@@ -304,7 +304,9 @@ export class AuthorizationService {
 				if (accountability?.admin === true) return;
 
 				for (const collection of Object.keys(requiredPermissions)) {
-					const permission = accountability?.permissions?.find((permission) => permission.collection === collection);
+					const permission = accountability?.permissions?.find(
+						(permission) => permission.collection === collection && permission.action === 'read'
+					);
 
 					if (!permission || !permission.fields) throw new ForbiddenException();
 
