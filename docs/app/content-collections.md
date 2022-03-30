@@ -20,7 +20,7 @@
 ::: tip Singletons
 
 If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
-#2 above.
+#2 above and go directly open the Item Details Form.
 
 :::
 
