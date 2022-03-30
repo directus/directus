@@ -407,11 +407,11 @@ export default defineComponent({
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal-alt) !important;
+	border-color: var(--border-normal) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal-alt) !important;
+	border-color: var(--border-normal) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
