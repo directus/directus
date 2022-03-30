@@ -12,7 +12,7 @@ export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
 export type Type = typeof TYPES[number];
 
-export type ApiFunction = typeof FUNCTIONS[number];
+export type FieldFunction = typeof FUNCTIONS[number];
 
 export type LocalType = typeof LOCAL_TYPES[number];
 

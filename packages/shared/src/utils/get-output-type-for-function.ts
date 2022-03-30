@@ -1,7 +1,7 @@
-import { ApiFunction, Type } from '../types/fields';
+import { FieldFunction, Type } from '../types/fields';
 
-export function getOutputTypeForFunction(fn: ApiFunction): Type {
-	const typeMap: Record<ApiFunction, Type> = {
+export function getOutputTypeForFunction(fn: FieldFunction): Type {
+	const typeMap: Record<FieldFunction, Type> = {
 		year: 'integer',
 		month: 'integer',
 		week: 'integer',
