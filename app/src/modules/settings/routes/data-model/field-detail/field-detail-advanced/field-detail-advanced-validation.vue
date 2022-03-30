@@ -6,6 +6,8 @@
 				:collection-name="collection"
 				:value="validation"
 				:field-name="field.field"
+				include-functions
+				include-validation
 				@input="validation = $event"
 			/>
 		</div>

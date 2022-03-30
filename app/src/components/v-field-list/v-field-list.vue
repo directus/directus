@@ -33,6 +33,7 @@ import { useFieldsStore } from '@/stores';
 
 interface Props {
 	collection: string;
+	field?: string;
 	disabledFields?: string[];
 	includeFunctions?: boolean;
 }
@@ -40,6 +41,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	disabledFields: () => [],
 	includeFunctions: false,
+	field: undefined,
 });
 
 defineEmits(['select-field']);
@@ -61,7 +63,11 @@ watch(search, () => debouncedRefresh());
 const { t } = useI18n();
 
 const treeList = computed(() => {
-	return treeListOriginal.value.map(setDisabled);
+	const list = treeListOriginal.value.map(setDisabled);
+
+	if (props.field) return list.filter((fieldNode) => fieldNode.field === props.field);
+
+	return list;
 
 	function setDisabled(
 		field: typeof treeListOriginal.value[number]

@@ -16,19 +16,19 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-menu placement="bottom-start" show-arrow :disabled="field !== undefined">
+						<v-menu placement="bottom-start" show-arrow>
 							<template #activator="{ toggle }">
-								<button
-									class="name"
-									:disabled="field !== undefined"
-									:class="{ disabled: field !== undefined }"
-									@click="toggle"
-								>
+								<button class="name" @click="toggle">
 									<span>{{ getFieldPreview(element) }}</span>
 								</button>
 							</template>
 
-							<v-field-list :collection="collection" include-functions @select-field="updateField(index, $event)" />
+							<v-field-list
+								:collection="collection"
+								:field="field"
+								include-functions
+								@select-field="updateField(index, $event)"
+							/>
 						</v-menu>
 						<v-select
 							inline
@@ -97,8 +97,8 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/shared/composables';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import {
 	FieldFilter,
 	FieldFilterOperator,
@@ -114,6 +114,7 @@ import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
 import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
+import { getFunctionsForType } from '@directus/shared/utils';
 
 type FilterInfo =
 	| {
@@ -192,8 +193,9 @@ function getFieldPreview(node: Record<string, any>) {
 		let functionName;
 
 		if (hasFunction) {
-			functionName = fieldKey.split('(')[0];
-			key = fieldKey.match(REGEX_BETWEEN_PARENS)![1];
+			const { field, fn } = extractFieldFromFunction(fieldKey);
+			functionName = fn;
+			key = field;
 		}
 
 		const pathPrefix = fieldParts.slice(0, index);
