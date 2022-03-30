@@ -739,6 +739,8 @@ no_flows: No Flows
 no_flows_copy: You don’t have any Flows yet.
 create_flow: Create Flow
 flow_name: Flow Name
+start_flow: Start Flow
+stop_flow: Stop Flow
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -1850,6 +1852,7 @@ operations:
     method: Method
     data: Data
     headers: Headers
+    header: Header
   sleep:
     name: Sleep
     description: Wait for a given amount of milliseconds.

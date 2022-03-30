@@ -44,10 +44,6 @@
 					<v-icon :name="flow.status === 'active' ? 'stop' : 'play_arrow'" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('debug_flow')" class="fullscreen" rounded icon secondary @click="startDebug">
-					<v-icon name="slow_motion_video" />
-				</v-button>
-
 				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
 					<v-icon name="edit" />
 				</v-button>
@@ -74,6 +70,7 @@
 						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
 						@create="createPanel"
 						@edit="editPanel"
+						@move="movePanelID = $event"
 						@update="stageOperationEdits"
 						@delete="deletePanel"
 						@duplicate="duplicatePanel"
@@ -119,6 +116,28 @@
 			</v-card>
 		</v-dialog>
 
+		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = undefined" @esc="movePanelID = undefined">
+			<v-card>
+				<v-card-title>{{ t('copy_to') }}</v-card-title>
+
+				<v-card-text>
+					<v-notice v-if="movePanelChoices.length === 0">
+						{{ t('no_other_dashboards_copy') }}
+					</v-notice>
+					<v-select v-else v-model="movePanelTo" :items="movePanelChoices" item-text="name" item-value="id" />
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="movePanelID = undefined">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button :loading="movePanelLoading" @click="movePanel">
+						{{ t('copy') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<router-view
 			:operation="panels.find((panel) => panel.id === props.operationId)"
 			@save="stageOperation"
@@ -160,37 +179,20 @@ const props = defineProps<{
 	operationId?: string;
 }>();
 
-const { primaryKey } = toRefs(props);
-
 const editMode = ref(false);
 const saving = ref(false);
-
-let parentId: string | undefined = undefined;
-let attachType: 'resolve' | 'reject' | undefined = undefined;
-
-const zoomToFit = ref(false);
 
 useShortcut('meta+s', () => {
 	saveChanges();
 });
 
-watch(editMode, (editModeEnabled) => {
-	if (editModeEnabled) {
-		zoomToFit.value = false;
-		window.onbeforeunload = () => '';
-	} else {
-		window.onbeforeunload = null;
-	}
-});
-
-const triggerDetailOpen = ref(false);
+// ------------- Manage Current Flow ------------- //
 
 const flowsStore = useFlowsStore();
-
 const stagedFlow = ref<Partial<FlowRaw>>({});
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		const existing = flowsStore.flows.find((flow) => flow.id === primaryKey.value);
+		const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
 		return merge({}, existing, stagedFlow.value);
 	},
 	set(newFlow) {
@@ -198,6 +200,42 @@ const flow = computed<FlowRaw | undefined>({
 	},
 });
 
+async function toggleFlowActive() {
+	if (!flow.value) return;
+	saving.value = true;
+	try {
+		await api.patch(`/flows/${props.primaryKey}`, {
+			status: flow.value.status === 'active' ? 'inactive' : 'active',
+		});
+
+		delete stagedFlow.value.status;
+
+		await flowsStore.hydrate();
+	} catch (error) {
+		unexpectedError(error as Error);
+	} finally {
+		saving.value = false;
+	}
+}
+
+const confirmDelete = ref(false);
+
+async function deleteFlow() {
+	if (!confirmDelete.value) return;
+
+	try {
+		await api.delete(`/flows/${confirmDelete.value}`);
+		await flowsStore.hydrate();
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		router.push('/settings/flows');
+	}
+}
+
+// ------------- Manage Panels ------------- //
+
+const triggerDetailOpen = ref(false);
 const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 const panelsToBeDeleted = ref<string[]>([]);
 
@@ -248,6 +286,9 @@ const panels = computed(() => {
 
 	return panels;
 });
+
+let parentId: string | undefined = undefined;
+let attachType: 'resolve' | 'reject' | undefined = undefined;
 
 function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string }) {
 	const key = event.id ?? props.operationId;
@@ -398,51 +439,6 @@ async function deletePanel(id: string) {
 	if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
 }
 
-const confirmCancel = ref(false);
-const confirmLeave = ref(false);
-const leaveTo = ref<string | null>(null);
-
-const editsGuard: NavigationGuard = (to) => {
-	const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
-
-	if (editMode.value && to.params.primaryKey !== props.primaryKey) {
-		if (hasEdits) {
-			confirmLeave.value = true;
-			leaveTo.value = to.fullPath;
-			return false;
-		} else {
-			editMode.value = false;
-		}
-	}
-};
-
-onBeforeRouteUpdate(editsGuard);
-onBeforeRouteLeave(editsGuard);
-
-function attemptCancelChanges(): void {
-	const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
-
-	if (hasEdits) {
-		confirmCancel.value = true;
-	} else {
-		cancelChanges();
-	}
-}
-
-function cancelChanges() {
-	confirmCancel.value = false;
-	stagedPanels.value = [];
-	panelsToBeDeleted.value = [];
-	editMode.value = false;
-}
-
-function discardAndLeave() {
-	if (!leaveTo.value) return;
-	cancelChanges();
-	confirmLeave.value = false;
-	router.push(leaveTo.value);
-}
-
 function createPanel(parent: string, type: 'resolve' | 'reject') {
 	parentId = parent;
 	attachType = type;
@@ -461,42 +457,36 @@ function editPanel(panel: AppPanel) {
 	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
 }
 
-async function toggleFlowActive() {
-	if (!flow.value) return;
-	saving.value = true;
+// ------------- Move Panel To ------------- //
+
+const movePanelID = ref<string | undefined>();
+const movePanelTo = ref<string | undefined>();
+const movePanelLoading = ref(false);
+
+const movePanelChoices = computed(() => flowsStore.flows.filter((flow) => flow.id !== props.primaryKey));
+
+async function movePanel() {
+	movePanelLoading.value = true;
+
+	const currentPanel = panels.value.find((panel) => panel.id === movePanelID.value);
+
 	try {
-		await api.patch(`/flows/${props.primaryKey}`, {
-			status: flow.value.status === 'active' ? 'inactive' : 'active',
+		await api.post(`/operations`, {
+			...omit(currentPanel, ['id']),
+			flow: movePanelTo.value,
 		});
 
-		delete stagedFlow.value.status;
-
 		await flowsStore.hydrate();
-	} catch (error) {
-		unexpectedError(error as Error);
-	} finally {
-		saving.value = false;
-	}
-}
 
-function startDebug() {
-	// TODO: Start debugger
-}
-
-const confirmDelete = ref(false);
-
-async function deleteFlow() {
-	if (!confirmDelete.value) return;
-
-	try {
-		await api.delete(`/flows/${confirmDelete.value}`);
-		await flowsStore.hydrate();
+		movePanelID.value = undefined;
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
-		router.push('/settings/flows');
+		movePanelLoading.value = false;
 	}
 }
+
+// ------------- Drag&Drop Arrows ------------- //
 
 const arrowInfo = ref<ArrowInfo | undefined>();
 
@@ -531,6 +521,54 @@ function getNearAttachment(pos: Vector2) {
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
 	}
 	return undefined;
+}
+
+// ------------- Navigation Guard ------------- //
+
+const confirmCancel = ref(false);
+const confirmLeave = ref(false);
+const leaveTo = ref<string | null>(null);
+
+const editsGuard: NavigationGuard = (to) => {
+	const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
+
+	if (editMode.value && to.params.primaryKey !== props.primaryKey) {
+		if (hasEdits) {
+			confirmLeave.value = true;
+			leaveTo.value = to.fullPath;
+			return false;
+		} else {
+			editMode.value = false;
+		}
+	}
+};
+
+onBeforeRouteUpdate(editsGuard);
+onBeforeRouteLeave(editsGuard);
+
+function attemptCancelChanges(): void {
+	const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
+
+	if (hasEdits) {
+		confirmCancel.value = true;
+	} else {
+		cancelChanges();
+	}
+}
+
+function cancelChanges() {
+	confirmCancel.value = false;
+	stagedPanels.value = [];
+	stagedFlow.value = {};
+	panelsToBeDeleted.value = [];
+	editMode.value = false;
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	cancelChanges();
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
 }
 </script>
 

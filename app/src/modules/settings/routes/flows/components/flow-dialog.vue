@@ -28,86 +28,84 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { defineComponent, ref, reactive, PropType, watch } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import { router } from '@/router';
 import { FlowRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { useFlowsStore } from '@/stores';
 
-export default defineComponent({
-	name: 'FlowDialog',
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		flow: {
-			type: Object as PropType<FlowRaw>,
-			default: null,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		modelValue?: boolean;
+		flow?: FlowRaw;
+	}>(),
+	{
+		modelValue: false,
+	}
+);
 
-		const flowsStore = useFlowsStore()
+const emit = defineEmits(['update:modelValue']);
 
-		const values = reactive({
-			name: props.flow?.name ?? null,
-			icon: props.flow?.icon ?? 'account_tree',
-			note: props.flow?.note ?? null,
-		});
+const { t } = useI18n();
 
-		watch(
-			() => props.modelValue,
-			(newValue, oldValue) => {
-				if (isEqual(newValue, oldValue) === false) {
-					values.name = props.flow?.name ?? null;
-					values.icon = props.flow?.icon ?? 'account_tree';
-					values.note = props.flow?.note ?? null;
-				}
-			}
-		);
+const flowsStore = useFlowsStore();
 
-		const saving = ref(false);
-
-		return { values, cancel, saving, save, t };
-
-		function cancel() {
-			emit('update:modelValue', false);
-		}
-
-		async function save() {
-			saving.value = true;
-
-			try {
-				if (props.flow) {
-					await api.patch(`/flows/${props.flow.id}`, values, { params: { fields: ['id'] } });
-				} else {
-					const response = await api.post('/flows', {
-						...values,
-						trigger: 'action',
-						options: {
-							hi: 'hi'
-						}
-					}, { params: { fields: ['id'] } });
-					router.push(`/flows/${response.data.data.id}`);
-				}
-				await flowsStore.hydrate()
-
-				emit('update:modelValue', false);
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				saving.value = false;
-			}
-		}
-	},
+const values = reactive({
+	name: props.flow?.name ?? null,
+	icon: props.flow?.icon ?? 'account_tree',
+	note: props.flow?.note ?? null,
 });
+
+watch(
+	() => props.modelValue,
+	(newValue, oldValue) => {
+		if (isEqual(newValue, oldValue) === false) {
+			values.name = props.flow?.name ?? null;
+			values.icon = props.flow?.icon ?? 'account_tree';
+			values.note = props.flow?.note ?? null;
+		}
+	}
+);
+
+const saving = ref(false);
+
+function cancel() {
+	emit('update:modelValue', false);
+}
+
+async function save() {
+	saving.value = true;
+
+	try {
+		if (props.flow) {
+			await api.patch(`/flows/${props.flow.id}`, values, { params: { fields: ['id'] } });
+		} else {
+			const response = await api.post(
+				'/flows',
+				{
+					...values,
+					trigger: 'action',
+					options: {
+						event: 'items.create',
+					},
+				},
+				{ params: { fields: ['id'] } }
+			);
+			router.push(`/settings/flows/${response.data.data.id}`);
+		}
+		await flowsStore.hydrate();
+
+		emit('update:modelValue', false);
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		saving.value = false;
+	}
+}
 </script>
 
 <style scoped>

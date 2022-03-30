@@ -62,7 +62,7 @@ export default defineOperationApp({
 					fields: [
 						{
 							field: 'header',
-							name: '$t:header',
+							name: '$t:operations.request.header',
 							type: 'string',
 							meta: {
 								width: 'half',

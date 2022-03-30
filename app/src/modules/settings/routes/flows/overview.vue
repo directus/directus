@@ -36,16 +36,18 @@
 			{{ t('no_flows_copy') }}
 		</v-info>
 
-		<v-table
-			v-else
-			v-model:headers="tableHeaders"
-			:items="flows"
-			show-resize
-			fixed-header
-			@click:row="navigateToFlow"
-		>
+		<v-table v-else v-model:headers="tableHeaders" :items="flows" show-resize fixed-header @click:row="navigateToFlow">
 			<template #[`item.icon`]="{ item }">
 				<v-icon class="icon" :name="item.icon" />
+			</template>
+
+			<template #[`item.status`]="{ item }">
+				<display-formatted-value
+					type="string"
+					:item="item"
+					:value="item.status"
+					:conditional-formatting="conditionalFormatting"
+				/>
 			</template>
 
 			<template #item-append="{ item }">
@@ -92,7 +94,7 @@
 			</v-card>
 		</v-dialog>
 
-		<flow-dialog :model-value="!!editFlow" :flow="editFlow" @update:model-value="editFlow = null" />
+		<flow-dialog :model-value="!!editFlow" :flow="editFlow" @update:model-value="editFlow = undefined" />
 	</private-view>
 </template>
 
@@ -102,10 +104,9 @@ import { useI18n } from 'vue-i18n';
 import { FlowRaw } from '@directus/shared/types';
 import { router } from '@/router';
 import SettingsNavigation from '../../components/navigation.vue';
-import flowDialog from './components/flow-dialog.vue';
+import FlowDialog from './components/flow-dialog.vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { md } from '@/utils/md';
 import { useFlowsStore, usePermissionsStore } from '@/stores';
 
 const { t } = useI18n();
@@ -114,13 +115,30 @@ const permissionsStore = usePermissionsStore();
 
 const confirmDelete = ref<string | null>(null);
 const deletingFlow = ref(false);
-const editFlow = ref<FlowRaw | null>(null);
+const editFlow = ref<FlowRaw | undefined>();
 
 const createDialogActive = ref(false);
 
 const createAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_flows', 'create');
 });
+
+const conditionalFormatting = ref([
+	{
+		operator: 'eq',
+		value: 'active',
+		text: t('active'),
+		color: 'var(--foreground-inverted)',
+		background: 'var(--success)',
+	},
+	{
+		operator: 'eq',
+		value: 'inactive',
+		text: t('inactive'),
+		color: 'var(--foreground-inverted)',
+		background: 'var(--danger)',
+	},
+]);
 
 const tableHeaders = [
 	{
@@ -135,15 +153,20 @@ const tableHeaders = [
 		width: 240,
 	},
 	{
+		text: t('status'),
+		value: 'status',
+		width: 100,
+	},
+	{
 		text: t('note'),
 		value: 'note',
 		width: 360,
 	},
 ];
 
-const flowsStore = useFlowsStore()
+const flowsStore = useFlowsStore();
 
-const flows = computed(() => flowsStore.flows)
+const flows = computed(() => flowsStore.flows);
 
 function navigateToFlow({ item: flow }: { item: FlowRaw }) {
 	router.push(`/settings/flows/${flow.id}`);
@@ -156,7 +179,7 @@ async function deleteFlow() {
 
 	try {
 		await api.delete(`/flows/${confirmDelete.value}`);
-		await flowsStore.hydrate()
+		await flowsStore.hydrate();
 		confirmDelete.value = null;
 	} catch (err: any) {
 		unexpectedError(err);
@@ -167,7 +190,7 @@ async function deleteFlow() {
 
 async function toggleFlowCreation(active: boolean) {
 	if (active === false) {
-		await flowsStore.hydrate()
+		await flowsStore.hydrate();
 	}
 
 	createDialogActive.value = active;
