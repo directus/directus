@@ -84,7 +84,6 @@ delete_folder: Izbriši mapu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi oznaku
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
@@ -115,7 +114,6 @@ recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
 unarchive_confirm: Jeste li sigurni da želite poništiti arhiviranje ove stavke?
 nested_files_folders_will_be_moved: Ugniježđene datoteke i mape bit će premještene za jednu razinu gore.
-unknown_validation_errors: 'Došlo je do pogrešaka provjere valjanosti za sljedeća skrivena polja:'
 validationError:
   eq: Vrijednost mora biti {valid}
   neq: Vrijednost ne može biti {invalid}
@@ -339,8 +337,6 @@ label_import: Uvoz
 label_export: Izvoz
 import_export: Uvoz / Izvoz
 format: Format
-use_current_filters_settings: Koristite trenutne filtere i postavke
-export_data_button: Pokreni izvoz
 last_page: Zadnja stranica
 last_access: Zadnji pristup
 fill_template: Ispunite vrijednošću predloška
@@ -1264,7 +1260,6 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
-weeks: { }
 report_error: Prijavi grešku
 start: Započni
 interfaces:
@@ -1474,7 +1469,6 @@ interfaces:
     auto_formatter: Koristite automatsko oblikovanje naslova
     alphabetize: Abecedno
     alphabetize_label: Nametni abecedno razvrstavanje
-    add_tags: Dodajte oznake...
   input:
     input: Unos
     description: Ručno unesite vrijednost
@@ -1666,7 +1660,6 @@ layouts:
     subtitle: Podnaslov
   tabular:
     tabular: Tablica
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno

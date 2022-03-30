@@ -57,7 +57,6 @@ delete_folder: Slet mappe
 prefix: Præfiks
 suffix: Suffiks
 reset_bookmark: Nustil bogmærke
-rename_bookmark: Omdøb bogmærke
 update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
 delete_bookmark_copy: >-
@@ -87,7 +86,6 @@ recommended_defaults: Anbefalede Standarder
 unarchive: Fjern fra arkiv
 unarchive_confirm: Er du sikker på, at du vil fjerne arkiveringen af dette element?
 nested_files_folders_will_be_moved: Indlejrede filer og mapper vil blive flyttet et niveau op.
-unknown_validation_errors: 'Der var valideringsfejl for følgende skjulte felter:'
 validationError:
   eq: Værdien skal være {valid}
   neq: Værdi kan ikke være {invalid}
@@ -283,7 +281,6 @@ translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
 label_import: Importér
 format: Format
-use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi
@@ -1285,7 +1282,6 @@ interfaces:
     auto_formatter: Brug Titel Auto-Formatter
     alphabetize: Alphabetize
     alphabetize_label: Gennemtving Alfabetisk Ordre
-    add_tags: Tilføj tags...
   input:
     input: Input
     description: Indtast en værdi manuelt
@@ -1454,7 +1450,6 @@ layouts:
     subtitle: Undertitel
   tabular:
     tabular: Tabel
-    fields: Felter
     spacing: Afstand
     comfortable: Behageligt
     compact: Kompakt

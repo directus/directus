@@ -63,7 +63,7 @@ export class PayloadService {
 
 			return value;
 		},
-		async boolean({ action, value }) {
+		async 'cast-boolean'({ action, value }) {
 			if (action === 'read') {
 				if (value === true || value === 1 || value === '1') {
 					return true;
@@ -76,7 +76,7 @@ export class PayloadService {
 
 			return value;
 		},
-		async json({ action, value }) {
+		async 'cast-json'({ action, value }) {
 			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
@@ -117,7 +117,7 @@ export class PayloadService {
 			if (action === 'update') return new Date();
 			return value;
 		},
-		async csv({ action, value }) {
+		async 'cast-csv'({ action, value }) {
 			if (Array.isArray(value) === false && typeof value !== 'string') return;
 
 			if (action === 'read' && Array.isArray(value) === false) {
@@ -305,7 +305,7 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'date') {
-						const [year, month, day] = value.toISOString().substr(0, 10).split('-');
+						const [year, month, day] = value.toISOString().slice(0, 10).split('-');
 
 						// Strip off the time / timezone information from a date-only value
 						const newValue = `${year}-${month}-${day}`;
@@ -532,7 +532,7 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-			if (!relation.meta || !payload[relation.meta.one_field!]) continue;
+			if (!relation.meta) continue;
 
 			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!].primary;
 			const relatedPrimaryKeyField = this.schema.collections[relation.collection].primary;
@@ -547,9 +547,11 @@ export class PayloadService {
 			const savedPrimaryKeys: PrimaryKey[] = [];
 
 			// Nested array of individual items
-			if (Array.isArray(payload[relation.meta!.one_field!])) {
-				for (let i = 0; i < (payload[relation.meta!.one_field!] || []).length; i++) {
-					const relatedRecord = (payload[relation.meta!.one_field!] || [])[i];
+			const field = payload[relation.meta!.one_field!];
+			if (!field || Array.isArray(field)) {
+				const updates = field || []; // treat falsey values as removing all children
+				for (let i = 0; i < updates.length; i++) {
+					const relatedRecord = updates[i];
 
 					let record = cloneDeep(relatedRecord);
 
@@ -629,7 +631,7 @@ export class PayloadService {
 			}
 			// "Updates" object w/ create/update/delete
 			else {
-				const alterations = payload[relation.meta!.one_field!] as Alterations;
+				const alterations = field as Alterations;
 				const { error } = nestedUpdateSchema.validate(alterations);
 				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
 

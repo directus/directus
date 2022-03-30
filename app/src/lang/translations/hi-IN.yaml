@@ -74,7 +74,6 @@ delete_folder: डिलीट फोल्डर
 prefix: प्रीफिक्स
 suffix: सफिक्स
 reset_bookmark: रीसेट बुकमार्क
-rename_bookmark: रीनेम बुकमार्क
 update_bookmark: अपडेट बुकमार्क
 delete_bookmark: डिलीट बुकमार्क
 delete_bookmark_copy: >-
@@ -104,7 +103,6 @@ recommended_defaults: अनुशंसित डिफ़ॉल्ट
 unarchive: अनआर्काइव
 unarchive_confirm: क्या आप वाकई इस आइटम को अनआर्काइव करना चाहते हैं?
 nested_files_folders_will_be_moved: नेस्टेड फ़ाइलें और फ़ोल्डर एक स्तर ऊपर ले जाया जाएगा
-unknown_validation_errors: 'निम्न छिपा क्षेत्रों में मान्यकरण त्रुटियों थे:'
 validationError:
   eq: मान {valid} होना चाहिए
   neq: मान {invalid} नहीं हो सकता
