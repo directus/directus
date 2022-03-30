@@ -1,5 +1,5 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { SchemaOverview } from '@directus/shared/types';
+import { FieldFunction, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { getFunctions } from '../database/helpers';
@@ -26,7 +26,7 @@ export function getColumn(
 	const fn = getFunctions(knex, schema);
 
 	if (column.includes('(') && column.includes(')')) {
-		const functionName = column.split('(')[0];
+		const functionName = column.split('(')[0] as FieldFunction;
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
 
 		if (functionName in fn) {
