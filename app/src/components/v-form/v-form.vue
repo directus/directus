@@ -319,7 +319,7 @@ export default defineComponent({
 			const updatableKeys = Object.keys(updates).filter((key) => {
 				const field = props.fields?.find((field) => field.field === key);
 				if (!field) return false;
-				return !isDisabled(field);
+				return field.schema?.is_primary_key || !isDisabled(field);
 			});
 
 			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
