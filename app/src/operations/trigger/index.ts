@@ -8,36 +8,23 @@ export default defineOperationApp({
 	preview: (options) => `# ${options.name}`,
 	options: [
 		{
-			field: 'flows',
-			name: '$t:operations.trigger.flows',
-			type: 'json',
+			field: 'flow',
+			name: '$t:operations.trigger.flow',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'input',
+			},
+		},
+		{
+			field: 'data',
+			name: '$t:operations.trigger.data',
+			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'list',
+				interface: 'input-code',
 				options: {
-					fields: [
-						{
-							field: 'flow',
-							name: '$t:operations.trigger.flow',
-							type: 'string',
-							meta: {
-								width: 'half',
-								interface: 'input',
-							},
-						},
-						{
-							field: 'data',
-							name: '$t:operations.trigger.data',
-							type: 'string',
-							meta: {
-								width: 'full',
-								interface: 'input-code',
-								options: {
-									language: 'json',
-								},
-							},
-						},
-					],
+					language: 'json',
 				},
 			},
 		},

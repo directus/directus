@@ -2,15 +2,26 @@ import { defineOperationApi } from '@directus/shared/utils';
 import { getFlowManager } from '../../flows';
 
 type Options = {
-	flows: {flow: string, data: string}[];
+	flow: string;
+	data: string;
 };
 
 export default defineOperationApi<Options>({
 	id: 'trigger',
 
-	handler: async ({ flows }, context) => {
+	handler: async ({ flow, data }, context) => {
 		const flowManager = getFlowManager();
 
-		return await Promise.all(flows.map(({flow, data}) => flowManager.runOperationFlow(flow, JSON.parse(data), context)));
+		const parsedData = JSON.parse(data);
+
+		let result: unknown | unknown[];
+
+		if (Array.isArray(parsedData)) {
+			result = await Promise.all(parsedData.map((data) => flowManager.runOperationFlow(flow, data, context)));
+		} else {
+			result = await flowManager.runOperationFlow(flow, parsedData, context);
+		}
+
+		return result;
 	},
 });
