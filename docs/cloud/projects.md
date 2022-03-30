@@ -1,4 +1,4 @@
-# Projects
+# Cloud Projects
 
 > Cloud Projects are individual instances of Directus, managed within a Team. Community, Standard, and Enterprise tier
 > Projects are available, with each offering different options for infrastructure, configuration, and professional
