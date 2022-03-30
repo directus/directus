@@ -18,7 +18,7 @@ use this login method, email-and-password login is available as well. In either 
 
 ![Manage Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/managing-your-account-20220225A.webp)
 
-Update your name and email at any time by following these steps:
+To update your name or email, follow the steps below.
 
 1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 2. Toggle <span mi icon prmry>edit</span> to allow edits.
@@ -28,6 +28,8 @@ Update your name and email at any time by following these steps:
 ## Reset Password
 
 ![User Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/reset-password-20220322A.webp)
+
+To reset your password, follow the steps below.
 
 1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 2. Click **"Send Reset Link"**. An email will be sent to reset password.
@@ -39,7 +41,7 @@ Update your name and email at any time by following these steps:
 
 ![Destroy Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/destroying-your-account-20220225A.webp)
 
-To destroy your Directus Cloud Account, follow these steps:
+To destroy your Directus Cloud Account, follow the steps below.
 
 1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
 2. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.

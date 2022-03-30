@@ -1,7 +1,8 @@
 # Projects
 
-> Cloud Projects are individual instances of the Directus platform managed within a team. Three Project tiers are
-> available, each offering different options for infrastructure, configuration, and professional services.
+> Cloud Projects are individual instances of Directus, managed within a Team. Community, Standard, and Enterprise tier
+> Projects are available, with each offering different options for infrastructure, configuration, and professional
+> services.
 
 [[toc]]
 
@@ -25,7 +26,7 @@ steps below.
 
 The Community tier offers a completely free Directus Project, perfect to spin-up hobby projects, demo Directus Cloud,
 test a proof of concept or any other non-production activity. To create a Community Project, follow the steps below.
-[Learn More](/cloud/glossary/#projects).
+[Learn More](/cloud/glossary/#projects)
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
@@ -47,8 +48,8 @@ Create a [Standard Project](#create-a-standard-project).
 
 The Project Name displays within Directus Cloud. This can be changed at any time and is purely for organizational
 purposes, it has no impact on the Project itself. The Project URL is how you access the actual Project being created.
-Standard Projects offer custom URLs, which are displayed as follows: `some-custom-url.directus.app`. In any case, your
-desired URL must be available, not in use by another Project. _This cannot be changed after Project creation._
+Standard Projects offer custom URLs, which are displayed as follows: `some-custom-url.directus.app`. Your desired URL
+must be available, not in use by another Project. It cannot be changed after Project creation.
 
 :::
 
@@ -58,7 +59,7 @@ desired URL must be available, not in use by another Project. _This cannot be ch
 
 The Standard tier is perfect for most production-ready use cases. These Projects come with custom URLs, daily
 [backups](/cloud/glossary/#backups), as well as upgraded server power, which can be scaled up and down as needed. To
-create a Standard Project, follow the steps below. [Learn More](/cloud/glossary/#projects).
+create a Standard Project, follow the steps below. [Learn More](/cloud/glossary/#projects)
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
@@ -85,7 +86,7 @@ Upgrade to an [Enterprise Project](#create-an-enterprise-project).
 ## Create an Enterprise Project
 
 Enterprise tier offers power and scale to meet any Project's needs, 15+ [Datacenter regions](#data-processing), upgraded
-[support options](#support-options), and much more. [Learn More](/cloud/glossary/#projects).
+[support options](#support-options), and much more. [Learn More](/cloud/glossary/#projects)
 
 :::tip Ready to to go Enterprise?
 
@@ -99,7 +100,7 @@ Enterprise tier offers power and scale to meet any Project's needs, 15+ [Datacen
   <source src="https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/access-a-project-20220329A.mp4" type="video/mp4">
 </video>
 
-At some point you will want to login and access the actual managed Project. You can type in the Project's URL directly,
+At some point, you will want to login and access the actual managed Project. You can go the Project's URL directly,
 however there also are two ways to access a Project from within the Cloud Dashboard. To access a Project, follow the
 steps below.
 
@@ -133,7 +134,7 @@ may help inform Node configuration decisions.
   Nodes.
 - **API Requests**\
   Number of API requests. This provides basic insight into traffic cycles, including overall volatility. If there are huge
-  peaks in traffic, it might be preferable to configure more Standby Nodes than Active Nodes.
+  spikes in traffic, it may be wise to configure more Standby Nodes.
 - **API Bandwidth**\
   The read/write bandwidth. If bandwidth is high, it may be beneficial to vertically-scale with Performance Tier or Enterprise
   Nodes in order to better handle the larger volume of data.
@@ -149,7 +150,7 @@ To access the Project Monitor Page, follow the steps below.
 ![Manage a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/manage-a-community-project-20220329A.webp)
 
 On Community Projects, the only option available is to change the Project's Name. To manage a Community Project, follow
-the steps below. [Learn More](/cloud/glssary/#projects).
+the steps below. [Learn More](/cloud/glssary/#projects)
 
 1. Open the Team Menu in the Dashboard Header and click the desired Team.
 2. Click **"Projects"** to enter the Projects Page.
@@ -175,8 +176,8 @@ On Standard Projects, it is possible to change the Project Name as well as recon
 
 ## Manage an Enterprise Project
 
-Each Enterprise Project is customized, and as such, cannot be managed from the dashboard. The Project will be managed in
-tandem with Directus Core Team.
+Each Enterprise Project is customized, and as such, cannot be managed from the Cloud Dashboard. The Project will be
+managed in tandem with the Directus Core Team.
 
 :::tip Ready to to go Enterprise?
 
@@ -215,7 +216,7 @@ destroy a Directus Cloud Project, follow these steps:
 
 ::: danger
 
-This action will break any external apps connecting to the Project API or linking to project files. This action is
+This action will break any external apps connecting to the Project's API or linking to Project files. This action is
 permanent and irreversible. **Directus Cloud is not responsible for data or files lost due to this action!**
 
 :::

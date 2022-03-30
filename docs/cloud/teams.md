@@ -1,7 +1,8 @@
 # Cloud Teams
 
-> Teams are an organizational system that provide consolidated billing on Projects. Teams group Accounts together as
-> Team Members, allowing Team Members to manage the same Project(s).
+> Each Cloud Project is nested within one Team. A Team is an organizational system which groups Accounts together as
+> Team Members and provides consolidated billing on its nested Projects. Teams are free, so create as many as you need
+> to appropriately organize Team Members and Project billing.
 
 [[toc]]
 
@@ -9,8 +10,7 @@
 
 ![Create Team](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/create-a-team-20220329A.webp)
 
-Teams are how you organize Projects and share them across multiple Accounts. They're free, so create as many as you'd
-like! To create a Team, follow the steps below.
+To create a Team, follow the steps below.
 
 1. Open the Team Menu in the Dashboard Header and click **"Create a Team <span mi icon prmry>add</span>"**.\
    The Create Team Page will open.
@@ -18,9 +18,10 @@ like! To create a Team, follow the steps below.
 
 :::tip Team Name and Team Slug
 
-The Team Name is a text name assigned to a Team, used in the Cloud Dashboard. The Team slug defines your Team within the
-URL `https://directus.cloud/TEAM-SLUG/projects`. These are purely organizational, allowing you to easily remember the
-Team and link to specific Cloud Dashboards. They have no impact on the functionality of your Team or its Projects.
+The Team Name is a text name assigned to a Team, used in the Cloud Dashboard. The Team slug lies within the full URL
+`https://directus.cloud/TEAM-SLUG/projects`. These are purely organizational, allowing you to easily remember the Team
+and link to specific Cloud Dashboards. They do not impact Cloud Projects or billing and can be
+[updated at any time](#update-team-settings).
 
 :::
 
@@ -28,8 +29,7 @@ Team and link to specific Cloud Dashboards. They have no impact on the functiona
 
 ![Managing a Team](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/managing-a-team-20220225A.webp)
 
-The Settings Page enables changes to the Team Name and Team Slug. These can be changed at any time without affecting
-Projects within. To update Team Settings, follow the steps below.
+To update Team Settings, follow the steps below.
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Settings"** to enter the Team Settings Page.
@@ -53,17 +53,10 @@ follow the steps below.
 ![View Billing Details](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/view-billing-details-20220322A.webp)
 
 Please follow these steps to see billing details such as credit available to Team Projects, total active subscriptions,
-and invoice receipts. [Learn More](/cloud/glossary/#billing).
+and invoice receipts. [Learn More](/cloud/glossary/#billing)
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Billing"** to enter the Billing Details Page.
-
-:::tip Team Metered Usage
-
-You may notice credit on top of the Billing Page. In the _rare event_ your Team receives credit from the Directus Team,
-this credit balance will decrease the amount due on the next invoice(s) until all credit is used up.
-
-:::
 
 ## Manage Billing
 
@@ -86,15 +79,23 @@ until a successful payment is made. If the paused Project is never repaid, it wi
 its data and assets! For details on unpaid Projects and refunds see,
 [Cloud Policies](https://directus.io/cloud-policies/)
 
+:::tip Team Metered Usage
+
+You may notice credit on top of the [Billing Page](#view-billing-details). In the _rare event_ your Team receives credit
+from the Directus Team, this credit balance will decrease the amount due on the next invoice(s) until all credit is used
+up. Then the default payment method will be used.
+
+:::
+
 ### Billing Cycles
 
 Bills are invoiced on a calendar monthly basis, so each new billing period begins after exactly one month. When a
 Project is destroyed, the bill is processed immediately. As mentioned in the previous section, bills are invoiced
 per-Project. So, if a Team has 4 Standard Projects, it will be charged 4 times each month.
-[Learn More](/cloud/glossary/#billing).
+[Learn More](/cloud/glossary/#billing)
 
-To change a default payment method, add or remove additional payment methods, and change other billing details follow
-the steps below.
+Follow the steps below to change a default payment method, add or remove additional payment methods, or change other
+billing details.
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Billing"** to enter the Billing Details Page.
@@ -128,10 +129,10 @@ Team. To invite Team Members, follow the steps below.
 4. Enter one or more email(s), comma separated.
 5. Click **"Send Invites"**.
 
-:::tip Must Create Account Before Joining a Team
+:::tip
 
 Clicking the emailed invitation link does not automatically create an Account for you. Invitees will need to
-[create an Account](/cloud/accounts/#create-account-and-login) manually before accepting invitation to join a Team.
+[create an Account](/cloud/accounts/#create-account-and-login) before accepting invitation to join a Team.
 
 :::
 
@@ -150,7 +151,7 @@ yourself, follow the steps below.
 :::warning
 
 If an Account leaves or is removed from a Team, it will be fully "locked out" of the Team until re-invited by another
-Member. Be Careful!
+Member.
 
 :::
 

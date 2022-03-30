@@ -4,13 +4,17 @@
 
 ## Accounts
 
-Your Account is your SuperAdmin Cloud Dashboard profile, used to create and join Teams, [pay bills](#billing), and
-manage Projects. See the [Overview](/cloud/overview) to learn how Accounts, [Teams](#teams) and [Projects](#projects)
-interrelate. [Learn More](/cloud/accounts) :::tip Accounts vs Users
+An Account is your SuperAdmin profile, used to create and join Teams, [pay bills](#billing), and manage Projects. See
+the [Overview](/cloud/overview) to learn how Accounts, [Teams](#teams) and [Projects](#projects) interrelate.
+[Learn More](/cloud/accounts)
 
-To avoid confusion, "User" is the term for users in a Directus Project, while the terms "Account" and "Team Member" are
-used in the context of Directus Cloud. Accounts on Directus Cloud and Users in a Directus Project are two separate
-systems.
+:::tip Accounts vs Users
+
+To avoid confusion, "User" is the term for user profiles in a Directus Project, while the terms "Account" and "Team
+Member" are used in the context of Directus Cloud. Accounts on Directus Cloud and Users in a Directus Project are two
+separate systems.
+
+:::
 
 ## Asset Storage
 
@@ -63,10 +67,10 @@ apply to both Active and Standby Nodes.
 
 :::
 
-Note that this means the monthly prices given for Active Nodes, _$25/month for General Purpose and $50/month for
-Performance tier_, are actually estimates based on the cost per hour times the average length of a month (730 hours).
-So, the pricing shown for one Active, General Purpose Node is `$0.03424657534 x 730hrs = $25`, however the actual bill
-will vary slightly each month.
+This means the monthly prices given for Active Nodes, _$25/month for General Purpose and $50/month for Performance
+tier_, are actually estimates based on the cost per hour times the average length of a month (730 hours). So, the
+pricing shown for one Active, General Purpose Node is `$0.03424657534 x 730hrs = $25`, however the actual bill will vary
+slightly each month.
 
 Furthermore, a Standard Project's Nodes can be reconfigured at any time. You can upgrade and downgrade Node Types, add
 and remove Nodes, or destroy your Project as you please. In the end, _you simply pay for the actual Node-hours used by
@@ -111,7 +115,7 @@ As stated in the beginning of this section and as shown by the examples above, _
 Node configuration_. As needs change on a Project, you are free to reconfigure Node Type as well as the number of Active
 and Standby Nodes as needed. However, you may need to monitor overall system traffic to make informed decisions on Node
 configuration. The [Project Monitor Page](/cloud/projects/#monitor-a-project) provides performance analytics, which can
-be used to help identify and decide on optimal Node configuration for your Project.
+be used to help identify optimal Node configurations for your Project.
 
 :::warning Standby Nodes
 
@@ -130,7 +134,7 @@ well.
 ## Cloud Exclusives
 
 These are [Extensions](#extensions) to Directus Core which are only available on Cloud Projects _(such as the Kanban
-Layout for project management)_. Cloud Exclusive development is managed by the Core Team, so these will stay up-to-date
+Layout for project management)_. Cloud Exclusives development is managed by the Core Team, so these will stay up-to-date
 with the [latest version of Directus](#automatic-updates).
 
 ## Data Portability
@@ -148,7 +152,7 @@ Enterprise Projects and 2 Datacenter Regions available to Standard Projects.
 
 [Asset Storage](#asset-storage), data storage, and in-transit encryption are included on all Cloud Projects. All data at
 rest remains encrypted. HTTPS/TLS protocols are enabled on all in-transit data. Cloud Projects are created with secure
-and safe [tenancy](#multi-tenancy) architectures.
+and safe [tenancy architectures](#multi-tenancy).
 
 :::tip Directus Core Security Features
 
@@ -185,7 +189,7 @@ for side-by-side comparisons.
 
 Directus Cloud has options to choose the processing power of your Node as well as the number of Nodes your Project runs
 on. Nodes can be configured to meet traffic needs at any scale. In general, there are two approaches to scale
-performance, vertical-scaling and horizontal-scaling. Vertical-scaling refers to the use of improved the hardware _(e.g.
+performance, vertical-scaling and horizontal-scaling. Vertical-scaling refers to the use of improved hardware _(e.g.
 better CPUs and more RAM)_ to scale up. In Directus Cloud, configuring the Node Type will provide vertical-scaling.
 Horizontal-scaling refers to increasing the number of Nodes to scale up. In Directus Cloud, adding more Active and
 Standby Nodes will provide horizontal-scaling.
@@ -230,13 +234,13 @@ unpaused.
 
 ### Load Balancing
 
-Akin to horizontal-scaling, the term Load balancing refers to the configured minimum number of Active Nodes your Project
-is running, and the instantaneous distribution of load across servers.
+Akin to horizontal-scaling, the term Load balancing refers to the instantaneous distribution of load across the Active
+Nodes that your Project is running.
 
 ### Standby Nodes
 
 Standby Nodes stay turned-off until traffic starts to take up significant system capacity, at which point Standby Nodes
-activate one-by-one as needed to handle the increase in traffic safely. Activation occurs within just a few moments.
+activate one-by-one as needed to safely handle the increase in traffic. Activation occurs within just a few moments.
 
 Standby Nodes are not required, however you do not pay when Standby Nodes are disabled. For more pricing information,
 see [billing](#billing).
@@ -304,7 +308,7 @@ Enterprise Projects are custom-tailored, offering power and scale to meet any Pr
 
 Directus does not impose _arbitrary_ software-based limits of any kind. So for things like Collections, Roles, or Users-
 whether you have 1 or 10,000 of these, you are free to build out your Project as needed, with no up-charge. However,
-actual Project performance is going to depend on Node configuration, so there are hard technical Limits. For details,
+actual Project performance is going to depend on Node configuration, so there are hard technical limits. For details,
 see [Cloud Policies](https://directus.io/cloud-policies/)
 
 ## Rate Limiting
@@ -369,8 +373,8 @@ Community project databases are technically single-tenant, but also file-based, 
 for a production-ready environment.
 
 **Standard**\
-Standard Projects are created using multi-tenant architecture. However, each Standard Project is scoped- one container per
-Project, with no bleeding into other Projects. If your neighbor's Project gets busy, it will not impact your Project.
+Standard Projects are created using multi-tenant architecture. However, each Standard Project is scoped to one container
+per Project, with no bleeding into other Projects. If your neighbor's Project gets busy, it will not impact your Project.
 
 **Enterprise**\
 Databases on Enterprise Projects are single-tenant, offering 100% isolation. No neighbors.
