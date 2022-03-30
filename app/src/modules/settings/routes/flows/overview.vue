@@ -6,6 +6,10 @@
 			</v-button>
 		</template>
 
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+		</template>
+
 		<template #navigation>
 			<settings-navigation />
 		</template>

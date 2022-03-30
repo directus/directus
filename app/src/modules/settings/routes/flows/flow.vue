@@ -2,13 +2,13 @@
 	<settings-not-found v-if="!flow" />
 	<private-view v-else :title="flow?.name ?? t('loading')">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon :name="flow?.icon ?? 'account_tree'" />
+			<v-button class="header-icon" rounded icon exact to="/settings/flows">
+				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('flows'), to: '/flows' }]" />
+			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
 		</template>
 
 		<template #actions>
@@ -61,7 +61,7 @@
 		</template>
 
 		<div class="container">
-			<arrows :panels="panels" :edit-mode="editMode" :arrow-info="arrowInfo" />
+			<arrows :panels="panels" :arrow-info="arrowInfo" />
 			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
 					<operation
@@ -150,7 +150,7 @@
 import { FlowRaw, OperationRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useFlowsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
@@ -574,7 +574,10 @@ function discardAndLeave() {
 
 <style scoped lang="scss">
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 
 .container {

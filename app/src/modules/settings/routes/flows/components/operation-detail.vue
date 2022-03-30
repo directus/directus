@@ -1,8 +1,8 @@
 <template>
 	<v-drawer
 		:model-value="isOpen"
-		:title="'Create new Action'"
-		:subtitle="t('panel_options')"
+		:title="t(operationId === '+' ? 'create_operation' : 'edit_operation')"
+		:subtitle="t('operation_options')"
 		:icon="'insert_chart'"
 		persistent
 		@cancel="$emit('cancel')"
@@ -57,9 +57,11 @@ const props = withDefaults(
 	defineProps<{
 		primaryKey: string;
 		operationId: string;
-		operation?: Record<string, any>
+		operation?: Record<string, any>;
 	}>(),
-	{}
+	{
+		operation: undefined,
+	}
 );
 
 const emit = defineEmits(['save', 'cancel']);
@@ -67,14 +69,14 @@ const emit = defineEmits(['save', 'cancel']);
 const isOpen = useDialogRoute();
 const { t } = useI18n();
 
-const options = ref<Record<string, any>>(props.operation?.options ?? {})
+const options = ref<Record<string, any>>(props.operation?.options ?? {});
 const operationType = ref<string | undefined>(props.operation?.type);
-const operationKey = ref<string>(props.operation?.key ?? '')
-const operationName = ref(props.operation?.name ?? '')
+const operationKey = ref<string>(props.operation?.key ?? '');
+const operationName = ref(props.operation?.name ?? '');
 
 watch(operationType, () => {
-	options.value = {}
-})
+	options.value = {};
+});
 
 const selectedOperation = computed(() => getOperation(operationType.value));
 
@@ -90,11 +92,11 @@ const displayOperations = computed(() => {
 });
 
 const operationOptions = computed(() => {
-	if(typeof selectedOperation.value?.options === 'function') {
-		return selectedOperation.value.options(options.value)
+	if (typeof selectedOperation.value?.options === 'function') {
+		return selectedOperation.value.options(options.value);
 	}
-	return
-})
+	return undefined;
+});
 
 function saveOperation() {
 	emit('save', {
@@ -103,7 +105,7 @@ function saveOperation() {
 		key: operationKey.value,
 		type: operationType.value,
 		options: options.value,
-	})
+	});
 }
 </script>
 

@@ -741,6 +741,9 @@ create_flow: Create Flow
 flow_name: Flow Name
 start_flow: Start Flow
 stop_flow: Stop Flow
+create_operation: Create new Operation
+edit_operation: Edit Operation
+operation_options: Operation Options
 insights: Insights
 dashboard: Dashboard
 panel: Panel

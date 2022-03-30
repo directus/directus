@@ -14,7 +14,6 @@ import { ArrowInfo } from './operation.vue';
 
 const props = defineProps<{
 	panels: Record<string, any>[];
-	editMode: boolean;
 	arrowInfo?: ArrowInfo;
 }>();
 

@@ -121,7 +121,8 @@ const pointermove = throttle((event: PointerEvent) => {
 }, 20);
 
 function pointerup() {
-	if (!moving && (down === 'reject' || down === 'resolve')) emit('create', props.panel.id, down);
+	if (!moving && ((down === 'reject' && !props.panel.reject) || (down === 'resolve' && !props.panel.resolve)))
+		emit('create', props.panel.id, down);
 	moving = false;
 	down = undefined;
 
