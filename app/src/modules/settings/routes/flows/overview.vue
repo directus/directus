@@ -129,14 +129,14 @@ const conditionalFormatting = ref([
 		value: 'active',
 		text: t('active'),
 		color: 'var(--foreground-inverted)',
-		background: 'var(--success)',
+		background: 'var(--primary)',
 	},
 	{
 		operator: 'eq',
 		value: 'inactive',
 		text: t('inactive'),
 		color: 'var(--foreground-inverted)',
-		background: 'var(--danger)',
+		background: 'var(--secondary)',
 	},
 ]);
 
@@ -215,7 +215,7 @@ async function toggleFlowCreation(active: boolean) {
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 </style>
