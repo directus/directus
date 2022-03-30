@@ -48,6 +48,7 @@ import { Vector2 } from '@/utils/vector2';
 import { throttle } from 'lodash';
 import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+import { getTriggers } from '../triggers';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {
@@ -69,6 +70,7 @@ const props = withDefaults(
 );
 
 const { operations } = getOperations();
+const { triggers } = getTriggers();
 
 const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplicate', 'arrow-move', 'arrow-stop']);
 
@@ -81,7 +83,10 @@ const styleVars = {
 	'--attachment-y': ATTACHMENT_OFFSET.y + 'px',
 };
 
-const currentOperation = computed(() => operations.value.find((operation) => operation.id === props.panel.type));
+const currentOperation = computed(() => {
+	if (props.type === 'operation') return operations.value.find((operation) => operation.id === props.panel.type);
+	else return triggers.value.find((trigger) => trigger.value === props.panel.type);
+});
 
 let down: Target | undefined = undefined;
 let moving = false;
@@ -118,6 +123,7 @@ const pointermove = throttle((event: PointerEvent) => {
 function pointerup() {
 	if (!moving && (down === 'reject' || down === 'resolve')) emit('create', props.panel.id, down);
 	moving = false;
+	down = undefined;
 
 	emit('arrow-stop');
 

@@ -14,13 +14,13 @@
 		</template>
 
 		<div class="content">
-			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggerTypes" />
+			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" />
 
 			<v-form
 				v-if="flowEdits.trigger"
 				v-model="flowEdits.options"
 				class="extension-options"
-				:fields="triggerFields[flowEdits.trigger]"
+				:fields="currentTrigger?.options"
 				primary-key="+"
 			/>
 		</div>
@@ -29,8 +29,9 @@
 
 <script setup lang="ts">
 import { DeepPartial, Field, FlowRaw, TriggerType } from '@directus/shared/types';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getTriggers } from '../triggers';
 
 const { t } = useI18n();
 
@@ -56,93 +57,9 @@ function saveTrigger() {
 	emit('update:open', false);
 }
 
-const triggerTypes = ref<{ text: string; value: TriggerType; icon: string; description: string }[]>([
-	{
-		text: t('triggers.filter.name'),
-		value: 'filter',
-		icon: 'keyboard_tab',
-		description: t('triggers.filter.description'),
-	},
-	{
-		text: t('triggers.action.name'),
-		value: 'action',
-		icon: 'start',
-		description: t('triggers.action.description'),
-	},
-	{
-		text: t('triggers.init.name'),
-		value: 'init',
-		icon: 'sensors',
-		description: t('triggers.init.description'),
-	},
-	{
-		text: t('triggers.operation.name'),
-		value: 'operation',
-		icon: 'bolt',
-		description: t('triggers.operation.description'),
-	},
-	{
-		text: t('triggers.schedule.name'),
-		value: 'schedule',
-		icon: 'schedule',
-		description: t('triggers.schedule.description'),
-	},
-	{
-		text: t('triggers.webhook.name'),
-		value: 'webhook',
-		icon: 'anchor',
-		description: t('triggers.webhook.description'),
-	},
-]);
+const { triggers } = getTriggers();
 
-const triggerFields = ref<Record<TriggerType, DeepPartial<Field>[]>>({
-	filter: [
-		{
-			field: 'event',
-			name: t('triggers.filter.event'),
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input',
-			},
-		},
-	],
-	action: [
-		{
-			field: 'event',
-			name: t('triggers.action.event'),
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input',
-			},
-		},
-	],
-	init: [
-		{
-			field: 'event',
-			name: t('triggers.init.event'),
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input',
-			},
-		},
-	],
-	schedule: [
-		{
-			field: 'cron',
-			name: t('triggers.schedule.cron'),
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input',
-			},
-		},
-	],
-	operation: [],
-	webhook: [],
-});
+const currentTrigger = computed(() => triggers.value.find((trigger) => trigger.value === flowEdits.value.trigger));
 </script>
 
 <style scoped lang="scss">

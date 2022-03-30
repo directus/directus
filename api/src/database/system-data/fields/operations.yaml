@@ -9,7 +9,7 @@ fields:
   - field: position_x
   - field: position_y
   - field: options
-    special: json
+    special: cast-json
   - field: resolve
   - field: reject
   - field: flow

@@ -9,7 +9,7 @@ fields:
   - field: status
   - field: trigger
   - field: options
-    special: json
+    special: cast-json
   - field: operation
   - field: operations
     special: o2m
