@@ -68,6 +68,7 @@ data:
     many_field: flow
     one_collection: directus_flows
     one_field: operations
+    one_deselect_action: delete
   - many_collection: directus_operations
     many_field: resolve
     one_collection: directus_operations

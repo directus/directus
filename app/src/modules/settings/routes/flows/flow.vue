@@ -374,6 +374,7 @@ function addChangesToTree(tree: Tree): Record<string, any> {
 	if (tree.reject) newTree.reject = addChangesToTree(tree.reject);
 	if (tree.resolve) newTree.resolve = addChangesToTree(tree.resolve);
 	if (tree.id.startsWith('_')) delete newTree.id;
+	newTree.flow = props.primaryKey;
 
 	return newTree;
 }
