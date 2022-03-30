@@ -406,12 +406,16 @@ export default defineComponent({
 </style>
 
 <style>
+.apexcharts-tooltip.apexcharts-theme-light {
+	border-color: var(--border-normal-alt) !important;
+}
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+	border-color: var(--border-normal-alt) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued);
+	background-color: var(--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
@@ -421,6 +425,7 @@ export default defineComponent({
 }
 
 .apexcharts-tooltip-series-group {
+	background-color: var(--background-normal) !important;
 	padding: 0;
 }
 
