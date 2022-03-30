@@ -5,7 +5,7 @@
 			<interface-system-filter
 				:collection-name="collection"
 				:value="validation"
-				:field="field.field"
+				:field-name="field.field"
 				@input="validation = $event"
 			/>
 		</div>

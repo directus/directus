@@ -18,6 +18,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 
 	if (hasChanged('relations.m2o.related_collection')) {
 		preventCircularConstraint(updates, state, helperFn);
+		updateJunctionRelated(updates, state, helperFn);
 	}
 
 	if (hasChanged('relations.o2m.field')) {
@@ -106,6 +107,16 @@ export function preventCircularConstraint(updates: StateUpdates, _state: State, 
 export function setJunctionFields(updates: StateUpdates, _state: State, { getCurrent }: HelperFunctions) {
 	set(updates, 'relations.o2m.meta.junction_field', getCurrent('relations.m2o.field'));
 	set(updates, 'relations.m2o.meta.junction_field', getCurrent('relations.o2m.field'));
+}
+
+export function updateJunctionRelated(updates: StateUpdates, _state: State, { getCurrent }: HelperFunctions) {
+	const fieldsStore = useFieldsStore();
+
+	const relatedCollection = getCurrent('relations.m2o.related_collection');
+	const relatedCollectionPrimaryKeyField =
+		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field ?? 'id';
+
+	set(updates, 'relations.m2o.field', `${relatedCollection}_${relatedCollectionPrimaryKeyField}`);
 }
 
 function collectionExists(collection: string) {
