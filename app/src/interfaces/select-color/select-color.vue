@@ -168,7 +168,7 @@ const { t } = useI18n();
 
 interface Props {
 	disabled?: boolean;
-	value?: string;
+	value?: string | null;
 	placeholder?: string;
 	presets?: { name: string; color: string }[];
 	width: string;
@@ -177,7 +177,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
-	value: undefined,
+	value: () => null,
 	placeholder: undefined,
 	opacity: false,
 	presets: () => [
