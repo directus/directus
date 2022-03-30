@@ -179,26 +179,26 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_gt') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().greater(compareValue)
+			schema[key] = Number.isSafeInteger(Number(compareValue))
+				? getNumberSchema().greater(Number(compareValue))
 				: getDateSchema().greater(compareValue);
 		}
 
 		if (operator === '_gte') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().min(compareValue)
+			schema[key] = Number.isSafeInteger(Number(compareValue))
+				? getNumberSchema().min(Number(compareValue))
 				: getDateSchema().min(compareValue);
 		}
 
 		if (operator === '_lt') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().less(compareValue)
+			schema[key] = Number.isSafeInteger(Number(compareValue))
+				? getNumberSchema().less(Number(compareValue))
 				: getDateSchema().less(compareValue);
 		}
 
 		if (operator === '_lte') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().max(compareValue)
+			schema[key] = Number.isSafeInteger(Number(compareValue))
+				? getNumberSchema().max(Number(compareValue))
 				: getDateSchema().max(compareValue);
 		}
 
