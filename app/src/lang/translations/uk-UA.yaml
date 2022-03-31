@@ -365,6 +365,10 @@ today: Сьогодні
 yesterday: Вчора
 delete_comment: Видалити коментар
 delete_share: Видалити частку
+functions:
+  year: Рік
+  month: Місяць
+  count: Кількість
 date-fns_date: PPP
 date-fns_time: 'г:хх:сс'
 date-fns_time_no_seconds: 'г:хх'

@@ -361,6 +361,10 @@ today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
 delete_share: 删除分享
+functions:
+  year: 年
+  month: 月
+  count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'

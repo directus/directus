@@ -349,6 +349,10 @@ interface_label: Интерфейс
 today: Сегодня
 yesterday: Вчера
 delete_comment: Удалить комментарий
+functions:
+  year: Год
+  month: Месяц
+  count: Количество
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'

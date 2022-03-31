@@ -351,6 +351,10 @@ today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
 delete_share: Șterge distribuire
+functions:
+  year: An
+  month: Lună
+  count: Numărătoare
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'

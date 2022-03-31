@@ -240,6 +240,9 @@ interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
+functions:
+  year: Godina
+  month: Mjesec
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'

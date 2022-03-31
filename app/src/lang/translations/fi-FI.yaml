@@ -326,6 +326,10 @@ interface_label: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
+functions:
+  year: Vuosi
+  month: Kuukausi
+  count: Määrä
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
