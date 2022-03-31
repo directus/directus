@@ -365,6 +365,10 @@ today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
 delete_share: Elimina condivisione
+functions:
+  year: Anno
+  month: Mese
+  count: Quantità
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -1310,7 +1314,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
