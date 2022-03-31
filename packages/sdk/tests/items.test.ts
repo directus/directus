@@ -295,4 +295,34 @@ describe('items', function () {
 
 		expect(scope.pendingMocks().length).toBe(0);
 	});
+	test('should passthrough additional headers', async (url, nock) => {
+		const postData = {
+			title: 'New post',
+			body: 'This is a new post',
+			published: false,
+		};
+		const id = 3;
+		const expectedData = {
+			id,
+			...postData,
+		};
+		const headerName = 'X-Custom-Header';
+		const headerValue = 'Custom header value';
+		const customOptions = {
+			headers: {
+				[headerName]: headerValue,
+			},
+		};
+		nock()
+			.post('/items/posts')
+			// check if custom header is present
+			.matchHeader(headerName, headerValue)
+			.reply(200, {
+				data: expectedData,
+			});
+
+		const sdk = new Directus<Blog>(url);
+		const item = await sdk.items('posts').createOne(postData, undefined, customOptions);
+		expect(item).toMatchObject(expectedData);
+	});
 });
