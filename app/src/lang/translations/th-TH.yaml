@@ -293,6 +293,9 @@ interface_label: อินเทอร์เฟซ
 today: วันนี้
 yesterday: เมื่อวาน
 delete_comment: ลบความคิดเห็น
+functions:
+  year: ปี
+  month: เดือน
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
