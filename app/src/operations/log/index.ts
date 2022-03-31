@@ -2,7 +2,7 @@ import { defineOperationApp } from '@directus/shared/utils';
 
 export default defineOperationApp({
 	id: 'log',
-	icon: 'print',
+	icon: 'terminal',
 	name: '$t:operations.log.name',
 	description: '$t:operations.log.description',
 	preview: ({ name, options }) => `

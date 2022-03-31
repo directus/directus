@@ -588,6 +588,11 @@ function discardAndLeave() {
 	--gap-size: 40px;
 }
 
+.clear-changes {
+	--v-button-background-color: var(--foreground-subdued);
+	--v-button-background-color-hover: var(--foreground-normal);
+}
+
 .grid {
 	display: grid;
 	grid-template-rows: repeat(auto-fit, var(--row-size));

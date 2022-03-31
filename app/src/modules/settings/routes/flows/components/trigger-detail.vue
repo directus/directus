@@ -3,7 +3,7 @@
 		:model-value="open"
 		:title="'Change the Trigger'"
 		:subtitle="t('panel_options')"
-		:icon="'insert_chart'"
+		icon="offline_bolt"
 		persistent
 		@cancel="$emit('update:open', false)"
 	>

@@ -2,7 +2,7 @@
 	<private-view :title="t('flows')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="account_tree" />
+				<v-icon name="bolt" />
 			</v-button>
 		</template>
 
@@ -36,7 +36,7 @@
 			</sidebar-detail>
 		</template>
 
-		<v-info v-if="flows.length === 0" icon="account_tree" :title="t('no_flows')" center>
+		<v-info v-if="flows.length === 0" icon="bolt" :title="t('no_flows')" center>
 			{{ t('no_flows_copy') }}
 		</v-info>
 
@@ -139,8 +139,8 @@ const conditionalFormatting = ref([
 		operator: 'eq',
 		value: 'inactive',
 		text: t('inactive'),
-		color: 'var(--foreground-inverted)',
-		background: 'var(--secondary)',
+		color: 'var(--foreground-subdued)',
+		background: 'var(--background-normal)',
 	},
 ]);
 
@@ -152,14 +152,14 @@ const tableHeaders = [
 		sortable: false,
 	},
 	{
-		text: t('name'),
-		value: 'name',
-		width: 240,
-	},
-	{
 		text: t('status'),
 		value: 'status',
 		width: 100,
+	},
+	{
+		text: t('name'),
+		value: 'name',
+		width: 240,
 	},
 	{
 		text: t('note'),

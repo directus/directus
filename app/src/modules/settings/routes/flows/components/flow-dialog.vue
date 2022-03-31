@@ -56,7 +56,7 @@ const flowsStore = useFlowsStore();
 
 const values = reactive({
 	name: props.flow?.name ?? null,
-	icon: props.flow?.icon ?? 'account_tree',
+	icon: props.flow?.icon ?? 'bolt',
 	note: props.flow?.note ?? null,
 });
 
@@ -65,7 +65,7 @@ watch(
 	(newValue, oldValue) => {
 		if (isEqual(newValue, oldValue) === false) {
 			values.name = props.flow?.name ?? null;
-			values.icon = props.flow?.icon ?? 'account_tree';
+			values.icon = props.flow?.icon ?? 'bolt';
 			values.note = props.flow?.note ?? null;
 		}
 	}

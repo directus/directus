@@ -12,18 +12,6 @@ export default defineOperationApp({
 	`,
 	options: [
 		{
-			field: 'url',
-			name: '$t:operations.request.url',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'input',
-				options: {
-					placeholder: '$t:operations.request.url_placeholder',
-				},
-			},
-		},
-		{
 			field: 'method',
 			name: '$t:operations.request.method',
 			type: 'string',
@@ -45,14 +33,20 @@ export default defineOperationApp({
 					],
 				},
 			},
+			schema: {
+				default_value: 'GET',
+			},
 		},
 		{
-			field: 'data',
-			name: '$t:operations.request.data',
-			type: 'json',
+			field: 'url',
+			name: '$t:operations.request.url',
+			type: 'string',
 			meta: {
-				width: 'full',
-				interface: 'input-code',
+				width: 'half',
+				interface: 'input',
+				options: {
+					placeholder: '$t:operations.request.url_placeholder',
+				},
 			},
 		},
 		{
@@ -71,6 +65,9 @@ export default defineOperationApp({
 							meta: {
 								width: 'half',
 								interface: 'input',
+								options: {
+									placeholder: '$t:operations.request.header_placeholder',
+								},
 							},
 						},
 						{
@@ -80,10 +77,22 @@ export default defineOperationApp({
 							meta: {
 								width: 'half',
 								interface: 'input',
+								options: {
+									placeholder: '$t:operations.request.value_placeholder',
+								},
 							},
 						},
 					],
 				},
+			},
+		},
+		{
+			field: 'data',
+			name: '$t:operations.request.data',
+			type: 'json',
+			meta: {
+				width: 'full',
+				interface: 'input-code',
 			},
 		},
 	],

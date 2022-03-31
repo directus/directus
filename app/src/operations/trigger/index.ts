@@ -15,8 +15,11 @@ export default defineOperationApp({
 			name: '$t:operations.trigger.flow',
 			type: 'string',
 			meta: {
-				width: 'half',
+				width: 'full',
 				interface: 'input',
+				options: {
+					iconRight: 'bolt',
+				},
 			},
 		},
 		{

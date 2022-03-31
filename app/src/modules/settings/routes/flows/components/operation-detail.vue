@@ -3,7 +3,7 @@
 		:model-value="isOpen"
 		:title="t(operationId === '+' ? 'create_operation' : 'edit_operation')"
 		:subtitle="t('operation_options')"
-		:icon="'insert_chart'"
+		icon="offline_bolt"
 		persistent
 		@cancel="$emit('cancel')"
 	>
@@ -17,11 +17,19 @@
 			<div class="grid">
 				<div class="field half">
 					<div class="type-label">{{ t('name') }}</div>
-					<v-input v-model="operationName"></v-input>
+					<v-input v-model="operationName" :placeholder="t('operation_name')">
+						<template #append>
+							<v-icon name="title" />
+						</template>
+					</v-input>
 				</div>
 				<div class="field half">
 					<div class="type-label">{{ t('key') }}</div>
-					<v-input v-model="operationKey"></v-input>
+					<v-input v-model="operationKey" :placeholder="t('operation_key')">
+						<template #append>
+							<v-icon name="vpn_key" />
+						</template>
+					</v-input>
 				</div>
 			</div>
 

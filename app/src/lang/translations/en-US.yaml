@@ -738,12 +738,14 @@ no_other_flows_copy: You don't have any other Flows yet.
 no_flows: No Flows
 no_flows_copy: You don’t have any Flows yet.
 create_flow: Create Flow
-flow_name: Flow Name
+flow_name: Name
 start_flow: Start Flow
 stop_flow: Stop Flow
 create_operation: Create new Operation
 edit_operation: Edit Operation
 operation_options: Operation Options
+operation_name: Name of operation...
+operation_key: Identifier for reference...
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -1831,13 +1833,14 @@ operations:
   mail:
     name: E-Mail
     description: Send emails to other humans
-    to: Recipients
-    template: Template
+    to: To
+    to_placeholder: Add e-mail addresses and press enter...
+    template: Body
     data: Data
   notification:
     name: Notification
     description: Send a notification to someone
-    recipient: Recipient
+    recipient: Users
     message: Message
   read:
     name: Read
@@ -1845,19 +1848,21 @@ operations:
     mode:
       field: Mode
       one: One Item
-      many: Many Items
+      many: Multiple Items
       query: Items by Query
-    key: Ids
+    key: IDs
     query: Query
   request:
     name: Request
     description: Make a request to an url
-    url: Url
+    url: URL
     url_placeholder: https://example.com/example
     method: Method
     data: Data
     headers: Headers
     header: Header
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
   sleep:
     name: Sleep
     description: Wait for a given amount of milliseconds

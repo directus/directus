@@ -13,21 +13,28 @@ export default defineOperationApp({
 	`,
 	options: [
 		{
-			field: 'subject',
-			name: '$t:subject',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'input',
-			},
-		},
-		{
 			field: 'to',
 			name: '$t:operations.mail.to',
 			type: 'string',
 			meta: {
-				width: 'half',
+				width: 'full',
 				interface: 'tags',
+				options: {
+					placeholder: '$t:operations.mail.to_placeholder',
+					iconRight: 'alternate_email',
+				},
+			},
+		},
+		{
+			field: 'subject',
+			name: '$t:subject',
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'input',
+				options: {
+					iconRight: 'title',
+				},
 			},
 		},
 		{

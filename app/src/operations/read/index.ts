@@ -53,6 +53,9 @@ export default defineOperationApp({
 			meta: {
 				width: 'full',
 				interface: 'tags',
+				options: {
+					iconRight: 'vpn_key',
+				},
 			},
 		},
 		{

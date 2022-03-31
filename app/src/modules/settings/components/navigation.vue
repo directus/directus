@@ -69,7 +69,7 @@ export default defineComponent({
 				to: `/settings/webhooks`,
 			},
 			{
-				icon: 'account_tree',
+				icon: 'bolt',
 				name: t('settings_flows'),
 				to: `/settings/flows`,
 			},

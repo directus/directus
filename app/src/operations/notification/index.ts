@@ -12,21 +12,27 @@ export default defineOperationApp({
 	`,
 	options: [
 		{
-			field: 'subject',
-			name: '$t:subject',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'input',
-			},
-		},
-		{
 			field: 'recipient',
 			name: '$t:operations.notification.recipient',
 			type: 'string',
 			meta: {
-				width: 'half',
+				width: 'full',
 				interface: 'input',
+				options: {
+					iconRight: 'people_alt',
+				},
+			},
+		},
+		{
+			field: 'subject',
+			name: '$t:title',
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'input',
+				options: {
+					iconRight: 'title',
+				},
 			},
 		},
 		{
