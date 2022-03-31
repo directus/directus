@@ -184,6 +184,10 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+functions:
+  year: साल
+  month: महीना
+  count: गिनती
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
