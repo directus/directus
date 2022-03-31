@@ -179,25 +179,25 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_gt') {
-			schema[key] = Number.isSafeInteger(Number(compareValue))
+			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
 				? getNumberSchema().greater(Number(compareValue))
 				: getDateSchema().greater(compareValue);
 		}
 
 		if (operator === '_gte') {
-			schema[key] = Number.isSafeInteger(Number(compareValue))
+			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
 				? getNumberSchema().min(Number(compareValue))
 				: getDateSchema().min(compareValue);
 		}
 
 		if (operator === '_lt') {
-			schema[key] = Number.isSafeInteger(Number(compareValue))
+			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
 				? getNumberSchema().less(Number(compareValue))
 				: getDateSchema().less(compareValue);
 		}
 
 		if (operator === '_lte') {
-			schema[key] = Number.isSafeInteger(Number(compareValue))
+			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
 				? getNumberSchema().max(Number(compareValue))
 				: getDateSchema().max(compareValue);
 		}
@@ -219,7 +219,7 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_between') {
-			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+			if (compareValue.every((value: any) => Number.isSafeInteger(Number(value instanceof Date ? NaN : value)))) {
 				const values = compareValue as [number, number];
 				schema[key] = getNumberSchema().greater(values[0]).less(values[1]);
 			} else {
@@ -229,7 +229,7 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_nbetween') {
-			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+			if (compareValue.every((value: any) => Number.isSafeInteger(Number(value instanceof Date ? NaN : value)))) {
 				const values = compareValue as [number, number];
 				schema[key] = getNumberSchema().less(values[0]).greater(values[1]);
 			} else {
