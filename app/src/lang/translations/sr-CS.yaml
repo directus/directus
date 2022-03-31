@@ -63,7 +63,6 @@ recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
 unarchive_confirm: Da li ste sigurni da želite da vratite iz arhive ovu stavku?
 nested_files_folders_will_be_moved: Ugnježđeni fajlovi i fascikle će biti pomjereni na jedan nivo iznad.
-unknown_validation_errors: 'Došlo je do greške u validaciji kod sljedećih sakrivenih polja:'
 validationError:
   eq: Vrijednost treba biti {valid}
   neq: Vrijednost ne može biti {invalid}
@@ -226,10 +225,7 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
-export_data: Izvoz Podataka
 format: Format
-use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
-export_collection: 'Izvoz {collection}'
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
@@ -988,8 +984,6 @@ interfaces:
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
     box: Blok / Linijski
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   map:
     zoom: Uvеćanjе
   presentation-notice:
@@ -1029,7 +1023,6 @@ interfaces:
     auto_formatter: Koristi automatski format naslova
     alphabetize: Po abecedi
     alphabetize_label: Abecedni red
-    add_tags: Dodaj tagove...
   input:
     input: Unos
     description: Ručno unesite vrijednost
@@ -1074,8 +1067,6 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.
@@ -1191,7 +1182,6 @@ layouts:
     subtitle: Pod naslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno

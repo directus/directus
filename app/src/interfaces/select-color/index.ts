@@ -27,7 +27,7 @@ export default defineInterface({
 		{
 			field: 'presets',
 			name: '$t:interfaces.select-color.preset_colors',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'list',
@@ -40,7 +40,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:name',
 							meta: {
-								interface: 'input',
+								interface: 'system-input-translated-string',
 								width: 'half',
 								options: {
 									placeholder: '$t:interfaces.select-color.name_placeholder',

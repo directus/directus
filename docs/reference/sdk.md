@@ -21,7 +21,7 @@ const directus = new Directus('http://directus.example.com');
 
 async function start() {
 	// We don't need to authenticate if data is public
-	const publicData = await directus.items('public').readMany({ meta: 'total_count' });
+	const publicData = await directus.items('public').readByQuery({ meta: 'total_count' });
 
 	console.log({
 		items: publicData.data,
@@ -55,7 +55,7 @@ async function start() {
 	}
 
 	// After authentication, we can fetch the private data in case the user has access to it
-	const privateData = await directus.items('privateData').readMany({ meta: 'total_count' });
+	const privateData = await directus.items('privateData').readByQuery({ meta: 'total_count' });
 
 	console.log({
 		items: privateData.data,
@@ -402,8 +402,6 @@ again.
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#options.storage.prefix) for each
 one.
 
-When using
-
 ## Items
 
 You can get an instance of the item handler by providing the collection (and type, in the case of TypeScript) to the
@@ -478,12 +476,6 @@ await articles.createMany([
 ]);
 ```
 
-### Read All
-
-```js
-await articles.readMany();
-```
-
 ### Read By Query
 
 ```js
@@ -497,7 +489,18 @@ await articles.readByQuery({
 });
 ```
 
-### Read By Primary Key(s)
+### Read All
+
+```js
+await articles.readByQuery({
+	// By default API limits results to 100.
+	// With -1, it will return all results, but it may lead to performance degradation
+	// for large result sets.
+	limit: -1,
+});
+```
+
+### Read Single Item
 
 ```js
 await articles.readOne(15);
@@ -506,7 +509,45 @@ await articles.readOne(15);
 Supports optional query:
 
 ```js
-await articles.readOne(15, { fields: ['title'] });
+await articles.readOne(15, {
+	fields: ['title'],
+});
+```
+
+### Read Multiple Items
+
+```js
+await articles.readMany([15, 16, 17]);
+```
+
+Supports optional query:
+
+```js
+await articles.readMany([15, 16, 17], {
+	fields: ['title'],
+});
+```
+
+### Update Single Item
+
+```js
+await articles.updateOne(15, {
+	title: 'This articles now has a different title',
+});
+```
+
+Supports optional query:
+
+```js
+await articles.updateOne(
+	42,
+	{
+		title: 'This articles now has a similar title',
+	},
+	{
+		fields: ['title'],
+	}
+);
 ```
 
 ### Update Multiple Items

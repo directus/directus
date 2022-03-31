@@ -1,10 +1,9 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
+import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Relation, RelationMeta, SchemaOverview } from '../types';
-import { Aggregate, Filter, LogicalFilterAND, Query } from '@directus/shared/types';
+import { Aggregate, Filter, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
@@ -65,30 +64,7 @@ export default function applyQuery(
 		applyAggregate(dbQuery, query.aggregate, collection);
 	}
 
-	if (query.union && query.union[1].length > 0) {
-		const [field, keys] = query.union as [string, (string | number)[]];
-
-		const queries = keys.map((key) => {
-			const unionFilter = { [field]: { _eq: key } } as Filter;
-			let filter: Filter | null | undefined = cloneDeep(query.filter);
-
-			if (filter) {
-				if ('_and' in filter) {
-					(filter as LogicalFilterAND)._and.push(unionFilter);
-				} else {
-					filter = {
-						_and: [filter, unionFilter],
-					} as LogicalFilterAND;
-				}
-			} else {
-				filter = unionFilter;
-			}
-
-			return knex.select('*').from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
-		});
-
-		dbQuery = knex.unionAll(queries);
-	} else if (query.filter) {
+	if (query.filter) {
 		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
 	}
 
@@ -298,7 +274,7 @@ export function applyFilter(
 					);
 				}
 
-				if (relationType === 'm2o' || subQuery === true) {
+				if (relationType === 'm2o' || subQuery === true || (relationType === 'o2m' && parentAlias !== undefined)) {
 					let parent: string;
 
 					if (relationType === 'm2o') {
@@ -371,7 +347,7 @@ export function applyFilter(
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
-			} else if (subQuery === false) {
+			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
 
 				let pkField: Knex.Raw<any> | string = `${collection}.${

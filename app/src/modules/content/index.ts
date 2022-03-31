@@ -10,6 +10,7 @@ import { useCollectionsStore } from '@/stores';
 import { Collection } from '@directus/shared/types';
 import { orderBy, isNil } from 'lodash';
 import { useNavigation } from './composables/use-navigation';
+import useLocalStorage from '@/composables/use-local-storage';
 import { ref } from 'vue';
 
 const checkForSystem: NavigationGuard = (to, from) => {
@@ -88,6 +89,14 @@ export default defineModule({
 					}),
 					['meta.sort', 'collection']
 				);
+
+				const { data } = useLocalStorage('last-accessed-collection');
+				if (
+					data.value &&
+					collectionsStore.visibleCollections.find((visibleCollection) => visibleCollection.collection === data.value)
+				) {
+					return `/content/${data.value}`;
+				}
 
 				let firstCollection = findFirst(rootCollections);
 

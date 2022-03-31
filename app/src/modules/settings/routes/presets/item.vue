@@ -31,10 +31,11 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							:disabled="preset === null || id === '+'"
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" />
 						</v-button>
 					</template>
 
@@ -141,11 +142,11 @@ import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 import { isEqual } from 'lodash';
 
 type FormattedPreset = {
@@ -205,25 +206,7 @@ export default defineComponent({
 			if (hasEdits.value) save();
 		});
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -246,7 +229,6 @@ export default defineComponent({
 			confirmDelete,
 			updateFilters,
 			search,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
@@ -571,17 +553,15 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .preset-item {
@@ -600,9 +580,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--warning);
-	--sidebar-detail-color: var(--warning);
-	--sidebar-detail-color-active: var(--warning);
+	--sidebar-detail-icon-color: var(--primary);
+	--sidebar-detail-color: var(--primary);
+	--sidebar-detail-color-active: var(--primary);
 	--form-vertical-gap: 24px;
 
 	display: contents;

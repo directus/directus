@@ -1,8 +1,8 @@
-import { defineDisplay } from '@directus/shared/utils';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
 import DisplayTranslations from './translations.vue';
-import { useFieldsStore, useRelationsStore } from '@/stores';
+import { useFieldsStore } from '@/stores';
+import { useRelationsStore } from '@/stores';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 type Options = {
 	template: string;

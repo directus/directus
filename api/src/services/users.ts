@@ -6,9 +6,8 @@ import env from '../env';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview, MutationOptions } from '../types';
-import { Query } from '@directus/shared/types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
+import { Query, SchemaOverview, Accountability } from '@directus/shared/types';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
 import { Url } from '../utils/url';
@@ -325,7 +324,9 @@ export class UsersService extends ItemsService {
 
 		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
-		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
+		const acceptURL = url
+			? new Url(url).setQuery('token', token).toString()
+			: new Url(env.PUBLIC_URL).addPath('admin', 'reset-password').setQuery('token', token);
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({

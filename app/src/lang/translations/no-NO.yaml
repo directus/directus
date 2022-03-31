@@ -110,7 +110,6 @@ recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
-unknown_validation_errors: 'Det oppstod valideringsfeil for følgende skjulte felter:'
 validationError:
   eq: Verdien må være {valid}
   neq: Verdien kan ikke være {invalid}
@@ -286,10 +285,8 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
-export_data: Eksporter data
+label_import: Importer
 format: Format
-use_current_filters_settings: Bruk gjeldende filtre og innstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Siste side
 last_access: Siste tilgang
 fill_template: Fyll med malverdi
@@ -721,7 +718,6 @@ layouts:
     subtitle: Undertittel
   tabular:
     tabular: Tabell
-    fields: Felter
     spacing: Mellomrom
     comfortable: Komfortabel
     compact: Kompakt

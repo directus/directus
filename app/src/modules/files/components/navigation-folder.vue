@@ -57,7 +57,7 @@
 						<v-text-overflow :text="t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item clickable @click="deleteActive = true">
+				<v-list-item class="danger" clickable @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
@@ -118,7 +118,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
 import useFolders, { Folder } from '@/composables/use-folders';
 import api from '@/api';
-import FolderPicker from './folder-picker.vue';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -286,3 +286,11 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style scoped>
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
+}
+</style>

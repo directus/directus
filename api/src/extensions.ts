@@ -1,6 +1,16 @@
 import express, { Router } from 'express';
 import path from 'path';
-import { AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
+import {
+	ActionHandler,
+	AppExtensionType,
+	EndpointConfig,
+	Extension,
+	ExtensionType,
+	FilterHandler,
+	HookConfig,
+	InitHandler,
+	ScheduleHandler,
+} from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntry,
@@ -22,15 +32,12 @@ import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
-import { HookConfig, EndpointConfig, FilterHandler, ActionHandler, InitHandler, ScheduleHandler } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
 import { schedule, ScheduledTask, validate } from 'node-cron';
 import { rollup } from 'rollup';
-// @TODO Remove this once a new version of @rollup/plugin-virtual has been released
-// @ts-expect-error
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
@@ -199,7 +206,12 @@ class ExtensionManager {
 			logger.info('Watching extensions for changes...');
 
 			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
-				path.resolve(env.EXTENSIONS_PATH, pluralize(type))
+				path.posix.join(
+					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
+					pluralize(type),
+					'*',
+					'index.js'
+				)
 			);
 
 			this.watcher = chokidar.watch([path.resolve('.', 'package.json'), ...localExtensionPaths], {
@@ -257,17 +269,22 @@ class ExtensionManager {
 		for (const extensionType of APP_EXTENSION_TYPES) {
 			const entry = generateExtensionsEntry(extensionType, this.extensions);
 
-			const bundle = await rollup({
-				input: 'entry',
-				external: Object.values(sharedDepsMapping),
-				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry }), alias({ entries: internalImports })],
-			});
-			const { output } = await bundle.generate({ format: 'es', compact: true });
+			try {
+				const bundle = await rollup({
+					input: 'entry',
+					external: Object.values(sharedDepsMapping),
+					makeAbsoluteExternalsRelative: false,
+					plugins: [virtual({ entry }), alias({ entries: internalImports })],
+				});
+				const { output } = await bundle.generate({ format: 'es', compact: true });
 
-			bundles[extensionType] = output[0].code;
+				bundles[extensionType] = output[0].code;
 
-			await bundle.close();
+				await bundle.close();
+			} catch (error: any) {
+				logger.warn(`Couldn't bundle App extensions`);
+				logger.warn(error);
+			}
 		}
 
 		return bundles;

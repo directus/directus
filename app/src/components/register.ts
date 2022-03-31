@@ -1,4 +1,4 @@
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
 import SidebarDetail from '@/views/private/components/sidebar-detail/';
@@ -23,8 +23,8 @@ import VDivider from './v-divider';
 import VDrawer from './v-drawer/';
 import VError from './v-error';
 import VFancySelect from './v-fancy-select';
-import VFieldSelect from './v-field-select';
 import VFieldTemplate from './v-field-template';
+import VFieldList from './v-field-list/v-field-list.vue';
 import VForm from './v-form';
 import VHover from './v-hover/';
 import VHighlight from './v-highlight.vue';
@@ -72,7 +72,7 @@ export function registerComponents(app: App): void {
 	app.component('VError', VError);
 	app.component('VFancySelect', VFancySelect);
 	app.component('VFieldTemplate', VFieldTemplate);
-	app.component('VFieldSelect', VFieldSelect);
+	app.component('VFieldList', VFieldList);
 	app.component('VForm', VForm);
 	app.component('VHover', VHover);
 	app.component('VHighlight', VHighlight);

@@ -1,5 +1,5 @@
-import { Permission, Accountability } from '@directus/shared/types';
-import { deepMap, parseFilter } from '@directus/shared/utils';
+import { Permission, Accountability, SchemaOverview } from '@directus/shared/types';
+import { deepMap, parseFilter, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
@@ -7,10 +7,9 @@ import { mergePermissions } from '../utils/merge-permissions';
 import { mergePermissionsForShare } from './merge-permissions-for-share';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
-import { getCache } from '../cache';
+import { getCache, setSystemCache } from '../cache';
 import hash from 'object-hash';
 import env from '../env';
-import { SchemaOverview } from '../types';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
@@ -93,7 +92,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			: {};
 
 		if (env.CACHE_PERMISSIONS !== false) {
-			await systemCache.set(cacheKey, { permissions, containDynamicData });
+			await setSystemCache(cacheKey, { permissions, containDynamicData });
 
 			if (containDynamicData && env.CACHE_ENABLED !== false) {
 				await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
@@ -194,7 +193,7 @@ function processPermissions(
 	return permissions.map((permission) => {
 		permission.permissions = parseFilter(permission.permissions, accountability!, filterContext);
 		permission.validation = parseFilter(permission.validation, accountability!, filterContext);
-		permission.presets = parseFilter(permission.presets, accountability!, filterContext);
+		permission.presets = parsePreset(permission.presets, accountability!, filterContext);
 
 		return permission;
 	});

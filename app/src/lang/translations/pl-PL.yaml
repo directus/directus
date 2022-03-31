@@ -28,6 +28,7 @@ draft: Szkic
 archived: Zarchiwizowany
 modules: Moduły
 module_bar: Pasek modułu
+reset_width: Zresetuj szerokość
 tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
@@ -40,6 +41,7 @@ duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
 group: Grupa
+export_items: Eksportuj elementy
 and: I
 or: Lub
 fill_width: Szerokość wypełnienia
@@ -67,6 +69,12 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
+create_translation_string: Utwórz tłumaczenia
+translation_string_key_placeholder: Klucz tłumaczenia...
+translation_string_translations_placeholder: Dodaj nowe tłumaczenie
+edit_translation_string: Edytuj tłumaczenia
+delete_translation_string_copy: >-
+  Czy na pewno chcesz usunąć tłumaczenia "{key}"? Tej akcji nie można cofnąć.
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
@@ -114,7 +122,7 @@ recommended_defaults: Zalecane ustawienia domyślne
 unarchive: Przywróć z archiwum
 unarchive_confirm: Jesteś pewien, że chcesz przywrócić ten element?
 nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
-unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
+validation_errors_notice: 'Następujące pola mają nieprawidłowe wartości:'
 validationError:
   eq: Wartość musi być {valid}
   neq: Wartość nie może być {invalid}
@@ -164,6 +172,7 @@ revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
 revision_post_update: Oto jak wyglądał ten element po aktualizacji.
 changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
+hide_field: Ukryj pole
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
@@ -172,6 +181,7 @@ field_create_success: 'Utworzono pole: "{field}"'
 field_update_success: 'Zaktualizowano pole: "{field}"'
 duplicate_where_to: Gdzie chcesz zduplikować to pole?
 language: Język
+language_placeholder: Wybierz język...
 aggregate_function: Funkcja agregacji
 aggregate_precision: Precyzja agregacji
 group_aggregation: Agregacja grup
@@ -273,6 +283,7 @@ note: Notatka
 enter_a_value: Wprowadź wartość...
 enter_a_placeholder: Wprowadź tekst zastępczy...
 length: Długość
+soft_length: Limit miękki
 precision_scale: Precyzja i Skala
 readonly: Tylko do odczytu
 unique: Unikalne
@@ -283,11 +294,18 @@ foreign_key: Klucz obcy
 finish_setup: Zakończ konfigurację
 dismiss: Anuluj
 raw_value: Wartość surowa
+copy_raw_value: Kopiuj wartość surową
+copy_raw_value_success: Skopiowano
+copy_raw_value_fail: Kopiowanie nie powiodło się
+paste_raw_value: Wklej wartość surową
+paste_raw_value_success: Wklejony
+paste_raw_value_fail: Wklejanie nie powiodło się
+view_raw_value: Zobacz wartość surową
 edit_raw_value: Edytuj wartość surową
 enter_raw_value: Wprowadź surową wartość...
 clear_value: Wyczyść wartość
 clear_changes: Wyczyść zmiany
-reset_to_default: Przywróć do domyślnych
+reset_to_default: Przywróć domyślne
 undo_changes: Cofnij zmiany
 notifications: Powiadomienia
 show_all_activity: Pokaż wszystkie aktywności
@@ -319,10 +337,15 @@ related_collection: Powiązana kolekcja
 related_collections: Powiązane kolekcje
 translations_collection: Kolekcja tłumaczeń
 languages_collection: Kolekcja języków
-export_data: Eksportuj dane
+import_data_input_placeholder: CSV lub JSON...
+import_data_button: Rozpocznij import
+import_data_indeterminate: Importowanie danych...
+import_data_success: Pomyślnie zaimportowano dane z {filename}
+import_data_error: Struktura danych tego pliku nie pasuje do kolekcji.
+label_import: Importuj
+label_export: Eksportuj
+import_export: Import / Eksport
 format: Formatowanie
-use_current_filters_settings: Użyj obecnych filtrów i ustawień
-export_collection: 'Eksportuj {collection}'
 last_page: Ostatnia strona
 last_access: Ostatni dostęp
 fill_template: Wypełnij wartością szablonu
@@ -338,9 +361,12 @@ interface_label: Interfejs
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
+delete_share: Usuń udostępnienie
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'GG:mm:ss'
+date-fns_time_no_seconds_24hour: 'GG:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -391,6 +417,15 @@ replace_from_library: Zastąp plik z biblioteki
 replace_from_url: Zastąp plik z URL
 no_file_selected: Nie wybrano pliku
 download_file: Pobierz plik
+open_file_in_tab: Otwórz plik w nowej karcie
+start_export: Rozpocznij eksport
+not_available_for_local_downloads: Niedostępne dla lokalnych plików
+exporting_all_items_in_collection: Eksportowanie wszystkich {total} elementów w {collection}.
+exporting_limited_items_in_collection: Eksportowanie {limit} z {total} przedmiotów w {collection}.
+exporting_no_items_to_export: Brak elementów do wyeksportowania. Dostosuj konfigurację eksportu poniżej.
+exporting_download_hint: Po zakończeniu, ten plik {format} zostanie automatycznie pobrany na twoje urządzenie.
+exporting_batch_hint: Ten eksport będzie przetwarzany w partiach, a po ukończeniu plik {format} zostanie zapisany do biblioteki plików.
+exporting_batch_hint_forced: Ze względu na dużą liczbę produktów, wywóz ten musi być przetwarzany w partiach, i po zakończeniu, plik {format} zostanie zapisany do biblioteki plików.
 collection_key: Klucz kolekcji
 name: Nazwa
 primary_key_field: Pole klucza podstawowego
@@ -518,6 +553,9 @@ errors:
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
   ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
+  VALUE_TOO_LONG: Wartość jest zbyt długa
+  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
+  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
@@ -548,12 +586,16 @@ update_collection_success: Zaktualizowana kolekcja
 delete_collection_success: Usunięta kolekcja
 make_collection_visible: Spraw, aby kolekcja była widoczna
 make_collection_hidden: Spraw, aby kolekcja była ukryta
+make_folder_visible: Uwidocznij folder
+make_folder_hidden: Ukryj folder
+goto_collection_content: Zobacz zawartość
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
 one_filtered_item: '1 przefiltrowany element'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć tę kolekcję? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. Ta akcja jest trwała.
+delete_folder_are_you_sure: Czy na pewno chcesz usunąć ten folder? Zagnieżdżone foldery i kolekcje zostaną przeniesione na najwyższy poziom.
 collections_shown: Wyświetlane kolekcje
 visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
@@ -647,6 +689,7 @@ no_results_copy: Dostosuj lub wyczyść filtry wyszukiwania, aby zobaczyć wynik
 clear_filters: Wyczyść filtry
 saves_automatically: Zapisuje automatycznie
 role: Rola
+edit_role: Edytuj rolę
 rule: Reguła
 user: Użytkownik
 no_presets: Brak szablonów
@@ -689,7 +732,11 @@ no_data: Brak danych
 create_dashboard: Utwórz pulpit
 dashboard_name: Nazwa Pulpitu
 full_screen: Pełny ekran
+full_text_search: Wyszukiwanie pełnotekstowe
 edit_panels: Edytuj pulpit
+center_align: Wyśrodkuj
+left_align: Wyrównaj do lewej
+right_align: Wyrównaj do prawej
 fit_to_screen: Dopasuj do ekranu
 image_url: Adres Url obrazu
 alt_text: Tekst alternatywny
@@ -713,6 +760,8 @@ unlimited: Nielimitowany
 open_link_in: Otwórz link w
 new_tab: Nowa karta
 current_tab: Aktualna karta
+save_image: Zapisz obraz
+save_media: Zapisz media
 wysiwyg_options:
   aligncenter: Wyśrodkuj
   alignjustify: Wyjustuj
@@ -780,6 +829,7 @@ settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
+settings_translation_strings: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 select: Wybierz...
@@ -825,6 +875,7 @@ page_help_settings_presets_item: >-
   **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
 page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
+page_help_settings_translation_strings_collection: '**Przeglądaj Tłumaczenie** — Wyświetla wszystkie ciągi tłumaczeń w projekcie.'
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
@@ -863,6 +914,7 @@ directus_collection:
   directus_roles: Grupy uprawnień dla użytkowników systemu
   directus_sessions: Informacje o sesji użytkownika
   directus_settings: Opcje konfiguracji projektu
+  directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
   directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
 fields:
@@ -947,6 +999,7 @@ fields:
     external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
+    email_notifications: Powiadomienia e-mail
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1157,6 +1210,8 @@ share_access_not_found: Ta współdzielona strona nie istnieje lub przekroczyła
 share_access_not_found_desc: Skontaktuj się z autoryzowanym użytkownikiem tego projektu, aby poprosić o dostęp.
 share_access_not_found_title: Nieznana strona udostępniania
 share_copy_link: Kopiuj link
+share_copy_link_success: Link skopiowany
+share_copy_link_error: Nie można skopiować linku
 share_send_link: Wyślij link
 relational_triggers: Wyzwalacze relacji
 referential_action_field_label_m2o: Po usunięciu {collection}...
@@ -1189,12 +1244,23 @@ file: Plik
 file_library: Biblioteka plików
 forgot_password: Zapomniałem hasła
 hidden: Ukryte
+hidden_in_group: Ukryte w {group}
 icon: Ikona
 info: Informacja
 normal: Normalny
 success: Sukces
 warning: Ostrzeżenie
 danger: Niebezpieczeństwo
+colors:
+  purple: Fioletowy
+  blue: Niebieski
+  green: Zielony
+  yellow: Żółty
+  orange: Pomarańczowy
+  red: Czerwony
+  black: Czarny
+  gray: Szary
+  white: Biały
 junction_collection: Kolekcja Junction
 latency: Opóźnienie
 login: Zaloguj się
@@ -1223,6 +1289,9 @@ sign_out: Wyloguj się
 sign_out_confirm: Na pewno chcesz się wylogować?
 something_went_wrong: Coś poszło nie tak.
 sort_direction: Kierunek sortowania
+export_location: Eksportuj lokalizację
+export_started: Eksport rozpoczęty
+export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy będzie gotowy do pobrania.
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
@@ -1249,6 +1318,8 @@ interfaces:
     no_rules: Brak skonfigurowanych reguł
     change_value: Kliknij, aby zmienić wartość
     placeholder: Przeciągnij tutaj reguły
+  fields:
+    name: Pola
   group-accordion:
     name: Akordion
     description: Wyświetlaj pola lub grupy jako sekcje akordionu
@@ -1308,6 +1379,7 @@ interfaces:
     include_seconds: Uwzględnij sekundy
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
+    placeholder: Wybierz datę...
   system-display-template:
     display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
@@ -1380,8 +1452,8 @@ interfaces:
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   map:
     map: Mapa
     description: Wybierz lokalizację na mapie
@@ -1440,7 +1512,7 @@ interfaces:
     auto_formatter: Użyj automatycznego formatowania
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
-    add_tags: Dodaj tagi...
+    add_tags: Dodaj tag i naciśnij Enter...
   input:
     input: Wprowadź
     description: Ręcznie wprowadź wartość
@@ -1458,6 +1530,11 @@ interfaces:
   input-multiline:
     textarea: Obszar tekstowy
     description: Wprowadź wieloliniowy zwykły tekst
+  input-translated-string:
+    input-translated-string: Przetłumaczone ciągi
+    description: Wybierz lub dodaj tłumaczenia
+    search_placeholder: Szukaj...
+    new_translation_string: Nowe tłumaczenia
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
@@ -1488,8 +1565,8 @@ interfaces:
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+    imageToken: Statyczny token dostępu
+    imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.
@@ -1558,15 +1635,19 @@ displays:
     format: Formatowanie
     format_label: Automatyczny format
     font: Czcionka
+    font_sans_serif: Bezszeryfowa
     font_serif: Szeryfowa
     font_monospace: Monospace
     bold: Pogrubiony
     bold_label: Ustaw styl pogrubiony
     italic: Kursywa
+    italic_label: Użyj stylu italic
     prefix: Przedrostek
     prefix_label: Poprzedni tekst
     suffix: Przyrostek
+    suffix_label: Tekst dodany
     color: Kolor
+    background: Tło
     icon: Ikona
     border: Krawędź
     border_label: Pokaż obramowanie
@@ -1628,7 +1709,6 @@ layouts:
     subtitle: Subtytuł
   tabular:
     tabular: Tabela
-    fields: Pola
     spacing: Odstępy
     comfortable: Wygodny
     compact: Kompaktowy

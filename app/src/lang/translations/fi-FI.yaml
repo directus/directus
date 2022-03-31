@@ -109,7 +109,6 @@ recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirretään yksi taso ylöspäin.
-unknown_validation_errors: 'Validointivirheitä seuraavissa piilotetuissa kentissä:'
 validationError:
   eq: Arvon on oltava {valid}
   neq: Arvo ei voi olla {invalid}
@@ -311,10 +310,8 @@ related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
 translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
-export_data: Vie tiedot
+label_import: Tuo
 format: Muoto
-use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
-export_collection: 'Vie {collection}'
 last_page: Viimeinen sivu
 last_access: Viimeksi käytetty
 fill_template: Täytä mallin arvolla
@@ -1305,8 +1302,6 @@ interfaces:
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
     box: Lohko / rivillä
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   map:
     map: Kartta
     description: Valitse sijainti kartalla
@@ -1365,7 +1360,6 @@ interfaces:
     auto_formatter: Käytä otsikon automaattimuotoilua
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
-    add_tags: Lisää tunnisteita...
   input:
     input: Syöte
     description: Manuaalisesti syötetty arvo
@@ -1413,8 +1407,6 @@ interfaces:
     custom_formats: Mukautetut muodot
     options_override: Valintojen ohitus
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
@@ -1545,7 +1537,6 @@ layouts:
     subtitle: Alaotsikko
   tabular:
     tabular: Taulukko
-    fields: Kentät
     spacing: Väli
     comfortable: Mukava
     compact: Kompakti
