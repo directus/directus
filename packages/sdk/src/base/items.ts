@@ -15,8 +15,8 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 
 	async readOne(id: ID, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
 		const response = await this.transport.get<T>(`${this.endpoint}/${encodeURI(id as string)}`, {
-			...options?.requestOptions,
 			params: query,
+			...options?.requestOptions,
 		});
 
 		return response.data as T;
@@ -28,7 +28,6 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		const primaryKeyField = collectionFields.data?.find((field: any) => field.schema.is_primary_key === true);
 
 		const { data, meta } = await this.transport.get<T[]>(`${this.endpoint}`, {
-			...options?.requestOptions,
 			params: {
 				filter: {
 					[primaryKeyField!.field]: { _in: ids },
@@ -37,6 +36,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 				sort: query?.sort || primaryKeyField!.field,
 				...query,
 			},
+			...options?.requestOptions,
 		});
 
 		return {
@@ -47,8 +47,8 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 
 	async readByQuery(query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>> {
 		const { data, meta } = await this.transport.get<T[]>(`${this.endpoint}`, {
-			...options?.requestOptions,
 			params: query,
+			...options?.requestOptions,
 		});
 
 		return {
@@ -60,24 +60,24 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 	async createOne(item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
 		return (
 			await this.transport.post<T>(`${this.endpoint}`, item, {
-				...options?.requestOptions,
 				params: query,
+				...options?.requestOptions,
 			})
 		).data;
 	}
 
 	async createMany(items: PartialItem<T>[], query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>> {
 		return await this.transport.post<PartialItem<T>[]>(`${this.endpoint}`, items, {
-			...options?.requestOptions,
 			params: query,
+			...options?.requestOptions,
 		});
 	}
 
 	async updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
 		return (
 			await this.transport.patch<PartialItem<T>>(`${this.endpoint}/${encodeURI(id as string)}`, item, {
-				...options?.requestOptions,
 				params: query,
+				...options?.requestOptions,
 			})
 		).data;
 	}
@@ -95,8 +95,8 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 				data,
 			},
 			{
-				...options?.requestOptions,
 				params: query,
+				...options?.requestOptions,
 			}
 		);
 	}
@@ -114,8 +114,8 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 				data,
 			},
 			{
-				...options?.requestOptions,
 				params: query,
+				...options?.requestOptions,
 			}
 		);
 	}
