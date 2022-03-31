@@ -39,6 +39,11 @@
 			v-md="currentOperation?.preview(panel)"
 			class="block"
 		></div>
+		<component
+			:is="`operation-${currentOperation.id}`"
+			v-else-if="currentOperation && 'id' in currentOperation"
+			:options="currentOperation"
+		/>
 	</v-workspace-panel>
 </template>
 

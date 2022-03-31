@@ -36,12 +36,17 @@
 			</v-notice>
 
 			<extension-options
-				v-if="operationType && selectedOperation"
+				v-if="operationType && selectedOperation && operationOptions"
 				v-model="options"
 				:extension="operationType"
 				:options="operationOptions"
 				type="operation"
 			></extension-options>
+			<component
+				:is="`operation-options-${operationType}`"
+				v-else-if="operationType && selectedOperation"
+				:options="operation"
+			/>
 		</div>
 	</v-drawer>
 </template>
