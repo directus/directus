@@ -349,6 +349,10 @@ interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
+functions:
+  year: Ano
+  month: Mês
+  count: Contagem
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
