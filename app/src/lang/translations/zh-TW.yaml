@@ -237,6 +237,10 @@ interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
+functions:
+  year: 年
+  month: 月
+  count: 數量
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 minutes: 分
