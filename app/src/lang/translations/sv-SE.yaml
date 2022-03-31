@@ -323,6 +323,10 @@ interface_label: Gränssnitt
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
+functions:
+  year: År
+  month: Månad
+  count: Antal
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
