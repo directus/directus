@@ -5,7 +5,11 @@ export default defineOperationApp({
 	icon: 'cloud_download',
 	name: '$t:operations.request.name',
 	description: '$t:operations.request.description',
-	preview: (options) => `# ${options.name}`,
+	preview: ({ name, options }) => `
+# ${name}
+**$t:operations.request.url**: ${options.url}\n
+**$t:operations.request.method**: ${options.method}
+	`,
 	options: [
 		{
 			field: 'url',

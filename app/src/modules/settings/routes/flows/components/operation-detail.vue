@@ -57,6 +57,7 @@ import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { computed, ref, watch } from 'vue';
 import { getOperation, getOperations } from '@/operations';
+import { translate } from '@/utils/translate-object-values';
 
 const props = withDefaults(
 	defineProps<{
@@ -98,7 +99,7 @@ const displayOperations = computed(() => {
 
 const operationOptions = computed(() => {
 	if (typeof selectedOperation.value?.options === 'function') {
-		return selectedOperation.value.options(options.value);
+		return translate(selectedOperation.value.options(options.value));
 	}
 	return undefined;
 });

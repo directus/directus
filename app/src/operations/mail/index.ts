@@ -5,7 +5,12 @@ export default defineOperationApp({
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	preview: (options) => `# ${options.name}`,
+	preview: ({ name, options }) => `
+# ${name}
+**$t:subject**: ${options.subject}\n
+**$t:operations.mail.to**: ${options.to}\n
+**$t:operations.mail.template**: ${options.template}
+	`,
 	options: [
 		{
 			field: 'subject',

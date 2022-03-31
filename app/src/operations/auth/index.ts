@@ -5,7 +5,11 @@ export default defineOperationApp({
 	icon: 'lock_open',
 	name: '$t:operations.auth.name',
 	description: '$t:operations.auth.description',
-	preview: (options) => `# ${options.name}`,
+	preview: ({ name, options }) => `
+# ${name}
+**$t:collection**: ${options.collection}\n
+**$t:filter**: ${JSON.stringify(options.filter)}
+	`,
 	options: (options: Record<string, any>) => [
 		{
 			field: 'collection',

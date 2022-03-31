@@ -5,7 +5,11 @@ export default defineOperationApp({
 	icon: 'beenhere',
 	name: '$t:operations.validate.name',
 	description: '$t:operations.validate.description',
-	preview: (options) => `# ${options.name}`,
+	preview: ({ name, options }) => `
+# ${name}
+**$t:collection**: ${options.collection}\n
+**$t:item**: ${options.item}
+	`,
 	options: (options: Record<string, any>) => [
 		{
 			field: 'collection',

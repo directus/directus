@@ -5,7 +5,10 @@ export default defineOperationApp({
 	icon: 'flag',
 	name: '$t:operations.trigger.name',
 	description: '$t:operations.trigger.description',
-	preview: (options) => `# ${options.name}`,
+	preview: ({ name, options }) => `
+# ${name}
+**$t:operations.trigger.flow**: ${options.flow}
+	`,
 	options: [
 		{
 			field: 'flow',

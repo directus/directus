@@ -19,7 +19,7 @@ export interface OperationAppConfig {
 	name: string;
 	icon: string;
 	description?: string;
-	preview: (operation: Record<string, any>) => string | ComponentOptions | null;
+	preview: ((operation: Record<string, any>) => string) | ComponentOptions | null;
 	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]) | ComponentOptions | null;
 }
 

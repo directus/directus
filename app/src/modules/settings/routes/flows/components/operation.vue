@@ -36,7 +36,7 @@
 		</template>
 		<div
 			v-if="typeof currentOperation?.preview === 'function'"
-			v-md="currentOperation?.preview(panel)"
+			v-md="translate(currentOperation?.preview(panel))"
 			class="block"
 		></div>
 		<component
@@ -54,6 +54,7 @@ import { throttle } from 'lodash';
 import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
+import { translate } from '@/utils/translate-object-values';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {

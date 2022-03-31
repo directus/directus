@@ -5,7 +5,11 @@ export default defineOperationApp({
 	icon: 'notifications',
 	name: '$t:operations.notification.name',
 	description: '$t:operations.notification.description',
-	preview: (options) => `# ${options.name}`,
+	preview: ({ name, options }) => `
+# ${name}
+**$t:subject**: ${options.subject}\n
+**$t:operations.notification.message**:\n${options.message}
+	`,
 	options: [
 		{
 			field: 'subject',

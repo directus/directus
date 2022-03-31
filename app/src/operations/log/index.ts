@@ -5,9 +5,9 @@ export default defineOperationApp({
 	icon: 'print',
 	name: '$t:operations.log.name',
 	description: '$t:operations.log.description',
-	preview: (options) => `
-# ${options.name}
-**Message:** ${options.options.message}
+	preview: ({ name, options }) => `
+# ${name}
+**$t:operations.log.message:** ${options.message}
 	`,
 	options: [
 		{
