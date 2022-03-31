@@ -3,7 +3,7 @@
  */
 
 import { Blog } from './blog.d';
-import { Directus } from '../src';
+import { Directus, ItemsOptions } from '../src';
 import { test } from './utils';
 
 describe('items', function () {
@@ -308,9 +308,11 @@ describe('items', function () {
 		};
 		const headerName = 'X-Custom-Header';
 		const headerValue = 'Custom header value';
-		const customOptions = {
-			headers: {
-				[headerName]: headerValue,
+		const customOptions: ItemsOptions = {
+			requestOptions: {
+				headers: {
+					[headerName]: headerValue,
+				},
 			},
 		};
 		nock()

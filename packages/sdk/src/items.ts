@@ -87,25 +87,24 @@ export type FieldFilter<T> = {
 
 export type Filter<T> = LogicalFilter<T> | FieldFilter<T extends Array<unknown> ? T[number] : T>;
 
+export type ItemsOptions = {
+	requestOptions: TransportRequestOptions;
+};
+
 /**
  * CRUD at its finest
  */
 export interface IItems<T extends Item> {
-	createOne(item: PartialItem<T>, query?: QueryOne<T>, options?: TransportRequestOptions): Promise<OneItem<T>>;
-	createMany(items: PartialItem<T>[], query?: QueryMany<T>, options?: TransportRequestOptions): Promise<ManyItems<T>>;
+	createOne(item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>>;
+	createMany(items: PartialItem<T>[], query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
 
-	readOne(id: ID, query?: QueryOne<T>, options?: TransportRequestOptions): Promise<OneItem<T>>;
-	readMany(ids: ID[], query?: QueryMany<T>, options?: TransportRequestOptions): Promise<ManyItems<T>>;
-	readByQuery(query?: QueryMany<T>, options?: TransportRequestOptions): Promise<ManyItems<T>>;
+	readOne(id: ID, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>>;
+	readMany(ids: ID[], query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
+	readByQuery(query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
 
-	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>, options?: TransportRequestOptions): Promise<OneItem<T>>;
-	updateMany(
-		ids: ID[],
-		item: PartialItem<T>,
-		query?: QueryMany<T>,
-		options?: TransportRequestOptions
-	): Promise<ManyItems<T>>;
+	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>>;
+	updateMany(ids: ID[], item: PartialItem<T>, query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
 
-	deleteOne(id: ID, options?: TransportRequestOptions): Promise<void>;
-	deleteMany(ids: ID[], options?: TransportRequestOptions): Promise<void>;
+	deleteOne(id: ID, options?: ItemsOptions): Promise<void>;
+	deleteMany(ids: ID[], options?: ItemsOptions): Promise<void>;
 }
