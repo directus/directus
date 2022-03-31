@@ -1,4 +1,4 @@
-import { ITransport, TransportOptions } from '../transport';
+import { ITransport, TransportRequestOptions } from '../transport';
 import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items';
 import { ID, FieldType } from '../types';
 
@@ -13,7 +13,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
 	}
 
-	async readOne(id: ID, query?: QueryOne<T>, options?: TransportOptions): Promise<OneItem<T>> {
+	async readOne(id: ID, query?: QueryOne<T>, options?: TransportRequestOptions): Promise<OneItem<T>> {
 		const response = await this.transport.get<T>(`${this.endpoint}/${encodeURI(id as string)}`, {
 			...options,
 			params: query,
@@ -22,7 +22,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		return response.data as T;
 	}
 
-	async readMany(ids: ID[], query?: QueryMany<T>, options?: TransportOptions): Promise<ManyItems<T>> {
+	async readMany(ids: ID[], query?: QueryMany<T>, options?: TransportRequestOptions): Promise<ManyItems<T>> {
 		const collectionFields = await this.transport.get<FieldType[]>(`/fields/${this.collection}`);
 
 		const primaryKeyField = collectionFields.data?.find((field: any) => field.schema.is_primary_key === true);
@@ -45,7 +45,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		};
 	}
 
-	async readByQuery(query?: QueryMany<T>, options?: TransportOptions): Promise<ManyItems<T>> {
+	async readByQuery(query?: QueryMany<T>, options?: TransportRequestOptions): Promise<ManyItems<T>> {
 		const { data, meta } = await this.transport.get<T[]>(`${this.endpoint}`, {
 			...options,
 			params: query,
@@ -57,7 +57,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		};
 	}
 
-	async createOne(item: PartialItem<T>, query?: QueryOne<T>, options?: TransportOptions): Promise<OneItem<T>> {
+	async createOne(item: PartialItem<T>, query?: QueryOne<T>, options?: TransportRequestOptions): Promise<OneItem<T>> {
 		return (
 			await this.transport.post<T>(`${this.endpoint}`, item, {
 				...options,
@@ -66,14 +66,23 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		).data;
 	}
 
-	async createMany(items: PartialItem<T>[], query?: QueryMany<T>, options?: TransportOptions): Promise<ManyItems<T>> {
+	async createMany(
+		items: PartialItem<T>[],
+		query?: QueryMany<T>,
+		options?: TransportRequestOptions
+	): Promise<ManyItems<T>> {
 		return await this.transport.post<PartialItem<T>[]>(`${this.endpoint}`, items, {
 			...options,
 			params: query,
 		});
 	}
 
-	async updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>, options?: TransportOptions): Promise<OneItem<T>> {
+	async updateOne(
+		id: ID,
+		item: PartialItem<T>,
+		query?: QueryOne<T>,
+		options?: TransportRequestOptions
+	): Promise<OneItem<T>> {
 		return (
 			await this.transport.patch<PartialItem<T>>(`${this.endpoint}/${encodeURI(id as string)}`, item, {
 				...options,
@@ -82,7 +91,12 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		).data;
 	}
 
-	async updateMany(ids: ID[], data: PartialItem<T>, query?: QueryMany<T>, options?: TransportOptions): Promise<ManyItems<T>> {
+	async updateMany(
+		ids: ID[],
+		data: PartialItem<T>,
+		query?: QueryMany<T>,
+		options?: TransportRequestOptions
+	): Promise<ManyItems<T>> {
 		return await this.transport.patch<PartialItem<T>[]>(
 			`${this.endpoint}`,
 			{
@@ -96,7 +110,12 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		);
 	}
 
-	async updateByQuery(updateQuery: QueryMany<T>, data: PartialItem<T>, query?: QueryMany<T>, options?: TransportOptions): Promise<ManyItems<T>> {
+	async updateByQuery(
+		updateQuery: QueryMany<T>,
+		data: PartialItem<T>,
+		query?: QueryMany<T>,
+		options?: TransportRequestOptions
+	): Promise<ManyItems<T>> {
 		return await this.transport.patch<PartialItem<T>[]>(
 			`${this.endpoint}`,
 			{
@@ -110,11 +129,11 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		);
 	}
 
-	async deleteOne(id: ID, options?: TransportOptions): Promise<void> {
+	async deleteOne(id: ID, options?: TransportRequestOptions): Promise<void> {
 		await this.transport.delete(`${this.endpoint}/${encodeURI(id as string)}`, undefined, options);
 	}
 
-	async deleteMany(ids: ID[], options?: TransportOptions): Promise<void> {
+	async deleteMany(ids: ID[], options?: TransportRequestOptions): Promise<void> {
 		await this.transport.delete(`${this.endpoint}`, ids, options);
 	}
 }
