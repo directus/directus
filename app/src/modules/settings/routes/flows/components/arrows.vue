@@ -80,9 +80,9 @@ const arrows = computed(() => {
 		if (y === toY) return generatePath(Vector2.fromMany({ x, y }, { x: toX - endOffset, y: toY }));
 
 		if (x + 3 * 20 < toX) {
-			const centerX = findBestPosition(new Vector2(x, y), new Vector2(toX, toY), 'x');
+			const centerX = findBestPosition(new Vector2(x + 2 * 20, y), new Vector2(toX - 2 * 20, toY), 'x');
 			return generatePath(
-				Vector2.fromMany({ x, y }, { x: x + centerX, y }, { x: x + centerX, y: toY }, { x: toX - endOffset, y: toY })
+				Vector2.fromMany({ x, y }, { x: centerX, y }, { x: centerX, y: toY }, { x: toX - endOffset, y: toY })
 			);
 		}
 
@@ -92,8 +92,8 @@ const arrows = computed(() => {
 			Vector2.fromMany(
 				{ x, y },
 				{ x: x + offsetBox, y },
-				{ x: x + offsetBox, y: y + centerY },
-				{ x: toX - offsetBox, y: y + centerY },
+				{ x: x + offsetBox, y: centerY },
+				{ x: toX - offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: toY },
 				{ x: toX - endOffset, y: toY }
 			)
@@ -144,10 +144,10 @@ const arrows = computed(() => {
 		let pointer = Math.floor(possiblePlaces.length / 2);
 		for (let i = 0; i < possiblePlaces.length; i++) {
 			pointer += i * (i % 2 == 0 ? -1 : 1);
-			if (possiblePlaces[pointer]) return pointer * 20;
+			if (possiblePlaces[pointer]) return min[axis] + pointer * 20;
 		}
 
-		return Math.floor((to[axis] - from[axis]) / 2 / 20) * 20;
+		return from[axis] + Math.floor((to[axis] - from[axis]) / 2 / 20) * 20;
 	}
 
 	function range(min: number, max: number, step: number) {
