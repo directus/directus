@@ -351,6 +351,10 @@ today: Bugün
 yesterday: Dün
 delete_comment: Yorumu Sil
 delete_share: Paylaşımı Sil
+functions:
+  year: Yıl
+  month: Ay
+  count: Say
 date-fns_date: PPP
 date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
