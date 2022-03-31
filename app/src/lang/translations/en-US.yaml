@@ -1860,10 +1860,10 @@ operations:
     header: Header
   sleep:
     name: Sleep
-    description: Wait for a given amount of milliseconds.
+    description: Wait for a given amount of milliseconds
     milliseconds: Milliseconds
   transform:
-    name: Transform,
+    name: Transform
     description: Insert JSON into the flow
   trigger:
     name: Trigger
