@@ -365,6 +365,10 @@ today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
 delete_share: Изтриване на споделянето
+functions:
+  year: Година
+  month: Месец
+  count: Брой
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -1310,7 +1314,6 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
