@@ -38,7 +38,7 @@
 					</button>
 				</template>
 
-				<v-field-list :collection="collection" @select-field="addNode($event)">
+				<v-field-list :collection="collection" include-functions @select-field="addNode($event)">
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
 							<v-list-item-content>
@@ -54,14 +54,14 @@
 </template>
 
 <script lang="ts" setup>
-import { get, set, isEmpty, cloneDeep } from 'lodash';
+import { useFieldsStore } from '@/stores';
+import { Filter, Type } from '@directus/shared/types';
+import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Filter } from '@directus/shared/types';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
-import { getFilterOperatorsForType } from '@directus/shared/utils';
-import { useFieldsStore } from '@/stores';
 
 interface Props {
 	value?: Record<string, any>;
@@ -129,8 +129,16 @@ function addNode(key: string) {
 	if (key === '$group') {
 		innerValue.value = innerValue.value.concat({ _and: [] });
 	} else {
-		const field = fieldsStore.getField(collection.value, key)!;
-		const operator = getFilterOperatorsForType(field.type)[0];
+		let type: Type;
+
+		if (key.includes('(') && key.includes(')')) {
+			const functionName = key.split('(')[0];
+			type = getOutputTypeForFunction(functionName);
+		} else {
+			const field = fieldsStore.getField(collection.value, key)!;
+			type = field?.type || 'unknown';
+		}
+		const operator = getFilterOperatorsForType(type)[0];
 		const node = set({}, key, { ['_' + operator]: null });
 		innerValue.value = innerValue.value.concat(node);
 	}

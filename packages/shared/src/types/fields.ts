@@ -1,7 +1,7 @@
 import { Filter, FilterOperator } from './filter';
 import { DeepPartial } from './misc';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS } from '../constants';
+import { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS, FUNCTIONS } from '../constants';
 
 type Translations = {
 	language: string;
@@ -11,6 +11,8 @@ type Translations = {
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
 export type Type = typeof TYPES[number];
+
+export type FieldFunction = typeof FUNCTIONS[number];
 
 export type LocalType = typeof LOCAL_TYPES[number];
 

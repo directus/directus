@@ -16,19 +16,19 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-menu placement="bottom-start" show-arrow :disabled="!!field === false">
+						<v-menu placement="bottom-start" show-arrow>
 							<template #activator="{ toggle }">
-								<button
-									class="name"
-									:disabled="!!field === false"
-									:class="{ disabled: !!field === false }"
-									@click="toggle"
-								>
+								<button class="name" @click="toggle">
 									<span>{{ getFieldPreview(element) }}</span>
 								</button>
 							</template>
 
-							<v-field-list :collection="collection" @select-field="updateField(index, $event)" />
+							<v-field-list
+								:collection="collection"
+								:field="field"
+								include-functions
+								@select-field="updateField(index, $event)"
+							/>
 						</v-menu>
 						<v-select
 							inline
@@ -96,18 +96,25 @@
 </template>
 
 <script lang="ts" setup>
-import { useFieldTree } from '@/composables/use-field-tree';
-import { computed, toRefs } from 'vue';
-import InputGroup from './input-group.vue';
-import Draggable from 'vuedraggable';
 import { useFieldsStore } from '@/stores';
-import { useI18n } from 'vue-i18n';
-import { getFilterOperatorsForType } from '@directus/shared/utils';
-import { get } from 'lodash';
-import { FieldFilter, Filter, FieldFilterOperator, LogicalFilterAND, LogicalFilterOR } from '@directus/shared/types';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/shared/composables';
-import { fieldToFilter, getField, getNodeName, getComparator } from './utils';
-import { toArray } from '@directus/shared/utils';
+import {
+	FieldFilter,
+	FieldFilterOperator,
+	Filter,
+	LogicalFilterAND,
+	LogicalFilterOR,
+	Type,
+} from '@directus/shared/types';
+import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/shared/utils';
+import { get } from 'lodash';
+import { computed, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import InputGroup from './input-group.vue';
+import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
+import { getFunctionsForType } from '@directus/shared/utils';
 
 type FilterInfo =
 	| {
@@ -145,7 +152,6 @@ const emit = defineEmits(['remove-node', 'update:filter', 'change']);
 
 const { collection } = toRefs(props);
 const filterSync = useSync(props, 'filter', emit);
-const { treeList: fieldOptions, loadFieldRelations } = useFieldTree(collection);
 const fieldsStore = useFieldsStore();
 const { t } = useI18n();
 
@@ -181,9 +187,27 @@ function getFieldPreview(node: Record<string, any>) {
 	const fieldParts = fieldKey.split('.');
 
 	const fieldNames = fieldParts.map((fieldKey, index) => {
+		const hasFunction = fieldKey.includes('(') && fieldKey.includes(')');
+
+		let key = fieldKey;
+		let functionName;
+
+		if (hasFunction) {
+			const { field, fn } = extractFieldFromFunction(fieldKey);
+			functionName = fn;
+			key = field;
+		}
+
 		const pathPrefix = fieldParts.slice(0, index);
-		const field = fieldsStore.getField(props.collection, [...pathPrefix, fieldKey].join('.'));
-		return field?.name ?? fieldKey;
+		const field = fieldsStore.getField(props.collection, [...pathPrefix, key].join('.'));
+
+		const name = field?.name ?? key;
+
+		if (hasFunction) {
+			return t(`functions.${functionName}`) + ` (${name})`;
+		}
+
+		return name;
 	});
 
 	return fieldNames.join(' -> ');
@@ -294,10 +318,17 @@ function replaceNode(index: number, newFilter: Filter) {
 }
 
 function getCompareOptions(name: string) {
-	const fieldInfo = fieldsStore.getField(props.collection, name);
-	if (fieldInfo === null) return [];
+	let type: Type;
 
-	return getFilterOperatorsForType(fieldInfo.type, { includeValidation: true }).map((type) => ({
+	if (name.includes('(') && name.includes(')')) {
+		const functionName = name.split('(')[0];
+		type = getOutputTypeForFunction(functionName);
+	} else {
+		const fieldInfo = fieldsStore.getField(props.collection, name);
+		type = fieldInfo?.type || 'unknown';
+	}
+
+	return getFilterOperatorsForType(type, { includeValidation: true }).map((type) => ({
 		text: t(`operators.${type}`),
 		value: `_${type}`,
 	}));

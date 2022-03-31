@@ -50,7 +50,9 @@
 				:batch-active="batchActiveFields.includes(field.field)"
 				:primary-key="primaryKey"
 				:loading="loading"
-				:validation-error="validationErrors.find((err) => err.field === field.field)"
+				:validation-error="
+					validationErrors.find((err) => err.field === field.field || err.field.endsWith(`(${field.field})`))
+				"
 				:badge="badge"
 				@update:model-value="setValue(field, $event)"
 				@unset="unsetValue(field)"
@@ -61,16 +63,17 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, provide, watch, onBeforeUpdate } from 'vue';
+import { useElementSize } from '@/composables/use-element-size';
+import useFormFields from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/';
+import { applyConditions } from '@/utils/apply-conditions';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import useFormFields from '@/composables/use-form-fields';
-import { useElementSize } from '@/composables/use-element-size';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
-import { applyConditions } from '@/utils/apply-conditions';
 
 type FieldValues = {
 	[field: string]: any;
@@ -352,7 +355,8 @@ export default defineComponent({
 			}
 		}
 
-		function scrollToField(field: string) {
+		function scrollToField(fieldKey: string) {
+			const { field } = extractFieldFromFunction(fieldKey);
 			if (!formFieldEls.value[field]) return;
 			formFieldEls.value[field].$el.scrollIntoView({ behavior: 'smooth' });
 		}
