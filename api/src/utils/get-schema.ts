@@ -152,7 +152,7 @@ async function getDatabaseSchema(
 			special: special,
 			note: field.note,
 			alias: existing?.alias ?? true,
-			validation: (field.validation as Filter) ?? null,
+			validation: (validation as Filter) ?? null,
 		};
 	}
 
