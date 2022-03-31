@@ -23,7 +23,7 @@
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
 	},
 	"engines": {
-		"node": ">=16.0.0",
+		"node": "16.13.0",
 		"npm": ">=7.0.0"
 	},
 	"devDependencies": {
