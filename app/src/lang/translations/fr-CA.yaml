@@ -362,6 +362,10 @@ today: Aujourd'hui
 yesterday: Hier
 delete_comment: Supprimer le commentaire
 delete_share: Supprimer le partage
+functions:
+  year: Année
+  month: Mois
+  count: Compter
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
