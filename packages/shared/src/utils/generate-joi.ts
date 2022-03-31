@@ -179,27 +179,23 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_gt') {
-			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
-				? getNumberSchema().greater(Number(compareValue))
-				: getDateSchema().greater(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate ? getDateSchema().greater(compareValue) : getNumberSchema().greater(Number(compareValue));
 		}
 
 		if (operator === '_gte') {
-			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
-				? getNumberSchema().min(Number(compareValue))
-				: getDateSchema().min(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate ? getDateSchema().min(compareValue) : getNumberSchema().min(Number(compareValue));
 		}
 
 		if (operator === '_lt') {
-			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
-				? getNumberSchema().less(Number(compareValue))
-				: getDateSchema().less(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate ? getDateSchema().less(compareValue) : getNumberSchema().less(Number(compareValue));
 		}
 
 		if (operator === '_lte') {
-			schema[key] = Number.isSafeInteger(Number(compareValue instanceof Date ? NaN : compareValue))
-				? getNumberSchema().max(Number(compareValue))
-				: getDateSchema().max(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate ? getDateSchema().max(compareValue) : getNumberSchema().max(Number(compareValue));
 		}
 
 		if (operator === '_null') {
