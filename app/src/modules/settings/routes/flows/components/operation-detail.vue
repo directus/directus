@@ -100,6 +100,8 @@ const displayOperations = computed(() => {
 const operationOptions = computed(() => {
 	if (typeof selectedOperation.value?.options === 'function') {
 		return translate(selectedOperation.value.options(options.value));
+	} else if (typeof selectedOperation.value?.options === 'object') {
+		return selectedOperation.value.options;
 	}
 	return undefined;
 });

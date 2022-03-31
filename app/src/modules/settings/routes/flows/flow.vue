@@ -276,6 +276,7 @@ const panels = computed(() => {
 		height: PANEL_HEIGHT,
 		showHeader: true,
 		draggable: false,
+		flow: props.primaryKey,
 		type: flow.value?.trigger,
 		options: flow.value?.options,
 	};
@@ -308,11 +309,11 @@ function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string 
 				}
 
 				if (attachType === 'resolve') {
-					attach.position_x = parent.x + PANEL_WIDTH + 5;
+					attach.position_x = parent.x + PANEL_WIDTH + 6;
 					attach.position_y = parent.y;
 				} else {
 					attach.position_x = parent.x;
-					attach.position_y = parent.y + PANEL_HEIGHT + 5;
+					attach.position_y = parent.y + PANEL_HEIGHT + 6;
 				}
 			}
 		}
@@ -381,6 +382,7 @@ async function saveChanges() {
 		await flowsStore.hydrate();
 
 		stagedPanels.value = [];
+		stagedFlow.value = {};
 		editMode.value = false;
 	} catch (error) {
 		unexpectedError(error as Error);

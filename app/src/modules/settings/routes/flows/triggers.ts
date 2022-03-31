@@ -20,7 +20,9 @@ export function getTriggers() {
 			value: 'filter',
 			icon: 'keyboard_tab',
 			description: t('triggers.filter.description'),
-			preview: (options) => `Hi`,
+			preview: ({ options }) => `
+**${t('triggers.filter.event')}**: ${options.event}
+			`,
 			options: [
 				{
 					field: 'event',
@@ -38,7 +40,9 @@ export function getTriggers() {
 			value: 'action',
 			icon: 'start',
 			description: t('triggers.action.description'),
-			preview: (options) => `Hi`,
+			preview: ({ options }) => `
+**${t('triggers.filter.event')}**: ${options.event}
+			`,
 			options: [
 				{
 					field: 'event',
@@ -56,7 +60,9 @@ export function getTriggers() {
 			value: 'init',
 			icon: 'sensors',
 			description: t('triggers.init.description'),
-			preview: (options) => `Hi`,
+			preview: ({ options }) => `
+**${t('triggers.filter.event')}**: ${options.event}
+			`,
 			options: [
 				{
 					field: 'event',
@@ -74,7 +80,7 @@ export function getTriggers() {
 			value: 'operation',
 			icon: 'bolt',
 			description: t('triggers.operation.description'),
-			preview: (options) => `Hi`,
+			preview: () => t('triggers.operation.preview'),
 			options: [],
 		},
 		{
@@ -82,8 +88,8 @@ export function getTriggers() {
 			value: 'schedule',
 			icon: 'schedule',
 			description: t('triggers.schedule.description'),
-			preview: (options) => `
-**Cron**: ${options.options.cron}
+			preview: ({ options }) => `
+**${t('triggers.schedule.cron')}**: ${options.cron}
             `,
 			options: [
 				{
@@ -105,7 +111,7 @@ export function getTriggers() {
 			value: 'webhook',
 			icon: 'anchor',
 			description: t('triggers.webhook.description'),
-			preview: (options) => `Hi`,
+			preview: ({ flow }) => `**${t('triggers.webhook.preview')}**:\nPOST /flows/trigger/${flow}`,
 			options: [],
 		},
 	]);

@@ -1810,6 +1810,7 @@ triggers:
   operation:
     name: Operation
     description: Triggered by an operation in a different Flow, to chain or reuse Flows
+    preview: Triggered by an operation in a different Flow
   schedule:
     name: Schedule
     description: Triggers at certain points of time
@@ -1817,6 +1818,7 @@ triggers:
   webhook:
     name: Webhook
     description: Triggers based on an incoming HTTP request
+    preview: Triggers on
 operations:
   auth:
     name: Authenticate
