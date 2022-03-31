@@ -320,6 +320,10 @@ interface_label: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
+functions:
+  year: سنة
+  month: شهر
+  count: عدد
 date-fns_time: 'ساعات: دقائق: ثواني'
 date-fns_time_no_seconds: 'س:دد ص'
 minutes: دقائق
