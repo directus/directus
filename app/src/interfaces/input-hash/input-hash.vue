@@ -3,6 +3,7 @@
 		:placeholder="internalPlaceholder"
 		:disabled="disabled"
 		:type="masked ? 'password' : 'text'"
+		:autocomplete="masked ? 'new-password' : 'off'"
 		:model-value="localValue"
 		:class="{ hashed: isHashed && !localValue }"
 		@update:model-value="emitValue"
