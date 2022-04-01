@@ -368,6 +368,7 @@ delete_share: Видалити частку
 functions:
   year: Рік
   month: Місяць
+  week: Тиждень
   count: Кількість
 date-fns_date: PPP
 date-fns_time: 'г:хх:сс'
