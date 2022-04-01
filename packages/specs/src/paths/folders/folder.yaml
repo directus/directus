@@ -1,0 +1,76 @@
+get:
+  summary: Retrieve a Folder
+  description: Retrieve a single folder by unique identifier.
+  operationId: getFolder
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Folders'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Folders
+
+patch:
+  summary: Update a Folder
+  description: Update an existing folder
+  operationId: updateFolder
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the folder. Can't be null or empty.
+            parent:
+              type: integer
+              example: 3
+              description: Unique identifier of the parent folder. This allows for nested folders.
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Folders'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Folders
+
+delete:
+  summary: Delete a Folder
+  description: Delete an existing folder
+  operationId: deleteFolder
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Folders
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

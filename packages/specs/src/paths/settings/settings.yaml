@@ -1,0 +1,52 @@
+get:
+  summary: Retrieve Settings
+  description: List the settings.
+  operationId: getSettings
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Settings'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Settings
+
+patch:
+  summary: Update Settings
+  description: Update the settings
+  operationId: updateSetting
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Settings'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Settings

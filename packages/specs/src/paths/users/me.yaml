@@ -1,0 +1,44 @@
+get:
+  summary: Retrieve Current User
+  description: Retrieve the currently authenticated user.
+  operationId: getMe
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Users'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Users
+
+patch:
+  summary: Update Current User
+  description: Update the currently authenticated user.
+  operationId: updateMe
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Users'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Users

@@ -1,0 +1,63 @@
+table: directus_users
+
+columns:
+  id:
+    type: uuid
+    primary: true
+    nullable: false
+  first_name:
+    type: string
+    length: 50
+  last_name:
+    type: string
+    length: 50
+  email:
+    type: string
+    length: 128
+    nullable: false
+    unique: true
+  password:
+    type: string
+    length: 255
+  location:
+    type: string
+    length: 255
+  title:
+    type: string
+    length: 50
+  description:
+    type: text
+  tags:
+    type: json
+  avatar:
+    type: uuid
+  language:
+    type: string
+    length: 8
+    default: 'en-US'
+  theme:
+    type: string
+    length: 20
+    default: auto
+  tfa_secret:
+    type: string
+    length: 255
+  status:
+    type: string
+    length: 16
+    nullable: false
+    default: active
+  role:
+    type: uuid
+    nullable: true
+    references:
+      table: directus_roles
+      column: id
+  token:
+    type: string
+    length: 255
+  last_access:
+    type: timestamp
+  last_page:
+    type: string
+    length: 255

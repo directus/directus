@@ -1,0 +1,35 @@
+table: directus_webhooks
+
+columns:
+  id:
+    increments: true
+  name:
+    type: string
+    length: 255
+    nullable: false
+  method:
+    type: string
+    length: 10
+    default: POST
+    nullable: false
+  url:
+    type: string
+    length: 255
+    nullable: false
+  status:
+    type: string
+    length: 10
+    default: active
+    nullable: false
+  data:
+    type: boolean
+    default: true
+    nullable: false
+  actions:
+    type: string
+    length: 100
+    nullable: false
+  collections:
+    type: string
+    length: 255
+    nullable: false

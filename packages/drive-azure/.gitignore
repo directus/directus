@@ -1,0 +1,10 @@
+node_modules
+
+/_*
+/coverage
+/dist*
+/src/**/*.js
+/*.d.ts
+/*.d.ts.map
+
+*.tgz

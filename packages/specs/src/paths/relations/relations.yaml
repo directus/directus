@@ -1,0 +1,81 @@
+get:
+  summary: List Relations
+  description: List the relations.
+  operationId: getRelations
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Relations'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Relations
+
+post:
+  summary: Create a Relation
+  description: Create a new relation.
+  operationId: createRelation
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            collection_many:
+              description: Collection that has the field that holds the foreign key.
+              type: string
+              example: articles
+            collection_one:
+              description: Collection on the _one_ side of the relationship.
+              type: string
+              example: authors
+            field_many:
+              description: Foreign key. Field that holds the primary key of the related collection.
+              type: string
+              example: author
+            field_one:
+              description: Alias column that serves as the _one_ side of the relationship.
+              type: string
+              example: books
+            junction_field:
+              description: Field on the junction table that holds the primary key of the related collection.
+              type: string
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Relations'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Relations

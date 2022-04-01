@@ -1,0 +1,13 @@
+node_modules
+.cache
+.env
+.DS_Store
+uploads
+extensions
+debug.db
+*.db
+test
+dist
+tmp
+keys.json
+coverage

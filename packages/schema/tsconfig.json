@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"skipLibCheck": true,
+		"target": "es5",
+		"module": "commonjs",
+		"lib": ["es2019", "es2018", "es2017", "es7", "es6", "dom"],
+		"declaration": true,
+		"outDir": "./dist",
+		"strict": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"rootDir": "src"
+	},
+	"exclude": ["node_modules", "dist", "test"]
+}

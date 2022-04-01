@@ -1,0 +1,24 @@
+get:
+  summary: Retrieve a Revision
+  description: Retrieve a single revision by unique identifier.
+  operationId: getRevision
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Id'
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Revisions'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Revisions

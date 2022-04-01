@@ -1,0 +1,25 @@
+get:
+  summary: List All Fields
+  description: Returns a list of the fields available in the project.
+  operationId: getFields
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Fields'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Fields

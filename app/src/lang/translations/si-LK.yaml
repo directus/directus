@@ -1,0 +1,25 @@
+---
+default_provider: පෙරනිමි
+draft: කටුපිටපත
+archived: සංරක්ෂිතය
+maps: සිතියම්
+group: සමූහය
+all: සියල්ල
+cancel: අවලංගු කරන්න
+interfaces:
+  filter:
+    all: සියල්ල
+displays:
+  icon:
+    icon: නිරූපකය
+layouts:
+  cards:
+    subtitle: උපසිරැසිය
+  calendar:
+    calendar: දින දසුන
+  map:
+    map: සිතියම
+    layers: ස්ථර
+panels:
+  metric:
+    field: ක්ෂේත්‍රය

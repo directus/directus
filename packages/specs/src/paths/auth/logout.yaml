@@ -1,0 +1,20 @@
+post:
+  summary: Log Out
+  description: Log Out
+  tags:
+    - Authentication
+  operationId: logout
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [token]
+          properties:
+            refresh_token:
+              type: string
+              example: eyJ0eXAiOiJKV...
+              description: JWT access token you want to logout.
+  responses:
+    '200':
+      description: Request successful

@@ -1,0 +1,49 @@
+table: directus_settings
+
+columns:
+  id:
+    increments: true
+  project_name:
+    type: string
+    length: 100
+    nullable: false
+    default: 'Directus'
+  project_url:
+    type: string
+    length: 255
+  project_color:
+    type: string
+    length: 10
+    default: '#00C897'
+  project_logo:
+    type: uuid
+    references:
+      table: directus_files
+      column: id
+  public_foreground:
+    type: uuid
+    references:
+      table: directus_files
+      column: id
+  public_background:
+    type: uuid
+    references:
+      table: directus_files
+      column: id
+  public_note:
+    type: text
+  auth_login_attempts:
+    type: integer
+    default: 25
+    unsigned: true
+  auth_password_policy:
+    type: string
+    length: 100
+  storage_asset_transform:
+    type: string # One of: 'all', 'none', 'presets'
+    length: 7
+    default: all
+  storage_asset_presets:
+    type: json
+  custom_css:
+    type: text

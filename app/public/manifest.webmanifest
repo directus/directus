@@ -1,0 +1,9 @@
+{
+	"name": "Directus",
+	"short_name": "Directus",
+	"theme_color": "#263238",
+	"background_color": "#263238",
+	"display": "standalone",
+	"start_url": "./",
+	"scope": "."
+}

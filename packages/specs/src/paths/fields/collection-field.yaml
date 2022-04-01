@@ -1,0 +1,231 @@
+get:
+  summary: Retrieve a Field
+  description: Retrieves the details of a single field in a given collection.
+  operationId: getCollectionField
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Fields'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Fields
+
+patch:
+  summary: Update a Field
+  description: Update an existing field.
+  operationId: updateField
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            field:
+              description: Unique name of the field. Field name is unique within the collection.
+              example: id
+              type: string
+            type:
+              description: Directus specific data type. Used to cast values in the API.
+              example: integer
+              type: string
+            schema:
+              description: The schema info.
+              type: object
+              properties:
+                name:
+                  description: The name of the field.
+                  example: title
+                  type: string
+                table:
+                  description: The collection of the field.
+                  example: posts
+                  type: string
+                type:
+                  description: The type of the field.
+                  example: string
+                  type: string
+                default_value:
+                  description: The default value of the field.
+                  example: null
+                  type: string
+                  nullable: true
+                max_length:
+                  description: The max length of the field.
+                  example: null
+                  type: integer
+                  nullable: true
+                is_nullable:
+                  description: If the field is nullable.
+                  example: false
+                  type: boolean
+                is_primary_key:
+                  description: If the field is primary key.
+                  example: false
+                  type: boolean
+                has_auto_increment:
+                  description: If the field has auto increment.
+                  example: false
+                  type: boolean
+                foreign_key_column:
+                  description: Related column from the foreign key constraint.
+                  example: null
+                  type: string
+                  nullable: true
+                foreign_key_table:
+                  description: Related table from the foreign key constraint.
+                  example: null
+                  type: string
+                  nullable: true
+                comment:
+                  description: Comment as saved in the database.
+                  example: null
+                  type: string
+                  nullable: true
+                schema:
+                  description: Database schema (pg only).
+                  example: public
+                  type: string
+                foreign_key_schema:
+                  description: Related schema from the foreign key constraint (pg only).
+                  example: null
+                  type: string
+                  nullable: true
+            meta:
+              description: The meta info.
+              type: object
+              nullable: true
+              properties:
+                id:
+                  description: Unique identifier for the field in the `directus_fields` collection.
+                  example: 3
+                  type: integer
+                collection:
+                  description: Unique name of the collection this field is in.
+                  example: posts
+                  type: string
+                field:
+                  description: Unique name of the field. Field name is unique within the collection.
+                  example: title
+                  type: string
+                special:
+                  description: Transformation flag for field
+                  example: null
+                  type: array
+                  items:
+                    type: string
+                  nullable: true
+                system-interface:
+                  description: What interface is used in the admin app to edit the value for this field.
+                  example: primary-key
+                  type: string
+                  nullable: true
+                options:
+                  description: Options for the interface that's used. This format is based on the individual interface.
+                  example: null
+                  type: object
+                  nullable: true
+                display:
+                  description: What display is used in the admin app to display the value for this field.
+                  example: null
+                  type: string
+                  nullable: true
+                display_options:
+                  description: Options for the display that's used. This format is based on the individual display.
+                  example: null
+                  type: object
+                  nullable: true
+                locked:
+                  description:
+                    If the field can be altered by the end user. Directus system fields have this value set to `true`.
+                  example: true
+                  type: boolean
+                readonly:
+                  description: Prevents the user from editing the value in the field.
+                  example: false
+                  type: boolean
+                hidden:
+                  description: If this field should be hidden.
+                  example: true
+                  type: boolean
+                sort:
+                  description: Sort order of this field on the edit page of the admin app.
+                  example: 1
+                  type: integer
+                  nullable: true
+                width:
+                  description: Width of the field on the edit form.
+                  example: null
+                  type: string
+                  nullable: true
+                  enum: [half, half-left, half-right, full, fill, null]
+                group:
+                  description: What field group this field is part of.
+                  example: null
+                  type: integer
+                  nullable: true
+                translation:
+                  description:
+                    'Key value pair of `<language>: <translation>` that allows the user to change the displayed name of
+                    the field in the admin app.'
+                  example: null
+                  type: object
+                  nullable: true
+                note:
+                  description:
+                    A user provided note for the field. Will be rendered alongside the interface on the edit page.
+                  example: ''
+                  type: string
+                  nullable: true
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Fields'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Fields
+
+delete:
+  summary: Delete a Field
+  description: Delete an existing field.
+  operationId: deleteField
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Fields
+
+parameters:
+  - name: collection
+    in: path
+    description: Unique identifier of the collection the item resides in.
+    schema:
+      type: string
+    required: true
+  - name: id
+    in: path
+    description: Unique identifier of the field.
+    schema:
+      type: string
+    required: true

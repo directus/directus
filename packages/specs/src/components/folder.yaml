@@ -1,0 +1,18 @@
+type: object
+x-collection: directus_files
+properties:
+  id:
+    description: Unique identifier for the folder.
+    example: 0cf0e03d-4364-45df-b77b-ca61f61869d2
+    type: string
+  name:
+    description: Name of the folder.
+    example: New York
+    type: string
+  parent:
+    description: Unique identifier of the parent folder. This allows for nested folders.
+    example: null
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Folders'
+    nullable: true

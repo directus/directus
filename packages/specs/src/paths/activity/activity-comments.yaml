@@ -1,0 +1,38 @@
+post:
+  summary: Create a Comment
+  description: Creates a new comment.
+  operationId: createComment
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: ['collection', 'item', 'comment']
+          properties:
+            collection:
+              type: string
+              example: projects
+            item:
+              type: integer
+              example: 1
+            comment:
+              type: string
+              example: A new comment
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Activity'
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Activity

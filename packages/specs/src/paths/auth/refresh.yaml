@@ -1,0 +1,39 @@
+post:
+  summary: Refresh Token
+  description: Refresh a Temporary Access Token.
+  tags:
+    - Authentication
+  operationId: refresh
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [token]
+          properties:
+            refresh_token:
+              type: string
+              example: eyJ0eXAiOiJKV...
+              description: JWT access token you want to refresh. This token can't be expired.
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJI...
+                  expires:
+                    type: integer
+                    example: 900
+                  refresh_token:
+                    type: string
+                    example: Gy-caJMpmGTA...
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

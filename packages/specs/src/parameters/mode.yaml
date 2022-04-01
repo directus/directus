@@ -1,0 +1,7 @@
+description: Controls if the API sets a cookie or returns a JWT on successful login.
+in: query
+name: mode
+required: true
+schema:
+  type: string
+  enum: [jwt, cookie]

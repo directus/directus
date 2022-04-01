@@ -1,0 +1,131 @@
+.chart-container {
+	position: relative;
+	font-family: var(--family-sans-serif);
+
+	.axis,
+	.chart-label {
+		font-size: 10px;
+		fill: var(--foreground-normal);
+
+		line {
+			stroke: var(--border-normal);
+		}
+	}
+
+	.dataset-units {
+		circle {
+			stroke: #fff;
+			stroke-width: 2;
+		}
+
+		path {
+			fill: none;
+			stroke-opacity: 1;
+			stroke-width: 2px;
+		}
+	}
+
+	.dataset-path {
+		stroke-width: 2px;
+	}
+
+	.path-group {
+		path {
+			fill: none;
+			stroke-opacity: 1;
+			stroke-width: 2px;
+		}
+	}
+
+	line.dashed {
+		stroke-dasharray: 5, 3;
+	}
+
+	.axis-line {
+		.specific-value {
+			text-anchor: start;
+		}
+
+		.y-line {
+			text-anchor: end;
+		}
+
+		.x-line {
+			text-anchor: middle;
+		}
+	}
+
+	.legend-dataset-text {
+		font-weight: 600;
+		fill: var(--foreground-normal);
+	}
+}
+
+.graph-svg-tip {
+	position: absolute;
+	z-index: 99999;
+	padding: 10px;
+	color: var(--border-normal);
+	font-size: 12px;
+	text-align: center;
+	background: rgba(0, 0, 0, 0.8);
+	border-radius: 3px;
+
+	ul {
+		display: flex;
+		padding-left: 0;
+	}
+
+	ol {
+		display: flex;
+		padding-left: 0;
+	}
+
+	&.comparison {
+		padding: 0;
+		text-align: left;
+		pointer-events: none;
+
+		.title {
+			display: block;
+			margin: 0;
+			padding: 10px;
+			font-weight: 600;
+			line-height: 1;
+			pointer-events: none;
+		}
+
+		ul {
+			margin: 0;
+			white-space: nowrap;
+			list-style: none;
+		}
+
+		li {
+			display: inline-block;
+			padding: 5px 10px;
+		}
+	}
+
+	ul.data-point-list {
+		li {
+			flex: 1;
+			min-width: 90px;
+			font-weight: 600;
+		}
+	}
+
+	strong {
+		color: #dfe2e5;
+		font-weight: 600;
+	}
+
+	.svg-pointer {
+		position: absolute;
+		height: 5px;
+		margin: 0 0 0 -5px;
+		border: 5px solid transparent;
+		border-top-color: rgba(0, 0, 0, 0.8);
+		content: ' ';
+	}
+}

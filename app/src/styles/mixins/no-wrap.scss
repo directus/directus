@@ -1,0 +1,5 @@
+@mixin no-wrap {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}

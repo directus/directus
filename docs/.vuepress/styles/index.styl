@@ -1,0 +1,168 @@
+@import './colors.styl'
+
+html
+  scroll-padding-top 4rem
+
+.tabs-component
+  margin 4em 0
+.tabs-component-tabs
+  border solid 1px var(--border-normal)
+  border-radius 6px
+.tabs-component-tab
+  &:hover
+    color #666
+  &.is-active
+    color #000
+    border-bottom solid 1px #fff
+    z-index 2
+  &.is-disabled
+    *
+      color #cdcdcd
+      cursor not-allowed !important
+.tabs-component-panels
+  padding 1em
+@media (min-width: 700px)
+  .tabs-component-tabs
+    border 0
+    align-items stretch
+    display flex
+    justify-content flex-start
+    margin-bottom -1px
+    padding-left 0
+  .tabs-component-tab
+    background-color #fff
+    border solid 1px #ddd
+    border-radius 6px 6px 0 0
+    margin-right 0.1em
+    transition transform 0.3s ease
+  .tabs-component-panels
+    border-top-left-radius 0
+    background-color #fff
+    border solid 1px #ddd
+    border-radius 0 6px 6px 6px
+    box-shadow 0 0 10px rgba(0, 0, 0, 0.05)
+    padding 1em
+  .tabs-component-tab
+    color #999
+    font-size 14px
+    font-weight 600
+    margin-right 0
+    list-style none
+    &:not(:first-child)
+      border-left 0
+  .tabs-component-tab-a
+    align-items center
+    color inherit
+    display flex
+    padding 0.25em 1em
+    text-decoration none
+.page-reference
+  .theme-default-content.content__default
+  .page-edit
+  .page-nav
+    max-width 1200px
+    hr
+      width calc(100% + 5rem)
+      left -2.5rem
+      position relative
+      margin 3rem 0
+    h2
+      border-bottom 0
+      margin-top 3rem
+      font-size: 2rem;
+    hr + h2
+      margin-top -1 * ($navbarHeight + 2rem)
+    h3
+      margin-top 3rem
+      margin-bottom 0.5rem
+      font-size 1.2rem
+    h4
+      margin-top 2rem
+      margin-bottom 0
+    .definitions
+      font-size: 0.9rem
+      > p
+        border-bottom 2px solid var(--border-subdued)
+        padding .8rem 0
+        margin 0
+        > code:first-child
+          background transparent
+          padding 0
+          margin-right 0.2rem
+          font-weight 700
+          font-size 0.8rem
+        > strong
+          color#aaa
+        &:first-child
+          border-top 2px solid var(--border-subdued)
+
+pre
+  tab-size: 2 !important;
+
+.two-up
+  margin-top 3rem
+
+.two-up .right
+  margin-top 50px
+  .table-of-contents
+    margin-top -20px
+  pre,
+  pre[class*="language-"]
+    margin-top 0
+  div[class*="language"] + p
+    text-align right
+    margin-top -11px
+    font-size 14px
+
+@media (min-width: 1000px)
+  .two-up
+    display grid
+    grid-template-columns minmax(0, 4fr) minmax(0, 3fr)
+    grid-gap 40px
+    align-items start
+
+  .two-up .left
+  .two-up .right
+    > *:first-child {
+      margin-top: 0 !important;
+    }
+
+  .two-up .right
+    margin-top 0
+    position sticky
+    top $navbarHeight
+
+.navbar .home-link
+  width 4.3rem
+  overflow hidden
+  display inline-flex
+  align-items center
+  height 100%
+
+@media (min-width: 560px)
+  .navbar .home-link
+    width 12.2rem
+
+@media (min-width: 660px)
+  .navbar .home-link
+    width auto
+    overflow auto
+
+
+.right
+  h5 + div[class^="language-"] {
+    margin-top -16px
+  }
+
+  .search-box
+    input
+      background var(--background-page) url(/search.svg) 0.4rem 0.3rem no-repeat !important
+
+@media (prefers-color-scheme: dark)
+  html
+    color-scheme dark
+  iframe
+    color-scheme auto
+  .search-box
+    input
+      background var(--background-page) url(/search-dark.svg) 0.4rem 0.3rem no-repeat !important

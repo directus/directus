@@ -1,0 +1,24 @@
+get:
+  summary: Get a Random String
+  description: Returns a random string of given length.
+  operationId: random
+  parameters:
+    - description: Length of the random string.
+      in: query
+      name: length
+      required: false
+      schema:
+        type: integer
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: string
+                example: 1>M3+4oh.S
+            type: object
+      description: Successful request
+  tags:
+    - Utilities

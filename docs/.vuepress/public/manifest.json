@@ -1,0 +1,53 @@
+{
+	"manifest_version": 2,
+	"name": "Directus Docs",
+	"short-name": "Docs",
+	"description": "Directus 9. An Instant App & API for your SQL Database.",
+	"theme-color": "#6644ff",
+	"version": "1.0",
+	"scope": "/",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "/favicon.svg",
+			"sizes": "16x16",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "/favicon.svg",
+			"sizes": "32x32",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "/favicon.svg",
+			"sizes": "48x48",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "/favicon.svg",
+			"sizes": "96x96",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "/favicon.svg",
+			"sizes": "128x128",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "/favicon.svg",
+			"sizes": "256x256",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "/favicon.svg",
+			"sizes": "512x512",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "/favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml"
+		}
+	],
+	"display": "standalone"
+}

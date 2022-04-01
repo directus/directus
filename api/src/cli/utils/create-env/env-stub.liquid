@@ -1,0 +1,60 @@
+####################################################################################################
+## General
+
+HOST="0.0.0.0"
+PORT=8055
+PUBLIC_URL="/"
+
+####################################################################################################
+## Database
+
+{{ database }}
+
+####################################################################################################
+## Rate Limiting
+
+RATE_LIMITER_ENABLED=false
+RATE_LIMITER_STORE=memory
+RATE_LIMITER_POINTS=25
+RATE_LIMITER_DURATION=1
+
+####################################################################################################
+## Cache
+
+CACHE_ENABLED=false
+
+####################################################################################################
+## File Storage
+
+STORAGE_LOCATIONS="local"
+STORAGE_LOCAL_DRIVER="local"
+STORAGE_LOCAL_ROOT="./uploads"
+
+####################################################################################################
+## Security
+
+{{ security }}
+
+ACCESS_TOKEN_TTL="15m"
+REFRESH_TOKEN_TTL="7d"
+REFRESH_TOKEN_COOKIE_SECURE=false
+REFRESH_TOKEN_COOKIE_SAME_SITE="lax"
+REFRESH_TOKEN_COOKIE_NAME="directus_refresh_token"
+
+####################################################################################################
+## Auth Providers
+
+AUTH_PROVIDERS=""
+
+####################################################################################################
+## Extensions
+
+EXTENSIONS_PATH="./extensions"
+
+####################################################################################################
+## Email
+
+EMAIL_FROM="no-reply@directus.io"
+EMAIL_TRANSPORT="sendmail"
+EMAIL_SENDMAIL_NEW_LINE="unix"
+EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"

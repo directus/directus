@@ -1,0 +1,38 @@
+type: object
+x-collection: directus_roles
+properties:
+  id:
+    description: Unique identifier for the role.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+  name:
+    description: Name of the role.
+    example: Administrator
+    type: string
+  icon:
+    description: The role's icon.
+    example: verified_user
+    type: string
+  description:
+    description: Description of the role.
+    example: Admins have access to all managed data within the system by default
+    type: string
+    nullable: true
+  ip_access:
+    description: Array of IP addresses that are allowed to connect to the API as a user of this role.
+    example: []
+    type: array
+    items:
+      type: string
+  enforce_tfa:
+    description: Whether or not this role enforces the use of 2FA.
+    example: false
+    type: boolean
+  admin_access:
+    description: Admin role. If true, skips all permission checks.
+    example: false
+    type: boolean
+  app_access:
+    description: The users in the role are allowed to use the app.
+    example: true
+    type: boolean

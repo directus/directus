@@ -1,0 +1,50 @@
+post:
+  summary: Retrieve a Temporary Access Token
+  description: Retrieve a Temporary Access Token
+  tags:
+    - Authentication
+  operationId: login
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [email, password]
+          properties:
+            email:
+              type: string
+              example: admin@example.com
+              description: Email address of the user you're retrieving the access token for.
+            password:
+              type: string
+              description: Password of the user.
+              format: password
+              example: password
+            mode:
+              type: string
+              enum: ['json', cookie]
+              default: 'json'
+              description: Choose between retrieving the token as a string, or setting it as a cookie.
+            otp:
+              type: string
+              description: If 2FA is enabled, you need to pass the one time password.
+  responses:
+    '200':
+      description: Successful authentification
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJI...
+                  expires:
+                    type: integer
+                    example: 900
+                  refresh_token:
+                    type: string
+                    example: yuOJkjdPXMd...

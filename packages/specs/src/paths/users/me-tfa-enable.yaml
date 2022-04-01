@@ -1,0 +1,13 @@
+post:
+  summary: Enable 2FA
+  description: Enables two-factor authentication for the currently authenticated user.
+  operationId: meTfaEnable
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Users

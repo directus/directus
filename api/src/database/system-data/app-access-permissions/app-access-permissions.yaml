@@ -1,0 +1,102 @@
+# NOTE: Activity/collections/fields/presets/relations/revisions will have an extra hardcoded filter
+# to filter out collections you don't have read access
+
+- collection: directus_activity
+  action: read
+  permissions:
+    user:
+      _eq: $CURRENT_USER
+
+- collection: directus_activity
+  action: create
+  validation:
+    comment:
+      _nnull: true
+
+- collection: directus_presets
+  action: read
+  permissions:
+    _or:
+      - user:
+          _eq: $CURRENT_USER
+      - _and:
+          - user:
+              _null: true
+          - role:
+              _eq: $CURRENT_ROLE
+      - _and:
+          - user:
+              _null: true
+          - role:
+              _null: true
+
+- collection: directus_presets
+  action: create
+  validation:
+    user:
+      _eq: $CURRENT_USER
+
+- collection: directus_presets
+  action: update
+  permissions:
+    user:
+      _eq: $CURRENT_USER
+
+- collection: directus_presets
+  action: delete
+  permissions:
+    user:
+      _eq: $CURRENT_USER
+
+- collection: directus_roles
+  action: read
+  permissions:
+    id:
+      _eq: $CURRENT_ROLE
+
+- collection: directus_settings
+  action: read
+
+- collection: directus_notifications
+  action: read
+  permissions:
+    recipient:
+      _eq: $CURRENT_USER
+
+- collection: directus_notifications
+  action: update
+  permissions:
+    recipient:
+      _eq: $CURRENT_USER
+  fields:
+    - status
+
+- collection: directus_shares
+  action: read
+  permissions:
+    user_created:
+      _eq: $CURRENT_USER
+
+- collection: directus_users
+  action: read
+  permissions:
+    id:
+      _eq: $CURRENT_USER
+  fields:
+    - id
+    - first_name
+    - last_name
+    - last_page
+    - email
+    - password
+    - location
+    - title
+    - description
+    - tags
+    - preferences_divider
+    - avatar
+    - language
+    - theme
+    - tfa_secret
+    - status
+    - role

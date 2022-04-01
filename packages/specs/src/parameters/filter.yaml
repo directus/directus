@@ -1,0 +1,9 @@
+description: Select items in collection by given conditions.
+in: query
+name: filter
+required: false
+schema:
+  type: array
+  items:
+    type: string
+    pattern: '^(\[[^\[\]]*?\]){1}(\[(_eq|_neq|_lt|_lte|_gt|_gte|_in|_nin|_null|_nnull|_contains|_ncontains|_between|_nbetween|_empty|_nempty)\])?=.*?$'

@@ -1,0 +1,54 @@
+@mixin form-grid {
+	display: grid;
+	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
+	gap: var(--form-vertical-gap) var(--form-horizontal-gap);
+
+	&.with-fill {
+		grid-template-columns:
+			[start] minmax(0, var(--form-column-max-width)) [half] minmax(0, var(--form-column-max-width))
+			[full] 1fr [fill];
+	}
+
+	.type-label {
+		margin-bottom: 8px;
+	}
+
+	.field {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: start / full;
+		}
+	}
+
+	.half,
+	.half-left,
+	.half-space {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: start / half;
+		}
+	}
+
+	.half + .half,
+	.half-right {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: half / full;
+		}
+	}
+
+	.full {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: start / full;
+		}
+	}
+
+	.fill {
+		grid-column: start / fill;
+	}
+}

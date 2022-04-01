@@ -1,0 +1,50 @@
+@import 'themes/mixins/generate-colors';
+
+// Main palette
+$purple: #6644ff;
+$pink: #ff99dd;
+$blue: #3399ff;
+$green: #2ecda7;
+$yellow: #fbc54f;
+$orange: #ffa439;
+$red: #e35169;
+
+// Mixing colors
+$light-theme-tint: #fff;
+$light-theme-shade: #2e3c43;
+$dark-theme-tint: #fff;
+$dark-theme-shade: #16151a;
+
+// Color variant names -> Color to map to said name
+$color-mapping: (
+	'purple': $purple,
+	'pink': $pink,
+	'blue': $blue,
+	'green': $green,
+	'yellow': $yellow,
+	'orange': $orange,
+	'red': $red,
+	'primary': $purple,
+	'secondary': $pink,
+	'success': $green,
+	'warning': $orange,
+	'danger': $red,
+);
+
+// Suffix -> Percentage mapping (Percentage of main color)
+// Negative numbers will use secondary color for mixture.
+// The percentage will be equal to the absolute value of the number.
+$step-mapping: (
+	'10': 10,
+	'25': 25,
+	'50': 50,
+	'75': 75,
+	'90': 90,
+	// Special case, 'none' will result in no suffix
+	'none': 100,
+	'110': -90,
+	'125': -75,
+	'150': -50,
+	'175': -25,
+	'190': -10,
+);

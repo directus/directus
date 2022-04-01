@@ -1,0 +1,92 @@
+type: object
+x-collection: directus_users
+properties:
+  id:
+    description: Unique identifier for the user.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    type: string
+  first_name:
+    description: First name of the user.
+    example: Admin
+    type: string
+  last_name:
+    description: Last name of the user.
+    example: User
+    type: string
+  email:
+    description: Unique email address for the user.
+    example: admin@example.com
+    type: string
+    format: email
+  password:
+    description: Password of the user.
+    type: string
+  location:
+    description: The user's location.
+    example: null
+    type: string
+    nullable: true
+  title:
+    description: The user's title.
+    example: null
+    type: string
+    nullable: true
+  description:
+    description: The user's description.
+    example: null
+    type: string
+    nullable: true
+  tags:
+    description: The user's tags.
+    example: null
+    type: array
+    nullable: true
+    items:
+      type: string
+  avatar:
+    description: The user's avatar.
+    example: null
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Files'
+    nullable: true
+  language:
+    description: The user's language used in Directus.
+    example: en-US
+    type: string
+  theme:
+    description: What theme the user is using.
+    example: auto
+    type: string
+    enum: [light, dark, auto]
+  tfa_secret:
+    description: The 2FA secret string that's used to generate one time passwords.
+    example: null
+    type: string
+    nullable: true
+  status:
+    description: Status of the user.
+    example: active
+    type: string
+    enum: [active, invited, draft, suspended, deleted]
+  role:
+    description: Unique identifier of the role of this user.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Roles'
+  token:
+    description: Static token for the user.
+    type: string
+    nullable: true
+  last_acces:
+    description: When this user used the API last.
+    example: '2020-05-31T14:32:37Z'
+    type: string
+    nullable: true
+    format: date-time
+  last_page:
+    description: Last page that the user was on.
+    example: /my-project/settings/collections/a
+    type: string
+    nullable: true
