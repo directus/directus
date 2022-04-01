@@ -1,0 +1,9 @@
+export var DEFAULT_RETRY_DELAY_BASE = 100;
+export var MAXIMUM_RETRY_DELAY = 20 * 1000;
+export var THROTTLING_RETRY_DELAY_BASE = 500;
+export var INITIAL_RETRY_TOKENS = 500;
+export var RETRY_COST = 5;
+export var TIMEOUT_RETRY_COST = 10;
+export var NO_RETRY_INCREMENT = 1;
+export var INVOCATION_ID_HEADER = "amz-sdk-invocation-id";
+export var REQUEST_HEADER = "amz-sdk-request";

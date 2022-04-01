@@ -1,0 +1,14 @@
+import { HttpRequest as __HttpRequest, HttpResponse as __HttpResponse } from "@aws-sdk/protocol-http";
+import { SerdeContext as __SerdeContext } from "@aws-sdk/types";
+import { GetRoleCredentialsCommandInput, GetRoleCredentialsCommandOutput } from "../commands/GetRoleCredentialsCommand";
+import { ListAccountRolesCommandInput, ListAccountRolesCommandOutput } from "../commands/ListAccountRolesCommand";
+import { ListAccountsCommandInput, ListAccountsCommandOutput } from "../commands/ListAccountsCommand";
+import { LogoutCommandInput, LogoutCommandOutput } from "../commands/LogoutCommand";
+export declare const serializeAws_restJson1GetRoleCredentialsCommand: (input: GetRoleCredentialsCommandInput, context: __SerdeContext) => Promise<__HttpRequest>;
+export declare const serializeAws_restJson1ListAccountRolesCommand: (input: ListAccountRolesCommandInput, context: __SerdeContext) => Promise<__HttpRequest>;
+export declare const serializeAws_restJson1ListAccountsCommand: (input: ListAccountsCommandInput, context: __SerdeContext) => Promise<__HttpRequest>;
+export declare const serializeAws_restJson1LogoutCommand: (input: LogoutCommandInput, context: __SerdeContext) => Promise<__HttpRequest>;
+export declare const deserializeAws_restJson1GetRoleCredentialsCommand: (output: __HttpResponse, context: __SerdeContext) => Promise<GetRoleCredentialsCommandOutput>;
+export declare const deserializeAws_restJson1ListAccountRolesCommand: (output: __HttpResponse, context: __SerdeContext) => Promise<ListAccountRolesCommandOutput>;
+export declare const deserializeAws_restJson1ListAccountsCommand: (output: __HttpResponse, context: __SerdeContext) => Promise<ListAccountsCommandOutput>;
+export declare const deserializeAws_restJson1LogoutCommand: (output: __HttpResponse, context: __SerdeContext) => Promise<LogoutCommandOutput>;

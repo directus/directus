@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getInstanceMetadataEndpoint = exports.httpRequest = void 0;
+const tslib_1 = require("tslib");
+tslib_1.__exportStar(require("./fromContainerMetadata"), exports);
+tslib_1.__exportStar(require("./fromInstanceMetadata"), exports);
+tslib_1.__exportStar(require("./remoteProvider/RemoteProviderInit"), exports);
+tslib_1.__exportStar(require("./types"), exports);
+var httpRequest_1 = require("./remoteProvider/httpRequest");
+Object.defineProperty(exports, "httpRequest", { enumerable: true, get: function () { return httpRequest_1.httpRequest; } });
+var getInstanceMetadataEndpoint_1 = require("./utils/getInstanceMetadataEndpoint");
+Object.defineProperty(exports, "getInstanceMetadataEndpoint", { enumerable: true, get: function () { return getInstanceMetadataEndpoint_1.getInstanceMetadataEndpoint; } });

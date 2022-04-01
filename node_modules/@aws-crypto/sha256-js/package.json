@@ -1,0 +1,27 @@
+{
+  "name": "@aws-crypto/sha256-js",
+  "version": "2.0.0",
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "pretest": "tsc -p tsconfig.test.json",
+    "test": "mocha --require ts-node/register test/**/*test.ts"
+  },
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:aws/aws-sdk-js-crypto-helpers.git"
+  },
+  "author": {
+    "name": "AWS Crypto Tools Team",
+    "email": "aws-cryptools@amazon.com",
+    "url": "https://docs.aws.amazon.com/aws-crypto-tools/index.html?id=docs_gateway#lang/en_us"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@aws-crypto/util": "^2.0.0",
+    "@aws-sdk/types": "^3.1.0",
+    "tslib": "^1.11.1"
+  },
+  "gitHead": "c63b577ab80a02b078be6f537e14b4af578c4bae"
+}

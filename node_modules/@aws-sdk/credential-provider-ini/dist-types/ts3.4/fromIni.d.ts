@@ -1,0 +1,14 @@
+import { AssumeRoleWithWebIdentityParams } from "@aws-sdk/credential-provider-web-identity";
+import { SourceProfileInit } from "@aws-sdk/shared-ini-file-loader";
+import { CredentialProvider, Credentials } from "@aws-sdk/types";
+import { AssumeRoleParams } from "./resolveAssumeRoleCredentials";
+export interface FromIniInit extends SourceProfileInit {
+    
+    mfaCodeProvider?: (mfaSerial: string) => Promise<string>;
+    
+    roleAssumer?: (sourceCreds: Credentials, params: AssumeRoleParams) => Promise<Credentials>;
+    
+    roleAssumerWithWebIdentity?: (params: AssumeRoleWithWebIdentityParams) => Promise<Credentials>;
+}
+
+export declare const fromIni: (init?: FromIniInit) => CredentialProvider;

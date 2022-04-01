@@ -1,0 +1,64 @@
+{
+  "name": "@azure/core-asynciterator-polyfill",
+  "author": "Microsoft Corporation",
+  "sdk-type": "client",
+  "version": "1.0.2",
+  "description": "Polyfill for IE/Node 8 for Symbol.asyncIterator",
+  "tags": [
+    "microsoft",
+    "clientruntime"
+  ],
+  "keywords": [
+    "microsoft",
+    "clientruntime",
+    "azure",
+    "cloud"
+  ],
+  "main": "./dist/index.js",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/core/core-asynciterator-polyfill/README.md",
+  "repository": "github:Azure/azure-sdk-for-js",
+  "bugs": {
+    "url": "https://github.com/Azure/azure-sdk-for-js/issues"
+  },
+  "scripts": {
+    "audit": "node ../../../common/scripts/rush-audit.js && rimraf node_modules package-lock.json && npm i --package-lock-only 2>&1 && npm audit",
+    "build:samples": "echo Obsolete",
+    "build:test": "echo skipped",
+    "build": "npm run clean && tsc -p .",
+    "check-format": "prettier --list-different --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"*.{js,json}\"",
+    "clean": "rimraf dist *.log",
+    "execute:samples": "echo skipped",
+    "format": "prettier --write --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"*.{js,json}\"",
+    "integration-test:browser": "echo skipped",
+    "integration-test:node": "echo skipped",
+    "integration-test": "npm run integration-test:node && npm run integration-test:browser",
+    "lint": "eslint package.json src --ext .ts",
+    "lint:fix": "eslint package.json src --ext .ts --fix --fix-type [problem,suggestion]",
+    "pack": "npm pack 2>&1",
+    "test:browser": "npm run clean && npm run build:test && npm run unit-test:browser && npm run integration-test:browser",
+    "test:node": "npm run build && npm run unit-test:node && npm run integration-test:node",
+    "test": "npm run build && npm run unit-test:node && rollup -c 2>&1 && npm run unit-test:browser && npm run integration-test",
+    "unit-test:browser": "echo skipped",
+    "unit-test:node": "echo skipped",
+    "unit-test": "npm run unit-test:node && npm run unit-test:browser"
+  },
+  "sideEffects": true,
+  "private": false,
+  "devDependencies": {
+    "@azure/eslint-plugin-azure-sdk": "^3.0.0",
+    "@types/node": "^12.0.0",
+    "eslint": "^7.15.0",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
+    "typescript": "~4.2.0"
+  }
+}

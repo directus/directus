@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.STSServiceException = void 0;
+const tslib_1 = require("tslib");
+tslib_1.__exportStar(require("./STS"), exports);
+tslib_1.__exportStar(require("./STSClient"), exports);
+tslib_1.__exportStar(require("./commands"), exports);
+tslib_1.__exportStar(require("./defaultRoleAssumers"), exports);
+tslib_1.__exportStar(require("./models"), exports);
+var STSServiceException_1 = require("./models/STSServiceException");
+Object.defineProperty(exports, "STSServiceException", { enumerable: true, get: function () { return STSServiceException_1.STSServiceException; } });

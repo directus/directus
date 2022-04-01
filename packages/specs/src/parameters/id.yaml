@@ -1,6 +1,0 @@
-description: Index
-name: id
-in: path
-required: true
-schema:
-  type: integer
