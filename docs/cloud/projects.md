@@ -38,12 +38,12 @@ a Team's Projects, follow the steps below.
 The Community tier offers a completely free Directus Project, perfect to spin-up hobby projects, demo Directus Cloud,
 test a proof of concept or any other non-production activity. Community Projects come with the following configurations.
 
-- **Project Name** — Custom.
-- **Project URL** — Random.
-- [Datacenter](#data-processing) — `United States, East`.
-- [Node Type](#node-types) — Community Node.
-- [Load Balancing](#load-balancing) — One Active Node.
-- [Auto-Scaling](#auto-scaling) — Not Available.
+- **Project Name** — Custom. _This can be changed at any time with no impact on the Project_.
+- **Project URL** — Random URL: `aa3i82.directus.app`. _This cannot be changed_.
+- [Datacenter Region](/cloud/glossary/#data-processing) — `United States, East`.
+- [Node Type](/cloud/glossary/#node-types) — Community Node.
+- [Load Balancing](/cloud/glossary/#load-balancing) — One Active Node.
+- [Auto-Scaling](/cloud/glossary/#auto-scaling) — Not Available.
 - **Starting Template** — Create an Empty Project or a Demo Project with dummy data.
 
 To create a Community Project, follow the steps below.
@@ -53,7 +53,7 @@ To create a Community Project, follow the steps below.
 3. Click **"Create Project"**.
 4. Set the Project Name.
 5. Select the Community tier.
-6. Scroll to the bottom of the screen and choose a [Starting Template](/cloud/glossary/#projects).
+6. Scroll to the bottom of the screen and choose a Starting Template.
 7. Click **"Create Project"**.
 
 :::tip Project Name
@@ -75,21 +75,26 @@ Create a [Standard Project](#create-a-standard-project).
 ![Create a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/create-a-project-20220228A.webp)
 
 The Standard tier is perfect for most production-ready use cases. These Projects come with custom URLs, daily
-[backups](/cloud/glossary/#backups), as well as upgraded server power, which can be scaled up and down as needed. To
-create a Standard Project, follow the steps below. [Learn More](/cloud/glossary/#projects)
+[backups](/cloud/glossary/#backups), as well as upgraded server power, which can be scaled up and down as needed.
+
+Standard Projects come with the following configuration options.
+
+- **Project Name** — Custom. _This can be changed at any time with no impact on the Project_.
+- **Project URL** — Custom URL: `your-custom-url.directus.app`. _This cannot be changed_.
+- [Datacenter Region](/cloud/glossary/#data-processing) — `United States, East` or `Europe, Frankfurt`.
+- [Node Type](/cloud/glossary/#node-types) — General Purpose or Performance Tier Nodes.
+- [Load Balancing](/cloud/glossary/#load-balancing) — 1-6 Active Nodes.
+- [Auto-Scaling](/cloud/glossary/#auto-scaling) — 0-5 Standby Nodes.
+
+To create a Standard Project, follow the steps below. [Learn More](/cloud/glossary/#projects)
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
 3. Click the Team you wish to create a Project under.
 4. Click **"Create Project"**.
-5. Set the Project Name.
+5. Set the Project Name as desired.
 6. Select the Standard tier.
-7. Set the following [configuration options](/cloud/glossary/#community) as desired:
-   - Project URL
-   - Datacenter Region
-   - Node Type
-   - Load Balancing
-   - Auto-Scaling
+7. Set the configuration options as desired.
 8. Click **"Proceed to Checkout"**. You will be taken to a checkout page.
 9. Enter payment information and hit **"Subscribe"**.
 
@@ -102,8 +107,9 @@ Upgrade to an [Enterprise Project](#create-an-enterprise-project).
 
 ## Create an Enterprise Project
 
-Enterprise tier offers power and scale to meet any Project's needs, 15+ [Datacenter regions](#data-processing), upgraded
-[support options](#support-options), and much more. [Learn More](/cloud/glossary/#projects)
+Enterprise tier offers power and scale to meet any Project's needs, 19
+[Datacenter regions](/cloud/glossary/#data-processing), upgraded [support options](#support-options), and much more.
+[Learn More](/cloud/glossary/#projects)
 
 :::tip Ready to to go Enterprise?
 
@@ -118,10 +124,6 @@ Enterprise tier offers power and scale to meet any Project's needs, 15+ [Datacen
 </video>
 
 At some point, you will want to login and access the actual managed Project. You can go the Project's URL directly.
-Community Project URLS are a random string: `abc123.directus.app`. Standard Projects offer customizable URLs:
-`some-custom-url.directus.app`. Your desired URL must be available, not in use by another Project. It cannot be changed
-after Project creation.
-
 There also are two ways to access a Project from within the Cloud Dashboard. To access a Project from the Cloud
 Dashboard, follow the steps below.
 

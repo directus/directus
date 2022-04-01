@@ -141,9 +141,18 @@ via the schema endpoints. For Enterprise clients, the Directus Team will work wi
 
 ## Data Processing
 
-In order to optimize your Project and help you meet any local data compliance laws such as GDPR, Standard and Enterprise
-Projects allow you to choose the region your Project is hosted in. There are 19 Datacenter Regions available to
-Enterprise Projects and 2 Datacenter Regions available to Standard Projects.
+The location you choose to Host your Project can have measurable impact. In order to optimize your Project as well as
+help you meet any local data compliance laws such as GDPR, Standard and Enterprise Projects allow you to choose the
+region your Project is hosted in. There are 19 Datacenter Regions available to Enterprise Projects and 2 Datacenter
+Regions available to Standard Projects.
+
+![Datacenter Regions](https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/datacenter-region-20220331A.webp)
+
+:::tip
+
+Community Projects are hosted in the `United States, East` Region.
+
+:::
 
 ## Encryption and Security
 
@@ -340,7 +349,7 @@ for a production-ready environment.
 **Standard**\
 Standard Projects are created using multi-tenant architecture. However, if your neighbor's Project gets busy, it will not
 impact your Project because each Standard Project is scoped to one container per Project with dedicated minimum resources.
-However, when needed, it can expand beyond this and tap into resources which are not dedicated by other Projects.
+However, when needed, it can expand beyond this and tap into resources which are not dedicated to other Projects.
 
 **Enterprise**\
 Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project. No neighbors.
