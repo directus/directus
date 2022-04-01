@@ -137,6 +137,8 @@ export class CollectionsService {
 
 				return payload.collection;
 			});
+
+			return payload.collection;
 		} finally {
 			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
@@ -144,8 +146,6 @@ export class CollectionsService {
 
 			await clearSystemCache();
 		}
-
-		return payload.collection;
 	}
 
 	/**
@@ -325,6 +325,8 @@ export class CollectionsService {
 			} else {
 				await collectionItemsService.createOne({ ...payload.meta, collection: collectionKey }, opts);
 			}
+
+			return collectionKey;
 		} finally {
 			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
@@ -332,8 +334,6 @@ export class CollectionsService {
 
 			await clearSystemCache();
 		}
-
-		return collectionKey;
 	}
 
 	/**

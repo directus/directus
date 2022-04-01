@@ -379,6 +379,8 @@ export class FieldsService {
 					accountability: this.accountability,
 				}
 			);
+
+			return field.field;
 		} finally {
 			if (this.cache && env.CACHE_AUTO_PURGE) {
 				await this.cache.clear();
@@ -386,8 +388,6 @@ export class FieldsService {
 
 			await clearSystemCache();
 		}
-
-		return field.field;
 	}
 
 	async deleteField(collection: string, field: string): Promise<void> {
