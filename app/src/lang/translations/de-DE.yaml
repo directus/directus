@@ -1003,6 +1003,7 @@ fields:
     project_url: Projekt-URL
     project_color: Projektfarbe
     project_logo: Projektlogo
+    default_language: Standardsprache
     branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
