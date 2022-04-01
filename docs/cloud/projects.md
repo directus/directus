@@ -6,16 +6,27 @@
 
 [[toc]]
 
+A Cloud Project is a Directus Instance, the [Infrastructure](/cloud/glossary/#infrastructure) it runs on, as well as all
+its [data and file assets](/cloud/glossary/#asset-storage). All Cloud Projects come
+[quota-free](/cloud/glossary/#quotas) and include all [Cloud Exclusives](/cloud/glossary/#cloud-exclusives). See
+[Support Options](/cloud/glossary/#support-options) to find out how to get help on your Project.
+
+There are 3 different Project tiers on Directus Cloud: [Community](#create-a-community-project),
+[Standard](#create-a-standard-project), and [Enterprise](#create-an-enterprise-project). A side-by-side comparison of
+what is included in each tier can be found on the [Pricing Page](https://directus.io/pricing/).
+
+See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects interrelate.
+
 ## View a Team's Projects
 
 ![View Projects](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/view-projects-20220322A.webp)
 
 All of a Team's Projects are listed on the Projects Page. For each Project, the following information and shortcuts are
 provided. On Project creation, the provisioning progress will be displayed until fully complete. The icon on the far
-left indicates whether it is online, offline or [inactive](#resume-a-community-project). Next to this, the Project Name
-and Project Slug are given. On the right, the Project tier is displayed, followed by shortcuts which allow you to
-<span mi icon>edit</span> edit and <span mi icon>launch</span> access the Project. To view a Team's Projects, follow the
-steps below.
+left indicates whether it is online, [offline](/cloud/glossary/#system-status) or [paused](#resume-a-community-project).
+Next to this, the Project Name and Project Slug are given. On the right, the Project tier is displayed, followed by
+shortcuts which allow you to <span mi icon>edit</span> edit and <span mi icon>launch</span> access the Project. To view
+a Team's Projects, follow the steps below.
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
@@ -25,31 +36,37 @@ steps below.
 ![Create a Community Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/create-a-community-project-20220329A.webp)
 
 The Community tier offers a completely free Directus Project, perfect to spin-up hobby projects, demo Directus Cloud,
-test a proof of concept or any other non-production activity. To create a Community Project, follow the steps below.
-[Learn More](/cloud/glossary/#projects)
+test a proof of concept or any other non-production activity. Community Projects come with the following configurations.
+
+- **Project Name** — Custom.
+- **Project URL** — Random.
+- [Datacenter](#data-processing) — `United States, East`.
+- [Node Type](#node-types) — Community Node.
+- [Load Balancing](#load-balancing) — One Active Node.
+- [Auto-Scaling](#auto-scaling) — Not Available.
+- **Starting Template** — Create an Empty Project or a Demo Project with dummy data.
+
+To create a Community Project, follow the steps below.
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
 3. Click **"Create Project"**.
-4. Set the Project Name.\
-   _Note: This is the only [customizable configuration](/cloud/glossary/#community) on Community Projects._
+4. Set the Project Name.
 5. Select the Community tier.
 6. Scroll to the bottom of the screen and choose a [Starting Template](/cloud/glossary/#projects).
 7. Click **"Create Project"**.
+
+:::tip Project Name
+
+The Project Name displays within Directus Cloud. This can be changed at any time and is purely for organizational
+purposes, it has no impact on the Project itself.
+
+:::
 
 :::tip Standard Tier
 
 Need a production-ready Project that can scale as needed?\
 Create a [Standard Project](#create-a-standard-project).
-
-:::
-
-:::tip Project Name and Project URL
-
-The Project Name displays within Directus Cloud. This can be changed at any time and is purely for organizational
-purposes, it has no impact on the Project itself. The Project URL is how you access the actual Project being created.
-Standard Projects offer custom URLs, which are displayed as follows: `some-custom-url.directus.app`. Your desired URL
-must be available, not in use by another Project. It cannot be changed after Project creation.
 
 :::
 
@@ -100,9 +117,13 @@ Enterprise tier offers power and scale to meet any Project's needs, 15+ [Datacen
   <source src="https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/access-a-project-20220329A.mp4" type="video/mp4">
 </video>
 
-At some point, you will want to login and access the actual managed Project. You can go the Project's URL directly,
-however there also are two ways to access a Project from within the Cloud Dashboard. To access a Project, follow the
-steps below.
+At some point, you will want to login and access the actual managed Project. You can go the Project's URL directly.
+Community Project URLS are a random string: `abc123.directus.app`. Standard Projects offer customizable URLs:
+`some-custom-url.directus.app`. Your desired URL must be available, not in use by another Project. It cannot be changed
+after Project creation.
+
+There also are two ways to access a Project from within the Cloud Dashboard. To access a Project from the Cloud
+Dashboard, follow the steps below.
 
 1. Open the Team Menu in the Dashboard Header and click the desired Team.
 2. Click **"Projects"** to enter the Projects Page.\

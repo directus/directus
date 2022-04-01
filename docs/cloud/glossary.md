@@ -2,20 +2,6 @@
 
 [[toc]]
 
-## Accounts
-
-An Account is your SuperAdmin profile, used to create and join Teams, [pay bills](#billing), and manage Projects. See
-the [Overview](/cloud/overview) to learn how Accounts, [Teams](#teams) and [Projects](#projects) interrelate.
-[Learn More](/cloud/accounts)
-
-:::tip Accounts vs Users
-
-To avoid confusion, "User" is the term for user profiles in a Directus Project, while the terms "Account" and "Team
-Member" are used in the context of Directus Cloud. Accounts on Directus Cloud and Users in a Directus Project are two
-separate systems.
-
-:::
-
 ## Asset Storage
 
 Directus Core allows asset storage for any type of file. This applies on all Cloud Projects. However, on Directus Cloud,
@@ -40,8 +26,9 @@ Version-locking is available on Enterprise Projects.
 ## Backups
 
 By default, file assets and databases are backed up once per day on all Standard and Enterprise Projects. Additionally,
-the frequency can be reconfigured as needed on Enterprise Projects. In the event of an emergency, such as your Node
-crashing, your data will be safe. If you need access to backed-up data, [contact us](https://directus.io/contact/)
+Enterprise customers can work with out team for more tailored backup solutions. In the event of an emergency, such as
+your Node crashing, your data will be safe. If you need access to your backed-up data,
+[contact us](https://directus.io/contact/)
 
 :::warning
 
@@ -49,7 +36,7 @@ Please note that Community Projects are not backed up.
 
 :::
 
-## Billing
+## Monthly Billing
 
 Since our Community tier is completely free, and our Enterprise tier pricing is individually tailored based on customer
 needs, this section will focus on our pay-as-you-go Standard tier.
@@ -133,9 +120,19 @@ well.
 
 ## Cloud Exclusives
 
-These are [Extensions](#extensions) to Directus Core which are only available on Cloud Projects _(such as the Kanban
-Layout for project management)_. Cloud Exclusives development is managed by the Core Team, so these will stay up-to-date
-with the [latest version of Directus](#automatic-updates).
+These are [Extensions](#extensions) to Directus Core which are only available on [Directus Cloud](/cloud/overview).
+Cloud Exclusives development is managed by the Core Team, so these will stay up-to-date with the
+[latest version of Directus](#automatic-updates). Examples include:
+
+- The Kanban Layout
+
+:::tip
+
+Directus Team will is always adding more Cloud Exclusives, so check back frequently to see the latest and greatest on
+Directus Cloud. Looking to sponsor development of an Extension or Cloud Exclusive?
+[Contact Us](https://directus.io/contact/)
+
+:::
 
 ## Data Portability
 
@@ -145,7 +142,7 @@ via the schema endpoints. For Enterprise clients, the Directus Team will work wi
 ## Data Processing
 
 In order to optimize your Project and help you meet any local data compliance laws such as GDPR, Standard and Enterprise
-Projects allow you to choose the region your Project is hosted in. There are 15 Datacenter Regions available to
+Projects allow you to choose the region your Project is hosted in. There are 19 Datacenter Regions available to
 Enterprise Projects and 2 Datacenter Regions available to Standard Projects.
 
 ## Encryption and Security
@@ -179,11 +176,10 @@ data will be delivered with the lowest latency.
 
 ## Infrastructure
 
-In the context of these docs, Infrastructure refers to the hard and soft tech specs to the equipment running your
-Directus Project. This includes the database, [database tenancy](#multi-tenancy), [Node Type](#node-types),
-[data storage region](#data-portability), [rate limiting](#rate-limiting), etc. Infrastructure differs by Project tier.
-Refer to [Projects](#projects) as well as the Infrastructure section on the [pricing page](https://directus.io/pricing/)
-for side-by-side comparisons.
+In the context of these docs, Infrastructure refers refers to the hardware running your Project including the
+[database](#multi-tenancy), [serverless nodes](#nodes), [asset storage](#asset-storage), and [global CDN](#global-cdn).
+Infrastructure differs by Project tier. Refer to [Projects](/cloud/projects) as well as the Infrastructure section on
+the [pricing page](https://directus.io/pricing/) for side-by-side comparisons.
 
 ## Nodes
 
@@ -207,17 +203,16 @@ Each Node Type provides a different level of processing power.
   scale, production-ready use-cases.
 
 - **Performance Tier**\
-  Performance Tier Nodes are the upgraded Node Type offered on Standard Projects. These Nodes provide higher processing power
-  and may need to be implemented on Projects under unique conditions _(e.g. a Project frequently sends and receives larger
-  files and data sets)_.
+  Performance Tier Nodes are the upgraded Node Type offered on Standard Projects, which may provide better performance under
+  certain conditions.
 
 - **Enterprise**\
   Node configuration options are flexible and customizable, tailored to the Project's needs.
 
 :::tip
 
-In Standard Projects, the Node Type configured [and associated cost per hour](#billing) will apply to both Active and
-Standby Nodes.
+In Standard Projects, the Node Type configured [and associated cost per hour](#monthly-billing) will apply to both
+Active and Standby Nodes.
 
 :::
 
@@ -243,7 +238,7 @@ Standby Nodes stay turned-off until traffic starts to take up significant system
 activate one-by-one as needed to safely handle the increase in traffic. Activation occurs within just a few moments.
 
 Standby Nodes are not required, however you do not pay when Standby Nodes are disabled. For more pricing information,
-see [billing](#billing).
+see [billing](#monthly-billing).
 
 ### Auto-scaling
 
@@ -252,35 +247,11 @@ at safe levels.
 
 :::tip Optimal Node Configuration
 
-As noted under [Billing](#billing), Projects can be reconfigured as needed. The
+As noted under [Billing](#monthly-billing), Projects can be reconfigured as needed. The
 [Project Monitor Page](/cloud/projects/#monitor-a-project) provides performance analytics to help inform Node
 configuration decisions.
 
 :::
-
-## Projects
-
-A Cloud Project is a Directus Instance along with its linked database and all other saved assets. All Cloud Projects
-come [quota-free](#quotas) and include all [Cloud Exclusives](#cloud-exclusives).
-
-Read the [Projects documentation](/cloud/projects) to learn how to manage Projects. See
-[Support Options](#support-options) to find out how to get help on your Project.
-
-There are 3 different Project tiers on Directus Cloud. A side-by-side comparison of what is included in each tier can be
-found on the [Pricing Page](https://directus.io/pricing/). The following highlights the configuration options available
-at each Project tier.
-
-### Community
-
-A Community Project comes with the following configurations.
-
-- **Project Name** — Custom.
-- **Project URL** — Random.
-- [Datacenter](#data-processing) — `United States, East`.
-- [Node Type](#node-types) — Community Node.
-- [Load Balancing](#load-balancing) — One Active Node.
-- [Auto-Scaling](#auto-scaling) — Not Available.
-- **Starting Template** — Create an Empty Project or a Demo Project with dummy data.
 
 ### Standard
 
@@ -307,7 +278,7 @@ Enterprise Projects are custom-tailored, offering power and scale to meet any Pr
 ## Quotas
 
 Directus does not impose _arbitrary_ software-based limits of any kind. So for things like Collections, Roles, or Users-
-whether you have 1 or 10,000 of these, you are free to build out your Project as needed, with no up-charge. However,
+whether you have 10 or 10,000 of these, you are free to build out your Project as needed, with no up-charge. However,
 actual Project performance is going to depend on Node configuration, so there are hard technical limits. For details,
 see [Cloud Policies](https://directus.io/cloud-policies/)
 
@@ -351,16 +322,10 @@ Looking for Basic or Premium Support on a self-hosted Project? [Contact Sales](h
   <source src="https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/system-status-20220329A.mp4" type="video/mp4">
 </video>
 
-Click <span mi icon>check</span> in the Dashboard Header to navigate to the System Status Page. This page displays the
-current connectivity status of Directus Cloud, status on individual Projects by URL, and also provides a daily Incidents
-log. This Page is where to _find out what happened_ in the super rare event that the network slows down or goes down.
+Click <span mi icon>check</span> in the Dashboard Header to navigate to the System Status Page. This Page is where to
+_find out what happened_ in the super rare event that the network slows down or goes offline. You can check the current
+connectivity status of Directus Cloud, status on individual Projects by URL, and also provides a daily Incidents log.
 For more information, see [Cloud Policies](https://directus.io/cloud-policies/#)
-
-## Teams
-
-In the Cloud Dashboard, a Team groups [Accounts](#accounts), giving them full access to the same [Projects](#projects).
-See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects interrelate. Read the
-[Teams documentation](/cloud/teams) to learn how to manage Teams.
 
 ## Multi-tenancy
 
@@ -373,11 +338,12 @@ Community project databases are technically single-tenant, but also file-based, 
 for a production-ready environment.
 
 **Standard**\
-Standard Projects are created using multi-tenant architecture. However, each Standard Project is scoped to one container
-per Project, with no bleeding into other Projects. If your neighbor's Project gets busy, it will not impact your Project.
+Standard Projects are created using multi-tenant architecture. However, if your neighbor's Project gets busy, it will not
+impact your Project because each Standard Project is scoped to one container per Project with dedicated minimum resources.
+However, when needed, it can expand beyond this and tap into resources which are not dedicated by other Projects.
 
 **Enterprise**\
-Databases on Enterprise Projects are single-tenant, offering 100% isolation. No neighbors.
+Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project. No neighbors.
 
 :::tip
 

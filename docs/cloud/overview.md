@@ -18,10 +18,8 @@ logged in, you create or join a Team and your Account then becomes a Member of t
 within a Team.
 
 Accounts can be Members on multiple Teams. All Team Members have SuperAdmin privileges to manage the Team's Projects,
-Project [billing](/cloud/glossary/#billing), other Team Members, and the Team itself. Teams can have multiple Team
-Members and multiple Projects. Projects can only be managed by one Team. Projects cannot be transferred to new Teams.
-
-![Cloud Hierarchy](image.webp)
+Project [billing](/cloud/glossary/#monthly-billing), other Team Members, and the Team itself. Teams can have multiple
+Team Members and multiple Projects. Projects can only be managed by one Team and cannot be transferred to new Teams.
 
 ## Getting Started
 
@@ -52,18 +50,18 @@ layout relates to each of these.
 
 ## Teams
 
-- **Team Members** — [View, invite and remove](/cloud/teams) other Team Members or leave a Team yourself.
+- [Team Members](/cloud/teams) — View, invite and remove other Team Members or leave a Team yourself.
 
-- **Team Activity** — [View Team activity](/cloud/teams/#view-team-activity) like Project creation and deletion, billing
+- [Team Activity](/cloud/teams/#view-team-activity) — View Team activity like Project creation and deletion, billing
   information changes, Member invitations and removals, etc.
 
-- **Team Settings** — [Edit the Team Name and Team Slug](/cloud/teams/#update-team-settings), as well as
-  [destroy the Team](/cloud/teams/#destroy-a-team).
+- [Team Settings](/cloud/teams/#update-team-settings) — Edit the Team Name and Team Slug, as well as
+  [destroy the Team](/cloud/teams/#update-team-settings).
 
 ## Projects
 
-- **Team Projects** — View and access all Projects managed within a Team. Click a Project to enter the Product Details
-  Page and [access, monitor, edit or delete a Project](/cloud/projects).
+- [Team Projects](/cloud/projects) — View and access all Projects managed within a Team. Click a Project to enter the
+  Product Details Page and access, monitor, edit or delete a Project.
 
-- **Team Billing** — [View and manage billing details](/cloud/teams/#manage-billing) such as credit card information,
-  usage, subscriptions, and receipts.
+- [Team Billing](/cloud/teams/#manage-billing) — View and manage billing details such as credit card information, usage,
+  subscriptions, and receipts.

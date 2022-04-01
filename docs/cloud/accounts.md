@@ -5,6 +5,13 @@
 
 [[toc]]
 
+An Account is your portal to Directus Cloud, used to manage Teams, Team Members, Projects, and
+[billing](/cloud/glossary/#monthly-billing). To avoid confusion, "User" is the term for user profiles in a Directus
+Project, while the terms "Account" and "Team Member" are used in the context of Directus Cloud. _Accounts on Directus
+Cloud_ and _Users in a Directus Project_ are two separate systems.
+
+See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects interrelate.
+
 ## Create Account and Login
 
 ![Create Account and Login](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/login-page-20220225A.webp)

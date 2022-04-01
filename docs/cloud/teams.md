@@ -1,10 +1,21 @@
 # Cloud Teams
 
-> Each Cloud Project is nested within one Team. A Team is an organizational system which groups Accounts together as
-> Team Members and provides consolidated billing on its nested Projects. Teams are free, so create as many as you need
-> to appropriately organize Team Members and Project billing.
+> A Team is an organizational system which groups Accounts together as Team Members and provides consolidated billing on
+> its nested Projects.
 
 [[toc]]
+
+Teams provide an organizational system within the Cloud Dashboard which allows individuals to separate or consolidate
+Projects and payment methods as well as manage Projects independently or with other Team Members.
+
+For example, a company's IT department can manage Projects and Project billing across multiple departments, each with
+their own department-specific payment methods, and with each department administrator's access limited to their
+respective Project(s) and payment methods. Similarly, Agencies or freelance developers with multiple customers can
+access all their customers' Projects, while limiting each customer's access by adding them to the Team that holds their
+respective Project(s) and payment methods. Teams are free, so create as many as you need to appropriately group Team
+Members, Projects and payment methods.
+
+See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects interrelate.
 
 ## Create a Team
 
@@ -53,7 +64,7 @@ follow the steps below.
 ![View Billing Details](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/view-billing-details-20220322A.webp)
 
 Please follow these steps to see billing details such as credit available to Team Projects, total active subscriptions,
-and invoice receipts. [Learn More](/cloud/glossary/#billing)
+and invoice receipts. [Learn More](/cloud/glossary/#monthly-billing)
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Billing"** to enter the Billing Details Page.
@@ -61,6 +72,15 @@ and invoice receipts. [Learn More](/cloud/glossary/#billing)
 ## Manage Billing
 
 ![Manage Billing](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/manage-billing-20220322A.webp)
+
+Follow the steps below to change a default payment method, add or remove additional payment methods, or change other
+billing details.
+
+1. Open the Team Menu in the Dashboard Header and select the desired Team.
+2. Click **"Billing"** to enter the Billing Details Page.
+3. Click **"Manage Billing"** to enter the Stripe payments gateway.
+4. Adjust payment methods and details as needed.
+5. Click **"Return to Directus Cloud"**.
 
 ### Team Billing
 
@@ -92,23 +112,7 @@ up. Then the default payment method will be used.
 Bills are invoiced on a calendar monthly basis, so each new billing period begins after exactly one month. When a
 Project is destroyed, the bill is processed immediately. As mentioned in the previous section, bills are invoiced
 per-Project. So, if a Team has 4 Standard Projects, it will be charged 4 times each month.
-[Learn More](/cloud/glossary/#billing)
-
-Follow the steps below to change a default payment method, add or remove additional payment methods, or change other
-billing details.
-
-1. Open the Team Menu in the Dashboard Header and select the desired Team.
-2. Click **"Billing"** to enter the Billing Details Page.
-3. Click **"Manage Billing"** to enter the Stripe payments gateway.
-4. Adjust payment methods and details as needed.
-5. Click **"Return to Directus Cloud"**.
-
-:::tip What's a calendar monthly basis?
-
-This is the period from a day of one month to the corresponding day of the next month, if such exists. If not, it runs
-to the last day of the next month _(e.g. January 3 to February 3 or from January 31 to February 29)_.
-
-:::
+[Learn More](/cloud/glossary/#monthly-billing)
 
 :::tip Stripe Payment
 
