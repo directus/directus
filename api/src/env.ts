@@ -84,6 +84,8 @@ const defaults: Record<string, any> = {
 	RELATIONAL_BATCH_SIZE: 25000,
 
 	EXPORT_BATCH_SIZE: 5000,
+
+	FILE_METADATA_ALLOWLIST: '',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -100,6 +102,8 @@ const typeMap: Record<string, string> = {
 
 	DB_EXCLUDE_TABLES: 'array',
 	IMPORT_IP_DENY_LIST: 'array',
+
+	FILE_METADATA_ALLOWLIST: 'array',
 };
 
 let env: Record<string, any> = {

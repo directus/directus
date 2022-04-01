@@ -564,6 +564,15 @@ STORAGE_AWS_REGION="us-east-2"
 STORAGE_AWS_BUCKET="my-files"
 ```
 
+### Metadata
+
+When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+purposes, collection of additional metadata must be configured:
+
+| Variable                  | Description                                                                                                                     | Default Value |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `FILE_METADATA_ALLOWLIST` | A comma-separated list of metadata keys to collect during file upload. Unavailable fields are excluded from the saved metadata. | --            |
+
 ## Assets
 
 | Variable                               | Description                                                                                                                             | Default Value |
