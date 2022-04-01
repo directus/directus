@@ -26,9 +26,7 @@ import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted } from
 import { useAppStore, useUserStore, useServerStore } from '@/stores';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import useSystem from '@/composables/use-system';
-
 import setFavicon from '@/utils/set-favicon';
-import { setLanguage } from '@/lang/set-language';
 
 export default defineComponent({
 	setup() {
