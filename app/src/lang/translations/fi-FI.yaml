@@ -945,6 +945,7 @@ fields:
     project_url: Projektin osoite
     project_color: Projektin väri
     project_logo: Projektin logo
+    default_language: Oletuskieli
     branding: Brändäys & tyyli
     public_foreground: Julkinen etuala
     public_background: Julkinen tausta
