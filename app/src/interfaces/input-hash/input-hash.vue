@@ -18,6 +18,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 
 export default defineComponent({
+	inheritAttrs: false,
 	props: {
 		value: {
 			type: String,
