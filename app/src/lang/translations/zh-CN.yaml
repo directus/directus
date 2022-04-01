@@ -1023,6 +1023,7 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
+    default_language: 默认语言
     branding: 品牌和样式
     public_foreground: 公共前景
     public_background: 公共背景
