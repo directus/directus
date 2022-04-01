@@ -84,17 +84,7 @@ async function save() {
 		if (props.flow) {
 			await api.patch(`/flows/${props.flow.id}`, values, { params: { fields: ['id'] } });
 		} else {
-			const response = await api.post(
-				'/flows',
-				{
-					...values,
-					trigger: 'action',
-					options: {
-						event: 'items.create',
-					},
-				},
-				{ params: { fields: ['id'] } }
-			);
+			const response = await api.post('/flows', values, { params: { fields: ['id'] } });
 			router.push(`/settings/flows/${response.data.data.id}`);
 		}
 		await flowsStore.hydrate();

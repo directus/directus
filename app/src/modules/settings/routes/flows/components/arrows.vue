@@ -1,7 +1,7 @@
 <template>
 	<div class="arrow-container">
 		<svg :width="size.width" :height="size.height" class="arrows">
-			<path v-for="(arrow, index) in arrows" :key="index" :d="arrow" />
+			<path v-for="(arrow, index) in arrows" :key="index" :class="arrow.type" :d="arrow.d" />
 		</svg>
 	</div>
 </template>
@@ -10,7 +10,7 @@
 import { Vector2 } from '@/utils/vector2';
 import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
-import { ArrowInfo } from './operation.vue';
+import { ArrowInfo, Target } from './operation.vue';
 
 const props = defineProps<{
 	panels: Record<string, any>[];
@@ -35,7 +35,7 @@ const size = computed(() => {
 });
 
 const arrows = computed(() => {
-	const arrows: string[] = [];
+	const arrows: { d: string; type: Target }[] = [];
 
 	for (const panel of props.panels) {
 		const resolveChild = props.panels.find((pan) => pan.id === panel.resolve);
@@ -43,18 +43,30 @@ const arrows = computed(() => {
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
-			arrows.push(createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y));
+			arrows.push({
+				d: createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y),
+				type: 'resolve',
+			});
 		} else if (resolveChild) {
 			const { x, y, toX, toY } = getPoints(panel, RESOLVE_OFFSET, resolveChild);
-			arrows.push(createLine(x, y, toX as number, toY as number));
+			arrows.push({
+				d: createLine(x, y, toX as number, toY as number),
+				type: 'resolve',
+			});
 		}
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
 			const { x, y } = getPoints(panel, REJECT_OFFSET);
-			arrows.push(createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y));
+			arrows.push({
+				d: createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y),
+				type: 'reject',
+			});
 		} else if (rejectChild) {
 			const { x, y, toX, toY } = getPoints(panel, REJECT_OFFSET, rejectChild);
-			arrows.push(createLine(x, y, toX as number, toY as number));
+			arrows.push({
+				d: createLine(x, y, toX as number, toY as number),
+				type: 'reject',
+			});
 		}
 	}
 
@@ -194,6 +206,10 @@ const arrows = computed(() => {
 			fill: transparent;
 			stroke: var(--primary);
 			stroke-width: 2px;
+
+			&.reject {
+				stroke: var(--secondary);
+			}
 		}
 	}
 }

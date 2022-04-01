@@ -68,6 +68,7 @@
 						:edit-mode="editMode"
 						:panel="panel"
 						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
+						:parent="parentPanels[panel.id]"
 						@create="createPanel"
 						@edit="editPanel"
 						@move="movePanelID = $event"
@@ -81,7 +82,7 @@
 			</v-workspace>
 		</div>
 
-		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" />
+		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" :first-open="firstOpen" />
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -162,7 +163,7 @@ import { nanoid } from 'nanoid';
 
 import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
-import Operation, { ArrowInfo } from './components/operation.vue';
+import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { AppPanel } from '@/components/v-workspace-panel.vue';
 import TriggerDetail from './components/trigger-detail.vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
@@ -179,7 +180,6 @@ const props = defineProps<{
 	operationId?: string;
 }>();
 
-const editMode = ref(false);
 const saving = ref(false);
 
 useShortcut('meta+s', () => {
@@ -199,6 +199,9 @@ const flow = computed<FlowRaw | undefined>({
 		stagedFlow.value = newFlow ?? {};
 	},
 });
+
+const firstOpen = computed(() => !flow.value?.trigger);
+const editMode = ref(firstOpen.value);
 
 async function toggleFlowActive() {
 	if (!flow.value) return;
@@ -235,7 +238,7 @@ async function deleteFlow() {
 
 // ------------- Manage Panels ------------- //
 
-const triggerDetailOpen = ref(false);
+const triggerDetailOpen = ref(firstOpen.value);
 const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 const panelsToBeDeleted = ref<string[]>([]);
 
@@ -286,6 +289,23 @@ const panels = computed(() => {
 	panels.push(trigger);
 
 	return panels;
+});
+
+const parentPanels = computed(() => {
+	return panels.value.reduce<Record<string, { id: string; type: Target }>>((acc, panel) => {
+		if (panel.resolve)
+			acc[panel.resolve] = {
+				id: panel.id,
+				type: 'resolve',
+			};
+		if (panel.reject)
+			acc[panel.reject] = {
+				id: panel.id,
+				type: 'reject',
+			};
+
+		return acc;
+	}, {});
 });
 
 let parentId: string | undefined = undefined;
@@ -503,6 +523,27 @@ function arrowStop() {
 	}
 	const nearPanel = getNearAttachment(arrowInfo.value?.pos);
 
+	if (nearPanel && isLoop(arrowInfo.value.id, nearPanel)) {
+		arrowInfo.value = undefined;
+		return;
+	}
+
+	// make sure only one arrow can be connected to an attachment
+	if (nearPanel && parentPanels.value[nearPanel]) {
+		const currentlyConnected = parentPanels.value[nearPanel];
+
+		if (currentlyConnected.id === '$trigger') {
+			flow.value = merge({}, flow.value, { operation: null });
+		} else {
+			stageOperationEdits({
+				edits: {
+					[currentlyConnected.type]: null,
+				},
+				id: currentlyConnected.id,
+			});
+		}
+	}
+
 	if (arrowInfo.value.id === '$trigger') {
 		flow.value = merge({}, flow.value, { operation: nearPanel ?? null });
 	} else {
@@ -517,9 +558,22 @@ function arrowStop() {
 	arrowInfo.value = undefined;
 }
 
+function isLoop(currentId: string, attachTo: string) {
+	let parent = currentId;
+	while (parent !== undefined) {
+		if (parent === attachTo) return true;
+		parent = parentPanels.value[parent]?.id ?? undefined;
+	}
+
+	return false;
+}
+
 function getNearAttachment(pos: Vector2) {
 	for (const panel of panels.value) {
-		const attachmentPos = new Vector2(panel.x * 20 + ATTACHMENT_OFFSET.x, panel.y * 20 + ATTACHMENT_OFFSET.y);
+		const attachmentPos = new Vector2(
+			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
+			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y
+		);
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
 	}
 	return undefined;

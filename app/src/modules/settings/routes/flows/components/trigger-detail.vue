@@ -1,19 +1,33 @@
 <template>
 	<v-drawer
 		:model-value="open"
-		:title="'Change the Trigger'"
+		:title="t(firstOpen ? 'create_trigger' : 'change_trigger')"
 		:subtitle="t('panel_options')"
 		icon="offline_bolt"
 		persistent
+		:cancelable="!firstOpen"
 		@cancel="$emit('update:open', false)"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded @click="saveTrigger">
+			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!currentTrigger" @click="saveTrigger">
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
 		<div class="content">
+			<div class="grid">
+				<div class="field full">
+					<div class="type-label">{{ t('name') }}</div>
+					<v-input v-model="name" :placeholder="t('trigger_name')">
+						<template #append>
+							<v-icon name="title" />
+						</template>
+					</v-input>
+				</div>
+			</div>
+
+			<v-divider />
+
 			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" />
 
 			<v-form
@@ -28,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { DeepPartial, Field, FlowRaw, TriggerType } from '@directus/shared/types';
+import { FlowRaw, TriggerType } from '@directus/shared/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
@@ -38,18 +52,30 @@ const { t } = useI18n();
 const props = defineProps<{
 	open: boolean;
 	flow?: FlowRaw;
+	firstOpen: boolean;
 }>();
-const emit = defineEmits(['update:open', 'update:flow']);
+const emit = defineEmits(['update:open', 'update:flow', 'first-save']);
 
 const flowEdits = ref<{
 	trigger?: TriggerType;
-	options?: Record<string, any>;
+	options: Record<string, any>;
 }>({
 	trigger: props.flow?.trigger ?? undefined,
-	options: props.flow?.options,
+	options: props.flow?.options ?? {
+		name: '',
+	},
+});
+
+const name = computed({
+	get: () => flowEdits.value.options?.name ?? '',
+	set: (newName) => {
+		flowEdits.value.options.name = newName;
+	},
 });
 
 function saveTrigger() {
+	if (!currentTrigger.value) return;
+
 	emit('update:flow', {
 		...(props.flow ?? {}),
 		...flowEdits.value,

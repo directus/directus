@@ -4,7 +4,7 @@
 		:name="panel.panel_name"
 		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
 		class="block-container"
-		:class="{ [type]: true, 'edit-mode': editMode }"
+		:class="{ [type]: true, 'edit-mode': editMode, loner: parent === undefined }"
 		:edit-mode="editMode"
 		:resizable="false"
 		:show-options="type !== 'trigger'"
@@ -18,7 +18,7 @@
 	>
 		<template #body>
 			<div class="button add-resolve" x-small icon rounded @pointerdown.stop="pointerdown('resolve')">
-				<v-icon name="check" small></v-icon>
+				<v-icon name="check_circle"></v-icon>
 			</div>
 			<div
 				v-if="panel.id !== '$trigger'"
@@ -28,9 +28,16 @@
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon name="close" small></v-icon>
+				<v-icon name="cancel"></v-icon>
 			</div>
-			<div v-if="panel.id !== '$trigger'" x-small icon rounded class="button attachment">
+			<div
+				v-if="panel.id !== '$trigger'"
+				x-small
+				icon
+				rounded
+				class="button attachment"
+				:class="{ reject: parent?.type === 'reject' }"
+			>
 				<div class="dot" />
 			</div>
 		</template>
@@ -68,6 +75,7 @@ const props = withDefaults(
 		panel: Record<string, any>;
 		type?: 'trigger' | 'operation';
 		editMode?: boolean;
+		parent?: { id: string; type: Target };
 	}>(),
 	{
 		type: 'operation',
@@ -193,18 +201,38 @@ function pointerup() {
 		cursor: default;
 	}
 
+	&.loner {
+		color: var(--foreground-subdued);
+
+		::v-deep(.header) {
+			.v-icon {
+				color: var(--foreground-subdued);
+			}
+			.name {
+				color: var(--foreground-subdued);
+			}
+		}
+
+		.attachment {
+			border-color: var(--foreground-subdued);
+
+			.dot {
+				background-color: var(--foreground-subdued);
+			}
+		}
+	}
+
 	.button {
 		position: absolute;
-		border: var(--border-width) solid var(--primary);
 		border-radius: 50%;
-		width: 22px;
-		height: 22px;
+		width: 20px;
+		height: 20px;
 		display: flex;
 		background-color: var(--background-page);
 		justify-content: center;
 		align-items: center;
 		z-index: 10;
-		transform: translate(-50%, -50%);
+		transform: translate(calc(-50% - 1px), calc(-50% - 2px));
 
 		cursor: pointer;
 
@@ -221,16 +249,31 @@ function pointerup() {
 	.add-reject {
 		top: var(--reject-top);
 		left: var(--reject-left);
+
+		.v-icon {
+			color: var(--secondary);
+		}
 	}
 
 	.attachment {
+		width: 20px;
+		height: 20px;
+		border: 3px solid var(--primary);
 		cursor: default;
-		color: var(--primary);
 		top: var(--attachment-y);
 		left: var(--attachment-x);
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		transform: translate(calc(-50% + 1px), calc(-50% - 2px));
+
+		&.reject {
+			border-color: var(--secondary);
+
+			.dot {
+				background-color: var(--secondary);
+			}
+		}
 
 		.dot {
 			width: 6px;

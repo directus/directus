@@ -21,6 +21,7 @@ export function getTriggers() {
 			icon: 'keyboard_tab',
 			description: t('triggers.filter.description'),
 			preview: ({ options }) => `
+# ${options.name}
 **${t('triggers.filter.event')}**: ${options.event}
 			`,
 			options: [
@@ -41,6 +42,7 @@ export function getTriggers() {
 			icon: 'start',
 			description: t('triggers.action.description'),
 			preview: ({ options }) => `
+# ${options.name}
 **${t('triggers.filter.event')}**: ${options.event}
 			`,
 			options: [
@@ -61,6 +63,7 @@ export function getTriggers() {
 			icon: 'sensors',
 			description: t('triggers.init.description'),
 			preview: ({ options }) => `
+# ${options.name}
 **${t('triggers.filter.event')}**: ${options.event}
 			`,
 			options: [
@@ -70,7 +73,21 @@ export function getTriggers() {
 					type: 'string',
 					meta: {
 						width: 'full',
-						interface: 'input',
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{ text: 'cli.before', value: 'cli.before' },
+								{ text: 'cli.after', value: 'cli.after' },
+								{ text: 'app.before', value: 'app.before' },
+								{ text: 'app.after', value: 'app.after' },
+								{ text: 'routes.before', value: 'routes.before' },
+								{ text: 'routes.after', value: 'routes.after' },
+								{ text: 'routes.custom', value: 'routes.custom.before' },
+								{ text: 'routes.custom', value: 'routes.custom.after' },
+								{ text: 'middlewares.before', value: 'middlewares.before' },
+								{ text: 'middlewares.after', value: 'middlewares.after' },
+							],
+						},
 					},
 				},
 			],
@@ -80,8 +97,22 @@ export function getTriggers() {
 			value: 'operation',
 			icon: 'bolt',
 			description: t('triggers.operation.description'),
-			preview: () => t('triggers.operation.preview'),
-			options: [],
+			preview: ({ options }) => `
+# ${options.name}
+${t('triggers.operation.preview')}
+		`,
+			options: [
+				{
+					field: 'empty',
+					type: 'alias',
+					meta: {
+						interface: 'presentation-notice',
+						options: {
+							text: t('no_options_available'),
+						},
+					},
+				},
+			],
 		},
 		{
 			text: t('triggers.schedule.name'),
@@ -89,6 +120,7 @@ export function getTriggers() {
 			icon: 'schedule',
 			description: t('triggers.schedule.description'),
 			preview: ({ options }) => `
+# ${options.name}
 **${t('triggers.schedule.cron')}**: ${options.cron}
             `,
 			options: [
@@ -111,8 +143,22 @@ export function getTriggers() {
 			value: 'webhook',
 			icon: 'anchor',
 			description: t('triggers.webhook.description'),
-			preview: ({ flow }) => `**${t('triggers.webhook.preview')}**:\nPOST /flows/trigger/${flow}`,
-			options: [],
+			preview: ({ options, flow }) => `
+# ${options.name}
+**${t('triggers.webhook.preview')}**:\nPOST /flows/trigger/${flow}
+			`,
+			options: [
+				{
+					field: 'empty',
+					type: 'alias',
+					meta: {
+						interface: 'presentation-notice',
+						options: {
+							text: t('no_options_available'),
+						},
+					},
+				},
+			],
 		},
 	]);
 

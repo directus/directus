@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="t('flows')">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded disabled icon>
 				<v-icon name="bolt" />
 			</v-button>
 		</template>
