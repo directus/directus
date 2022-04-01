@@ -992,6 +992,7 @@ fields:
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
+    default_language: Язык по умолчанию
     branding: Брендинг
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
