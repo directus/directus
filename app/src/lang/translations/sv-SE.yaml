@@ -77,7 +77,6 @@ delete_folder: Ta bort mapp
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Återställ bokmärke
-rename_bookmark: Döp om bokmärke
 update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
 delete_bookmark_copy: >-
@@ -324,6 +323,10 @@ interface_label: Gränssnitt
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
+functions:
+  year: År
+  month: Månad
+  count: Antal
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'

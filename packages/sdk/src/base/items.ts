@@ -1,5 +1,5 @@
 import { ITransport } from '../transport';
-import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items';
+import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem, ItemsOptions } from '../items';
 import { ID, FieldType } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
@@ -13,15 +13,16 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
 	}
 
-	async readOne(id: ID, query?: QueryOne<T>): Promise<OneItem<T>> {
+	async readOne(id: ID, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
 		const response = await this.transport.get<T>(`${this.endpoint}/${encodeURI(id as string)}`, {
 			params: query,
+			...options?.requestOptions,
 		});
 
 		return response.data as T;
 	}
 
-	async readMany(ids: ID[], query?: QueryMany<T>): Promise<ManyItems<T>> {
+	async readMany(ids: ID[], query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>> {
 		const collectionFields = await this.transport.get<FieldType[]>(`/fields/${this.collection}`);
 
 		const primaryKeyField = collectionFields.data?.find((field: any) => field.schema.is_primary_key === true);
@@ -35,6 +36,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 				sort: query?.sort || primaryKeyField!.field,
 				...query,
 			},
+			...options?.requestOptions,
 		});
 
 		return {
@@ -43,9 +45,10 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		};
 	}
 
-	async readByQuery(query?: QueryMany<T>): Promise<ManyItems<T>> {
+	async readByQuery(query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>> {
 		const { data, meta } = await this.transport.get<T[]>(`${this.endpoint}`, {
 			params: query,
+			...options?.requestOptions,
 		});
 
 		return {
@@ -54,29 +57,37 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		};
 	}
 
-	async createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
+	async createOne(item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
 		return (
 			await this.transport.post<T>(`${this.endpoint}`, item, {
 				params: query,
+				...options?.requestOptions,
 			})
 		).data;
 	}
 
-	async createMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>> {
+	async createMany(items: PartialItem<T>[], query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>> {
 		return await this.transport.post<PartialItem<T>[]>(`${this.endpoint}`, items, {
 			params: query,
+			...options?.requestOptions,
 		});
 	}
 
-	async updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
+	async updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
 		return (
 			await this.transport.patch<PartialItem<T>>(`${this.endpoint}/${encodeURI(id as string)}`, item, {
 				params: query,
+				...options?.requestOptions,
 			})
 		).data;
 	}
 
-	async updateMany(ids: ID[], data: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>> {
+	async updateMany(
+		ids: ID[],
+		data: PartialItem<T>,
+		query?: QueryMany<T>,
+		options?: ItemsOptions
+	): Promise<ManyItems<T>> {
 		return await this.transport.patch<PartialItem<T>[]>(
 			`${this.endpoint}`,
 			{
@@ -85,11 +96,17 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 			},
 			{
 				params: query,
+				...options?.requestOptions,
 			}
 		);
 	}
 
-	async updateByQuery(updateQuery: QueryMany<T>, data: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>> {
+	async updateByQuery(
+		updateQuery: QueryMany<T>,
+		data: PartialItem<T>,
+		query?: QueryMany<T>,
+		options?: ItemsOptions
+	): Promise<ManyItems<T>> {
 		return await this.transport.patch<PartialItem<T>[]>(
 			`${this.endpoint}`,
 			{
@@ -98,15 +115,16 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 			},
 			{
 				params: query,
+				...options?.requestOptions,
 			}
 		);
 	}
 
-	async deleteOne(id: ID): Promise<void> {
-		await this.transport.delete(`${this.endpoint}/${encodeURI(id as string)}`);
+	async deleteOne(id: ID, options?: ItemsOptions): Promise<void> {
+		await this.transport.delete(`${this.endpoint}/${encodeURI(id as string)}`, undefined, options?.requestOptions);
 	}
 
-	async deleteMany(ids: ID[]): Promise<void> {
-		await this.transport.delete(`${this.endpoint}`, ids);
+	async deleteMany(ids: ID[], options?: ItemsOptions): Promise<void> {
+		await this.transport.delete(`${this.endpoint}`, ids, options?.requestOptions);
 	}
 }

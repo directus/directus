@@ -1,22 +1,22 @@
-import { Knex } from 'knex';
-import { cloneDeep, merge, uniq, uniqWith, flatten, isNil, isArray } from 'lodash';
-import getDatabase from '../database';
-import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
-import { validatePayload } from '@directus/shared/utils';
-import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, PrimaryKey } from '../types';
 import {
-	Query,
+	Accountability,
 	Aggregate,
+	Filter,
 	Permission,
 	PermissionsAction,
-	Accountability,
+	Query,
 	SchemaOverview,
-	Filter,
 } from '@directus/shared/types';
+import { validatePayload } from '@directus/shared/utils';
+import { Knex } from 'knex';
+import { cloneDeep, flatten, isArray, isNil, merge, uniq, uniqWith } from 'lodash';
+import getDatabase from '../database';
+import { ForbiddenException } from '../exceptions';
+import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, PrimaryKey } from '../types';
+import { stripFunction } from '../utils/strip-function';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
-import { stripFunction } from '../utils/strip-function';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -302,8 +302,14 @@ export class AuthorizationService {
 
 		const payloadWithPresets = merge({}, preset, payload);
 
+		const fieldValidationRules = Object.values(this.schema.collections[collection].fields)
+			.map((field) => field.validation)
+			.filter((v) => v) as Filter[];
+
 		const hasValidationRules =
 			isNil(permission.validation) === false && Object.keys(permission.validation ?? {}).length > 0;
+
+		const hasFieldValidationRules = fieldValidationRules && fieldValidationRules.length > 0;
 
 		const requiredColumns: SchemaOverview['collections'][string]['fields'][string][] = [];
 
@@ -321,7 +327,7 @@ export class AuthorizationService {
 			}
 		}
 
-		if (hasValidationRules === false && requiredColumns.length === 0) {
+		if (hasValidationRules === false && hasFieldValidationRules === false && requiredColumns.length === 0) {
 			return payloadWithPresets;
 		}
 
@@ -342,6 +348,14 @@ export class AuthorizationService {
 						_nnull: true,
 					},
 				});
+			}
+		}
+
+		if (hasFieldValidationRules) {
+			if (permission.validation) {
+				permission.validation = { _and: [permission.validation, ...fieldValidationRules] };
+			} else {
+				permission.validation = { _and: fieldValidationRules };
 			}
 		}
 

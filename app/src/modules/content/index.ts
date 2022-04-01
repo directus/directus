@@ -48,6 +48,14 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		}
 	}
 
+	if (to.params.collection === 'directus_presets') {
+		if (to.params.primaryKey) {
+			return `/settings/presets/${to.params.primaryKey}`;
+		} else {
+			return '/settings/presets';
+		}
+	}
+
 	if (
 		'bookmark' in from.query &&
 		typeof from.query.bookmark === 'string' &&

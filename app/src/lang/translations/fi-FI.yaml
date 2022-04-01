@@ -79,7 +79,6 @@ delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
 reset_bookmark: Nollaa kirjanmerkki
-rename_bookmark: Uudelleennimeä kirjanmerkki
 update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
 delete_bookmark_copy: >-
@@ -327,6 +326,10 @@ interface_label: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
+functions:
+  year: Vuosi
+  month: Kuukausi
+  count: Määrä
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
