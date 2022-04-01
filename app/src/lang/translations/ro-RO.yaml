@@ -997,6 +997,7 @@ fields:
     project_url: Url proiect
     project_color: Culoare proiect
     project_logo: Logo proiect
+    default_language: Limba implicită
     branding: Branding și stil
     public_foreground: Prim-plan public
     public_background: Fundal public
