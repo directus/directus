@@ -416,9 +416,10 @@ often possible to cache assets for far longer than you would cache database cont
 | Variable                          | Description                                                                              | Default Value    |
 | --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
 | `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `5m`             |
 | `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
 | `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long the schema caches (schema/permissions) are persisted.                           | `10m`            |
 | `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
 | `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
 | `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |

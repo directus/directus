@@ -22,6 +22,7 @@ export const systemSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				name: {
 					field: 'name',
@@ -35,6 +36,7 @@ export const systemSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				items: {
 					field: 'items',
@@ -48,6 +50,7 @@ export const systemSchema = {
 					special: ['o2m'],
 					note: null,
 					alias: true,
+					validation: null,
 				},
 			},
 		},
@@ -71,6 +74,7 @@ export const systemSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				title: {
 					field: 'title',
@@ -84,6 +88,7 @@ export const systemSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				uploaded_by: {
 					field: 'uploaded_by',
@@ -97,6 +102,7 @@ export const systemSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 			},
 		},
@@ -153,6 +159,7 @@ export const userSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				name: {
 					field: 'name',
@@ -166,6 +173,7 @@ export const userSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				items: {
 					field: 'items',
@@ -179,6 +187,7 @@ export const userSchema = {
 					special: ['o2m'],
 					note: null,
 					alias: true,
+					validation: null,
 				},
 			},
 		},
@@ -202,6 +211,7 @@ export const userSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				title: {
 					field: 'title',
@@ -215,6 +225,7 @@ export const userSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 				uploaded_by: {
 					field: 'uploaded_by',
@@ -228,6 +239,7 @@ export const userSchema = {
 					special: [],
 					note: null,
 					alias: false,
+					validation: null,
 				},
 			},
 		},

@@ -84,7 +84,6 @@ delete_folder: Izbriši mapu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi oznaku
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
@@ -354,6 +353,10 @@ today: Danas
 yesterday: Jučer
 delete_comment: Obriši komentar
 delete_share: Izbriši dijeljenje
+functions:
+  year: Godina
+  month: Mjesec
+  count: Zbroj
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
 date-fns_time_no_seconds: 'h:mm a'

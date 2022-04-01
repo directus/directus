@@ -1,5 +1,6 @@
 <template>
 	<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
+		<slot name="prepend" />
 		<v-list-item v-if="fieldsCount > 20">
 			<v-list-item-content>
 				<v-input v-model="search" autofocus small :placeholder="t('search')">
@@ -15,6 +16,7 @@
 			:key="field.field"
 			:field="field"
 			:search="search"
+			:include-functions="includeFunctions"
 			@add="$emit('select-field', $event)"
 		/>
 	</v-list>
@@ -31,10 +33,16 @@ import { useFieldsStore } from '@/stores';
 
 interface Props {
 	collection: string;
+	field?: string;
 	disabledFields?: string[];
+	includeFunctions?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+	disabledFields: () => [],
+	includeFunctions: false,
+	field: undefined,
+});
 
 defineEmits(['select-field']);
 
@@ -55,7 +63,11 @@ watch(search, () => debouncedRefresh());
 const { t } = useI18n();
 
 const treeList = computed(() => {
-	return treeListOriginal.value.map(setDisabled);
+	const list = treeListOriginal.value.map(setDisabled);
+
+	if (props.field) return list.filter((fieldNode) => fieldNode.field === props.field);
+
+	return list;
 
 	function setDisabled(
 		field: typeof treeListOriginal.value[number]

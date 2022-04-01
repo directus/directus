@@ -10,14 +10,14 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **REST & GraphQL API.** Instantly layers a blazingly fast Node.js API on top of any SQL database.
 - **Manage pure SQL.** Works with new or existing SQL databases, no migration required.
 - **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
-- **On-Prem or Cloud.** Run locally, install on-premises, or use our [self-service Cloud service](https://directus.io/pricing) (free tier available).
+- **On-Prem or Cloud.** Run locally, install on-premises, or use our
+  [self-service Cloud service](https://directus.io/pricing) (free tier available).
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
 **[Learn more about Directus](https://directus.io)**
 
 <br>
-
 
 ## 🚀 Directus Cloud
 

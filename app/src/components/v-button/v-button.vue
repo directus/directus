@@ -340,8 +340,8 @@ export default defineComponent({
 	background-color: transparent;
 }
 
-.outlined:not(.active):focus,
-.outlined:not(.active):hover {
+.outlined:not(.active):not(:disabled):focus,
+.outlined:not(.active):not(:disabled):hover {
 	color: var(--v-button-background-color-hover);
 	background-color: transparent;
 	border-color: var(--v-button-background-color-hover);

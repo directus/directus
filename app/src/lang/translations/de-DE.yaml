@@ -84,7 +84,6 @@ delete_folder: Ordner löschen
 prefix: Präfix
 suffix: Suffix
 reset_bookmark: Lesezeichen zurücksetzen
-rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
 delete_bookmark_copy: >-
@@ -354,6 +353,10 @@ today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
 delete_share: Freigabe löschen
+functions:
+  year: Jahr
+  month: Monat
+  count: Anzahl
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
