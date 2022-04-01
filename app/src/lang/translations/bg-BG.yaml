@@ -1035,6 +1035,7 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
+    default_language: Език по подразбиране
     branding: Стил и брандиране
     public_foreground: Публично изображение
     public_background: Публичен фон
