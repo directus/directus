@@ -7,11 +7,17 @@
 	>
 		<template #activator="{ toggle }">
 			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
-				<span class="label">
+				<span class="label" v-if="value.length !== 1">
 					{{ value.length }}
 					<template v-if="value.length >= 100">+</template>
 					{{ unit }}
 				</span>
+				<render-template
+					v-else
+					:template="internalTemplate"
+					:item="value[0]"
+					:collection="junctionCollection ?? relatedCollection"
+				/>
 			</span>
 		</template>
 
