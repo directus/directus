@@ -74,7 +74,6 @@ delete_folder: डिलीट फोल्डर
 prefix: प्रीफिक्स
 suffix: सफिक्स
 reset_bookmark: रीसेट बुकमार्क
-rename_bookmark: रीनेम बुकमार्क
 update_bookmark: अपडेट बुकमार्क
 delete_bookmark: डिलीट बुकमार्क
 delete_bookmark_copy: >-
@@ -185,6 +184,10 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+functions:
+  year: साल
+  month: महीना
+  count: गिनती
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'

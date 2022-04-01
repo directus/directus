@@ -25,8 +25,8 @@
 		"dev": "vite",
 		"build": "vite build",
 		"serve": "vite preview",
-		"test": "jest --coverage",
-		"test:watch": "jest --coverage --watchAll"
+		"test": "jest",
+		"test:watch": "jest --watchAll"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {

@@ -91,11 +91,13 @@ delete_folder: Изтриване на папката
 prefix: Представка
 suffix: Наставка
 reset_bookmark: Нулиране на отметки
-rename_bookmark: Преименуване на отметката
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
 delete_bookmark_copy: >-
   Сигурни ли сте, че искате да изтриете „{bookmark}“ отметката? Действието не може да бъде отменено.
+delete_personal_bookmark: Изтриване на лична отметка
+delete_role_bookmark: Изтриване на отметка за роля
+delete_global_bookmark: Изтриване на глобална отметка
 logoutReason:
   SIGN_OUT: Излязъл
   SESSION_EXPIRED: Сесията е изтекла
@@ -192,6 +194,7 @@ camera: Камера
 show_zero: Показване на нули
 create_in_advanced_field_creation_mode: Създаване на поле в разширен режим
 continue_in_advanced_field_creation_mode: Продълважане в разширен режим
+validation: Валидиране
 sum: Сумиране
 sum_distinct: Сумиране на уникалните
 avg: Усредняване
@@ -362,6 +365,10 @@ today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
 delete_share: Изтриване на споделянето
+functions:
+  year: Година
+  month: Месец
+  count: Брой
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -562,6 +569,11 @@ value_hashed: Хеширана стойност
 bookmark_name: Име на отметката...
 create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
+edit_personal_bookmark: Редактиране на лична отметка
+edit_role_bookmark: Редактиране на отметка за роля
+edit_global_bookmark: Редактиране на глобална отметка
+cannot_edit_role_bookmarks: Отметката за роля, не може да бъде променяна
+cannot_edit_global_bookmarks: Глобалната отметката, не може да бъде променяна
 bookmarks: Отметки
 presets: Заготовки
 unexpected_error: Неочаквана грешка
@@ -649,6 +661,8 @@ operators:
   nintersects: Няма пресичане
   intersects_bbox: Прилежащи към границите
   nintersects_bbox: Не са прилежащи към границите
+  regex: Отговаря на RegExp
+custom_validation_message: Собствено съобщение при валидация
 loading: Зареждане...
 drop_to_upload: Пускане за качване
 item: Запис
@@ -1300,7 +1314,6 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:

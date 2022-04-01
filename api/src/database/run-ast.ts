@@ -225,7 +225,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 			return helpers.st.asText(table, field.field);
 		}
 
-		return getColumn(knex, table, fieldNode.name, alias);
+		return getColumn(knex, table, fieldNode.name, alias, schema);
 	};
 }
 

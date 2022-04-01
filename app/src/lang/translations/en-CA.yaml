@@ -83,7 +83,6 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Reset Bookmark
-rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
@@ -332,6 +331,10 @@ interface_label: Interface
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
+functions:
+  year: Year
+  month: Month
+  count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -542,7 +545,6 @@ update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
 make_collection_hidden: Make Collection Hidden
-goto_collection_content: View Content
 start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'

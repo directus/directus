@@ -95,10 +95,6 @@
 				</sidebar-detail>
 
 				<div class="layout-sidebar">
-					<sidebar-detail icon="search" :title="t('search')">
-						<v-input v-model="search" :placeholder="t('preset_search_placeholder')"></v-input>
-					</sidebar-detail>
-
 					<component
 						:is="`layout-sidebar-${values.layout}`"
 						v-if="values.layout && values.collection"
@@ -246,6 +242,8 @@ export default defineComponent({
 
 				if (edits.value.name) editsParsed.bookmark = edits.value.name;
 				if (edits.value.name?.length === 0) editsParsed.bookmark = null;
+				if (edits.value.icon) editsParsed.icon = edits.value.icon;
+				if (edits.value.color) editsParsed.color = edits.value.color;
 				if (edits.value.collection) editsParsed.collection = edits.value.collection;
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
@@ -336,6 +334,8 @@ export default defineComponent({
 					collection: preset.value.collection,
 					layout: preset.value.layout,
 					name: preset.value.bookmark,
+					icon: preset.value.icon,
+					color: preset.value.color,
 					search: preset.value.search,
 					scope: scope,
 					layout_query: preset.value.layout_query,
@@ -518,6 +518,51 @@ export default defineComponent({
 						width: 'half',
 						options: {
 							placeholder: t('preset_name_placeholder'),
+						},
+					},
+				},
+				{
+					field: 'icon',
+					name: '$t:icon',
+					type: 'string',
+					meta: {
+						interface: 'select-icon',
+						width: 'half',
+					},
+					schema: {
+						default_value: 'bookmark_outline',
+					},
+				},
+				{
+					field: 'color',
+					name: '$t:color',
+					type: 'string',
+					meta: {
+						interface: 'select-color',
+						width: 'half',
+					},
+				},
+				{
+					field: 'search',
+					name: t('search'),
+					type: 'string',
+					meta: {
+						interface: 'input',
+						width: 'half',
+						options: {
+							placeholder: t('search_items'),
+						},
+					},
+				},
+				{
+					field: 'filter',
+					name: t('filter'),
+					type: 'string',
+					meta: {
+						interface: 'system-filter',
+						width: 'half',
+						options: {
+							collectionField: 'collection',
 						},
 					},
 				},
