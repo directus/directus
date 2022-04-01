@@ -32,7 +32,18 @@ fields:
     translations:
       language: en-US
       translations: Website
-    width: full
+    width: half
+
+  - field: default_language
+    interface: system-language
+    options:
+      iconRight: language
+      placeholder: en-US
+      includeProjectDefault: false
+    translations:
+      language: en-US
+      translations: Default Language
+    width: half
 
   - field: branding_divider
     interface: presentation-divider
