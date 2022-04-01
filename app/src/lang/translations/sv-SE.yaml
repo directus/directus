@@ -923,6 +923,7 @@ fields:
     project_url: Projektets URL
     project_color: Projektets färg
     project_logo: Projektets logotyp
+    default_language: Förvalt språk
     public_foreground: Publik förgrund
     public_background: Publik bakgrund
     public_note: Publik anteckning
