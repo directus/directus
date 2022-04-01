@@ -1,16 +1,9 @@
 # Item Page
 
-> A tailored form for viewing and editing an item's fields. This page also includes options for archiving, reverting,
-> deleting, and commenting on the item.
+> A tailored form for viewing and editing an Item's Fields. This page also includes options for archiving, reverting,
+> deleting, and commenting on the Item.
 
 [[toc]]
-
-::: warning Permissions
-
-The actions on this page assume the current user has permission to perform that action. However, certain features may be
-disabled or hidden based on permissions.
-
-:::
 
 ## Updating an Item
 

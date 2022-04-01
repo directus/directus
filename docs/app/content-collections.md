@@ -1,8 +1,7 @@
 # Collection Page
 
-> This is the main gateway to your content Items, providing a highly configurable Layout for browsing and visualizing
-> the Items within a Collection. The Page Header includes key action buttons for sorting, filtering, creating, deleting,
-> and batch editing Items.
+> The Collections Page displays all Items within a Collection. The page comes with highly configurable Layouts for
+> browsing, visualizing, and managing these Items.
 
 [[toc]]
 

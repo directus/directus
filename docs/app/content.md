@@ -1,14 +1,17 @@
 # Content
 
-> This Content Module is the primary way for interacting with Items in a Collection _(i.e. database content)_. Here you
-> can browse/visualize, create, upload, edit, share and delete Items.
+> The Content Module is the primary way for Users to interact with Items in a Collection _(i.e. database content)_,
+> enabling Users to browse/view, create, sort, order, upload, download, edit, share, archive, and delete Items.
 
 ::: tip Assumed Knowledge
 
-The controls to create, view, edit and delete Items in this Module are quite intuitive. However, to use the Module
-effectively in all its nuances, you will need to know about creating [Collections](/configuration/data-model) and
-[Filters](/app/filters), as well as understand how configuration of
-[Users, Roles and Permissions](/configuration/users-roles-permissions/) impacts content access for non-Administrators.
+You will need to know what [Collections](/getting-started/glossary/#collections),
+[Items](/getting-started/glossary/#items) and [Fields](/getting-started/glossary/#fields) are in general. After that,
+the controls to manage Items are quite intuitive, so its easy to get started in this Module. However, things gets more
+nuanced as a Project grows in complexity. To use the Module effectively and fully, you will also need to understand how
+to configure [Collections](/configuration/data-model) and the [relationships](/configuration/relationships/) between
+Collections; how [Filters](/app/filters) work; and also how
+[Users, Roles, and Permissions](/configuration/users-roles-permissions/) work together.
 
 :::
 
@@ -16,13 +19,32 @@ effectively in all its nuances, you will need to know about creating [Collection
 
 ![Collection Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/collection-page-20220215A.webp)
 
-The Collections Page displays all Items within a Collection. It comes with highly configurable Layouts for browsing,
-visualizing, and managing Items. Once an Item is clicked, its Item Page is opened.
-[Learn more about the Collection Page](/getting-started/glossary/#collections)
+The Content Module is composed of Collections Pages and Item Details Pages. Each Collection Page displays all Items in
+its Collection. It comes with highly configurable [Layouts](/getting-started/glossary/#layouts) for browsing,
+visualizing, and managing Items. The Page Header includes key action buttons for sorting, searching, filtering,
+creating, and batch editing/archiving/deleting Items. When you navigate into the Content Module, you land directly on a
+Collection Page. Use the [Navigation Bar](/app/overview/#_2-navigation-bar) on the left to move between Collection
+Pages.
 
-## Item Page
+:::tip
+
+This module is only for management of Items _(i.e. content)_. Collections are not managed through this Module, as that
+creates changes in the data model. Administrators manage Collections through the Settings menu.
+[Learn More](/configuration/data-model)
+
+:::
+
+## Item Details Page
 
 ![Article Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/item-page-20220215A.webp)
 
-A tailored form for viewing and editing Fields of an Item. This page also includes options for archiving, reverting,
-deleting, and commenting on the Item. [Learn more about the Item Page](/getting-started/glossary/#items)
+When an Item is clicked on the Collection Page, its Item Details Page is opened. This is a form primarily for viewing
+and editing an Item's Field Values, but also includes options for commenting on, sharing, archiving, reverting, and
+deleting the Item.
+
+::: warning Permissions
+
+Users and Roles with [limited access permissions](/configuration/users-roles-permissions) to Collections, Items, or Item
+Fields may not be able to view and manage Items as usual.
+
+:::
