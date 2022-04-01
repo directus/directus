@@ -993,6 +993,7 @@ fields:
     project_url: Proje URL'si
     project_color: Proje Rengi
     project_logo: Proje Logosu
+    default_language: Varsayılan Dil
     branding: Markalama ve Stil
     public_foreground: Herkese Açık Ön Plan
     public_background: Herkese Açık Arkaplan

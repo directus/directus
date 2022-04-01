@@ -984,6 +984,7 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
+    default_language: Idioma padrão
     branding: Marca e estilo
     public_foreground: Primeiro plano público
     public_background: Fundo público

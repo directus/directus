@@ -866,6 +866,7 @@ fields:
     project_url: URL ของโครงการ
     project_color: สีของโปรเจ็ค
     project_logo: โลโก้ของโปรเจ็ค
+    default_language: ภาษาเริ่มต้น
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note

@@ -1026,6 +1026,7 @@ fields:
     project_url: URL-адреса проекту
     project_color: Демонструвати колір
     project_logo: Демонструвати логотип
+    default_language: Мова за замовчуванням
     branding: Брендінг та стиль
     public_foreground: Публічний передній план
     public_background: Публічний фон

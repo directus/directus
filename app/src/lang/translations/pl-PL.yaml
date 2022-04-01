@@ -1035,6 +1035,7 @@ fields:
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
+    default_language: Domyślny język
     branding: Marka i Styl
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne

@@ -999,6 +999,7 @@ fields:
     project_url: URL projekta
     project_color: Boja projekta
     project_logo: Logotip projekta
+    default_language: Zadani jezik
     branding: Brendiranje i stil
     public_foreground: Javni prvi plan
     public_background: Javna pozadina

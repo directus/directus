@@ -895,6 +895,7 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farve
     project_logo: Projekt Logo
+    default_language: Standard Sprog
     public_foreground: Offentlig Forgrund
     public_background: Offentlig Baggrund
     public_note: Offentlig Note
