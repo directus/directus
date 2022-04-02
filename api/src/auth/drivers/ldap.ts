@@ -90,7 +90,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				});
 
 				res.on('error', () => {
-					// Attempt to rebind on seach error
+					// Attempt to rebind on search error
 					this.bindClient.bind(bindDn, bindPassword, (err: Error | null) => {
 						if (err) {
 							const error = handleError(err);
