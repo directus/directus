@@ -21,10 +21,12 @@
 #'Proxy', 'Intl'
 identifier: पहचानकर्ता
 avatar: अवतार
+application: एप्लीकेशन
 default_provider: Hi
 published: प्रकाशित
 draft: प्रारूप
 archived: संग्रह
+modules: मॉड्यूल
 tile_size: टाइल आकार
 edit_field: एडिट फील्ड
 conditions: शर्तेँ
@@ -48,6 +50,7 @@ leaf: पत्ता
 edit_collection: कलेक्शन संपादित करें
 exclusive: विशेष
 children: बच्चे
+db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें'
 show_archived_items: आर्काइव आइटम दिखाएं
 edited: डेटा संपादित
 required: आवश्यक
@@ -144,11 +147,15 @@ validation_for_role: 'फील्ड {action} नियमों जो {role} 
 presets_for_role: '{role} भूमिका के लिए फ़ील्ड मान जो डिफ़ॉल्ट होगा'
 presentation_and_aliases: प्रस्तुति और उपनाम
 revision_post_update: यहां देखें कि अपडेट के बाद यह आइटम कैसा दिखता है
+hide_field: फ़ील्ड छुपाएँ
+hide_field_on_detail: विवरण पर फ़ील्ड छुपाएँ
 language: भाषा
+language_placeholder: भाषा चुनें
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
 camera: कैमरा
 show_zero: शून्य दिखाओ
+validation: मान्यकरण
 avg: औसत
 count: गिनती
 min: न्यूनतम
@@ -184,15 +191,34 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+finish_setup: सेटअप खत्म करें
+dismiss: ख़ारिज करें
+label_import: आयात करें
+label_export: निर्यात करें
+import_export: आयात / निर्यात
+format: प्रारूप
+submit: दर्ज करें
+system: प्रणाली
+interface_label: इंटरफ़ेस
+today: आज
+yesterday: बीता कल
+delete_comment: टिप्पणी हटाएँ
 functions:
   year: साल
   month: महीना
+  week: सप्ताह
+  day: दिन
+  weekday: सप्ताह के दिन
+  hour: घंटा
+  minute: मिनट
+  second: सेकंड
   count: गिनती
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+hours: घंटे
 month: महीना
 year: साल
 select_all: सभी चुनें
@@ -209,10 +235,22 @@ months:
   october: अक्तूबर
   november: नवम्बर
   december: दिसंबर
+original: मूल
 url: URL
+import_label: आयात करें
+dimensions: आयाम
 size: साइज़
+created: बनाया गया
+modified: संशोधन का समय
+checksum: चेकसम
 owner: मालिक
+edited_by: द्वारा संपादित
+folder: फ़ोल्डर
+zoom: छोटा-बड़ा करें
 download: डाउनलोड
+open: खोलें
+open_in_new_window: नए विंडो में खोलें
+foreground_color: अग्रभूमि रंग
 name: नाम
 csv: CSV
 webhooks: Webhooks
@@ -254,6 +292,7 @@ create: Create
 read: Read
 update: Update
 wysiwyg_options:
+  forecolor: अग्रभूमि रंग
   selectall: सभी चुनें
 settings_webhooks: Webhooks
 fields:
@@ -262,6 +301,7 @@ fields:
     sort_field: Sort Field
   directus_files:
     modified_on: संशोधन का समय
+    folder: फ़ोल्डर
     duration: अवधि
   directus_users:
     language: भाषा
@@ -298,6 +338,10 @@ interfaces:
     divider: Divider
   input-hash:
     hash: Hash
+  map:
+    zoom: छोटा-बड़ा करें
+  system-folder:
+    folder: फ़ोल्डर
   user:
     user: यूज़र
 displays:
@@ -305,7 +349,10 @@ displays:
     boolean: Boolean
   color:
     color: Color
+  datetime:
+    format: प्रारूप
   formatted-value:
+    format: प्रारूप
     font: फ़ॉन्ट
     font_serif: Serif
     font_monospace: Monospace
