@@ -16,15 +16,6 @@
 				</v-list-item>
 			</v-list>
 		</div>
-
-		<drawer-item
-			:active="!!currentlyEditing"
-			:collection="collection"
-			:primary-key="currentlyEditing ?? '+'"
-			:edits="editsAtStart"
-			@input="saveEdits"
-			@update:active="cancelEdit"
-		/>
 	</div>
 </template>
 
@@ -33,7 +24,6 @@ import { defineComponent, ref, watchEffect, computed, PropType } from 'vue';
 import api from '@/api';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
-import DrawerItem from '@/views/private/components/drawer-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -41,7 +31,6 @@ import { getEndpoint } from '@/utils/get-endpoint';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	components: { DrawerItem },
 	props: {
 		showHeader: {
 			type: Boolean,
@@ -113,6 +102,8 @@ export default defineComponent({
 
 		async function fetchData() {
 			if (!props) return;
+			if (!props.collection) return;
+			if (!props.sortField) return;
 
 			loading.value = true;
 
