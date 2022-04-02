@@ -8,7 +8,7 @@ import ldap, {
 	LDAPResult,
 	InappropriateAuthenticationError,
 	InvalidCredentialsError,
-	InsufficientAccessRightsError
+	InsufficientAccessRightsError,
 } from 'ldapjs';
 import ms from 'ms';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
@@ -107,7 +107,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				});
 
 				res.on('end', (result: LDAPResult | null) => {
-					// Handle edge case where authenticated bind user can't read their own DN
+					// Handle edge case where authenticated bind user cannot read their own DN
 					if (result?.status === 0) {
 						reject(new UnexpectedResponseException('Failed to find bind user record'));
 					}
