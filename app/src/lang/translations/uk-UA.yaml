@@ -1213,6 +1213,27 @@ inline: У тексті
 comment: Коментар
 shares: Акції
 unlimited_usage: Необмежене використання
+uses_left: 'Ніякого іншого використання | 1 додаток | Залишилося використання: {n}'
+no_shares: Немає спільних ресурсів для відображення
+new_share: Нова публікація
+expired: Закінчився
+upcoming: Майбутнє
+share: Поділитись
+share_item: Поділитися записом
+shared_with_you: З вами поділилися записом
+shared_enter_passcode: Введіть пароль для продовження...
+shared_leave_blank_for_unlimited: Залишіть порожнім для необмеженого
+shared_times_remaining: Посилання може бути використане {n} разів
+shared_last_remaining: Одноразове посилання
+shared_uses_left: Для безпеки кількість переглядів сторінки обмежена. В даний час залишилося {n} перегляду, після чого сторінка більше не буде доступна.
+share_access_page: Доступ до спільної сторінки
+share_access_not_found: Ця спільна сторінка або не існує, або вже перевищила максимальну кількість дозволених використань.
+share_access_not_found_desc: Зверніться до авторизованого користувача цього проекту, щоб попросити доступ.
+share_access_not_found_title: Невідома сторінка спільного доступу
+share_copy_link: Копіювати посилання
+share_copy_link_success: Посилання скопійоване
+share_copy_link_error: Неможливо скопіювати посилання
+share_send_link: Надіслати посилання
 relational_triggers: Реляційні тригери
 referential_action_field_label_m2o: Видалиться з {collection}...
 referential_action_field_label_o2m: Буде видалено з колекції {collection}...
@@ -1244,6 +1265,7 @@ file: Файл
 file_library: Бібліотека файлів
 forgot_password: Забули пароль
 hidden: Приховано
+hidden_in_group: Приховано в {group}
 icon: Іконка
 info: Інформація
 normal: Нормальний
@@ -1258,6 +1280,8 @@ colors:
   orange: Помаранчовий
   red: Червоний
   black: Чорний
+  gray: Сірий
+  white: Білий
 junction_collection: Збірна колекція
 latency: Затримка
 login: Вхід
@@ -1272,6 +1296,7 @@ relationship: Відносини
 reset: Скинути
 reset_password: Скинути пароль
 revisions: Версії
+no_revisions: Переглядів поки немає
 revert: Повернути
 save: Зберегти
 schema: Схема
@@ -1285,6 +1310,9 @@ sign_out: Вихід
 sign_out_confirm: Ви справді бажаєте вийти?
 something_went_wrong: Щось пішло не так.
 sort_direction: Напрямок сортування
+export_location: Розташування експорту
+export_started: Експорт розпочато
+export_started_copy: Ваш експорт розпочато. Ви отримаєте сповіщення, коли він буде готовий до завантаження.
 sort_asc: Впорядкувати за збільшенням
 sort_desc: Впорядкувати за зменшенням
 template: Шаблон
@@ -1302,6 +1330,8 @@ interfaces:
     add_filter: Додати фільтр
     add_group: І / або група
     add_value: Додати значення
+    logic_type_and: ТА
+    logic_type_or: АБО
     all: Все
     any: Будь-які
     and: й
@@ -1309,6 +1339,8 @@ interfaces:
     no_rules: Немає налаштованих правил
     change_value: Натисніть, щоб змінити значення
     placeholder: Перетягніть файли сюди
+  fields:
+    name: Поля
   group-accordion:
     name: Гармошка
     description: Відображати поля або групи в вигляді гармошки
@@ -1359,6 +1391,7 @@ interfaces:
     description: Ведіть або оберіть значення кольору
     placeholder: Оберіть колір...
     preset_colors: Шаблонні кольори
+    opacity: Прозорість
     preset_colors_add_label: Додати новий колір...
     name_placeholder: Введіть назву кольору...
   datetime:
@@ -1367,6 +1400,7 @@ interfaces:
     include_seconds: Секунди включно
     set_to_now: Перемкнути на Зараз
     use_24: Використовувати 24-годинний формат
+    placeholder: Виберіть дату та час...
   system-display-template:
     display-template: Шаблон відображення
     description: Змішати статичний текст і динамічні значення поля
@@ -1382,11 +1416,17 @@ interfaces:
     margin_top: Верхнє поле
     margin_top_label: Збільшити верхнє поле
   select-dropdown:
+    description: Виберіть значення зі списку
     choices_placeholder: Додати варіант
     allow_other: Дозволити інше
     allow_other_label: Додати інші значення
+    allow_none: Може бути порожнім
+    allow_none_label: Можна не вказувати значення
     choices_name_placeholder: Вкажіть назву...
     choices_value_placeholder: Введіть значення...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Випадаючий список (кілька)
+    description: Вибір декількох елементів із списку
   file:
     file: Файл
     description: Оберіть, або завантажте файл
@@ -1395,10 +1435,12 @@ interfaces:
     description: Оберіть, або завантажте декілька файлів
   input-hash:
     hash: Хеш
+    description: Введіть значення для хешування
     masked: Масковано
     masked_label: Приховати дійсне значення
   select-icon:
     icon: Іконка
+    description: Виберіть значок зі списку
     search_for_icon: Пошук іконки...
   file-image:
     image: Зображення
@@ -1415,6 +1457,7 @@ interfaces:
   list-m2m:
     many-to-many: Багато до багатьох
     description: Вибрати кілька пов'язаних об'єктів
+    display_template_configure_notice: Ви можете налаштувати шаблон відображення після створення цього поля.
   select-dropdown-m2o:
     many-to-one: Багато до одного
     description: Виберіть один пов'язаний об'єкт
@@ -1429,6 +1472,9 @@ interfaces:
     customSyntax: Користувацькі блоки
     customSyntax_label: Додати користувацькі типи синтаксису
     customSyntax_add: Додати користувацький синтаксис
+    box: Блок / Рядковий елемент
+    imageToken: Статичний маркер доступу
+    imageToken_label: Статичний маркер доступу додається до URL-адреси об’єктів
   map:
     map: Карта
     description: Обрати місцезнаходження на карті
@@ -1439,6 +1485,7 @@ interfaces:
     invalid_options: Неправильні опції
     invalid_format: Неправильний формат ({format})
     unexpected_geometry: Очікувалось {expected}, отримано {got}.
+    fit_bounds: Підігнати вигляд за розміром даних
     native: Нативний
     geojson: GeoJSON
     lnglat: Довгота, широта
@@ -1457,11 +1504,49 @@ interfaces:
     folder: Папка
     description: Обрати теку
     field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
+    root_name: Корінь файлової бібліотеки
     system_default: Стандартні налаштування
+  select-radio:
+    radio-buttons: Радіокнопки
+    description: Вибір одного з кількох варіантів
+  list:
+    repeater: Повторювач
+    description: Створити кілька записів однієї структури
+    edit_fields: Редагувати поля
+    add_label: 'Ярлик «Створити новий»'
+    field_name_placeholder: Введіть назву поля...
+    field_note_placeholder: Примітка до поля...
+  slider:
+    slider: Слайдер
+    description: Виберіть номер за допомогою слайдера
+    always_show_value: Завжди показувати значення
   tags:
     tags: Теги
+    description: Вибрати або додати теги
+    whitespace: Пробіл
+    hyphen: Замінити дефісом
+    underscore: Замінити підкресленням
+    remove: Видалити пробіли
+    capitalization: Заголовні букви
+    uppercase: Перетворити на Верхній Реєстр
+    lowercase: Перетворити на Нижній Реєстр
+    auto_formatter: Використовувати Авто-Форматування Заголовку
+    alphabetize: За абеткою
+    alphabetize_label: Примусовий Порядок по Абетці
+    add_tags: Додайте тег і натисніть Enter...
   input:
+    input: Введення
+    description: Ввести значення вручну
+    trim: Обрізати
+    trim_label: Обрізати початок та кінець
     mask: Масковано
+    mask_label: Приховати справжнє значення
+    clear: Очищене значення
+    clear_label: Зберегти як порожній рядок
+    minimum_value: Мінімальне значення
+    maximum_value: Максимальне значення
+    step_interval: Інтервал кроку
+    slug: Форматувати для Url
   input-translated-string:
     new_translation_string: Новий рядок перекладу
   boolean:
@@ -1476,6 +1561,9 @@ interfaces:
     no_collection: Немає колекцій
     toggle_split_view: Перемикання розділеного перегляду
     language_field: Поле визначення мови
+  list-o2m-tree-view:
+    description: У вигляді дерева рекурсивно вкладених елементів
+    recursive_only: Дерево можна вибрати для рекурсивних відносин.
   user:
     user: Користувач
     description: Виберіть існуючого користувача
@@ -1483,12 +1571,30 @@ interfaces:
     modes:
       auto: Автоматично
       dropdown: Випадаюче меню
+      modal: Модальне
   input-rich-text-html:
+    wysiwyg: WYSIWYG
     description: Багатотекстовий редактор, що пише матеріал для HTML
     toolbar: Панель інструментів
     custom_formats: Власне форматування
+    options_override: Перевизначення параметрів
     folder_note: Тека для завантажених файлів. Не може вплинути на існуючі файли.
+    imageToken: Статичний маркер доступу
+    imageToken_label: До URL-адреси об’єкта додається статичний маркер доступу
+  input-autocomplete-api:
+    input-autocomplete-api: Автоматичне доповнення вводу (API)
+    description: Автодоповнення значень пошуку через зовнішній API.
+    results_path: Шлях до результатів
+    value_path: Шлях значення
+    text_path: Шлях до тексту
+    trigger: Тригер
+    rate: Рейтинг
+  group-raw:
+    name: Необроблена група
+    description: Відображати поля як є
   group-detail:
+    name: Деталі групи
+    description: Відображати поля як секцію, що згортається
     show_header: Показувати заголовок групи
     header_icon: Іконка заголовка
     header_color: Колір заголовку
@@ -1504,6 +1610,11 @@ displays:
     language_field: Поле визначення мови
   boolean:
     boolean: Логічне значення
+    description: Відображати стан увімк і вимк
+    label_on: Мітка Увімк
+    label_on_placeholder: Введіть позначку увімкнути...
+    label_off: Мітка Вимк
+    label_off_placeholder: Введіть мітку вимк...
     icon_on: Підключити іконку
     icon_off: Відключити іконку
     color_on: Увімкнений колір
@@ -1514,10 +1625,14 @@ displays:
     icon_label: Показувати іконку колекції
   color:
     color: Колір
+    description: Відображати кольорову точку
     default_color: Колір за замовчуванням
   datetime:
     datetime: Дата й час
+    description: Показувати значення, що стосуються часу
     format: Формат
+    format_note: >-
+      Користувальницький формат приймає __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Довгий
     short: Короткий
     relative: Відносний
@@ -1529,6 +1644,8 @@ displays:
     filesize: Розмір файлу
     description: Показати розмір файлу
   formatted-value:
+    formatted-value: Форматоване значення
+    description: Показувати форматовану версію тексту
     format: Формат
     format_label: Автоматичний формат
     font: Шрифт
