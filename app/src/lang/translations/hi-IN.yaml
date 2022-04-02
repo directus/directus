@@ -61,6 +61,7 @@ create_panel: पैनल बनाएँ
 create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
 create_webhook: Webhook बनाएं
+translation_string_translations_placeholder: नया अनुवाद जोड़ें
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
@@ -251,9 +252,25 @@ download: डाउनलोड
 open: खोलें
 open_in_new_window: नए विंडो में खोलें
 foreground_color: अग्रभूमि रंग
+background_color: पृष्ठभूमि रंग
+upload_from_device: डिवाइस से अपलोड करें
+choose_from_library: पुस्तकालय से चुनें
 name: नाम
+comments: टिप्पणियाँ
+no_comments: अभी तक कोई टिप्पणी नहीं
+click_to_expand: फ़ैलाने के लिए यहाँ क्लिक करें
+select_item: आइटम का चयन करें
+no_items: कोई आइटम नहीं
+search_items: आइटम्स खोजें
+disabled: निष्क्रिय
+information: जानकारी
+report_bug: बग रिपोर्ट करें
+request_feature: सुविधा के लिए अनुरोध करें
 csv: CSV
 webhooks: Webhooks
+upper_limit: ऊपरी सीमा
+lower_limit: निचली सीमा
+documentation: दस्तावेज़ीकरण
 sidebar: साइड बार
 duration: अवधि
 modified_on: संशोधन का समय
@@ -263,6 +280,7 @@ add_sort_field: Add Sort Field
 sort: सॉर्ट
 errors:
   NOT_NULL_VIOLATION: मान null नहीं हो सकता
+bookmarks: पृष्टस्मृतियाँ
 flip_horizontal: फ्लिप हॉरिजॉन्टल
 one_item: '1 समान'
 font: फ़ॉन्ट
@@ -287,12 +305,15 @@ add_file: ऐड फाइल
 replace_file: फ़ाइल बदलें
 no_results: कोई परिणाम नहीं मिला
 role: भूमिका
+rule: नियम
 user: यूज़र
 create: Create
 read: Read
 update: Update
+toggle: टॉगल करें
 wysiwyg_options:
   forecolor: अग्रभूमि रंग
+  backcolor: पृष्ठभूमि रंग
   selectall: सभी चुनें
 settings_webhooks: Webhooks
 fields:
@@ -342,6 +363,8 @@ interfaces:
     zoom: छोटा-बड़ा करें
   system-folder:
     folder: फ़ोल्डर
+  boolean:
+    toggle: टॉगल करें
   user:
     user: यूज़र
 displays:
