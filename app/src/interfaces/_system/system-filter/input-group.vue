@@ -17,7 +17,7 @@
 		"
 	>
 		<input-component
-			is="interface-input"
+			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value"
