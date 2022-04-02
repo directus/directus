@@ -369,6 +369,11 @@ functions:
   year: Рік
   month: Місяць
   week: Тиждень
+  day: День
+  weekday: Будній день
+  hour: Час
+  minute: Хвилина
+  second: Секунда
   count: Кількість
 date-fns_date: PPP
 date-fns_time: 'г:хх:сс'
@@ -834,6 +839,7 @@ adding_user: Додавання користувача
 unknown_user: Невідомий користувач
 creating_in: 'Створення об''єкту в {collection}'
 editing_in: 'Редагування об''єкту в {collection}'
+viewing_in: 'Перегляд на запис від {collection}'
 creating_unit: 'Створення {unit}'
 editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
@@ -843,6 +849,7 @@ settings_permissions: Ролі і Дозволи
 settings_project: Налаштування проекту
 settings_webhooks: Вебхуки
 settings_presets: Шаблони і закладки
+settings_translation_strings: Переклади рядків
 one_or_more_options_are_missing: Одно або більше налаштувань відсутні
 scope: Область застосування
 select: Обрати...
@@ -888,6 +895,7 @@ page_help_settings_presets_item: >-
   **Деталі попереднього налаштування** — форма для керування закладками та стандартними налаштуваннями колекцій.
 page_help_settings_webhooks_collection: '**Переглянути веб-хуки** — перелік усіх веб-хуків у проекті.'
 page_help_settings_webhooks_item: '**Деталі веб-хуку** — форма для створення веб-хуків проекту та керування ними.'
+page_help_settings_translation_strings_collection: '**Переглянути переклади рядків** — Відображається повний список рядків у проекті.'
 page_help_users_collection: '**Каталог користувачів** — перелік усіх користувачів системи в цьому проекті.'
 page_help_users_item: >-
   **Інформація про користувача** — керуйте інформацією свого облікового запису або переглядайте відомості про інших користувачів.
@@ -926,6 +934,7 @@ directus_collection:
   directus_roles: Групи дозволів для користувачів системи
   directus_sessions: Інформація про сеанс користувача
   directus_settings: Параметри конфігурації проекту
+  directus_shares: Відстежує зовнішні елементи
   directus_users: Користувачі системи для платформи
   directus_webhooks: Конфігурація HTTP-запитів на основі подій
 fields:
@@ -1010,19 +1019,25 @@ fields:
     external_identifier: Зовнішній ідентифікатор
     last_page: Остання сторінка
     last_access: Останній доступ
+    email_notifications: Сповіщення по Email
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
+    tiff: Порада
     mapping: Зіставлення
     basemaps: Карта-схеми
     basemaps_raster: Растровий
     basemaps_tile: Растровий TileJSON
     basemaps_style: Стиль Mapbox
     mapbox_key: Ключ доступу Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Атрибуція
+    attribution_placeholder: '© Співзасновники OpenStreetMap'
     transforms_note: Назва методу Sharp та його короткий зміст. Дивіться https://sharp.pixelplumbing.com/api-constructor для отримання додаткової інформації.
     additional_transforms: Додаткові трансформації
     project_name: Назва проекту
+    project_descriptor: Опис проекту
     project_url: URL-адреса проекту
     project_color: Демонструвати колір
     project_logo: Демонструвати логотип
@@ -1047,6 +1062,10 @@ fields:
     name: Назва
     role: Роль
     password: Пароль
+    date_start: Дата початку
+    date_end: Дата завершення
+    max_uses: Максимум використань
+    times_used: Кількість використань
   directus_fields:
     collection: Назва колекції
     icon: Іконка колекції
@@ -1192,6 +1211,8 @@ start_collapsed: Старт згорнутим
 block: Блокувати
 inline: У тексті
 comment: Коментар
+shares: Акції
+unlimited_usage: Необмежене використання
 relational_triggers: Реляційні тригери
 referential_action_field_label_m2o: Видалиться з {collection}...
 referential_action_field_label_o2m: Буде видалено з колекції {collection}...
@@ -1229,6 +1250,14 @@ normal: Нормальний
 success: Успішно
 warning: Попередження
 danger: Небезпека
+colors:
+  purple: Фіолетовий
+  blue: Синій
+  green: Зелений
+  yellow: Жовтий
+  orange: Помаранчовий
+  red: Червоний
+  black: Чорний
 junction_collection: Збірна колекція
 latency: Затримка
 login: Вхід
@@ -1433,13 +1462,20 @@ interfaces:
     tags: Теги
   input:
     mask: Масковано
+  input-translated-string:
+    new_translation_string: Новий рядок перекладу
   boolean:
     toggle: Переключити
+    description: Перемикання між вкл/вимк
     color_on: Увімкнений колір
     color_off: Ввімкнений колір
+    label_placeholder: Введіть мітку...
     label_default: Увімкнено
   translations:
     display_template: Шаблон відображення
+    no_collection: Немає колекцій
+    toggle_split_view: Перемикання розділеного перегляду
+    language_field: Поле визначення мови
   user:
     user: Користувач
     description: Виберіть існуючого користувача
