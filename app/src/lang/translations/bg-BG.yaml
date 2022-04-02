@@ -368,6 +368,12 @@ delete_share: Изтриване на споделянето
 functions:
   year: Година
   month: Месец
+  week: Седмица
+  day: Ден
+  weekday: Делничен ден
+  hour: Час
+  minute: Минута
+  second: Секунда
   count: Брой
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
@@ -1315,6 +1321,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
