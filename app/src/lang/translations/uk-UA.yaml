@@ -1321,6 +1321,7 @@ translation: Переклад
 translation_placeholder: Введіть переклад...
 value: Значення
 view_project: Переглянути проект
+weeks: { }
 report_error: Звіт про помилку
 start: Почати
 interfaces:
@@ -1546,8 +1547,15 @@ interfaces:
     minimum_value: Мінімальне значення
     maximum_value: Максимальне значення
     step_interval: Інтервал кроку
-    slug: Форматувати для Url
+    slug: Slugify
+    slug_label: Безпечне введене значення URL
+  input-multiline:
+    textarea: Текстова область
+    description: Введіть багаторядковий простий текст
   input-translated-string:
+    input-translated-string: Перекладені рядки
+    description: Виберіть або додайте рядок перекладу
+    search_placeholder: Шукати...
     new_translation_string: Новий рядок перекладу
   boolean:
     toggle: Переключити
