@@ -156,17 +156,18 @@ export class AuthorizationService {
 						);
 
 						for (const child of ast.children[collection]) {
-							// Always add relational field as a deep child may have a filter
-							if (child.type !== 'field') {
-								(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
-									child.fieldKey
-								);
-							}
+							const childPermissions = validateFilterPermissions(child, schema, accountability);
 
-							requiredFieldPermissions = mergeRequiredFieldPermissions(
-								requiredFieldPermissions,
-								validateFilterPermissions(child, schema, accountability)
-							);
+							if (Object.keys(childPermissions).length > 0) {
+								//Only add relational field if deep child has a filter
+								if (child.type !== 'field') {
+									(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
+										child.fieldKey
+									);
+								}
+
+								requiredFieldPermissions = mergeRequiredFieldPermissions(requiredFieldPermissions, childPermissions);
+							}
 						}
 					}
 				} else {
@@ -176,17 +177,18 @@ export class AuthorizationService {
 					);
 
 					for (const child of ast.children) {
-						// Always add relational field as a deep child may have a filter
-						if (child.type !== 'field') {
-							(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
-								child.fieldKey
-							);
-						}
+						const childPermissions = validateFilterPermissions(child, schema, accountability);
 
-						requiredFieldPermissions = mergeRequiredFieldPermissions(
-							requiredFieldPermissions,
-							validateFilterPermissions(child, schema, accountability)
-						);
+						if (Object.keys(childPermissions).length > 0) {
+							// Only add relational field if deep child has a filter
+							if (child.type !== 'field') {
+								(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
+									child.fieldKey
+								);
+							}
+
+							requiredFieldPermissions = mergeRequiredFieldPermissions(requiredFieldPermissions, childPermissions);
+						}
 					}
 				}
 			}
