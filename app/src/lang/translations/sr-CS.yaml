@@ -34,7 +34,6 @@ delete_folder: Obriši Fasciklu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi postavljanje oznake
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
@@ -226,7 +225,6 @@ related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
 format: Format
-use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
@@ -242,6 +240,9 @@ interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
+functions:
+  year: Godina
+  month: Mjesec
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -1024,7 +1025,6 @@ interfaces:
     auto_formatter: Koristi automatski format naslova
     alphabetize: Po abecedi
     alphabetize_label: Abecedni red
-    add_tags: Dodaj tagove...
   input:
     input: Unos
     description: Ručno unesite vrijednost
@@ -1184,7 +1184,6 @@ layouts:
     subtitle: Pod naslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno

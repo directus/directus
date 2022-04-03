@@ -83,7 +83,6 @@ delete_folder: Удалить папку
 prefix: Префикс
 suffix: Суффикс
 reset_bookmark: Сбросить закладку
-rename_bookmark: Переименовать закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
 delete_bookmark_copy: >-
@@ -335,8 +334,6 @@ label_import: Импорт
 label_export: Экспорт
 import_export: Импорт / Экспорт
 format: Формат
-use_current_filters_settings: Использовать Текущие Фильтры и Настройки
-export_data_button: Начать экспорт
 last_page: Последняя Страница
 last_access: Последний Доступ
 fill_template: Заполнить Шаблонным Значением
@@ -352,6 +349,10 @@ interface_label: Интерфейс
 today: Сегодня
 yesterday: Вчера
 delete_comment: Удалить комментарий
+functions:
+  year: Год
+  month: Месяц
+  count: Количество
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -991,6 +992,7 @@ fields:
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
+    default_language: Язык по умолчанию
     branding: Брендинг
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
@@ -1444,7 +1446,6 @@ interfaces:
     auto_formatter: Использовать Авто-Форматирование Заголовка
     alphabetize: По алфавиту
     alphabetize_label: Принудительный Порядок по Алфавиту
-    add_tags: Добавить метки...
   input:
     input: Ввод
     description: Ввести значение вручную
@@ -1624,7 +1625,6 @@ layouts:
     subtitle: Подзаголовок
   tabular:
     tabular: Таблица
-    fields: Поля
     spacing: Отступы
     comfortable: Удобный
     compact: Компактный

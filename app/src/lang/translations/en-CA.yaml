@@ -83,7 +83,6 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Reset Bookmark
-rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
@@ -317,7 +316,6 @@ translations_collection: Translation Collection
 languages_collection: Languages Collection
 label_import: Import
 format: Format
-use_current_filters_settings: Use Current Filters & Settings
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -333,6 +331,10 @@ interface_label: Interface
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
+functions:
+  year: Year
+  month: Month
+  count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -963,6 +965,7 @@ fields:
     project_url: Project URL
     project_color: Project Colour
     project_logo: Project Logo
+    default_language: Default Language
     branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
@@ -1433,7 +1436,6 @@ interfaces:
     auto_formatter: Use Title Auto-Formatter
     alphabetize: Alphabetise
     alphabetize_label: Force Alphabetical Order
-    add_tags: Add tags...
   input:
     input: Input
     description: Manually enter a value
@@ -1623,7 +1625,6 @@ layouts:
     subtitle: Subtitle
   tabular:
     tabular: Table
-    fields: Fields
     spacing: Spacing
     comfortable: Comfortable
     compact: Compact

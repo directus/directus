@@ -28,6 +28,7 @@ draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
+reset_width: Restablecer ancho
 tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
@@ -40,6 +41,7 @@ duplicate_field: Duplicar Campo
 half_width: Mitad del ancho
 full_width: Ancho completo
 group: Grupo
+export_items: Exportar elementos
 and: "Y"
 or: O
 fill_width: Rellenar ancho
@@ -67,6 +69,12 @@ create_role: Crear Rol
 create_user: Crear usuario
 delete_panel: Eliminar Panel
 create_webhook: Crear un webhook(conección)
+create_translation_string: Crear Traducciones
+translation_string_key_placeholder: Clave de cadena de traducción...
+translation_string_translations_placeholder: Añadir una nueva traducción
+edit_translation_string: Editar traducción
+delete_translation_string_copy: >-
+  ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
@@ -83,7 +91,6 @@ delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
 reset_bookmark: Restablecer el marcador
-rename_bookmark: Renombrar el marcador
 update_bookmark: Actualizar el marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
@@ -326,8 +333,6 @@ label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
 format: Formato
-use_current_filters_settings: Usar Filtros y Ajustes Actuales
-export_data_button: Comenzar exportación
 last_page: Última Página
 last_access: Último Acceso
 fill_template: Rellenar con Valor de Plantilla
@@ -343,6 +348,10 @@ interface_label: Interfaz
 today: Hoy
 yesterday: Ayer
 delete_comment: Eliminar Comentario
+functions:
+  year: Año
+  month: Mes
+  count: Contar
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -977,6 +986,7 @@ fields:
     project_url: URL del Proyecto
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
+    default_language: Idioma predeterminado
     branding: Marca y estilo
     public_foreground: Superficie Pública
     public_background: Fondo Público
@@ -1371,7 +1381,6 @@ interfaces:
     auto_formatter: Usar Auto-Formateador de Título
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
-    add_tags: Agregar etiquetas...
   input:
     input: Entrada
     description: Introduzca manualmente un valor
@@ -1538,7 +1547,6 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabular
-    fields: Campos
     spacing: Espaciado
     comfortable: Cómoda
     compact: Compactar

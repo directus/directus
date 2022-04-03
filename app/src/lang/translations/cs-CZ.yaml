@@ -79,7 +79,6 @@ delete_folder: Smazat složku
 prefix: Prefix
 suffix: Přípona
 reset_bookmark: Obnovit záložku
-rename_bookmark: Přejmenovat záložku
 update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
 delete_bookmark_copy: >-
@@ -490,7 +489,6 @@ layouts:
     title: Název
   tabular:
     tabular: Tabulka
-    fields: Sloupce
     spacing: Odsazení
     comfortable: Komfortní
     compact: Kompaktní

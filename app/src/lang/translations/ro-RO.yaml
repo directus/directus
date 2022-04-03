@@ -84,7 +84,6 @@ delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
 reset_bookmark: Resetează semnul de carte
-rename_bookmark: Redenumește semnul de carte
 update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
 delete_bookmark_copy: >-
@@ -336,8 +335,6 @@ label_import: Import
 label_export: Exportă
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Folosește filtrele și setările curente
-export_data_button: Începe exportul
 last_page: Ultima Pagină
 last_access: Ultima accesare
 fill_template: Completează cu valoarea din șablon
@@ -354,6 +351,10 @@ today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
 delete_share: Șterge distribuire
+functions:
+  year: An
+  month: Lună
+  count: Numărătoare
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -996,6 +997,7 @@ fields:
     project_url: Url proiect
     project_color: Culoare proiect
     project_logo: Logo proiect
+    default_language: Limba implicită
     branding: Branding și stil
     public_foreground: Prim-plan public
     public_background: Fundal public
@@ -1470,7 +1472,6 @@ interfaces:
     auto_formatter: Folosește formatarea automată pentru titlu
     alphabetize: Așează în ordine alfabetică
     alphabetize_label: Forțează ordinea alfabetică
-    add_tags: Adaugă etichete...
   input:
     input: Input
     description: Introduceți manual o valoare
@@ -1662,7 +1663,6 @@ layouts:
     subtitle: Subtitlu
   tabular:
     tabular: Tabel
-    fields: Câmpuri
     spacing: Spațiere
     comfortable: Confortabil
     compact: Compact

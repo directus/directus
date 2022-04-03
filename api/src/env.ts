@@ -82,6 +82,8 @@ const defaults: Record<string, any> = {
 	SERVE_APP: true,
 
 	RELATIONAL_BATCH_SIZE: 25000,
+
+	EXPORT_BATCH_SIZE: 5000,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -286,6 +288,7 @@ function processValues(env: Record<string, any>) {
 
 		if (String(value).includes(',')) {
 			env[key] = toArray(value);
+			continue;
 		}
 
 		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
