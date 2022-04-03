@@ -40,7 +40,7 @@ test a proof of concept or any other non-production activity. Community Projects
 
 - **Project Name** — Custom. _This can be changed at any time with no impact on the Project_.
 - **Project URL** — Random URL: `aa3i82.directus.app`. _This cannot be changed_.
-- [Datacenter Region](/cloud/glossary/#data-processing) — `United States, East`.
+- [Datacenter Region](/cloud/glossary/#datacenter-regions) — `United States, East`.
 - [Node Type](/cloud/glossary/#node-types) — Community Node.
 - [Load Balancing](/cloud/glossary/#load-balancing) — One Active Node.
 - [Auto-Scaling](/cloud/glossary/#auto-scaling) — Not Available.
@@ -75,18 +75,18 @@ Create a [Standard Project](#create-a-standard-project).
 ![Create a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/create-a-project-20220228A.webp)
 
 The Standard tier is perfect for most production-ready use cases. These Projects come with custom URLs, daily
-[backups](/cloud/glossary/#backups), as well as upgraded server power, which can be scaled up and down as needed.
+[backups](/cloud/glossary/#backups), and better Nodes that can be scaled up and down as needed.
 
 Standard Projects come with the following configuration options.
 
 - **Project Name** — Custom. _This can be changed at any time with no impact on the Project_.
 - **Project URL** — Custom URL: `your-custom-url.directus.app`. _This cannot be changed_.
-- [Datacenter Region](/cloud/glossary/#data-processing) — `United States, East` or `Europe, Frankfurt`.
+- [Datacenter Region](/cloud/glossary/#datacenter-regions) — `United States, East` or `Europe, Frankfurt`.
 - [Node Type](/cloud/glossary/#node-types) — General Purpose or Performance Tier Nodes.
 - [Load Balancing](/cloud/glossary/#load-balancing) — 1-6 Active Nodes.
 - [Auto-Scaling](/cloud/glossary/#auto-scaling) — 0-5 Standby Nodes.
 
-To create a Standard Project, follow the steps below. [Learn More](/cloud/glossary/#projects)
+To create a Standard Project, follow the steps below.
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
@@ -108,8 +108,8 @@ Upgrade to an [Enterprise Project](#create-an-enterprise-project).
 ## Create an Enterprise Project
 
 Enterprise tier offers power and scale to meet any Project's needs, 19
-[Datacenter regions](/cloud/glossary/#data-processing), upgraded [support options](#support-options), and much more.
-[Learn More](/cloud/glossary/#projects)
+[Datacenter regions](/cloud/glossary/#datacenter-regions), upgraded [support options](/cloud/glossary/#support-options),
+and much more.
 
 :::tip Ready to to go Enterprise?
 
@@ -173,7 +173,7 @@ To access the Project Monitor Page, follow the steps below.
 ![Manage a Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/manage-a-community-project-20220329A.webp)
 
 On Community Projects, the only option available is to change the Project's Name. To manage a Community Project, follow
-the steps below. [Learn More](/cloud/glssary/#projects)
+the steps below.
 
 1. Open the Team Menu in the Dashboard Header and click the desired Team.
 2. Click **"Projects"** to enter the Projects Page.

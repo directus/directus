@@ -3,7 +3,7 @@
 > Our Cloud service manages all infrastructure and software updates on your Directus Projects. From hobbyists and
 > startups to Fortune 500 companies, our flexible cloud service offers fair and predictable usage-based pricing.
 
-![Hero Image](image.webp)
+![Hero Image](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/hero-image-20220402A.webp)
 
 [[toc]]
 
@@ -18,15 +18,15 @@ logged in, you create or join a Team and your Account then becomes a Member of t
 within a Team.
 
 Accounts can be Members on multiple Teams. All Team Members have SuperAdmin privileges to manage the Team's Projects,
-Project [billing](/cloud/glossary/#monthly-billing), other Team Members, and the Team itself. Teams can have multiple
-Team Members and multiple Projects. Projects can only be managed by one Team and cannot be transferred to new Teams.
+Project [billing](/cloud/teams/#manage-billing), other Team Members, and the Team itself. Teams can have multiple Team
+Members and multiple Projects. Projects can only be managed by one Team and cannot be transferred to new Teams.
 
 ## Getting Started
 
 To make life easy, you have the option to
 [create and login to your free Cloud Account](/cloud/accounts/#create-account-and-login) automatically with GitHub. If
 you have no GitHub or do not wish to use this login method, email-and-password login is available as well. Once
-logged-in, create a new Team or Select an existing Team. Then you can access and manage the Team's associated Projects,
+logged-in, create a new Team or select an existing Team. Then you can access and manage the Team's associated Projects,
 billing details, Team Members, Activity, and Settings.
 
 <video alt="Cloud Dashboard Overview" loop muted controls autoplay>
@@ -56,7 +56,7 @@ layout relates to each of these.
   information changes, Member invitations and removals, etc.
 
 - [Team Settings](/cloud/teams/#update-team-settings) — Edit the Team Name and Team Slug, as well as
-  [destroy the Team](/cloud/teams/#update-team-settings).
+  [destroy the Team](/cloud/teams/#destroy-a-team).
 
 ## Projects
 

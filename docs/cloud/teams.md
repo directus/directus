@@ -5,15 +5,13 @@
 
 [[toc]]
 
-Teams provide an organizational system within the Cloud Dashboard which allows individuals to separate or consolidate
-Projects and payment methods as well as manage Projects independently or with other Team Members.
+Teams within the Cloud Dashboard allow individuals to separate or consolidate Projects and payment methods as well as
+manage Projects independently or with other Team Members.
 
-For example, a company's IT department can manage Projects and Project billing across multiple departments, each with
-their own department-specific payment methods, and with each department administrator's access limited to their
-respective Project(s) and payment methods. Similarly, Agencies or freelance developers with multiple customers can
-access all their customers' Projects, while limiting each customer's access by adding them to the Team that holds their
-respective Project(s) and payment methods. Teams are free, so create as many as you need to appropriately group Team
-Members, Projects and payment methods.
+For example, a company can use Teams to organize Projects by department, each with consolidated billing and scoped
+access. Similarly, agencies or freelancers with multiple customers can create a Team per client to limit their access
+and isolate billing. Teams are free, so create as many as you need to appropriately organize Team Members, Projects, and
+payment methods.
 
 See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects interrelate.
 
@@ -52,7 +50,7 @@ To update Team Settings, follow the steps below.
 
 ![View Team Activity](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/view-team-activity-20220322A.webp)
 
-The Team Activity Page displays created and destroyed Projects, billing information changes, Team Members added or
+The Team Activity Page displays billing information changes, created and destroyed Projects, Team Members added or
 removed, Team Name and Team Slug changes, as well as any other major Team-oriented activities. To view Team Activity,
 follow the steps below.
 
@@ -64,7 +62,7 @@ follow the steps below.
 ![View Billing Details](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/view-billing-details-20220322A.webp)
 
 Please follow these steps to see billing details such as credit available to Team Projects, total active subscriptions,
-and invoice receipts. [Learn More](/cloud/glossary/#monthly-billing)
+and invoice receipts. [Learn More](/cloud/teams/#manage-billing)
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Billing"** to enter the Billing Details Page.
@@ -73,8 +71,9 @@ and invoice receipts. [Learn More](/cloud/glossary/#monthly-billing)
 
 ![Manage Billing](https://cdn.directus.io/docs/v9/cloud/teams/teams-20220322A/manage-billing-20220322A.webp)
 
-Follow the steps below to change a default payment method, add or remove additional payment methods, or change other
-billing details.
+Since our Community tier is completely free, and our Enterprise tier pricing is individually tailored based on customer
+needs, this section will focus on our pay-as-you-go Standard tier. Follow the steps below to change a default payment
+method, add or remove additional payment methods, or change other billing details.
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Billing"** to enter the Billing Details Page.
@@ -84,9 +83,9 @@ billing details.
 
 ### Team Billing
 
-Teams are free to create. They are simply used to give Team Members access to the same Projects, Project invoices, and
-payment methods. Each Team has its own separate billing. Each Project within a Team is
-[calculated](/cloud/glossary/#how-bills-are-calculated) and [invoiced separately every month](#billing-cycles).
+Teams are free to create. They are used to give Team Members access to the same Projects, Project invoices, and payment
+methods. Each Team has its own separate billing. Each Project within a Team is [calculated](#how-bills-are-calculated)
+and [invoiced separately every month](#billing-cycles).
 
 Team Members are SuperAdmins. As such, they have full access to manage billing information and payment methods,
 including information provided by other Team Members. Team Members should be highly trusted individuals.
@@ -107,16 +106,86 @@ up. Then the default payment method will be used.
 
 :::
 
+:::tip Stripe Payment
+
+To handle billing, Directus Cloud uses Stripe, a secure, industry-leading, dynamic, international billing service.
+
+:::
+
 ### Billing Cycles
 
 Bills are invoiced on a calendar monthly basis, so each new billing period begins after exactly one month. When a
 Project is destroyed, the bill is processed immediately. As mentioned in the previous section, bills are invoiced
 per-Project. So, if a Team has 4 Standard Projects, it will be charged 4 times each month.
-[Learn More](/cloud/glossary/#monthly-billing)
 
-:::tip Stripe Payment
+### How Bills Are Calculated
 
-To handle billing, Directus Cloud uses Stripe, a secure, industry-leading, dynamic, international billing service.
+Project billing is calculated based on the total number of hours that Active and Standby Nodes are utilized during the
+billing period. Once the [Node Type](/cloud/glossary/#nodes) is selected, the associated hourly rate will apply to both
+Active and Standby Nodes.
+
+:::tip Node Pricing
+
+**General Purpose:** $0.03424657534 / hour\
+**Performance Tier:** $0.06849315068 / hour
+
+:::
+
+This means the monthly prices given for Active Nodes, _$25/month for General Purpose and $50/month for Performance
+tier_, are actually estimates based on the cost per hour times the average length of a month (730 hours). So, the
+pricing shown for one Active, General Purpose Node is `$0.03424657534 x 730hrs = $25`, however the actual bill will vary
+slightly each month.
+
+Furthermore, a Standard Project's Nodes can be reconfigured at any time. You can upgrade and downgrade Node Types, add
+and remove Nodes, or destroy your Project as you please. In the end, _you simply pay for the actual Node-hours used by
+your Project_.
+
+The following four examples demonstrate this billing system:
+
+**Hourly Pricing**\
+A Project is configured to use General Purpose Nodes, with one Active Node and zero Standby Nodes. The Project runs for 3
+days and 3.5 hours (75.5 hours total, rounds to 76 hours) and is then destroyed, costing `1 Node x $0.03424657534/hour x 76 hours = $2.60`.
+
+The bill will be `$2.60` plus Tax/VAT, charged at Project destruction.
+
+**Active Nodes**\
+A Project is configured to use Performance Tier Nodes, with two Active Nodes and zero Standby Nodes. The Project runs the
+full month (730 hours). For this billing cycle, the two Active Nodes will cost `2 Nodes x $0.06849315068/hour x 730 hours = $100`.
+
+The monthly bill will be `$100` plus Tax/VAT.
+
+**Overages on Standby Nodes**\
+A Project is configured to use General Purpose Nodes, with three Active Nodes and two Standby Nodes. The Project runs the
+full month (730 hours). There are two traffic spikes. The first spike is smaller and only activates one Standby Node for
+6.5 hours. The second spike is larger and activates the first Node from 4pm to 12am (eight hours), and the second Node from
+6pm to 11pm (five hours), for a total of `8 + 5 = 13` hours. Between both spikes, Standby Nodes run for a total of 19.5 hours
+(rounds to 20 hrs). Active Nodes will cost `3 Nodes x $0.03424657534/hour x 730 hours = $75.00` plus Standby Node overages
+`20 Node-hours x $0.03424657534/hour = $0.68`.
+
+The monthly bill will be `$75.68` plus VAT/Tax.
+
+**Pro-rated Changes**\
+A Project begins the billing cycle configured to use General Purpose Nodes, one Active and zero Standby. A massive traffic
+spike is expected from marketing activities this month and 200 hours into the month, the Project is reconfigured. The Node
+Type is now Performance Tier, and uses two Active Nodes and five Standby Nodes. In the end, the marketing event was a failure,
+traffic was just slightly above average. The five Standby Nodes were not needed and never activated. The first 200 hours
+cost `(1 General Purpose Node x $0.03424657534/hour x 200hrs) = $6.85`. The other 530 hours cost `(2 Performance Nodes x $0.06849315068/hour x 530 hours) = 72.60`.
+
+The monthly bill will be `$79.45` plus VAT/Tax.
+
+### Optimize Node Configuration
+
+As stated in the beginning of this section and as shown by the examples above, _you are never locked-in to a specific
+Node configuration_. As needs change on a Project, you are free to reconfigure Node Type as well as the number of Active
+and Standby Nodes. To this end, you may want to monitor overall system traffic to make informed decisions on Node
+reconfiguration. The [Project Monitor Page](/cloud/projects/#monitor-a-project) provides performance analytics, which
+can be used to help identify optimal Node configurations for your Project.
+
+:::warning Standby Nodes
+
+For production-ready Projects of any kind, it is probably a good idea to have one or more Standby Nodes. These do not
+activate and you do not pay until they are needed. Alternatively, as with any web app or site, if you do not have the
+processing power to handle traffic spikes, it can crash your Nodes!
 
 :::
 
