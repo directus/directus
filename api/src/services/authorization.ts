@@ -196,7 +196,7 @@ export class AuthorizationService {
 
 			if (ast.type === 'root') {
 				// Validate all required permissions once at the root level
-				checkFieldPermissions(ast.name, action, requiredFieldPermissions);
+				checkFieldPermissions(ast.name, schema, action, requiredFieldPermissions);
 			}
 
 			return requiredFieldPermissions;
@@ -305,6 +305,7 @@ export class AuthorizationService {
 
 			function checkFieldPermissions(
 				rootCollection: string,
+				schema: SchemaOverview,
 				action: PermissionsAction,
 				requiredPermissions: Record<string, Set<string>>
 			) {
@@ -327,7 +328,9 @@ export class AuthorizationService {
 							throw new ForbiddenException();
 						}
 
-						allowedFields = permission?.fields ? [...permission.fields, 'id'] : ['id'];
+						allowedFields = permission?.fields
+							? [...permission.fields, schema.collections[collection].primary]
+							: [schema.collections[collection].primary];
 					} else if (!permission || !permission.fields) {
 						throw new ForbiddenException();
 					} else {
@@ -336,7 +339,7 @@ export class AuthorizationService {
 
 					if (allowedFields.includes('*')) continue;
 					// Allow legacy permissions with an empty fields array, where id can be accessed
-					if (allowedFields.length === 0) allowedFields.push('id');
+					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
 						if (!allowedFields.includes(field)) throw new ForbiddenException();
