@@ -368,6 +368,12 @@ delete_share: Изтриване на споделянето
 functions:
   year: Година
   month: Месец
+  week: Седмица
+  day: Ден
+  weekday: Делничен ден
+  hour: Час
+  minute: Минута
+  second: Секунда
   count: Брой
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
@@ -1035,6 +1041,7 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
+    default_language: Език по подразбиране
     branding: Стил и брандиране
     public_foreground: Публично изображение
     public_background: Публичен фон
@@ -1314,6 +1321,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:

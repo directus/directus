@@ -1054,6 +1054,7 @@ fields:
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
+    default_language: Default Language
     branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background

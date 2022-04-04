@@ -3,10 +3,19 @@ import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Aggregate, Filter, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
+import {
+	Aggregate,
+	Filter,
+	Query,
+	Relation,
+	RelationMeta,
+	SchemaOverview,
+	FieldFunction,
+} from '@directus/shared/types';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
+import { getOutputTypeForFunction } from '@directus/shared/utils';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -410,6 +419,17 @@ export function applyFilter(
 				});
 			}
 
+			// Cast filter value (compareValue) based on function used
+			if (column.includes('(') && column.includes(')')) {
+				const functionName = column.split('(')[0] as FieldFunction;
+				const type = getOutputTypeForFunction(functionName);
+
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+					compareValue = Number(compareValue);
+				}
+			}
+
+			// Cast filter value (compareValue) based on type of field being filtered against
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -420,6 +440,14 @@ export function applyFilter(
 						compareValue = compareValue.map((val) => helpers.date.parse(val));
 					} else {
 						compareValue = helpers.date.parse(compareValue);
+					}
+				}
+
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+					if (Array.isArray(compareValue)) {
+						compareValue = compareValue.map((val) => Number(val));
+					} else {
+						compareValue = Number(compareValue);
 					}
 				}
 			}
