@@ -182,7 +182,7 @@ which Items a Role will be able to share, enabling you to do things like _only s
 
 ## Limit Sharing by Field
 
-As mentioned several times before, when you create a Share on some Item, you associate a Role _(and thus the Role's
+When you create a Share on some Item, you associate a Role _(and thus the Role's
 permissions)_ to the Item. This allows you to set read permissions for the exact fields _(including relational fields)_
 that get shared.
 
