@@ -146,21 +146,21 @@ export default ({ schedule }) => {
 
 ### Filter Events
 
-| Name                          | Payload              | Meta                                    |
-| ----------------------------- | -------------------- | --------------------------------------- |
-| `request.not_found`           | `false`              | `request`, `response`                   |
-| `request.error`               | The request errors   | --                                      |
-| `database.error`              | The database error   | `client`                                |
-| `auth.login`                  | The login payload    | `status`, `user`, `provider`            |
-| `auth.register`               | The new user payload | `identifier`, `provider`, `accessToken` |
-| `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type`    |
-| `(<collection>.)items.read`   | The read item        | `collection`                            |
-| `(<collection>.)items.create` | The new item         | `collection`                            |
-| `(<collection>.)items.update` | The updated item     | `keys`, `collection`                    |
-| `(<collection>.)items.delete` | The keys of the item | `collection`                            |
-| `<system-collection>.create`  | The new item         | `collection`                            |
-| `<system-collection>.update`  | The updated item     | `keys`, `collection`                    |
-| `<system-collection>.delete`  | The keys of the item | `collection`                            |
+| Name                          | Payload              | Meta                                                |
+| ----------------------------- | -------------------- | --------------------------------------------------- |
+| `request.not_found`           | `false`              | `request`, `response`                               |
+| `request.error`               | The request errors   | --                                                  |
+| `database.error`              | The database error   | `client`                                            |
+| `auth.login`                  | The login payload    | `status`, `user`, `provider`                        |
+| `auth.register`               | The new user payload | `identifier`, `provider`, `accessToken`, `userInfo` |
+| `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type`                |
+| `(<collection>.)items.read`   | The read item        | `collection`                                        |
+| `(<collection>.)items.create` | The new item         | `collection`                                        |
+| `(<collection>.)items.update` | The updated item     | `keys`, `collection`                                |
+| `(<collection>.)items.delete` | The keys of the item | `collection`                                        |
+| `<system-collection>.create`  | The new item         | `collection`                                        |
+| `<system-collection>.update`  | The updated item     | `keys`, `collection`                                |
+| `<system-collection>.delete`  | The keys of the item | `collection`                                        |
 
 ::: tip System Collections
 
@@ -173,7 +173,8 @@ export default ({ schedule }) => {
 
 `auth.register` is triggered only for `openid` and `oauth2` providers. Moreover
 `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` has to be enabled. `accessToken` is return by the corresponding provider and
-should not be mistaken with Directus accessToken.
+should not be mistaken with Directus accessToken. Caution: `userInfo` depends on the provider that is used. Therefore,
+object properties might be different according to the current provider.
 
 :::
 

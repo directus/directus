@@ -180,6 +180,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				identifier,
 				provider: this.config.provider,
 				accessToken: tokenSet.access_token,
+				userInfo,
 			},
 			{
 				database: getDatabase(),
