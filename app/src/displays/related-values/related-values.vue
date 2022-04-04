@@ -6,18 +6,48 @@
 		:disabled="value.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
-				<span class="label" v-if="value.length !== 1">
+			<span class="label" v-if="value.length === 1">
+				<render-template
+						:template="internalTemplate"
+						:item="value[0]"
+						:collection="junctionCollection ?? relatedCollection"
+					/>
+			</span>
+			<span class="label" v-else-if="value.length > 1 && nb_visible_items > 1">
+				<template v-for="n in nb_visible_items">
+					<render-template
+							v-if="value[n-1]"
+							:template="internalTemplate"
+							:item="value[n-1]"
+							:collection="junctionCollection ?? relatedCollection"
+							:key="n"
+						/>
+					<template v-if="value[n-1] && value[n] && n !== nb_visible_items">,</template>
+				</template>
+				<span
+						v-if="value.length > nb_visible_items"
+						class="toggle"
+						:class="{ subdued: value.length === 0 }"
+						@click.stop="toggle"
+					>
+					<span class="label" >
+						{{ value.length - nb_visible_items }}
+						<template v-if="(value.length - nb_visible_items) >= 100">+</template>
+						{{ unit }}
+					</span>
+			</span>
+			</span>
+			<span
+					v-else
+					class="toggle"
+					:class="{ subdued: value.length === 0 }"
+					@click.stop="toggle"
+				>
+				<span class="label" >
 					{{ value.length }}
 					<template v-if="value.length >= 100">+</template>
 					{{ unit }}
 				</span>
-				<render-template
-					v-else
-					:template="internalTemplate"
-					:item="value[0]"
-					:collection="junctionCollection ?? relatedCollection"
-				/>
 			</span>
 		</template>
 
@@ -67,6 +97,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		nb_visible_items: {
+			type: Number,
+			default: null,
+		}
 	},
 	setup(props) {
 		const { t, te } = useI18n();
@@ -119,6 +153,10 @@ export default defineComponent({
 			return null;
 		});
 
+		const nb_visible_items = computed(() => {
+			return props.nb_visible_items ?? 0;
+		});
+
 		return {
 			relatedCollection,
 			junctionCollection,
@@ -127,6 +165,7 @@ export default defineComponent({
 			internalTemplate,
 			unit,
 			localType,
+			nb_visible_items
 		};
 
 		function getLinkForItem(item: any) {

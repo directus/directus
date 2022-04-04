@@ -41,6 +41,17 @@ export default defineDisplay({
 				name: '$t:display_template',
 				meta: displayTemplateMeta,
 			},
+			{
+				field: 'nb_visible_items',
+				name: '$:nb_visible_items',
+				meta: {
+					interface: 'input',
+					options: {
+						type: 'number',
+						min: 0
+					}
+				}
+			}
 		];
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
