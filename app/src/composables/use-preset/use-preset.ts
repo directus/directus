@@ -90,6 +90,11 @@ export function usePreset(
 		initLocalPreset();
 	});
 
+	// update current bookmark title when it is edited in navigation-bookmark
+	presetsStore.$subscribe(() => {
+		initLocalPreset();
+	});
+
 	const layoutOptions = computed<Record<string, any>>({
 		get() {
 			return localPreset.value.layout_options?.[layout.value] || null;

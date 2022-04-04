@@ -91,7 +91,6 @@ delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
 reset_bookmark: Réinitialiser le favori
-rename_bookmark: Renommer le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
 delete_bookmark_copy: >-
@@ -363,6 +362,10 @@ today: Aujourd'hui
 yesterday: Hier
 delete_comment: Supprimer le commentaire
 delete_share: Supprimer le partage
+functions:
+  year: Année
+  month: Mois
+  count: Compter
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -1024,6 +1027,7 @@ fields:
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
+    default_language: Langue par défaut
     branding: Apparence et style
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil

@@ -166,6 +166,16 @@ describe('Integration Tests', () => {
 									id: 1,
 									role: 'admin',
 									collection: table,
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: table,
 									action: 'read',
 									permissions: {},
 									validation: {},
@@ -185,6 +195,138 @@ describe('Integration Tests', () => {
 					expect(tracker.history.select[0].bindings).toStrictEqual(['something', rawItems[0].id, 100]);
 					expect(tracker.history.select[0].sql).toBe(
 						`select "${table}"."id", "${table}"."name" from "${table}" where ("${table}"."name" = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					);
+
+					expect(response).toStrictEqual({ id: rawItems[0].id });
+				}
+			);
+
+			it.each(Object.keys(schemas))(
+				'%s returns one item with filter on relational field from tables not as admin and has top level field permissions only',
+				async (schema) => {
+					const table = schemas[schema].tables[1];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					const itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: table,
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: table,
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+					const response = await itemsService.readOne(rawItems[0].id, {
+						fields: ['id'],
+						filter: { uploaded_by: { _in: ['b5a7dd0f-fc9f-4242-b331-83990990198f'] } },
+					});
+
+					expect(tracker.history.select.length).toBe(1);
+					expect(tracker.history.select[0].bindings).toStrictEqual([
+						'b5a7dd0f-fc9f-4242-b331-83990990198f',
+						rawItems[0].id,
+						100,
+					]);
+					expect(tracker.history.select[0].sql).toBe(
+						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					);
+
+					expect(response).toStrictEqual({ id: rawItems[0].id });
+				}
+			);
+
+			it.each(Object.keys(schemas))(
+				'%s returns one item with filter on relational field from tables not as admin and has relational permissions',
+				async (schema) => {
+					const table = schemas[schema].tables[1];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					const itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 3,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 4,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+					const response = await itemsService.readOne(rawItems[0].id, {
+						fields: ['id'],
+						filter: { uploaded_by: { _in: ['b5a7dd0f-fc9f-4242-b331-83990990198f'] } },
+					});
+
+					expect(tracker.history.select.length).toBe(1);
+					expect(tracker.history.select[0].bindings).toStrictEqual([
+						'b5a7dd0f-fc9f-4242-b331-83990990198f',
+						rawItems[0].id,
+						100,
+					]);
+					expect(tracker.history.select[0].sql).toBe(
+						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 					);
 
 					expect(response).toStrictEqual({ id: rawItems[0].id });
@@ -221,6 +363,16 @@ describe('Integration Tests', () => {
 							permissions: [
 								{
 									id: 1,
+									role: 'admin',
+									collection: table,
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
 									role: 'admin',
 									collection: table,
 									action: 'read',
@@ -313,6 +465,26 @@ describe('Integration Tests', () => {
 									id: 1,
 									role: 'admin',
 									collection: schemas[schema].tables[0],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 3,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
 									action: 'read',
 									permissions: {},
 									validation: {},
@@ -320,7 +492,7 @@ describe('Integration Tests', () => {
 									fields: ['id', 'items'],
 								},
 								{
-									id: 2,
+									id: 4,
 									role: 'admin',
 									collection: schemas[schema].tables[1],
 									action: 'read',
@@ -384,6 +556,26 @@ describe('Integration Tests', () => {
 									id: 1,
 									role: 'admin',
 									collection: schemas[schema].tables[0],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 3,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
 									action: 'read',
 									permissions: {},
 									validation: {},
@@ -391,7 +583,7 @@ describe('Integration Tests', () => {
 									fields: ['id', 'items'],
 								},
 								{
-									id: 2,
+									id: 4,
 									role: 'admin',
 									collection: schemas[schema].tables[1],
 									action: 'read',

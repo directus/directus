@@ -39,7 +39,6 @@ delete_folder: Trinti aplanką
 prefix: Priešdėlis
 suffix: Priesaga
 reset_bookmark: Atstatyti skirtuką
-rename_bookmark: Pervadinti žymę
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
 delete_bookmark_copy: >-
@@ -245,6 +244,9 @@ interface_label: Sąsaja
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
+functions:
+  year: Metai
+  month: Mėnuo
 month: Mėnuo
 year: Metai
 select_all: Pažymėti visus

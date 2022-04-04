@@ -40,6 +40,7 @@ export class ServerService {
 				'project_descriptor',
 				'project_logo',
 				'project_color',
+				'default_language',
 				'public_foreground',
 				'public_background',
 				'public_note',
