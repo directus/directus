@@ -77,7 +77,6 @@ delete_folder: Ta bort mapp
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Återställ bokmärke
-rename_bookmark: Döp om bokmärke
 update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
 delete_bookmark_copy: >-
@@ -107,7 +106,6 @@ recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
 unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
 nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
-unknown_validation_errors: 'Det är fel i valideringen av följande dolda fält:'
 validationError:
   eq: Värdet måste vara {valid}
   neq: Värdet kan inte vara {invalid}
@@ -310,7 +308,6 @@ translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
 label_import: Importera
 format: Format
-use_current_filters_settings: Använd befintliga filter & inställningar
 last_page: Sista sidan
 last_access: Senaste åtkomsten
 fill_template: Fyll med mallens värden
@@ -326,6 +323,10 @@ interface_label: Gränssnitt
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
+functions:
+  year: År
+  month: Månad
+  count: Antal
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -922,6 +923,7 @@ fields:
     project_url: Projektets URL
     project_color: Projektets färg
     project_logo: Projektets logotyp
+    default_language: Förvalt språk
     public_foreground: Publik förgrund
     public_background: Publik bakgrund
     public_note: Publik anteckning
@@ -1282,8 +1284,6 @@ interfaces:
     customSyntax_label: Lägg till anpassade syntaxtyper
     customSyntax_add: Lägg till anpassad syntax
     box: Block / Infogad
-    imageToken: Bildnyckel
-    imageToken_label: Token (statiskt) att lägga till på bildkällor
   map:
     map: Karta
     zoom: Zooma
@@ -1339,7 +1339,6 @@ interfaces:
     auto_formatter: Använd titel Auto-Formatter
     alphabetize: Alfabetisera
     alphabetize_label: Tvinga alfabetisk ordning
-    add_tags: Lägg till taggar...
   input:
     input: Inmatning
     description: Ange ett värde manuellt
@@ -1383,8 +1382,6 @@ interfaces:
     custom_formats: Anpassade format
     options_override: Skriv över alternativ
     folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
-    imageToken: Bildnyckel
-    imageToken_label: Token (statiskt) att lägga till på bildkällor
   input-autocomplete-api:
     results_path: Sökväg för resultat
     trigger: Utlösare
@@ -1509,7 +1506,6 @@ layouts:
     subtitle: Underrubrik
   tabular:
     tabular: Tabell
-    fields: Fält
     spacing: Mellanrum
     comfortable: Bekväm
     compact: Kompakt

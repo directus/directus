@@ -35,7 +35,6 @@ delete_folder: Διαγραφή Φακέλου
 prefix: Πρόθεμα
 suffix: Επίθεμα
 reset_bookmark: Επαναφορά Σελιδοδείκτη
-rename_bookmark: Μετονομασία Σελιδοδείκτη
 update_bookmark: Ενημέρωση Σελιδοδείκτη
 delete_bookmark: Διαγραφή σελιδοδείκτη
 logoutReason:

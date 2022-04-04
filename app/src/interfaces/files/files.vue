@@ -39,7 +39,23 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(element)" />
+						<v-icon v-if="!disabled" name="close" class="remove" @click.stop="deleteItem(element)" />
+						<v-menu show-arrow placement="bottom-end">
+							<template #activator="{ toggle }">
+								<v-icon name="more_vert" clickable @click.stop="toggle" />
+							</template>
+
+							<v-list>
+								<v-list-item clickable :href="getUrl(element)">
+									<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
+									<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
+								</v-list-item>
+								<v-list-item clickable :href="getUrl(element, true)">
+									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
+									<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -229,7 +245,7 @@ export default defineComponent({
 
 		const downloadUrl = computed(() => {
 			if (relatedPrimaryKey.value === null || relationCollection.value.collection !== 'directus_files') return;
-			return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
+			return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}?download`);
 		});
 
 		return {
@@ -263,7 +279,21 @@ export default defineComponent({
 			onUpload,
 			showUpload,
 			downloadUrl,
+			getUrl,
 		};
+
+		function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
+			const { junctionField } = relationInfo.value;
+			const key = junctionRow[junctionField]?.id ?? junctionRow[junctionField] ?? null;
+
+			if (!key) return null;
+
+			if (addDownload) {
+				return addTokenToURL(getRootPath() + `assets/${key}?download`);
+			}
+
+			return addTokenToURL(getRootPath() + `assets/${key}`);
+		}
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -310,5 +340,9 @@ export default defineComponent({
 	&:hover {
 		--v-icon-color: var(--danger);
 	}
+}
+
+.remove {
+	margin-right: 4px;
 }
 </style>

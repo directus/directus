@@ -23,29 +23,35 @@ type UsableLink = {
 	linkButton: LinkButton;
 };
 
-export default function useLink(editor: Ref<any>, isEditorDirty: Ref<boolean>): UsableLink {
+export default function useLink(editor: Ref<any>): UsableLink {
 	const linkDrawerOpen = ref(false);
-	const linkSelection = ref<LinkSelection>({
+	const defaultLinkSelection = {
 		url: null,
 		displayText: null,
 		title: null,
 		newTab: true,
-	});
+	};
+	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
+	const linkNode = ref<HTMLLinkElement | null>(null);
+	const currentSelectionNode = ref<HTMLElement | null>(null);
 
 	const linkButton = {
 		icon: 'link',
 		tooltip: i18n.global.t('wysiwyg_options.link'),
-		onAction: (buttonApi: any) => {
+		onAction: () => {
+			if (editor.value.plugins.fullscreen.isFullscreen()) {
+				editor.value.execCommand('mceFullScreen');
+			}
+
 			linkDrawerOpen.value = true;
 
-			if (buttonApi.isActive()) {
-				const node = editor.value.selection.getNode() as HTMLLinkElement;
-				editor.value.selection.select(node);
+			if (linkNode.value) {
+				editor.value.selection.select(currentSelectionNode.value);
 
-				const url = node.getAttribute('href');
-				const title = node.getAttribute('title');
-				const displayText = node.innerText;
-				const target = node.getAttribute('target');
+				const url = linkNode.value.getAttribute('href');
+				const title = linkNode.value.getAttribute('title');
+				const displayText = linkNode.value.innerText;
+				const target = linkNode.value.getAttribute('target');
 
 				if (url === null || displayText === null) {
 					return;
@@ -58,35 +64,44 @@ export default function useLink(editor: Ref<any>, isEditorDirty: Ref<boolean>): 
 					newTab: target === '_blank',
 				};
 			} else {
-				defaultLinkSelection();
+				const overrideLinkSelection = { displayText: editor.value.selection.getContent() || null };
+				setLinkSelection(overrideLinkSelection);
 			}
 		},
 		onSetup: (buttonApi: any) => {
-			const onImageNodeSelect = (eventApi: any) => {
-				buttonApi.setActive(eventApi.element.tagName === 'A');
+			const onLinkNodeSelect = (eventApi: any) => {
+				let element = eventApi.element;
+				currentSelectionNode.value = eventApi.element;
+				linkNode.value = null;
+
+				while (element && element.id !== 'tinymce') {
+					if (element.tagName === 'A') {
+						linkNode.value = element;
+						break;
+					}
+
+					element = element.parentElement;
+				}
+
+				buttonApi.setActive(!!linkNode.value);
 			};
 
-			editor.value.on('NodeChange', onImageNodeSelect);
+			editor.value.on('NodeChange', onLinkNodeSelect);
 
 			return function () {
-				editor.value.off('NodeChange', onImageNodeSelect);
+				editor.value.off('NodeChange', onLinkNodeSelect);
 			};
 		},
 	};
 
 	return { linkDrawerOpen, linkSelection, closeLinkDrawer, saveLink, linkButton };
 
-	function defaultLinkSelection() {
-		linkSelection.value = {
-			url: null,
-			displayText: null,
-			title: null,
-			newTab: true,
-		};
+	function setLinkSelection(overrideLinkSelection: Partial<LinkSelection> = {}) {
+		linkSelection.value = Object.assign({}, defaultLinkSelection, overrideLinkSelection);
 	}
 
 	function closeLinkDrawer() {
-		defaultLinkSelection();
+		setLinkSelection();
 		linkDrawerOpen.value = false;
 	}
 
@@ -97,8 +112,22 @@ export default function useLink(editor: Ref<any>, isEditorDirty: Ref<boolean>): 
 			link.displayText || link.url
 		}</a>`;
 
-		isEditorDirty.value = true;
-		editor.value.selection.setContent(linkHtml);
+		// New anchor tag or current selection node is an anchor tag
+		if (!linkNode.value || currentSelectionNode.value === linkNode.value) {
+			editor.value.selection.setContent(linkHtml);
+		}
+		// Parent node is an anchor tag
+		else if (currentSelectionNode.value) {
+			currentSelectionNode.value.innerHTML = link.displayText || link.url;
+			linkNode.value.setAttribute('data-mce-href', link.url); // Required for tinymce to update changes
+			linkNode.value.setAttribute('href', link.url);
+			linkNode.value.setAttribute('title', link.title || '');
+			linkNode.value.setAttribute('target', link.newTab ? '_blank' : '_self');
+			editor.value.selection.select(linkNode.value);
+			editor.value.selection.setNode(linkNode.value);
+		}
+
+		editor.value.undoManager.add();
 		closeLinkDrawer();
 	}
 }

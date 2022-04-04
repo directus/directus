@@ -7,7 +7,12 @@
 
 		<div class="grid-element half">
 			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
-			<v-input v-model="addLabel" class="input" :placeholder="t('create_new')" />
+			<interface-system-input-translated-string
+				:value="addLabel"
+				class="input"
+				:placeholder="t('create_new')"
+				@input="addLabel = $event"
+			/>
 		</div>
 
 		<div class="grid-element full">
@@ -135,7 +140,7 @@ export default defineComponent({
 				field: 'note',
 				type: 'string',
 				meta: {
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					width: 'full',
 					sort: 6,
 					options: {

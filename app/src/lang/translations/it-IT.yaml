@@ -28,6 +28,7 @@ draft: Bozza
 archived: Archiviato
 modules: Moduli
 module_bar: Barra del modulo
+reset_width: Reimposta larghezza
 tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
@@ -40,6 +41,7 @@ duplicate_field: Duplica campo
 half_width: Metà larghezza
 full_width: Larghezza Massima
 group: Gruppo
+export_items: Esporta elementi
 and: E
 or: O
 fill_width: Riempi larghezza
@@ -57,7 +59,7 @@ db_only_click_to_configure: 'Solo Database: click per configurare'
 show_active_items: Mostra gli elementi attivi
 show_archived_items: Mostra gli elementi archiviati
 show_all_items: Mostra tutti gli elementi
-edited: Valore Modificato
+edited: Valore modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
@@ -67,6 +69,12 @@ create_role: Crea ruolo
 create_user: Crea utente
 delete_panel: Elimina Pannello
 create_webhook: Crea webhook
+create_translation_string: Crea stringa di traduzione
+translation_string_key_placeholder: Chiave della stringa di traduzione...
+translation_string_translations_placeholder: Aggiungi una nuova traduzione
+edit_translation_string: Modifica stringa di traduzione
+delete_translation_string_copy: >-
+  Sei sicuro di voler eliminare la stringa di traduzione "{key}"? Questa azione non può essere annullata.
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
@@ -83,11 +91,13 @@ delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
 reset_bookmark: Reimposta Segnalibro
-rename_bookmark: Rinomina Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
 delete_bookmark_copy: >-
   Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione è irreversibile.
+delete_personal_bookmark: Elimina segnalibro personale
+delete_role_bookmark: Elimina segnalibro del ruolo
+delete_global_bookmark: Elimina segnalibro globale
 logoutReason:
   SIGN_OUT: Disconnesso
   SESSION_EXPIRED: Sessione scaduta
@@ -114,7 +124,7 @@ recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
-unknown_validation_errors: 'Si sono verificati errori di validazione per i seguenti campi nascosti:'
+validation_errors_notice: 'I seguenti campi contengono valori non validi:'
 validationError:
   eq: Il valore deve essere {valid}
   neq: Il valore non può essere {invalid}
@@ -155,15 +165,16 @@ item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
-permissions_for_role: 'Campi che il ruolo {role} può {action}.'
-fields_for_role: 'Campi che il ruolo {role} può {action}.'
-validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
+permissions_for_role: 'Oggetti per cui è abilitata l''azione {action} per il ruolo {role}.'
+fields_for_role: 'Campi per cui è abilitata l''azione {action} per il ruolo {role}.'
+validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare all''azione {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
 revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
+hide_field: Nascondi campo
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
@@ -172,6 +183,7 @@ field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Lingua
+language_placeholder: Seleziona una lingua...
 aggregate_function: Funzione di aggregazione
 aggregate_precision: Precisione dell'aggregazione
 group_aggregation: Raggruppamento
@@ -182,6 +194,7 @@ camera: Camera
 show_zero: Mostra zero
 create_in_advanced_field_creation_mode: Crea campo in modalità avanzata
 continue_in_advanced_field_creation_mode: Continua in modalità avanzata di creazione del campo
+validation: Validazione
 sum: Somma
 sum_distinct: Somma valori unici
 avg: Media
@@ -336,8 +349,6 @@ label_import: Importa
 label_export: Esporta
 import_export: Importa / Esporta
 format: Formato
-use_current_filters_settings: Usa i filtri e le impostazioni correnti
-export_data_button: Avvia l'esportazione
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
 fill_template: Riempi con il valore del modello
@@ -353,9 +364,16 @@ interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
+delete_share: Elimina condivisione
+functions:
+  year: Anno
+  month: Mese
+  count: Quantità
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -406,6 +424,15 @@ replace_from_library: Sostituisci File dalla Libreria
 replace_from_url: Sostituisci File da URL
 no_file_selected: Nessun File Selezionato
 download_file: Scarica File
+open_file_in_tab: Apri il file in una nuova scheda
+start_export: Avvia l'esportazione
+not_available_for_local_downloads: Non disponibile per i download locali
+exporting_all_items_in_collection: Esportazione di tutti i {total} elementi in {collection}.
+exporting_limited_items_in_collection: Esportazione di {limit} su {total} elementi in {collection}.
+exporting_no_items_to_export: Nessun elemento da esportare. Modifica la configurazione di esportazione qui sotto.
+exporting_download_hint: Una volta completato, questo file {format} verrà automaticamente scaricato sul tuo dispositivo.
+exporting_batch_hint: Questa esportazione verrà elaborata in batch e una volta completata il file {format} verrà salvato nella libreria file.
+exporting_batch_hint_forced: A causa del gran numero di elementi questa esportazione deve essere elaborata in batch e una volta completata il file {format} verrà salvato nella libreria file.
 collection_key: Chiave Di Raccolta
 name: Nome
 primary_key_field: Campo Chiave Primaria
@@ -437,7 +464,7 @@ information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta funzionalità
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
-reset_interface: '"Reimposta interfaccia"'
+reset_interface: Reimposta interfaccia
 display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
 list-m2a: Costruttore (M2A)
@@ -542,6 +569,11 @@ value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
+edit_personal_bookmark: Modifica segnalibro personale
+edit_role_bookmark: Modifica segnalibro del ruolo
+edit_global_bookmark: Modifica segnalibro globale
+cannot_edit_role_bookmarks: Impossibile modificare i segnalibri del ruolo
+cannot_edit_global_bookmarks: Impossibile modificare i segnalibri globali
 bookmarks: Segnalibri
 presets: Preset
 unexpected_error: Errore Imprevisto
@@ -568,12 +600,14 @@ make_collection_visible: Rendi visibile la raccolta
 make_collection_hidden: Rendi nascosta la raccolta
 make_folder_visible: Rendi visibile la cartella
 make_folder_hidden: Rendi nascosta la cartella
+goto_collection_content: Visualizza contenuto
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione è permanente.
+delete_folder_are_you_sure: Sei sicuro di voler eliminare questa cartella? Le cartelle e le collezioni annidate verranno spostate al livello più alto.
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
@@ -627,6 +661,8 @@ operators:
   nintersects: Non interseca
   intersects_bbox: Interseca il riquadro di delimitazione
   nintersects_bbox: Non interseca il riquadro di delimitazione
+  regex: Corrisponde all'espressione regolare
+custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
 drop_to_upload: Rilascia per caricare
 item: Elemento
@@ -667,6 +703,7 @@ no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risult
 clear_filters: Pulisci filtri
 saves_automatically: Salvataggio automatico
 role: Ruolo
+edit_role: Modifica ruolo
 rule: Regola
 user: Utente
 no_presets: Nessuna Preset
@@ -709,7 +746,11 @@ no_data: Nessun dato
 create_dashboard: Crea bacheca
 dashboard_name: Nome della bacheca
 full_screen: Schermo Intero
+full_text_search: Ricerca full-text
 edit_panels: Modifica pannelli
+center_align: Allinea al centro
+left_align: Allinea a sinistra
+right_align: Allinea a destra
 fit_to_screen: Adatta allo schermo
 image_url: URL immagine
 alt_text: Testo alternativo
@@ -733,6 +774,8 @@ unlimited: Illimitato
 open_link_in: Apri collegamento in
 new_tab: Nuova scheda
 current_tab: Scheda corrente
+save_image: Salva immagine
+save_media: Salva media
 wysiwyg_options:
   aligncenter: Centrato
   alignjustify: Giustificato
@@ -800,6 +843,7 @@ settings_permissions: Ruoli e permessi
 settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
+settings_translation_strings: Stringhe di Traduzione
 one_or_more_options_are_missing: Mancano una o più opzioni
 scope: Ambito
 select: Seleziona...
@@ -845,6 +889,7 @@ page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
 page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
 page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
+page_help_settings_translation_strings_collection: '**Sfoglia le stringhe di traduzione** — Elenca tutte le stringhe di traduzione nel progetto.'
 page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
 page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
@@ -883,6 +928,7 @@ directus_collection:
   directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
   directus_sessions: Informazioni sulla sessione dell'utente
   directus_settings: Opzioni di configurazione del progetto
+  directus_shares: Traccia gli elementi condivisi esternamente
   directus_users: Utenti di sistema per la piattaforma
   directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:
@@ -989,6 +1035,7 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    default_language: Lingua predefinita
     branding: Branding e stile
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
@@ -1192,7 +1239,7 @@ choose_action: Scegli azione
 continue_label: Continua
 continue_as: >-
   {name} è attualmente autenticato. Se riconosci questo account, premi continua.
-editing_role: '{role} Ruolo'
+editing_role: 'Ruolo {role}'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
 delete_label: Elimina
@@ -1212,12 +1259,23 @@ file: File
 file_library: Libreria File
 forgot_password: Ha dimenticato la password
 hidden: Nascosto
+hidden_in_group: Nascosto in {group}
 icon: Icona
 info: Informazioni
 normal: Normale
 success: Successo
 warning: Avviso
 danger: Pericolo
+colors:
+  purple: Viola
+  blue: Blu
+  green: Verde
+  yellow: Giallo
+  orange: Arancione
+  red: Rosso
+  black: Nero
+  gray: Grigio
+  white: Bianco
 junction_collection: Raccolta di Giunzione
 latency: Latenza
 login: Accesso
@@ -1246,6 +1304,9 @@ sign_out: Disconnessione
 sign_out_confirm: Sei sicuro di voler uscire?
 something_went_wrong: Qualcosa è andato storto.
 sort_direction: Direzione ordine
+export_location: Posizione di esportazione
+export_started: Esportazione iniziata
+export_started_copy: La tua esportazione è iniziata. Sarai avvisato quando sarà pronta per il download.
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
 template: Template
@@ -1272,6 +1333,8 @@ interfaces:
     no_rules: Nessuna regola configurata
     change_value: Clicca per cambiare il valore
     placeholder: Trascina qui le regole
+  fields:
+    name: Campi
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
@@ -1331,6 +1394,7 @@ interfaces:
     include_seconds: Includi Secondi
     set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
+    placeholder: Scegli data e ora...
   system-display-template:
     display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
@@ -1403,8 +1467,8 @@ interfaces:
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
-    imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   map:
     map: Mappa
     description: Seleziona una posizione su una mappa
@@ -1463,7 +1527,7 @@ interfaces:
     auto_formatter: Usa la formattazione automatica del titolo
     alphabetize: Ordine alfabetico
     alphabetize_label: Forza Ordine Alfabetico
-    add_tags: Aggiungi tag...
+    add_tags: Aggiungi un tag e premi invio...
   input:
     input: Input
     description: Inserisci manualmente un valore
@@ -1481,6 +1545,11 @@ interfaces:
   input-multiline:
     textarea: Area di testo
     description: Inserisci testo su più righe
+  input-translated-string:
+    input-translated-string: Stringhe tradotte
+    description: Seleziona o aggiungi stringa di traduzione
+    search_placeholder: Cerca...
+    new_translation_string: Nuova stringa di traduzione
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato
@@ -1511,8 +1580,8 @@ interfaces:
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
-    imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+    imageToken: Token di accesso statico
+    imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.
@@ -1655,7 +1724,6 @@ layouts:
     subtitle: Sottotitolo
   tabular:
     tabular: Tabella
-    fields: campi
     spacing: Spaziatura
     comfortable: Confortevole
     compact: Compatto

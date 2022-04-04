@@ -20,11 +20,11 @@ import { defineComponent, computed } from 'vue';
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Number],
 			required: true,
 		},
 		modelValue: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		label: {

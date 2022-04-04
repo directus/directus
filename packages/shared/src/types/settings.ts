@@ -44,4 +44,5 @@ export type Settings = {
 	basemaps: any[] | null;
 	mapbox_key: string | null;
 	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[];
+	translation_strings: Record<string, any>[];
 };
