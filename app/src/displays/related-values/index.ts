@@ -42,7 +42,7 @@ export default defineDisplay({
 				meta: displayTemplateMeta,
 			},
 			{
-				field: 'nb_visible_items',
+				field: 'nbVisibleItems',
 				name: '$:nb_visible_items',
 				meta: {
 					interface: 'input',
