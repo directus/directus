@@ -1,7 +1,7 @@
-import { DateHelper } from '../types';
+import { FnHelper } from '../types';
 import { Knex } from 'knex';
 
-export class DateHelperMSSQL extends DateHelper {
+export class FnHelperMSSQL extends FnHelper {
 	year(table: string, column: string): Knex.Raw {
 		return this.knex.raw('DATEPART(year, ??.??)', [table, column]);
 	}
@@ -32,5 +32,19 @@ export class DateHelperMSSQL extends DateHelper {
 
 	second(table: string, column: string): Knex.Raw {
 		return this.knex.raw('DATEPART(second, ??.??)', [table, column]);
+	}
+
+	count(table: string, column: string): Knex.Raw<any> {
+		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+
+		if (type === 'json') {
+			return this.knex.raw(`(SELECT COUNT(*) FROM OPENJSON(??.??, '$'))`, [table, column]);
+		}
+
+		if (type === 'alias') {
+			return this._relationalCount(table, column);
+		}
+
+		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 }

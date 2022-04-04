@@ -145,7 +145,7 @@ export default defineComponent({
 			},
 		});
 
-		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? {}));
+		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? []));
 
 		return { t, choices, fieldInfo, interfaceType, value, setValueAt, getComparator };
 

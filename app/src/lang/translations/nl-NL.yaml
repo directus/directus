@@ -83,7 +83,6 @@ delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
 reset_bookmark: Reset Bladwijzer
-rename_bookmark: Hernoem Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
 delete_bookmark_copy: >-
@@ -328,6 +327,10 @@ interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
+functions:
+  year: Jaar
+  month: Maand
+  count: Aantal
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'

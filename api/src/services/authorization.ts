@@ -10,7 +10,7 @@ import {
 } from '@directus/shared/types';
 import { validatePayload } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { cloneDeep, flatten, isArray, isNil, merge, uniq, uniqWith } from 'lodash';
+import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, PrimaryKey } from '../types';
@@ -145,63 +145,179 @@ export class AuthorizationService {
 			schema: SchemaOverview,
 			accountability: Accountability | null
 		) {
+			let requiredFieldPermissions: Record<string, Set<string>> = {};
+
 			if (ast.type !== 'field') {
 				if (ast.type === 'a2o') {
 					for (const collection of Object.keys(ast.children)) {
-						checkFilter(collection, ast.query?.[collection]?.filter ?? {});
+						requiredFieldPermissions = mergeRequiredFieldPermissions(
+							requiredFieldPermissions,
+							extractRequiredFieldPermissions(collection, ast.query?.[collection]?.filter ?? {})
+						);
 
 						for (const child of ast.children[collection]) {
-							validateFilterPermissions(child, schema, accountability);
+							// Always add relational field as a deep child may have a filter
+							if (child.type !== 'field') {
+								(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
+									child.fieldKey
+								);
+							}
+
+							requiredFieldPermissions = mergeRequiredFieldPermissions(
+								requiredFieldPermissions,
+								validateFilterPermissions(child, schema, accountability)
+							);
 						}
 					}
 				} else {
-					checkFilter(ast.name, ast.query?.filter ?? {});
+					requiredFieldPermissions = mergeRequiredFieldPermissions(
+						requiredFieldPermissions,
+						extractRequiredFieldPermissions(ast.name, ast.query?.filter ?? {})
+					);
 
 					for (const child of ast.children) {
-						validateFilterPermissions(child, schema, accountability);
+						// Always add relational field as a deep child may have a filter
+						if (child.type !== 'field') {
+							(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
+								child.fieldKey
+							);
+						}
+
+						requiredFieldPermissions = mergeRequiredFieldPermissions(
+							requiredFieldPermissions,
+							validateFilterPermissions(child, schema, accountability)
+						);
 					}
 				}
 			}
 
-			function checkFilter(collection: string, filter: Filter) {
-				const permissions = accountability?.permissions?.find((permission) => permission.collection === collection);
+			if (ast.type === 'root') {
+				// Validate all required permissions once at the root level
+				checkFieldPermissions(requiredFieldPermissions);
+			}
 
-				if (!permissions) throw new ForbiddenException();
+			return requiredFieldPermissions;
 
-				const allowedFields = permissions.fields || [];
-
-				for (const [key, value] of Object.entries(filter)) {
-					if (key.startsWith('_')) {
-						// Continue checking for _and and _or
-						if (isArray(value)) {
-							for (const val of value) {
-								checkFilter(collection, val);
+			function extractRequiredFieldPermissions(
+				collection: string,
+				filter: Filter,
+				parentCollection?: string,
+				parentField?: string
+			) {
+				return reduce(
+					filter,
+					function (result: Record<string, Set<string>>, filterValue, filterKey) {
+						if (filterKey.startsWith('_')) {
+							if (filterKey === '_and' || filterKey === '_or') {
+								if (isArray(filterValue)) {
+									for (const filter of filterValue as Filter[]) {
+										const requiredPermissions = extractRequiredFieldPermissions(
+											collection,
+											filter,
+											parentCollection,
+											parentField
+										);
+										result = mergeRequiredFieldPermissions(result, requiredPermissions);
+									}
+								}
+								return result;
 							}
-						}
-					} else {
-						if (
-							allowedFields.length !== 0 &&
-							allowedFields.includes('*') === false &&
-							allowedFields.includes(key) === false
-						) {
-							throw new ForbiddenException();
-						}
-
-						const relation = schema.relations.find((relation) => {
-							return (
-								(relation.collection === collection && relation.field === key) ||
-								(relation.related_collection === collection && relation.meta?.one_field === key)
-							);
-						});
-
-						// Field is a relation
-						if (relation) {
-							if (relation.related_collection === collection) {
-								checkFilter(relation.collection, value);
+							// Filter value is not a filter, so we should skip it
+							return result;
+						} else {
+							if (collection) {
+								(result[collection] || (result[collection] = new Set())).add(filterKey);
 							} else {
-								checkFilter(relation.related_collection!, value);
+								const relation = schema.relations.find((relation) => {
+									return (
+										(relation.collection === parentCollection && relation.field === parentField) ||
+										(relation.related_collection === parentCollection && relation.meta?.one_field === parentField)
+									);
+								});
+
+								if (relation) {
+									if (relation.related_collection === parentCollection) {
+										(result[relation.collection] || (result[relation.collection] = new Set())).add(filterKey);
+										parentCollection = relation.collection;
+									} else {
+										(result[relation.related_collection!] || (result[relation.related_collection!] = new Set())).add(
+											filterKey
+										);
+										parentCollection = relation.related_collection!;
+									}
+								} else {
+									// Filter key not found in parent collection
+									throw new ForbiddenException();
+								}
+							}
+
+							if (typeof filterValue === 'object') {
+								// Parent collection is undefined when we process the top level filter
+								if (!parentCollection) parentCollection = collection;
+
+								for (const [childFilterKey, childFilterValue] of Object.entries(filterValue)) {
+									if (childFilterKey.startsWith('_')) {
+										if (childFilterKey === '_and' || childFilterKey === '_or') {
+											if (isArray(childFilterValue)) {
+												for (const filter of childFilterValue as Filter[]) {
+													const requiredPermissions = extractRequiredFieldPermissions(
+														'',
+														filter,
+														parentCollection,
+														filterKey
+													);
+													result = mergeRequiredFieldPermissions(result, requiredPermissions);
+												}
+											}
+										}
+									} else {
+										const requiredPermissions = extractRequiredFieldPermissions(
+											'',
+											filterValue,
+											parentCollection,
+											filterKey
+										);
+										result = mergeRequiredFieldPermissions(result, requiredPermissions);
+									}
+								}
 							}
 						}
+
+						return result;
+					},
+					{}
+				);
+			}
+
+			function mergeRequiredFieldPermissions(current: Record<string, Set<string>>, child: Record<string, Set<string>>) {
+				for (const collection of Object.keys(child)) {
+					if (!current[collection]) {
+						current[collection] = child[collection];
+					} else {
+						current[collection] = new Set([...current[collection], ...child[collection]]);
+					}
+				}
+				return current;
+			}
+
+			function checkFieldPermissions(requiredPermissions: Record<string, Set<string>>) {
+				if (accountability?.admin === true) return;
+
+				for (const collection of Object.keys(requiredPermissions)) {
+					const permission = accountability?.permissions?.find(
+						(permission) => permission.collection === collection && permission.action === 'read'
+					);
+
+					if (!permission || !permission.fields) throw new ForbiddenException();
+
+					const allowedFields = permission.fields;
+
+					if (allowedFields.includes('*')) continue;
+					// Allow legacy permissions with an empty fields array, where id can be accessed
+					if (allowedFields.length === 0) allowedFields.push('id');
+
+					for (const field of requiredPermissions[collection]) {
+						if (!allowedFields.includes(field)) throw new ForbiddenException();
 					}
 				}
 			}
