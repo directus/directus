@@ -339,7 +339,11 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(collectionKeys: string[], data: Partial<Collection> | Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
+	async updateMany(
+		collectionKeys: string[],
+		data: Partial<Collection> | Partial<Collection>[],
+		opts?: MutationOptions
+	): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
