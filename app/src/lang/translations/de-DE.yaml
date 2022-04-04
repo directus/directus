@@ -41,6 +41,7 @@ duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
 group: Gruppe
+export_items: Elemente exportieren
 and: Und
 or: Oder
 fill_width: Breite füllen
@@ -68,6 +69,11 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
+translation_string_key_placeholder: Schlüssel für Übersetzung...
+translation_string_translations_placeholder: Neue Übersetzung hinzufügen
+edit_translation_string: Übersetzung editieren
+delete_translation_string_copy: >-
+  Soll die Übersetzung "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
