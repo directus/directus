@@ -69,11 +69,12 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
-translation_string_key_placeholder: Schlüssel für Übersetzung...
+create_translation_string: Übersetzungselement erstellen
+translation_string_key_placeholder: Schlüssel für Übersetzungselement...
 translation_string_translations_placeholder: Neue Übersetzung hinzufügen
-edit_translation_string: Übersetzung editieren
+edit_translation_string: Übersetzungselement editieren
 delete_translation_string_copy: >-
-  Soll die Übersetzung "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
+  Soll das Übersetzungselement "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -94,6 +95,9 @@ update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
 delete_bookmark_copy: >-
   Möchten Sie das Lesezeichen "{bookmark}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+delete_personal_bookmark: Persönliches Lesezeichen löschen
+delete_role_bookmark: Rollen-Lesezeichen löschen
+delete_global_bookmark: Globales Lesezeichen löschen
 logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
@@ -179,6 +183,7 @@ field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
+language_placeholder: Sprache auswählen...
 aggregate_function: Aggregations-Funktion
 aggregate_precision: Aggregations-Präzision
 group_aggregation: Gruppen-Aggregation
@@ -189,6 +194,7 @@ camera: Kamera
 show_zero: Null anzeigen
 create_in_advanced_field_creation_mode: Feld im erweiterten Modus erstellen
 continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
+validation: Validierung
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
 avg: Mittelwert
@@ -362,6 +368,12 @@ delete_share: Freigabe löschen
 functions:
   year: Jahr
   month: Monat
+  week: Woche
+  day: Tag
+  weekday: Wochentag
+  hour: Stunde
+  minute: Minute
+  second: Sekunde
   count: Anzahl
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
@@ -418,6 +430,15 @@ replace_from_library: Mit Datei aus der Bibliothek ersetzen
 replace_from_url: Mit Datei von URL ersetzen
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
+open_file_in_tab: Datei in neuem Tab öffnen
+start_export: Export starten
+not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
+exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
+exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
+exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Konfiguration unten an.
+exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
+exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
+exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -554,6 +575,11 @@ value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
+edit_personal_bookmark: Persönliches Lesezeichen bearbeiten
+edit_role_bookmark: Rollen-Lesezeichen bearbeiten
+edit_global_bookmark: Globales Lesezeichen bearbeiten
+cannot_edit_role_bookmarks: Rollen-Lesezeichen kann nicht bearbeitet werden
+cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
 presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
@@ -580,6 +606,7 @@ make_collection_visible: Sammlung sichtbar machen
 make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
+goto_collection_content: Inhalt anzeigen
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
@@ -640,6 +667,8 @@ operators:
   nintersects: Schneidet nicht
   intersects_bbox: Schneidet Begrenzung
   nintersects_bbox: Schneidet nicht Begrenzung
+  regex: Entspricht RegExp
+custom_validation_message: Benutzerdefinierte Validierungsnachricht
 loading: Wird geladen...
 drop_to_upload: Zum Hochladen ablegen
 item: Element
@@ -723,6 +752,7 @@ no_data: Keine Daten
 create_dashboard: Dashboard erstellen
 dashboard_name: Name des Dashboards
 full_screen: Vollbild
+full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
 center_align: Zentriert
 left_align: Linksbündig
@@ -819,6 +849,7 @@ settings_permissions: Rollen & Berechtigungen
 settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
+settings_translation_strings: Übersetzungselemente
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
 select: Auswählen...
@@ -864,6 +895,7 @@ page_help_settings_presets_item: >-
   **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
 page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
+page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -1240,6 +1272,16 @@ normal: Normal
 success: Erfolgreich
 warning: Warnung
 danger: Achtung
+colors:
+  purple: Lila
+  blue: Blau
+  green: Grün
+  yellow: Gelb
+  orange: Orange
+  red: Rot
+  black: Schwarz
+  gray: Grau
+  white: Weiß
 junction_collection: Verbindungssammlung
 latency: Latenz
 login: Login
@@ -1268,6 +1310,9 @@ sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
 something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
+export_location: Speicherort des Exports
+export_started: Export gestartet
+export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die Datei zum Download bereit ist.
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
@@ -1294,6 +1339,8 @@ interfaces:
     no_rules: Keine konfigurierten Regeln
     change_value: Klicken um Wert zu ändern
     placeholder: Regeln hierher ziehen
+  fields:
+    name: Felder
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
