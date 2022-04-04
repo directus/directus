@@ -48,10 +48,10 @@ export default defineDisplay({
 					interface: 'input',
 					options: {
 						type: 'number',
-						min: 0
-					}
-				}
-			}
+						min: 0,
+					},
+				},
+			},
 		];
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],

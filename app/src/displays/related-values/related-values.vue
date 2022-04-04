@@ -6,43 +6,43 @@
 		:disabled="value.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span class="label" v-if="value.length === 1">
+			<span v-if="value.length === 1" class="label">
 				<render-template
-						:template="internalTemplate"
-						:item="value[0]"
-						:collection="junctionCollection ?? relatedCollection"
-					/>
+					:template="internalTemplate"
+					:item="value[0]"
+					:collection="junctionCollection ?? relatedCollection"
+				/>
 			</span>
-			<span class="label" v-else-if="value.length > 1 && nb_visible_items > 1">
-				<template v-for="n in nb_visible_items">
+			<span v-else-if="value.length > 1 && nbVisibleItems > 1" class="label">
+				<template v-for="n in nbVisibleItems">
 					<render-template
-							v-if="value[n-1]"
-							:template="internalTemplate"
-							:item="value[n-1]"
-							:collection="junctionCollection ?? relatedCollection"
-							:key="n"
-						/>
-					<template v-if="value[n-1] && value[n] && n !== nb_visible_items">,</template>
+						v-if="value[n-1]"
+						:template="internalTemplate"
+						:item="value[n-1]"
+						:collection="junctionCollection ?? relatedCollection"
+						:key="n"
+					/>
+					<template v-if="value[n-1] && value[n] && n !== nbVisibleItems">,</template>
 				</template>
 				<span
-						v-if="value.length > nb_visible_items"
+						v-if="value.length > nbVisibleItems"
 						class="toggle"
 						:class="{ subdued: value.length === 0 }"
 						@click.stop="toggle"
 					>
 					<span class="label" >
-						{{ value.length - nb_visible_items }}
-						<template v-if="(value.length - nb_visible_items) >= 100">+</template>
+						{{ value.length - nbVisibleItems }}
+						<template v-if="(value.length - nbVisibleItems) >= 100">+</template>
 						{{ unit }}
 					</span>
 			</span>
 			</span>
 			<span
-					v-else
-					class="toggle"
-					:class="{ subdued: value.length === 0 }"
-					@click.stop="toggle"
-				>
+				v-else
+				class="toggle"
+				:class="{ subdued: value.length === 0 }"
+				@click.stop="toggle"
+			>
 				<span class="label" >
 					{{ value.length }}
 					<template v-if="value.length >= 100">+</template>
@@ -97,10 +97,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		nb_visible_items: {
+		nbVisibleItems: {
 			type: Number,
 			default: null,
-		}
+		},
 	},
 	setup(props) {
 		const { t, te } = useI18n();
@@ -153,8 +153,8 @@ export default defineComponent({
 			return null;
 		});
 
-		const nb_visible_items = computed(() => {
-			return props.nb_visible_items ?? 0;
+		const nbVisibleItems = computed(() => {
+			return props.nbVisibleItems ?? 0;
 		});
 
 		return {
@@ -165,7 +165,7 @@ export default defineComponent({
 			internalTemplate,
 			unit,
 			localType,
-			nb_visible_items
+			nbVisibleItems
 		};
 
 		function getLinkForItem(item: any) {
