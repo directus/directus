@@ -155,7 +155,11 @@ export class FilesService extends ItemsService {
 				mergeOutput: false,
 			});
 
-			metadata.metadata = pick(exifrMetadata, allowList);
+			if (allowList === '*' || allowList?.[0] === '*') {
+				metadata.metadata = exifrMetadata;
+			} else {
+				metadata.metadata = pick(exifrMetadata, allowList);
+			}
 
 			if (!metadata.description && exifrMetadata?.Caption) {
 				metadata.description = exifrMetadata.Caption;
