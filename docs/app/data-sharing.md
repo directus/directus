@@ -72,9 +72,8 @@ Once the link is opened by a user, a custom page displaying the Shared Item will
 
 ::: warning Logout to test links
 
-If you click a Data Share link while logged in to Directus, it may try to direct you into the Directus App, which will
-yield a message that says "Page Not Found". To avoid this when testing a Share, you can logout of the app before opening
-the link or simply open the link in another browser.
+If you open a Data Share link while logged in to Directus, it will redirect to the item in the regular Directus App. When testing a share, make sure to logout of the app before opening
+the link or simply open the link in another browser or incognito tab.
 
 :::
 
