@@ -146,10 +146,13 @@ export class FilesService extends ItemsService {
 
 		try {
 			const exifrMetadata = await exifr.parse(bufferContent, {
+				icc: false,
 				iptc: true,
 				ifd1: true,
 				interop: true,
-				icc: false,
+				translateValues: true,
+				reviveValues: true,
+				mergeOutput: false,
 			});
 
 			metadata.metadata = pick(exifrMetadata, allowList);

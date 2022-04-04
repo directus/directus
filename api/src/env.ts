@@ -85,7 +85,7 @@ const defaults: Record<string, any> = {
 
 	EXPORT_BATCH_SIZE: 5000,
 
-	FILE_METADATA_ALLOW_LIST: '',
+	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
