@@ -151,7 +151,7 @@ Name]** to configure any read permissions.
 3. Edit Role options according to your needs.
 4. Click <span mi btn>check</span> to confirm edits.
 
-::: warning You're creating / editing actual Roles!!
+::: warning You're creating / editing actual Roles!
 
 If you create or edit a Role in this menu, these changes will take effect app-wide, not just in the context of the
 Share.
