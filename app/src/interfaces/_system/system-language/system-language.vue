@@ -23,15 +23,23 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		includeProjectDefault: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	emits: ['input'],
-	setup() {
+	setup(props) {
 		const { t } = useI18n();
 
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,
-			value: key,
+			value: key as string | null,
 		}));
+
+		if (props.includeProjectDefault) {
+			languages.splice(0, 0, { text: t('fields.directus_settings.default_language'), value: null });
+		}
 
 		return { t, languages };
 	},
