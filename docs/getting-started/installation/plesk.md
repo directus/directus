@@ -127,11 +127,11 @@ Afterwards try `bootstrap` again.
 
 ## 8. Clean up .env file
 
-It is good security practice not to leave emails and passwords stored in plain text, so if you had to create login details through the .env file you should no remove those details from the file.
+It is good security practice not to leave emails and passwords stored in plain text, so if you had to create login details through the .env file you should now remove those details from the file.
 
 ## 9. Test Directus Access
 
-The Directus app should now work under your configured url. If not, try changing the development mode and wait a couple
+The Directus app should now work under your configured url. If not, try changing the application mode and wait a couple
 of seconds.
 
 ## Use snapshots
