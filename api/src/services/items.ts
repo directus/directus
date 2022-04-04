@@ -382,7 +382,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
 
-		const payloadAfterHooks = payload;
+		let payloadAfterHooks = payload;
 
 		if (opts?.emitEvents !== false) {
 			const eventName =
@@ -395,7 +395,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			};
 
 			if (isArrayPayload) {
-				await Promise.all(
+				payloadAfterHooks = await Promise.all(
 					payload.map((payload, index) =>
 						emitter.emitFilter(
 							eventName,
@@ -409,7 +409,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					)
 				);
 			} else {
-				await emitter.emitFilter(
+				payloadAfterHooks = await emitter.emitFilter(
 					eventName,
 					payload,
 					{
