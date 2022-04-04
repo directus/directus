@@ -81,7 +81,14 @@ export class FilesService extends ItemsService {
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			payload.metadata = await this.getMetadata(buffer.content);
+			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
+
+			payload.height ??= height;
+			payload.width ??= width;
+			payload.description ??= description;
+			payload.title ??= title;
+			payload.tags ??= tags;
+			payload.metadata ??= metadata;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -119,7 +126,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(bufferContent: any, allowList = env.FILE_METADATA_ALLOWLIST): Promise<Metadata> {
+	async getMetadata(bufferContent: any, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
 		const metadata: Metadata = {};
 
 		try {
@@ -142,17 +149,20 @@ export class FilesService extends ItemsService {
 				iptc: true,
 				ifd1: true,
 				interop: true,
+				icc: false,
 			});
 
 			metadata.metadata = pick(exifrMetadata, allowList);
 
-			if (!metadata.description && exifrMetadata.Caption) {
+			if (!metadata.description && exifrMetadata?.Caption) {
 				metadata.description = exifrMetadata.Caption;
 			}
-			if (exifrMetadata.Headline) {
+
+			if (exifrMetadata?.Headline) {
 				metadata.title = exifrMetadata.Headline;
 			}
-			if (exifrMetadata.Keywords) {
+
+			if (exifrMetadata?.Keywords) {
 				metadata.tags = exifrMetadata.Keywords;
 			}
 		} catch (err: any) {
