@@ -195,24 +195,3 @@ that get shared.
 6. Click to check the Collection Fields you'd like to allow read permissions on.
 7. Select <span mi>check</span> in the side menu Header to confirm changes.
 
-## Extensibility Options
-
-Directus Core is completely open-source, modular and extensible. Extensions allow you to expand or modify any part of
-Directus to fit your needs. Here are some great resources to get started down that track.
-
-- [Extensions > Introduction](/extensions/introduction/)
-- [Extensions > Creating Extensions](/extensions/creating-extensions/)
-- [Contributing > Introduction](/contributing/introduction/)
-- [Contributing > Codebase Overview](/contributing/codebase-overview/)
-
-::: tip Sponsoring Accelerated Development
-
-Working on an enterprise project and looking to outsource or financially sponsor the development of a Shares extension?
-Contact [our team](https://directus.io/contact/).
-
-:::
-
-## More Help
-
-Looking for technical support for your non-enterprise project? Chat with thousands of engineers within our growing
-[Community on Discord](https://discord.com/invite/directus).
