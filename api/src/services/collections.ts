@@ -339,11 +339,7 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(
-		collectionKeys: string[],
-		data: Partial<Collection> | Partial<Collection>[],
-		opts?: MutationOptions
-	): Promise<string[]> {
+	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -356,14 +352,8 @@ export class CollectionsService {
 					knex: trx,
 				});
 
-				if (Array.isArray(data)) {
-					for (const [index, collectionKey] of collectionKeys.entries()) {
-						await service.updateOne(collectionKey, data[index], { autoPurgeCache: false });
-					}
-				} else {
-					for (const collectionKey of collectionKeys) {
-						await service.updateOne(collectionKey, data, { autoPurgeCache: false });
-					}
+				for (const collectionKey of collectionKeys) {
+					await service.updateOne(collectionKey, data, { autoPurgeCache: false });
 				}
 			});
 

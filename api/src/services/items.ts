@@ -359,14 +359,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Update many items by primary key
 	 */
-	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Item> | Partial<Item>[],
+		opts?: MutationOptions
+	): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
 		const aliases = Object.values(this.schema.collections[this.collection].fields)
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
-		const payload: Partial<AnyItem> = cloneDeep(data);
+		const payload: Partial<AnyItem> | Partial<AnyItem>[] = cloneDeep(data);
+		const isArrayPayload = Array.isArray(payload);
 
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
@@ -376,32 +381,61 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
-		const payloadAfterHooks =
-			opts?.emitEvents !== false
-				? await emitter.emitFilter(
-						this.eventScope === 'items'
-							? ['items.update', `${this.collection}.items.update`]
-							: `${this.eventScope}.update`,
-						payload,
-						{
-							keys,
-							collection: this.collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						}
-				  )
-				: payload;
+
+		const payloadAfterHooks = payload;
+
+		if (opts?.emitEvents !== false) {
+			const eventName =
+				this.eventScope === 'items' ? ['items.update', `${this.collection}.items.update`] : `${this.eventScope}.update`;
+
+			const eventMeta = {
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			};
+
+			if (isArrayPayload) {
+				await Promise.all(
+					payload.map((payload, index) =>
+						emitter.emitFilter(
+							eventName,
+							payload,
+							{
+								key: keys[index],
+								collection: this.collection,
+							},
+							eventMeta
+						)
+					)
+				);
+			} else {
+				await emitter.emitFilter(
+					eventName,
+					payload,
+					{
+						keys,
+						collection: this.collection,
+					},
+					eventMeta
+				);
+			}
+		}
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
 		}
 
-		const payloadWithPresets = this.accountability
-			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
-			: payloadAfterHooks;
+		const payloadAfterHooksArray: Partial<AnyItem>[] = Array.isArray(payloadAfterHooks)
+			? payloadAfterHooks
+			: [payloadAfterHooks];
+
+		const payloadWithPresetsArray = this.accountability
+			? await Promise.all(
+					payloadAfterHooksArray.map((payloadAfterHooks) =>
+						authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+					)
+			  )
+			: payloadAfterHooksArray;
 
 		await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
@@ -410,26 +444,44 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
-			const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
+			const childrenRevisions: PrimaryKey[] = [];
+			const payloadsWithTypeCasting: Partial<AnyItem>[] = [];
 
-			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
-			const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
+			await Promise.all(
+				payloadWithPresetsArray.map(async (payloadWithPresets, index) => {
+					const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(
+						payloadWithPresets
+					);
+					const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
 
-			if (Object.keys(payloadWithTypeCasting).length > 0) {
-				try {
-					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
-				} catch (err: any) {
-					throw await translateDatabaseError(err);
-				}
-			}
+					const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
+					const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
 
-			const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
+					payloadsWithTypeCasting.push(payloadWithTypeCasting);
 
-			for (const key of keys) {
-				const { revisions } = await payloadService.processO2M(payload, key);
-				childrenRevisions.push(...revisions);
-			}
+					if (Object.keys(payloadWithTypeCasting).length > 0) {
+						try {
+							await trx(this.collection)
+								.update(payloadWithTypeCasting)
+								.whereIn(primaryKeyField, isArrayPayload ? [keys[index]] : keys);
+						} catch (err: any) {
+							throw await translateDatabaseError(err);
+						}
+					}
+
+					childrenRevisions.push(...revisionsM2O, ...revisionsA2O);
+
+					if (isArrayPayload) {
+						const { revisions } = await payloadService.processO2M(payload, keys[index]);
+						childrenRevisions.push(...revisions);
+					} else {
+						for (const key of keys) {
+							const { revisions } = await payloadService.processO2M(payload, key);
+							childrenRevisions.push(...revisions);
+						}
+					}
+				})
+			);
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
@@ -470,7 +522,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 								item: keys[index],
 								data:
 									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
-								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+								delta: await payloadService.prepareDelta(
+									isArrayPayload ? payloadsWithTypeCasting[index] : payloadsWithTypeCasting[0]
+								),
 							}))
 						)
 					);
@@ -501,21 +555,40 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(
-				this.eventScope === 'items' ? ['items.update', `${this.collection}.items.update`] : `${this.eventScope}.update`,
-				{
-					payload,
-					keys,
-					collection: this.collection,
-				},
-				{
-					// This hook is called async. If we would pass the transaction here, the hook can be
-					// called after the transaction is done #5460
-					database: this.knex || getDatabase(),
-					schema: this.schema,
-					accountability: this.accountability,
-				}
-			);
+			const eventName =
+				this.eventScope === 'items' ? ['items.update', `${this.collection}.items.update`] : `${this.eventScope}.update`;
+
+			const eventMeta = {
+				// This hook is called async. If we would pass the transaction here, the hook can be
+				// called after the transaction is done #5460
+				database: this.knex || getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			};
+
+			if (isArrayPayload) {
+				payload.forEach((payload, index) => {
+					emitter.emitAction(
+						eventName,
+						{
+							payload,
+							key: keys[index],
+							collection: this.collection,
+						},
+						eventMeta
+					);
+				});
+			} else {
+				emitter.emitAction(
+					eventName,
+					{
+						payload,
+						keys,
+						collection: this.collection,
+					},
+					eventMeta
+				);
+			}
 		}
 
 		return keys;

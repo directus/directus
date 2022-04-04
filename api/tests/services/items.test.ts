@@ -28,6 +28,55 @@ describe('Integration Tests', () => {
 		tracker.reset();
 	});
 
+	describe('updateMany', () => {
+		it.each(Object.keys(schemas))(
+			`%s updates many items with single payload in collection as an admin, accountability: "null"`,
+			async (schema) => {
+				const table = schemas[schema].tables[0];
+				const ids = [1, 2];
+				const payload = { name: 'foo' };
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: { role: 'admin', admin: true },
+					schema: schemas[schema].schema,
+				});
+
+				tracker.on.update(table).responseOnce(payload);
+
+				const response = await itemsService.updateMany(ids, payload, { emitEvents: false });
+
+				expect(tracker.history.update.length).toBe(1);
+				expect(tracker.history.update[0].bindings).toStrictEqual([payload.name, ...ids]);
+				expect(response).toBe(ids);
+			}
+		);
+
+		it.each(Object.keys(schemas))(
+			`%s updates many items with many payloads in collection as an admin, accountability: "null"`,
+			async (schema) => {
+				const table = schemas[schema].tables[0];
+				const ids = [1, 2];
+				const payloads = [{ name: 'foo' }, { name: 'bar' }];
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: { role: 'admin', admin: true },
+					schema: schemas[schema].schema,
+				});
+
+				tracker.on.update(table).response(payloads);
+
+				const response = await itemsService.updateMany(ids, payloads, { emitEvents: false });
+
+				expect(tracker.history.update.length).toBe(2);
+				expect(tracker.history.update[0].bindings).toStrictEqual([payloads[0].name, ids[0]]);
+				expect(tracker.history.update[1].bindings).toStrictEqual([payloads[1].name, ids[1]]);
+				expect(response).toBe(ids);
+			}
+		);
+	});
+
 	describe('createOne', () => {
 		const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', name: 'A.G.' };
 
