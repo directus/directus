@@ -223,8 +223,8 @@ export default defineComponent({
 
 			const startOffset = range.startOffset;
 
-			const left = start.textContent?.substr(0, startOffset) || '';
-			const right = start.textContent?.substr(startOffset) || '';
+			const left = start.textContent?.slice(0, startOffset) || '';
+			const right = start.textContent?.slice(startOffset) || '';
 
 			start.innerText = left;
 

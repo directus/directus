@@ -91,7 +91,6 @@ delete_folder: 删除文件夹
 prefix: 前缀
 suffix: 后缀
 reset_bookmark: 重置书签
-rename_bookmark: 重命名书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
 delete_bookmark_copy: >-
@@ -362,6 +361,10 @@ today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
 delete_share: 删除分享
+functions:
+  year: 年
+  month: 月
+  count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -1020,6 +1023,7 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
+    default_language: 默认语言
     branding: 品牌和样式
     public_foreground: 公共前景
     public_background: 公共背景
@@ -1299,7 +1303,6 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
-weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:

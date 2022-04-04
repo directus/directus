@@ -12,31 +12,24 @@ export type AuthStorage<T extends AuthTokenType = 'DynamicToken'> = {
 
 export class Auth extends IAuth {
 	autoRefresh = true;
-	msRefreshBeforeExpires = 30000;
 	staticToken = '';
 
 	private _storage: IStorage;
 	private _transport: ITransport;
-	private timer: ReturnType<typeof setTimeout> | null;
 	private passwords?: PasswordsHandler;
 
 	constructor(options: AuthOptions) {
 		super();
 
-		this.timer = null;
 		this._transport = options.transport;
 		this._storage = options.storage;
 
 		this.autoRefresh = options?.autoRefresh ?? this.autoRefresh;
 		this.mode = options?.mode ?? this.mode;
-		this.msRefreshBeforeExpires = options?.msRefreshBeforeExpires ?? this.msRefreshBeforeExpires;
 
 		if (options?.staticToken) {
 			this.staticToken = options?.staticToken;
 			this.updateStorage<'StaticToken'>({ access_token: this.staticToken, expires: null, refresh_token: null });
-		} else if (this.autoRefresh) {
-			this.autoRefreshJob();
-			this.addRefreshTokenInterceptor(this._transport.axios);
 		}
 	}
 
@@ -60,32 +53,27 @@ export class Auth extends IAuth {
 		this._storage.auth_token = null;
 		this._storage.auth_refresh_token = null;
 		this._storage.auth_expires = null;
+		this._storage.auth_expires_at = null;
 	}
 
 	private updateStorage<T extends AuthTokenType>(result: AuthStorage<T>) {
+		const expires = result.expires ?? null;
 		this._storage.auth_token = result.access_token;
 		this._storage.auth_refresh_token = result.refresh_token ?? null;
-		this._storage.auth_expires = result.expires ?? null;
+		this._storage.auth_expires = expires;
+		this._storage.auth_expires_at = new Date().getTime() + (expires ?? 0);
 	}
 
-	private autoRefreshJob() {
+	async refreshIfExpired() {
+		if (this.staticToken) return;
 		if (!this.autoRefresh) return;
-		if (!this._storage.auth_expires) return;
+		if (!this._storage.auth_expires_at) return;
 
-		if (this.timer) clearTimeout(this.timer);
-
-		const msWaitUntilRefresh = Math.max(
-			this._storage.auth_expires - this.msRefreshBeforeExpires,
-			this.msRefreshBeforeExpires
-		);
-
-		this.timer = setTimeout(async () => {
+		if (this._storage.auth_expires_at < new Date().getTime()) {
 			await this.refresh().catch(() => {
 				/*do nothing*/
 			});
-
-			this.autoRefreshJob();
-		}, msWaitUntilRefresh);
+		}
 	}
 
 	private addRefreshTokenInterceptor(axiosInstance: AxiosInstance) {
@@ -129,7 +117,7 @@ export class Auth extends IAuth {
 
 		this.updateStorage<'DynamicToken'>(response.data!);
 
-		if (this.autoRefresh) this.autoRefreshJob();
+		if (this.autoRefresh) this.refreshIfExpired();
 
 		return {
 			access_token: response.data!.access_token,
@@ -149,7 +137,7 @@ export class Auth extends IAuth {
 
 		this.updateStorage(response.data!);
 
-		if (this.autoRefresh) this.autoRefreshJob();
+		if (this.autoRefresh) this.refreshIfExpired();
 
 		return {
 			access_token: response.data!.access_token,
@@ -175,7 +163,5 @@ export class Auth extends IAuth {
 		await this._transport.post('/auth/logout', { refresh_token });
 
 		this.updateStorage<null>({ access_token: null, expires: null, refresh_token: null });
-
-		clearTimeout(this.timer as ReturnType<typeof setTimeout>);
 	}
 }

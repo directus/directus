@@ -3,7 +3,7 @@
  */
 
 import { Blog } from './blog.d';
-import { Directus } from '../src';
+import { Directus, ItemsOptions } from '../src';
 import { test } from './utils';
 
 describe('items', function () {
@@ -294,5 +294,37 @@ describe('items', function () {
 		await sdk.items('posts').deleteMany([1, 2]);
 
 		expect(scope.pendingMocks().length).toBe(0);
+	});
+	test('should passthrough additional headers', async (url, nock) => {
+		const postData = {
+			title: 'New post',
+			body: 'This is a new post',
+			published: false,
+		};
+		const id = 3;
+		const expectedData = {
+			id,
+			...postData,
+		};
+		const headerName = 'X-Custom-Header';
+		const headerValue = 'Custom header value';
+		const customOptions: ItemsOptions = {
+			requestOptions: {
+				headers: {
+					[headerName]: headerValue,
+				},
+			},
+		};
+		nock()
+			.post('/items/posts')
+			// check if custom header is present
+			.matchHeader(headerName, headerValue)
+			.reply(200, {
+				data: expectedData,
+			});
+
+		const sdk = new Directus<Blog>(url);
+		const item = await sdk.items('posts').createOne(postData, undefined, customOptions);
+		expect(item).toMatchObject(expectedData);
 	});
 });
