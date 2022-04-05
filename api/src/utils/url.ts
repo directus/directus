@@ -38,8 +38,8 @@ export class Url {
 		return this.protocol === null && this.host === null;
 	}
 
-	public addPath(...paths: string[]): Url {
-		const pathToAdd = paths.flatMap((p) => p.split('/')).filter((p) => p !== '');
+	public addPath(...paths: (string | number)[]): Url {
+		const pathToAdd = paths.flatMap((p) => String(p).split('/')).filter((p) => p !== '');
 
 		for (const pathSegment of pathToAdd) {
 			if (pathSegment === '..') {

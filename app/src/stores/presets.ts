@@ -1,7 +1,7 @@
 import api from '@/api';
 import { useUserStore } from '@/stores/';
 import { Preset } from '@directus/shared/types';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
@@ -122,7 +122,14 @@ export const usePresetsStore = defineStore({
 	}),
 	getters: {
 		bookmarks(): Preset[] {
-			return this.collectionPresets.filter((preset) => preset.bookmark !== null);
+			return orderBy(
+				this.collectionPresets.filter((preset) => preset.bookmark !== null),
+				[
+					(preset) => preset.user === null && preset.role === null,
+					(preset) => preset.user === null && preset.role !== null,
+					'bookmark',
+				]
+			);
 		},
 	},
 	actions: {

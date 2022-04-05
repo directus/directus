@@ -1,63 +1,36 @@
-# Collection Page
+# Collections
 
 > The Collections Page displays all Items within a Collection. The page comes with highly configurable Layouts for
 > browsing, visualizing, and managing these Items.
 
 [[toc]]
 
-## Create an Item
+## Search Items
 
-<video autoplay muted loop controls title="Create an Item">
+<video autoplay muted loop controls title="Search Items">
 	<source src="" type="video/mp4" />
 </video>
 
-1. Navigate to the Collection that you want to add an Item to.
-2. Click <span mi btn>add</span> in the Page Header.
-3. Fill in the Item Details Form as desired.
-4. Click <span mi btn>check</span> in the Page Header.
+When you input text into the search bar, it will return all Items that have a match within any Field, less Items which
+have been filtered out already.
 
-::: tip Singletons
+1. Navigate to the Content Module.
+2. Navigate to the collection of the items you want to search.
+3. Select <span mi icon>search</span> and a search bar will appear.
 
-If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
-#2 above and go directly open the Item Details Form.
+[overview > module bar]](/app/overview/#\_1-module-bar)
 
-:::
+## Filter Items
 
-## Batch Edit or Delete Items
+**[Learn more about Filtering](/configuration/filter-rules/).**
 
-It is possible to select multiple Items to batch edit/delete from the Collections Page. Deletion will permanently delete
-Items from the database, this cannot be reverted. On batch editing, the Item Details Form opens, allowing you to make
-the same edit across multiple Items.
-
-<video autoplay muted loop controls title="Batch Edit Items">
-	<source src="" type="video/mp4" />
-</video>
-
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar).
-2. Navigate to the Collection you wish to sort.
-3. In the [Sidebar](/app/overview/#_4-sidebar), choose a [Layout](/#adjust-item-layouts) that supports multiple
-   selection (e.g. "table" or "card" mode).
-4. Click the Items you wish to select.
-   - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the far left column to select Items.
-   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the top left hand corner to select Items.
-
-Once Items are selected, <span mi btn dngr>delete</span> and <span mi btn warning>edit</span> appear in the Page Header.
-There are two options:
-
-**Edit**\
-5. Click <span mi btn warning>edit</span> and the Item Details Form will open.\
-6. Make edits to Fields as desired.\
-7. Click <span mi btn>check</span> to confirm batch edits on all Items.
-
-**Delete**\
-5. Click <span mi btn dngr>delete</span> and a popup will appear.\
-6. Click **"Delete"**.
-
-:::danger DANGER!
-
-These actions are destructive, proceed with caution.
-
-:::
+1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
+2. Navigate to the collection of the items you want to filter
+3. Click on Filter (filter icon) located in the header
+4. Click the "Add Filter" dropdown and select the field to filter on
+5. Adjust the operator (eg: "Contains") as needed by clicking on it
+6. Enter a value in the field filter's input(s)
+7. Remove unwanted filters by hovering over the field and clicking "X"
 
 ## Manually Sort Items
 
@@ -101,95 +74,11 @@ to return data in a custom order.
 
 :::
 
-## Adjust Item Layouts
-
-**[Learn more about Layouts](/getting-started/glossary/#layouts)**
-
-![Adjust Item Layouts](image.webp)
-
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar).
-2. Navigate to the Collection of the Items you want to browse.
-3. In the page Sidebar, click **"Layout Options"**.
-4. Choose the desired Layout you want to use.
-5. Configure any other Layout options as desired.
-
-### Table Layout
-
-![Table Layout](image.webp)
-
-Supports all forms of data, and is therefore the default within the Content module. It includes the following
-features/options:
-
-- Toggle & Reorder Field Columns (Option)
-- Row Spacing (Option)
-- Manual Item Ordering
-- Column Sort
-- Column Resizing
-- Select All
-
-### Card Layout
-
-![Card Layout](image.webp)
-
-This tiled layout is ideal for collections that prioritize an image, and is the default for both the
-[User Directory](/app/user-directory/) and [File Library](/reference/files/). It includes the following
-features/options:
-
-- Image Source (Option)
-- Title (Option)
-- Subtitle (Option)
-- Image Fit (Option)
-- Fallback Icon (Option)
-- Card Size
-- Sort Field & Direction
-- Select All
-
-### Calendar Layout
-
-![Calendar Layout](image.webp)
-
-An excellent choice for temporal (date/time) data, this Layout allows you to choose between a Month, Week, Day, and List
-view. The following options are included:
-
-- Display Template
-- Start Date Field
-- End Date Field
-
-### Map Layout
-
-![Map Layout](image.webp)
-
-For geospatial/geographic data, the Map Layout provides a world map for points, lines, and other geometry. The following
-options are available:
-
-- Basemap
-- Location Field
-- Display Template
-- Enable Clustering
-
-## Searching Items
-
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
-2. Navigate to the collection of the items you want to search
-3. Type your search query into the input (magnifying glass icon) located in the header
-
-## Filtering Items
-
-**[Learn more about Filtering](/configuration/filter-rules/).**
-
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
-2. Navigate to the collection of the items you want to filter
-3. Click on Filter (filter icon) located in the header
-4. Click the "Add Filter" dropdown and select the field to filter on
-5. Adjust the operator (eg: "Contains") as needed by clicking on it
-6. Enter a value in the field filter's input(s)
-7. Remove unwanted filters by hovering over the field and clicking "X"
-
 ## View Archived Items
 
-**[Learn more about Archive](/configuration/data-model/#archive).**
-
 ![View Archived Items](image.webp)
+
+**[Learn more about Archive](/configuration/data-model/#archive).**
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to view
@@ -206,24 +95,3 @@ options are available:
 4. Click the "Create Bookmark" (bookmark icon) button in the header beside the page title
 5. Rename bookmarks by right-clicking them in the navigation sidebar and selecting "Rename Bookmark"
 6. Delete bookmarks by right-clicking them in the navigation sidebar and selecting "Delete Bookmark"
-
-## Import / Export Items
-
-### Import
-
-**[Learn more about Import Data from a File](/reference/system/utilities/#import-data-from-file)**
-
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
-2. Navigate to the collection of the items you want to import
-3. Click "Import / Export" in the page sidebar
-4. Choose the desired file containing items to import in the accepted format: either CSV or JSON
-5. Click the "Start Import" button to import the items from the chosen file
-
-### Export
-
-1. Navigate to the collection of the items you want to export
-2. Optional: Configure the dataset as desired (eg: layout, options, search, filters, order, etc)
-3. Click "Import / Export" in the page sidebar
-4. Choose the desired format: either CSV, JSON or XML
-5. Choose whether you want to use your current Filters and Settings in the export
-6. Click the "Start Export" button to download the file to your device

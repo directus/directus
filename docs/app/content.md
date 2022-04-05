@@ -3,15 +3,11 @@
 > The Content Module is the primary way for Users to interact with Items in a Collection _(i.e. database content)_,
 > enabling Users to browse/view, create, sort, order, upload, download, edit, share, archive, and delete Items.
 
-::: tip Assumed Knowledge
+::: tip Before You Begin
 
-You will need to know what [Collections](/getting-started/glossary/#collections),
+To use this module, you will need to know what [Collections](/getting-started/glossary/#collections),
 [Items](/getting-started/glossary/#items) and [Fields](/getting-started/glossary/#fields) are in general. After that,
-the controls to manage Items are quite intuitive, so its easy to get started in this Module. However, things gets more
-nuanced as a Project grows in complexity. To use the Module effectively and fully, you will also need to understand how
-to configure [Collections](/configuration/data-model) and the [relationships](/configuration/relationships/) between
-Collections; how [Filters](/app/filters) work; and also how
-[Users, Roles, and Permissions](/configuration/users-roles-permissions/) work together.
+the controls to view and manage Items are quite intuitive, so its easy to get started.
 
 :::
 
@@ -28,7 +24,7 @@ Pages.
 
 :::tip
 
-This module is only for management of Items _(i.e. content)_. Collections are not managed through this Module, as that
+This Module is for management of Items _(i.e. content)_. Collections are not managed through this Module, as that
 creates changes in the data model. Administrators manage Collections through the Settings menu.
 [Learn More](/configuration/data-model)
 
@@ -42,9 +38,32 @@ When an Item is clicked on the Collection Page, its Item Details Page is opened.
 and editing an Item's Field Values, but also includes options for commenting on, sharing, archiving, reverting, and
 deleting the Item.
 
-::: warning Permissions
+## Layouts
 
-Users and Roles with [limited access permissions](/configuration/users-roles-permissions) to Collections, Items, or Item
-Fields may not be able to view and manage Items as usual.
+<video alt="Layouts" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
 
-:::
+- control how Items are displayed on the Collections page
+- Access from the sidebar
+- ??
+
+## Import / Export Items
+
+![Import / Export Multiple Items](image.webp)
+
+- can be done [in the app](/content-import-export/#import-export-items)
+- can be done [programmatically](reference/system/utilities/#import-data-from-file)
+- import CSV or JSON
+- export CSV, JSON or XML
+- Learn how to [import and export Items](/app/content-import-export/)
+
+## Data Sharing
+
+<video alt="Data Sharing" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
+
+- Share Items with anyone, regardless of their permissions
+- The shared Item's view permissions are created
+- This means you can share with people who are not Users

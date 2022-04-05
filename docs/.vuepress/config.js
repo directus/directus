@@ -167,12 +167,27 @@ module.exports = {
 							{
 								type: 'page',
 								path: '/app/content-collections',
-								title: 'Content Collections',
+								title: 'Collections',
 							},
 							{
 								type: 'page',
 								path: '/app/content-items',
-								title: 'Content Items',
+								title: 'Items',
+							},
+							{
+								type: 'page',
+								path: '/app/content-layouts',
+								title: 'Layouts',
+							},
+							{
+								type: 'page',
+								path: '/app/content-import-export',
+								title: 'Import / Export',
+							},
+							{
+								type: 'page',
+								path: '/app/data-sharing',
+								title: 'Data Sharing',
 							},
 						],
 					},
