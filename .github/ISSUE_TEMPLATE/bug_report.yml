@@ -4,18 +4,16 @@ labels: 'Bug (Potential)'
 body:
   - type: markdown
     attributes:
-      value: Hi, thank you for taking the time to create an issue!
-  - type: checkboxes
-    id: troubleshooting
-    attributes:
-      label: Preflight Checklist
-      options:
-        - label: I have completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
-          required: true
-        - label: I'm on [the latest version of Directus](https://github.com/directus/directus/releases).
-          required: true
-        - label: There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes my problem.
-          required: true
+      value: |
+        Hi, thank you for taking the time to create an issue!
+        
+        > For issues specific to Directus Cloud projects, please reach out through the Live Chat in our Cloud Dashboard.
+        
+        Before opening this issue, please make sure that:
+        
+        - You've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
+        - You're using [the latest version of Directus](https://github.com/directus/directus/releases).
+        - There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
   - type: textarea
     attributes:
       label: Describe the Bug
@@ -56,13 +54,6 @@ body:
     attributes:
       label: What browser are you using?
       description: 'For example: Chrome, Safari'
-    validations:
-      required: true
-  - type: input
-    id: operating-system
-    attributes:
-      label: What operating system are you using?
-      description: 'For example: macOS, Windows'
     validations:
       required: true
   - type: input
