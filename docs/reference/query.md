@@ -688,7 +688,7 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 
 `timestamp` -> `year(timestamp)`
 
-### DateTime Filters
+### DateTime Functions
 
 | Filter    | Description                                              |
 | --------- | -------------------------------------------------------- |
@@ -701,11 +701,11 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 | `minute`  | Extract the minute from a datetime/date/timestamp field  |
 | `second`  | Extract the second from a datetime/date/timestamp field  |
 
-### Relational Filters
+### Array Functions
 
-| Filter  | Description                                         |
-| ------- | --------------------------------------------------- |
-| `count` | Extract the number of items from a relational field |
+| Filter  | Description                                                       |
+| ------- | ----------------------------------------------------------------- |
+| `count` | Extract the number of items from a JSON array or relational field |
 
 ::: warning GraphQL
 
