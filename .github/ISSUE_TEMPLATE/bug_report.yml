@@ -7,13 +7,13 @@ body:
       value: |
         Hi, thank you for taking the time to create an issue!
         
-        _For issues specific to Directus Cloud projects, please reach out through the Live Chat in our Cloud Dashboard._
-        
         Before opening this issue, please make sure that:
         
         - You've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
         - You're using [the latest version of Directus](https://github.com/directus/directus/releases).
         - There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
+        
+        _For issues specific to Directus Cloud projects, please reach out through the Live Chat in our Cloud Dashboard._
   - type: textarea
     attributes:
       label: Describe the Bug
