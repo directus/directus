@@ -319,11 +319,13 @@ export default defineComponent({
 		}
 
 		function apply(updates: { [field: string]: any }) {
-			const updatableKeys = Object.keys(updates).filter((key) => {
-				const field = props.fields?.find((field) => field.field === key);
-				if (!field) return false;
-				return field.schema?.is_primary_key || !isDisabled(field);
-			});
+			const updatableKeys = props.batchMode
+				? Object.keys(updates)
+				: Object.keys(updates).filter((key) => {
+						const field = props.fields?.find((field) => field.field === key);
+						if (!field) return false;
+						return field.schema?.is_primary_key || !isDisabled(field);
+				  });
 
 			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
 		}
