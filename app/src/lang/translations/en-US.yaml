@@ -1530,6 +1530,7 @@ interfaces:
     add_label: '"Create New" Label'
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
+    incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
   slider:
     slider: Slider
     description: Select a number using a slider
