@@ -1,7 +1,12 @@
 <template>
 	<div class="arrow-container">
 		<svg :width="size.width" :height="size.height" class="arrows">
-			<path v-for="(arrow, index) in arrows" :key="index" :class="arrow.type" :d="arrow.d" />
+			<path
+				v-for="(arrow, index) in arrows"
+				:key="index"
+				:class="{ [arrow.type]: true, loner: arrow.loner }"
+				:d="arrow.d"
+			/>
 		</svg>
 	</div>
 </template>
@@ -11,10 +16,12 @@ import { Vector2 } from '@/utils/vector2';
 import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { ArrowInfo, Target } from './operation.vue';
+import { ParentInfo } from '../flow.vue';
 
 const props = defineProps<{
 	panels: Record<string, any>[];
 	arrowInfo?: ArrowInfo;
+	parentPanels: Record<string, ParentInfo>;
 }>();
 
 const endOffset = 12;
@@ -35,23 +42,26 @@ const size = computed(() => {
 });
 
 const arrows = computed(() => {
-	const arrows: { d: string; type: Target }[] = [];
+	const arrows: { d: string; type: Target; loner: boolean }[] = [];
 
 	for (const panel of props.panels) {
 		const resolveChild = props.panels.find((pan) => pan.id === panel.resolve);
 		const rejectChild = props.panels.find((pan) => pan.id === panel.reject);
+		const loner = Object.values(props.parentPanels).find((pan) => pan.id === panel.id)?.loner ?? false;
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
 			arrows.push({
 				d: createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y),
 				type: 'resolve',
+				loner,
 			});
 		} else if (resolveChild) {
 			const { x, y, toX, toY } = getPoints(panel, RESOLVE_OFFSET, resolveChild);
 			arrows.push({
 				d: createLine(x, y, toX as number, toY as number),
 				type: 'resolve',
+				loner,
 			});
 		}
 
@@ -60,12 +70,14 @@ const arrows = computed(() => {
 			arrows.push({
 				d: createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y),
 				type: 'reject',
+				loner,
 			});
 		} else if (rejectChild) {
 			const { x, y, toX, toY } = getPoints(panel, REJECT_OFFSET, rejectChild);
 			arrows.push({
 				d: createLine(x, y, toX as number, toY as number),
 				type: 'reject',
+				loner,
 			});
 		}
 	}
@@ -211,6 +223,10 @@ const arrows = computed(() => {
 
 			&.reject {
 				stroke: var(--secondary);
+			}
+
+			&.loner {
+				stroke: var(--foreground-subdued);
 			}
 		}
 	}

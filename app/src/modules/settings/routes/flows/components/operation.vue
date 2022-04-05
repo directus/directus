@@ -226,31 +226,6 @@ function pointerup() {
 		cursor: default;
 	}
 
-	&.loner {
-		color: var(--foreground-subdued);
-
-		::v-deep(.header) {
-			.v-icon {
-				color: var(--foreground-subdued);
-			}
-			.name {
-				color: var(--foreground-subdued);
-			}
-		}
-
-		.button {
-			border-color: var(--foreground-subdued);
-
-			.v-icon {
-				color: var(--foreground-subdued);
-			}
-
-			.dot {
-				background-color: var(--foreground-subdued);
-			}
-		}
-	}
-
 	.button {
 		position: absolute;
 		border-radius: 50%;
@@ -309,6 +284,31 @@ function pointerup() {
 			height: 6px;
 			background-color: var(--primary);
 			border-radius: 50%;
+		}
+	}
+
+	&.loner {
+		color: var(--foreground-subdued);
+
+		::v-deep(.header) {
+			.v-icon {
+				color: var(--foreground-subdued);
+			}
+			.name {
+				color: var(--foreground-subdued);
+			}
+		}
+
+		.button {
+			border-color: var(--foreground-subdued);
+
+			.v-icon {
+				color: var(--foreground-subdued);
+			}
+
+			.dot {
+				background-color: var(--foreground-subdued);
+			}
 		}
 	}
 }

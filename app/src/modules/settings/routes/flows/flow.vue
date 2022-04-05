@@ -61,7 +61,7 @@
 		</template>
 
 		<div class="container">
-			<arrows :panels="panels" :arrow-info="arrowInfo" />
+			<arrows :panels="panels" :parent-panels="parentPanels" :arrow-info="arrowInfo" />
 			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
 					<operation
@@ -172,6 +172,7 @@ import { Vector2 } from '@/utils/vector2';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;
+export type ParentInfo = { id: string; type: Target; loner: boolean };
 
 const { t } = useI18n();
 
@@ -290,8 +291,6 @@ const panels = computed(() => {
 
 	return panels;
 });
-
-type ParentInfo = { id: string; type: Target; loner: boolean };
 
 const parentPanels = computed(() => {
 	const parents = panels.value.reduce<Record<string, ParentInfo>>((acc, panel) => {
