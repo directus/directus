@@ -291,21 +291,40 @@ const panels = computed(() => {
 	return panels;
 });
 
+type ParentInfo = { id: string; type: Target; loner: boolean };
+
 const parentPanels = computed(() => {
-	return panels.value.reduce<Record<string, { id: string; type: Target }>>((acc, panel) => {
+	const parents = panels.value.reduce<Record<string, ParentInfo>>((acc, panel) => {
 		if (panel.resolve)
 			acc[panel.resolve] = {
 				id: panel.id,
 				type: 'resolve',
+				loner: true,
 			};
 		if (panel.reject)
 			acc[panel.reject] = {
 				id: panel.id,
 				type: 'reject',
+				loner: true,
 			};
 
 		return acc;
 	}, {});
+
+	return Object.fromEntries(
+		Object.entries(parents).map(([key, value]) => {
+			return [key, { ...value, loner: !connectedToTrigger(key) }];
+		})
+	);
+
+	function connectedToTrigger(id: string) {
+		let parent = parents[id];
+		while (parent?.id !== '$trigger') {
+			if (parent === undefined) return false;
+			parent = parents[parent.id];
+		}
+		return true;
+	}
 });
 
 let parentId: string | undefined = undefined;
@@ -332,8 +351,8 @@ function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string 
 					attach.position_x = parent.x + PANEL_WIDTH + 6;
 					attach.position_y = parent.y;
 				} else {
-					attach.position_x = parent.x;
-					attach.position_y = parent.y + PANEL_HEIGHT + 6;
+					attach.position_x = parent.x + PANEL_WIDTH + 6;
+					attach.position_y = parent.y + PANEL_HEIGHT + 2;
 				}
 			}
 		}

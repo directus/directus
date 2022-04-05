@@ -4,7 +4,11 @@
 		:name="panel.panel_name"
 		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
 		class="block-container"
-		:class="{ [type]: true, 'edit-mode': editMode, loner: parent === undefined }"
+		:class="{
+			[type]: true,
+			'edit-mode': editMode,
+			loner: (parent === undefined || parent.loner) && type === 'operation',
+		}"
 		:edit-mode="editMode"
 		:resizable="false"
 		:show-options="type !== 'trigger'"
@@ -37,6 +41,7 @@
 				rounded
 				class="button attachment"
 				:class="{ reject: parent?.type === 'reject' }"
+				@pointerdown.stop="pointerdown('parent')"
 			>
 				<div class="dot" />
 			</div>
@@ -75,7 +80,7 @@ const props = withDefaults(
 		panel: Record<string, any>;
 		type?: 'trigger' | 'operation';
 		editMode?: boolean;
-		parent?: { id: string; type: Target };
+		parent?: { id: string; type: Target; loner: boolean };
 	}>(),
 	{
 		type: 'operation',
@@ -102,12 +107,13 @@ const currentOperation = computed(() => {
 	else return triggers.value.find((trigger) => trigger.value === props.panel.type);
 });
 
-let down: Target | undefined = undefined;
+let down: Target | 'parent' | undefined = undefined;
 let moving = false;
 let workspaceOffset: Vector2 = new Vector2(0, 0);
 
-function pointerdown(target: Target) {
-	if (!props.editMode) return;
+function pointerdown(target: Target | 'parent') {
+	if (!props.editMode || (target === 'parent' && props.parent === undefined)) return;
+
 	down = target;
 
 	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
@@ -122,14 +128,24 @@ function pointerdown(target: Target) {
 const pointermove = throttle((event: PointerEvent) => {
 	moving = true;
 	if (!down) return;
-	const arrowInfo: ArrowInfo = {
-		id: props.panel.id,
-		type: down,
-		pos: new Vector2(
-			Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-			Math.round((event.pageY - workspaceOffset.y) / 20) * 20
-		),
-	};
+	const arrowInfo: ArrowInfo =
+		down === 'parent'
+			? {
+					id: props.parent?.id,
+					type: props.parent?.type as Target,
+					pos: new Vector2(
+						Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
+						Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+					),
+			  }
+			: {
+					id: props.panel.id,
+					type: down,
+					pos: new Vector2(
+						Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
+						Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+					),
+			  };
 
 	emit('arrow-move', arrowInfo);
 }, 20);
@@ -155,6 +171,14 @@ function pointerup() {
 	background-color: var(--background-page);
 	overflow: visible;
 
+	&.editing.draggable {
+		box-shadow: none;
+
+		&:hover {
+			box-shadow: none;
+		}
+	}
+
 	::v-deep(.header .name) {
 		color: var(--primary);
 	}
@@ -166,6 +190,7 @@ function pointerup() {
 			font-size: 20px;
 			color: var(--foreground-normal-alt);
 			font-weight: 600;
+			margin-bottom: 4px;
 		}
 	}
 
@@ -213,8 +238,12 @@ function pointerup() {
 			}
 		}
 
-		.attachment {
+		.button {
 			border-color: var(--foreground-subdued);
+
+			.v-icon {
+				color: var(--foreground-subdued);
+			}
 
 			.dot {
 				background-color: var(--foreground-subdued);

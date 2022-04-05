@@ -66,6 +66,7 @@ import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/
 import { computed, ref, watch } from 'vue';
 import { getOperation, getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
+import slugify from '@sindresorhus/slugify';
 
 const props = withDefaults(
 	defineProps<{
@@ -86,11 +87,19 @@ const { t } = useI18n();
 const options = ref<Record<string, any>>(props.operation?.options ?? {});
 const operationType = ref<string | undefined>(props.operation?.type);
 const operationKey = ref<string>(props.operation?.key ?? '');
-const operationName = ref(props.operation?.name ?? '');
+const operationName = ref<string>(props.operation?.name ?? '');
 
 watch(operationType, () => {
 	options.value = {};
 });
+
+watch(
+	operationName,
+	(newName, oldName) => {
+		if (newName === '' || operationKey.value === slugify(oldName ?? '')) operationKey.value = slugify(newName);
+	},
+	{ immediate: true }
+);
 
 const selectedOperation = computed(() => getOperation(operationType.value));
 
