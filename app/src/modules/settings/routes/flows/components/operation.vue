@@ -94,10 +94,10 @@ const { triggers } = getTriggers();
 const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplicate', 'arrow-move', 'arrow-stop']);
 
 const styleVars = {
-	'--reject-top': REJECT_OFFSET.x + 'px',
-	'--reject-left': REJECT_OFFSET.y + 'px',
-	'--resolve-top': RESOLVE_OFFSET.x + 'px',
-	'--resolve-left': RESOLVE_OFFSET.y + 'px',
+	'--reject-left': REJECT_OFFSET.x + 'px',
+	'--reject-top': REJECT_OFFSET.y + 'px',
+	'--resolve-left': RESOLVE_OFFSET.x + 'px',
+	'--resolve-top': RESOLVE_OFFSET.y + 'px',
 	'--attachment-x': ATTACHMENT_OFFSET.x + 'px',
 	'--attachment-y': ATTACHMENT_OFFSET.y + 'px',
 };

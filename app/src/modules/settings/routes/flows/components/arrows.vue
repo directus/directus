@@ -76,8 +76,8 @@ const arrows = computed(() => {
 	return arrows;
 
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
-		const x = (panel.x - 1) * 20 + offset.y + 2;
-		const y = (panel.y - 1) * 20 + offset.x;
+		const x = (panel.x - 1) * 20 + offset.x + 2;
+		const y = (panel.y - 1) * 20 + offset.y;
 		if (to) {
 			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x + 2;
 			const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
@@ -113,7 +113,8 @@ const arrows = computed(() => {
 	}
 
 	function generatePath(points: Vector2[]) {
-		let path = `M ${points[0]}`;
+		// Add 8px to the x axis so that the arrow not overlaps with the icon
+		let path = `M ${points[0].add(new Vector2(8, 0))}`;
 
 		if (points.length >= 3) {
 			for (let i = 1; i < points.length - 1; i++) {
@@ -199,6 +200,7 @@ const arrows = computed(() => {
 	.arrows {
 		position: absolute;
 		top: 0;
+		z-index: 1;
 		left: var(--content-padding);
 		pointer-events: none;
 
