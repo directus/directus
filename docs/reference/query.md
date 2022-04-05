@@ -701,6 +701,12 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 | `minute`  | Extract the minute from a datetime/date/timestamp field  |
 | `second`  | Extract the second from a datetime/date/timestamp field  |
 
+### Relational Filters
+
+| Filter  | Description                                         |
+| ------- | --------------------------------------------------- |
+| `count` | Extract the number of items from a relational field |
+
 ::: warning GraphQL
 
 Names aren't allowed to include any special characters in GraphQL, preventing the `()` syntax from being used.
