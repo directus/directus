@@ -1,8 +1,14 @@
-## Import / Export Items
+# Import / Export Items
 
-### Import
+[[toc]]
 
-**[Learn more about Import Data from a File](/reference/system/utilities/#import-data-from-file)**
+## Import
+
+<video autoplay muted loop controls title="Import Data From a File">
+	<source src="" type="video/mp4" />
+</video>
+
+**[Learn to Import Data from a File](/reference/system/utilities/#import-data-from-file)**
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to import
@@ -10,7 +16,13 @@
 4. Choose the desired file containing items to import in the accepted format: either CSV or JSON
 5. Click the "Start Import" button to import the items from the chosen file
 
-### Export
+## Export
+
+<video autoplay muted loop controls title="Export Data to a File">
+	<source src="" type="video/mp4" />
+</video>
+
+[Learn to Export Data from a File](/reference/system/utilities/#export-data-to-a-file)
 
 1. Navigate to the collection of the items you want to export
 2. Optional: Configure the dataset as desired (eg: layout, options, search, filters, order, etc)

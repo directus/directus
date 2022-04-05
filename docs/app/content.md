@@ -3,6 +3,8 @@
 > The Content Module is the primary way for Users to interact with Items in a Collection _(i.e. database content)_,
 > enabling Users to browse/view, create, sort, order, upload, download, edit, share, archive, and delete Items.
 
+[[toc]]
+
 ::: tip Before You Begin
 
 To use this module, you will need to know what [Collections](/getting-started/glossary/#collections),
@@ -18,9 +20,9 @@ the controls to view and manage Items are quite intuitive, so its easy to get st
 The Content Module is composed of Collections Pages and Item Details Pages. Each Collection Page displays all Items in
 its Collection. It comes with highly configurable [Layouts](/getting-started/glossary/#layouts) for browsing,
 visualizing, and managing Items. The Page Header includes key action buttons for sorting, searching, filtering,
-creating, and batch editing/archiving/deleting Items. When you navigate into the Content Module, you land directly on a
-Collection Page. Use the [Navigation Bar](/app/overview/#_2-navigation-bar) on the left to move between Collection
-Pages.
+creating, as well as editing, archiving, and deleting multiple Items. When you navigate into the Content Module, you
+land directly on a Collection Page. Use the [Navigation Bar](/app/overview/#_2-navigation-bar) on the left to move
+between Collection Pages. [Learn More](/app/content-collections)
 
 :::tip
 
@@ -30,7 +32,7 @@ creates changes in the data model. Administrators manage Collections through the
 
 :::
 
-## Item Details Page
+## Item Page
 
 ![Article Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/item-page-20220215A.webp)
 
@@ -44,19 +46,16 @@ deleting the Item.
 	<source src="" type="video/mp4" />
 </video>
 
-- control how Items are displayed on the Collections page
-- Access from the sidebar
-- ??
+[Layouts](/getting-started/glossary/#layouts) determine how you view or interact with Items in a Collection.
+[Learn More](/app/content-layouts/).
 
 ## Import / Export Items
 
 ![Import / Export Multiple Items](image.webp)
 
-- can be done [in the app](/content-import-export/#import-export-items)
-- can be done [programmatically](reference/system/utilities/#import-data-from-file)
-- import CSV or JSON
-- export CSV, JSON or XML
-- Learn how to [import and export Items](/app/content-import-export/)
+It is possible to import and export a Collection's Items. This can be done [in the app](/app/content-import-export/) or
+[programmatically via the API](reference/system/utilities/#import-data-from-file). Imports can be of typ CSV or JSON
+while exports can be CSV, JSON or XML. Learn how to import and export Items. [Learn More](/app/content-import-export/)
 
 ## Data Sharing
 
@@ -64,6 +63,5 @@ deleting the Item.
 	<source src="" type="video/mp4" />
 </video>
 
-- Share Items with anyone, regardless of their permissions
-- The shared Item's view permissions are created
-- This means you can share with people who are not Users
+Data sharing allows you to share a view of an Item with anyone, regardless of their permissions.
+[Learn More](/app/data-sharing)

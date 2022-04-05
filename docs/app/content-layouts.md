@@ -1,5 +1,7 @@
 # Layouts
 
+[[toc]]
+
 ## Adjust Item Layouts
 
 **[Learn more about Layouts](/getting-started/glossary/#layouts)**

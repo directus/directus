@@ -5,6 +5,8 @@
 
 [[toc]]
 
+## What's a Collection?
+
 ## Search Items
 
 <video autoplay muted loop controls title="Search Items">
@@ -18,11 +20,14 @@ have been filtered out already.
 2. Navigate to the collection of the items you want to search.
 3. Select <span mi icon>search</span> and a search bar will appear.
 
-[overview > module bar]](/app/overview/#\_1-module-bar)
+[overview > module bar](/app/overview/#_1-module-bar)
 
 ## Filter Items
 
-**[Learn more about Filtering](/configuration/filter-rules/).**
+![Filter Items](image.webp)
+
+**[Learn more about Filtering](/configuration/filter-rules/).**\
+**[Learn more about Filtering](/app/filters/).**
 
 1. Navigate to the [Content Module](/app/overview/#_1-module-bar)
 2. Navigate to the collection of the items you want to filter
