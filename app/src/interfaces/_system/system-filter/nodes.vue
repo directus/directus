@@ -114,7 +114,6 @@ import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
 import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
-import { getFunctionsForType } from '@directus/shared/utils';
 
 type FilterInfo =
 	| {

@@ -47,8 +47,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
-import { ValidationError, Field, FieldFunction } from '@directus/shared/types';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { ValidationError, Field } from '@directus/shared/types';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 

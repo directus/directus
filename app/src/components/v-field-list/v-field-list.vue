@@ -12,9 +12,9 @@
 		</v-list-item>
 
 		<v-field-list-item
-			v-for="field in treeList"
-			:key="field.field"
-			:field="field"
+			v-for="fieldNode in treeList"
+			:key="fieldNode.field"
+			:field="fieldNode"
 			:search="search"
 			:include-functions="includeFunctions"
 			@add="$emit('select-field', $event)"

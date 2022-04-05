@@ -95,6 +95,9 @@ update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
 delete_bookmark_copy: >-
   Êtes-vous sûr de vouloir supprimer le favori "{bookmark}" ? Cette action ne peut pas être annulée.
+delete_personal_bookmark: Supprimer le marque-page personnel
+delete_role_bookmark: Supprimer le marque-page du rôle
+delete_global_bookmark: Supprimer le marque-page global
 logoutReason:
   SIGN_OUT: Déconnecté
   SESSION_EXPIRED: Votre session a expiré
@@ -365,6 +368,12 @@ delete_share: Supprimer le partage
 functions:
   year: Année
   month: Mois
+  week: Semaine
+  day: Jour
+  weekday: Jour de la semaine
+  hour: Heure
+  minute: Minute
+  second: Seconde
   count: Compter
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -566,6 +575,11 @@ value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori
 edit_bookmark: Modifier le favori
+edit_personal_bookmark: Modifier le marque-page personnel
+edit_role_bookmark: Modifier le marque-page du rôle
+edit_global_bookmark: Modifier le marque-page global
+cannot_edit_role_bookmarks: Impossible de modifier les marque-pages du rôle
+cannot_edit_global_bookmarks: Impossible de modifier les signets globaux
 bookmarks: Favoris
 presets: Pré-réglages
 unexpected_error: Erreur inconnue
@@ -1307,6 +1321,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
