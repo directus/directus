@@ -229,8 +229,14 @@ const config: Config = {
 	},
 };
 
+const isWindows = ['win32', 'win64'].includes(process.platform);
+
+for (const vendor of allVendors) {
+	config.envs[vendor]!.TZ = isWindows ? '0' : 'UTC';
+}
+
 export function getUrl(vendor: typeof allVendors[number]) {
-	let port = config.envs[vendor].PORT;
+	let port = config.envs[vendor]!.PORT;
 
 	if (process.env.TEST_LOCAL) {
 		port = '8055';

@@ -379,6 +379,12 @@ all of these differences, Directus has a single _superset_ of types that map to 
 - **Hash** — A string hashed using argon2 cryptographic hash algorithm
 - **Alias** — For fields that do not have a database column [Learn More](#)
 
+::: warning
+
+For **SQLite**, the **Timestamp** type is stored as a **DateTime**.
+
+:::
+
 ## Users
 
 An active User is required to access a project. Each user is assigned to a [Role](#roles) that determines what they have

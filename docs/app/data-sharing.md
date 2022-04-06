@@ -72,8 +72,9 @@ Once the link is opened by a user, a custom page displaying the Shared Item will
 
 ::: warning Logout to test links
 
-If you open a Data Share link while logged in to Directus, it will redirect to the item in the regular Directus App. When testing a share, make sure to logout of the app before opening
-the link or simply open the link in another browser or incognito tab.
+If you open a Data Share link while logged in to Directus, it will redirect to the item in the regular Directus App.
+When testing a share, make sure to logout of the app before opening the link or simply open the link in another browser
+or incognito tab.
 
 :::
 
@@ -182,9 +183,8 @@ which Items a Role will be able to share, enabling you to do things like _only s
 
 ## Limit Sharing by Field
 
-When you create a Share on some Item, you associate a Role _(and thus the Role's
-permissions)_ to the Item. This allows you to set read permissions for the exact fields _(including relational fields)_
-that get shared.
+When you create a Share on some Item, you associate a Role _(and thus the Role's permissions)_ to the Item. This allows
+you to set read permissions for the exact fields _(including relational fields)_ that get shared.
 
 1. Navigate to **Settings > Roles and Permissions**.
 2. Select the **[Role Name]** that is assigned to the Share.
@@ -194,4 +194,3 @@ that get shared.
 5. Click **Field Permissions**.
 6. Click to check the Collection Fields you'd like to allow read permissions on.
 7. Select <span mi>check</span> in the side menu Header to confirm changes.
-

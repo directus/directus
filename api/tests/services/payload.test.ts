@@ -1,6 +1,7 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { PayloadService } from '../../src/services';
+import { getHelpers, Helpers } from '../../src/database/helpers';
 
 jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
@@ -23,12 +24,14 @@ describe('Integration Tests', () => {
 	describe('Services / PayloadService', () => {
 		describe('transformers', () => {
 			let service: PayloadService;
+			let helpers: Helpers;
 
 			beforeEach(() => {
 				service = new PayloadService('test', {
 					knex: db,
 					schema: { collections: {}, relations: [] },
 				});
+				helpers = getHelpers(db);
 			});
 
 			describe('csv', () => {
@@ -39,6 +42,7 @@ describe('Integration Tests', () => {
 						payload: {},
 						accountability: { role: null },
 						specials: [],
+						helpers,
 					});
 
 					expect(result).toBe(undefined);
@@ -51,6 +55,7 @@ describe('Integration Tests', () => {
 						payload: {},
 						accountability: { role: null },
 						specials: [],
+						helpers,
 					});
 
 					expect(result).toMatchObject([]);
@@ -63,6 +68,7 @@ describe('Integration Tests', () => {
 						payload: {},
 						accountability: { role: null },
 						specials: [],
+						helpers,
 					});
 
 					expect(result).toMatchObject(['test', 'directus']);
@@ -75,6 +81,7 @@ describe('Integration Tests', () => {
 						payload: {},
 						accountability: { role: null },
 						specials: [],
+						helpers,
 					});
 
 					expect(result).toBe('test,directus');
@@ -87,6 +94,7 @@ describe('Integration Tests', () => {
 						payload: {},
 						accountability: { role: null },
 						specials: [],
+						helpers,
 					});
 
 					expect(result).toBe('test,directus');

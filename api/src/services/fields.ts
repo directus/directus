@@ -15,7 +15,7 @@ import { AbstractServiceOptions } from '../types';
 import { Field, FieldMeta, RawField, Type, Accountability, SchemaOverview } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { toArray } from '@directus/shared/utils';
+import { toArray, addFieldFlag } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import { getHelpers, Helpers } from '../database/helpers';
@@ -168,6 +168,15 @@ export class FieldsService {
 			});
 		}
 
+		// Update specific database type overrides
+		for (const field of result) {
+			if (field.meta?.special?.includes('cast-timestamp')) {
+				field.type = 'timestamp';
+			} else if (field.meta?.special?.includes('cast-datetime')) {
+				field.type = 'dateTime';
+			}
+		}
+
 		return result;
 	}
 
@@ -238,6 +247,12 @@ export class FieldsService {
 			// Check if field already exists, either as a column, or as a row in directus_fields
 			if (exists) {
 				throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+			}
+
+			// Add flag for specific database type overrides
+			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+			if (flagToAdd) {
+				addFieldFlag(field, flagToAdd);
 			}
 
 			await this.knex.transaction(async (trx) => {
