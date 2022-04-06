@@ -1,5 +1,15 @@
 import { ITransport } from '../transport';
-import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem, ItemsOptions } from '../items';
+import {
+	IItems,
+	Item,
+	QueryOne,
+	QueryMany,
+	OneItem,
+	ManyItems,
+	PartialItem,
+	ItemsOptions,
+	EmptyParamError,
+} from '../items';
 import { ID, FieldType } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
@@ -14,6 +24,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 	}
 
 	async readOne(id: ID, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
+		if (`${id}` === '') throw new EmptyParamError('id');
 		const response = await this.transport.get<T>(`${this.endpoint}/${encodeURI(id as string)}`, {
 			params: query,
 			...options?.requestOptions,
@@ -74,6 +85,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 	}
 
 	async updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>> {
+		if (`${id}` === '') throw new EmptyParamError('id');
 		return (
 			await this.transport.patch<PartialItem<T>>(`${this.endpoint}/${encodeURI(id as string)}`, item, {
 				params: query,
@@ -121,6 +133,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 	}
 
 	async deleteOne(id: ID, options?: ItemsOptions): Promise<void> {
+		if (`${id}` === '') throw new EmptyParamError('id');
 		await this.transport.delete(`${this.endpoint}/${encodeURI(id as string)}`, undefined, options?.requestOptions);
 	}
 

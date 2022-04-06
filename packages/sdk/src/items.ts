@@ -108,3 +108,9 @@ export interface IItems<T extends Item> {
 	deleteOne(id: ID, options?: ItemsOptions): Promise<void>;
 	deleteMany(ids: ID[], options?: ItemsOptions): Promise<void>;
 }
+
+export class EmptyParamError extends Error {
+	constructor(paramName?: string) {
+		super(`${paramName ?? 'ID'} cannot be an empty string`);
+	}
+}
