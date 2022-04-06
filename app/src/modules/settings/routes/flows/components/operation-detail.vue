@@ -96,7 +96,7 @@ watch(operationType, () => {
 watch(
 	operationName,
 	(newName, oldName) => {
-		if (newName === '' || operationKey.value === slugify(oldName ?? '')) operationKey.value = slugify(newName ?? '');
+		if (newName === null || operationKey.value === slugify(oldName ?? '')) operationKey.value = slugify(newName ?? '');
 	},
 	{ immediate: true }
 );
