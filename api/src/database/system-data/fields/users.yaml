@@ -72,6 +72,8 @@ fields:
   - field: language
     interface: system-language
     width: half
+    options:
+      includeProjectDefault: true
 
   - field: theme
     interface: select-dropdown

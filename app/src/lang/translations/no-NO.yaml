@@ -80,7 +80,6 @@ delete_folder: Slett mappe
 prefix: Prefiks
 suffix: Suffiks
 reset_bookmark: Tilbakestill bokmerke
-rename_bookmark: Endre navn på bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
 delete_bookmark_copy: >-
@@ -302,6 +301,10 @@ interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
+functions:
+  year: År
+  month: Måned
+  count: Antall
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'

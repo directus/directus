@@ -131,7 +131,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				}
 			}
 
-			message += 'The following changes will be applied:\n\n' + chalk.black(message);
+			message = 'The following changes will be applied:\n\n' + chalk.black(message);
 			if (dryRun) {
 				logger.info(message);
 				process.exit(0);

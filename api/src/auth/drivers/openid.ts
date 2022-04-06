@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Issuer, Client, generators, errors } from 'openid-client';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
+import flatten from 'flat';
 import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
@@ -135,14 +136,17 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
-		const { identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
+		// Flatten response to support dot indexes
+		userInfo = flatten(userInfo) as Record<string, unknown>;
+
+		const { provider, identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
 
 		const email = userInfo.email as string | null | undefined;
 		// Fallback to email if explicit identifier not found
 		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
 
 		if (!identifier) {
-			logger.warn(`[OpenID] Failed to find user identifier for provider "${this.config.provider}"`);
+			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -162,14 +166,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
-			logger.trace(
-				`[OpenID] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
-			);
+			logger.trace(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
 		await this.usersService.createOne({
-			provider: this.config.provider,
+			provider,
 			first_name: userInfo.given_name,
 			last_name: userInfo.family_name,
 			email: email,

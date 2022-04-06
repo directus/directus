@@ -1,8 +1,7 @@
-import { DateHelper } from '../types';
+import { FnHelper } from '../types';
 import { Knex } from 'knex';
-import { parseISO } from 'date-fns';
 
-export class DateHelperMySQL extends DateHelper {
+export class FnHelperMySQL extends FnHelper {
 	year(table: string, column: string): Knex.Raw {
 		return this.knex.raw('YEAR(??.??)', [table, column]);
 	}
@@ -35,13 +34,17 @@ export class DateHelperMySQL extends DateHelper {
 		return this.knex.raw('SECOND(??.??)', [table, column]);
 	}
 
-	readTimestampString(date: string): string {
-		const parsedDate = new Date(date);
-		return new Date(parsedDate.getTime() - parsedDate.getTimezoneOffset() * 60000).toISOString();
-	}
+	count(table: string, column: string): Knex.Raw {
+		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
 
-	writeTimestamp(date: string): Date {
-		const parsedDate = parseISO(date);
-		return new Date(parsedDate.getTime() + parsedDate.getTimezoneOffset() * 60000);
+		if (type === 'json') {
+			return this.knex.raw('JSON_LENGTH(??.??)', [table, column]);
+		}
+
+		if (type === 'alias') {
+			return this._relationalCount(table, column);
+		}
+
+		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 }

@@ -32,7 +32,17 @@ fields:
     translations:
       language: en-US
       translations: Website
-    width: full
+    width: half
+
+  - field: default_language
+    interface: system-language
+    options:
+      iconRight: language
+      placeholder: en-US
+    translations:
+      language: en-US
+      translations: Default Language
+    width: half
 
   - field: branding_divider
     interface: presentation-divider
@@ -378,3 +388,7 @@ fields:
             interface: input
             options:
               placeholder: $t:fields.directus_settings.attribution_placeholder
+
+  - field: translation_strings
+    special: cast-json
+    hidden: true

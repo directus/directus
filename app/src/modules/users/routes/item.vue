@@ -193,7 +193,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore, useServerStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -229,6 +229,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
+		const serverStore = useServerStore();
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -438,7 +439,7 @@ export default defineComponent({
 		async function setLang(user: Record<string, any>) {
 			if (userStore.currentUser!.id !== item.value?.id) return;
 
-			const newLang = user?.language;
+			const newLang = user?.language ?? serverStore.info?.project?.default_language;
 
 			if (newLang && newLang !== locale.value) {
 				await setLanguage(newLang);

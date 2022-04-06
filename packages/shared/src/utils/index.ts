@@ -5,6 +5,8 @@ export * from './generate-joi';
 export * from './get-collection-type';
 export * from './get-fields-from-template';
 export * from './get-filter-operators-for-type';
+export * from './get-functions-for-type';
+export * from './get-output-type-for-function';
 export * from './get-relation-type';
 export * from './get-simple-hash';
 export * from './is-dynamic-variable';

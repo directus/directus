@@ -69,6 +69,12 @@ create_role: Crea ruolo
 create_user: Crea utente
 delete_panel: Elimina Pannello
 create_webhook: Crea webhook
+create_translation_string: Crea stringa di traduzione
+translation_string_key_placeholder: Chiave della stringa di traduzione...
+translation_string_translations_placeholder: Aggiungi una nuova traduzione
+edit_translation_string: Modifica stringa di traduzione
+delete_translation_string_copy: >-
+  Sei sicuro di voler eliminare la stringa di traduzione "{key}"? Questa azione non può essere annullata.
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
@@ -85,11 +91,13 @@ delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
 reset_bookmark: Reimposta Segnalibro
-rename_bookmark: Rinomina Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
 delete_bookmark_copy: >-
   Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione è irreversibile.
+delete_personal_bookmark: Elimina segnalibro personale
+delete_role_bookmark: Elimina segnalibro del ruolo
+delete_global_bookmark: Elimina segnalibro globale
 logoutReason:
   SIGN_OUT: Disconnesso
   SESSION_EXPIRED: Sessione scaduta
@@ -175,6 +183,7 @@ field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Lingua
+language_placeholder: Seleziona una lingua...
 aggregate_function: Funzione di aggregazione
 aggregate_precision: Precisione dell'aggregazione
 group_aggregation: Raggruppamento
@@ -185,6 +194,7 @@ camera: Camera
 show_zero: Mostra zero
 create_in_advanced_field_creation_mode: Crea campo in modalità avanzata
 continue_in_advanced_field_creation_mode: Continua in modalità avanzata di creazione del campo
+validation: Validazione
 sum: Somma
 sum_distinct: Somma valori unici
 avg: Media
@@ -355,6 +365,10 @@ today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
 delete_share: Elimina condivisione
+functions:
+  year: Anno
+  month: Mese
+  count: Quantità
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -555,6 +569,11 @@ value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
+edit_personal_bookmark: Modifica segnalibro personale
+edit_role_bookmark: Modifica segnalibro del ruolo
+edit_global_bookmark: Modifica segnalibro globale
+cannot_edit_role_bookmarks: Impossibile modificare i segnalibri del ruolo
+cannot_edit_global_bookmarks: Impossibile modificare i segnalibri globali
 bookmarks: Segnalibri
 presets: Preset
 unexpected_error: Errore Imprevisto
@@ -581,6 +600,7 @@ make_collection_visible: Rendi visibile la raccolta
 make_collection_hidden: Rendi nascosta la raccolta
 make_folder_visible: Rendi visibile la cartella
 make_folder_hidden: Rendi nascosta la cartella
+goto_collection_content: Visualizza contenuto
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
@@ -641,6 +661,8 @@ operators:
   nintersects: Non interseca
   intersects_bbox: Interseca il riquadro di delimitazione
   nintersects_bbox: Non interseca il riquadro di delimitazione
+  regex: Corrisponde all'espressione regolare
+custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
 drop_to_upload: Rilascia per caricare
 item: Elemento
@@ -821,6 +843,7 @@ settings_permissions: Ruoli e permessi
 settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
+settings_translation_strings: Stringhe di Traduzione
 one_or_more_options_are_missing: Mancano una o più opzioni
 scope: Ambito
 select: Seleziona...
@@ -866,6 +889,7 @@ page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
 page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
 page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
+page_help_settings_translation_strings_collection: '**Sfoglia le stringhe di traduzione** — Elenca tutte le stringhe di traduzione nel progetto.'
 page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
 page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
@@ -1011,6 +1035,7 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    default_language: Lingua predefinita
     branding: Branding e stile
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
@@ -1241,6 +1266,16 @@ normal: Normale
 success: Successo
 warning: Avviso
 danger: Pericolo
+colors:
+  purple: Viola
+  blue: Blu
+  green: Verde
+  yellow: Giallo
+  orange: Arancione
+  red: Rosso
+  black: Nero
+  gray: Grigio
+  white: Bianco
 junction_collection: Raccolta di Giunzione
 latency: Latenza
 login: Accesso
@@ -1359,6 +1394,7 @@ interfaces:
     include_seconds: Includi Secondi
     set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
+    placeholder: Scegli data e ora...
   system-display-template:
     display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
@@ -1491,6 +1527,7 @@ interfaces:
     auto_formatter: Usa la formattazione automatica del titolo
     alphabetize: Ordine alfabetico
     alphabetize_label: Forza Ordine Alfabetico
+    add_tags: Aggiungi un tag e premi invio...
   input:
     input: Input
     description: Inserisci manualmente un valore
@@ -1508,6 +1545,11 @@ interfaces:
   input-multiline:
     textarea: Area di testo
     description: Inserisci testo su più righe
+  input-translated-string:
+    input-translated-string: Stringhe tradotte
+    description: Seleziona o aggiungi stringa di traduzione
+    search_placeholder: Cerca...
+    new_translation_string: Nuova stringa di traduzione
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato

@@ -416,9 +416,10 @@ often possible to cache assets for far longer than you would cache database cont
 | Variable                          | Description                                                                              | Default Value    |
 | --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
 | `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `5m`             |
 | `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
 | `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long the schema caches (schema/permissions) are persisted.                           | `10m`            |
 | `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
 | `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
 | `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
@@ -562,6 +563,17 @@ STORAGE_AWS_SECRET="yk29b...b932n"
 STORAGE_AWS_REGION="us-east-2"
 STORAGE_AWS_BUCKET="my-files"
 ```
+
+### Metadata
+
+When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+purposes, collection of additional metadata must be configured:
+
+| Variable                   | Description                                                                                           | Default Value                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO |
+
+<sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
 
 ## Assets
 

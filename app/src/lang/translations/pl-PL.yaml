@@ -69,6 +69,12 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
+create_translation_string: Utwórz tłumaczenia
+translation_string_key_placeholder: Klucz tłumaczenia...
+translation_string_translations_placeholder: Dodaj nowe tłumaczenie
+edit_translation_string: Edytuj tłumaczenia
+delete_translation_string_copy: >-
+  Czy na pewno chcesz usunąć tłumaczenia "{key}"? Tej akcji nie można cofnąć.
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
@@ -85,11 +91,13 @@ delete_folder: Usuń folder
 prefix: Przedrostek
 suffix: Przyrostek
 reset_bookmark: Zresetuj zakładkę
-rename_bookmark: Zmień nazwę zakładki
 update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
 delete_bookmark_copy: >-
   Czy na pewno chcesz usunąć zakładkę "{bookmark}"? Tej akcji nie można cofnąć.
+delete_personal_bookmark: Usuń Osobistą Zakładkę
+delete_role_bookmark: Usuń zakładkę roli
+delete_global_bookmark: Usuń globalną zakładkę
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
@@ -175,6 +183,7 @@ field_create_success: 'Utworzono pole: "{field}"'
 field_update_success: 'Zaktualizowano pole: "{field}"'
 duplicate_where_to: Gdzie chcesz zduplikować to pole?
 language: Język
+language_placeholder: Wybierz język...
 aggregate_function: Funkcja agregacji
 aggregate_precision: Precyzja agregacji
 group_aggregation: Agregacja grup
@@ -185,6 +194,7 @@ camera: Aparat
 show_zero: Pokaż zerowy
 create_in_advanced_field_creation_mode: Utwórz pole w trybie zaawansowanym
 continue_in_advanced_field_creation_mode: Kontynuuj w trybie zaawansowanego tworzenia pól
+validation: Walidacja
 sum: Suma
 sum_distinct: Suma z wyodrębnianiem
 avg: Średnia
@@ -355,6 +365,16 @@ today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
 delete_share: Usuń udostępnienie
+functions:
+  year: Rok
+  month: Miesiąc
+  week: Tydzień
+  day: Dzień
+  weekday: Dzień roboczy
+  hour: Godzina
+  minute: Minuta
+  second: Drugi
+  count: Licz
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -555,6 +575,11 @@ value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
 edit_bookmark: Edytuj zakładkę
+edit_personal_bookmark: Edytuj Osobistą Zakładkę
+edit_role_bookmark: Edytuj zakładkę roli
+edit_global_bookmark: Edytuj globalną zakładkę
+cannot_edit_role_bookmarks: Nie można edytować zakładek roli
+cannot_edit_global_bookmarks: Nie można edytować globalnych zakładek
 bookmarks: Zakładki
 presets: Ustawienia
 unexpected_error: Nieoczekiwany błąd
@@ -581,6 +606,7 @@ make_collection_visible: Spraw, aby kolekcja była widoczna
 make_collection_hidden: Spraw, aby kolekcja była ukryta
 make_folder_visible: Uwidocznij folder
 make_folder_hidden: Ukryj folder
+goto_collection_content: Zobacz zawartość
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
@@ -641,6 +667,8 @@ operators:
   nintersects: Nie przecina się
   intersects_bbox: Przecina pole ograniczające
   nintersects_bbox: Nie przecina pola ograniczającego
+  regex: Wyrażenie dopasowania
+custom_validation_message: Niestandardowy komunikat walidacyjny
 loading: Wczytywanie...
 drop_to_upload: Upuść, aby przesłać
 item: Element
@@ -821,6 +849,7 @@ settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
+settings_translation_strings: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 select: Wybierz...
@@ -866,6 +895,7 @@ page_help_settings_presets_item: >-
   **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
 page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
+page_help_settings_translation_strings_collection: '**Przeglądaj Tłumaczenie** — Wyświetla wszystkie ciągi tłumaczeń w projekcie.'
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
@@ -1011,6 +1041,7 @@ fields:
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
+    default_language: Domyślny język
     branding: Marka i Styl
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
@@ -1290,7 +1321,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1521,6 +1551,11 @@ interfaces:
   input-multiline:
     textarea: Obszar tekstowy
     description: Wprowadź wieloliniowy zwykły tekst
+  input-translated-string:
+    input-translated-string: Przetłumaczone ciągi
+    description: Wybierz lub dodaj tłumaczenia
+    search_placeholder: Szukaj...
+    new_translation_string: Nowe tłumaczenia
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
