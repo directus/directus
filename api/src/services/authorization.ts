@@ -118,6 +118,7 @@ export class AuthorizationService {
 						if (!aliasMap) continue;
 
 						for (const column of Object.values(aliasMap)) {
+							if (column === '*') continue;
 							if (allowedFields.includes(column) === false) throw new ForbiddenException();
 						}
 					}
