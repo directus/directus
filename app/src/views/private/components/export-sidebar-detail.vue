@@ -126,7 +126,7 @@
 						<p>
 							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
 
-							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit > itemCount)">
+							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit >= itemCount)">
 								{{
 									t('exporting_all_items_in_collection', {
 										total: itemCount ? n(itemCount) : '??',
@@ -267,7 +267,7 @@ const exportSettings = reactive({
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: `${primaryKeyField.value!.field}`,
+	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
 watch(
