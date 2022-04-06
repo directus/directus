@@ -86,8 +86,8 @@ const { t } = useI18n();
 
 const options = ref<Record<string, any>>(props.operation?.options ?? {});
 const operationType = ref<string | undefined>(props.operation?.type);
-const operationKey = ref<string>(props.operation?.key ?? '');
-const operationName = ref<string>(props.operation?.name ?? '');
+const operationKey = ref<string | null>(props.operation?.key ?? null);
+const operationName = ref<string | null>(props.operation?.name ?? null);
 
 watch(operationType, () => {
 	options.value = {};
@@ -96,7 +96,7 @@ watch(operationType, () => {
 watch(
 	operationName,
 	(newName, oldName) => {
-		if (newName === '' || operationKey.value === slugify(oldName ?? '')) operationKey.value = slugify(newName);
+		if (newName === '' || operationKey.value === slugify(oldName ?? '')) operationKey.value = slugify(newName ?? '');
 	},
 	{ immediate: true }
 );

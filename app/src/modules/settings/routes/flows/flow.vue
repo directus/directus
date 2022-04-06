@@ -202,7 +202,7 @@ const flow = computed<FlowRaw | undefined>({
 });
 
 const firstOpen = computed(() => !flow.value?.trigger);
-const editMode = ref(firstOpen.value);
+const editMode = ref(firstOpen.value || props.operationId !== undefined);
 
 async function toggleFlowActive() {
 	if (!flow.value) return;
