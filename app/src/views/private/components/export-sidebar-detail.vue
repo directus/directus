@@ -222,6 +222,7 @@ import FolderPicker from '@/views/private/components/folder-picker/folder-picker
 import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
+import { usePermissionsStore } from '@/stores';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -267,7 +268,7 @@ const exportSettings = reactive({
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: `${primaryKeyField.value!.field}`,
+	sort: `${primaryKeyField.value?.field}`,
 });
 
 watch(
@@ -304,22 +305,40 @@ watch(
 
 const itemCount = ref<number>();
 const itemCountLoading = ref(false);
+const permissionsStore = usePermissionsStore();
 
 const getItemCount = debounce(async () => {
 	itemCountLoading.value = true;
 
 	try {
+		const allowedFields = permissionsStore.getPermissionsForUser(collection.value, 'read')?.fields;
+		// Shouldn't occur, but just in case
+		if (!allowedFields) return;
+
+		let aggregateKey;
+
+		if (allowedFields.includes('*')) {
+			aggregateKey = '*';
+		} else if (primaryKeyField.value?.field && allowedFields.includes(primaryKeyField.value.field)) {
+			aggregateKey = primaryKeyField.value.field;
+		} else {
+			return;
+		}
+
 		const count = await api
 			.get(getEndpoint(collection.value), {
 				params: {
 					...exportSettings,
 					aggregate: {
-						count: ['*'],
+						count: [aggregateKey],
 					},
 				},
 			})
 			.then((response) => {
 				if (response.data.data?.[0]?.count) {
+					if (typeof response.data.data[0].count === 'object' && primaryKeyField.value?.field) {
+						return Number(response.data.data[0].count[primaryKeyField.value.field]);
+					}
 					return Number(response.data.data[0].count);
 				}
 			});
