@@ -1,7 +1,7 @@
 # Item Page
 
-> The Item Page is a tailored form for viewing and editing an Item's Fields. This page also includes options for
-> archiving, reverting, deleting, and commenting on the Item.
+> The Item Page is a tailored form for managing Items and their Field values. This page also includes options for
+> archiving, reverting, and commenting on the Item.
 
 [[toc]]
 
@@ -11,42 +11,47 @@
 	<source src="" type="video/mp4" />
 </video>
 
-1. Navigate to the Collection that you want to add an Item to.
-2. Click <span mi btn>add</span> in the Page Header.
-3. Fill in the Item Details Form as desired.
+To create an Item, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Click <span mi btn>add</span> in the Page Header. The Item Page will open.
+3. Fill in Item details as desired.
 4. Click <span mi btn>check</span> in the Page Header.
 
 ::: tip Singletons
 
-If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
-#2 above and go directly open the Item Details Form.
+If the Collection is configured as a "Singleton" in the data model settings, then the App will skip step two above and
+automatically open the Item Page.
 
 :::
 
-## Update an Item
+## Edit an Item
 
 ![Update an Item](image.webp)
 
-1. Navigate to the [Content Module](/app/overview#1.-module-bar)
-2. Navigate to the collection of the item you want to update
-3. Click on the item within the current layout (eg: on the row of the table)
-4. Update the Item Detail form
-5. Click <span mi btn>check</span> in the header.
+To update an Item's Field Values, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Click on the desired Item. The Item Page will open.
+3. Update Item details as desired.
+4. Click <span mi btn>check</span> in the header.
 
 ::: tip Other Save Options
 
-To the right of the primary Save button there is a "..." icon which contains the following alternate save options:
+To the right of the primary Save button, there is a <span mi icon>more_vert</span> icon which contains the following
+alternate save options:
 
-- Save and Stay (⌘S)
-- Save and Create New (⌘⇧S)
-- Save as Copy
+<span mi icon>check</span> Save and Stay (⌘S)\
+<span mi icon>add</span> Save and Create New (⌘⇧S)\
+<span mi icon>done_all</span> Save as Copy\
+<span mi icon>undo</span> Discard all Changes
 
 :::
 
 ::: tip Singletons
 
-If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
-#3 above.
+If the Collection is configured as a "Singleton" in Data Model Settings, then the App will skip step two above and
+automatically open the Item Page.
 
 :::
 
@@ -54,24 +59,16 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 ![Archive an Item](image.webp)
 
-[Learn More](/app/content-items/#archive-an-item)
+To archive an Item, follow the steps below. [Learn More](/configuration/data-model/#archive)
 
-1. Navigate to the [Content Module](/app/overview#1.-module-bar)
-2. Navigate to the collection of the item you want to archive
-3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
-4. Click the "Archive Item" (archive icon) button located in the header
-5. Confirm the action within the dialog by clicking "Archive"
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click <span mi btn warn>archive</span> located in the header and a popup will appear.
+4. Click **"Archive"** to confirm the action.
 
 ::: warning Requires Configuration
 
-This feature is only available if an Archive column has been configured in the Collection's data model settings.
-
-:::
-
-::: tip Archiving from the Item Detail page
-
-You can also click on an item to navigate to its Detail page. From there, you can click on the "Archive Item" (archive
-icon) button located in the header.
+Archiving is only available if an Archive Field has been configured within the Collection's data model settings.
 
 :::
 
@@ -79,50 +76,58 @@ icon) button located in the header.
 
 ![Delete an Item](image.webp)
 
-1. Navigate to the [Content Module](/app/overview#1.-module-bar)
-2. Navigate to the collection of the item you want to delete
-3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
-4. Click the "Delete Item" (trash icon) button located in the header
-5. Confirm the action within the dialog by clicking "Delete"
+To delete an Item, follow the steps below.
 
-::: tip Deleting from the Item Detail page
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click <span mi btn dngr>delete</span> located in the header and a popup will appear.
+4. Click **"Delete"** to confirm the action.
 
-You can also click on an item to navigate to its Detail page. From there, you can click on the "Delete Item" (trash
-icon) button located in the header.
+::: danger
+
+This action permanently removes the Item from the database. Proceed with caution!
+
+:::
+
+:::tip Archive as a Soft-Delete
+
+If you wish to remove an Item from view or use, but keep it stored, you may consider
+[archiving the Item](#archive-an-item) instead.
 
 :::
 
 ## Batch Delete, Archive or Edit Items
 
-![Batch Delete, Archive or Edit Items](image.webp)
-
-It is possible to select multiple Items to batch edit/delete from the Collections Page. Deletion will permanently delete
-Items from the database, this cannot be reverted. On batch editing, the Item Details Form opens, allowing you to make
-the same edit across multiple Items.
-
 <video autoplay muted loop controls title="Batch Edit Items">
 	<source src="" type="video/mp4" />
 </video>
 
-1. Navigate to the [Content Module](/app/overview/#_1-module-bar).
-2. Navigate to the Collection you wish to sort.
-3. In the [Sidebar](/app/overview/#_4-sidebar), choose a [Layout](/#adjust-item-layouts) that supports multiple
-   selection (e.g. "table" or "card" mode).
-4. Click the Items you wish to select.
-   - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the far left column to select Items.
-   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the top left hand corner to select Items.
+It is possible to delete, archive, or edit multiple Items at once from the Collection Page. Deletion will permanently
+delete Items from the database, this cannot be reverted. When batch editing, the Item Page opens, allowing you to make
+the same edit across multiple Items. Follow the steps below to batch delete, archive, or edit Items.
 
-Once Items are selected, <span mi btn dngr>delete</span> and <span mi btn warning>edit</span> appear in the Page Header.
-There are two options:
+1. Navigate to the Content Module and select the desired Collection.
+2. Choose a [Layout](/#adjust-item-layouts) that supports multiple Item selection from the Sidebar.\
+   (e.g. The Table or Card Layout)
+3. Click the Items you wish to select:
+   - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the left-most column.
+   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the upper left hand corner of each Card.
 
-**Edit**\
-5. Click <span mi btn warning>edit</span> and the Item Details Form will open.\
-6. Make edits to Fields as desired.\
-7. Click <span mi btn>check</span> to confirm batch edits on all Items.
+Once Items are selected, the following icons will appear in the Page Header: <span mi btn muted>delete</span>
+<span mi btn muted>archive</span> <span mi btn muted>edit</span>
 
 **Delete**\
-5. Click <span mi btn dngr>delete</span> and a popup will appear.\
-6. Click **"Delete"**.
+4. Click <span mi btn dngr>delete</span> in the header and a popup will appear.\
+5. Click **"Delete"** to confirm the action.
+
+**Archive**\
+4. Click <span mi btn muted>archive</span> in the header and a popup will appear.\
+5. Click **"Delete"** to confirm the action.
+
+**Edit**\
+4. Click <span mi btn muted>edit</span> in the header and the Item Page will open.\
+5. Update Item details as desired.\
+6. Click <span mi btn>check</span> to confirm batch edits on all Items.
 
 :::danger DANGER!
 
@@ -132,28 +137,52 @@ These actions are destructive, proceed with caution.
 
 ## Revert an Item
 
-![Revert an Item](image.webp)
+<video autoplay muted loop controls title="Revert Items">
+	<source src="" type="video/mp4" />
+</video>
 
-1. Navigate to the [Content Module](/app/overview#1.-module-bar)
-2. Navigate to the collection of the item you want to archive
-3. Click on an item to navigate to its Detail page
-4. Click "Revisions" in the page sidebar
-5. Click on the revision you wish to preview
-6. Click on the "Revert" button located in the drawer's header
-7. Confirm the action within the dialog by clicking "Revert"
+As you update Field Values on Items, Directus saves these [Revisions](/getting-started/glossary/#revisions) so that you
+can compare and revert the current state of an Item to previous states. To revert an Item, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click **"Revisions"** in the page sidebar.
+4. Click on the revision you wish to preview.
+5. Click on the "Revert" button located in the drawer's header.
+6. Confirm the action within the dialog by clicking **"Revert"**.
+
+:::tip
+
+Items can also be reverted [programmatically via the API](/reference/system/revisions/).
+
+:::
 
 ## Comment on an Item
 
-![Comment on an Item](image.webp)
+<video autoplay muted loop controls title="Comment on an Item">
+	<source src="" type="video/mp4" />
+</video>
 
-1. Navigate to the [Content Module](/app/overview#1.-module-bar)
-2. Navigate to the collection of the item you want to comment on
-3. Click on an item to navigate to its Detail page
-4. Click "Comments" in the page sidebar
-5. Type your message within the input
-6. Click the "Submit" button
+Comments, a collaborative tool, are left on an Item in the sidebar and remain there for you and other team-members to
+refer to. To create a comment, follow the steps below.
 
-### Mentions
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click **"Comments"** in the page sidebar.\
+4. Type your message into the input.
+5. Click the **"Submit"** button.
 
-You can also mention any user by typing `@` along with their name or email in your comment. They will then receive a
-notification which will direct them to your comment.
+:::tip Mentions
+
+You can also search and mention any User by typing the **"@"** symbol along with their name or email in your comment.
+They will then receive an in-app notification as well as an email which direct them to your comment.
+
+:::
+
+:::tip Edit and Delete Comments
+
+Each comment displays the time it was created in its upper right-hand corner. Hover over this and the
+<span mi icon>more_horiz</span> menu will appear. Click this menu if you wish to <span mi icon>edit</span> edit or
+<span mi icon>delete</span> delete the comment.
+
+:::

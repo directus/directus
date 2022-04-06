@@ -76,7 +76,7 @@ Layout. To order a Collection's Items, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. In the Sidebar, choose a [Layout](/app/content-layouts/#adjust-item-layouts) that supports ordering.\
-   (e.g. "table" or "card" mode)
+   (e.g. The Table or Card Layout)
 3. Set the Order Field and Order Direction.
    - **Table Layout:** Click on the Field's column Header, clicking again changes order direction.
    - **Card Layout:** Adjust the Sort Field and Sort Direction in the Layout Subheader.
@@ -91,8 +91,7 @@ Ordering is a non-destructive action which does not change your data.
 
 ![View Archived Items](image.webp)
 
-An Item can be [archived](/app/content-items/#archive-an-item) so that it exists within the database but is not
-displayed with other "active" Items in the app. To view an archived Item, follow the steps below.
+To view an archived Item, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Click **"Archive"** in the Sidebar.

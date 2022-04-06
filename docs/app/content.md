@@ -38,7 +38,14 @@ creates changes in the data model. Administrators manage Collections through the
 
 When an Item is clicked on the Collection Page, its Item Details Page is opened. This is a form primarily for viewing
 and editing an Item's Field Values, but also includes options for commenting on, sharing, archiving, reverting, and
-deleting the Item.
+deleting the Item. [Learn More](/app/content-items)
+
+::: tip Manage Items via the API
+
+In this section of the documentation, we show you how to create, view, update, and delete Items within the Directus App.
+However, these actions can also be done [programmatically via the API](/reference/items/).
+
+:::
 
 ## Layouts
 
