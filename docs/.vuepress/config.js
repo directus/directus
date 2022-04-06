@@ -167,12 +167,12 @@ module.exports = {
 							{
 								type: 'page',
 								path: '/app/content-collections',
-								title: 'Collections',
+								title: 'Collection Page',
 							},
 							{
 								type: 'page',
 								path: '/app/content-items',
-								title: 'Items',
+								title: 'Item Page',
 							},
 							{
 								type: 'page',

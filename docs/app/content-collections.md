@@ -1,6 +1,6 @@
-# Collections
+# Collection Page
 
-> The Collections Page displays all Items within a Collection. The page comes with highly configurable Layouts for
+> The Collection Page displays all Items within a Collection. The page comes with highly configurable Layouts for
 > browsing, visualizing, and managing these Items.
 
 [[toc]]
