@@ -39,7 +39,6 @@ fields:
     options:
       iconRight: language
       placeholder: en-US
-      includeProjectDefault: false
     translations:
       language: en-US
       translations: Default Language
