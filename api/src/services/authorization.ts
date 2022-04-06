@@ -56,7 +56,7 @@ export class AuthorizationService {
 		}
 
 		validateFields(ast);
-		validateFilterPermissions(ast, this.schema, this.accountability);
+		validateFilterPermissions(ast, this.schema, action, this.accountability);
 		applyFilters(ast, this.accountability);
 
 		return ast;
@@ -144,6 +144,7 @@ export class AuthorizationService {
 		function validateFilterPermissions(
 			ast: AST | NestedCollectionNode | FieldNode,
 			schema: SchemaOverview,
+			action: PermissionsAction,
 			accountability: Accountability | null
 		) {
 			let requiredFieldPermissions: Record<string, Set<string>> = {};
@@ -157,17 +158,18 @@ export class AuthorizationService {
 						);
 
 						for (const child of ast.children[collection]) {
-							// Always add relational field as a deep child may have a filter
-							if (child.type !== 'field') {
-								(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
-									child.fieldKey
-								);
-							}
+							const childPermissions = validateFilterPermissions(child, schema, action, accountability);
 
-							requiredFieldPermissions = mergeRequiredFieldPermissions(
-								requiredFieldPermissions,
-								validateFilterPermissions(child, schema, accountability)
-							);
+							if (Object.keys(childPermissions).length > 0) {
+								//Only add relational field if deep child has a filter
+								if (child.type !== 'field') {
+									(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
+										child.fieldKey
+									);
+								}
+
+								requiredFieldPermissions = mergeRequiredFieldPermissions(requiredFieldPermissions, childPermissions);
+							}
 						}
 					}
 				} else {
@@ -177,24 +179,25 @@ export class AuthorizationService {
 					);
 
 					for (const child of ast.children) {
-						// Always add relational field as a deep child may have a filter
-						if (child.type !== 'field') {
-							(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
-								child.fieldKey
-							);
-						}
+						const childPermissions = validateFilterPermissions(child, schema, action, accountability);
 
-						requiredFieldPermissions = mergeRequiredFieldPermissions(
-							requiredFieldPermissions,
-							validateFilterPermissions(child, schema, accountability)
-						);
+						if (Object.keys(childPermissions).length > 0) {
+							// Only add relational field if deep child has a filter
+							if (child.type !== 'field') {
+								(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
+									child.fieldKey
+								);
+							}
+
+							requiredFieldPermissions = mergeRequiredFieldPermissions(requiredFieldPermissions, childPermissions);
+						}
 					}
 				}
 			}
 
 			if (ast.type === 'root') {
 				// Validate all required permissions once at the root level
-				checkFieldPermissions(requiredFieldPermissions);
+				checkFieldPermissions(ast.name, schema, action, requiredFieldPermissions);
 			}
 
 			return requiredFieldPermissions;
@@ -301,7 +304,12 @@ export class AuthorizationService {
 				return current;
 			}
 
-			function checkFieldPermissions(requiredPermissions: Record<string, Set<string>>) {
+			function checkFieldPermissions(
+				rootCollection: string,
+				schema: SchemaOverview,
+				action: PermissionsAction,
+				requiredPermissions: Record<string, Set<string>>
+			) {
 				if (accountability?.admin === true) return;
 
 				for (const collection of Object.keys(requiredPermissions)) {
@@ -309,13 +317,30 @@ export class AuthorizationService {
 						(permission) => permission.collection === collection && permission.action === 'read'
 					);
 
-					if (!permission || !permission.fields) throw new ForbiddenException();
+					let allowedFields: string[];
 
-					const allowedFields = permission.fields;
+					// Allow the filtering of top level ID for actions such as update and delete
+					if (action !== 'read' && collection === rootCollection) {
+						const actionPermission = accountability?.permissions?.find(
+							(permission) => permission.collection === collection && permission.action === action
+						);
+
+						if (!actionPermission || !actionPermission.fields) {
+							throw new ForbiddenException();
+						}
+
+						allowedFields = permission?.fields
+							? [...permission.fields, schema.collections[collection].primary]
+							: [schema.collections[collection].primary];
+					} else if (!permission || !permission.fields) {
+						throw new ForbiddenException();
+					} else {
+						allowedFields = permission.fields;
+					}
 
 					if (allowedFields.includes('*')) continue;
 					// Allow legacy permissions with an empty fields array, where id can be accessed
-					if (allowedFields.length === 0) allowedFields.push('id');
+					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
 						if (!allowedFields.includes(field)) throw new ForbiddenException();
