@@ -268,7 +268,7 @@ const exportSettings = reactive({
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: `${primaryKeyField.value?.field}`,
+	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
 watch(
