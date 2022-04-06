@@ -57,8 +57,10 @@ export function useRelationMultiple(
 	const { fetchedSelectItems, selected, isItemSelected } = useSelected();
 
 	const totalItemCount = computed(() => {
-		if (relation.value?.type === 'o2m')
+		if (relation.value?.type === 'o2m') {
 			return existingItemCount.value + _value.value.create.length + selected.value.length;
+		}
+
 		return existingItemCount.value + _value.value.create.length;
 	});
 
@@ -343,7 +345,7 @@ export function useRelationMultiple(
 			},
 		});
 
-		existingItemCount.value = response.data.data[0].count[targetPKField];
+		existingItemCount.value = Number(response.data.data[0].count[targetPKField]);
 	}
 
 	function useSelected() {
