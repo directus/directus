@@ -58,7 +58,15 @@
 					<v-icon name="fullscreen" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
+				<v-button
+					v-tooltip.bottom="t('edit_panels')"
+					class="edit"
+					rounded
+					icon
+					outlined
+					:disabled="!updateAllowed"
+					@click="editMode = !editMode"
+				>
 					<v-icon name="edit" />
 				</v-button>
 			</template>
@@ -146,7 +154,7 @@
 <script lang="ts">
 import InsightsNavigation from '../components/navigation.vue';
 import { defineComponent, computed, ref, toRefs, watch } from 'vue';
-import { useInsightsStore, useAppStore } from '@/stores';
+import { useInsightsStore, useAppStore, usePermissionsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@directus/shared/types';
 import { nanoid } from 'nanoid';
@@ -179,6 +187,7 @@ export default defineComponent({
 
 		const insightsStore = useInsightsStore();
 		const appStore = useAppStore();
+		const permissionsStore = usePermissionsStore();
 
 		const { fullScreen } = toRefs(appStore);
 
@@ -191,6 +200,10 @@ export default defineComponent({
 		const movePanelID = ref<string | null>();
 
 		const zoomToFit = ref(false);
+
+		const updateAllowed = computed<boolean>(() => {
+			return permissionsStore.hasPermission('directus_panels', 'update');
+		});
 
 		useShortcut('meta+s', () => {
 			saveChanges();
@@ -305,6 +318,7 @@ export default defineComponent({
 		return {
 			currentDashboard,
 			editMode,
+			updateAllowed,
 			panels,
 			stagePanelEdits,
 			stagedPanels,

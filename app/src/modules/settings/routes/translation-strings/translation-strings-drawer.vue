@@ -208,7 +208,7 @@ async function deleteCurrentTranslationString() {
 	padding-bottom: var(--content-padding-bottom);
 }
 .v-button.delete-action {
-	--v-button-background-color-hover: var(--danger);
-	--v-button-color-hover: var(--foreground-inverted);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--foreground-inverted) !important;
 }
 </style>

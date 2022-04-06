@@ -79,7 +79,6 @@ const cssHeight = computed(() => props.height + 2 + 'px');
 		align-items: center;
 		padding: 8px 12px;
 		overflow: hidden;
-		line-height: 1;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color);

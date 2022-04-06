@@ -92,11 +92,13 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Reset Bookmark
-rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
   Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
+delete_personal_bookmark: Delete Personal Bookmark
+delete_role_bookmark: Delete Role Bookmark
+delete_global_bookmark: Delete Global Bookmark
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
@@ -197,6 +199,7 @@ camera: Camera
 show_zero: Show Zero
 create_in_advanced_field_creation_mode: Create Field in Advanced Mode
 continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
+validation: Validation
 sum: Sum
 sum_distinct: Sum Distinct
 avg: Average
@@ -368,6 +371,16 @@ today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
 delete_share: Delete Share
+functions:
+  year: Year
+  month: Month
+  week: Week
+  day: Day
+  weekday: Weekday
+  hour: Hour
+  minute: Minute
+  second: Second
+  count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -568,6 +581,11 @@ value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
 edit_bookmark: Edit Bookmark
+edit_personal_bookmark: Edit Personal Bookmark
+edit_role_bookmark: Edit Role Bookmark
+edit_global_bookmark: Edit Global Bookmark
+cannot_edit_role_bookmarks: Can't Edit Role Bookmarks
+cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
@@ -594,6 +612,7 @@ make_collection_visible: Make Collection Visible
 make_collection_hidden: Make Collection Hidden
 make_folder_visible: Make Folder Visible
 make_folder_hidden: Make Folder Hidden
+goto_collection_content: View Content
 start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
@@ -655,6 +674,8 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  regex: Matches RegExp
+custom_validation_message: Custom Validation Message
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item
@@ -1033,6 +1054,7 @@ fields:
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
+    default_language: Default Language
     branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
@@ -1508,6 +1530,7 @@ interfaces:
     add_label: '"Create New" Label'
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
+    incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
   slider:
     slider: Slider
     description: Select a number using a slider

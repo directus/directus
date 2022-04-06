@@ -282,7 +282,6 @@ import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-det
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
-import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import { useRouter } from 'vue-router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
@@ -303,7 +302,6 @@ export default defineComponent({
 		LayoutSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
-		BookmarkEdit,
 		DrawerBatch,
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
@@ -372,7 +370,7 @@ export default defineComponent({
 			batchEditActive,
 		} = useBatch();
 
-		const { bookmarkDialogActive, creatingBookmark, createBookmark, editingBookmark, editBookmark } = useBookmarks();
+		const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
 		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
 
@@ -447,8 +445,6 @@ export default defineComponent({
 			creatingBookmark,
 			createBookmark,
 			bookmarkTitle,
-			editingBookmark,
-			editBookmark,
 			breadcrumb,
 			clearFilters,
 			confirmArchive,
@@ -583,21 +579,22 @@ export default defineComponent({
 		function useBookmarks() {
 			const bookmarkDialogActive = ref(false);
 			const creatingBookmark = ref(false);
-			const editingBookmark = ref(false);
 
 			return {
 				bookmarkDialogActive,
 				creatingBookmark,
 				createBookmark,
-				editingBookmark,
-				editBookmark,
 			};
 
-			async function createBookmark(name: string) {
+			async function createBookmark(bookmark: any) {
 				creatingBookmark.value = true;
 
 				try {
-					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
+					const newBookmark = await saveCurrentAsBookmark({
+						bookmark: bookmark.name,
+						icon: bookmark.icon,
+						color: bookmark.color,
+					});
 					router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
@@ -606,11 +603,6 @@ export default defineComponent({
 				} finally {
 					creatingBookmark.value = false;
 				}
-			}
-
-			async function editBookmark(name: string) {
-				bookmarkTitle.value = name;
-				bookmarkDialogActive.value = false;
 			}
 		}
 

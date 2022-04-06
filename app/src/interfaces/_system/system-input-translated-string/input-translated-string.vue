@@ -5,6 +5,7 @@
 				<v-input
 					class="translation-input"
 					:model-value="localValue"
+					:autofocus="autofocus"
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:active="active"
@@ -89,11 +90,17 @@ const translationPrefix = '$t:';
 
 interface Props {
 	value?: string | null;
+	autofocus?: boolean;
 	disabled?: boolean;
 	placeholder?: string | null;
 }
 
-const props = withDefaults(defineProps<Props>(), { value: () => null, disabled: false, placeholder: () => null });
+const props = withDefaults(defineProps<Props>(), {
+	value: () => null,
+	autofocus: false,
+	disabled: false,
+	placeholder: () => null,
+});
 
 const emit = defineEmits(['input']);
 

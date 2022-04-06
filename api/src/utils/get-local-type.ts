@@ -119,6 +119,8 @@ export default function getLocalType(
 		if (special.includes('hash')) return 'hash';
 		if (special.includes('cast-csv')) return 'csv';
 		if (special.includes('uuid') || special.includes('file')) return 'uuid';
+		if (special.includes('cast-timestamp')) return 'timestamp';
+		if (special.includes('cast-datetime')) return 'dateTime';
 		if (type?.startsWith('geometry')) {
 			return (special[0] as Type) || 'geometry';
 		}

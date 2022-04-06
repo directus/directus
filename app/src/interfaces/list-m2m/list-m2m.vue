@@ -299,12 +299,13 @@ const customFilter = computed(() => {
 		],
 	};
 
-	if (selectedPrimaryKeys.value.length > 0)
+	if (selectedPrimaryKeys.value.length > 0) {
 		filter._and.push({
 			[relationInfo.value.relatedPrimaryKeyField.field]: {
 				_nin: selectedPrimaryKeys.value,
 			},
 		});
+	}
 
 	filter._and.push(selectFilter);
 

@@ -46,7 +46,6 @@ delete_folder: Padam fail
 prefix: Awalan
 suffix: Akhiran
 reset_bookmark: Tetapkan semula penanda buku
-rename_bookmark: Namakan semula penanda buku
 update_bookmark: Padam Penanda Buku
 delete_bookmark: Padam Penanda Buku
 create_field: Cipta Medan
