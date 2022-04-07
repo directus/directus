@@ -1754,6 +1754,8 @@ layouts:
     calendar: Calendar
     start_date_field: Start Date Field
     end_date_field: End Date Field
+    optional: Optional
+    first_day: First Day of the Week
   map:
     map: Map
     basemap: Basemap
