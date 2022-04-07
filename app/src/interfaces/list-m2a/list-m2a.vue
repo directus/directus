@@ -365,7 +365,7 @@ const customFilter = computed(() => {
 			},
 		});
 
-	filter._and.push(selectFilter);
+	if (props.primaryKey !== '+') filter._and.push(selectFilter);
 
 	return filter;
 });
