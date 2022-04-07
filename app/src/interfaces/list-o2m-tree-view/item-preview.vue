@@ -13,6 +13,7 @@
 			<v-icon
 				v-tooltip="t('deselect')"
 				:name="deleted ? 'settings_backup_restore' : 'close'"
+				class="deselect"
 				clickable
 				@click="$emit('deselect')"
 			/>
@@ -74,6 +75,10 @@ div.preview {
 
 		.v-icon + .v-icon {
 			margin-left: 4px;
+		}
+
+		.deselect {
+			--v-icon-color-hover: var(--danger);
 		}
 	}
 

@@ -37,6 +37,7 @@
 						<div class="spacer" />
 						<v-icon
 							v-if="!disabled"
+							class="deselect"
 							:name="element.$type === 'deleted' ? 'settings_backup_restore' : 'close'"
 							@click.stop="deleteItem(element)"
 						/>
@@ -377,6 +378,7 @@ const selectAllowed = computed(() => {
 
 .deselect {
 	--v-icon-color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
 
 	&:hover {
 		--v-icon-color: var(--danger);

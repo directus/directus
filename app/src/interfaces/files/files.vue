@@ -35,7 +35,7 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" class="remove" @click.stop="deleteItem(element)" />
+						<v-icon v-if="!disabled" name="close" class="deselect" @click.stop="deleteItem(element)" />
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon name="more_vert" clickable @click.stop="toggle" />
@@ -416,13 +416,11 @@ const selectAllowed = computed(() => {
 
 .deselect {
 	--v-icon-color: var(--foreground-subdued);
+	margin-right: 4px;
+	transition: color var(--fast) var(--transition);
 
 	&:hover {
 		--v-icon-color: var(--danger);
 	}
-}
-
-.remove {
-	margin-right: 4px;
 }
 </style>
