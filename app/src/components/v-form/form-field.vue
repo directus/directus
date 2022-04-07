@@ -106,7 +106,7 @@ const props = withDefaults(defineProps<Props>(), {
 	badge: undefined,
 });
 
-const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'set-field-value']);
+const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
