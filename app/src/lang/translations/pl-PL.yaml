@@ -1321,6 +1321,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1739,6 +1740,8 @@ layouts:
     calendar: Kalendarz
     start_date_field: Pole daty rozpoczęcia
     end_date_field: Pole daty zakończenia
+    optional: Opcjonalnie
+    first_day: Pierwszy dzień tygodnia
   map:
     map: Mapa
     basemap: Mapa bazowa
