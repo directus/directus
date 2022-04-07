@@ -310,22 +310,26 @@ export function useRelationMultiple(
 
 			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
-			const response = await api.request({
-				url: getEndpoint(targetCollection),
-				method: 'SEARCH' as Method,
-				data: {
-					query: {
-						fields: Array.from(fields),
-						filter: {
-							[reverseJunctionField]: itemId.value,
+			if (itemId.value === '+') {
+				fetchedItems.value = [];
+			} else {
+				const response = await api.request({
+					url: getEndpoint(targetCollection),
+					method: 'SEARCH' as Method,
+					data: {
+						query: {
+							fields: Array.from(fields),
+							filter: {
+								[reverseJunctionField]: itemId.value,
+							},
+							page: previewQuery.value.page,
+							limit: previewQuery.value.limit,
 						},
-						page: previewQuery.value.page,
-						limit: previewQuery.value.limit,
 					},
-				},
-			});
+				});
 
-			fetchedItems.value = response.data.data;
+				fetchedItems.value = response.data.data;
+			}
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -334,6 +338,10 @@ export function useRelationMultiple(
 	}
 
 	async function updateItemCount(targetCollection: string, targetPKField: string, reverseJunctionField: string) {
+		if (itemId.value === '+') {
+			existingItemCount.value = 0;
+			return;
+		}
 		const response = await api.get(getEndpoint(targetCollection), {
 			params: {
 				aggregate: {
