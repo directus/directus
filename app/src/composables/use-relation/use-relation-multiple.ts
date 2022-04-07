@@ -35,7 +35,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage } = useUtil();
+	const { cleanItem, getPage, localDelete } = useUtil();
 
 	const _value = computed<Item>({
 		get() {
@@ -169,6 +169,7 @@ export function useRelationMultiple(
 		useActions,
 		cleanItem,
 		isItemSelected,
+		localDelete,
 	};
 
 	function useActions(target: Ref<Item>) {
@@ -388,7 +389,7 @@ export function useRelationMultiple(
 		return { fetchedSelectItems, selected, isItemSelected };
 
 		function isItemSelected(item: DisplayItem) {
-			return relation.value && item[relation.value.reverseJunctionField.field] !== undefined;
+			return relation.value !== undefined && item[relation.value.reverseJunctionField.field] !== undefined;
 		}
 
 		async function loadSelectedDisplay() {
@@ -495,13 +496,17 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		return { cleanItem, getPage };
+		return { cleanItem, getPage, localDelete };
 
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {
 				if (!key.startsWith('$')) acc[key] = value;
 				return acc;
 			}, {} as DisplayItem);
+		}
+
+		function localDelete(item: DisplayItem) {
+			return item.$type !== undefined && (item.$type !== 'updated' || isItemSelected(item));
 		}
 
 		function getPage<T>(offset: number, items: T[]) {

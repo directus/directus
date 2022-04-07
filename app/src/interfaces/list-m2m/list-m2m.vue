@@ -38,7 +38,7 @@
 						<v-icon
 							v-if="!disabled"
 							class="deselect"
-							:name="element.$type === 'deleted' ? 'settings_backup_restore' : 'close'"
+							:name="getDeselectIcon(element)"
 							@click.stop="deleteItem(element)"
 						/>
 					</v-list-item>
@@ -169,7 +169,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected } =
+const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
 	useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
@@ -177,6 +177,12 @@ const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 const allowDrag = computed(
 	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
 );
+
+function getDeselectIcon(item: DisplayItem) {
+	if (item.$type === 'deleted') return 'settings_backup_restore';
+	if (localDelete(item)) return 'delete';
+	return 'close';
+}
 
 function sortItems(items: DisplayItem[]) {
 	const sortField = relationInfo.value?.sortField;

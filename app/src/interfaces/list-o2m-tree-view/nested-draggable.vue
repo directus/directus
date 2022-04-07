@@ -25,6 +25,7 @@
 					:relation-info="relationInfo"
 					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
 					:deleted="element.$type === 'deleted'"
+					:delete-icon="getDeselectIcon(element)"
 					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
 					@input="update"
 					@deselect="remove(element)"
@@ -181,12 +182,18 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem } = useRelationMultiple(
+const { displayItems, create, update, remove, select, cleanItem, localDelete } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
 	primaryKey
 );
+
+function getDeselectIcon(item: DisplayItem) {
+	if (item.$type === 'deleted') return 'settings_backup_restore';
+	if (localDelete(item)) return 'delete';
+	return 'close';
+}
 
 const selectDrawer = ref(false);
 

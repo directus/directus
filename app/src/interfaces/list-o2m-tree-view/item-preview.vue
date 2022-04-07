@@ -10,13 +10,7 @@
 		<div class="spacer" />
 		<div v-if="!disabled" class="actions">
 			<v-icon v-tooltip="t('edit')" name="launch" clickable @click="editActive = true" />
-			<v-icon
-				v-tooltip="t('deselect')"
-				:name="deleted ? 'settings_backup_restore' : 'close'"
-				class="deselect"
-				clickable
-				@click="$emit('deselect')"
-			/>
+			<v-icon v-tooltip="t('deselect')" :name="deleteIcon" class="deselect" clickable @click="$emit('deselect')" />
 		</div>
 
 		<drawer-item
@@ -45,6 +39,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		open?: boolean;
 		deleted: boolean;
+		deleteIcon: string;
 	}>(),
 	{
 		disabled: false,

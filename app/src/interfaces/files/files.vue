@@ -35,7 +35,12 @@
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" class="deselect" @click.stop="deleteItem(element)" />
+						<v-icon
+							v-if="!disabled"
+							:name="getDeselectIcon(element)"
+							class="deselect"
+							@click.stop="deleteItem(element)"
+						/>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon name="more_vert" clickable @click.stop="toggle" />
@@ -205,18 +210,20 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected } = useRelationMultiple(
-	value,
-	query,
-	relationInfo,
-	primaryKey
-);
+const { update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
+	useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 const allowDrag = computed(
 	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
 );
+
+function getDeselectIcon(item: DisplayItem) {
+	if (item.$type === 'deleted') return 'settings_backup_restore';
+	if (localDelete(item)) return 'delete';
+	return 'close';
+}
 
 function sortItems(items: DisplayItem[]) {
 	const sortField = relationInfo.value?.sortField;
