@@ -5,7 +5,7 @@
 	<div v-else class="one-to-many">
 		<template v-if="loading">
 			<v-skeleton-loader
-				v-for="n in clamp(totalItemCount - (page - 1) * limit, 0, limit)"
+				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
 				:key="n"
 				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 			/>
