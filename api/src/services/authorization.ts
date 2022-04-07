@@ -494,7 +494,7 @@ export class AuthorizationService {
 		}
 
 		if (hasFieldValidationRules) {
-			if (permission.validation) {
+			if (permission.validation && Object.keys(permission.validation).length > 0) {
 				permission.validation = { _and: [permission.validation, ...fieldValidationRules] };
 			} else {
 				permission.validation = { _and: fieldValidationRules };
