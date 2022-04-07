@@ -101,7 +101,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, toRefs, watch, PropType, inject } from 'vue';
-import { useCollectionsStore, useRelationsStore, usePermissionsStore, useUserStore } from '@/stores/';
+import { useCollectionsStore, useRelationsStore, usePermissionsStore } from '@/stores/';
 import { useCollection } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import api from '@/api';
