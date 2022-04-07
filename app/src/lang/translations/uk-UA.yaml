@@ -1321,6 +1321,7 @@ translation: Переклад
 translation_placeholder: Введіть переклад...
 value: Значення
 view_project: Переглянути проект
+weeks: { }
 report_error: Звіт про помилку
 start: Почати
 interfaces:
@@ -1516,6 +1517,7 @@ interfaces:
     add_label: 'Ярлик «Створити новий»'
     field_name_placeholder: Введіть назву поля...
     field_note_placeholder: Примітка до поля...
+    incompatible_data: Поточні дані не сумісні з інтерфейсом ретранслятора і будуть замінені під час додавання елементів до ретранслятора
   slider:
     slider: Слайдер
     description: Виберіть номер за допомогою слайдера
@@ -1738,6 +1740,8 @@ layouts:
     calendar: Календар
     start_date_field: Поле дати початку
     end_date_field: Поле дати завершення
+    optional: Необов'язковий
+    first_day: Перший день тижня
   map:
     map: Карта
     basemap: Карта-схема
