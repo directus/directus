@@ -95,6 +95,9 @@ update_bookmark: 更新书签
 delete_bookmark: 删除书签
 delete_bookmark_copy: >-
   你确定要删除"{bookmark}" 这个书签吗? 此操作无法撤销。
+delete_personal_bookmark: 删除个人书签
+delete_role_bookmark: 删除角色书签
+delete_global_bookmark: 删除全局书签
 logoutReason:
   SIGN_OUT: 注销
   SESSION_EXPIRED: 会话过期
@@ -191,6 +194,7 @@ camera: 摄像头
 show_zero: 显示0
 create_in_advanced_field_creation_mode: 在高级模式下创建字段
 continue_in_advanced_field_creation_mode: 在高级字段创建模式中继续
+validation: 验证
 sum: Sum
 sum_distinct: Sum Distinct
 avg: 平均值
@@ -565,6 +569,11 @@ value_hashed: 哈希值
 bookmark_name: 书签名称
 create_bookmark: 创建书签
 edit_bookmark: 编辑书签
+edit_personal_bookmark: 编辑个人书签
+edit_role_bookmark: 编辑角色书签
+edit_global_bookmark: 编辑全局书签
+cannot_edit_role_bookmarks: 无法编辑角色书签
+cannot_edit_global_bookmarks: 无法编辑全局书签
 bookmarks: 书签
 presets: 预设
 unexpected_error: 未知错误
@@ -591,6 +600,7 @@ make_collection_visible: 显示收藏
 make_collection_hidden: 隐藏收藏集
 make_folder_visible: 显示文件夹
 make_folder_hidden: 隐藏文件夹
+goto_collection_content: 查看内容
 start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
 one_item: '1项'
@@ -651,6 +661,8 @@ operators:
   nintersects: 不相交
   intersects_bbox: 相交边框
   nintersects_bbox: 没有相交边框
+  regex: 匹配正则表达式
+custom_validation_message: 自定义验证消息
 loading: 正在载入...
 drop_to_upload: 拖拽文件并上传
 item: 条目
@@ -1492,12 +1504,13 @@ interfaces:
     radio-buttons: 单选按钮
     description: 选择多项选择
   list:
-    repeater: 中继器
+    repeater: 重复器
     description: 创建同一结构的多个条目
     edit_fields: 编辑字段
     add_label: '"创建新"标签'
     field_name_placeholder: 输入字段名称...
     field_note_placeholder: 输入字段备注...
+    incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字
