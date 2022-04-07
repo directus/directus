@@ -298,7 +298,7 @@ function deleteItem(item: DisplayItem) {
 		page.value === Math.ceil(totalItemCount.value / limit.value) &&
 		page.value !== Math.ceil((totalItemCount.value - 1) / limit.value)
 	) {
-		page.value = Math.max(0, page.value - 1);
+		page.value = Math.max(1, page.value - 1);
 	}
 
 	remove(item);
