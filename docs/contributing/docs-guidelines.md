@@ -2,6 +2,10 @@
 
 - Glossaries
 - Linking Things
+- Defining a "Feature" -> The document's "topic" -> "Scoping a doc".
+- Definining the extent of a tutorial/process.
+  - Insights' "How it Works" combines CRUD into one operation.
+  -
 
 # Documentation Guidelines
 
@@ -10,31 +14,39 @@ styling, content scope/structure, and media assets uniform and in-sync.
 
 ## Document Types
 
-- No-code Technical Guides
-- INformational/Expository Documents (e.g. glossary, overview, etc.)
-- code-based technical references
-- code-based tutorials
+1. No-code technical.
+2. No-code Informational/Expository. (e.g. glossaries, overviews, etc.)
+3. Code-based technical reference.
+4. Code-based tutorial.
+5. Instructional/Educational (for the future).
 
-## Single Page Structure
+## No-Code Technical Structure
+
+Sometimes no-code technical documents take a single page, sometimes they take multiple pages.
+
+### Single Page Docs
+
+As the name implies, these are standalone documents.
 
 - Blockquote Intros: 2-4 lines. Strong sentence.
 - `[[toc]]`
-- header media, intro paragraph and tip
+- Header media
+- intro paragraphs and tips
 - `:::tip Before you Begin`
 - Titles: (Update | Updating) an Item
 - Headers -> keep them simple, avoid changes
 - Headers -> Don’t wanna go beyond H3s
 - Before You Begin
 
-## Nested Pages Structure
+### Nested Page Docs
 
-### Parent Page
+These are document **Parent Page**
 
 - Blockquote Intro: 2-4 lines. Strong sentence.
 - `[[toc]]`
 - intro paragaph
 
-### Child Pages
+**Child Pages**
 
 - Blockquote Intro: 2-4 lines. Strong sentence.
 - `[[toc]]`
@@ -51,44 +63,57 @@ explanation which is best fit after the steps are given.
 - Directions (1, 2, 3, 4...)
 - :::tips
 
-## Language
+## Language, Punctuation and Styling
 
 - Text Widows
 - Clicked vs Selected vs Access etc.
 - Blocks must be in this order: danger, warning, tip
 - Leave Title on Dangers and Warnings blank, defaults to WARNING
 - Use word when writing integer less than 10...\
-  Should we draw from APA or IEEE? https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/general_format.html
-  https://owl.purdue.edu/owl/research_and_citation/ieee_style/ieee_general_format.html
+- Should we draw from
+  [APA](https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/general_format.html)
+  or [IEEE](https://owl.purdue.edu/owl/research_and_citation/ieee_style/ieee_general_format.html) as a foundation
 
-- Deep linking: Never change Headers once finalized .... Perhaps we can use a broken link finder? Haven't looked into
-  this.
-- Comma lists vs slashes
-
-## Images
-
-Fill screen Take screencap of the window Use squoosh.app to convert to webp
-
-## Videos
-
-screen record the window optimize file with Handbrake
-
-### Punctuation
-
+- Deep linking: Never change Headers once finalized.\
+  Perhaps we can use a broken link finder? Haven't looked into this.
+- Comma lists vs slashes?
 - The long hyphen `—` is used after key terms `shift + option + "-"` on a mac.
-- Period at end of bullet ul and ol items.
-- Capitalization of Directus Terms
+- Period at end of `ul` and `ol` items.
+- Capitalization of Directus Terms.
+
+### Bullet Point Topics
+
+- **Team Members** — [View, invite and remove](/cloud/teams) other Team Members or leave a Team yourself. TURNS TO
+- [Team Members](/cloud/teams) — View, invite and remove other Team Members or leave a Team yourself.
+
+## Media
+
+- Use a clean browser, with no add-ons, extra tabs, or widgets visible.
+- Use the Company logo for an avatar (on google chrome) Example Content Guidelines.\
+- Semi-realistic examples.
+- Business professional language.
+- Shouldn't take over 10 min to make a screenshot or video beginning-to-end.
+- No scroll-bars.
+- Should we make each image and video a modal/lightbox?
+
+### Images
+
+Fill screen with window.\
+Take screencap of window.\
+
+Add images of acceptable and unacceptable screencaps. Use squoosh.app to convert to webp
+
+### Videos
+
+- Screen record the window.
+- Optimize file with Handbrake.
 
 ## Useful Links
 
-### Squoosh.app
+**[Squoosh](squoosh.app)** — A webapp to convert images to `.webp`. Also has a
+[batch-convert CLI Tool](https://github.com/GoogleChromeLabs/squoosh/tree/dev/cli).
 
-https://github.com/GoogleChromeLabs/squoosh/tree/dev/cli A webapp and CLI tool to convert `.png` to `.webp`.
+**[Handbrake](https://handbrake.fr/)** — Makes video file 10-20x smaller with no reduction in quality. Use on _all_
+videos.
 
-### Handbrake
-
-https://handbrake.fr/ Convert video to 10-20x smaller file size
-
-### Material Design Icons
-
-https://fonts.google.com/icons The icons we use in Directus.
+**[Material Design Icons](https://fonts.google.com/icons)** — The icons we use in Directus.
