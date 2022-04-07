@@ -24,9 +24,6 @@ export default definePanel({
 			field: 'color',
 			name: '$t:color',
 			type: 'string',
-			schema: {
-				default_value: '#00C897',
-			},
 			meta: {
 				interface: 'select-color',
 				width: 'half',
@@ -47,7 +44,7 @@ export default definePanel({
 						},
 						{
 							text: 'Count (Distinct)',
-							value: 'count_distinct',
+							value: 'countDistinct',
 						},
 						{
 							text: 'Average',
@@ -55,7 +52,7 @@ export default definePanel({
 						},
 						{
 							text: 'Average (Distinct)',
-							value: 'avg_distinct',
+							value: 'avgDistinct',
 						},
 						{
 							text: 'Sum',
@@ -63,7 +60,7 @@ export default definePanel({
 						},
 						{
 							text: 'Sum (Distinct)',
-							value: 'sum_distinct',
+							value: 'sumDistinct',
 						},
 						{
 							text: 'Minimum',

@@ -140,7 +140,12 @@ export default function useActions(
 
 			return isEqual(item, deletingItem) === false;
 		});
-		emit(newValue);
+
+		if (newValue.length === 0) {
+			emit(null);
+		} else {
+			emit(newValue);
+		}
 	}
 
 	return {

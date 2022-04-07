@@ -60,7 +60,7 @@ countries (the "One" Collection)
 
 ### Setup
 
-![M2O](../assets/guides/fields/m2o.png)
+![M2O](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/M2O-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled. All you need to configure is the related collection and its primary key field.
@@ -103,7 +103,7 @@ cities (the "Many" Collection)
 
 ### Setup
 
-![O2M](../assets/guides/fields/o2m.png)
+![O2M](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/O2M-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled. All you need to configure is the related collection and its M2O field.
@@ -118,9 +118,9 @@ reason, when selecting existing fields, options will be disabled if they don't h
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
 the M2O field (see above) that pairs with this O2M.
 
-The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured by
-selecting an existing numeric type field (highlights green) from the Related Collection, or entering the name of a new
-field to be created.
+The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured
+by selecting an existing numeric type field (highlights green) from the Related Collection, or entering the name of a
+new field to be created.
 
 **Relational Triggers** allow for control over what happens when a relationship is broken. There are two options:
 
@@ -142,12 +142,12 @@ languages.
 
 ### Setup
 
-![Translations](../assets/guides/fields/translations.png)
+![Translations](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/translations-wizard-20220216A.webp)
 
 The easiest way to add translations is to use the wizard, which only asks for the Translation field name. All required
 fields and relationships will then be automatically created and configured.
 
-![Translations](../assets/guides/fields/translations-2.png)
+![Translations](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/translations-relations-20220216A.webp)
 
 If you choose to switch to **manual setup**, you will be presented with a similar relationship setup to O2M or M2M. The
 parent collection and primary key are known, so those fields are disabled.
@@ -202,7 +202,7 @@ Articles", where an article might relate to many other articles.
 
 ### Setup
 
-![M2M](../assets/guides/fields/m2m.png)
+![M2M](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/M2M-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled.
@@ -219,9 +219,9 @@ intelligent naming defaults, or disable it to select existing options or enter c
 You also have the option to create a **Corresponding Field** during this process. This allows you to more easily create
 the reverse M2M field on the _related_ collection.
 
-The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured by
-selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a new
-field to be created.
+The optional **Sort Field** can be used to enable manual reordering of items within this O2M field. This is configured
+by selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a
+new field to be created.
 
 **Relational Triggers** allow for control over what happens when a relationship is broken. There are three options:
 
@@ -281,7 +281,7 @@ images (Collection)
 
 ### Setup
 
-![M2A](../assets/guides/fields/m2a.png)
+![M2A](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/M2A-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled.
@@ -300,9 +300,9 @@ you save the changes on the new M2A field.
 
 :::
 
-The optional **Sort Field** can be used to enable manual reordering of items within this M2A field. This is configured by
-selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a new
-field to be created.
+The optional **Sort Field** can be used to enable manual reordering of items within this M2A field. This is configured
+by selecting an existing numeric type field (highlights green) from the Junction Collection, or entering the name of a
+new field to be created.
 
 **Relational Triggers** allow for control over what happens when a relationship is broken. There are three options:
 

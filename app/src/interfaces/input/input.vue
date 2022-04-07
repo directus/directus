@@ -13,6 +13,7 @@
 		:min="min"
 		:max="max"
 		:step="step"
+		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -100,11 +101,11 @@ export default defineComponent({
 		},
 		min: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		max: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		step: {
 			type: Number,

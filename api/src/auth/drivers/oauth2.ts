@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Issuer, Client, generators, errors } from 'openid-client';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
+import flatten from 'flat';
 import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
@@ -18,6 +19,7 @@ import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getConfigFromEnv } from '../../utils/get-config-from-env';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -47,11 +49,18 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			issuer: additionalConfig.provider,
 		});
 
+		const clientOptionsOverrides = getConfigFromEnv(
+			`AUTH_${config.provider.toUpperCase()}_CLIENT_`,
+			[`AUTH_${config.provider.toUpperCase()}_CLIENT_ID`, `AUTH_${config.provider.toUpperCase()}_CLIENT_SECRET`],
+			'underscore'
+		);
+
 		this.client = new issuer.Client({
 			client_id: clientId,
 			client_secret: clientSecret,
 			redirect_uris: [this.redirectUrl],
 			response_types: ['code'],
+			...clientOptionsOverrides,
 		});
 	}
 
@@ -109,14 +118,17 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
-		const { emailKey, identifierKey, allowPublicRegistration } = this.config;
+		// Flatten response to support dot indexes
+		userInfo = flatten(userInfo) as Record<string, unknown>;
+
+		const { provider, emailKey, identifierKey, allowPublicRegistration } = this.config;
 
 		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
 		// Fallback to email if explicit identifier not found
 		const identifier = (userInfo[identifierKey] as string | null | undefined) ?? email;
 
 		if (!identifier) {
-			logger.warn(`[OAuth2] Failed to find user identifier for provider "${this.config.provider}"`);
+			logger.warn(`[OAuth2] Failed to find user identifier for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -134,14 +146,14 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
-			logger.trace(
-				`[OAuth2] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
-			);
+			logger.trace(`[OAuth2] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
 		await this.usersService.createOne({
-			provider: this.config.provider,
+			provider,
+			first_name: userInfo[this.config.firstNameKey],
+			last_name: userInfo[this.config.lastNameKey],
 			email: email,
 			external_identifier: identifier,
 			role: this.config.defaultRoleId,
