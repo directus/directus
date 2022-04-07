@@ -5,7 +5,9 @@
 - Defining a "Feature" -> The document's "topic" -> "Scoping a doc".
 - Definining the extent of a tutorial/process.
   - Insights' "How it Works" combines CRUD into one operation.
-  -
+  - Cloud/Content/others CRUD operations are separate.
+- Before you Begin has a super simple link to a "getting started" section which is a pre-requisite to reading all
+  documentation. It should be a 30-90 minute read.
 
 # Documentation Guidelines
 
@@ -28,29 +30,38 @@ Sometimes no-code technical documents take a single page, sometimes they take mu
 
 As the name implies, these are standalone documents.
 
-- Blockquote Intros: 2-4 lines. Strong sentence.
+- `# Page Title`
+- Blockquote Intro: 2-4 lines. Strong sentence.
 - `[[toc]]`
-- Header media
-- intro paragraphs and tips
+- Header Media
+- Intro paragraphs and tips
 - `:::tip Before you Begin`
-- Titles: (Update | Updating) an Item
-- Headers -> keep them simple, avoid changes
-- Headers -> Don’t wanna go beyond H3s
-- Before You Begin
+- `## Title`: (Update | Updating) an Item??
+  - Titles -> keep them simple, avoid changes
+  - Titles -> Don’t wanna go beyond H3s
+  - `:::danger, warning, tip`
 
 ### Nested Page Docs
 
-These are document **Parent Page**
-
 - Blockquote Intro: 2-4 lines. Strong sentence.
 - `[[toc]]`
-- intro paragaph
+- Header Media
+- Intro paragraphs and tips
+- `:::tip Before you Begin`
+- `## Child Page Overview`
+  - Intro Paragaph
+  - `Learn More` Link to Child page
+  - `:::danger, warning, tip`
 
 **Child Pages**
 
 - Blockquote Intro: 2-4 lines. Strong sentence.
 - `[[toc]]`
-- `## Sections`
+- `## CRUD and Other Operations`
+  - Media
+  - Intro to Operation
+  - Steps to Operation
+  - `:::danger, warning, tip`
 
 ## Section Structure
 
