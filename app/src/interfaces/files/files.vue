@@ -205,7 +205,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { update, remove, select, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
+const { update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -255,7 +255,7 @@ function editItem(item: DisplayItem) {
 
 	editModalActive.value = true;
 
-	if (item?.$type === 'created') {
+	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = null;
 		relatedPrimaryKey.value = null;
 	} else {

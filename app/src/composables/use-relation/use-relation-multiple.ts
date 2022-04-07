@@ -168,6 +168,7 @@ export function useRelationMultiple(
 		fetchedItems,
 		useActions,
 		cleanItem,
+		isItemSelected,
 	};
 
 	function useActions(target: Ref<Item>) {
@@ -363,8 +364,14 @@ export function useRelationMultiple(
 			const info = relation.value;
 			if (!info) return [];
 
-			return (relation.value?.type === 'o2m' ? _value.value.update : _value.value.create)
-				.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
+			if (relation.value?.type === 'o2m') {
+				return _value.value.update
+					.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
+					.filter(isItemSelected);
+			}
+
+			return _value.value.create
+				.map((item, index) => ({ ...item, $index: index, $type: 'created' } as DisplayItem))
 				.filter(isItemSelected);
 		});
 

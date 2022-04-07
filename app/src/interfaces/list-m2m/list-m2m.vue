@@ -169,12 +169,8 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected } = useRelationMultiple(
-	value,
-	query,
-	relationInfo,
-	primaryKey
-);
+const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected } =
+	useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -227,7 +223,7 @@ function editItem(item: DisplayItem) {
 
 	editModalActive.value = true;
 
-	if (item?.$type === 'created') {
+	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = null;
 		relatedPrimaryKey.value = null;
 	} else {
