@@ -16,6 +16,8 @@ export class Auth extends IAuth {
 	private _storage: IStorage;
 	private _transport: ITransport;
 	private passwords?: PasswordsHandler;
+	
+	private _refreshPromise?: Promise<false | AuthResult>;
 
 	constructor(options: AuthOptions) {
 		super();
@@ -66,13 +68,16 @@ export class Auth extends IAuth {
 	async refreshIfExpired() {
 		if (this.staticToken) return;
 		if (!this.autoRefresh) return;
-		if (!this._storage.auth_expires_at) return;
+		if (!this._storage.auth_expires_at) {
+			// wait because resetStorage() call in refresh()
+		        await this._refreshPromise;
+			return;
+		}
 
 		if (this._storage.auth_expires_at < new Date().getTime()) {
-			await this.refresh().catch(() => {
-				/*do nothing*/
-			});
+			this._refreshPromise = this.refresh();
 		}
+		await this._refreshPromise; // wait for refresh
 	}
 
 	async refresh(): Promise<AuthResult | false> {
