@@ -20,11 +20,23 @@
 
 			<template v-if="!disabled" #append>
 				<template v-if="displayItem">
-					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editModalActive = true" />
+					<v-icon
+						v-if="updateAllowed"
+						v-tooltip="t('edit')"
+						name="open_in_new"
+						class="edit"
+						@click.stop="editModalActive = true"
+					/>
 					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', null)" />
 				</template>
 				<template v-else>
-					<v-icon v-tooltip="t('create_item')" class="add" name="add" @click.stop="editModalActive = true" />
+					<v-icon
+						v-if="createAllowed"
+						v-tooltip="t('create_item')"
+						class="add"
+						name="add"
+						@click.stop="editModalActive = true"
+					/>
 					<v-icon class="expand" name="expand_more" />
 				</template>
 			</template>
@@ -64,6 +76,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { parseFilter } from '@/utils/parse-filter';
 import { render } from 'micromustache';
+import { usePermissionsStore } from '@/stores';
 
 const props = withDefaults(
 	defineProps<{
@@ -179,6 +192,18 @@ function onSelection(selection: (number | string)[]) {
 
 	selectModalActive.value = false;
 }
+
+const { hasPermission } = usePermissionsStore();
+
+const createAllowed = computed(() => {
+	if (!relationInfo.value) return false;
+	return hasPermission(relationInfo.value.relatedCollection.collection, 'create');
+});
+
+const updateAllowed = computed(() => {
+	if (!relationInfo.value) return false;
+	return hasPermission(relationInfo.value.relatedCollection.collection, 'update');
+});
 </script>
 
 <style lang="scss" scoped>
