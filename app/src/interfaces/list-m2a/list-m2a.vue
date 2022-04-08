@@ -630,7 +630,7 @@ export default defineComponent({
 					editsAtStart.value = {
 						[anyRelation.value.meta!.one_collection_field!]: relatedCollectiom,
 						[anyRelation.value.field]: {
-							[o2mRelationPrimaryKeyField.value]: relatedKey,
+							[primaryKeys.value[relatedCollectiom]]: relatedKey,
 						},
 					};
 				}
