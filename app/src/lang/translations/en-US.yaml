@@ -647,6 +647,7 @@ advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
 change_advanced_filter_operator: Change Operator
+advanced: Advanced
 operators:
   eq: Equals
   neq: Doesn't equal
