@@ -15,17 +15,36 @@
 
 		<div class="content">
 			<p class="type-label panel-type-label">{{ t('type') }}</p>
+			<div v-for="group of groups" :key="group.key" class="group">
+				<h2>{{ group.name }}</h2>
 
-			<v-fancy-select v-model="edits.type" class="select" :items="selectItems" />
+				<div class="grid">
+					<button
+						v-for="panel of group.panels"
+						:key="panel.id"
+						class="panel"
+						:class="{ active: chosenPanel === panel.id, gray: chosenPanel && chosenPanel !== panel.id }"
+						@click="toggleInterface(panel.id)"
+					>
+						<div class="preview">
+							<span class="fallback">
+								<v-icon large :name="panel.icon ?? 'insert_chart'" />
+							</span>
+						</div>
+						<v-text-overflow :text="panel.name" class="name" />
+					</button>
 
-			<extension-options
-				v-if="edits.type"
-				v-model="edits.options"
-				:options="customOptionsFields"
-				type="panel"
-				:extension="edits.type"
-			/>
-
+					<transition-expand>
+						<extension-options
+							v-if="edits.type"
+							v-model="edits.options"
+							:options="customOptionsFields"
+							type="panel"
+							:extension="edits.type"
+						/>
+					</transition-expand>
+				</div>
+			</div>
 			<v-divider :inline-title="false" large>
 				<template #icon><v-icon name="info" /></template>
 				<template #default>{{ t('panel_header') }}</template>
@@ -81,12 +100,12 @@
 
 <script lang="ts">
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { computed, defineComponent, reactive, watch, PropType } from 'vue';
+import { computed, defineComponent, reactive, watch, PropType, ref } from 'vue';
 import { getPanels, getPanel } from '@/panels';
-import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { sortGroups } from '../utils/sortGroups';
 
 export default defineComponent({
 	name: 'PanelConfiguration',
@@ -100,14 +119,12 @@ export default defineComponent({
 	emits: ['cancel', 'save'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
-
-		const { panels } = getPanels();
-
 		const isOpen = useDialogRoute();
+		const chosenPanel = ref();
 
 		const edits = reactive<Partial<Panel>>({
 			show_header: props.panel?.show_header ?? true,
-			type: props.panel?.type || undefined,
+			type: props.panel?.type || chosenPanel.value,
 			name: props.panel?.name,
 			note: props.panel?.note,
 			icon: props.panel?.icon ?? undefined,
@@ -117,19 +134,6 @@ export default defineComponent({
 			position_x: props.panel?.position_x ?? 1,
 			position_y: props.panel?.position_y ?? 1,
 			options: props.panel?.options ?? {},
-		});
-
-		const selectItems = computed<FancySelectItem[]>(() => {
-			return panels.value.map((panel) => {
-				const item: FancySelectItem = {
-					text: panel.name,
-					icon: panel.icon,
-					description: panel.description,
-					value: panel.id,
-				};
-
-				return item;
-			});
 		});
 
 		const extensionInfo = computed(() => {
@@ -154,17 +158,63 @@ export default defineComponent({
 			return null;
 		});
 
+		const configRow = computed(() => {
+			if (!chosenPanel.value) return null;
+
+			let indexInGroup: number | null = null;
+
+			groups.value.forEach((group) => {
+				const index = group.panels.findIndex((inter) => inter.id === chosenPanel.value);
+				if (index !== -1) indexInGroup = index;
+			});
+
+			if (indexInGroup === null) return null;
+
+			const windowWidth = window.innerWidth;
+
+			let columns = 1;
+
+			if (windowWidth > 400) {
+				columns = 2;
+			}
+
+			if (windowWidth > 600) {
+				columns = 3;
+			}
+
+			if (windowWidth > 840) {
+				columns = 4;
+			}
+
+			return Math.ceil((indexInGroup + 1) / columns) + 1;
+		});
+
+		const { panels } = getPanels();
+
+		const groups = computed(() => sortGroups(panels.value));
+
 		return {
-			selectItems,
+			t,
+			isOpen,
+			panels,
+			groups,
+			chosenPanel,
+			toggleInterface,
+			configRow,
 			close,
 			emitSave,
 			edits,
-			t,
-			isOpen,
 			setOptionsValues,
 			customOptionsFields,
 		};
 
+		function toggleInterface(id: string) {
+			if (chosenPanel.value === id) {
+				chosenPanel.value = null;
+			} else {
+				chosenPanel.value = id;
+			}
+		}
 		function emitSave() {
 			emit('save', edits);
 		}
@@ -176,7 +226,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;
@@ -193,5 +243,109 @@ export default defineComponent({
 
 .v-divider {
 	margin: 68px 0 48px;
+}
+
+.group h2 {
+	margin-bottom: 40px;
+	padding-bottom: 2px;
+	font-weight: 700;
+	border-bottom: var(--border-width) solid var(--border-subdued);
+}
+
+.group + .group {
+	margin-top: 80px;
+}
+
+.grid {
+	--columns: 1;
+
+	display: grid;
+	grid-template-columns: repeat(var(--columns), 1fr);
+	gap: 32px;
+
+	@media (min-width: 400px) {
+		--columns: 2;
+	}
+
+	@media (min-width: 600px) {
+		--columns: 3;
+	}
+
+	@media (min-width: 840px) {
+		--columns: 4;
+	}
+}
+
+.panel {
+	min-height: 100px;
+	overflow: hidden;
+	text-align: left;
+}
+
+.preview {
+	--v-icon-color: var(--background-page);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 160px;
+	height: 100px;
+	margin-bottom: 8px;
+	border: var(--border-width) solid var(--border-subdued);
+	border-radius: var(--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, border-color;
+}
+
+.preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.preview span {
+	display: contents;
+}
+
+.preview :deep(svg) {
+	width: 100%;
+	height: 100%;
+}
+
+.preview :deep(svg) .glow {
+	filter: drop-shadow(0 0 4px var(--primary-50));
+}
+
+.preview .fallback {
+	--v-icon-color: var(--primary-75);
+
+	display: block;
+	padding: 8px 16px;
+	background-color: var(--background-page);
+	border: 2px solid var(--primary);
+	border-radius: var(--border-radius);
+	box-shadow: 0 0 8px var(--primary-75);
+}
+
+.panel:hover .preview {
+	border-color: var(--border-normal);
+}
+
+.panel.active .preview {
+	background-color: var(--primary-alt);
+	border-color: var(--primary);
+}
+
+.panel.gray .preview {
+	--primary: var(--foreground-subdued);
+	--primary-50: var(--foreground-subdued);
+
+	background-color: var(--background-subdued);
+}
+
+.panel.gray .preview .fallback {
+	--v-icon-color: var(--foreground-subdued);
+
+	box-shadow: 0 0 8px var(--foreground-subdued);
 }
 </style>

@@ -7,7 +7,7 @@ export interface PanelConfig {
 	name: string;
 	icon: string;
 	description?: string;
-
+	group?: string;
 	component: Component;
 	options:
 		| DeepPartial<Field>[]
