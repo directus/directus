@@ -12,134 +12,183 @@ export default defineInterface({
 	types: ['string', 'uuid', 'bigInteger', 'integer', 'float', 'decimal', 'text'],
 	group: 'standard',
 	options: ({ field }) => {
-		const textOptions: { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] } = {
-			standard: [
-				{
-					field: 'placeholder',
-					name: '$t:placeholder',
-					meta: {
-						width: 'full',
-						interface: 'system-input-translated-string',
-						options: {
-							placeholder: '$t:enter_a_placeholder',
-						},
+		const fontOptions: DeepPartial<Field>[] = [
+			{
+				field: 'font',
+				name: '$t:font',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{ text: '$t:sans_serif', value: 'sans-serif' },
+							{ text: '$t:monospace', value: 'monospace' },
+							{ text: '$t:serif', value: 'serif' },
+						],
 					},
 				},
-				{
-					field: 'iconLeft',
-					name: '$t:icon_left',
-					type: 'string',
-					meta: {
-						width: 'half',
-						interface: 'select-icon',
+				schema: {
+					default_value: 'sans-serif',
+				},
+			},
+		];
+
+		const standardOptions: DeepPartial<Field>[] = [
+			{
+				field: 'placeholder',
+				name: '$t:placeholder',
+				type: 'string',
+				meta: {
+					width: 'full',
+					interface: 'system-input-translated-string',
+					options: {
+						placeholder: '$t:enter_a_placeholder',
 					},
 				},
-				{
-					field: 'iconRight',
-					name: '$t:icon_right',
-					type: 'string',
-					meta: {
-						width: 'half',
-						interface: 'select-icon',
+			},
+			{
+				field: 'iconLeft',
+				name: '$t:icon_left',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-icon',
+				},
+			},
+			{
+				field: 'iconRight',
+				name: '$t:icon_right',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-icon',
+				},
+			},
+		];
+
+		const affixOptions: DeepPartial<Field>[] = [
+			{
+				field: 'prefix',
+				name: '$t:prefix',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'system-input-translated-string',
+					options: {
+						placeholder: '$t:prefix_placeholder',
 					},
 				},
-			],
-			advanced: [
-				{
-					field: 'softLength',
-					name: '$t:soft_length',
-					type: 'integer',
-					meta: {
-						width: 'half',
-						interface: 'input',
-						options: {
-							placeholder: '255',
-							min: 1,
-							max: field.schema?.max_length,
-						},
+			},
+			{
+				field: 'suffix',
+				name: '$t:suffix',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'system-input-translated-string',
+					options: {
+						placeholder: '$t:suffix_placeholder',
 					},
 				},
-				{
-					field: 'font',
-					name: '$t:font',
-					type: 'string',
-					meta: {
-						width: 'half',
-						interface: 'select-dropdown',
-						options: {
-							choices: [
-								{ text: '$t:sans_serif', value: 'sans-serif' },
-								{ text: '$t:monospace', value: 'monospace' },
-								{ text: '$t:serif', value: 'serif' },
-							],
-						},
-					},
-					schema: {
-						default_value: 'sans-serif',
+			},
+		];
+
+		const smartNumberControls: DeepPartial<Field>[] = [
+			{
+				field: 'smartNumberControls',
+				name: '$t:interfaces.input.smart_number_controls',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.smart_number_controls_label',
 					},
 				},
-				{
-					field: 'trim',
-					name: '$t:interfaces.input.trim',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-						options: {
-							label: '$t:interfaces.input.trim_label',
-						},
-					},
-					schema: {
-						default_value: false,
+				schema: {
+					default_value: false,
+				},
+			},
+		];
+
+		const textOptions: DeepPartial<Field>[] = [
+			{
+				field: 'softLength',
+				name: '$t:soft_length',
+				type: 'integer',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						placeholder: '255',
+						min: 1,
+						max: field.schema?.max_length,
 					},
 				},
-				{
-					field: 'masked',
-					name: '$t:interfaces.input.mask',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-						options: {
-							label: '$t:interfaces.input.mask_label',
-						},
-					},
-					schema: {
-						default_value: false,
+			},
+			...fontOptions,
+			{
+				field: 'trim',
+				name: '$t:interfaces.input.trim',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.trim_label',
 					},
 				},
-				{
-					field: 'clear',
-					name: '$t:interfaces.input.clear',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-						options: {
-							label: '$t:interfaces.input.clear_label',
-						},
-					},
-					schema: {
-						default_value: false,
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'masked',
+				name: '$t:interfaces.input.mask',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.mask_label',
 					},
 				},
-				{
-					field: 'slug',
-					name: '$t:interfaces.input.slug',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-						options: {
-							label: '$t:interfaces.input.slug_label',
-						},
-					},
-					schema: {
-						default_value: false,
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'clear',
+				name: '$t:interfaces.input.clear',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.clear_label',
 					},
 				},
-			],
-		};
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'slug',
+				name: '$t:interfaces.input.slug',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.slug_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+		];
 
 		const numberOptions: DeepPartial<Field>[] = [
 			{
@@ -172,62 +221,48 @@ export default defineInterface({
 					default_value: 1,
 				},
 			},
+		];
+
+		const stringNumDivider: DeepPartial<Field>[] = [
 			{
-				field: 'placeholder',
-				name: '$t:placeholder',
-				type: 'string',
+				field: 'string_num_divider',
+				name: 'string_num_divider',
+				type: 'alias',
 				meta: {
-					width: 'half',
-					interface: 'system-input-translated-string',
+					width: 'full',
+					interface: 'presentation-divider',
+					special: ['alias', 'no-data'],
 					options: {
-						placeholder: '$t:enter_a_placeholder',
+						inlineTitle: true,
+						title: 'Inline number options',
 					},
-				},
-			},
-			{
-				field: 'iconLeft',
-				name: '$t:icon_left',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'select-icon',
-				},
-			},
-			{
-				field: 'iconRight',
-				name: '$t:icon_right',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'select-icon',
-				},
-			},
-			{
-				field: 'font',
-				name: '$t:font',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{ text: '$t:sans_serif', value: 'sans-serif' },
-							{ text: '$t:monospace', value: 'monospace' },
-							{ text: '$t:serif', value: 'serif' },
-						],
-					},
-				},
-				schema: {
-					default_value: 'sans-serif',
 				},
 			},
 		];
 
 		if (field.type && ['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
-			return numberOptions;
+			return [...standardOptions, ...numberOptions, ...fontOptions, ...affixOptions];
+		}
+		if (field.type && ['string', 'text'].includes(field.type)) {
+			// If field is not a masked/password input, we could possibly use smart number controls
+			if (field?.meta?.options && !field.meta?.options.masked) {
+				if (field.meta?.options.smartNumberControls) {
+					return {
+						standard: [...standardOptions],
+						advanced: [...affixOptions, ...textOptions, ...smartNumberControls, ...stringNumDivider, ...numberOptions],
+					};
+				}
+				return {
+					standard: [...standardOptions],
+					advanced: [...affixOptions, ...textOptions, ...smartNumberControls],
+				};
+			}
 		}
 
-		return textOptions;
+		return {
+			standard: [...standardOptions],
+			advanced: [...affixOptions, ...textOptions],
+		};
 	},
 	preview: PreviewSVG,
 });
