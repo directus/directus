@@ -11,6 +11,7 @@ export type AuthStorage<T extends AuthTokenType = 'DynamicToken'> = {
 
 export class Auth extends IAuth {
 	autoRefresh = true;
+	msRefreshBeforeExpires = 30000;
 	staticToken = '';
 
 	private _storage: IStorage;
@@ -27,6 +28,7 @@ export class Auth extends IAuth {
 
 		this.autoRefresh = options?.autoRefresh ?? this.autoRefresh;
 		this.mode = options?.mode ?? this.mode;
+		this.msRefreshBeforeExpires = options?.msRefreshBeforeExpires ?? this.msRefreshBeforeExpires;
 
 		if (options?.staticToken) {
 			this.staticToken = options?.staticToken;
@@ -74,7 +76,7 @@ export class Auth extends IAuth {
 			return;
 		}
 
-		if (this._storage.auth_expires_at < new Date().getTime()) {
+		if (this._storage.auth_expires_at < new Date().getTime() + this.msRefreshBeforeExpires) {
 			this._refreshPromise = this.refresh();
 		}
 		await this._refreshPromise; // wait for refresh
