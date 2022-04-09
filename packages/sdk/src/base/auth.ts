@@ -70,7 +70,7 @@ export class Auth extends IAuth {
 		if (!this.autoRefresh) return;
 		if (!this._storage.auth_expires_at) {
 			// wait because resetStorage() call in refresh()
-		        await this._refreshPromise;
+			await this._refreshPromise;
 			return;
 		}
 
