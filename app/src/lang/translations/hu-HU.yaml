@@ -1,15 +1,39 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Azonosító
 avatar: Profilkép
+application: Alkalmazás
 default_provider: Alapértelmezett
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
 modules: Modulok
 module_bar: Modulsáv
+reset_width: Széllesség visszaállítása
 tile_size: Csempeméret
 edit_field: Mező szerkesztése
 conditions: Feltételek
 maps: Térképek
+switch_user: Felhasználó váltása
 item_creation: Elem létrehozása
 item_revision: Nézet revíziója
 enter_a_name: Adjon meg egy nevet...
@@ -17,6 +41,7 @@ duplicate_field: Mező másolása
 half_width: Fél szélesség
 full_width: Teljes szélesség
 group: Csoport
+export_items: Elemek exportálása
 and: És
 or: Vagy
 fill_width: Teret kitöltő
@@ -31,7 +56,9 @@ edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
 db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához'
+show_active_items: Aktív elemek megjelenítése
 show_archived_items: Archivált elemek megjelenítése
+show_all_items: Összes elem megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
 required_for_app_access: Alkalmazás-hozzáféréshez szükséges
@@ -42,6 +69,10 @@ create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 delete_panel: Panel törlése
 create_webhook: Webhook létrehozása
+create_translation_string: Fordítás létrehozása
+translation_string_key_placeholder: Fordítási karakterlánc kulcs...
+translation_string_translations_placeholder: Új fordítás hozzáadása
+edit_translation_string: Fordítás módosítása
 invite_users: Felhasználók meghívása
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
@@ -783,6 +814,7 @@ cancel: Mégse
 no_upscale: Ne méretezze fel a képeket
 collection: Gyűjtemény
 collections: Gyűjtemények
+content: Tartalom
 singleton: Egyedüli
 singleton_label: Egyetlen objektumként kezelendő
 system_fields_locked: A rendszermezők zároltak és nem szerkeszthetők
