@@ -217,7 +217,7 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		if (operator === '_between') {
 			if (compareValue.every((value: any) => Number.isSafeInteger(Number(value instanceof Date ? NaN : value)))) {
 				const values = compareValue as [number, number];
-				schema[key] = getNumberSchema().greater(values[0]).less(values[1]);
+				schema[key] = getNumberSchema().greater(Number(values[0])).less(Number(values[1]));
 			} else {
 				const values = compareValue as [string, string];
 				schema[key] = getDateSchema().greater(values[0]).less(values[1]);
@@ -227,7 +227,7 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		if (operator === '_nbetween') {
 			if (compareValue.every((value: any) => Number.isSafeInteger(Number(value instanceof Date ? NaN : value)))) {
 				const values = compareValue as [number, number];
-				schema[key] = getNumberSchema().less(values[0]).greater(values[1]);
+				schema[key] = getNumberSchema().less(Number(values[0])).greater(Number(values[1]));
 			} else {
 				const values = compareValue as [string, string];
 				schema[key] = getDateSchema().less(values[0]).greater(values[1]);
