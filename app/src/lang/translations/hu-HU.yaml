@@ -73,9 +73,13 @@ create_translation_string: Fordítás létrehozása
 translation_string_key_placeholder: Fordítási karakterlánc kulcs...
 translation_string_translations_placeholder: Új fordítás hozzáadása
 edit_translation_string: Fordítás módosítása
+delete_translation_string_copy: >-
+  Biztosan törörlni szeretné a "{key}" fordítási karakterláncot? Ez a művelet nem visszavonható.
 invite_users: Felhasználók meghívása
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
+subject: Tárgy
+inbox: Bejövő
 emails: Emailek
 connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
@@ -91,11 +95,15 @@ update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
 delete_bookmark_copy: >-
   Biztosan törölni szeretnéd a "{bookmark}" könyvjelzőt? Ez a művelet nem visszavonható.
+delete_personal_bookmark: Személyes könyvjelző törlése
+delete_role_bookmark: Szerepkör könyvjelző törlése
+delete_global_bookmark: Globális könyvjelző törlése
 logoutReason:
   SIGN_OUT: Kijelentkezve
   SESSION_EXPIRED: A munkamenet lejárt
 public_label: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
+admin_description: Alapértelmezett adminisztrátori szerepkör korlátlan alkalmazás és API hozzáféréssel.
 not_allowed: Nem engedélyezett
 directus_version: Directus verzió
 node_version: Node verzió
@@ -116,6 +124,7 @@ recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
+validation_errors_notice: 'A következő mezők értéke érvénytelen:'
 validationError:
   eq: Az érték {valid} kell legyen
   neq: Az érték nem lehet {invalid}
@@ -165,6 +174,7 @@ revision_post_create: Ez az elem így nézett ki létrehozásakor.
 revision_post_update: Ez az elem így nézett ki a frissítés után.
 changes_made: A revízió végrehajtása soránz az alábbi változások történtek.
 no_relational_data: Ne feledje, hogy a relációs adatok nem tartoznak ide.
+hide_field: Mező elrejtése
 hide_field_on_detail: Mező elrejtése a Részleteken
 show_field_on_detail: Mező megjelenítése a Részleteken
 delete_field: Mező törlése
@@ -173,6 +183,7 @@ field_create_success: 'Létrehozott mező: "{field}"'
 field_update_success: 'Módosított mező: "{field}"'
 duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
+language_placeholder: Válasszon nyelvet...
 aggregate_function: Aggregáló függvény
 aggregate_precision: Aggregálás pontossága
 group_aggregation: Csoport aggregáció
@@ -181,6 +192,8 @@ global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
 show_zero: Zéró megjelenítése
+continue_in_advanced_field_creation_mode: Folytassa a Speciális mező létrehozási módban
+validation: Érvényesítés
 sum: Össz.
 avg: Átlag
 count: Mennyiség
@@ -419,6 +432,7 @@ user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasznál�
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
 no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
+activity_log: Tevékenységnapló
 all_items: Minden elem
 any: Bármely
 csv: CSV
@@ -499,6 +513,7 @@ errors:
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
   NOT_NULL_VIOLATION: Az érték nem lehet null
   ILLEGAL_ASSET_TRANSFORMATION: A forráskép túl nagy az előnézethez
+  VALUE_TOO_LONG: Az érték túl hosszú
   UNKNOWN: Váratlan hiba történt
 security: Biztonság
 value_hashed: Biztonságosan hashelt érték
@@ -529,6 +544,7 @@ update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
 make_collection_visible: A Gyűjtemény legyen látható
 make_collection_hidden: A Gyűjtemény legyen rejtett
+goto_collection_content: Tartalom megtekintése
 start_end_of_count_items: '{start}-{end} {count} elemből'
 start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
@@ -561,6 +577,7 @@ advanced_settings: Haladó beállítások
 advanced_filter: Bővített szűrés
 delete_advanced_filter: Szűrő törlése
 change_advanced_filter_operator: Operátor cseréje
+advanced: Speciális
 operators:
   eq: Egyenlő
   neq: Nem egyenlő
@@ -670,6 +687,8 @@ create_dashboard: Irányítópult létrehozása
 dashboard_name: Irányítópult neve
 full_screen: Teljes képernyő
 edit_panels: Panel szerkesztése
+left_align: Balra igazítás
+right_align: Jobbra igazítás
 fit_to_screen: Képernyőhöz igazítva
 image_url: Kép URL
 alt_text: Alternatív szöveg
@@ -681,6 +700,7 @@ source: Forrás
 url_placeholder: Írjon be egy url-t...
 display_text: Szöveg megjelenítése
 display_text_placeholder: Írjon be egy megjelenítendő szöveget...
+interface_group_other: Egyéb
 tooltip: Buboréksúgó
 tooltip_placeholder: Írjon be egy buboréksúgó szöveget...
 unlimited: Korlátlan
