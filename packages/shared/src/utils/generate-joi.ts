@@ -217,10 +217,10 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		if (operator === '_between') {
 			if (compareValue.every((value: any) => Number.isSafeInteger(Number(value instanceof Date ? NaN : value)))) {
 				const values = compareValue as [number, number];
-				schema[key] = getNumberSchema().greater(Number(values[0])).less(Number(values[1]));
+				schema[key] = getNumberSchema().min(Number(values[0])).max(Number(values[1]));
 			} else {
 				const values = compareValue as [string, string];
-				schema[key] = getDateSchema().greater(values[0]).less(values[1]);
+				schema[key] = getDateSchema().min(values[0]).max(values[1]);
 			}
 		}
 
