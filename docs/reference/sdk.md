@@ -662,6 +662,27 @@ if (form && form instanceof HTMLFormElement) {
 </html>
 ```
 
+### Importing a file
+
+Example of [importing a file from a URL](/reference/files/#import-a-file):
+
+```js
+await directus.files.import({
+	url: 'http://www.example.com/example-image.jpg',
+});
+```
+
+Example of importing file with custom data:
+
+```js
+await directus.files.import({
+	url: 'http://www.example.com/example-image.jpg',
+	data: {
+		title: 'My Custom File',
+	},
+});
+```
+
 ## Folders
 
 ```js

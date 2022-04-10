@@ -1,4 +1,4 @@
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
 import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lodash';
@@ -23,6 +23,7 @@ type Transformers = {
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 		specials: string[];
+		helpers: Helpers;
 	}) => Promise<any>;
 };
 
@@ -109,12 +110,12 @@ export class PayloadService {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'({ action, value }) {
-			if (action === 'create') return new Date();
+		async 'date-created'({ action, value, helpers }) {
+			if (action === 'create') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
-		async 'date-updated'({ action, value }) {
-			if (action === 'update') return new Date();
+		async 'date-updated'({ action, value, helpers }) {
+			if (action === 'update') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
 		async 'cast-csv'({ action, value }) {
@@ -222,6 +223,7 @@ export class PayloadService {
 					payload,
 					accountability,
 					specials: fieldSpecials,
+					helpers: this.helpers,
 				});
 			}
 		}
@@ -288,24 +290,26 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'timestamp') {
-						const newValue = value.toISOString();
+						const newValue = this.helpers.date.readTimestampString(value.toISOString());
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'dateTime') {
-						const year = String(value.getUTCFullYear());
-						const month = String(value.getUTCMonth() + 1).padStart(2, '0');
-						const date = String(value.getUTCDate()).padStart(2, '0');
-						const hours = String(value.getUTCHours()).padStart(2, '0');
-						const minutes = String(value.getUTCMinutes()).padStart(2, '0');
-						const seconds = String(value.getUTCSeconds()).padStart(2, '0');
+						const year = String(value.getFullYear());
+						const month = String(value.getMonth() + 1).padStart(2, '0');
+						const day = String(value.getDate()).padStart(2, '0');
+						const hours = String(value.getHours()).padStart(2, '0');
+						const minutes = String(value.getMinutes()).padStart(2, '0');
+						const seconds = String(value.getSeconds()).padStart(2, '0');
 
-						const newValue = `${year}-${month}-${date}T${hours}:${minutes}:${seconds}`;
+						const newValue = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'date') {
-						const [year, month, day] = value.toISOString().slice(0, 10).split('-');
+						const year = String(value.getFullYear());
+						const month = String(value.getMonth() + 1).padStart(2, '0');
+						const day = String(value.getDate()).padStart(2, '0');
 
 						// Strip off the time / timezone information from a date-only value
 						const newValue = `${year}-${month}-${day}`;
@@ -317,7 +321,7 @@ export class PayloadService {
 							const [date] = value.split('T');
 							const [year, month, day] = date.split('-');
 
-							payload[name] = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+							payload[name] = new Date(Number(year), Number(month) - 1, Number(day));
 						}
 
 						if (dateColumn.type === 'dateTime') {
@@ -326,12 +330,17 @@ export class PayloadService {
 							const [hours, minutes, seconds] = time.substring(0, 8).split(':');
 
 							payload[name] = new Date(
-								Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes), Number(seconds))
+								Number(year),
+								Number(month) - 1,
+								Number(day),
+								Number(hours),
+								Number(minutes),
+								Number(seconds)
 							);
 						}
 
 						if (dateColumn.type === 'timestamp') {
-							const newValue = parseISO(value);
+							const newValue = this.helpers.date.writeTimestamp(value);
 							payload[name] = newValue;
 						}
 					}

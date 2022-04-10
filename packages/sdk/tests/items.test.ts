@@ -3,10 +3,20 @@
  */
 
 import { Blog } from './blog.d';
-import { Directus, ItemsOptions } from '../src';
+import { Directus, ItemsOptions, EmptyParamError } from '../src';
 import { test } from './utils';
 
 describe('items', function () {
+	test(`should throw EmptyParamError when using empty string as id`, async (url, _nock) => {
+		const sdk = new Directus<Blog>(url);
+
+		try {
+			await sdk.items('posts').readOne('');
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(EmptyParamError);
+		}
+	});
+
 	test(`can get an item by id`, async (url, nock) => {
 		nock()
 			.get('/items/posts/1')

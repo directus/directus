@@ -230,7 +230,7 @@ export const userSchema = {
 				uploaded_by: {
 					field: 'uploaded_by',
 					defaultValue: null,
-					nullable: false,
+					nullable: true,
 					generated: false,
 					type: 'uuid',
 					dbType: 'uuid',
