@@ -673,7 +673,7 @@ presets_only: Apenas predefinições
 create: Criar
 on_create: Ao Criar
 on_update: Pós-alteração
-read: Leitura
+read: Ler
 update: Alteração
 select_fields: Selecionar campos
 format_text: Formatar texto

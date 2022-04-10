@@ -5,4 +5,13 @@ export class DateHelperSQLite extends DateHelper {
 		const newDate = new Date(date);
 		return (newDate.getTime() - newDate.getTimezoneOffset() * 60 * 1000).toString();
 	}
+
+	fieldFlagForField(fieldType: string): string {
+		switch (fieldType) {
+			case 'timestamp':
+				return 'cast-timestamp';
+			default:
+				return '';
+		}
+	}
 }

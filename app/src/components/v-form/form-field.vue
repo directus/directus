@@ -40,6 +40,7 @@
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
 			@update:model-value="emitValue($event)"
+			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">

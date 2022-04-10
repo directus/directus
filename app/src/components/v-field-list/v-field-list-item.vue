@@ -58,17 +58,12 @@ export default {
 
 <script lang="ts" setup>
 import formatTitle from '@directus/format-title';
-import { Type } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
+import { FieldNode } from '@/composables/use-field-tree';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-type FieldInfo = {
-	field: string;
-	name: string;
-	key: string;
-	path: string;
-	type: Type;
+type FieldInfo = FieldNode & {
 	disabled?: boolean;
 	children?: FieldInfo[];
 };
@@ -86,7 +81,7 @@ defineEmits(['add']);
 const { t } = useI18n();
 
 const supportedFunctions = computed(() => {
-	if (!props.includeFunctions) return [];
+	if (!props.includeFunctions || props.field.group) return [];
 	return getFunctionsForType(props.field.type);
 });
 </script>
