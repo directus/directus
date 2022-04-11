@@ -35,7 +35,15 @@ As the name implies, these are standalone documents.
 - `[[toc]]`
 - Header Media
 - Intro paragraphs and tips
-- `:::tip Before you Begin`
+- Assumed Knowledge
+
+:::tip Before you Begin
+
+Please see the [Platform Overview]() Before starting and section. To use this `Z`, you will need to understand `W`, `X`
+and `Y`.
+
+:::
+
 - `## Title`: (Update | Updating) an Item??
   - Titles -> keep them simple, avoid changes
   - Titles -> Don’t wanna go beyond H3s
