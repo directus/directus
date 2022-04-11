@@ -14,7 +14,20 @@
 					{{ t(`errors.${imageError}`) }}
 				</span>
 			</div>
-			<img v-else :src="src" alt="" role="presentation" @error="imageErrorHandler" />
+
+			<img
+				v-else-if="image.type.startsWith('image')"
+				:src="src"
+				:width="image.width"
+				:height="image.height"
+				alt=""
+				role="presentation"
+				@error="imageErrorHandler"
+			/>
+
+			<div v-else class="fallback">
+				<v-icon-file :ext="ext" />
+			</div>
 
 			<div class="shadow" />
 
@@ -53,17 +66,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed, PropType } from 'vue';
-import api from '@/api';
+<script lang="ts" setup>
+import api, { addTokenToURL } from '@/api';
 import formatFilesize from '@/utils/format-filesize';
-import FileLightbox from '@/views/private/components/file-lightbox';
-import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { addTokenToURL } from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
+import FileLightbox from '@/views/private/components/file-lightbox';
+import { nanoid } from 'nanoid';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { readableMimeType } from '@/utils/readable-mime-type';
 
 type Image = {
 	id: string; // uuid
@@ -74,192 +87,160 @@ type Image = {
 	filename_download: string;
 };
 
-export default defineComponent({
-	components: { FileLightbox, DrawerItem },
-	props: {
-		value: {
-			type: [String, Object] as PropType<string | Record<string, any>>,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		folder: {
-			type: String,
-			default: undefined,
-		},
-		width: {
-			type: String,
-			required: true,
-		},
-		crop: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t, n, te } = useI18n();
+interface Props {
+	width: string;
+	value?: string | Record<string, any>;
+	disabled?: boolean;
+	folder?: string;
+	crop?: boolean;
+}
 
-		const loading = ref(false);
-		const image = ref<Image | null>(null);
-		const lightboxActive = ref(false);
-		const editDrawerActive = ref(false);
-		const imageError = ref<string | null>(null);
-
-		const cacheBuster = ref(nanoid());
-
-		const src = computed(() => {
-			if (!image.value) return null;
-
-			if (image.value.type.includes('svg')) {
-				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
-			}
-			if (image.value.type.includes('image')) {
-				const fit = props.crop ? 'cover' : 'contain';
-				const url =
-					getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
-				return addTokenToURL(url);
-			}
-
-			return null;
-		});
-
-		const downloadSrc = computed(() => {
-			if (!image.value) return null;
-			return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
-		});
-
-		const meta = computed(() => {
-			if (!image.value) return null;
-			const { filesize, width, height, type } = image.value;
-
-			if (width && height) {
-				return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
-			}
-
-			return `${formatFilesize(filesize)} • ${type}`;
-		});
-
-		watch(
-			() => props.value,
-			(newValue, oldValue) => {
-				if (newValue === oldValue) return;
-
-				if (newValue) {
-					fetchImage();
-				}
-
-				if (oldValue && newValue === null) {
-					deselect();
-				}
-			},
-			{ immediate: true }
-		);
-
-		const { edits, stageEdits } = useEdits();
-
-		return {
-			t,
-			loading,
-			image,
-			src,
-			imageError,
-			imageErrorHandler,
-			meta,
-			lightboxActive,
-			editDrawerActive,
-			changeCacheBuster,
-			setImage,
-			deselect,
-			downloadSrc,
-			edits,
-			stageEdits,
-		};
-
-		async function fetchImage() {
-			loading.value = true;
-
-			try {
-				const id = typeof props.value === 'string' ? props.value : props.value?.id;
-
-				const response = await api.get(`/files/${id}`, {
-					params: {
-						fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
-					},
-				});
-
-				if (props.value !== null && typeof props.value === 'object') {
-					image.value = {
-						...response.data.data,
-						...props.value,
-					};
-				} else {
-					image.value = response.data.data;
-				}
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		async function imageErrorHandler() {
-			if (!src.value) return;
-			try {
-				await api.get(src.value);
-			} catch (err: any) {
-				imageError.value = err.response?.data?.errors[0]?.extensions?.code;
-
-				if (!imageError.value || !te('errors.' + imageError.value)) {
-					imageError.value = 'UNKNOWN';
-				}
-			}
-		}
-
-		function changeCacheBuster() {
-			cacheBuster.value = nanoid();
-		}
-
-		function setImage(data: Image) {
-			image.value = data;
-			emit('input', data.id);
-		}
-
-		function deselect() {
-			emit('input', null);
-
-			loading.value = false;
-			image.value = null;
-			lightboxActive.value = false;
-			editDrawerActive.value = false;
-		}
-
-		function useEdits() {
-			const edits = computed(() => {
-				// If the current value isn't a primitive, it means we've already staged some changes
-				// This ensures we continue on those changes instead of starting over
-				if (props.value && typeof props.value === 'object') {
-					return props.value;
-				}
-
-				return {};
-			});
-
-			return { edits, stageEdits };
-
-			function stageEdits(newEdits: Record<string, any>) {
-				if (!image.value) return;
-
-				emit('input', {
-					id: image.value.id,
-					...newEdits,
-				});
-			}
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
+	disabled: false,
+	folder: undefined,
+	crop: false,
 });
+
+const emit = defineEmits(['input']);
+
+const { t, n, te } = useI18n();
+
+const loading = ref(false);
+const image = ref<Image | null>(null);
+const lightboxActive = ref(false);
+const editDrawerActive = ref(false);
+const imageError = ref<string | null>(null);
+
+const cacheBuster = ref(nanoid());
+
+const src = computed(() => {
+	if (!image.value) return null;
+
+	if (image.value.type.includes('svg')) {
+		return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
+	}
+	if (image.value.type.includes('image')) {
+		const fit = props.crop ? 'cover' : 'contain';
+		const url = getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
+		return addTokenToURL(url);
+	}
+
+	return null;
+});
+
+const ext = computed(() => (image.value ? readableMimeType(image.value.type, true) : 'unknown'));
+
+const downloadSrc = computed(() => {
+	if (!image.value) return null;
+	return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
+});
+
+const meta = computed(() => {
+	if (!image.value) return null;
+	const { filesize, width, height, type } = image.value;
+
+	if (width && height) {
+		return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
+	}
+
+	return `${formatFilesize(filesize)} • ${type}`;
+});
+
+watch(
+	() => props.value,
+	(newValue, oldValue) => {
+		if (newValue === oldValue) return;
+
+		if (newValue) {
+			fetchImage();
+		}
+
+		if (oldValue && newValue === null) {
+			deselect();
+		}
+	},
+	{ immediate: true }
+);
+
+const { edits, stageEdits } = useEdits();
+
+async function fetchImage() {
+	loading.value = true;
+
+	try {
+		const id = typeof props.value === 'string' ? props.value : props.value?.id;
+
+		const response = await api.get(`/files/${id}`, {
+			params: {
+				fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
+			},
+		});
+
+		if (props.value !== null && typeof props.value === 'object') {
+			image.value = {
+				...response.data.data,
+				...props.value,
+			};
+		} else {
+			image.value = response.data.data;
+		}
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
+
+async function imageErrorHandler() {
+	if (!src.value) return;
+	try {
+		await api.get(src.value);
+	} catch (err: any) {
+		imageError.value = err.response?.data?.errors[0]?.extensions?.code;
+
+		if (!imageError.value || !te('errors.' + imageError.value)) {
+			imageError.value = 'UNKNOWN';
+		}
+	}
+}
+
+function setImage(data: Image) {
+	image.value = data;
+	emit('input', data.id);
+}
+
+function deselect() {
+	emit('input', null);
+
+	loading.value = false;
+	image.value = null;
+	lightboxActive.value = false;
+	editDrawerActive.value = false;
+}
+
+function useEdits() {
+	const edits = computed(() => {
+		// If the current value isn't a primitive, it means we've already staged some changes
+		// This ensures we continue on those changes instead of starting over
+		if (props.value && typeof props.value === 'object') {
+			return props.value;
+		}
+
+		return {};
+	});
+
+	return { edits, stageEdits };
+
+	function stageEdits(newEdits: Record<string, any>) {
+		if (!image.value) return;
+
+		emit('input', {
+			id: image.value.id,
+			...newEdits,
+		});
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -415,5 +396,14 @@ img {
 
 .disabled-placeholder {
 	height: var(--input-height-tall);
+}
+
+.fallback {
+	background-color: var(--background-normal);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: var(--input-height-tall);
+	border-radius: var(--border-radius);
 }
 </style>
