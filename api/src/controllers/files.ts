@@ -12,6 +12,7 @@ import { FilesService, MetaService } from '../services';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { toArray } from '@directus/shared/utils';
+import validateUUID from 'uuid-validate';
 
 const router = express.Router();
 
@@ -138,6 +139,12 @@ router.post(
 				};
 			} else {
 				const key = Array.isArray(keys) ? keys[0] : keys;
+
+				// Throw an error if file was not created
+				if (!key || !validateUUID(String(key))) {
+					throw new InvalidPayloadException(`File was not created`);
+				}
+
 				const record = await service.readOne(key, req.sanitizedQuery);
 
 				res.locals.payload = {
