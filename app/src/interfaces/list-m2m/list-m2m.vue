@@ -61,6 +61,7 @@
 			:junction-field="relationInfo.junctionField"
 			:edits="editsAtStart"
 			:circular-field="junction.field"
+			:disabled="!updateAllowed"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -224,7 +225,7 @@ export default defineComponent({
 
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
-		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
+		const { createAllowed, selectAllowed, updateAllowed } = usePermissions(junctionCollection, relationCollection);
 
 		return {
 			t,
@@ -255,6 +256,7 @@ export default defineComponent({
 			templateWithDefaults,
 			createAllowed,
 			selectAllowed,
+			updateAllowed,
 			customFilter,
 		};
 

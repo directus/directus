@@ -57,13 +57,16 @@ export default defineComponent({
 		const lastAccessDate = ref('');
 
 		watch(
-			() => props,
+			[() => props.user, () => props.isNew],
 			async () => {
 				if (!props.user) return;
-				lastAccessDate.value = await localizedFormat(
-					new Date(props.user.last_access),
-					String(t('date-fns_date_short'))
-				);
+
+				if (props.user.last_access) {
+					lastAccessDate.value = await localizedFormat(
+						new Date(props.user.last_access),
+						String(t('date-fns_date_short'))
+					);
+				}
 			},
 			{ immediate: true }
 		);

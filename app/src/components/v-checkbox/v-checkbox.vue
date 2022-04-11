@@ -215,6 +215,11 @@ body {
 		}
 	}
 
+	&:focus:not(:disabled) {
+		border-color: var(--primary);
+		box-shadow: 0 0 16px -8px var(--primary);
+	}
+
 	&:not(:disabled):not(.indeterminate) {
 		.label {
 			color: var(--foreground-normal);

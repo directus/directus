@@ -23,7 +23,6 @@ export type AuthMode = 'json' | 'cookie';
 export type AuthOptions = {
 	mode?: AuthMode;
 	autoRefresh?: boolean;
-	msRefreshBeforeExpires?: number;
 	staticToken?: string;
 	transport: ITransport;
 	storage: IStorage;
@@ -37,6 +36,7 @@ export abstract class IAuth {
 
 	abstract login(credentials: AuthCredentials): Promise<AuthResult>;
 	abstract refresh(): Promise<AuthResult | false>;
+	abstract refreshIfExpired(): Promise<void>;
 	abstract static(token: AuthToken): Promise<boolean>;
 	abstract logout(): Promise<void>;
 }

@@ -46,7 +46,7 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, set, uniq, pick, transform, isObject, omit } from 'lodash';
 import ms from 'ms';
-import { getCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
 import { BaseException } from '@directus/shared/exceptions';
@@ -358,6 +358,15 @@ export class GraphQLService {
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
 
+			const CountFunctions = schemaComposer.createObjectTC({
+				name: 'count_functions',
+				fields: {
+					count: {
+						type: GraphQLInt,
+					},
+				},
+			});
+
 			const DateFunctions = schemaComposer.createObjectTC({
 				name: 'date_functions',
 				fields: {
@@ -455,6 +464,16 @@ export class GraphQLService {
 								type: DateTimeFunctions,
 								resolve: (obj: Record<string, any>) => {
 									const funcFields = Object.keys(DateTimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
+									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+								},
+							};
+						}
+
+						if (field.type === 'json' || field.type === 'alias') {
+							acc[`${field.field}_func`] = {
+								type: CountFunctions,
+								resolve: (obj: Record<string, any>) => {
+									const funcFields = Object.keys(CountFunctions.getFields()).map((key) => `${field.field}_${key}`);
 									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 								},
 							};
@@ -694,6 +713,15 @@ export class GraphQLService {
 				},
 			});
 
+			const CountFunctionFilterOperators = schemaComposer.createInputTC({
+				name: 'count_function_filter_operators',
+				fields: {
+					count: {
+						type: NumberFilterOperators,
+					},
+				},
+			});
+
 			const DateFunctionFilterOperators = schemaComposer.createInputTC({
 				name: 'date_function_filter_operators',
 				fields: {
@@ -784,6 +812,12 @@ export class GraphQLService {
 						if (field.type === 'dateTime' || field.type === 'timestamp') {
 							acc[`${field.field}_func`] = {
 								type: DateTimeFunctionFilterOperators,
+							};
+						}
+
+						if (field.type === 'json' || field.type === 'alias') {
+							acc[`${field.field}_func`] = {
+								type: CountFunctionFilterOperators,
 							};
 						}
 
@@ -2033,10 +2067,10 @@ export class GraphQLService {
 						throw new ForbiddenException();
 					}
 
-					const { cache, systemCache } = getCache();
+					const { cache } = getCache();
 
 					await cache?.clear();
-					await systemCache.clear();
+					await clearSystemCache();
 
 					return;
 				},
@@ -2458,7 +2492,7 @@ export class GraphQLService {
 			});
 		}
 
-		if ('directus_users' in schema.update.collections) {
+		if ('directus_users' in schema.update.collections && this.accountability?.user) {
 			schemaComposer.Mutation.addFields({
 				update_users_me: {
 					type: ReadCollectionTypes['directus_users'],
