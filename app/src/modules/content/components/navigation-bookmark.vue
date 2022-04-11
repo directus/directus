@@ -86,13 +86,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, reactive } from 'vue';
-import { Preset } from '@directus/shared/types';
-import { useUserStore, usePresetsStore } from '@/stores';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { useRoute, useRouter } from 'vue-router';
+import { usePresetsStore, useUserStore } from '@/stores';
 import { translate } from '@/utils/translate-literal';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Preset } from '@directus/shared/types';
+import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 
 interface Props {
 	bookmark: Preset;
