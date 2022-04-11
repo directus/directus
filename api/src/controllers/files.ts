@@ -103,6 +103,10 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 
 	function tryDone() {
 		if (savedFiles.length === fileCount) {
+			if (fileCount === 0) {
+				return next(new InvalidPayloadException(`No files where submitted in the POST body`));
+			}
+
 			res.locals.savedFiles = savedFiles;
 			return next();
 		}
