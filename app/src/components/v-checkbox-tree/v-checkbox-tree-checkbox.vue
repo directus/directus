@@ -43,7 +43,7 @@
 <script lang="ts">
 import { defineComponent, computed, PropType, toRefs } from 'vue';
 import { difference } from 'lodash';
-import { useVisibleChildren } from './useVisibleChildren';
+import { useVisibleChildren } from './use-visible-children';
 
 type Delta = {
 	added?: (number | string)[];

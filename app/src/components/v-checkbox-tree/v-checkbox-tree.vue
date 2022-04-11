@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { computed, ref, defineComponent, PropType, watch, toRefs } from 'vue';
-import { useVisibleChildren } from './useVisibleChildren';
+import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
