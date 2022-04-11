@@ -4,7 +4,6 @@ import { Preset } from '@directus/shared/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
-import { translate } from '@/utils/translate-literal';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
