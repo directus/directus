@@ -17,7 +17,7 @@ export class Auth extends IAuth {
 	private _storage: IStorage;
 	private _transport: ITransport;
 	private passwords?: PasswordsHandler;
-	
+
 	private _refreshPromise?: Promise<false | AuthResult>;
 
 	constructor(options: AuthOptions) {
