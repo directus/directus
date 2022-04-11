@@ -115,7 +115,6 @@
 				:width="item.width"
 				:height="item.height"
 				:title="item.title"
-				@click="replaceFileDialogActive = true"
 			/>
 
 			<image-editor
