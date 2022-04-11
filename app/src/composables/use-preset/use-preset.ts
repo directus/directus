@@ -1,4 +1,5 @@
 import { usePresetsStore, useUserStore } from '@/stores';
+import { translate } from '@/utils/translate-literal';
 import { Filter, Preset } from '@directus/shared/types';
 import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
@@ -136,7 +137,7 @@ export function usePreset(
 	});
 
 	const bookmarkTitle = computed<string | null>({
-		get: () => localPreset.value?.bookmark || null,
+		get: () => translate(localPreset.value?.bookmark) || null,
 		set: (bookmark) => updatePreset({ bookmark }, true),
 	});
 
