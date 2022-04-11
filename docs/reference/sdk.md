@@ -21,7 +21,7 @@ const directus = new Directus('http://directus.example.com');
 
 async function start() {
 	// We don't need to authenticate if data is public
-	const publicData = await directus.items('public').readMany({ meta: 'total_count' });
+	const publicData = await directus.items('public').readByQuery({ meta: 'total_count' });
 
 	console.log({
 		items: publicData.data,
@@ -55,7 +55,7 @@ async function start() {
 	}
 
 	// After authentication, we can fetch the private data in case the user has access to it
-	const privateData = await directus.items('privateData').readMany({ meta: 'total_count' });
+	const privateData = await directus.items('privateData').readByQuery({ meta: 'total_count' });
 
 	console.log({
 		items: privateData.data,
@@ -173,8 +173,6 @@ const directus = new Directus(url, init);
 
     - `autoRefresh` [optional] _Boolean_ - Tells SDK if it should handle refresh tokens automatically. Defaults to
       `true`.
-    - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
-      before the refresh token expires and needs to be refreshed. Defaults to `30000`.
     - `staticToken` [optional] _String_ - Defines the static token to use. It is not compatible with the options above
       since it does not refresh. Defaults to `''` (no static token).
 
@@ -476,6 +474,30 @@ await articles.createMany([
 ]);
 ```
 
+### Read By Query
+
+```js
+await articles.readByQuery({
+	search: 'Directus',
+	filter: {
+		date_published: {
+			_gte: '$NOW',
+		},
+	},
+});
+```
+
+### Read All
+
+```js
+await articles.readByQuery({
+	// By default API limits results to 100.
+	// With -1, it will return all results, but it may lead to performance degradation
+	// for large result sets.
+	limit: -1,
+});
+```
+
 ### Read Single Item
 
 ```js
@@ -493,19 +515,14 @@ await articles.readOne(15, {
 ### Read Multiple Items
 
 ```js
-await articles.readMany({
-	search: 'Directus',
-	filter: {
-		date_published: {
-			_gte: '$NOW',
-		},
-	},
-});
+await articles.readMany([15, 16, 17]);
 ```
 
+Supports optional query:
+
 ```js
-await articles.readMany({
-	limit: -1,
+await articles.readMany([15, 16, 17], {
+	fields: ['title'],
 });
 ```
 
@@ -561,6 +578,24 @@ await articles.deleteOne(15);
 
 // Multiple
 await articles.deleteMany([15, 42]);
+```
+
+### Request Parameter Overrides
+
+To override any of the axios request parameters, provide an additional parameter with a `requestOptions` object:
+
+```js
+await articles.createOne(
+	{ title: 'example' },
+	{ fields: ['id'] },
+	{
+		requestOptions: {
+			headers: {
+				'X-My-Custom-Header': 'example',
+			},
+		},
+	}
+);
 ```
 
 ## Activity
@@ -643,6 +678,53 @@ if (form && form instanceof HTMLFormElement) {
 	<script src="/index.js" type="module"></script>
 </body>
 </html>
+```
+
+#### NodeJS usage
+
+When uploading a file from a NodeJS environment, you'll have to override the headers to ensure the correct boundary is
+set:
+
+```js
+import { Directus } from 'https://unpkg.com/@directus/sdk@latest/dist/sdk.esm.min.js';
+
+const directus = new Directus('http://localhost:8055', {
+	auth: {
+		staticToken: 'STATIC_TOKEN', // If you want to use a static token, otherwise check below how you can use email and password.
+	},
+});
+
+const form = new FormData();
+form.append("file", fs.createReadStream("./to_upload.jpeg"));
+
+const fileId = await directus.files.createOne(form, {}, {
+  requestOptions: {
+    headers: {
+      ...form.getHeaders()
+    }
+  }
+);
+```
+
+### Importing a file
+
+Example of [importing a file from a URL](/reference/files/#import-a-file):
+
+```js
+await directus.files.import({
+	url: 'http://www.example.com/example-image.jpg',
+});
+```
+
+Example of importing file with custom data:
+
+```js
+await directus.files.import({
+	url: 'http://www.example.com/example-image.jpg',
+	data: {
+		title: 'My Custom File',
+	},
+});
 ```
 
 ## Folders

@@ -15,7 +15,7 @@ type UsableSourceCode = {
 	sourceCodeButton: SourceCodeButton;
 };
 
-export default function useSourceCode(editor: Ref<any>, isEditorDirty: Ref<boolean>): UsableSourceCode {
+export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
 	const codeDrawerOpen = ref(false);
 	const code = ref<string>();
 
@@ -23,6 +23,10 @@ export default function useSourceCode(editor: Ref<any>, isEditorDirty: Ref<boole
 		icon: 'sourcecode',
 		tooltip: i18n.global.t('wysiwyg_options.source_code'),
 		onAction: () => {
+			if (editor.value.plugins.fullscreen.isFullscreen()) {
+				editor.value.execCommand('mceFullScreen');
+			}
+
 			codeDrawerOpen.value = true;
 			code.value = editor.value.getContent();
 		},
@@ -35,8 +39,8 @@ export default function useSourceCode(editor: Ref<any>, isEditorDirty: Ref<boole
 	}
 
 	function saveCode() {
-		isEditorDirty.value = true;
 		editor.value.setContent(code.value);
+		editor.value.undoManager.add();
 		closeCodeDrawer();
 	}
 }

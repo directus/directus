@@ -29,11 +29,23 @@
 
 					<template v-if="!disabled" #append>
 						<template v-if="currentItem">
-							<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editModalActive = true" />
+							<v-icon
+								v-if="updateAllowed"
+								v-tooltip="t('edit')"
+								name="open_in_new"
+								class="edit"
+								@click.stop="editModalActive = true"
+							/>
 							<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', null)" />
 						</template>
 						<template v-else>
-							<v-icon v-tooltip="t('create_item')" class="add" name="add" @click.stop="editModalActive = true" />
+							<v-icon
+								v-if="createAllowed"
+								v-tooltip="t('create_item')"
+								class="add"
+								name="add"
+								@click.stop="editModalActive = true"
+							/>
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
 						</template>
 					</template>
@@ -89,7 +101,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, toRefs, watch, PropType, inject } from 'vue';
-import { useCollectionsStore, useRelationsStore } from '@/stores/';
+import { useCollectionsStore, useRelationsStore, usePermissionsStore } from '@/stores/';
 import { useCollection } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import api from '@/api';
@@ -101,6 +113,7 @@ import { Filter } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { render } from 'micromustache';
 import { deepMap } from '@directus/shared/utils';
+import { merge } from 'lodash';
 
 /**
  * @NOTE
@@ -164,6 +177,7 @@ export default defineComponent({
 
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
+		const { hasPermission } = usePermissionsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { usesMenu, menuActive } = useMenu();
@@ -175,6 +189,8 @@ export default defineComponent({
 		const { setCurrent, currentItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
 		const { edits, stageEdits } = useEdits();
+
+		const { createAllowed, updateAllowed } = usePermissions();
 
 		const editModalActive = ref(false);
 
@@ -202,6 +218,8 @@ export default defineComponent({
 			editModalActive,
 			relatedPrimaryKeyField,
 			customFilter,
+			createAllowed,
+			updateAllowed,
 		};
 
 		function useCurrent() {
@@ -210,7 +228,7 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				(newValue) => {
+				async (newValue) => {
 					// When the newly configured value is a primitive, assume it's the primary key
 					// of the item and fetch it from the API to render the preview
 					if (
@@ -229,12 +247,17 @@ export default defineComponent({
 
 					// If value is already fullfilled, let's fetch all necessary
 					// fields for display template
-					else if (
-						!currentItem.value &&
-						typeof newValue === 'object' &&
-						newValue[relatedPrimaryKeyField.value!.field]
-					) {
-						fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
+					else if (!currentItem.value && typeof newValue === 'object') {
+						if (newValue[relatedPrimaryKeyField.value!.field]) {
+							await fetchCurrent(newValue[relatedPrimaryKeyField.value!.field]);
+							if (currentItem.value) {
+								// Override with locally updated values
+								Object.assign(currentItem.value, newValue);
+							}
+						} else {
+							// Display newly created entry in nested m2o
+							currentItem.value = newValue;
+						}
 					}
 				},
 				{ immediate: true }
@@ -479,11 +502,22 @@ export default defineComponent({
 					emit('input', newEdits);
 				}
 
-				currentItem.value = {
-					...currentItem.value,
-					...newEdits,
-				};
+				currentItem.value = merge({}, currentItem.value, newEdits);
 			}
+		}
+
+		function usePermissions() {
+			const createAllowed = computed(() => {
+				if (!relatedCollection.value) return false;
+				return hasPermission(relatedCollection.value.collection, 'create');
+			});
+
+			const updateAllowed = computed(() => {
+				if (!relatedCollection.value) return false;
+				return hasPermission(relatedCollection.value.collection, 'update');
+			});
+
+			return { createAllowed, updateAllowed };
 		}
 	},
 });

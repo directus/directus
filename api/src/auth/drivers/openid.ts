@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Issuer, Client, generators, errors } from 'openid-client';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
+import flatten from 'flat';
 import { LocalAuthDriver } from './local';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
@@ -18,6 +19,7 @@ import asyncHandler from '../../utils/async-handler';
 import { Url } from '../../utils/url';
 import logger from '../../logger';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getConfigFromEnv } from '../../utils/get-config-from-env';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -35,6 +37,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		}
 
 		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', additionalConfig.provider, 'callback');
+
+		const clientOptionsOverrides = getConfigFromEnv(
+			`AUTH_${config.provider.toUpperCase()}_CLIENT_`,
+			[`AUTH_${config.provider.toUpperCase()}_CLIENT_ID`, `AUTH_${config.provider.toUpperCase()}_CLIENT_SECRET`],
+			'underscore'
+		);
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
@@ -57,6 +65,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 							client_secret: clientSecret,
 							redirect_uris: [this.redirectUrl],
 							response_types: ['code'],
+							...clientOptionsOverrides,
 						})
 					);
 				})
@@ -115,25 +124,29 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				{ code: payload.code, state: payload.state },
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
+			userInfo = tokenSet.claims();
 
-			const issuer = client.issuer;
-			if (issuer.metadata.userinfo_endpoint) {
-				userInfo = await client.userinfo(tokenSet.access_token!);
-			} else {
-				userInfo = tokenSet.claims();
+			if (client.issuer.metadata.userinfo_endpoint) {
+				userInfo = {
+					...userInfo,
+					...(await client.userinfo(tokenSet.access_token!)),
+				};
 			}
 		} catch (e) {
 			throw handleError(e);
 		}
 
-		const { identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
+		// Flatten response to support dot indexes
+		userInfo = flatten(userInfo) as Record<string, unknown>;
+
+		const { provider, identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
 
 		const email = userInfo.email as string | null | undefined;
 		// Fallback to email if explicit identifier not found
 		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
 
 		if (!identifier) {
-			logger.warn(`[OpenID] Failed to find user identifier for provider "${this.config.provider}"`);
+			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -153,14 +166,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
-			logger.trace(
-				`[OpenID] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
-			);
+			logger.trace(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
 		await this.usersService.createOne({
-			provider: this.config.provider,
+			provider,
 			first_name: userInfo.given_name,
 			last_name: userInfo.family_name,
 			email: email,

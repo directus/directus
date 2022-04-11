@@ -34,4 +34,11 @@ export interface Collection {
 	schema: Table | null;
 }
 
+export interface AppCollection extends Collection {
+	name: string;
+	icon: string;
+	type: CollectionType;
+	color?: string | null;
+}
+
 export type CollectionType = 'alias' | 'table' | 'unknown';

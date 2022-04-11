@@ -289,7 +289,6 @@ export default defineComponent({
 
 					notify({
 						title: t('field_create_success', { field: newField.field }),
-						type: 'success',
 					});
 
 					duplicateActive.value = false;

@@ -66,6 +66,30 @@ One of `auto`, `light`, `dark`.
 `tfa_secret` **string**\
 When TFA is enabled, this holds the secret key for it.
 
+`status` **string**\
+Status of the user. One of `draft`, `invited`, `active`, `suspended`, `archived`.
+
+`role` **uuid**\
+Role of the user. Many-to-one to [roles](/reference/roles).
+
+`token` **string**\
+Static access token for the user.
+
+`last_access` **date**\
+Last time the user accessed the API.
+
+`last_page` **date**\
+Last page in the app the user used.
+
+`provider` **string**\
+What auth provider was used to register this user.
+
+`external_identifier` **string**\
+Primary key of the user in the third party authentication provider, if used.
+
+`auth_data` **json**\
+Required data about the user as provided by the third party auth provider, if used.
+
 `email_notifications` **boolean**\
 When this is enabled, the user will receive emails for notifications.
 

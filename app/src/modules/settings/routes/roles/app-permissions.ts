@@ -100,6 +100,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		collection: 'directus_users',
 		action: 'read',
 		permissions: {},
+		fields: ['*'],
 	},
 	{
 		collection: 'directus_users',
@@ -295,6 +296,15 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_settings',
 		action: 'read',
+	},
+	{
+		collection: 'directus_shares',
+		action: 'read',
+		permissions: {
+			user_created: {
+				_eq: '$CURRENT_USER',
+			},
+		},
 	},
 	{
 		collection: 'directus_users',

@@ -83,7 +83,6 @@ delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
 reset_bookmark: Redefinir Favoritos
-rename_bookmark: Renomear Favorito
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-
@@ -114,7 +113,6 @@ recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
 unarchive_confirm: Você tem certeza que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
-unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -336,8 +334,6 @@ label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
 format: Formato
-use_current_filters_settings: Usar filtros e configurações atuais
-export_data_button: Iniciar Exportação
 last_page: Última página
 last_access: Último acesso
 fill_template: Preencher com valor de template
@@ -353,6 +349,10 @@ interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
+functions:
+  year: Ano
+  month: Mês
+  count: Contagem
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -673,7 +673,7 @@ presets_only: Apenas predefinições
 create: Criar
 on_create: Ao Criar
 on_update: Pós-alteração
-read: Leitura
+read: Ler
 update: Alteração
 select_fields: Selecionar campos
 format_text: Formatar texto
@@ -984,6 +984,7 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
+    default_language: Idioma padrão
     branding: Marca e estilo
     public_foreground: Primeiro plano público
     public_background: Fundo público
@@ -1226,6 +1227,7 @@ interfaces:
     add_filter: Adicionar filtro
     all: Tudo
     any: Qualquer
+    change_value: Clique para mudar o valor
   group-accordion:
     name: Sanfonada
     description: Exibir campos ou grupos como seções sanfonadas
@@ -1351,8 +1353,6 @@ interfaces:
     customSyntax_label: Adicionar tipos de sintaxe personalizados
     customSyntax_add: Adicionar sintaxe personalizada
     box: Bloco / Em linha
-    imageToken: Token da imagem
-    imageToken_label: Qual token (estático) a ser adicionado nas imagens
   map:
     map: Mapa
     description: Selecione uma localização no mapa
@@ -1411,7 +1411,6 @@ interfaces:
     auto_formatter: Utilizar auto formatação de título
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
-    add_tags: Adicionar tags...
   input:
     input: Entrada
     description: Digite manualmente um valor
@@ -1459,8 +1458,6 @@ interfaces:
     custom_formats: Formatos Personalizados
     options_override: Sobrescrever opções
     folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
-    imageToken: Token da imagem
-    imageToken_label: Qual token (estático) a ser adicionado nas imagens
   input-autocomplete-api:
     input-autocomplete-api: Entrada de preenchimento automático (API)
     description: Um tipo de pesquisa para valores de API externos.
@@ -1598,7 +1595,6 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabela
-    fields: Campos
     spacing: Espaçamento
     comfortable: Confortável
     compact: Compacto

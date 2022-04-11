@@ -38,7 +38,7 @@ describe('utils', function () {
 		const sdk = new Directus(url);
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
-		expect(hash?.substr(0, 7)).toBe('$argon2');
+		expect(hash?.slice(0, 7)).toBe('$argon2');
 	});
 
 	test(`hash verify`, async (url, nock) => {
@@ -55,7 +55,7 @@ describe('utils', function () {
 		const sdk = new Directus(url);
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
-		expect(hash?.substr(0, 7)).toBe('$argon2');
+		expect(hash?.slice(0, 7)).toBe('$argon2');
 
 		nock()
 			.post('/utils/hash/verify')

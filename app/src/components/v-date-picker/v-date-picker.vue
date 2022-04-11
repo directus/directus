@@ -1,6 +1,6 @@
 <template>
 	<div ref="wrapper" class="v-date-picker">
-		<input class="input" type="text" :placeholder="t('enter_a_value')" data-input />
+		<input class="input" type="text" data-input />
 	</div>
 </template>
 
@@ -35,7 +35,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'close'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -63,7 +63,7 @@ export default defineComponent({
 
 		onBeforeUnmount(() => {
 			if (flatpickr) {
-				flatpickr.destroy();
+				flatpickr.close();
 				flatpickr = null;
 			}
 		});
@@ -81,6 +81,10 @@ export default defineComponent({
 				const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
 				emitValue(selectedDate);
 			},
+			onClose(selectedDates: Date[], _dateStr: string, _instance: Flatpickr.Instance) {
+				const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
+				emitValue(selectedDate);
+			},
 			onReady(_selectedDates: Date[], _dateStr: string, instance: Flatpickr.Instance) {
 				const setToNowButton: HTMLElement = document.createElement('button');
 				setToNowButton.innerHTML = t('interfaces.datetime.set_to_now');
@@ -88,6 +92,14 @@ export default defineComponent({
 				setToNowButton.tabIndex = -1;
 				setToNowButton.addEventListener('click', setToNow);
 				instance.calendarContainer.appendChild(setToNowButton);
+
+				if (!props.use24) {
+					instance.amPM?.addEventListener('keyup', enterToClose);
+				} else if (props.includeSeconds) {
+					instance.secondElement?.addEventListener('keyup', enterToClose);
+				} else {
+					instance.minuteElement?.addEventListener('keyup', enterToClose);
+				}
 			},
 		};
 
@@ -105,18 +117,33 @@ export default defineComponent({
 
 			switch (props.type) {
 				case 'dateTime':
-					return emit('update:modelValue', format(value, "yyyy-MM-dd'T'HH:mm:ss"));
+					emit('update:modelValue', format(value, "yyyy-MM-dd'T'HH:mm:ss"));
+					break;
 				case 'date':
-					return emit('update:modelValue', format(value, 'yyyy-MM-dd'));
+					emit('update:modelValue', format(value, 'yyyy-MM-dd'));
+					break;
 				case 'time':
-					return emit('update:modelValue', format(value, 'HH:mm:ss'));
+					emit('update:modelValue', format(value, 'HH:mm:ss'));
+					break;
 				case 'timestamp':
-					return emit('update:modelValue', formatISO(value));
+					emit('update:modelValue', formatISO(value));
+					break;
+			}
+
+			// close the calendar on input change if it's only a date picker without time input
+			if (props.type === 'date') {
+				emit('close');
 			}
 		}
 
 		function setToNow() {
 			flatpickr?.setDate(new Date(), true);
+		}
+
+		function enterToClose(e: any) {
+			if (e.key !== 'Enter') return;
+			flatpickr?.close();
+			emit('close');
 		}
 
 		return { t, wrapper };
