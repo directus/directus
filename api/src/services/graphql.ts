@@ -1,5 +1,6 @@
+import { BaseException } from '@directus/shared/exceptions';
+import { Accountability, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
-import { validateQuery } from '../utils/validate-query';
 import {
 	ArgumentNode,
 	BooleanValueNode,
@@ -33,7 +34,6 @@ import {
 	StringValueNode,
 	validate,
 } from 'graphql';
-import { Filter, SchemaOverview } from '@directus/shared/types';
 import {
 	GraphQLJSON,
 	InputTypeComposer,
@@ -44,19 +44,20 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, set, uniq, pick, transform, isObject, omit } from 'lodash';
+import { flatten, get, isObject, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
-import { getCache, clearSystemCache } from '../cache';
+import { clearSystemCache, getCache } from '../cache';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import getDatabase from '../database';
 import env from '../env';
-import { BaseException } from '@directus/shared/exceptions';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
-import { Accountability, Query, Aggregate } from '@directus/shared/types';
 import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../types';
+import { generateHash } from '../utils/generate-hash';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
+import { validateQuery } from '../utils/validate-query';
 import { ActivityService } from './activity';
 import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
@@ -64,9 +65,9 @@ import { FieldsService } from './fields';
 import { FilesService } from './files';
 import { FoldersService } from './folders';
 import { ItemsService } from './items';
+import { NotificationsService } from './notifications';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
-import { NotificationsService } from './notifications';
 import { RelationsService } from './relations';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
@@ -78,8 +79,6 @@ import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
-import { generateHash } from '../utils/generate-hash';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
