@@ -368,6 +368,12 @@ delete_share: Elimina condivisione
 functions:
   year: Anno
   month: Mese
+  week: Settimana
+  day: Giorno
+  weekday: Giorno della settimana
+  hour: Ore
+  minute: Minuti
+  second: Secondi
   count: Quantità
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -634,6 +640,7 @@ advanced_settings: Impostazioni avanzate
 advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
 change_advanced_filter_operator: Cambia Operatore
+advanced: Avanzate
 operators:
   eq: Uguale a
   neq: Diverso da
@@ -1315,6 +1322,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1510,6 +1518,7 @@ interfaces:
     add_label: 'Etichetta "Crea nuovo"'
     field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
+    incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore
@@ -1732,6 +1741,8 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Data inizio
     end_date_field: Campo Data fine
+    optional: Opzionale
+    first_day: Primo giorno della settimana
   map:
     map: Mappa
     basemap: Mappa base
