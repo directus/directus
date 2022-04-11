@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 jest.mock('../../src/cache');
+jest.mock('../../src/env');
 
 import { multipartHandler } from '../../src/controllers/files';
 import { InvalidPayloadException } from '../../src/exceptions/invalid-payload';
