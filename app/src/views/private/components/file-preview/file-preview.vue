@@ -61,7 +61,6 @@ const isSmall = computed(() => props.height < 528);
 .file-preview {
 	position: relative;
 	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
-	margin-bottom: var(--form-vertical-gap);
 
 	img,
 	video,
