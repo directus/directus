@@ -2492,7 +2492,7 @@ export class GraphQLService {
 			});
 		}
 
-		if ('directus_users' in schema.update.collections) {
+		if ('directus_users' in schema.update.collections && this.accountability?.user) {
 			schemaComposer.Mutation.addFields({
 				update_users_me: {
 					type: ReadCollectionTypes['directus_users'],
