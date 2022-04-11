@@ -9,12 +9,13 @@
 
 			<v-card-text>
 				<div class="fields">
-					<v-input
-						v-model="bookmarkValue.name"
+					<interface-system-input-translated-string
+						:value="bookmarkValue.name"
 						class="full"
 						autofocus
 						trim
 						:placeholder="t('bookmark_name')"
+						@input="bookmarkValue.name = $event"
 						@keyup.enter="$emit('save', bookmarkValue)"
 					/>
 					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
