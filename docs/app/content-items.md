@@ -107,7 +107,7 @@ delete Items from the database, this cannot be reverted. When batch editing, the
 the same edit across multiple Items. Follow the steps below to batch delete, archive, or edit Items.
 
 1. Navigate to the Content Module and select the desired Collection.
-2. Choose a [Layout](/#adjust-item-layouts) that supports multiple Item selection from the Sidebar.\
+2. Choose a [Layout](#adjust-item-layout) that supports multiple Item selection from the Sidebar.\
    (e.g. The Table or Card Layout)
 3. Click the Items you wish to select:
    - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the left-most column.

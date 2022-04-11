@@ -24,7 +24,7 @@ follow the steps below.
 
 ![Filter Items](image.webp)
 
-It is possibly to conditionally [filter](/app/filters/) which Items are displayed on the Collection page. To filter a
+It is possible to conditionally [filter](/app/filters/) the Items displayed on the Collection page. To filter a
 Collection's Items, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
@@ -86,6 +86,16 @@ Layout. To order a Collection's Items, follow the steps below.
 Ordering is a non-destructive action which does not change your data.
 
 :::
+
+## Adjust Item Layout
+
+<video autoplay muted loop controls title="Adjust Item Layouts">
+	<source src="" type="video/mp4" />
+</video>
+
+The Content Module provides Layouts, which are customized displays for viewing and interacting with Items on a
+Collection Page. Whether your Collection contains blog posts, project management tasks, geo-coordinates, temporal data
+or beyond; Layouts display Items in a logical and intuitive way. [Learn More](/app/content-layouts)
 
 ## View Archived Items
 

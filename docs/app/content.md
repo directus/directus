@@ -17,12 +17,12 @@ the controls to view and manage Items are quite intuitive, so its easy to get st
 
 ![Collection Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/collection-page-20220215A.webp)
 
-The Content Module is composed of Collections Pages and Item Details Pages. Each Collection Page displays all Items in
-its Collection. It comes with highly configurable [Layouts](/getting-started/glossary/#layouts) for browsing,
-visualizing, and managing Items. The Page Header includes key action buttons for sorting, searching, filtering,
-creating, as well as editing, archiving, and deleting multiple Items. When you navigate into the Content Module, you
-land directly on a Collection Page. Use the [Navigation Bar](/app/overview/#_2-navigation-bar) on the left to move
-between Collection Pages. [Learn More](/app/content-collections)
+The Content Module is composed of Collections Pages and Item Pages. Each Collection Page displays all Items in its
+Collection. It comes with highly configurable [Layouts](/getting-started/glossary/#layouts) for browsing, visualizing,
+and managing Items. The Page Header includes key action buttons for sorting, searching, filtering, creating, as well as
+editing, archiving, and deleting multiple Items. When you navigate into the Content Module, you land directly on a
+Collection Page. Use the [Navigation Bar](/app/overview/#_2-navigation-bar) on the left to move between Collection
+Pages. [Learn More](/app/content-collections)
 
 :::tip
 
