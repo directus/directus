@@ -135,7 +135,7 @@ export default defineComponent({
 		);
 
 		watch(stringValue, () => {
-			// prevent redundant stringify caused by setValue (on change event) when same value
+			// prevent setting redundantly stringified json value when it's actually the same value
 			if (props.type === 'json' && codemirror?.getValue() === props.value) return;
 
 			if (codemirror?.getValue() !== stringValue.value) {
