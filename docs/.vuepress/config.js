@@ -181,11 +181,6 @@ module.exports = {
 							},
 							{
 								type: 'page',
-								path: '/app/content-import-export',
-								title: 'Import / Export',
-							},
-							{
-								type: 'page',
 								path: '/app/data-sharing',
 								title: 'Data Sharing',
 							},
@@ -221,6 +216,11 @@ module.exports = {
 						type: 'page',
 						path: '/app/filters',
 						title: 'Filters',
+					},
+					{
+						type: 'page',
+						path: '/app/import-export',
+						title: 'Import / Export',
 					},
 				],
 			},
