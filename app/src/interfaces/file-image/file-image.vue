@@ -167,6 +167,7 @@ const { edits, stageEdits } = useEdits();
 
 async function fetchImage() {
 	loading.value = true;
+	imageError.value = null;
 
 	try {
 		const id = typeof props.value === 'string' ? props.value : props.value?.id;
