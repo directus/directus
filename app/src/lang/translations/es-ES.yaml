@@ -1058,6 +1058,7 @@ fields:
     module_bar: Barra de módulos
     transformations_all: Permitir todas las transformaciones
     transformations_none: Desactivar transformaciones
+    transformations_presets: Limitar las transformaciones a los ajustes de abajo
   directus_shares:
     name: Nombre
     role: Rol
@@ -1099,18 +1100,28 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mi proyecto...
+    project_color_note: Inicio de sesión y fondo de Logo
+    project_logo_note: Blanco 40x40 SVG/PNG
+    public_note_placeholder: Un mensaje corto y público que soporta formato markdown...
     security_divider_title: Seguridad
     auth_password_policy:
+      none_text: Ninguno – No Recomendado
       weak_text: Débil - 8 caracteres mínimos
+      strong_text: Fuerte – Mayúsculas / Minúsculas / Números / Especiales
     storage_asset_presets:
       fit_label: Ajustar
+      upscaling: Actualización
       fit:
+        contain_text: Contiene (preservar relación de aspecto)
+        cover_text: Portada (fuerza tamaño exacto)
         fit_text: Ajustar dentro
+        outside_text: Ajustar exterior
     additional_transforms: Transformaciones adicionales
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     mapbox_key: Token de acceso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Mapas basales
+    basemaps_name_placeholder: Introduzca el nombre del mapa base...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Estilo Mapbox
@@ -1126,26 +1137,41 @@ field_options:
     only_track_activity: Sólo seguimiento de actividad
     do_not_track_anything: No realizar seguimiento
     collection_setup: Configuración de Colección
+    note_placeholder: Una descripción de esta colección...
+    hidden_label: Ocultar en la aplicación
     singleton: Tratar como un sólo objeto
     language: Idioma
     translation: Traducción
     translation_placeholder: Introduzca una traducción...
     collection_name: Nombre de Colección
+    singular_unit: Unidad Singular
+    plural_unit: Unidad plural
     archive_divider: Archivar
     archive_field_placeholder: Elija un campo...
+    archive_app_filter: Activar Filtro de Archivos de la Aplicación
+    archive_value: Valor establecido al archivar...
+    unarchive_value: Valor establecido al desarchivar...
     sort_divider: Ordenar
     sort_field: Elija un campo...
     accountability_divider: Responsabilidad
     duplication_divider: Duplicación
   directus_files:
     title: Un título único...
+    description: Una descripción opcional...
+    location: Una ubicación opcional...
+    storage_divider: Nombre de archivo
+    filename_disk: Nombre en el almacenamiento de disco...
+    filename_download: Nombre al descargar...
   directus_roles:
+    name: El nombre único para este rol...
     description: Una descripción de este rol...
+    ip_access: Añadir direcciones IP permitidas, dejar vacío para permitir todos...
     fields:
       icon_name: Ícono
       name_name: Nombre
       name_placeholder: Ingresar un título...
       link_name: Enlace
+      link_placeholder: URL relativa o absoluta...
     collections_name: Colecciones
     collections_addLabel: Añadir Colección...
   directus_users:
@@ -1172,6 +1198,7 @@ field_options:
     headers:
       header: Encabezado
       value: Valor
+      add: Añadir cabecera
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 no_value: Sin valor
 do_nothing: No hacer nada
@@ -1187,9 +1214,23 @@ inline: Alineado
 comment: Comentar
 shares: Compartido
 unlimited_usage: Uso ilimitado
+uses_left: No hay usos restantes | 1 uso restante | {n} usos restantes
+no_shares: No hay acciones para mostrar
+new_share: Nueva parte
 expired: Expirado
 upcoming: Próximamente
 share: Compartir
+share_item: Compartir artículo
+shared_with_you: Un artículo ha sido compartido contigo
+shared_enter_passcode: Introduzca su código de acceso para continuar...
+shared_leave_blank_for_unlimited: Dejar en blanco para ilimitado
+shared_times_remaining: Este enlace sólo puede utilizarse {n} veces
+shared_last_remaining: Este enlace sólo puede utilizarse una vez
+shared_uses_left: Para mayor seguridad, esta página compartida ha sido configurada con un número limitado de vistas. Actualmente quedan {n} visitas, después de las cuales la página ya no será accesible.
+share_access_page: Acceso a la página compartida
+share_access_not_found: Esta página compartida o no existe o ya ha excedido el número máximo de usos permitidos.
+share_access_not_found_desc: Póngase en contacto con un usuario autorizado de este proyecto para solicitar acceso.
+share_access_not_found_title: Página de compartir desconocida
 share_copy_link: Copiar enlace
 share_copy_link_success: Enlace Copiado
 share_copy_link_error: Imposible copiar el archivo
@@ -1225,6 +1266,7 @@ file: Archivo
 file_library: Biblioteca de Archivos
 forgot_password: He olvidado mi Contraseña
 hidden: Oculto
+hidden_in_group: Escondido en {group}
 icon: Ícono
 info: Información
 normal: Normal
@@ -1232,8 +1274,14 @@ success: Éxito
 warning: Advertencia
 danger: Peligro
 colors:
+  purple: Morado
+  blue: Azul
+  green: Verde
+  yellow: Amarillo
+  orange: Naranja
   red: Rojo
   black: Negro
+  gray: Gris
   white: Blanco
 junction_collection: Colección de Unión
 latency: Latencia
@@ -1263,6 +1311,9 @@ sign_out: Cerrar Sesión
 sign_out_confirm: '¿Realmente desea cerrar sesión?'
 something_went_wrong: Algo salió mal.
 sort_direction: Dirección de Ordenamiento
+export_location: Exportar ubicación
+export_started: Exportación iniciada
+export_started_copy: Tu exportación ha comenzado. Serás notificado cuando esté listo para descargar.
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
@@ -1293,11 +1344,13 @@ interfaces:
     name: Campos
   group-accordion:
     name: Acordeón
+    description: Mostrar campos o grupos como secciones de accordeón
     start: Iniciar
     all_closed: Todo Cerrado
     first_opened: Primero Abierto
     all_opened: Todo Abierto
     accordion_mode: Modo Accordion
+    max_one_section_open: Máximo de una sección abierta
   presentation-links:
     presentation-links: Botón de enlace
     links: Enlaces
@@ -1314,11 +1367,17 @@ interfaces:
     show_more: 'Mostrar {count} más'
     items_shown: Elementos Mostrados
   select-multiple-checkbox-tree:
+    name: Casillas (árbol)
+    description: Elija entre múltiples opciones a través de casillas anidadas
+    value_combining: Combinación de Valor
+    value_combining_note: Controla qué valor se almacena cuando se realizan selecciones anidadas.
     show_all: Mostrar todo
+    show_selected: Mostrar seleccionados
   input-code:
     code: Código
     description: Escribir o compartir fragmentos de código
     line_number: Número de línea
+    line_wrapping: Salto de línea
     placeholder: Ingrese el código aquí...
   system-collection:
     collection: Colección
@@ -1342,6 +1401,7 @@ interfaces:
     include_seconds: Incluir Segundos
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
+    placeholder: Elija una fecha...
   system-display-template:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
@@ -1351,6 +1411,7 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta y divide los campos en secciones
+    title_placeholder: Introduzca un título, o déjelo en blanco para mostrar sólo una línea...
     inline_title: Título seguido por línea
     inline_title_label: Mostrar título seguido por línea
     margin_top: Margen superior
@@ -1385,6 +1446,8 @@ interfaces:
   file-image:
     image: Imagen
     description: Seleccionar o subir una imagen
+    crop: Recortar para encajar
+    crop_label: Recortar imagen según sea necesario
   system-interface:
     interface: Interfaz
     description: Seleccionar una interfaz existente
@@ -1395,6 +1458,7 @@ interfaces:
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
+    display_template_configure_notice: Puede configurar la plantilla de pantalla después de crear este campo.
   select-dropdown-m2o:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
@@ -1404,34 +1468,56 @@ interfaces:
     description: Ingresar y previsualizar Markdown
     edit: Editar
     preview: Vista previa
+    editorFont: Fuente del editor
     previewFont: Previsualizar fuente
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
     customSyntax_add: Añadir sintaxis personalizada
     box: Bloque / Alineación
+    imageToken: Token de acceso estático
+    imageToken_label: Token de acceso estático a añadir la URL de los recursos
   map:
     map: Mapa
+    description: Seleccione una ubicación en el mapa
     zoom: Zoom
+    geometry_type: Tipo de geometría
+    geometry_format: Formato de geometría
     default_view: Vista predeterminada
+    invalid_options: Opciones no válidas
+    invalid_format: Formato no válido ({format})
+    unexpected_geometry: Esperado {expected}, obtuvo {got}.
+    fit_bounds: Ajustar la vista a los datos
     native: Nativo
     geojson: GeoJSON
     lnglat: Longitud, Latitud
     wkt: WKT
     wkb: WKB
+    click_to_select: Clic para seleccionar {geometry}
   presentation-notice:
     notice: Aviso
+    description: Mostrar un breve aviso
+    text: Introduzca el contenido del aviso aquí...
   list-o2m:
     one-to-many: Uno a Muchos
+    description: Seleccionar varios elementos relacionados
     no_collection: No se encontró la colección
   system-folder:
     folder: Directorio
     description: Seleccione una carpeta
+    field_hint: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     root_name: Raíz de la Biblioteca de Archivos
     system_default: Valores por defecto del sistema
+  select-radio:
+    radio-buttons: Botones de radio
+    description: Seleccione una de las múltiples opciones
   list:
     repeater: Repetidor
+    description: Crear múltiples entradas con la misma estructura
     edit_fields: Editar campos
+    add_label: 'Etiqueta "Crear nuevo"'
     field_name_placeholder: Ingrese el nombre del campo...
+    field_note_placeholder: Introducir nota del campo...
+    incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -1449,10 +1535,12 @@ interfaces:
     auto_formatter: Usar Auto-Formateador de Título
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
+    add_tags: Añadir una etiqueta y presionar Enter...
   input:
     input: Entrada
     description: Introduzca manualmente un valor
     trim: Recortar
+    trim_label: Recortar el inicio y el final
     mask: Enmascarado
     mask_label: Ocultar el valor real
     clear: Valor Limpiado
@@ -1461,8 +1549,15 @@ interfaces:
     maximum_value: Valor Máximo
     step_interval: Intervalo de Pasos
     slug: Slugify
+    slug_label: Hacer segura la URL del valor introducido
   input-multiline:
     textarea: Área de Texto
+    description: Introduzca texto plano multilínea
+  input-translated-string:
+    input-translated-string: Cadenas traducidas
+    description: Seleccionar o añadir cadena de traducción
+    search_placeholder: Buscar...
+    new_translation_string: Nueva cadena de traducción
   boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
@@ -1473,8 +1568,10 @@ interfaces:
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
+    toggle_split_view: Cambiar vista dividida
     language_field: Campo indicador de idioma
   list-o2m-tree-view:
+    description: Vista del árbol para elementos anidados recursivos uno a muchos
     recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
@@ -1486,16 +1583,26 @@ interfaces:
       modal: Diálogo
   input-rich-text-html:
     wysiwyg: WYSIWYG
+    description: Un editor de texto rich escribiendo contenido HTML
     toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
     options_override: Sobrescribir Opciones
+    folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
+    imageToken: Token de acceso estático
+    imageToken_label: Token de acceso estático a añadir la URL de los recursos
   input-autocomplete-api:
+    input-autocomplete-api: Campo de Autocompletado (API)
     results_path: Ruta de Resultados
     value_path: Ruta del valor
     text_path: Ruta de texto
     trigger: Disparador
     rate: Tasa
+  group-raw:
+    description: Rendear los campos como son
   group-detail:
+    name: Grupo de detalles
+    description: Procesar los campos como una sección colapsable
+    show_header: Mostrar encabezado de grupo
     header_icon: Iconos del encabezado
     header_color: Color del encabezado
     start_open: Iniciar apertura
@@ -1555,11 +1662,18 @@ displays:
     bold: Negrita
     bold_label: Usar negritas
     italic: Cursiva
+    italic_label: Usar itálica
     prefix: Prefijo
+    prefix_label: Añadir texto al inicio
     suffix: Sufijo
+    suffix_label: Añadir texto al final
     color: Color
+    background: Fondo
     icon: Ícono
+    border: Border
+    border_label: Mostrar borde
     text: Texto
+    text_placeholder: Sobrescribir valor opcional...
   formatted-json-value:
     formatted-json-value: Valor JSON Formateado
     description: Presentar una versión formateada del objeto
@@ -1597,6 +1711,7 @@ displays:
   related-values:
     related-values: Valores Relacionados
     description: Presentar valores relativos
+    display_template_configure_notice: Puede configurar la plantilla de pantalla después de crear este campo.
   user:
     user: Usuario
     description: Presentar un usuario de Directus
@@ -1623,19 +1738,37 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Fecha de Inicio
     end_date_field: Campo Fecha de Fin
+    optional: Opcional
+    first_day: Primer día de la semana
   map:
     map: Mapa
     basemap: Mapa base
     layers: Capas
+    cluster_options: Opciones de grupo
+    cluster: Datos cercanos al grupo
+    cluster_radius: Radio del grupo
+    cluster_minpoints: Tamaño mínimo del grupo
+    cluster_maxzoom: Zoom máximo para el grupo
+    field: Campo geoespacial
     invalid_geometry: Geometría incorrecta
+    find_location: Buscar ubicación...
+    default_template: Usando la colección por defecto...
+    no_compatible_fields: No hay campos compatibles
 panels:
   metric:
     name: Métrico
+    description: Mostrar un único valor basado en una consulta
     field: Campo
   time_series:
     name: Series de tiempo
+    description: Procesar un gráfico de línea basado en valores a lo largo del tiempo
+    date_field: Campo de fecha
     value_field: Tipo de campo
+    fill_type: Tipo de relleno
+    curve_type: Tipo de curva
   label:
     name: Etiqueta
+    description: Mostrar algo de texto
   list:
     name: Lista
+    description: Filtrar y listar campos de una colección
