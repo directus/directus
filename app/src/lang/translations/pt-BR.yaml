@@ -67,6 +67,9 @@ create_role: Criar Cargo
 create_user: Criar Usuário
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
+translation_string_translations_placeholder: Adicionar uma nova tradução
+delete_translation_string_copy: >-
+  Tem certeza de que deseja excluir a string de tradução "{key}"? Essa ação não pode ser desfeita.
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
@@ -170,6 +173,7 @@ field_create_success: 'Campo Criado: "{field}"'
 field_update_success: 'Campo Atualizado: "{field}"'
 duplicate_where_to: Para onde você gostaria de duplicar este campo?
 language: Idioma
+language_placeholder: Selecione um idioma...
 aggregate_function: Função de Agregação
 aggregate_precision: Precisão de Agregação
 group_aggregation: Agregação go Grupo
@@ -180,6 +184,7 @@ camera: Câmera
 show_zero: Mostrar Zero
 create_in_advanced_field_creation_mode: Criar Campo no Modo Avançado
 continue_in_advanced_field_creation_mode: Continuar a Criação do Campo no Modo Avançado
+validation: Validação
 sum: Soma
 sum_distinct: Soma Distinta
 avg: Média
@@ -352,10 +357,18 @@ delete_comment: Excluir comentário
 functions:
   year: Ano
   month: Mês
+  week: Semana
+  day: Dia
+  weekday: Dia da Semana
+  hour: Hora
+  minute: Minuto
+  second: Segundo
   count: Contagem
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -406,6 +419,7 @@ replace_from_library: Substituir Arquivo da Biblioteca
 replace_from_url: Substituir Arquivo da URL
 no_file_selected: Nenhum arquivo selecionado
 download_file: Baixar arquivo
+open_file_in_tab: Abrir em nova guia
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -706,6 +720,7 @@ create_dashboard: Criar painel
 dashboard_name: Nome do painel
 full_screen: Tela cheia
 edit_panels: Editar painéis
+left_align: Alinhar à Esquerda
 right_align: Alinhar à Direita
 fit_to_screen: Ajustar à tela
 image_url: URL da Imagem
@@ -1149,6 +1164,7 @@ start_open: Iniciar Aberto
 block: Bloco
 inline: Em linha
 comment: Comentário
+shared_uses_left: Para maior segurança, esta página compartilhada foi configurada com um número limitado de visualizações. Atualmente há {n} visualizações restantes, depois das quais a página não estará mais acessível.
 share_access_not_found: Esta página compartilhada não existe ou já excedeu o número máximo de usuários permitidos.
 share_access_not_found_desc: Entre em contato com um usuário autorizado deste projeto para solicitar acesso.
 relational_triggers: Gatilhos Relacionais
