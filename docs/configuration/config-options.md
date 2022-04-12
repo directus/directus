@@ -265,21 +265,23 @@ All the `DB_POOL_` prefixed options are passed to [`tarn.js`](https://github.com
 
 ## Security
 
-| Variable                         | Description                                                                                                                           | Default Value            |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `KEY`                            | Unique identifier for the project.                                                                                                    | --                       |
-| `SECRET`                         | Secret string for the project.                                                                                                        | --                       |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                          | `15m`                    |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                      | `7d`                     |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                              | --                       |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                           | `false`                  |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                 | `lax`                    |
-| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                        | `directus_refresh_token` |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset)                | --                       |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)                          | --                       |
-| `IP_TRUST_PROXY`                 | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                       | true                     |
-| `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                  | false                    |
-| `CONTENT_SECURITY_POLICY`        | Custom options for the Content-Security-Policy header. See [helmet's documentation](https://helmetjs.github.io) for more information. | --                       |
+| Variable                         | Description                                                                                                                                                      | Default Value            |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `KEY`                            | Unique identifier for the project.                                                                                                                               | --                       |
+| `SECRET`                         | Secret string for the project.                                                                                                                                   | --                       |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                                                     | `15m`                    |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                                                 | `7d`                     |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                                                         | --                       |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                                                      | `false`                  |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                                            | `lax`                    |
+| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                                                   | `directus_refresh_token` |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication/#request-password-reset)                                           | --                       |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users/#invite-a-new-user)                                                     | --                       |
+| `IP_TRUST_PROXY`                 | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                  | true                     |
+| `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                                             | false                    |
+| `CONTENT_SECURITY_POLICY`        | Custom overrides for the Content-Security-Policy header. See [helmet's documentation](https://helmetjs.github.io) for more information.                          | --                       |
+| `ASSETS_CONTENT_SECURITY_POLICY` | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation](https://helmetjs.github.io) for more information. | --                       |
+| `IMPORT_IP_DENY_LIST`            | Deny importing files from these IP addresses. Use `0.0.0.0` for any local IP address                                                                             | `0.0.0.0`                |
 
 ::: tip Cookie Strictness
 
@@ -319,8 +321,8 @@ multiplied. This may cause out of memory errors, especially when running in cont
 
 | Variable               | Description                                                                                                                                            | Default Value                |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
-| `CORS_ENABLED`         | Whether or not to enable the CORS headers.                                                                                                             | `true`                       |
-| `CORS_ORIGIN`          | Value for the `Access-Control-Allow-Origin` header. Use `true` to match the Origin header, or provide a domain or a CSV of domains for specific access | `true`                       |
+| `CORS_ENABLED`         | Whether or not to enable the CORS headers.                                                                                                             | `false`                      |
+| `CORS_ORIGIN`          | Value for the `Access-Control-Allow-Origin` header. Use `true` to match the Origin header, or provide a domain or a CSV of domains for specific access | `false`                      |
 | `CORS_METHODS`         | Value for the `Access-Control-Allow-Methods` header.                                                                                                   | `GET,POST,PATCH,DELETE`      |
 | `CORS_ALLOWED_HEADERS` | Value for the `Access-Control-Allow-Headers` header.                                                                                                   | `Content-Type,Authorization` |
 | `CORS_EXPOSED_HEADERS` | Value for the `Access-Control-Expose-Headers` header.                                                                                                  | `Content-Range`              |
@@ -415,9 +417,10 @@ often possible to cache assets for far longer than you would cache database cont
 | Variable                          | Description                                                                              | Default Value    |
 | --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
 | `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `5m`             |
 | `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
 | `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long the schema caches (schema/permissions) are persisted.                           | `10m`            |
 | `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
 | `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
 | `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
@@ -562,14 +565,26 @@ STORAGE_AWS_REGION="us-east-2"
 STORAGE_AWS_BUCKET="my-files"
 ```
 
+### Metadata
+
+When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+purposes, collection of additional metadata must be configured:
+
+| Variable                   | Description                                                                                           | Default Value                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO |
+
+<sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
+
 ## Assets
 
-| Variable                               | Description                                                                                                | Default Value |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
-| `ASSETS_CACHE_TTL`                     | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header. | `30m`         |
-| `ASSETS_TRANSFORM_MAX_CONCURRENT`      | How many file transformations can be done simultaneously                                                   | `4`           |
-| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` | The max pixel dimensions size (width/height) that is allowed to be transformed                             | `6000`        |
-| `ASSETS_TRANSFORM_MAX_OPERATIONS`      | The max number of transform operations that is allowed to be processed (excludes saved presets)            | `5`           |
+| Variable                               | Description                                                                                                                             | Default Value |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `ASSETS_CACHE_TTL`                     | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header.                              | `30m`         |
+| `ASSETS_TRANSFORM_MAX_CONCURRENT`      | How many file transformations can be done simultaneously                                                                                | `4`           |
+| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` | The max pixel dimensions size (width/height) that is allowed to be transformed                                                          | `6000`        |
+| `ASSETS_TRANSFORM_MAX_OPERATIONS`      | The max number of transform operations that is allowed to be processed (excludes saved presets)                                         | `5`           |
+| `ASSETS_CONTENT_SECURITY_POLICY`       | Custom overrides for the Content-Security-Policy header. See [helmet's documentation](https://helmetjs.github.io) for more information. | --            |
 
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
@@ -797,3 +812,4 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | Variable                | Description                                                                               | Default Value |
 | ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
 | `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
+| `EXPORT_BATCH_SIZE`     | How many rows are read into memory at a time when constructing exports                    | 5000          |

@@ -10,6 +10,7 @@ export function getJSType(field: Field): string {
 	if (['string', 'text', 'uuid', 'hash'].includes(field.type)) return 'string';
 	if (['boolean'].includes(field.type)) return 'boolean';
 	if (['time', 'timestamp', 'date', 'dateTime'].includes(field.type)) return 'string';
-	if (['json', 'csv', 'geometry'].includes(field.type)) return 'object';
+	if (['json', 'csv'].includes(field.type)) return 'object';
+	if (field.type.startsWith('geometry')) return 'object';
 	return 'undefined';
 }

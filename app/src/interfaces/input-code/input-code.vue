@@ -37,7 +37,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: [String, Object, Array] as PropType<string | Record<string, any> | any[]>,
+			type: [String, Object, Array, Number, Boolean] as PropType<string | Record<string, any> | any[]>,
 			default: null,
 		},
 		altOptions: {
@@ -104,7 +104,9 @@ export default defineComponent({
 						}
 
 						try {
-							emit('input', JSON.parse(content));
+							const parsedJson = JSON.parse(content);
+							if (typeof parsedJson !== 'string') return emit('input', parsedJson);
+							return emit('input', content);
 						} catch {
 							// We won't stage invalid JSON
 						}
@@ -118,7 +120,7 @@ export default defineComponent({
 		const stringValue = computed<string>(() => {
 			if (props.value === null) return '';
 
-			if (typeof props.value === 'object') {
+			if (props.type === 'json' || typeof props.value === 'object') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
@@ -133,6 +135,9 @@ export default defineComponent({
 		);
 
 		watch(stringValue, () => {
+			// prevent setting redundantly stringified json value when it's actually the same value
+			if (props.type === 'json' && codemirror?.getValue() === props.value) return;
+
 			if (codemirror?.getValue() !== stringValue.value) {
 				codemirror?.setValue(stringValue.value || '');
 			}
