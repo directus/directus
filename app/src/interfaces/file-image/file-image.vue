@@ -278,6 +278,7 @@ img {
 	height: 100%;
 	color: var(--foreground-subdued);
 	background-color: var(--background-normal);
+	padding: 32px;
 
 	.v-icon {
 		margin-bottom: 6px;
