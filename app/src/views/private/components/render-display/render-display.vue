@@ -1,5 +1,5 @@
 <template>
-	<value-null v-if="value === null || value === undefined" />
+	<value-null v-if="type !== 'alias' && (value === null || value === undefined)" />
 	<v-text-overflow v-else-if="displayInfo === null" class="display" :text="value" />
 	<component
 		:is="`display-${display}`"
@@ -8,6 +8,7 @@
 		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
+		:item="item"
 		:type="type"
 		:collection="collection"
 		:field="field"
@@ -42,6 +43,7 @@ export default defineComponent({
 			type: [String, Number, Object, Array, Boolean],
 			default: null,
 		},
+		item: Object,
 		type: {
 			type: String,
 			required: true,

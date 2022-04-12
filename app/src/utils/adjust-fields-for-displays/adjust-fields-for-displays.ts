@@ -20,34 +20,39 @@ export default function adjustFieldsForDisplays(fields: readonly string[], paren
 			let fieldKeys: string[] | null = null;
 
 			if (Array.isArray(display.fields)) {
-				fieldKeys = display.fields.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);
+				fieldKeys = display.fields;
 			}
 
 			if (typeof display.fields === 'function') {
-				fieldKeys = display
-					.fields(field.meta?.display_options, {
-						collection: field.collection,
-						field: field.field,
-						type: field.type,
-					})
-					.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);
+				fieldKeys = display.fields(field.meta?.display_options, {
+					collection: field.collection,
+					field: field.field,
+					type: field.type,
+				});
 			}
 
-			if (fieldKeys) {
-				return fieldKeys.map((fieldKey) => {
+			if (Array.isArray(fieldKeys)) {
+				return fieldKeys.map((relatedFieldKey) => {
+					/**
+					 * Prefix relation fields except functions
+					 */
+					const key: string = relatedFieldKey.includes('(')
+						? relatedFieldKey.replaceAll('()', `(${fieldKey})`)
+						: `${fieldKey}.${relatedFieldKey}`;
+
 					/**
 					 * This is for the special case where you want to show a thumbnail in a relation to
 					 * directus_files. The thumbnail itself isn't a real field, but shows the thumbnail based
 					 * on the other available fields (like ID, title, and type).
 					 */
-					if (fieldKey.includes('$thumbnail') && field.collection === 'directus_files') {
-						return fieldKey
+					if (key.includes('$thumbnail') && field.collection === 'directus_files') {
+						return key
 							.split('.')
 							.filter((part) => part !== '$thumbnail')
 							.join('.');
 					}
 
-					return fieldKey;
+					return key;
 				});
 			}
 
