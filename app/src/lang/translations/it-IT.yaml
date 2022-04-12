@@ -351,7 +351,7 @@ import_export: Importa / Esporta
 format: Formato
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
-fill_template: Riempi con il valore del modello
+fill_template: Riempi con i valori del template
 a_unique_table_name: Un nome di tabella unico...
 a_unique_column_name: Un nome di colonna unico...
 enable_custom_values: Abilita valori personalizzati
