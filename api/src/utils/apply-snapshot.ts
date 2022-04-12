@@ -1,4 +1,4 @@
-import { Snapshot, SnapshotDiff } from '../types';
+import { Snapshot, SnapshotDiff, SnapshotField } from '../types';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
 import { Knex } from 'knex';
@@ -6,7 +6,7 @@ import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { set } from 'lodash';
-import { DiffNew } from 'deep-diff';
+import { Diff, DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
 
@@ -74,7 +74,7 @@ export async function applySnapshot(
 		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
-			if (diff?.[0].kind === 'N') {
+			if (diff?.[0].kind === 'N' && !isUpdateFieldMetaOptions(diff?.[0])) {
 				try {
 					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
 				} catch (err) {
@@ -83,7 +83,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A' || isUpdateFieldMetaOptions(diff?.[0])) {
 				const newValues = snapshot.fields.find((snapshotField) => {
 					return snapshotField.collection === collection && snapshotField.field === field;
 				});
@@ -100,7 +100,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'D') {
+			if (diff?.[0].kind === 'D' && !isUpdateFieldMetaOptions(diff?.[0])) {
 				try {
 					await fieldsService.deleteField(collection, field);
 				} catch (err) {
@@ -159,4 +159,11 @@ export async function applySnapshot(
 			}
 		}
 	});
+}
+
+export function isUpdateFieldMetaOptions(diff: Diff<SnapshotField | undefined>): boolean {
+	if (!diff) return false;
+	if (diff.kind !== 'N' && diff.kind !== 'D') return false;
+	if (!diff.path || diff.path.length < 2) return false;
+	return diff.path.join('.').startsWith('meta.options');
 }
