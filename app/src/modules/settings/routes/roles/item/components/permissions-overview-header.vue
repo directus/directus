@@ -25,6 +25,9 @@ export default defineComponent({
 .permissions-overview-header {
 	--v-icon-color: var(--foreground-subdued);
 
+	position: sticky;
+	top: 60px; // height of header bar minus 1px to avoid gaps
+	z-index: 4;
 	display: flex;
 	padding: 12px;
 	background-color: var(--background-input);
