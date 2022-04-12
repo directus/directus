@@ -1104,6 +1104,8 @@ field_options:
       weak_text: Débil - 8 caracteres mínimos
     storage_asset_presets:
       fit_label: Ajustar
+      fit:
+        fit_text: Ajustar dentro
     additional_transforms: Transformaciones adicionales
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     mapbox_key: Token de acceso Mapbox
@@ -1127,6 +1129,7 @@ field_options:
     singleton: Tratar como un sólo objeto
     language: Idioma
     translation: Traducción
+    translation_placeholder: Introduzca una traducción...
     collection_name: Nombre de Colección
     archive_divider: Archivar
     archive_field_placeholder: Elija un campo...
@@ -1229,7 +1232,9 @@ success: Éxito
 warning: Advertencia
 danger: Peligro
 colors:
+  red: Rojo
   black: Negro
+  white: Blanco
 junction_collection: Colección de Unión
 latency: Latencia
 login: Iniciar Sesión
@@ -1284,6 +1289,8 @@ interfaces:
     no_rules: No hay reglas configuradas
     change_value: Haga clic para cambiar el valor
     placeholder: Arrastre archivos a esta zona
+  fields:
+    name: Campos
   group-accordion:
     name: Acordeón
     start: Iniciar
@@ -1611,7 +1618,7 @@ layouts:
     spacing: Espaciado
     comfortable: Cómoda
     compact: Compacto
-    cozy: Cómoda
+    cozy: Holgada
   calendar:
     calendar: Calendario
     start_date_field: Campo Fecha de Inicio
