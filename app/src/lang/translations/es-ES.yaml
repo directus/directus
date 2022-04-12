@@ -95,11 +95,15 @@ update_bookmark: Actualizar Marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
   ¿Está seguro que desea eliminar el Marcador "{bookmark}"? Esta acción no es reversible.
+delete_personal_bookmark: Eliminar marcador personal
+delete_role_bookmark: Eliminar marcador de rol
+delete_global_bookmark: Eliminar marcador global
 logoutReason:
   SIGN_OUT: Sesión terminada
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
+admin_description: Función administrativa inicial con acceso sin restricciones App/API.
 not_allowed: No Permitido
 directus_version: Versión de Directus
 node_version: Versión de Node
@@ -120,6 +124,7 @@ recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
+validation_errors_notice: 'Los siguientes campos tienen valores no válidos:'
 validationError:
   eq: El valor tiene que ser {valid}
   neq: El valor no puede ser {invalid}
@@ -169,6 +174,7 @@ revision_post_create: Este es el aspecto de este elemento cuando fue creado.
 revision_post_update: Así se vería el elemento después de la actualización.
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
+hide_field: Ocultar campo
 hide_field_on_detail: Ocultar campo en el Detalle
 show_field_on_detail: Mostrar campo en el Detalle
 delete_field: Eliminar Campo
@@ -177,6 +183,7 @@ field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
 duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
 language: Idioma
+language_placeholder: Seleccione un idioma...
 aggregate_function: Función de agregado
 aggregate_precision: Precisión agregada
 group_aggregation: Agregación de grupo
@@ -187,6 +194,7 @@ camera: Cámara
 show_zero: Mostrar cero
 create_in_advanced_field_creation_mode: Crear campo en modo avanzado
 continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
+validation: Validación
 sum: Suma
 sum_distinct: Sumar Diferentes
 avg: Media
@@ -289,7 +297,13 @@ foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
 dismiss: Cerrar
 raw_value: Valor Plano
+copy_raw_value: Copiar valor exacto
 copy_raw_value_success: Copiado
+copy_raw_value_fail: Copia fallida
+paste_raw_value: Pegar valor exacto
+paste_raw_value_success: Pegado
+paste_raw_value_fail: Fallo al Pegar
+view_raw_value: Ver valor exacto
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
@@ -329,6 +343,8 @@ languages_collection: Colección de Idiomas
 import_data_input_placeholder: CSV o JSON...
 import_data_button: Comenzar importación
 import_data_indeterminate: Importando datos...
+import_data_success: Datos importados correctamente desde {filename}
+import_data_error: La estructura de datos de este archivo no coincide con la colección.
 label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
@@ -348,13 +364,22 @@ interface_label: Interfaz
 today: Hoy
 yesterday: Ayer
 delete_comment: Eliminar Comentario
+delete_share: Eliminar vínculos compartidos
 functions:
   year: Año
   month: Mes
+  week: Semana
+  day: Día
+  weekday: Día laborable
+  hour: Hora
+  minute: Minuto
+  second: Segundo
   count: Contar
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -405,6 +430,15 @@ replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
 no_file_selected: Sin Archivos Seleccionados
 download_file: Descargar Archivo
+open_file_in_tab: Abrir archivo en nueva pestaña
+start_export: Iniciar exportación
+not_available_for_local_downloads: No disponible para descargas locales
+exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
+exporting_limited_items_in_collection: Exportando {limit} de {total} elementos dentro de {collection}.
+exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación a continuación.
+exporting_download_hint: Una vez completado, este archivo {format} se descargará automáticamente a tu dispositivo.
+exporting_batch_hint: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
+exporting_batch_hint_forced: Debido al gran número de artículos, esta exportación debe ser procesada en lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
 primary_key_field: Campo Llave Primaria
@@ -541,6 +575,11 @@ value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador
 edit_bookmark: Editar Marcador
+edit_personal_bookmark: Editar marcador personal
+edit_role_bookmark: Editar marcador de rol
+edit_global_bookmark: Editar marcador global
+cannot_edit_role_bookmarks: No se pueden editar los marcadores de rol
+cannot_edit_global_bookmarks: No se puede editar marcadores globales
 bookmarks: Marcadores
 presets: Predefinidos
 unexpected_error: Error Inesperado
@@ -566,12 +605,15 @@ delete_collection_success: Colección Eliminada
 make_collection_visible: Hacer visible la colección
 make_collection_hidden: Hacer que la colección se oculte
 make_folder_visible: Hacer visible la carpeta
+make_folder_hidden: Ocultar carpeta
+goto_collection_content: Ver contenido
 start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
   ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
+delete_folder_are_you_sure: '¿Está seguro que desea eliminar esta carpeta? Las carpetas anidadas y las colecciones se moverán al nivel más alto.'
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -598,6 +640,7 @@ advanced_settings: Configuración Avanzada
 advanced_filter: Filtro Avanzado
 delete_advanced_filter: Borrar filtro
 change_advanced_filter_operator: Cambiar operador
+advanced: Avanzado
 operators:
   eq: Igual a
   neq: No es igual a
@@ -625,6 +668,8 @@ operators:
   nintersects: No se intersecta
   intersects_bbox: Caja delimitadora de intersecciones
   nintersects_bbox: No intersecta la caja delimitadora
+  regex: Coincidir RegExp
+custom_validation_message: Mensaje de validación personalizado
 loading: Cargando...
 drop_to_upload: Arrastrar para Subir
 item: Elemento
@@ -665,6 +710,7 @@ no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
 clear_filters: Limpiar Filtros
 saves_automatically: Guardar Automáticamente
 role: Rol
+edit_role: Editar rol
 rule: Regla
 user: Usuario
 no_presets: Sin Predefinidos
@@ -707,7 +753,11 @@ no_data: Sin datos
 create_dashboard: Crear un Panel
 dashboard_name: Nombre del Panel
 full_screen: Pantalla Completa
+full_text_search: Búsqueda de texto completo
 edit_panels: Editar Panel
+center_align: Center Align
+left_align: Left Align
+right_align: Alineación derecha
 fit_to_screen: Ajustar a la pantalla
 image_url: Url de la imagen
 alt_text: Texto Alternativo
@@ -790,6 +840,7 @@ adding_user: Agregando Usuario
 unknown_user: Usuario Desconocido
 creating_in: 'Creando Elemento en {collection}'
 editing_in: 'Editando Elemento en {collection}'
+viewing_in: 'Viendo objeto en {collection}'
 creating_unit: 'Creando {unit}'
 editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando {count} Elementos por lote'
@@ -799,6 +850,7 @@ settings_permissions: Roles y Permisos
 settings_project: Configuración del Proyecto
 settings_webhooks: Webhooks
 settings_presets: Predefinidos y Marcadores
+settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
 select: Seleccionar...
@@ -844,6 +896,7 @@ page_help_settings_presets_item: >-
   **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
 page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
 page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_settings_translation_strings_collection: '**Examinar cadenas de traducción** — Lista todas las cadenas de traducción dentro del proyecto.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
@@ -882,6 +935,7 @@ directus_collection:
   directus_roles: Grupos de permisos para usuarios del sistema
   directus_sessions: Información de sesión de usuario
   directus_settings: Opciones de configuración del proyecto
+  directus_shares: Rastrear elementos compartidos externamente
   directus_users: Usuarios del sistema para la plataforma
   directus_webhooks: Configuración de peticiones HTTP basadas en eventos
 fields:
@@ -980,9 +1034,11 @@ fields:
     mapbox_key: Token de acceso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Atribución
+    attribution_placeholder: Colaboradores de ©OpenStreetMap
     transforms_note: El nombre del método Sharp y sus argumentos. Vea https://sharp.pixelplumbing.com/api-constructor para más información.
     additional_transforms: Transformaciones adicionales
     project_name: Nombre del Proyecto
+    project_descriptor: Descriptor del proyecto
     project_url: URL del Proyecto
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
@@ -997,9 +1053,11 @@ fields:
     storage_default_folder: Carpeta por defecto
     storage_asset_presets: Ajustes de transformación
     storage_asset_transform: Transformaciones permitidas
+    overrides: Reemplazos de la aplicación
     custom_css: CSS Personalizado
     module_bar: Barra de módulos
     transformations_all: Permitir todas las transformaciones
+    transformations_none: Desactivar transformaciones
   directus_shares:
     name: Nombre
     role: Rol
@@ -1055,6 +1113,7 @@ field_options:
     basemaps_tile: Raster TileJSON
     basemaps_style: Estilo Mapbox
     files_divider_title: Archivos y miniaturas
+    overrides_divider_title: Reemplazos de la aplicación
   directus_activity:
     login: Iniciar sesión
     create: Crear
@@ -1169,6 +1228,8 @@ normal: Normal
 success: Éxito
 warning: Advertencia
 danger: Peligro
+colors:
+  black: Negro
 junction_collection: Colección de Unión
 latency: Latencia
 login: Iniciar Sesión
