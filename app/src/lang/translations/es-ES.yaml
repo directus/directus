@@ -1322,6 +1322,7 @@ translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 start: Iniciar
 interfaces:
@@ -1592,12 +1593,14 @@ interfaces:
     imageToken_label: Token de acceso estático a añadir la URL de los recursos
   input-autocomplete-api:
     input-autocomplete-api: Campo de Autocompletado (API)
+    description: Búsqueda autocompletada para valores de API externos.
     results_path: Ruta de Resultados
     value_path: Ruta del valor
     text_path: Ruta de texto
     trigger: Disparador
     rate: Tasa
   group-raw:
+    name: Grupo Puro
     description: Rendear los campos como son
   group-detail:
     name: Grupo de detalles
