@@ -92,8 +92,6 @@ export class Auth extends IAuth {
 
 		this.updateStorage<'DynamicToken'>(response.data!);
 
-		if (this.autoRefresh) this.refreshIfExpired();
-
 		return {
 			access_token: response.data!.access_token,
 			refresh_token: response.data?.refresh_token,
@@ -111,8 +109,6 @@ export class Auth extends IAuth {
 		);
 
 		this.updateStorage(response.data!);
-
-		if (this.autoRefresh) this.refreshIfExpired();
 
 		return {
 			access_token: response.data!.access_token,
