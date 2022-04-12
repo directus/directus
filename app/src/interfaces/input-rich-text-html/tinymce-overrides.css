@@ -102,6 +102,7 @@
 
 .wysiwyg:not(.disabled) .tox-tinymce.focus {
 	border-color: var(--primary) !important;
+	box-shadow: 0 0 16px -8px var(--primary) !important;
 }
 
 .tox .tox-toolbar,

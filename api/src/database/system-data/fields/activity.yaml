@@ -46,19 +46,19 @@ fields:
     width: half
 
   - field: comment
-    display: formatted-text
+    display: formatted-value
     display_options:
-      subdued: true
+      color: 'var(--foreground-subdued)'
     width: half
 
   - field: user_agent
-    display: formatted-text
+    display: formatted-value
     display_options:
       font: monospace
     width: half
 
   - field: ip
-    display: formatted-text
+    display: formatted-value
     display_options:
       font: monospace
     width: half
