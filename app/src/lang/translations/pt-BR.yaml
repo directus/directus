@@ -706,6 +706,7 @@ create_dashboard: Criar painel
 dashboard_name: Nome do painel
 full_screen: Tela cheia
 edit_panels: Editar painéis
+right_align: Alinhar à Direita
 fit_to_screen: Ajustar à tela
 image_url: URL da Imagem
 alt_text: Texto Alternativo
@@ -729,6 +730,7 @@ unlimited: Ilimitado
 open_link_in: Abrir link em
 new_tab: Nova aba
 current_tab: Aba atual
+save_image: Salvar Imagem
 wysiwyg_options:
   aligncenter: Alinhar ao centro
   alignjustify: Justificar
@@ -1147,6 +1149,8 @@ start_open: Iniciar Aberto
 block: Bloco
 inline: Em linha
 comment: Comentário
+share_access_not_found: Esta página compartilhada não existe ou já excedeu o número máximo de usuários permitidos.
+share_access_not_found_desc: Entre em contato com um usuário autorizado deste projeto para solicitar acesso.
 relational_triggers: Gatilhos Relacionais
 referential_action_field_label_m2o: Ao Excluir de {collection}...
 referential_action_field_label_o2m: Em Desmarcar {collection}...
@@ -1184,6 +1188,15 @@ normal: Normal
 success: Sucesso
 warning: Atenção
 danger: Perigo
+colors:
+  blue: Azul
+  green: Verde
+  yellow: Amarelo
+  orange: Laranja
+  red: Vermelho
+  black: Preto
+  gray: Cinza
+  white: Branco
 junction_collection: Jução da coleção
 latency: Latência
 login: Entrar
@@ -1198,6 +1211,7 @@ relationship: Relacionamento
 reset: Redefinir
 reset_password: Recuperar senha
 revisions: Revisões
+no_revisions: Ainda não há revisões
 revert: Reverter
 save: Salvar
 schema: Esquema
@@ -1225,8 +1239,13 @@ interfaces:
   filter:
     name: Filtro
     add_filter: Adicionar filtro
+    add_group: E / Ou grupo
+    add_value: Acrescentar Valor
+    logic_type_and: E
+    logic_type_or: OU
     all: Tudo
     any: Qualquer
+    and: e
     change_value: Clique para mudar o valor
   group-accordion:
     name: Sanfonada
@@ -1610,3 +1629,7 @@ panels:
     name: Métrico
   label:
     name: Rótulo
+    description: Exibir algum texto
+  list:
+    name: Lista
+    description: Filtrar e listar campos de uma coleção
