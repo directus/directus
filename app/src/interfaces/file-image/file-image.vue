@@ -167,6 +167,7 @@ const { edits, stageEdits } = useEdits();
 
 async function fetchImage() {
 	loading.value = true;
+	imageError.value = null;
 
 	try {
 		const id = typeof props.value === 'string' ? props.value : props.value?.id;
@@ -277,6 +278,7 @@ img {
 	height: 100%;
 	color: var(--foreground-subdued);
 	background-color: var(--background-normal);
+	padding: 32px;
 
 	.v-icon {
 		margin-bottom: 6px;
