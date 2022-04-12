@@ -22,7 +22,7 @@
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
@@ -56,7 +56,7 @@
 						:disabled="item === null || archiveAllowed !== true"
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
 					</v-button>
 				</template>
 
@@ -111,7 +111,7 @@
 						:alt="t('avatar')"
 						@error="avatarError = $event"
 					/>
-					<v-icon v-else name="account_circle" outline x-large />
+					<v-icon v-else name="account_circle" x-large />
 				</div>
 				<div class="user-box-content">
 					<template v-if="loading">
@@ -125,11 +125,11 @@
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
 						<div v-if="item.email" class="email">
-							<v-icon name="alternate_email" small outline />
+							<v-icon name="alternate_email" small />
 							{{ item.email }}
 						</div>
 						<div v-if="item.location" class="location">
-							<v-icon name="place" small outline />
+							<v-icon name="place" small />
 							{{ item.location }}
 						</div>
 						<v-chip v-if="roleName" :class="item.status" small>{{ roleName }}</v-chip>
@@ -193,7 +193,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore, useServerStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -229,6 +229,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
+		const serverStore = useServerStore();
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -438,7 +439,7 @@ export default defineComponent({
 		async function setLang(user: Record<string, any>) {
 			if (userStore.currentUser!.id !== item.value?.id) return;
 
-			const newLang = user?.language;
+			const newLang = user?.language ?? serverStore.info?.project?.default_language;
 
 			if (newLang && newLang !== locale.value) {
 				await setLanguage(newLang);

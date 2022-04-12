@@ -90,6 +90,8 @@
 
 				<div class="spacer" />
 
+				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
+
 				<div v-if="imageData" class="dimensions">
 					{{ n(imageData.width) }}x{{ n(imageData.height) }}
 					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
@@ -166,6 +168,7 @@ export default defineComponent({
 			initCropper,
 			flip,
 			rotate,
+			reset,
 			aspectRatio,
 			aspectRatioIcon,
 			newDimensions,
@@ -203,6 +206,7 @@ export default defineComponent({
 			onImageLoad,
 			flip,
 			rotate,
+			reset,
 			aspectRatio,
 			aspectRatioIcon,
 			saving,
@@ -307,6 +311,8 @@ export default defineComponent({
 				set(newAspectRatio) {
 					localAspectRatio.value = newAspectRatio;
 					cropperInstance.value?.setAspectRatio(newAspectRatio);
+					cropperInstance.value?.crop();
+					dragMode.value = 'crop';
 				},
 			});
 
@@ -340,6 +346,11 @@ export default defineComponent({
 				set(newMode: 'move' | 'crop') {
 					cropperInstance.value?.setDragMode(newMode);
 					localDragMode.value = newMode;
+
+					if (newMode === 'move') {
+						cropperInstance.value?.clear();
+						localCropping.value = false;
+					}
 				},
 			});
 
@@ -362,6 +373,7 @@ export default defineComponent({
 				initCropper,
 				flip,
 				rotate,
+				reset,
 				aspectRatio,
 				aspectRatioIcon,
 				newDimensions,
@@ -376,10 +388,14 @@ export default defineComponent({
 					cropperInstance.value.destroy();
 				}
 
+				localCropping.value = false;
+
 				cropperInstance.value = new Cropper(imageElement.value, {
 					autoCrop: false,
+					autoCropArea: 0.5,
 					toggleDragModeOnDblclick: false,
 					dragMode: 'move',
+					viewMode: 1,
 					crop: throttle((event) => {
 						if (!imageData.value) return;
 
@@ -421,6 +437,11 @@ export default defineComponent({
 
 			function rotate() {
 				cropperInstance.value?.rotate(-90);
+			}
+
+			function reset() {
+				cropperInstance.value?.reset();
+				dragMode.value = 'move';
 			}
 		}
 	},

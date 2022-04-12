@@ -84,7 +84,6 @@ delete_folder: Klasörü Sil
 prefix: Prefiks
 suffix: Suffiks
 reset_bookmark: Yer İşaretini Sıfırla
-rename_bookmark: Yer İşaretini Yeniden Adlandır
 update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer İşaretini Kaldır
 delete_bookmark_copy: >-
@@ -115,7 +114,6 @@ recommended_defaults: Önerilen Varsayılanlar
 unarchive: Arşivden Çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
 nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
-unknown_validation_errors: 'Aşağıdaki gizli alanlar için doğrulama hataları vardı:'
 validationError:
   eq: Değer {valid} olmalıdır
   neq: Değer {invalid} olamaz
@@ -337,8 +335,6 @@ label_import: İçe Aktar
 label_export: Dışa Aktar
 import_export: İçe / Dışa Aktar
 format: Biçim
-use_current_filters_settings: Mevcut Filtreleri ve Ayarları Kullan
-export_data_button: Dışa Aktarmayı Başlat
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablon Değeri ile Doldur
@@ -355,6 +351,10 @@ today: Bugün
 yesterday: Dün
 delete_comment: Yorumu Sil
 delete_share: Paylaşımı Sil
+functions:
+  year: Yıl
+  month: Ay
+  count: Say
 date-fns_date: PPP
 date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
@@ -993,6 +993,7 @@ fields:
     project_url: Proje URL'si
     project_color: Proje Rengi
     project_logo: Proje Logosu
+    default_language: Varsayılan Dil
     branding: Markalama ve Stil
     public_foreground: Herkese Açık Ön Plan
     public_background: Herkese Açık Arkaplan
@@ -1463,7 +1464,6 @@ interfaces:
     auto_formatter: Başlık Otomatik Biçimlendiricisini Kullan
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik Sırayı Zorla
-    add_tags: Etiketler ekle...
   input:
     input: Girdi
     description: Manuel olarak bir değer gir
@@ -1655,7 +1655,6 @@ layouts:
     subtitle: Alt Başlık
   tabular:
     tabular: Tablo
-    fields: Alanlar
     spacing: Aralıklandırma
     comfortable: Rahat
     compact: Kompakt

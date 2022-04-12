@@ -12,6 +12,7 @@ import { userName } from '../utils/user-name';
 import { uniq } from 'lodash';
 import env from '../env';
 import validateUUID from 'uuid-validate';
+import { Url } from '../utils/url';
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
@@ -83,7 +84,9 @@ ${userName(sender)} has mentioned you in a comment:
 
 ${comment}
 
-<a href="${env.PUBLIC_URL}/admin/content/${data.collection}/${data.item}">Click here to view.</a>
+<a href="${new Url(env.PUBLIC_URL)
+						.addPath('admin', 'content', data.collection, data.item)
+						.toString()}">Click here to view.</a>
 `;
 
 					await this.notificationsService.createOne({
