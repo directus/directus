@@ -146,25 +146,27 @@ export default ({ schedule }) => {
 
 ### Filter Events
 
-| Name                          | Payload              | Meta                                 |
-| ----------------------------- | -------------------- | ------------------------------------ |
-| `request.not_found`           | `false`              | `request`, `response`                |
-| `request.error`               | The request errors   | --                                   |
-| `database.error`              | The database error   | `client`                             |
-| `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
-| `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
-| `(<collection>.)items.read`   | The read item        | `collection`                         |
-| `(<collection>.)items.create` | The new item         | `collection`                         |
-| `(<collection>.)items.update` | The updated item     | `keys`, `collection`                 |
-| `(<collection>.)items.delete` | The keys of the item | `collection`                         |
-| `<system-collection>.create`  | The new item         | `collection`                         |
-| `<system-collection>.update`  | The updated item     | `keys`, `collection`                 |
-| `<system-collection>.delete`  | The keys of the item | `collection`                         |
+| Name                          | Payload                         | Meta                                 |
+| ----------------------------- | ------------------------------- | ------------------------------------ |
+| `request.not_found`           | `false`                         | `request`, `response`                |
+| `request.error`               | The request errors              | --                                   |
+| `database.error`              | The database error              | `client`                             |
+| `auth.login`                  | The login payload               | `status`, `user`, `provider`         |
+| `auth.jwt`                    | The auth token                  | `status`, `user`, `provider`, `type` |
+| `authenticate`                | The empty accountability object | `req`                                |
+| `(<collection>.)items.read`   | The read item                   | `collection`                         |
+| `(<collection>.)items.create` | The new item                    | `collection`                         |
+| `(<collection>.)items.update` | The updated item                | `keys`, `collection`                 |
+| `(<collection>.)items.delete` | The keys of the item            | `collection`                         |
+| `<system-collection>.create`  | The new item                    | `collection`                         |
+| `<system-collection>.update`  | The updated item                | `keys`, `collection`                 |
+| `<system-collection>.delete`  | The keys of the item            | `collection`                         |
 
 ::: tip System Collections
 
 `<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+`files` (except create/update), `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`,
+`users` or `webhooks`.
 
 :::
 
@@ -180,15 +182,17 @@ export default ({ schedule }) => {
 | `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
 | `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
 | `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
-| `(<collection>.)items.delete` | `payload`, `collection`                             |
+| `(<collection>.)items.delete` | `keys`, `collection`                                |
+| `(<collection>.)items.sort`   | `collection`, `item`, `to`                          |
 | `<system-collection>.create`  | `payload`, `key`, `collection`                      |
 | `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
-| `<system-collection>.delete`  | `payload`, `collection`                             |
+| `<system-collection>.delete`  | `keys`, `collection`                                |
 
 ::: tip System Collections
 
 `<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+`files` (except create/update), `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`,
+`users` or `webhooks`.
 
 :::
 

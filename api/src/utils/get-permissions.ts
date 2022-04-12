@@ -7,7 +7,7 @@ import { mergePermissions } from '../utils/merge-permissions';
 import { mergePermissionsForShare } from './merge-permissions-for-share';
 import { UsersService } from '../services/users';
 import { RolesService } from '../services/roles';
-import { getCache } from '../cache';
+import { getCache, setSystemCache } from '../cache';
 import hash from 'object-hash';
 import env from '../env';
 
@@ -92,7 +92,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			: {};
 
 		if (env.CACHE_PERMISSIONS !== false) {
-			await systemCache.set(cacheKey, { permissions, containDynamicData });
+			await setSystemCache(cacheKey, { permissions, containDynamicData });
 
 			if (containDynamicData && env.CACHE_ENABLED !== false) {
 				await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);

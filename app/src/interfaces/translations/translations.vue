@@ -458,12 +458,12 @@ export default defineComponent({
 	}
 
 	.secondary {
-		--v-divider-color: var(--blue-50);
+		--v-divider-color: var(--secondary-50);
 
 		.v-form {
-			--primary: var(--blue);
-			--v-chip-color: var(--blue);
-			--v-chip-background-color: var(--blue-alt);
+			--primary: var(--secondary);
+			--v-chip-color: var(--secondary);
+			--v-chip-background-color: var(--secondary-alt);
 		}
 	}
 

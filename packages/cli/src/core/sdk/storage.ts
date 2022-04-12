@@ -40,6 +40,22 @@ export class InstanceStorage implements IStorage {
 		}
 	}
 
+	get auth_expires_at(): number | null {
+		const value = this.get('auth_expires_at');
+		if (value === null) {
+			return null;
+		}
+		return parseInt(value);
+	}
+
+	set auth_expires_at(value: number | null) {
+		if (value === null) {
+			this.delete('auth_expires_at');
+		} else {
+			this.set('auth_expires_at', value!.toString());
+		}
+	}
+
 	get auth_refresh_token(): string | null {
 		return this.get('auth_refresh_token');
 	}

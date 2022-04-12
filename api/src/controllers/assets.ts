@@ -10,6 +10,9 @@ import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
 import { TransformationParams, TransformationMethods, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
+import helmet from 'helmet';
+import { merge } from 'lodash';
+import { getConfigFromEnv } from '../utils/get-config-from-env';
 
 const router = Router();
 
@@ -105,6 +108,18 @@ router.get(
 			throw new InvalidQueryException(`Dynamic asset generation has been disabled for this project.`);
 		}
 	}),
+
+	helmet.contentSecurityPolicy(
+		merge(
+			{
+				useDefaults: false,
+				directives: {
+					defaultSrc: ['none'],
+				},
+			},
+			getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+		)
+	),
 
 	// Return file
 	asyncHandler(async (req, res) => {

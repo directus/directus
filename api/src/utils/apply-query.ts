@@ -1,20 +1,21 @@
 import { Knex } from 'knex';
-import { clone, cloneDeep, get, isPlainObject, set } from 'lodash';
+import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import {
 	Aggregate,
 	Filter,
-	LogicalFilterAND,
 	Query,
 	Relation,
 	RelationMeta,
 	SchemaOverview,
+	FieldFunction,
 } from '@directus/shared/types';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
+import { getOutputTypeForFunction } from '@directus/shared/utils';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -42,7 +43,7 @@ export default function applyQuery(
 
 				return {
 					order,
-					column: getColumn(knex, collection, column, false) as any,
+					column: getColumn(knex, collection, column, false, schema) as any,
 				};
 			})
 		);
@@ -65,37 +66,14 @@ export default function applyQuery(
 	}
 
 	if (query.group) {
-		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false)));
+		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
 	}
 
 	if (query.aggregate) {
 		applyAggregate(dbQuery, query.aggregate, collection);
 	}
 
-	if (query.union && query.union[1].length > 0) {
-		const [field, keys] = query.union as [string, (string | number)[]];
-
-		const queries = keys.map((key) => {
-			const unionFilter = { [field]: { _eq: key } } as Filter;
-			let filter: Filter | null | undefined = cloneDeep(query.filter);
-
-			if (filter) {
-				if ('_and' in filter) {
-					(filter as LogicalFilterAND)._and.push(unionFilter);
-				} else {
-					filter = {
-						_and: [filter, unionFilter],
-					} as LogicalFilterAND;
-				}
-			} else {
-				filter = unionFilter;
-			}
-
-			return knex.select('*').from(applyFilter(knex, schema, dbQuery.clone(), filter, collection, subQuery).as('foo'));
-		});
-
-		dbQuery = knex.unionAll(queries);
-	} else if (query.filter) {
+	if (query.filter) {
 		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
 	}
 
@@ -378,7 +356,7 @@ export function applyFilter(
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
-			} else if (subQuery === false) {
+			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
 
 				let pkField: Knex.Raw<any> | string = `${collection}.${
@@ -415,7 +393,7 @@ export function applyFilter(
 			const [table, column] = key.split('.');
 
 			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
-			const selectionRaw = getColumn(knex, table, column, false) as any;
+			const selectionRaw = getColumn(knex, table, column, false, schema) as any;
 
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
@@ -441,6 +419,17 @@ export function applyFilter(
 				});
 			}
 
+			// Cast filter value (compareValue) based on function used
+			if (column.includes('(') && column.includes(')')) {
+				const functionName = column.split('(')[0] as FieldFunction;
+				const type = getOutputTypeForFunction(functionName);
+
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+					compareValue = Number(compareValue);
+				}
+			}
+
+			// Cast filter value (compareValue) based on type of field being filtered against
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -451,6 +440,14 @@ export function applyFilter(
 						compareValue = compareValue.map((val) => helpers.date.parse(val));
 					} else {
 						compareValue = helpers.date.parse(compareValue);
+					}
+				}
+
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+					if (Array.isArray(compareValue)) {
+						compareValue = compareValue.map((val) => Number(val));
+					} else {
+						compareValue = Number(compareValue);
 					}
 				}
 			}

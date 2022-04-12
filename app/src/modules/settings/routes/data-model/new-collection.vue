@@ -261,7 +261,6 @@ export default defineComponent({
 
 				notify({
 					title: t('collection_created'),
-					type: 'success',
 				});
 
 				router.replace(`/settings/data-model/${collectionName.value}`);
@@ -353,16 +352,22 @@ export default defineComponent({
 							showAsDot: true,
 							choices: [
 								{
-									background: '#00C897',
+									text: '$t:published',
 									value: 'published',
+									foreground: '#FFFFFF',
+									background: 'var(--primary)',
 								},
 								{
-									background: '#D3DAE4',
+									text: '$t:draft',
 									value: 'draft',
+									foreground: '#18222F',
+									background: '#D3DAE4',
 								},
 								{
-									background: '#F7971C',
+									text: '$t:archived',
 									value: 'archived',
+									foreground: '#FFFFFF',
+									background: 'var(--warning)',
 								},
 							],
 						},
