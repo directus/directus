@@ -274,20 +274,12 @@ export class AuthorizationService {
 									);
 								});
 
-								if (relation) {
-									if (relation.related_collection === parentCollection) {
-										(result[relation.collection] || (result[relation.collection] = new Set())).add(filterKey);
-										parentCollection = relation.collection;
-									} else {
-										(result[relation.related_collection!] || (result[relation.related_collection!] = new Set())).add(
-											filterKey
-										);
-										parentCollection = relation.related_collection!;
-									}
-								} else {
-									// Filter key not found in parent collection
-									throw new ForbiddenException();
-								}
+								// Filter key not found in parent collection
+								if (!relation) throw new ForbiddenException();
+
+								parentCollection =
+									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
 							if (typeof filterValue === 'object') {
