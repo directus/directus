@@ -568,6 +568,7 @@ export class FieldsService {
 			) {
 				column.defaultTo(this.knex.fn.now());
 			} else if (
+				typeof field.schema.default_value === 'string' &&
 				field.schema.default_value.includes('CURRENT_TIMESTAMP(') &&
 				field.schema.default_value.includes(')')
 			) {
