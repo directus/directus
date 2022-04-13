@@ -58,7 +58,6 @@ delete_folder: Kustuta kaust
 prefix: Eesliide
 suffix: Järelliide
 reset_bookmark: Kustuta järjehoidja
-rename_bookmark: Järjehoidja ümbernimetamine
 update_bookmark: Järjehoidja uuendamine
 delete_bookmark: Kustuta järjehoidja
 delete_bookmark_copy: >-
@@ -250,7 +249,6 @@ related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
 format: Vorming
-use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
 last_page: Viimane leht
 last_access: Viimati vaadatud
 fill_template: Täida mallist
@@ -266,6 +264,9 @@ interface_label: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
+functions:
+  year: Aasta
+  month: Kuu
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -1060,7 +1061,6 @@ interfaces:
     auto_formatter: Kasuta pealkirja stiili
     alphabetize: Järjesta tähestikuliselt
     alphabetize_label: Sorteeri tähestikuliselt ümber
-    add_tags: Lisa märksõnu...
   input:
     input: Sisend
     description: Sisesta väärtus käsitsi

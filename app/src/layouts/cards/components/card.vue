@@ -9,7 +9,7 @@
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
-				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
+				<v-icon-file v-if="type || imgError" :ext="type" />
 				<template v-else>
 					<img
 						v-if="imageSource"
@@ -201,8 +201,8 @@ export default defineComponent({
 
 		.svg {
 			position: absolute;
-			width: 50%;
-			height: 50%;
+			width: 75%;
+			height: 75%;
 			object-fit: contain;
 		}
 

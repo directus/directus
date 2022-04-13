@@ -10,7 +10,7 @@ import NavigationItem from './navigation-item.vue';
 import navLinks from './links.yaml';
 
 function spreadPath(path: string) {
-	const sections = path.substr(1).split('/');
+	const sections = path.slice(1).split('/');
 	if (sections.length === 0) return [];
 
 	const paths: string[] = ['/' + sections[0]];

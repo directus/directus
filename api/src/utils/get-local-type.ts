@@ -94,6 +94,7 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	'time without time zone': 'time',
 	float4: 'float',
 	float8: 'float',
+	citext: 'text',
 
 	// Oracle
 	number: 'integer',
@@ -115,10 +116,12 @@ export default function getLocalType(
 	const special = field?.special;
 
 	if (special) {
-		if (special.includes('json')) return 'json';
+		if (special.includes('cast-json')) return 'json';
 		if (special.includes('hash')) return 'hash';
-		if (special.includes('csv')) return 'csv';
+		if (special.includes('cast-csv')) return 'csv';
 		if (special.includes('uuid') || special.includes('file')) return 'uuid';
+		if (special.includes('cast-timestamp')) return 'timestamp';
+		if (special.includes('cast-datetime')) return 'dateTime';
 		if (type?.startsWith('geometry')) {
 			return (special[0] as Type) || 'geometry';
 		}

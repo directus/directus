@@ -57,7 +57,6 @@ delete_folder: Slet mappe
 prefix: Præfiks
 suffix: Suffiks
 reset_bookmark: Nustil bogmærke
-rename_bookmark: Omdøb bogmærke
 update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
 delete_bookmark_copy: >-
@@ -282,7 +281,6 @@ translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
 label_import: Importér
 format: Format
-use_current_filters_settings: Brug Nuværende Filtre Og Indstillinger
 last_page: Sidste side
 last_access: Seneste Adgang
 fill_template: Udfyld med skabelonværdi
@@ -298,6 +296,10 @@ interface_label: Grænseflade
 today: Idag
 yesterday: Igår
 delete_comment: Slet kommentar
+functions:
+  year: År
+  month: Måned
+  count: Antal
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'tt:mm a'
@@ -893,6 +895,7 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farve
     project_logo: Projekt Logo
+    default_language: Standard Sprog
     public_foreground: Offentlig Forgrund
     public_background: Offentlig Baggrund
     public_note: Offentlig Note
@@ -1284,7 +1287,6 @@ interfaces:
     auto_formatter: Brug Titel Auto-Formatter
     alphabetize: Alphabetize
     alphabetize_label: Gennemtving Alfabetisk Ordre
-    add_tags: Tilføj tags...
   input:
     input: Input
     description: Indtast en værdi manuelt

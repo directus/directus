@@ -84,7 +84,6 @@ delete_folder: Izbriši mapu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi oznaku
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
@@ -338,8 +337,6 @@ label_import: Uvoz
 label_export: Izvoz
 import_export: Uvoz / Izvoz
 format: Format
-use_current_filters_settings: Koristite trenutne filtere i postavke
-export_data_button: Pokreni izvoz
 last_page: Zadnja stranica
 last_access: Zadnji pristup
 fill_template: Ispunite vrijednošću predloška
@@ -356,6 +353,10 @@ today: Danas
 yesterday: Jučer
 delete_comment: Obriši komentar
 delete_share: Izbriši dijeljenje
+functions:
+  year: Godina
+  month: Mjesec
+  count: Zbroj
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -998,6 +999,7 @@ fields:
     project_url: URL projekta
     project_color: Boja projekta
     project_logo: Logotip projekta
+    default_language: Zadani jezik
     branding: Brendiranje i stil
     public_foreground: Javni prvi plan
     public_background: Javna pozadina
@@ -1472,7 +1474,6 @@ interfaces:
     auto_formatter: Koristite automatsko oblikovanje naslova
     alphabetize: Abecedno
     alphabetize_label: Nametni abecedno razvrstavanje
-    add_tags: Dodajte oznake...
   input:
     input: Unos
     description: Ručno unesite vrijednost

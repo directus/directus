@@ -111,7 +111,7 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const detailOpen = ref(false);
+		const detailOpen = ref(props.start === 'open');
 
 		const edited = computed(() => {
 			if (!props.values) return false;

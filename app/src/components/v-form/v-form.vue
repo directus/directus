@@ -3,6 +3,7 @@
 		<validation-errors
 			v-if="!nested && validationErrors.length > 0"
 			:validation-errors="validationErrors"
+			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
 		<template v-for="(field, index) in formFields">
@@ -49,9 +50,12 @@
 				:batch-active="batchActiveFields.includes(field.field)"
 				:primary-key="primaryKey"
 				:loading="loading"
-				:validation-error="validationErrors.find((err) => err.field === field.field)"
+				:validation-error="
+					validationErrors.find((err) => err.field === field.field || err.field.endsWith(`(${field.field})`))
+				"
 				:badge="badge"
-				@update:model-value="setValue(field, $event)"
+				@update:model-value="setValue(field.field, $event)"
+				@set-field-value="setValue($event.field, $event.value)"
 				@unset="unsetValue(field)"
 				@toggle-batch="toggleBatchField(field)"
 			/>
@@ -60,16 +64,17 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, provide, watch, onBeforeUpdate } from 'vue';
+import { useElementSize } from '@/composables/use-element-size';
+import useFormFields from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/';
+import { applyConditions } from '@/utils/apply-conditions';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import useFormFields from '@/composables/use-form-fields';
-import { useElementSize } from '@/composables/use-element-size';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
-import { applyConditions } from '@/utils/apply-conditions';
 
 type FieldValues = {
 	[field: string]: any;
@@ -277,7 +282,7 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.field)));
+			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta?.field)));
 
 			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
 
@@ -306,17 +311,30 @@ export default defineComponent({
 			}
 		}
 
-		function setValue(field: Field, value: any) {
+		function setValue(fieldKey: string, value: any) {
+			const field = props.fields?.find((field) => field.field === fieldKey);
+			if (!field || isDisabled(field)) return;
+
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
-			edits[field.field] = value;
+			edits[fieldKey] = value;
 			emit('update:modelValue', edits);
 		}
 
 		function apply(updates: { [field: string]: any }) {
-			emit('update:modelValue', pick(assign({}, props.modelValue, updates), Object.keys(updates)));
+			const updatableKeys = props.batchMode
+				? Object.keys(updates)
+				: Object.keys(updates).filter((key) => {
+						const field = props.fields?.find((field) => field.field === key);
+						if (!field) return false;
+						return field.schema?.is_primary_key || !isDisabled(field);
+				  });
+
+			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
 		}
 
 		function unsetValue(field: Field) {
+			if (isDisabled(field)) return;
+
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };
 				delete newEdits[field.field];
@@ -336,12 +354,13 @@ export default defineComponent({
 					unsetValue(field);
 				} else {
 					batchActiveFields.value = [...batchActiveFields.value, field.field];
-					setValue(field, field.schema?.default_value);
+					setValue(field.field, field.schema?.default_value);
 				}
 			}
 		}
 
-		function scrollToField(field: string) {
+		function scrollToField(fieldKey: string) {
+			const { field } = extractFieldFromFunction(fieldKey);
 			if (!formFieldEls.value[field]) return;
 			formFieldEls.value[field].$el.scrollIntoView({ behavior: 'smooth' });
 		}

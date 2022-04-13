@@ -243,7 +243,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							sortable:
 								['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
 									field.type
-								) === false,
+								) === false && field.key.includes('.') === false,
 						} as HeaderRaw;
 					});
 				},
