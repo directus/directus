@@ -233,14 +233,32 @@ export class AuthorizationService {
 						else if (filterKey.includes(':')) {
 							const [field, collectionScope] = filterKey.split(':');
 
-							// Add the `item` field to the required permissions
-							(
-								requiredFieldPermissions[collection ? collection : parentCollection!] ||
-								(requiredFieldPermissions[collection ? collection : parentCollection!] = new Set())
-							).add(field);
+							if (collection) {
+								// Add the `item` field to the required permissions
+								(result[collection] || (result[collection] = new Set())).add(field);
 
-							// Add the `collection` field to the required permissions
-							requiredFieldPermissions[collection ? collection : parentCollection!].add('collection');
+								// Add the `collection` field to the required permissions
+								result[collection].add('collection');
+							} else {
+								const relation = schema.relations.find((relation) => {
+									return (
+										(relation.collection === parentCollection && relation.field === parentField) ||
+										(relation.related_collection === parentCollection && relation.meta?.one_field === parentField)
+									);
+								});
+
+								// Filter key not found in parent collection
+								if (!relation) throw new ForbiddenException();
+
+								const relatedCollectionName =
+									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
+								// Add the `item` field to the required permissions
+								(result[relatedCollectionName] || (result[relatedCollectionName] = new Set())).add(field);
+
+								// Add the `collection` field to the required permissions
+								result[relatedCollectionName].add('collection');
+							}
 
 							// Continue to parse the filter for nested `collection` afresh
 							const requiredPermissions = extractRequiredFieldPermissions(collectionScope, filterValue);
