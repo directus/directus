@@ -408,8 +408,9 @@ middleman servers (like CDNs) and even the browser.
 
 ::: tip Assets Cache
 
-The cache-control header for the `/assets` endpoint is separate from the regular data-cache. This is useful as it's
-often possible to cache assets for far longer than you would cache database content. [Learn More](#assets)
+`Cache-Control` and `Last-Modified` headers for the `/assets` endpoint are separate from the regular data-cache.
+`Last-Modified` comes from `modified_on` DB field. This is useful as it's often possible to cache assets for far longer
+than you would cache database content. [Learn More](#assets)
 
 :::
 

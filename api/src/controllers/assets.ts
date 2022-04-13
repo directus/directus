@@ -161,6 +161,12 @@ router.get(
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
 
+		const unixTime = Date.parse(file.modified_on);
+		if (!Number.isNaN(unixTime)) {
+			const lastModifiedDate = new Date(unixTime);
+			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
+		}
+
 		if (range) {
 			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);
 			res.status(206);
