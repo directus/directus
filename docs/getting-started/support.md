@@ -31,7 +31,7 @@ If you're still experiencing a problem after completing the above steps, you can
 
 ## Community Support
 
-[Github Discussions](https://github.com/directus/directus/discussions) is great first place to reach out for help. Our
+[GitHub Discussions](https://github.com/directus/directus/discussions) is great first place to reach out for help. Our
 community and core developers often check this platform and answer posts. It has the added benefit of being an archival
 resource for others developers with similar questions.
 

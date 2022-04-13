@@ -521,6 +521,37 @@ module.exports = {
 					},
 				],
 			},
+			{ type: 'divider' },
+			{
+				title: 'Directus Cloud',
+				children: [
+					{
+						type: 'page',
+						path: '/cloud/overview',
+						title: 'Overview',
+					},
+					{
+						type: 'page',
+						path: '/cloud/accounts',
+						title: 'Accounts',
+					},
+					{
+						type: 'page',
+						path: '/cloud/teams',
+						title: 'Teams',
+					},
+					{
+						type: 'page',
+						path: '/cloud/projects',
+						title: 'Projects',
+					},
+					{
+						type: 'page',
+						path: '/cloud/glossary',
+						title: 'Glossary',
+					},
+				],
+			},
 		],
 	},
 	markdown: {
