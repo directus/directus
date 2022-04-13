@@ -3,13 +3,20 @@ import { defineDisplay } from '@directus/shared/utils';
 import { get } from 'lodash';
 import { ValueNull } from '@/views/private/components/value-null';
 
+type Props = {
+	field: string;
+	rootItem: Record<string, any>;
+	showZero: boolean;
+	suffix: string;
+};
+
 export default defineDisplay({
 	id: 'related-count',
 	name: 'Related Count',
 	icon: 'functions',
 	description: 'Display the total number of related items',
-	component: ({ field, item, showZero, suffix }: { field: string; item: any; showZero: boolean; suffix: string }) => {
-		const count = get(item, `${field}_count`);
+	component: ({ field, rootItem, showZero, suffix }: Props) => {
+		const count = get(rootItem, `${field}_count`);
 		if (!count && !showZero) {
 			return h(ValueNull);
 		}

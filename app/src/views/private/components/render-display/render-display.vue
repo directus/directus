@@ -8,7 +8,7 @@
 		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
-		:item="item"
+		:root-item="rootItem"
 		:type="type"
 		:collection="collection"
 		:field="field"
@@ -43,7 +43,10 @@ export default defineComponent({
 			type: [String, Number, Object, Array, Boolean],
 			default: null,
 		},
-		item: Object,
+		rootItem: {
+			type: Object,
+			default: null,
+		},
 		type: {
 			type: String,
 			required: true,
