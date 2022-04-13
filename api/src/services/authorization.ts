@@ -228,6 +228,20 @@ export class AuthorizationService {
 							}
 							// Filter value is not a filter, so we should skip it
 							return result;
+						}
+						// m2a filter in the form of `item:collection`
+						else if (filterKey.includes(':')) {
+							const [field, collectionScope] = filterKey.split(':');
+
+							// Add the `item` field to the required permissions
+							(
+								requiredFieldPermissions[collection ? collection : parentCollection!] ||
+								(requiredFieldPermissions[collection ? collection : parentCollection!] = new Set())
+							).add(field);
+
+							// Continue to parse the filter for nested `collection` afresh
+							const requiredPermissions = extractRequiredFieldPermissions(collectionScope, filterValue);
+							result = mergeRequiredFieldPermissions(result, requiredPermissions);
 						} else {
 							if (collection) {
 								(result[collection] || (result[collection] = new Set())).add(filterKey);
