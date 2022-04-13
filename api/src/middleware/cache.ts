@@ -42,6 +42,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 
 		res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL));
 		res.setHeader('Vary', 'Origin, Cache-Control');
+		res.setHeader('x-directus-cache', 'HIT');
 
 		return res.json(cachedData);
 	} else {
