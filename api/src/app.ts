@@ -179,12 +179,12 @@ export default async function createApp(): Promise<express.Application> {
 		app.use('/admin/*', noCacheIndexHtmlHandler);
 	}
 
+	app.use(authenticate);
+	
 	// use the rate limiter - all routes for now
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
-
-	app.use(authenticate);
 
 	app.use(checkIP);
 
