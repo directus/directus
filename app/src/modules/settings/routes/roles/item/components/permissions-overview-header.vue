@@ -20,7 +20,7 @@ const { t } = useI18n();
 	--v-icon-color: var(--foreground-subdued);
 
 	position: sticky;
-	top: 60px; // height of header bar minus 1px to avoid gaps
+	top: calc(var(--header-bar-height) - 1px); // minus 1px to avoid gaps
 	z-index: 4;
 	display: flex;
 	padding: 12px;
