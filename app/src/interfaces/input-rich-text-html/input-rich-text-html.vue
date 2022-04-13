@@ -268,31 +268,19 @@ export default defineComponent({
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
 
-		let tinymceEditor: HTMLElement | null;
 		let count = ref(0);
+
 		onMounted(() => {
-			let iframe;
-			let contentLoaded = false;
-			const wysiwyg = document.getElementById(props.field);
+			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
 
-			if (wysiwyg) iframe = wysiwyg.getElementsByTagName('iframe');
+			const observer = new MutationObserver((_mutations) => {
+				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
 
-			if (iframe && iframe[0] && iframe[0].contentWindow)
-				tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
+				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+			});
 
-			if (tinymceEditor) {
-				const observer = new MutationObserver((_mutations) => {
-					count.value = tinymceEditor?.textContent?.replace('\n', '')?.length ?? 0;
-					if (!contentLoaded) {
-						contentLoaded = true;
-					} else {
-						emit('input', editorRef.value.getContent());
-					}
-				});
-
-				const config = { characterData: true, childList: true, subtree: true };
-				observer.observe(tinymceEditor, config);
-			}
+			const config = { characterData: true, childList: true, subtree: true };
+			observer.observe(iframeContents, config);
 		});
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(

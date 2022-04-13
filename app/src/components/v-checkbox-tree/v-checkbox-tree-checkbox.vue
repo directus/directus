@@ -41,8 +41,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+import { defineComponent, computed, PropType, toRefs } from 'vue';
 import { difference } from 'lodash';
+import { useVisibleChildren } from './use-visible-children';
 
 type Delta = {
 	added?: (number | string)[];
@@ -111,46 +112,20 @@ export default defineComponent({
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const visibleChildrenValues = computed(() => {
-			let options = props.children || [];
+		const { search, modelValue, children, showSelectionOnly, itemText, itemValue, itemChildren, parentValue, value } =
+			toRefs(props);
 
-			if (props.search) {
-				options = options.filter(
-					(child) =>
-						child[props.itemText].toLowerCase().includes(props.search.toLowerCase()) ||
-						childrenHaveSearchMatch(child[props.itemChildren])
-				);
-			}
-
-			if (props.showSelectionOnly) {
-				options = options.filter(
-					(child) =>
-						props.modelValue.includes(child[props.itemValue]) ||
-						childrenHaveValueMatch(child[props.itemChildren]) ||
-						props.modelValue.includes(props.parentValue) ||
-						props.modelValue.includes(props.value)
-				);
-			}
-
-			return options.map((child) => child[props.itemValue]);
-
-			function childrenHaveSearchMatch(children: Record<string, any>[] | undefined): boolean {
-				if (!children) return false;
-				return children.some(
-					(child) =>
-						child[props.itemText].toLowerCase().includes(props.search.toLowerCase()) ||
-						childrenHaveSearchMatch(child[props.itemChildren])
-				);
-			}
-
-			function childrenHaveValueMatch(children: Record<string, any>[] | undefined): boolean {
-				if (!children) return false;
-				return children.some(
-					(child) =>
-						props.modelValue.includes(child[props.itemValue]) || childrenHaveValueMatch(child[props.itemChildren])
-				);
-			}
-		});
+		const { visibleChildrenValues } = useVisibleChildren(
+			search,
+			modelValue,
+			children,
+			showSelectionOnly,
+			itemText,
+			itemValue,
+			itemChildren,
+			parentValue,
+			value
+		);
 
 		const groupShown = computed(() => {
 			if (props.showSelectionOnly === true && props.modelValue.includes(props.value)) {
@@ -165,7 +140,7 @@ export default defineComponent({
 				return visibleChildrenValues.value.length > 0;
 			}
 
-			return typeof props.search === 'string' && props.search.length > 0;
+			return false;
 		});
 
 		const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);

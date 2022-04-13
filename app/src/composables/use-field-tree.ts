@@ -1,5 +1,5 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Relation, Type } from '@directus/shared/types';
 import { getRelationType } from '@directus/shared/utils';
 import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
@@ -11,6 +11,7 @@ export type FieldNode = {
 	relatedCollection?: string;
 	key: string;
 	path: string;
+	type: Type;
 	children?: FieldNode[];
 	group?: boolean;
 };
@@ -65,15 +66,15 @@ export function useFieldTree(
 			return isNil(field.meta?.group);
 		});
 
-		const fieldNodes = topLevelFields.flatMap((field) => makeNode(field, allFields, parent));
+		const fieldNodes = topLevelFields.flatMap((field) => makeNode(field, parent));
 
 		return fieldNodes.length ? fieldNodes : undefined;
 	}
 
-	function makeNode(field: Field, allFields: Field[], parent?: FieldNode): FieldNode | FieldNode[] {
+	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
-		const pathContext = parent ? parent.path + '.' : '';
-		const keyContext = parent && !parent.group ? parent.key + '.' : '';
+		const pathContext = parent?.path ? parent.path + '.' : '';
+		const keyContext = parent?.key ? parent.key + '.' : '';
 
 		if (field?.meta?.special?.includes('group')) {
 			const node: FieldNode = {
@@ -81,9 +82,10 @@ export function useFieldTree(
 				field: field.field,
 				collection: field.collection,
 				relatedCollection: undefined,
-				key: field.field,
+				key: parent ? parent.key : '',
 				path: pathContext + field.field,
 				group: true,
+				type: field.type,
 			};
 
 			return {
@@ -100,6 +102,7 @@ export function useFieldTree(
 				relatedCollection: relatedCollections[0],
 				key: keyContext + field.field,
 				path: pathContext + field.field,
+				type: field.type,
 			};
 		}
 
@@ -111,6 +114,7 @@ export function useFieldTree(
 				relatedCollection: collection,
 				key: keyContext + `${field.field}:${collection}`,
 				path: pathContext + `${field.field}:${collection}`,
+				type: field.type,
 			};
 		});
 	}

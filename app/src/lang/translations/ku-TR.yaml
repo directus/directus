@@ -83,7 +83,6 @@ delete_folder: سڕینەوەی بوخچە
 prefix: پێشگر
 suffix: پاشگر
 reset_bookmark: ڕێکخستنەوەی نیشانکەر
-rename_bookmark: ناولێنانەوەی نیشانکەر
 update_bookmark: نوێکردنەوەی نیشانکەر
 delete_bookmark: سڕینەوەی نیشانکەر
 delete_bookmark_copy: >-

@@ -126,7 +126,7 @@
 						<p>
 							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
 
-							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit > itemCount)">
+							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit >= itemCount)">
 								{{
 									t('exporting_all_items_in_collection', {
 										total: itemCount ? n(itemCount) : '??',
@@ -215,7 +215,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import readableMimeType from '@/utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollection } from '@directus/shared/composables';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
@@ -246,6 +246,8 @@ const emit = defineEmits(['refresh']);
 
 const { t, n } = useI18n();
 
+const { collection } = toRefs(props);
+
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const file = ref<File | null>(null);
@@ -258,15 +260,33 @@ const fileExtension = computed(() => {
 	return readableMimeType(file.value.type, true);
 });
 
-const { primaryKeyField, fields, info: collectionInfo } = useCollection(props.collection);
+const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
 
 const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? 25,
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: props.layoutQuery?.sort?.[0] ?? `${primaryKeyField.value!.field}`,
+	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
+
+watch(
+	() => props.layoutQuery,
+	() => {
+		if (props.layoutQuery?.fields) {
+			exportSettings.fields = props.layoutQuery?.fields;
+		}
+
+		if (props.layoutQuery?.sort) {
+			if (Array.isArray(props.layoutQuery.sort)) {
+				exportSettings.sort = props.layoutQuery.sort[0];
+			} else {
+				exportSettings.sort = props.layoutQuery.sort;
+			}
+		}
+	},
+	{ immediate: true }
+);
 
 const format = ref('csv');
 const location = ref('download');
@@ -294,7 +314,7 @@ const getItemCount = debounce(async () => {
 
 	try {
 		const count = await api
-			.get(getEndpoint(props.collection), {
+			.get(getEndpoint(collection.value), {
 				params: {
 					...exportSettings,
 					aggregate: {
@@ -382,7 +402,7 @@ function useUpload() {
 		formData.append('file', file);
 
 		try {
-			await api.post(`/utils/import/${props.collection}`, formData, {
+			await api.post(`/utils/import/${collection.value}`, formData, {
 				onUploadProgress: (progressEvent: ProgressEvent) => {
 					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
 					progress.value = percentCompleted;
@@ -419,9 +439,9 @@ function startExport() {
 }
 
 function exportDataLocal() {
-	const endpoint = props.collection.startsWith('directus_')
-		? `${props.collection.substring(9)}`
-		: `items/${props.collection}`;
+	const endpoint = collection.value.startsWith('directus_')
+		? `${collection.value.substring(9)}`
+		: `items/${collection.value}`;
 
 	const url = getRootPath() + endpoint;
 
@@ -449,7 +469,7 @@ async function exportDataFiles() {
 	exporting.value = true;
 
 	try {
-		await api.post(`/utils/export/${props.collection}`, {
+		await api.post(`/utils/export/${collection.value}`, {
 			query: {
 				...exportSettings,
 				sort: [exportSettings.sort],

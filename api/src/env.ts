@@ -10,7 +10,7 @@ import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
 
-const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
+const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
 
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
@@ -84,6 +84,8 @@ const defaults: Record<string, any> = {
 	RELATIONAL_BATCH_SIZE: 25000,
 
 	EXPORT_BATCH_SIZE: 5000,
+
+	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -100,6 +102,8 @@ const typeMap: Record<string, string> = {
 
 	DB_EXCLUDE_TABLES: 'array',
 	IMPORT_IP_DENY_LIST: 'array',
+
+	FILE_METADATA_ALLOW_LIST: 'array',
 };
 
 let env: Record<string, any> = {
@@ -288,6 +292,7 @@ function processValues(env: Record<string, any>) {
 
 		if (String(value).includes(',')) {
 			env[key] = toArray(value);
+			continue;
 		}
 
 		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
