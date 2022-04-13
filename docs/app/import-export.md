@@ -1,5 +1,3 @@
-- Folders in the File Library and Role Groups in the User Directory do not represent new Collections.
-
 # Import / Export
 
 > The Content, User Directory, and File Library modules allow importing and exporting of multiple Items stored as files.
@@ -8,7 +6,7 @@
 
 [[toc]]
 
-::: tip Before You Begin
+:::tip Before You Begin
 
 To use this utility, you will need to be familiar with [Collections](/getting-started/glossary/#collections),
 [Items](/getting-started/glossary/#items), and [Fields](/getting-started/glossary/#fields).
@@ -32,7 +30,7 @@ This page details Importing and Exporting of Items as files via the no-code app.
 To import Items from a file, follow the steps below.
 
 1. Navigate to the desired Module and Collection.\
-   Note: the User Directory and File Library are each composed of one Collection.
+   Note: the User Directory and File Library are each composed of just one Collection.
 2. Click **"Import / Export"** in the Sidebar.
 3. Click into the import search box. A file browser will open.
 4. Select the desired file and click **"open"**.
