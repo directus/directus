@@ -154,6 +154,7 @@ fields:
   - field: last_access
     width: half
     display: datetime
+    readonly: true
     display_options:
       relative: true
 

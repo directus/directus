@@ -173,6 +173,8 @@ const directus = new Directus(url, init);
 
     - `autoRefresh` [optional] _Boolean_ - Tells SDK if it should handle refresh tokens automatically. Defaults to
       `true`.
+    - `msRefreshBeforeExpires` [optional] _Number_ - When `autoRefresh` is enabled, this tells how many milliseconds
+      before the refresh token expires and needs to be refreshed. Defaults to `30000`.
     - `staticToken` [optional] _String_ - Defines the static token to use. It is not compatible with the options above
       since it does not refresh. Defaults to `''` (no static token).
 
@@ -580,6 +582,24 @@ await articles.deleteOne(15);
 await articles.deleteMany([15, 42]);
 ```
 
+### Request Parameter Overrides
+
+To override any of the axios request parameters, provide an additional parameter with a `requestOptions` object:
+
+```js
+await articles.createOne(
+	{ title: 'example' },
+	{ fields: ['id'] },
+	{
+		requestOptions: {
+			headers: {
+				'X-My-Custom-Header': 'example',
+			},
+		},
+	}
+);
+```
+
 ## Activity
 
 ```js
@@ -660,6 +680,32 @@ if (form && form instanceof HTMLFormElement) {
 	<script src="/index.js" type="module"></script>
 </body>
 </html>
+```
+
+#### NodeJS usage
+
+When uploading a file from a NodeJS environment, you'll have to override the headers to ensure the correct boundary is
+set:
+
+```js
+import { Directus } from 'https://unpkg.com/@directus/sdk@latest/dist/sdk.esm.min.js';
+
+const directus = new Directus('http://localhost:8055', {
+	auth: {
+		staticToken: 'STATIC_TOKEN', // If you want to use a static token, otherwise check below how you can use email and password.
+	},
+});
+
+const form = new FormData();
+form.append("file", fs.createReadStream("./to_upload.jpeg"));
+
+const fileId = await directus.files.createOne(form, {}, {
+  requestOptions: {
+    headers: {
+      ...form.getHeaders()
+    }
+  }
+);
 ```
 
 ### Importing a file

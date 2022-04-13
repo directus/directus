@@ -94,6 +94,7 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	'time without time zone': 'time',
 	float4: 'float',
 	float8: 'float',
+	citext: 'text',
 
 	// Oracle
 	number: 'integer',
