@@ -27,6 +27,7 @@
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"
+			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
 		<v-notice v-else type="warning">
@@ -77,7 +78,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'setFieldValue'],
 	setup(props) {
 		const { t } = useI18n();
 

@@ -26,7 +26,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},

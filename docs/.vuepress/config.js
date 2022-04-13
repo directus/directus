@@ -157,6 +157,7 @@ module.exports = {
 						path: '/app/overview',
 						title: 'Overview',
 					},
+					{ type: 'divider' },
 					{
 						type: 'page',
 						path: '/app/content',
@@ -172,6 +173,11 @@ module.exports = {
 								type: 'page',
 								path: '/app/content-items',
 								title: 'Content Items',
+							},
+							{
+								type: 'page',
+								path: '/app/data-sharing',
+								title: 'Data Sharing',
 							},
 						],
 					},
@@ -199,6 +205,12 @@ module.exports = {
 						type: 'page',
 						path: '/app/settings',
 						title: 'Settings',
+					},
+					{ type: 'divider' },
+					{
+						type: 'page',
+						path: '/app/filters',
+						title: 'Filters',
 					},
 				],
 			},

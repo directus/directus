@@ -1,10 +1,13 @@
 <template>
 	<div class="repeater">
-		<v-notice v-if="!value || value.length === 0">
+		<v-notice v-if="(Array.isArray(value) && value.length === 0) || value == null">
 			{{ placeholder }}
 		</v-notice>
+		<v-notice v-else-if="!Array.isArray(value)" type="warning">
+			<p>{{ t('interfaces.list.incompatible_data') }}</p>
+		</v-notice>
 
-		<v-list v-if="value && value.length > 0">
+		<v-list v-if="Array.isArray(value) && value.length > 0">
 			<draggable
 				:disabled="disabled"
 				:force-fallback="true"
@@ -260,9 +263,16 @@ export default defineComponent({
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
 
-			if (props.value !== null) {
+			if (Array.isArray(props.value)) {
 				emitValue([...props.value, newDefaults]);
 			} else {
+				if (props.value != null) {
+					// eslint-disable-next-line no-console
+					console.warn(
+						'The repeater interface expects an array as value, but the given value is no array. Overriding given value.'
+					);
+				}
+
 				emitValue([newDefaults]);
 			}
 

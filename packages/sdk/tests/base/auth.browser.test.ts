@@ -3,7 +3,7 @@
  */
 
 import { Directus } from '../../src';
-import { test, timers } from '../utils';
+import { test } from '../utils';
 
 describe('auth (browser)', function () {
 	beforeEach(() => {
@@ -38,68 +38,6 @@ describe('auth (browser)', function () {
 		});
 
 		expect(scope.pendingMocks().length).toBe(0);
-	});
-
-	test(`authentication should auto refresh after specified period`, async (url, nock) => {
-		const scope = nock();
-
-		scope
-			.post('/auth/login', (body) => body.mode === 'cookie')
-			.reply(
-				200,
-				{
-					data: {
-						access_token: 'access_token',
-						expires: 5000,
-					},
-				},
-				{
-					'Set-Cookie': 'directus_refresh_token=the_refresh_token; Max-Age=604800; Path=/; HttpOnly;',
-				}
-			);
-
-		scope
-			.post('/auth/refresh')
-			.matchHeader('cookie', 'directus_refresh_token=the_refresh_token')
-			.reply(200, {
-				data: {
-					access_token: 'new_access_token',
-					expires: 5000,
-				},
-			});
-
-		expect(scope.pendingMocks().length).toBe(2);
-
-		await timers(async ({ tick, flush }) => {
-			const sdk = new Directus(url, { auth: { autoRefresh: true, msRefreshBeforeExpires: 2500 } });
-
-			const loginPromise = sdk.auth.login({
-				email: 'wolfulus@gmail.com',
-				password: 'password',
-			});
-
-			await tick(2000);
-
-			await loginPromise;
-
-			expect(scope.pendingMocks().length).toBe(1);
-			expect(sdk.storage.auth_token).toBe('access_token');
-			expect(sdk.storage.auth_expires).toBe(5000);
-			await tick(5000);
-
-			expect(scope.pendingMocks().length).toBe(1);
-			await flush();
-
-			await new Promise((resolve) => {
-				scope.once('replied', () => {
-					flush().then(resolve);
-				});
-			});
-
-			expect(sdk.storage.auth_expires).toBe(5000);
-			expect(scope.pendingMocks().length).toBe(0);
-			expect(sdk.storage.auth_token).toBe('new_access_token');
-		});
 	});
 
 	test(`logout doesn't send a refresh token due to cookie mode`, async (url, nock) => {

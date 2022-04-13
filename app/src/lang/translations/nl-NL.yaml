@@ -83,7 +83,6 @@ delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
 reset_bookmark: Reset Bladwijzer
-rename_bookmark: Hernoem Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
 delete_bookmark_copy: >-
@@ -114,7 +113,6 @@ recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
 unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
 nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
-unknown_validation_errors: 'Er waren validatie-fouten voor de volgende verborgen velden:'
 validationError:
   eq: Waarde moet {valid} zijn
   neq: Waarde kan niet {invalid} zijn
@@ -314,8 +312,6 @@ label_import: Importeren
 label_export: Exporteren
 import_export: Importeren / Exporteren
 format: Format
-use_current_filters_settings: Gebruik huidige filters & instellingen
-export_data_button: Start exporteren
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde
@@ -331,6 +327,10 @@ interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
+functions:
+  year: Jaar
+  month: Maand
+  count: Aantal
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -1093,7 +1093,6 @@ interfaces:
     auto_formatter: Automatische titel formatter gebruiken
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
-    add_tags: Tags toevoegen...
   input:
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
@@ -1230,7 +1229,6 @@ layouts:
     subtitle: Ondertitel
   tabular:
     tabular: Tabel
-    fields: Velden
     spacing: Ruimte
     comfortable: Comfortabel
     compact: Compact
