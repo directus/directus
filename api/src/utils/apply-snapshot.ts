@@ -59,7 +59,7 @@ export async function applySnapshot(
 						const matchingForeignKeyField = matchingForeignKeyTable.fields[fieldDiff.schema.foreign_key_column];
 						if (!matchingForeignKeyField || matchingForeignKeyField.type !== 'uuid') return fieldDiff;
 
-						return merge(fieldDiff, { type: 'uuid' }, { schema: { data_type: 'uuid', max_length: null } });
+						return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
 					});
 
 				try {
