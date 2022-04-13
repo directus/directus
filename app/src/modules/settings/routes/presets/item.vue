@@ -514,7 +514,7 @@ export default defineComponent({
 					name: t('name'),
 					type: 'string',
 					meta: {
-						interface: 'input',
+						interface: 'system-input-translated-string',
 						width: 'half',
 						options: {
 							placeholder: t('preset_name_placeholder'),

@@ -349,7 +349,7 @@ import_export: Importa / Esporta
 format: Formato
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
-fill_template: Riempi con il valore del modello
+fill_template: Riempi con i valori del modello
 a_unique_table_name: Un nome di tabella unico...
 a_unique_column_name: Un nome di colonna unico...
 enable_custom_values: Abilita valori personalizzati
@@ -708,7 +708,7 @@ role: Ruolo
 edit_role: Modifica ruolo
 rule: Regola
 user: Utente
-no_presets: Nessuna Preset
+no_presets: Nessun Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
