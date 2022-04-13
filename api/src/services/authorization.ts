@@ -239,6 +239,9 @@ export class AuthorizationService {
 								(requiredFieldPermissions[collection ? collection : parentCollection!] = new Set())
 							).add(field);
 
+							// Add the `collection` field to the required permissions
+							requiredFieldPermissions[collection ? collection : parentCollection!].add('collection');
+
 							// Continue to parse the filter for nested `collection` afresh
 							const requiredPermissions = extractRequiredFieldPermissions(collectionScope, filterValue);
 							result = mergeRequiredFieldPermissions(result, requiredPermissions);
