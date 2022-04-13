@@ -1,27 +1,12 @@
-import { h } from 'vue';
 import { defineDisplay } from '@directus/shared/utils';
-import { get } from 'lodash';
-import { ValueNull } from '@/views/private/components/value-null';
-
-type Props = {
-	field: string;
-	rootItem: Record<string, any>;
-	showZero: boolean;
-	suffix: string;
-};
+import RelatedCount from './related-count.vue';
 
 export default defineDisplay({
 	id: 'related-count',
 	name: 'Related Count',
 	icon: 'functions',
 	description: 'Display the total number of related items',
-	component: ({ field, rootItem, showZero, suffix }: Props) => {
-		const count = get(rootItem, `${field}_count`);
-		if (!count && !showZero) {
-			return h(ValueNull);
-		}
-		return `${count} ${suffix}`;
-	},
+	component: RelatedCount,
 	options: [
 		{
 			field: 'showZero',
