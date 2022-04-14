@@ -23,9 +23,9 @@ const { t } = useI18n();
 	top: calc(var(--header-bar-height) - 1px); // minus 1px to avoid gaps
 	z-index: 4;
 	display: flex;
-	padding: 12px;
+	padding: 10px;
+	padding-left: 0;
 	background-color: var(--background-input);
-	border-bottom: var(--border-width) solid var(--border-normal);
 
 	.name {
 		flex-grow: 1;

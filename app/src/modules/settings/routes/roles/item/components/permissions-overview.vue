@@ -12,36 +12,31 @@
 				v-for="collection in regularCollections"
 				:key="collection.collection"
 				:collection="collection"
+				:collections="collections"
 				:role="role"
-				:permissions="permissions.filter((p) => p.collection === collection.collection)"
+				:permissions="permissions"
 				:refreshing="refreshing"
 			/>
 
-			<button class="system-toggle" @click="systemVisible = !systemVisible">
-				{{ t('system_collections') }}
-				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
-			</button>
+			<v-detail :label="t('system_collections')" class="system-toggle">
+				<permissions-overview-row
+					v-for="collection in systemCollections"
+					:key="collection.collection"
+					:collection="collection"
+					:collections="collections"
+					:role="role"
+					:permissions="permissions"
+					:refreshing="refreshing"
+					:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
+				/>
 
-			<transition-expand>
-				<div v-if="systemVisible">
-					<permissions-overview-row
-						v-for="collection in systemCollections"
-						:key="collection.collection"
-						:collection="collection"
-						:role="role"
-						:permissions="permissions.filter((p) => p.collection === collection.collection)"
-						:refreshing="refreshing"
-						:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
-					/>
-				</div>
-			</transition-expand>
-
-			<span v-if="systemVisible && appAccess" class="reset-toggle">
-				{{ t('reset_system_permissions_to') }}
-				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
-				/
-				<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
-			</span>
+				<span v-if="appAccess" class="reset-toggle">
+					{{ t('reset_system_permissions_to') }}
+					<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
+					/
+					<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
+				</span>
+			</v-detail>
 		</div>
 
 		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
@@ -72,7 +67,8 @@ import { Permission } from '@directus/shared/types';
 import api from '@/api';
 import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { orderBy } from 'lodash';
+import { orderBy, sortBy } from 'lodash';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -96,11 +92,18 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 
-		const regularCollections = computed(() =>
-			collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false && collection.schema
-			)
-		);
+		const collections = computed(() => {
+			return translate(
+				sortBy(
+					collectionsStore.collections.filter(
+						(collection) => collection.collection.startsWith('directus_') === false && collection.meta
+					),
+					['meta.sort', 'collection']
+				)
+			);
+		});
+
+		const regularCollections = computed(() => collections.value.filter((collection) => !collection.meta?.group));
 
 		const systemCollections = computed(() =>
 			orderBy(
@@ -108,8 +111,6 @@ export default defineComponent({
 				'name'
 			)
 		);
-
-		const systemVisible = ref(false);
 
 		const { permissions, loading, fetchPermissions, refreshPermission, refreshing } = usePermissions();
 
@@ -123,7 +124,7 @@ export default defineComponent({
 
 		return {
 			t,
-			systemVisible,
+			collections,
 			regularCollections,
 			systemCollections,
 			permissions,
@@ -246,20 +247,10 @@ export default defineComponent({
 
 .table {
 	max-width: 792px;
-	background-color: var(--background-input);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
 }
 
 .system-toggle {
-	width: 100%;
-	height: 48px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
-
-	.v-icon {
-		vertical-align: -7px;
-	}
+	margin-top: 44px;
 }
 
 .reset-toggle {
