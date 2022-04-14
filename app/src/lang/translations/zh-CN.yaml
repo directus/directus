@@ -49,11 +49,11 @@ field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
-branch: 分支
-leaf: Leaf
-indeterminate: 不确定的状态
+branch: 分支（父节点）
+leaf: 叶节点
+indeterminate: 不确定状态(总是保留父节点)
 edit_collection: 编辑模型
-exclusive: 唯一的
+exclusive: 排他(分支或叶节点间互斥)
 children: 子页面
 db_only_click_to_configure: '仅限数据库：点击配置'
 show_active_items: 显示活动项
