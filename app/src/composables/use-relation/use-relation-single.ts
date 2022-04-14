@@ -41,6 +41,7 @@ export function useRelationSingle(
 
 	async function getDisplayItems() {
 		const val = value.value;
+
 		if (!val) {
 			displayItem.value = null;
 			return;
@@ -53,7 +54,10 @@ export function useRelationSingle(
 
 		const id = typeof val === 'object' ? val[relation.value.relatedPrimaryKeyField.field] : val;
 
-		if (!id) return;
+		if (!id) {
+			displayItem.value = val;
+			return;
+		}
 
 		const fields = new Set(previewQuery.value.fields);
 		fields.add(pkField);
