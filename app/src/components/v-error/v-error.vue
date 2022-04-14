@@ -2,7 +2,7 @@
 	<div class="v-error selectable">
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
-			v-if="showCopy"
+			v-if="isCopySupported"
 			v-tooltip="t('copy_details')"
 			small
 			class="copy-error"
@@ -17,6 +17,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref } from 'vue';
 import { isPlainObject } from 'lodash';
+import useClipboard from '@/composables/use-clipboard';
 
 export default defineComponent({
 	props: {
@@ -44,15 +45,16 @@ export default defineComponent({
 
 		const copied = ref(false);
 
-		const showCopy = computed(() => !!navigator.clipboard?.writeText);
+		const { isCopySupported, copyToClipboard } = useClipboard();
 
-		return { t, code, copyError, showCopy, copied, message };
+		return { t, code, copyError, isCopySupported, copied, message };
 
 		async function copyError() {
 			const error = props.error?.response?.data || props.error;
-			await navigator.clipboard.writeText(
+			const isCopied = await copyToClipboard(
 				JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
 			);
+			if (!isCopied) return;
 			copied.value = true;
 		}
 	},
