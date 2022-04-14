@@ -1,7 +1,7 @@
 import api from '@/api';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge } from 'lodash';
+import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
 import { Method } from 'axios';
@@ -50,6 +50,12 @@ export function useRelationMultiple(
 		set(newValue) {
 			value.value = newValue;
 		},
+	});
+
+	watch(value, (newValue, oldValue) => {
+		if (Array.isArray(newValue) && isPlainObject(oldValue)) {
+			updateFetchedItems();
+		}
 	});
 
 	watch(previewQuery, updateFetchedItems, { immediate: true });
