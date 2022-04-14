@@ -344,7 +344,7 @@ import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
 import_data_indeterminate: 导入数据中
 import_data_success: 成功从 {filename} 导入数据
-import_data_error: 此文件的数据结构与收藏不匹配。
+import_data_error: 此文件的数据结构与模型不匹配。
 label_import: 导入
 label_export: 导出
 import_export: 导入 / 导出
@@ -369,6 +369,11 @@ functions:
   year: 年
   month: 月
   week: 周
+  day: 日
+  weekday: 星期几
+  hour: 时
+  minute: 分
+  second: 秒
   count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -1735,6 +1740,7 @@ layouts:
     start_date_field: 开始日期
     end_date_field: 结束日期
     optional: 可选的
+    first_day: 一周的起始日
   map:
     map: 地图
     basemap: 底图
