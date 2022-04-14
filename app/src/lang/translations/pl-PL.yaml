@@ -640,6 +640,7 @@ advanced_settings: Zaawansowane Ustawienia
 advanced_filter: Filtr zaawansowany
 delete_advanced_filter: Usuń filtr
 change_advanced_filter_operator: Zmień operatora
+advanced: Zaawansowane
 operators:
   eq: Równa się
   neq: Różne od
@@ -1740,6 +1741,8 @@ layouts:
     calendar: Kalendarz
     start_date_field: Pole daty rozpoczęcia
     end_date_field: Pole daty zakończenia
+    optional: Opcjonalnie
+    first_day: Pierwszy dzień tygodnia
   map:
     map: Mapa
     basemap: Mapa bazowa

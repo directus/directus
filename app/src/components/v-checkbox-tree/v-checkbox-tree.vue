@@ -10,6 +10,7 @@
 			:item-value="itemValue"
 			:item-children="itemChildren"
 			:text="choice[itemText]"
+			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled"
@@ -19,7 +20,8 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, defineComponent, PropType } from 'vue';
+import { computed, ref, defineComponent, PropType, watch, toRefs } from 'vue';
+import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
@@ -74,9 +76,54 @@ export default defineComponent({
 			},
 		});
 
+		const fakeValue = ref('');
+		const fakeParentValue = ref('');
+
+		const { search, modelValue, showSelectionOnly, itemText, itemValue, itemChildren, choices } = toRefs(props);
+
+		const { visibleChildrenValues } = useVisibleChildren(
+			search,
+			modelValue,
+			choices,
+			showSelectionOnly,
+			itemText,
+			itemValue,
+			itemChildren,
+			fakeParentValue,
+			fakeValue
+		);
+
 		const openSelection = ref<(string | number)[]>([]);
 
-		return { value, openSelection };
+		watch(
+			() => props.search,
+			(newValue) => {
+				if (!newValue) return;
+
+				const selection = new Set([...openSelection.value, ...searchChoices(newValue, props.choices)]);
+
+				openSelection.value = [...selection];
+			},
+			{ immediate: true }
+		);
+
+		function searchChoices(text: string, target: Record<string, any>[]) {
+			const selection: string[] = [];
+
+			for (const item of target) {
+				if (item[props.itemText].toLowerCase().includes(text.toLowerCase())) {
+					selection.push(item[props.itemValue]);
+				}
+
+				if (item[props.itemChildren]) {
+					selection.push(...searchChoices(text, item[props.itemChildren]));
+				}
+			}
+
+			return selection;
+		}
+
+		return { value, openSelection, visibleChildrenValues };
 	},
 });
 </script>

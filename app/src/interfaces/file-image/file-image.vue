@@ -7,14 +7,27 @@
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
-			<div v-if="imageError" class="image-error">
+			<div v-if="imageError || !src" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
 
 				<span class="message">
 					{{ t(`errors.${imageError}`) }}
 				</span>
 			</div>
-			<img v-else :src="src" alt="" role="presentation" @error="imageErrorHandler" />
+
+			<img
+				v-else-if="image.type.startsWith('image')"
+				:src="src"
+				:width="image.width"
+				:height="image.height"
+				alt=""
+				role="presentation"
+				@error="imageErrorHandler"
+			/>
+
+			<div v-else class="fallback">
+				<v-icon-file :ext="ext" />
+			</div>
 
 			<div class="shadow" />
 
@@ -56,14 +69,14 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, toRefs } from 'vue';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import formatFilesize from '@/utils/format-filesize';
-import FileLightbox from '@/views/private/components/file-lightbox';
-import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
+import FileLightbox from '@/views/private/components/file-lightbox';
+import { nanoid } from 'nanoid';
+import { readableMimeType } from '@/utils/readable-mime-type';
 
 const props = withDefaults(
 	defineProps<{
@@ -108,7 +121,7 @@ const imageError = ref<string | null>(null);
 const cacheBuster = ref(nanoid());
 
 const src = computed(() => {
-	if (!image.value) return undefined;
+	if (!image.value) return null;
 
 	if (image.value.type.includes('svg')) {
 		return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
@@ -119,8 +132,10 @@ const src = computed(() => {
 		return addTokenToURL(url);
 	}
 
-	return undefined;
+	return null;
 });
+
+const ext = computed(() => (image.value ? readableMimeType(image.value.type, true) : 'unknown'));
 
 const downloadSrc = computed(() => {
 	if (!image.value) return null;
@@ -155,7 +170,6 @@ function deselect() {
 	remove();
 
 	loading.value = false;
-	image.value = null;
 	lightboxActive.value = false;
 	editDrawerActive.value = false;
 }
@@ -201,6 +215,7 @@ img {
 	height: 100%;
 	color: var(--foreground-subdued);
 	background-color: var(--background-normal);
+	padding: 32px;
 
 	.v-icon {
 		margin-bottom: 6px;
@@ -320,5 +335,14 @@ img {
 
 .disabled-placeholder {
 	height: var(--input-height-tall);
+}
+
+.fallback {
+	background-color: var(--background-normal);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: var(--input-height-tall);
+	border-radius: var(--border-radius);
 }
 </style>
