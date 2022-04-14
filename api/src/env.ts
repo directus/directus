@@ -10,7 +10,7 @@ import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
 
-const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
+const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
 
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
