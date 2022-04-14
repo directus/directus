@@ -92,6 +92,7 @@ const props = withDefaults(
 		value: () => null,
 		disabled: false,
 		crop: true,
+		folder: undefined,
 	}
 );
 
