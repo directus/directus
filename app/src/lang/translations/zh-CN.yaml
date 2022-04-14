@@ -368,6 +368,7 @@ delete_share: 删除分享
 functions:
   year: 年
   month: 月
+  week: 周
   count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -1733,6 +1734,7 @@ layouts:
     calendar: 日历
     start_date_field: 开始日期
     end_date_field: 结束日期
+    optional: 可选的
   map:
     map: 地图
     basemap: 底图
