@@ -81,7 +81,7 @@ export default async function runAST(
 		if (!items || items.length === 0) return items;
 
 		// Apply the `_in` filters to the nested collection batches
-		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
+		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items, query.limit);
 
 		for (const nestedNode of nestedNodes) {
 			let nestedItems: Item[] | null = [];
@@ -248,7 +248,8 @@ function getDBQuery(
 function applyParentFilters(
 	schema: SchemaOverview,
 	nestedCollectionNodes: NestedCollectionNode[],
-	parentItem: Item | Item[]
+	parentItem: Item | Item[],
+	queryLimit: number | null | undefined = -1
 ) {
 	const parentItems = toArray(parentItem);
 
@@ -259,7 +260,7 @@ function applyParentFilters(
 			const foreignField = schema.collections[nestedNode.relation.related_collection!].primary;
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id);
 
-			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
+			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } }, limit: queryLimit } });
 		} else if (nestedNode.type === 'o2m') {
 			const relatedM2OisFetched = !!nestedNode.children.find((child) => {
 				return child.type === 'field' && child.name === nestedNode.relation.field;
@@ -284,7 +285,7 @@ function applyParentFilters(
 			const foreignField = nestedNode.relation.field;
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id);
 
-			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
+			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } }, limit: queryLimit } });
 		} else if (nestedNode.type === 'a2o') {
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
@@ -299,7 +300,7 @@ function applyParentFilters(
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 
 				merge(nestedNode, {
-					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } },
+					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } }, limit: -1 } },
 				});
 			}
 		}
