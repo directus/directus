@@ -334,28 +334,19 @@ const customFilter = computed(() => {
 	const reverseRelation = `$FOLLOW(${info.junctionCollection.collection},${info.junctionField.field},${info.collectionField.field})`;
 
 	const selectFilter: Filter = {
-		_or: [
-			{
-				[reverseRelation]: {
-					[info.reverseJunctionField.field]: {
-						_neq: props.primaryKey,
-					},
+		[reverseRelation]: {
+			_none: {
+				[relationInfo.value.reverseJunctionField.field]: {
+					_eq: props.primaryKey,
 				},
 			},
-			{
-				[reverseRelation]: {
-					[info.reverseJunctionField.field]: {
-						_null: true,
-					},
-				},
-			},
-		],
+		},
 	};
 
 	const junctionField = info.junctionField.field;
 
 	const selectedPrimaryKeys = selected.value.reduce((acc, item) => {
-		const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.collection]].field;
+		const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.field]].field;
 		if (item[info.collectionField.field] === selectingFrom.value) acc.push(item[junctionField][relatedPKField]);
 		return acc;
 	}, [] as (string | number)[]);

@@ -331,29 +331,26 @@ const customFilter = computed(() => {
 
 	if (!relationInfo.value) return filter;
 
-	// const selectFilter: Filter = {
-	// 	_or: [
-	// 		{
-	// 			[relationInfo.value.reverseJunctionField.field]: {
-	// 				_neq: props.primaryKey,
-	// 			},
-	// 		},
-	// 		{
-	// 			[relationInfo.value.reverseJunctionField.field]: {
-	// 				_null: true,
-	// 			},
-	// 		},
-	// 	],
-	// };
+	const reverseRelation = `$FOLLOW(${relationInfo.value.junctionCollection.collection},${relationInfo.value.junctionField.field})`;
 
-	// if (selectedPrimaryKeys.value.length > 0)
-	// 	filter._and.push({
-	// 		[relationInfo.value.relatedPrimaryKeyField.field]: {
-	// 			_nin: selectedPrimaryKeys.value,
-	// 		},
-	// 	});
+	const selectFilter: Filter = {
+		[reverseRelation]: {
+			_none: {
+				[relationInfo.value.reverseJunctionField.field]: {
+					_eq: props.primaryKey,
+				},
+			},
+		},
+	};
 
-	// if(props.primaryKey !== '+') filter._and.push(selectFilter);
+	if (selectedPrimaryKeys.value.length > 0)
+		filter._and.push({
+			[relationInfo.value.relatedPrimaryKeyField.field]: {
+				_nin: selectedPrimaryKeys.value,
+			},
+		});
+
+	if (props.primaryKey !== '+') filter._and.push(selectFilter);
 
 	return filter;
 });
