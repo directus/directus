@@ -45,10 +45,6 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		icon: 'embed',
 		tooltip: i18n.global.t('wysiwyg_options.media'),
 		onAction: (buttonApi: any) => {
-			if (editor.value.plugins.fullscreen.isFullscreen()) {
-				editor.value.execCommand('mceFullScreen');
-			}
-
 			mediaDrawerOpen.value = true;
 
 			if (buttonApi.isActive()) {

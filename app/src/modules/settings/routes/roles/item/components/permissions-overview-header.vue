@@ -9,22 +9,19 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>
 .permissions-overview-header {
 	--v-icon-color: var(--foreground-subdued);
 
+	position: sticky;
+	top: calc(var(--header-bar-height) - 1px); // minus 1px to avoid gaps
+	z-index: 4;
 	display: flex;
 	padding: 12px;
 	background-color: var(--background-input);

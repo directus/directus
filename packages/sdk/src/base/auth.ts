@@ -11,11 +11,14 @@ export type AuthStorage<T extends AuthTokenType = 'DynamicToken'> = {
 
 export class Auth extends IAuth {
 	autoRefresh = true;
+	msRefreshBeforeExpires = 30000;
 	staticToken = '';
 
 	private _storage: IStorage;
 	private _transport: ITransport;
 	private passwords?: PasswordsHandler;
+
+	private _refreshPromise?: Promise<AuthResult | false>;
 
 	constructor(options: AuthOptions) {
 		super();
@@ -25,6 +28,7 @@ export class Auth extends IAuth {
 
 		this.autoRefresh = options?.autoRefresh ?? this.autoRefresh;
 		this.mode = options?.mode ?? this.mode;
+		this.msRefreshBeforeExpires = options?.msRefreshBeforeExpires ?? this.msRefreshBeforeExpires;
 
 		if (options?.staticToken) {
 			this.staticToken = options?.staticToken;
@@ -66,13 +70,16 @@ export class Auth extends IAuth {
 	async refreshIfExpired() {
 		if (this.staticToken) return;
 		if (!this.autoRefresh) return;
-		if (!this._storage.auth_expires_at) return;
-
-		if (this._storage.auth_expires_at < new Date().getTime()) {
-			await this.refresh().catch(() => {
-				/*do nothing*/
-			});
+		if (!this._storage.auth_expires_at) {
+			// wait because resetStorage() call in refresh()
+			await this._refreshPromise;
+			return;
 		}
+
+		if (this._storage.auth_expires_at < new Date().getTime() + this.msRefreshBeforeExpires) {
+			this._refreshPromise = this.refresh();
+		}
+		await this._refreshPromise; // wait for refresh
 	}
 
 	async refresh(): Promise<AuthResult | false> {
@@ -85,11 +92,9 @@ export class Auth extends IAuth {
 
 		this.updateStorage<'DynamicToken'>(response.data!);
 
-		if (this.autoRefresh) this.refreshIfExpired();
-
 		return {
 			access_token: response.data!.access_token,
-			refresh_token: response.data?.refresh_token,
+			...(response.data?.refresh_token && { refresh_token: response.data.refresh_token }),
 			expires: response.data!.expires,
 		};
 	}
@@ -105,11 +110,9 @@ export class Auth extends IAuth {
 
 		this.updateStorage(response.data!);
 
-		if (this.autoRefresh) this.refreshIfExpired();
-
 		return {
 			access_token: response.data!.access_token,
-			refresh_token: response.data?.refresh_token,
+			...(response.data?.refresh_token && { refresh_token: response.data.refresh_token }),
 			expires: response.data!.expires,
 		};
 	}

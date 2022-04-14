@@ -557,26 +557,31 @@ export default defineComponent({
 			function stageEdits(edits: Record<string, any>) {
 				const currentValue = props.value || [];
 
-				// Whether or not the currently-being-edited item exists in the staged values
-				const hasBeenStaged =
-					currentValue.includes(editsAtStart.value) || currentValue.includes(currentlyEditing.value);
+				const newValue = currentValue.map((item) => {
+					if (
+						typeof item === 'object' &&
+						item[anyRelation.value.meta!.one_collection_field!] ===
+							edits[anyRelation.value.meta!.one_collection_field!] &&
+						item[anyRelation.value.field] ===
+							edits[anyRelation.value.field][primaryKeys.value[edits[anyRelation.value.meta!.one_collection_field!]]]
+					) {
+						return edits;
+					} else if (['number', 'string'].includes(typeof item)) {
+						if (item === edits[o2mRelationPrimaryKeyField.value]) return edits;
+					}
+
+					return item;
+				});
 
 				// Whether or not the currently-being-edited item has been saved to the database
 				const isNew = currentlyEditing.value === '+' && relatedPrimaryKey.value === '+';
 
-				if (isNew && hasBeenStaged === false) {
-					emit('input', [...currentValue, edits]);
-				} else {
-					emit(
-						'input',
-						currentValue.map((val) => {
-							if (val === editsAtStart.value || val == currentlyEditing.value) {
-								return edits;
-							}
-							return val;
-						})
-					);
+				if (isNew) {
+					newValue.push(edits);
 				}
+
+				if (newValue.length === 0) emit('input', null);
+				else emit('input', newValue);
 			}
 
 			function cancelEdit() {
@@ -620,9 +625,16 @@ export default defineComponent({
 
 				if (isPlainObject(relatedKey)) {
 					relatedKey = item[anyRelation.value.field][primaryKeys.value[relatedCollectiom]];
+					editsAtStart.value = item;
+				} else {
+					editsAtStart.value = {
+						[anyRelation.value.meta!.one_collection_field!]: relatedCollectiom,
+						[anyRelation.value.field]: {
+							[primaryKeys.value[relatedCollectiom]]: relatedKey,
+						},
+					};
 				}
 
-				editsAtStart.value = item;
 				relatedPrimaryKey.value = relatedKey || '+';
 				currentlyEditing.value = junctionPrimaryKey || '+';
 			}

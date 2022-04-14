@@ -20,6 +20,7 @@ import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import { getHelpers, Helpers } from '../database/helpers';
 import Keyv from 'keyv';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 
 export class FieldsService {
 	knex: Knex;
@@ -561,8 +562,18 @@ export class FieldsService {
 		}
 
 		if (field.schema?.default_value !== undefined) {
-			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
+			if (
+				typeof field.schema.default_value === 'string' &&
+				(field.schema.default_value.toLowerCase() === 'now()' || field.schema.default_value === 'CURRENT_TIMESTAMP')
+			) {
 				column.defaultTo(this.knex.fn.now());
+			} else if (
+				typeof field.schema.default_value === 'string' &&
+				field.schema.default_value.includes('CURRENT_TIMESTAMP(') &&
+				field.schema.default_value.includes(')')
+			) {
+				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
+				column.defaultTo(this.knex.fn.now(Number(precision)));
 			} else if (
 				typeof field.schema.default_value === 'string' &&
 				['"null"', 'null'].includes(field.schema.default_value.toLowerCase())

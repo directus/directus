@@ -6,8 +6,8 @@
 				clickable
 				readonly
 				:model-value="displayValue"
-				:placeholder="t('interfaces.datetime.placeholder')"
 				:disabled="disabled"
+				:placeholder="!isValidValue ? value : t('enter_a_value')"
 				@click="toggle"
 			>
 				<template v-if="!disabled" #append>
@@ -34,9 +34,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import formatLocalized from '@/utils/localized-format';
-import { parse, parseISO } from 'date-fns';
+import { isValid, parse, parseISO } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -68,17 +68,19 @@ export default defineComponent({
 
 		const dateTimeMenu = ref();
 
-		const { displayValue } = useDisplayValue();
+		const { displayValue, isValidValue } = useDisplayValue();
 
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
 
+			const isValidValue = computed(() => isValid(parseValue(props.value)));
+
 			watch(() => props.value, setDisplayValue, { immediate: true });
 
-			return { displayValue };
+			return { displayValue, isValidValue };
 
 			async function setDisplayValue() {
-				if (!props.value) {
+				if (!props.value || !isValidValue.value) {
 					displayValue.value = null;
 					return;
 				}
@@ -111,7 +113,7 @@ export default defineComponent({
 			emit('input', null);
 		}
 
-		return { displayValue, unsetValue, dateTimeMenu, t };
+		return { t, displayValue, unsetValue, dateTimeMenu, isValidValue };
 	},
 });
 </script>

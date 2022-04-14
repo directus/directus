@@ -135,7 +135,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(collection);
 
-		const isNew = computed(() => props.primaryKey === '+');
+		const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
 		const title = computed(() => {
 			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;

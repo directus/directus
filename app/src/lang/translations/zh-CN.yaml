@@ -29,7 +29,7 @@ archived: 已存档
 modules: 模块
 module_bar: 模块栏
 reset_width: 重置宽度
-tile_size: 图块大小：
+tile_size: 瓦块大小
 edit_field: 编辑
 conditions: 条件
 maps: 地图
@@ -41,12 +41,12 @@ duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
 group: 群组
-export_items: 导出条目
-and: 和
+export_items: 导出
+and: 与
 or: 或
-fill_width: 填充宽度
+fill_width: 适应页面宽度
 field_name_translations: 字段名称翻译
-enter_password_to_enable_tfa: 输入您的密码以启用两步验证
+enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
 branch: 分支
@@ -344,7 +344,7 @@ import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
 import_data_indeterminate: 导入数据中
 import_data_success: 成功从 {filename} 导入数据
-import_data_error: 此文件的数据结构与收藏不匹配。
+import_data_error: 此文件的数据结构与模型不匹配。
 label_import: 导入
 label_export: 导出
 import_export: 导入 / 导出
@@ -368,6 +368,12 @@ delete_share: 删除分享
 functions:
   year: 年
   month: 月
+  week: 周
+  day: 日
+  weekday: 星期几
+  hour: 时
+  minute: 分
+  second: 秒
   count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -1733,6 +1739,8 @@ layouts:
     calendar: 日历
     start_date_field: 开始日期
     end_date_field: 结束日期
+    optional: 可选的
+    first_day: 一周的起始日
   map:
     map: 地图
     basemap: 底图

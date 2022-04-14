@@ -640,6 +640,7 @@ advanced_settings: Zaawansowane Ustawienia
 advanced_filter: Filtr zaawansowany
 delete_advanced_filter: Usuń filtr
 change_advanced_filter_operator: Zmień operatora
+advanced: Zaawansowane
 operators:
   eq: Równa się
   neq: Różne od

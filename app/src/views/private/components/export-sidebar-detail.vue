@@ -273,6 +273,10 @@ const exportSettings = reactive({
 watch(
 	() => props.layoutQuery,
 	() => {
+		if (props.layoutQuery?.fields) {
+			exportSettings.fields = props.layoutQuery?.fields;
+		}
+
 		if (props.layoutQuery?.sort) {
 			if (Array.isArray(props.layoutQuery.sort)) {
 				exportSettings.sort = props.layoutQuery.sort[0];
