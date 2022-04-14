@@ -5,7 +5,7 @@ import { Knex } from 'knex';
 import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { set } from 'lodash';
+import { set, merge } from 'lodash';
 import { DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
@@ -38,7 +38,29 @@ export async function applySnapshot(
 				// creating a collection without a primary key
 				const fields = snapshotDiff.fields
 					.filter((fieldDiff) => fieldDiff.collection === collection)
-					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
+					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
+					.map((fieldDiff) => {
+						// Casts field type to UUID when applying SQLite-based schema on other databases.
+						// This is needed because SQLite snapshots UUID fields as char with length 36, and
+						// it will fail when trying to create relation between char field to UUID field
+						if (
+							!fieldDiff.schema ||
+							fieldDiff.schema.data_type !== 'char' ||
+							fieldDiff.schema.max_length !== 36 ||
+							!fieldDiff.schema.foreign_key_table ||
+							!fieldDiff.schema.foreign_key_column
+						) {
+							return fieldDiff;
+						}
+
+						const matchingForeignKeyTable = schema.collections[fieldDiff.schema.foreign_key_table];
+						if (!matchingForeignKeyTable) return fieldDiff;
+
+						const matchingForeignKeyField = matchingForeignKeyTable.fields[fieldDiff.schema.foreign_key_column];
+						if (!matchingForeignKeyField || matchingForeignKeyField.type !== 'uuid') return fieldDiff;
+
+						return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
+					});
 
 				try {
 					await collectionsService.createOne({
