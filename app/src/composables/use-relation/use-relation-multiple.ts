@@ -317,16 +317,14 @@ export function useRelationMultiple(
 			} else {
 				const response = await api.request({
 					url: getEndpoint(targetCollection),
-					method: 'SEARCH' as Method,
-					data: {
-						query: {
-							fields: Array.from(fields),
-							filter: {
-								[reverseJunctionField]: itemId.value,
-							},
-							page: previewQuery.value.page,
-							limit: previewQuery.value.limit,
+					method: 'GET' as Method,
+					params: {
+						fields: Array.from(fields),
+						filter: {
+							[reverseJunctionField]: itemId.value,
 						},
+						page: previewQuery.value.page,
+						limit: previewQuery.value.limit,
 					},
 				});
 
