@@ -1,9 +1,19 @@
 # Collection Page
 
-> The Collection Page displays all Items within a Collection. The page comes with highly configurable Layouts for
-> browsing, visualizing, and managing these Items.
+> The Collection Page displays all Items within a Collection and comes with highly configurable Layouts for browsing,
+> visualizing, and managing these Items.
 
 [[toc]]
+
+## Adjust Page Layout
+
+<video autoplay muted loop controls title="Layouts">
+	<source src="" type="video/mp4" />
+</video>
+
+Layouts determine how you view or interact with Items in a Collection. Whether your Collection contains blog posts,
+project management tasks, geo-coordinates, temporal data or beyond; Layouts display Items in a logical and intuitive
+way. [Learn More](/app/layouts)
 
 ## Search Items
 
@@ -11,25 +21,20 @@
 	<source src="" type="video/mp4" />
 </video>
 
-Input a string or number into the search bar to find all Items that have one or more Fields that contain your string or
-number, not including any Items which have been [filtered out](#filter-items). To search through a Collection's Items,
-follow the steps below.
+Find all Items with one or more Fields containing your searched value, excluding any Items which have been
+[filtered out](#filter-items). To search through a Collection's Items, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Select <span mi icon>search</span> in the Page Header and a search bar will appear.
-3. Type in the string or number to search by. The page will display Items that have a matching string or number value in
-   one or more of its Fields.
+3. Type in the value to search for.
 
 ## Filter Items
 
-![Filter Items](image.webp)
+<video autoplay muted loop controls title="Filter Items">
+	<source src="" type="video/mp4" />
+</video>
 
-It is possible to conditionally [filter](/app/filters/) the Items displayed on the Collection page. To filter a
-Collection's Items, follow the steps below.
-
-1. Navigate to the Content Module and select the desired Collection.
-2. Select <span mi icon>filter_list</span> in the Page Header.
-3. Apply any [Filters](/app/filters/) as needed.
+Filters enable complex and granular filtered displays of Items. [Learn More](/app/filters/)
 
 ## Manually Sort Items
 
@@ -37,18 +42,20 @@ Collection's Items, follow the steps below.
 	<source src="" type="video/mp4" />
 </video>
 
-Drag-and-drop Items to custom-sort them as desired. This is only possible on certain Layouts, such as the default
-[Table Layout](/app/content-layouts/#table-layout). To sort a Collection's Items, follow the steps below.
+Drag and drop Items to custom-sort them as desired. This is only possible on certain Layouts, such as the default
+[Table Layout](/app/layouts/#table-layout). To sort a Collection's Items, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
-2. In the Sidebar, choose a [Layout](/app/content-layouts) that supports manual sorting.
+2. In the Sidebar, be sure a [Layout](#adjust-page-layout) is chosen that supports manual sorting.
 3. Enable manual sorting:
    - For the Table Layout, toggle <span mi icon>sort</span> in the configured Sort column.
 4. Drag Items by their handle into a new position.
 
-::: warning Sorting Requires Configuration
+::: warning Manual Sorting Requires Configuration
 
 Only available if a Sort column has been configured in the Collection's Data Model Settings.
+
+<!--@TODO config > Data Model Settings: Link -->
 
 :::
 
@@ -62,54 +69,49 @@ navigating away from the page.
 :::tip
 
 Sorting saves a value in a [Sort Field](/reference/query/#sort). This value is used to return data in a custom order.
-The key takeaway is that while the values in this Sort Field do get updated and modified, values in other Fields are not
-changed.
+This means that while the values in this Sort Field do get updated and modified, values in other Fields are not changed.
 
 :::
 
-## Order Items
+## Automatically Sort Items
 
-![Order Items](image.webp)
-
-Order and browse Items alphabetically or numerically. Ordering Items is not possible on certain Layouts, such as the Map
-Layout. To order a Collection's Items, follow the steps below.
-
-1. Navigate to the Content Module and select the desired Collection.
-2. In the Sidebar, choose a [Layout](/app/content-layouts/#adjust-item-layouts) that supports ordering.\
-   (e.g. The Table or Card Layout)
-3. Set the Order Field and Order Direction.
-   - **Table Layout:** Click on the Field's column Header, clicking again changes order direction.
-   - **Card Layout:** Adjust the Sort Field and Sort Direction in the Layout Subheader.
-
-::: tip
-
-Ordering is a non-destructive action which does not change your data.
-
-:::
-
-## Adjust Item Layout
-
-<video autoplay muted loop controls title="Adjust Item Layouts">
+<video autoplay muted loop controls title="Automatically Sort Items">
 	<source src="" type="video/mp4" />
 </video>
 
-The Content Module provides Layouts, which are customized displays for viewing and interacting with Items on a
-Collection Page. Whether your Collection contains blog posts, project management tasks, geo-coordinates, temporal data
-or beyond; Layouts display Items in a logical and intuitive way. [Learn More](/app/content-layouts)
+Sort Items alphabetically or numerically, in ascending or descending order. Sorting is not possible on certain Layouts,
+such as the Map Layout. Layouts that support automatic sorting have controls for this in slightly different locations.
+Controls are found under each Layout's respective section. The following Layouts currently support automatic sorting:
+
+- [Table Layout](/app/layouts/#table-layout)
+- [Card Layout](/app/layouts/#card-layout)
+
+::: tip
+
+Automatic sorting is a non-destructive action which does not change your data.
+
+:::
 
 ## View Archived Items
 
-![View Archived Items](image.webp)
+<video autoplay muted loop controls title="View Archived Items">
+	<source src="" type="video/mp4" />
+</video>
 
-To view an archived Item, follow the steps below.
+To view an archived Item, follow the steps below. [Learn More](/app/content-items/#archive-an-item)
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Click **"Archive"** in the Sidebar.
-3. Choose the desired view: `Show Items` (default), `Show Archived Items`, or `Show Items + Archived Items`.
+3. Choose the desired view:
+   - **"Show Items"**
+   - **"Show Archived Items"**
+   - **"Show Items + Archived Items"**
 
 ## Bookmark Item Presets
 
-![Bookmark Item Presets](image.webp)
+<video autoplay muted loop controls title="Bookmark Item Presets">
+	<source src="" type="video/mp4" />
+</video>
 
 Bookmarks allow you to save how a Collection Page looks so that you can return to the exact same view later. This
 includes details such as the Layout, searches, filters, sorting, ordering, etc. To Bookmark a Collection, follow these
@@ -118,5 +120,13 @@ steps.
 1. Navigate to the Content Module and select the desired Collection.
 2. Configure the page as desired (eg: layout, options, search, filters, order, etc).
 3. Click the <span mi icon>bookmark_border</span> in the header next to the page title.
-4. **Optional:** Rename or Delete a bookmark by right-clicking it in the navigation sidebar and selecting **"Rename
-   Bookmark"** or **"Delete Bookmark"**.
+4. **Optional:** Right-click <span mi icon>bookmark_border</span> in the Navigation Bar, then **"Rename Bookmark"** or
+   **"Delete Bookmark"**.
+
+## Import / Export Items
+
+<video autoplay muted loop controls title="Layouts Montage">
+	<source src="" type="video/mp4" />
+</video>
+
+No-code Users can import and export a Collection's Items in file-format. [Learn More](/app/import-export/)

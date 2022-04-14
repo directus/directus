@@ -5,6 +5,21 @@
 
 [[toc]]
 
+:::tip Programmatically Manage Items
+
+This page shows you how to manage Items within the no-code app. However, Items can also be [managed](/reference/items/)
+programmatically via the API.
+
+<!--
+@TODO Reference > Items
+Add links once "archive item" is created
+[archived]()
+[reverted](/reference/system/revisions/#revisions)
+[commented on](/reference/system/activity/#create-a-comment)
+-->
+
+:::
+
 ## Create an Item
 
 <video autoplay muted loop controls title="Create an Item">
@@ -14,7 +29,7 @@
 To create an Item, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
-2. Click <span mi btn>add</span> in the Page Header. The Item Page will open.
+2. Click <span mi btn>add</span> in the Page Header and the Item Page will open.
 3. Fill in Item details as desired.
 4. Click <span mi btn>check</span> in the Page Header.
 
@@ -23,13 +38,20 @@ To create an Item, follow the steps below.
 If the Collection is configured as a "Singleton" in the data model settings, then the App will skip step two above and
 automatically open the Item Page.
 
+<!--
+@TODO Config > Data Model
+Link to Singleton once written
+-->
+
 :::
 
 ## Edit an Item
 
-![Update an Item](image.webp)
+<video autoplay muted loop controls title="Edit an Item">
+	<source src="" type="video/mp4" />
+</video>
 
-To update an Item's Field Values, follow the steps below.
+To edit an Item's Field Values, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Click on the desired Item. The Item Page will open.
@@ -38,7 +60,7 @@ To update an Item's Field Values, follow the steps below.
 
 ::: tip Other Save Options
 
-To the right of the primary Save button, there is a <span mi icon>more_vert</span> icon which contains the following
+To the right of the primary Save button, there is a <span mi icon>more_vert</span> menu which contains the following
 alternate save options:
 
 <span mi icon>check</span> Save and Stay (⌘S)\
@@ -107,13 +129,13 @@ delete Items from the database, this cannot be reverted. When batch editing, the
 the same edit across multiple Items. Follow the steps below to batch delete, archive, or edit Items.
 
 1. Navigate to the Content Module and select the desired Collection.
-2. Choose a [Layout](#adjust-item-layout) that supports multiple Item selection from the Sidebar.\
+2. Choose a [Layout](/app/layouts) that supports multiple Item selection from the Sidebar.\
    (e.g. The Table or Card Layout)
 3. Click the Items you wish to select:
    - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the left-most column.
-   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the upper left hand corner of each Card.
+   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the upper left-hand corner of each Card.
 
-Once Items are selected, the following icons will appear in the Page Header: <span mi btn muted>delete</span>
+Once Items are selected, the following buttons will appear in the Page Header: <span mi btn muted>delete</span>
 <span mi btn muted>archive</span> <span mi btn muted>edit</span>
 
 **Delete**\
@@ -141,15 +163,23 @@ These actions are destructive, proceed with caution.
 	<source src="" type="video/mp4" />
 </video>
 
-As you update Field Values on Items, Directus saves these [Revisions](/getting-started/glossary/#revisions) so that you
-can compare and revert the current state of an Item to previous states. To revert an Item, follow the steps below.
+As you update Field Values on Items, Directus saves these [Revisions](/getting-started/glossary/#revisions), and they
+can be compared side-by-side to the current state. To revert an Item, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Select the desired Item. The Item Page will open.
 3. Click **"Revisions"** in the page sidebar.
-4. Click on the revision you wish to preview.
-5. Click on the "Revert" button located in the drawer's header.
-6. Confirm the action within the dialog by clicking **"Revert"**.
+4. Click on the revision you wish to preview and a side menu will appear.
+5. Go to **"Revisions Made"** in the side menu and view the revision differences.
+6. Click <span mi btn muted>restore</span> to revert the Item's values and return to the Item Page.
+7. Click <span mi btn>check</span> to confirm and exit to the Collection Page.
+
+:::tip Revision Preview
+
+You will also see a **"Revision Preview"** button in the side menu navigation, which will let you preview all the Item's
+values for that revision.
+
+:::
 
 :::tip
 
@@ -168,21 +198,21 @@ refer to. To create a comment, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Select the desired Item. The Item Page will open.
-3. Click **"Comments"** in the page sidebar.\
-4. Type your message into the input.
+3. Click **"Comments"** in the page sidebar.
+4. Type your message into the input box.
 5. Click the **"Submit"** button.
 
 :::tip Mentions
 
 You can also search and mention any User by typing the **"@"** symbol along with their name or email in your comment.
-They will then receive an in-app notification as well as an email which direct them to your comment.
+They will then receive an in-app notification as well as an email directing to your comment.
 
 :::
 
 :::tip Edit and Delete Comments
 
 Each comment displays the time it was created in its upper right-hand corner. Hover over this and the
-<span mi icon>more_horiz</span> menu will appear. Click this menu if you wish to <span mi icon>edit</span> edit or
+<span mi icon>more_horiz</span> menu will appear. Click this menu to <span mi icon>edit</span> edit or
 <span mi icon>delete</span> delete the comment.
 
 :::

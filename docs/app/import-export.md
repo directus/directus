@@ -11,7 +11,10 @@
 To use this utility, you will need to be familiar with [Collections](/getting-started/glossary/#collections),
 [Items](/getting-started/glossary/#items), and [Fields](/getting-started/glossary/#fields).
 
-<!--@TODO Link to Introduction when ready-->
+<!--
+@TODO Getting Started > Introduction
+Link when ready
+-->
 
 :::
 
@@ -42,10 +45,13 @@ The Items will now be in the Collection. The file itself will not be stored in t
 
 :::tip Importing Relational Files
 
-It is possible to import relational Field values as well. For this task, the User making the import will need access
-permissions for the related Collection, as well as a firm understanding of the relational data model.
+It is possible to import relational Field values as well. For this task, the User performing the import will need access
+permissions for the related Collection and a firm understanding of the relational data model.
 
-<!--@TODO link to config > import / export-->
+<!--
+@TODO config > import / export
+Add link
+-->
 
 :::
 
@@ -63,21 +69,20 @@ Fields are exported, how they are exported, and where they are exported. To expo
 2. Click **"Import / Export"** in the Sidebar.
 3. Click **"Export Items"** and the [Export Items Menu](#export-items-menu) will appear.
 4. Choose the desired format: CSV, JSON or XML.
-5. Optional: Configure any other export details as desired.
+5. **Optional:** Configure any other export details as desired.
 6. Click <span mi btn>download</span> to download the file.
 
 :::tip Exporting to File Library
 
-When downloading 2,500 or more Items, you will be required to download into the Directus Project's File Library. You can
-also choose to download to the File Library in the [Export Items Menu](#export-items-menu). In either case, you can
-navigate to the File Library to download your file locally.
+When downloading 2,500 or more Items, you will be required to download into the Directus Project's File Library. After
+exporting, go to the File Library to download your file locally.
 
 :::
 
 :::tip Exporting Relational Files
 
-It is possible to export relational Field values. For this task, the User making the export will need access permissions
-for the related Collection, as well as a firm understanding of the relational data model.
+It is possible to export relational Field values. For this task, the User performing the export will need access
+permissions for the related Collection and a firm understanding of the relational data model.
 
 <!--@TODO link to config access permissions when ready-->
 
@@ -89,6 +94,9 @@ for the related Collection, as well as a firm understanding of the relational da
 	<source src="" type="video/mp4" />
 </video>
 
+This menu provides granular control over exactly which Items and Fields are exported, how they are exported, and where
+they are exported.
+
 - **Format** — Choose to export Items as CSV, JSON, or XML.
 - **Limit** — Set the maximum number of Items to be exported.
 - **Export Location** — Download the export file directly to your machine or to the File Library.
@@ -97,7 +105,7 @@ for the related Collection, as well as a firm understanding of the relational da
 - **Sort Direction** — Choose to sort Items in ascending or descending order.
 - **Full-Text Search** — Limit exported Items to ones which matched as search results.
 - **Filter** — Limit exported Items with a Filter.
-- **Fields** — Add, remove and re-order the Item Fields that will be exported.
+- **Fields** — Add, remove, and re-order the Item Fields that will be exported.
 
 :::tip Layout Impacts Export Fields
 
@@ -109,7 +117,13 @@ displayed, but this can also be modified in the Export items Menu.
 
 ## File Assets and Media
 
-Some Collections may directly or [relationally](#relational-data) include images, videos or other file types among their
-Fields. It is not possible to import/export files of any kind because they cannot be stored in CSV, JSON, or XML.
+Some Collections may directly or relationally include Fields referencing images, videos or other file types. It is not
+possible to import or export files with this utility.
 
-To import and export Files, please see the [File Library Module](/app/file-library/).
+To import and export files, please see the [File Library Module](/app/file-library/).
+
+:::tip What does Import/Export do in the File Library?!
+
+Import/Export handles Field Values associated with the file _(e.g. id, title, description, etc.)_.
+
+:::

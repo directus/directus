@@ -43,7 +43,7 @@ Customization controls can be found in the following three locations.
 
 - **Layout Options** — Located in the Sidebar.
 - **Subheader** — Located just below the Page Header and above the Page Area.
-- **Page Area** — The Page Area, which displays all Items.
+- **Page Area** — The center of the webpage, which displays all Items.
 
 These controls typically fall into three general categories.
 
@@ -52,23 +52,24 @@ These controls typically fall into three general categories.
   etc.
 
 - **Field Values Displayed**\
-  Most Layouts allow you to choose which Field value(s) are used to represent each Item on the Collection Page. For example,
+  Most Layouts allow you to choose which Field Value(s) are used to represent each Item on the Collection Page. For example,
   with blog posts, it may be ideal to have the hero image, blog title, date, author, etc.
 
-- **Sorting and Ordering**\
-  Certain Layouts may allow alphabetical and numerical ordering, drag-and-drop adjustments, positioning Items in relation
-  to one another, etc.
+- **Manual and Automatic Sorting**\
+  Certain Layouts may allow sorting Items by value in ascending and descending order, drag-and-drop repositioning of Items,
+  etc.
 
 ### Key Takeaways
 
+As you go through Layouts, it may be helpful to keep the following points in mind.
+
 - **Layouts will not be universally usable for all Collections.**\
-  Layouts are custom-tailored to support specific data-models. In order to work properly, the Map Layout requires the Collection
-  have a Map Field configured and the Calendar Layout requires the Collection have a datetime Field configured.
+  Layouts are tailored to work with specific data-models. For example, in order to work properly, the Map Layout requires
+  the Collection have a Map Field configured and the Calendar Layout requires the Collection have a datetime Field configured.
 
 - **Controls are different for each Layout.**\
   Each Layout presents data differently, so certain customizations may not be functional with certain Layouts. For example,
-  the Map Layout displays each Item as a pin on a map, so this Layout has no controls for manual sorting or alphabetical
-  ordering.
+  the Map Layout displays each Item as a pin on a map, so this Layout has no controls for sorting.
 
 - **Controls for a Layout may be in different locations.**\
   Depending on the Layout, the same control may be under Layout Options in the sidebar, the subheader, or on the Page Area
@@ -104,7 +105,16 @@ Layout used in the Content Module. It includes the following controls.
 
 - **Select Item(s)** — Click <span mi icon>check_box_outline_blank</span> in the selection column for the desired
   Item(s).
-- **Manually Sort Items** — Drag and drop <span mi icon>drag_handle</span> in the sort column to reposition Item(s).
+- **Manually Sort Items** — Toggle <span mi icon>sort</span> in the configured Sort column to drag and drop
+  <span mi icon>drag_handle</span> Items.
+
+::: warning Manual Sorting Requires Configuration
+
+Only available if a Sort column has been configured in the Collection's Data Model Settings.
+
+<!--@TODO config > Data Model Settings: Link -->
+
+:::
 
 :::tip
 
@@ -122,7 +132,7 @@ points.
 </video>
 
 This tiled Layout is ideal for Collections that prioritize an image _(e.g. a user or blog post)_. This is the default
-for both the [User Directory](/app/user-directory/) and [File Library](/reference/files/). It includes the following
+for both the [User Directory](/app/user-directory/) and [File Library](/app/file-library/). It includes the following
 controls.
 
 **Layout Options**
@@ -158,12 +168,12 @@ controls.
 **Layout Options**
 
 - **Display Template** — Set a mix of Field values and text to represent Items on the calendar.
-- **Start Date Field** — Field to determine each Item's beginning time on the calendar.
-- **End Date Field** — Field to determine each Item's ending time on the calendar.
+- **Start Date Field** — Choose Field to determine each Item's beginning time on the calendar.
+- **End Date Field** — Choose Field to determine each Item's ending time on the calendar.
 
 **Subheader**
 
-- **Toggle Month and Year** — Move across time with the chevrons in the subheader.
+- **Toggle Month and Year** — Move across time using the chevrons in the subheader.
 - **Today** — Click to jump to the current date on the calendar.
 - **Month Week Day List** — Adjust the time interval used to display Items in the Page Area.
 
@@ -173,8 +183,13 @@ controls.
 
 :::tip Configuration Requirements
 
-To use this, the Collection will need at least one datetime Field to set a start time, but ideally two _(to set a start
-and end time)_.
+To use this Layout, the Collection will need at least one datetime Field to set a start time, but ideally two _(to set a
+start and end time)_.
+
+<!--
+@TODO Config > Fields
+Link to Datetime Field
+-->
 
 :::
 
@@ -190,27 +205,32 @@ points, lines, and other geometry. The following options are available:
 **Layout Options**
 
 - **Basemap** — Choose the map provider used for the Collection.
-- **Geospatial Field** — Select the geospatial field type to display on screen.
+- **Geospatial Field** — Select the geospatial field type to display on screen:
   - **Map JSON Point** — Supports latitude-longitude based, single-point locations.
   - **Map Geometry** — Supports geometric areas such as lines and polygons.
 - **Display Template** — Choose the Fields displayed when hovering over an Item on the map.
 - **Cluster Nearby Data** — Toggle whether or not nearby Items get clustered into a single pin.
 
 **Subheader**\
-There is no Subheader on the Map Layout.
+_There is no Subheader on the Map Layout._
 
 **Page Area**
 
 - **Zoom** — Click <span mi icon>add</span> and <span mi icon>remove</span> in the upper left hand corner of the Page
   Area to zoom in and out.
 - **Zoom to my Location** — Click <span mi icon>my_location</span> to zoom into your current location on the map.
-- **Reframe** — Click the square in the upper left-hand corner to resize.
-- **Select Item** — Click a single Item to enter the Item Page.
-- **Select Items** — Click and drag to select multiple Items at once to open the Item Page.
+- **Reframe** — Click the square in the upper left-hand corner to resize and reframe the map area.
+- **Select Item** — Click a single Item to enter its Item Page.
+- **Select Items** — Click and drag to select multiple Items at once, opening the Item Page.
 
 :::tip Configuration Requirements
 
-Must have a Map Field configured on the Collection for this Layout to work properly.
+To use this Layout, the Collection must have a Map Field configured.
+
+<!--
+@TODO Config > Fields
+Link to Map Field
+-->
 
 :::
 
@@ -221,7 +241,8 @@ Must have a Map Field configured on the Collection for this Layout to work prope
 </video>
 
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
-task. Tasks are grouped onto status panels. The following controls are available.
+task, because it groups Items onto panels according to their status _(e.g. "Not Started", "In Progress", "Under Review",
+"Complete", or any other status that is defined)_. The following controls are available.
 
 **Layout Options**
 
@@ -236,10 +257,10 @@ task. Tasks are grouped onto status panels. The following controls are available
 - **Card Image** — Choose an Image Field to be displayed on each Item.
 - **Card Image Fit** — Toggle whether the image fit is cropped.
 - **Card User** — Choose the User Created Field to display their avatar in the bottom right corner.
-- **Show Ungrouped** — Toggle display of a status Panel containing Items with no assigned status.
+- **Show Ungrouped** — Toggle display of a Status Panel containing Items with no assigned status.
 
 **Subheader**\
-There is no Subheader for the Kanban Layout.
+_There is no Subheader for the Kanban Layout._
 
 **Page Area**
 
@@ -251,8 +272,12 @@ There is no Subheader for the Kanban Layout.
 
 :::tip Configuration Requirements
 
-The Kanban Layout groups Items according to their status _(e.g. "Not Started", "In Progress", "Under Review",
-"Complete", or any other status that is defined)_. In order to make Kanban work, you will need to configure an
-appropriate status Field for **"Group By"** in the Layout Options menu.
+To make this Layout work, you will need to configure an appropriate status Field on the Collection, then identify this
+Field under **"Group By"** in the Layout Options menu.
+
+<!--
+@TODO Config > Fields
+Create and link to Kanban config tutorial.
+-->
 
 :::
