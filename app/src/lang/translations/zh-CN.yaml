@@ -42,11 +42,11 @@ half_width: 半宽
 full_width: 全宽
 group: 群组
 export_items: 导出
-and: 和
+and: 与
 or: 或
-fill_width: 填充宽度
+fill_width: 适应页面宽度
 field_name_translations: 字段名称翻译
-enter_password_to_enable_tfa: 输入您的密码以启用两步验证
+enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
 branch: 分支
