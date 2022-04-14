@@ -14,6 +14,7 @@
 		:max="max"
 		:step="step"
 		:autocomplete="masked ? 'new-password' : 'off'"
+		:field-data="fieldData"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -34,6 +35,7 @@
 </template>
 
 <script lang="ts">
+import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
@@ -70,6 +72,14 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		prefix: {
+			type: String,
+			default: null,
+		},
+		suffix: {
+			type: String,
+			default: null,
+		},
 		trim: {
 			type: Boolean,
 			default: true,
@@ -94,7 +104,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-
 		slug: {
 			type: Boolean,
 			default: false,
@@ -110,6 +119,14 @@ export default defineComponent({
 		step: {
 			type: Number,
 			default: 1,
+		},
+		smartNumberControls: {
+			type: Boolean,
+			default: false,
+		},
+		fieldData: {
+			type: Object as PropType<Field | undefined>,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

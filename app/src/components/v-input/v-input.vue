@@ -9,42 +9,35 @@
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
-				<input
-					ref="input"
-					v-focus="autofocus"
-					v-bind="attributes"
-					:placeholder="placeholder ? String(placeholder) : undefined"
-					:autocomplete="autocomplete"
-					:type="type"
-					:min="min"
-					:max="max"
-					:step="step"
-					:disabled="disabled"
-					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
-					v-on="listeners"
-				/>
+				<template v-if="isSmartInput">
+					<smart-input
+						v-bind="passthroughAttributes"
+						:type="type"
+						:min="min === undefined || min === null ? undefined : String(min)"
+						:max="max === undefined || max === null ? undefined : String(max)"
+						:step="String(step)"
+						:field-data="fieldData"
+						:autocomplete="autocomplete"
+						:placeholder="placeholder ? String(placeholder) : undefined"
+						:model-value="modelValue === undefined || modelValue === null ? '' : modelValue"
+						@update:model-value="emitValue($event)"
+					/>
+				</template>
+				<template v-else>
+					<input
+						ref="input"
+						v-focus="autofocus"
+						v-bind="passthroughAttributes"
+						:placeholder="placeholder ? String(placeholder) : undefined"
+						:autocomplete="autocomplete"
+						:type="type"
+						:disabled="disabled"
+						:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+						v-on="listeners"
+					/>
+				</template>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
-			<span v-if="type === 'number' && !hideArrows">
-				<v-icon
-					:class="{ disabled: !isStepUpAllowed }"
-					name="keyboard_arrow_up"
-					class="step-up"
-					tabindex="-1"
-					clickable
-					:disabled="!isStepUpAllowed"
-					@click="stepUp"
-				/>
-				<v-icon
-					:class="{ disabled: !isStepDownAllowed }"
-					name="keyboard_arrow_down"
-					class="step-down"
-					tabindex="-1"
-					clickable
-					:disabled="!isStepDownAllowed"
-					@click="stepDown"
-				/>
-			</span>
 			<div v-if="$slots.append" class="append">
 				<slot name="append" :value="modelValue" :disabled="disabled" />
 			</div>
@@ -63,8 +56,9 @@ export default {
 
 <script lang="ts" setup>
 import { computed, ref, useAttrs } from 'vue';
-import { omit } from 'lodash';
 import slugify from '@sindresorhus/slugify';
+import smartInput from './smart-input.vue';
+import { Field } from '@directus/shared/types';
 
 interface Props {
 	autofocus?: boolean;
@@ -79,15 +73,17 @@ interface Props {
 	slug?: boolean;
 	slugSeparator?: string;
 	type?: string;
+	fieldData?: Field;
 	hideArrows?: boolean;
-	max?: number;
-	min?: number;
-	step?: number;
+	max?: number | string;
+	min?: number | string;
+	step?: number | string;
 	active?: boolean;
 	dbSafe?: boolean;
 	trim?: boolean;
 	autocomplete?: string;
 	small?: boolean;
+	smartNumberControls?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -103,6 +99,7 @@ const props = withDefaults(defineProps<Props>(), {
 	slug: false,
 	slugSeparator: '-',
 	type: 'text',
+	fieldData: undefined,
 	hideArrows: false,
 	max: undefined,
 	min: undefined,
@@ -112,6 +109,7 @@ const props = withDefaults(defineProps<Props>(), {
 	trim: false,
 	autocomplete: 'off',
 	small: false,
+	smartNumberControls: false,
 });
 
 const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
@@ -121,7 +119,10 @@ const attrs = useAttrs();
 const input = ref<HTMLInputElement | null>(null);
 
 const listeners = computed(() => ({
-	input: emitValue,
+	input: (e: InputEvent) => {
+		const value = (e.target as HTMLInputElement).value;
+		emitValue(value);
+	},
 	keydown: processValue,
 	blur: (e: Event) => {
 		trimIfEnabled();
@@ -129,7 +130,8 @@ const listeners = computed(() => ({
 	},
 	focus: (e: PointerEvent) => emit('focus', e),
 }));
-const attributes = computed(() => omit(attrs, ['class']));
+
+const passthroughAttributes = computed(() => ({ ...attrs, class: undefined }));
 
 const classes = computed(() => [
 	{
@@ -141,12 +143,10 @@ const classes = computed(() => [
 	...((attrs.class || '') as string).split(' '),
 ]);
 
-const isStepUpAllowed = computed(() => {
-	return props.disabled === false && (props.max === undefined || parseInt(String(props.modelValue), 10) < props.max);
-});
-
-const isStepDownAllowed = computed(() => {
-	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
+// Use smart input for numbers, or a string with smart number controls
+const isSmartInput = computed(() => {
+	if (props.type === 'number' || (props.type === 'text' && props.smartNumberControls)) return true;
+	return false;
 });
 
 function processValue(event: KeyboardEvent) {
@@ -193,20 +193,16 @@ function trimIfEnabled() {
 	}
 }
 
-function emitValue(event: InputEvent) {
-	let value = (event.target as HTMLInputElement).value;
-
-	if (props.nullable === true && value === '') {
+function emitValue(value: string) {
+	if (props.nullable === true && (value === null || value === '')) {
 		emit('update:modelValue', null);
 		return;
 	}
 
 	if (props.type === 'number') {
-		const parsedNumber = Number(value);
-
 		// Ignore if numeric value remains unchanged
-		if (props.modelValue !== parsedNumber) {
-			emit('update:modelValue', parsedNumber);
+		if (props.modelValue !== value) {
+			emit('update:modelValue', value);
 		}
 	} else {
 		if (props.slug === true) {
@@ -222,30 +218,6 @@ function emitValue(event: InputEvent) {
 		}
 
 		emit('update:modelValue', value);
-	}
-}
-
-function stepUp() {
-	if (!input.value) return;
-	if (isStepUpAllowed.value === false) return;
-
-	input.value.stepUp();
-
-	if (input.value.value != null) {
-		return emit('update:modelValue', Number(input.value.value));
-	}
-}
-
-function stepDown() {
-	if (!input.value) return;
-	if (isStepDownAllowed.value === false) return;
-
-	input.value.stepDown();
-
-	if (input.value.value) {
-		return emit('update:modelValue', Number(input.value.value));
-	} else {
-		return emit('update:modelValue', props.min || 0);
 	}
 }
 </script>
@@ -294,35 +266,6 @@ body {
 			margin-right: 8px;
 		}
 
-		.step-up {
-			margin-bottom: -8px;
-		}
-
-		.step-down {
-			margin-top: -8px;
-		}
-
-		.step-up,
-		.step-down {
-			--v-icon-color: var(--arrow-color);
-
-			display: block;
-
-			&:hover:not(.disabled) {
-				--arrow-color: var(--primary);
-			}
-
-			&:active:not(.disabled) {
-				transform: scale(0.9);
-			}
-
-			&.disabled {
-				--arrow-color: var(--border-normal);
-
-				cursor: auto;
-			}
-		}
-
 		&:hover {
 			--arrow-color: var(--border-normal-alt);
 
@@ -352,6 +295,14 @@ body {
 		.prefix,
 		.suffix {
 			color: var(--foreground-subdued);
+		}
+
+		.prefix {
+			margin-right: 4px;
+		}
+
+		.suffix {
+			margin-left: 4px;
 		}
 
 		.append {
