@@ -11,19 +11,19 @@ export const sortGroups = (panels: PanelConfig[]) => {
 			panels: panels.filter((panel) => panel.group === 'other' || !panel.group),
 		},
 		{
-			key: 'standard',
+			key: 'charts',
 			name: t('interface_group_text_and_numbers'),
-			panels: panels.filter((panel) => panel.group === 'standard'),
+			panels: panels.filter((panel) => panel.group === 'charts'),
 		},
 		{
-			key: 'selection',
-			name: t('interface_group_selection'),
-			panels: panels.filter((panel) => panel.group === 'selection'),
+			key: 'content',
+			name: t('interface_group_content'),
+			panels: panels.filter((panel) => panel.group === 'content'),
 		},
 		{
-			key: 'relational',
-			name: t('interface_group_relational'),
-			panels: panels.filter((panel) => panel.group === 'relational'),
+			key: 'aggregate',
+			name: t('interface_group_aggregate'),
+			panels: panels.filter((panel) => panel.group === 'aggregate'),
 		},
 		{
 			key: 'presentation',

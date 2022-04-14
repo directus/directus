@@ -8,6 +8,7 @@ export default definePanel({
 	name: '$t:panels.metric.name',
 	description: '$t:panels.metric.description',
 	icon: 'functions',
+	group: 'aggregate',
 	component: PanelMetric,
 	options: ({ options }) => {
 		const fieldsStore = useFieldsStore();

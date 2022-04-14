@@ -7,6 +7,7 @@ export default definePanel({
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
 	component: PanelTimeSeries,
+	group: 'charts',
 	options: [
 		{
 			field: 'collection',

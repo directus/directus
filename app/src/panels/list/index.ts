@@ -6,6 +6,7 @@ export default definePanel({
 	name: '$t:panels.list.name',
 	description: '$t:panels.list.description',
 	icon: 'list',
+	group: 'content',
 	component: PanelList,
 	options: [
 		{
