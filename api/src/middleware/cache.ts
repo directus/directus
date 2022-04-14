@@ -14,7 +14,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 	if (!cache) return next();
 
 	if (req.headers['cache-control']?.includes('no-store') || req.headers['Cache-Control']?.includes('no-store')) {
-		if (env.CACHE_STATUS_HEADER) res.setHeader(`${env.CACHE_STATUS_HEADER}`, 'UNCACHEABLE');
+		if (env.CACHE_STATUS_HEADER) res.setHeader(`${env.CACHE_STATUS_HEADER}`, 'MISS');
 		return next();
 	}
 
