@@ -675,18 +675,19 @@ registrations.
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                          | Description                                                            | Default Value |
-| --------------------------------- | ---------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                                                   | --            |
-| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.                           | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                                    | --            |
-| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                                       | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                                        | `cn`          |
-| `AUTH_<PROVIDER>_USER_SCOPE`      | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
-| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                                      | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group.                     | `member`      |
-| `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
+| Variable                                        | Description                                                            | Default Value |
+| ----------------------------------------------- | ---------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`                    | LDAP connection URL.                                                   | --            |
+| `AUTH_<PROVIDER>_BIND_DN`                       | Bind user <sup>[1]</sup> distinguished name.                           | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`                 | Bind user password.                                                    | --            |
+| `AUTH_<PROVIDER>_USER_DN`                       | Directory path containing users.                                       | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`                | Attribute to identify users by.                                        | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`                    | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
+| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup>        | Directory path containing groups.                                      | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`               | Attribute to identify user as a member of a group.                     | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`                   | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`                | Attribute containing the email of the user.                            | `mail`        |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`<sup>[3]</sup> | Role to use on user sign-up. Only used when GROUP_DN isn't configured. | --            |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. To bind
 anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
@@ -696,6 +697,9 @@ anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
 - `base`: Limits the scope to a single object defined by the associated DN.
 - `one`: Searches all objects within the associated DN.
 - `sub`: Searches all objects and sub-objects within the associated DN.
+
+<sup>[3]</sup> If you specify groupDn, the user's role will always get updated on authentication to what's configured in
+AD. It will fallback to the configured default role id if supplied.
 
 ### Example: LDAP
 
