@@ -8,7 +8,7 @@ import logger from '../../../logger';
 import { Snapshot } from '../../../types';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
-import { applySnapshot, isUpdateFieldMetaNested } from '../../../utils/apply-snapshot';
+import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
 import { flushCaches } from '../../../cache';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
@@ -82,7 +82,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				message += '\n\n' + chalk.black.underline.bold('Fields:');
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
-					if (diff[0]?.kind === 'E' || isUpdateFieldMetaNested(diff[0])) {
+					if (diff[0]?.kind === 'E' || isNestedMetaUpdate(diff[0])) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {

@@ -74,7 +74,7 @@ export async function applySnapshot(
 		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
-			if (diff?.[0].kind === 'N' && !isUpdateFieldMetaNested(diff?.[0])) {
+			if (diff?.[0].kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
 				} catch (err) {
@@ -83,7 +83,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A' || isUpdateFieldMetaNested(diff?.[0])) {
+			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A' || isNestedMetaUpdate(diff?.[0])) {
 				const newValues = snapshot.fields.find((snapshotField) => {
 					return snapshotField.collection === collection && snapshotField.field === field;
 				});
@@ -100,7 +100,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'D' && !isUpdateFieldMetaNested(diff?.[0])) {
+			if (diff?.[0].kind === 'D' && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.deleteField(collection, field);
 				} catch (err) {
@@ -161,9 +161,9 @@ export async function applySnapshot(
 	});
 }
 
-export function isUpdateFieldMetaNested(diff: Diff<SnapshotField | undefined>): boolean {
+export function isNestedMetaUpdate(diff: Diff<SnapshotField | undefined>): boolean {
 	if (!diff) return false;
 	if (diff.kind !== 'N' && diff.kind !== 'D') return false;
-	if (!diff.path || diff.path.length < 2) return false;
-	return diff.path.join('.').startsWith('meta.options') || diff.path.join('.').startsWith('meta.display_options');
+	if (!diff.path || diff.path.length < 2 || diff.path[0] !== 'meta') return false;
+	return true;
 }
