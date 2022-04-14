@@ -26,7 +26,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="get(item, header.value)"
+					:value="get(item, aliasFields?.[header.value] ? aliasFields[header.value].fullAlias : header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -182,6 +182,7 @@ import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@/utils/get-with-arrays';
+import useAliasFields from '@/composables/use-alias-fields';
 
 interface Props {
 	collection: string;
@@ -254,6 +255,8 @@ useShortcut(
 );
 
 const fieldsWritable = useSync(props, 'fields', emit);
+
+const { aliasFields } = useAliasFields(fieldsWritable);
 
 function addField(fieldKey: string) {
 	fieldsWritable.value = [...fieldsWritable.value, fieldKey];

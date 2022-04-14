@@ -19,6 +19,7 @@ import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useFieldsStore } from '@/stores';
+import useAliasFields from '@/composables/use-alias-fields';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -47,13 +48,23 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
+		const { aliasFields, aliasQuery } = useAliasFields(fieldsWithRelational);
+
+		const fieldsWithRelationalAliased = computed(() => {
+			if (!aliasFields.value) return fieldsWithRelational.value;
+			return fieldsWithRelational.value.map((field) =>
+				aliasFields.value?.[field] ? aliasFields.value[field].fullAlias : field
+			);
+		});
+
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
 				sort,
 				limit,
 				page,
-				fields: fieldsWithRelational,
+				fields: fieldsWithRelationalAliased,
+				alias: aliasQuery,
 				filter,
 				search,
 			}
