@@ -321,9 +321,7 @@ export function useRelationMultiple(
 			if (itemId.value === '+') {
 				fetchedItems.value = [];
 			} else {
-				const response = await api.request({
-					url: getEndpoint(targetCollection),
-					method: 'GET' as Method,
+				const response = await api.get(getEndpoint(targetCollection), {
 					params: {
 						fields: Array.from(fields),
 						filter: {
