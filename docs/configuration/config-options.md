@@ -425,6 +425,7 @@ than you would cache database content. [Learn More](#assets)
 | `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
 | `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
 | `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
+| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.         | --               |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
