@@ -443,8 +443,11 @@ exporting_all_items_in_collection: Exporting all {total} items within {collectio
 exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
 exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
 exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
-exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
-exporting_batch_hint_forced: Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will be saved to the File Library.
+exporting_batch_hint:
+  This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
+exporting_batch_hint_forced:
+  Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will
+  be saved to the File Library.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -620,7 +623,8 @@ one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
   permanent.
-delete_folder_are_you_sure: Are you sure you want to delete this folder? Nested folders and collections will be moved to the top most level.
+delete_folder_are_you_sure:
+  Are you sure you want to delete this folder? Nested folders and collections will be moved to the top most level.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -908,7 +912,8 @@ page_help_settings_presets_item: >-
   **Preset Detail** — A form for managing bookmarks and default collection presets.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
-page_help_settings_translation_strings_collection: '**Browse Translation Strings** — Lists all translation strings within the project.'
+page_help_settings_translation_strings_collection:
+  '**Browse Translation Strings** — Lists all translation strings within the project.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
@@ -1048,7 +1053,8 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Attribution
     attribution_placeholder: © OpenStreetMap contributors
-    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    transforms_note:
+      The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Additional Transformations
     project_name: Project Name
     project_descriptor: Project Descriptor
@@ -1130,7 +1136,8 @@ field_options:
         fit_text: Fit inside
         outside_text: Fit outside
     additional_transforms: Additional Transformations
-    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    transforms_note:
+      The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basemaps
@@ -1239,9 +1246,12 @@ shared_enter_passcode: Enter your passcode to continue...
 shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
 shared_last_remaining: This link can only be used once
-shared_uses_left: For added security, this shared page has been configured with a limited number of views. There are currently {n} views remaining, after which, the page will no longer be accessible.
+shared_uses_left:
+  For added security, this shared page has been configured with a limited number of views. There are currently {n} views
+  remaining, after which, the page will no longer be accessible.
 share_access_page: Access Shared Page
-share_access_not_found: This shared page either does not exist or has already exceeded the maximum number of allowed uses.
+share_access_not_found:
+  This shared page either does not exist or has already exceeded the maximum number of allowed uses.
 share_access_not_found_desc: Please contact an authorized user of this project to request access.
 share_access_not_found_title: Unknown Share Page
 share_copy_link: Copy Link
@@ -1517,7 +1527,7 @@ interfaces:
     no_collection: The collection could not be found
   system-folder:
     folder: Folder
-    description:  Select a folder
+    description: Select a folder
     field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
@@ -1531,7 +1541,9 @@ interfaces:
     add_label: '"Create New" Label'
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
-    incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
+    incompatible_data:
+      The current data is not compatible with the repeater interface and will be overridden when adding items to the
+      repeater
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -1771,6 +1783,35 @@ layouts:
     find_location: Find location...
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
+  kanban:
+    name: Kanban,
+    group_field: Group By,
+    group_field_placeholder: Field to group by...,
+    group_title: Group Title,
+    group_title_placeholder: Field for group titles...,
+    title: Card Title,
+    title_placeholder: Optional title field...,
+    text: Card Text,
+    text_placeholder: Optional text field...,
+    date: Card Date,
+    date_placeholder: Optional date field...,
+    tags: Card Tags,
+    tags_placeholder: Optional tags field...,
+    user: Card User,
+    user_placeholder: Optional user field...,
+    image: Card Image,
+    image_placeholder: Optional image field...,
+    image_fit: Card Image Fit,
+    crop: Crop,
+    advanced: Advanced,
+    edit_group: Edit Group,
+    delete_group: Delete Group,
+    add_group: Add Group,
+    add_group_placeholder: Enter a new group title...,
+    show_ungrouped: Show Ungrouped,
+    show: Show,
+    no_group: No Group,
+    not_all_loaded: Could only load the first 1000 items.
 
 panels:
   metric:
@@ -1790,3 +1831,67 @@ panels:
   list:
     name: List
     description: Filter and list fields from a collection
+  barchart:
+    name: Bar Chart,
+    description: Bar or column charts for comparing groups of values
+    select_field: You must select a field.
+    select_collection: You must select a collection.
+    select_x_axis: You must select an X-Axis.
+    function: Function
+    horizontal: Horizontal
+    x_axis_grouping: X-Axis Group Aggregation
+    x_axis: X-Axis
+    y_axis_function: Y-Axis Function
+    y_axis: Y-Axis
+    show_x_axis: Show X-Axis
+    show_y_axis: Show Y-Axis
+    show_data_label: Show Data Label
+    group_by: Grouped By
+    group_and_function: You must include or omit both a group and a function.
+    y_axix_NaN: The Y axis must be a number.
+    y_axis_conditional_one: The value for condition
+    y_axis_conditional_two: must be a number.
+  linechart:
+    name: Line Chart
+    description: Line chart for comparing change of a field.
+    select_field: You must select a field.
+    select_collection: You must select a collection.
+    select_x_axis: You must select an X-Axis.
+    function: Function
+    x_axis: X-Axis
+    x_axis_decimals: X-Axis Decimals
+    disabled_no_grouping: Disabled when no grouping is selected.
+    y_axis: Y-Axis
+    datasets: Datasets
+    show_legend: Show Legend
+    show_marker: Show Tooltip Marker
+    include_dataset: You must include atleast one dataset.
+    include_y_axis: You must include a Y-Axis for each dataset when no group is specified.
+    group_and_function: You must include or omit both a group and a function.
+    smooth: 'Smooth'
+    straight: 'Straight'
+    step_line: 'Step Line'
+  meter:
+    description: Meter for tracking values
+    name: Meter
+    arc: Arc
+    stroke_width: Stroke Width
+    select_max_value: You must select a maximum value.
+    max_greater_than_zero: The maximum must be greater than 0.
+    select_field: You must select a field.
+    select_collection: You must select a collection.
+    function: Function
+    thin: Thin
+    medium: Medium
+    broad: Broad
+  piechart:
+    name: Pie or Donut Chart
+    description: Circular chart showing the ratios of groups on a column.
+    function: 'Function'
+    donut: Donut
+    labels: Show Labels
+    legend: Show Legend
+    right: Right
+    bottom: Bottom
+    monochrome: Monochrome
+    monochrome_color: Monochrome Color
