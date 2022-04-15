@@ -39,7 +39,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { computed, ref, Ref, watch, nextTick } from 'vue';
+import { computed, nextTick, ref, Ref, watch } from 'vue';
 import Big from 'big.js';
 import { Field } from '@directus/shared/types';
 
@@ -225,25 +225,35 @@ const canStepDown = computed(() => {
 	return !props.disabled && (!workingNumber.value || !minCast.value || Big(workingNumber.value).gt(minCast.value));
 });
 
-function stepUp() {
+function stepUp(evt?: MouseEvent | KeyboardEvent) {
 	if (canStepUp.value === false) return;
 	const valToStep = Big(workingNumber.value || '0');
 
 	const onePlus = valToStep.plus(stepCast.value).toString();
 
-	updateWorkingNumber(onePlus);
+	const withShiftKey = evt ? evt.shiftKey : false;
+
+	updateWorkingNumber(onePlus, withShiftKey);
+
+	const cursor = getCursorPosition();
 	updateField(workingNumber.value);
+	restoreCursorPosition(cursor);
 	emitUp();
 }
 
-function stepDown() {
+function stepDown(evt?: MouseEvent | KeyboardEvent) {
 	if (canStepDown.value === false) return;
 	const valToStep = Big(workingNumber.value || '0');
 
 	const oneMinus = valToStep.minus(stepCast.value).toString();
 
-	updateWorkingNumber(oneMinus);
+	const withShiftKey = evt ? evt.shiftKey : false;
+
+	updateWorkingNumber(oneMinus, withShiftKey);
+
+	const cursor = getCursorPosition();
 	updateField(workingNumber.value);
+	restoreCursorPosition(cursor);
 	emitUp();
 }
 
@@ -399,12 +409,64 @@ function maxBig(a: Big, b: Big) {
 	return a.gt(b) ? a : b;
 }
 
-function checkKeyAction(event: KeyboardEvent) {
-	const key = event.code;
-	switch (key) {
-		case 'ArrowUp':
-		case 'ArrowDown':
+function checkKeyAction(evt: KeyboardEvent) {
+	const key = evt.code;
+
+	if (isDisplayNum.value && ['ArrowUp', 'ArrowDown'].includes(key)) {
+		evt.preventDefault();
+		switch (key) {
+			case 'ArrowUp':
+				stepUp(evt);
+				break;
+			case 'ArrowDown':
+				stepDown(evt);
+				break;
+		}
+	} else if (isDisplayText.value) {
+		// else
 	}
+}
+
+interface CursorPosition {
+	start: number;
+	end: number;
+	atEnd: boolean;
+}
+
+function getCursorPosition(): CursorPosition {
+	const input = inputField.value;
+	const length = input?.value.length;
+	const start = input?.selectionStart || input?.value.length || 0;
+	const end = input?.selectionEnd || input?.value.length || 0;
+
+	let atEnd = false;
+	if (start === length && end === length) {
+		atEnd = true;
+	}
+
+	return {
+		start,
+		end,
+		atEnd,
+	};
+}
+
+async function restoreCursorPosition(pos: CursorPosition) {
+	// Allow DOM to update before trying to fetch input value
+	await nextTick();
+
+	const input = inputField.value;
+	const length = input?.value.length || 0;
+
+	setTimeout(() => {
+		input?.focus();
+		// Keep cursor at end of input if that's where it started
+		if (pos.atEnd) {
+			input?.setSelectionRange(length, length);
+		} else {
+			input?.setSelectionRange(pos.start, pos.end);
+		}
+	}, 0);
 }
 
 // Run regex on string, find first value that's not null/empty.
