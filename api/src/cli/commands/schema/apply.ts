@@ -8,7 +8,7 @@ import logger from '../../../logger';
 import { Snapshot } from '../../../types';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
-import { applySnapshot } from '../../../utils/apply-snapshot';
+import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
 import { flushCaches } from '../../../cache';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
@@ -82,13 +82,17 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				message += '\n\n' + chalk.black.underline.bold('Fields:');
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
-					if (diff[0]?.kind === 'E') {
+					if (diff[0]?.kind === 'E' || isNestedMetaUpdate(diff[0])) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
+							const path = change.path!.slice(1).join('.');
 							if (change.kind === 'E') {
-								const path = change.path!.slice(1).join('.');
 								message += `\n    - Set ${path} to ${change.rhs}`;
+							} else if (change.kind === 'D') {
+								message += `\n    - Remove ${path}`;
+							} else if (change.kind === 'N') {
+								message += `\n    - Add ${path} and set it to ${change.rhs}`;
 							}
 						}
 					} else if (diff[0]?.kind === 'D') {
