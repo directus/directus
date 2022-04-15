@@ -245,8 +245,8 @@ export default defineInterface({
 		}
 		if (field.type && ['string', 'text'].includes(field.type)) {
 			// If field is not a masked/password input, we could possibly use smart number controls
-			if (field?.meta?.options && !field.meta?.options.masked) {
-				if (field.meta?.options.smartNumberControls) {
+			if (field.meta?.options?.masked === undefined || field.meta?.options?.masked !== true) {
+				if (field.meta?.options?.smartNumberControls) {
 					return {
 						standard: [...standardOptions],
 						advanced: [...affixOptions, ...textOptions, ...smartNumberControls, ...stringNumDivider, ...numberOptions],
