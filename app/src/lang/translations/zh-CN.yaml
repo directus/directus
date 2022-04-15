@@ -640,6 +640,7 @@ advanced_settings: 高级设置
 advanced_filter: 高级过滤器
 delete_advanced_filter: 删除过滤器
 change_advanced_filter_operator: 更改操作者
+advanced: 高级
 operators:
   eq: 等于
   neq: 不等于
@@ -1321,6 +1322,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:

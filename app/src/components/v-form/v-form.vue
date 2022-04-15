@@ -312,7 +312,8 @@ export default defineComponent({
 		}
 
 		function setValue(fieldKey: string, value: any) {
-			const field = props.fields?.find((field) => field.field === fieldKey);
+			const field = formFields.value?.find((field) => field.field === fieldKey);
+
 			if (!field || isDisabled(field)) return;
 
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
