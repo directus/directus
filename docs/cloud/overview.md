@@ -51,10 +51,8 @@ layout relates to each of these.
 ## Teams
 
 - [Team Members](/cloud/teams) — View, invite and remove other Team Members or leave a Team yourself.
-
 - [Team Activity](/cloud/teams/#view-team-activity) — View Team activity like Project creation and deletion, billing
   information changes, Member invitations and removals, etc.
-
 - [Team Settings](/cloud/teams/#update-team-settings) — Edit the Team Name and Team Slug, as well as
   [destroy the Team](/cloud/teams/#destroy-a-team).
 
@@ -62,6 +60,5 @@ layout relates to each of these.
 
 - [Team Projects](/cloud/projects) — View and access all Projects managed within a Team. Click a Project to enter the
   Product Details Page and access, monitor, edit or delete a Project.
-
 - [Team Billing](/cloud/teams/#manage-billing) — View and manage billing details such as credit card information, usage,
   subscriptions, and receipts.
