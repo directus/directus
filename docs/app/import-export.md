@@ -1,8 +1,8 @@
 # Import / Export
 
 > The Content, User Directory, and File Library modules allow importing and exporting of multiple Items stored as files.
-> This makes it quick and easy for no-code Users to handle tasks like uploading and downloading new customer
-> information; pulling down sales data for transformation, reports, and analysis; and beyond.
+> This makes it quick and easy to handle tasks like uploading and downloading new customer information; pulling down
+> sales data for transformation, reports, and analysis; and beyond.
 
 [[toc]]
 
@@ -71,6 +71,12 @@ Fields are exported, how they are exported, and where they are exported. To expo
 4. Choose the desired format: CSV, JSON or XML.
 5. **Optional:** Configure any other export details as desired.
 6. Click <span mi btn>download</span> to download the file.
+
+:::tip Opening the file in Excel?
+
+Export your file to CSV to seamlessly open in excel.
+
+:::
 
 :::tip Exporting to File Library
 

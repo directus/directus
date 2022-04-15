@@ -49,7 +49,7 @@ also be done [programmatically via the API](/reference/items/).
 
 ## Data Sharing
 
-<video alt="Data Sharing" autoplay muted loop controls>
+<video title="Data Sharing" autoplay muted loop controls>
 	<source src="" type="video/mp4" />
 </video>
 

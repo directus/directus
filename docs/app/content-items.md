@@ -35,7 +35,7 @@ To create an Item, follow the steps below.
 
 ::: tip Singletons
 
-If the Collection is configured as a "Singleton" in the data model settings, then the App will skip step two above and
+If the Collection is configured as a Singleton in the data model settings, then the App will skip step two above and
 automatically open the Item Page.
 
 <!--
@@ -111,7 +111,7 @@ This action permanently removes the Item from the database. Proceed with caution
 
 :::
 
-:::tip Archive as a Soft-Delete
+:::tip Soft-Delete
 
 If you wish to remove an Item from view or use, but keep it stored, you may consider
 [archiving the Item](#archive-an-item) instead.
@@ -151,7 +151,7 @@ Once Items are selected, the following buttons will appear in the Page Header: <
 5. Update Item details as desired.\
 6. Click <span mi btn>check</span> to confirm batch edits on all Items.
 
-:::danger DANGER!
+:::danger
 
 These actions are destructive, proceed with caution.
 
