@@ -640,6 +640,7 @@ advanced_settings: Разширени настройки
 advanced_filter: Разширен филтър
 delete_advanced_filter: Изтриване на филтър
 change_advanced_filter_operator: Промяна на оператор
+advanced: Разширени
 operators:
   eq: Равно
   neq: Различно
@@ -1321,6 +1322,7 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1516,6 +1518,7 @@ interfaces:
     add_label: 'Текст за „Създаване“'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
+    incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
@@ -1738,6 +1741,8 @@ layouts:
     calendar: Календар
     start_date_field: Начална дата
     end_date_field: Крайна дата
+    optional: По желание
+    first_day: Първи ден от седмицата
   map:
     map: Географска карта
     basemap: Основна карта
