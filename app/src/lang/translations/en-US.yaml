@@ -1839,6 +1839,9 @@ panels:
     include_dataset: You must include atleast one dataset.
     include_y_axis: You must include a Y-Axis for each dataset when no group is specified.
     group_and_function: You must include or omit both a group and a function.
+    smooth: 'Smooth'
+    straight: 'Straight'
+    step_line: 'Step Line'
   meter:
     description: Meter for tracking values
     name: Meter
@@ -1849,11 +1852,13 @@ panels:
     select_field: You must select a field.
     select_collection: You must select a collection.
     function: Function
+    thin: Thin
+    medium: Medium
+    broad: Broad
   piechart:
     name: Pie or Donut Chart
     description: Circular chart showing the ratios of groups on a column.
     function: 'Function'
-    column: Column
     donut: Donut
     labels: Show Labels
     legend: Show Legend
