@@ -21,7 +21,7 @@ export const useCollectionsStore = defineStore({
 		visibleCollections(): Collection[] {
 			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter((collection) => collection.meta?.hidden !== true);
+				.filter((collection) => collection.meta && collection.meta?.hidden !== true);
 		},
 		allCollections(): Collection[] {
 			return this.collections.filter(({ collection }) => collection.startsWith('directus_') === false);
