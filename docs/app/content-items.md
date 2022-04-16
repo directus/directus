@@ -92,7 +92,7 @@ To archive an Item, follow the steps below. [Learn More](/configuration/data-mod
 
 ::: warning Requires Configuration
 
-Archiving is only available if an Archive Field has been configured within the Collection's data model settings.
+Requires an archive Field to be configured within the Collection's data model settings.
 
 :::
 
@@ -143,8 +143,8 @@ refer to. To create a comment, follow the steps below.
 
 :::tip Mentions
 
-You can also search and mention any User by typing the **"@"** symbol along with their name or email in your comment.
-They will then receive an in-app notification as well as an email directing to your comment.
+You can also search and mention any User by typing the **"@"** symbol along with their name or email to send an in-app
+notification as well as an email directing to your comment.
 
 :::
 

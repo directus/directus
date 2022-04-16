@@ -231,8 +231,8 @@ Link to Map Field
 ![Kanban Layout](https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/kanban-layout-20220416A.webp)
 
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
-task, because it groups Items onto panels according to their status _(e.g. "Not Started", "In Progress", "Under Review",
-"Complete", or any other status that is defined)_. The following controls are available.
+task, because it groups Items onto columns according to their status _(e.g. "Not Started", "In Progress", "Under
+Review", "Complete", or any other status that is defined)_. The following controls are available.
 
 **Layout Options**
 
@@ -247,17 +247,17 @@ task, because it groups Items onto panels according to their status _(e.g. "Not 
 - **Card Image** — Choose an Image Field to be displayed on each Item.
 - **Card Image Fit** — Toggle whether the image fit is cropped.
 - **Card User** — Choose the User Created Field to display their avatar in the bottom right corner.
-- **Show Ungrouped** — Toggle display of a Status Panel containing Items with no assigned status.
+- **Show Ungrouped** — Toggle display of a status column containing Items with no assigned status.
 
 **Subheader**\
 _There is no Subheader for the Kanban Layout._
 
 **Page Area**
 
-- **Create Task and Assign Status** — Click <span mi icon>add</span> in a status panel and the Item Page will open.
+- **Create Task and Assign Status** — Click <span mi icon>add</span> in a status column and the Item Page will open.
 - **Sort Panels** — Drag and drop Items to reposition or change task status.
-- **Add Status Panel** — Click <span mi icon>add_box</span> and add a group name (i.e. new Status Panel).
-- **Edit or Delete Status Panel** — Click <span mi icon>more_horiz</span> and then click <span mi icon>edit</span> to
+- **Add Status Panel** — Click <span mi icon>add_box</span> and add a group name (i.e. new status column).
+- **Edit or Delete Status Column** — Click <span mi icon>more_horiz</span> and then click <span mi icon>edit</span> to
   edit or <span mi icon>delete</span> to delete.
 
 :::tip Configuration Requirements
