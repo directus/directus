@@ -15,6 +15,7 @@
 		:step="step"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:field-data="fieldData"
+		:smart-number-controls="smartNumberControls"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>

@@ -8,9 +8,16 @@
 			v-model="fieldValue"
 			:placeholder="placeholder ? String(placeholder) : undefined"
 			type="text"
-			@beforeinput="parseInput($event as InputEvent)"
-			@keydown="checkKeyAction"
+			@beforeinput="handleBeforeInput($event as InputEvent)"
+			@click="setWorkingNumAtCursor()"
+			@focus="setWorkingNumAtCursor()"
+			@blur="resetFieldMeta()"
+			@keydown="checkKeydownAction"
+			@keyup="checkKeyupAction"
 		/>
+	</div>
+	<div v-if="isDisplayNum" class="data-warning">
+		<v-icon name="error_outline" tabindex="-1" clickable @click="stepUp" />
 	</div>
 	<div v-if="!hideArrows && isDisplayNum" class="adjustment-arrows">
 		<v-icon
@@ -42,6 +49,9 @@ export default {
 import { computed, nextTick, ref, Ref, watch } from 'vue';
 import Big from 'big.js';
 import { Field } from '@directus/shared/types';
+
+// Set rounding mode to half-up
+Big.RM = 1;
 
 interface Props {
 	autofocus?: boolean;
@@ -99,6 +109,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
 
+// const INT_2_MIN = Big('-32768');
+// const INT_2_MAX = Big('32767');
+const INT_4_MIN = Big('-2147483648');
+const INT_4_MAX = Big('2147483647');
+const INT_8_MIN = Big('-9223372036854775808');
+const INT_8_MAX = Big('9223372036854775807');
+const FLOAT_4_MIN = Big('1.175494e-38');
+const FLOAT_4_MAX = Big('3.402823e+38');
+// const FLOAT_8_MIN = Big('2.225074e-308');
+// const FLOAT_8_MAX = Big('1.797693e+308');
+
 const inputField: Ref<HTMLInputElement | null> = ref(null);
 
 const fieldDisplayType = ref(props.type || 'text');
@@ -109,13 +130,9 @@ const fieldDisplayType = ref(props.type || 'text');
  * on the context of the cursor location.
  */
 const isDisplayNum = computed(() => fieldDisplayType.value === 'number');
-const isDisplayText = computed(() => fieldDisplayType.value === 'text');
+// const isDisplayText = computed(() => fieldDisplayType.value === 'text');
 
-const minCast = ref(props.min ? Big(props.min) : null);
-const maxCast = ref(props.max ? Big(props.max) : null);
-const stepCast = ref(Big(props.step || 1));
-
-const fieldValue = ref(props.modelValue);
+const fieldValue = ref(String(props.modelValue));
 
 const initialValue: Ref<string | number | null> = ref(null);
 
@@ -125,38 +142,56 @@ const initialValue: Ref<string | number | null> = ref(null);
  */
 const workingNumber = ref(props.type === 'number' ? String(props.modelValue) : '');
 
-watch(
-	() => props.modelValue,
-	(newModel) => {
-		const display = fieldValue.value;
-		const value = String(newModel);
-		/**
-		 * Only update from the model value if the field isn't set, or if
-		 * the value is *not* equal to our working number when our field is a
-		 * number type. (We only emit valid numbers, field could have extra
-		 * characters we don't want overwritten unless it's clear we didn't
-		 * send the update from here)
-		 */
-		if (!display || (props.type === 'number' && newModel !== workingNumber.value)) {
-			updateField(value);
-			updateWorkingNumber(value);
-		}
+const workingNumberRange = ref({
+	start: 0,
+	end: 0,
+});
 
-		// On first update of model value we'll treat value as initial
-		if (initialValue.value === null || initialValue.value === undefined) {
-			initialValue.value = newModel;
+if (props.type === 'number') {
+	watch(
+		() => props.modelValue,
+		(newModel) => {
+			const value = String(newModel);
+			/**
+			 * Only update from the model value if the value is *not* equal to
+			 * our working number when our field is a number type. (We only
+			 * emit valid numbers, field could have extra characters we don't
+			 * want overwritten unless it's clear we didn't send the update
+			 * from here)
+			 */
+			if (String(newModel) !== workingNumber.value) {
+				updateField(value);
+				updateWorkingNumber(value);
+			}
+
+			// On first update of model value we'll treat value as initial
+			if (initialValue.value === null || initialValue.value === undefined) {
+				initialValue.value = newModel;
+			}
 		}
-	}
-);
+	);
+} else if (props.type === 'text') {
+	watch(
+		() => props.modelValue,
+		(newModel) => {
+			updateField(String(newModel), true);
+		}
+	);
+	watch(
+		() => fieldValue.value,
+		() => {
+			if (document.activeElement === inputField.value) {
+				setWorkingNumAtCursor();
+			}
+		}
+	);
+}
 
 // Supported input types 'bigInteger', 'integer', 'float', 'decimal'
 const numberType = computed(() => {
 	let fieldType = 'integer';
-	if (isDisplayNum.value && props.fieldData?.type) {
+	if (props.type === 'number' && props.fieldData?.type) {
 		fieldType = props.fieldData.type;
-	}
-	if (isDisplayText.value && props.fieldData?.meta?.options?.number_type) {
-		fieldType = props.fieldData.meta.options.number_type;
 	}
 	return fieldType;
 });
@@ -164,30 +199,116 @@ const numberType = computed(() => {
 // Return precision if numeric/decimal type, 0 otherwise
 const numberPrecision = computed(() => {
 	let precision = 0;
-	if (numberType.value === 'decimal') {
-		if (isDisplayNum.value && props.fieldData?.schema?.numeric_precision) {
-			precision = props.fieldData?.schema?.numeric_precision;
-		}
-		if (isDisplayText.value && props.fieldData?.meta?.options?.numeric_precision) {
-			precision = props.fieldData?.meta?.options?.numeric_precision;
-		}
+	if (numberType.value === 'decimal' && props.type === 'number' && props.fieldData?.schema?.numeric_precision) {
+		precision = props.fieldData?.schema?.numeric_precision;
 	}
-	return precision;
+	return Number(precision);
 });
 
 // Return scale if numeric/decimal type, 0 otherwise
 const numberScale = computed(() => {
 	let scale = 0;
-	if (numberType.value === 'decimal') {
-		if (isDisplayNum.value && props.fieldData?.schema?.numeric_scale) {
-			scale = props.fieldData?.schema?.numeric_scale;
+	if (numberType.value === 'decimal' && props.type === 'number' && props.fieldData?.schema?.numeric_scale) {
+		scale = props.fieldData.schema.numeric_scale;
+	}
+	return Number(scale);
+});
+
+/**
+ * For some number types we need to ensure that the step is within the available scale.
+ * If it's not, we'll round it to the nearest value the data type can handle.
+ *
+ * Ideally, we'll restrict the step value in the field editing process, and this should
+ * just be a redundant check.
+ */
+const getStep = computed(() => {
+	const step = Big(props.step || '1');
+	switch (numberType.value) {
+		// Integers can't have decimals
+		case 'integer':
+		case 'bigInteger':
+			return step.round();
+		case 'decimal':
+			return step.round(numberScale.value);
+		case 'float':
+		default:
+			/**
+			 * Float 4 (the float format Directus defaults to) has up to 7 decimal points
+			 * of precision, however, it's the absolute max, assuming nothing preceeding
+			 * the decimal. We'll just have to round to 7 places and assume the user knows
+			 * what they're doing if they're using floats.
+			 */
+			return step.round(7);
+	}
+});
+
+// Set min for data types
+const getMin = computed(() => {
+	if (!props.min) {
+		switch (numberType.value) {
+			// Int4 limits
+			case 'integer':
+				return INT_4_MIN;
+			// Int8 limits
+			case 'bigInteger':
+				return INT_8_MIN;
+			case 'float':
+				return FLOAT_4_MIN;
+			default:
+				return null;
 		}
-		if (isDisplayText.value && props.fieldData?.meta?.options?.numeric_scale) {
-			scale = props.fieldData?.meta?.options?.numeric_scale;
+	} else {
+		const min = Big(props.min);
+		switch (numberType.value) {
+			// Int4 limits
+			case 'integer':
+				return clamp(min, INT_4_MIN, INT_4_MAX);
+			// Int8 limits
+			case 'bigInteger':
+				return clamp(min, INT_8_MIN, INT_8_MAX);
+			case 'float':
+				return clamp(min, FLOAT_4_MIN, FLOAT_4_MAX);
+			default:
+				return min;
 		}
 	}
-	return scale;
 });
+
+// Set max for data types
+const getMax = computed(() => {
+	if (!props.max) {
+		switch (numberType.value) {
+			// Int4 limits
+			case 'integer':
+				return INT_4_MAX;
+			// Int8 limits
+			case 'bigInteger':
+				return INT_8_MAX;
+			case 'float':
+				return FLOAT_4_MAX;
+			default:
+				return null;
+		}
+	} else {
+		const max = Big(props.max);
+		switch (numberType.value) {
+			// Int4 limits
+			case 'integer':
+				return clamp(max, INT_4_MIN, INT_4_MAX);
+			// Int8 limits
+			case 'bigInteger':
+				return clamp(max, INT_8_MIN, INT_8_MAX);
+			case 'float':
+				return clamp(max, FLOAT_4_MIN, FLOAT_4_MAX);
+			default:
+				return max;
+		}
+	}
+});
+
+const minCast = ref(getMin.value);
+const maxCast = ref(getMax.value);
+const stepCast = ref(getStep.value);
 
 /**
  * Given a string such as:
@@ -195,8 +316,8 @@ const numberScale = computed(() => {
  * Matches returned are valid input numbers:
  * ['-86', '-0', '1.5', '3674', '15', '-90', '.0005', '-.67', '.8', '1e10', '-5E-7', '-1.7e-4', '0.02', '-4']
  */
-const numRegex = new RegExp(/[+-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d+)?/, 'g');
-const boundedNumRegex = new RegExp(/^[+-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d+)?$/);
+const numRegex = new RegExp(/[-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d+)?/, 'g');
+// const boundedNumRegex = new RegExp(/^[-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d+)?$/);
 
 /**
  * Matches similar to numRegex, however, it matches incrementally. For instance, numRegex
@@ -207,12 +328,13 @@ const boundedNumRegex = new RegExp(/^[+-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d
  *
  * Note, because each part is optional, may return many null values.
  */
-const incrementalNumRegex = new RegExp(
-	/((?<![\d+-])[+-])?(\d*)?((?<!(e[+-]\d))\.(?!e))?(\d+)?((?<=\d)(e))?(((?<=e)[+-])?(\d*)?)?/,
-	'gi'
-);
+// const incrementalNumRegex = new RegExp(
+// 	/((?<![\d+-])[-])?(\d*)?((?<!(e[+-]\d))\.(?![e-]))?(\d+)?((?<=\d)(e))?(((?<=e)[+-])?(\d*)?)?/,
+// 	'gi'
+// );
 const boundedIncrementalNumRegex = new RegExp(
-	/^((?<![\d+-])[+-])?(\d*)?((?<!(e[+-]\d))\.(?!e))?(\d+)?((?<=\d)(e))?(((?<=e)[+-])?(\d*)?)?$/
+	/^[-]?(\d*)?((?<!(e[+-]\d))\.(?![e-]))?(\d+)?((?<=\d)(e))?(((?<=e)[+-])?(\d*)?)?$/,
+	'i'
 );
 
 const canStepUp = computed(() => {
@@ -271,7 +393,8 @@ function restrictToNumber(value: string) {
 	return true;
 }
 
-function parseInput(evt: InputEvent) {
+function handleBeforeInput(evt: InputEvent) {
+	// Only need to restrict input if number
 	if (props.type === 'number') {
 		const nextValue = getNextValue(evt) || '';
 		// Restrict to number-like values
@@ -284,9 +407,92 @@ function parseInput(evt: InputEvent) {
 			// v-model during the input event.
 			emitUp();
 		}
-	} else {
-		///
 	}
+}
+
+function setWorkingNumAtCursor() {
+	if (props.type !== 'text') return;
+	if (isNumberAtCursor()) {
+		const cursor = getCursorPosition();
+		const matchCandidates = fieldValue.value.matchAll(numRegex);
+		let matches = [];
+
+		if (cursor.atEnd) {
+			cursor.start = fieldValue.value.length;
+		}
+
+		for (let match of matchCandidates) {
+			if (match[0].length > 0) {
+				matches.push({
+					match: match[0],
+					start: match.index || 0,
+					end: (match.index || 0) + match[0].length,
+				});
+			}
+		}
+
+		const numAtCursor = matches.find((match) => {
+			if (cursor.start >= match.start && cursor.start <= match.end) return true;
+		});
+
+		if (numAtCursor) {
+			/**
+			 * updateWorkingNumber calls determineEmittable, as a result, the working
+			 * number may differ from the contents of the number in the text field.
+			 * This is ok, because on a text field we only use the working number
+			 * and/or modify the number in the input when an arrow key or button
+			 * is pressed (stepUp() or stepDown()). In other words, it won't alter
+			 * anything unless explicitly treated as a number.
+			 */
+			updateWorkingNumber(numAtCursor.match);
+			setWorkingNumberRange(numAtCursor?.start, numAtCursor?.end);
+			fieldDisplayType.value = 'number';
+			return true;
+		}
+	}
+	resetFieldMeta();
+}
+
+function resetFieldMeta() {
+	if (props.type === 'text') {
+		setWorkingNumberRange();
+		updateWorkingNumber('');
+		fieldDisplayType.value = 'text';
+	}
+}
+
+/**
+ * Acts as a preliminary, low-resource check to see if there's an editable
+ * number at the cursor position. Helps to avoid unnecessarily running
+ * expensive regex operations.
+ */
+function isNumberAtCursor() {
+	const cursor = getCursorPosition();
+	// If there's a range selected, don't engage number editing.
+	if (cursor.start !== cursor.end) return false;
+
+	const value = fieldValue.value as string;
+
+	/**
+	 * For obvious reasons, getCursorPosition has to check position in DOM field.
+	 * If the updated value is shorter than the input field value, and the cursor
+	 * was placed in that difference, we'll account for that.
+	 */
+	if (cursor.atEnd) {
+		cursor.start = value.length;
+	}
+
+	// Matches exactly one digit
+	const regexBefore = new RegExp(/^\d$/);
+	// Matches [digit], -[digit], .[digit], or -.[digit]
+	const regexAfter = new RegExp(/^((\d.{0,2})|(-\d.?)|(\.\d.?)|(-\.\d))$/);
+
+	const charBefore = value.substring(cursor.start > 0 ? cursor.start - 1 : 0, cursor.start);
+	const charsAfter = value.substring(cursor.start, cursor.start + 3);
+
+	if (regexBefore.test(charBefore) || regexAfter.test(charsAfter)) return true;
+
+	return false;
 }
 
 function updateWorkingNumber(value: string, exactSteps = false) {
@@ -298,8 +504,31 @@ function updateWorkingNumber(value: string, exactSteps = false) {
 	}
 }
 
-function updateField(value: string) {
-	fieldValue.value = value;
+function setWorkingNumberRange(start = 0, end = 0) {
+	workingNumberRange.value.start = start;
+	workingNumberRange.value.end = end;
+}
+
+function updateField(value: string, overwrite = false) {
+	if (props.type === 'number') {
+		fieldValue.value = value;
+	}
+	if (props.type === 'text') {
+		// On text field, if overwrite is set it'll explicitly set the entire field.
+		// Otherwise, only the subsection of the working number will be updated
+		if (overwrite) {
+			fieldValue.value = value;
+		} else {
+			const start = workingNumberRange.value.start;
+			const end = workingNumberRange.value.end;
+
+			const newValue = `${fieldValue.value.slice(0, start)}${value}${fieldValue.value.slice(end)}`;
+
+			fieldValue.value = newValue;
+
+			setWorkingNumAtCursor();
+		}
+	}
 }
 
 function emitUp() {
@@ -368,6 +597,9 @@ function determineEmittable(value = '', exactSteps: boolean) {
 		return clampedNum!.toString();
 	}
 
+	if (numberPrecision.value && numberPrecision.value > 0) {
+		numAtStep = numAtStep.prec(numberPrecision.value);
+	}
 	return numAtStep.toString();
 }
 
@@ -386,7 +618,7 @@ function roundToStep(value: Big) {
  *
  * This clamp function takes instances of Big numbers, and clamps them.
  */
-function clamp(num: Big, min: Big | null, max: Big | null) {
+function clamp(num: Big, min: Big | null, max: Big | null): Big {
 	if (min && max) {
 		// clamp value
 		return maxBig(min, minBig(num, max));
@@ -401,17 +633,16 @@ function clamp(num: Big, min: Big | null, max: Big | null) {
 	}
 }
 
-function minBig(a: Big, b: Big) {
+function minBig(a: Big, b: Big): Big {
 	return a.lt(b) ? a : b;
 }
 
-function maxBig(a: Big, b: Big) {
+function maxBig(a: Big, b: Big): Big {
 	return a.gt(b) ? a : b;
 }
 
-function checkKeyAction(evt: KeyboardEvent) {
+function checkKeydownAction(evt: KeyboardEvent) {
 	const key = evt.code;
-
 	if (isDisplayNum.value && ['ArrowUp', 'ArrowDown'].includes(key)) {
 		evt.preventDefault();
 		switch (key) {
@@ -422,8 +653,13 @@ function checkKeyAction(evt: KeyboardEvent) {
 				stepDown(evt);
 				break;
 		}
-	} else if (isDisplayText.value) {
-		// else
+	}
+}
+
+function checkKeyupAction(evt: KeyboardEvent) {
+	const key = evt.code;
+	if (props.type === 'text' && ['ArrowLeft', 'ArrowRight'].includes(key)) {
+		setWorkingNumAtCursor();
 	}
 }
 
@@ -436,8 +672,8 @@ interface CursorPosition {
 function getCursorPosition(): CursorPosition {
 	const input = inputField.value;
 	const length = input?.value.length;
-	const start = input?.selectionStart || input?.value.length || 0;
-	const end = input?.selectionEnd || input?.value.length || 0;
+	const start = input?.selectionStart || input?.selectionStart == 0 ? input?.selectionStart : input?.value.length || 0;
+	const end = input?.selectionEnd || input?.selectionEnd == 0 ? input?.selectionEnd : input?.value.length || 0;
 
 	let atEnd = false;
 	if (start === length && end === length) {
@@ -475,13 +711,6 @@ function getFirstMatch(string: string, regex: RegExp) {
 	if (match) return match;
 	return '';
 }
-
-/**
- * TODO:
- * Get number field schema types
- * > then clamp min/max to min/max of type in database
- * > then restrict step to precision of type
- */
 </script>
 
 <style scoped lang="scss">
@@ -515,6 +744,10 @@ function getFirstMatch(string: string, regex: RegExp) {
 			border-color: var(--v-input-border-color-focus);
 		}
 	}
+}
+
+.data-warning {
+	margin-right: 8px;
 }
 .step-up {
 	margin-bottom: -8px;
