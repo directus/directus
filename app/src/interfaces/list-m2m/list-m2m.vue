@@ -46,9 +46,11 @@
 			</draggable>
 		</v-list>
 
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="createItem">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
+		<div class="actions">
+			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+				{{ t('create_new') }}
+			</v-button>
+			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
