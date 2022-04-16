@@ -23,7 +23,7 @@ Add links once "archive item" is created
 ## Create an Item
 
 <video autoplay muted loop controls title="Create an Item">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/create-an-item-20220415A.mp4" type="video/mp4" />
 </video>
 
 To create an Item, follow the steps below.
@@ -48,7 +48,7 @@ Link to Singleton once written
 ## Edit an Item
 
 <video autoplay muted loop controls title="Edit an Item">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/edit-an-item-20220415A.mp4" type="video/mp4" />
 </video>
 
 To edit an Item's Field Values, follow the steps below.
@@ -79,7 +79,9 @@ automatically open the Item Page.
 
 ## Archive an Item
 
-![Archive an Item](image.webp)
+<video autoplay muted loop controls title="Archive an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/archive-an-item-20220415A.mp4" type="video/mp4" />
+</video>
 
 To archive an Item, follow the steps below. [Learn More](/configuration/data-model/#archive)
 
@@ -94,9 +96,71 @@ Archiving is only available if an Archive Field has been configured within the C
 
 :::
 
+## Revert an Item
+
+<video autoplay muted loop controls title="Revert an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/revert-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+As you update Field Values on Items, Directus saves these [Revisions](/getting-started/glossary/#revisions), and they
+can be compared side-by-side to the current state. To revert an Item, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click **"Revisions"** in the page sidebar.
+4. Click on the revision you wish to preview and a side menu will appear.
+5. Go to **"Revisions Made"** in the side menu and view the revision differences.
+6. Click <span mi btn muted>restore</span> to revert the Item's values and return to the Item Page.
+7. Click <span mi btn>check</span> to confirm and exit to the Collection Page.
+
+:::tip Revision Preview
+
+You will also see a **"Revision Preview"** button in the side menu navigation, which will let you preview all the Item's
+values for that revision.
+
+:::
+
+:::tip
+
+Items can also be reverted [programmatically via the API](/reference/system/revisions/).
+
+:::
+
+## Comment on an Item
+
+<video autoplay muted loop controls title="Comment on an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/comment-on-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+Comments, a collaborative tool, are left on an Item in the sidebar and remain there for you and other team-members to
+refer to. To create a comment, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click **"Comments"** in the page sidebar.
+4. Type your message into the input box.
+5. Click the **"Submit"** button.
+
+:::tip Mentions
+
+You can also search and mention any User by typing the **"@"** symbol along with their name or email in your comment.
+They will then receive an in-app notification as well as an email directing to your comment.
+
+:::
+
+:::tip Edit and Delete Comments
+
+Each comment displays the time it was created in its upper right-hand corner. Hover over this and the
+<span mi icon>more_horiz</span> menu will appear. Click this menu to <span mi icon>edit</span> edit or
+<span mi icon>delete</span> delete the comment.
+
+:::
+
 ## Delete an Item
 
-![Delete an Item](image.webp)
+<video autoplay muted loop controls title="Comment on an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/delete-an-item-20220415A.mp4" type="video/mp4" />
+</video>
 
 To delete an Item, follow the steps below.
 
@@ -121,7 +185,8 @@ If you wish to remove an Item from view or use, but keep it stored, you may cons
 ## Batch Delete, Archive or Edit Items
 
 <video autoplay muted loop controls title="Batch Edit Items">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/batch-edit-items-20220415A.mp4
+" type="video/mp4" />
 </video>
 
 It is possible to delete, archive, or edit multiple Items at once from the Collection Page. Deletion will permanently
@@ -154,65 +219,5 @@ Once Items are selected, the following buttons will appear in the Page Header: <
 :::danger
 
 These actions are destructive, proceed with caution.
-
-:::
-
-## Revert an Item
-
-<video autoplay muted loop controls title="Revert Items">
-	<source src="" type="video/mp4" />
-</video>
-
-As you update Field Values on Items, Directus saves these [Revisions](/getting-started/glossary/#revisions), and they
-can be compared side-by-side to the current state. To revert an Item, follow the steps below.
-
-1. Navigate to the Content Module and select the desired Collection.
-2. Select the desired Item. The Item Page will open.
-3. Click **"Revisions"** in the page sidebar.
-4. Click on the revision you wish to preview and a side menu will appear.
-5. Go to **"Revisions Made"** in the side menu and view the revision differences.
-6. Click <span mi btn muted>restore</span> to revert the Item's values and return to the Item Page.
-7. Click <span mi btn>check</span> to confirm and exit to the Collection Page.
-
-:::tip Revision Preview
-
-You will also see a **"Revision Preview"** button in the side menu navigation, which will let you preview all the Item's
-values for that revision.
-
-:::
-
-:::tip
-
-Items can also be reverted [programmatically via the API](/reference/system/revisions/).
-
-:::
-
-## Comment on an Item
-
-<video autoplay muted loop controls title="Comment on an Item">
-	<source src="" type="video/mp4" />
-</video>
-
-Comments, a collaborative tool, are left on an Item in the sidebar and remain there for you and other team-members to
-refer to. To create a comment, follow the steps below.
-
-1. Navigate to the Content Module and select the desired Collection.
-2. Select the desired Item. The Item Page will open.
-3. Click **"Comments"** in the page sidebar.
-4. Type your message into the input box.
-5. Click the **"Submit"** button.
-
-:::tip Mentions
-
-You can also search and mention any User by typing the **"@"** symbol along with their name or email in your comment.
-They will then receive an in-app notification as well as an email directing to your comment.
-
-:::
-
-:::tip Edit and Delete Comments
-
-Each comment displays the time it was created in its upper right-hand corner. Hover over this and the
-<span mi icon>more_horiz</span> menu will appear. Click this menu to <span mi icon>edit</span> edit or
-<span mi icon>delete</span> delete the comment.
 
 :::

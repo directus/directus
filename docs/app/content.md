@@ -17,7 +17,7 @@ the controls to view and manage Items are quite intuitive.
 
 ## Collection Page
 
-![Collection Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/collection-page-20220215A.webp)
+![Collection Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/content-20220415A/collection-page-20220415A.webp)
 
 The Content Module is composed of Collection Pages and Item Pages. Use the Navigation Bar on the left to move between
 Collections. Each Collection Page displays all Items in its Collection and comes with highly configurable
@@ -34,7 +34,7 @@ fundamental data model. Administrators manage Collections via the Settings menu.
 
 ## Item Page
 
-![Article Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/item-page-20220215A.webp)
+![Article Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/content-20220415A/item-page-20220215A.webp)
 
 When an Item is clicked on the Collection Page, its Item Details Page is opened. This is a form primarily for viewing
 and editing an Item's Field Values, but also includes options for commenting on, sharing, archiving, reverting, and
@@ -50,7 +50,7 @@ also be done [programmatically via the API](/reference/items/).
 ## Data Sharing
 
 <video title="Data Sharing" autoplay muted loop controls>
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content/content-20220415A/data-shares-20220415A.mp4" type="video/mp4" />
 </video>
 
 Data sharing allows an Item to be viewed by anyone, regardless of their permissions. [Learn More](/app/data-sharing)

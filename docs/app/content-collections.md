@@ -8,7 +8,7 @@
 ## Adjust Page Layout
 
 <video autoplay muted loop controls title="Layouts">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/adjust-page-layout-20220415A.mp4" type="video/mp4" />
 </video>
 
 Layouts determine how you view or interact with Items in a Collection. Whether your Collection contains blog posts,
@@ -18,7 +18,7 @@ way. [Learn More](/app/layouts)
 ## Search Items
 
 <video autoplay muted loop controls title="Search Items">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/search-items-20220415A.mp4" type="video/mp4" />
 </video>
 
 Find all Items with one or more Fields containing your searched value, excluding any Items which have been
@@ -31,7 +31,7 @@ Find all Items with one or more Fields containing your searched value, excluding
 ## Filter Items
 
 <video autoplay muted loop controls title="Filter Items">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/filters-20220415A.mp4" type="video/mp4" />
 </video>
 
 Filters enable complex and granular filtered displays of Items. [Learn More](/app/filters/)
@@ -39,7 +39,7 @@ Filters enable complex and granular filtered displays of Items. [Learn More](/ap
 ## Manually Sort Items
 
 <video autoplay muted loop controls title="Batch Edit Items">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/manually-sort-items-20220415A.mp4" type="video/mp4" />
 </video>
 
 Drag and drop Items to custom-sort them as desired. This is only possible on certain Layouts, such as the default
@@ -76,7 +76,7 @@ This means that while the values in this Sort Field do get updated and modified,
 ## Automatically Sort Items
 
 <video autoplay muted loop controls title="Automatically Sort Items">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/automatically-sort-items-20220415A.mp4" type="video/mp4" />
 </video>
 
 Sort Items alphabetically or numerically, in ascending or descending order. Sorting is not possible on certain Layouts,
@@ -95,7 +95,7 @@ Automatic sorting is a non-destructive action which does not change your data.
 ## View Archived Items
 
 <video autoplay muted loop controls title="View Archived Items">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/view-archived-items.mp4" type="video/mp4" />
 </video>
 
 To view an archived Item, follow the steps below. [Learn More](/app/content-items/#archive-an-item)
@@ -107,26 +107,17 @@ To view an archived Item, follow the steps below. [Learn More](/app/content-item
    - **"Show Archived Items"**
    - **"Show Items + Archived Items"**
 
-## Bookmark Item Presets
+## Create Presets and Bookmarks
 
-<video autoplay muted loop controls title="Bookmark Item Presets">
-	<source src="" type="video/mp4" />
+<video autoplay muted loop controls title="Create Presets and Bookmarks">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/presets-and-bookmarks-20220415A.mp4" type="video/mp4" />
 </video>
 
-Bookmarks allow you to save how a Collection Page looks so that you can return to the exact same view later. This
-includes details such as the Layout, searches, filters, sorting, ordering, etc. To Bookmark a Collection, follow these
-steps.
-
-1. Navigate to the Content Module and select the desired Collection.
-2. Configure the page as desired (eg: layout, options, search, filters, order, etc).
-3. Click the <span mi icon>bookmark_border</span> in the header next to the page title.
-4. **Optional:** Right-click <span mi icon>bookmark_border</span> in the Navigation Bar, then **"Rename Bookmark"** or
-   **"Delete Bookmark"**.
+Save how a Collection Page looks so that you can return to the exact same view later, including details such as the
+Layout, searches, filters, sorting, ordering, etc. [Learn More](/configuration/presets-bookmarks/)
 
 ## Import / Export Items
 
-<video autoplay muted loop controls title="Layouts Montage">
-	<source src="" type="video/mp4" />
-</video>
+![Import and Export Items](https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/imports-exports-20220416A.webp)
 
 No-code Users can import and export a Collection's Items in file-format. [Learn More](/app/import-export/)

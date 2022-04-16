@@ -9,7 +9,7 @@
 ## What's a Layout?
 
 <video autoplay muted loop controls title="Layouts Montage">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/layout-montage-20220415A.mp4" type="video/mp4" />
 </video>
 
 Data models vary drastically in shape and purpose, from eCommerce platforms to IoT fleets and everything in between.
@@ -27,7 +27,7 @@ thousands of engineers guiding development of the Directus platform.
 ## How it Works
 
 <video autoplay muted loop controls title="Adjust Item Layouts">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/adjust-page-layout-20220415A.mp4" type="video/mp4" />
 </video>
 
 To adjust an Item's Layout, follow the steps below.
@@ -78,9 +78,7 @@ As you go through Layouts, it may be helpful to keep the following points in min
 
 ## Table Layout
 
-<video autoplay muted loop controls title="The Table Layout">
-	<source src="" type="video/mp4" />
-</video>
+![Table Layout](https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/table-layout.webp)
 
 This Layout supports all forms of data, as it directly reflects how data is stored in a Collection. This is the default
 Layout used in the Content Module. It includes the following controls.
@@ -127,9 +125,7 @@ points.
 
 ## Card Layout
 
-<video autoplay muted loop controls title="The Card Layout">
-	<source src="" type="video/mp4" />
-</video>
+![Card Layout](https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/card-layout-20220416A.webp)
 
 This tiled Layout is ideal for Collections that prioritize an image _(e.g. a user or blog post)_. This is the default
 for both the [User Directory](/app/user-directory/) and [File Library](/app/file-library/). It includes the following
@@ -158,9 +154,7 @@ controls.
 
 ## Calendar Layout
 
-<video autoplay muted loop controls title="The Card Layout">
-	<source src="" type="video/mp4" />
-</video>
+![Calendar Layout](https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/calendar-layout-20220416A.webp)
 
 This Layout is ideal for Collections with time-oriented data _(e.g. events and appointments)_. It includes the following
 controls.
@@ -195,9 +189,7 @@ Link to Datetime Field
 
 ## Map Layout
 
-<video autoplay muted loop controls title="The Map Layout">
-	<source src="" type="video/mp4" />
-</video>
+![Map Layout](https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/map-layout-20220416A.webp)
 
 This Layout is ideal for Collections that emphasize geospatial data. It provides a world map, with Items displayed as
 points, lines, and other geometry. The following options are available:
@@ -236,9 +228,7 @@ Link to Map Field
 
 ## Kanban Layout
 
-<video autoplay muted loop controls title="The Kanban Layout">
-	<source src="" type="video/mp4" />
-</video>
+![Kanban Layout](https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/kanban-layout-20220416A.webp)
 
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
 task, because it groups Items onto panels according to their status _(e.g. "Not Started", "In Progress", "Under Review",

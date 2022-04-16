@@ -2,7 +2,7 @@
 
 > The Content, User Directory, and File Library modules allow importing and exporting of multiple Items stored as files.
 > This makes it quick and easy to handle tasks like uploading and downloading new customer information; pulling down
-> sales data for transformation, reports, and analysis; and beyond.
+> sales data for transformation, reports, analysis, and beyond.
 
 [[toc]]
 
@@ -29,7 +29,7 @@ This page details Importing and Exporting of Items as files via the no-code app.
 ## Import Items
 
 <video autoplay muted loop controls title="Import Data From a File">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/imports-exports/imports-exports-20220415A/import-items-20220416A.mp4" type="video/mp4" />
 </video>
 
 To import Items from a file, follow the steps below.
@@ -58,7 +58,8 @@ Add link
 ## Export Items
 
 <video autoplay muted loop controls title="Export Data to a File">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/imports-exports/imports-exports-20220415A/export-items-20220416A.mp4
+" type="video/mp4" />
 </video>
 
 When exporting Items, the [Export Items Menu](#export-items-menu) provides granular control over exactly which Items and
@@ -97,7 +98,7 @@ permissions for the related Collection and a firm understanding of the relationa
 ## Export Items Menu
 
 <video autoplay muted loop controls title="Export Data to a File">
-	<source src="" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/imports-exports/imports-exports-20220415A/export-items-menu-20220416A.mp4" type="video/mp4" />
 </video>
 
 This menu provides granular control over exactly which Items and Fields are exported, how they are exported, and where
