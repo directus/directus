@@ -43,6 +43,38 @@ export default defineDisplay({
 				default_value: false,
 			},
 		},
+		{
+			field: 'strict',
+			name: 'Strict',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: 'Use strict units',
+				},
+				note: "Removes words like 'almost', 'over', 'less than'",
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
+			field: 'suffix',
+			name: 'Suffix',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: 'Show relative indicator',
+				},
+				note: "Uses words like 'in' and 'ago'",
+			},
+			schema: {
+				default_value: true,
+			},
+		},
 	],
 	types: ['dateTime', 'date', 'time', 'timestamp'],
 });

@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import localizedFormat from '@/utils/localized-format';
 import localizedFormatDistance from '@/utils/localized-format-distance';
+import localizedFormatDistanceStrict from '@/utils/localized-format-distance-strict';
 import { parseISO, parse } from 'date-fns';
 
 export default defineComponent({
@@ -27,6 +28,14 @@ export default defineComponent({
 		relative: {
 			type: Boolean,
 			default: false,
+		},
+		strict: {
+			type: Boolean,
+			default: false,
+		},
+		suffix: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup(props) {
@@ -59,8 +68,9 @@ export default defineComponent({
 				}
 
 				if (props.relative) {
-					displayValue.value = await localizedFormatDistance(newValue, new Date(), {
-						addSuffix: props.format === 'long',
+					const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance;
+					displayValue.value = await fn(newValue, new Date(), {
+						addSuffix: props.suffix,
 					});
 				} else {
 					let format;
