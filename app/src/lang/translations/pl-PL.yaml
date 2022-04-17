@@ -1756,6 +1756,35 @@ layouts:
     find_location: Znajdź lokalizację...
     default_template: Używanie domyślnej kolekcji...
     no_compatible_fields: Brak kompatybilnych pól
+  kanban:
+    name: Kanban,
+    group_field: Grupuj według,
+    group_field_placeholder: Pole do grupowania przez...,
+    group_title: Tytuł grupy,
+    group_title_placeholder: Pole dla tytułów grupy...,
+    title: Tytuł karty,
+    title_placeholder: Opcjonalne pole tytułu...,
+    text: Tekst karty,
+    text_placeholder: Opcjonalne pole tekstowe...,
+    date: Data Karty,
+    date_placeholder: Opcjonalnie pole daty...,
+    tags: Tagi karty,
+    tags_placeholder: Opcjonalne pole tagów...,
+    user: Użytkownik karty,
+    user_placeholder: Opcjonalne pole użytkownika...,
+    image: Obraz karty,
+    image_placeholder: Opcjonalne pole obrazów...,
+    image_fit: Dopasuj obraz karty,
+    crop: Przytnij,
+    advanced: Zaawansowane,
+    edit_group: Edytuj grupę,
+    delete_group: Usuń grupę,
+    add_group: Dodaj grupę,
+    add_group_placeholder: Wprowadź nowy tytuł grupy...,
+    show_ungrouped: Show Ungrouped,
+    show: Pokaż,
+    no_group: Brak Grupy,
+    not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 panels:
   metric:
     name: Metryczny
@@ -1774,3 +1803,30 @@ panels:
   list:
     name: Lista
     description: Filtruj i wyświetl pola z kolekcji
+  barchart:
+    name: Wykres słupkowy,
+    description: Pasek lub wykresy kolumnowe do porównywania grup wartości
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    select_x_axis: Musisz wybrać oś X.
+    function: Funkcja
+    horizontal: Poziomy
+    x_axis_grouping: Agregacja grup osi X
+    x_axis: Oś X
+    y_axis_function: Funkcja osi Y
+    y_axis: Oś Y
+    show_x_axis: Pokaż oś X
+    show_y_axis: Pokaż Oś Y
+  linechart:
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    select_x_axis: Musisz wybrać oś X.
+    function: Funkcja
+    x_axis: Oś X
+    y_axis: Oś Y
+  meter:
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    function: Funkcja
+  piechart:
+    function: 'Funkcja'
