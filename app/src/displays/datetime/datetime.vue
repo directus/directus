@@ -60,7 +60,7 @@ export default defineComponent({
 
 				if (props.relative) {
 					displayValue.value = await localizedFormatDistance(newValue, new Date(), {
-						addSuffix: true,
+						addSuffix: props.format === 'long',
 					});
 				} else {
 					let format;
