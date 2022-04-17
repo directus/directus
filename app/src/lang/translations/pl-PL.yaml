@@ -1817,16 +1817,51 @@ panels:
     y_axis: Oś Y
     show_x_axis: Pokaż oś X
     show_y_axis: Pokaż Oś Y
+    show_data_label: Pokaż etykietę danych
+    group_by: Pogrupowane według
+    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    y_axix_NaN: Oś Y musi być liczbą.
+    y_axis_conditional_one: Wartość warunku
+    y_axis_conditional_two: musi być liczbą.
   linechart:
+    name: Wykres liniowy
+    description: Wykres liniowy do porównywania zmiany pola.
     select_field: Musisz wybrać pole.
     select_collection: Musisz wybrać kolekcję.
     select_x_axis: Musisz wybrać oś X.
     function: Funkcja
     x_axis: Oś X
+    x_axis_decimals: Ułamki dziesiętne osi X
+    disabled_no_grouping: Wyłączone, gdy nie wybrano grupowania.
     y_axis: Oś Y
+    datasets: Zestawy danych
+    show_legend: Pokaż Legendę
+    show_marker: Pokaż znacznik podpowiedzi
+    include_dataset: Musisz podać co najmniej jeden zbiór danych.
+    include_y_axis: Musisz podać oś Y dla każdego zbioru danych, gdy nie określono żadnej grupy.
+    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    smooth: 'Gładki'
+    straight: 'Prosta'
+    step_line: 'Linia kroku'
   meter:
+    description: Licznik wartości śledzenia
+    name: Licznik
+    arc: Łuk
+    stroke_width: Szerokość obrysu
+    select_max_value: Musisz wybrać maksymalną wartość.
+    max_greater_than_zero: Maksymalna wartość musi być większa niż 0.
     select_field: Musisz wybrać pole.
     select_collection: Musisz wybrać kolekcję.
     function: Funkcja
+    thin: Cienka
+    medium: Średni
+    broad: Szeroki
   piechart:
+    description: Okrągły wykres przedstawiający współczynniki grup w kolumnie.
     function: 'Funkcja'
+    labels: Pokaż etykiety
+    legend: Pokaż Legendę
+    right: Prawy
+    bottom: Dolny
+    monochrome: Monochromatyczne
+    monochrome_color: Kolor monochromatyczny
