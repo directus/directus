@@ -57,7 +57,7 @@ export function useRelationMultiple(
 		}
 	});
 
-	watch(previewQuery, updateFetchedItems, { immediate: true });
+	watch([previewQuery, itemId, relation], updateFetchedItems, { immediate: true });
 
 	const { fetchedSelectItems, selected, isItemSelected } = useSelected();
 
