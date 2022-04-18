@@ -210,6 +210,8 @@ const numberScale = computed(() => {
  * just be a redundant check.
  */
 const getStep = computed(() => {
+	// Force numbers in text inputs to only move in increments of 1
+	if (props.type === 'text') return Big('1');
 	const step = Big(props.step || '1');
 	switch (numberType.value) {
 		// Integers can't have decimals
@@ -321,12 +323,18 @@ const boundedIncrementalNumRegex = new RegExp(
 );
 
 const canStepUp = computed(() => {
+	if (props.type === 'text') {
+		return !props.disabled && workingNumber.value && Big(workingNumber.value).lt(INT_8_MAX);
+	}
 	// Checking !workingNumber without accounting for 0 works because workingNumber
 	// is a string and !'0' = false
 	return !props.disabled && (!workingNumber.value || !maxCast.value || Big(workingNumber.value).lt(maxCast.value));
 });
 
 const canStepDown = computed(() => {
+	if (props.type === 'text') {
+		return !props.disabled && workingNumber.value && Big(workingNumber.value).gt(Big('0'));
+	}
 	return !props.disabled && (!workingNumber.value || !minCast.value || Big(workingNumber.value).gt(minCast.value));
 });
 
@@ -384,7 +392,11 @@ function setWorkingNumAtCursor() {
 	if (props.type !== 'text') return;
 	if (isNumberAtCursor()) {
 		const cursor = getCursorPosition();
-		const matchCandidates = fieldValue.value.matchAll(numRegex);
+
+		// For text inputs we'll only deal with whole, positive integers
+		const intRegex = new RegExp(/\d+/, 'g');
+
+		const matchCandidates = fieldValue.value.matchAll(intRegex);
 		let matches = [];
 
 		if (cursor.atEnd) {
@@ -452,15 +464,11 @@ function isNumberAtCursor() {
 		cursor.start = value.length;
 	}
 
-	// Matches exactly one digit
-	const regexBefore = new RegExp(/^\d$/);
-	// Matches [digit], -[digit], .[digit], or -.[digit]
-	const regexAfter = new RegExp(/^((\d.{0,2})|(-\d.?)|(\.\d.?)|(-\.\d))$/);
+	const charBefore = value.substring(cursor.start > 0 ? cursor.start - 1 : 0, cursor.start).trim();
+	const charAfter = value.substring(cursor.start, cursor.start + 1).trim();
 
-	const charBefore = value.substring(cursor.start > 0 ? cursor.start - 1 : 0, cursor.start);
-	const charsAfter = value.substring(cursor.start, cursor.start + 3);
-
-	if (regexBefore.test(charBefore) || regexAfter.test(charsAfter)) return true;
+	// @ts-expect-error
+	if ((charBefore.length > 0 && !isNaN(charBefore)) || (charAfter.length > 0 && !isNaN(charAfter))) return true;
 
 	return false;
 }
@@ -504,12 +512,11 @@ function updateField(
 			const start = workingNumberRange.value.start;
 			const end = workingNumberRange.value.end;
 
-			const newValue = `${fieldValue.value.slice(0, start)}${workingNumber.value}${fieldValue.value.slice(end)}`;
+			const newValue = `${fieldValue.value.slice(0, start)}${value}${fieldValue.value.slice(end)}`;
 
 			fieldValue.value = newValue;
-
-			setWorkingNumAtCursor();
 		}
+		setWorkingNumAtCursor();
 	}
 	emitUpdateModelValue(fieldValue.value);
 }
