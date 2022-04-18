@@ -94,24 +94,6 @@ export default defineInterface({
 			},
 		];
 
-		const smartNumberControls: DeepPartial<Field>[] = [
-			{
-				field: 'smartNumberControls',
-				name: '$t:interfaces.input.smart_number_controls',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-					options: {
-						label: '$t:interfaces.input.smart_number_controls_label',
-					},
-				},
-				schema: {
-					default_value: false,
-				},
-			},
-		];
-
 		const textOptions: DeepPartial<Field>[] = [
 			{
 				field: 'softLength',
@@ -223,40 +205,8 @@ export default defineInterface({
 			},
 		];
 
-		const stringNumDivider: DeepPartial<Field>[] = [
-			{
-				field: 'string_num_divider',
-				name: 'string_num_divider',
-				type: 'alias',
-				meta: {
-					width: 'full',
-					interface: 'presentation-divider',
-					special: ['alias', 'no-data'],
-					options: {
-						inlineTitle: true,
-						title: 'Inline number options',
-					},
-				},
-			},
-		];
-
 		if (field.type && ['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
 			return [...standardOptions, ...numberOptions, ...fontOptions, ...affixOptions];
-		}
-		if (field.type && ['string', 'text'].includes(field.type)) {
-			// If field is not a masked/password input, we could possibly use smart number controls
-			if (field.meta?.options?.masked === undefined || field.meta?.options?.masked !== true) {
-				if (field.meta?.options?.smartNumberControls) {
-					return {
-						standard: [...standardOptions],
-						advanced: [...affixOptions, ...textOptions, ...smartNumberControls, ...stringNumDivider, ...numberOptions],
-					};
-				}
-				return {
-					standard: [...standardOptions],
-					advanced: [...affixOptions, ...textOptions, ...smartNumberControls],
-				};
-			}
 		}
 
 		return {

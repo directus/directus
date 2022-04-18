@@ -70,7 +70,6 @@ interface Props {
 	trim?: boolean;
 	autocomplete?: string;
 	small?: boolean;
-	smartNumberControls?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -96,7 +95,6 @@ const props = withDefaults(defineProps<Props>(), {
 	trim: false,
 	autocomplete: 'off',
 	small: false,
-	smartNumberControls: false,
 });
 
 const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);

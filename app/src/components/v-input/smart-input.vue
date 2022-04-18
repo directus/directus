@@ -76,7 +76,6 @@ interface Props {
 	trim?: boolean;
 	autocomplete?: string;
 	small?: boolean;
-	editAsNumber?: boolean;
 	saveAffix?: boolean;
 }
 
@@ -103,7 +102,6 @@ const props = withDefaults(defineProps<Props>(), {
 	trim: false,
 	autocomplete: 'off',
 	small: false,
-	editAsNumber: false,
 	saveAffix: false,
 });
 
@@ -307,7 +305,6 @@ const stepCast = ref(getStep.value);
  * ['-86', '-0', '1.5', '3674', '15', '-90', '.0005', '-.67', '.8', '1e10', '-5E-7', '-1.7e-4', '0.02', '-4']
  */
 const numRegex = new RegExp(/[-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d+)?/, 'g');
-// const boundedNumRegex = new RegExp(/^[-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d+)?$/);
 
 /**
  * Matches similar to numRegex, however, it matches incrementally. For instance, numRegex
@@ -318,10 +315,6 @@ const numRegex = new RegExp(/[-]?((\d+\.\d+)|(\d+)|(\.\d+))([eE][+-]?\d+)?/, 'g'
  *
  * Note, because each part is optional, may return many null values.
  */
-// const incrementalNumRegex = new RegExp(
-// 	/((?<![\d+-])[-])?(\d*)?((?<!(e[+-]\d))\.(?![e-]))?(\d+)?((?<=\d)(e))?(((?<=e)[+-])?(\d*)?)?/,
-// 	'gi'
-// );
 const boundedIncrementalNumRegex = new RegExp(
 	/^[-]?(\d*)?((?<!(e[+-]\d))\.(?![e-]))?(\d+)?((?<=\d)(e))?(((?<=e)[+-])?(\d*)?)?$/,
 	'i'

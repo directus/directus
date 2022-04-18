@@ -17,7 +17,6 @@
 		:suffix="suffix"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:field-data="fieldData"
-		:smart-number-controls="smartNumberControls"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -122,10 +121,6 @@ export default defineComponent({
 		step: {
 			type: [String, Number],
 			default: 1,
-		},
-		smartNumberControls: {
-			type: Boolean,
-			default: false,
 		},
 		fieldData: {
 			type: Object as PropType<Field | undefined>,
