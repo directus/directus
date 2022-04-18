@@ -121,7 +121,7 @@
 		/>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled="disabled"
 			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
