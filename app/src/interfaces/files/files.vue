@@ -153,6 +153,7 @@ const props = withDefaults(
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
+		folder: undefined,
 	}
 );
 
@@ -249,7 +250,6 @@ const currentlyEditing = ref<string | number | null>(null);
 const relatedPrimaryKey = ref<string | number | null>(null);
 const selectModalActive = ref(false);
 const editsAtStart = ref<Record<string, any>>({});
-let newItem = false;
 
 function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
@@ -257,7 +257,6 @@ function editItem(item: DisplayItem) {
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
-	newItem = false;
 	editsAtStart.value = item;
 
 	editModalActive.value = true;
