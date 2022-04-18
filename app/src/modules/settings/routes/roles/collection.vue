@@ -39,9 +39,7 @@
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<span class="name" :class="{ public: item.public }">
-						{{ item.name }}
-					</span>
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
