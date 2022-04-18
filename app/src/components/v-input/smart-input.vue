@@ -105,7 +105,7 @@ const props = withDefaults(defineProps<Props>(), {
 	saveAffix: false,
 });
 
-const emit = defineEmits(['click', 'keydown', 'keyup', 'input', 'blur', 'focus']);
+const emit = defineEmits(['update:modelValue', 'click', 'keydown', 'keyup', 'input', 'blur', 'focus']);
 
 // const INT_2_MIN = Big('-32768');
 // const INT_2_MAX = Big('32767');
@@ -493,7 +493,7 @@ function updateField(
 ) {
 	if (props.type === 'number') {
 		updateWorkingNumber(value, !!options.shiftKey);
-		fieldValue.value = value;
+		fieldValue.value = workingNumber.value;
 	}
 	if (props.type === 'text') {
 		// On text field, if overwrite is set it'll explicitly set the entire field.
@@ -504,13 +504,14 @@ function updateField(
 			const start = workingNumberRange.value.start;
 			const end = workingNumberRange.value.end;
 
-			const newValue = `${fieldValue.value.slice(0, start)}${value}${fieldValue.value.slice(end)}`;
+			const newValue = `${fieldValue.value.slice(0, start)}${workingNumber.value}${fieldValue.value.slice(end)}`;
 
 			fieldValue.value = newValue;
 
 			setWorkingNumAtCursor();
 		}
 	}
+	emitUpdateModelValue(fieldValue.value);
 }
 
 /**
@@ -684,17 +685,13 @@ function focusField() {
 	inputField?.value?.focus();
 }
 
-interface CustomInputEvent extends InputEvent {
-	/**
-	 * Almost always a string. Only a number in the event that the model value is a
-	 * number, and the next value is the string equivalent, then we pass the number.
-	 */
-	nextValue?: string | number;
-}
-
 /** Emits */
 
-function emitInput(evt: CustomInputEvent) {
+function emitUpdateModelValue(value: string) {
+	emit('update:modelValue', value);
+}
+
+function emitInput(evt: InputEvent) {
 	emit('input', evt);
 }
 

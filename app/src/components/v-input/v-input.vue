@@ -46,6 +46,7 @@ import { computed, useAttrs, ref, Ref, watch } from 'vue';
 import slugify from '@sindresorhus/slugify';
 import smartInput from './smart-input.vue';
 import { Field } from '@directus/shared/types';
+import Big from 'big.js';
 
 interface Props {
 	autofocus?: boolean;
@@ -102,7 +103,8 @@ const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
 const attrs = useAttrs();
 
 const listeners = computed(() => ({
-	input: emitValue,
+	'update:modelValue': emitValue,
+	input: (e: InputEvent) => emitValue((e.target as HTMLInputElement).value),
 	keydown: processValue,
 	blur: (e: Event) => {
 		trimIfEnabled();
@@ -179,8 +181,8 @@ function trimIfEnabled() {
 	}
 }
 
-function emitValue(evt: InputEvent) {
-	let value = (evt.target as HTMLInputElement).value;
+function emitValue(value: string) {
+	if (props.modelValue === value) return;
 
 	if (props.nullable === true && (value === null || value === '')) {
 		emit('update:modelValue', null);
@@ -189,13 +191,17 @@ function emitValue(evt: InputEvent) {
 
 	if (props.type === 'number') {
 		/**
+		 * Necessary when dealing with large decimal numbers. We can't simply compare strings because
+		 * the database may have stripped out the scientific notation when the value was saved.
+		 */
+		if (Big(props.modelValue).eq(Big(value))) return;
+		/**
 		 * If initial value was a number whose string representation is equal to the new value,
 		 * emit the numerical initial value. This avoids breaking edits tracking.
 		 */
 		if (typeof initialValue.value === 'number' && String(initialValue.value) === value) {
 			emit('update:modelValue', initialValue.value);
-		} else if (props.modelValue !== value) {
-			emit('update:modelValue', value);
+			return;
 		}
 	} else {
 		if (props.slug === true) {
@@ -209,9 +215,8 @@ function emitValue(evt: InputEvent) {
 			// Replace é -> e etc
 			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 		}
-
-		emit('update:modelValue', value);
 	}
+	emit('update:modelValue', value);
 }
 </script>
 
