@@ -1414,6 +1414,7 @@ export class GraphQLService {
 				selection = selection as FieldNode | InlineFragmentNode;
 
 				let current: string;
+				let currentAlias: string | null = null;
 
 				// Union type (Many-to-Any)
 				if (selection.kind === 'InlineFragment') {
@@ -1427,6 +1428,10 @@ export class GraphQLService {
 					if (selection.name.value.startsWith('__')) continue;
 
 					current = selection.name.value;
+
+					if (selection.alias && query.alias && selection.alias.value in query.alias) {
+						currentAlias = selection.alias.value;
+					}
 
 					if (parent) {
 						current = `${parent}.${current}`;
@@ -1446,7 +1451,7 @@ export class GraphQLService {
 							children.push(`${subSelection.name!.value}(${rootField})`);
 						}
 					} else {
-						children = parseFields(selection.selectionSet.selections, current);
+						children = parseFields(selection.selectionSet.selections, currentAlias ?? current);
 					}
 
 					fields.push(...children);
