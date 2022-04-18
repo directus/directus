@@ -10,6 +10,11 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 	const formFields = computed(() => {
 		let formFields = cloneDeep(fields.value);
 
+		formFields = formFields.filter((field) => {
+			const systemFake = field.field?.startsWith('$') || false;
+			return systemFake === false;
+		});
+
 		formFields = orderBy(formFields, [(field) => !!field.meta?.system, 'meta.sort', 'meta.id'], ['desc', 'asc', 'asc']);
 
 		formFields = formFields.map((field, index) => {
@@ -39,11 +44,6 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 			}
 
 			return field;
-		});
-
-		formFields = formFields.filter((field) => {
-			const systemFake = field.field?.startsWith('$') || false;
-			return systemFake === false;
 		});
 
 		formFields = translate(formFields);
