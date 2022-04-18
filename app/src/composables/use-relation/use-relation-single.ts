@@ -55,7 +55,7 @@ export function useRelationSingle(
 		const id = typeof val === 'object' ? val[relation.value.relatedPrimaryKeyField.field] : val;
 
 		if (!id) {
-			displayItem.value = val;
+			displayItem.value = val as Record<string, any>;
 			return;
 		}
 
