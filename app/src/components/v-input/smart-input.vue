@@ -1,20 +1,15 @@
 <template>
-	<div class="smart-field-root" :focus="focusField">
-		<div class="smart-field">
-			<div class="highlights">
-				<!-- placeholder for highlights -->
-			</div>
-			<input
-				ref="inputField"
-				v-model="fieldValue"
-				:placeholder="placeholder ? String(placeholder) : undefined"
-				type="text"
-				:autocomplete="autocomplete"
-				:disabled="disabled"
-				v-bind="$attrs"
-				v-on="listeners"
-			/>
-		</div>
+	<div class="smart-input" :focus="focusField">
+		<input
+			ref="inputField"
+			v-model="fieldValue"
+			:placeholder="placeholder ? String(placeholder) : undefined"
+			type="text"
+			:autocomplete="autocomplete"
+			:disabled="disabled"
+			v-bind="$attrs"
+			v-on="listeners"
+		/>
 		<div v-if="isDisplayNum" class="data-warning">
 			<v-icon name="error_outline" tabindex="-1" clickable @click="stepUp" />
 		</div>
@@ -54,55 +49,35 @@ import { Field } from '@directus/shared/types';
 Big.RM = 1;
 
 interface Props {
-	autofocus?: boolean;
 	disabled?: boolean;
-	clickable?: boolean;
 	prefix?: string;
 	suffix?: string;
-	fullWidth?: boolean;
 	placeholder?: string;
 	modelValue?: string | number;
 	nullable?: boolean;
-	slug?: boolean;
-	slugSeparator?: string;
 	type?: string;
 	fieldData?: Field;
 	hideArrows?: boolean;
 	max?: string;
 	min?: string;
 	step?: string;
-	active?: boolean;
-	dbSafe?: boolean;
-	trim?: boolean;
 	autocomplete?: string;
-	small?: boolean;
-	saveAffix?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	autofocus: false,
 	disabled: false,
-	clickable: false,
 	prefix: undefined,
 	suffix: undefined,
-	fullWidth: true,
 	placeholder: '',
 	modelValue: '',
 	nullable: true,
-	slug: false,
-	slugSeparator: '-',
 	type: 'text',
 	fieldData: undefined,
 	hideArrows: false,
 	max: undefined,
 	min: undefined,
 	step: '1',
-	active: false,
-	dbSafe: false,
-	trim: false,
 	autocomplete: 'off',
-	small: false,
-	saveAffix: false,
 });
 
 const emit = defineEmits(['update:modelValue', 'click', 'keydown', 'keyup', 'input', 'blur', 'focus']);
@@ -771,45 +746,13 @@ function onInputKeyup(evt: KeyboardEvent) {
 </script>
 
 <style scoped lang="scss">
-.smart-field-root {
+.smart-input {
 	flex-grow: 1;
 	width: 20px;
 	height: 100%;
 	position: relative;
 	display: flex;
 	align-items: center;
-	height: 100%;
-}
-.smart-field {
-	flex-grow: 1;
-	width: 20px;
-	height: 100%;
-	position: relative;
-	.highlights,
-	input {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		padding: var(--input-padding);
-		padding-right: 0px;
-		padding-left: 0px;
-		font-family: var(--v-input-font-family);
-		background-color: transparent;
-		border: none;
-	}
-	input {
-		appearance: none;
-
-		&::placeholder {
-			color: var(--v-input-placeholder-color);
-		}
-
-		&:focus {
-			border-color: var(--v-input-border-color-focus);
-		}
-	}
 }
 
 .data-warning {

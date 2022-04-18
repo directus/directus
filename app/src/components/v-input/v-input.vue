@@ -10,6 +10,7 @@
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
 				<smart-input
+					v-if="useSmart"
 					v-focus="autofocus"
 					v-bind="passthroughAttributes"
 					:type="type"
@@ -17,6 +18,17 @@
 					:max="max === undefined || max === null ? undefined : String(max)"
 					:step="String(step)"
 					:field-data="fieldData"
+					:autocomplete="autocomplete"
+					:placeholder="placeholder ? String(placeholder) : undefined"
+					:disabled="disabled"
+					:model-value="modelValue === undefined || modelValue === null ? '' : modelValue"
+					v-on="listeners"
+				/>
+				<simple-input
+					v-else
+					v-focus="autofocus"
+					v-bind="passthroughAttributes"
+					:type="type"
 					:autocomplete="autocomplete"
 					:placeholder="placeholder ? String(placeholder) : undefined"
 					:disabled="disabled"
@@ -45,6 +57,7 @@ export default {
 import { computed, useAttrs, ref, Ref, watch } from 'vue';
 import slugify from '@sindresorhus/slugify';
 import smartInput from './smart-input.vue';
+import simpleInput from './simple-input.vue';
 import { Field } from '@directus/shared/types';
 import Big from 'big.js';
 
@@ -136,6 +149,11 @@ watch(
 		}
 	}
 );
+
+const useSmart = computed(() => {
+	if (props.type === 'number' || props.type === 'text') return true;
+	return false;
+});
 
 function processValue(event: KeyboardEvent) {
 	if (!event.key) return;
@@ -309,7 +327,7 @@ body {
 		}
 	}
 
-	input {
+	:deep(input) {
 		flex-grow: 1;
 		width: 20px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
