@@ -1564,8 +1564,6 @@ interfaces:
     step_interval: Step Interval
     slug: Slugify
     slug_label: Make entered value URL safe
-    smart_number_controls: Smart number controls
-    smart_number_controls_label: Enable smart number controls
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
