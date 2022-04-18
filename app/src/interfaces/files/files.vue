@@ -210,7 +210,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
+const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
 	useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
@@ -304,7 +304,7 @@ function onUpload(files: Record<string, any>[]) {
 		};
 	});
 
-	update(...filesAsJunctionRows);
+	create(...filesAsJunctionRows);
 }
 
 const downloadUrl = computed(() => {
