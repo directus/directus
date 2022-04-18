@@ -295,6 +295,7 @@ raw_value: Rå værdi
 copy_raw_value: Kopier Rå Værdi
 copy_raw_value_success: Kopieret
 copy_raw_value_fail: Kopiering Mislykkedes
+paste_raw_value: Indsæt Rå Værdi
 paste_raw_value_success: Indsat
 paste_raw_value_fail: Indsæt Mislykkedes
 view_raw_value: Vis Rå Værdi
@@ -334,10 +335,12 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
+import_data_indeterminate: Importerer Data...
 import_data_success: Data importeret fra {filename}
 import_data_error: Denne fils datastruktur matcher ikke samlingen.
 label_import: Importér
 label_export: Eksporter
+import_export: Import / Eksport
 format: Format
 last_page: Sidste side
 last_access: Seneste Adgang
@@ -361,11 +364,15 @@ functions:
   week: Uge
   day: Dag
   weekday: Ugedag
+  hour: Time
+  minute: Minut
   second: Sekund
   count: Antal
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'tt:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -417,9 +424,11 @@ replace_from_url: Erstat fil fra URL
 no_file_selected: Ingen Fil Valgt
 download_file: Download Fil
 open_file_in_tab: Åbn fil i nyt faneblad
+start_export: Start Eksport
 not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
 exporting_all_items_in_collection: Eksporterer alle {total} varer inden for {collection}.
 exporting_limited_items_in_collection: Eksporterer {limit} ud af {total} varer inden for {collection}.
+exporting_no_items_to_export: Ingen varer at eksportere. Juster eksportkonfigurationen nedenfor.
 exporting_download_hint: Når den er færdig, vil denne {format} -fil automatisk blive hentet til din enhed.
 exporting_batch_hint: Denne eksport vil blive behandlet i batcher, og når den er fuldført, vil {format} -filen blive gemt i filbiblioteket.
 exporting_batch_hint_forced: På grund af det store antal varer skal denne eksport forarbejdes i partier og når den er færdig, gemmes {format} -filen i Filbiblioteket.
@@ -563,6 +572,7 @@ edit_personal_bookmark: Rediger Personligt Bogmærke
 edit_role_bookmark: Rediger Rolle Bogmærke
 edit_global_bookmark: Rediger Globalt Bogmærke
 cannot_edit_role_bookmarks: Kan Ikke Redigere Rolle Bogmærker
+cannot_edit_global_bookmarks: Kan Ikke Redigere Globale Bogmærker
 bookmarks: Foretrukne
 presets: Forudindstillinger
 unexpected_error: Uventet Fejl
@@ -612,6 +622,7 @@ count_other_revisions: '{count} Andre revisioner'
 font: Font
 sans_serif: Sans Serif
 serif: Serif
+monospace: Monospace
 divider: Opdeler
 color: Farve
 circle: Cirkel
@@ -772,6 +783,7 @@ wysiwyg_options:
   subscript: Sænket
   superscript: Hævet
   codeblock: Kode
+  blockquote: Blokér
   bullist: Kugleliste
   numlist: Nummereret Liste
   hr: Horisontal Regel
@@ -931,6 +943,7 @@ fields:
     sort_field: Sortér Felt
     accountability: Aktivitet & Revision Tracking
     archive_field: Arkivér Felt
+    item_duplication_fields: Element Duplikationsfelter
   directus_files:
     title: Titel
     description: Beskrivelse
@@ -990,6 +1003,7 @@ fields:
     webP: WebP
     tiff: Tiff
     mapping: Kortlægning
+    mapbox_key: Mapbox Access Token
     attribution: Tildeling
     attribution_placeholder: '© OpenStreetMap bidragsydere'
     transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
@@ -1597,6 +1611,7 @@ displays:
     format_label: Automatisk format
     font: Font
     font_serif: Serif
+    font_monospace: Monospace
     bold: Fed
     bold_label: Use bold style
     prefix: Præfiks
@@ -1773,6 +1788,7 @@ panels:
   meter:
     description: Måler til sporingsværdier
     name: Måler
+    arc: Bue
     stroke_width: Slag Bredde
     select_max_value: Du skal vælge en maksimal værdi.
     max_greater_than_zero: Maksimum skal være større end 0.
