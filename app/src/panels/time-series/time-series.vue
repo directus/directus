@@ -12,7 +12,7 @@ import { isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/shared/utils';
 import { addWeeks } from 'date-fns';
 import { cssVar } from '@/utils/css-var';
 
