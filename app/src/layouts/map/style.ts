@@ -1,4 +1,4 @@
-import { cssVar } from '@directus/shared/utils';
+import { cssVar } from '@directus/shared/utils/browser';
 
 export function getMapStyle() {
 	return [

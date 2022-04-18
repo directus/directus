@@ -62,7 +62,7 @@ import { useServerStore } from '@/stores';
 import { storeToRefs } from 'pinia';
 import { getRootPath } from '@/utils/get-root-path';
 import { useI18n } from 'vue-i18n';
-import { cssVar } from '@directus/shared/utils';
+import { cssVar } from '@directus/shared/utils/browser';
 import Color from 'color';
 
 interface Props {
