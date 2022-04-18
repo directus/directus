@@ -3,10 +3,19 @@ import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Aggregate, Filter, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
+import {
+	Aggregate,
+	Filter,
+	Query,
+	Relation,
+	RelationMeta,
+	SchemaOverview,
+	FieldFunction,
+} from '@directus/shared/types';
 import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
+import { getOutputTypeForFunction } from '@directus/shared/utils';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -34,7 +43,7 @@ export default function applyQuery(
 
 				return {
 					order,
-					column: getColumn(knex, collection, column, false) as any,
+					column: getColumn(knex, collection, column, false, schema) as any,
 				};
 			})
 		);
@@ -57,7 +66,7 @@ export default function applyQuery(
 	}
 
 	if (query.group) {
-		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false)));
+		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
 	}
 
 	if (query.aggregate) {
@@ -358,25 +367,26 @@ export function applyFilter(
 					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
 				}
 
-				// Note: knex's types don't appreciate knex.raw in whereIn, even though it's officially supported
-				dbQuery[logical].whereIn(pkField as string, (subQueryKnex) => {
+				const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
 					const field = relation!.field;
 					const collection = relation!.collection;
 					const column = `${collection}.${field}`;
 
-					subQueryKnex.select({ [field]: column }).from(collection);
+					subQueryKnex
+						.select({ [field]: column })
+						.from(collection)
+						.whereNotNull(field);
 
-					applyQuery(
-						knex,
-						relation!.collection,
-						subQueryKnex,
-						{
-							filter: value,
-						},
-						schema,
-						true
-					);
-				});
+					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+				};
+
+				if (Object.keys(value)?.[0] === '_none') {
+					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
+				} else if (Object.keys(value)?.[0] === '_some') {
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
+				} else {
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
+				}
 			}
 		}
 
@@ -384,7 +394,7 @@ export function applyFilter(
 			const [table, column] = key.split('.');
 
 			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
-			const selectionRaw = getColumn(knex, table, column, false) as any;
+			const selectionRaw = getColumn(knex, table, column, false, schema) as any;
 
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
@@ -410,6 +420,17 @@ export function applyFilter(
 				});
 			}
 
+			// Cast filter value (compareValue) based on function used
+			if (column.includes('(') && column.includes(')')) {
+				const functionName = column.split('(')[0] as FieldFunction;
+				const type = getOutputTypeForFunction(functionName);
+
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+					compareValue = Number(compareValue);
+				}
+			}
+
+			// Cast filter value (compareValue) based on type of field being filtered against
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -420,6 +441,14 @@ export function applyFilter(
 						compareValue = compareValue.map((val) => helpers.date.parse(val));
 					} else {
 						compareValue = helpers.date.parse(compareValue);
+					}
+				}
+
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+					if (Array.isArray(compareValue)) {
+						compareValue = compareValue.map((val) => Number(val));
+					} else {
+						compareValue = Number(compareValue);
 					}
 				}
 			}

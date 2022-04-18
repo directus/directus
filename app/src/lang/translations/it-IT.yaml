@@ -351,7 +351,7 @@ import_export: Importa / Esporta
 format: Formato
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
-fill_template: Riempi con il valore del modello
+fill_template: Riempi con i valori del modello
 a_unique_table_name: Un nome di tabella unico...
 a_unique_column_name: Un nome di colonna unico...
 enable_custom_values: Abilita valori personalizzati
@@ -365,6 +365,16 @@ today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
 delete_share: Elimina condivisione
+functions:
+  year: Anno
+  month: Mese
+  week: Settimana
+  day: Giorno
+  weekday: Giorno della settimana
+  hour: Ore
+  minute: Minuti
+  second: Secondi
+  count: Quantità
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -630,6 +640,7 @@ advanced_settings: Impostazioni avanzate
 advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
 change_advanced_filter_operator: Cambia Operatore
+advanced: Avanzate
 operators:
   eq: Uguale a
   neq: Diverso da
@@ -702,7 +713,7 @@ role: Ruolo
 edit_role: Modifica ruolo
 rule: Regola
 user: Utente
-no_presets: Nessuna Preset
+no_presets: Nessun Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
@@ -1031,6 +1042,7 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    default_language: Lingua predefinita
     branding: Branding e stile
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
@@ -1310,7 +1322,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1506,6 +1517,7 @@ interfaces:
     add_label: 'Etichetta "Crea nuovo"'
     field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
+    incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore
@@ -1728,6 +1740,8 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Data inizio
     end_date_field: Campo Data fine
+    optional: Opzionale
+    first_day: Primo giorno della settimana
   map:
     map: Mappa
     basemap: Mappa base

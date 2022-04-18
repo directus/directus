@@ -352,6 +352,10 @@ today: امروز
 yesterday: دیروز
 delete_comment: حذف دیدگاه
 delete_share: حذف به اشتراک گذاری
+functions:
+  year: سال
+  month: ماه
+  count: تعداد
 date-fns_date: فرمت PPP برای تاریخ
 date-fns_time: 'فرمت زمان h:mm:ss a'
 date-fns_time_no_seconds: 'فرمت زمان h:mm a'

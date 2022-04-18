@@ -29,7 +29,7 @@ archived: 已存档
 modules: 模块
 module_bar: 模块栏
 reset_width: 重置宽度
-tile_size: 图块大小：
+tile_size: 瓦块大小
 edit_field: 编辑
 conditions: 条件
 maps: 地图
@@ -41,19 +41,19 @@ duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
 group: 群组
-export_items: 导出条目
-and: 和
+export_items: 导出
+and: 与
 or: 或
-fill_width: 填充宽度
+fill_width: 适应页面宽度
 field_name_translations: 字段名称翻译
-enter_password_to_enable_tfa: 输入您的密码以启用两步验证
+enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
-branch: 分支
-leaf: Leaf
-indeterminate: 不确定的状态
+branch: 父节点优先
+leaf: 叶节点优先
+indeterminate: 不确定状态，总是保留分支节点
 edit_collection: 编辑模型
-exclusive: 唯一的
+exclusive: 排他，分支或叶节点间互斥
 children: 子页面
 db_only_click_to_configure: '仅限数据库：点击配置'
 show_active_items: 显示活动项
@@ -95,6 +95,9 @@ update_bookmark: 更新书签
 delete_bookmark: 删除书签
 delete_bookmark_copy: >-
   你确定要删除"{bookmark}" 这个书签吗? 此操作无法撤销。
+delete_personal_bookmark: 删除个人书签
+delete_role_bookmark: 删除角色书签
+delete_global_bookmark: 删除全局书签
 logoutReason:
   SIGN_OUT: 注销
   SESSION_EXPIRED: 会话过期
@@ -191,6 +194,7 @@ camera: 摄像头
 show_zero: 显示0
 create_in_advanced_field_creation_mode: 在高级模式下创建字段
 continue_in_advanced_field_creation_mode: 在高级字段创建模式中继续
+validation: 验证
 sum: Sum
 sum_distinct: Sum Distinct
 avg: 平均值
@@ -340,7 +344,7 @@ import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
 import_data_indeterminate: 导入数据中
 import_data_success: 成功从 {filename} 导入数据
-import_data_error: 此文件的数据结构与收藏不匹配。
+import_data_error: 此文件的数据结构与模型不匹配。
 label_import: 导入
 label_export: 导出
 import_export: 导入 / 导出
@@ -361,6 +365,16 @@ today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
 delete_share: 删除分享
+functions:
+  year: 年
+  month: 月
+  week: 周
+  day: 日
+  weekday: 星期几
+  hour: 时
+  minute: 分
+  second: 秒
+  count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -561,6 +575,11 @@ value_hashed: 哈希值
 bookmark_name: 书签名称
 create_bookmark: 创建书签
 edit_bookmark: 编辑书签
+edit_personal_bookmark: 编辑个人书签
+edit_role_bookmark: 编辑角色书签
+edit_global_bookmark: 编辑全局书签
+cannot_edit_role_bookmarks: 无法编辑角色书签
+cannot_edit_global_bookmarks: 无法编辑全局书签
 bookmarks: 书签
 presets: 预设
 unexpected_error: 未知错误
@@ -587,6 +606,7 @@ make_collection_visible: 显示收藏
 make_collection_hidden: 隐藏收藏集
 make_folder_visible: 显示文件夹
 make_folder_hidden: 隐藏文件夹
+goto_collection_content: 查看内容
 start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
 one_item: '1项'
@@ -620,6 +640,7 @@ advanced_settings: 高级设置
 advanced_filter: 高级过滤器
 delete_advanced_filter: 删除过滤器
 change_advanced_filter_operator: 更改操作者
+advanced: 高级
 operators:
   eq: 等于
   neq: 不等于
@@ -647,6 +668,8 @@ operators:
   nintersects: 不相交
   intersects_bbox: 相交边框
   nintersects_bbox: 没有相交边框
+  regex: 匹配正则表达式
+custom_validation_message: 自定义验证消息
 loading: 正在载入...
 drop_to_upload: 拖拽文件并上传
 item: 条目
@@ -882,7 +905,7 @@ page_help_insights_dashboard: '**仪表盘** — 管理工作区面板'
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
-all: 全部
+all: 全部，全选时保留分支节点
 none: 无
 no_layout_collection_selected_yet: 尚未选择布局/模型
 batch_delete_confirm: >-
@@ -1019,6 +1042,7 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
+    default_language: 默认语言
     branding: 品牌和样式
     public_foreground: 公共前景
     public_background: 公共背景
@@ -1309,7 +1333,7 @@ interfaces:
     add_value: 添加值
     logic_type_and: 逻辑与 - AND
     logic_type_or: 逻辑或 - OR
-    all: 全部
+    all: 全部，全选时保留分支节点
     any: 任意
     and: 和
     of_the_following: 条件时生效
@@ -1487,12 +1511,13 @@ interfaces:
     radio-buttons: 单选按钮
     description: 选择多项选择
   list:
-    repeater: 中继器
+    repeater: 重复器
     description: 创建同一结构的多个条目
     edit_fields: 编辑字段
     add_label: '"创建新"标签'
     field_name_placeholder: 输入字段名称...
     field_note_placeholder: 输入字段备注...
+    incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字
@@ -1715,6 +1740,8 @@ layouts:
     calendar: 日历
     start_date_field: 开始日期
     end_date_field: 结束日期
+    optional: 可选的
+    first_day: 一周的起始日
   map:
     map: 地图
     basemap: 底图

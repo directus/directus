@@ -244,6 +244,9 @@ interface_label: Sąsaja
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
+functions:
+  year: Metai
+  month: Mėnuo
 month: Mėnuo
 year: Metai
 select_all: Pažymėti visus

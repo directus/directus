@@ -179,7 +179,7 @@ import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
-import { AppPanel } from '@/components/v-workspace-panel.vue';
+import { getPanels } from '@/panels';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -196,6 +196,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
+		const { panels: panelsInfo } = getPanels();
 
 		const insightsStore = useInsightsStore();
 		const appStore = useAppStore();
@@ -302,10 +303,19 @@ export default defineComponent({
 					x: panel.position_x,
 					y: panel.position_y,
 					borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
-				} as AppPanel;
+				};
 			});
 
-			return withBorderRadii;
+			const withIcons = withBorderRadii.map((panel) => {
+				if (panel.icon) return panel;
+
+				return {
+					...panel,
+					icon: panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type)?.icon,
+				};
+			});
+
+			return withIcons;
 		});
 
 		const confirmCancel = ref(false);

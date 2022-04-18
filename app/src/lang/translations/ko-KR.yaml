@@ -89,6 +89,9 @@ interface_label: 인터페이스
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
+functions:
+  year: 년
+  month: 월
 month: 월
 year: 년
 select_all: 모두 선택

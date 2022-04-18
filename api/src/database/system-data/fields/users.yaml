@@ -72,6 +72,8 @@ fields:
   - field: language
     interface: system-language
     width: half
+    options:
+      includeProjectDefault: true
 
   - field: theme
     interface: select-dropdown
@@ -152,6 +154,7 @@ fields:
   - field: last_access
     width: half
     display: datetime
+    readonly: true
     display_options:
       relative: true
 

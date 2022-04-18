@@ -408,21 +408,24 @@ middleman servers (like CDNs) and even the browser.
 
 ::: tip Assets Cache
 
-The cache-control header for the `/assets` endpoint is separate from the regular data-cache. This is useful as it's
-often possible to cache assets for far longer than you would cache database content. [Learn More](#assets)
+`Cache-Control` and `Last-Modified` headers for the `/assets` endpoint are separate from the regular data-cache.
+`Last-Modified` comes from `modified_on` DB field. This is useful as it's often possible to cache assets for far longer
+than you would cache database content. [Learn More](#assets)
 
 :::
 
 | Variable                          | Description                                                                              | Default Value    |
 | --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
 | `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `30m`            |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `5m`             |
 | `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
 | `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
+| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long the schema caches (schema/permissions) are persisted.                           | `10m`            |
 | `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
 | `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
 | `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
 | `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
+| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.         | --               |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -563,6 +566,17 @@ STORAGE_AWS_REGION="us-east-2"
 STORAGE_AWS_BUCKET="my-files"
 ```
 
+### Metadata
+
+When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+purposes, collection of additional metadata must be configured:
+
+| Variable                   | Description                                                                                           | Default Value                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO |
+
+<sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
+
 ## Assets
 
 | Variable                               | Description                                                                                                                             | Default Value |
@@ -662,18 +676,19 @@ registrations.
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                          | Description                                                            | Default Value |
-| --------------------------------- | ---------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`      | LDAP connection URL.                                                   | --            |
-| `AUTH_<PROVIDER>_BIND_DN`         | Bind user <sup>[1]</sup> distinguished name.                           | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`   | Bind user password.                                                    | --            |
-| `AUTH_<PROVIDER>_USER_DN`         | Directory path containing users.                                       | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`  | Attribute to identify users by.                                        | `cn`          |
-| `AUTH_<PROVIDER>_USER_SCOPE`      | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
-| `AUTH_<PROVIDER>_GROUP_DN`        | Directory path containing groups.                                      | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE` | Attribute to identify user as a member of a group.                     | `member`      |
-| `AUTH_<PROVIDER>_GROUP_SCOPE`     | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`  | Attribute containing the email of the user.                            | `mail`        |
+| Variable                                        | Description                                                            | Default Value |
+| ----------------------------------------------- | ---------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`                    | LDAP connection URL.                                                   | --            |
+| `AUTH_<PROVIDER>_BIND_DN`                       | Bind user <sup>[1]</sup> distinguished name.                           | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`                 | Bind user password.                                                    | --            |
+| `AUTH_<PROVIDER>_USER_DN`                       | Directory path containing users.                                       | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`                | Attribute to identify users by.                                        | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`                    | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
+| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup>        | Directory path containing groups.                                      | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`               | Attribute to identify user as a member of a group.                     | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`                   | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`                | Attribute containing the email of the user.                            | `mail`        |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`<sup>[3]</sup> | Role to use on user sign-up. Only used when GROUP_DN isn't configured. | --            |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. To bind
 anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
@@ -683,6 +698,9 @@ anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
 - `base`: Limits the scope to a single object defined by the associated DN.
 - `one`: Searches all objects within the associated DN.
 - `sub`: Searches all objects and sub-objects within the associated DN.
+
+<sup>[3]</sup> If you specify groupDn, the user's role will always get updated on authentication to what's configured in
+AD. It will fallback to the configured default role id if supplied.
 
 ### Example: LDAP
 

@@ -4,6 +4,7 @@ import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { ItemsService } from '../../src/services';
 import { sqlFieldFormatter, sqlFieldList } from '../__test-utils__/items-utils';
 import { systemSchema, userSchema } from '../__test-utils__/schemas';
+import { cloneDeep } from 'lodash';
 
 jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
@@ -166,6 +167,16 @@ describe('Integration Tests', () => {
 									id: 1,
 									role: 'admin',
 									collection: table,
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: table,
 									action: 'read',
 									permissions: {},
 									validation: {},
@@ -185,6 +196,138 @@ describe('Integration Tests', () => {
 					expect(tracker.history.select[0].bindings).toStrictEqual(['something', rawItems[0].id, 100]);
 					expect(tracker.history.select[0].sql).toBe(
 						`select "${table}"."id", "${table}"."name" from "${table}" where ("${table}"."name" = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					);
+
+					expect(response).toStrictEqual({ id: rawItems[0].id });
+				}
+			);
+
+			it.each(Object.keys(schemas))(
+				'%s returns one item with filter on relational field from tables not as admin and has top level field permissions only',
+				async (schema) => {
+					const table = schemas[schema].tables[1];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					const itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: table,
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: table,
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+					const response = await itemsService.readOne(rawItems[0].id, {
+						fields: ['id'],
+						filter: { uploaded_by: { _in: ['b5a7dd0f-fc9f-4242-b331-83990990198f'] } },
+					});
+
+					expect(tracker.history.select.length).toBe(1);
+					expect(tracker.history.select[0].bindings).toStrictEqual([
+						'b5a7dd0f-fc9f-4242-b331-83990990198f',
+						rawItems[0].id,
+						100,
+					]);
+					expect(tracker.history.select[0].sql).toBe(
+						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					);
+
+					expect(response).toStrictEqual({ id: rawItems[0].id });
+				}
+			);
+
+			it.each(Object.keys(schemas))(
+				'%s returns one item with filter on relational field from tables not as admin and has relational permissions',
+				async (schema) => {
+					const table = schemas[schema].tables[1];
+
+					tracker.on.select(table).responseOnce(rawItems);
+
+					const itemsService = new ItemsService(table, {
+						knex: db,
+						accountability: {
+							role: 'admin',
+							admin: false,
+							permissions: [
+								{
+									id: 1,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 3,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 4,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'read',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+							],
+						},
+						schema: schemas[schema].schema,
+					});
+					const response = await itemsService.readOne(rawItems[0].id, {
+						fields: ['id'],
+						filter: { uploaded_by: { _in: ['b5a7dd0f-fc9f-4242-b331-83990990198f'] } },
+					});
+
+					expect(tracker.history.select.length).toBe(1);
+					expect(tracker.history.select[0].bindings).toStrictEqual([
+						'b5a7dd0f-fc9f-4242-b331-83990990198f',
+						rawItems[0].id,
+						100,
+					]);
+					expect(tracker.history.select[0].sql).toBe(
+						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 					);
 
 					expect(response).toStrictEqual({ id: rawItems[0].id });
@@ -221,6 +364,16 @@ describe('Integration Tests', () => {
 							permissions: [
 								{
 									id: 1,
+									role: 'admin',
+									collection: table,
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
 									role: 'admin',
 									collection: table,
 									action: 'read',
@@ -313,6 +466,26 @@ describe('Integration Tests', () => {
 									id: 1,
 									role: 'admin',
 									collection: schemas[schema].tables[0],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 3,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
 									action: 'read',
 									permissions: {},
 									validation: {},
@@ -320,7 +493,7 @@ describe('Integration Tests', () => {
 									fields: ['id', 'items'],
 								},
 								{
-									id: 2,
+									id: 4,
 									role: 'admin',
 									collection: schemas[schema].tables[1],
 									action: 'read',
@@ -384,6 +557,26 @@ describe('Integration Tests', () => {
 									id: 1,
 									role: 'admin',
 									collection: schemas[schema].tables[0],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 2,
+									role: 'admin',
+									collection: schemas[schema].tables[1],
+									action: 'create',
+									permissions: {},
+									validation: {},
+									presets: {},
+									fields: ['*'],
+								},
+								{
+									id: 3,
+									role: 'admin',
+									collection: schemas[schema].tables[0],
 									action: 'read',
 									permissions: {},
 									validation: {},
@@ -391,7 +584,7 @@ describe('Integration Tests', () => {
 									fields: ['id', 'items'],
 								},
 								{
-									id: 2,
+									id: 4,
 									role: 'admin',
 									collection: schemas[schema].tables[1],
 									action: 'read',
@@ -420,7 +613,7 @@ describe('Integration Tests', () => {
 				async (schema) => {
 					const table = schemas[schema].tables[0];
 
-					const customSchema = schemas[schema].schema;
+					const customSchema = cloneDeep(schemas[schema].schema);
 					customSchema.collections[table].accountability = 'all';
 
 					const itemsService = new ItemsService(table, {
@@ -558,5 +751,105 @@ describe('Integration Tests', () => {
 				expect(response).toStrictEqual([items[1]]);
 			});
 		});
+	});
+
+	describe('updateOne', () => {
+		const item = { id: '6107c897-9182-40f7-b22e-4f044d1258d2', name: 'Item name', items: [] };
+
+		it.each(Object.keys(schemas))(
+			'%s updates relational field in one item without read permissions',
+			async (schema) => {
+				const childTable = schemas[schema].tables[1];
+
+				const childItem = {
+					id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
+					title: 'A new child item',
+					uploaded_by: '6107c897-9182-40f7-b22e-4f044d1258d2',
+				};
+				tracker.on.select(childTable).response([childItem]);
+				tracker.on.update(childTable).response(childItem);
+
+				const table = schemas[schema].tables[0];
+				schemas[schema].accountability = null;
+
+				tracker.on.select(table).response([item]);
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: {
+						role: 'admin',
+						admin: false,
+						permissions: [
+							{
+								id: 1,
+								role: 'admin',
+								collection: schemas[schema].tables[0],
+								action: 'create',
+								permissions: {},
+								validation: {},
+								presets: {},
+								fields: ['*'],
+							},
+							{
+								id: 2,
+								role: 'admin',
+								collection: schemas[schema].tables[1],
+								action: 'create',
+								permissions: {},
+								validation: {},
+								presets: {},
+								fields: ['*'],
+							},
+							{
+								id: 3,
+								role: 'admin',
+								collection: schemas[schema].tables[0],
+								action: 'update',
+								permissions: {},
+								validation: {},
+								presets: {},
+								fields: ['*'],
+							},
+							{
+								id: 4,
+								role: 'admin',
+								collection: schemas[schema].tables[1],
+								action: 'update',
+								permissions: {},
+								validation: {},
+								presets: {},
+								fields: ['*'],
+							},
+						],
+					},
+					schema: schemas[schema].schema,
+				});
+				const response = await itemsService.updateOne(item.id, {
+					items: [],
+				});
+
+				expect(tracker.history.select.length).toBe(4);
+				expect(tracker.history.select[0].bindings).toStrictEqual([item.id, 1]);
+				expect(tracker.history.select[0].sql).toBe(
+					`select "${table}"."id", "${table}"."name" from "${table}" where (("${table}"."id" in (?))) order by "${table}"."id" asc limit ?`
+				);
+				expect(tracker.history.select[1].bindings).toStrictEqual([item.id, 25000]);
+				expect(tracker.history.select[1].sql).toBe(
+					`select "${childTable}"."uploaded_by", "${childTable}"."id" from "${childTable}" where "${childTable}"."uploaded_by" in (?) order by "${childTable}"."id" asc limit ?`
+				);
+				expect(tracker.history.select[2].bindings).toStrictEqual([item.id, 1, 100]);
+				expect(tracker.history.select[2].sql).toBe(
+					`select "${childTable}"."id" from "${childTable}" where ("${childTable}"."uploaded_by" = ? and 1 = ?) order by "${childTable}"."id" asc limit ?`
+				);
+				expect(tracker.history.select[3].bindings).toStrictEqual([childItem.id, 1]);
+				expect(tracker.history.select[3].sql).toBe(
+					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where (("${childTable}"."id" in (?))) order by "${childTable}"."id" asc limit ?`
+				);
+				expect(tracker.history.update[0].bindings).toStrictEqual([null, childItem.id]);
+				expect(tracker.history.update[0].sql).toBe(`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`);
+
+				expect(response).toStrictEqual(item.id);
+			}
+		);
 	});
 });

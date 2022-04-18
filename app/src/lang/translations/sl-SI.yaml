@@ -258,6 +258,9 @@ interface_label: Vmesnik
 today: Danes
 yesterday: Včeraj
 delete_comment: Izbriši komentar
+functions:
+  year: Leto
+  month: Mesec
 date-fns_date: PPP
 date-fns_time: 'hh:mm:ss'
 date-fns_time_no_seconds: 'hh:mm'

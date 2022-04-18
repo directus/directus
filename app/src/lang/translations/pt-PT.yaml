@@ -249,6 +249,9 @@ interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Remover comentário
+functions:
+  year: Ano
+  month: Mês
 date-fns_date: dd MMM u
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'

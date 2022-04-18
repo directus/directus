@@ -257,6 +257,9 @@ interface_label: Interfície
 today: Avui
 yesterday: Ahir
 delete_comment: Elimina comentari
+functions:
+  year: Any
+  month: Mes
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h.mm a'

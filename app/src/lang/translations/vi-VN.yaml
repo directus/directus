@@ -283,6 +283,9 @@ interface_label: Giao diện
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
+functions:
+  year: Năm
+  month: Tháng
 minutes: Phút
 hours: Giờ
 month: Tháng
