@@ -26,8 +26,9 @@
 
 		<div class="roles">
 			<v-table
+				v-model:headers="tableHeaders"
+				show-resize
 				:items="roles"
-				:headers="tableHeaders"
 				fixed-header
 				item-key="id"
 				:loading="loading"
@@ -90,20 +91,22 @@ export default defineComponent({
 			return adminRoles.length === 1 ? adminRoles[0].id : null;
 		});
 
-		const tableHeaders: TableHeader[] = [
+		const tableHeaders = ref<TableHeader[]>([
 			{
 				text: '',
 				value: 'icon',
 				sortable: false,
 				width: 42,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('name'),
 				value: 'name',
 				sortable: false,
-				width: 140,
+				width: 200,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('users'),
@@ -111,6 +114,7 @@ export default defineComponent({
 				sortable: false,
 				width: 140,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('description'),
@@ -118,8 +122,9 @@ export default defineComponent({
 				sortable: false,
 				width: 470,
 				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		fetchRoles();
 
