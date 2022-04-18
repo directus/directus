@@ -17,7 +17,7 @@ export function useRelationSingle(
 	const displayItem = ref<Record<string, any> | null>(null);
 	const loading = ref(false);
 
-	watch(value, getDisplayItems, { immediate: true });
+	watch([value, previewQuery, relation], getDisplayItems, { immediate: true });
 
 	return { update, remove, displayItem, loading };
 

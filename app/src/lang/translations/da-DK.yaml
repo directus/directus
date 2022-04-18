@@ -1,5 +1,27 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifier
 avatar: Profilbillede
+application: Anvendelse
 default_provider: Standard
 published: Publiceret
 draft: Kladde
@@ -10,6 +32,7 @@ tile_size: Tile Size
 edit_field: Rediger Felt
 conditions: Betingelser
 maps: Kort
+switch_user: Skift Bruger
 item_creation: Element Oprettelse
 item_revision: Genstandsrevision
 enter_a_name: Indtast et navn...
@@ -17,6 +40,7 @@ duplicate_field: Dupliker Felt
 half_width: Halv Bredde
 full_width: Fuld Bredde
 group: Gruppe
+export_items: Eksportér Elementer
 and: Og
 or: Eller
 fill_width: Fuld Bredde
@@ -33,7 +57,8 @@ children: Underordnede
 db_only_click_to_configure: 'Kun database: Klik for at indstille'
 show_active_items: Vis Aktive Elementer
 show_archived_items: Vis arkiverede element
-edited: Værdi Ændret
+show_all_items: Vis Alle Punkter
+edited: Værdi Redigeret
 required: Påkrævet
 required_for_app_access: Påkrævet for App adgang
 requires_value: Påkrævet værdi
@@ -43,9 +68,17 @@ create_role: Opret Rolle
 create_user: Opret bruger
 delete_panel: Slet Panel
 create_webhook: Opret Webhook
+create_translation_string: Opret Oversættelsesstreng
+translation_string_key_placeholder: Oversættelse streng nøgle...
+translation_string_translations_placeholder: Tilføj en ny oversættelse
+edit_translation_string: Rediger Oversættelsesstreng
+delete_translation_string_copy: >-
+  Er du sikker på du vil slette oversættelsesstrengen "{key}"? Denne handling kan ikke fortrydes.
 invite_users: Inviter brugere
 invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
+subject: Emne
+inbox: Indbakke
 emails: E-mail
 connection_excellent: Udmærket forbindelse
 connection_good: God forbindelse
@@ -61,11 +94,15 @@ update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
 delete_bookmark_copy: >-
   Er du sikker på at du vil slette "{bookmark}"-bogmærket? Denne handling kan ikke fortrydes.
+delete_personal_bookmark: Slet Personligt Bogmærke
+delete_role_bookmark: Slet Rolle Bogmærke
+delete_global_bookmark: Slet Globalt Bogmærke
 logoutReason:
   SIGN_OUT: Logget ud
   SESSION_EXPIRED: Sessionen er udløbet
 public_label: Offentlig
 public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
+admin_description: Oprindelig administrativ rolle med ubegrænset App/API-adgang.
 not_allowed: Ikke tilladt
 directus_version: Directus Version
 node_version: Node version
@@ -86,6 +123,7 @@ recommended_defaults: Anbefalede Standarder
 unarchive: Fjern fra arkiv
 unarchive_confirm: Er du sikker på, at du vil fjerne arkiveringen af dette element?
 nested_files_folders_will_be_moved: Indlejrede filer og mapper vil blive flyttet et niveau op.
+validation_errors_notice: 'Følgende felter har ugyldige værdier:'
 validationError:
   eq: Værdien skal være {valid}
   neq: Værdi kan ikke være {invalid}
@@ -135,6 +173,7 @@ revision_post_create: Her er hvordan dette element så ud, da det blev oprettet.
 revision_post_update: Her er hvad dette element så ud efter opdateringen.
 changes_made: Nedenfor er de specifikke ændringer i denne revision.
 no_relational_data: Husk på, at relationsdata ikke er inkluderet her.
+hide_field: Skjul Felt
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
 delete_field: Slet Felt
@@ -143,6 +182,7 @@ field_create_success: 'Oprettet Felt: "{field}"'
 field_update_success: 'Opdateret Felt: "{field}"'
 duplicate_where_to: Hvor vil du kopiere dette felt til?
 language: Sprog
+language_placeholder: Vælg et sprog...
 aggregate_function: Samlet Funktion
 aggregate_precision: Aggregeret Præcision
 group_aggregation: Gruppe Sammenlægning
@@ -151,7 +191,9 @@ global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
 show_zero: Vis Nul
+create_in_advanced_field_creation_mode: Opret felt i avanceret tilstand
 continue_in_advanced_field_creation_mode: Fortsæt i avanceret feltskabelsestilstand
+validation: Validering
 sum: Sum
 sum_distinct: Sum Distinkt
 avg: Gennemsnit
@@ -192,6 +234,9 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
+geometry: Geometri (Alle)
+geometry.Point: Punkt
+geometry.MultiPoint: Multipunkt
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret Oversættelser
 auto_refresh: Opdater Automatisk
@@ -236,6 +281,7 @@ note: Kommentar
 enter_a_value: Indtast en værdi...
 enter_a_placeholder: Indtast en pladsholder...
 length: Længde
+soft_length: Blød Grænse
 precision_scale: Præcision & Skala
 readonly: Skrivebeskyttet
 unique: Unik
@@ -246,9 +292,19 @@ foreign_key: Fremmed Nøgle
 finish_setup: Afslut Opsætning
 dismiss: Afvis
 raw_value: Rå værdi
+copy_raw_value: Kopier Rå Værdi
+copy_raw_value_success: Kopieret
+copy_raw_value_fail: Kopiering Mislykkedes
+paste_raw_value: Indsæt Rå Værdi
+paste_raw_value_success: Indsat
+paste_raw_value_fail: Indsæt Mislykkedes
+view_raw_value: Vis Rå Værdi
 edit_raw_value: Rediger Rå Værdi
 enter_raw_value: Indtast rå værdi...
+clear_value: Ryd Værdi
 clear_changes: Ryd Ændringer
+reset_to_default: Nulstil til standard
+undo_changes: Fortryd Ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
@@ -279,7 +335,12 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
+import_data_indeterminate: Importerer Data...
+import_data_success: Data importeret fra {filename}
+import_data_error: Denne fils datastruktur matcher ikke samlingen.
 label_import: Importér
+label_export: Eksporter
+import_export: Import / Eksport
 format: Format
 last_page: Sidste side
 last_access: Seneste Adgang
@@ -296,13 +357,22 @@ interface_label: Grænseflade
 today: Idag
 yesterday: Igår
 delete_comment: Slet kommentar
+delete_share: Slet Del
 functions:
   year: År
   month: Måned
+  week: Uge
+  day: Dag
+  weekday: Ugedag
+  hour: Time
+  minute: Minut
+  second: Sekund
   count: Antal
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'tt:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -353,6 +423,15 @@ replace_from_library: Erstat fil fra enhed
 replace_from_url: Erstat fil fra URL
 no_file_selected: Ingen Fil Valgt
 download_file: Download Fil
+open_file_in_tab: Åbn fil i nyt faneblad
+start_export: Start Eksport
+not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
+exporting_all_items_in_collection: Eksporterer alle {total} varer inden for {collection}.
+exporting_limited_items_in_collection: Eksporterer {limit} ud af {total} varer inden for {collection}.
+exporting_no_items_to_export: Ingen varer at eksportere. Juster eksportkonfigurationen nedenfor.
+exporting_download_hint: Når den er færdig, vil denne {format} -fil automatisk blive hentet til din enhed.
+exporting_batch_hint: Denne eksport vil blive behandlet i batcher, og når den er fuldført, vil {format} -filen blive gemt i filbiblioteket.
+exporting_batch_hint_forced: På grund af det store antal varer skal denne eksport forarbejdes i partier og når den er færdig, gemmes {format} -filen i Filbiblioteket.
 collection_key: Samlings Nøgle
 name: Navn
 primary_key_field: Primær Nøglefelt
@@ -396,6 +475,9 @@ user_count: 'Ingen brugere: Én bruger, {count} brugere'
 no_users_copy: Der er endnu ingen brugere i denne rolle.
 webhooks_count: 'Ingen Webhooks ● One Webhook ● {count} Webhooks'
 no_webhooks_copy: Ingen webhooks er konfigureret endnu. Kom i gang ved at oprette en nedenfor.
+no_notifications: Ingen Notifikationer
+no_notifications_copy: Du er alle fanget op!
+activity_log: Aktivitetslog
 all_items: Alle Punkter
 any: Alle
 csv: CSV
@@ -477,12 +559,20 @@ errors:
   INTERNAL_SERVER_ERROR: Uventet Fejl
   NOT_NULL_VIOLATION: Værdien kan ikke være null
   ILLEGAL_ASSET_TRANSFORMATION: Billedkilde for stor til forhåndsvisning
+  VALUE_TOO_LONG: Værdien er for lang
+  VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
+  INVALID_FOREIGN_KEY: Ugyldig udenlandsk nøgle
   UNKNOWN: Uventet Fejl
 security: Sikkerhed
 value_hashed: Værdi Sikker Hashed
 bookmark_name: Bogmærke navn...
 create_bookmark: Opret Bogmærke
 edit_bookmark: Rediger Bogmærke
+edit_personal_bookmark: Rediger Personligt Bogmærke
+edit_role_bookmark: Rediger Rolle Bogmærke
+edit_global_bookmark: Rediger Globalt Bogmærke
+cannot_edit_role_bookmarks: Kan Ikke Redigere Rolle Bogmærker
+cannot_edit_global_bookmarks: Kan Ikke Redigere Globale Bogmærker
 bookmarks: Foretrukne
 presets: Forudindstillinger
 unexpected_error: Uventet Fejl
@@ -507,12 +597,16 @@ update_collection_success: Opdateret Samling
 delete_collection_success: Slettet Samling
 make_collection_visible: Gør Samlingen Synlig
 make_collection_hidden: Gør Samlingen Skjult
+make_folder_visible: Gør Mappen Synlig
+make_folder_hidden: Lav Mappe Skjult
+goto_collection_content: Vis Indhold
 start_end_of_count_items: '{start}-{end} af {count} varer'
 start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede emner'
 one_item: '1 vare'
 one_filtered_item: '1 filtreret genstand'
 delete_collection_are_you_sure: >-
   Er du sikker på, at du vil slette denne samling? Dette vil slette samlingen og alle elementer i den. Denne handling er permanent.
+delete_folder_are_you_sure: Er du sikker på, at du vil slette denne mappe? Indlejrede mapper og samlinger vil blive flyttet til det øverste niveau.
 collections_shown: Viste Samlinger
 visible_collections: Synlige Samlinger
 hidden_collections: Skjulte Samlinger
@@ -528,6 +622,7 @@ count_other_revisions: '{count} Andre revisioner'
 font: Font
 sans_serif: Sans Serif
 serif: Serif
+monospace: Monospace
 divider: Opdeler
 color: Farve
 circle: Cirkel
@@ -538,6 +633,7 @@ advanced_settings: Avancerede Indstillinger
 advanced_filter: Avanceret Filter
 delete_advanced_filter: Slet Filter
 change_advanced_filter_operator: Skift Operatør
+advanced: Avanceret
 operators:
   eq: Lig
   neq: Ligner ikke
@@ -565,6 +661,8 @@ operators:
   nintersects: Skærer ikke
   intersects_bbox: Grænsefelt til skæring
   nintersects_bbox: Grænsefeltet skærer ikke op
+  regex: Matcher RegExp
+custom_validation_message: Brugerdefineret Valideringsbesked
 loading: Indlæser...
 drop_to_upload: Slip for upload
 item: Vare
@@ -605,6 +703,7 @@ no_results_copy: Justér eller ryd søgefiltre for at se resultater.
 clear_filters: Ryd Filtre
 saves_automatically: Gemmer Automatisk
 role: Rolle
+edit_role: Rediger Rolle
 rule: Regel
 user: Bruger
 no_presets: Ingen Forudindstillinger
@@ -647,6 +746,7 @@ no_data: Ingen Data
 create_dashboard: Opret Dashboard
 dashboard_name: Betjeningspanels Navn
 full_screen: Fuld Skærm
+full_text_search: Fuldtekst Søgning
 edit_panels: Rediger Paneler
 fit_to_screen: Tilpas til skærm
 image_url: Billede Url
@@ -671,6 +771,8 @@ unlimited: Ubegrænset
 open_link_in: Åbn link i
 new_tab: Ny fane
 current_tab: Aktuel fane
+save_image: Gem Billede
+save_media: Gem Medier
 wysiwyg_options:
   aligncenter: Juster centreret
   forecolor: Forgrundsfarve
@@ -681,6 +783,7 @@ wysiwyg_options:
   subscript: Sænket
   superscript: Hævet
   codeblock: Kode
+  blockquote: Blokér
   bullist: Kugleliste
   numlist: Nummereret Liste
   hr: Horisontal Regel
@@ -720,6 +823,7 @@ adding_user: Tilføjer Bruger
 unknown_user: Ukendt Bruger
 creating_in: 'Opretter element i {collection}'
 editing_in: 'Redigerer element i {collection}'
+viewing_in: 'Viser element i {collection}'
 creating_unit: 'Opretter {unit}'
 editing_unit: 'Redigerer {unit}'
 editing_in_batch: 'Masseredigerer {count} elementer'
@@ -728,6 +832,7 @@ settings_permissions: Roller og Tilladelser
 settings_project: Projektindstillinger
 settings_webhooks: Webhooks
 settings_presets: Forudindstillinger Og Bogmærker
+settings_translation_strings: Oversættelsesstrenge
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 select: Vælg...
@@ -741,6 +846,7 @@ layout_setup: Layout Opsætning
 unsaved_changes: Ikke gemte ændringer
 unsaved_changes_copy: Er du sikker på du vil forlade denne side?
 discard_changes: Kassér Ændringer
+discard_all_changes: Kassér Alle Ændringer
 discard_changes_copy: Er du sikker på, at du vil kassere alle de foretagne ændringer?
 show_x_axis: Vis X- Akse
 show_y_axis: Vis Y-akse
@@ -771,6 +877,7 @@ page_help_settings_presets_item: >-
   **Forudindstilling Detaljer** — En formular til håndtering af bogmærker og standard samlingsindstillinger.
 page_help_settings_webhooks_collection: '**Gennemse Webhooks** — Viser alle webhooks i projektet.'
 page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprettelse og håndtering af projektwebhooks.'
+page_help_settings_translation_strings_collection: '**Gennemse oversættelsesstrenge** — Viser alle oversættelsesstrenge i projektet.'
 page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
 page_help_users_item: >-
   **Brugeroplysninger** — Administrer dine kontooplysninger eller se andre brugeres detaljer.
@@ -788,6 +895,7 @@ cancel: Annuller
 no_upscale: Opskalér ikke billeder
 collection: Samling
 collections: Samlinger
+content: Indhold
 singleton_label: Behandl som enkelt objekt
 system_fields_locked: Systemfelter er låst og kan ikke redigeres
 directus_collection:
@@ -800,12 +908,14 @@ directus_collection:
   directus_migrations: Hvilken version af den database, du bruger
   directus_panels: Individuelle paneler i Insights dashboards
   directus_permissions: Adgangstilladelser for hver rolle
+  directus_notifications: Notifikationer sendt til brugere
   directus_presets: Forudindstillinger for opsamling standardindstillinger og bogmærker
   directus_relations: Sammenhæng konfiguration og metadata
   directus_revisions: Data snapshots for al aktivitet
   directus_roles: Tilladelsesgrupper for systembrugere
   directus_sessions: Bruger session information
   directus_settings: Valgmuligheder for projektopsætning
+  directus_shares: Spor eksternt delte elementer
   directus_users: Systembrugere til platformen
   directus_webhooks: Konfiguration for event-baserede HTTP-forespørgsler
 fields:
@@ -832,6 +942,8 @@ fields:
     unarchive_value: Fjern Arkiveringsværdi
     sort_field: Sortér Felt
     accountability: Aktivitet & Revision Tracking
+    archive_field: Arkivér Felt
+    item_duplication_fields: Element Duplikationsfelter
   directus_files:
     title: Titel
     description: Beskrivelse
@@ -884,29 +996,47 @@ fields:
     external_identifier: External Identifier
     last_page: Sidste side
     last_access: Seneste Adgang
+    email_notifications: E-Mail Notifikationer
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: Kortlægning
+    mapbox_key: Mapbox Access Token
+    attribution: Tildeling
+    attribution_placeholder: '© OpenStreetMap bidragsydere'
     transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
     additional_transforms: Yderligere Transformationer
     project_name: Projektnavn
+    project_descriptor: Projektdeskriptor
     project_url: Projekt URL
     project_color: Projekt Farve
     project_logo: Projekt Logo
     default_language: Standard Sprog
+    branding: Branding & Stil
     public_foreground: Offentlig Forgrund
     public_background: Offentlig Baggrund
     public_note: Offentlig Note
     auth_password_policy: Auth Adgangskode Politik
     auth_login_attempts: Auth Login Forsøg
+    files_and_thumbnails: Filer Og Lagerplads
+    storage_default_folder: Standard Mappe
+    storage_asset_presets: Forudindstillinger For Transformation
+    storage_asset_transform: Tilladte Transformationer
     overrides: App Tilsidesættelser
     module_bar: Modul Bar
+    transformations_all: Tillad alle transformationer
+    transformations_none: Deaktivér transformationer
+    transformations_presets: Begræns transformationer til forudindstillinger nedenfor
   directus_shares:
     name: Navn
     role: Rolle
     password: Adgangskode
+    date_start: Dato Start
+    date_end: Dato Slut
+    max_uses: Maks. Anvendelser
+    times_used: Brugte Tider
   directus_fields:
     collection: Samlingens Navn
     icon: Samlingsikon
@@ -927,7 +1057,9 @@ fields:
     method: Metode
     status: Status
     data: Data
+    header: Overskrift
     value: Værdi
+    headers: Anmod Om Headers
     data_label: Send Begivenhedsdata
     triggers: Udløsere
     actions: Handlinger
@@ -935,6 +1067,7 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
+    project_color_note: Login- & Logo Baggrund
     public_note_placeholder: En kort, offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
@@ -942,6 +1075,8 @@ field_options:
       weak_text: Svag – Minimum 8 Tegn
       strong_text: Stærk – Øvre / Nedre / Numre / Special
     storage_asset_presets:
+      fit_label: Tilpas
+      upscaling: Opskalering
       fit:
         contain_text: Indeholder (bevare aspektforhold)
         cover_text: Dæksel (kræfter nøjagtig størrelse)
@@ -949,6 +1084,8 @@ field_options:
         outside_text: Tilpas udenfor
     additional_transforms: Yderligere Transformationer
     transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
+    mapbox_key: Mapbox Access Token
+    basemaps_name_placeholder: Indtast det basemap navn...
     files_divider_title: Filer Og Miniaturer
     overrides_divider_title: App Tilsidesættelser
   directus_activity:
@@ -1020,7 +1157,9 @@ field_options:
     actions_delete: Slet
     actions_login: Log ind
     headers:
+      header: Overskrift
       value: Værdi
+      add: Tilføj Overskrift
 no_fields_in_collection: 'Der er ingen felter i "{collection}" endnu'
 no_value: Ingen værdi
 do_nothing: Gør Intet
@@ -1034,6 +1173,28 @@ start_collapsed: Start Sammenbrudt
 block: Blokér
 inline: Indlejret
 comment: Kommenter
+shares: Aktier
+unlimited_usage: Ubegrænset brug
+uses_left: Ingen anvendelser tilbage - 1 brug tilbage - {n} bruger venstre
+no_shares: Ingen aktier at vise
+new_share: Ny Del
+expired: Udløbet
+upcoming: Kommende
+share: Del
+share_item: Del Element
+shared_with_you: Et element er blevet delt med dig
+shared_enter_passcode: Indtast din adgangskode for at fortsætte...
+shared_leave_blank_for_unlimited: Lad stå tomt for ubegrænset
+shared_times_remaining: Dette link kan kun bruges {n} gange
+shared_last_remaining: Dette link kan kun bruges én gang
+shared_uses_left: For ekstra sikkerhed er denne delte side konfigureret med et begrænset antal visninger. Der er i øjeblikket {n} visninger tilbage, hvorefter siden ikke længere vil være tilgængelig.
+share_access_page: Adgang Delt Side
+share_access_not_found: Denne delte side findes enten ikke eller har allerede overskredet det maksimale antal tilladte anvendelser.
+share_access_not_found_desc: Kontakt en autoriseret bruger af dette projekt for at anmode om adgang.
+share_access_not_found_title: Ukendt Del Side
+share_copy_link: Kopier Link
+share_copy_link_success: Link Kopieret
+share_copy_link_error: Kan ikke kopiere link
 relational_triggers: Relationelle Udløsere
 referential_action_field_label_m2o: Ved sletning af {collection}...
 referential_action_field_label_o2m: Ved Fravælg {collection}...
@@ -1065,11 +1226,23 @@ file: Fil
 file_library: Fil Bibliotek
 forgot_password: Glemt adgangskode
 hidden: Skjult
+hidden_in_group: Skjult i {group}
 icon: Ikon
 info: Info
 normal: Normal
+success: Succes
 warning: Advarsel
 danger: Fare
+colors:
+  purple: Lilla
+  blue: Blå
+  green: Grøn
+  yellow: Gul
+  orange: Orange
+  red: Rød
+  black: Sort
+  gray: Grå
+  white: Hvid
 junction_collection: Junction Samling
 latency: Latency
 login: Log ind
@@ -1084,6 +1257,7 @@ relationship: Forhold
 reset: Nulstil
 reset_password: Nulstil adgangskode
 revisions: Revisioner
+no_revisions: Ingen Revisioner Endnu
 revert: Gendan
 save: Gem
 schema: Schema
@@ -1097,6 +1271,9 @@ sign_out: Log ud
 sign_out_confirm: Er du sikker på, at du vil logge ud?
 something_went_wrong: Noget gik galt.
 sort_direction: Sorteringsretning
+export_location: Eksporter Placering
+export_started: Eksport Startet
+export_started_copy: Din eksport er startet. Du får besked, når den er klar til download.
 sort_asc: Sortér Stigende
 sort_desc: Sortér Faldende
 template: Skabelon
@@ -1106,6 +1283,7 @@ translation_placeholder: Indtast en oversættelse...
 value: Værdi
 view_project: Vis Projekt
 report_error: Fejl I Rapport
+start: Start
 interfaces:
   filter:
     name: Filtrer
@@ -1113,6 +1291,8 @@ interfaces:
     add_filter: Tilføj Filter
     add_group: Og / Eller gruppe
     add_value: Tilføj Værdi
+    logic_type_and: OG
+    logic_type_or: ELLER
     all: Alle
     any: Alle
     and: og
@@ -1120,17 +1300,24 @@ interfaces:
     no_rules: Ingen konfigurerede regler
     change_value: Klik for at ændre værdi
     placeholder: Træk regler her
+  fields:
+    name: Felter
   group-accordion:
+    name: Harmonika
     description: Vis felter eller grupper som harmonika sektioner
+    start: Start
     all_closed: Alle Lukkede
     first_opened: Første Åbnet
     all_opened: Alle Åbnede
+    accordion_mode: Harmonika Tilstand
     max_one_section_open: Maks. 1 Sektion Åben
   presentation-links:
     presentation-links: Knap Links
+    links: Links
     description: Konfigurerbare linkknapper til at starte dynamiske URL'er
     style: Stil
     primary: Primær
+    link: Links
     button: Knapper
     error: Kan ikke udføre handling
   select-multiple-checkbox:
@@ -1150,6 +1337,7 @@ interfaces:
     code: Kode
     description: Skriv eller del kodesnippets
     line_number: Linje Nummer
+    line_wrapping: Linjeindpakning
     placeholder: Indtast kode her...
   system-collection:
     collection: Samling
@@ -1164,13 +1352,16 @@ interfaces:
     description: Indtast eller vælg en farveværdi
     placeholder: Vælg en farve...
     preset_colors: Forudindstillede Farver
+    opacity: Gennemsigtighed
     preset_colors_add_label: Tilføj ny farve...
     name_placeholder: Indtast farvenavn...
   datetime:
     datetime: Datotid
     description: Indtast datoer og tidspunkter
+    include_seconds: Inkluder Sekunder
     set_to_now: Indstil til nu
     use_24: Brug 24-timers Format
+    placeholder: Vælg en datetime...
   system-display-template:
     display-template: Vis Skabelon
     description: Bland statisk tekst og dynamiske feltværdier
@@ -1180,6 +1371,7 @@ interfaces:
   presentation-divider:
     divider: Opdeler
     description: Etiket og opdel felter i sektioner
+    title_placeholder: Indtast en titel, eller efterlad blank for kun at vise en linje...
     inline_title: Indlejret Titel
     inline_title_label: Vis titel inde i linien
     margin_top: Margen Top
@@ -1213,6 +1405,8 @@ interfaces:
   file-image:
     image: Billede
     description: Vælg eller upload et billede
+    crop: Beskær til at passe
+    crop_label: Beskær billede efter behov
   system-interface:
     interface: Grænseflade
     description: Vælg en eksisterende grænseflade
@@ -1223,6 +1417,7 @@ interfaces:
   list-m2m:
     many-to-many: Mange til mange
     description: Vælg flere relaterede forbindelseselementer
+    display_template_configure_notice: Du kan konfigurere skærmskabelonen efter oprettelse af dette felt.
   select-dropdown-m2o:
     many-to-one: Mange til One
     description: Vælg et enkelt relateret element
@@ -1230,10 +1425,15 @@ interfaces:
   input-rich-text-md:
     description: Indtast og vis markdown
     edit: Rediger
+    preview: Eksempelvisning
+    editorFont: Editor Skrifttype
+    previewFont: Forhåndsvis Skrifttype
     customSyntax: Brugerdefinerede Blokke
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
     box: Blokér / Inline
+    imageToken: Statisk Adgangstoken
+    imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL
   map:
     map: Kort
     description: Vælg en placering på et kort
@@ -1248,6 +1448,7 @@ interfaces:
     native: Indbygget
     lnglat: Længdegrad, Breddegrad
     wkb: WKB
+    click_to_select: Klik for at vælge {geometry}
   presentation-notice:
     notice: Bemærk
     description: Vis en kort meddelelse
@@ -1259,6 +1460,7 @@ interfaces:
   system-folder:
     folder: Mappe
     description: Vælg en mappe
+    field_hint: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder
   select-radio:
@@ -1271,6 +1473,7 @@ interfaces:
     add_label: '"Opret Ny" Etiket'
     field_name_placeholder: Indtast feltnavn...
     field_note_placeholder: Indtast felt note...
+    incompatible_data: De aktuelle data er ikke kompatible med repeater-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til repeateren
   slider:
     slider: Skyder
     description: Vælg et nummer ved hjælp af en skyder
@@ -1287,6 +1490,7 @@ interfaces:
     auto_formatter: Brug Titel Auto-Formatter
     alphabetize: Alphabetize
     alphabetize_label: Gennemtving Alfabetisk Ordre
+    add_tags: Tilføj et tag og tryk på Enter...
   input:
     input: Input
     description: Indtast en værdi manuelt
@@ -1303,6 +1507,11 @@ interfaces:
   input-multiline:
     textarea: Tekstareal
     description: Indtast tekst med flere linjer
+  input-translated-string:
+    input-translated-string: Oversatte Strenge
+    description: Vælg eller tilføj oversættelsesstreng
+    search_placeholder: Søg...
+    new_translation_string: Ny Oversættelsesstreng
   boolean:
     toggle: Skift
     description: Skift mellem tænd og sluk
@@ -1332,10 +1541,14 @@ interfaces:
     toolbar: Værktøjslinje
     custom_formats: Brugerdefinerede Formater
     options_override: Tilsidesæt
+    folder_note: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
+    imageToken: Statisk Adgangstoken
+    imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL
   input-autocomplete-api:
     description: En søgetype foran for eksterne API-værdier.
     results_path: Sti Til Resultater
     value_path: Værdi Sti
+    text_path: Tekst Sti
     trigger: Udløser
     rate: Sats
   group-raw:
@@ -1381,6 +1594,7 @@ displays:
     format: Format
     format_note: >-
       Det brugerdefinerede format accepterer __[Date Field Symbol Tablet](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Lang
     short: Kort
     relative: Relativ
     relative_label: 'Vis relativ tid, fx: 5 minutter siden'
@@ -1394,15 +1608,22 @@ displays:
     formatted-value: Formateret Værdi
     description: Vis en formateret version af teksten
     format: Format
+    format_label: Automatisk format
     font: Font
     font_serif: Serif
+    font_monospace: Monospace
     bold: Fed
     bold_label: Use bold style
     prefix: Præfiks
+    prefix_label: Forbered tekst
     suffix: Suffiks
+    suffix_label: Tilføjede Tekst
     color: Farve
+    background: Baggrund
     icon: Ikon
+    border_label: Vis kant
     text: Tekst
+    text_placeholder: Valgfri værdi tilsidesættelse...
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet
@@ -1419,12 +1640,14 @@ displays:
   labels:
     labels: Etiketter
     description: Vis enten en enkelt eller en liste over etiketter
+    default_foreground: Standard Forgrund
     default_background: Standard Baggrund
     format_label: Formatér hver etiket
     show_as_dot: Vis Som Dot
     choices_value_placeholder: Indtast en værdi...
     choices_text_placeholder: Indtast en tekst...
   mime-type:
+    description: Vis MIME- typen for en fil
     extension_only: Kun Udvidelse
     extension_only_label: Vis kun filendelsen
   rating:
@@ -1437,6 +1660,7 @@ displays:
   related-values:
     related-values: Relaterede Værdier
     description: Vis relative værdier
+    display_template_configure_notice: Du kan konfigurere skærmskabelonen efter oprettelse af dette felt.
   user:
     user: Bruger
     description: Vis en directus bruger
@@ -1463,6 +1687,8 @@ layouts:
     calendar: Kalender
     start_date_field: Start Dato Felt
     end_date_field: Slut Dato Felt
+    optional: Valgfri
+    first_day: Første dag i ugen
   map:
     map: Kort
     layers: Lag
@@ -1470,7 +1696,39 @@ layouts:
     cluster: Klynge Nærliggende Data
     cluster_minpoints: Mindste klyngestørrelse
     cluster_maxzoom: Maksimum zoom til klyngedannelse
+    field: Geospatialt Felt
     invalid_geometry: Ugyldig geometri
+    find_location: Find placering...
+    default_template: Brug Samling Standard...
+    no_compatible_fields: Ingen kompatible felter
+  kanban:
+    group_field: Grupper Af,
+    group_field_placeholder: Felt til gruppe af...,
+    group_title: Gruppe Titel
+    group_title_placeholder: Felt for gruppetitler...,
+    title: Korttitel
+    title_placeholder: Valgfrit titelfelt...,
+    text: Kort Tekst
+    text_placeholder: Valgfrit tekstfelt...,
+    date: Kortdato
+    date_placeholder: Valgfri datofelt...,
+    tags: Kort Tags,
+    tags_placeholder: Valgfri tags felt...,
+    user: Kortbruger
+    user_placeholder: Valgfrit brugerfelt...,
+    image: Kortbillede,
+    image_placeholder: Valgfrit billedfelt...,
+    image_fit: Kortbilled Passer Til
+    crop: Afgrøde
+    advanced: Avanceret
+    edit_group: Rediger Gruppe,
+    delete_group: Slet Gruppe,
+    add_group: Tilføj Gruppe,
+    add_group_placeholder: Indtast en ny gruppetitel...,
+    show_ungrouped: Show Ungrouped,
+    show: Vis,
+    no_group: Ingen Gruppe,
+    not_all_loaded: Kunne kun indlæse de første 1000 elementer.
 panels:
   metric:
     name: Metrisk
@@ -1481,9 +1739,72 @@ panels:
     description: Vis et linjediagram baseret på værdier over tid
     date_field: Dato Felt
     value_field: Værdi Felt
+    fill_type: Udfyld Type
+    curve_type: Kurve Type
   label:
     name: Etiket
     description: Vis noget tekst
   list:
     name: Liste
     description: Filtrer og liste felter fra en samling
+  barchart:
+    name: Bjælkediagrammer
+    description: Bar eller kolonne diagrammer til sammenligning af grupper af værdier
+    select_field: Du skal vælge et felt.
+    select_collection: Du skal vælge en samling.
+    select_x_axis: Du skal vælge en X-akse.
+    function: Funktion
+    horizontal: Horisontal
+    x_axis_grouping: X-akse Gruppe Sammenlægning
+    x_axis: X-akse
+    y_axis_function: Y-akse Funktion
+    y_axis: Y-akse
+    show_x_axis: Vis X-akse
+    show_y_axis: Vis Y-akse
+    show_data_label: Vis Data-Etiket
+    group_by: Grupperet Efter
+    group_and_function: Du skal inkludere eller udelade både en gruppe og en funktion.
+    y_axix_NaN: Y- aksen skal være et tal.
+    y_axis_conditional_one: Værdien for betingelse
+    y_axis_conditional_two: skal være et tal.
+  linechart:
+    name: Linjediagram
+    description: Linjediagram til sammenligning af ændring af et felt.
+    select_field: Du skal vælge et felt.
+    select_collection: Du skal vælge en samling.
+    select_x_axis: Du skal vælge en X-akse.
+    function: Funktion
+    x_axis: X-akse
+    x_axis_decimals: X-akse Decimaler
+    disabled_no_grouping: Deaktiveret når ingen gruppering er valgt.
+    y_axis: Y-akse
+    show_legend: Vis Forklaring
+    include_dataset: Du skal inkludere mindst et datasæt.
+    include_y_axis: Du skal inkludere en Y-akse for hvert datasæt, når ingen gruppe er angivet.
+    group_and_function: Du skal inkludere eller udelade både en gruppe og en funktion.
+    smooth: 'Glat'
+    straight: 'Lige'
+    step_line: 'Trin Linje'
+  meter:
+    description: Måler til sporingsværdier
+    name: Måler
+    arc: Bue
+    stroke_width: Slag Bredde
+    select_max_value: Du skal vælge en maksimal værdi.
+    max_greater_than_zero: Maksimum skal være større end 0.
+    select_field: Du skal vælge et felt.
+    select_collection: Du skal vælge en samling.
+    function: Funktion
+    thin: Tynd
+    medium: Mellem
+    broad: Bred
+  piechart:
+    name: Tærte eller Donut Chart
+    description: Cirkulære diagram, der viser forholdet mellem grupper på en kolonne.
+    function: 'Funktion'
+    labels: Vis Etiketter
+    legend: Vis Forklaring
+    right: Højre
+    bottom: Bund
+    monochrome: Monokrom
+    monochrome_color: Monokrom Farve

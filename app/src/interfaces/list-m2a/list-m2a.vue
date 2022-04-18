@@ -60,10 +60,10 @@
 			</draggable>
 		</v-list>
 
-		<div v-if="!disabled" class="actions">
-			<v-menu v-if="enableCreate" show-arrow>
+		<div class="actions">
+			<v-menu v-if="enableCreate" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button @click="toggle">
+					<v-button :disabled="disabled" @click="toggle">
 						{{ t('create_new') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
@@ -84,9 +84,9 @@
 				</v-list>
 			</v-menu>
 
-			<v-menu v-if="enableSelect" show-arrow>
+			<v-menu v-if="enableSelect" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button class="existing" @click="toggle">
+					<v-button class="existing" :disabled="disabled" @click="toggle">
 						{{ t('add_existing') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
@@ -121,7 +121,7 @@
 		/>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled="disabled"
 			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
