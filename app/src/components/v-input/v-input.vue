@@ -9,33 +9,20 @@
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
-				<template v-if="isSmartInput">
-					<smart-input
-						v-bind="passthroughAttributes"
-						:type="type"
-						:min="min === undefined || min === null ? undefined : String(min)"
-						:max="max === undefined || max === null ? undefined : String(max)"
-						:step="String(step)"
-						:field-data="fieldData"
-						:autocomplete="autocomplete"
-						:placeholder="placeholder ? String(placeholder) : undefined"
-						:model-value="modelValue === undefined || modelValue === null ? '' : modelValue"
-						@update:model-value="emitValue($event)"
-					/>
-				</template>
-				<template v-else>
-					<input
-						ref="input"
-						v-focus="autofocus"
-						v-bind="passthroughAttributes"
-						:placeholder="placeholder ? String(placeholder) : undefined"
-						:autocomplete="autocomplete"
-						:type="type"
-						:disabled="disabled"
-						:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
-						v-on="listeners"
-					/>
-				</template>
+				<smart-input
+					v-focus="autofocus"
+					v-bind="passthroughAttributes"
+					:type="type"
+					:min="min === undefined || min === null ? undefined : String(min)"
+					:max="max === undefined || max === null ? undefined : String(max)"
+					:step="String(step)"
+					:field-data="fieldData"
+					:autocomplete="autocomplete"
+					:placeholder="placeholder ? String(placeholder) : undefined"
+					:disabled="disabled"
+					:model-value="modelValue === undefined || modelValue === null ? '' : modelValue"
+					v-on="listeners"
+				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<div v-if="$slots.append" class="append">
@@ -55,7 +42,7 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { computed, ref, useAttrs } from 'vue';
+import { computed, useAttrs, ref, Ref, watch } from 'vue';
 import slugify from '@sindresorhus/slugify';
 import smartInput from './smart-input.vue';
 import { Field } from '@directus/shared/types';
@@ -116,19 +103,14 @@ const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
 
 const attrs = useAttrs();
 
-const input = ref<HTMLInputElement | null>(null);
-
 const listeners = computed(() => ({
-	input: (e: InputEvent) => {
-		const value = (e.target as HTMLInputElement).value;
-		emitValue(value);
-	},
+	input: emitValue,
 	keydown: processValue,
 	blur: (e: Event) => {
 		trimIfEnabled();
 		if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 	},
-	focus: (e: PointerEvent) => emit('focus', e),
+	focus: (e: FocusEvent) => emit('focus', e),
 }));
 
 const passthroughAttributes = computed(() => ({ ...attrs, class: undefined }));
@@ -143,11 +125,17 @@ const classes = computed(() => [
 	...((attrs.class || '') as string).split(' '),
 ]);
 
-// Use smart input for numbers, or a string with smart number controls
-const isSmartInput = computed(() => {
-	if (props.type === 'number' || (props.type === 'text' && props.smartNumberControls)) return true;
-	return false;
-});
+const initialValue: Ref<string | number | null> = ref(null);
+
+watch(
+	() => props.modelValue,
+	(newModel) => {
+		// On first update of model value we'll treat value as initial
+		if (initialValue.value === null || initialValue.value === undefined) {
+			initialValue.value = newModel;
+		}
+	}
+);
 
 function processValue(event: KeyboardEvent) {
 	if (!event.key) return;
@@ -193,15 +181,22 @@ function trimIfEnabled() {
 	}
 }
 
-function emitValue(value: string) {
+function emitValue(evt: InputEvent) {
+	let value = (evt.target as HTMLInputElement).value;
+
 	if (props.nullable === true && (value === null || value === '')) {
 		emit('update:modelValue', null);
 		return;
 	}
 
 	if (props.type === 'number') {
-		// Ignore if numeric value remains unchanged
-		if (props.modelValue !== value) {
+		/**
+		 * If initial value was a number whose string representation is equal to the new value,
+		 * emit the numerical initial value. This avoids breaking edits tracking.
+		 */
+		if (typeof initialValue.value === 'number' && String(initialValue.value) === value) {
+			emit('update:modelValue', initialValue.value);
+		} else if (props.modelValue !== value) {
 			emit('update:modelValue', value);
 		}
 	} else {

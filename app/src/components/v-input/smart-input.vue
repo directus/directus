@@ -1,47 +1,47 @@
 <template>
-	<div class="smart-field">
-		<div class="highlights">
-			<!-- placeholder for highlights -->
+	<div class="smart-field-root" :focus="focusField">
+		<div class="smart-field">
+			<div class="highlights">
+				<!-- placeholder for highlights -->
+			</div>
+			<input
+				ref="inputField"
+				v-model="fieldValue"
+				:placeholder="placeholder ? String(placeholder) : undefined"
+				type="text"
+				:autocomplete="autocomplete"
+				:disabled="disabled"
+				v-bind="$attrs"
+				v-on="listeners"
+			/>
 		</div>
-		<input
-			ref="inputField"
-			v-model="fieldValue"
-			:placeholder="placeholder ? String(placeholder) : undefined"
-			type="text"
-			@beforeinput="handleBeforeInput($event as InputEvent)"
-			@click="setWorkingNumAtCursor()"
-			@focus="setWorkingNumAtCursor()"
-			@blur="resetFieldMeta()"
-			@keydown="checkKeydownAction"
-			@keyup="checkKeyupAction"
-		/>
-	</div>
-	<div v-if="isDisplayNum" class="data-warning">
-		<v-icon name="error_outline" tabindex="-1" clickable @click="stepUp" />
-	</div>
-	<div v-if="!hideArrows && isDisplayNum" class="adjustment-arrows">
-		<v-icon
-			:class="['step-up', { disabled: !canStepUp }]"
-			name="keyboard_arrow_up"
-			tabindex="-1"
-			clickable
-			:disabled="!canStepUp"
-			@click="stepUp"
-		/>
-		<v-icon
-			:class="['step-down', { disabled: !canStepDown }]"
-			name="keyboard_arrow_down"
-			tabindex="-1"
-			clickable
-			:disabled="!canStepDown"
-			@click="stepDown"
-		/>
+		<div v-if="isDisplayNum" class="data-warning">
+			<v-icon name="error_outline" tabindex="-1" clickable @click="stepUp" />
+		</div>
+		<div v-if="!hideArrows && isDisplayNum" class="adjustment-arrows">
+			<v-icon
+				:class="['step-up', { disabled: !canStepUp }]"
+				name="keyboard_arrow_up"
+				tabindex="-1"
+				clickable
+				:disabled="!canStepUp"
+				@click="stepUp"
+			/>
+			<v-icon
+				:class="['step-down', { disabled: !canStepDown }]"
+				name="keyboard_arrow_down"
+				tabindex="-1"
+				clickable
+				:disabled="!canStepDown"
+				@click="stepDown"
+			/>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
 export default {
-	inheritAttrs: false,
+	name: 'SmartInput',
 };
 </script>
 
@@ -107,7 +107,7 @@ const props = withDefaults(defineProps<Props>(), {
 	saveAffix: false,
 });
 
-const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
+const emit = defineEmits(['click', 'keydown', 'keyup', 'input', 'blur', 'focus']);
 
 // const INT_2_MIN = Big('-32768');
 // const INT_2_MAX = Big('32767');
@@ -134,49 +134,39 @@ const isDisplayNum = computed(() => fieldDisplayType.value === 'number');
 
 const fieldValue = ref(String(props.modelValue));
 
-const initialValue: Ref<string | number | null> = ref(null);
-
 /**
  * Keep track of current number. Necessary when text field has more than one
  * editable number.
  */
 const workingNumber = ref(props.type === 'number' ? String(props.modelValue) : '');
 
+// Start/end index of working number in string
 const workingNumberRange = ref({
 	start: 0,
 	end: 0,
 });
 
-if (props.type === 'number') {
-	watch(
-		() => props.modelValue,
-		(newModel) => {
-			const value = String(newModel);
-			/**
-			 * Only update from the model value if the value is *not* equal to
-			 * our working number when our field is a number type. (We only
-			 * emit valid numbers, field could have extra characters we don't
-			 * want overwritten unless it's clear we didn't send the update
-			 * from here)
-			 */
-			if (String(newModel) !== workingNumber.value) {
-				updateField(value);
-				updateWorkingNumber(value);
-			}
-
-			// On first update of model value we'll treat value as initial
-			if (initialValue.value === null || initialValue.value === undefined) {
-				initialValue.value = newModel;
-			}
+watch(
+	() => props.modelValue,
+	(newModel) => {
+		const value = String(newModel);
+		/**
+		 * Only update from the model value if the value is *not* equal to
+		 * our working number when our field is a number type. (We only
+		 * emit valid numbers, field could have extra characters we don't
+		 * want overwritten unless it's clear we didn't send the update
+		 * from here). Or not equal to the fieldValue when the field
+		 * is a text type.
+		 */
+		if (
+			(props.type === 'number' && value !== workingNumber.value) ||
+			(props.type === 'text' && value !== fieldValue.value)
+		) {
+			updateField(value, { overwrite: true });
 		}
-	);
-} else if (props.type === 'text') {
-	watch(
-		() => props.modelValue,
-		(newModel) => {
-			updateField(String(newModel), true);
-		}
-	);
+	}
+);
+if (props.type === 'text') {
 	watch(
 		() => fieldValue.value,
 		() => {
@@ -347,6 +337,16 @@ const canStepDown = computed(() => {
 	return !props.disabled && (!workingNumber.value || !minCast.value || Big(workingNumber.value).gt(minCast.value));
 });
 
+const listeners = computed(() => ({
+	input: onInput,
+	beforeinput: onBeforeInput,
+	click: onInputClick,
+	focus: onInputFocus,
+	blur: onInputBlur,
+	keydown: onInputKeydown,
+	keyup: onInputKeyup,
+}));
+
 function stepUp(evt?: MouseEvent | KeyboardEvent) {
 	if (canStepUp.value === false) return;
 	const valToStep = Big(workingNumber.value || '0');
@@ -355,12 +355,9 @@ function stepUp(evt?: MouseEvent | KeyboardEvent) {
 
 	const withShiftKey = evt ? evt.shiftKey : false;
 
-	updateWorkingNumber(onePlus, withShiftKey);
-
 	const cursor = getCursorPosition();
-	updateField(workingNumber.value);
+	updateField(onePlus, { shiftKey: withShiftKey });
 	restoreCursorPosition(cursor);
-	emitUp();
 }
 
 function stepDown(evt?: MouseEvent | KeyboardEvent) {
@@ -371,17 +368,14 @@ function stepDown(evt?: MouseEvent | KeyboardEvent) {
 
 	const withShiftKey = evt ? evt.shiftKey : false;
 
-	updateWorkingNumber(oneMinus, withShiftKey);
-
 	const cursor = getCursorPosition();
-	updateField(workingNumber.value);
+	updateField(oneMinus, { shiftKey: withShiftKey });
 	restoreCursorPosition(cursor);
-	emitUp();
 }
 
 /**
- * If narrowed value is/can become a number, return narrowed value.
- * Otherwise return old value.
+ * If narrowed value is/can become a number, return false (i.e. don't restrict).
+ * Otherwise return true (restrict)
  */
 function restrictToNumber(value: string) {
 	// Value is, or can become a number
@@ -391,23 +385,6 @@ function restrictToNumber(value: string) {
 	if (canBeValidNum) return false;
 
 	return true;
-}
-
-function handleBeforeInput(evt: InputEvent) {
-	// Only need to restrict input if number
-	if (props.type === 'number') {
-		const nextValue = getNextValue(evt) || '';
-		// Restrict to number-like values
-		const restrictInput = restrictToNumber(nextValue);
-		if (restrictInput) {
-			evt.preventDefault();
-		} else {
-			updateWorkingNumber(nextValue);
-			// Dont need to call updateField because that's taken care of by the
-			// v-model during the input event.
-			emitUp();
-		}
-	}
 }
 
 function setWorkingNumAtCursor() {
@@ -509,14 +486,27 @@ function setWorkingNumberRange(start = 0, end = 0) {
 	workingNumberRange.value.end = end;
 }
 
-function updateField(value: string, overwrite = false) {
+interface FieldUpdateOptions {
+	overwrite?: boolean;
+	shiftKey?: boolean;
+}
+
+function updateField(
+	value: string,
+	options: FieldUpdateOptions = {
+		overwrite: false,
+		shiftKey: false,
+	}
+) {
+	//console.trace(cursor);
 	if (props.type === 'number') {
+		updateWorkingNumber(value, !!options.shiftKey);
 		fieldValue.value = value;
 	}
 	if (props.type === 'text') {
 		// On text field, if overwrite is set it'll explicitly set the entire field.
 		// Otherwise, only the subsection of the working number will be updated
-		if (overwrite) {
+		if (options.overwrite) {
 			fieldValue.value = value;
 		} else {
 			const start = workingNumberRange.value.start;
@@ -528,22 +518,6 @@ function updateField(value: string, overwrite = false) {
 
 			setWorkingNumAtCursor();
 		}
-	}
-}
-
-function emitUp() {
-	if (props.type === 'number') {
-		let toEmit: string | number = workingNumber.value;
-		// If initial value was number and current value is string representation of that number,
-		// emit initial value. This will avoid breaking edits tracking.
-		if (typeof initialValue.value === 'number' && String(initialValue.value) === workingNumber.value) {
-			toEmit = initialValue.value;
-		}
-
-		emit('update:modelValue', toEmit);
-	}
-	if (props.type === 'text' && !(fieldValue.value === props.modelValue)) {
-		emit('update:modelValue', fieldValue.value);
 	}
 }
 
@@ -658,7 +632,7 @@ function checkKeydownAction(evt: KeyboardEvent) {
 
 function checkKeyupAction(evt: KeyboardEvent) {
 	const key = evt.code;
-	if (props.type === 'text' && ['ArrowLeft', 'ArrowRight'].includes(key)) {
+	if (props.type === 'text' && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) {
 		setWorkingNumAtCursor();
 	}
 }
@@ -711,9 +685,104 @@ function getFirstMatch(string: string, regex: RegExp) {
 	if (match) return match;
 	return '';
 }
+
+// Called when .focus() is called on root element
+function focusField() {
+	inputField?.value?.focus();
+}
+
+interface CustomInputEvent extends InputEvent {
+	/**
+	 * Almost always a string. Only a number in the event that the model value is a
+	 * number, and the next value is the string equivalent, then we pass the number.
+	 */
+	nextValue?: string | number;
+}
+
+/** Emits */
+
+function emitInput(evt: CustomInputEvent) {
+	emit('input', evt);
+}
+
+function emitFocus(evt: FocusEvent) {
+	emit('focus', evt);
+}
+function emitBlur(evt: FocusEvent) {
+	emit('blur', evt);
+}
+function emitClick(evt: MouseEvent) {
+	emit('click', evt);
+}
+function emitKeydown(evt: KeyboardEvent) {
+	emit('keydown', evt);
+}
+function emitKeyup(evt: KeyboardEvent) {
+	emit('keyup', evt);
+}
+
+/** Event listener callbacks */
+
+function onInput(evt: InputEvent) {
+	emitInput(evt);
+}
+
+function onBeforeInput(evt: InputEvent) {
+	let nextValue: string | number = getNextValue(evt) || '';
+
+	let shouldRestrict = false;
+
+	// Only need to restrict input if number
+	if (props.type === 'number') {
+		// Restrict to number-like values
+		shouldRestrict = restrictToNumber(nextValue);
+		if (shouldRestrict) {
+			evt.preventDefault();
+		}
+	}
+}
+
+function onInputFocus(evt: FocusEvent) {
+	emitFocus(evt);
+	if (evt.defaultPrevented) return;
+	setWorkingNumAtCursor();
+}
+
+function onInputBlur(evt: FocusEvent) {
+	emitBlur(evt);
+	if (evt.defaultPrevented) return;
+	resetFieldMeta();
+}
+
+function onInputClick(evt: MouseEvent) {
+	emitClick(evt);
+	if (evt.defaultPrevented) return;
+	setWorkingNumAtCursor();
+}
+
+function onInputKeydown(evt: KeyboardEvent) {
+	emitKeydown(evt);
+	if (evt.defaultPrevented) return;
+	checkKeydownAction(evt);
+}
+
+function onInputKeyup(evt: KeyboardEvent) {
+	emitKeyup(evt);
+	if (evt.defaultPrevented) return;
+	checkKeyupAction(evt);
+}
 </script>
 
 <style scoped lang="scss">
+.smart-field-root {
+	flex-grow: 1;
+	width: 20px;
+	height: 100%;
+	position: relative;
+	display: flex;
+	align-items: center;
+	height: 100%;
+}
 .smart-field {
 	flex-grow: 1;
 	width: 20px;

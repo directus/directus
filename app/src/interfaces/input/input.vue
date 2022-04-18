@@ -13,6 +13,8 @@
 		:min="min"
 		:max="max"
 		:step="step"
+		:prefix="prefix"
+		:suffix="suffix"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:field-data="fieldData"
 		:smart-number-controls="smartNumberControls"
@@ -110,15 +112,15 @@ export default defineComponent({
 			default: false,
 		},
 		min: {
-			type: Number,
+			type: [String, Number],
 			default: undefined,
 		},
 		max: {
-			type: Number,
+			type: [String, Number],
 			default: undefined,
 		},
 		step: {
-			type: Number,
+			type: [String, Number],
 			default: 1,
 		},
 		smartNumberControls: {
