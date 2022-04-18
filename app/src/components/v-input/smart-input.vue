@@ -113,9 +113,9 @@ const INT_4_MIN = Big('-2147483648');
 const INT_4_MAX = Big('2147483647');
 const INT_8_MIN = Big('-9223372036854775808');
 const INT_8_MAX = Big('9223372036854775807');
-const FLOAT_4_MIN = Big('1.175494e-38');
+const FLOAT_4_MIN = Big('-3.402823e+38');
 const FLOAT_4_MAX = Big('3.402823e+38');
-// const FLOAT_8_MIN = Big('2.225074e-308');
+// const FLOAT_8_MIN = Big('-1.797693e+308');
 // const FLOAT_8_MAX = Big('1.797693e+308');
 
 const inputField: Ref<HTMLInputElement | null> = ref(null);
@@ -491,7 +491,6 @@ function updateField(
 		shiftKey: false,
 	}
 ) {
-	//console.trace(cursor);
 	if (props.type === 'number') {
 		updateWorkingNumber(value, !!options.shiftKey);
 		fieldValue.value = value;
@@ -561,7 +560,7 @@ function determineEmittable(value = '', exactSteps: boolean) {
 
 	if (min || max) {
 		const clampedNum = clamp(numAtStep || Big(validNumber), min, max);
-		return clampedNum!.toString();
+		numAtStep = clampedNum;
 	}
 
 	if (numberPrecision.value && numberPrecision.value > 0) {
@@ -598,6 +597,7 @@ function clamp(num: Big, min: Big | null, max: Big | null): Big {
 		// return num or max, whichever is lower
 		return num.gt(max) ? max : num;
 	}
+	return Big('0');
 }
 
 function minBig(a: Big, b: Big): Big {
