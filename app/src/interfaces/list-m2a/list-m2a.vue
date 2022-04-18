@@ -266,6 +266,7 @@ function editItem(item: DisplayItem) {
 
 	const relationPkField =
 		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]].field;
+	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
@@ -279,7 +280,7 @@ function editItem(item: DisplayItem) {
 	} else {
 		if (!relationPkField) return;
 		currentlyEditing.value = get(item, [junctionPkField], null);
-		relatedPrimaryKey.value = get(item, [junctionPkField, relationPkField], null);
+		relatedPrimaryKey.value = get(item, [junctionField, relationPkField], null);
 	}
 }
 
