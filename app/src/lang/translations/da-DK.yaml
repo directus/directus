@@ -1,5 +1,6 @@
 ---
 avatar: Profilbillede
+application: Anvendelse
 default_provider: Standard
 published: Publiceret
 draft: Kladde
@@ -10,6 +11,7 @@ tile_size: Tile Size
 edit_field: Rediger Felt
 conditions: Betingelser
 maps: Kort
+switch_user: Skift Bruger
 item_creation: Element Oprettelse
 item_revision: Genstandsrevision
 enter_a_name: Indtast et navn...
@@ -17,6 +19,7 @@ duplicate_field: Dupliker Felt
 half_width: Halv Bredde
 full_width: Fuld Bredde
 group: Gruppe
+export_items: Eksportér Elementer
 and: Og
 or: Eller
 fill_width: Fuld Bredde
@@ -33,6 +36,7 @@ children: Underordnede
 db_only_click_to_configure: 'Kun database: Klik for at indstille'
 show_active_items: Vis Aktive Elementer
 show_archived_items: Vis arkiverede element
+show_all_items: Vis Alle Punkter
 edited: Værdi Ændret
 required: Påkrævet
 required_for_app_access: Påkrævet for App adgang
@@ -43,6 +47,8 @@ create_role: Opret Rolle
 create_user: Opret bruger
 delete_panel: Slet Panel
 create_webhook: Opret Webhook
+create_translation_string: Opret Oversættelsesstreng
+translation_string_key_placeholder: Oversættelse streng nøgle...
 invite_users: Inviter brugere
 invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
