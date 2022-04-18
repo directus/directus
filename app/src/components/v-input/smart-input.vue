@@ -95,6 +95,8 @@ const FLOAT_4_MAX = Big('3.402823e+38');
 
 const inputField: Ref<HTMLInputElement | null> = ref(null);
 
+const isShiftDown = ref(false);
+
 const fieldDisplayType = ref(props.type || 'text');
 
 /**
@@ -139,19 +141,6 @@ watch(
 		}
 	}
 );
-if (props.type === 'text') {
-	watch(
-		() => fieldValue.value,
-		(newValue) => {
-			if (document.activeElement === inputField.value) {
-				setWorkingNumAtCursor();
-			}
-			if (newValue !== props.modelValue) {
-				emitUpdateModelValue(newValue);
-			}
-		}
-	);
-}
 
 // Supported input types 'bigInteger', 'integer', 'float', 'decimal'
 const numberType = computed(() => {
@@ -326,29 +315,25 @@ const listeners = computed(() => ({
 	keyup: onInputKeyup,
 }));
 
-function stepUp(evt?: MouseEvent | KeyboardEvent) {
+function stepUp() {
 	if (canStepUp.value === false) return;
 	const valToStep = Big(workingNumber.value || '0');
 
-	const onePlus = valToStep.plus(stepCast.value).toString();
-
-	const withShiftKey = evt ? evt.shiftKey : false;
+	const onePlus = determineEmittable(valToStep.plus(stepCast.value).toString());
 
 	const cursor = getCursorPosition();
-	updateField(onePlus, { shiftKey: withShiftKey });
+	updateField(onePlus);
 	restoreCursorPosition(cursor);
 }
 
-function stepDown(evt?: MouseEvent | KeyboardEvent) {
+function stepDown() {
 	if (canStepDown.value === false) return;
 	const valToStep = Big(workingNumber.value || '0');
 
-	const oneMinus = valToStep.minus(stepCast.value).toString();
-
-	const withShiftKey = evt ? evt.shiftKey : false;
+	const oneMinus = determineEmittable(valToStep.minus(stepCast.value).toString());
 
 	const cursor = getCursorPosition();
-	updateField(oneMinus, { shiftKey: withShiftKey });
+	updateField(oneMinus);
 	restoreCursorPosition(cursor);
 }
 
@@ -451,8 +436,8 @@ function isNumberAtCursor() {
 	return false;
 }
 
-function updateWorkingNumber(value: string, exactSteps = false) {
-	const emittable = determineEmittable(value, exactSteps);
+function updateWorkingNumber(value: string) {
+	const emittable = determineEmittable(value);
 	if (emittable) {
 		workingNumber.value = Big(emittable).toString() || '';
 	} else {
@@ -467,20 +452,12 @@ function setWorkingNumberRange(start = 0, end = 0) {
 
 interface FieldUpdateOptions {
 	overwrite?: boolean;
-	shiftKey?: boolean;
 }
 
-function updateField(
-	value: string,
-	options: FieldUpdateOptions = {
-		overwrite: false,
-		shiftKey: false,
-	}
-) {
+function updateField(value: string | false, options: FieldUpdateOptions = { overwrite: false }) {
+	if (!value) value = '';
 	if (props.type === 'number') {
-		updateWorkingNumber(value, !!options.shiftKey);
 		fieldValue.value = value;
-		emitUpdateModelValue(workingNumber.value);
 	}
 	if (props.type === 'text') {
 		// On text field, if overwrite is set it'll explicitly set the entire field.
@@ -495,8 +472,24 @@ function updateField(
 
 			fieldValue.value = newValue;
 		}
-		setWorkingNumAtCursor();
-		emitUpdateModelValue(fieldValue.value);
+	}
+	afterFieldUpdate();
+}
+
+function afterFieldUpdate() {
+	if (props.type === 'number') {
+		updateWorkingNumber(fieldValue.value);
+		if (fieldValue.value !== props.modelValue) {
+			emitUpdateModelValue(workingNumber.value);
+		}
+	}
+	if (props.type === 'text') {
+		if (document.activeElement === inputField.value) {
+			setWorkingNumAtCursor();
+		}
+		if (fieldValue.value !== props.modelValue) {
+			emitUpdateModelValue(fieldValue.value);
+		}
 	}
 }
 
@@ -533,7 +526,7 @@ function getNextValue(evt: InputEvent) {
  * With determineEmittable we'll pull the first valid number, and
  * apply our min and max constraints.
  */
-function determineEmittable(value = '', exactSteps: boolean) {
+function determineEmittable(value = '') {
 	const min = minCast.value;
 	const max = maxCast.value;
 
@@ -541,7 +534,9 @@ function determineEmittable(value = '', exactSteps: boolean) {
 	if (!validNumber) return false;
 
 	let numAtStep = Big(validNumber);
-	if (exactSteps) {
+
+	// If shift is pressed, round to exact increments of step
+	if (isShiftDown.value) {
 		numAtStep = roundToStep(numAtStep);
 	}
 
@@ -596,24 +591,30 @@ function maxBig(a: Big, b: Big): Big {
 }
 
 function checkKeydownAction(evt: KeyboardEvent) {
-	const key = evt.code;
-	if (isDisplayNum.value && ['ArrowUp', 'ArrowDown'].includes(key)) {
+	const key = evt.key.toLowerCase();
+	if (isDisplayNum.value && ['arrowup', 'arrowdown'].includes(key)) {
 		evt.preventDefault();
 		switch (key) {
-			case 'ArrowUp':
-				stepUp(evt);
+			case 'arrowup':
+				stepUp();
 				break;
-			case 'ArrowDown':
-				stepDown(evt);
+			case 'arrowdown':
+				stepDown();
 				break;
 		}
+	}
+	if (key === 'shift') {
+		isShiftDown.value = true;
 	}
 }
 
 function checkKeyupAction(evt: KeyboardEvent) {
-	const key = evt.code;
-	if (props.type === 'text' && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) {
+	const key = evt.key.toLowerCase();
+	if (props.type === 'text' && key.startsWith('arrow')) {
 		setWorkingNumAtCursor();
+	}
+	if (key === 'shift') {
+		isShiftDown.value = false;
 	}
 }
 
@@ -698,6 +699,7 @@ function emitKeyup(evt: KeyboardEvent) {
 
 async function onInput(evt: InputEvent) {
 	emitInput(evt);
+	afterFieldUpdate();
 }
 
 function onBeforeInput(evt: InputEvent) {

@@ -33,6 +33,7 @@
 		<form-field-interface
 			:autofocus="autofocus"
 			:model-value="internalValue"
+			:initial-value="initialValue"
 			:field="field"
 			:loading="loading"
 			:batch-mode="batchMode"

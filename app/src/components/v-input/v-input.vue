@@ -54,7 +54,7 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { computed, useAttrs, ref, Ref, watch } from 'vue';
+import { computed, useAttrs } from 'vue';
 import slugify from '@sindresorhus/slugify';
 import smartInput from './smart-input.vue';
 import simpleInput from './simple-input.vue';
@@ -84,6 +84,7 @@ interface Props {
 	trim?: boolean;
 	autocomplete?: string;
 	small?: boolean;
+	initialValue?: string | number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -109,6 +110,7 @@ const props = withDefaults(defineProps<Props>(), {
 	trim: false,
 	autocomplete: 'off',
 	small: false,
+	initialValue: undefined,
 });
 
 const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
@@ -141,18 +143,6 @@ const classes = computed(() => [
 	},
 	...((attrs.class || '') as string).split(' '),
 ]);
-
-const initialValue: Ref<string | number | null> = ref(null);
-
-watch(
-	() => props.modelValue,
-	(newModel) => {
-		// On first update of model value we'll treat value as initial
-		if (initialValue.value === null || initialValue.value === undefined) {
-			initialValue.value = newModel;
-		}
-	}
-);
 
 const useSmart = computed(() => {
 	if (props.type === 'number' || props.type === 'text') return true;
@@ -202,7 +192,6 @@ function trimIfEnabled() {
 		emit('update:modelValue', String(props.modelValue).trim());
 	}
 }
-
 function emitValue(value: string) {
 	if (props.nullable === true && (value === null || value === '')) {
 		emit('update:modelValue', null);
@@ -226,8 +215,8 @@ function emitValue(value: string) {
 		 * If initial value was a number whose string representation is equal to the new value,
 		 * emit the numerical initial value. This avoids breaking edits tracking.
 		 */
-		if (typeof initialValue.value === 'number' && String(initialValue.value) === value) {
-			emit('update:modelValue', initialValue.value);
+		if (props.initialValue && typeof props.initialValue === 'number' && String(props.initialValue) === value) {
+			emit('update:modelValue', props.initialValue);
 			return;
 		}
 	} else {

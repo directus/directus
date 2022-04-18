@@ -17,6 +17,7 @@
 		:suffix="suffix"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:field-data="fieldData"
+		:initial-value="initialValue"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -43,6 +44,10 @@ import { defineComponent, PropType, computed } from 'vue';
 export default defineComponent({
 	props: {
 		value: {
+			type: [String, Number],
+			default: null,
+		},
+		initialValue: {
 			type: [String, Number],
 			default: null,
 		},

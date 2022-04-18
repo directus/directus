@@ -24,6 +24,7 @@
 			:collection="field.collection"
 			:field="field.field"
 			:field-data="field"
+			:initial-value="initialValue"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"
@@ -62,6 +63,10 @@ export default defineComponent({
 			default: null,
 		},
 		modelValue: {
+			type: [String, Number, Object, Array, Boolean],
+			default: undefined,
+		},
+		initialValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: undefined,
 		},
