@@ -142,9 +142,12 @@ watch(
 if (props.type === 'text') {
 	watch(
 		() => fieldValue.value,
-		() => {
+		(newValue) => {
 			if (document.activeElement === inputField.value) {
 				setWorkingNumAtCursor();
+			}
+			if (newValue !== props.modelValue) {
+				emitUpdateModelValue(newValue);
 			}
 		}
 	);
@@ -476,7 +479,8 @@ function updateField(
 ) {
 	if (props.type === 'number') {
 		updateWorkingNumber(value, !!options.shiftKey);
-		fieldValue.value = workingNumber.value;
+		fieldValue.value = value;
+		emitUpdateModelValue(workingNumber.value);
 	}
 	if (props.type === 'text') {
 		// On text field, if overwrite is set it'll explicitly set the entire field.
@@ -492,8 +496,8 @@ function updateField(
 			fieldValue.value = newValue;
 		}
 		setWorkingNumAtCursor();
+		emitUpdateModelValue(fieldValue.value);
 	}
-	emitUpdateModelValue(fieldValue.value);
 }
 
 /**
@@ -644,15 +648,12 @@ async function restoreCursorPosition(pos: CursorPosition) {
 	const input = inputField.value;
 	const length = input?.value.length || 0;
 
-	setTimeout(() => {
-		input?.focus();
-		// Keep cursor at end of input if that's where it started
-		if (pos.atEnd) {
-			input?.setSelectionRange(length, length);
-		} else {
-			input?.setSelectionRange(pos.start, pos.end);
-		}
-	}, 0);
+	// Keep cursor at end of input if that's where it started
+	if (pos.atEnd) {
+		input?.setSelectionRange(length, length);
+	} else {
+		input?.setSelectionRange(pos.start, pos.end);
+	}
 }
 
 // Run regex on string, find first value that's not null/empty.
@@ -695,7 +696,7 @@ function emitKeyup(evt: KeyboardEvent) {
 
 /** Event listener callbacks */
 
-function onInput(evt: InputEvent) {
+async function onInput(evt: InputEvent) {
 	emitInput(evt);
 }
 

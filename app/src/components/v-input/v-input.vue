@@ -117,7 +117,11 @@ const attrs = useAttrs();
 
 const listeners = computed(() => ({
 	'update:modelValue': emitValue,
-	input: (e: InputEvent) => emitValue((e.target as HTMLInputElement).value),
+	input: (e: InputEvent) => {
+		if (!useSmart.value) {
+			emitValue((e.target as HTMLInputElement).value);
+		}
+	},
 	keydown: processValue,
 	blur: (e: Event) => {
 		trimIfEnabled();
@@ -200,8 +204,6 @@ function trimIfEnabled() {
 }
 
 function emitValue(value: string) {
-	if (props.modelValue === value) return;
-
 	if (props.nullable === true && (value === null || value === '')) {
 		emit('update:modelValue', null);
 		return;
@@ -212,7 +214,14 @@ function emitValue(value: string) {
 		 * Necessary when dealing with large decimal numbers. We can't simply compare strings because
 		 * the database may have stripped out the scientific notation when the value was saved.
 		 */
-		if (Big(props.modelValue).eq(Big(value))) return;
+		if (props.modelValue && value) {
+			try {
+				const isEq = Big(props.modelValue).eq(Big(value));
+				if (isEq) return;
+			} catch (e) {
+				// Value couldn't be cast to Big just continue
+			}
+		}
 		/**
 		 * If initial value was a number whose string representation is equal to the new value,
 		 * emit the numerical initial value. This avoids breaking edits tracking.
