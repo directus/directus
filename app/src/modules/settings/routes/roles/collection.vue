@@ -47,7 +47,7 @@
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<span class="description">{{ item.description }}</span>
+					<v-text-overflow :text="item.description" class="description" />
 				</template>
 			</v-table>
 		</div>
