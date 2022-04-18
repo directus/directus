@@ -158,7 +158,7 @@
 
 <script lang="ts" setup>
 import { isHex } from '@/utils/color';
-import { cssVar } from '@/utils/css-var';
+import { cssVar } from '@directus/shared/utils';
 import Color from 'color';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
