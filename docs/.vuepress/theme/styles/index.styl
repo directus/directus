@@ -129,16 +129,29 @@ body
 
     &[outline]
       background-color transparent
-      border 2px solid var(--primary);
+      border 2px solid var(--primary)
       color var(--primary)
+
+    &[action]
+      background-color var(--success-light)
+      color var(--success)
 
   &[icon]
     vertical-align middle
     margin-bottom 4px
     color var(--foreground-subdued)
 
+    &[prmry]
+      color var(--primary)
+
     &[dark]
       color var(--foreground-normal-alt)
+
+    &[dngr]
+      color var(--danger)
+
+    &[warn]
+      color var(--warning)
 
 a
   font-weight 500

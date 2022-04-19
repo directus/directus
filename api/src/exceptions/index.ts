@@ -13,6 +13,7 @@ export * from './method-not-allowed';
 export * from './range-not-satisfiable';
 export * from './route-not-found';
 export * from './service-unavailable';
+export * from './token-expired';
 export * from './unprocessable-entity';
 export * from './unsupported-media-type';
 export * from './user-suspended';

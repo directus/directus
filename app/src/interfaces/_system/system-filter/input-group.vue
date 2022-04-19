@@ -1,13 +1,16 @@
 <template>
+	<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(getComparator(field))">
+		<input-component
+			:is="interfaceType"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
+			:value="value"
+			@input="value = $event"
+		/>
+	</template>
 	<template
-		v-if="
+		v-else-if="
 			[
-				'_eq',
-				'_neq',
-				'_lt',
-				'_gt',
-				'_lte',
-				'_gte',
 				'_contains',
 				'_icontains',
 				'_ncontains',
@@ -15,11 +18,12 @@
 				'_nstarts_with',
 				'_ends_with',
 				'_nends_with',
+				'_regex',
 			].includes(getComparator(field))
 		"
 	>
 		<input-component
-			:is="interfaceType"
+			is="interface-input"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value"
@@ -147,7 +151,7 @@ export default defineComponent({
 			},
 		});
 
-		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? {}));
+		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? []));
 
 		return { t, choices, fieldInfo, interfaceType, value, setValueAt, getComparator };
 

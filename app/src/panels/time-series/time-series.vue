@@ -14,6 +14,7 @@ import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { addWeeks } from 'date-fns';
+import { cssVar } from '@/utils/css-var';
 
 export default defineComponent({
 	props: {
@@ -66,7 +67,7 @@ export default defineComponent({
 		},
 		color: {
 			type: String,
-			default: '#00C897',
+			default: cssVar('--primary'),
 		},
 		fillType: {
 			type: String,
@@ -258,7 +259,7 @@ export default defineComponent({
 
 		function setupChart() {
 			chart.value = new ApexCharts(chartEl.value, {
-				colors: [props.color ? props.color : '#00C897'],
+				colors: [props.color ? props.color : cssVar('--primary')],
 				chart: {
 					type: props.fillType === 'disabled' ? 'line' : 'area',
 					height: '100%',
@@ -293,12 +294,12 @@ export default defineComponent({
 							[
 								{
 									offset: 0,
-									color: props.color ? props.color : '#00C897',
+									color: props.color ? props.color : cssVar('--primary'),
 									opacity: 0.25,
 								},
 								{
 									offset: 100,
-									color: props.color ? props.color : '#00C897',
+									color: props.color ? props.color : cssVar('--primary'),
 									opacity: 0,
 								},
 							],
@@ -405,12 +406,17 @@ export default defineComponent({
 </style>
 
 <style>
+.apexcharts-tooltip.apexcharts-theme-light {
+	border-color: var(--border-normal) !important;
+}
+
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+	border-color: var(--border-normal) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued);
+	background-color: var(--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
@@ -420,6 +426,7 @@ export default defineComponent({
 }
 
 .apexcharts-tooltip-series-group {
+	background-color: var(--background-normal) !important;
 	padding: 0;
 }
 

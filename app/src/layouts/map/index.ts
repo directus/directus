@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { toRefs, computed, ref, watch } from 'vue';
 
 import { toGeoJSON, getGeometryFormatForType } from '@/utils/geometry';
-import { layers as directusLayers } from './style';
+import { getMapStyle } from './style';
 import { useRouter } from 'vue-router';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
@@ -80,6 +80,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			(fields) => {
 				if (!geometryField.value && fields.length > 0) {
 					geometryField.value = fields[0].field;
+				}
+
+				// clear the location filter when it is no longer using a valid geometryField
+				if (
+					geometryField.value &&
+					locationFilter.value &&
+					!Object.keys(locationFilter.value).includes(geometryField.value)
+				) {
+					locationFilter.value = undefined;
 				}
 			},
 			{ immediate: true }
@@ -275,7 +284,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			collection,
 			geojson,
 			directusSource,
-			directusLayers,
+			directusLayers: getMapStyle(),
 			featureId,
 			geojsonBounds,
 			geojsonLoading,

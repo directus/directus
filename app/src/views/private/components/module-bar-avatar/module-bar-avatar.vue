@@ -49,7 +49,7 @@
 						class="avatar-image"
 						@error="avatarError = $event"
 					/>
-					<v-icon v-else name="account_circle" outline />
+					<v-icon v-else name="account_circle" />
 				</v-avatar>
 			</router-link>
 		</v-hover>
@@ -191,7 +191,7 @@ export default defineComponent({
 
 		&:hover {
 			.v-icon {
-				--v-icon-color: var(--warning);
+				--v-icon-color: var(--primary);
 			}
 		}
 	}

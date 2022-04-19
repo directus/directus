@@ -10,6 +10,9 @@ import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
 import { TransformationParams, TransformationMethods, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
+import helmet from 'helmet';
+import { merge } from 'lodash';
+import { getConfigFromEnv } from '../utils/get-config-from-env';
 
 const router = Router();
 
@@ -106,6 +109,18 @@ router.get(
 		}
 	}),
 
+	helmet.contentSecurityPolicy(
+		merge(
+			{
+				useDefaults: false,
+				directives: {
+					defaultSrc: ['none'],
+				},
+			},
+			getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+		)
+	),
+
 	// Return file
 	asyncHandler(async (req, res) => {
 		const id = req.params.pk?.substring(0, 36);
@@ -145,6 +160,12 @@ router.get(
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
+
+		const unixTime = Date.parse(file.modified_on);
+		if (!Number.isNaN(unixTime)) {
+			const lastModifiedDate = new Date(unixTime);
+			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
+		}
 
 		if (range) {
 			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);
