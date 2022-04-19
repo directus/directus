@@ -1,5 +1,5 @@
 import api from '@/api';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { ref, Ref, watch } from 'vue';
@@ -17,7 +17,7 @@ export function useRelationSingle(
 	const displayItem = ref<Record<string, any> | null>(null);
 	const loading = ref(false);
 
-	watch(value, getDisplayItems, { immediate: true });
+	watch([value, previewQuery, relation], getDisplayItems, { immediate: true });
 
 	return { update, remove, displayItem, loading };
 

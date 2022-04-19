@@ -462,7 +462,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						schema: this.schema,
 					});
 
-					const revisionIDs = await revisionsService.createMany(
+					const revisions = (
 						await Promise.all(
 							activity.map(async (activity, index) => ({
 								activity: activity,
@@ -473,7 +473,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
 							}))
 						)
-					);
+					).filter((revision) => revision.delta);
+
+					const revisionIDs = await revisionsService.createMany(revisions);
 
 					for (let i = 0; i < revisionIDs.length; i++) {
 						const revisionID = revisionIDs[i];
@@ -691,7 +693,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					continue;
 				}
 
-				defaults[name] = field.defaultValue;
+				if (field.defaultValue) defaults[name] = field.defaultValue;
 			}
 
 			return defaults as Partial<Item>;
