@@ -2,6 +2,135 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.9.0 (April 15, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#12732](https://github.com/directus/directus/pull/12732) Adds x-directus-cache response header with HIT value (by
+    @keesvanbemmel)
+- **App**
+  - [#12687](https://github.com/directus/directus/pull/12687) Add support for translatable bookmark names (by
+    @rijkvanzanten)
+  - [#12082](https://github.com/directus/directus/pull/12082) Relational Interfaces Rework 🐰🕳️ (by @Nitwel)
+  - [#11620](https://github.com/directus/directus/pull/11620) :sparkles: adding possibility to update another field
+    value from a custom interface (by @AntoineBarroux)
+- **sdk**
+  - [#12575](https://github.com/directus/directus/pull/12575) Add `import` file method to SDK (by @azrikahar)
+
+### :rocket: Improvements
+
+- **App**
+  - [#12780](https://github.com/directus/directus/pull/12780) Insights translations (by @jaycammarano)
+  - [#12743](https://github.com/directus/directus/pull/12743) Hide DB only tables from default nav (by @rijkvanzanten)
+  - [#12742](https://github.com/directus/directus/pull/12742) Render full field path in system fields interface (by
+    @rijkvanzanten)
+  - [#12706](https://github.com/directus/directus/pull/12706) Add copy button to role ID in role permissions page's
+    sidebar detail (by @azrikahar)
+  - [#12704](https://github.com/directus/directus/pull/12704) Sticky permissions overview header (by @azrikahar)
+  - [#12689](https://github.com/directus/directus/pull/12689) Re-style file detail preview + replace interaction (by
+    @rijkvanzanten)
+  - [#12613](https://github.com/directus/directus/pull/12613) Add first day of the week option to calendar layout (by
+    @azrikahar)
+  - [#12598](https://github.com/directus/directus/pull/12598) Default filter operator to `eq` for field with choices (by
+    @azrikahar)
+  - [#12597](https://github.com/directus/directus/pull/12597) Prevent boolean as string for filter value when switching
+    from null/empty operators (by @azrikahar)
+  - [#12596](https://github.com/directus/directus/pull/12596) Add autofocus prop to input translated string (by
+    @azrikahar)
+  - [#12541](https://github.com/directus/directus/pull/12541) When no header icon is chosen use the panel types's icon
+    for the default header icon rather than hardcoding "insert_chart" (by @jaycammarano)
+  - [#12539](https://github.com/directus/directus/pull/12539) Disable fields that are groups to be selected in field
+    list (by @u12206050)
+- **API**
+  - [#12767](https://github.com/directus/directus/pull/12767) Added default role support to LDAP and allow optional role
+    syncing (by @aidenfoxx)
+  - [#12684](https://github.com/directus/directus/pull/12684) Fix count support in GQL schema (by @rijkvanzanten)
+  - [#12670](https://github.com/directus/directus/pull/12670) add citext as a supported local type (by @azrikahar)
+  - [#12511](https://github.com/directus/directus/pull/12511) Safe Metadata Upload (by @wrynegade)
+  - [#12457](https://github.com/directus/directus/pull/12457) Flatten oauth user profile so we can use sub-values (by
+    @aidenfoxx)
+  - :warning: [#12281](https://github.com/directus/directus/pull/12281) Return 401 status code for expired tokens (by
+    @azrikahar)
+  - [#12231](https://github.com/directus/directus/pull/12231) add `Last-Modified` header to `/assets/*` responses (by
+    @molszanski)
+- **sdk**
+  - [#12649](https://github.com/directus/directus/pull/12649) Await when token is refreshing & reinstate
+    `msRefreshBeforeExpires` flag (by @lubrst)
+- **Docker**
+  - [#12547](https://github.com/directus/directus/pull/12547) docker - disable npm update warnings (by @adminradio)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#12744](https://github.com/directus/directus/pull/12744) Fix icon alignment in db-only tables (by @rijkvanzanten)
+  - [#12741](https://github.com/directus/directus/pull/12741) Fix inline rendering of rating display (by @rijkvanzanten)
+  - [#12715](https://github.com/directus/directus/pull/12715) Fix updating of exported fields for table layout (by
+    @azrikahar)
+  - [#12703](https://github.com/directus/directus/pull/12703) Fix primitive values for JSON code input (by @azrikahar)
+  - [#12697](https://github.com/directus/directus/pull/12697) Reset existing image error after replacing it (by
+    @azrikahar)
+  - [#12692](https://github.com/directus/directus/pull/12692) Don't crash on non-image files in image interface (by
+    @rijkvanzanten)
+  - [#12690](https://github.com/directus/directus/pull/12690) Fix inline overflow of formatted value display in cards
+    layout (by @rijkvanzanten)
+  - [#12630](https://github.com/directus/directus/pull/12630) Fix M2A editing of new but unsaved items (by @azrikahar)
+  - [#12629](https://github.com/directus/directus/pull/12629) fix M2M and M2A drawer item validation (by @azrikahar)
+  - [#12611](https://github.com/directus/directus/pull/12611) Check create & update permissions for M2O field (by
+    @azrikahar)
+  - [#12608](https://github.com/directus/directus/pull/12608) Fix export sidebar without read permission for primary key
+    (by @licitdev)
+  - [#12601](https://github.com/directus/directus/pull/12601) Set system-language includeProjectDefault prop's default
+    value to false (by @azrikahar)
+  - [#12592](https://github.com/directus/directus/pull/12592) Allow adding items to the repeater interface if the
+    (default) value is no array (by @HCl-not-HCi)
+  - [#12582](https://github.com/directus/directus/pull/12582) Fix batch editing for fields in groups (by @azrikahar)
+  - [#12553](https://github.com/directus/directus/pull/12553) Fix field names in groups for validation errors (by
+    @azrikahar)
+  - [#12052](https://github.com/directus/directus/pull/12052) Fix expressions/functions as default values for datetime
+    field (by @azrikahar)
+  - [#12045](https://github.com/directus/directus/pull/12045) Display fullscreen rich text input below dialog (by
+    @programmarchy)
+  - [#11437](https://github.com/directus/directus/pull/11437) Fix not being able to close groups (by @Nitwel)
+- **API**
+  - [#12739](https://github.com/directus/directus/pull/12739) Split filter key to get m2a nested collection name (by
+    @licitdev)
+  - [#12727](https://github.com/directus/directus/pull/12727) Added "json" to acceptedEnvTypes (by @aidenfoxx)
+  - [#12723](https://github.com/directus/directus/pull/12723) Fix schema apply of UUIDs from SQLite onto other databases
+    (by @azrikahar)
+  - [#12716](https://github.com/directus/directus/pull/12716) Fix schema apply for CURRENT_TIMESTAMP default value (by
+    @azrikahar)
+  - [#12688](https://github.com/directus/directus/pull/12688) Return BigIntegers as Strings in GraphQL (by
+    @rijkvanzanten)
+  - [#12685](https://github.com/directus/directus/pull/12685) Only add update_me permissions for logged in users (by
+    @rijkvanzanten)
+  - [#12682](https://github.com/directus/directus/pull/12682) Throw payload error when using file upload without
+    providing a file (by @rijkvanzanten)
+  - [#12666](https://github.com/directus/directus/pull/12666) Cast to number for joi between (by @licitdev)
+  - [#12615](https://github.com/directus/directus/pull/12615) Merge permission's validation only when not empty (by
+    @licitdev)
+  - [#12607](https://github.com/directus/directus/pull/12607) Fix access to count(\*) aggregation (by @licitdev)
+  - [#12579](https://github.com/directus/directus/pull/12579) Fix snapshot output (by @azrikahar)
+  - [#12549](https://github.com/directus/directus/pull/12549) Add permissions check for relational field only if child
+    has filter (by @licitdev)
+  - [#12532](https://github.com/directus/directus/pull/12532) Always try to rebind on healthcheck error (by @aidenfoxx)
+  - :warning: [#10956](https://github.com/directus/directus/pull/10956) Remove UTC conversion from date, time and
+    datetime fields (by @licitdev)
+- **sdk**
+  - [#12632](https://github.com/directus/directus/pull/12632) add missing query parameters in SDK (by @azrikahar)
+  - [#12595](https://github.com/directus/directus/pull/12595) Prevent empty string as id in SDK (by @azrikahar)
+
+### :memo: Documentation
+
+- [#12576](https://github.com/directus/directus/pull/12576) Add `count` function in docs (by @azrikahar)
+- [#12558](https://github.com/directus/directus/pull/12558) Adds one click deploy with koyeb. (by @PatelN123)
+- [#11827](https://github.com/directus/directus/pull/11827) Docs: Add Cloud Section (by @erondpowell)
+- [#11579](https://github.com/directus/directus/pull/11579) Docs: Data Sharing (by @erondpowell)
+
+### :package: Dependency Updates
+
+- [#12609](https://github.com/directus/directus/pull/12609) Upgrade sharp (by @rijkvanzanten)
+
 ## v9.8.0 (April 1, 2022)
 
 ### :sparkles: New Features

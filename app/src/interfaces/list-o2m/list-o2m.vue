@@ -51,11 +51,11 @@
 			</draggable>
 		</v-list>
 
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed && updateAllowed" @click="createItem">
+		<div class="actions">
+			<v-button v-if="enableCreate && createAllowed && updateAllowed" :disabled="disabled" @click="createItem">
 				{{ t('create_new') }}
 			</v-button>
-			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
+			<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 
@@ -63,7 +63,7 @@
 		</div>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled="disabled"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
