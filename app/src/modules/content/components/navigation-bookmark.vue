@@ -8,7 +8,7 @@
 	>
 		<v-list-item-icon><v-icon :name="bookmark.icon" :color="bookmark.color" /></v-list-item-icon>
 		<v-list-item-content>
-			<v-text-overflow :text="bookmark.bookmark" />
+			<v-text-overflow :text="name" />
 		</v-list-item-content>
 
 		<v-menu placement="bottom-start" show-arrow>
@@ -51,7 +51,13 @@
 				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
 				<v-card-text>
 					<div class="fields">
-						<v-input v-model="editValue.name" class="full" autofocus @keyup.enter="editSave" />
+						<interface-system-input-translated-string
+							:value="editValue.name"
+							class="full"
+							autofocus
+							@input="editValue.name = $event"
+							@keyup.enter="editSave"
+						/>
 						<interface-select-icon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
 						<interface-select-color width="half" :value="editValue.color" @input="editValue.color = $event" />
 					</div>
@@ -79,127 +85,111 @@
 	</v-list-item>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, reactive } from 'vue';
-import { Preset } from '@directus/shared/types';
-import { useUserStore, usePresetsStore } from '@/stores';
+<script lang="ts" setup>
+import { usePresetsStore, useUserStore } from '@/stores';
+import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { Preset } from '@directus/shared/types';
+import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
-export default defineComponent({
-	props: {
-		bookmark: {
-			type: Object as PropType<Preset>,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+interface Props {
+	bookmark: Preset;
+}
 
-		const router = useRouter();
-		const route = useRoute();
+const props = defineProps<Props>();
 
-		const { currentUser, isAdmin } = useUserStore();
-		const presetsStore = usePresetsStore();
+const { t } = useI18n();
 
-		const isMine = computed(() => props.bookmark.user === currentUser!.id);
+const router = useRouter();
+const route = useRoute();
 
-		const hasPermission = computed(() => isMine.value || isAdmin);
+const { currentUser, isAdmin } = useUserStore();
+const presetsStore = usePresetsStore();
 
-		const scope = computed(() => {
-			if (props.bookmark.user && !props.bookmark.role) return 'personal';
-			if (!props.bookmark.user && props.bookmark.role) return 'role';
-			return 'global';
-		});
+const isMine = computed(() => props.bookmark.user === currentUser!.id);
 
-		const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
-		const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
+const hasPermission = computed(() => isMine.value || isAdmin);
 
-		return {
-			t,
-			isMine,
-			hasPermission,
-			scope,
-			editActive,
-			editValue,
-			editSave,
-			editSaving,
-			editCancel,
-			deleteActive,
-			deleteSave,
-			deleteSaving,
-		};
-
-		function useEditBookmark() {
-			const editActive = ref(false);
-			const editValue = reactive({
-				name: props.bookmark.bookmark,
-				icon: props.bookmark?.icon ?? 'bookmark_outline',
-				color: props.bookmark?.color ?? null,
-			});
-			const editSaving = ref(false);
-
-			return { editActive, editValue, editSave, editSaving, editCancel };
-
-			async function editSave() {
-				editSaving.value = true;
-
-				try {
-					await presetsStore.savePreset({
-						...props.bookmark,
-						bookmark: editValue.name,
-						icon: editValue.icon,
-						color: editValue.color,
-					});
-
-					editActive.value = false;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					editSaving.value = false;
-				}
-			}
-
-			function editCancel() {
-				editActive.value = false;
-				editValue.name = props.bookmark.bookmark;
-				editValue.icon = props.bookmark?.icon ?? 'bookmark_outline';
-				editValue.color = props.bookmark?.color ?? null;
-			}
-		}
-
-		function useDeleteBookmark() {
-			const deleteActive = ref(false);
-			const deleteSaving = ref(false);
-
-			return { deleteActive, deleteSave, deleteSaving };
-
-			async function deleteSave() {
-				deleteSaving.value = true;
-
-				try {
-					let navigateTo: string | null = null;
-
-					if (route.query?.bookmark && +route.query.bookmark === props.bookmark.id) {
-						navigateTo = `/content/${props.bookmark.collection}`;
-					}
-
-					await presetsStore.delete([props.bookmark.id!]);
-					deleteActive.value = false;
-
-					if (navigateTo) {
-						router.replace(navigateTo);
-					}
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					deleteSaving.value = false;
-				}
-			}
-		}
-	},
+const scope = computed(() => {
+	if (props.bookmark.user && !props.bookmark.role) return 'personal';
+	if (!props.bookmark.user && props.bookmark.role) return 'role';
+	return 'global';
 });
+
+const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
+const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
+
+const name = computed(() => translate(props.bookmark.bookmark));
+
+function useEditBookmark() {
+	const editActive = ref(false);
+	const editValue = reactive({
+		name: props.bookmark.bookmark,
+		icon: props.bookmark?.icon ?? 'bookmark_outline',
+		color: props.bookmark?.color ?? null,
+	});
+	const editSaving = ref(false);
+
+	return { editActive, editValue, editSave, editSaving, editCancel };
+
+	async function editSave() {
+		editSaving.value = true;
+
+		try {
+			await presetsStore.savePreset({
+				...props.bookmark,
+				bookmark: editValue.name,
+				icon: editValue.icon,
+				color: editValue.color,
+			});
+
+			editActive.value = false;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			editSaving.value = false;
+		}
+	}
+
+	function editCancel() {
+		editActive.value = false;
+		editValue.name = props.bookmark.bookmark;
+		editValue.icon = props.bookmark?.icon ?? 'bookmark_outline';
+		editValue.color = props.bookmark?.color ?? null;
+	}
+}
+
+function useDeleteBookmark() {
+	const deleteActive = ref(false);
+	const deleteSaving = ref(false);
+
+	return { deleteActive, deleteSave, deleteSaving };
+
+	async function deleteSave() {
+		deleteSaving.value = true;
+
+		try {
+			let navigateTo: string | null = null;
+
+			if (route.query?.bookmark && +route.query.bookmark === props.bookmark.id) {
+				navigateTo = `/content/${props.bookmark.collection}`;
+			}
+
+			await presetsStore.delete([props.bookmark.id!]);
+			deleteActive.value = false;
+
+			if (navigateTo) {
+				router.replace(navigateTo);
+			}
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			deleteSaving.value = false;
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>

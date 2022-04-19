@@ -40,6 +40,7 @@
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
 			@update:model-value="emitValue($event)"
+			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
@@ -68,7 +69,6 @@
 
 <script lang="ts" setup>
 import { getJSType } from '@/utils/get-js-type';
-import { notify } from '@/utils/notify';
 import { Field, ValidationError } from '@directus/shared/types';
 import { isEqual } from 'lodash';
 import { computed, ref } from 'vue';
@@ -77,6 +77,7 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
+import useClipboard from '@/composables/use-clipboard';
 
 interface Props {
 	field: Field;
@@ -105,7 +106,7 @@ const props = withDefaults(defineProps<Props>(), {
 	badge: undefined,
 });
 
-const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue']);
+const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
@@ -169,6 +170,8 @@ function emitValue(value: any) {
 function useRaw() {
 	const showRaw = ref(false);
 
+	const { copyToClipboard, pasteFromClipboard } = useClipboard();
+
 	const type = computed(() => {
 		return getJSType(props.field);
 	});
@@ -207,32 +210,13 @@ function useRaw() {
 	});
 
 	async function copyRaw() {
-		try {
-			await navigator?.clipboard?.writeText(rawValue.value);
-			notify({
-				title: t('copy_raw_value_success'),
-			});
-		} catch (err: any) {
-			notify({
-				type: 'error',
-				title: t('copy_raw_value_fail'),
-			});
-		}
+		await copyToClipboard(rawValue.value);
 	}
 
 	async function pasteRaw() {
-		try {
-			const pasteValue = await navigator?.clipboard?.readText();
-			rawValue.value = pasteValue;
-			notify({
-				title: t('paste_raw_value_success'),
-			});
-		} catch (err: any) {
-			notify({
-				type: 'error',
-				title: t('paste_raw_value_fail'),
-			});
-		}
+		const pastedValue = await pasteFromClipboard();
+		if (!pastedValue) return;
+		rawValue.value = pastedValue;
 	}
 
 	return { showRaw, rawValue, copyRaw, pasteRaw };

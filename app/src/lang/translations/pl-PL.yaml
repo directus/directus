@@ -640,6 +640,7 @@ advanced_settings: Zaawansowane Ustawienia
 advanced_filter: Filtr zaawansowany
 delete_advanced_filter: Usuń filtr
 change_advanced_filter_operator: Zmień operatora
+advanced: Zaawansowane
 operators:
   eq: Równa się
   neq: Różne od
@@ -1517,6 +1518,7 @@ interfaces:
     add_label: 'Etykieta "Utwórz nowy"'
     field_name_placeholder: Wprowadź nazwę pola...
     field_note_placeholder: Wprowadź opis pola...
+    incompatible_data: Bieżące dane nie są kompatybilne z interfejsem iteratora i zostaną nadpisane podczas dodawania elementów do iteratora
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka
@@ -1739,6 +1741,8 @@ layouts:
     calendar: Kalendarz
     start_date_field: Pole daty rozpoczęcia
     end_date_field: Pole daty zakończenia
+    optional: Opcjonalnie
+    first_day: Pierwszy dzień tygodnia
   map:
     map: Mapa
     basemap: Mapa bazowa
@@ -1753,6 +1757,35 @@ layouts:
     find_location: Znajdź lokalizację...
     default_template: Używanie domyślnej kolekcji...
     no_compatible_fields: Brak kompatybilnych pól
+  kanban:
+    name: Kanban,
+    group_field: Grupuj według,
+    group_field_placeholder: Pole do grupowania przez...,
+    group_title: Tytuł grupy,
+    group_title_placeholder: Pole dla tytułów grupy...,
+    title: Tytuł karty,
+    title_placeholder: Opcjonalne pole tytułu...,
+    text: Tekst karty,
+    text_placeholder: Opcjonalne pole tekstowe...,
+    date: Data Karty,
+    date_placeholder: Opcjonalnie pole daty...,
+    tags: Tagi karty,
+    tags_placeholder: Opcjonalne pole tagów...,
+    user: Użytkownik karty,
+    user_placeholder: Opcjonalne pole użytkownika...,
+    image: Obraz karty,
+    image_placeholder: Opcjonalne pole obrazów...,
+    image_fit: Dopasuj obraz karty,
+    crop: Przytnij,
+    advanced: Zaawansowane,
+    edit_group: Edytuj grupę,
+    delete_group: Usuń grupę,
+    add_group: Dodaj grupę,
+    add_group_placeholder: Wprowadź nowy tytuł grupy...,
+    show_ungrouped: Show Ungrouped,
+    show: Pokaż,
+    no_group: Brak Grupy,
+    not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 panels:
   metric:
     name: Metryczny
@@ -1771,3 +1804,67 @@ panels:
   list:
     name: Lista
     description: Filtruj i wyświetl pola z kolekcji
+  barchart:
+    name: Wykres słupkowy,
+    description: Pasek lub wykresy kolumnowe do porównywania grup wartości
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    select_x_axis: Musisz wybrać oś X.
+    function: Funkcja
+    horizontal: Poziomy
+    x_axis_grouping: Agregacja grup osi X
+    x_axis: Oś X
+    y_axis_function: Funkcja osi Y
+    y_axis: Oś Y
+    show_x_axis: Pokaż oś X
+    show_y_axis: Pokaż Oś Y
+    show_data_label: Pokaż etykietę danych
+    group_by: Pogrupowane według
+    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    y_axix_NaN: Oś Y musi być liczbą.
+    y_axis_conditional_one: Wartość warunku
+    y_axis_conditional_two: musi być liczbą.
+  linechart:
+    name: Wykres liniowy
+    description: Wykres liniowy do porównywania zmiany pola.
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    select_x_axis: Musisz wybrać oś X.
+    function: Funkcja
+    x_axis: Oś X
+    x_axis_decimals: Ułamki dziesiętne osi X
+    disabled_no_grouping: Wyłączone, gdy nie wybrano grupowania.
+    y_axis: Oś Y
+    datasets: Zestawy danych
+    show_legend: Pokaż Legendę
+    show_marker: Pokaż znacznik podpowiedzi
+    include_dataset: Musisz podać co najmniej jeden zbiór danych.
+    include_y_axis: Musisz podać oś Y dla każdego zbioru danych, gdy nie określono żadnej grupy.
+    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    smooth: 'Gładki'
+    straight: 'Prosta'
+    step_line: 'Linia kroku'
+  meter:
+    description: Licznik wartości śledzenia
+    name: Licznik
+    arc: Łuk
+    stroke_width: Szerokość obrysu
+    select_max_value: Musisz wybrać maksymalną wartość.
+    max_greater_than_zero: Maksymalna wartość musi być większa niż 0.
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    function: Funkcja
+    thin: Cienka
+    medium: Średni
+    broad: Szeroki
+  piechart:
+    name: Wykres kołowy lub pączkowy
+    description: Okrągły wykres przedstawiający współczynniki grup w kolumnie.
+    function: 'Funkcja'
+    donut: Pączek
+    labels: Pokaż etykiety
+    legend: Pokaż Legendę
+    right: Prawy
+    bottom: Dolny
+    monochrome: Monochromatyczne
+    monochrome_color: Kolor monochromatyczny

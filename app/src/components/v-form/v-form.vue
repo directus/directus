@@ -3,7 +3,7 @@
 		<validation-errors
 			v-if="!nested && validationErrors.length > 0"
 			:validation-errors="validationErrors"
-			:fields="formFields"
+			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
 		<template v-for="(field, index) in formFields">
@@ -54,7 +54,8 @@
 					validationErrors.find((err) => err.field === field.field || err.field.endsWith(`(${field.field})`))
 				"
 				:badge="badge"
-				@update:model-value="setValue(field, $event)"
+				@update:model-value="setValue(field.field, $event)"
+				@set-field-value="setValue($event.field, $event.value)"
 				@unset="unsetValue(field)"
 				@toggle-batch="toggleBatchField(field)"
 			/>
@@ -310,11 +311,13 @@ export default defineComponent({
 			}
 		}
 
-		function setValue(field: Field, value: any) {
-			if (isDisabled(field)) return;
+		function setValue(fieldKey: string, value: any) {
+			const field = formFields.value?.find((field) => field.field === fieldKey);
+
+			if (!field || isDisabled(field)) return;
 
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
-			edits[field.field] = value;
+			edits[fieldKey] = value;
 			emit('update:modelValue', edits);
 		}
 
@@ -352,7 +355,7 @@ export default defineComponent({
 					unsetValue(field);
 				} else {
 					batchActiveFields.value = [...batchActiveFields.value, field.field];
-					setValue(field, field.schema?.default_value);
+					setValue(field.field, field.schema?.default_value);
 				}
 			}
 		}

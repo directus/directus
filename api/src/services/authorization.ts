@@ -56,7 +56,7 @@ export class AuthorizationService {
 		}
 
 		validateFields(ast);
-		validateFilterPermissions(ast, this.schema, this.accountability);
+		validateFilterPermissions(ast, this.schema, action, this.accountability);
 		applyFilters(ast, this.accountability);
 
 		return ast;
@@ -118,6 +118,7 @@ export class AuthorizationService {
 						if (!aliasMap) continue;
 
 						for (const column of Object.values(aliasMap)) {
+							if (column === '*') continue;
 							if (allowedFields.includes(column) === false) throw new ForbiddenException();
 						}
 					}
@@ -143,6 +144,7 @@ export class AuthorizationService {
 		function validateFilterPermissions(
 			ast: AST | NestedCollectionNode | FieldNode,
 			schema: SchemaOverview,
+			action: PermissionsAction,
 			accountability: Accountability | null
 		) {
 			let requiredFieldPermissions: Record<string, Set<string>> = {};
@@ -156,17 +158,18 @@ export class AuthorizationService {
 						);
 
 						for (const child of ast.children[collection]) {
-							// Always add relational field as a deep child may have a filter
-							if (child.type !== 'field') {
-								(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
-									child.fieldKey
-								);
-							}
+							const childPermissions = validateFilterPermissions(child, schema, action, accountability);
 
-							requiredFieldPermissions = mergeRequiredFieldPermissions(
-								requiredFieldPermissions,
-								validateFilterPermissions(child, schema, accountability)
-							);
+							if (Object.keys(childPermissions).length > 0) {
+								//Only add relational field if deep child has a filter
+								if (child.type !== 'field') {
+									(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
+										child.fieldKey
+									);
+								}
+
+								requiredFieldPermissions = mergeRequiredFieldPermissions(requiredFieldPermissions, childPermissions);
+							}
 						}
 					}
 				} else {
@@ -176,24 +179,25 @@ export class AuthorizationService {
 					);
 
 					for (const child of ast.children) {
-						// Always add relational field as a deep child may have a filter
-						if (child.type !== 'field') {
-							(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
-								child.fieldKey
-							);
-						}
+						const childPermissions = validateFilterPermissions(child, schema, action, accountability);
 
-						requiredFieldPermissions = mergeRequiredFieldPermissions(
-							requiredFieldPermissions,
-							validateFilterPermissions(child, schema, accountability)
-						);
+						if (Object.keys(childPermissions).length > 0) {
+							// Only add relational field if deep child has a filter
+							if (child.type !== 'field') {
+								(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
+									child.fieldKey
+								);
+							}
+
+							requiredFieldPermissions = mergeRequiredFieldPermissions(requiredFieldPermissions, childPermissions);
+						}
 					}
 				}
 			}
 
 			if (ast.type === 'root') {
 				// Validate all required permissions once at the root level
-				checkFieldPermissions(requiredFieldPermissions);
+				checkFieldPermissions(ast.name, schema, action, requiredFieldPermissions);
 			}
 
 			return requiredFieldPermissions;
@@ -224,6 +228,41 @@ export class AuthorizationService {
 							}
 							// Filter value is not a filter, so we should skip it
 							return result;
+						}
+						// m2a filter in the form of `item:collection`
+						else if (filterKey.includes(':')) {
+							const [field, collectionScope] = filterKey.split(':');
+
+							if (collection) {
+								// Add the `item` field to the required permissions
+								(result[collection] || (result[collection] = new Set())).add(field);
+
+								// Add the `collection` field to the required permissions
+								result[collection].add('collection');
+							} else {
+								const relation = schema.relations.find((relation) => {
+									return (
+										(relation.collection === parentCollection && relation.field === parentField) ||
+										(relation.related_collection === parentCollection && relation.meta?.one_field === parentField)
+									);
+								});
+
+								// Filter key not found in parent collection
+								if (!relation) throw new ForbiddenException();
+
+								const relatedCollectionName =
+									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
+								// Add the `item` field to the required permissions
+								(result[relatedCollectionName] || (result[relatedCollectionName] = new Set())).add(field);
+
+								// Add the `collection` field to the required permissions
+								result[relatedCollectionName].add('collection');
+							}
+
+							// Continue to parse the filter for nested `collection` afresh
+							const requiredPermissions = extractRequiredFieldPermissions(collectionScope, filterValue);
+							result = mergeRequiredFieldPermissions(result, requiredPermissions);
 						} else {
 							if (collection) {
 								(result[collection] || (result[collection] = new Set())).add(filterKey);
@@ -235,20 +274,12 @@ export class AuthorizationService {
 									);
 								});
 
-								if (relation) {
-									if (relation.related_collection === parentCollection) {
-										(result[relation.collection] || (result[relation.collection] = new Set())).add(filterKey);
-										parentCollection = relation.collection;
-									} else {
-										(result[relation.related_collection!] || (result[relation.related_collection!] = new Set())).add(
-											filterKey
-										);
-										parentCollection = relation.related_collection!;
-									}
-								} else {
-									// Filter key not found in parent collection
-									throw new ForbiddenException();
-								}
+								// Filter key not found in parent collection
+								if (!relation) throw new ForbiddenException();
+
+								parentCollection =
+									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
 							if (typeof filterValue === 'object') {
@@ -300,7 +331,12 @@ export class AuthorizationService {
 				return current;
 			}
 
-			function checkFieldPermissions(requiredPermissions: Record<string, Set<string>>) {
+			function checkFieldPermissions(
+				rootCollection: string,
+				schema: SchemaOverview,
+				action: PermissionsAction,
+				requiredPermissions: Record<string, Set<string>>
+			) {
 				if (accountability?.admin === true) return;
 
 				for (const collection of Object.keys(requiredPermissions)) {
@@ -308,13 +344,30 @@ export class AuthorizationService {
 						(permission) => permission.collection === collection && permission.action === 'read'
 					);
 
-					if (!permission || !permission.fields) throw new ForbiddenException();
+					let allowedFields: string[];
 
-					const allowedFields = permission.fields;
+					// Allow the filtering of top level ID for actions such as update and delete
+					if (action !== 'read' && collection === rootCollection) {
+						const actionPermission = accountability?.permissions?.find(
+							(permission) => permission.collection === collection && permission.action === action
+						);
+
+						if (!actionPermission || !actionPermission.fields) {
+							throw new ForbiddenException();
+						}
+
+						allowedFields = permission?.fields
+							? [...permission.fields, schema.collections[collection].primary]
+							: [schema.collections[collection].primary];
+					} else if (!permission || !permission.fields) {
+						throw new ForbiddenException();
+					} else {
+						allowedFields = permission.fields;
+					}
 
 					if (allowedFields.includes('*')) continue;
 					// Allow legacy permissions with an empty fields array, where id can be accessed
-					if (allowedFields.length === 0) allowedFields.push('id');
+					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
 						if (!allowedFields.includes(field)) throw new ForbiddenException();
@@ -468,7 +521,7 @@ export class AuthorizationService {
 		}
 
 		if (hasFieldValidationRules) {
-			if (permission.validation) {
+			if (permission.validation && Object.keys(permission.validation).length > 0) {
 				permission.validation = { _and: [permission.validation, ...fieldValidationRules] };
 			} else {
 				permission.validation = { _and: fieldValidationRules };

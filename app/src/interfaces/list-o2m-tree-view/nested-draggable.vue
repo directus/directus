@@ -4,149 +4,273 @@
 		class="drag-area"
 		:class="{ root, drag }"
 		tag="ul"
-		:list="tree"
+		:model-value="filteredDisplayItems"
 		:group="{ name: 'g1' }"
 		item-key="id"
-		draggable=".row"
+		draggable=".draggable"
 		:set-data="hideDragImage"
 		:disabled="disabled"
 		:force-fallback="true"
 		@start="drag = true"
 		@end="drag = false"
-		@change="$emit('change', $event)"
+		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<li class="row">
+			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
 				<item-preview
 					:item="element"
 					:template="template"
 					:collection="collection"
-					:primary-key-field="primaryKeyField"
 					:disabled="disabled"
-					:parent-field="parentField"
-					@input="replaceItem(index, $event)"
-					@deselect="removeItem(index)"
+					:relation-info="relationInfo"
+					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
+					:deleted="element.$type === 'deleted'"
+					:delete-icon="getDeselectIcon(element)"
+					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
+					@input="update"
+					@deselect="remove(element)"
 				/>
 				<nested-draggable
-					:tree="element[childrenField] || []"
+					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
+					:model-value="element[field]"
 					:template="template"
 					:collection="collection"
-					:primary-key-field="primaryKeyField"
-					:parent-field="parentField"
-					:children-field="childrenField"
 					:disabled="disabled"
-					@change="$emit('change', $event)"
-					@input="replaceChildren(index, $event)"
+					:field="field"
+					:fields="fields"
+					:enable-create="enableCreate"
+					:enable-select="enableSelect"
+					:custom-filter="customFilter"
+					:relation-info="relationInfo"
+					:primary-key="element[relationInfo.relatedPrimaryKeyField.field]"
+					:items-moved="itemsMoved"
+					@update:model-value="updateModelValue($event, index)"
 				/>
 			</li>
 		</template>
 	</draggable>
+
+	<template v-if="root">
+		<div v-if="!disabled" class="actions">
+			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableSelect" @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
+		</div>
+
+		<drawer-item
+			v-if="!disabled"
+			:active="addNewActive"
+			:collection="collection"
+			:primary-key="'+'"
+			:edits="{}"
+			:circular-field="relationInfo.reverseJunctionField.field"
+			@input="addNew"
+			@update:active="addNewActive = false"
+		/>
+
+		<drawer-collection
+			v-if="!disabled"
+			v-model:active="selectDrawer"
+			:collection="collection"
+			:selection="[]"
+			:filter="customFilter"
+			multiple
+			@input="select"
+		/>
+	</template>
 </template>
 
 <script lang="ts">
+export default {
+	name: 'NestedDraggable',
+};
+</script>
+
+<script setup lang="ts">
 import Draggable from 'vuedraggable';
-import { defineComponent, ref, PropType } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
+import { Filter } from '@directus/shared/types';
+import {
+	DisplayItem,
+	RelationO2M,
+	RelationQueryMultiple,
+	useRelationMultiple,
+	ChangesItem,
+} from '@/composables/use-relation';
+import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerItem from '@/views/private/components/drawer-item';
+import { useI18n } from 'vue-i18n';
+import { moveInArray } from '@directus/shared/utils';
+import { cloneDeep } from 'lodash';
 
-export default defineComponent({
-	name: 'NestedDraggable',
-	components: {
-		Draggable,
-		ItemPreview,
+type ChangeEvent =
+	| {
+			added: {
+				newIndex: number;
+				element: DisplayItem;
+			};
+	  }
+	| {
+			removed: {
+				oldIndex: number;
+				element: DisplayItem;
+			};
+	  }
+	| {
+			moved: {
+				newIndex: number;
+				oldIndex: number;
+				element: DisplayItem;
+			};
+	  };
+
+const props = withDefaults(
+	defineProps<{
+		modelValue?: ChangesItem;
+		template: string;
+		disabled?: boolean;
+		collection: string;
+		field: string;
+		primaryKey: string | number;
+		filter?: Filter | null;
+		fields: string[];
+		relationInfo: RelationO2M;
+		root?: boolean;
+		enableCreate: boolean;
+		enableSelect: boolean;
+		customFilter: Filter;
+		itemsMoved: (string | number)[];
+	}>(),
+	{
+		disabled: false,
+		filter: () => null,
+		root: false,
+		modelValue: undefined,
+	}
+);
+
+const { t } = useI18n();
+const emit = defineEmits(['update:modelValue']);
+
+const value = computed<ChangesItem>({
+	get() {
+		if (props.modelValue === undefined)
+			return {
+				create: [],
+				update: [],
+				delete: [],
+			};
+		return props.modelValue as ChangesItem;
 	},
-	props: {
-		tree: {
-			required: true,
-			type: Array as PropType<Record<string, any>[]>,
-			default: () => [],
-		},
-		root: {
-			type: Boolean,
-			default: false,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-		template: {
-			type: String,
-			required: true,
-		},
-		primaryKeyField: {
-			type: String,
-			required: true,
-		},
-		parentField: {
-			type: String,
-			required: true,
-		},
-		childrenField: {
-			type: String,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['change', 'input'],
-	setup(props, { emit }) {
-		const drag = ref(false);
-
-		const editActive = ref(false);
-
-		return {
-			drag,
-			hideDragImage,
-			editActive,
-			dragOptions: {
-				animation: 150,
-				group: 'description',
-				disabled: false,
-				ghostClass: 'ghost',
-			},
-			replaceItem,
-			removeItem,
-			replaceChildren,
-		};
-
-		function replaceItem(index: number, item: Record<string, any>) {
-			emit(
-				'input',
-				props.tree.map((child, childIndex) => {
-					if (childIndex === index) {
-						return item;
-					}
-					return child;
-				})
-			);
-		}
-
-		function removeItem(index: number) {
-			emit(
-				'input',
-				props.tree.filter((child, childIndex) => childIndex !== index)
-			);
-		}
-
-		function replaceChildren(index: number, tree: Record<string, any>[]) {
-			emit(
-				'input',
-				props.tree.map((child, childIndex) => {
-					if (childIndex === index) {
-						return {
-							...child,
-							[props.childrenField]: tree,
-						};
-					}
-
-					return child;
-				})
-			);
-		}
+	set: (val) => {
+		emit('update:modelValue', val);
 	},
 });
+
+const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter } = toRefs(props);
+
+const drag = ref(false);
+const open = ref<Record<string, boolean>>({});
+
+const limit = ref(-1);
+const page = ref(1);
+
+const query = computed<RelationQueryMultiple>(() => ({
+	fields: fields.value,
+	limit: limit.value,
+	page: page.value,
+}));
+
+const { displayItems, create, update, remove, select, cleanItem, localDelete } = useRelationMultiple(
+	value,
+	query,
+	relationInfo,
+	primaryKey
+);
+
+function getDeselectIcon(item: DisplayItem) {
+	if (item.$type === 'deleted') return 'settings_backup_restore';
+	if (localDelete(item)) return 'delete';
+	return 'close';
+}
+
+const selectDrawer = ref(false);
+
+const dragOptions = {
+	animation: 150,
+	group: 'description',
+	disabled: false,
+	ghostClass: 'ghost',
+};
+
+const filteredDisplayItems = computed(() => {
+	return displayItems.value.filter(
+		(item) =>
+			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined)
+	);
+});
+
+function updateModelValue(changes: ChangesItem, index: number) {
+	const pkField = relationInfo.value?.relatedPrimaryKeyField.field;
+	if (!pkField) return;
+
+	update({
+		...displayItems.value[index],
+		[field.value]: changes,
+	});
+}
+
+function change(event: ChangeEvent) {
+	if ('added' in event) {
+		switch (event.added.element.$type) {
+			case 'created':
+				create(cleanItem(event.added.element));
+				break;
+			case 'updated': {
+				const pkField = relationInfo.value.relatedPrimaryKeyField.field;
+				const exists = displayItems.value.find((item) => item[pkField] === event.added.element[pkField]);
+				// We have to make sure we remove the reverseJunctionField when we move it back to its initial position as otherwise it will be selected.
+				update({
+					...cleanItem(event.added.element),
+					[relationInfo.value.reverseJunctionField.field]: exists ? undefined : primaryKey.value,
+				});
+				break;
+			}
+			default:
+				update({
+					...event.added.element,
+					[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
+				});
+		}
+	} else if ('removed' in event && '$type' in event.removed.element) {
+		remove({
+			...event.removed.element,
+			[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
+		});
+	} else if ('moved' in event) {
+		sort(event.moved.oldIndex, event.moved.newIndex);
+	}
+}
+
+function sort(from: number, to: number) {
+	const sortField = relationInfo.value.sortField;
+	if (!sortField) return;
+
+	const sortedItems = moveInArray(cloneDeep(filteredDisplayItems.value), from, to).map((item, index) => ({
+		...item,
+		[sortField]: index,
+	}));
+
+	update(...sortedItems);
+}
+
+const addNewActive = ref(false);
+
+function addNew(item: Record<string, any>) {
+	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value;
+	create(item);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -173,9 +297,13 @@ export default defineComponent({
 		transition: var(--fast) var(--transition);
 		transition-property: box-shadow, background-color;
 
-		& + .drag-area:not(:empty) {
+		& + .drag-area {
 			padding-top: 12px;
 		}
+	}
+
+	&:not(.draggable) .preview {
+		cursor: not-allowed;
 	}
 }
 

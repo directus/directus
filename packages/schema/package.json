@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.8.0",
+	"version": "9.9.0",
 	"description": "Utility for extracting information about existing DB schema",
 	"main": "dist/index.js",
 	"exports": {

@@ -212,7 +212,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .display-formatted {
-	display: inline-block;
+	display: inline;
 	overflow: hidden;
 	text-overflow: ellipsis;
 

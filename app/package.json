@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "9.8.0",
+	"version": "9.9.0",
 	"private": false,
 	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
@@ -30,10 +30,10 @@
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
-		"@directus/docs": "9.8.0",
-		"@directus/extensions-sdk": "9.8.0",
-		"@directus/format-title": "9.8.0",
-		"@directus/shared": "9.8.0",
+		"@directus/docs": "9.9.0",
+		"@directus/extensions-sdk": "9.9.0",
+		"@directus/format-title": "9.9.0",
+		"@directus/shared": "9.9.0",
 		"@fortawesome/fontawesome-svg-core": "1.2.36",
 		"@fortawesome/free-brands-svg-icons": "5.15.4",
 		"@fullcalendar/core": "5.10.1",

@@ -115,10 +115,15 @@ os_totalmem: Arbeitsspeicher
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 archive_confirm_count: >-
-  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
+  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente
+  wirklich archivieren?
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
-reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
-the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
+reset_system_permissions_copy:
+  Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die
+  System-Sammlungen angewendet haben. Sind Sie sicher?
+the_following_are_minimum_permissions:
+  Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die
+  Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
@@ -150,7 +155,8 @@ nullable: NULL-Werte
 allow_null_value: NULL-Wert erlauben
 allow_multiple: Mehrere zulassen
 allow_multiple_to_be_open: Gleichzeitiges Öffnen erlauben
-enter_value_to_replace_nulls: Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
+enter_value_to_replace_nulls:
+  Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
 field_standard: Standard
 field_presentation: Darstellung & Aliase
 field_file: Eine Datei
@@ -254,7 +260,8 @@ this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Fe
 click_here: Hier klicken
 to_manually_setup_translations: um die Übersetzung manuell einzurichten.
 click_to_manage_translated_fields: >-
-  Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
+  Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um
+  es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
 fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
@@ -437,8 +444,12 @@ exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collecti
 exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
 exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Konfiguration unten an.
 exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
-exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
-exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
+exporting_batch_hint:
+  Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek
+  gespeichert.
+exporting_batch_hint_forced:
+  Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung
+  wird die Datei {format} in der Dateibibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -549,7 +560,7 @@ account_created_successfully: Konto wurde erfolgreich erstellt
 auto_fill: Autom. ausfüllen
 corresponding_field: Korrespondierendes Feld
 errors:
-  COLLECTION_NOT_FOUND: "Sammlung existiert nicht"
+  COLLECTION_NOT_FOUND: 'Sammlung existiert nicht'
   FIELD_NOT_FOUND: Feld nicht gefunden
   FORBIDDEN: Verweigert
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
@@ -612,8 +623,11 @@ start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elemen
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
-  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
-delete_folder_are_you_sure: Sind Sie sicher, dass Sie diesen Ordner löschen möchten? Verschachtelte Ordner und Sammlungen werden in die oberste Ebene verschoben.
+  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente
+  löschen. Diese Aktion kann nicht rückgängig gemacht werden.
+delete_folder_are_you_sure:
+  Sind Sie sicher, dass Sie diesen Ordner löschen möchten? Verschachtelte Ordner und Sammlungen werden in die oberste
+  Ebene verschoben.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -739,7 +753,8 @@ panel_header: Panel-Titel
 panel_name_placeholder: Dieses Panel benennen...
 panel_note_placeholder: Optionale Details zu diesem Panel...
 panel_delete_confirm: Möchten Sie dieses Panel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-dashboard_delete_confirm: Möchten Sie dieses Dashboard wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+dashboard_delete_confirm:
+  Möchten Sie dieses Dashboard wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 edit_dashboard: Dashboard bearbeiten
 delete_dashboard: Dashboard löschen
 visible: Sichtbar
@@ -871,31 +886,42 @@ show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
 page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
-  **Durchsuche Elemente** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Durchsuche Elemente** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Ansicht,
+  Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren
+  Zugriff ab.
 page_help_collections_item: >-
-  **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
+  **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen
+  vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
 page_help_activity_collection: >-
   **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
 page_help_docs_global: >-
-  **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
+  **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten
+  ist.
 page_help_files_collection: >-
-  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht,
+  Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren
+  Zugriff ab.
 page_help_files_item: >-
-  **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
-page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
+  **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur
+  Aktualisierung der Zugriffseinstellungen.
+page_help_settings_project: '**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts.'
 page_help_settings_datamodel_collections: >-
-  **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
+  **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und
+  Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
-page_help_settings_roles_collection: '**Rollen durchsuchen** — Auflistung der Admin-, öffentlichen und benutzerdefinierten Benutzerrollen.'
-page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
+page_help_settings_roles_collection:
+  '**Rollen durchsuchen** — Auflistung der Admin-, öffentlichen und benutzerdefinierten Benutzerrollen.'
+page_help_settings_roles_item: '**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten.'
 page_help_settings_presets_collection: >-
-  **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
+  **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen,
+  sowie Standardansichten.
 page_help_settings_presets_item: >-
   **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
 page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
-page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
+page_help_settings_translation_strings_collection:
+  '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -908,7 +934,8 @@ all: Alle
 none: Kein/e
 no_layout_collection_selected_yet: Noch keine Ansicht oder Sammlung ausgewählt
 batch_delete_confirm: >-
-  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht
+  werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 collection: Sammlung
@@ -1034,7 +1061,9 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Attribuierung
     attribution_placeholder: '© OpenStreetMap Mitwirkende'
-    transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
+    transforms_note:
+      Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor
+      können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
     project_name: Projekt-Name
     project_descriptor: Projektuntertitel
@@ -1116,7 +1145,9 @@ field_options:
         fit_text: Passform innen
         outside_text: Passform außen
     additional_transforms: Zusätzliche Umwandlungen
-    transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
+    transforms_note:
+      Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor
+      können weitere Informationen gefunden werden.
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basiskarte
@@ -1225,10 +1256,15 @@ shared_enter_passcode: Kennwort eingeben um fortzufahren...
 shared_leave_blank_for_unlimited: Leer lassen für kein Limit
 shared_times_remaining: Dieser Link kann nur {n} mal verwendet werden
 shared_last_remaining: Dieser Link kann nur einmal verwendet werden
-shared_uses_left: Für zusätzliche Sicherheit wurde diese freigegebene Seite mit einer begrenzten Anzahl von Aufrufen konfiguriert. Derzeit sind noch {n} Aufrufe verbleiben, danach wird die Seite nicht mehr zugänglich sein.
+shared_uses_left:
+  Für zusätzliche Sicherheit wurde diese freigegebene Seite mit einer begrenzten Anzahl von Aufrufen konfiguriert.
+  Derzeit sind noch {n} Aufrufe verbleiben, danach wird die Seite nicht mehr zugänglich sein.
 share_access_page: Auf gemeinsame Seite zugreifen
-share_access_not_found: Diese freigegebene Seite existiert entweder nicht oder hat bereits die maximale Anzahl an erlaubten Verwendungen überschritten.
-share_access_not_found_desc: Bitte kontaktieren Sie einen autorisierten Benutzer dieses Projekts, um Zugriff anzufordern.
+share_access_not_found:
+  Diese freigegebene Seite existiert entweder nicht oder hat bereits die maximale Anzahl an erlaubten Verwendungen
+  überschritten.
+share_access_not_found_desc:
+  Bitte kontaktieren Sie einen autorisierten Benutzer dieses Projekts, um Zugriff anzufordern.
 share_access_not_found_title: Unbekannte geteilte Seite
 share_copy_link: Link kopieren
 share_copy_link_success: Link kopiert
@@ -1632,7 +1668,8 @@ displays:
     description: Werte in Bezug zur Zeit anzeigen
     format: Format
     format_note: >-
-      Das benutzerdefinierte Format akzeptiert die __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Das benutzerdefinierte Format akzeptiert die __[Date Field Symbol
+      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
     short: Short
     relative: Relativ
@@ -1745,6 +1782,23 @@ layouts:
     find_location: Standort suchen...
     default_template: Verwenden des Sammlungs-Standards...
     no_compatible_fields: Keine kompatiblen Felder
+  kanban:
+    name: Kanban,
+    group_field: Gruppen Feld,
+    group_title: Gruppen Title,
+    image: Bild,
+    title: Titel,
+    text: Text,
+    date: Datum,
+    tags: Tags,
+    user: Benutzer,
+    advanced: Erweitert,
+    image_fit: Bild Anpassung,
+    crop: Zuschneiden,
+    edit: Bearbeite Gruppe,
+    clear: Reinige Gruppe,
+    delete: Lösche Gruppe
+
 panels:
   metric:
     name: Metrik
