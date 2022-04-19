@@ -1748,7 +1748,6 @@ panels:
     name: Liste
     description: Filtrer og liste felter fra en samling
   barchart:
-    name: Bjælkediagrammer
     description: Bar eller kolonne diagrammer til sammenligning af grupper af værdier
     select_field: Du skal vælge et felt.
     select_collection: Du skal vælge en samling.
