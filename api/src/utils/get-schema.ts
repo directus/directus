@@ -1,5 +1,5 @@
 import SchemaInspector from '@directus/schema';
-import { Accountability, SchemaOverview, Filter } from '@directus/shared/types';
+import { Accountability, Filter, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
@@ -13,6 +13,7 @@ import { RelationsService } from '../services';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 
+import { ALIAS_TYPES } from '../constants';
 export async function getSchema(options?: {
 	accountability?: Accountability;
 	database?: Knex;
@@ -135,6 +136,9 @@ async function getDatabaseSchema(
 		const existing = result.collections[field.collection].fields[field.field];
 		const column = schemaOverview[field.collection].columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
+
+		if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !existing) continue;
+
 		const type = (existing && getLocalType(column, { special })) || 'alias';
 		let validation = field.validation ?? null;
 
