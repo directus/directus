@@ -25,7 +25,7 @@ export default defineComponent({
 		},
 		includeProjectDefault: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 	},
 	emits: ['input'],

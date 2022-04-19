@@ -4,7 +4,7 @@
 			<template #item="{ element: field }">
 				<v-list-item block>
 					<v-icon name="drag_handle" class="drag-handle" left />
-					<div class="name">{{ field.name }}</div>
+					<div class="name">{{ field.displayName }}</div>
 					<div class="spacer" />
 					<v-icon name="close" clickable @click="removeField(field.key)" />
 				</v-list-item>
@@ -29,6 +29,7 @@ import { Field } from '@directus/shared/types';
 import { computed } from 'vue';
 import Draggable from 'vuedraggable';
 import { useI18n } from 'vue-i18n';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 
 interface Props {
 	collectionName: string;
@@ -47,8 +48,39 @@ const fields = computed<(Field & { key: string })[]>({
 			props.value?.map((fieldKey) => ({
 				key: fieldKey,
 				...fieldsStore.getField(props.collectionName, fieldKey)!,
+				displayName: getFieldDisplayName(fieldKey),
 			})) ?? []
 		);
+
+		function getFieldDisplayName(fieldKey: string) {
+			const fieldParts = fieldKey.split('.');
+
+			const fieldNames = fieldParts.map((fieldKey, index) => {
+				const hasFunction = fieldKey.includes('(') && fieldKey.includes(')');
+
+				let key = fieldKey;
+				let functionName;
+
+				if (hasFunction) {
+					const { field, fn } = extractFieldFromFunction(fieldKey);
+					functionName = fn;
+					key = field;
+				}
+
+				const pathPrefix = fieldParts.slice(0, index);
+				const field = fieldsStore.getField(props.collectionName, [...pathPrefix, key].join('.'));
+
+				const name = field?.name ?? key;
+
+				if (hasFunction) {
+					return t(`functions.${functionName}`) + ` (${name})`;
+				}
+
+				return name;
+			});
+
+			return fieldNames.join(' -> ');
+		}
 	},
 	set(updatedFields) {
 		const newFields = updatedFields.map((field) => field.key);

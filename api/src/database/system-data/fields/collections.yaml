@@ -193,7 +193,7 @@ fields:
 
   - field: item_duplication_fields
     special:
-      - json
+      - cast-json
     interface: system-field-tree
     options:
       collectionField: collection

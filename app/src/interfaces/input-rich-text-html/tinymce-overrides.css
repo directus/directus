@@ -180,6 +180,10 @@ body.dark .tox .tox-toolbar__overflow {
 	z-index: 510;
 }
 
+.tox.tox-tinymce.tox-fullscreen {
+	z-index: 490;
+}
+
 .tox .tox-dialog {
 	color: var(--foreground-normal);
 	background-color: var(--background-page);

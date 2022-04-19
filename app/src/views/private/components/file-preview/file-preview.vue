@@ -2,17 +2,21 @@
 	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }">
 		<div v-if="type === 'image'" class="image" @click="$emit('click')">
 			<img :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
-			<v-icon v-if="inModal === false" name="upload" />
 		</div>
 
 		<video v-else-if="type === 'video'" controls :src="src" />
 
 		<audio v-else-if="type === 'audio'" controls :src="src" />
+
+		<div v-else class="fallback">
+			<v-icon-file :ext="type" />
+		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import { readableMimeType } from '@/utils/readable-mime-type';
 
 interface Props {
 	mime: string;
@@ -29,8 +33,8 @@ const props = withDefaults(defineProps<Props>(), { width: undefined, height: und
 
 const imgError = ref(false);
 
-const type = computed<'image' | 'video' | 'audio' | null>(() => {
-	if (props.mime === null) return null;
+const type = computed<'image' | 'video' | 'audio' | string>(() => {
+	if (props.mime === null) return 'unknown';
 
 	if (props.mime.startsWith('image')) {
 		return 'image';
@@ -44,7 +48,7 @@ const type = computed<'image' | 'video' | 'audio' | null>(() => {
 		return 'audio';
 	}
 
-	return null;
+	return readableMimeType(props.mime, true) ?? 'unknown';
 });
 
 const isSVG = computed(() => props.mime.includes('svg'));
@@ -57,7 +61,6 @@ const isSmall = computed(() => props.height < 528);
 .file-preview {
 	position: relative;
 	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
-	margin-bottom: var(--form-vertical-gap);
 
 	img,
 	video,
@@ -71,8 +74,6 @@ const isSmall = computed(() => props.height < 528);
 	}
 
 	.image {
-		cursor: pointer;
-
 		background-color: var(--background-normal);
 		border-radius: var(--border-radius);
 
@@ -81,23 +82,15 @@ const isSmall = computed(() => props.height < 528);
 			display: block;
 			margin: 0 auto;
 		}
+	}
 
-		.v-icon {
-			position: absolute;
-			right: 12px;
-			bottom: 12px;
-			z-index: 2;
-			color: white;
-			text-shadow: 0px 0px 8px rgb(0 0 0 / 0.75);
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
-		}
-
-		&:hover {
-			.v-icon {
-				opacity: 1;
-			}
-		}
+	.fallback {
+		background-color: var(--background-normal);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: var(--input-height-tall);
+		border-radius: var(--border-radius);
 	}
 
 	&.svg,

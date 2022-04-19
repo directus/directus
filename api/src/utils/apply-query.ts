@@ -367,25 +367,26 @@ export function applyFilter(
 					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
 				}
 
-				// Note: knex's types don't appreciate knex.raw in whereIn, even though it's officially supported
-				dbQuery[logical].whereIn(pkField as string, (subQueryKnex) => {
+				const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
 					const field = relation!.field;
 					const collection = relation!.collection;
 					const column = `${collection}.${field}`;
 
-					subQueryKnex.select({ [field]: column }).from(collection);
+					subQueryKnex
+						.select({ [field]: column })
+						.from(collection)
+						.whereNotNull(column);
 
-					applyQuery(
-						knex,
-						relation!.collection,
-						subQueryKnex,
-						{
-							filter: value,
-						},
-						schema,
-						true
-					);
-				});
+					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+				};
+
+				if (Object.keys(value)?.[0] === '_none') {
+					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
+				} else if (Object.keys(value)?.[0] === '_some') {
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
+				} else {
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
+				}
 			}
 		}
 

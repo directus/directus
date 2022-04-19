@@ -28,6 +28,8 @@ draft: Utkast
 archived: Arkivert
 modules: Moduler
 module_bar: Modul Bar
+reset_width: Reset Width
+tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
 maps: Kart
@@ -39,6 +41,7 @@ duplicate_field: Dupliser felt
 half_width: Halv vidde
 full_width: Fullbredde
 group: Gruppe
+export_items: Eksporter produkter
 and: Og
 or: Eller
 fill_width: Fyll vidde
@@ -53,7 +56,9 @@ edit_collection: Rediger samling
 exclusive: Eksklusiv
 children: Barn
 db_only_click_to_configure: 'Kun database: Klikk for å konfigurere'
+show_active_items: Show Active Items
 show_archived_items: Vis arkiverte elementer
+show_all_items: Show Active Items
 edited: Verdi endret
 required: Påkrevd
 required_for_app_access: Påkrevd for app-tilgang

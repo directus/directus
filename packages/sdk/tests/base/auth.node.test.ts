@@ -42,6 +42,7 @@ describe('auth (node)', function () {
 					data: {
 						access_token: 'auth_token',
 						refresh_token: 'json_refresh_token',
+						expires: 60000,
 					},
 				},
 				{

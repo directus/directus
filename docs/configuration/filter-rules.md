@@ -138,6 +138,37 @@ allowing for more complex filtering.
 }
 ```
 
+### Some vs None in One-to-Many
+
+When applying filters to a one-to-many field, Directus will default to a "some" search, for example in:
+
+```json
+{
+	"categories": {
+		"name": {
+			"_eq": "Recipe"
+		}
+	}
+}
+```
+
+the top level parent will be returned if _one of_ the categories has the name `Recipe`. This behavior can be overridden
+by using the explicit `_some` and `_none` operators, for example:
+
+```json
+{
+	"categories": {
+		"_none": {
+			"name": {
+				"_eq": "Recipe"
+			}
+		}
+	}
+}
+```
+
+will fetch all parent items that don't have the category "Recipe"
+
 ## Dynamic Variables
 
 In addition to static values, you can also filter against _dynamic_ values using the following variables.

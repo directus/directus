@@ -273,7 +273,12 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			}
 			break;
 		default:
-			update(Array.isArray(value) ? value[0] : value);
+			// avoid setting value as string 'true'/'false' when switching from null/empty operators
+			if (['_null', '_nnull', '_empty', '_nempty'].includes(nodeInfo.comparator)) {
+				update(null);
+			} else {
+				update(Array.isArray(value) ? value[0] : value);
+			}
 			break;
 	}
 

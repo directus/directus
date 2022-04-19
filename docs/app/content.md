@@ -1,8 +1,16 @@
 # Content
 
+<<<<<<< HEAD
+
 > The Content Module is the primary way for Users to interact with Items in a Collection. Users will have the tools they
 > need to view and manage, sort and order, or even import and export data easily and intuitively no matter what your
 > data model contains, from blog posts to event bookings, IoT fleet geo-positions to CRM, and everything in between.
+> ======= The Content Module is the primary way for Users to interact with Items in a Collection _(i.e. database
+> content)_. Users will have the tools they need to view and manage, sort and order, or even import and export data
+> easily and intuitively no matter what your data model contains, from blog posts to event bookings, IoT fleet
+> geo-positions to CRM, and everything in between.
+>
+> > > > > > > 6599ad6498e48486848f39196cd8b01f8accb9d3
 
 [[toc]]
 

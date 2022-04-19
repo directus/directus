@@ -48,21 +48,6 @@ function validateFilter(filter: Query['filter']) {
 			const value = nested;
 
 			switch (key) {
-				case '_eq':
-				case '_neq':
-				case '_contains':
-				case '_ncontains':
-				case '_starts_with':
-				case '_nstarts_with':
-				case '_ends_with':
-				case '_nends_with':
-				case '_gt':
-				case '_gte':
-				case '_lt':
-				case '_lte':
-				default:
-					validateFilterPrimitive(value, key);
-					break;
 				case '_in':
 				case '_nin':
 				case '_between':
@@ -81,6 +66,25 @@ function validateFilter(filter: Query['filter']) {
 				case '_intersects_bbox':
 				case '_nintersects_bbox':
 					validateGeometry(value, key);
+					break;
+				case '_none':
+				case '_some':
+					validateFilter(nested);
+					break;
+				case '_eq':
+				case '_neq':
+				case '_contains':
+				case '_ncontains':
+				case '_starts_with':
+				case '_nstarts_with':
+				case '_ends_with':
+				case '_nends_with':
+				case '_gt':
+				case '_gte':
+				case '_lt':
+				case '_lte':
+				default:
+					validateFilterPrimitive(value, key);
 					break;
 			}
 		} else if (isPlainObject(nested)) {
