@@ -1832,7 +1832,7 @@ panels:
     name: List
     description: Filter and list fields from a collection
   barchart:
-    name: Bar Chart,
+    name: Bar Chart
     description: Bar or column charts for comparing groups of values
     select_field: You must select a field.
     select_collection: You must select a collection.
