@@ -4,6 +4,7 @@ import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
 import { getCache, setSystemCache } from '../cache';
+import { ALIAS_TYPES } from '../constants';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
@@ -13,7 +14,6 @@ import { RelationsService } from '../services';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 
-import { ALIAS_TYPES } from '../constants';
 export async function getSchema(options?: {
 	accountability?: Accountability;
 	database?: Knex;
