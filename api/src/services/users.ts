@@ -167,7 +167,10 @@ export class UsersService extends ItemsService {
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (data.role) {
-			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', data.role).first();
+			// data.role will be an object with id with GraphQL mutations
+			const roleId = data.role?.id ?? data.role;
+
+			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
 
 			if (!newRole?.admin_access) {
 				await this.checkRemainingAdminExistence(keys);
