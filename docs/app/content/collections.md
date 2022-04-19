@@ -18,7 +18,7 @@ way. [Learn More](/app/layouts)
 ## Search Items
 
 <video autoplay muted loop controls title="Search Items">
-	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/search-items-20220415A.mp4" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/search-items-20220419A.mp4" type="video/mp4" />
 </video>
 
 Find all Items with one or more Fields containing your searched value, excluding any Items which have been
@@ -31,7 +31,7 @@ Find all Items with one or more Fields containing your searched value, excluding
 ## Filter Items
 
 <video autoplay muted loop controls title="Filter Items">
-	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/filters-20220415A.mp4" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/filter-items-2022019A.mp4" type="video/mp4" />
 </video>
 
 Filters enable complex and granular filtered displays of Items. [Learn More](/app/filters/)
@@ -56,13 +56,6 @@ Drag and drop Items to custom-sort them as desired. This is only possible on cer
 Only available if a Sort column has been configured in the Collection's Data Model Settings.
 
 <!--@TODO config > Data Model Settings: Link -->
-
-:::
-
-::: tip
-
-The new sort order is saved automatically, so make sure you wait until the App's loading indicator finishes before
-navigating away from the page.
 
 :::
 
@@ -98,7 +91,7 @@ Automatic sorting is a non-destructive action which does not change your data.
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/view-archived-items.mp4" type="video/mp4" />
 </video>
 
-To view an archived Item, follow the steps below. [Learn More](/app/content-items/#archive-an-item)
+To view an archived Item, follow the steps below. [Learn More](/app/content/items/#archive-an-item)
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Click **"Archive"** in the Sidebar.

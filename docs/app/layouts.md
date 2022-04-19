@@ -9,7 +9,7 @@
 ## What's a Layout?
 
 <video autoplay muted loop controls title="Layouts Montage">
-	<source src="https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/layout-montage-20220415A.mp4" type="video/mp4" />
+	<source src="https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/layouts-montage-20220419A.mp4" type="video/mp4" />
 </video>
 
 Data models vary drastically in shape and purpose, from eCommerce platforms to IoT fleets and everything in between.
@@ -111,15 +111,6 @@ Layout used in the Content Module. It includes the following controls.
 Only available if a Sort column has been configured in the Collection's Data Model Settings.
 
 <!--@TODO config > Data Model Settings: Link -->
-
-:::
-
-:::tip
-
-Collections _(aka SQL Data Tables)_ simply store data in tables. That is key to why this Layout supports all forms of
-data. However, this is not always be the most intuitive way to interact with data. For example, imagine trying to work
-with Items that represent points on a map, _stored as a table!_ It would be quite difficult to visualize all these
-points.
 
 :::
 

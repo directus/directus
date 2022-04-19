@@ -166,17 +166,17 @@ module.exports = {
 						children: [
 							{
 								type: 'page',
-								path: '/app/content-collections',
+								path: '/app/content/collections',
 								title: 'Collection Page',
 							},
 							{
 								type: 'page',
-								path: '/app/content-items',
+								path: '/app/content/items',
 								title: 'Item Page',
 							},
 							{
 								type: 'page',
-								path: '/app/data-sharing',
+								path: '/app/content/data-sharing',
 								title: 'Data Sharing',
 							},
 						],

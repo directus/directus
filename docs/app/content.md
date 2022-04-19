@@ -1,9 +1,8 @@
 # Content
 
-> The Content Module is the primary way for Users to interact with Items in a Collection _(i.e. database content)_.
-> No-code Users will have the tools they need to view and manage, sort and order, or even import and export data easily
-> and intuitively no matter what your data model contains, from blog posts to event bookings, IoT fleet geo-positions to
-> CRM, and everything in between.
+> The Content Module is the primary way for Users to interact with Items in a Collection. Users will have the tools they
+> need to view and manage, sort and order, or even import and export data easily and intuitively no matter what your
+> data model contains, from blog posts to event bookings, IoT fleet geo-positions to CRM, and everything in between.
 
 [[toc]]
 
@@ -23,7 +22,7 @@ The Content Module is composed of Collection Pages and Item Pages. Use the Navig
 Collections. Each Collection Page displays all Items in its Collection and comes with highly configurable
 [Layouts](/getting-started/glossary/#layouts) for browsing, visualizing, and managing Items. The Page Header includes
 key action buttons for sorting, searching, filtering, creating, editing, archiving, and deleting multiple Items.
-[Learn More](/app/content-collections)
+[Learn More](/app/content/collections)
 
 :::tip
 
@@ -38,7 +37,7 @@ fundamental data model. Administrators manage Collections via the Settings menu.
 
 When an Item is clicked on the Collection Page, its Item Details Page is opened. This is a form primarily for viewing
 and editing an Item's Field Values, but also includes options for commenting on, sharing, archiving, reverting, and
-deleting the Item. [Learn More](/app/content-items)
+deleting the Item. [Learn More](/app/content/items)
 
 ::: tip Manage Items via the API
 
