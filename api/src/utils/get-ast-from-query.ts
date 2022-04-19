@@ -230,10 +230,9 @@ export default async function getASTFromQuery(
 					continue;
 				}
 
+				// update query alias for children parseFields
 				const deepAlias = getDeepQuery(deep?.[fieldKey] || {})?.alias;
-				if (!isEmpty(deepAlias)) {
-					query.alias = deepAlias;
-				}
+				if (!isEmpty(deepAlias)) query.alias = deepAlias;
 
 				child = {
 					type: relationType,
