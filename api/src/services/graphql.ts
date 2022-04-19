@@ -1429,12 +1429,26 @@ export class GraphQLService {
 
 					current = selection.name.value;
 
-					if (selection.alias && query.alias && selection.alias.value in query.alias) {
+					if (selection.alias) {
 						currentAlias = selection.alias.value;
 					}
 
 					if (parent) {
 						current = `${parent}.${current}`;
+
+						if (currentAlias) {
+							currentAlias = `${parent}.${currentAlias}`;
+
+							// add nested aliases into deep query
+							if (selection.selectionSet) {
+								if (!query.deep) query.deep = {};
+								set(
+									query.deep,
+									parent,
+									merge(get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } })
+								);
+							}
+						}
 					}
 				}
 
