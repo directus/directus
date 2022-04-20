@@ -41,7 +41,7 @@ and link to specific Cloud Dashboards. They do not impact Cloud Projects or bill
 To update Team Settings:
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
-2. Click **"Settings"** to enter the Team Settings Page.
+2. Click **"Settings"** to enter the Team Settings page.
 3. Toggle <span mi icon prmry>edit</span> to allow edits.
 4. Edit Team Name and Team Slug as desired.
 5. Click the **"Save"** button.
@@ -75,7 +75,7 @@ needs, this section will focus on our pay-as-you-go Standard tier. Follow the st
 method, add or remove additional payment methods or change other billing details:
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
-2. Click **"Billing"** to enter the Billing Details Page.
+2. Click **"Billing"** to enter the Billing Details page.
 3. Click **"Manage Billing"** to enter the Stripe payments gateway.
 4. Adjust payment methods and details as needed.
 5. Click **"Return to Directus Cloud"**.
@@ -203,7 +203,7 @@ the Team. To invite Team Members:
 2. Click **"Members"** to enter the Members Page.
 3. Scroll down to the Invite New Members section.
 4. Enter one or more email(s), comma separated.
-5. Click **"Send Invites"**.
+5. Click **"Send Invites."**
 
 :::tip
 
