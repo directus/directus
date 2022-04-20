@@ -76,19 +76,19 @@ watch(
 	{ immediate: true }
 );
 
-const refreshInterval = ref<number | null>(null);
+let refreshInterval: number | null = null;
 
 onMounted(async () => {
 	if (!props.relative) return;
 
-	refreshInterval.value = window.setInterval(async () => {
+	refreshInterval = window.setInterval(async () => {
 		if (!localValue.value) return;
 		displayValue.value = await relativeFormat(localValue.value);
 	}, 60000);
 });
 
 onUnmounted(() => {
-	if (refreshInterval.value) clearInterval(refreshInterval.value);
+	if (refreshInterval) clearInterval(refreshInterval);
 });
 </script>
 
