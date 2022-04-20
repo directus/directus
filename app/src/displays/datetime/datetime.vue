@@ -18,7 +18,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	format: 'long',
-	relative: true,
+	relative: false,
 });
 
 const { t } = useI18n();
