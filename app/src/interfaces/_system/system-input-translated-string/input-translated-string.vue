@@ -10,7 +10,7 @@
 					:disabled="disabled"
 					:active="active"
 					@update:model-value="localValue = $event"
-					@focus="isFocused = !isFocused"
+					@focus="isFocused = true"
 					@blur="blur"
 					@keydown.enter="checkKeyValidity"
 				>
