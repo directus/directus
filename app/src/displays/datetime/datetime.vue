@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, PropType, computed } from 'vue';
+import { defineComponent, ref, watch, PropType, computed, onMounted, onUnmounted } from 'vue';
 import localizedFormat from '@/utils/localized-format';
 import localizedFormatDistance from '@/utils/localized-format-distance';
 import { parseISO, parse } from 'date-fns';
@@ -49,6 +49,22 @@ export default defineComponent({
 		});
 
 		const displayValue = ref<string | null>(null);
+		const refreshInterval = ref<number | null>(null);
+
+		onMounted(async () => {
+			if (!props.relative) return;
+
+			refreshInterval.value = window.setInterval(async () => {
+				if (!localValue.value) return;
+				displayValue.value = await localizedFormatDistance(localValue.value, new Date(), {
+					addSuffix: true,
+				});
+			}, 60000);
+		});
+
+		onUnmounted(() => {
+			if (refreshInterval.value) clearInterval(refreshInterval.value);
+		});
 
 		watch(
 			localValue,
