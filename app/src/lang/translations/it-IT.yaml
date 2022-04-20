@@ -1322,6 +1322,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1774,9 +1775,17 @@ layouts:
     user_placeholder: Campo utente opzionale...,
     image: Immagine della scheda,
     image_placeholder: Campo immagine opzionale...,
+    image_fit: Immagine della scheda adattata,
     crop: Ritaglia,
     advanced: Avanzate,
     edit_group: Modifica gruppo,
+    delete_group: Elimina gruppo,
+    add_group: Aggiungi gruppo,
+    add_group_placeholder: Inserisci un nuovo titolo per il gruppo...,
+    show_ungrouped: Mostra separati,
+    show: Mostra,
+    no_group: Nessun gruppo,
+    not_all_loaded: È stato possibile caricare solo i primi 1000 elementi.
 panels:
   metric:
     name: Metrica
@@ -1795,3 +1804,67 @@ panels:
   list:
     name: Elenco
     description: Filtra ed elenca i campi da una collezione
+  barchart:
+    name: Grafico a barre
+    description: Grafici a barre o colonne per confrontare gruppi di valori
+    select_field: Devi selezionare un campo.
+    select_collection: Devi selezionare una raccolta.
+    select_x_axis: Devi selezionare l'asse X.
+    function: Funzione
+    horizontal: Orizzontale
+    x_axis_grouping: Raggruppamento asse X
+    x_axis: Asse X
+    y_axis_function: Funzione dell'asse Y
+    y_axis: Asse Y
+    show_x_axis: Mostra asse X
+    show_y_axis: Mostra asse Y
+    show_data_label: Mostra l'etichetta dei dati
+    group_by: Raggruppato per
+    group_and_function: Devi includere o escludere sia un gruppo che una funzione.
+    y_axix_NaN: L'asse Y deve essere un numero.
+    y_axis_conditional_one: Il valore per la condizione
+    y_axis_conditional_two: deve essere un numero.
+  linechart:
+    name: Grafico a linee
+    description: Grafico a linee per confrontare le variazioni di un campo.
+    select_field: Devi selezionare un campo.
+    select_collection: Devi selezionare una raccolta.
+    select_x_axis: Devi selezionare l'asse X.
+    function: Funzione
+    x_axis: Asse X
+    x_axis_decimals: Decimali dell'asse X
+    disabled_no_grouping: Disabilitato quando non è selezionato un raggruppamento.
+    y_axis: Asse Y
+    datasets: Set di dati
+    show_legend: Mostra legenda
+    show_marker: Mostra indicatore del suggerimento
+    include_dataset: Devi includere almeno un set di dati.
+    include_y_axis: Devi includere un asse Y per ogni set di dati quando non è specificato un gruppo.
+    group_and_function: Devi includere o escludere sia un gruppo che una funzione.
+    smooth: 'Arrotondato'
+    straight: 'Dritto'
+    step_line: 'A gradini'
+  meter:
+    description: Metro per il rilevamento dei valori
+    name: Metro
+    arc: Arco
+    stroke_width: Spessore della linea
+    select_max_value: Devi selezionare un valore massimo.
+    max_greater_than_zero: Il massimo deve essere maggiore di zero.
+    select_field: Devi selezionare un campo.
+    select_collection: Devi selezionare una raccolta.
+    function: Funzione
+    thin: Sottile
+    medium: Medio
+    broad: Largo
+  piechart:
+    name: Grafico a torta o ciambella
+    description: Grafico circolare che mostra i rapporti dei gruppi su una colonna.
+    function: 'Funzione'
+    donut: Ciambella
+    labels: Mostra etichette
+    legend: Mostra legenda
+    right: Destra
+    bottom: In basso
+    monochrome: Monocromatico
+    monochrome_color: Colore monocromatico
