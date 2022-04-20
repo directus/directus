@@ -1,19 +1,22 @@
 # Overview
 
-> Whether you're a hobbyist, startup or Fortune 500 enterprise, our flexible Cloud service lets you get up and running with Directus quickly. We do all the heavy lifting of managing your infrastructure and software updates - and you also benefit from fair and predictable usage-based pricing.
+> Whether you're a hobbyist, startup or Fortune 500 enterprise, our flexible Cloud service lets you get up and running
+> with Directus quickly. We do all the heavy lifting of managing your infrastructure and software updates - and you also
+> benefit from fair and predictable usage-based pricing.
 
 ![Hero Image](https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/hero-image-20220402A.webp)
 
 [[toc]]
 
 [Directus Cloud](https://directus.cloud/) is a hosting platform for [Directus Projects](/cloud/glossary/#projects) which
-handles data storage, hosting, updates and scalability so you can focus on building your digital apps and expeirences. There are three
-[tiers of Cloud Projects](/cloud/glossary/#projects): Community, Standard and Enterprise. All three tiers come with
-all the great features of Directus Core, as well as all [Cloud Exclusive](/cloud/glossary/#cloud-exclusives) extensions.
+handles data storage, hosting, updates and scalability so you can focus on building your digital apps and experiences.
+There are three [tiers of Cloud Projects](/cloud/glossary/#projects): Community, Standard and Enterprise. All three
+tiers come with all the great features of Directus Core, as well as all
+[Cloud Exclusive](/cloud/glossary/#cloud-exclusives) extensions.
 
 The Cloud Dashboard is constructed to manage three key components: [Accounts](/cloud/glossary/#accounts),
-[Teams](/cloud/glossary/#teams) and [Projects](/cloud/glossary/#projects). First, create an Account. Once
-logged in, create or join a Team, and your Account will become a Member of that Team. Once tha's complete, you can create Projects
+[Teams](/cloud/glossary/#teams) and [Projects](/cloud/glossary/#projects). First, create an Account. Once logged in,
+create or join a Team, and your Account will become a Member of that Team. Once that's complete, you can create Projects
 within a Team.
 
 Accounts can be Members on multiple Teams. All Team Members have SuperAdmin privileges to manage the Team's Projects,
@@ -24,17 +27,17 @@ Members and multiple Projects. Projects can only be managed by one Team and cann
 
 To make life easy, you have the option to
 [create and login to your free Cloud Account](/cloud/accounts/#create-account-and-login) automatically with GitHub. If
-you don't have a GitHub account or prefer not to use this login method, email-and-password login is available, as well. Once
-logged in, create a new Team or select an existing Team. Then you can access and manage the Team's associated Projects,
-billing details, Team Members, Activity and Settings.
+you don't have a GitHub account or prefer not to use this login method, email-and-password login is available, as well.
+Once logged in, create a new Team or select an existing Team. Then you can access and manage the Team's associated
+Projects, billing details, Team Members, Activity and Settings.
 
 <video alt="Cloud Dashboard Overview" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/cloud-dashboard-overview-20220329A.mp4" type="video/mp4">
 </video>
 
 Remember: The Dashboard layout itself is designed to manage [Accounts](/cloud/glossary/#accounts),
-[Teams](/cloud/glossary/#teams) and [Projects](/cloud/glossary/#projects). Here's how the Dashboard
-layout relates to each of these components:
+[Teams](/cloud/glossary/#teams) and [Projects](/cloud/glossary/#projects). Here's how the Dashboard layout relates to
+each of these components:
 
 ## Accounts
 
