@@ -23,7 +23,7 @@ To create a Team, follow the steps below.
 
 1. Open the Team Menu in the Dashboard Header and click **"Create a Team <span mi icon prmry>add</span>"**.\
    The Create Team Page will open.
-2. Enter a Team Name and Team Slug, then click **"Save."**
+2. Enter a Team Name and Team Slug, then click **"Save"**.
 
 :::tip Team Name and Team Slug
 
@@ -79,7 +79,7 @@ method, add or remove additional payment methods, or change other billing detail
 2. Click **"Billing"** to enter the Billing Details page.
 3. Click **"Manage Billing"** to enter the Stripe payments gateway.
 4. Adjust payment methods and details as needed.
-5. Click **"Return to Directus Cloud."**
+5. Click **"Return to Directus Cloud"**.
 
 ### Team Billing
 
@@ -219,9 +219,9 @@ yourself, follow the steps below.
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Members"** to enter the Members Page.
 3. Click <span mi icon>exit_to_app</span> or <span mi icon>close</span> button on the desired Member.
-4. Click **"Confirm."**
+4. Click **"Confirm"**.
 
-:::Warning:
+:::warning
 
 If an Account leaves or is removed from a Team, it will be fully "locked out" of the Team until re-invited by another
 Member.
@@ -239,14 +239,16 @@ To destroy a Team, follow the steps below.
 3. Scroll down to the "Destroy this Team" section.
 4. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.
 5. Type the Team Name into the input box.
-6. Click **"Destroy Team."**
+6. Click **"Destroy Team"**.
 
-::: Danger: Destroying a Team completely removes all its data from Directus Cloud. This action is permanent and irreversible.
+:::danger
+
+Destroying a Team completely removes all its data from Directus Cloud. This action is permanent and irreversible.
 Proceed with caution!
 
 :::
 
-::: Tip: Teams with Active Projects
+:::tip Teams with Active Projects
 
 To delete a Team, you must first delete any active Projects within it.
 
