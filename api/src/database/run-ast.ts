@@ -168,7 +168,7 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelectInternal.push(child.fieldKey);
+			columnsToSelectInternal.push(child.relation.field);
 		}
 
 		if (child.type === 'a2o') {
@@ -193,7 +193,9 @@ async function parseCurrentLevel(
 
 	const fieldNodes = columnsToSelect.map(
 		(column: string) =>
-			children.find((childNode) => childNode.type === 'field' && childNode.fieldKey === column) ?? {
+			children.find(
+				(childNode) => childNode.type === 'field' && (childNode.fieldKey === column || childNode.name === column)
+			) ?? {
 				type: 'field',
 				name: column,
 				fieldKey: column,
@@ -322,7 +324,7 @@ function mergeWithParentItems(
 			const itemChild = nestedItems.find((nestedItem) => {
 				return (
 					nestedItem[schema.collections[nestedNode.relation.related_collection!].primary] ==
-					parentItem[nestedNode.fieldKey]
+					parentItem[nestedNode.relation.field]
 				);
 			});
 

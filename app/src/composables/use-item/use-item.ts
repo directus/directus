@@ -8,7 +8,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/shared/utils';
 import { translate } from '@/utils/translate-object-values';
 import { usePermissions } from '../use-permissions';
 import { validateItem } from '@/utils/validate-item';
