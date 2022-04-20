@@ -1756,6 +1756,27 @@ layouts:
     find_location: Trova una posizione...
     default_template: Uso il default della raccolta...
     no_compatible_fields: Nessun campo compatibile
+  kanban:
+    name: Kanban,
+    group_field: Raggruppa per,
+    group_field_placeholder: Campo di raggruppamento...,
+    group_title: Titolo del gruppo,
+    group_title_placeholder: Campo per i titoli del gruppo...,
+    title: Titolo della scheda,
+    title_placeholder: Campo titolo opzionale...,
+    text: Testo della scheda,
+    text_placeholder: Campo testuale opzionale...,
+    date: Data della scheda,
+    date_placeholder: Campo data opzionale...,
+    tags: Tag della scheda,
+    tags_placeholder: Campo tag opzionale...,
+    user: Utente della scheda,
+    user_placeholder: Campo utente opzionale...,
+    image: Immagine della scheda,
+    image_placeholder: Campo immagine opzionale...,
+    crop: Ritaglia,
+    advanced: Avanzate,
+    edit_group: Modifica gruppo,
 panels:
   metric:
     name: Metrica
