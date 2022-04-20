@@ -216,7 +216,7 @@ Link to Map Field
 
 :::
 
-## Kanban Layout
+## Kanban Layout [Cloud Exclusive]
 
 ![Kanban Layout](https://cdn.directus.io/docs/v9/app-guide/layouts/layouts-20220415A/kanban-layout-20220416A.webp)
 
