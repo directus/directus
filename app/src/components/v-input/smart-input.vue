@@ -7,11 +7,18 @@
 			type="text"
 			:autocomplete="autocomplete"
 			:disabled="disabled"
+			:spellcheck="spellcheck"
 			v-bind="$attrs"
 			v-on="listeners"
 		/>
-		<div v-if="isDisplayNum" class="data-warning">
-			<v-icon name="error_outline" tabindex="-1" clickable @click="stepUp" />
+		<div v-if="type === 'number' && !hideDataWarnings && dataWarning && dataWarningMessage" class="data-warning">
+			<v-icon
+				v-tooltip.instant="dataWarningMessage"
+				name="error_outline"
+				tabindex="-1"
+				clickable
+				@mousedown.prevent.stop="updateField(determineEmittable(fieldValue))"
+			/>
 		</div>
 		<div v-if="!hideArrows && isDisplayNum" class="adjustment-arrows">
 			<v-icon
@@ -20,7 +27,7 @@
 				tabindex="-1"
 				clickable
 				:disabled="!canStepUp"
-				@click="stepUp"
+				@mousedown.prevent.stop="stepUp"
 			/>
 			<v-icon
 				:class="['step-down', { disabled: !canStepDown }]"
@@ -28,7 +35,7 @@
 				tabindex="-1"
 				clickable
 				:disabled="!canStepDown"
-				@click="stepDown"
+				@mousedown.prevent.stop="stepDown"
 			/>
 		</div>
 	</div>
@@ -41,9 +48,12 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, Ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, Ref, watch } from 'vue';
 import Big from 'big.js';
 import { Field } from '@directus/shared/types';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 // Set rounding mode to half-up
 Big.RM = 1;
@@ -58,6 +68,8 @@ interface Props {
 	type?: string;
 	fieldData?: Field;
 	hideArrows?: boolean;
+	hideDataWarnings?: boolean;
+	spellcheck?: boolean;
 	max?: string;
 	min?: string;
 	step?: string;
@@ -74,6 +86,8 @@ const props = withDefaults(defineProps<Props>(), {
 	type: 'text',
 	fieldData: undefined,
 	hideArrows: false,
+	hideDataWarnings: false,
+	spellcheck: false,
 	max: undefined,
 	min: undefined,
 	step: '1',
@@ -96,6 +110,15 @@ const FLOAT_4_MAX = Big('3.402823e+38');
 const inputField: Ref<HTMLInputElement | null> = ref(null);
 
 const isShiftDown = ref(false);
+
+onMounted(() => {
+	window.addEventListener('keydown', globalKeydownAction);
+	window.addEventListener('keyup', globalKeyupAction);
+});
+onUnmounted(() => {
+	window.removeEventListener('keydown', globalKeydownAction);
+	window.removeEventListener('keyup', globalKeyupAction);
+});
 
 const fieldDisplayType = ref(props.type || 'text');
 
@@ -145,7 +168,7 @@ watch(
 // Supported input types 'bigInteger', 'integer', 'float', 'decimal'
 const numberType = computed(() => {
 	let fieldType = 'integer';
-	if (props.type === 'number' && props.fieldData?.type) {
+	if (props.fieldData?.type) {
 		fieldType = props.fieldData.type;
 	}
 	return fieldType;
@@ -154,7 +177,7 @@ const numberType = computed(() => {
 // Return precision if numeric/decimal type, 0 otherwise
 const numberPrecision = computed(() => {
 	let precision = 0;
-	if (numberType.value === 'decimal' && props.type === 'number' && props.fieldData?.schema?.numeric_precision) {
+	if (numberType.value === 'decimal' && props.fieldData?.schema?.numeric_precision) {
 		precision = props.fieldData?.schema?.numeric_precision;
 	}
 	return Number(precision);
@@ -163,7 +186,7 @@ const numberPrecision = computed(() => {
 // Return scale if numeric/decimal type, 0 otherwise
 const numberScale = computed(() => {
 	let scale = 0;
-	if (numberType.value === 'decimal' && props.type === 'number' && props.fieldData?.schema?.numeric_scale) {
+	if (numberType.value === 'decimal' && props.fieldData?.schema?.numeric_scale) {
 		scale = props.fieldData.schema.numeric_scale;
 	}
 	return Number(scale);
@@ -211,6 +234,8 @@ const getMin = computed(() => {
 				return INT_8_MIN;
 			case 'float':
 				return FLOAT_4_MIN;
+			case 'decimal':
+				return getDecimalLimit(numberPrecision.value, numberScale.value, true);
 			default:
 				return null;
 		}
@@ -225,6 +250,12 @@ const getMin = computed(() => {
 				return clamp(min, INT_8_MIN, INT_8_MAX);
 			case 'float':
 				return clamp(min, FLOAT_4_MIN, FLOAT_4_MAX);
+			case 'decimal':
+				return clamp(
+					min,
+					getDecimalLimit(numberPrecision.value, numberScale.value, true),
+					getDecimalLimit(numberPrecision.value, numberScale.value)
+				);
 			default:
 				return min;
 		}
@@ -243,11 +274,14 @@ const getMax = computed(() => {
 				return INT_8_MAX;
 			case 'float':
 				return FLOAT_4_MAX;
+			case 'decimal':
+				return getDecimalLimit(numberPrecision.value, numberScale.value);
 			default:
 				return null;
 		}
 	} else {
 		const max = Big(props.max);
+
 		switch (numberType.value) {
 			// Int4 limits
 			case 'integer':
@@ -257,6 +291,12 @@ const getMax = computed(() => {
 				return clamp(max, INT_8_MIN, INT_8_MAX);
 			case 'float':
 				return clamp(max, FLOAT_4_MIN, FLOAT_4_MAX);
+			case 'decimal':
+				return clamp(
+					max,
+					getDecimalLimit(numberPrecision.value, numberScale.value, true),
+					getDecimalLimit(numberPrecision.value, numberScale.value)
+				);
 			default:
 				return max;
 		}
@@ -314,6 +354,70 @@ const listeners = computed(() => ({
 	keydown: onInputKeydown,
 	keyup: onInputKeyup,
 }));
+
+const dataWarning = computed(() => {
+	const numToValidate = getNumberFromValue(fieldValue.value);
+	if (!numToValidate) return false;
+	const val = Big(numToValidate);
+	if (maxCast.value) {
+		const max = maxCast.value;
+		if (val.gt(max)) {
+			if (props.max) return 'over_max';
+			return 'out_of_bounds';
+		}
+	}
+	if (minCast.value) {
+		const min = minCast.value;
+		if (val.lt(min)) {
+			if (props.min) return 'under_min';
+			return 'out_of_bounds';
+		}
+	}
+	return false;
+});
+
+const literalDataType = computed(() => {
+	const p = numberPrecision.value;
+	const s = numberScale.value;
+	switch (numberType.value) {
+		case 'float':
+			return 'float4';
+		case 'decimal':
+			return `numeric${(p || s) && '('}${p && p}${s && ', ' + s}${(p || s) && ')'}`;
+		case 'bigInteger':
+			return 'int8';
+		case 'integer':
+		default:
+			return 'int4';
+	}
+});
+
+const dataWarningMessage = computed(() => {
+	const outOfBounds = t('interfaces.input.out_of_data_type_bounds', { data_type: literalDataType.value });
+	const exceedsMax = t('interfaces.input.value_over_max', { max: props.max });
+	const exceedsMin = t('interfaces.input.value_under_min', { min: props.min });
+	if (dataWarning.value) {
+		switch (dataWarning.value) {
+			case 'out_of_bounds':
+				return outOfBounds;
+			case 'over_max':
+				return exceedsMax;
+			case 'under_min':
+				return exceedsMin;
+		}
+	}
+	return false;
+});
+
+function getDecimalLimit(percision: number, scale: number, negative?: boolean) {
+	const bound = Big(`1e${percision - scale}`);
+	const step = Big(`1e-${scale}`);
+	const limit = bound.minus(step);
+	if (negative) {
+		limit.s = -1;
+	}
+	return limit;
+}
 
 function stepUp() {
 	if (canStepUp.value === false) return;
@@ -530,7 +634,7 @@ function determineEmittable(value = '') {
 	const min = minCast.value;
 	const max = maxCast.value;
 
-	const validNumber = getFirstMatch(value, numRegex);
+	const validNumber = getNumberFromValue(value);
 	if (!validNumber) return false;
 
 	let numAtStep = Big(validNumber);
@@ -549,6 +653,10 @@ function determineEmittable(value = '') {
 		numAtStep = numAtStep.prec(numberPrecision.value);
 	}
 	return numAtStep.toString();
+}
+
+function getNumberFromValue(value: string) {
+	return getFirstMatch(value, numRegex);
 }
 
 function roundToStep(value: Big) {
@@ -603,9 +711,6 @@ function checkKeydownAction(evt: KeyboardEvent) {
 				break;
 		}
 	}
-	if (key === 'shift') {
-		isShiftDown.value = true;
-	}
 }
 
 function checkKeyupAction(evt: KeyboardEvent) {
@@ -613,6 +718,17 @@ function checkKeyupAction(evt: KeyboardEvent) {
 	if (props.type === 'text' && key.startsWith('arrow')) {
 		setWorkingNumAtCursor();
 	}
+}
+
+function globalKeydownAction(evt: KeyboardEvent) {
+	const key = evt.key.toLowerCase();
+	if (key === 'shift') {
+		isShiftDown.value = true;
+	}
+}
+
+function globalKeyupAction(evt: KeyboardEvent) {
+	const key = evt.key.toLowerCase();
 	if (key === 'shift') {
 		isShiftDown.value = false;
 	}
@@ -649,6 +765,7 @@ async function restoreCursorPosition(pos: CursorPosition) {
 	const input = inputField.value;
 	const length = input?.value.length || 0;
 
+	input?.focus();
 	// Keep cursor at end of input if that's where it started
 	if (pos.atEnd) {
 		input?.setSelectionRange(length, length);

@@ -17,6 +17,9 @@
 		:suffix="suffix"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:field-data="fieldData"
+		:hide-arrows="hideArrows"
+		:hide-data-warnings="hideDataWarnings"
+		:spellcheck="spellcheck"
 		:initial-value="initialValue"
 		@update:model-value="$emit('input', $event)"
 	>
@@ -112,6 +115,18 @@ export default defineComponent({
 			default: false,
 		},
 		slug: {
+			type: Boolean,
+			default: false,
+		},
+		hideArrows: {
+			type: Boolean,
+			default: false,
+		},
+		hideDataWarnings: {
+			type: Boolean,
+			default: false,
+		},
+		spellcheck: {
 			type: Boolean,
 			default: false,
 		},

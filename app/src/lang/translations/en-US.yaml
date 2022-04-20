@@ -1564,6 +1564,21 @@ interfaces:
     step_interval: Step Interval
     slug: Slugify
     slug_label: Make entered value URL safe
+    spellcheck: Spellcheck
+    spellcheck_label: Enable input spellcheck
+    hide_arrows: Hide Arrows
+    hide_arrows_label: Hide number arrow buttons
+    hide_data_warnings: Hide Data Warnings
+    hide_data_warnings_label: Hide out-of-bounds warning
+    out_of_data_type_bounds: >-
+      Value out of bounds of data type, click icon to round to nearest valid value.
+      `{data_type}` 
+    value_over_max: |-
+      Value larger than maximum, click icon to round down. 
+      Max = {max}
+    value_under_min: |-
+      Value smaller than minimum, click icon to round up. 
+      Min = {min}
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text

@@ -21,6 +21,9 @@
 					:autocomplete="autocomplete"
 					:placeholder="placeholder ? String(placeholder) : undefined"
 					:disabled="disabled"
+					:hide-arrows="hideArrows"
+					:hide-data-warnings="hideDataWarnings"
+					:spellcheck="spellcheck"
 					:model-value="modelValue === undefined || modelValue === null ? '' : modelValue"
 					v-on="listeners"
 				/>
@@ -32,6 +35,7 @@
 					:autocomplete="autocomplete"
 					:placeholder="placeholder ? String(placeholder) : undefined"
 					:disabled="disabled"
+					:spellcheck="spellcheck"
 					:model-value="modelValue === undefined || modelValue === null ? '' : modelValue"
 					v-on="listeners"
 				/>
@@ -76,6 +80,8 @@ interface Props {
 	type?: string;
 	fieldData?: Field;
 	hideArrows?: boolean;
+	hideDataWarnings?: boolean;
+	spellcheck?: boolean;
 	max?: number | string;
 	min?: number | string;
 	step?: number | string;
@@ -102,6 +108,8 @@ const props = withDefaults(defineProps<Props>(), {
 	type: 'text',
 	fieldData: undefined,
 	hideArrows: false,
+	hideDataWarnings: false,
+	spellcheck: false,
 	max: undefined,
 	min: undefined,
 	step: 1,

@@ -170,6 +170,21 @@ export default defineInterface({
 					default_value: false,
 				},
 			},
+			{
+				field: 'spellcheck',
+				name: '$t:interfaces.input.spellcheck',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.spellcheck_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
 		];
 
 		const numberOptions: DeepPartial<Field>[] = [
@@ -205,13 +220,49 @@ export default defineInterface({
 			},
 		];
 
+		const numberArrows: DeepPartial<Field>[] = [
+			{
+				field: 'hideArrows',
+				name: '$t:interfaces.input.hide_arrows',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.hide_arrows_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+		];
+
+		const dataWarnings: DeepPartial<Field>[] = [
+			{
+				field: 'hideDataWarnings',
+				name: '$t:interfaces.input.hide_data_warnings',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.hide_data_warnings_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+		];
+
 		if (field.type && ['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
-			return [...standardOptions, ...numberOptions, ...fontOptions, ...affixOptions];
+			return [...standardOptions, ...numberOptions, ...fontOptions, ...affixOptions, ...numberArrows, ...dataWarnings];
 		}
 
 		return {
 			standard: [...standardOptions],
-			advanced: [...affixOptions, ...textOptions],
+			advanced: [...affixOptions, ...textOptions, ...numberArrows],
 		};
 	},
 	preview: PreviewSVG,
