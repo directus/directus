@@ -6,9 +6,9 @@
 
 [[toc]]
 
-A Cloud Project is a Directus Instance, the [Infrastructure](/cloud/glossary/#infrastructure) it runs on, and all
-of its [data and file assets](/cloud/glossary/#asset-storage). All Cloud Projects come
-[quota-free](/cloud/glossary/#quotas) and include all [Cloud Exclusives](/cloud/glossary/#cloud-exclusives). See
+A Cloud Project is a Directus Instance, the [Infrastructure](/cloud/glossary/#infrastructure) it runs on, and all of its
+[data and file assets](/cloud/glossary/#asset-storage). All Cloud Projects come [quota-free](/cloud/glossary/#quotas)
+and include all [Cloud Exclusives](/cloud/glossary/#cloud-exclusives). See
 [Support Options](/cloud/glossary/#support-options) to find out how to get help on your Project.
 
 There are three different Project tiers on Directus Cloud: [Community](#create-a-community-project),
@@ -29,14 +29,15 @@ shortcuts, which allow you to <span mi icon>edit</span> edit and <span mi icon>l
 a Team's Projects:
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
-2. Click **"Projects."**
+2. Click **"Projects"**.
 
 ## Create a Community Project
 
 ![Create a Community Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/create-a-community-project-20220329A.webp)
 
-The Community tier offers a completely free Directus Project, perfect for spinnin up hobby projects, trying out Directus Cloud,
-testing a proof-of-concept or performing any other non-production activity. Community Projects come with the following configurations:
+The Community tier offers a completely free Directus Project, perfect for spinning up hobby projects, trying out
+Directus Cloud, testing a proof-of-concept or performing any other non-production activity. Community Projects come with
+the following configurations:
 
 - **Project Name** — Custom. _This can be changed at any time with no impact on the Project_.
 - **Project URL** — Random URL: `aa3i82.directus.app`. _This cannot be changed_.
@@ -57,14 +58,14 @@ To create a Community Project:
 6. Scroll to the bottom of the screen and choose a Starting Template.
 7. Click **"Create Project"**.
 
-:::Tip: Project Name
+:::tip Project Name
 
 The Project Name displays within Directus Cloud. This can be changed at any time and is purely for organizational
 purposes. It has no impact on the Project itself.
 
 :::
 
-:::Tip: Standard Tier
+:::tip Standard Tier
 
 Need a production-ready Project that can scale as needed?\
 Create a [Standard Project](#create-a-standard-project).
@@ -76,7 +77,8 @@ Create a [Standard Project](#create-a-standard-project).
 ![Create a Standard Project](https://cdn.directus.io/docs/v9/cloud/projects/projects-20220322A/create-a-project-20220228A.webp)
 
 The Standard tier is perfect for most production-ready use cases. Standard tier Projects come with custom URLs, daily
-[backups](/cloud/glossary/#backups) and Nodes that can be scaled up and down as needed.
+[backups](/cloud/glossary/#backups) and higher-powered Nodes. In addition, Node configuration can be scaled up and down
+as needed.
 
 Standard Projects come with the following configuration options:
 
@@ -90,16 +92,16 @@ Standard Projects come with the following configuration options:
 To create a Standard Project:
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
-2. Click **"Projects."**
+2. Click **"Projects"**.
 3. Click the Team you wish to create a Project under.
-4. Click **"Create Project."**
+4. Click **"Create Project"**.
 5. Set the Project Name as desired.
 6. Select the Standard tier.
 7. Set the configuration options as desired.
-8. Click **"Proceed to Checkout."** You will be taken to a checkout page.
-9. Enter payment information and hit **"Subscribe."**
+8. Click **"Proceed to Checkout"**. You will be taken to a checkout page.
+9. Enter payment information and hit **"Subscribe"**.
 
-:::Tip: Enterprise Tier
+:::tip Enterprise Tier
 
 Need even more power, scale, customization and support?\
 Upgrade to an [Enterprise Project](#create-an-enterprise-project).
@@ -112,7 +114,7 @@ Enterprise tier offers power and scale to meet any Project's needs and offers 19
 [Datacenter regions](/cloud/glossary/#datacenter-regions), upgraded [support options](/cloud/glossary/#support-options),
 and much more.
 
-:::Tip: Ready to to go Enterprise?
+:::tip Ready to to go Enterprise?
 
 [Contact Sales](https://directus.io/contact/)
 
@@ -124,7 +126,8 @@ and much more.
   <source src="https://cdn.directus.io/docs/v9/cloud/projects/projects-20220329A/access-a-project-20220329A.mp4" type="video/mp4">
 </video>
 
-At some point, you will want to log in and access the actual managed Project. You can go the Project's URL directly, or you can access it from within the Cloud Dashboard two different ways. To access a Project from the Cloud Dashboard:
+At some point, you will want to log in and access the actual managed Project. You can go the Project's URL directly, or
+you can access it from within the Cloud Dashboard two different ways. To access a Project from the Cloud Dashboard:
 
 1. Open the Team Menu in the Dashboard Header and click the desired Team.
 2. Click **"Projects"** to enter the Projects page.\
@@ -137,7 +140,7 @@ At some point, you will want to log in and access the actual managed Project. Yo
 #### From Project Monitor Page
 
 3. Click a Project to enter its Project Monitor page.
-4. Click **"Open Project."** Your Project login page will open in a new tab.
+4. Click **"Open Project"**. Your Project login page will open in a new tab.
 
 ## Monitor a Project
 
@@ -149,7 +152,7 @@ Graphs on the Project Monitor page display daily Project information over the la
 may help inform your decisions around configuring Nodes.
 
 - **Combined Node Usage**\
-  Total load placed on all Nodes. If CPU or memory are overloaded, the Node could crash! High usage is a sign that' it's time
+  Total load placed on all Nodes. If CPU or memory are overloaded, the Node could crash! High usage is a sign that it's time
   to scale up.
 - **Horizontal Scaling**\
   Number of Standby Nodes activated. If one or more Standy Nodes are frequently activated, it may be time to add more Active
@@ -178,7 +181,7 @@ On Community Projects, the only option available is to change the Project's Name
 3. Click the Project to enter the Project Monitor page.
 4. Click **"Edit"** to enter the Project Details page.
 5. Change Project Name as desired.
-6. Click **"Update Project."**
+6. Click **"Update Project"**.
 
 ## Manage a Standard Project
 
@@ -193,14 +196,14 @@ On Standard Projects, it's possible to change the Project Name as well as reconf
 3. Click the Project to enter the Project Monitor page.
 4. Click **"Edit"** to enter the Project Details page.
 5. Make changes as desired.
-6. Click **"Update Project."**
+6. Click **"Update Project"**.
 
 ## Manage an Enterprise Project
 
-Each Enterprise Project is customized, so it can't be managed from the Cloud Dashboard. The Project will be
-managed in tandem with the Directus Core Team.
+Each Enterprise Project is customized, so it can't be managed from the Cloud Dashboard. The Project will be managed in
+tandem with the Directus Core Team.
 
-:::Tip: Ready to to go Enterprise?
+:::tip Ready to to go Enterprise?
 
 [Contact Sales](https://directus.io/contact/)
 
@@ -212,13 +215,14 @@ managed in tandem with the Directus Core Team.
 
 If there is no app activity for 3 days on a Community Project, the [Infrastructure](/cloud/glossary/#infrastructure)
 gets paused. Projects that remain paused for a certain duration will be automatically deleted (see details in
-[Cloud Policies](https://directus.io/cloud-policies/#)). To avoid deletion, you have to manually resume the Project within
-the Cloud Dashboard, because requests to the app will not resume the Project. To resume a paused Community Project:
+[Cloud Policies](https://directus.io/cloud-policies/#)). To avoid deletion, you have to manually resume the Project
+within the Cloud Dashboard, because requests to the app will not resume the Project. To resume a paused Community
+Project:
 
 1. Open the Team Menu in the Dashboard Header and click the desired Team.
 2. Click **"Projects"** to enter the Projects page.
 3. Click the paused Project to enter the Project Monitor page.
-4. Click **"Resume Project."**
+4. Click **"Resume Project"**.
 
 ## Destroy a Project
 
@@ -232,9 +236,11 @@ destroy a Directus Cloud Project, follow these steps:
 3. Click the Project you wish to delete.
 4. Scroll to the bottom of the page and toggle <span mi icon dngr>local_fire_department</span>.
 5. Type in the Project Name.
-6. Click **"Destroy Project."**
+6. Click **"Destroy Project"**.
 
-::: Danger: This action will break any external apps connecting to the Project's API or linking to Project files, and is
-permanent and irreversible. **Directus Cloud is not responsible for data or files lost due to this action!**
+:::tip
+
+This action will break any external apps connecting to the Project's API or linking to Project files, and is permanent
+and irreversible. **Directus Cloud is not responsible for data or files lost due to this action!**
 
 :::
