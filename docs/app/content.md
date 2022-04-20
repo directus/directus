@@ -1,24 +1,20 @@
 # Content
 
-<<<<<<< HEAD
-
-> The Content Module is the primary way for Users to interact with Items in a Collection. Users will have the tools they
-> need to view and manage, sort and order, or even import and export data easily and intuitively no matter what your
-> data model contains, from blog posts to event bookings, IoT fleet geo-positions to CRM, and everything in between.
-> ======= The Content Module is the primary way for Users to interact with Items in a Collection _(i.e. database
-> content)_. Users will have the tools they need to view and manage, sort and order, or even import and export data
-> easily and intuitively no matter what your data model contains, from blog posts to event bookings, IoT fleet
-> geo-positions to CRM, and everything in between.
->
-> > > > > > > 6599ad6498e48486848f39196cd8b01f8accb9d3
+> The Content Module is the primary way for Users to interact with Items in a Collection. Regardless of what your data
+> model contains _(be it blog posts, event bookings, IoT fleets, geo-positions, CRM, or whatever!)_ the Content Module
+> enables Users to view and manage, sort and search, or import and export data.
 
 [[toc]]
 
 ::: tip Before You Begin
 
-To use this module, you will need to know what [Collections](/getting-started/glossary/#collections),
-[Items](/getting-started/glossary/#items) and [Fields](/getting-started/glossary/#fields) are in general. After that,
-the controls to view and manage Items are quite intuitive.
+To efficiently use this Module, you will need to know about [Collections](/getting-started/glossary/#collections),
+[Items](/getting-started/glossary/#items) and [Fields](/getting-started/glossary/#fields).
+
+<!--
+@TODO getting-started > 30-90 min tutorial
+Link to tutorial
+-->
 
 :::
 
@@ -49,8 +45,9 @@ deleting the Item. [Learn More](/app/content/items)
 
 ::: tip Manage Items via the API
 
-This section explains how to create, view, update, and delete Items within the Directus App. However, these actions can
-also be done [programmatically via the API](/reference/items/).
+This section explains how to create, view, update, and delete Items within the Directus App. However, all actions
+performed in the app can also be done programmatically.\
+Learn how to [manage Items via the API](/reference/items/).
 
 :::
 
@@ -60,4 +57,5 @@ also be done [programmatically via the API](/reference/items/).
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content/content-20220415A/data-shares-20220415A.mp4" type="video/mp4" />
 </video>
 
-Data sharing allows an Item to be viewed by anyone, regardless of their permissions. [Learn More](/app/data-sharing)
+Data Sharing allows you to share an Item from a Collection with anyone, regardless of their permissions, even if they
+are not Users within the project. [Learn More](/app/content/data-sharing)

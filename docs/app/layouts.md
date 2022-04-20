@@ -1,8 +1,7 @@
 # Layouts
 
-> The Content Module provides Layouts, which are customized displays for viewing and interacting with Items on a
-> Collection Page. Whether your Collection contains blog posts, project management tasks, geo-coordinates, temporal data
-> or beyond; Layouts display Items in a logical and intuitive way.
+> Layouts are customized displays for viewing and interacting with the Items in a Collection. This makes working with
+> some general category of data model, such as map locations or calendar events, a more human-friendly experience.
 
 [[toc]]
 

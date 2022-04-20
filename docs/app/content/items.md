@@ -94,6 +94,11 @@ To archive an Item, follow the steps below. [Learn More](/configuration/data-mod
 
 Requires an archive Field to be configured within the Collection's data model settings.
 
+<!--
+@TODO configuration > data model
+Add relevant link here
+-->
+
 :::
 
 ## Revert an Item
@@ -179,45 +184,5 @@ This action permanently removes the Item from the database. Proceed with caution
 
 If you wish to remove an Item from view or use, but keep it stored, you may consider
 [archiving the Item](#archive-an-item) instead.
-
-:::
-
-## Batch Delete, Archive or Edit Items
-
-<video autoplay muted loop controls title="Batch Edit Items">
-	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/batch-edit-items-20220415A.mp4
-" type="video/mp4" />
-</video>
-
-It is possible to delete, archive, or edit multiple Items at once from the Collection Page. Deletion will permanently
-delete Items from the database, this cannot be reverted. When batch editing, the Item Page opens, allowing you to make
-the same edit across multiple Items. Follow the steps below to batch delete, archive, or edit Items.
-
-1. Navigate to the Content Module and select the desired Collection.
-2. Choose a [Layout](/app/layouts) that supports multiple Item selection from the Sidebar.\
-   (e.g. The Table or Card Layout)
-3. Click the Items you wish to select:
-   - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the left-most column.
-   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the upper left-hand corner of each Card.
-
-Once Items are selected, the following buttons will appear in the Page Header: <span mi btn muted>delete</span>
-<span mi btn muted>archive</span> <span mi btn muted>edit</span>
-
-**Delete**\
-4. Click <span mi btn dngr>delete</span> in the header and a popup will appear.\
-5. Click **"Delete"** to confirm the action.
-
-**Archive**\
-4. Click <span mi btn muted>archive</span> in the header and a popup will appear.\
-5. Click **"Delete"** to confirm the action.
-
-**Edit**\
-4. Click <span mi btn muted>edit</span> in the header and the Item Page will open.\
-5. Update Item details as desired.\
-6. Click <span mi btn>check</span> to confirm batch edits on all Items.
-
-:::danger
-
-These actions are destructive, proceed with caution.
 
 :::

@@ -12,8 +12,8 @@
 </video>
 
 Layouts determine how you view or interact with Items in a Collection. Whether your Collection contains blog posts,
-project management tasks, geo-coordinates, temporal data or beyond; Layouts display Items in a logical and intuitive
-way. [Learn More](/app/layouts)
+project management tasks, geo-coordinates, temporal data or beyond; Layouts present Items in a more human-friendly way.
+[Learn More](/app/layouts)
 
 ## Search Items
 
@@ -45,17 +45,21 @@ Filters enable complex and granular filtered displays of Items. [Learn More](/ap
 Drag and drop Items to custom-sort them as desired. This is only possible on certain Layouts, such as the default
 [Table Layout](/app/layouts/#table-layout). To sort a Collection's Items, follow the steps below.
 
-1. Navigate to the Content Module and select the desired Collection.
-2. In the Sidebar, be sure a [Layout](#adjust-page-layout) is chosen that supports manual sorting.
-3. Enable manual sorting:
+1. Be sure a sorting column has been configured under **"Settings > Data Model > Collection"**.\
+_(Shown in the video)_
+<!-- @TODO configuration > Data Model: Link -->
+2. Navigate to the Content Module and select the desired Collection.
+3. In the Sidebar, be sure a [Layout](#adjust-page-layout) is chosen that supports manual sorting.
+4. Enable manual sorting:
    - For the Table Layout, toggle <span mi icon>sort</span> in the configured Sort column.
-4. Drag Items by their handle into a new position.
+5. Drag Items by their handle into a new position.
 
 ::: warning Manual Sorting Requires Configuration
 
-Only available if a Sort column has been configured in the Collection's Data Model Settings.
+Only available if a Sort column has been configured under:\
+**"Settings > Data Model > Collection > Sort"**
 
-<!--@TODO config > Data Model Settings: Link -->
+<!--@TODO configuration > Data Model: Link -->
 
 :::
 
@@ -73,11 +77,8 @@ This means that while the values in this Sort Field do get updated and modified,
 </video>
 
 Sort Items alphabetically or numerically, in ascending or descending order. Sorting is not possible on certain Layouts,
-such as the Map Layout. Layouts that support automatic sorting have controls for this in slightly different locations.
-Controls are found under each Layout's respective section. The following Layouts currently support automatic sorting:
-
-- [Table Layout](/app/layouts/#table-layout)
-- [Card Layout](/app/layouts/#card-layout)
+such as the Map Layout. Layouts that do support automatic sorting have controls in slightly different locations.
+[Learn More](/app/layouts)
 
 ::: tip
 
@@ -100,6 +101,15 @@ To view an archived Item, follow the steps below. [Learn More](/app/content/item
    - **"Show Archived Items"**
    - **"Show Items + Archived Items"**
 
+:::warning Archiving Requires Configuration
+
+Only available if an Archive column has been configured under:\
+ **"Settings > Data Model > Collection > Archive"**.
+
+<!-- @TODO configuration > Data Model: Link to section on archiving -->
+
+:::
+
 ## Create Presets and Bookmarks
 
 <video autoplay muted loop controls title="Create Presets and Bookmarks">
@@ -114,3 +124,50 @@ Layout, searches, filters, sorting, ordering, etc. [Learn More](/configuration/p
 ![Import and Export Items](https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/imports-exports-20220416A.webp)
 
 No-code Users can import and export a Collection's Items in file-format. [Learn More](/app/import-export/)
+
+## Batch Delete, Archive or Edit Items
+
+<video autoplay muted loop controls title="Batch Edit Items">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/batch-edit-items-20220415A.mp4
+" type="video/mp4" />
+</video>
+
+It is possible to delete, archive, or edit multiple Items at once from the Collection Page. Deletion will permanently
+delete Items from the database, this cannot be reverted. When batch editing, the Item Page opens, allowing you to make
+the same edit across multiple Items. Follow the steps below to batch delete, archive, or edit Items.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Choose a [Layout](/app/layouts) that supports multiple Item selection from the Sidebar.\
+   (e.g. The Table or Card Layout)
+3. Click the Items you wish to select:
+   - **Table Layout:** Click <span mi icon>check_box_outline_blank</span> in the left-most column.
+   - **Card Layout:** Click <span mi icon>radio_button_unchecked</span> in the upper left-hand corner of each Card.
+
+Once Items are selected, the following buttons will appear in the Page Header: <span mi btn muted>delete</span>
+<span mi btn muted>archive</span> <span mi btn muted>edit</span>
+
+**Delete**\
+4. Click <span mi btn dngr>delete</span> in the header and a popup will appear.\
+5. Click **"Delete"** to confirm the action.
+
+**Archive**\
+4. Click <span mi btn muted>archive</span> in the header and a popup will appear.\
+5. Click **"Delete"** to confirm the action.
+
+**Edit**\
+4. Click <span mi btn muted>edit</span> in the header and the Item Page will open.\
+5. Update Item details as desired.\
+6. Click <span mi btn>check</span> to confirm batch edits on all Items.
+
+:::danger
+
+Deletion will permanently remove Items from the Collection, proceed with caution.
+
+:::
+
+:::warning
+
+Editing and Archiving will change the Items' Field Values, however this can be
+[reverted](/app/content/items/#revert-an-item).
+
+:::
