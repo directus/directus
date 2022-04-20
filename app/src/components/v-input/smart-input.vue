@@ -17,7 +17,7 @@
 				name="error_outline"
 				tabindex="-1"
 				clickable
-				@mousedown.prevent.stop="updateField(determineEmittable(fieldValue))"
+				@mousedown.prevent.stop="roundToSafeValue"
 			/>
 		</div>
 		<div v-if="!hideArrows && isDisplayNum" class="adjustment-arrows">
@@ -213,12 +213,10 @@ const getStep = computed(() => {
 		case 'float':
 		default:
 			/**
-			 * Float 4 (the float format Directus defaults to) has up to 7 decimal points
-			 * of precision, however, it's the absolute max, assuming nothing preceeding
-			 * the decimal. We'll just have to round to 7 places and assume the user knows
-			 * what they're doing if they're using floats.
+			 * Floats don't have even or minimum steps. We'll just use the user-defined
+			 * step, or 1.
 			 */
-			return step.round(7);
+			return step;
 	}
 });
 
@@ -235,7 +233,7 @@ const getMin = computed(() => {
 			case 'float':
 				return FLOAT_4_MIN;
 			case 'decimal':
-				return getDecimalLimit(numberPrecision.value, numberScale.value, true);
+				return getNumericLimit(numberPrecision.value, numberScale.value, true);
 			default:
 				return null;
 		}
@@ -253,8 +251,8 @@ const getMin = computed(() => {
 			case 'decimal':
 				return clamp(
 					min,
-					getDecimalLimit(numberPrecision.value, numberScale.value, true),
-					getDecimalLimit(numberPrecision.value, numberScale.value)
+					getNumericLimit(numberPrecision.value, numberScale.value, true),
+					getNumericLimit(numberPrecision.value, numberScale.value)
 				);
 			default:
 				return min;
@@ -275,7 +273,7 @@ const getMax = computed(() => {
 			case 'float':
 				return FLOAT_4_MAX;
 			case 'decimal':
-				return getDecimalLimit(numberPrecision.value, numberScale.value);
+				return getNumericLimit(numberPrecision.value, numberScale.value);
 			default:
 				return null;
 		}
@@ -294,8 +292,8 @@ const getMax = computed(() => {
 			case 'decimal':
 				return clamp(
 					max,
-					getDecimalLimit(numberPrecision.value, numberScale.value, true),
-					getDecimalLimit(numberPrecision.value, numberScale.value)
+					getNumericLimit(numberPrecision.value, numberScale.value, true),
+					getNumericLimit(numberPrecision.value, numberScale.value)
 				);
 			default:
 				return max;
@@ -359,6 +357,8 @@ const dataWarning = computed(() => {
 	const numToValidate = getNumberFromValue(fieldValue.value);
 	if (!numToValidate) return false;
 	const val = Big(numToValidate);
+
+	// Check upper bound
 	if (maxCast.value) {
 		const max = maxCast.value;
 		if (val.gt(max)) {
@@ -366,6 +366,8 @@ const dataWarning = computed(() => {
 			return 'out_of_bounds';
 		}
 	}
+
+	// Check lower bound
 	if (minCast.value) {
 		const min = minCast.value;
 		if (val.lt(min)) {
@@ -373,6 +375,18 @@ const dataWarning = computed(() => {
 			return 'out_of_bounds';
 		}
 	}
+
+	switch (numberType.value) {
+		case 'integer':
+			return checkInt(val);
+		case 'bigInteger':
+			return checkBigInt(val);
+		case 'decimal':
+			return checkNumeric(val);
+		case 'float':
+			return checkFloat(val);
+	}
+
 	return false;
 });
 
@@ -383,7 +397,7 @@ const literalDataType = computed(() => {
 		case 'float':
 			return 'float4';
 		case 'decimal':
-			return `numeric${(p || s) && '('}${p && p}${s && ', ' + s}${(p || s) && ')'}`;
+			return `decimal${(p || s) && '('}${p && p}${s && ', ' + s}${(p || s) && ')'}`;
 		case 'bigInteger':
 			return 'int8';
 		case 'integer':
@@ -396,6 +410,12 @@ const dataWarningMessage = computed(() => {
 	const outOfBounds = t('interfaces.input.out_of_data_type_bounds', { data_type: literalDataType.value });
 	const exceedsMax = t('interfaces.input.value_over_max', { max: props.max });
 	const exceedsMin = t('interfaces.input.value_under_min', { min: props.min });
+	const noDecimal = t('interfaces.input.no_decimal', { data_type: literalDataType.value });
+	const exceedsScale = t('interfaces.input.exceeds_scale', {
+		scale: numberScale.value,
+		data_type: literalDataType.value,
+	});
+	const float4Precision = t('interfaces.input.float_4_precision');
 	if (dataWarning.value) {
 		switch (dataWarning.value) {
 			case 'out_of_bounds':
@@ -404,15 +424,86 @@ const dataWarningMessage = computed(() => {
 				return exceedsMax;
 			case 'under_min':
 				return exceedsMin;
+			case 'decimal_not_supported':
+				return noDecimal;
+			case 'too_many_decimals':
+				return exceedsScale;
+			case 'precision_uncertain':
+				return float4Precision;
 		}
 	}
 	return false;
 });
 
-function getDecimalLimit(percision: number, scale: number, negative?: boolean) {
-	const bound = Big(`1e${percision - scale}`);
+function roundToSafeValue() {
+	switch (dataWarning.value) {
+		case 'out_of_bounds':
+			updateField(determineEmittable(fieldValue.value));
+			break;
+		case 'over_max':
+			updateField(determineEmittable(fieldValue.value));
+			break;
+		case 'under_min':
+			updateField(determineEmittable(fieldValue.value));
+			break;
+		case 'decimal_not_supported':
+			updateField(
+				determineEmittable(
+					Big(fieldValue.value || 0)
+						.round()
+						.toString()
+				)
+			);
+			break;
+		case 'too_many_decimals':
+			updateField(
+				determineEmittable(
+					Big(fieldValue.value || 0)
+						.round(numberScale.value)
+						.toString()
+				)
+			);
+			break;
+		case 'precision_uncertain':
+			// Do nothing
+			break;
+	}
+}
+
+function getDecimalPlaces(value: Big): number {
+	const digits = value.c.length;
+	const decimalPlaces = digits - (value.e + 1);
+	return decimalPlaces;
+}
+
+function checkInt(value: Big) {
+	if (getDecimalPlaces(value) > 0) {
+		return 'decimal_not_supported';
+	}
+	return false;
+}
+
+function checkBigInt(value: Big) {
+	return checkInt(value);
+}
+
+function checkNumeric(value: Big) {
+	if (getDecimalPlaces(value) > numberScale.value) {
+		return 'too_many_decimals';
+	}
+	return false;
+}
+function checkFloat(value: Big) {
+	if (value.c.length > 7) {
+		return 'precision_uncertain';
+	}
+	return false;
+}
+
+function getNumericLimit(percision: number, scale: number, negative?: boolean) {
+	const upperBound = Big(`1e${percision - scale}`);
 	const step = Big(`1e-${scale}`);
-	const limit = bound.minus(step);
+	const limit = upperBound.minus(step);
 	if (negative) {
 		limit.s = -1;
 	}

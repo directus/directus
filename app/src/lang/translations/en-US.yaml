@@ -1568,17 +1568,26 @@ interfaces:
     spellcheck_label: Enable input spellcheck
     hide_arrows: Hide Arrows
     hide_arrows_label: Hide number arrow buttons
-    hide_data_warnings: Hide Data Warnings
-    hide_data_warnings_label: Hide out-of-bounds warning
+    hide_data_warnings: Hide Warnings
+    hide_data_warnings_label: Hide data type check warnings
     out_of_data_type_bounds: >-
       Value out of bounds of data type, click icon to round to nearest valid value.
-      `{data_type}` 
+      `{data_type}`
     value_over_max: |-
       Value larger than maximum, click icon to round down. 
       Max = {max}
     value_under_min: |-
       Value smaller than minimum, click icon to round up. 
       Min = {min}
+    no_decimal: |-
+      Data type does not support frational values, click icon to round to whole number. 
+      `{data_type}`
+    exceeds_scale: |-
+      Data type only supports up to {scale} decimal places, click icon to round to nearest valid value.
+      `{data_type}`
+    float_4_precision: >-
+      Data type only guarantees up to 7 significant digits of precision. Saved value may vary. 
+      `float4`
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
