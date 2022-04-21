@@ -110,36 +110,4 @@ function emitKeyup(evt: KeyboardEvent) {
 	display: flex;
 	align-items: center;
 }
-
-.data-warning {
-	margin-right: 8px;
-}
-.step-up {
-	margin-bottom: -8px;
-}
-
-.step-down {
-	margin-top: -8px;
-}
-
-.step-up,
-.step-down {
-	--v-icon-color: var(--arrow-color);
-
-	display: block;
-
-	&:hover:not(.disabled) {
-		--arrow-color: var(--primary);
-	}
-
-	&:active:not(.disabled) {
-		transform: scale(0.9);
-	}
-
-	&.disabled {
-		--arrow-color: var(--border-normal);
-
-		cursor: auto;
-	}
-}
 </style>
