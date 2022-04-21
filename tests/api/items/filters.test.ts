@@ -88,7 +88,7 @@ describe('/items', () => {
 			});
 			describe('returns users with name equality _OR favorite_artist equality', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const name = 'test@example.com';
+					const name = 'testing-name-equality@example.com';
 
 					const artist = createArtist();
 					const guests: any[] = createMany(createGuest, 10, { name });
@@ -96,7 +96,7 @@ describe('/items', () => {
 
 					for (const guest of guests) {
 						guest.id = uuid();
-						guest.name = 'not-test@example.com';
+						guest.name = 'not-equal-test@example.com';
 						guest.favorite_artist = artist.id;
 					}
 
