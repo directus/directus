@@ -151,6 +151,7 @@
 		"rollup": "^2.67.3",
 		"sanitize-html": "^2.6.0",
 		"sharp": "^0.30.3",
+		"smart-deep-sort": "^1.0.2",
 		"stream-json": "^1.7.1",
 		"supertest": "^6.1.6",
 		"tmp-promise": "^3.0.3",
