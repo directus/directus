@@ -187,32 +187,48 @@ export default defineInterface({
 			},
 		];
 
+		/**
+		 * These values are all saved as strings, so treating them all as floats will
+		 * allow us variable precision and scale without any extra code.
+		 * ---
+		 * In the future it might be a good idea to restrict these numbers to the
+		 * data type of the current field being created.
+		 */
 		const numberOptions: DeepPartial<Field>[] = [
 			{
 				field: 'min',
 				name: '$t:interfaces.input.minimum_value',
-				type: 'integer',
+				type: 'float',
 				meta: {
 					width: 'half',
 					interface: 'input',
+					options: {
+						hideDataWarnings: true,
+					},
 				},
 			},
 			{
 				field: 'max',
 				name: '$t:interfaces.input.maximum_value',
-				type: 'integer',
+				type: 'float',
 				meta: {
 					width: 'half',
 					interface: 'input',
+					options: {
+						hideDataWarnings: true,
+					},
 				},
 			},
 			{
 				field: 'step',
 				name: '$t:interfaces.input.step_interval',
-				type: 'integer',
+				type: 'float',
 				meta: {
 					width: 'half',
 					interface: 'input',
+					options: {
+						hideDataWarnings: true,
+					},
 				},
 				schema: {
 					default_value: 1,
@@ -257,7 +273,10 @@ export default defineInterface({
 		];
 
 		if (field.type && ['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
-			return [...standardOptions, ...numberOptions, ...fontOptions, ...affixOptions, ...numberArrows, ...dataWarnings];
+			return {
+				standard: [...standardOptions, ...numberOptions],
+				advanced: [...fontOptions, ...affixOptions, ...numberArrows, ...dataWarnings],
+			};
 		}
 
 		return {

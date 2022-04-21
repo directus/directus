@@ -1569,7 +1569,7 @@ interfaces:
     hide_arrows: Hide Arrows
     hide_arrows_label: Hide number arrow buttons
     hide_data_warnings: Hide Warnings
-    hide_data_warnings_label: Hide data type check warnings
+    hide_data_warnings_label: Hide data type warnings
     out_of_data_type_bounds: >-
       Value out of bounds of data type, click icon to round to nearest valid value.
       `{data_type}`
