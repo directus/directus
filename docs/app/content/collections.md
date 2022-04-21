@@ -5,6 +5,19 @@
 
 [[toc]]
 
+::: tip Before You Begin
+
+To efficiently use the Collection Page, you will need to know about
+[Collections](/getting-started/glossary/#collections), [Items](/getting-started/glossary/#items) and
+[Fields](/getting-started/glossary/#fields).
+
+<!--
+@TODO getting-started > 30-90 min tutorial
+Link to tutorial
+-->
+
+:::
+
 ## Adjust Page Layout
 
 <video autoplay muted loop controls title="Layouts">
@@ -158,16 +171,3 @@ Once Items are selected, the following buttons will appear in the Page Header: <
 4. Click <span mi btn muted>edit</span> in the header and the Item Page will open.\
 5. Update Item details as desired.\
 6. Click <span mi btn>check</span> to confirm batch edits on all Items.
-
-:::danger
-
-Deletion will permanently remove Items from the Collection, proceed with caution.
-
-:::
-
-:::warning
-
-Editing and Archiving will change the Items' Field Values, however this can be
-[reverted](/app/content/items/#revert-an-item).
-
-:::

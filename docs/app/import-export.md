@@ -114,14 +114,6 @@ they are exported.
 - **Filter** — Limit exported Items with a Filter.
 - **Fields** — Add, remove, and re-order the Item Fields that will be exported.
 
-:::tip Layout Impacts Export Fields
-
-When most Layouts are configured, every single Field will be exported by default and must be manually removed in the
-Export Items Menu if unwanted. However, the Table Layout is special. By default, it will export the Fields that are
-displayed, but this can also be modified in the Export items Menu.
-
-:::
-
 ## File Assets and Media
 
 Some Collections may directly or relationally include Fields referencing images, videos or other file types. It is not

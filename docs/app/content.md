@@ -25,13 +25,14 @@ Link to tutorial
 The Content Module is composed of Collection Pages and Item Pages. Use the Navigation Bar on the left to move between
 Collections. Each Collection Page displays all Items in its Collection and comes with highly configurable
 [Layouts](/getting-started/glossary/#layouts) for browsing, visualizing, and managing Items. The Page Header includes
-key action buttons for sorting, searching, filtering, creating, editing, archiving, and deleting multiple Items.
-[Learn More](/app/content/collections)
+key action buttons for sorting, searching, filtering, creating, editing, archiving, and deleting multiple Items. To
+learn more, see our guide on the [Collection Page](/app/content/collections).
 
 :::tip
 
 This Module is for management of Items. Collections are not managed through this Module, as that creates changes in the
-fundamental data model. Administrators manage Collections via the Settings menu. [Learn More](/configuration/data-model)
+fundamental data model. Administrators manage Collections via the Settings menu. To learn more, see our guide on
+[data model configuration](/configuration/data-model).
 
 :::
 
@@ -39,9 +40,9 @@ fundamental data model. Administrators manage Collections via the Settings menu.
 
 ![Article Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/content-20220415A/item-page-20220215A.webp)
 
-When an Item is clicked on the Collection Page, its Item Details Page is opened. This is a form primarily for viewing
-and editing an Item's Field Values, but also includes options for commenting on, sharing, archiving, reverting, and
-deleting the Item. [Learn More](/app/content/items)
+When an Item is clicked on the Collection Page, its Item Details Page is opened. This is a form primarily for viewing,
+editing and deleting an Item's Field Values. Options for commenting on, sharing, archiving, and reverting the Item are
+included as well. To learn more, see our guide on the [Item Page](/app/content/items).
 
 ::: tip Manage Items via the API
 
@@ -57,5 +58,7 @@ Learn how to [manage Items via the API](/reference/items/).
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content/content-20220415A/data-shares-20220415A.mp4" type="video/mp4" />
 </video>
 
-Data Sharing allows you to share an Item from a Collection with anyone, regardless of their permissions, even if they
-are not Users within the project. [Learn More](/app/content/data-sharing)
+In a given Project, some Collections will likely be hidden for the Public as well as other Roles. There may be cases
+when you want to share an Item with a person _(or people)_ that don't have the permissions to see it. This is where
+Shares come in to play. You can share Item from a Collection with anyone, regardless of their permissions and even if
+they are not Users within the project. To learn more, see our guide on [Data Sharing](/app/content/data-sharing).
