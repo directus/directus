@@ -144,6 +144,18 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 
+		const fields = computed(() => {
+			if (props.collection) {
+				return fieldsStore.getFieldsForCollection(props.collection);
+			}
+
+			if (props.fields) {
+				return props.fields;
+			}
+
+			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
+		});
+
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
 		});
@@ -223,18 +235,6 @@ export default defineComponent({
 		};
 
 		function useForm() {
-			const fields = computed(() => {
-				if (props.collection) {
-					return fieldsStore.getFieldsForCollection(props.collection);
-				}
-
-				if (props.fields) {
-					return props.fields;
-				}
-
-				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-			});
-
 			const defaultValues = computed(() => {
 				return fields.value.reduce(function (acc, field) {
 					if (
@@ -325,7 +325,7 @@ export default defineComponent({
 			const updatableKeys = props.batchMode
 				? Object.keys(updates)
 				: Object.keys(updates).filter((key) => {
-						const field = props.fields?.find((field) => field.field === key);
+						const field = fields.value?.find((field) => field.field === key);
 						if (!field) return false;
 						return field.schema?.is_primary_key || !isDisabled(field);
 				  });
