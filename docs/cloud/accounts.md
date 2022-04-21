@@ -5,7 +5,7 @@
 
 [[toc]]
 
-An Account is your portal to Directus Cloud, used to manage Teams, Team Members, Projects, and
+An Account is your portal to Directus Cloud. You can use it to manage your Teams, Team Members, Projects and
 [billing](/cloud/teams/#manage-billing). To avoid confusion, "User" is the term for user profiles in a Directus Project,
 while the terms "Account" and "Team Member" are used in the context of Directus Cloud. _Accounts on Directus Cloud_ and
 _Users in a Directus Project_ are two separate systems.
@@ -16,18 +16,18 @@ See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects in
 
 ![Create Account and Login](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/login-page-20220225A.webp)
 
-Creating an Account is easy and free. As mentioned in the [Overview](/cloud/overview/), to make life easy, you have the
-option to create and login to your free Cloud Account automatically with Github. If you have no Github or do not wish to
-use this login method, email-and-password login is available as well. In either case, simply go to the
+Creating an Account is easy and free. As we talked about in the [Overview](/cloud/overview/), we've made life easy for you by giving you the
+option to create and log in to your free Cloud Account automatically with Github. If you don't have a Github account or prefer not to
+use this login method, email-and-password login is available, as well. In either case, simply go to the
 [Login Page](https://directus.cloud/login) and follow the prompts.
 
 ## Manage Account
 
 ![Manage Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/managing-your-account-20220225A.webp)
 
-To update your name or email, follow the steps below.
+To update your name or email:
 
-1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
+1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account page.
 2. Toggle <span mi icon prmry>edit</span> to allow edits.
 3. Change your name and email as desired.
 4. Click the **"Save"** button.
@@ -36,21 +36,21 @@ To update your name or email, follow the steps below.
 
 ![User Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/reset-password-20220322A.webp)
 
-To reset your password, follow the steps below.
+To reset your password:
 
-1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
+1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account page.
 2. Click **"Send Reset Link"**. An email will be sent to reset password.
-3. Login to the email associated with your Account.
-4. Open the email and click **"Reset Password"**. You will be directed to the Password Reset Page.
+3. Log in to the email associated with your Account.
+4. Open the email and click **"Reset Password"**. You will be directed to the Password Reset page.
 5. Reset the password as desired and click **"Reset Password"**.
 
 ## Destroy Account
 
 ![Destroy Account](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/destroying-your-account-20220225A.webp)
 
-To destroy your Directus Cloud Account, follow the steps below.
+To destroy your Directus Cloud Account:
 
-1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account Page.
+1. Click <span mi icon>account_circle</span> in the Dashboard Header to enter your Account page.
 2. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.
 3. Type in your password, then click the **"Destroy Account"** button.
 
