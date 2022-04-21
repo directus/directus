@@ -15,15 +15,15 @@ interface Props {
 	type: 'dateTime' | 'date' | 'time' | 'timestamp';
 	format?: string;
 	relative?: boolean;
-  strict?: boolean;
-  suffix?: boolean;
+	strict?: boolean;
+	suffix?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	format: 'long',
 	relative: false,
-  strict: false,
-  suffix: true,
+	strict: false,
+	suffix: true,
 });
 
 const { t } = useI18n();
@@ -47,11 +47,11 @@ const localValue = computed(() => {
 });
 
 const relativeFormat = (value: Date) => {
-  const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance
-  return fn(value, new Date(), {
-    addSuffix: props.suffix,
-  });
-}
+	const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance;
+	return fn(value, new Date(), {
+		addSuffix: props.suffix,
+	});
+};
 
 watch(
 	localValue,
