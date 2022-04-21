@@ -96,9 +96,10 @@ describe('/items', () => {
 
 					for (const guest of guests) {
 						guest.id = uuid();
-						guest.name = 'test@example.com';
+						guest.name = 'not-test@example.com';
 						guest.favorite_artist = artist.id;
 					}
+
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
