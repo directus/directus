@@ -115,7 +115,6 @@ export default defineComponent({
 	justify-content: center;
 	width: 100%;
 	height: 100%;
-	/*background: rgb(255 255 255 / 0.5);*/
 	backdrop-filter: blur(10px);
 }
 
