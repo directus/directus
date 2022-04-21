@@ -450,14 +450,40 @@ module.exports = {
 						title: 'Creating Extensions',
 					},
 					{
+						type: 'divider',
+					},
+					{
+						type: 'page',
+						path: '/extensions/modules',
+						title: 'Modules',
+					},
+					{
+						type: 'page',
+						path: '/extensions/layouts',
+						title: 'Layouts',
+					},
+					{
+						type: 'page',
+						path: '/extensions/interfaces',
+						title: 'Interfaces',
+					},
+					{
 						type: 'page',
 						path: '/extensions/displays',
 						title: 'Displays',
 					},
 					{
 						type: 'page',
-						path: '/extensions/email-templates',
-						title: 'Email Templates',
+						path: '/extensions/panels',
+						title: 'Panels',
+					},
+					{
+						type: 'page',
+						path: '/extensions/themes',
+						title: 'Themes',
+					},
+					{
+						type: 'divider',
 					},
 					{
 						type: 'page',
@@ -471,13 +497,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/extensions/interfaces',
-						title: 'Interfaces',
-					},
-					{
-						type: 'page',
-						path: '/extensions/layouts',
-						title: 'Layouts',
+						path: '/extensions/email-templates',
+						title: 'Email Templates',
 					},
 					{
 						type: 'page',
@@ -485,19 +506,17 @@ module.exports = {
 						title: 'Migrations',
 					},
 					{
-						type: 'page',
-						path: '/extensions/modules',
-						title: 'Modules',
+						type: 'divider',
 					},
 					{
 						type: 'page',
-						path: '/extensions/panels',
-						title: 'Panels',
+						path: '/generated/services',
+						title: 'Services',
 					},
 					{
 						type: 'page',
-						path: '/extensions/themes',
-						title: 'Themes',
+						path: '/generated/exceptions',
+						title: 'Exceptions',
 					},
 				],
 			},
@@ -570,6 +589,15 @@ module.exports = {
 		},
 	},
 	plugins: [
+		[
+			require('./typedoc/plugin.js'),
+			{
+				entryPoints: ['../api/src/index.ts'],
+				tsconfig: '../api/tsconfig.json',
+				out: 'generated',
+				publicPath: '/generated/',
+			},
+		],
 		[
 			'vuepress-plugin-clean-urls',
 			{

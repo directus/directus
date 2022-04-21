@@ -39,6 +39,8 @@
 		"micromark": "3.0.8",
 		"npm-watch": "0.11.0",
 		"slugify": "1.6.2",
+		"typedoc": "^0.22.15",
+		"typedoc-plugin-markdown": "^3.12.0",
 		"vuepress": "1.8.2",
 		"vuepress-plugin-clean-urls": "1.1.2"
 	}
