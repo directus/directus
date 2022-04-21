@@ -24,7 +24,7 @@ describe('/items', () => {
 		describe('Mathmatical Operators', () => {
 			describe('returns users with name _eq', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const name = 'test@example.com';
+					const name = 'users-with-eq@example.com';
 					const guests: any[] = createMany(createGuest, 10);
 					for (const guest of guests) {
 						guest.id = uuid();
@@ -63,7 +63,7 @@ describe('/items', () => {
 		describe('Logical Operators', () => {
 			describe('returns users with name equality _AND favorite_artist equality', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const name = 'test@example.com';
+					const name = 'users-with-name-and-favorite-artist@example.com';
 					const guests: any[] = createMany(createGuest, 10, { name });
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 					const artist = createArtist();
