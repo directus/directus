@@ -6,9 +6,9 @@
 			:placeholder="placeholder ? String(placeholder) : undefined"
 			:type="type"
 			:autocomplete="autocomplete"
+			:spellcheck="spellcheck"
 			:disabled="disabled"
 			v-bind="$attrs"
-			v-on="listeners"
 		/>
 	</div>
 </template>
@@ -20,13 +20,14 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { computed, ref, Ref, watch } from 'vue';
+import { ref, Ref, watch } from 'vue';
 
 interface Props {
 	disabled?: boolean;
 	placeholder?: string;
 	modelValue?: string | number;
 	type?: string;
+	spellcheck?: boolean;
 	autocomplete?: string;
 }
 
@@ -35,10 +36,15 @@ const props = withDefaults(defineProps<Props>(), {
 	placeholder: '',
 	modelValue: '',
 	type: 'text',
+	spellcheck: false,
 	autocomplete: 'off',
 });
 
-const emit = defineEmits(['update:modelValue', 'click', 'keydown', 'keyup', 'input', 'blur', 'focus']);
+/**
+ * Because we v-bind $attrs, any listeners defined on component will pass directly
+ * through to the input, so long as the emit is not defined here.
+ */
+const emit = defineEmits(['update:modelValue']);
 
 const inputField: Ref<HTMLInputElement | null> = ref(null);
 
@@ -55,15 +61,6 @@ watch(
 	}
 );
 
-const listeners = computed(() => ({
-	input: emitInput,
-	click: emitClick,
-	focus: emitFocus,
-	blur: emitBlur,
-	keydown: emitKeydown,
-	keyup: emitKeyup,
-}));
-
 function updateField(value: any) {
 	fieldValue.value = value;
 	emitUpdateModelValue(value);
@@ -78,26 +75,6 @@ function focusField() {
 
 function emitUpdateModelValue(value: any) {
 	emit('update:modelValue', value);
-}
-
-function emitInput(evt: InputEvent) {
-	emit('input', evt);
-}
-
-function emitFocus(evt: FocusEvent) {
-	emit('focus', evt);
-}
-function emitBlur(evt: FocusEvent) {
-	emit('blur', evt);
-}
-function emitClick(evt: MouseEvent) {
-	emit('click', evt);
-}
-function emitKeydown(evt: KeyboardEvent) {
-	emit('keydown', evt);
-}
-function emitKeyup(evt: KeyboardEvent) {
-	emit('keyup', evt);
 }
 </script>
 
