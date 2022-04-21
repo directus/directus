@@ -7,8 +7,26 @@ export default defineDisplay({
 	description: '$t:displays.datetime.description',
 	icon: 'query_builder',
 	component: DisplayDateTime,
-	options: [
-		{
+	options: ({ field: { meta } }) => {
+		const options = [
+			{
+				field: 'relative',
+				name: '$t:displays.datetime.relative',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.datetime.relative_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			}
+		];
+		
+		options.push(! meta?.options.relative ? ({
 			field: 'format',
 			name: '$t:displays.datetime.format',
 			type: 'string',
@@ -27,23 +45,7 @@ export default defineDisplay({
 			schema: {
 				default_value: 'long',
 			},
-		},
-		{
-			field: 'relative',
-			name: '$t:displays.datetime.relative',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:displays.datetime.relative_label',
-				},
-			},
-			schema: {
-				default_value: false,
-			},
-		},
-		{
+		}) : ({
 			field: 'strict',
 			name: 'Strict',
 			type: 'boolean',
@@ -74,7 +76,9 @@ export default defineDisplay({
 			schema: {
 				default_value: true,
 			},
-		},
-	],
+		});
+		
+		return options
+	},
 	types: ['dateTime', 'date', 'time', 'timestamp'],
 });
