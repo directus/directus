@@ -8,7 +8,7 @@ export default defineDisplay({
 	icon: 'query_builder',
 	component: DisplayDateTime,
 	options: ({ field }) => {
-		const options = field.meta?.options || {};
+		const options = field.meta?.display_options || {};
 		const fields = [
 			{
 				field: 'relative',
@@ -27,7 +27,7 @@ export default defineDisplay({
 			},
 		];
 
-		if (options.relative) {
+		if (!options.relative) {
 			fields.push({
 				field: 'format',
 				name: '$t:displays.datetime.format',
@@ -51,22 +51,6 @@ export default defineDisplay({
 		} else {
 			fields.push(
 				{
-					field: 'strict',
-					name: 'Strict',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-						options: {
-							label: 'Use strict units',
-						},
-						note: "Removes words like 'almost', 'over', 'less than'",
-					},
-					schema: {
-						default_value: false,
-					},
-				},
-				{
 					field: 'suffix',
 					name: 'Suffix',
 					type: 'boolean',
@@ -80,6 +64,22 @@ export default defineDisplay({
 					},
 					schema: {
 						default_value: true,
+					},
+				},
+				{
+					field: 'strict',
+					name: 'Strict',
+					type: 'boolean',
+					meta: {
+						width: 'full',
+						interface: 'boolean',
+						options: {
+							label: 'Use strict units',
+						},
+						note: "Removes words like 'almost', 'over', 'less than'",
+					},
+					schema: {
+						default_value: false,
 					},
 				}
 			);
