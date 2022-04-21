@@ -136,6 +136,15 @@ export default defineLayout<LayoutOptions>({
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
 				},
+				views: {
+					dayGridMonth: {
+						eventTimeFormat: {
+							hour: 'numeric',
+							minute: '2-digit',
+							meridiem: 'narrow',
+						},
+					},
+				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
 				eventClick(info) {
