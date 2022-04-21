@@ -81,7 +81,6 @@ delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
 reset_bookmark: Đặt lại Dấu trang
-rename_bookmark: Đổi tên Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-
@@ -111,7 +110,6 @@ recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
 unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
 nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
-unknown_validation_errors: 'Có một số lỗi xảy ra với những trường ẩn sau:'
 validationError:
   eq: Dữ liệu phải là {valid}
   neq: Dữ liệu không thể là {invalid}
@@ -285,6 +283,9 @@ interface_label: Giao diện
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
+functions:
+  year: Năm
+  month: Tháng
 minutes: Phút
 hours: Giờ
 month: Tháng
@@ -899,7 +900,6 @@ layouts:
     subtitle: Tiêu đề phụ
   tabular:
     tabular: Bảng
-    fields: Các trường
     spacing: Khoảng cách
     comfortable: Thoải mái
     compact: Thu gọn

@@ -9,7 +9,6 @@ import ldap, {
 	InappropriateAuthenticationError,
 	InvalidCredentialsError,
 	InsufficientAccessRightsError,
-	OperationsError,
 } from 'ldapjs';
 import ms from 'ms';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
@@ -90,13 +89,8 @@ export class LDAPAuthDriver extends AuthDriver {
 					resolve();
 				});
 
-				res.on('error', (err: Error) => {
-					if (!(err instanceof OperationsError)) {
-						reject(handleError(err));
-						return;
-					}
-
-					// Rebind on OperationsError
+				res.on('error', () => {
+					// Attempt to rebind on search error
 					this.bindClient.bind(bindDn, bindPassword, (err: Error | null) => {
 						if (err) {
 							const error = handleError(err);
@@ -113,8 +107,8 @@ export class LDAPAuthDriver extends AuthDriver {
 				});
 
 				res.on('end', (result: LDAPResult | null) => {
+					// Handle edge case where authenticated bind user cannot read their own DN
 					if (result?.status === 0) {
-						// Handle edge case where authenticated bind user could not fetch their own DN
 						reject(new UnexpectedResponseException('Failed to find bind user record'));
 					}
 				});
@@ -227,7 +221,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		await this.validateBindClient();
 
-		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute } = this.config;
+		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId } = this.config;
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
@@ -269,7 +263,10 @@ export class LDAPAuthDriver extends AuthDriver {
 		const userId = await this.fetchUserId(userInfo.dn);
 
 		if (userId) {
-			await this.usersService.updateOne(userId, { role: userRole?.id ?? null });
+			// Only sync roles if the AD groups are configured
+			if (groupDn) {
+				await this.usersService.updateOne(userId, { role: userRole?.id ?? defaultRoleId ?? null });
+			}
 			return userId;
 		}
 
@@ -283,7 +280,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			last_name: userInfo.lastName,
 			email: userInfo.email,
 			external_identifier: userInfo.dn,
-			role: userRole?.id,
+			role: userRole?.id ?? defaultRoleId,
 		});
 
 		return (await this.fetchUserId(userInfo.dn)) as string;

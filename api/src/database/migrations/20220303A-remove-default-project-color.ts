@@ -1,13 +1,22 @@
 import { Knex } from 'knex';
+import { getHelpers } from '../helpers';
 
 export async function up(knex: Knex): Promise<void> {
-	await knex.schema.alterTable('directus_settings', (table) => {
-		table.string('project_color', 50).defaultTo(null).alter();
+	const helper = getHelpers(knex).schema;
+
+	await helper.changeToString('directus_settings', 'project_color', {
+		nullable: true,
+		default: null,
+		length: 50,
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.alterTable('directus_settings', (table) => {
-		table.string('project_color', 10).defaultTo('#00C897').alter();
+	const helper = getHelpers(knex).schema;
+
+	await helper.changeToString('directus_settings', 'project_color', {
+		nullable: true,
+		default: '#00C897',
+		length: 10,
 	});
 }

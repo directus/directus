@@ -92,6 +92,7 @@ export default defineLayout<LayoutOptions>({
 		const endDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
+		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
@@ -126,6 +127,7 @@ export default defineLayout<LayoutOptions>({
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
 				height: '100%',
+				firstDay: firstDay.value ?? 0,
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
@@ -133,6 +135,15 @@ export default defineLayout<LayoutOptions>({
 					left: 'prevYear,prev,next,nextYear today',
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
+				},
+				views: {
+					dayGridMonth: {
+						eventTimeFormat: {
+							hour: 'numeric',
+							minute: '2-digit',
+							meridiem: 'narrow',
+						},
+					},
 				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
@@ -236,6 +247,7 @@ export default defineLayout<LayoutOptions>({
 			dateFields,
 			startDateField,
 			endDateField,
+			firstDay,
 			showingCount,
 			createCalendar,
 			destroyCalendar,

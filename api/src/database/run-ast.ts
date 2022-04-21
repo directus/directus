@@ -95,6 +95,7 @@ export default async function runAST(
 					const node = merge({}, nestedNode, {
 						query: { limit: env.RELATIONAL_BATCH_SIZE, offset: batchCount * env.RELATIONAL_BATCH_SIZE },
 					});
+
 					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
@@ -108,7 +109,11 @@ export default async function runAST(
 					batchCount++;
 				}
 			} else {
-				nestedItems = (await runAST(nestedNode, schema, { knex, nested: true })) as Item[] | null;
+				const node = merge({}, nestedNode, {
+					query: { limit: -1 },
+				});
+
+				nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items
@@ -163,7 +168,7 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelectInternal.push(child.fieldKey);
+			columnsToSelectInternal.push(child.relation.field);
 		}
 
 		if (child.type === 'a2o') {
@@ -188,7 +193,9 @@ async function parseCurrentLevel(
 
 	const fieldNodes = columnsToSelect.map(
 		(column: string) =>
-			children.find((childNode) => childNode.type === 'field' && childNode.fieldKey === column) ?? {
+			children.find(
+				(childNode) => childNode.type === 'field' && (childNode.fieldKey === column || childNode.name === column)
+			) ?? {
 				type: 'field',
 				name: column,
 				fieldKey: column,
@@ -220,7 +227,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 			return helpers.st.asText(table, field.field);
 		}
 
-		return getColumn(knex, table, fieldNode.name, alias);
+		return getColumn(knex, table, fieldNode.name, alias, schema);
 	};
 }
 
@@ -317,7 +324,7 @@ function mergeWithParentItems(
 			const itemChild = nestedItems.find((nestedItem) => {
 				return (
 					nestedItem[schema.collections[nestedNode.relation.related_collection!].primary] ==
-					parentItem[nestedNode.fieldKey]
+					parentItem[nestedNode.relation.field]
 				);
 			});
 
@@ -341,7 +348,15 @@ function mergeWithParentItems(
 			});
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
-			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
+
+			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);
+			}
+
+			if (nestedNode.query.limit !== -1) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
+			}
+
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {
 				// This is pre-filled in get-ast-from-query
 				const sortField = nestedNode.query.sort![0]!;

@@ -28,7 +28,6 @@
 	},
 	"devDependencies": {
 		"@types/dockerode": "3.3.0",
-		"@types/faker": "5.5.9",
 		"@types/jest": "27.4.1",
 		"@types/listr": "0.14.4",
 		"@types/node": "16.11.9",
@@ -41,7 +40,6 @@
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-prettier": "4.0.0",
 		"eslint-plugin-vue": "7.20.0",
-		"faker": "5.5.3",
 		"globby": "11.0.4",
 		"jest": "27.5.1",
 		"knex": "0.95.15",

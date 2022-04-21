@@ -10,7 +10,7 @@ import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
 
-const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
+const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
 
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
@@ -39,8 +39,8 @@ const defaults: Record<string, any> = {
 
 	ROOT_REDIRECT: './admin',
 
-	CORS_ENABLED: true,
-	CORS_ORIGIN: true,
+	CORS_ENABLED: false,
+	CORS_ORIGIN: false,
 	CORS_METHODS: 'GET,POST,PATCH,DELETE',
 	CORS_ALLOWED_HEADERS: 'Content-Type,Authorization',
 	CORS_EXPOSED_HEADERS: 'Content-Range',
@@ -77,9 +77,15 @@ const defaults: Record<string, any> = {
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
+	IMPORT_IP_DENY_LIST: '0.0.0.0',
+
 	SERVE_APP: true,
 
 	RELATIONAL_BATCH_SIZE: 25000,
+
+	EXPORT_BATCH_SIZE: 5000,
+
+	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -95,12 +101,15 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 
 	DB_EXCLUDE_TABLES: 'array',
+	IMPORT_IP_DENY_LIST: 'array',
+
+	FILE_METADATA_ALLOW_LIST: 'array',
 };
 
 let env: Record<string, any> = {
 	...defaults,
-	...getEnv(),
 	...process.env,
+	...getEnv(),
 };
 
 process.env = env;
@@ -116,8 +125,8 @@ export default env;
 export function refreshEnv(): void {
 	env = {
 		...defaults,
-		...getEnv(),
 		...process.env,
+		...getEnv(),
 	};
 
 	process.env = env;
@@ -283,6 +292,7 @@ function processValues(env: Record<string, any>) {
 
 		if (String(value).includes(',')) {
 			env[key] = toArray(value);
+			continue;
 		}
 
 		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
