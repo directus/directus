@@ -1414,6 +1414,7 @@ export class GraphQLService {
 				selection = selection as FieldNode | InlineFragmentNode;
 
 				let current: string;
+				let currentAlias: string | null = null;
 
 				// Union type (Many-to-Any)
 				if (selection.kind === 'InlineFragment') {
@@ -1428,8 +1429,26 @@ export class GraphQLService {
 
 					current = selection.name.value;
 
+					if (selection.alias) {
+						currentAlias = selection.alias.value;
+					}
+
 					if (parent) {
 						current = `${parent}.${current}`;
+
+						if (currentAlias) {
+							currentAlias = `${parent}.${currentAlias}`;
+
+							// add nested aliases into deep query
+							if (selection.selectionSet) {
+								if (!query.deep) query.deep = {};
+								set(
+									query.deep,
+									parent,
+									merge(get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } })
+								);
+							}
+						}
 					}
 				}
 
@@ -1446,7 +1465,7 @@ export class GraphQLService {
 							children.push(`${subSelection.name!.value}(${rootField})`);
 						}
 					} else {
-						children = parseFields(selection.selectionSet.selections, current);
+						children = parseFields(selection.selectionSet.selections, currentAlias ?? current);
 					}
 
 					fields.push(...children);

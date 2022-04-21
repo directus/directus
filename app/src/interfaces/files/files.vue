@@ -62,16 +62,18 @@
 			</draggable>
 		</v-list>
 
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="showUpload = true">{{ t('upload_file') }}</v-button>
-			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
+		<div class="actions">
+			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
+				{{ t('upload_file') }}
+			</v-button>
+			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
 		</div>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled="disabled"
 			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -153,6 +155,7 @@ const props = withDefaults(
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
+		folder: undefined,
 	}
 );
 
@@ -210,7 +213,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
+const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
 	useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
@@ -249,7 +252,6 @@ const currentlyEditing = ref<string | number | null>(null);
 const relatedPrimaryKey = ref<string | number | null>(null);
 const selectModalActive = ref(false);
 const editsAtStart = ref<Record<string, any>>({});
-let newItem = false;
 
 function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
@@ -257,7 +259,6 @@ function editItem(item: DisplayItem) {
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
-	newItem = false;
 	editsAtStart.value = item;
 
 	editModalActive.value = true;
@@ -304,7 +305,7 @@ function onUpload(files: Record<string, any>[]) {
 		};
 	});
 
-	update(...filesAsJunctionRows);
+	create(...filesAsJunctionRows);
 }
 
 const downloadUrl = computed(() => {

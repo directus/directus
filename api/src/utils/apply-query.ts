@@ -375,7 +375,7 @@ export function applyFilter(
 					subQueryKnex
 						.select({ [field]: column })
 						.from(collection)
-						.whereNotNull(field);
+						.whereNotNull(column);
 
 					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
 				};
