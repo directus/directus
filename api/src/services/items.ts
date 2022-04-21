@@ -693,7 +693,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					continue;
 				}
 
-				defaults[name] = field.defaultValue;
+				if (field.defaultValue) defaults[name] = field.defaultValue;
 			}
 
 			return defaults as Partial<Item>;

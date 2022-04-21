@@ -96,15 +96,15 @@ or incognito tab.
 
 ## Creating and Viewing Shares
 
-A User's ability to create shares will be based on their Role's permissions. If you are an `Administrator`,
-_congratulations!_ You can share any Item you want. However, other Roles created will likely have limits set on their
-Share permissions.
-
 <!--
 @TODO
 configuration > users-roles-permissions
 getting-started > intro-tutorial
 -->
+
+A User's ability to create shares will be based on their Role's permissions. If you are an `Administrator`,
+_congratulations!_ You can share any Item you want. However, other Roles created will likely have limits set on their
+Share permissions.
 
 Any given Share will inherit the same read permissions as the Role it was associated with in the Share Options Menu.
 

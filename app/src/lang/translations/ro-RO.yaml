@@ -1227,6 +1227,11 @@ normal: Normal
 success: Succes
 warning: Avertisment
 danger: Pericol
+colors:
+  orange: Oranj
+  black: Negru
+  gray: Gri
+  white: Alb
 junction_collection: Colecție de joncțiuni
 latency: Latență
 login: Autentificare
@@ -1255,6 +1260,9 @@ sign_out: Deconectare
 sign_out_confirm: Ești sigur că vrei să te deconectezi?
 something_went_wrong: Ceva nu a funcţionat corect.
 sort_direction: Sortează direcția
+export_location: Exportare locație
+export_started: Export inițiat
+export_started_copy: Exportul dvs. a început. Vei fi notificat când este gata de descărcare.
 sort_asc: Sortează ascendent
 sort_desc: Sortează descrescător
 template: Șablon
@@ -1281,6 +1289,8 @@ interfaces:
     no_rules: Nu există reguli configurate
     change_value: Click pentru a schimba valoarea
     placeholder: Trage regulile aici
+  fields:
+    name: Câmpuri
   group-accordion:
     name: Acordeon
     description: Afișează câmpurile sau grupurile ca secțiuni acordeon
@@ -1340,6 +1350,7 @@ interfaces:
     include_seconds: Include secunde
     set_to_now: Setează acum
     use_24: Utilizaţi formatul de 24 de ore
+    placeholder: Alegeți o dată...
   system-display-template:
     display-template: Afişare şablon
     description: Combină textul static cu valorile dinamice ale câmpului
@@ -1455,6 +1466,7 @@ interfaces:
     add_label: 'Eticheta „Creează nou”'
     field_name_placeholder: Introduceți numele câmpului...
     field_note_placeholder: Introduceți nota câmpului...
+    incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
   slider:
     slider: Glisor
     description: Selectați un număr folosind un glisor
@@ -1472,6 +1484,7 @@ interfaces:
     auto_formatter: Folosește formatarea automată pentru titlu
     alphabetize: Așează în ordine alfabetică
     alphabetize_label: Forțează ordinea alfabetică
+    add_tags: Adaugă o etichetă și apasă Enter...
   input:
     input: Input
     description: Introduceți manual o valoare
@@ -1489,6 +1502,11 @@ interfaces:
   input-multiline:
     textarea: Zonă de text
     description: Introduceți text brut pe mai multe linii
+  input-translated-string:
+    input-translated-string: Șiruri traduse
+    description: Selectați sau adăugați un șir de traducere
+    search_placeholder: Caută...
+    new_translation_string: Șirul Traducător nou
   boolean:
     toggle: Comutare
     description: Comutare între pornit și oprit
@@ -1671,6 +1689,8 @@ layouts:
     calendar: Calendar
     start_date_field: Câmp dată de început
     end_date_field: Câmp dată de sfârșit
+    optional: Opţional
+    first_day: Prima zi a săptămânii
   map:
     map: Hartă
     basemap: Basemap
@@ -1685,6 +1705,23 @@ layouts:
     find_location: Găsește locația...
     default_template: Se folosește Implicit Colecția...
     no_compatible_fields: Nu există câmpuri compatibile
+  kanban:
+    name: Kanban,
+    group_field: Grupare după
+    group_field_placeholder: Câmp pentru grup de...,
+    group_title: Titlul grupului
+    group_title_placeholder: Câmp pentru titlurile grupului...,
+    title: Titlu card
+    title_placeholder: Câmp titlu opțional...,
+    text: Text Card,
+    text_placeholder: Câmp text opțional...,
+    date: Data cardului,
+    date_placeholder: Câmp de dată opțional...,
+    tags: Tag-uri de card,
+    tags_placeholder: Câmp etichete opționale...,
+    user: Utilizator Card,
+    user_placeholder: Câmp opțional de utilizator...,
+    image: Imaginea cardului,
 panels:
   metric:
     name: Metric

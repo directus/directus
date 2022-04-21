@@ -3,7 +3,7 @@
  */
 
 import { Knex } from 'knex';
-import { cloneDeep, mapKeys, omitBy, uniq } from 'lodash';
+import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
 import { AST, FieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
@@ -114,10 +114,17 @@ export default async function getASTFromQuery(
 		for (const fieldKey of fields) {
 			let name = fieldKey;
 
-			const isAlias = (query.alias && name in query.alias) ?? false;
+			if (query.alias) {
+				// check for field alias (is is one of the key)
+				if (name in query.alias) {
+					name = query.alias[fieldKey];
+				}
 
-			if (isAlias) {
-				name = query.alias![fieldKey];
+				// check for junction alias (it is one of the value instead of the key)
+				if (Object.values(query.alias).includes(name)) {
+					const aliasKey = Object.keys(query.alias).find((key) => query.alias?.[key] === name);
+					if (aliasKey && fieldKey !== aliasKey) name = aliasKey;
+				}
 			}
 
 			const isRelational =
@@ -222,6 +229,10 @@ export default async function getASTFromQuery(
 				if (permissions && permissions.some((permission) => permission.collection === relatedCollection) === false) {
 					continue;
 				}
+
+				// update query alias for children parseFields
+				const deepAlias = getDeepQuery(deep?.[fieldKey] || {})?.alias;
+				if (!isEmpty(deepAlias)) query.alias = deepAlias;
 
 				child = {
 					type: relationType,
