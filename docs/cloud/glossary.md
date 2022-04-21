@@ -105,7 +105,7 @@ data will be delivered with the lowest possible latency.
 
 ## Infrastructure
 
-In the context of these docs, Infrastructure refers refers to the hardware running your Project, including the
+In the context of these docs, Infrastructure refers to the hardware running your Project, including the
 [database](#multi-tenancy), [serverless nodes](#nodes), [asset storage](#asset-storage) and [global CDN](#global-cdn).
 Infrastructure differs by Project tier. Please refer to [Projects](/cloud/projects) as well as the Infrastructure
 section on the [Pricing page](https://directus.io/pricing/) for side-by-side comparisons.
