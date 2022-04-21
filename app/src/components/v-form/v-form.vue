@@ -334,7 +334,7 @@ export default defineComponent({
 		}
 
 		function unsetValue(field: Field) {
-			if (isDisabled(field)) return;
+			if (!props.batchMode && isDisabled(field)) return;
 
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };
