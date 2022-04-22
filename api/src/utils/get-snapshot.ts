@@ -2,10 +2,10 @@ import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { version } from '../../package.json';
-import { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types';
+import { Snapshot, SnapshotField, SnapshotRelation } from '../types';
 import { Knex } from 'knex';
 import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
-import { SchemaOverview, Field, Relation } from '@directus/shared/types';
+import { SchemaOverview, Collection, Field, Relation } from '@directus/shared/types';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
