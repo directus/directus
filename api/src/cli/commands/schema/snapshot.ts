@@ -6,8 +6,6 @@ import path from 'path';
 import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
 import { flushCaches } from '../../../cache';
-import { sortBy } from 'lodash';
-import sortDeep from 'smart-deep-sort';
 
 export async function snapshot(
 	snapshotPath: string,
@@ -44,19 +42,11 @@ export async function snapshot(
 
 	const snapshot = await getSnapshot({ database });
 
-	const snapshotSorted = {
-		version: snapshot.version,
-		directus: snapshot.directus,
-		collections: sortBy(sortDeep(snapshot.collections), ['collection']),
-		fields: sortBy(sortDeep(snapshot.fields), ['collection', 'field']),
-		relations: sortBy(sortDeep(snapshot.relations), ['collection', 'field']),
-	};
-
 	try {
 		if (options?.format === 'yaml') {
-			await fs.writeFile(filename, toYaml(snapshotSorted));
+			await fs.writeFile(filename, toYaml(snapshot));
 		} else {
-			await fs.writeFile(filename, JSON.stringify(snapshotSorted));
+			await fs.writeFile(filename, JSON.stringify(snapshot));
 		}
 
 		logger.info(`Snapshot saved to ${filename}`);
