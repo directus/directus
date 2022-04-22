@@ -59,7 +59,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				"c"."DATA_SCALE" "numeric_scale",
 				"uc"."CONSTRAINT_TYPE" "column_key",
 				"c"."CHAR_LENGTH" "max_length",
-				"c"."VIRTUAL_COLUMN" "is_generated"  
+				"c"."VIRTUAL_COLUMN" "is_generated"
 			FROM "USER_TAB_COLS" "c"
 			LEFT JOIN (
 				SELECT /*+ rule */
