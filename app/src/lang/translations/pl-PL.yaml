@@ -1804,7 +1804,6 @@ panels:
     name: Lista
     description: Filtruj i wyświetl pola z kolekcji
   barchart:
-    name: Wykres słupkowy
     description: Pasek lub wykresy kolumnowe do porównywania grup wartości
     select_field: Musisz wybrać pole.
     select_collection: Musisz wybrać kolekcję.
