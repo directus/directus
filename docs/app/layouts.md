@@ -18,10 +18,11 @@ to view and interact with Items in a Collection.
 
 The following sections detail the Layouts managed and supported by the Directus Team. Keep in mind that Directus is
 open-source, modular and extensible. You are free to create any Layout you need on self-hosted and Enterprise Cloud
-Projects. Additionally, Directus Cloud is always adding more Layouts to its Cloud Exclusive Extensions, so check back
-often to stay up-to-date with the latest and greatest. Additionaly, you can join the community on
-[Discord](https://discord.com/invite/directus) and [GitHub](https://github.com/directus/directus/discussions) to find
-thousands of engineers guiding development of the Directus platform.
+Projects. Additionally, Directus Cloud is always adding more Layouts to its
+[Cloud Exclusive Extensions](/cloud/glossary/#extensions), so check back often to stay up-to-date with the latest and
+greatest. Additionaly, you can join the community on [Discord](https://discord.com/invite/directus) and
+[GitHub](https://github.com/directus/directus/discussions) to find thousands of engineers guiding development of the
+Directus platform.
 
 ## How it Works
 
@@ -109,7 +110,11 @@ Layout used in the Content Module. It includes the following controls.
 
 Only available if a Sort column has been configured in the Collection's Data Model Settings.
 
-<!--@TODO config > Data Model Settings: Link -->
+<!--
+@TODO configuration > data-model
+Link
+-->
+
 
 :::
 
@@ -222,7 +227,8 @@ Link to Map Field
 
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
 task, because it groups Items onto columns according to their status _(e.g. "Not Started", "In Progress", "Under
-Review", "Complete", or any other status that is defined)_. The following controls are available.
+Review", "Complete", or any other status defined)_. The following controls are available.
+
 
 **Layout Options**
 
@@ -237,7 +243,7 @@ Review", "Complete", or any other status that is defined)_. The following contro
 - **Card Image** — Choose an Image Field to be displayed on each Item.
 - **Card Image Fit** — Toggle whether the image fit is cropped.
 - **Card User** — Choose the User Created Field to display their avatar in the bottom right corner.
-- **Show Ungrouped** — Toggle display of a status column containing Items with no assigned status.
+- **Show Ungrouped** — Toggle display of a column containing Items with no assigned status.
 
 **Subheader**\
 _There is no Subheader for the Kanban Layout._

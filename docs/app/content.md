@@ -30,7 +30,8 @@ learn more, see our guide on the [Collection Page](/app/content/collections).
 
 :::tip
 
-This Module is for management of Items. Collections are not managed through this Module, as that creates changes in the
+
+This Module is for managing Items. Collections are not managed through this Module, as that creates changes in the
 fundamental data model. Administrators manage Collections via the Settings menu. To learn more, see our guide on
 [data model configuration](/configuration/data-model).
 
@@ -40,9 +41,9 @@ fundamental data model. Administrators manage Collections via the Settings menu.
 
 ![Article Overview](https://cdn.directus.io/docs/v9/app-guide/content/content/content-20220415A/item-page-20220215A.webp)
 
-When an Item is clicked on the Collection Page, its Item Details Page is opened. This is a form primarily for viewing,
-editing and deleting an Item's Field Values. Options for commenting on, sharing, archiving, and reverting the Item are
-included as well. To learn more, see our guide on the [Item Page](/app/content/items).
+When an Item is clicked on within the Collection Page, its Item Page is opened. This is a form primarily for viewing,
+editing and deleting an Item. Options for commenting on, sharing, archiving, and reverting the Item are included as
+well. To learn more, see our guide on the [Item Page](/app/content/items).
 
 ::: tip Manage Items via the API
 
