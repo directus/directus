@@ -210,6 +210,9 @@ function emitValue(event: InputEvent) {
 		}
 	} else {
 		if (props.slug === true) {
+			// prevent pasting of non slugSafeCharacters from bypassing the keydown checks
+			value = value.replace(/[^a-zA-Z0-9-_~]/g, '');
+
 			const endsWithSpace = value.endsWith(' ');
 			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
 			if (endsWithSpace) value += props.slugSeparator;
@@ -217,6 +220,8 @@ function emitValue(event: InputEvent) {
 
 		if (props.dbSafe === true) {
 			value = value.replace(/\s/g, '_');
+			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
+			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 			// Replace é -> e etc
 			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 		}
