@@ -2,7 +2,7 @@
 	<img
 		v-if="imageThumbnail && !imgError"
 		:src="imageThumbnail"
-		:class="{ 'is-svg': value && value.type.includes('svg') }"
+		:class="{ 'is-svg': value && value.type?.includes('svg') }"
 		:alt="value.title"
 		@error="imgError = true"
 	/>
@@ -46,8 +46,8 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (!props.value) return null;
-			if (props.value.type.includes('svg')) return addTokenToURL(getRootPath() + `assets/${props.value.id}`);
-			if (props.value.type.includes('image') === false) return null;
+			if (props.value.type?.includes('svg')) return addTokenToURL(getRootPath() + `assets/${props.value.id}`);
+			if (props.value.type?.includes('image') === false) return null;
 			return addTokenToURL(getRootPath() + `assets/${props.value.id}?key=system-small-cover`);
 		});
 
