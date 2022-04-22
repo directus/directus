@@ -47,7 +47,7 @@ function omitID(item: Record<string, any>) {
 	return omit(item, 'meta.id');
 }
 
-function sortDeep(raw: Collection | Field | Relation): Collection | Field | Relation {
+function sortDeep(raw: any): any {
 	if (isPlainObject(raw)) {
 		const mapped = mapValues(raw, (value) => {
 			return sortDeep(value);
