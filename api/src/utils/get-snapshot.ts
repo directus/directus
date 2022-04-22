@@ -5,7 +5,7 @@ import { version } from '../../package.json';
 import { Snapshot, SnapshotField, SnapshotRelation } from '../types';
 import { Knex } from 'knex';
 import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
-import { SchemaOverview, Collection, Field, Relation } from '@directus/shared/types';
+import { SchemaOverview } from '@directus/shared/types';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
