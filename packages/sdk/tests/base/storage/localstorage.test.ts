@@ -1,5 +1,5 @@
 /**
- * @jest-environment jest-environment-jsdom-global
+ * @jest-environment jsdom
  */
 
 import { LocalStorage } from '../../../src/base/storage';

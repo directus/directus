@@ -1,4 +1,4 @@
-<template function>
+<template>
 	<div class="v-card-subtitle"><slot /></div>
 </template>
 

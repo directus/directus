@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
@@ -22,7 +22,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: undefined,
 		},
@@ -31,12 +31,13 @@ export default defineComponent({
 			default: 'item-group',
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const { value: selection, multiple, max, mandatory } = toRefs(props);
+		const { modelValue: selection, multiple, max, mandatory } = toRefs(props);
 		useGroupableParent(
 			{
 				selection: selection,
-				onSelectionChange: (newSelectionValues) => emit('input', newSelectionValues),
+				onSelectionChange: (newSelectionValues) => emit('update:modelValue', newSelectionValues),
 			},
 			{
 				multiple: multiple,

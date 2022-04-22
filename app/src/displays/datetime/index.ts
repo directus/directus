@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayDateTime from './datetime.vue';
 
 export default defineDisplay({
@@ -6,14 +6,14 @@ export default defineDisplay({
 	name: '$t:displays.datetime.datetime',
 	description: '$t:displays.datetime.description',
 	icon: 'query_builder',
-	handler: DisplayDateTime,
+	component: DisplayDateTime,
 	options: [
 		{
 			field: 'format',
 			name: '$t:displays.datetime.format',
 			type: 'string',
 			meta: {
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				width: 'half',
 				options: {
 					choices: [
@@ -34,7 +34,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.datetime.relative_label',
 				},

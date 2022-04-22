@@ -7,8 +7,8 @@ function handleSpecialWords(str: string, index: number, words: string[]): string
 	const lowercaseStr = str.toLowerCase();
 	const uppercaseStr = str.toUpperCase();
 
-	for (let i = 0; i < specialCase.length; i += 1) {
-		if (specialCase[i].toLowerCase() === lowercaseStr) return specialCase[i];
+	for (const special of specialCase) {
+		if (special.toLowerCase() === lowercaseStr) return special;
 	}
 
 	if (acronyms.includes(uppercaseStr)) return uppercaseStr;
@@ -44,9 +44,5 @@ function decamelize(string: string): string {
 
 export default function formatTitle(title: string, separator?: RegExp): string {
 	if (!separator) separator = new RegExp('/s|-|_| ', 'g');
-	return decamelize(title)
-		.split(separator)
-		.map(capitalize)
-		.map(handleSpecialWords)
-		.reduce(combine);
+	return decamelize(title).split(separator).map(capitalize).map(handleSpecialWords).reduce(combine);
 }

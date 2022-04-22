@@ -3,10 +3,10 @@ get:
   description: Retrieve a single folder by unique identifier.
   operationId: getFolder
   parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/Fields"
-    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -14,11 +14,11 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Folders"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+                $ref: '../../openapi.yaml#/components/schemas/Folders'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Folders
 
@@ -27,8 +27,8 @@ patch:
   description: Update an existing folder
   operationId: updateFolder
   parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/Fields"
-    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       application/json:
@@ -43,7 +43,7 @@ patch:
               example: 3
               description: Unique identifier of the parent folder. This allows for nested folders.
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -51,11 +51,11 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Folders"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+                $ref: '../../openapi.yaml#/components/schemas/Folders'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Folders
 
@@ -64,13 +64,13 @@ delete:
   description: Delete an existing folder
   operationId: deleteFolder
   responses:
-    "200":
+    '200':
       description: Successful request
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Folders
 parameters:
-  - $ref: "../../openapi.yaml#/components/parameters/UUId"
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

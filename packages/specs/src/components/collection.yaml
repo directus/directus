@@ -20,6 +20,11 @@ properties:
         type: string
         example: people
         nullable: true
+      color:
+        description: Choose an accent color for this collection.
+        type: string
+        example: '#6644ff'
+        nullable: true
       note:
         description: A note describing the collection.
         type: string

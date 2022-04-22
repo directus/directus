@@ -38,26 +38,29 @@ export type DirectusTypes = {
 	users: undefined;
 };
 
-export interface IDirectus<T extends TypeMap> {
+export interface IDirectusBase {
+	readonly url: string;
 	readonly auth: IAuth;
 	readonly storage: IStorage;
 	readonly transport: ITransport;
-
-	readonly activity: ActivityHandler<TypeOf<T, 'directus_activity'>>;
-	readonly collections: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
-	readonly fields: FieldsHandler<TypeOf<T, 'directus_fields'>>;
-	readonly files: FilesHandler<TypeOf<T, 'directus_files'>>;
-	readonly folders: FoldersHandler<TypeOf<T, 'directus_folders'>>;
-	readonly permissions: PermissionsHandler<TypeOf<T, 'directus_permissions'>>;
-	readonly presets: PresetsHandler<TypeOf<T, 'directus_presets'>>;
-	readonly relations: RelationsHandler<TypeOf<T, 'directus_relations'>>;
-	readonly revisions: RevisionsHandler<TypeOf<T, 'directus_revisions'>>;
-	readonly roles: RolesHandler<TypeOf<T, 'directus_roles'>>;
-	readonly settings: SettingsHandler<TypeOf<T, 'directus_settings'>>;
-	readonly users: UsersHandler<TypeOf<T, 'directus_users'>>;
 	readonly server: ServerHandler;
 	readonly utils: UtilsHandler;
 	readonly graphql: GraphQLHandler;
+}
+
+export interface IDirectus<T extends TypeMap> extends IDirectusBase {
+	readonly activity: ActivityHandler<TypeOf<T, 'directus_activity'>>;
+	readonly collections: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
+	readonly files: FilesHandler<TypeOf<T, 'directus_files'>>;
+	readonly fields: FieldsHandler<TypeOf<T, 'directus_fields'>>;
+	readonly folders: FoldersHandler<TypeOf<T, 'directus_folders'>>;
+	readonly permissions: PermissionsHandler<TypeOf<T, 'directus_permissions'>>;
+	readonly presets: PresetsHandler<TypeOf<T, 'directus_presets'>>;
+	readonly revisions: RevisionsHandler<TypeOf<T, 'directus_revisions'>>;
+	readonly relations: RelationsHandler<TypeOf<T, 'directus_relations'>>;
+	readonly roles: RolesHandler<TypeOf<T, 'directus_roles'>>;
+	readonly users: UsersHandler<TypeOf<T, 'directus_users'>>;
+	readonly settings: SettingsHandler<TypeOf<T, 'directus_settings'>>;
 
 	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I>;
 	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I>;

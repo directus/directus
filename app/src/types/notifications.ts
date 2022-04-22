@@ -1,10 +1,8 @@
-import VueI18n from 'vue-i18n';
-
-export interface NotificationRaw {
+export interface SnackbarRaw {
 	id?: string;
 	persist?: boolean;
-	title: string | VueI18n.TranslateResult;
-	text?: string | VueI18n.TranslateResult;
+	title: string;
+	text?: string;
 	type?: 'info' | 'success' | 'warning' | 'error';
 	icon?: string | null;
 	closeable?: boolean;
@@ -14,7 +12,7 @@ export interface NotificationRaw {
 	error?: Error;
 }
 
-export interface Notification extends NotificationRaw {
+export interface Snackbar extends SnackbarRaw {
 	readonly id: string;
 	readonly timestamp: number;
 }

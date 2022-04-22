@@ -1,4 +1,4 @@
-import { User } from '@/types';
+import { User } from '@directus/shared/types';
 
 export type Activity = {
 	id: number;

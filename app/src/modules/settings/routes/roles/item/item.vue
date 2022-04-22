@@ -1,57 +1,55 @@
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
-		<template #headline>{{ $t('settings_permissions') }}</template>
+	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false" @esc="confirmDelete = false">
+			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-if="primaryKey !== lastAdminRoleId"
+						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null"
 						@click="on"
-						v-tooltip.bottom="$t('delete')"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button
-				rounded
-				icon
-				@click="userInviteModalActive = true"
-				v-tooltip.bottom="$t('invite_users')"
-				class="invite-user"
-			>
+			<v-button v-tooltip.bottom="t('invite_users')" rounded icon secondary @click="userInviteModalActive = true">
 				<v-icon name="person_add" />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="t('save')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="$t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -65,18 +63,18 @@
 
 		<div class="roles">
 			<v-notice v-if="adminEnabled" type="info">
-				{{ $t('admins_have_all_permissions') }}
+				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
 			<v-form
+				v-model="edits"
 				collection="directus_roles"
 				:primary-key="primaryKey"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
-				v-model="edits"
 			/>
 		</div>
 
@@ -84,23 +82,39 @@
 			<role-info-sidebar-detail :role="item" />
 			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../../components/navigation.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
-import { useUserStore, usePermissionsStore } from '@/stores/';
+import { useUserStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
+import useShortcut from '@/composables/use-shortcut';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
-	name: 'roles-item',
+	name: 'RolesItem',
 	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview, UsersInvite },
 	props: {
 		primaryKey: {
@@ -111,19 +125,24 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		lastAdminRoleId: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 
-		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
+		const { edits, hasEdits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
 			primaryKey
 		);
-
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
 		const confirmDelete = ref(false);
 
@@ -145,7 +164,14 @@ export default defineComponent({
 			return !!values.app_access;
 		});
 
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) saveAndStay();
+		});
+
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
 		return {
+			t,
 			item,
 			loading,
 			error,
@@ -160,6 +186,9 @@ export default defineComponent({
 			adminEnabled,
 			userInviteModalActive,
 			appAccess,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		/**
@@ -169,6 +198,11 @@ export default defineComponent({
 		 * in case we're changing the current user's role
 		 */
 
+		async function saveAndStay() {
+			await save();
+			await userStore.hydrate();
+		}
+
 		async function saveAndQuit() {
 			await save();
 			await userStore.hydrate();
@@ -177,7 +211,14 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/roles`);
+			router.replace(`/settings/roles`);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 	},
 });
@@ -185,10 +226,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .roles {
@@ -202,21 +241,14 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 
 .permissions-overview,
 .roles .v-notice {
 	margin-bottom: 48px;
-}
-
-.invite-user {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 </style>

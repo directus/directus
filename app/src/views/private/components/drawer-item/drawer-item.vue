@@ -1,9 +1,9 @@
 <template>
-	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
-		<template #title v-if="template !== null">
-			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
+	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
+		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
+			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
-			<h1 class="type-title" v-else>
+			<h1 v-else class="type-title">
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
@@ -13,46 +13,69 @@
 		</template>
 
 		<template #actions>
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+			<slot name="actions" />
+			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
 		<div class="drawer-item-content">
 			<template v-if="junctionField">
+				<file-preview
+					v-if="file"
+					:src="file.src"
+					:mime="file.type"
+					:width="file.width"
+					:height="file.height"
+					:title="file.title"
+					:in-modal="true"
+				/>
+
 				<v-form
+					:disabled="disabled"
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
-					:edits="_edits[junctionField]"
+					:model-value="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
-					@input="setJunctionEdits"
+					:validation-errors="junctionField ? validationErrors : undefined"
+					autofocus
+					@update:model-value="setJunctionEdits"
 				/>
 
 				<v-divider v-if="showDivider" />
 			</template>
 
-			<v-form :loading="loading" :initial-values="item" :primary-key="primaryKey" :fields="fields" v-model="_edits" />
+			<v-form
+				v-model="internalEdits"
+				:disabled="disabled"
+				:loading="loading"
+				:initial-values="item"
+				:primary-key="primaryKey"
+				:fields="fields"
+				:validation-errors="!junctionField ? validationErrors : undefined"
+			/>
 		</div>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '@/api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, PropType, watch, toRefs } from 'vue';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
+import FilePreview from '@/views/private/components/file-preview';
 
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import i18n from '@/lang';
-import { Relation, Field } from '@/types';
+import { Field, Relation } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
+import { validateItem } from '@/utils/validate-item';
 
 export default defineComponent({
-	model: {
-		prop: 'edits',
-	},
+	components: { FilePreview },
 	props: {
 		active: {
 			type: Boolean,
@@ -64,7 +87,7 @@ export default defineComponent({
 		},
 		primaryKey: {
 			type: [String, Number],
-			required: true,
+			default: null,
 		},
 		edits: {
 			type: Object as PropType<Record<string, any>>,
@@ -73,6 +96,10 @@ export default defineComponent({
 		junctionField: {
 			type: String,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 		// There's an interesting case where the main form can be a newly created item ('+'), while
 		// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
@@ -89,34 +116,43 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:active', 'input'],
 	setup(props, { emit }) {
+		const { t, te } = useI18n();
+
+		const validationErrors = ref<any[]>([]);
+
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
-		const { _active } = useActiveState();
-		const {
-			junctionFieldInfo,
-			junctionRelatedCollection,
-			junctionRelatedCollectionInfo,
-			setJunctionEdits,
-		} = useJunction();
-		const { _edits, loading, item } = useItem();
+		const { internalActive } = useActiveState();
+		const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } =
+			useJunction();
+		const { internalEdits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
 		const { collection } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
 
+		const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
+
 		const title = computed(() => {
-			if (props.primaryKey === '+') {
-				return i18n.t('creating_in', {
-					collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
-				});
+			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
+
+			if (te(`collection_names_singular.${collection.collection}`)) {
+				return isNew.value
+					? t('creating_unit', {
+							unit: t(`collection_names_singular.${collection.collection}`),
+					  })
+					: t('editing_unit', {
+							unit: t(`collection_names_singular.${collection.collection}`),
+					  });
 			}
 
-			return i18n.t('editing_in', {
-				collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
-			});
+			return isNew.value
+				? t('creating_in', { collection: collection.name })
+				: t('editing_in', { collection: collection.name });
 		});
 
 		const showDivider = computed(() => {
@@ -140,7 +176,7 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (props.circularField) {
-				return fieldsWithPermissions.value.filter((field) => {
+				return fieldsWithPermissions.value.filter((field: Field) => {
 					return field.field !== props.circularField;
 				});
 			} else {
@@ -162,11 +198,15 @@ export default defineComponent({
 				null
 		);
 
+		const { file, isDirectusFiles } = useFile();
+
 		return {
-			_active,
-			_edits,
+			t,
+			internalActive,
+			internalEdits,
 			loading,
 			item,
+			validationErrors,
 			save,
 			cancel,
 			title,
@@ -182,12 +222,31 @@ export default defineComponent({
 			templateData,
 			templateDataLoading,
 			collectionInfo,
+			file,
+			isDirectusFiles,
 		};
+
+		function useFile() {
+			const isDirectusFiles = computed(() => {
+				return junctionRelatedCollection.value === 'directus_files';
+			});
+
+			const file = computed(() => {
+				if (isDirectusFiles.value === false || !item.value) return null;
+				const fileData = item.value?.[props.junctionField];
+				if (!fileData) return null;
+
+				const src = addTokenToURL(getRootPath() + `assets/${fileData.id}?key=system-large-contain`);
+				return { ...fileData, src };
+			});
+
+			return { file, isDirectusFiles };
+		}
 
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -197,13 +256,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useItem() {
 			const localEdits = ref<Record<string, any>>({});
 
-			const _edits = computed<Record<string, any>>({
+			const internalEdits = computed<Record<string, any>>({
 				get() {
 					if (props.edits !== undefined) {
 						return {
@@ -237,7 +296,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { _edits, loading, item, fetchItem };
+			return { internalEdits, loading, item, fetchItem };
 
 			async function fetchItem() {
 				loading.value = true;
@@ -256,7 +315,7 @@ export default defineComponent({
 					const response = await api.get(endpoint, { params: { fields } });
 
 					item.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -279,7 +338,7 @@ export default defineComponent({
 						...(item.value || {}),
 						[junctionFieldInfo.value.field]: response.data.data,
 					};
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -300,31 +359,28 @@ export default defineComponent({
 				// If this is a m2m/m2a, there will be 2 relations associated with this field
 				const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
 
-				const relationForField = relations.find((relation: Relation) => {
-					return relation.many_collection === props.collection && relation.many_field === props.junctionField;
+				const relationForField: Relation = relations.find((relation: Relation) => {
+					return relation.collection === props.collection && relation.field === props.junctionField;
 				});
 
-				if (relationForField.one_collection) return relationForField.one_collection;
-				if (relationForField.one_collection_field)
+				if (relationForField.related_collection) return relationForField.related_collection;
+				if (relationForField.meta?.one_collection_field)
 					return (
-						props.edits[relationForField.one_collection_field] || item.value?.[relationForField.one_collection_field]
+						props.edits[relationForField.meta.one_collection_field] ||
+						item.value?.[relationForField.meta.one_collection_field]
 					);
 				return null;
 			});
 
-			const junctionRelatedCollectionInfo = computed(() => {
-				if (!junctionRelatedCollection.value) return null;
-				const { info } = useCollection(junctionRelatedCollection.value);
-				return info.value;
-			});
+			const { info: junctionRelatedCollectionInfo } = useCollection(junctionRelatedCollection);
 
 			return { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits };
 
 			function setJunctionEdits(edits: any) {
 				if (!props.junctionField) return;
 
-				_edits.value = {
-					..._edits.value,
+				internalEdits.value = {
+					...internalEdits.value,
 					[props.junctionField]: edits,
 				};
 			}
@@ -334,14 +390,24 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
-				emit('input', _edits.value);
-				_active.value = false;
-				_edits.value = {};
+				const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
+				const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fields.value;
+				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
+
+				if (errors.length > 0) {
+					validationErrors.value = errors;
+					return;
+				}
+
+				emit('input', internalEdits.value);
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 
 			function cancel() {
-				_active.value = false;
-				_edits.value = {};
+				validationErrors.value = [];
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 		}
 	},

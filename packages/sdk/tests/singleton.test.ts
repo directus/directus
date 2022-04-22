@@ -36,9 +36,9 @@ describe('singleton', function () {
 
 		expect(settings).not.toBeNull();
 		expect(settings).not.toBeUndefined();
-		expect(settings!.url).toBe('http://website.com');
-		expect(settings!.title).toBe(`Website Title`);
-		expect(settings!.show_menu).toBe(true);
+		expect(settings?.url).toBe('http://website.com');
+		expect(settings?.title).toBe(`Website Title`);
+		expect(settings?.show_menu).toBe(true);
 	});
 
 	test(`can update an item`, async (url, nock) => {
@@ -63,8 +63,8 @@ describe('singleton', function () {
 
 		expect(settings).not.toBeNull();
 		expect(settings).not.toBeUndefined();
-		expect(settings!.url).toBe('http://website.com');
-		expect(settings!.title).toBe(`New Website Title`);
-		expect(settings!.show_menu).toBe(true);
+		expect(settings?.url).toBe('http://website.com');
+		expect(settings?.title).toBe(`New Website Title`);
+		expect(settings?.show_menu).toBe(true);
 	});
 });

@@ -1,18 +1,8 @@
-import { Field, FilterOperator } from '@/types';
-import { TranslateResult } from 'vue-i18n';
+import { DeepPartial, Field } from '@directus/shared/types';
 
 export type FormField = DeepPartial<Field> & {
 	field: string;
-	name: string | TranslateResult;
+	name: string;
 	hideLabel?: boolean;
 	hideLoader?: boolean;
-};
-
-export type ValidationError = {
-	code: string;
-	field: string;
-	type: FilterOperator;
-	valid?: number | string | (number | string)[];
-	invalid?: number | string | (number | string)[];
-	substring?: string;
 };

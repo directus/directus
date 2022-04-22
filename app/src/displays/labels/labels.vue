@@ -16,20 +16,16 @@
 			</v-chip>
 		</template>
 		<template v-else>
-			<display-color
-				v-for="item in items"
-				:key="item.value"
-				:value="item.background"
-				:default-color="defaultBackground"
-				v-tooltip="item.text"
-			/>
+			<display-color v-for="item in items" :key="item.value" v-tooltip="item.text" :value="item.background" />
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
+import { translate } from '@/utils/translate-object-values';
+import { isEmpty } from 'lodash';
 
 type Choice = {
 	value: string;
@@ -56,16 +52,9 @@ export default defineComponent({
 			type: Array as PropType<Choice[]>,
 			default: () => [],
 		},
-		defaultBackground: {
-			type: String,
-			default: '#eceff1',
-		},
-		defaultForeground: {
-			type: String,
-			default: '#263238',
-		},
 		type: {
 			type: String,
+			required: true,
 			validator: (val: string) => ['text', 'string', 'json', 'csv'].includes(val),
 		},
 	},
@@ -73,27 +62,39 @@ export default defineComponent({
 		const items = computed(() => {
 			let items: string[];
 
-			if (props.value === null) items = [];
+			if (isEmpty(props.value)) items = [];
 			else if (props.type === 'string') items = [props.value as string];
 			else items = props.value as string[];
 
 			return items.map((item) => {
 				const choice = (props.choices || []).find((choice) => choice.value === item);
 
+				let itemStringValue: string;
+
+				if (typeof item === 'object') {
+					itemStringValue = JSON.stringify(item);
+				} else {
+					if (props.format) {
+						itemStringValue = formatTitle(item);
+					} else {
+						itemStringValue = item;
+					}
+				}
+
 				if (choice === undefined) {
 					return {
 						value: item,
-						text: props.format ? formatTitle(item) : item,
-						foreground: props.defaultForeground,
-						background: props.defaultBackground,
+						text: itemStringValue,
+						foreground: 'var(--foreground-normal)',
+						background: 'var(--background-normal)',
 					};
 				} else {
-					return {
+					return translate({
 						value: item,
-						text: choice.text || (props.format ? formatTitle(item) : item),
-						foreground: choice.foreground || props.defaultForeground,
-						background: choice.background || props.defaultBackground,
-					};
+						text: choice.text || itemStringValue,
+						foreground: choice.foreground || 'var(--foreground-normal)',
+						background: choice.background || 'var(--background-normal)',
+					});
 				}
 			});
 		});

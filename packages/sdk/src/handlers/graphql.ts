@@ -14,10 +14,12 @@ export class GraphQLHandler {
 		});
 	}
 
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async items<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
 		return await this.request('/graphql', query, variables);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async system<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
 		return await this.request('/graphql/system', query, variables);
 	}

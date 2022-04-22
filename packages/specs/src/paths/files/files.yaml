@@ -4,8 +4,16 @@ get:
   tags:
     - Files
   operationId: getFiles
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -15,9 +23,9 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/Files"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+                  $ref: '../../openapi.yaml#/components/schemas/Files'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
 post:
   summary: Create a File
@@ -34,7 +42,7 @@ post:
             data:
               type: string
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -42,6 +50,6 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Files"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+                $ref: '../../openapi.yaml#/components/schemas/Files'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

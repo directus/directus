@@ -1,11 +1,11 @@
 import express from 'express';
-import asyncHandler from '../utils/async-handler';
-import { FoldersService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
-import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
-import { PrimaryKey } from '../types';
+import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
+import { FoldersService, MetaService } from '../services';
+import { PrimaryKey } from '../types';
+import asyncHandler from '../utils/async-handler';
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ router.post(
 				const record = await service.readOne(savedKeys[0], req.sanitizedQuery);
 				res.locals.payload = { data: record };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -95,7 +95,7 @@ router.get(
 );
 
 router.patch(
-	'/:collection',
+	'/',
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new FoldersService({
@@ -114,7 +114,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -140,7 +140,7 @@ router.patch(
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

@@ -1,5 +1,4 @@
-import { defineModule } from '@/modules/define';
-
+import { defineModule } from '@directus/shared/utils';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 
@@ -10,23 +9,35 @@ export default defineModule({
 	routes: [
 		{
 			name: 'users-collection',
-			path: '/',
+			path: '',
 			component: Collection,
-			props: (route) => ({
-				queryFilters: route.query,
-			}),
 		},
 		{
 			name: 'users-item',
-			path: '/:primaryKey',
+			path: ':primaryKey',
+			component: Item,
+			props: true,
+		},
+		{
+			path: 'roles',
+			redirect: '/users',
+		},
+		{
+			name: 'roles-collection',
+			path: 'roles/:role',
+			component: Collection,
+			props: true,
+		},
+		{
+			name: 'roles-item-add',
+			path: 'roles/:role/+',
 			component: Item,
 			props: (route) => ({
-				primaryKey: route.params.primaryKey,
-				preset: route.query,
+				primaryKey: '+',
+				role: route.params.role,
 			}),
 		},
 	],
-	order: 10,
 	preRegisterCheck(user, permissions) {
 		const admin = user.role.admin_access;
 		if (admin) return true;

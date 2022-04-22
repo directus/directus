@@ -85,7 +85,6 @@ function css(el, property) {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 $navbar-vertical-padding = 0.7rem
 $navbar-horizontal-padding = 30px
 
@@ -93,7 +92,7 @@ $navbar-horizontal-padding = 30px
   padding $navbar-vertical-padding $navbar-horizontal-padding
   line-height $navbarHeight - 1.4rem
 
-  background-color: #2CCDA6;
+  background-color var(--primary)
 
   a, span, img
     display inline-block
@@ -106,7 +105,7 @@ $navbar-horizontal-padding = 30px
   .site-name
     font-size 1.3rem
     font-weight 600
-    color $textColor
+    color var(--foreground-normal-alt)
     position relative
 
     opacity: 0;
@@ -127,7 +126,7 @@ $navbar-horizontal-padding = 30px
       vertical-align top
       input
         border none
-        color $textColor
+        color var(--foreground-normal-alt)
         padding 0 0.5rem 0 2rem
         background-position 0.5rem 0.5rem
         @media (max-width: 959px)
@@ -140,9 +139,9 @@ $navbar-horizontal-padding = 30px
       .suggestion
         &.focused
           a
-            color darken($accentColor, 10%)
+            color var(--primary-dark)
         a
-          color $textColor
+          color var(--foreground-normal-alt)
 
 @media (max-width: $MQMobile)
   .navbar
@@ -156,4 +155,8 @@ $navbar-horizontal-padding = 30px
       overflow hidden
       white-space nowrap
       text-overflow ellipsis
+
+@media (prefers-color-scheme: dark)
+  .navbar
+	  background-color: var(--background-normal)
 </style>

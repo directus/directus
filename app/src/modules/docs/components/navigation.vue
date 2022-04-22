@@ -1,16 +1,16 @@
 <template>
-	<v-list large :multiple="false" v-model="selection" :mandatory="false">
+	<v-list v-model="selection" nav :mandatory="false" scope="docs-navigation">
 		<navigation-item v-for="item in navSections" :key="item.name" :section="item" />
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from '@vue/composition-api';
+import { defineComponent, watch, ref } from 'vue';
 import NavigationItem from './navigation-item.vue';
 import navLinks from './links.yaml';
 
 function spreadPath(path: string) {
-	const sections = path.substr(1).split('/');
+	const sections = path.slice(1).split('/');
 	if (sections.length === 0) return [];
 
 	const paths: string[] = ['/' + sections[0]];
@@ -41,8 +41,9 @@ export default defineComponent({
 			() => props.path,
 			(newPath) => {
 				if (newPath === null) return;
-				selection.value = spreadPath(newPath.replace('/docs', ''));
-			}
+				selection.value = [...(selection.value || []), ...spreadPath(newPath.replace('/docs', ''))];
+			},
+			{ immediate: true }
 		);
 
 		return { navSections: navLinks, selection };

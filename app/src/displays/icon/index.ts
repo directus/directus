@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayIcon from './icon.vue';
 
 export default defineDisplay({
@@ -6,14 +6,14 @@ export default defineDisplay({
 	name: '$t:displays.icon.icon',
 	description: '$t:displays.icon.description',
 	icon: 'insert_emoticon',
-	handler: DisplayIcon,
+	component: DisplayIcon,
 	options: [
 		{
 			field: 'filled',
 			name: '$t:displays.icon.filled',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				width: 'half',
 				options: {
 					label: '$t:displays.icon.filled_label',
@@ -28,7 +28,7 @@ export default defineDisplay({
 			name: '$t:color',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 		},

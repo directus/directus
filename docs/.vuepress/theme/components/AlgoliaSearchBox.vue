@@ -1,113 +1,111 @@
 <template>
-  <form
-    id="search-form"
-    class="algolia-search-wrapper search-box"
-    role="search"
-  >
-    <input
-      id="algolia-search-input"
-      class="search-query"
-      :placeholder="placeholder"
-    >
-  </form>
+	<form id="search-form" class="algolia-search-wrapper search-box" role="search">
+		<input id="algolia-search-input" class="search-query" :placeholder="placeholder" />
+	</form>
 </template>
 
 <script>
 export default {
-  name: 'AlgoliaSearchBox',
+	name: 'AlgoliaSearchBox',
 
-  props: ['options'],
+	props: ['options'],
 
-  data () {
-    return {
-      placeholder: undefined
-    }
-  },
+	data() {
+		return {
+			placeholder: undefined,
+		};
+	},
 
-  watch: {
-    $lang (newValue) {
-      this.update(this.options, newValue)
-    },
+	watch: {
+		$lang(newValue) {
+			this.update(this.options, newValue);
+		},
 
-    options (newValue) {
-      this.update(newValue, this.$lang)
-    }
-  },
+		options(newValue) {
+			this.update(newValue, this.$lang);
+		},
+	},
 
-  mounted () {
-    this.initialize(this.options, this.$lang)
-    this.placeholder = this.$site.themeConfig.searchPlaceholder || ''
-  },
+	mounted() {
+		this.initialize(this.options, this.$lang);
+		this.placeholder = this.$site.themeConfig.searchPlaceholder || '';
+	},
 
-  methods: {
-    initialize (userOptions, lang) {
-      Promise.all([
-        import(/* webpackChunkName: "docsearch" */ 'docsearch.js/dist/cdn/docsearch.min.js'),
-        import(/* webpackChunkName: "docsearch" */ 'docsearch.js/dist/cdn/docsearch.min.css')
-      ]).then(([docsearch]) => {
-        docsearch = docsearch.default
-        const { algoliaOptions = {}} = userOptions
-        docsearch(Object.assign(
-          {},
-          userOptions,
-          {
-            inputSelector: '#algolia-search-input',
-            // #697 Make docsearch work well at i18n mode.
-            algoliaOptions: Object.assign({
-              'facetFilters': [`lang:${lang}`].concat(algoliaOptions.facetFilters || [])
-            }, algoliaOptions),
-            handleSelected: (input, event, suggestion) => {
-              const { pathname, hash } = new URL(suggestion.url)
-              const routepath = pathname.replace(this.$site.base, '/')
-              const _hash = decodeURIComponent(hash)
-              this.$router.push(`${routepath}${_hash}`)
-            }
-          }
-        ))
-      })
-    },
+	methods: {
+		initialize(userOptions, lang) {
+			Promise.all([
+				import(/* webpackChunkName: "docsearch" */ 'docsearch.js/dist/cdn/docsearch.min.js'),
+				import(/* webpackChunkName: "docsearch" */ 'docsearch.js/dist/cdn/docsearch.min.css'),
+			]).then(([docsearch]) => {
+				docsearch = docsearch.default;
+				const { algoliaOptions = {} } = userOptions;
+				docsearch(
+					Object.assign({}, userOptions, {
+						inputSelector: '#algolia-search-input',
+						// #697 Make docsearch work well at i18n mode.
+						algoliaOptions: Object.assign(
+							{
+								facetFilters: [`lang:${lang}`].concat(algoliaOptions.facetFilters || []),
+							},
+							algoliaOptions
+						),
+						handleSelected: (input, event, suggestion) => {
+							const { pathname, hash } = new URL(suggestion.url);
+							const routepath = pathname.replace(this.$site.base, '/');
+							const _hash = decodeURIComponent(hash);
+							this.$router.push(`${routepath}${_hash}`);
+						},
+					})
+				);
+			});
+		},
 
-    update (options, lang) {
-      this.$el.innerHTML = '<input id="algolia-search-input" class="search-query">'
-      this.initialize(options, lang)
-    }
-  }
-}
+		update(options, lang) {
+			this.$el.innerHTML = '<input id="algolia-search-input" class="search-query">';
+			this.initialize(options, lang);
+		},
+	},
+};
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .algolia-search-wrapper
   & > span
     vertical-align middle
   .algolia-autocomplete
     line-height normal
     .ds-dropdown-menu
-      background-color #fff
-      border 2px solid #D3DAE4
+      background-color var(--background-page)
+      border 2px solid var(--border-normal)
       border-radius 4px
       font-size 16px
       margin 6px 0 0
       padding 4px
       text-align left
       &:before
-        border-color #999
-      [class*=ds-dataset-]
+        border-color var(--border-normal)
+      [class^=ds-dataset-]
         border none
+        background var(--background-page)
         padding 0
       .ds-suggestions
         margin-top 0
       .ds-suggestion
-        border-bottom 1px solid $borderColor
+        border-bottom 1px solid var(--border-normal)
     .algolia-docsearch-suggestion--highlight
-      color #2c815b
+      color var(--primary-dark) !important
+      box-shadow inset 0 -2px 0 0 var(--primary) !important
+    .algolia-docsearch-suggestion--text
+      color var(--foreground-normal)
     .algolia-docsearch-suggestion
-      border-color $borderColor
+      border-color var(--border-normal)
       padding 0
+      background transparent
       .algolia-docsearch-suggestion--category-header
         padding 5px 10px
         margin-top 0
-        background $accentColor
+        background var(--primary)
+        border-bottom 1px solid var(--border-normal)
         color #fff
         font-weight 600
         .algolia-docsearch-suggestion--highlight
@@ -117,21 +115,26 @@ export default {
       .algolia-docsearch-suggestion--title
         font-weight 600
         margin-bottom 0
-        color $textColor
+        color var(--foreground-normal-alt)
       .algolia-docsearch-suggestion--subcategory-column
         vertical-align top
         padding 5px 7px 5px 5px
-        border-color $borderColor
-        background #f1f3f5
+        border-color var(--border-normal)
+        background var(--background-normal)
         &:after
           display none
       .algolia-docsearch-suggestion--subcategory-column-text
-        color #555
+        color var(--foreground-normal)
+			.algolia-docsearch-suggestion--content
+        background var(--background-page)
+    .algolia-docsearch-suggestion--content
+      &:before
+        background #d3dae4
     .algolia-docsearch-footer
-      border-color $borderColor
+      border-color var(--border-normal)
     .ds-cursor .algolia-docsearch-suggestion--content
-      background-color #e7edf3 !important
-      color $textColor
+      background-color var(--background-normal-alt) !important
+      color var(--foreground-normal-alt)
 
 @media (min-width: $MQMobile)
   .algolia-search-wrapper
@@ -169,4 +172,18 @@ export default {
       margin -3px 3px 0
       vertical-align middle
 
+@media (prefers-color-scheme: dark)
+	.algolia-search-wrapper
+		.algolia-autocomplete
+			.ds-dropdown-menu
+				&:before
+					border-color #455a64 !important
+					background #263238 !important
+				.algolia-docsearch-suggestion--category-header
+          .algolia-docsearch-suggestion--highlight
+            background rgba(255, 255, 255, 1)
+            color var(--primary) !important
+    .algolia-docsearch-suggestion--content
+      &:before
+        background #455a64
 </style>

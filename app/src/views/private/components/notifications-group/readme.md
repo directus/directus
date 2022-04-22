@@ -9,13 +9,17 @@ Renders a notification item for every notification in the notificationsStore que
 ```
 
 ## Props
+
 n/a
 
 ## Events
+
 n/a
 
 ## Slots
+
 n/a
 
 ## CSS Variables
+
 n/a

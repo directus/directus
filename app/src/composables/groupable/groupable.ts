@@ -1,9 +1,8 @@
-import Vue from 'vue';
-import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch } from '@vue/composition-api';
-import { notEmpty, isEmpty } from '@/utils/is-empty/';
+import { isEmpty, notEmpty } from '@/utils/is-empty/';
 import { isEqual } from 'lodash';
+import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 
-type GroupableInstance = {
+export type GroupableInstance = {
 	active: Ref<boolean>;
 	value: string | number | undefined;
 };
@@ -19,19 +18,29 @@ type GroupableOptions = {
 	watch?: boolean;
 };
 
-export function useGroupable(options?: GroupableOptions) {
+type UsableGroupable = {
+	active: Ref<boolean>;
+	toggle: () => void;
+	activate: () => void;
+	deactivate: () => void;
+};
+
+export function useGroupable(options?: GroupableOptions): UsableGroupable {
 	// Injects the registration / toggle functions from the parent scope
 	const parentFunctions = inject(options?.group || 'item-group', null);
 
 	if (isEmpty(parentFunctions)) {
 		return {
 			active: ref(false),
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			toggle: () => {},
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			activate: () => {},
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			deactivate: () => {},
+			toggle: () => {
+				// Do nothing
+			},
+			activate: () => {
+				// Do nothing
+			},
+			deactivate: () => {
+				// Do nothing
+			},
 		};
 	}
 
@@ -39,13 +48,20 @@ export function useGroupable(options?: GroupableOptions) {
 		register,
 		unregister,
 		toggle,
+		selection,
 	}: {
 		register: (item: GroupableInstance) => void;
 		unregister: (item: GroupableInstance) => void;
 		toggle: (item: GroupableInstance) => void;
+		selection: Ref<(number | string)[]>;
 	} = parentFunctions;
 
-	const active = ref(options?.active?.value === true ? true : false);
+	let startActive = false;
+
+	if (options?.active?.value === true) startActive = true;
+	if (options?.value && selection.value.includes(options.value)) startActive = true;
+
+	const active = ref(startActive);
 	const item = { active, value: options?.value };
 
 	register(item);
@@ -71,29 +87,35 @@ export function useGroupable(options?: GroupableOptions) {
 	return {
 		active,
 		toggle: () => {
-			active.value = !active.value;
 			toggle(item);
 		},
 		activate: () => {
 			if (active.value === false) toggle(item);
-			active.value = true;
 		},
 		deactivate: () => {
 			if (active.value === true) toggle(item);
-			active.value = false;
 		},
 	};
 }
 
 type GroupableParentState = {
-	selection?: Ref<(string | number)[]> | Ref<readonly (string | number)[]>;
+	selection?: Ref<(string | number)[] | undefined> | Ref<readonly (string | number)[] | undefined>;
 	onSelectionChange?: (newSelectionValues: readonly (string | number)[]) => void;
+	onToggle?: (item: GroupableInstance) => void;
 };
 
 type GroupableParentOptions = {
 	mandatory?: Ref<boolean>;
 	max?: Ref<number>;
 	multiple?: Ref<boolean>;
+};
+
+type UsableGroupableParent = {
+	items: Ref<GroupableInstance[]>;
+	selection: Ref<readonly (string | number)[]>;
+	internalSelection: Ref<(string | number)[]>;
+	getValueForItem: (item: GroupableInstance) => string | number;
+	updateChildren: () => void;
 };
 
 /**
@@ -104,13 +126,13 @@ export function useGroupableParent(
 	state: GroupableParentState = {},
 	options: GroupableParentOptions = {},
 	group = 'item-group'
-) {
+): UsableGroupableParent {
 	// References to the active state and value of the individual child items
-	const items = ref<GroupableInstance[]>([]);
+	const items = shallowRef<GroupableInstance[]>([]);
 
 	// Internal copy of the selection. This allows the composition to work without the state option
 	// being passed
-	const _selection = ref<(number | string)[]>([]);
+	const internalSelection = ref<(number | string)[]>([]);
 
 	// Uses either the internal state, or the passed in state. Will call the onSelectionChange
 	// handler if it's passed
@@ -120,28 +142,28 @@ export function useGroupableParent(
 				return state.selection.value;
 			}
 
-			return _selection.value;
+			return internalSelection.value;
 		},
 		set(newSelection) {
 			if (notEmpty(state.onSelectionChange)) {
 				state.onSelectionChange(newSelection);
 			}
 
-			_selection.value = [...newSelection];
+			internalSelection.value = [...newSelection];
 		},
 	});
 
 	// Provide the needed functions to all children groupable components. Note: nested item groups
 	// will override the item-group namespace, making nested item groups possible.
-	provide(group, { register, unregister, toggle });
+	provide(group, { register, unregister, toggle, selection });
 
 	// Whenever the value of the selection changes, we have to update all the children's internal
 	// states. If not, you can have an activated item that's not actually active.
-	watch(selection, updateChildren);
+	watch(selection, updateChildren, { immediate: true });
 
 	// It takes a tick before all children are rendered, this will make sure the start state of the
 	// children matches the start selection
-	Vue.nextTick().then(updateChildren);
+	nextTick().then(updateChildren);
 
 	watch(
 		() => options?.mandatory?.value,
@@ -149,7 +171,7 @@ export function useGroupableParent(
 			if (isEqual(newValue, oldValue)) return;
 
 			// If you're required to select a value, make sure a value is selected on first render
-			if (selection.value.length === 0 && options?.mandatory?.value === true) {
+			if (!selection.value || (selection.value.length === 0 && options?.mandatory?.value === true)) {
 				selection.value = [getValueForItem(items.value[0])];
 			}
 		}
@@ -157,7 +179,7 @@ export function useGroupableParent(
 
 	// These aren't exported with any particular use in mind. It's mostly for testing purposes.
 	// Treat them as readonly.
-	return { items, selection, _selection, getValueForItem, updateChildren };
+	return { items, selection, internalSelection, getValueForItem, updateChildren };
 
 	// Register a child within the context of this group
 	function register(item: GroupableInstance) {
@@ -187,6 +209,10 @@ export function useGroupableParent(
 			toggleMultiple(item);
 		} else {
 			toggleSingle(item);
+		}
+
+		if (notEmpty(state.onToggle)) {
+			state.onToggle(item);
 		}
 	}
 

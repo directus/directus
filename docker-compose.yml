@@ -1,16 +1,24 @@
-# This composer file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
+# This compose file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
+# For production use see the docker compose file example in the docs:
+#     https://docs.directus.io/getting-started/installation/docker/#docker-compose
 #
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
 # Ports:
 #   Postgres:        5100
-#   MySQL:           5101
+#   MySQL (8):       5101
 #   MariaDB:         5102
 #   MS SQL:          5103
 #   Oracle:          5104
 #   Redis:           5105
 #   Minio (S3):      5106
 #   Azure            5107
+#   MySQL (5.7):     5108
+#   Memcached:       5109
+#   Keycloak:        5110
+#   Postgres (10):   5111
+#   Minio Admin:     5112
+#   CockroachDB:     5113
 #
 # Credentials:
 #   Postgres:
@@ -47,11 +55,22 @@
 #     Name:          devstoreaccount1
 #     Key:           Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
 #     Container:     devstoreaccount1
+#
+#   Memcached
+#     n/a
+#
+#   Keycloak
+#     User:          admin
+#     Password:      secret
+#
+#   CockroachDB
+#     User:          admin
+#     Password:      --
 
 version: '3.1'
 services:
   postgres:
-    image: postgres:12-alpine
+    image: postgis/postgis:13-3.1-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -66,9 +85,11 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5101:3306
+    cap_add:
+      - SYS_NICE
 
   maria:
-    image: mariadb:10.5
+    image: mariadb:10.7
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -99,11 +120,49 @@ services:
 
   minio:
     image: minio/minio:latest
-    command: server /data/minio/
+    command: server /data/minio/ --console-address :9001
     ports:
       - 5106:9000
+      - 5112:9001
 
   azure:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
       - 5107:10000
+
+  mysql5:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 5108:3306
+
+  memcached:
+    image: memcached:latest
+    ports:
+      - 5109:11211
+
+  keycloak:
+    image: jboss/keycloak:latest
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: secret
+      DB_ADDR: ''
+      DB_VENDOR: h2
+    ports:
+      - 5110:8080
+
+  postgres10:
+    image: postgis/postgis:10-3.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 5111:5432
+
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v21.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 5113:26257

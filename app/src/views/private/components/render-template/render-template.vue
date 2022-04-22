@@ -1,32 +1,34 @@
 <template>
-	<div class="render-template" ref="templateEl">
+	<div ref="templateEl" class="render-template">
 		<span class="vertical-aligner" />
-		<template v-for="(part, index) in parts">
-			<value-null :key="index" v-if="part === null || part.value === null" />
+		<template v-for="(part, index) in parts" :key="index">
+			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
 			<component
-				v-else-if="typeof part === 'object' && part.component"
 				:is="`display-${part.component}`"
-				:key="index"
+				v-else-if="typeof part === 'object' && part.component"
+				v-bind="part.options"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				:type="part.type"
 				:collection="part.collection"
 				:field="part.field"
-				v-bind="part.options"
 			/>
-			<span :key="index" v-else>{{ part }}</span>
+			<span v-else-if="typeof part === 'string'">{{ translate(part) }}</span>
+			<span v-else>{{ part }}</span>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
-import { Field } from '@/types';
-import { getDisplays } from '@/displays';
+import { Field } from '@directus/shared/types';
+import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { translate } from '@/utils/translate-literal';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -41,7 +43,7 @@ export default defineComponent({
 		},
 		item: {
 			type: Object as PropType<Record<string, any>>,
-			required: true,
+			default: null,
 		},
 		template: {
 			type: String,
@@ -50,7 +52,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
-		const { displays } = getDisplays();
 
 		const templateEl = ref<HTMLElement>();
 
@@ -84,21 +85,20 @@ export default defineComponent({
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
+
 					if (value === undefined) return null;
 
-					// If no display is configured, we can render the raw value
-					if (!field || !field.meta?.display) return value;
+					if (!field) return value;
 
-					const displayInfo = displays.value.find((display) => display.id === field.meta?.display);
+					const display = field?.meta?.display || getDefaultDisplayForType(field.type);
+
+					// No need to render the empty display overhead in this case
+					if (display === 'raw') return value;
+
+					const displayInfo = getDisplay(field.meta?.display);
 
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;
-
-					// If the display handler is a function, we parse the value and return the result
-					if (typeof displayInfo.handler === 'function') {
-						const handler = displayInfo.handler as Function;
-						return handler(value, field.meta?.display_options);
-					}
 
 					return {
 						component: field.meta?.display,
@@ -111,10 +111,10 @@ export default defineComponent({
 						field: field.field,
 					};
 				})
-				.map((p) => p || null)
+				.map((p) => p ?? null)
 		);
 
-		return { parts, templateEl };
+		return { parts, templateEl, translate };
 	},
 });
 </script>
@@ -139,6 +139,10 @@ export default defineComponent({
 
 	> * {
 		vertical-align: middle;
+	}
+
+	.render-template {
+		display: inline;
 	}
 }
 

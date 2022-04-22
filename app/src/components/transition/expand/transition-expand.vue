@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import ExpandMethods from './transition-expand-methods';
 
 export default defineComponent({
@@ -19,8 +19,9 @@ export default defineComponent({
 			default: '',
 		},
 	},
-	setup(props) {
-		const methods = ExpandMethods(props.expandedParentClass, props.xAxis);
+	emits: ['beforeEnter', 'enter', 'afterEnter', 'enterCancelled', 'leave', 'afterLeave', 'leaveCancelled'],
+	setup(props, { emit }) {
+		const methods = ExpandMethods(props.expandedParentClass, props.xAxis, emit);
 		return { methods };
 	},
 });

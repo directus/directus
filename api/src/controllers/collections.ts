@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { CollectionsService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { validateBatch } from '../middleware/validate-batch';
+import { CollectionsService, MetaService } from '../services';
 import { Item } from '../types';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 
@@ -88,7 +88,7 @@ router.patch(
 		try {
 			const collection = await collectionsService.readOne(req.params.collection);
 			res.locals.payload = { data: collection || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

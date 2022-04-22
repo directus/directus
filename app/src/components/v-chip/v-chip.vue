@@ -1,5 +1,10 @@
 <template>
-	<span v-if="_active" class="v-chip" :class="[sizeClass, { outlined, label, disabled, close }]" @click="onClick">
+	<span
+		v-if="internalActive"
+		class="v-chip"
+		:class="[sizeClass, { outlined, label, disabled, close }]"
+		@click="onClick"
+	>
 		<span class="chip-content">
 			<slot />
 			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
@@ -10,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 export default defineComponent({
@@ -41,23 +46,24 @@ export default defineComponent({
 		},
 		...sizeProps,
 	},
+	emits: ['update:active', 'click', 'close'],
 	setup(props, { emit }) {
-		const _localActive = ref(true);
+		const internalLocalActive = ref(true);
 
-		const _active = computed<boolean>({
+		const internalActive = computed<boolean>({
 			get: () => {
 				if (props.active !== null) return props.active;
-				return _localActive.value;
+				return internalLocalActive.value;
 			},
 			set: (active: boolean) => {
 				emit('update:active', active);
-				_localActive.value = active;
+				internalLocalActive.value = active;
 			},
 		});
 
 		const sizeClass = useSizeClass(props);
 
-		return { sizeClass, _active, onClick, onCloseClick };
+		return { sizeClass, internalActive, onClick, onCloseClick };
 
 		function onClick(event: MouseEvent) {
 			if (props.disabled) return;
@@ -66,7 +72,7 @@ export default defineComponent({
 
 		function onCloseClick(event: MouseEvent) {
 			if (props.disabled) return;
-			_active.value = !_active.value;
+			internalActive.value = !internalActive.value;
 			emit('close', event);
 		}
 	},
@@ -98,7 +104,7 @@ body {
 	border: var(--border-width) solid var(--v-chip-background-color);
 	border-radius: 16px;
 
-	&:hover {
+	&.clickable:hover {
 		color: var(--v-chip-color-hover);
 		background-color: var(--v-chip-background-color-hover);
 		border-color: var(--v-chip-background-color-hover);
@@ -113,7 +119,8 @@ body {
 		color: var(--v-chip-color);
 		background-color: var(--v-chip-background-color);
 		border-color: var(--v-chip-background-color);
-		&:hover {
+
+		&.clickable:hover {
 			color: var(--v-chip-color);
 			background-color: var(--v-chip-background-color);
 			border-color: var(--v-chip-background-color);
@@ -122,12 +129,14 @@ body {
 
 	&.x-small {
 		height: 20px;
+		padding: 0 4px;
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
-		height: 26px;
+		height: 24px;
+		padding: 0 4px;
 		font-size: 14px;
 		border-radius: 12px;
 	}

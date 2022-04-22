@@ -31,8 +31,7 @@ properties:
     example: id
     type: string
   junction_field:
-    description:
-      Field on the junction table that holds the many field of the related relation.
+    description: Field on the junction table that holds the many field of the related relation.
     example: null
     type: string
     nullable: true

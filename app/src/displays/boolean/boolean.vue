@@ -9,13 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
-
-type Choice = {
-	value: string;
-	text: string;
-	color: string | null;
-};
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -41,11 +35,11 @@ export default defineComponent({
 		},
 		colorOn: {
 			type: String,
-			default: '#00C897',
+			default: 'var(--primary)',
 		},
 		colorOff: {
 			type: String,
-			default: '#B0BEC5',
+			default: 'var(--foreground-subdued)',
 		},
 	},
 	setup(props) {

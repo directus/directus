@@ -33,7 +33,7 @@ properties:
       type: string
     example: null
     nullable: true
-  collections:
+  system-collections:
     description: The collections that triggers this webhook.
     type: array
     items:

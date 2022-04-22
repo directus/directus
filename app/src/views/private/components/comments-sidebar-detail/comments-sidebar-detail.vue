@@ -1,141 +1,180 @@
 <template>
-	<sidebar-detail :title="$t('comments')" icon="chat_bubble_outline" :badge="count || null">
+	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
-		<v-progress-linear indeterminate v-if="loading" />
+		<v-progress-linear v-if="loading" indeterminate />
 
 		<div v-else-if="!activity || activity.length === 0" class="empty">
-			<div class="content">{{ $t('no_comments') }}</div>
+			<div class="content">{{ t('no_comments') }}</div>
 		</div>
 
-		<template v-else v-for="group in activity">
-			<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
+		<template v-for="group in activity" v-else :key="group.date.toString()">
+			<v-divider>{{ group.dateFormatted }}</v-divider>
 
-			<template v-for="item in group.activity">
-				<comment-item :refresh="refresh" :activity="item" :key="item.id" />
+			<template v-for="item in group.activity" :key="item.id">
+				<comment-item
+					:refresh="refresh"
+					:activity="item"
+					:user-previews="userPreviews"
+					:primary-key="primaryKey"
+					:collection="collection"
+				/>
 			</template>
 		</template>
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
 
 import api from '@/api';
 import { Activity, ActivityByDate } from './types';
 import CommentInput from './comment-input.vue';
-import { groupBy } from 'lodash';
-import i18n from '@/lang';
+import { groupBy, orderBy, flatten } from 'lodash';
 import formatLocalized from '@/utils/localized-format';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
-import { TranslateResult } from 'vue-i18n';
 import CommentItem from './comment-item.vue';
-import { orderBy } from 'lodash';
+import { userName } from '@/utils/user-name';
 
-export default defineComponent({
-	components: { CommentInput, CommentItem },
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		primaryKey: {
-			type: [String, Number],
-			required: true,
-		},
-	},
-	setup(props) {
-		const { activity, loading, error, refresh, count } = useActivity(props.collection, props.primaryKey);
+type ActivityByDateDisplay = ActivityByDate & {
+	activity: (Activity & {
+		display: string;
+	})[];
+};
 
-		return {
-			activity,
-			loading,
-			error,
-			refresh,
-			count,
-		};
+const props = defineProps<{
+	collection: string;
+	primaryKey: string | number;
+}>();
+const { t } = useI18n();
 
-		function useActivity(collection: string, primaryKey: string | number) {
-			const activity = ref<ActivityByDate[] | null>(null);
-			const count = ref(0);
-			const error = ref(null);
-			const loading = ref(false);
+const { activity, loading, refresh, count, userPreviews } = useActivity(props.collection, props.primaryKey);
 
-			getActivity();
+function useActivity(collection: string, primaryKey: string | number) {
+	const regex = /\s@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
+	const activity = ref<ActivityByDateDisplay[] | null>(null);
+	const count = ref(0);
+	const error = ref(null);
+	const loading = ref(false);
+	const userPreviews = ref<Record<string, any>>({});
 
-			return { activity, error, loading, refresh, count };
+	getActivity();
 
-			async function getActivity() {
-				error.value = null;
-				loading.value = true;
+	return { activity, error, loading, refresh, count, userPreviews };
 
-				try {
-					const response = await api.get(`/activity`, {
-						params: {
-							'filter[collection][_eq]': collection,
-							'filter[item][_eq]': primaryKey,
-							'filter[action][_in]': 'comment',
-							sort: '-id', // directus_activity has auto increment and is therefore in chronological order
-							fields: [
-								'id',
-								'action',
-								'timestamp',
-								'user.id',
-								'user.email',
-								'user.first_name',
-								'user.last_name',
-								'user.avatar.id',
-								'revisions.id',
-								'comment',
-							],
-						},
-					});
+	async function getActivity() {
+		error.value = null;
+		loading.value = true;
 
-					count.value = response.data.data.length;
+		try {
+			const response = await api.get(`/activity`, {
+				params: {
+					'filter[collection][_eq]': collection,
+					'filter[item][_eq]': primaryKey,
+					'filter[action][_eq]': 'comment',
+					sort: '-id', // directus_activity has auto increment and is therefore in chronological order
+					fields: [
+						'id',
+						'action',
+						'timestamp',
+						'user.id',
+						'user.email',
+						'user.first_name',
+						'user.last_name',
+						'user.avatar.id',
+						'revisions.id',
+						'comment',
+					],
+				},
+			});
 
-					const activityByDate = groupBy(response.data.data, (activity: Activity) => {
-						// activity's timestamp date is in iso-8601
-						const date = new Date(new Date(activity.timestamp).toDateString());
-						return date;
-					});
+			count.value = response.data.data.length;
 
-					const activityGrouped: ActivityByDate[] = [];
+			userPreviews.value = await loadUserPreviews(response.data.data, regex);
 
-					for (const [key, value] of Object.entries(activityByDate)) {
-						const date = new Date(key);
-						const today = isToday(date);
-						const yesterday = isYesterday(date);
-						const thisYear = isThisYear(date);
+			const activityWithUsersInComments = (response.data.data as Activity[]).map((comment) => {
+				const display = (comment.comment as string).replace(
+					regex,
+					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`
+				);
+				return {
+					...comment,
+					display,
+				};
+			});
 
-						let dateFormatted: TranslateResult;
+			const activityByDate = groupBy(activityWithUsersInComments, (activity) => {
+				// activity's timestamp date is in iso-8601
+				const date = new Date(new Date(activity.timestamp).toDateString());
+				return date;
+			});
 
-						if (today) dateFormatted = i18n.t('today');
-						else if (yesterday) dateFormatted = i18n.t('yesterday');
-						else if (thisYear)
-							dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short_no_year')));
-						else dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short')));
+			const activityGrouped: ActivityByDateDisplay[] = [];
 
-						activityGrouped.push({
-							date: date,
-							dateFormatted: String(dateFormatted),
-							activity: value,
-						});
-					}
+			for (const [key, value] of Object.entries(activityByDate)) {
+				const date = new Date(key);
+				const today = isToday(date);
+				const yesterday = isYesterday(date);
+				const thisYear = isThisYear(date);
 
-					activity.value = orderBy(activityGrouped, ['date'], ['desc']);
-				} catch (error) {
-					error.value = error;
-				} finally {
-					loading.value = false;
-				}
+				let dateFormatted: string;
+
+				if (today) dateFormatted = t('today');
+				else if (yesterday) dateFormatted = t('yesterday');
+				else if (thisYear) dateFormatted = await formatLocalized(date, String(t('date-fns_date_short_no_year')));
+				else dateFormatted = await formatLocalized(date, String(t('date-fns_date_short')));
+
+				activityGrouped.push({
+					date: date,
+					dateFormatted: String(dateFormatted),
+					activity: value,
+				});
 			}
 
-			async function refresh() {
-				await getActivity();
-			}
+			activity.value = orderBy(activityGrouped, ['date'], ['desc']);
+		} catch (error: any) {
+			error.value = error;
+		} finally {
+			loading.value = false;
 		}
-	},
-});
+	}
+
+	async function refresh() {
+		await getActivity();
+	}
+}
+
+async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
+	let userPreviews: any[] = [];
+
+	comments.forEach((comment: Record<string, any>) => {
+		userPreviews.push(comment.comment.match(regex));
+	});
+
+	const uniqIds: string[] = [...new Set(flatten(userPreviews))].filter((id) => {
+		if (id) return id;
+	});
+
+	if (uniqIds.length > 0) {
+		const response = await api.get('/users', {
+			params: {
+				filter: { id: { _in: uniqIds.map((id) => id.substring(2)) } },
+				fields: ['first_name', 'last_name', 'email', 'id'],
+			},
+		});
+
+		const userPreviews: Record<string, string> = {};
+
+		response.data.data.map((user: Record<string, any>) => {
+			userPreviews[user.id] = userName(user);
+		});
+
+		return userPreviews;
+	}
+
+	return {};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -151,12 +190,13 @@ export default defineComponent({
 	position: sticky;
 	top: 0;
 	z-index: 2;
-	margin-top: 8px;
-	margin-bottom: 8px;
-	padding-top: 8px;
-	padding-bottom: 8px;
+	margin-top: 12px;
+	margin-bottom: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 	background-color: var(--background-normal);
 	box-shadow: 0 0 4px 2px var(--background-normal);
+	--v-divider-label-color: var(--foreground-subdued);
 }
 
 .empty {

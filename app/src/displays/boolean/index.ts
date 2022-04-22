@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayBoolean from './boolean.vue';
 
 export default defineDisplay({
@@ -7,14 +7,14 @@ export default defineDisplay({
 	description: '$t:displays.boolean.description',
 	types: ['boolean'],
 	icon: 'check_box',
-	handler: DisplayBoolean,
+	component: DisplayBoolean,
 	options: [
 		{
 			field: 'labelOn',
 			name: '$t:displays.boolean.label_on',
 			type: 'string',
 			meta: {
-				interface: 'text-input',
+				interface: 'system-input-translated-string',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_on_placeholder',
@@ -26,7 +26,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.label_off',
 			type: 'string',
 			meta: {
-				interface: 'text-input',
+				interface: 'system-input-translated-string',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_off_placeholder',
@@ -38,7 +38,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.icon_on',
 			type: 'string',
 			meta: {
-				interface: 'icon',
+				interface: 'select-icon',
 				width: 'half',
 			},
 			schema: {
@@ -50,7 +50,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.icon_off',
 			type: 'string',
 			meta: {
-				interface: 'icon',
+				interface: 'select-icon',
 				width: 'half',
 			},
 			schema: {
@@ -62,11 +62,8 @@ export default defineDisplay({
 			name: '$t:displays.boolean.color_on',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
-			},
-			schema: {
-				default_value: '#00C897',
 			},
 		},
 		{
@@ -74,11 +71,8 @@ export default defineDisplay({
 			name: '$t:displays.boolean.color_off',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
-			},
-			schema: {
-				default_value: '#B0BEC5',
 			},
 		},
 	],

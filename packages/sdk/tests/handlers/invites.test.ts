@@ -22,7 +22,7 @@ describe('invites', function () {
 
 	test(`accept`, async (url, nock) => {
 		const scope = nock()
-			.patch('/users/invite/accept', {
+			.post('/users/invite/accept', {
 				token: 'token',
 				password: 'password1234',
 			})

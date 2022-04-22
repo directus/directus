@@ -1,14 +1,13 @@
-import { createStore } from 'pinia';
 import api from '@/api';
-import VueI18n from 'vue-i18n';
-import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
-import formatTitle from '@directus/format-title';
-import { useRelationsStore } from '@/stores/';
-import { Relation, FieldRaw, Field } from '@/types';
-import { merge, orderBy } from 'lodash';
-import { nanoid } from 'nanoid';
+import { useRelationsStore, useCollectionsStore } from '@/stores/';
+import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
+import { isEqual, merge, orderBy, omit } from 'lodash';
+import { nanoid } from 'nanoid';
+import { defineStore } from 'pinia';
 
 /**
  * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need
@@ -39,6 +38,8 @@ const fakeFilesField: Field = {
 		width: 'full',
 		group: null,
 		note: null,
+		required: false,
+		conditions: null,
 	},
 };
 
@@ -51,39 +52,46 @@ const fakeFilesField: Field = {
  */
 let currentUpdate: string;
 
-export const useFieldsStore = createStore({
+export const useFieldsStore = defineStore({
 	id: 'fieldsStore',
 	state: () => ({
 		fields: [] as Field[],
 	}),
 	actions: {
 		async hydrate() {
-			const fieldsResponse = await api.get(`/fields`, { params: { limit: -1 } });
+			const fieldsResponse = await api.get<any>(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
-
-			this.state.fields = [...fields.map(this.parseField), fakeFilesField];
-
+			this.fields = [...fields.map(this.parseField), fakeFilesField];
 			this.translateFields();
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		parseField(field: FieldRaw): Field {
-			const name = formatTitle(field.field);
+			let name = formatTitle(field.field);
 
 			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
-					i18n.mergeLocaleMessage(language, {
-						fields: {
-							[field.collection]: {
-								[field.field]: translation,
+					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
+
+					i18n.global.mergeLocaleMessage(language, {
+						...(literalInterpolatedTranslation && {
+							fields: {
+								[field.collection]: {
+									[field.field]: literalInterpolatedTranslation,
+								},
 							},
-						},
+						}),
 					});
 				}
+			}
+
+			if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
+				name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 			}
 
 			return {
@@ -92,54 +100,51 @@ export const useFieldsStore = createStore({
 			};
 		},
 		translateFields() {
-			this.state.fields = this.state.fields.map((field) => {
-				let name: string | VueI18n.TranslateResult;
-
-				if (i18n.te(`fields.${field.collection}.${field.field}`)) {
-					name = i18n.t(`fields.${field.collection}.${field.field}`);
-				} else {
-					name = formatTitle(field.field);
+			this.fields = this.fields.map((field) => {
+				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
+					field.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 				}
-
-				return {
-					...field,
-					name,
-				};
+				return field;
 			});
 		},
-		async createField(collectionKey: string, newField: Field) {
-			const stateClone = [...this.state.fields];
+		async upsertField(collection: string, field: string, values: DeepPartial<Field>) {
+			const existing = this.getField(collection, field);
 
-			// Update locally first, so the changes are visible immediately
-			this.state.fields = [...this.state.fields, newField];
+			// Strip out auto-generated fields the app might've added
+			const rawField = omit(values, ['name']);
+
+			if (existing) {
+				if (isEqual(values, existing)) return;
+
+				return await this.updateField(collection, field, rawField);
+			} else {
+				return await this.createField(collection, rawField);
+			}
+		},
+		async createField(collectionKey: string, newField: DeepPartial<Field>) {
+			const stateClone = [...this.fields];
 
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.post(`/fields/${collectionKey}`, newField);
+				const response = await api.post<{ data: Field }>(`/fields/${collectionKey}`, newField);
 
-				const field = this.parseField(response.data.data);
+				const createdField = this.parseField(response.data.data);
 
-				this.state.fields = this.state.fields.map((field) => {
-					if (field.collection === collectionKey && field.field === newField.field) {
-						return field;
-					}
+				this.fields = [...this.fields, createdField];
 
-					return field;
-				});
-
-				return field;
-			} catch (err) {
+				return createdField;
+			} catch (err: any) {
 				// reset the changes if the api sync failed
-				this.state.fields = stateClone;
+				this.fields = stateClone;
 				unexpectedError(err);
 			}
 		},
-		async updateField(collectionKey: string, fieldKey: string, updates: Record<string, Partial<Field>>) {
-			const stateClone = [...this.state.fields];
+		async updateField(collectionKey: string, fieldKey: string, updates: DeepPartial<Field>) {
+			const stateClone = [...this.fields];
 
 			// Update locally first, so the changes are visible immediately
-			this.state.fields = this.state.fields.map((field) => {
+			this.fields = this.fields.map((field) => {
 				if (field.collection === collectionKey && field.field === fieldKey) {
 					return merge({}, field, updates);
 				}
@@ -150,29 +155,29 @@ export const useFieldsStore = createStore({
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.patch(`/fields/${collectionKey}/${fieldKey}`, updates);
+				const response = await api.patch<any>(`/fields/${collectionKey}/${fieldKey}`, updates);
 
-				this.state.fields = this.state.fields.map((field) => {
+				this.fields = this.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === fieldKey) {
 						return this.parseField(response.data.data);
 					}
 
 					return field;
 				});
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
-				this.state.fields = stateClone;
+				this.fields = stateClone;
 				unexpectedError(err);
 			}
 		},
-		async updateFields(collectionKey: string, updates: Partial<Field>[]) {
+		async updateFields(collectionKey: string, updates: DeepPartial<Field>[]) {
 			const updateID = nanoid();
-			const stateClone = [...this.state.fields];
+			const stateClone = [...this.fields];
 
 			currentUpdate = updateID;
 
 			// Update locally first, so the changes are visible immediately
-			this.state.fields = this.state.fields.map((field) => {
+			this.fields = this.fields.map((field) => {
 				if (field.collection === collectionKey) {
 					const updatesForThisField = updates.find((update) => update.field === field.field);
 
@@ -190,7 +195,7 @@ export const useFieldsStore = createStore({
 				const response = await api.patch(`/fields/${collectionKey}`, updates);
 
 				if (currentUpdate === updateID) {
-					this.state.fields = this.state.fields.map((field) => {
+					this.fields = this.fields.map((field) => {
 						if (field.collection === collectionKey) {
 							const newDataForField = response.data.data.find((update: Field) => update.field === field.field);
 							if (newDataForField) return this.parseField(newDataForField);
@@ -198,41 +203,58 @@ export const useFieldsStore = createStore({
 
 						return field;
 					});
+
+					this.translateFields();
 				}
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
-				this.state.fields = stateClone;
+				this.fields = stateClone;
 				unexpectedError(err);
 			}
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
-			const stateClone = [...this.state.fields];
+			const relationsStore = useRelationsStore();
+			const collectionsStore = useCollectionsStore();
 
-			this.state.fields = this.state.fields.filter((field) => {
+			const stateClone = [...this.fields];
+			const relationsStateClone = [...relationsStore.relations];
+
+			this.fields = this.fields.filter((field) => {
 				if (field.field === fieldKey && field.collection === collectionKey) return false;
+				return true;
+			});
+
+			relationsStore.relations = relationsStore.relations.filter((relation) => {
+				if (
+					(relation.collection === collectionKey && relation.field === fieldKey) ||
+					(relation.related_collection === collectionKey && relation.meta?.one_field === fieldKey)
+				) {
+					return false;
+				}
 				return true;
 			});
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
-			} catch (err) {
-				this.state.fields = stateClone;
+				await collectionsStore.hydrate();
+			} catch (err: any) {
+				this.fields = stateClone;
+				relationsStore.relations = relationsStateClone;
 				unexpectedError(err);
 			}
 		},
-		getPrimaryKeyFieldForCollection(collection: string) {
-			/** @NOTE it's safe to assume every collection has a primary key */
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const primaryKeyField = this.state.fields.find(
+		getPrimaryKeyFieldForCollection(collection: string): Field | null {
+			const primaryKeyField = this.fields.find(
 				(field) => field.collection === collection && field.schema?.is_primary_key === true
 			);
 
-			return primaryKeyField;
+			return primaryKeyField ?? null;
 		},
 		getFieldsForCollection(collection: string): Field[] {
 			return orderBy(
-				this.state.fields.filter((field) => field.collection === collection),
-				(collection) => (collection.meta?.sort ? Number(collection.meta?.sort) : null)
+				this.fields.filter((field) => field.collection === collection),
+				[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)],
+				['desc', 'asc']
 			);
 		},
 		getFieldsForCollectionAlphabetical(collection: string): Field[] {
@@ -243,14 +265,42 @@ export const useFieldsStore = createStore({
 			});
 		},
 		/**
+		 * Retrieve sorted fields including groups. This is necessary because
+		 * fields inside groups starts their sort number from 1 to N again.
+		 */
+		getFieldsForCollectionSorted(collection: string): Field[] {
+			const fields = orderBy(
+				this.fields.filter((field) => field.collection === collection),
+				'meta.sort'
+			);
+
+			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
+
+			for (const [index, field] of nonGroupFields.entries()) {
+				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+
+				if (groupFields.length) {
+					nonGroupFields.splice(index + 1, 0, ...orderBy(groupFields, 'meta.sort'));
+				}
+			}
+
+			return nonGroupFields;
+		},
+		/**
 		 * Retrieve field info for a field or a related field
 		 */
-		getField(collection: string, fieldKey: string) {
+		getField(collection: string, fieldKey: string): Field | null {
 			if (fieldKey.includes('.')) {
-				return this.getRelationalField(collection, fieldKey);
+				return this.getRelationalField(collection, fieldKey) || null;
 			} else {
-				return this.state.fields.find((field) => field.collection === collection && field.field === fieldKey);
+				return this.fields.find((field) => field.collection === collection && field.field === fieldKey) || null;
 			}
+		},
+		/**
+		 * Retrieve nested fields for a given group field
+		 */
+		getFieldGroupChildren(collection: string, fieldKey: string): Field[] | null {
+			return this.fields.filter((field) => field.collection === collection && field.meta?.group === fieldKey) || null;
 		},
 		/**
 		 * Retrieve field info for a (deeply) nested field
@@ -258,18 +308,25 @@ export const useFieldsStore = createStore({
 		 * dot notation.
 		 */
 		getRelationalField(collection: string, fields: string) {
-			const relationshipStore = useRelationsStore();
-			const parts = fields.split('.');
+			const relationsStore = useRelationsStore();
+			const [field, ...path] = fields.split('.');
+			if (field.includes(':')) {
+				const [_, collection] = field.split(':');
+				return this.getField(collection, path.join('.'));
+			}
 
-			const relation = relationshipStore
-				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
+			const relations = relationsStore.getRelationsForField(collection, field);
+			const relation = relations?.find((relation: Relation) => {
+				return relation.field === field || relation.meta?.one_field === field;
+			});
 
 			if (relation === undefined) return false;
 
-			const relatedCollection = relation.many_field === parts[0] ? relation.one_collection : relation.many_collection;
-			parts.shift();
-			const relatedField = parts.join('.');
+			const relatedCollection = relation.field === field ? relation.related_collection : relation.collection;
+
+			if (relatedCollection === null) return false;
+
+			const relatedField = path.join('.');
 			return this.getField(relatedCollection, relatedField);
 		},
 	},

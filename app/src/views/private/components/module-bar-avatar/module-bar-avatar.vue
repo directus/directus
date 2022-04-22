@@ -1,63 +1,92 @@
 <template>
-	<v-hover class="module-bar-avatar" v-slot="{ hover }">
-		<v-dialog v-model="signOutActive" @esc="signOutActive = false">
-			<template #activator="{ on }">
-				<v-button
-					@click="on"
-					tile
-					icon
-					x-large
-					:class="{ show: hover }"
-					class="sign-out"
-					v-tooltip.right="$t('sign_out')"
-				>
-					<v-icon name="logout" />
-				</v-button>
-			</template>
+	<div class="module-bar-avatar">
+		<v-badge :value="unread" :disabled="unread == 0" class="notifications-badge">
+			<v-button
+				v-tooltip.right="t('notifications')"
+				tile
+				icon
+				x-large
+				class="notifications"
+				@click="notificationsDrawerOpen = true"
+			>
+				<v-icon name="notifications" />
+			</v-button>
+		</v-badge>
 
-			<v-card>
-				<v-card-title>{{ $t('sign_out_confirm') }}</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="signOutActive = !signOutActive">
-						{{ $t('cancel') }}
+		<v-hover v-slot="{ hover }">
+			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
+				<template #activator="{ on }">
+					<v-button
+						v-tooltip.right="t('sign_out')"
+						tile
+						icon
+						x-large
+						:class="{ show: hover }"
+						class="sign-out"
+						@click="on"
+					>
+						<v-icon name="logout" />
 					</v-button>
-					<v-button :to="signOutLink">{{ $t('sign_out') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+				</template>
 
-		<router-link :to="userProfileLink">
-			<v-avatar tile large v-tooltip.right="userFullName" :class="{ 'no-avatar': !avatarURL }">
-				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
-				<v-icon v-else name="account_circle" outline />
-			</v-avatar>
-		</router-link>
-	</v-hover>
+				<v-card>
+					<v-card-title>{{ t('sign_out_confirm') }}</v-card-title>
+					<v-card-actions>
+						<v-button secondary @click="signOutActive = !signOutActive">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button :to="signOutLink">{{ t('sign_out') }}</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<router-link :to="userProfileLink">
+				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
+					<img
+						v-if="avatarURL && !avatarError"
+						:src="avatarURL"
+						:alt="userFullName"
+						class="avatar-image"
+						@error="avatarError = $event"
+					/>
+					<v-icon v-else name="account_circle" />
+				</v-avatar>
+			</router-link>
+		</v-hover>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
-import { useUserStore } from '@/stores/';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
+import { useUserStore, useAppStore, useNotificationsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
+		const appStore = useAppStore();
+		const notificationsStore = useNotificationsStore();
+
+		const { notificationsDrawerOpen } = storeToRefs(appStore);
+		const { unread } = storeToRefs(notificationsStore);
+
 		const userStore = useUserStore();
 
 		const signOutActive = ref(false);
 
 		const avatarURL = computed<string | null>(() => {
-			if (userStore.state.currentUser === null) return null;
-			if (userStore.state.currentUser.avatar === null) return null;
-
-			return addTokenToURL(getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=system-medium-cover`);
+			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
+			return addTokenToURL(getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
 
-		const userProfileLink = computed<string>(() => {
-			const id = userStore.state.currentUser?.id;
-			const role = userStore.state.currentUser?.role?.id;
+		const avatarError = ref(null);
 
+		const userProfileLink = computed<string>(() => {
+			const id = userStore.currentUser?.id;
 			return `/users/${id}`;
 		});
 
@@ -67,7 +96,17 @@ export default defineComponent({
 
 		const userFullName = userStore.fullName;
 
-		return { userFullName, avatarURL, userProfileLink, signOutActive, signOutLink };
+		return {
+			t,
+			userFullName,
+			avatarURL,
+			userProfileLink,
+			signOutActive,
+			signOutLink,
+			notificationsDrawerOpen,
+			unread,
+			avatarError,
+		};
 	},
 });
 </script>
@@ -81,10 +120,12 @@ export default defineComponent({
 		--v-button-color-hover: var(--white);
 		--v-avatar-color: var(--module-background);
 
+		position: relative;
+		z-index: 3;
 		overflow: visible;
 
 		.avatar-image {
-			opacity: 0.5;
+			opacity: 0.8;
 			transition: opacity var(--fast) var(--transition);
 		}
 
@@ -116,6 +157,18 @@ export default defineComponent({
 		}
 	}
 
+	.notifications-badge {
+		--v-badge-offset-x: 16px;
+		--v-badge-offset-y: 16px;
+	}
+
+	.notifications {
+		--v-button-color: var(--module-icon);
+		--v-button-color-hover: var(--white);
+		--v-button-background-color: var(--module-background);
+		--v-button-background-color-hover: var(--module-background);
+	}
+
 	.sign-out {
 		--v-button-color: var(--module-icon);
 		--v-button-background-color: var(--module-background);
@@ -124,15 +177,21 @@ export default defineComponent({
 		position: absolute;
 		top: 0;
 		left: 0;
+		z-index: 2;
+		transform: translateY(-100%);
 		transition: transform var(--fast) var(--transition);
 
+		@media (min-width: 960px) {
+			transform: translateY(100%);
+		}
+
 		&.show {
-			transform: translateY(-100%);
+			transform: translateY(0%);
 		}
 
 		&:hover {
 			.v-icon {
-				--v-icon-color: var(--warning);
+				--v-icon-color: var(--primary);
 			}
 		}
 	}

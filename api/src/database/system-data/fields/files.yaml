@@ -3,76 +3,75 @@ table: directus_files
 fields:
   - field: id
     hidden: true
-    interface: text-input
+    interface: input
     special: uuid
 
   - field: title
-    interface: text-input
+    interface: input
     options:
       iconRight: title
-      placeholder: A unique title...
+      placeholder: $t:field_options.directus_files.title
     width: full
 
   - field: description
-    interface: textarea
+    interface: input-multiline
     width: full
     options:
-      placeholder: An optional description...
+      placeholder: $t:field_options.directus_files.description
 
   - field: tags
     interface: tags
     options:
       iconRight: local_offer
-    special: json
+    special: cast-json
     width: full
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
       choices: null
       format: false
 
   - field: location
-    interface: text-input
+    interface: input
     options:
       iconRight: place
-      placeholder: An optional location...
+      placeholder: $t:field_options.directus_files.location
     width: half
 
   - field: storage
-    interface: text-input
+    interface: input
     options:
       iconRight: storage
     width: half
     readonly: true
 
   - field: storage_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: insert_drive_file
-      title: File Naming
+      title: $t:field_options.directus_files.storage_divider
     special:
       - alias
       - no-data
     width: full
 
   - field: filename_disk
-    interface: text-input
+    interface: input
     options:
       iconRight: publish
-      placeholder: Name on disk storage...
+      placeholder: $t:field_options.directus_files.filename_disk
     readonly: true
     width: half
 
   - field: filename_download
-    interface: text-input
+    interface: input
     options:
       iconRight: get_app
-      placeholder: Name when downloading...
+      placeholder: $t:field_options.directus_files.filename_download
     width: half
 
   - field: metadata
     hidden: true
-    special: json
+    special: cast-json
 
   - field: type
     display: mime-type
@@ -83,11 +82,13 @@ fields:
     readonly: true
 
   - field: modified_by
-    interface: user
+    interface: select-dropdown-m2o
     special: user-updated
     width: half
     display: user
     readonly: true
+    options:
+      template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
 
   - field: modified_on
     interface: datetime
@@ -104,6 +105,7 @@ fields:
     display: user
     width: half
     hidden: true
+    special: user-created
 
   - field: uploaded_on
     display: datetime

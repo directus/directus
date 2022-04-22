@@ -1,15 +1,28 @@
-import { computed, Ref } from '@vue/composition-api';
-import { isAllowed } from '../utils/is-allowed';
-import { useCollection } from './use-collection';
-import { useUserStore, usePermissionsStore } from '@/stores';
+import { usePermissionsStore, useUserStore } from '@/stores';
+import { Field } from '@directus/shared/types';
+import { computed, ComputedRef, Ref } from 'vue';
 import { cloneDeep } from 'lodash';
-import { Field } from '@/types';
+import { isAllowed } from '../utils/is-allowed';
+import { useCollection } from '@directus/shared/composables';
 
-export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: Ref<boolean>) {
+type UsablePermissions = {
+	createAllowed: ComputedRef<boolean>;
+	deleteAllowed: ComputedRef<boolean>;
+	saveAllowed: ComputedRef<boolean>;
+	archiveAllowed: ComputedRef<boolean>;
+	updateAllowed: ComputedRef<boolean>;
+	shareAllowed: ComputedRef<boolean>;
+	fields: ComputedRef<Field[]>;
+	revisionsAllowed: ComputedRef<boolean>;
+};
+
+export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: Ref<boolean>): UsablePermissions {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
 	const { info: collectionInfo, fields: rawFields } = useCollection(collection);
+
+	const createAllowed = computed(() => isAllowed(collection.value, 'create', item.value));
 
 	const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
 
@@ -22,6 +35,8 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	});
 
 	const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
+
+	const shareAllowed = computed(() => isAllowed(collection.value, 'share', item.value));
 
 	const archiveAllowed = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return false;
@@ -39,15 +54,15 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	const fields = computed(() => {
 		let fields = cloneDeep(rawFields.value);
 
-		if (userStore.state.currentUser?.role?.admin_access === true) return fields;
+		if (userStore.currentUser?.role?.admin_access === true) return fields;
 
 		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
 
 		if (!permissions) return fields;
 
-		if (permissions?.fields?.includes('*') === false) {
+		if (permissions.fields?.includes('*') === false) {
 			fields = fields.map((field: Field) => {
-				if (permissions.fields.includes(field.field) === false) {
+				if (permissions.fields?.includes(field.field) === false) {
 					field.meta = {
 						...(field.meta || {}),
 						readonly: true,
@@ -58,12 +73,12 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 			});
 		}
 
-		if (permissions?.presets) {
+		if (permissions.presets) {
 			fields = fields.map((field: Field) => {
-				if (field.field in permissions.presets) {
+				if (field.field in permissions.presets!) {
 					field.schema = {
 						...(field.schema || {}),
-						default_value: permissions.presets[field.field],
+						default_value: permissions.presets![field.field],
 					} as any;
 				}
 
@@ -75,11 +90,20 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	});
 
 	const revisionsAllowed = computed(() => {
-		if (userStore.state.currentUser?.role?.admin_access === true) return true;
-		return !!permissionsStore.state.permissions.find(
+		if (userStore.currentUser?.role?.admin_access === true) return true;
+		return !!permissionsStore.permissions.find(
 			(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
 		);
 	});
 
-	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields, revisionsAllowed };
+	return {
+		createAllowed,
+		deleteAllowed,
+		saveAllowed,
+		archiveAllowed,
+		updateAllowed,
+		shareAllowed,
+		fields,
+		revisionsAllowed,
+	};
 }

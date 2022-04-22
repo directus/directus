@@ -1,4 +1,6 @@
-* {
+@import './mixins/form-grid.scss';
+
+*:not(svg *) {
 	box-sizing: border-box;
 	margin: 0;
 	color: inherit;
@@ -56,13 +58,9 @@ textarea,
 .selectable {
 	user-select: text;
 
-	/* stylelint-disable no-descending-specificity */
-
 	* {
 		user-select: text;
 	}
-
-	/* stylelint-enable no-descending-specificity */
 }
 
 :invalid {
@@ -106,7 +104,7 @@ strong {
 }
 
 ::selection {
-	background: #e1f0fa;
+	background: var(--background-normal-alt);
 }
 
 dl > div {
@@ -135,4 +133,16 @@ dd {
 
 dd a {
 	color: var(--primary);
+}
+
+.form-grid {
+	@include form-grid;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+	-webkit-appearance: none;
 }

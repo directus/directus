@@ -1,44 +1,54 @@
+import { getDisplays } from '@/displays';
+import { getInterfaces } from '@/interfaces';
+import { getPanels } from '@/panels';
+import { getLayouts } from '@/layouts';
+import { getModules } from '@/modules';
+import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { translate } from '@/utils/translate-object-values';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
-
-import { getModules } from '@/modules';
-import { getLayouts } from '@/layouts';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
-import { translate } from '@/utils/translate-object-values';
-
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useTranslationStrings } from '@/composables/use-translation-strings';
 
 const { modules, modulesRaw } = getModules();
 const { layouts, layoutsRaw } = getLayouts();
 const { interfaces, interfacesRaw } = getInterfaces();
+const { panels, panelsRaw } = getPanels();
 const { displays, displaysRaw } = getDisplays();
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
+	const { mergeTranslationStringsForLanguage } = useTranslationStrings();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
-		return false;
+		// eslint-disable-next-line no-console
+		console.warn(`"${lang}" is not an available language in the Directus app.`);
+	} else {
+		if (loadedLanguages.includes(lang) === false) {
+			try {
+				const { default: translations } = await import(`./translations/${lang}.yaml`);
+				i18n.global.mergeLocaleMessage(lang, translations);
+				loadedLanguages.push(lang);
+			} catch (err: any) {
+				// eslint-disable-next-line no-console
+				console.warn(err);
+			}
+		}
+
+		i18n.global.locale.value = lang;
+
+		(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 	}
-
-	if (loadedLanguages.includes(lang) === false) {
-		const translations = await import(`@/lang/translations/${lang}.yaml`).catch((err) => console.warn(err));
-		i18n.mergeLocaleMessage(lang, translations);
-		loadedLanguages.push(lang);
-	}
-
-	i18n.locale = lang;
-
-	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 
 	modules.value = translate(modulesRaw.value);
 	layouts.value = translate(layoutsRaw.value);
 	interfaces.value = translate(interfacesRaw.value);
+	panels.value = translate(panelsRaw.value);
 	displays.value = translate(displaysRaw.value);
 
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
+	mergeTranslationStringsForLanguage(lang);
 
 	return true;
 }

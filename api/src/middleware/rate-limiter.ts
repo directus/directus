@@ -1,11 +1,12 @@
 import { RequestHandler } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { RateLimiterMemory, RateLimiterRedis, RateLimiterMemcache } from 'rate-limiter-flexible';
+import ms from 'ms';
+import { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
 import env from '../env';
 import { HitRateLimitException } from '../exceptions';
-import ms from 'ms';
-import { validateEnv } from '../utils/validate-env';
 import { createRateLimiter } from '../rate-limiter';
+import asyncHandler from '../utils/async-handler';
+import { getIPFromReq } from '../utils/get-ip-from-req';
+import { validateEnv } from '../utils/validate-env';
 
 let checkRateLimit: RequestHandler = (req, res, next) => next();
 export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
@@ -17,8 +18,8 @@ if (env.RATE_LIMITER_ENABLED === true) {
 
 	checkRateLimit = asyncHandler(async (req, res, next) => {
 		try {
-			await rateLimiter.consume(req.ip, 1);
-		} catch (rateLimiterRes) {
+			await rateLimiter.consume(getIPFromReq(req), 1);
+		} catch (rateLimiterRes: any) {
 			if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 
 			res.set('Retry-After', String(rateLimiterRes.msBeforeNext / 1000));

@@ -2,27 +2,28 @@
 	<div>
 		<v-notice type="info">
 			{{
-				$t('permissions_for_role', {
-					action: $t(permission.action).toLowerCase(),
-					role: role ? role.name : $t('public'),
+				t('permissions_for_role', {
+					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
 
-		<interface-code v-model="permissions" language="json" type="json" />
+		<v-form v-model="permissionSync" :fields="fields" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
-			<v-notice type="warning">{{ $t('the_following_are_minimum_permissions') }}</v-notice>
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
 			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Permission, Role } from '@/types';
-import useSync from '@/composables/use-sync';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
+import { Permission, Role } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -39,22 +40,27 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
-		const _permission = useSync(props, 'permission', emit);
+		const { t } = useI18n();
 
-		const permissions = computed({
-			get() {
-				return _permission.value.permissions;
-			},
-			set(newPermissions: Record<string, any> | null) {
-				_permission.value = {
-					..._permission.value,
-					permissions: newPermissions,
-				};
-			},
-		});
+		const permissionSync = useSync(props, 'permission', emit);
 
-		return { permissions };
+		const fields = computed(() => [
+			{
+				field: 'permissions',
+				name: t('rule'),
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: permissionSync.value.collection,
+					},
+				},
+			},
+		]);
+
+		return { t, fields, permissionSync };
 	},
 });
 </script>

@@ -10,4 +10,4 @@ test
 dist
 tmp
 keys.json
-
+coverage

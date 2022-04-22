@@ -1,33 +1,33 @@
 <template>
-	<transition-group class="notifications-group" name="slide-fade" tag="div">
+	<transition-group class="notifications-group" :class="{ 'sidebar-open': sidebarOpen }" name="slide-fade" tag="div">
 		<slot />
 		<notification-item
 			v-for="(notification, index) in queue"
 			:key="notification.id"
 			v-bind="notification"
 			:tail="index === queue.length - 1"
-			:dense="dense"
+			:dense="sidebarOpen === false"
 			:show-close="notification.persist === true && notification.closeable !== false"
 		/>
 	</transition-group>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs } from 'vue';
 import { useNotificationsStore } from '@/stores/';
 import NotificationItem from '../notification-item';
 
 export default defineComponent({
 	components: { NotificationItem },
 	props: {
-		dense: {
+		sidebarOpen: {
 			type: Boolean,
 			default: false,
 		},
 	},
 	setup() {
 		const notificationsStore = useNotificationsStore();
-		const queue = toRefs(notificationsStore.state).queue;
+		const queue = toRefs(notificationsStore).queue;
 
 		return { queue };
 	},
@@ -35,23 +35,28 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .notifications-group {
 	position: fixed;
 	top: 0;
 	right: 8px;
 	left: 8px;
 	z-index: 50;
-	width: 260px;
+	width: 256px;
 	direction: rtl;
 
 	> *,
-	::v-deep > * {
+	> :deep(*) {
 		direction: ltr;
 	}
 
-	@include breakpoint(medium) {
+	&.sidebar-open {
+		top: auto;
+		right: 12px;
+		bottom: 76px;
+		left: auto;
+	}
+
+	@media (min-width: 960px) {
 		top: auto;
 		right: 12px;
 		bottom: 76px;
@@ -72,7 +77,7 @@ export default defineComponent({
 	position: absolute;
 }
 
-.slide-fade-enter {
+.slide-fade-enter-from {
 	transform: translateX(50px) scaleY(0) scaleX(0);
 	transform-origin: right bottom;
 	opacity: 0;

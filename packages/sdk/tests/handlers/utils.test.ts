@@ -5,6 +5,7 @@
 import argon2 from 'argon2';
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { generateHash } from '../utils';
 
 describe('utils', function () {
 	test(`generates random string`, async (url, nock) => {
@@ -30,14 +31,14 @@ describe('utils', function () {
 			})
 			.reply(200, async (_, body: any) => {
 				return {
-					data: await argon2.hash(body.string),
+					data: await generateHash(body.string),
 				};
 			});
 
 		const sdk = new Directus(url);
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
-		expect(hash.substr(0, 7)).toBe('$argon2');
+		expect(hash?.slice(0, 7)).toBe('$argon2');
 	});
 
 	test(`hash verify`, async (url, nock) => {
@@ -47,14 +48,14 @@ describe('utils', function () {
 			})
 			.reply(200, async (_, body: any) => {
 				return {
-					data: await argon2.hash(body.string),
+					data: await generateHash(body.string),
 				};
 			});
 
 		const sdk = new Directus(url);
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
-		expect(hash.substr(0, 7)).toBe('$argon2');
+		expect(hash?.slice(0, 7)).toBe('$argon2');
 
 		nock()
 			.post('/utils/hash/verify')
@@ -64,7 +65,7 @@ describe('utils', function () {
 				};
 			});
 
-		const result = await sdk.utils.hash.verify('wolfulus', hash);
+		const result = await sdk.utils.hash.verify('wolfulus', hash || '');
 
 		expect(result).toBe(true);
 	});

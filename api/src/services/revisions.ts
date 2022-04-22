@@ -1,13 +1,13 @@
-import { ItemsService } from './items';
-import { AbstractServiceOptions, PrimaryKey, Revision } from '../types';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { AbstractServiceOptions, PrimaryKey } from '../types';
+import { ItemsService } from './index';
 
 export class RevisionsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_revisions', options);
 	}
 
-	async revert(pk: PrimaryKey) {
+	async revert(pk: PrimaryKey): Promise<void> {
 		const revision = await super.readOne(pk);
 
 		if (!revision) throw new ForbiddenException();

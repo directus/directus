@@ -1,5 +1,6 @@
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceTags from './tags.vue';
-import { defineInterface } from '@/interfaces/define';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'tags',
@@ -8,6 +9,7 @@ export default defineInterface({
 	icon: 'local_offer',
 	component: InterfaceTags,
 	types: ['json', 'csv'],
+	group: 'standard',
 	options: [
 		{
 			field: 'presets',
@@ -24,7 +26,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'text-input',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},
@@ -36,7 +38,7 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:interfaces.tags.alphabetize_label',
 				},
@@ -47,17 +49,17 @@ export default defineInterface({
 		},
 		{
 			field: 'allowCustom',
-			name: '$t:interfaces.dropdown.allow_other',
+			name: '$t:interfaces.select-dropdown.allow_other',
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
-					label: '$t:interfaces.dropdown.allow_other_label',
+					label: '$t:interfaces.select-dropdown.allow_other_label',
 				},
 			},
 			schema: {
-				default_value: false,
+				default_value: true,
 			},
 		},
 		{
@@ -66,7 +68,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					allowNone: true,
 					choices: [
@@ -83,7 +85,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					allowNone: true,
 					choices: [
@@ -100,7 +102,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'icon',
+				interface: 'select-icon',
 			},
 		},
 		{
@@ -109,9 +111,10 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'icon',
+				interface: 'select-icon',
 			},
 		},
 	],
 	recommendedDisplays: ['labels'],
+	preview: PreviewSVG,
 });

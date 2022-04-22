@@ -1,22 +1,18 @@
 <template>
 	<div>
 		<v-notice type="info">
-			{{ $t('revision_post_update') }}
+			{{ revision.activity.action === 'create' ? t('revision_post_create') : t('revision_post_update') }}
 			<br />
-			{{ $t('no_relational_data') }}
+			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<v-form
-			disabled
-			:collection="revision.collection"
-			:primary-key="revision.item"
-			:initial-values="revision.data"
-		/>
+		<v-form disabled :collection="revision.collection" :primary-key="revision.item" :initial-values="revision.data" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from 'vue';
 import { Revision } from './types';
 
 export default defineComponent({
@@ -25,6 +21,10 @@ export default defineComponent({
 			type: Object as PropType<Revision>,
 			required: true,
 		},
+	},
+	setup() {
+		const { t } = useI18n();
+		return { t };
 	},
 });
 </script>

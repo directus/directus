@@ -1,8 +1,10 @@
-import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
-import database from '../database';
 import { Knex } from 'knex';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
+import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { AbstractServiceOptions, PrimaryKey } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
+import emitter from '../emitter';
 
 export class UtilsService {
 	knex: Knex;
@@ -10,12 +12,12 @@ export class UtilsService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 	}
 
-	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }) {
+	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {
 		const sortFieldResponse =
 			(await this.knex.select('sort_field').from('directus_collections').where({ collection }).first()) ||
 			systemCollectionRows;
@@ -27,7 +29,7 @@ export class UtilsService {
 		}
 
 		if (this.accountability?.admin !== true) {
-			const permissions = this.schema.permissions.find((permission) => {
+			const permissions = this.accountability?.permissions?.find((permission) => {
 				return permission.collection === collection && permission.action === 'update';
 			});
 
@@ -65,6 +67,27 @@ export class UtilsService {
 			}
 		}
 
+		// Check to see if there's any duplicate values in the sort counts. If that's the case, we'll have to
+		// reset the count values, otherwise the sort operation will cause unexpected results
+		const duplicates = await this.knex
+			.select(sortField)
+			.count(sortField, { as: 'count' })
+			.groupBy(sortField)
+			.from(collection)
+			.havingRaw('count(??) > 1', [sortField]);
+
+		if (duplicates?.length > 0) {
+			const ids = await this.knex.select(primaryKeyField).from(collection).orderBy(sortField);
+
+			// This might not scale that well, but I don't really know how to accurately set all rows
+			// to a sequential value that works cross-DB vendor otherwise
+			for (let i = 0; i < ids.length; i++) {
+				await this.knex(collection)
+					.update({ [sortField]: i + 1 })
+					.where(ids[i]);
+			}
+		}
+
 		const targetSortValueResponse = await this.knex
 			.select(sortField)
 			.from(collection)
@@ -97,5 +120,19 @@ export class UtilsService {
 				.andWhere(sortField, '<=', sourceSortValue)
 				.andWhereNot({ [primaryKeyField]: item });
 		}
+
+		emitter.emitAction(
+			['items.sort', `${collection}.items.sort`],
+			{
+				collection,
+				item,
+				to,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 }

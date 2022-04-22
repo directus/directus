@@ -1,25 +1,66 @@
-import { createStore } from 'pinia';
-import { Notification, NotificationRaw } from '@/types';
-import { nanoid } from 'nanoid';
+import { Snackbar, SnackbarRaw } from '@/types';
 import { reverse, sortBy } from 'lodash';
+import { nanoid } from 'nanoid';
+import { defineStore } from 'pinia';
+import { Notification } from '@directus/shared/types';
+import { useUserStore } from '.';
+import api from '@/api';
 
-export const useNotificationsStore = createStore({
+export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',
 	state: () => ({
-		dialogs: [] as Notification[],
-		queue: [] as Notification[],
-		previous: [] as Notification[],
+		dialogs: [] as Snackbar[],
+		queue: [] as Snackbar[],
+		previous: [] as Snackbar[],
+		notifications: [] as Notification[],
+		unread: 0,
 	}),
 	actions: {
-		add(notification: NotificationRaw) {
+		async hydrate() {
+			const userStore = useUserStore();
+
+			if (userStore.currentUser && !('share' in userStore.currentUser)) {
+				await this.getUnreadCount();
+			}
+		},
+		async getUnreadCount() {
+			const userStore = useUserStore();
+
+			if (!userStore.currentUser || !('id' in userStore.currentUser)) return;
+
+			const countResponse = await api.get('/notifications', {
+				params: {
+					filter: {
+						_and: [
+							{
+								recipient: {
+									_eq: userStore.currentUser.id,
+								},
+							},
+							{
+								status: {
+									_eq: 'inbox',
+								},
+							},
+						],
+					},
+					aggregate: {
+						count: 'id',
+					},
+				},
+			});
+
+			this.unread = countResponse.data.data[0].count.id;
+		},
+		add(notification: SnackbarRaw) {
 			const id = nanoid();
 			const timestamp = Date.now();
 
 			if (notification.dialog === true) {
 				notification.persist = true;
 
-				this.state.dialogs = [
-					...this.state.dialogs,
+				this.dialogs = [
+					...this.dialogs,
 					{
 						...notification,
 						id,
@@ -27,8 +68,8 @@ export const useNotificationsStore = createStore({
 					},
 				];
 			} else {
-				this.state.queue = [
-					...this.state.queue,
+				this.queue = [
+					...this.queue,
 					{
 						...notification,
 						id,
@@ -46,30 +87,30 @@ export const useNotificationsStore = createStore({
 			return id;
 		},
 		hide(id: string) {
-			const queues = [...this.state.queue, ...this.state.dialogs];
+			const queues = [...this.queue, ...this.dialogs];
 			const toBeHidden = queues.find((n) => n.id === id);
 			if (!toBeHidden) return;
 
-			if (toBeHidden.dialog === true) this.state.dialogs = this.state.dialogs.filter((n) => n.id !== id);
-			else this.state.queue = this.state.queue.filter((n) => n.id !== id);
+			if (toBeHidden.dialog === true) this.dialogs = this.dialogs.filter((n) => n.id !== id);
+			else this.queue = this.queue.filter((n) => n.id !== id);
 
-			this.state.previous = [...this.state.previous, toBeHidden];
+			this.previous = [...this.previous, toBeHidden];
 		},
 		remove(id: string) {
-			const queues = [...this.state.queue, ...this.state.dialogs];
+			const queues = [...this.queue, ...this.dialogs];
 
 			const toBeRemoved = queues.find((n) => n.id === id);
 			if (!toBeRemoved) return;
 
-			if (toBeRemoved.dialog === true) this.state.dialogs = this.state.dialogs.filter((n) => n.id !== id);
-			else this.state.queue = this.state.queue.filter((n) => n.id !== id);
+			if (toBeRemoved.dialog === true) this.dialogs = this.dialogs.filter((n) => n.id !== id);
+			else this.queue = this.queue.filter((n) => n.id !== id);
 		},
-		update(id: string, updates: Partial<Notification>) {
-			this.state.queue = this.state.queue.map(updateIfNeeded);
-			this.state.dialogs = this.state.dialogs.map(updateIfNeeded);
-			this.state.previous = this.state.queue.map(updateIfNeeded);
+		update(id: string, updates: Partial<Snackbar>) {
+			this.queue = this.queue.map(updateIfNeeded);
+			this.dialogs = this.dialogs.map(updateIfNeeded);
+			this.previous = this.queue.map(updateIfNeeded);
 
-			function updateIfNeeded(notification: Notification) {
+			function updateIfNeeded(notification: Snackbar) {
 				if (notification.id === id) {
 					return {
 						...notification,
@@ -81,8 +122,8 @@ export const useNotificationsStore = createStore({
 		},
 	},
 	getters: {
-		lastFour(state) {
-			const all = [...state.queue, ...state.previous.filter((l) => l.dialog !== true)];
+		lastFour(): Snackbar[] {
+			const all = [...this.queue, ...this.previous.filter((l) => l.dialog !== true)];
 			const chronologicalAll = reverse(sortBy(all, ['timestamp']));
 			const newestFour = chronologicalAll.slice(0, 4);
 			return reverse(newestFour);

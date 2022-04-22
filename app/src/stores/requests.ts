@@ -1,22 +1,29 @@
-import { createStore } from 'pinia';
 import { nanoid } from 'nanoid';
+import { defineStore } from 'pinia';
 
-export const useRequestsStore = createStore({
+export const useRequestsStore = defineStore({
 	id: 'requestsStore',
 	state: () => ({
 		queue: [] as string[],
 	}),
 	getters: {
-		queueHasItems: (state) => state.queue.length > 0,
+		queueHasItems(): boolean {
+			return this.queue.length > 0;
+		},
 	},
 	actions: {
 		startRequest() {
 			const id = nanoid();
-			this.state.queue = [...this.state.queue, id];
+			this.queue = [...this.queue, id];
+
+			// If requests take more than 3.5 seconds, we'll have to assume they'll either never
+			// happen, or already crashed
+			setTimeout(() => this.endRequest(id), 3500);
+
 			return id;
 		},
 		endRequest(id: string) {
-			this.state.queue = this.state.queue.filter((queueID: string) => queueID !== id);
+			this.queue = this.queue.filter((queueID: string) => queueID !== id);
 		},
 	},
 });

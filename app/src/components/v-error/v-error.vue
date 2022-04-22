@@ -2,47 +2,59 @@
 	<div class="v-error selectable">
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
-			v-tooltip="$t('copy_details')"
-			v-if="showCopy"
+			v-if="isCopySupported"
+			v-tooltip="t('copy_details')"
 			small
 			class="copy-error"
 			:name="copied ? 'check' : 'content_copy'"
+			clickable
 			@click="copyError"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType, ref } from 'vue';
 import { isPlainObject } from 'lodash';
+import useClipboard from '@/composables/use-clipboard';
 
 export default defineComponent({
 	props: {
 		error: {
-			type: [Object, Error] as PropType<any>,
+			type: [Object, Error] as PropType<Record<string, any>>,
 			required: true,
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const code = computed(() => {
 			return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
 		});
 
 		const message = computed(() => {
-			return props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
+			let message = props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
+
+			if (message.length > 200) {
+				message = message.substring(0, 197) + '...';
+			}
+
+			return message;
 		});
 
 		const copied = ref(false);
 
-		const showCopy = computed(() => !!navigator.clipboard?.writeText);
+		const { isCopySupported, copyToClipboard } = useClipboard();
 
-		return { code, copyError, showCopy, copied, message };
+		return { t, code, copyError, isCopySupported, copied, message };
 
 		async function copyError() {
 			const error = props.error?.response?.data || props.error;
-			await navigator.clipboard.writeText(
+			const isCopied = await copyToClipboard(
 				JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
 			);
+			if (!isCopied) return;
 			copied.value = true;
 		}
 	},

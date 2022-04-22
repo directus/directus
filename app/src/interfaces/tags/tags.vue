@@ -1,30 +1,31 @@
 <template>
 	<div class="interface-tags">
 		<v-input
-			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
-			@keydown="onInput"
-			:disabled="disabled"
 			v-if="allowCustom"
+			:placeholder="placeholder || t('interfaces.tags.add_tags')"
+			:disabled="disabled"
+			@keydown="onInput"
 		>
-			<template #prepend><v-icon v-if="iconLeft" :name="iconLeft" /></template>
+			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>
 		</v-input>
-		<div class="tags" v-if="presetVals.length > 0 || customVals.length > 0">
+		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
 			<span v-if="presetVals.length > 0" class="presets tag-container">
 				<v-chip
 					v-for="preset in presetVals"
-					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
 					:key="preset"
+					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
 					:disabled="disabled"
 					small
 					label
+					clickable
 					@click="toggleTag(preset)"
 				>
 					{{ preset }}
 				</v-chip>
 			</span>
 			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon class="custom-tags-delimeter" v-if="presetVals.length > 0" name="chevron_right" />
+				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimeter" name="chevron_right" />
 				<v-chip
 					v-for="val in customVals"
 					:key="val"
@@ -32,6 +33,7 @@
 					class="tag"
 					small
 					label
+					clickable
 					@click="removeTag(val)"
 				>
 					{{ val }}
@@ -42,7 +44,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
@@ -88,7 +91,10 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const presetVals = computed<string[]>(() => {
 			if (props.presets !== null) return processArray(props.presets);
 			return [];
@@ -145,15 +151,7 @@ export default defineComponent({
 			return array;
 		}
 
-		return {
-			onInput,
-			addTag,
-			removeTag,
-			toggleTag,
-			presetVals,
-			customVals,
-			selectedVals,
-		};
+		return { t, onInput, addTag, removeTag, toggleTag, presetVals, customVals, selectedVals };
 
 		function onInput(event: KeyboardEvent) {
 			if (event.target && (event.key === 'Enter' || event.key === ',')) {
@@ -212,6 +210,7 @@ export default defineComponent({
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--danger);
 			--v-chip-color-hover: var(--foreground-inverted);
+
 			&.inactive {
 				--v-chip-background-color: var(--background-subdued);
 				--v-chip-color: var(--foreground-subdued);
@@ -223,16 +222,18 @@ export default defineComponent({
 
 	.custom {
 		.v-chip {
-			transition: all var(--fast) var(--transition);
 			--v-chip-background-color: var(--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--danger);
 			--v-chip-close-color: var(--v-chip-background-color);
 			--v-chip-close-color-hover: var(--white);
 
+			transition: all var(--fast) var(--transition);
+
 			&:hover {
 				--v-chip-close-color: var(--white);
-				::v-deep .chip-content .close-outline .close:hover {
+
+				:deep(.chip-content .close-outline .close:hover) {
 					--v-icon-color: var(--danger);
 				}
 			}

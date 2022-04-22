@@ -1,9 +1,16 @@
 <template>
-	<v-select @input="$listeners.input" :value="value" :items="languages" :disabled="disabled" />
+	<v-select
+		:model-value="value"
+		:items="languages"
+		:disabled="disabled"
+		:placeholder="t('language_placeholder')"
+		@update:model-value="$emit('input', $event)"
+	/>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 import availableLanguages from '@/lang/available-languages.yaml';
 
 export default defineComponent({
@@ -16,14 +23,25 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		includeProjectDefault: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	emits: ['input'],
 	setup(props) {
+		const { t } = useI18n();
+
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,
-			value: key,
+			value: key as string | null,
 		}));
 
-		return { languages };
+		if (props.includeProjectDefault) {
+			languages.splice(0, 0, { text: t('fields.directus_settings.default_language'), value: null });
+		}
+
+		return { t, languages };
 	},
 });
 </script>

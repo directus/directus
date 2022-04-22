@@ -3,7 +3,6 @@
  */
 
 import { Directus } from '../../src';
-import { NotAuthenticated } from '../../src/errors';
 import { test } from '../utils';
 
 describe('auth', function () {
@@ -17,16 +16,6 @@ describe('auth', function () {
 
 		const sdk = new Directus(url);
 		await sdk.auth.static('token');
-	});
-
-	it(`throws when refreshing without authenticating first`, async () => {
-		const sdk = new Directus('http://localhost');
-		try {
-			await sdk.auth.refresh(true);
-			fail('Should have failed');
-		} catch (err) {
-			expect(err).toBeInstanceOf(NotAuthenticated);
-		}
 	});
 
 	/*
@@ -56,7 +45,7 @@ describe('auth', function () {
 				}
 			);
 			fail('Should have failed');
-		} catch (err) {
+		} catch (err: any) {
 			expect(err).toBeInstanceOf(InvalidRefreshTime);
 		}
 	});
@@ -97,7 +86,7 @@ describe('auth', function () {
 				password: 'invalid_password',
 			});
 			fail('Should have thrown due to error response');
-		} catch (err) {
+		} catch {
 			//
 		}
 
@@ -125,7 +114,7 @@ describe('auth', function () {
 		try {
 			await sdk.auth.static('token');
 			fail('Should have thrown due to error response');
-		} catch (err) {
+		} catch {
 			//
 		}
 

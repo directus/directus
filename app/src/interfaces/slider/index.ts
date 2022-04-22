@@ -1,5 +1,6 @@
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceSlider from './slider.vue';
-import { defineInterface } from '@/interfaces/define';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'slider',
@@ -8,32 +9,33 @@ export default defineInterface({
 	icon: 'linear_scale',
 	component: InterfaceSlider,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
+	group: 'other',
 	options: [
 		{
 			field: 'minValue',
-			name: '$t:interfaces.numeric.minimum_value',
+			name: '$t:interfaces.input.minimum_value',
 			type: 'integer',
 			meta: {
 				width: 'half',
-				interface: 'numeric',
+				interface: 'input',
 			},
 		},
 		{
 			field: 'maxValue',
-			name: '$t:interfaces.numeric.maximum_value',
+			name: '$t:interfaces.input.maximum_value',
 			type: 'integer',
 			meta: {
 				width: 'half',
-				interface: 'numeric',
+				interface: 'input',
 			},
 		},
 		{
 			field: 'stepInterval',
-			name: '$t:interfaces.numeric.step_interval',
+			name: '$t:interfaces.input.step_interval',
 			type: 'integer',
 			meta: {
 				width: 'half',
-				interface: 'numeric',
+				interface: 'input',
 			},
 		},
 		{
@@ -42,8 +44,9 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

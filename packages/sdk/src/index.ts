@@ -1,7 +1,6 @@
 // Interfaces
 export * from './auth';
 export * from './directus';
-export * from './errors';
 export * from './handlers';
 export * from './items';
 export * from './singleton';

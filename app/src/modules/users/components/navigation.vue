@@ -1,8 +1,8 @@
 <template>
-	<v-list large>
+	<v-list nav>
 		<v-list-item to="/users" exact :active="currentRole === null">
-			<v-list-item-icon><v-icon name="folder_shared" outline /></v-list-item-icon>
-			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
+			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
+			<v-list-item-content>{{ t('all_users') }}</v-list-item-content>
 		</v-list-item>
 
 		<v-divider v-if="(roles && roles.length > 0) || loading" />
@@ -13,25 +13,25 @@
 			</v-list-item>
 		</template>
 
-		<v-list-item
-			v-for="{ name, id, icon } in roles"
-			:key="id"
-			:to="`/users?role=${id}`"
-			exact
-			:active="currentRole === id"
-		>
-			<v-list-item-icon><v-icon :name="icon" outline /></v-list-item-icon>
-			<v-list-item-content>{{ name }}</v-list-item-content>
-		</v-list-item>
+		<navigation-role
+			v-for="role in roles"
+			:key="role.id"
+			:role="role"
+			:last-admin="lastAdminRoleId === role.id"
+			:active="currentRole === role.id"
+		/>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { computed, defineComponent } from 'vue';
 
 import useNavigation from '../composables/use-navigation';
+import NavigationRole from './navigation-role.vue';
 
 export default defineComponent({
+	components: { NavigationRole },
 	props: {
 		currentRole: {
 			type: String,
@@ -39,9 +39,17 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { roles, loading } = useNavigation();
 
-		return { roles, loading };
+		const lastAdminRoleId = computed(() => {
+			if (!roles.value) return null;
+			const adminRoles = roles.value.filter((role) => role.admin_access === true);
+			return adminRoles.length === 1 ? adminRoles[0].id : null;
+		});
+
+		return { t, roles, loading, lastAdminRoleId };
 	},
 });
 </script>

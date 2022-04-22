@@ -1,4 +1,5 @@
 import BaseJoi, { AnySchema } from 'joi';
+import { escapeRegExp, merge } from 'lodash';
 
 /**
  * @TODO
@@ -25,7 +26,7 @@ const Joi = BaseJoi.extend({
 			method(substring) {
 				return this.$_addRule({ name: 'contains', args: { substring } });
 			},
-			validate(value, helpers, { substring }, options) {
+			validate(value, helpers, { substring }) {
 				if (value.includes(substring) === false) {
 					return helpers.error('string.contains', { substring });
 				}
@@ -45,7 +46,7 @@ const Joi = BaseJoi.extend({
 			method(substring) {
 				return this.$_addRule({ name: 'ncontains', args: { substring } });
 			},
-			validate(value, helpers, { substring }, options) {
+			validate(value, helpers, { substring }) {
 				if (value.includes(substring) === true) {
 					return helpers.error('string.ncontains', { substring });
 				}
@@ -57,20 +58,19 @@ const Joi = BaseJoi.extend({
 });
 
 type JoiOptions = {
-	allowUnknown: boolean;
+	allowUnknown?: boolean;
+	requireAll?: boolean;
 };
 
 const defaults: JoiOptions = {
 	allowUnknown: true,
+	requireAll: false,
 };
 
-export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions) {
+export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions): AnySchema {
 	filter = filter || {};
 
-	options = {
-		...defaults,
-		...(options || {}),
-	};
+	options = merge({}, defaults, options);
 
 	const schema: Record<string, AnySchema> = {};
 
@@ -94,6 +94,32 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 
 			if (operator === '_ncontains') {
 				schema[key] = Joi.string().ncontains(Object.values(value)[0]);
+			}
+
+			if (operator === '_starts_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+					name: 'starts_with',
+				});
+			}
+
+			if (operator === '_nstarts_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+					name: 'starts_with',
+					invert: true,
+				});
+			}
+
+			if (operator === '_ends_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+					name: 'ends_with',
+				});
+			}
+
+			if (operator === '_nends_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+					name: 'ends_with',
+					invert: true,
+				});
 			}
 
 			if (operator === '_in') {
@@ -144,6 +170,10 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 			if (operator === '_nbetween') {
 				const values = Object.values(value)[0] as number[];
 				schema[key] = Joi.number().less(values[0]).greater(values[1]);
+			}
+
+			if (options.requireAll) {
+				schema[key] = schema[key].required();
 			}
 		}
 	}

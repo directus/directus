@@ -1,13 +1,6 @@
 import { BaseStorage } from './base';
 
 export class LocalStorage extends BaseStorage {
-	private prefix: string;
-
-	constructor(prefix: string = '') {
-		super();
-		this.prefix = prefix;
-	}
-
 	get(key: string): string | null {
 		const value = localStorage.getItem(this.key(key));
 		if (value !== null) {
@@ -24,7 +17,7 @@ export class LocalStorage extends BaseStorage {
 	delete(key: string): string | null {
 		const k = this.key(key);
 		const value = this.get(k);
-		if (!!value) {
+		if (value) {
 			localStorage.removeItem(k);
 		}
 		return value;

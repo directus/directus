@@ -13,7 +13,7 @@ export class UtilsHandler {
 	}
 
 	random = {
-		string: async (length: number = 32): Promise<string> => {
+		string: async (length = 32): Promise<string> => {
 			const result = await this.transport.get<string>('/utils/random/string', { params: { length } });
 			return result.data!;
 		},

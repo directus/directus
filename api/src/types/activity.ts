@@ -5,5 +5,5 @@ export enum Action {
 	REVERT = 'revert',
 	COMMENT = 'comment',
 	UPLOAD = 'upload',
-	AUTHENTICATE = 'authenticate',
+	LOGIN = 'login',
 }

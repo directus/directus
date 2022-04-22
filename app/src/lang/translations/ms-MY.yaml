@@ -1,7 +1,84 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifier
+avatar: Avatar
+application: Aplikasi
+default_provider: Permintaan
+published: Diterbitkan
+draft: Draf
+archived: Diarkibkan
+modules: Modul
+module_bar: Modul.bar
+tile_size: Saiz jubin
+edit_field: Sunting halaman
+conditions: Syarat
+maps: Peta
+switch_user: Tukar pengguna
+item_creation: Pembuatan barang
+item_revision: Barang semakan
+enter_a_name: Masukkan nama
+duplicate_field: Halaman salinan
+half_width: Separuh lebar
+full_width: Kelebaran penuh
+group: Kumpulan
+export_items: Ekspot item
+and: Dan
+or: Atau
+fill_width: Isi lebar
+field_name_translations: Terjemahan nama bidang
+enter_password_to_enable_tfa: Masukkan kata laluan anda untuk mengaktifkan pengesahan dua faktor
+add_field: Tambah medan
+role_name: Nama peranan
+branch: Cawangan
+leaf: Daun
+indeterminate: Tidak tentu arah
+edit_collection: Edit koleksi
+exclusive: Eksklusif
+children: Kanak-kanak
+show_active_items: Tunjukkan item yang aktif
+show_archived_items: Tunjukkan item yang diarkibkan
+show_all_items: Tunjukkan semua item
+edited: Nilai diedit
 required: Diperlukan
+create_preset: Bina Pratetapan
+create_panel: Cipta Panel
 create_role: Buat Peranan
+create_user: Cipta Pengguna
+invite: Jemputan
+emails: Emel
+connection_excellent: Rangkaian bagus
+connection_good: Rangkaian baik
+connection_fair: Rangkaian sederhana
+connection_poor: Rangkaian lemah
+primary: Utama
+rename_folder: Tukar nama fail
+delete_folder: Padam fail
+prefix: Awalan
+suffix: Akhiran
+reset_bookmark: Tetapkan semula penanda buku
+update_bookmark: Padam Penanda Buku
 delete_bookmark: Padam Penanda Buku
+validationError:
+  eq: Nilai mesti {valid}
 create_field: Cipta Medan
 hidden_on_detail: Tersembunyi di Butiran
 text: Teks
@@ -13,7 +90,6 @@ length: Panjang
 readonly: Baca Sahaja
 unique: Unik
 primary_key: Kunci Utama
-clear_value: Kosongkan nilai
 page_not_found: Halaman Tidak Dijumpai
 page_not_found_body: Halaman yang anda cari tidak wujud
 title: Tajuk
@@ -30,9 +106,12 @@ item_count: 'Tiada Benda | Satu Benda | {count} Benda'
 create_collection: Cipta Koleksi
 users: Pengguna-pengguna
 activity: Aktiviti
+action: Tindakan
+ip_address: Alamat IP
 user_directory: Direktori pengguna
 duration: Durasi
 status: Status
+remove: Buang
 bookmarks: Penandabuku
 back: Kembali
 operators:
@@ -105,13 +184,36 @@ fields:
     role: Peranan
   directus_settings:
     project_name: Nama Projek
+    module_bar: Modul.bar
+  directus_shares:
+    name: Nama
+    role: Peranan
+    password: Katalaluan
   directus_fields:
     note: Nota
+    translation: Terjemahan nama bidang
   directus_roles:
+    name: Nama peranan
     description: Penerangan
+  directus_webhooks:
+    name: Nama
+    status: Status
+    value: Nilai
+    collections: Koleksi-koleksi
+field_options:
+  directus_activity:
+    create: Cipta
+    update: Kemaskini
+  directus_roles:
+    fields:
+      name_name: Nama
+    collections_name: Koleksi-koleksi
+  directus_webhooks:
+    actions_create: Cipta
+    actions_update: Kemaskini
+    headers:
+      value: Nilai
 comment: Komen
-default: Lalai
-delete: Padam
 delete_field_are_you_sure: >-
   Adakah anda pasti ingin memadam medan "{field}"? Tindakan ini tidak dapat dibatalkan.
 description: Penerangan
@@ -142,16 +244,18 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
-  collection:
+  filter:
+    all: Semua
+  presentation-links:
+    primary: Utama
+  system-collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Koleksi-koleksi
   file:
     file: Fail
   files:
     files: Fail-fail
-  numeric:
-    numeric: Angka
   tags:
     tags: Tag
 displays:
@@ -159,6 +263,10 @@ displays:
     collection: Koleksi
   file:
     file: Fail
+  formatted-value:
+    prefix: Awalan
+    suffix: Akhiran
+    text: Teks
   user:
     avatar: Avatar
     name: Nama
@@ -167,5 +275,4 @@ layouts:
   cards:
     title: Tajuk
   tabular:
-    fields: Medan-medan
     compact: Padat

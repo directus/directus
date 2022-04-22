@@ -1,11 +1,11 @@
 <template>
 	<div class="v-list-item-icon" :class="{ center }">
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -61,11 +61,13 @@ body {
 				}
 			}
 
-			&.large #{$this} .v-icon {
-				--v-icon-color: none;
+			&.nav #{$this} :slotted(.v-icon) {
+				&.dense {
+					--v-icon-size: 18px;
+				}
 			}
 
-			&.disabled #{$this} .v-icon {
+			&.disabled #{$this} :slotted(.v-icon) {
 				--v-icon-color: var(--foreground-subdued) !important;
 			}
 		}

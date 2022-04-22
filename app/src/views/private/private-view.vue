@@ -1,31 +1,41 @@
 <template>
-	<v-info v-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
-		{{ $t('no_app_access_copy') }}
+	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
+		{{ t('no_app_access_copy') }}
 
 		<template #append>
-			<v-button to="/logout">Switch User</v-button>
+			<v-button to="/logout">{{ t('switch_user') }}</v-button>
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme }">
-		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
+	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
+		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<div class="module-nav alt-colors">
+			<div ref="moduleNavEl" class="module-nav alt-colors">
 				<project-info />
 
 				<div class="module-nav-content">
 					<slot name="navigation" />
 				</div>
+
+				<div
+					class="module-nav-resize-handle"
+					:class="{ active: handleHover }"
+					@pointerenter="handleHover = true"
+					@pointerleave="handleHover = false"
+					@pointerdown.self="onResizeHandlePointerDown"
+					@dblclick="resetModuleNavWidth"
+				/>
 			</div>
 		</aside>
-		<div class="content" ref="contentEl">
+		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
+				:small="smallHeader"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
 				@primary="navOpen = !navOpen"
 			>
-				<template v-for="(_, scopedSlotName) in $scopedSlots" v-slot:[scopedSlotName]="slotData">
+				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
@@ -35,8 +45,10 @@
 			</main>
 		</div>
 		<aside
+			id="sidebar"
+			ref="sidebarEl"
 			role="contentinfo"
-			class="sidebar alt-colors"
+			class="alt-colors"
 			aria-label="Module Sidebar"
 			:class="{ 'is-open': sidebarOpen }"
 			@click="openSidebar"
@@ -55,92 +67,175 @@
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
 
-		<notifications-group v-if="notificationsPreviewActive === false" :dense="sidebarOpen === false" />
+		<notifications-drawer />
+		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
 		<notification-dialogs />
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, provide, toRefs, computed, onUpdated, nextTick } from '@vue/composition-api';
-import ModuleBar from './components/module-bar/';
-import SidebarDetailGroup from './components/sidebar-detail-group/';
+<script lang="ts" setup>
+import useElementSize from '@/composables/use-element-size';
+import useEventListener from '@/composables/use-event-listener';
+import useLocalStorage from '@/composables/use-local-storage';
+import useTitle from '@/composables/use-title';
+import useWindowSize from '@/composables/use-window-size';
+import { useAppStore, useUserStore } from '@/stores';
+import { debounce } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed, onMounted, provide, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar';
-import ProjectInfo from './components/project-info';
-import SidebarButton from './components/sidebar-button/';
+import ModuleBar from './components/module-bar.vue';
+import NotificationDialogs from './components/notification-dialogs/';
+import NotificationsDrawer from './components/notifications-drawer.vue';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
-import NotificationDialogs from './components/notification-dialogs/';
-import { useUserStore, useAppStore } from '@/stores';
-import router from '@/router';
-import useTitle from '@/composables/use-title';
+import ProjectInfo from './components/project-info';
+import SidebarDetailGroup from './components/sidebar-detail-group/';
 
-export default defineComponent({
-	components: {
-		ModuleBar,
-		SidebarDetailGroup,
-		HeaderBar,
-		ProjectInfo,
-		SidebarButton,
-		NotificationsGroup,
-		NotificationsPreview,
-		NotificationDialogs,
-	},
-	props: {
-		title: {
-			type: String,
-			default: null,
+interface Props {
+	title?: string | null;
+	smallHeader?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false });
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const contentEl = ref<Element>();
+const sidebarEl = ref<Element>();
+const { width: windowWidth } = useWindowSize();
+const { width: contentWidth } = useElementSize(contentEl);
+const { width: sidebarWidth } = useElementSize(sidebarEl);
+
+const moduleNavEl = ref<HTMLElement>();
+const { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp } =
+	useModuleNavResize();
+useEventListener(window, 'pointermove', onPointerMove);
+useEventListener(window, 'pointerup', onPointerUp);
+
+const { data } = useLocalStorage('module-nav-width');
+
+onMounted(() => {
+	if (!data.value) return;
+	if (Number.isNaN(data.value)) return;
+	moduleNavEl.value!.style.width = `${data.value}px`;
+});
+
+const { title } = toRefs(props);
+const navOpen = ref(false);
+const userStore = useUserStore();
+const appStore = useAppStore();
+
+const appAccess = computed(() => {
+	if (!userStore.currentUser) return true;
+	return userStore.currentUser?.role?.app_access || false;
+});
+
+const notificationsPreviewActive = ref(false);
+
+const { sidebarOpen, fullScreen } = storeToRefs(appStore);
+
+const theme = computed(() => {
+	return userStore.currentUser?.theme || 'auto';
+});
+
+provide('main-element', contentEl);
+
+router.afterEach(async () => {
+	contentEl.value?.scrollTo({ top: 0 });
+	fullScreen.value = false;
+});
+
+useTitle(title);
+
+function useModuleNavResize() {
+	const handleHover = ref<boolean>(false);
+	const dragging = ref<boolean>(false);
+	const dragStartX = ref<number>(0);
+	const dragStartWidth = ref<number>(0);
+	const currentWidth = ref<number | null>(null);
+	const currentWidthLimit = ref<number>(0);
+	const rafId = ref<number | null>(null);
+
+	watch(
+		currentWidth,
+		debounce((newVal) => {
+			if (newVal === 220) {
+				data.value = null;
+			} else {
+				data.value = newVal;
+			}
+		}, 300)
+	);
+
+	watch(
+		[windowWidth, contentWidth, sidebarWidth],
+		() => {
+			if (windowWidth.value > 1260) {
+				// 590 = minimum content width, 60 = module bar width, and dynamic side bar width
+				currentWidthLimit.value = windowWidth.value - (590 + 60 + sidebarWidth.value);
+			} else if (windowWidth.value > 960) {
+				// 590 = minimum content width, 60 = module bar width, 60 = side bar width
+				currentWidthLimit.value = windowWidth.value - (590 + 60 + 60);
+			} else {
+				// first 60 = module bar width, second 60 = room for overlay
+				currentWidthLimit.value = windowWidth.value - (60 + 60);
+			}
+
+			if (currentWidth.value && currentWidth.value > currentWidthLimit.value) {
+				currentWidth.value = Math.max(220, currentWidthLimit.value);
+				moduleNavEl.value!.style.width = `${currentWidth.value}px`;
+			}
 		},
-	},
-	setup(props) {
-		const { title } = toRefs(props);
-		const navOpen = ref(false);
-		const contentEl = ref<Element>();
-		const userStore = useUserStore();
-		const appStore = useAppStore();
+		{ immediate: true }
+	);
 
-		const appAccess = computed(() => {
-			if (!userStore.state.currentUser) return true;
-			return userStore.state.currentUser?.role?.app_access || false;
+	return { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp };
+
+	function onResizeHandlePointerDown(event: PointerEvent) {
+		dragging.value = true;
+		dragStartX.value = event.pageX;
+		dragStartWidth.value = moduleNavEl.value!.offsetWidth;
+	}
+
+	function resetModuleNavWidth() {
+		currentWidth.value = 220;
+		moduleNavEl.value!.style.width = `220px`;
+	}
+
+	function onPointerMove(event: PointerEvent) {
+		if (!dragging.value) return;
+
+		rafId.value = window.requestAnimationFrame(() => {
+			currentWidth.value = Math.max(220, dragStartWidth.value + (event.pageX - dragStartX.value));
+			if (currentWidth.value >= currentWidthLimit.value) currentWidth.value = currentWidthLimit.value;
+			if (currentWidth.value > 220 && currentWidth.value <= 230) currentWidth.value = 220; // snap when nearing min width
+			moduleNavEl.value!.style.width = `${currentWidth.value}px`;
 		});
+	}
 
-		const notificationsPreviewActive = ref(false);
-
-		const { sidebarOpen } = toRefs(appStore.state);
-
-		const theme = computed(() => {
-			return userStore.state.currentUser?.theme || 'auto';
-		});
-
-		provide('main-element', contentEl);
-
-		router.afterEach(async (to, from) => {
-			contentEl.value?.scrollTo({ top: 0 });
-		});
-
-		useTitle(title);
-
-		return {
-			navOpen,
-			contentEl,
-			theme,
-			sidebarOpen,
-			openSidebar,
-			notificationsPreviewActive,
-			appAccess,
-		};
-
-		function openSidebar(event: PointerEvent) {
-			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
-				sidebarOpen.value = true;
+	function onPointerUp() {
+		if (dragging.value === true) {
+			dragging.value = false;
+			if (rafId.value) {
+				window.cancelAnimationFrame(rafId.value);
 			}
 		}
-	},
-});
+	}
+}
+
+function openSidebar(event: PointerEvent) {
+	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
+		sidebarOpen.value = true;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
@@ -148,12 +243,13 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
+	overflow-x: hidden;
 	background-color: var(--background-page);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
@@ -161,12 +257,12 @@ export default defineComponent({
 	.sidebar-overlay {
 		--v-overlay-z-index: 29;
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			display: none;
 		}
 	}
 
-	.navigation {
+	#navigation {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -181,7 +277,14 @@ export default defineComponent({
 			transform: translateX(0);
 		}
 
+		&:not(.is-open) {
+			.module-nav-resize-handle {
+				display: none;
+			}
+		}
+
 		.module-nav {
+			position: relative;
 			display: inline-block;
 			width: 220px;
 			height: 100%;
@@ -198,17 +301,46 @@ export default defineComponent({
 			}
 		}
 
-		@include breakpoint(medium) {
+		.module-nav-resize-handle {
+			position: absolute;
+			top: 0;
+			right: -2px;
+			bottom: 0;
+			width: 4px;
+			background-color: var(--primary);
+			cursor: ew-resize;
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
+			transition-delay: 0;
+			user-select: none;
+			touch-action: none;
+
+			&:hover,
+			&:active {
+				opacity: 1;
+			}
+
+			&.active {
+				transition-delay: var(--slow);
+			}
+		}
+
+		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
+
+			&:not(.is-open) {
+				.module-nav-resize-handle {
+					display: block;
+				}
+			}
 		}
 	}
 
-	.content {
+	#main-content {
 		--border-radius: 6px;
 		--input-height: 60px;
-		--input-padding: 16px; // (60 - 4 - 24) / 2
-		--form-vertical-gap: 52px;
+		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 
 		position: relative;
 		flex-grow: 1;
@@ -217,7 +349,7 @@ export default defineComponent({
 		overflow: auto;
 		scroll-padding-top: 100px;
 
-		// Page Content Spacing (Could be converted to Project Setting toggle)
+		/* Page Content Spacing (Could be converted to Project Setting toggle) */
 		font-size: 15px;
 		line-height: 24px;
 
@@ -225,22 +357,22 @@ export default defineComponent({
 			display: contents;
 		}
 
-		// Offset for partially visible sidebar
-		@include breakpoint(medium) {
-			margin-right: 64px;
+		/* Offset for partially visible sidebar */
+		@media (min-width: 960px) {
+			margin-right: 60px;
 		}
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			margin-right: 0;
 		}
 	}
 
-	.sidebar {
+	#sidebar {
 		position: fixed;
 		top: 0;
 		right: 0;
 		z-index: 30;
-		width: 284px;
+		width: 280px;
 		height: 100%;
 		overflow: hidden;
 		background-color: var(--background-normal);
@@ -258,31 +390,47 @@ export default defineComponent({
 		.flex-container {
 			display: flex;
 			flex-direction: column;
-			width: 284px;
+			width: 280px;
 			height: 100%;
 		}
 
-		@include breakpoint(medium) {
-			transform: translateX(calc(100% - 64px));
+		@media (min-width: 960px) {
+			transform: translateX(calc(100% - 60px));
 		}
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			position: relative;
-			flex-basis: 64px;
+			flex-basis: 60px;
 			flex-shrink: 0;
-			transform: none;
-			transition: flex-basis var(--slow) var(--transition);
+			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
 
 			&.is-open {
-				flex-basis: 284px;
-				transform: none;
+				flex-basis: 280px;
 			}
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--content-padding: 32px;
 		--content-padding-bottom: 132px;
+	}
+
+	&.full-screen {
+		#navigation {
+			position: fixed;
+			transform: translateX(-100%);
+			transition: none;
+		}
+
+		#main-content {
+			margin: 0;
+		}
+
+		#sidebar {
+			position: fixed;
+			transform: translateX(100%);
+			transition: none;
+		}
 	}
 }
 </style>

@@ -1,46 +1,95 @@
-import env from './env';
 import Keyv, { Options } from 'keyv';
-import { validateEnv } from './utils/validate-env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
 import ms from 'ms';
+import env from './env';
 import logger from './logger';
+import { getConfigFromEnv } from './utils/get-config-from-env';
+import { validateEnv } from './utils/validate-env';
 
 let cache: Keyv | null = null;
+let systemCache: Keyv | null = null;
+let lockCache: Keyv | null = null;
 
-if (env.CACHE_ENABLED === true) {
-	validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-	cache = getKeyvInstance();
-	cache.on('error', (err) => logger.error(err));
+export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: Keyv } {
+	if (env.CACHE_ENABLED === true && cache === null) {
+		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
+		cache = getKeyvInstance(env.CACHE_TTL ? ms(env.CACHE_TTL as string) : undefined);
+		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+	}
+
+	if (systemCache === null) {
+		systemCache = getKeyvInstance(env.CACHE_SYSTEM_TTL ? ms(env.CACHE_SYSTEM_TTL as string) : undefined, '_system');
+		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+	}
+
+	if (lockCache === null) {
+		lockCache = getKeyvInstance(undefined, '_lock');
+		lockCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+	}
+
+	return { cache, systemCache, lockCache };
 }
 
-export default cache;
+export async function flushCaches(forced?: boolean): Promise<void> {
+	const { cache } = getCache();
+	await clearSystemCache(forced);
+	await cache?.clear();
+}
 
-function getKeyvInstance() {
-	switch (env.CACHE_STORE) {
-		case 'redis':
-			return new Keyv(getConfig('redis'));
-		case 'memcache':
-			return new Keyv(getConfig('memcache'));
-		case 'memory':
-		default:
-			return new Keyv(getConfig());
+export async function clearSystemCache(forced?: boolean): Promise<void> {
+	const { systemCache, lockCache } = getCache();
+
+	// Flush system cache when forced or when system cache lock not set
+	if (forced || !(await lockCache.get('system-cache-lock'))) {
+		await lockCache.set('system-cache-lock', true, 10000);
+		await systemCache.clear();
+		await lockCache.delete('system-cache-lock');
 	}
 }
 
-function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): Options<any> {
+export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
+	const { systemCache, lockCache } = getCache();
+
+	if (!(await lockCache.get('system-cache-lock'))) {
+		await systemCache.set(key, value, ttl);
+	}
+}
+
+function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Keyv {
+	switch (env.CACHE_STORE) {
+		case 'redis':
+			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
+		case 'memcache':
+			return new Keyv(getConfig('memcache', ttl, namespaceSuffix));
+		case 'memory':
+		default:
+			return new Keyv(getConfig('memory', ttl, namespaceSuffix));
+	}
+}
+
+function getConfig(
+	store: 'memory' | 'redis' | 'memcache' = 'memory',
+	ttl: number | undefined,
+	namespaceSuffix = ''
+): Options<any> {
 	const config: Options<any> = {
-		namespace: env.CACHE_NAMESPACE,
-		ttl: ms(env.CACHE_TTL as string),
+		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
+		ttl,
 	};
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
+
 		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
 	}
 
 	if (store === 'memcache') {
 		const KeyvMemcache = require('keyv-memcache');
-		config.store = new KeyvMemcache(env.CACHE_MEMCACHE);
+
+		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
+		// so we need to join array into a string when applicable. See #7986
+		const cacheMemcache = Array.isArray(env.CACHE_MEMCACHE) ? env.CACHE_MEMCACHE.join(',') : env.CACHE_MEMCACHE;
+
+		config.store = new KeyvMemcache(cacheMemcache);
 	}
 
 	return config;

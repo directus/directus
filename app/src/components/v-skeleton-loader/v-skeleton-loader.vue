@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -136,7 +136,7 @@ body {
 	transition: opacity var(--medium) var(--transition);
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
 	position: absolute;
 	opacity: 0;

@@ -1,19 +1,19 @@
 <template>
 	<v-slider
-		:value="value"
+		:model-value="value"
 		:disabled="disabled"
 		:min="minValue"
 		:max="maxValue"
 		:step="stepInterval"
-		:alwaysShowValue="alwaysShowValue"
+		:always-show-value="alwaysShowValue"
 		show-thumb-label
 		show-ticks
-		@input="$listeners.input"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -42,6 +42,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 });
 </script>
 

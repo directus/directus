@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express';
-import { InvalidQueryException, MethodNotAllowedException, InvalidPayloadException } from '../exceptions';
-import asyncHandler from '../utils/async-handler';
+import { DocumentNode, getOperationAST, parse, Source } from 'graphql';
+import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions';
 import { GraphQLParams } from '../types';
-import { getOperationAST, Source, parse, DocumentNode } from 'graphql';
+import asyncHandler from '../utils/async-handler';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (req.method !== 'GET' && req.method !== 'POST') {
@@ -17,7 +17,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 	if (req.method === 'GET') {
 		query = (req.query.query as string | undefined) || null;
 
-		if (req.params.variables) {
+		if (req.query.variables) {
 			try {
 				variables = JSON.parse(req.query.variables as string);
 			} catch {
@@ -40,7 +40,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 
 	try {
 		document = parse(new Source(query));
-	} catch (err) {
+	} catch (err: any) {
 		throw new InvalidPayloadException(`GraphQL schema validation error.`, {
 			graphqlErrors: [err],
 		});

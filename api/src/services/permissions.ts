@@ -1,25 +1,35 @@
-import { AbstractServiceOptions, PermissionsAction, Query, Item, PrimaryKey } from '../types';
-import { ItemsService, MutationOptions, QueryOptions } from '../services/items';
-import { filterItems } from '../utils/filter-items';
-import logger from '../logger';
-
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
+import { ItemsService, QueryOptions } from '../services/items';
+import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
+import { Query, PermissionsAction } from '@directus/shared/types';
+import { filterItems } from '../utils/filter-items';
+import Keyv from 'keyv';
+import { getCache, clearSystemCache } from '../cache';
 
 export class PermissionsService extends ItemsService {
+	systemCache: Keyv<any>;
+
 	constructor(options: AbstractServiceOptions) {
 		super('directus_permissions', options);
+
+		const { systemCache } = getCache();
+
+		this.systemCache = systemCache;
 	}
 
-	getAllowedFields(action: PermissionsAction, collection?: string) {
-		const results = this.schema.permissions.filter((permission) => {
-			let matchesCollection = true;
+	getAllowedFields(action: PermissionsAction, collection?: string): Record<string, string[]> {
+		const results =
+			this.accountability?.permissions?.filter((permission) => {
+				let matchesCollection = true;
 
-			if (collection) {
-				matchesCollection = permission.collection === collection;
-			}
+				if (collection) {
+					matchesCollection = permission.collection === collection;
+				}
 
-			return permission.action === action;
-		});
+				const matchesAction = permission.action === action;
+
+				return collection ? matchesCollection && matchesAction : matchesAction;
+			}) ?? [];
 
 		const fieldsPerCollection: Record<string, string[]> = {};
 
@@ -68,21 +78,63 @@ export class PermissionsService extends ItemsService {
 		return result;
 	}
 
-	/**
-	 * @deprecated Use `readOne` or `readMany` instead
-	 */
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
-		logger.warn(
-			'PermissionsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
-		);
+	async createOne(data: Partial<Item>, opts?: MutationOptions) {
+		const res = await super.createOne(data, opts);
+		await clearSystemCache();
+		return res;
+	}
 
-		if (Array.isArray(key)) return await this.readMany(key, query, { permissionsAction: action });
-		return await this.readOne(key, query, { permissionsAction: action });
+	async createMany(data: Partial<Item>[], opts?: MutationOptions) {
+		const res = await super.createMany(data, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions) {
+		const res = await super.updateByQuery(query, data, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions) {
+		const res = await super.updateOne(key, data, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
+		const res = await super.updateMany(keys, data, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async upsertOne(payload: Partial<Item>, opts?: MutationOptions) {
+		const res = await super.upsertOne(payload, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
+		const res = await super.upsertMany(payloads, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async deleteByQuery(query: Query, opts?: MutationOptions) {
+		const res = await super.deleteByQuery(query, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async deleteOne(key: PrimaryKey, opts?: MutationOptions) {
+		const res = await super.deleteOne(key, opts);
+		await clearSystemCache();
+		return res;
+	}
+
+	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions) {
+		const res = await super.deleteMany(keys, opts);
+		await clearSystemCache();
+		return res;
 	}
 }

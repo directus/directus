@@ -1,9 +1,9 @@
 /**
- * @jest-environment jest-environment-jsdom-global
+ * @jest-environment jsdom
  */
 
-import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
-import { test, timers } from '../utils';
+import { Directus } from '../../src';
+import { test } from '../utils';
 
 describe('auth (browser)', function () {
 	beforeEach(() => {
@@ -15,10 +15,8 @@ describe('auth (browser)', function () {
 	});
 
 	test(`sets default auth mode to cookie`, async (url) => {
-		const storage = new MemoryStorage();
-		const transport = new AxiosTransport(url, storage);
-		const auth = new Auth(transport, storage);
-		expect(auth.options.mode).toBe('cookie');
+		const sdk = new Directus(url, { auth: { mode: 'cookie' } });
+		expect(sdk.auth.mode).toBe('cookie');
 	});
 
 	test(`sends default auth mode`, async (url, nock) => {
@@ -33,79 +31,13 @@ describe('auth (browser)', function () {
 			});
 
 		const sdk = new Directus(url);
+
 		await sdk.auth.login({
 			email: 'wolfulus@gmail.com',
 			password: 'password',
 		});
 
 		expect(scope.pendingMocks().length).toBe(0);
-	});
-
-	test(`authentication should auto refresh after specified period`, async (url, nock) => {
-		const scope = nock();
-
-		scope
-			.post('/auth/login', (body) => body.mode === 'cookie')
-			.reply(
-				200,
-				{
-					data: {
-						access_token: 'access_token',
-						expires: 5000,
-					},
-				},
-				{
-					'Set-Cookie': 'directus_refresh_token=the_refresh_token; Max-Age=604800; Path=/; HttpOnly;',
-				}
-			);
-
-		scope
-			.post('/auth/refresh')
-			.matchHeader('cookie', 'directus_refresh_token=the_refresh_token')
-			.reply(200, {
-				data: {
-					access_token: 'new_access_token',
-					expires: 5000,
-				},
-			});
-
-		expect(scope.pendingMocks().length).toBe(2);
-
-		await timers(async ({ tick, flush }) => {
-			const sdk = new Directus(url);
-			await sdk.auth.login(
-				{
-					email: 'wolfulus@gmail.com',
-					password: 'password',
-				},
-				{
-					refresh: {
-						auto: true,
-						time: 2500,
-					},
-				}
-			);
-
-			await tick(2000);
-
-			expect(scope.pendingMocks().length).toBe(1);
-			expect(sdk.auth.expiring).toBe(false);
-
-			await tick(500);
-
-			expect(scope.pendingMocks().length).toBe(1);
-			expect(sdk.auth.expiring).toBe(true);
-
-			await new Promise((resolve) => {
-				scope.once('replied', () => {
-					flush().then(resolve);
-				});
-			});
-
-			expect(sdk.storage.auth_expires).toBe(107500);
-
-			expect(scope.pendingMocks().length).toBe(0);
-		}, 100000);
 	});
 
 	test(`logout doesn't send a refresh token due to cookie mode`, async (url, nock) => {
@@ -129,6 +61,7 @@ describe('auth (browser)', function () {
 		});
 
 		const sdk = new Directus(url);
+
 		await sdk.auth.login({
 			email: 'wolfulus@gmail.com',
 			password: 'password',

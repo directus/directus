@@ -1,59 +1,173 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikátor
+avatar: Avatar
+default_provider: Výchozí
+published: Zveřejněno
+draft: Návrh
+archived: Archivováno
+modules: Moduly
+module_bar: Panel modulů
+tile_size: Velikost dlaždice
 edit_field: Upravit pole
+conditions: Podmínky
+maps: Mapy
+item_creation: Vytvoření položky
 item_revision: Revize položky
+enter_a_name: Zadejte název...
 duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
+group: Skupina
+and: A
+or: Nebo
 fill_width: Plná šířka
 field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
 add_field: Přidat pole
 role_name: Jméno role
-db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
+branch: Větev
+leaf: List
+indeterminate: Neurčitý
+edit_collection: Upravit kolekci
+exclusive: Exkluzivní
+children: Potomci
+db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení'
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
 required: Povinné
 required_for_app_access: Vyžadováno pro přístup k aplikacím
 requires_value: Vyžaduje hodnotu
 create_preset: Vytvořit šablonu
+create_panel: Vytvořit panel
 create_role: Vytvořit roli
 create_user: Vytvořit uživatele
+delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
 invite: Pozvat
+email_already_invited: E-mail "{email}" již byl pozván
+subject: Předmět
+inbox: Doručené
 emails: E-mail
 connection_excellent: Vynikající připojení
 connection_good: Dobré připojení
 connection_fair: Zhoršené připojení
 connection_poor: Špatné připojení
+primary: Primární
 rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
+prefix: Prefix
+suffix: Přípona
 reset_bookmark: Obnovit záložku
+update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
+delete_bookmark_copy: >-
+  Jste si jisti, že chcete odstranit záložku "{bookmark}"? Tuto akci nelze vrátit zpět.
+logoutReason:
+  SIGN_OUT: Odhlášen
+  SESSION_EXPIRED: Relace vypršela
+public_label: Veřejný
+public_description: Určuje, která API data jsou dostupná bez ověřování.
+not_allowed: Nepovoleno
 directus_version: Verze Directusu
+node_version: Node verze
+node_uptime: Doba provozu Node
+os_type: Typ OS
+os_version: Verze OS
+os_uptime: Dobra provozu operačního systému
+os_totalmem: Pamět OS
 archive: Archivovat
 archive_confirm: Skutečně chcete tuto položku archivovat?
+archive_confirm_count: >-
+  Nevybrány žádné položky | Jste si jisti, že chcete archivovat tuto položku? | Jste si jisti, že chcete archivovat tyto {count} položky?
+reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
+reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
+the_following_are_minimum_permissions: Následující oprávnění jsou vyžadována v případě, že je povolen "Přístup k aplikaci". Můžete rozšířit oprávnění nad tuto úroveň, ale ne níže.
+recommended_defaults: Doporučené výchozí hodnoty
+unarchive: Vyjmout z archivu
 unarchive_confirm: Skutečně chcete tuto položku obnovit z archivu?
 nested_files_folders_will_be_moved: Vnořené soubory a složky budou přesunuty o úroveň výše.
 validationError:
+  eq: Hodnota musí být {valid}
+  neq: Hodnota nemůže být {invalid}
+  in: Hodnota musí být jedna z {valid}
+  nin: Hodnota nemůže být jedna z {invalid}
+  contains: Hodnota musí obsahovat {substring}
   ncontains: Hodnota nesmí obsahovat {substring}
   gt: Hodnota musí být větší než {valid}
   gte: Hodnota musí být větší nebo rovna {valid}
   lt: Hodnota musí být menší než {valid}
+  lte: Hodnota musí být menší nebo rovna {valid}
   empty: Hodnota musí být prázdná
   nempty: Hodnota nesmí být prázdná
   null: Hodnota musí být null
   nnull: Hodnota nesmí být null
   required: Hodnota je povinná
+  unique: Hodnota musí být unikátní
+  regex: Hodnota nemá správný formát
+all_access: Veškerý přístup
+no_access: Žádný přístup
+use_custom: Použít vlastní
+nullable: Nulovatelný
+allow_null_value: Povolit NULL hodnotu
+allow_multiple: Povolit více
+allow_multiple_to_be_open: Povolit více otevřených
+enter_value_to_replace_nulls: Zadejte novou hodnotu, která nahradí všechny NULL, které jsou aktuálně v tomto poli.
 field_standard: Standardní
+field_m2o: M2O vazba
+field_m2a: M2A vazba
+field_o2m: O2M vazba
+field_m2m: M2M vazba
+item_permissions: Oprávnění položky
+field_permissions: Oprávnění pole
 field_validation: Validace pole
+permissions_for_role: 'Položky, které {role} role může {action}.'
+fields_for_role: 'Pole, které {role} role může {action}.'
+hide_field_on_detail: Skrýt pole v detailu
+show_field_on_detail: Zobrazit pole v detailu
 delete_field: Smazat pole
+fields_and_layout: Pole a rozložení
+field_create_success: 'Vytvořeno pole: "{field}"'
+field_update_success: 'Aktualizováno pole: "{field}"'
+duplicate_where_to: Kam chcete zkopírovat toto pole?
 language: Jazyk
 global: Globální
 admins_have_all_permissions: Administrátoři mají všechna oprávnění
+camera: Fotoaparát
+exposure: Expozice
+shutter: Závěrka
+iso: ISO
+focal_length: Ohnisková vzdálenost
+schema_setup_key: Název databázového sloupce tohoto pole a API klíč
 create_field: Vytvořit pole
+creating_new_field: 'Nové pole ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Obnovit předvolby stránky
 hidden_field: Skryté pole
 hidden_on_detail: Skryté v detailu
+disabled_editing_value: Zakázat úpravy hodnoty
+key: Klíč
+alias: Alias
 date: Datum
 text: Text
 auto_generate: Auto-generování
@@ -66,9 +180,6 @@ length: Délka
 readonly: Pouze pro čtení
 unique: Unikátní
 primary_key: Primární klíč
-clear_value: Vymazat hodnotu
-reset_to_default: Obnovit výchozí nastavení
-undo_changes: Vrátit změny
 notifications: Notifikace
 page_not_found: Stránka nenalezena
 page_not_found_body: Hledaná stránka nebyla nalezena.
@@ -76,7 +187,6 @@ title: Název
 leave_comment: Napsat komentář...
 this_collection: Tato kategorie
 related_collection: Související kategorie
-export_data: Exportovat data
 format: Formát
 submit: Potvrdit
 move_to_folder: Přesunout do složky
@@ -110,8 +220,12 @@ no_comments: Zatím bez komentářů
 request_feature: Požadavek na funkci
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
 create_collection: Vytvořit kategorii
+copy: Kopírovat
 users: Uživatelé
 activity: Aktivita
+action: Akce
+ip_address: IP adresa
+user_agent: Uživatelský agent
 webhooks: Webhooky
 field_width: Šířka pole
 user_directory: Uživatelé
@@ -119,6 +233,9 @@ documentation: Dokumentace
 duration: Trvání
 modified_on: Upraveno
 status: Stav
+remove: Odebrat
+errors:
+  NOT_NULL_VIOLATION: Hodnota nesmí být null
 bookmarks: Záložky
 back: Zpět
 all_users: Všichni uživatelé
@@ -142,6 +259,7 @@ upload_files_indeterminate: 'Nahrávám soubory {done}/{total}'
 upload_files_success: 'Nahráno {count} souborů'
 drag_file_here: Přetáhněte sem soubor
 layout_options: Možnosti rozvržení
+value_unique: Hodnota musí být unikátní
 all_files: Všechny soubory
 my_files: Mé soubory
 recent_files: Nedávné soubory
@@ -200,6 +318,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    color: Barva
     hidden: Skryté
   directus_files:
     title: Název
@@ -236,6 +355,11 @@ fields:
     role: Role
   directus_settings:
     project_name: Název projektu
+    module_bar: Panel modulů
+  directus_shares:
+    name: Jméno
+    role: Role
+    password: Heslo
   directus_fields:
     note: Poznámka
     hidden: Skryté
@@ -243,15 +367,36 @@ fields:
   directus_roles:
     name: Jméno role
     description: Popis
+  directus_webhooks:
+    name: Jméno
+    status: Stav
+    value: Hodnota
+    collections: Kategorie
+field_options:
+  directus_activity:
+    create: Vytořit
+    update: Úpravy
+  directus_collections:
+    language: Jazyk
+    translation: Překlad
+    archive_divider: Archivovat
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Jméno
+    collections_name: Kategorie
+  directus_webhooks:
+    actions_create: Vytořit
+    actions_update: Úpravy
+    headers:
+      value: Hodnota
 comment: Komentář
-continue: Pokračovat
-default: Výchozí
-delete: Smazat
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
 description: Popis
 done: Hotovo
 duplicate: Duplikovat
+limit: Limit
 email: E-mail
 embed: Vložení
 field: Pole | Pole
@@ -288,13 +433,15 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
-  code:
-    line_number: Číslo řádku
-  collection:
+  filter:
+    all: Vše
+  presentation-links:
+    primary: Primární
+  system-collection:
     collection: Kategorie
-  collections:
+  system-collections:
     collections: Kategorie
-  color:
+  select-color:
     color: Barva
   file:
     file: Soubor
@@ -302,12 +449,10 @@ interfaces:
   files:
     files: Soubory
     description: Vyberte nebo nahrajte soubory
-  icon:
+  select-icon:
     icon: Ikona
-  numeric:
-    numeric: Číselné
-  repeater:
-    edit_fields: Upravit pole
+  system-folder:
+    folder: Složka
   tags:
     tags: Štítky
   user:
@@ -324,6 +469,13 @@ displays:
     description: Zobrazit soubory
   filesize:
     filesize: Velikost souboru
+  formatted-value:
+    format: Formát
+    prefix: Prefix
+    suffix: Přípona
+    color: Barva
+    icon: Ikona
+    text: Text
   icon:
     icon: Ikona
   user:
@@ -337,7 +489,6 @@ layouts:
     title: Název
   tabular:
     tabular: Tabulka
-    fields: Sloupce
     spacing: Odsazení
     comfortable: Komfortní
     compact: Kompaktní

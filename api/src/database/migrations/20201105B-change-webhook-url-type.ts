@@ -1,13 +1,14 @@
 import { Knex } from 'knex';
+import { getHelpers } from '../helpers';
 
-export async function up(knex: Knex) {
-	await knex.schema.alterTable('directus_webhooks', (table) => {
-		table.text('url').alter();
-	});
+export async function up(knex: Knex): Promise<void> {
+	const helper = getHelpers(knex).schema;
+	await helper.changeToText('directus_webhooks', 'url');
 }
 
-export async function down(knex: Knex) {
-	await knex.schema.alterTable('directus_webhooks', (table) => {
-		table.string('url').alter();
+export async function down(knex: Knex): Promise<void> {
+	await getHelpers(knex).schema.changeToString('directus_webhooks', 'url', {
+		nullable: false,
+		length: 255,
 	});
 }

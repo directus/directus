@@ -1,13 +1,16 @@
 ---
+avatar: პროფილის ფოტო
 create_role: შექმენით როლი
 create_field: შექმენით ველი
 auto_generate: ავტო-გენერირება
-clear_value: მნიშვნელობის გასუფთავება
 title: სათაური
 owner: მფლობელი
 comments: კომენტარები
 create_collection: შექმენით კოლექცია
 users: მომხმარებლები
+action: მოქმედება
+ip_address: IP მისამართი
+user_agent: მომხმარებლის აგენტი
 duration: ხანგრძლივობა
 status: სტატუსი
 back: უკან დაბრუნება
@@ -52,15 +55,26 @@ fields:
     tfa_secret: ორფაქტორიანი იდენტიფიკაცია
     status: სტატუსი
     role: როლი
+  directus_shares:
+    role: როლი
+    password: პაროლი
   directus_roles:
     description: აღწერა
+  directus_webhooks:
+    status: სტატუსი
+field_options:
+  directus_activity:
+    create: შექმნა
+  directus_webhooks:
+    actions_create: შექმნა
 comment: კომენტარი
-continue: გაგრძელება
 description: აღწერა
 email: ელ-ფოსტა
 password: პაროლი
 interfaces:
-  collection:
+  filter:
+    all: ყველა
+  system-collection:
     collection: კოლექცია
   files:
     files: ფაილები

@@ -1,13 +1,24 @@
-import { ref, inject, Ref } from '@vue/composition-api';
 import api from '@/api';
-import { Collection, Permission } from '@/types';
+import { Permission, Collection } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { inject, ref, Ref } from 'vue';
+
+const ACTIONS = ['create', 'read', 'update', 'delete', 'share'] as const;
+type Action = typeof ACTIONS[number];
+
+type UsableUpdatePermissions = {
+	getPermission: (action: string) => Permission | undefined;
+	setFullAccess: (action: Action) => Promise<void>;
+	setNoAccess: (action: Action) => Promise<void>;
+	setFullAccessAll: () => Promise<void>;
+	setNoAccessAll: () => Promise<void>;
+};
 
 export default function useUpdatePermissions(
 	collection: Ref<Collection>,
 	permissions: Ref<Permission[]>,
 	role: Ref<string>
-) {
+): UsableUpdatePermissions {
 	const saving = ref(false);
 	const refresh = inject<() => Promise<void>>('refresh-permissions');
 
@@ -17,7 +28,9 @@ export default function useUpdatePermissions(
 		return permissions.value.find((permission) => permission.action === action);
 	}
 
-	async function setFullAccess(action: 'create' | 'read' | 'update' | 'delete') {
+	async function setFullAccess(action: Action) {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -34,10 +47,10 @@ export default function useUpdatePermissions(
 			try {
 				await api.patch(`/permissions/${permission.id}`, {
 					fields: '*',
-					permissions: null,
-					validation: null,
+					permissions: {},
+					validation: {},
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				await refresh?.();
@@ -50,8 +63,10 @@ export default function useUpdatePermissions(
 					collection: collection.value.collection,
 					action: action,
 					fields: '*',
+					permissions: {},
+					validation: {},
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				await refresh?.();
@@ -60,7 +75,9 @@ export default function useUpdatePermissions(
 		}
 	}
 
-	async function setNoAccess(action: 'create' | 'read' | 'update' | 'delete') {
+	async function setNoAccess(action: Action) {
+		if (saving.value === true) return;
+
 		const permission = getPermission(action);
 
 		if (!permission) return;
@@ -69,7 +86,7 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete(`/permissions/${permission.id}`);
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			await refresh?.();
@@ -78,6 +95,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setFullAccessAll() {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -88,19 +107,17 @@ export default function useUpdatePermissions(
 			});
 		}
 
-		const actions = ['create', 'read', 'update', 'delete'];
-
 		await Promise.all(
-			actions.map(async (action) => {
+			ACTIONS.map(async (action) => {
 				const permission = getPermission(action);
 				if (permission) {
 					try {
 						await api.patch(`/permissions/${permission.id}`, {
 							fields: '*',
-							permissions: null,
-							validation: null,
+							permissions: {},
+							validation: {},
 						});
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				} else {
@@ -110,8 +127,10 @@ export default function useUpdatePermissions(
 							collection: collection.value.collection,
 							action: action,
 							fields: '*',
+							permissions: {},
+							validation: {},
 						});
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				}
@@ -123,11 +142,13 @@ export default function useUpdatePermissions(
 	}
 
 	async function setNoAccessAll() {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		try {
 			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			await refresh?.();

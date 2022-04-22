@@ -1,6 +1,7 @@
 export * from './app';
 export * from './collections';
 export * from './fields';
+export * from './insights';
 export * from './latency';
 export * from './notifications';
 export * from './permissions';

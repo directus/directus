@@ -1,15 +1,15 @@
 <template>
-	<private-view :title="$t('settings_permissions')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_permissions')">
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="admin_panel_settings" outline />
+				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_role')">
+			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -19,36 +19,35 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_roles_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
 		<div class="roles">
 			<v-table
+				v-model:headers="tableHeaders"
+				show-resize
 				:items="roles"
-				:headers="tableHeaders"
 				fixed-header
 				item-key="id"
 				:loading="loading"
 				@click:row="navigateToRole"
 			>
-				<template #item.icon="{ item }">
+				<template #[`item.icon`]="{ item }">
 					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
 				</template>
 
-				<template #item.name="{ item }">
-					<span class="name" :class="{ public: item.public }">
-						{{ item.name }}
-					</span>
+				<template #[`item.name`]="{ item }">
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
 				</template>
 
-				<template #item.count="{ item }">
+				<template #[`item.count`]="{ item }">
 					<value-null v-if="item.public" />
 				</template>
 
-				<template #item.description="{ item }">
-					<span class="description">{{ item.description }}</span>
+				<template #[`item.description`]="{ item }">
+					<v-text-overflow :text="item.description" class="description" />
 				</template>
 			</v-table>
 		</div>
@@ -57,62 +56,73 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 
-import { i18n } from '@/lang';
 import api from '@/api';
-import marked from 'marked';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { translate } from '@/utils/translate-object-values';
+import { Role } from '@directus/shared/types';
 
-type Role = {
-	id: number;
-	name: string;
-	description: string;
-	count: number;
+type RoleItem = Partial<Role> & {
+	count?: number;
 };
 
 export default defineComponent({
-	name: 'roles-collection',
+	name: 'RolesCollection',
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
-		const roles = ref<Role[]>([]);
+		const { t } = useI18n();
+
+		const router = useRouter();
+
+		const roles = ref<RoleItem[]>([]);
 		const loading = ref(false);
 
-		const tableHeaders: TableHeader[] = [
+		const lastAdminRoleId = computed(() => {
+			const adminRoles = roles.value.filter((role) => role.admin_access === true);
+			return adminRoles.length === 1 ? adminRoles[0].id : null;
+		});
+
+		const tableHeaders = ref<TableHeader[]>([
 			{
 				text: '',
 				value: 'icon',
 				sortable: false,
 				width: 42,
 				align: 'left',
+				description: null,
 			},
 			{
-				text: i18n.t('name'),
+				text: t('name'),
 				value: 'name',
 				sortable: false,
-				width: 140,
+				width: 200,
 				align: 'left',
+				description: null,
 			},
 			{
-				text: i18n.t('users'),
+				text: t('users'),
 				value: 'count',
 				sortable: false,
 				width: 140,
 				align: 'left',
+				description: null,
 			},
 			{
-				text: i18n.t('description'),
+				text: t('description'),
 				value: 'description',
 				sortable: false,
 				width: 470,
 				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		fetchRoles();
 
@@ -120,40 +130,59 @@ export default defineComponent({
 			return `/settings/roles/+`;
 		});
 
-		return { marked, loading, roles, tableHeaders, addNewLink, navigateToRole };
+		return { t, loading, roles, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
 			loading.value = true;
 
 			try {
 				const response = await api.get(`/roles`, {
-					params: { limit: -1, fields: 'id,name,description,icon,users.id', sort: 'name' },
+					params: {
+						limit: -1,
+						fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
+						deep: {
+							users: {
+								_aggregate: { count: 'id' },
+								_groupBy: ['role'],
+								_sort: 'role',
+								_limit: -1,
+							},
+						},
+						sort: 'name',
+					},
 				});
 
 				roles.value = [
 					{
 						public: true,
-						name: i18n.t('public'),
+						name: t('public_label'),
 						icon: 'public',
-						description: i18n.t('public_description'),
+						description: t('public_description'),
 						id: 'public',
 					},
 					...response.data.data.map((role: any) => {
 						return {
-							...role,
-							count: (role.users || []).length,
+							...translate(role),
+							count: role.users[0]?.count.id || 0,
 						};
 					}),
 				];
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}
 		}
 
-		function navigateToRole(item: Role) {
-			router.push(`/settings/roles/${item.id}`);
+		function navigateToRole({ item }: { item: Role }) {
+			if (item.id !== 'public' && lastAdminRoleId.value) {
+				router.push({
+					name: 'settings-roles-item',
+					params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+				});
+			} else {
+				router.push(`/settings/roles/${item.id}`);
+			}
 		}
 	},
 });
@@ -161,8 +190,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .roles {

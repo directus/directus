@@ -1,13 +1,21 @@
 import api from '@/api';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import { computed, Ref, ref, watch } from '@vue/composition-api';
-import { ComputedRef } from '@vue/composition-api';
 import { Collection } from '@/types';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { computed, Ref, ref, watch } from 'vue';
 
-export default function useTemplateData(collection: ComputedRef<Collection | undefined>, primaryKey: Ref<string>) {
+type UsableTemplateData = {
+	templateData: Ref<Record<string, any> | undefined>;
+	loading: Ref<boolean>;
+	error: Ref<any>;
+};
+
+export default function useTemplateData(
+	collection: Ref<Collection | null>,
+	primaryKey: Ref<string>
+): UsableTemplateData {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
-	const error = ref(null);
+	const error = ref<any>(null);
 
 	const fields = computed(() => {
 		if (!collection.value?.meta?.display_template) return null;
@@ -35,7 +43,7 @@ export default function useTemplateData(collection: ComputedRef<Collection | und
 			});
 
 			templateData.value = result.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;

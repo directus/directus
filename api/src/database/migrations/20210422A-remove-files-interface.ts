@@ -1,7 +1,9 @@
 import { Knex } from 'knex';
 
-export async function up(knex: Knex) {
+export async function up(knex: Knex): Promise<void> {
 	await knex('directus_fields').update({ interface: 'many-to-many' }).where({ interface: 'files' });
 }
 
-export async function down(knex: Knex) {}
+export async function down(_knex: Knex): Promise<void> {
+	// Do nothing
+}

@@ -4,57 +4,98 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
+import dts from 'rollup-plugin-dts';
 
-function target(format) {
+import pkg from './package.json';
+
+const globalName = 'DirectusSdk';
+
+const configs = {
+	global: {
+		file: pkg.unpkg.replace('esm', 'global'),
+		format: 'iife',
+		target: 'es5',
+		browser: true,
+	},
+	browser: {
+		file: pkg.unpkg,
+		format: 'es',
+		browser: true,
+		external: false,
+	},
+	bundler: {
+		file: pkg.module,
+		format: 'es',
+		dev: true,
+	},
+	cjs: {
+		file: pkg.main,
+		format: 'cjs',
+		dev: true,
+	},
+};
+
+function createConfig({
+	file,
+	format,
+	target = null,
+	dev = false,
+	browser = false,
+	external = Object.fromEntries(Object.keys(pkg.dependencies || {}).map((x) => [x, x])),
+}) {
 	const config = {
 		input: 'src/index.ts',
 		output: {
-			name: 'Directus',
-			file: `./dist/sdk.${format}.js`,
+			file,
 			format,
 			exports: 'auto',
 			sourcemap: true,
-			globals: ['axios'],
+		},
+		external: external ? Object.keys(external) : undefined,
+		watch: {
+			include: 'src/**/*',
 		},
 		plugins: [
 			json(),
-			resolve({
-				browser: true,
-			}),
 			typescript({
-				tsconfig: 'tsconfig.json',
 				tsconfigOverride: {
 					compilerOptions: {
-						module: 'ES2015',
+						...(target ? { target, lib: [target] } : {}),
+						declaration: false,
+						declarationMap: false,
 					},
 				},
 			}),
+			resolve({ browser }),
 			commonjs(),
 			sourceMaps(),
 		],
 	};
-	return [
-		config,
-		{
-			...config,
-			output: {
-				...config.output,
-				file: config.output.file.replace(/\.js$/, '.min.js'),
-			},
-			plugins: [
-				...config.plugins,
-				terser({
-					ecma: 2015,
-				}),
-			],
-		},
-	];
+
+	if (format === 'iife') {
+		config.output.name = globalName;
+		config.output.globals = external ?? {};
+	}
+
+	if (!dev) {
+		config.plugins.push(
+			terser({
+				ecma: target?.replace('es', '') ?? '2019',
+			})
+		);
+	}
+
+	return config;
 }
 
-export default [
-	// Browser targets
-	...target('iife'),
-	...target('umd'),
-	...target('esm'),
-	...target('system'),
-];
+function createConfigs(configs) {
+	const typesConfig = {
+		input: 'src/index.ts',
+		output: [{ file: pkg.types, format: 'es' }],
+		plugins: [dts()],
+	};
+
+	return [...Object.keys(configs).map((key) => createConfig(configs[key])), typesConfig];
+}
+
+export default createConfigs(configs);

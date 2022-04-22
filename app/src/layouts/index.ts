@@ -1,17 +1,13 @@
-import { ref, Ref } from '@vue/composition-api';
-import { LayoutConfig } from './types';
+import { shallowRef, Ref } from 'vue';
+import { LayoutConfig } from '@directus/shared/types';
 
-let layoutsRaw: Ref<LayoutConfig[]>;
-let layouts: Ref<LayoutConfig[]>;
+const layoutsRaw: Ref<LayoutConfig[]> = shallowRef([]);
+const layouts: Ref<LayoutConfig[]> = shallowRef([]);
 
-export function getLayouts() {
-	if (!layoutsRaw) {
-		layoutsRaw = ref([]);
-	}
-
-	if (!layouts) {
-		layouts = ref([]);
-	}
-
+export function getLayouts(): { layouts: Ref<LayoutConfig[]>; layoutsRaw: Ref<LayoutConfig[]> } {
 	return { layouts, layoutsRaw };
+}
+
+export function getLayout(name?: string | null): LayoutConfig | undefined {
+	return !name ? undefined : layouts.value.find(({ id }) => id === name);
 }

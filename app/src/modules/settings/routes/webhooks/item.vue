@@ -1,6 +1,8 @@
 <template>
 	<private-view :title="title">
-		<template #headline>{{ $t('settings_webhooks') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_webhooks'), to: '/settings/webhooks' }]" />
+		</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
@@ -12,19 +14,19 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -35,10 +37,11 @@
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false"
+						v-if="hasEdits === true"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -49,41 +52,51 @@
 		</template>
 
 		<v-form
+			v-model="edits"
 			:loading="loading"
 			:initial-values="item"
 			collection="directus_webhooks"
 			:batch-mode="isBatch"
 			:primary-key="primaryKey"
 			:validation-errors="validationErrors"
-			v-model="edits"
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_item'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import marked from 'marked';
-import i18n from '@/lang';
-
-type Values = {
-	[field: string]: any;
-};
+import useShortcut from '@/composables/use-shortcut';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
-	name: 'webhooks-item',
+	name: 'WebhooksItem',
 	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {
@@ -92,11 +105,16 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const { primaryKey } = toRefs(props);
 
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -109,16 +127,26 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(ref('directus_webhooks'), primaryKey);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 		const confirmDelete = ref(false);
 
 		const title = computed(() => {
-			if (loading.value) return i18n.t('loading');
-			if (isNew.value) return i18n.t('creating_webhook');
+			if (loading.value) return t('loading');
+			if (isNew.value) return t('creating_webhook');
 			return item.value?.name;
 		});
 
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) saveAndStay();
+		});
+
+		useShortcut('meta+shift+s', () => {
+			if (hasEdits.value) saveAndAddNew();
+		});
+
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
 		return {
+			t,
 			item,
 			loading,
 			error,
@@ -133,10 +161,13 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
-			marked,
 			title,
 			validationErrors,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		async function saveAndQuit() {
@@ -160,7 +191,19 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/webhooks`);
+			router.replace(`/settings/webhooks`);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 	},
 });
@@ -180,9 +223,9 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 </style>

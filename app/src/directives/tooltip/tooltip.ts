@@ -1,12 +1,11 @@
-import { DirectiveOptions } from 'vue';
-import { DirectiveBinding } from 'vue/types/options';
 import { nanoid } from 'nanoid';
+import { Directive, DirectiveBinding } from 'vue';
 
 const tooltipDelay = 300;
 
 const handlers: Record<string, () => void> = {};
 
-function bind(element: HTMLElement, binding: DirectiveBinding) {
+function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
 	if (binding.value) {
 		element.dataset.tooltip = nanoid();
 		handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
@@ -15,7 +14,7 @@ function bind(element: HTMLElement, binding: DirectiveBinding) {
 	}
 }
 
-function unbind(element: HTMLElement) {
+function unmounted(element: HTMLElement): void {
 	element.removeEventListener('mouseenter', handlers[element.dataset.tooltip as string]);
 	element.removeEventListener('mouseleave', onLeaveTooltip);
 	clearTimeout(tooltipTimer);
@@ -24,17 +23,17 @@ function unbind(element: HTMLElement) {
 	delete handlers[element.dataset.tooltip as string];
 }
 
-const Tooltip: DirectiveOptions = {
-	bind,
-	unbind,
-	update(element, binding) {
+const Tooltip: Directive = {
+	beforeMount,
+	unmounted,
+	updated(element, binding) {
 		if (binding.value && !binding.oldValue) {
-			bind(element, binding);
+			beforeMount(element, binding);
 		} else if (!binding.value && binding.oldValue) {
-			unbind(element);
+			unmounted(element);
 		} else {
-			unbind(element);
-			bind(element, binding);
+			unmounted(element);
+			beforeMount(element, binding);
 		}
 	},
 };
@@ -44,7 +43,7 @@ export default Tooltip;
 let tooltipTimer: number;
 
 export function createEnterHandler(element: HTMLElement, binding: DirectiveBinding) {
-	return () => {
+	return (): void => {
 		const tooltip = getTooltip();
 
 		if (binding.modifiers.instant) {
@@ -60,14 +59,14 @@ export function createEnterHandler(element: HTMLElement, binding: DirectiveBindi
 	};
 }
 
-export function onLeaveTooltip() {
+export function onLeaveTooltip(): void {
 	const tooltip = getTooltip();
 
 	clearTimeout(tooltipTimer);
 	animateOut(tooltip);
 }
 
-export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement) {
+export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement): void {
 	const offset = 10;
 	const arrowAlign = 20;
 
@@ -79,13 +78,24 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 	tooltip.innerText = binding.value;
 	tooltip.classList.remove('top', 'bottom', 'left', 'right', 'start', 'end');
 
+	let placement = binding.arg ?? 'top';
+
+	if ('top' in binding.modifiers) placement = 'top';
+	if ('right' in binding.modifiers) placement = 'right';
+	if ('bottom' in binding.modifiers) placement = 'bottom';
+	if ('left' in binding.modifiers) placement = 'left';
+
 	if (binding.modifiers.inverted) {
 		tooltip.classList.add('inverted');
 	} else {
 		tooltip.classList.remove('inverted');
 	}
 
-	if (binding.modifiers.bottom) {
+	if (binding.modifiers.monospace) {
+		tooltip.classList.add('monospace');
+	}
+
+	if (placement === 'bottom') {
 		if (binding.modifiers.start) {
 			left += arrowAlign;
 			transformPos = 100;
@@ -102,7 +112,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		top += bounds.height + offset;
 		tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), ${top}px)`;
 		tooltip.classList.add('bottom');
-	} else if (binding.modifiers.left) {
+	} else if (placement === 'left') {
 		if (binding.modifiers.start) {
 			top += arrowAlign;
 			transformPos = 100;
@@ -119,7 +129,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		left -= offset;
 		tooltip.style.transform = `translate(calc(${left}px - 100%), calc(${top}px - ${transformPos}%))`;
 		tooltip.classList.add('left');
-	} else if (binding.modifiers.right) {
+	} else if (placement === 'right') {
 		if (binding.modifiers.start) {
 			top += arrowAlign;
 			transformPos = 100;
@@ -156,7 +166,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 	}
 }
 
-export function animateIn(tooltip: HTMLElement) {
+export function animateIn(tooltip: HTMLElement): void {
 	tooltip.classList.add('visible', 'enter');
 	tooltip.classList.remove('leave', 'leave-active');
 
@@ -171,7 +181,7 @@ export function animateIn(tooltip: HTMLElement) {
 	}, 200);
 }
 
-export function animateOut(tooltip: HTMLElement) {
+export function animateOut(tooltip: HTMLElement): void {
 	if (tooltip.classList.contains('visible') === false) return;
 
 	tooltip.classList.add('visible', 'leave');

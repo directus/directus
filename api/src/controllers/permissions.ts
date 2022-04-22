@@ -1,11 +1,11 @@
 import express from 'express';
-import asyncHandler from '../utils/async-handler';
-import { PermissionsService, MetaService } from '../services';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import useCollection from '../middleware/use-collection';
+import { ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
-import { PrimaryKey } from '../types';
+import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
+import { MetaService, PermissionsService } from '../services';
+import { PrimaryKey } from '../types';
+import asyncHandler from '../utils/async-handler';
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ router.post(
 				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
 				res.locals.payload = { data: item };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -116,7 +116,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -142,7 +142,7 @@ router.patch(
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
