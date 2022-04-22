@@ -107,6 +107,7 @@
 		"vue-i18n": "9.1.9",
 		"vue-router": "4.0.12",
 		"vuedraggable": "4.1.0",
-		"wellknown": "0.5.0"
+		"wellknown": "0.5.0",
+		"@joeattardi/emoji-button": "^4.6.2"
 	}
 }
