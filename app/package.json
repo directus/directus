@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "9.9.0",
+	"version": "9.9.1",
 	"private": false,
 	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
@@ -30,10 +30,10 @@
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
-		"@directus/docs": "9.9.0",
-		"@directus/extensions-sdk": "9.9.0",
-		"@directus/format-title": "9.9.0",
-		"@directus/shared": "9.9.0",
+		"@directus/docs": "9.9.1",
+		"@directus/extensions-sdk": "9.9.1",
+		"@directus/format-title": "9.9.1",
+		"@directus/shared": "9.9.1",
 		"@fortawesome/fontawesome-svg-core": "1.2.36",
 		"@fortawesome/free-brands-svg-icons": "5.15.4",
 		"@fullcalendar/core": "5.10.1",
@@ -41,6 +41,7 @@
 		"@fullcalendar/interaction": "5.10.1",
 		"@fullcalendar/list": "5.10.1",
 		"@fullcalendar/timegrid": "5.10.1",
+		"@joeattardi/emoji-button": "^4.6.2",
 		"@mapbox/mapbox-gl-draw": "1.3.0",
 		"@mapbox/mapbox-gl-draw-static-mode": "1.0.1",
 		"@mapbox/mapbox-gl-geocoder": "4.7.4",
@@ -107,7 +108,6 @@
 		"vue-i18n": "9.1.9",
 		"vue-router": "4.0.12",
 		"vuedraggable": "4.1.0",
-		"wellknown": "0.5.0",
-		"@joeattardi/emoji-button": "^4.6.2"
+		"wellknown": "0.5.0"
 	}
 }
