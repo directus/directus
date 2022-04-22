@@ -73,7 +73,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				FROM "USER_CONSTRAINTS" "uc"
 				INNER JOIN "USER_CONS_COLUMNS" "ucc"
 					ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
-					AND "uc"."CONSTRAINT_TYPE" = 'P'
+				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
 			) "uc"
 				ON "c"."TABLE_NAME" = "uc"."TABLE_NAME"
 				AND "c"."COLUMN_NAME" = "uc"."COLUMN_NAME"
