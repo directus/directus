@@ -1,13 +1,14 @@
 import { Component, ComponentOptions } from 'vue';
 import { DeepPartial } from './misc';
 import { Field } from './fields';
+import { Query } from './query';
 
 export interface PanelConfig {
 	id: string;
 	name: string;
 	icon: string;
 	description?: string;
-
+	query?: (options: Record<string, any>) => (Record<string, any> | Query) | Record<string, any>;
 	component: Component;
 	options:
 		| DeepPartial<Field>[]
@@ -29,6 +30,7 @@ export type Panel = {
 	icon: string;
 	color: string;
 	note: string;
+	query?: Record<string, any>;
 	type: string;
 	position_x: number;
 	position_y: number;

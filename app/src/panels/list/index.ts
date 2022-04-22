@@ -1,4 +1,6 @@
-import { definePanel } from '@directus/shared/utils';
+import { useFieldsStore } from '@/stores';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { definePanel, getFieldsFromTemplate } from '@directus/shared/utils';
 import PanelList from './list.vue';
 
 export default definePanel({
@@ -7,6 +9,19 @@ export default definePanel({
 	description: '$t:panels.list.description',
 	icon: 'list',
 	component: PanelList,
+	query: (options) => {
+		const fieldsStore = useFieldsStore();
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(options.collection);
+
+		return {
+			filter: options.filter,
+			fields: [
+				primaryKeyField?.field,
+				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection),
+			],
+			sort: options.sortDirection === 'desc' ? `-${options.sort}` : options.sort,
+		};
+	},
 	options: [
 		{
 			field: 'collection',
