@@ -67,6 +67,7 @@ create_role: Criar Cargo
 create_user: Criar Usuário
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
+create_translation_string: String chave para a tradução
 translation_string_translations_placeholder: Adicionar uma nova tradução
 delete_translation_string_copy: >-
   Tem certeza de que deseja excluir a string de tradução "{key}"? Essa ação não pode ser desfeita.
