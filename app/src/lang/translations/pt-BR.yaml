@@ -165,6 +165,7 @@ revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
 no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
+hide_field: Ocultar campo
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
 delete_field: Excluir Campo
@@ -746,6 +747,7 @@ open_link_in: Abrir link em
 new_tab: Nova aba
 current_tab: Aba atual
 save_image: Salvar Imagem
+save_media: Salvar Arquivo
 wysiwyg_options:
   aligncenter: Alinhar ao centro
   alignjustify: Justificar
@@ -1160,7 +1162,9 @@ generate_and_save_uuid: Gerar e salvar UUID
 save_current_user_id: Salvar ID de usuário atual
 save_current_user_role: Salvar a Função de Usuário Atual
 save_current_datetime: Salvar data/hora atual
+always_open: Sempre Aberto
 start_open: Iniciar Aberto
+start_collapsed: Início Recolhido
 block: Bloco
 inline: Em linha
 comment: Comentário
