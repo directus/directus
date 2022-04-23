@@ -7,9 +7,8 @@
 
 ::: tip Before You Begin
 
-To efficiently use the Collection Page, you will need to know about
-[Collections](/getting-started/glossary/#collections), [Items](/getting-started/glossary/#items) and
-[Fields](/getting-started/glossary/#fields).
+To use the Collection Page, you will need to know about [Collections](/getting-started/glossary/#collections),
+[Items](/getting-started/glossary/#items) and [Fields](/getting-started/glossary/#fields).
 
 <!--
 @TODO getting-started > 30-90 min tutorial
@@ -47,7 +46,9 @@ Find all Items with one or more Fields containing your searched value, excluding
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/filter-items-2022019A.mp4" type="video/mp4" />
 </video>
 
-Filters enable complex and granular filtered displays of Items. [Learn More](/app/filters/)
+Filters allow you to conditionally select Items from a Collection. Use-cases include customizing Item search results,
+restricting Item access permissions for specific Users or Roles, building dashboard analytics with the Insights module,
+and more. To Learn More, see our guide on [Filters](/app/filters/).
 
 ## Manually Sort Items
 
@@ -55,7 +56,7 @@ Filters enable complex and granular filtered displays of Items. [Learn More](/ap
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/manually-sort-items-20220415A.mp4" type="video/mp4" />
 </video>
 
-Drag and drop Items to custom-sort them as desired. This is only possible on certain Layouts, such as the default
+Drag and drop Items to custom sort them as desired. This is only possible on certain Layouts, such as the default
 [Table Layout](/app/layouts/#table-layout). To sort a Collection's Items, follow the steps below.
 
 1. Be sure a sorting column has been configured under **"Settings > Data Model > Collection"**.\
@@ -90,8 +91,8 @@ This means that while the values in this Sort Field do get updated and modified,
 </video>
 
 Sort Items alphabetically or numerically, in ascending or descending order. Sorting is not possible on certain Layouts,
-such as the Map Layout. Layouts that do support automatic sorting have controls in slightly different locations.
-[Learn More](/app/layouts)
+such as the Map Layout. Layouts that do support automatic sorting have controls in slightly different locations. To
+learn more, see [Layouts](/app/layouts).
 
 ::: tip
 
@@ -105,7 +106,9 @@ Automatic sorting is a non-destructive action which does not change your data.
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/view-archived-items.mp4" type="video/mp4" />
 </video>
 
-To view an archived Item, follow the steps below. [Learn More](/app/content/items/#archive-an-item)
+The no-code app allows you to hide archived Items, display them alongside other Items, or display archived Items only.
+To learn how to archive an Item, see our guide on the [Item Page](/app/content/items/#archive-an-item). To change
+whether an archived Item is displayed, follow the steps below.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Click **"Archive"** in the Sidebar.
@@ -130,13 +133,17 @@ Only available if an Archive column has been configured under:\
 </video>
 
 Save how a Collection Page looks so that you can return to the exact same view later, including details such as the
-Layout, searches, filters, sorting, ordering, etc. [Learn More](/configuration/presets-bookmarks/)
+Layout, searches, filters, sorting, ordering, etc. To learn more, see our guide on
+[Presets and Bookmarks](/configuration/presets-bookmarks/).
 
 ## Import / Export Items
 
 ![Import and Export Items](https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/imports-exports-20220416A.webp)
 
-No-code Users can import and export a Collection's Items in file-format. [Learn More](/app/import-export/)
+The Content, User Directory and File Library modules allow importing and exporting of multiple Items stored as files.
+This makes it quick and easy to handle tasks like uploading and downloading new customer information; pulling down sales
+data for transformation, reports, analysis, and beyond. To learn more, see how to
+[Import and Export Items](/app/import-export/) in file format.
 
 ## Batch Delete, Archive or Edit Items
 

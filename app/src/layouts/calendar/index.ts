@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useCollection } from '@directus/shared/composables';
-import { formatISO, parse, format } from 'date-fns';
+import { formatISO, parse, format, isValid } from 'date-fns';
 import { useItems } from '@directus/shared/composables';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
@@ -289,7 +289,7 @@ export default defineLayout<LayoutOptions>({
 			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
 
 			if (endDateField.value) {
-				if (allDay) {
+				if (allDay && isValid(item[endDateField.value])) {
 					const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
 					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
 					// expected result in the calendar

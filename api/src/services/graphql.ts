@@ -1561,9 +1561,10 @@ export class GraphQLService {
 	 */
 	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
+			error[0].extensions.code = error[0].code;
 			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
 		}
-
+		error.extensions.code = error.code;
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 

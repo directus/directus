@@ -174,15 +174,9 @@ To delete an Item, follow the steps below.
 3. Click <span mi btn dngr>delete</span> located in the header and a popup will appear.
 4. Click **"Delete"** to confirm the action.
 
-::: danger
-
-This action permanently removes the Item from the database. Proceed with caution!
-
-:::
-
 :::tip Soft-Delete
 
-If you wish to remove an Item from view or use, but keep it stored, you may consider
+If you wish to remove an Item from view or use without fully deleting it, you may consider
 [archiving the Item](#archive-an-item) instead.
 
 :::
