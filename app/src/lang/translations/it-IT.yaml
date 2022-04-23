@@ -332,6 +332,7 @@ revision_preview: Anteprima Revisione
 updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
 post_comment_success: Commento pubblicato
+post_comment_updated: Commento aggiornato
 item_create_success: Elemento Creato | Elementi Creati
 item_update_success: Elemento Aggiornato | Elementi Aggiornati
 item_delete_success: Elemento Eliminato| Elementi Eliminati
@@ -1322,6 +1323,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
