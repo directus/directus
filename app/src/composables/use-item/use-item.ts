@@ -62,6 +62,24 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	const { fields: fieldsWithPermissions } = usePermissions(collection, item, isNew);
 
+	// copied from v-form.vue, should move into useCollection/usePermissions?
+	const defaultValues = computed(() => {
+		return fieldsWithPermissions.value.reduce(function (acc, field) {
+			if (
+				field.schema?.default_value !== undefined &&
+				// Ignore autoincremented integer PK field
+				!(
+					field.schema.is_primary_key &&
+					field.schema.data_type === 'integer' &&
+					typeof field.schema.default_value === 'string'
+				)
+			) {
+				acc[field.field] = field.schema?.default_value;
+			}
+			return acc;
+		}, {} as Record<string, any>);
+	});
+
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
 			return getEndpoint(collection.value);
@@ -111,7 +129,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validateItem(merge({}, item.value, edits.value), fieldsWithPermissions.value, isNew.value);
+		const baseValues = isNew.value === true ? defaultValues.value : item.value;
+		const errors = validateItem(merge({}, baseValues, edits.value), fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
