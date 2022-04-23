@@ -41,6 +41,7 @@ duplicate_field: Duplică câmp
 half_width: Lățime înjumătățită
 full_width: Lățime completă
 group: Grup
+export_items: Exportă elemente
 and: Și
 or: Sau
 fill_width: Umple lățimea
@@ -68,6 +69,12 @@ create_role: Creează rol
 create_user: Creează utilizator
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
+create_translation_string: Crează șirul de traducere
+translation_string_key_placeholder: Cheie traducere șir...
+translation_string_translations_placeholder: Adauga o nouă traducere
+edit_translation_string: Editează Șirul de Traduceri
+delete_translation_string_copy: >-
+  Sunteţi sigur că doriţi să ştergeţi câmpul "{key}"? Această acţiune nu poate fi modificată ulterior.
 invite_users: Invită utilizatori
 invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
@@ -88,6 +95,9 @@ update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
 delete_bookmark_copy: >-
   Sigur doriți să ștergeți semnul de carte "{bookmark}"? Această acțiune nu va putea fi anulată.
+delete_personal_bookmark: Ștergere marcaj personal
+delete_role_bookmark: Ștergere marcaj roluri
+delete_global_bookmark: Ștergeți Marcajul Global
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
@@ -114,6 +124,7 @@ recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
 unarchive_confirm: Sigur doriți să dezarhivați acest element?
 nested_files_folders_will_be_moved: Fișierele și dosarele conținute vor fi mutate cu un nivel în sus.
+validation_errors_notice: 'Următoarele câmpuri au valori invalide:'
 validationError:
   eq: Valoarea trebuie să fie {valid}
   neq: Valoarea nu poate fi {invalid}
@@ -163,6 +174,7 @@ revision_post_create: Iată cum arăta acest element când a fost creat.
 revision_post_update: Iată cum arăta acest element după actualizare.
 changes_made: Mai jos sunt modificările specifice aduse acestei revizuiri.
 no_relational_data: Rețineți că datele relaționale nu sunt incluse aici.
+hide_field: Ascundeți câmpul
 hide_field_on_detail: Ascunde câmpul în detalii
 show_field_on_detail: Arată câmpul în detalii
 delete_field: Ștergere câmp
@@ -171,6 +183,7 @@ field_create_success: 'Câmp creat: „{field}”'
 field_update_success: 'Câmp actualizat: „{field}”'
 duplicate_where_to: Unde doriți să duplicați acest câmp?
 language: Limba
+language_placeholder: Selectați o limbă...
 aggregate_function: Funcție agregată
 aggregate_precision: Precizie agregată
 group_aggregation: Agregare de grup
@@ -181,6 +194,7 @@ camera: Cameră
 show_zero: Arată zero
 create_in_advanced_field_creation_mode: Crează câmp în modul avansat
 continue_in_advanced_field_creation_mode: Continuă în modul de creare a câmpurilor avansate
+validation: Validare
 sum: Sum
 sum_distinct: Sumă distinctă
 avg: Medie
@@ -318,6 +332,7 @@ revision_preview: Previzualizare revizie
 updates_made: Actualizări realizate
 leave_comment: Lasă un comentariu...
 post_comment_success: Comentariu postat
+post_comment_updated: Comentariu actualizat
 item_create_success: Element creat | Elemente create
 item_update_success: Element actualizat | Elemente actualizate
 item_delete_success: Element șters | Elemente șterse
@@ -354,6 +369,12 @@ delete_share: Șterge distribuire
 functions:
   year: An
   month: Lună
+  week: Săptămână
+  day: Zi
+  weekday: Zi din săptămână
+  hour: Oră
+  minute: Minut
+  second: Secundă
   count: Numărătoare
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -410,6 +431,7 @@ replace_from_library: Înlocuiește fișierul din bibliotecă
 replace_from_url: Înlocuiţi fişierul din url
 no_file_selected: Niciun fișier selectat
 download_file: Descarcă fișier
+open_file_in_tab: Deschideți în filă nouă
 collection_key: Cheie colecție
 name: Nume
 primary_key_field: Câmp cheie principală
