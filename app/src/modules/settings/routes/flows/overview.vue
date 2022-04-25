@@ -38,6 +38,10 @@
 
 		<v-info v-if="flows.length === 0" icon="bolt" :title="t('no_flows')" center>
 			{{ t('no_flows_copy') }}
+
+			<template v-if="createAllowed" #append>
+				<v-button @click="toggleFlowCreation">{{ t('create_flow') }}</v-button>
+			</template>
 		</v-info>
 
 		<v-table v-else v-model:headers="tableHeaders" :items="flows" show-resize fixed-header @click:row="navigateToFlow">
