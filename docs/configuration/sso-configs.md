@@ -1,8 +1,8 @@
 # Example SSO Configurations
 
-Detailed below are a collection Directus configurations for integrating with various OAuth 2.0 and OpenID platforms.
+Below is a collection of Directus configurations for integrating with various OAuth 2.0 and OpenID platforms.
 
-Due to the large number of avalible SSO plaforms, this list will only cover the most common configurations. Contributions are welcomed to expand the list and keep it updated.
+Due to the large number of avalible SSO plaforms, this list will only cover the most common configurations. Contribution to expand and maintain the list are encouranged.
 
 ## Google
 
