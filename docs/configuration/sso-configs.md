@@ -2,7 +2,7 @@
 
 Below is a collection of Directus configurations for integrating with various OAuth 2.0 and OpenID platforms.
 
-Due to the large number of avalible SSO plaforms, this list will only cover the most common configurations. Contribution to expand and maintain the list are encouranged.
+Due to the large number of available SSO platforms, this list will only cover the most common configurations. Contributions to expand and maintain the list are encouraged.
 
 ## Google
 
