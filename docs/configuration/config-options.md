@@ -618,7 +618,7 @@ The default Directus email/password authentication flow.
 
 No additional configuration required.
 
-### SSO (`openid` and `oauth2`)
+### SSO (`oauth2` and `openid`)
 
 Directus' SSO integrations provide powerful alternative ways to authenticate into your project. Directus will ask you to
 login on the external service, and return authenticated with a Directus account linked to that service.
