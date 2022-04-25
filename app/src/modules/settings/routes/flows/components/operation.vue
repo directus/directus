@@ -17,11 +17,11 @@
 		@duplicate="$emit('duplicate', panel)"
 	>
 		<template #body>
-			<div class="button add-resolve" x-small icon rounded @pointerdown.stop="pointerdown('resolve')">
+			<div v-if="editMode" class="button add-resolve" x-small icon rounded @pointerdown.stop="pointerdown('resolve')">
 				<v-icon name="check_circle"></v-icon>
 			</div>
 			<div
-				v-if="panel.id !== '$trigger'"
+				v-if="editMode && panel.id !== '$trigger'"
 				x-small
 				icon
 				rounded
