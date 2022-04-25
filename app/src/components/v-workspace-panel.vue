@@ -24,7 +24,7 @@
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
 			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click.stop="$emit('edit')" />
 
-			<v-menu placement="bottom-end" show-arrow v-if="showOptions">
+			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
 					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
 				</template>
@@ -85,43 +85,43 @@ import { throttle } from 'lodash';
 import { useI18n } from 'vue-i18n';
 
 export type AppPanel = {
-	id: string
-	x: number
-	y: number
-	width: number
-	height: number
-	name?: string
-	icon?: string
-	color?: string
-	note?: string
-	showHeader?: boolean
-	minWidth?: number
-	minHeight?: number
-	draggable?: boolean
-	borderRadius?: [boolean, boolean, boolean, boolean]
-}
+	id: string;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	name?: string;
+	icon?: string;
+	color?: string;
+	note?: string;
+	showHeader?: boolean;
+	minWidth?: number;
+	minHeight?: number;
+	draggable?: boolean;
+	borderRadius?: [boolean, boolean, boolean, boolean];
+};
 
 // Right now, it is not possible to do type Props = AppPanel & {resizable?: boolean; editMode?: boolean}
 type Props = {
-	id: string
-	x: number
-	y: number
-	width: number
-	height: number
-	name?: string
-	icon?: string
-	color?: string
-	note?: string
-	showHeader?: boolean
-	minWidth?: number
-	minHeight?: number
-	draggable?: boolean
-	borderRadius?: [boolean, boolean, boolean, boolean]
-	resizable?: boolean
-	editMode?: boolean
-	showOptions?: boolean
-	alwaysUpdatePosition?: boolean
-}
+	id: string;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	name?: string;
+	icon?: string;
+	color?: string;
+	note?: string;
+	showHeader?: boolean;
+	minWidth?: number;
+	minHeight?: number;
+	draggable?: boolean;
+	borderRadius?: [boolean, boolean, boolean, boolean];
+	resizable?: boolean;
+	editMode?: boolean;
+	showOptions?: boolean;
+	alwaysUpdatePosition?: boolean;
+};
 
 const props = withDefaults(defineProps<Props>(), {
 	name: undefined,
@@ -136,15 +136,15 @@ const props = withDefaults(defineProps<Props>(), {
 	draggable: true,
 	borderRadius: () => [true, true, true, true],
 	showOptions: true,
-	alwaysUpdatePosition: false
-})
+	alwaysUpdatePosition: false,
+});
 
-const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit'])
+const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit']);
 
 const { t } = useI18n();
 
 /**
- * When drag-n-dropping for positiniong/resizing, we're
+ * When drag-n-dropping for positioning/resizing, we're
  */
 const editedPosition = reactive<Partial<Panel>>({
 	position_x: undefined,
@@ -253,8 +253,8 @@ function useDragDrop() {
 				editedPosition.position_x = panelStartPosX + gridDeltaX;
 			}
 
-			const minWidth = props.minWidth
-			const minHeight = props.minHeight
+			const minWidth = props.minWidth;
+			const minHeight = props.minHeight;
 
 			if (editedPosition.position_x && editedPosition.position_x < 1) editedPosition.position_x = 1;
 			if (editedPosition.position_y && editedPosition.position_y < 1) editedPosition.position_y = 1;
@@ -262,7 +262,7 @@ function useDragDrop() {
 			if (editedPosition.height && editedPosition.height < minHeight) editedPosition.height = minHeight;
 		}
 
-		if(props.alwaysUpdatePosition) emit('update', editedPosition);
+		if (props.alwaysUpdatePosition) emit('update', editedPosition);
 	}, 20);
 
 	return { dragging, onPointerDown, onPointerUp, onPointerMove };
