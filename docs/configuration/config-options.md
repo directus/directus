@@ -639,7 +639,7 @@ AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 
 ::: warning PUBLIC_URL
 
-These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure that variable is configured correctly.
+These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variable is configured correctly.
 
 :::
 
