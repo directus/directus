@@ -38,7 +38,11 @@ AUTH_TWITTER_IDENTIFIER_KEY="data.username"
 AUTH_TWITTER_SCOPE="tweet.read users.read"
 ```
 
-*NOTE: Twitter does not provide "email" so we define "username" as the identifier.*
+::: warning Notice
+
+Twitter does not provide "email" so we define "username" as the identifier.
+
+:::
 
 ## Microsoft Azure
 
@@ -91,7 +95,11 @@ AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
 AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 ```
 
-*NOTE: If the authenticating user has not marked their email as "public" in Github, it will not be readable by Directus.*
+::: warning Notice
+
+If the authenticating user has not marked their email as "public" in Github, it will not be readable by Directus.*
+
+:::
 
 ## Discord
 
