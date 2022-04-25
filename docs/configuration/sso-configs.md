@@ -97,7 +97,7 @@ AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 
 ::: warning Notice
 
-If the authenticating user has not marked their email as "public" in Github, it will not be readable by Directus.*
+If the authenticating user has not marked their email as "public" in Github, it will not be readable by Directus.
 
 :::
 
