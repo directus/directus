@@ -12,21 +12,22 @@
 				height: workspaceSize.height + 'px',
 			}"
 		>
-			<v-workspace-panel
-				v-if="!$slots.panel"
-				v-for="panel in panels"
-				:key="panel.id"
-				v-bind="panel"
-				:edit-mode="editMode"
-				:resizable="resizable"
-				@edit="$emit('edit', panel)"
-				@update="$emit('update', { edits: $event, id: panel.id })"
-				@move="$emit('move', panel.id)"
-				@delete="$emit('delete', panel.id)"
-				@duplicate="$emit('duplicate', panel)"
-			>
-				<slot :panel="panel"></slot>
-			</v-workspace-panel>
+			<template v-if="!$slots.panel">
+				<v-workspace-panel
+					v-for="panel in panels"
+					:key="panel.id"
+					v-bind="panel"
+					:edit-mode="editMode"
+					:resizable="resizable"
+					@edit="$emit('edit', panel)"
+					@update="$emit('update', { edits: $event, id: panel.id })"
+					@move="$emit('move', panel.id)"
+					@delete="$emit('delete', panel.id)"
+					@duplicate="$emit('duplicate', panel)"
+				>
+					<slot :panel="panel"></slot>
+				</v-workspace-panel>
+			</template>
 			<template v-else>
 				<template v-for="panel in panels" :key="panel.id">
 					<slot name="panel" :panel="panel"></slot>
@@ -40,24 +41,28 @@
 import { computed, inject, ref } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
 import { AppPanel } from './v-workspace-panel.vue';
+import { cssVar } from '@directus/shared/utils/browser';
 
-const props = withDefaults(defineProps<{
-	panels: AppPanel[]
-	editMode?: boolean
-	zoomToFit?: boolean
-	resizable?: boolean
-}>(), {
-	editMode: false,
-	zoomToFit: false,
-	resizable: true
-})
+const props = withDefaults(
+	defineProps<{
+		panels: AppPanel[];
+		editMode?: boolean;
+		zoomToFit?: boolean;
+		resizable?: boolean;
+	}>(),
+	{
+		editMode: false,
+		zoomToFit: false,
+		resizable: true,
+	}
+);
 
-defineEmits(['update', 'move', 'delete', 'duplicate', 'edit'])
+defineEmits(['update', 'move', 'delete', 'duplicate', 'edit']);
 
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
 
-const paddingSize = computed(() => Number(getVar('--content-padding')?.slice(0, -2) || 0));
+const paddingSize = computed(() => Number(cssVar('--content-padding', mainElement.value)?.slice(0, -2) || 0));
 
 const workspaceSize = computed(() => {
 	const furthestPanelX = props.panels.reduce(
@@ -114,11 +119,6 @@ const workspaceBoxSize = computed(() => {
 		height: workspaceSize.value.height * zoomScale.value + paddingSize.value * 2,
 	};
 });
-
-function getVar(cssVar: string) {
-	if (!mainElement.value) return;
-	return getComputedStyle(mainElement.value).getPropertyValue(cssVar).trim();
-}
 </script>
 
 <style scoped>
