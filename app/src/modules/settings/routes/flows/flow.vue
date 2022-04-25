@@ -123,7 +123,7 @@
 
 				<v-card-text>
 					<v-notice v-if="movePanelChoices.length === 0">
-						{{ t('no_other_dashboards_copy') }}
+						{{ t('no_other_flows_copy') }}
 					</v-notice>
 					<v-select v-else v-model="movePanelTo" :items="movePanelChoices" item-text="name" item-value="id" />
 				</v-card-text>
@@ -132,7 +132,7 @@
 					<v-button secondary @click="movePanelID = undefined">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button :loading="movePanelLoading" @click="movePanel">
+					<v-button :loading="movePanelLoading" :disabled="movePanelChoices.length === 0" @click="movePanel">
 						{{ t('copy') }}
 					</v-button>
 				</v-card-actions>
