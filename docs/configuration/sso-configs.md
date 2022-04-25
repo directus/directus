@@ -115,3 +115,13 @@ AUTH_TWITCH_SCOPE="openid user:read:email"
 AUTH_TWITCH_PARAMS__CLAIMS="string:{"id_token":{"email":null}}"
 AUTH_TWITCH_IDENTIFIER_KEY="email"
 ```
+
+## Apple
+
+```
+AUTH_APPLE_DRIVER="openid"
+AUTH_APPLE_CLIENT_ID="..."
+AUTH_APPLE_CLIENT_SECRET="..."
+AUTH_APPLE_ISSUER_URL="https://appleid.apple.com/.well-known/openid-configuration"
+AUTH_APPLE_IDENTIFIER_KEY="email"
+```
