@@ -70,8 +70,8 @@ export default defineComponent({
 						.querySelector('head meta[name="theme-color"]')
 						?.setAttribute('content', newUser.theme === 'light' ? '#ffffff' : '#263238');
 				} else {
-					// Default to light mode
-					document.body.classList.add('light');
+					// Default to auto mode
+					document.body.classList.add('auto');
 				}
 			},
 			{ immediate: true }
@@ -115,7 +115,6 @@ export default defineComponent({
 	justify-content: center;
 	width: 100%;
 	height: 100%;
-	background: rgb(255 255 255 / 0.5);
 	backdrop-filter: blur(10px);
 }
 

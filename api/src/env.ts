@@ -108,8 +108,8 @@ const typeMap: Record<string, string> = {
 
 let env: Record<string, any> = {
 	...defaults,
-	...getEnv(),
 	...process.env,
+	...getEnv(),
 };
 
 process.env = env;
@@ -125,8 +125,8 @@ export default env;
 export function refreshEnv(): void {
 	env = {
 		...defaults,
-		...getEnv(),
 		...process.env,
+		...getEnv(),
 	};
 
 	process.env = env;

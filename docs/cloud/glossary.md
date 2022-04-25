@@ -4,18 +4,18 @@
 
 ## Asset Storage
 
-Directus Core allows asset storage for any type of file. This applies on all Cloud Projects. However, on Directus Cloud,
-certain hard technical limits apply to file uploads such as limits on size per asset and total asset storage per
+Directus Core allows asset storage for any type of file. This applies to all Cloud Projects. However, on Directus Cloud,
+certain hard technical limits apply to file uploads, such as limits on size per asset and total asset storage per
 Project. For more details, see [Cloud Policies](https://directus.io/cloud-policies/#)
 
 ## Automatic Updates
 
 Software updates on any app can be a time-consuming chore, taking developer energy and focus away from core business
 logic. Cloud Projects are updated every two weeks in rolling releases _(i.e. done with no downtime)_. These updates keep
-your Project on the latest version and fully up-to-date with all [Cloud Exclusives](#cloud-exclusives), dependencies,
-and security patches.
+your Project on the latest version and fully up to date with all [Cloud Exclusives](#cloud-exclusives), dependencies and
+security patches.
 
-::: tip Version-locking
+:::tip Version-locking
 
 Version-locking is available on Enterprise Projects.
 
@@ -25,7 +25,7 @@ Version-locking is available on Enterprise Projects.
 
 By default, file assets and databases are backed up once per day on all Standard and Enterprise Projects. Additionally,
 Enterprise customers can work with our team for more tailored backup solutions. In the event of an emergency, such as
-your Node crashing, your data will be safe. If you need access to your backed-up data,
+your Node crashing, don't worry! Your data will be safe. If you need access to your backed-up data,
 [contact us](https://directus.io/contact/)
 
 :::warning
@@ -37,38 +37,35 @@ Please note that Community Projects are not backed up.
 ## Caching
 
 Caching is enabled on Cloud Projects. Public data is cached in the CDN for a short period of time. All Directus Cloud
-Projects are running behind a [Global CDN](#global-cdn). Enterprise Projects offer other advanced caching strategies as
+Projects are running behind a [Global CDN](#global-cdn), but Enterprise Projects offer advanced caching strategies, as
 well.
 
 ## Cloud Exclusives
 
 Our managed service includes several Cloud-Exclusive [Extensions](#extensions) that are not available to self-hosted
-users. It is important to note that these are **not** paywalled Core features, but are instead progressive enhancements
-that add to the base offering. Our team is always adding new exclusives, so check back often to stay up to date with the
-latest and greatest. Cloud Exclusives development is managed by the Core Team, so these will stay up-to-date with the
+users. It's important to note that these are **not** paywalled Core features, but are progressive enhancements that add
+to the base offering. Our team is always adding new exclusives, so check back often to stay up to date with the latest
+and greatest features! Cloud Exclusives development is managed by the Core Team, so these will stay up to date with the
 [latest version of Directus](#automatic-updates). Examples include:
 
 - Kanban Layout
 
 :::tip
 
-Directus Team is always adding more Cloud Exclusives, so check back frequently to see the latest and greatest on
-Directus Cloud. Looking to sponsor development of an Extension or Cloud Exclusive?
-[Contact Us](https://directus.io/contact/)
+Looking to sponsor development of an Extension or Cloud Exclusive? [Contact Us](https://directus.io/contact/)
 
 :::
 
 ## Data Portability
 
 Directus Core is totally detached from the database. Data can be cleanly imported and exported on Projects with the API
-via the schema endpoints. For Enterprise clients, the Directus Team will work with you to help you through this process.
+via the schema endpoints. Enterprise clients: the Directus Team will work with you to help you through this process.
 
 ## Datacenter Regions
 
-The location you choose to Host your Project can have measurable impact. In order to optimize your Project as well as
-help you meet any local data compliance laws such as GDPR, Standard and Enterprise Projects allow you to choose the
-region your Project is hosted in. There are 19 Datacenter Regions available to Enterprise Projects and two available to
-Standard Projects.
+The location you choose to host your Project can have measurable impact. To optimize your Project and meet any local
+data compliance laws such as GDPR, Standard and Enterprise, you can choose the region your Project is hosted in. There
+are 19 Datacenter Regions available to Enterprise Projects and two available to Standard Projects.
 
 ![Datacenter Regions](https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/datacenter-region-20220331A.webp)
 
@@ -80,14 +77,14 @@ Community Projects are hosted in the `United States, East` Region.
 
 ## Encryption and Security
 
-[Asset Storage](#asset-storage), data storage, and in-transit encryption are included on all Cloud Projects. All data at
-rest remains encrypted. HTTPS/TLS protocols are enabled on all in-transit data. Cloud Projects are created with secure
-and safe [tenancy architectures](#multi-tenancy).
+[Asset Storage](#asset-storage), data storage and in-transit encryption are included on all Cloud Projects. All data at
+rest remains encrypted, and HTTPS/TLS protocols are enabled on all in-transit data. Cloud Projects are created with
+secure and safe [tenancy architectures](#multi-tenancy).
 
 :::tip Directus Core Security Features
 
-Directus core comes with even more security features out-of-the-box including IP address whitelabeling, 2FA enabling,
-SSO options, customization for Password Rule requirements, and the flexibility to use any access token paradigm desired.
+Directus core comes with even more security features out-of-the-box, including IP address whitelabeling, 2FA enabling,
+SSO options, customization for Password Rule requirements and the flexibility to use any access token paradigm desired.
 
 :::
 
@@ -103,36 +100,36 @@ own custom Extensions as needed.
 
 ## Global CDN
 
-A Global CDN is provided on all Cloud Projects, out-of-the-box, with over 300 cache locations, which means assets and
-data will be delivered with the lowest latency.
+A Global CDN is provided for all Cloud Projects, out-of-the-box, with over 300 cache locations. This means assets and
+data will be delivered with the lowest possible latency.
 
 ## Infrastructure
 
-In the context of these docs, Infrastructure refers refers to the hardware running your Project including the
-[database](#multi-tenancy), [serverless nodes](#nodes), [asset storage](#asset-storage), and [global CDN](#global-cdn).
+In the context of these docs, Infrastructure refers to the hardware running your Project, including the
+[database](#multi-tenancy), [serverless nodes](#nodes), [asset storage](#asset-storage) and [global CDN](#global-cdn).
 Infrastructure differs by Project tier. Please refer to [Projects](/cloud/projects) as well as the Infrastructure
-section on the [pricing page](https://directus.io/pricing/) for side-by-side comparisons.
+section on the [Pricing page](https://directus.io/pricing/) for side-by-side comparisons.
 
 ## Nodes
 
-Directus Cloud has options to choose the processing power of your Node as well as the number of Nodes your Project runs
-on. Nodes can be configured to meet traffic needs at any scale. In general, there are two approaches to scale
-performance, vertical-scaling and horizontal-scaling. Vertical-scaling refers to the use of improved hardware _(e.g.
-better CPUs and more RAM)_ to scale up. In Directus Cloud, configuring the Node Type will provide vertical-scaling.
-Horizontal-scaling refers to increasing the number of Nodes to scale up. In Directus Cloud, adding more Active and
-Standby Nodes will provide horizontal-scaling.
+Directus Cloud provides you with options for configuring processing power of your Node as well as the number of Nodes
+your Project runs on. You can configure and reconfigure Nodes to meet traffic needs at any scale. In general, there are
+two approaches to scale performance: vertical-scaling and horizontal-scaling. Vertical-scaling refers to the use of
+improved hardware _(e.g. better CPUs and more RAM)_ to scale up. In Directus Cloud, configuring the Node Type will
+provide vertical-scaling. Horizontal-scaling refers to increasing the number of Nodes to scale up. In Directus Cloud,
+adding more Active and Standby Nodes will provide horizontal-scaling.
 
 ### Node Types
 
 Each Node Type provides a different level of processing power.
 
 - **Community**\
-  Community Projects come equipped with one Node, which can handle basic web traffic required for hobby-projects, learning/demoing
-  Directus Cloud, and other non-production use cases. Community Nodes will pause after 3 days of [inactivity](/cloud/projects/#resume-a-community-project).
+  Community Projects come equipped with one Node, which can handle basic web traffic required for hobby projects, learning
+  and demoing Directus Cloud, and other non-production use cases. Community Nodes will pause after 3 days of [inactivity](/cloud/projects/#resume-a-community-project).
 
 - **General Purpose**\
-  General Purpose Nodes are the basic Node Type offered on Standard Projects. These Nodes are the right choice for most small-to-medium
-  scale, production-ready use-cases.
+   General Purpose Nodes are the basic Node Type offered on Standard Projects. These Nodes are the right choice for most
+  small- to medium- scale, production-ready use cases.
 
 - **Performance Tier**\
   Performance Tier Nodes are the upgraded Node Type offered on Standard Projects, which may provide better performance under
@@ -140,7 +137,7 @@ Each Node Type provides a different level of processing power.
   via the API.
 
 - **Enterprise**\
-  Node configuration options are flexible and customizable, tailored to the Project's needs.
+  Node configuration options are flexible and customizable, tailored to your Project's needs.
 
 :::tip
 
@@ -151,7 +148,7 @@ to both Active and Standby Nodes.
 
 ### Active Nodes
 
-Active Nodes stay on constantly. A Project must have at least 1 Active Node in order to function.
+Active Nodes stay on constantly. Projects must have at least one Active Node in order to function.
 
 :::warning
 
@@ -162,16 +159,16 @@ unpaused.
 
 ### Load Balancing
 
-Similar to the term horizontal-scaling, the term Load balancing refers to the instantaneous distribution of load across
-the Active Nodes that your Project is running.
+Similar to the term horizontal scaling, the term load balancing refers to the instantaneous distribution of load across
+the Active Nodes on which your Project is running.
 
 ### Standby Nodes
 
 Standby Nodes stay turned-off until traffic starts to take up significant system capacity, at which point Standby Nodes
-activate one-by-one as needed to safely handle the increase in traffic. Activation occurs within just a few moments.
+activate one-by-one, as needed, to safely handle the increase in traffic. Activation occurs within just a few moments.
 
-Standby Nodes are not required, however you do not pay when Standby Nodes are disabled. For more pricing information,
-see [billing](/cloud/teams/#manage-billing).
+Standby Nodes are not required, however you don't pay for usage when Standby Nodes are disabled. For more pricing
+information, see [billing](/cloud/teams/#manage-billing).
 
 ### Auto-scaling
 
@@ -180,38 +177,38 @@ at safe levels.
 
 :::tip Optimal Node Configuration
 
-As noted under [Billing](/cloud/teams/#manage-billing), Projects can be reconfigured as needed. The
-[Project Monitor Page](/cloud/projects/#monitor-a-project) provides performance analytics to help inform Node
+As noted under [Billing](/cloud/teams/#manage-billing), Projects can be reconfigured as needed. Check out the
+[Project Monitor page](/cloud/projects/#monitor-a-project) for performance analytics that can help inform Node
 configuration decisions.
 
 :::
 
 ## Quotas
 
-Directus does not impose _arbitrary_ software-based limits of any kind. So for things like Collections, Roles, or Users-
-whether you have 10 or 10,000 of these, you are free to build out your Project as needed, with no up-charge. However,
+Directus does not impose _arbitrary_ software-based limits of any kind. So for things like Collections, Roles or Users -
+whether you have 10 or 10,000 of them - you are free to build out your Project as needed, with no up-charge. However,
 actual Project performance is going to depend on Node configuration, so there are hard technical limits. For details,
 see [Cloud Policies](https://directus.io/cloud-policies/)
 
 ## Rate Limiting
 
-Rate limiting refers to technical limitations within Directus Cloud as well as Cloud Projects. This includes limits on
-things like API requests per second per Project. For details, see [Cloud Policies](https://directus.io/cloud-policies/#)
+Rate limiting refers to technical limitations within Directus Cloud as well as Cloud Projects.\
+For details, see [Cloud Policies](https://directus.io/cloud-policies/#)
 
 ## Support Options
 
-There are three types of support for Directus.
+There are three types of support for Directus:
 
 ### Community Support
 
-As an open-source Project, everyone is encouraged to reach out to the Community for help on Projects, _and of course
-help others as well_. Find us on [GitHub](https://github.com/directus/directus/discussions) and
+Because Directus is an open-source Project, you're encouraged to reach out to the Community for help on Projects, _and
+of course help others as well_. Find us on [GitHub](https://github.com/directus/directus/discussions) and
 [Discord](https://directus.chat/) to join the thousands of other developers all discussing and guiding the future of the
 Directus platform. Most common questions have already been asked and answered and can be easily searched.
 
 :::warning No Guaranteed Response Time
 
-While the Directus Core Team plays an active and engaged role in community discussions, aiming to answer questions
+While the Directus Core Team plays an active and engaged role in community discussions and aims to answer questions
 within a few days, there is no guaranteed response time for Community Support.
 
 :::
@@ -219,7 +216,7 @@ within a few days, there is no guaranteed response time for Community Support.
 ### Basic and Premium Support
 
 Basic and Premium Support offer direct communication with the Directus Core Team. Basic support is included on all
-Enterprise Projects. Premium Support adds 24/7 response times for critical software issues only.
+Enterprise Projects, and Premium Support adds 24/7 response times for critical software issues only.
 
 :::tip Add-on Support
 
@@ -233,10 +230,10 @@ Looking for Basic or Premium Support on a self-hosted Project? [Contact Sales](h
   <source src="https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/system-status-20220329A.mp4" type="video/mp4">
 </video>
 
-Click <span mi icon>check</span> in the Dashboard Header to navigate to the System Status Page. This Page is where to
+Click <span mi icon>check</span> in the Dashboard Header to navigate to the System Status page. This page is where to
 _find out what happened_ in the super rare event that the network slows down or goes offline. Here you can view the
-current connectivity status of Directus Cloud, status on individual Projects by URL, and a daily Incidents log. For more
-information, see [Cloud Policies](https://directus.io/cloud-policies/#)
+current connectivity status of Directus Cloud, the status on individual Projects by URL and a daily Incidents log. For
+more information, see [Cloud Policies](https://directus.io/cloud-policies/#)
 
 ## Multi-tenancy
 
@@ -249,20 +246,20 @@ Community project databases are technically single-tenant, but also file-based, 
 for a production-ready environment.
 
 **Standard**\
-Standard Projects are created using multi-tenant architecture. However, if your neighbor's Project gets busy, it will not
-impact your Project because each Standard Project is scoped to one container per Project with dedicated minimum resources.
+Standard Projects are created using a multi-tenant architecture. However, if your neighbor's Project gets busy, it will not
+impact your Project, because each Standard Project is scoped to one container per Project with dedicated minimum resources.
 Projects also have the ability to scale beyond this minimum allocation based on currently available resources within the
 multitenant pool. However, these additional resources are not guaranteed and are offered on a dynamic first-come, first-serve
 basis. For end-to-end, single-tenant infrastructure with fully dedicated resources, [contact us about our Enterprise Tier](https://directus.io/contact/)
 
 **Enterprise**\
-Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project. No neighbors. Ready to go Enterprise?
+Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project - no neighbors! Ready to upgrade to Enterprise?
 [Contact us](https://directus.io/contact/)
 
 :::tip
 
-This section refers to how your Cloud Project is stored among other Cloud Projects and has nothing to do with how you
-design your Project's data model. You can implement single or multi-tenant architecture within any Directus Cloud
+This section refers to how your Cloud Project is stored alongside other Cloud Projects and has nothing to do with how
+you design your Project's data model. You can implement single or multi-tenant architecture within any Directus Cloud
 Project.
 
 :::

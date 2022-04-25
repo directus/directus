@@ -11,10 +11,9 @@ import { useI18n } from 'vue-i18n';
 import { isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
-import { abbreviateNumber } from '@/utils/abbreviate-number';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint, abbreviateNumber } from '@directus/shared/utils';
+import { cssVar } from '@directus/shared/utils/browser';
 import { addWeeks } from 'date-fns';
-import { cssVar } from '@/utils/css-var';
 
 export default defineComponent({
 	props: {

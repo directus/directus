@@ -332,6 +332,7 @@ revision_preview: Podgląd wersji
 updates_made: Aktualizacje wykonane
 leave_comment: Napisz komentarz...
 post_comment_success: Komentarz dodany
+post_comment_updated: Komentarz zaktualizowany
 item_create_success: Element utworzony | Elementy utworzone
 item_update_success: Element zaktualizowany | Elementy zaktualizowane
 item_delete_success: Element usunięty | Elementy usunięte
@@ -1805,7 +1806,7 @@ panels:
     name: Lista
     description: Filtruj i wyświetl pola z kolekcji
   barchart:
-    name: Wykres słupkowy,
+    name: Wykres słupkowy
     description: Pasek lub wykresy kolumnowe do porównywania grup wartości
     select_field: Musisz wybrać pole.
     select_collection: Musisz wybrać kolekcję.
