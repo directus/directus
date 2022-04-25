@@ -169,6 +169,7 @@ import { md } from '@/utils/md';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -319,9 +320,16 @@ export default defineComponent({
 			for (const panel of panels.value) {
 				const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
 				const query = type.query(panel.options);
-				queries[panel.id] = query;
+				queries[panel.id] = { collection: panel.options.collection, query };
 			}
+
 			return queries;
+		});
+
+		stitchQueriesToGql();
+
+		watch(queryObject, () => {
+			stitchQueriesToGql();
 		});
 
 		onBeforeRouteUpdate(editsGuard);
@@ -496,6 +504,34 @@ export default defineComponent({
 			} finally {
 				movePanelLoading.value = false;
 			}
+		}
+		function stitchQueriesToGql() {
+			if (!queryObject.value) return '';
+			const formattedQuery = {
+				query: {},
+			};
+
+			for (const [key, query] of Object.entries(queryObject.value)) {
+				const sanitizedKey = 'id_' + key.replaceAll('-', '_');
+
+				if (!query?.collection || !query.query) continue;
+				formattedQuery.query[sanitizedKey] = {};
+				formattedQuery.query[sanitizedKey].__aliasFor = query.collection;
+
+				if (query.query.fields) {
+					for (const field of query.query.fields) {
+						formattedQuery.query[sanitizedKey][field] = true;
+					}
+				}
+
+				if (query.query.filter) {
+					// need to typecast deep values
+					const castFilter = deepParseNumber(query.query.filter);
+					formattedQuery.query[sanitizedKey].__args = { filter: query.query.filter };
+				}
+			}
+			// console.log(formattedQuery);
+			// console.log(jsonToGraphQLQuery(formattedQuery));
 		}
 	},
 });
