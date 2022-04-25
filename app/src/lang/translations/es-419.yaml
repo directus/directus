@@ -22,7 +22,7 @@
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
-default_provider: Proveedor predeterminado
+default_provider: Predeterminado
 published: Publicado
 draft: Borrador
 archived: Archivado
@@ -34,31 +34,31 @@ edit_field: Editar Campo
 conditions: Condiciones
 maps: Mapas
 switch_user: Cambiar usuario
-item_creation: Creación de ítem
+item_creation: Creación de Elemento
 item_revision: Revisión de Elemento
-enter_a_name: Ingresa_un_nombre...
-duplicate_field: Campo duplicado
+enter_a_name: Ingresa un Nombre...
+duplicate_field: Duplicar Campo
 half_width: Ancho a la Mitad
 full_width: Ancho completo
 group: Grupo
-export_items: Exportar elementos
+export_items: Exportar Elementos
 and: "Y"
 or: O
-fill_width: Ajustar ancho
+fill_width: Llenar ancho
 field_name_translations: Traducciónes del nombre de campo
-enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar "Two-Factor Authentication"
+enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar el doble factor de autenticación
 add_field: Añade un campo
 role_name: Nombra un rol
-branch: Marca
+branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
-edit_collection: Editar_Colección
+edit_collection: Editar Colección
 exclusive: Exclusivo
-children: Hijo
-db_only_click_to_configure: 'Base_de_Datos_Solamente_Click_para_Configurar'
-show_active_items: Muestre_Items_Activos
+children: Descendientes
+db_only_click_to_configure: 'Sólo Base de Datos: Clic para Configurar'
+show_active_items: Mostrar Elementos Activos
 show_archived_items: Mostrar los registros archivados
-show_all_items: Muestre_Todos_los _Items
+show_all_items: Mostrar todos los elementos
 edited: Valor editado
 required: Requerido
 required_for_app_access: Requerido para acceso a la App
@@ -67,7 +67,7 @@ create_preset: Crear ajuste
 create_panel: Crear Panel
 create_role: Crear rol
 create_user: Crear Usuario
-delete_panel: Borrar_Panel
+delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
 create_translation_string: Crear Traducciones
 translation_string_key_placeholder: Clave de cadena de traducción...
@@ -138,7 +138,7 @@ validationError:
   lte: El_Valor_Tiene_Que_Ser_Menor_O_Igual_A{valid}
   empty: El_Valor_Tiene_Que_Estar_Vacío
   nempty: Este valor no puede quedar vacío
-  null: El_Valor_Tiene_Que_Ser_Nulo
+  null: El valor debe ser null
   nnull: El_Valor_No_Puede_Ser_Nulo
   required: Valor requerido
   unique: El valor debe de ser único
@@ -166,15 +166,15 @@ field_permissions: Permisos de campo
 field_validation: Validación de campo
 field_presets: Ajustes prefijados de campo
 permissions_for_role: 'Items_El{role}_Rol_Puede{action}.'
-fields_for_role: 'Campos_El{role}_Rol_puede{action}.'
-validation_for_role: 'Reglas{action}_De_Campo_El{role}_Rol_Debe_Obedecer.'
+fields_for_role: 'Campos que {role} puede {action}.'
+validation_for_role: 'Reglas del campo {action} que el Rol {role} debe obedecer.'
 presets_for_role: 'Valor del campo por defecto para el rol {role}.'
 presentation_and_aliases: Presentación_y_Aliases
 revision_post_create: Aspecto_Una_Vez_Creado.
 revision_post_update: Aspecto_Luego_De_Actualizado.
 changes_made: Cambios.
 no_relational_data: Tenga presente que datos relacionales no están incluídos.
-hide_field: Ocultar campo
+hide_field: Ocultar Campo
 hide_field_on_detail: Oculto en Detalle
 show_field_on_detail: Mostrar en Detalle
 delete_field: Borrar Campo
