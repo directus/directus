@@ -168,6 +168,7 @@ import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
+import { getPanels } from '@/panels';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -188,6 +189,7 @@ export default defineComponent({
 		const insightsStore = useInsightsStore();
 		const appStore = useAppStore();
 		const permissionsStore = usePermissionsStore();
+		const { panels: panelTypes } = getPanels();
 
 		const { fullScreen } = toRefs(appStore);
 
@@ -311,6 +313,16 @@ export default defineComponent({
 				}
 			}
 		};
+
+		const queryObject = computed(() => {
+			const queries = {};
+			for (const panel of panels.value) {
+				const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
+				const query = type.query(panel.options);
+				queries[panel.id] = query;
+			}
+			return queries;
+		});
 
 		onBeforeRouteUpdate(editsGuard);
 		onBeforeRouteLeave(editsGuard);

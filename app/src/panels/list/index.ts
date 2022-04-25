@@ -10,16 +10,23 @@ export default definePanel({
 	icon: 'list',
 	component: PanelList,
 	query: (options) => {
+		if (!options?.collection || !options.sortField || !options.sortDirection) return;
+
 		const fieldsStore = useFieldsStore();
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(options.collection);
+		let displayFields = [primaryKeyField?.field];
 
-		return {
-			filter: options.filter,
-			fields: [
+		if (options.displayTemplate) {
+			displayFields = [
 				primaryKeyField?.field,
 				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection),
-			],
-			sort: options.sortDirection === 'desc' ? `-${options.sort}` : options.sort,
+			];
+		}
+
+		return {
+			filter: options.filter ?? {},
+			fields: displayFields,
+			sort: options.sortDirection === 'desc' ? `-${options.sortField}` : options.sortField,
 		};
 	},
 	options: [
