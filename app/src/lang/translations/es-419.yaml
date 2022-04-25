@@ -28,7 +28,7 @@ draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
-reset_width: Restablecer ancho
+reset_width: Reestablecer Ancho
 tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
@@ -71,8 +71,8 @@ delete_panel: Borrar_Panel
 create_webhook: Crear un Webhook
 create_translation_string: Crear Traducciones
 translation_string_key_placeholder: Clave de cadena de traducción...
-translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar traducción
+translation_string_translations_placeholder: Agregar una nueva traducción
+edit_translation_string: Editar Texto de Traducción
 delete_translation_string_copy: >-
   ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
@@ -286,7 +286,7 @@ note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
 length: Largó
-soft_length: Límite suave
+soft_length: Límite Suave
 precision_scale: Precisión y Escala
 readonly: Solo Lectura
 unique: Único
@@ -297,13 +297,13 @@ foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
 dismiss: Ignorar
 raw_value: Valor sin interpretar
-copy_raw_value: Copiar valor exacto
+copy_raw_value: Copiar Valor Exacto
 copy_raw_value_success: Copiado
-copy_raw_value_fail: Copia fallida
-paste_raw_value: Pegar valor exacto
+copy_raw_value_fail: Copia Fallida
+paste_raw_value: Pegar Valor Exacto
 paste_raw_value_success: Pegado
 paste_raw_value_fail: Fallo al Pegar
-view_raw_value: Ver valor exacto
+view_raw_value: Ver Valor Exacto
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar Valor
@@ -332,6 +332,7 @@ revision_preview: Vista Previa de Revisión
 updates_made: Actualizaciones Finalizadas
 leave_comment: Deje su Comentario...
 post_comment_success: Comentario Publicado
+post_comment_updated: Comentario Actualizado
 item_create_success: Registro Creado | Registros Creados
 item_update_success: Registro Actualizado | Registros Actualizados
 item_delete_success: Registro Borrado | Registros Borrados
@@ -343,7 +344,7 @@ languages_collection: Coleccion de Idiomas
 import_data_input_placeholder: CSV o JSON...
 import_data_button: Empezar Importación
 import_data_indeterminate: Importando Datos...
-import_data_success: Datos importados correctamente desde {filename}
+import_data_success: Datos importados con éxito desde {filename}
 import_data_error: La estructura de datos de este archivo no coincide con la colección.
 label_import: Importar
 label_export: Exportar
@@ -370,7 +371,7 @@ functions:
   month: Mes
   week: Semana
   day: Día
-  weekday: Día laborable
+  weekday: Día de la semana
   hour: Hora
   minute: Minuto
   second: Segundo
@@ -431,17 +432,17 @@ replace_from_url: Reemplazar Archivo desde Enlace
 no_file_selected: No hay Archivo Seleccionado
 download_file: Bajar Archivo
 open_file_in_tab: Abrir archivo en nueva pestaña
-start_export: Iniciar exportación
+start_export: Iniciar Exportación
 not_available_for_local_downloads: No disponible para descargas locales
-exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
-exporting_limited_items_in_collection: Exportando {limit} de {total} elementos dentro de {collection}.
+exporting_all_items_in_collection: Exportando todos los {total} elementos de {collection}.
+exporting_limited_items_in_collection: Exportando {limit} de los {total} elementos en {collection}.
 exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación a continuación.
 exporting_download_hint: Una vez completado, este archivo {format} se descargará automáticamente a tu dispositivo.
 exporting_batch_hint: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 exporting_batch_hint_forced: Debido al gran número de artículos, esta exportación debe ser procesada en lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
-primary_key_field: Campo Llave Primaria
+primary_key_field: Campo de la Llave Principal
 type: Tipo
 creating_new_collection: Crear Nueva Colección
 created_by: Creado Por
@@ -465,9 +466,9 @@ click_to_expand: Haga Clic para Expandir
 select_item: Seleccionar Elemento
 no_items: Sin Registros
 search_items: Buscar elementos...
-disabled: Desactivado
+disabled: Deshabilitado
 information: Información
-report_bug: Reportar Problema
+report_bug: Reportar Error
 request_feature: Solicitar Características
 interface_not_found: 'Interfaz "{interface}" no encontrada.'
 reset_interface: Restablecer Interfaz
@@ -699,16 +700,16 @@ per_page: Por Página
 all_files: Todos los Archivos
 my_files: Mis Archivos
 recent_files: Archivos Recientes
-create_folder: Crear Directorio
+create_folder: Crear Carpeta
 edit_folder: Editar Carpeta
-folder_name: Nombre del Directorio...
-folder_key: Clave de carpeta...
+folder_name: Nombre de Carpeta...
+folder_key: Llave de Carpeta...
 add_file: Agregar Archivo
 replace_file: Reemplazar Archivo
 no_results: Sin Resultados
 no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
 clear_filters: Limpiar Filtros
-saves_automatically: Guardar Automáticamente
+saves_automatically: Guarda Automáticamente
 role: Rol
 edit_role: Editar rol
 rule: Regla
@@ -721,7 +722,7 @@ create: Crear
 on_create: Al Crear
 on_update: Al Actualizar
 read: Leer
-update: Actualización
+update: Actualizar
 select_fields: Seleccionar Campos
 format_text: Formatear Texto
 format_value: Formatear Valor
@@ -733,7 +734,7 @@ icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
 insights: Informes
-dashboard: Panel de control
+dashboard: Tablero
 panel: Panel
 panel_options: Opciones del Panel
 panel_header: Encabezado del Panel
@@ -1130,7 +1131,7 @@ field_options:
   directus_activity:
     login: Iniciar sesión
     create: Crear
-    update: Actualización
+    update: Actualizar
     delete: Eliminar
   directus_collections:
     track_activity_revisions: Rastrear actividad y revisiones
