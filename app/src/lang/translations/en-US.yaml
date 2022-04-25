@@ -749,6 +749,7 @@ flows: Flows
 flow: Flow
 create_trigger: Create Trigger
 change_trigger: Change Trigger
+choose_a_trigger: Choose a Trigger...
 flow_delete_confirm: Are you sure you want to delete this Flow? This action can not be undone.
 edit_flow: Edit Flow
 delete_flow: Delete Flow
@@ -1921,7 +1922,7 @@ panels:
     monochrome: Monochrome
     monochrome_color: Monochrome Color
 triggers:
-  filter: 
+  filter:
     name: Event Filter
     description: Triggers before an event is fired, to check, modify, or cancel the event
     event: Event
