@@ -8,7 +8,7 @@ export default defineOperationApp({
 	preview: ({ name, options }) => `
 # ${name}
 **$t:operations.request.url**: ${options.url}\n
-**$t:operations.request.method**: ${options.method}
+**$t:operations.request.method**: ${options.method ?? 'GET'}
 	`,
 	options: [
 		{
