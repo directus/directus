@@ -42,7 +42,7 @@
 
 		<v-table v-else v-model:headers="tableHeaders" :items="flows" show-resize fixed-header @click:row="navigateToFlow">
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon" />
+				<v-icon class="icon" :name="item.icon ?? 'account_tree'" />
 			</template>
 
 			<template #[`item.status`]="{ item }">
