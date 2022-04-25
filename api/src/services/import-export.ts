@@ -24,6 +24,7 @@ import { getDateFormatted } from '../utils/get-date-formatted';
 import { toArray } from '@directus/shared/utils';
 import { NotificationsService } from './notifications';
 import logger from '../logger';
+import stripBomStream from 'strip-bom-stream';
 
 export class ImportService {
 	knex: Knex;
@@ -117,6 +118,7 @@ export class ImportService {
 
 			return new Promise<void>((resolve, reject) => {
 				stream
+					.pipe(stripBomStream())
 					.pipe(csv())
 					.on('data', (value: Record<string, string>) => {
 						const obj = transform(value, (result: Record<string, string>, value, key) => {
