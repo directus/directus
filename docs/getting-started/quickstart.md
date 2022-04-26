@@ -2,33 +2,67 @@
 
 > This quickstart guide is designed to get you up and running with a Directus Cloud Project in a snap. Along the way,
 > you will better understand what Directus is, setup your free Directus Cloud Account, get hands-on experience with the
-> App and API, and find more resources and documentation to deep-dive into the App and API.
+> App and API, and find more resources to deep-dive into the App and API.
 
-[[toc]]
-
-## 1. Create Cloud Project and Login
+## 1. Create Cloud Account and Login
 
 <video autoplay muted loop controls>
 <source src="" type="video/mp4" />
 </video>
 
-1. First, you'll need to [create and log in](/cloud/accounts/#create-account-and-login) to your Directus Cloud Account.
-2. Next, you will need to [create a Team](/cloud/teams/#create-a-team) or navigate to an existing Team.
-3. Now you're ready to [create a Community Project](/cloud/projects/#create-a-community-project).
+First, you'll need to [create an Account and log in](/cloud/accounts/#create-account-and-login) on
+[Directus Cloud](https://directus.cloud/login)
+
+Your Directus Cloud Account allows you to create and manage any number of Community and Standard Projects. We've made
+life easier by giving you the option to create and log in to your free Cloud Account automatically with Github. If you
+don't have a Github account or prefer not to use this login method, email-and-password login is available, as well.
+
+:::tip Learn more About Cloud
+
+- [Overview](/cloud/overview/)
+- [Cloud Accounts](/cloud/accounts/)
+
+:::
+
+## 2. Create and Access Project
+
+<video autoplay muted loop controls>
+<source src="" type="video/mp4" />
+</video>
+
+You will need to create a [Team](/cloud/teams/) or navigate to the existing Team under which you want to create a
+Community Project. To create a Community Project, follow the steps below:
+
+1. Open the Team Menu in the Dashboard Header and select or [create](/cloud/teams/#create-a-team) the desired Team.
+2. Click **"Projects"**.
+3. Click **"Create Project"**.
+4. Set the Project Name.
+5. Select the Community tier.
+6. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
+   Note the **"Demo Project"** adds in dummy data for more in-depth demo purposes.
+7. Click **"Create Project"**.
 
 _It should take around 90 seconds for the Cloud Project to build out. During this time, a link will be sent to the email
-associated with you Cloud Account. The email will contain your Project URL as well as an email and password to login. If
-you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log in to
-the app!_
+associated with your Cloud Account. The email will contain your Project URL as well as an email and password to login.
+If you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log
+in!_
 
-4. You can [access a Project](/cloud/projects/#access-a-project) from within the Cloud Dashboard or type the URL into
+8. You can [access a Project](/cloud/projects/#access-a-project) from within the Cloud Dashboard or type the URL into
    your browser.
-5. Log in with username and password from the email.
+9. Log in with your username and password from the email.
 
 :::tip Check All Inboxes
 
 Due to the algorithms used by some email providers, it is possible the email containing your Project URL, email and
 password will end up in another non-primary folder such as "Social" or "Promotions". Be sure to check all inbox mail.
+
+:::
+
+:::tip Learn More About Teams and Projects
+
+- [Overview](/cloud/overview/)
+- [Cloud Teams](/cloud/teams/)
+- [Cloud Projects](/cloud/projects/)
 
 :::
 
@@ -43,8 +77,8 @@ Once logged in, you're greeted with the option to create your first
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
    For the sake of this demo, we'll be calling ours `articles`, but feel free to make it your own!
-4. Leave the other settings at default and click <span mi btn>arrow*forward</span> and the **"Optional System Fields"**
-   will open. Keep the values in this menu at default *(toggled off)\_ for now. You can adjust these later.
+4. Leave the other settings at default and click <span mi btn>arrow_forward</span> and the **"Optional System Fields"**
+   will open. Keep the values in this menu at default _(toggled off)_ for now. You can adjust these later.
 5. Click <span mi btn>check</span> in the menu header.
 
 :::tip Learn More About Collections
@@ -89,7 +123,8 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 
 1. Navigate to the Content Module.
 2. Click <span mi btn>add</span> in the page header to open the Item Page.
-3. Set the Field Value(s) as desired and click <span mi btn>check</span> in the top-right to save your Item.
+3. Fill in the Field Value(s) as desired.
+4. Click <span mi btn>check</span> in the top-right to save your Item.
 
 :::tip Learn More About Items
 
@@ -103,29 +138,26 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 ![Directus Permissions](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/permissions-20220217A.webp)
 
 Directus comes with two built-in roles: Public and Admin. The Public Role determines what data is returned to
-non-authenticated users. This Role comes with all permissions turned off, but can be reconfigured with fully granular
+non-authenticated users. Public comes with all permissions turned off and can be reconfigured with fully granular
 control to expose exactly what you want unauthenticated Users to see. The Admin role has full permissions and this
 cannot be changed. Aside from these built-in Roles, any number of new Roles can be created, all with fully customized,
 granular permissions.
 
 By Default, content entered into Directus will be considered private, with permissions always set to the default of "No
-Access" for all Roles and must be reconfigured for each Role. This means that no data will be returned by the API unless
-it is available to Public or requested by an authenticated User that has the correct permissions.
+Access" for all Roles and the full ability to reconfigure as desired. This means that no data will be returned by the
+API unless it is available to Public or requested by an authenticated User that has the correct permissions.
 
-Thus, in order to have the API return our Items, we'll have to reconfigure some permissions. For simplicity's sake,
-we'll do this on the Public Role, instead of creating a new Role.
+Thus, in order to have the API return our Items, we'll have to add some read permissions. For simplicity's sake, we'll
+do this on the Public Role, instead of creating a new Role.
 
 1. Navigate to **Settings Module > Roles & Permissions > Public**.
-2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection to
-   open read access permissions.\
+2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection.\
    In our case, the Collection name is `article`.
 3. Click **"All Access"** to give the Public Role full read permissions to the Items in this Collection.
 
 ::: tip Learn More About Roles & Permissions
 
-- Manage [Users, Roles and Permissions](/configuration/users-roles-permissions/) in the App.
-- Manage [Users](/reference/system/users/), [Roles](/reference/system/roles), and
-  [Permissions](/reference/system/permissions) via the API.
+- Manage [Users, Roles and Permissions](/configuration/users-roles-permissions/).
 
 :::
 
@@ -151,3 +183,13 @@ everywhere!
 	]
 }
 ```
+
+_In this example, we made a super-simple read request with the API, but there's more! The REST and GraphQL APIs provide
+exhaustive endpoints for the data model and every single action that you can do in the App can be done via the API._
+
+:::tip Learn More About The API
+
+- [Intro to the API](/reference/introduction/)
+- [JS SDK](/reference/sdk/)
+
+:::
