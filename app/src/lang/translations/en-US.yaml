@@ -747,6 +747,7 @@ icon_off: Icon Off
 label: Label
 flows: Flows
 flow: Flow
+view_trigger: View Trigger
 create_trigger: Create Trigger
 change_trigger: Change Trigger
 choose_a_trigger: Choose a Trigger...
@@ -755,11 +756,12 @@ edit_flow: Edit Flow
 delete_flow: Delete Flow
 no_other_flows_copy: You don't have any other Flows yet.
 no_flows: No Flows
-no_flows_copy: You don’t have any Flows yet.
+no_flows_copy: You don't have any Flows yet.
 create_flow: Create Flow
 flow_name: Name
 start_flow: Start Flow
 stop_flow: Stop Flow
+view_operation: View Operation
 create_operation: Create new Operation
 edit_operation: Edit Operation
 operation_options: Operation Options

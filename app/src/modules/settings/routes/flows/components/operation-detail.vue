@@ -1,7 +1,7 @@
 <template>
 	<v-drawer
 		:model-value="isOpen"
-		:title="t(operationId === '+' ? 'create_operation' : 'edit_operation')"
+		:title="preview ? t('view_operation') : t(operationId === '+' ? 'create_operation' : 'edit_operation')"
 		:subtitle="t('operation_options')"
 		icon="offline_bolt"
 		persistent

@@ -83,7 +83,7 @@
 			</v-workspace>
 		</div>
 
-		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" :first-open="firstOpen" />
+		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" :preview="!editMode" :first-open="firstOpen" />
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -494,7 +494,8 @@ function duplicatePanel(panel: OperationRaw) {
 }
 
 function previewPanel(panel: AppPanel) {
-	router.push(`/settings/flows/${props.primaryKey}/${panel.id}?preview`);
+	if (panel.id === '$trigger') triggerDetailOpen.value = true;
+	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}?preview`);
 }
 
 function editPanel(panel: AppPanel) {
