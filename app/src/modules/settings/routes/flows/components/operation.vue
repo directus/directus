@@ -203,16 +203,21 @@ function pointerup() {
 			left: 0;
 			right: 0;
 			border-radius: 2px;
-			animation-name: floating;
-			animation-duration: 3s;
-			animation-iteration-count: infinite;
-			animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 7px var(--primary);
-			@keyframes floating {
-				50% {
-					box-shadow: 0 0 0 10px var(--primary);
+		}
+
+		&.running {
+			&::before {
+				animation-name: floating;
+				animation-duration: 3s;
+				animation-iteration-count: infinite;
+				animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+				@keyframes floating {
+					50% {
+						box-shadow: 0 0 0 10px var(--primary);
+					}
 				}
 			}
 		}
