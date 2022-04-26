@@ -1,170 +1,142 @@
 # Quickstart Guide
 
-> If you're looking for the fastest way to get up-and-running with Directus, this guide will walk you through getting
-> things installed, configured, and modeled.
+> This quickstart guide is designed to get you up and running with a Directus Cloud Project in a snap. Along the way,
+> you will better understand what Directus is, setup your free Directus Cloud Account, get hands-on experience with the
+> App and API, and find more resources and documentation to deep-dive into the App and API.
 
-## 1. Installation
+[[toc]]
 
-Make sure you have the latest LTS version or newer of [Node.js](https://nodejs.dev) installed, and have a running
-database ready to connect to.
+## 1. Create Cloud Project and Login
 
-Run the following command in your terminal and follow the prompts.
+<video autoplay muted loop controls>
+<source src="" type="video/mp4" />
+</video>
 
-```bash
-npm init directus-project example-project
-```
+1. First, you'll need to [create and log in](/cloud/accounts/#create-account-and-login) to your Directus Cloud Account.
+2. Next, you will need to [create a Team](/cloud/teams/#create-a-team) or navigate to an existing Team.
+3. Now you're ready to [create a Community Project](/cloud/projects/#create-a-community-project).
 
-Choose SQLite from the list. Use up/down arrow keys to select the SQL type.
+_It should take around 90 seconds for the Cloud Project to build out. During this time, a link will be sent to the email
+associated with you Cloud Account. The email will contain your Project URL as well as an email and password to login. If
+you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log in to
+the app!_
 
-```bash
-? Choose your database client SQLite
-```
+4. You can [access a Project](/cloud/projects/#access-a-project) from within the Cloud Dashboard or type the URL into
+   your browser.
+5. Log in with username and password from the email.
 
-After that a file path for `data.db`, your database, will be suggested. Hit the enter key to stick with the default
-path.
+:::tip Check All Inboxes
 
-```bash
-? Database File Path: <file-path>/example-project/data.db
-```
-
-Next you'll set your username/email and password.
-
-```bash
-Create your first admin user:
-? Email: admin@example.com
-? Password: ********
-```
-
-After that, you're all set!
-
-```
-Your project has been created at <file-path>/example-project.
-
-The configuration can be found in <file-path>/example-project/.env
-```
-
-Once the installation is complete, you can start Directus by navigating to your project folder _(in this case
-`example-project`)_ and running:
-
-```bash
-npx directus start
-```
-
-After that, you will see this message:
-
-```bash
-✨ Server started at http://localhost:8055
-```
-
-#### Other Options
-
-When you link other types of SQL to Directus, you may have additional prompts:
-
-- **Database Host** – IP address for your database.
-- **Port** – Port number your database is running on.
-- **Database Name** – Name of your existing database.
-- **Database User** – Name of existing user in database.
-- **Database Password** – Password to enter database.
-- **Enable SSL** – Select `Y` for yes or `N` for no.
-- **Root** – Provide the root name.
-
-Simply configure these according to your project's needs.
-
-::: warning Directus seeds your database
-
-Directus installs a few dozen tables into the database it is linked to; so if you're adding it to a database with
-existing data. However, installation of Directus will not alter the existing data tables.
+Due to the algorithms used by some email providers, it is possible the email containing your Project URL, email and
+password will end up in another non-primary folder such as "Social" or "Promotions". Be sure to check all inbox mail.
 
 :::
-
-## 2. Login to App
-
-With the server running, you're now able to login to your new Directus project and start using it.
-
-Our start command stated that the server started at port `8055`, which means we can navigate to
-[http://localhost:8055](http://localhost:8055) to open Directus in the browser.
-
-Login using the admin credentials you configured during the installation in Step 1.
 
 ## 3. Create a Collection
 
-Once logged in, you're greeted with the option to create your first Collection:
-
 ![Directus Empty State](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/empty-state-20220217A.webp)
 
-Follow the prompts and create a Collection. For the sake of this demo, we'll be calling ours `articles`, but feel free
-to make it your own!
+Once logged in, you're greeted with the option to create your first
+[Collection](/getting-started/glossary/#collections).
 
-::: tip More Info on Collections
+1. Navigate into the Content Module.
+2. Click **"Create Collection"** and a side menu will appear.
+3. Fill in a **Name**.\
+   For the sake of this demo, we'll be calling ours `articles`, but feel free to make it your own!
+4. Leave the other settings at default and click <span mi btn>arrow*forward</span> and the **"Optional System Fields"**
+   will open. Keep the values in this menu at default *(toggled off)\_ for now. You can adjust these later.
+5. Click <span mi btn>check</span> in the menu header.
 
-For a more in-depth guide to setting up Collections, see [Collections](/app/content-collections).
+:::tip Learn More About Collections
+
+- [The Content Module](/app/content)
+- [Create and Manage a Collection](/configuration/data-model/)
+- [Build Relationships Between Collections](/configuration/relationships/)
 
 :::
 
-## 4. Create a Field
+<!--
+@TODO configuration > data-model
+Change the link to the "Create a Collection" format
+-->
 
-With the Collection created, it's time to start adding some Fields. Click the **"Create Field"** button, and select
-**"Input"**:
+## 4. Create a Field
 
 <video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/add-field-20220217A.mp4" type="video/mp4" />
 </video>
 
-We'll be calling our Field `title`. While Directus offers a range of powerful field customization options, we'll be
-sticking to the defaults for now. These defaults use the "String" datatype.
+With your first Collection created, it's time to start adding some [Fields](/getting-started/glossary/#fields).
 
-::: tip More Info on Fields
+1. Navigate to **Settings Module > Data Model > `Collection-Name`**.
+2. Click the **"Create Field"** button and select the **"Input"** Field type.
+3. Fill in a Field name under **Key**. We'll be calling our Field `title`.\
+   While Directus offers a range of powerful field customization options, we'll be sticking to the defaults for now. These
+   defaults use the "String" datatype.
+4. Select **"Save"**.
 
-To learn more about the different types of Fields, and all available options, see
-[Fields](/getting-started/glossary/#fields).
+::: tip Learn More About Fields
+
+- [Create and Manage Fields in the App](/configuration/data-model/)
 
 :::
 
 ## 5. Create an Item
 
-Now that we have a Collection with a Field configured, it's time to start adding some content. Navigate to the Content
-Module (top left), and click <span mi btn>add</span> in the top-right to get started. This will take you to the
-Create/Edit Item page:
-
 ![Directus Create Item](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/create-item-20220217A.webp)
 
-Once you're happy with your creation, click <span mi btn>check</span> in the top-right to save your Item to the
-database.
+Now that we have a Collection with a Field configured, it's time to add an [Item](/getting-started/glossary/#).
 
-::: tip More Info on Items
+1. Navigate to the Content Module.
+2. Click <span mi btn>add</span> in the page header to open the Item Page.
+3. Set the Field Value(s) as desired and click <span mi btn>check</span> in the top-right to save your Item.
 
-To learn more about the different types of Items, and all available options, see [Items](/app/content-items/).
+:::tip Learn More About Items
+
+- [The Content Module](/app/content/)
+- [The Item Page](/app/content/items)
 
 :::
 
-## 6. Set Role/Public Permissions
-
-By default, all content entered into Directus is considered private. This means that no data will be returned by the
-API, unless requested by an authenticated user that has the correct permissions. In order to have the API return our
-items, we'll have to setup some permissions. Navigate to **Settings Module <span mi icon dark>chevron_right</span> Roles
-& Permissions**.
-
-Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select
-the Public Role, find your Collection, and click the icon under the <span mi icon>visibility</span> icon (read/view
-permission) to allow the Public Role to read the Items in your Collection.
+## 6. Set Roles & Permissions
 
 ![Directus Permissions](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/permissions-20220217A.webp)
 
-::: tip More Info on Roles & Permissions
+Directus comes with two built-in roles: Public and Admin. The Public Role determines what data is returned to
+non-authenticated users. This Role comes with all permissions turned off, but can be reconfigured with fully granular
+control to expose exactly what you want unauthenticated Users to see. The Admin role has full permissions and this
+cannot be changed. Aside from these built-in Roles, any number of new Roles can be created, all with fully customized,
+granular permissions.
 
-Roles & Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting these
-up, see [Roles](/reference/system/roles) & [Permissions](/reference/system/permissions).
+By Default, content entered into Directus will be considered private, with permissions always set to the default of "No
+Access" for all Roles and must be reconfigured for each Role. This means that no data will be returned by the API unless
+it is available to Public or requested by an authenticated User that has the correct permissions.
+
+Thus, in order to have the API return our Items, we'll have to reconfigure some permissions. For simplicity's sake,
+we'll do this on the Public Role, instead of creating a new Role.
+
+1. Navigate to **Settings Module > Roles & Permissions > Public**.
+2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection to
+   open read access permissions.\
+   In our case, the Collection name is `article`.
+3. Click **"All Access"** to give the Public Role full read permissions to the Items in this Collection.
+
+::: tip Learn More About Roles & Permissions
+
+- Manage [Users, Roles and Permissions](/configuration/users-roles-permissions/) in the App.
+- Manage [Users](/reference/system/users/), [Roles](/reference/system/roles), and
+  [Permissions](/reference/system/permissions) via the API.
 
 :::
 
 ## 7. Connect to the API
 
-Now that your project has some content in it, it's time to start using this content externally. Data can be accessed in
-a number of ways, including the REST API, GraphQL, the CLI, or even straight from the database. In this case, we'll use
-[the `/items/` REST API endpoint](/reference/items) to retrieve the item we just created.
+Now that your Project has some content in it which is exposed to the Public, it's time to start using this content
+externally! Data can be accessed in a number of ways, including the REST and GraphQL API Enpoints. In this case, we'll
+use the `/items/` [REST API endpoint](/reference/items) to retrieve the item we just created.
 
-Using your browser, or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud), open
-[http://localhost:8055/items/articles](http://localhost:8055/items/articles).
+Open [http://localhost:8055/items/articles](http://localhost:8055/items/articles) in the browser or an API tool like
+[Postman](http://postman.com) or [Paw](https://paw.cloud)
 
 And there it is! The Article Item you just created is being served in beautiful JSON, ready to be used anywhere and
 everywhere!
