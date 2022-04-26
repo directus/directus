@@ -8,6 +8,8 @@
 		v-model="optionsValues"
 		class="extension-options"
 		:fields="optionsFields"
+		:initial-values="disabled ? optionsValues : null"
+		:disabled="disabled"
 		primary-key="+"
 	/>
 
@@ -52,6 +54,10 @@ export default defineComponent({
 		modelValue: {
 			type: Object,
 			default: () => ({}),
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],

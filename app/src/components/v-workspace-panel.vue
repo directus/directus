@@ -12,7 +12,7 @@
 			'br-bl': dragging || borderRadius[3],
 		}"
 		data-move
-		@pointerdown="onPointerDown('move', $event)"
+		@pointerdown="editMode ? onPointerDown('move', $event) : $emit('preview')"
 	>
 		<div v-if="showHeader" class="header">
 			<v-icon class="icon" :style="iconColor" :name="icon" />
@@ -139,7 +139,7 @@ const props = withDefaults(defineProps<Props>(), {
 	alwaysUpdatePosition: false,
 });
 
-const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit']);
+const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
 
 const { t } = useI18n();
 
@@ -316,9 +316,11 @@ function useDragDrop() {
 	background-color: var(--background-page);
 	border: 1px solid var(--border-subdued);
 	box-shadow: 0 0 0 1px var(--border-subdued);
+	cursor: pointer;
 
 	&:hover {
 		z-index: 3;
+		border-color: var(--border-normal-alt);
 	}
 
 	&.editing.draggable {

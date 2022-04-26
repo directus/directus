@@ -19,6 +19,7 @@
 					v-bind="panel"
 					:edit-mode="editMode"
 					:resizable="resizable"
+					@preview="$emit('preview', panel)"
 					@edit="$emit('edit', panel)"
 					@update="$emit('update', { edits: $event, id: panel.id })"
 					@move="$emit('move', panel.id)"
@@ -57,7 +58,7 @@ const props = withDefaults(
 	}
 );
 
-defineEmits(['update', 'move', 'delete', 'duplicate', 'edit']);
+defineEmits(['update', 'move', 'delete', 'duplicate', 'edit', 'preview']);
 
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);

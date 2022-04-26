@@ -10,6 +10,7 @@
 		:show-options="type !== 'trigger'"
 		:style="styleVars"
 		always-update-position
+		@preview="$emit('preview', panel)"
 		@edit="$emit('edit', panel)"
 		@update="$emit('update', { edits: $event, id: panel.id })"
 		@move="$emit('move', panel.id)"
@@ -94,7 +95,17 @@ const props = withDefaults(
 const { operations } = getOperations();
 const { triggers } = getTriggers();
 
-const emit = defineEmits(['create', 'edit', 'update', 'delete', 'move', 'duplicate', 'arrow-move', 'arrow-stop']);
+const emit = defineEmits([
+	'create',
+	'preview',
+	'edit',
+	'update',
+	'delete',
+	'move',
+	'duplicate',
+	'arrow-move',
+	'arrow-stop',
+]);
 
 const styleVars = {
 	'--reject-left': REJECT_OFFSET.x + 'px',

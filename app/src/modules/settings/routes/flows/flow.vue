@@ -70,6 +70,7 @@
 						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
 						:parent="parentPanels[panel.id]"
 						@create="createPanel"
+						@preview="previewPanel"
 						@edit="editPanel"
 						@move="movePanelID = $event"
 						@update="stageOperationEdits"
@@ -490,6 +491,10 @@ function duplicatePanel(panel: OperationRaw) {
 	newPanel.position_x = newPanel.position_x + 2;
 	newPanel.position_y = newPanel.position_y + 2;
 	stageOperationEdits({ edits: newPanel, id: '+' });
+}
+
+function previewPanel(panel: AppPanel) {
+	router.push(`/settings/flows/${props.primaryKey}/${panel.id}?preview`);
 }
 
 function editPanel(panel: AppPanel) {

@@ -8,7 +8,13 @@
 		@cancel="$emit('cancel')"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!operationType" @click="saveOperation">
+			<v-button
+				v-tooltip.bottom="t('done')"
+				icon
+				rounded
+				:disabled="!operationType"
+				@click="preview ? $emit('cancel') : saveOperation"
+			>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -17,7 +23,7 @@
 			<div class="grid">
 				<div class="field half">
 					<div class="type-label">{{ t('name') }}</div>
-					<v-input v-model="operationName" :placeholder="t('operation_name')">
+					<v-input v-model="operationName" :disabled="preview" :placeholder="t('operation_name')">
 						<template #append>
 							<v-icon name="title" />
 						</template>
@@ -25,7 +31,7 @@
 				</div>
 				<div class="field half">
 					<div class="type-label">{{ t('key') }}</div>
-					<v-input v-model="operationKey" :placeholder="t('operation_key')">
+					<v-input v-model="operationKey" :disabled="preview" :placeholder="t('operation_key')">
 						<template #append>
 							<v-icon name="vpn_key" />
 						</template>
@@ -35,7 +41,7 @@
 
 			<v-divider />
 
-			<v-fancy-select v-model="operationType" class="select" :items="displayOperations" />
+			<v-fancy-select v-model="operationType" class="select" :disabled="preview" :items="displayOperations" />
 
 			<v-notice v-if="operationType && !selectedOperation" class="not-found" type="danger">
 				{{ t('operation_not_found', { operation: operationType }) }}
@@ -48,6 +54,7 @@
 				v-model="options"
 				:extension="operationType"
 				:options="operationOptions"
+				:disabled="preview"
 				type="operation"
 			></extension-options>
 			<component
@@ -73,9 +80,11 @@ const props = withDefaults(
 		primaryKey: string;
 		operationId: string;
 		operation?: Record<string, any>;
+		preview?: boolean;
 	}>(),
 	{
 		operation: undefined,
+		preview: undefined,
 	}
 );
 
