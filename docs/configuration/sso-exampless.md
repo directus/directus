@@ -1,6 +1,6 @@
-# Example SSO Configurations
+# SSO Examples
 
-Below is a collection of Directus configurations for integrating with various OAuth 2.0 and OpenID platforms.
+Below is a collection of example Directus configurations for integrating with various OAuth 2.0 and OpenID platforms.
 
 Due to the large number of available SSO platforms, this list will only cover the most common configurations. Contributions to expand and maintain the list are encouraged.
 
@@ -97,7 +97,7 @@ AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 
 ::: warning Notice
 
-If the authenticating user has not marked their email as "public" in Github, it will not be readable by Directus.
+If the authenticating user has not marked their email as "public" in Github, it will not be accessible by Directus.
 
 :::
 
@@ -105,7 +105,7 @@ If the authenticating user has not marked their email as "public" in Github, it 
 
 ```
 AUTH_DISCORD_DRIVER="oauth2"
-AUTH_DISCORD_CLIENT_ID="string:..."
+AUTH_DISCORD_CLIENT_ID="..."
 AUTH_DISCORD_CLIENT_SECRET="..."
 AUTH_DISCORD_AUTHORIZE_URL="https://discord.com/api/oauth2/authorize"
 AUTH_DISCORD_ACCESS_URL="https://discord.com/api/oauth2/token"
