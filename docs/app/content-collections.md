@@ -33,7 +33,7 @@ navigating away from the page.
 
 ::: warning Requires Configuration
 
-This feature is only available if a Sort column has been configured in the Collection's data model settings.
+This feature is only available if a Sort column has been configured for the Collection under **"Data Model > Settings"**.
 
 :::
 
