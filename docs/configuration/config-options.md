@@ -637,7 +637,7 @@ AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
 AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 ```
 
-More examples of SSO configurations [can be found here](/configuration/sso-examples/).
+More example SSO configurations [can be found here](/configuration/sso-examples/).
 
 ::: warning PUBLIC_URL
 
