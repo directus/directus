@@ -148,7 +148,7 @@ function getItemWithLang<T extends Record<string, any>>(items: T[], lang: string
 	const relatedPKField = relationInfo.value?.relatedPrimaryKeyField.field;
 	if (!langField || !relatedPKField || !lang) return;
 
-	return items.find((item) => item[langField][relatedPKField] === lang);
+	return items.find((item) => item?.[langField]?.[relatedPKField] === lang);
 }
 
 function updateValue(item: DisplayItem, lang: string | undefined) {

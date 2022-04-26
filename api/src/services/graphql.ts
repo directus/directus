@@ -146,7 +146,18 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
-		const validationErrors = validate(schema, document, specifiedRules);
+		const validationErrors = validate(schema, document, [
+			...specifiedRules,
+			(context) => ({
+				Field(node) {
+					if (env.GRAPHQL_INTROSPECTION === false && (node.name.value === '__schema' || node.name.value === '__type')) {
+						context.reportError(
+							new GraphQLError('GraphQL introspection is not allowed. The query contained __schema or __type.', [node])
+						);
+					}
+				},
+			}),
+		]);
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
