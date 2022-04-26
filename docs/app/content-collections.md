@@ -31,7 +31,7 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 The new sort order is saved automatically, so make sure you wait until the App's loading indicator finishes before
 navigating away from the page.
 
-::: warning Requires Configuration
+::: warning Sorting Requires Configuration
 
 This feature is only available if a Sort column has been configured for the Collection under **"Data Model > Settings"**.
 
