@@ -60,15 +60,16 @@
 </template>
 
 <script setup lang="ts">
-import LanguageSelect from './language-select.vue';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useFieldsStore, useUserStore } from '@/stores/';
-import { useI18n } from 'vue-i18n';
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { notEmpty } from '@/utils/is-empty';
-import { useWindowSize } from '@/composables/use-window-size';
 import { DisplayItem, RelationQueryMultiple, useRelationM2M, useRelationMultiple } from '@/composables/use-relation';
+import { useWindowSize } from '@/composables/use-window-size';
+import { useFieldsStore, useUserStore } from '@/stores/';
+import { notEmpty } from '@/utils/is-empty';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { toArray } from '@directus/shared/utils';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import LanguageSelect from './language-select.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -246,7 +247,7 @@ function useLanguages() {
 				},
 			});
 
-			languages.value = response.data.data;
+			languages.value = response.data.data ? toArray(response.data.data) : [];
 
 			if (!firstLang.value) {
 				const userLang = languages.value.find(
@@ -256,11 +257,11 @@ function useLanguages() {
 						lang[pkField] === userStore.currentUser.language
 				)?.[pkField];
 
-				firstLang.value = userLang || languages.value[0][pkField];
+				firstLang.value = userLang || languages.value[0]?.[pkField];
 			}
 
 			if (!secondLang.value) {
-				secondLang.value = languages.value[1][pkField];
+				secondLang.value = languages.value[1]?.[pkField];
 			}
 		} catch (err: any) {
 			unexpectedError(err);
