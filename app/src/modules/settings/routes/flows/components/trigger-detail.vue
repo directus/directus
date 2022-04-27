@@ -1,7 +1,7 @@
 <template>
 	<v-drawer
 		:model-value="open"
-		:title="preview ? t('view_trigger') : t(firstOpen ? 'create_trigger' : 'change_trigger')"
+		:title="t(firstOpen ? 'create_trigger' : 'change_trigger')"
 		:subtitle="t('panel_options')"
 		icon="offline_bolt"
 		persistent
@@ -9,13 +9,7 @@
 		@cancel="$emit('update:open', false)"
 	>
 		<template #actions>
-			<v-button
-				v-tooltip.bottom="t('done')"
-				icon
-				rounded
-				:disabled="!currentTrigger"
-				@click="preview ? $emit('update:open', false) : saveTrigger()"
-			>
+			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!currentTrigger" @click="saveTrigger">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -24,7 +18,7 @@
 			<div class="grid">
 				<div class="field full">
 					<div class="type-label">{{ t('name') }}</div>
-					<v-input v-model="name" :disabled="preview" :placeholder="t('trigger_name')">
+					<v-input v-model="name" :placeholder="t('trigger_name')">
 						<template #append>
 							<v-icon name="title" />
 						</template>
@@ -41,8 +35,7 @@
 				v-model="flowEdits.options"
 				class="extension-options"
 				:fields="currentTrigger?.options"
-				:initial-values="preview ? flowEdits.options : null"
-				:disabled="preview"
+				:initial-values="flowEdits.options"
 				primary-key="+"
 			/>
 		</div>

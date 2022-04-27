@@ -202,7 +202,6 @@ export default defineModule({
 								return {
 									primaryKey: route.params.primaryKey,
 									operationId: route.params.operationId,
-									preview: 'preview' in route.query,
 								};
 							},
 						},

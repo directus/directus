@@ -12,7 +12,7 @@
 			'br-bl': dragging || borderRadius[3],
 		}"
 		data-move
-		@pointerdown="editMode ? onPointerDown('move', $event) : $emit('preview')"
+		@pointerdown="onPointerDown('move', $event)"
 	>
 		<div v-if="showHeader" class="header">
 			<v-icon class="icon" :style="iconColor" :name="icon" />

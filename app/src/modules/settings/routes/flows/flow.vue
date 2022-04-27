@@ -70,7 +70,6 @@
 						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
 						:parent="parentPanels[panel.id]"
 						@create="createPanel"
-						@preview="previewPanel"
 						@edit="editPanel"
 						@move="movePanelID = $event"
 						@update="stageOperationEdits"
@@ -83,7 +82,7 @@
 			</v-workspace>
 		</div>
 
-		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" :preview="!editMode" :first-open="firstOpen" />
+		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" :first-open="firstOpen" />
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -491,11 +490,6 @@ function duplicatePanel(panel: OperationRaw) {
 	newPanel.position_x = newPanel.position_x + 2;
 	newPanel.position_y = newPanel.position_y + 2;
 	stageOperationEdits({ edits: newPanel, id: '+' });
-}
-
-function previewPanel(panel: AppPanel) {
-	if (panel.id === '$trigger') triggerDetailOpen.value = true;
-	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}?preview`);
 }
 
 function editPanel(panel: AppPanel) {
