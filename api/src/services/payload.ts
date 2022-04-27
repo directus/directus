@@ -400,7 +400,7 @@ export class PayloadService {
 
 			if (allowedCollections.includes(relatedCollection) === false) {
 				throw new InvalidPayloadException(
-					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}`
+					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`
 				);
 			}
 

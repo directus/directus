@@ -338,6 +338,7 @@ revision_preview: Revision Preview
 updates_made: Updates Made
 leave_comment: Leave a comment...
 post_comment_success: Comment posted
+post_comment_updated: Comment updated
 item_create_success: Item Created | Items Created
 item_update_success: Item Updated | Items Updated
 item_delete_success: Item Deleted | Items Deleted

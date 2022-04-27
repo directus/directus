@@ -16,10 +16,10 @@ See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects in
 
 ![Create Account and Login](https://cdn.directus.io/docs/v9/cloud/accounts/accounts-20220322A/login-page-20220225A.webp)
 
-Creating an Account is easy and free. As we talked about in the [Overview](/cloud/overview/), we've made life easy for you by giving you the
-option to create and log in to your free Cloud Account automatically with Github. If you don't have a Github account or prefer not to
-use this login method, email-and-password login is available, as well. In either case, simply go to the
-[Login Page](https://directus.cloud/login) and follow the prompts.
+Creating an Account is easy and free. As we talked about in the [Overview](/cloud/overview/), we've made life easy for
+you by giving you the option to create and log in to your free Cloud Account automatically with Github. If you don't
+have a Github account or prefer not to use this login method, email-and-password login is available, as well. In either
+case, simply go to the [Login Page](https://directus.cloud/login) and follow the prompts.
 
 ## Manage Account
 
