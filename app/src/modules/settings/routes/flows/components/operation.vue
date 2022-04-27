@@ -4,7 +4,13 @@
 		:name="panel.panel_name"
 		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
 		class="block-container"
-		:class="[type, { 'edit-mode': editMode, loner: (parent === undefined || parent.loner) && type === 'operation' }]"
+		:class="[
+			type,
+			{
+				'edit-mode': editMode,
+				loner: (parent === undefined || parent.loner) && type === 'operation',
+			},
+		]"
 		:edit-mode="editMode"
 		:resizable="false"
 		:show-options="type !== 'trigger'"
@@ -52,7 +58,7 @@
 		<div
 			v-if="typeof currentOperation?.preview === 'function'"
 			v-md="translate(currentOperation?.preview(panel))"
-			class="block"
+			class="block selectable"
 		></div>
 		<component
 			:is="`operation-${currentOperation.id}`"

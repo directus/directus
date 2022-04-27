@@ -316,36 +316,42 @@ function useDragDrop() {
 	background-color: var(--background-page);
 	border: 1px solid var(--border-subdued);
 	box-shadow: 0 0 0 1px var(--border-subdued);
-	cursor: pointer;
 
 	&:hover {
 		z-index: 3;
-		border-color: var(--border-normal-alt);
 	}
 
-	&.editing.draggable {
-		border-color: var(--border-normal);
-		box-shadow: 0 0 0 1px var(--border-normal);
-		cursor: move;
-	}
+	&.editing {
+		cursor: pointer;
 
-	&.editing.draggable:hover {
-		border-color: var(--border-normal-alt);
-		box-shadow: 0 0 0 1px var(--border-normal-alt);
-	}
+		&:hover {
+			border-color: var(--border-normal-alt);
+		}
 
-	&.editing.dragging {
-		z-index: 3 !important;
-		border-color: var(--primary);
-		box-shadow: 0 0 0 1px var(--primary);
-	}
+		&.draggable {
+			border-color: var(--border-normal);
+			box-shadow: 0 0 0 1px var(--border-normal);
+			cursor: move;
+		}
 
-	&.editing.dragging .resize-details {
-		opacity: 1;
-	}
+		&.draggable:hover {
+			border-color: var(--border-normal-alt);
+			box-shadow: 0 0 0 1px var(--border-normal-alt);
+		}
 
-	&.editing .panel-content {
-		pointer-events: none;
+		&.dragging {
+			z-index: 3 !important;
+			border-color: var(--primary);
+			box-shadow: 0 0 0 1px var(--primary);
+		}
+
+		&.dragging .resize-details {
+			opacity: 1;
+		}
+
+		& .panel-content {
+			pointer-events: none;
+		}
 	}
 }
 
