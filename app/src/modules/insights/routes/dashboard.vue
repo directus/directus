@@ -505,6 +505,10 @@ export default defineComponent({
 				movePanelLoading.value = false;
 			}
 		}
+
+		// dont make call in this.
+		//  When a new panel is added run the single query for that panel
+		//  and add it to the global query object
 		function stitchQueriesToGql() {
 			if (!queryObject.value) return '';
 			const formattedQuery = {
@@ -525,13 +529,9 @@ export default defineComponent({
 				}
 
 				if (query.query.filter) {
-					// need to typecast deep values
-					const castFilter = deepParseNumber(query.query.filter);
 					formattedQuery.query[sanitizedKey].__args = { filter: query.query.filter };
 				}
 			}
-			// console.log(formattedQuery);
-			// console.log(jsonToGraphQLQuery(formattedQuery));
 		}
 	},
 });

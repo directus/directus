@@ -27,6 +27,7 @@ import {
 	GraphQLUnionType,
 	InlineFragmentNode,
 	IntValueNode,
+	Kind,
 	ObjectFieldNode,
 	ObjectValueNode,
 	SelectionNode,
@@ -80,6 +81,13 @@ import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 
+const stringNumber = (value) => {
+	if (!isNaN(value)) {
+		return value;
+	}
+	return String(value);
+};
+
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
 
@@ -108,6 +116,21 @@ export const GraphQLDate = new GraphQLScalarType({
 	...GraphQLString,
 	name: 'Date',
 	description: 'ISO8601 Date values',
+});
+
+export const FilterStrNumber = new GraphQLScalarType({
+	name: 'FilterStrNumber',
+	serialize: stringNumber,
+	parseValue: stringNumber,
+	parseLiteral(ast) {
+		if (ast.kind === Kind.INT || ast.kind === Kind.FLOAT) {
+			return stringNumber(Number(ast.kind));
+		}
+		if (ast.kind === Kind.STRING) {
+			return ast.value;
+		}
+		return undefined;
+	},
 });
 
 /**
@@ -667,28 +690,28 @@ export class GraphQLService {
 				name: 'number_filter_operators',
 				fields: {
 					_eq: {
-						type: GraphQLFloat,
+						type: FilterStrNumber,
 					},
 					_neq: {
-						type: GraphQLFloat,
+						type: FilterStrNumber,
 					},
 					_in: {
-						type: new GraphQLList(GraphQLFloat),
+						type: new GraphQLList(FilterStrNumber),
 					},
 					_nin: {
-						type: new GraphQLList(GraphQLFloat),
+						type: new GraphQLList(FilterStrNumber),
 					},
 					_gt: {
-						type: GraphQLFloat,
+						type: FilterStrNumber,
 					},
 					_gte: {
-						type: GraphQLFloat,
+						type: FilterStrNumber,
 					},
 					_lt: {
-						type: GraphQLFloat,
+						type: FilterStrNumber,
 					},
 					_lte: {
-						type: GraphQLFloat,
+						type: FilterStrNumber,
 					},
 					_null: {
 						type: GraphQLBoolean,
