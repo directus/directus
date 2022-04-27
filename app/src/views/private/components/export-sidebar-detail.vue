@@ -126,7 +126,7 @@
 						<p>
 							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
 
-							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit > itemCount)">
+							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit >= itemCount)">
 								{{
 									t('exporting_all_items_in_collection', {
 										total: itemCount ? n(itemCount) : '??',
@@ -218,10 +218,10 @@ import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollection } from '@directus/shared/composables';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/shared/utils';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -267,12 +267,16 @@ const exportSettings = reactive({
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: `${primaryKeyField.value!.field}`,
+	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
 watch(
 	() => props.layoutQuery,
 	() => {
+		if (props.layoutQuery?.fields) {
+			exportSettings.fields = props.layoutQuery?.fields;
+		}
+
 		if (props.layoutQuery?.sort) {
 			if (Array.isArray(props.layoutQuery.sort)) {
 				exportSettings.sort = props.layoutQuery.sort[0];

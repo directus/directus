@@ -3,7 +3,7 @@
 		<validation-errors
 			v-if="!nested && validationErrors.length > 0"
 			:validation-errors="validationErrors"
-			:fields="formFields"
+			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
 		<template v-for="(field, index) in formFields">
@@ -54,7 +54,8 @@
 					validationErrors.find((err) => err.field === field.field || err.field.endsWith(`(${field.field})`))
 				"
 				:badge="badge"
-				@update:model-value="setValue(field, $event)"
+				@update:model-value="setValue(field.field, $event)"
+				@set-field-value="setValue($event.field, $event.value)"
 				@unset="unsetValue(field)"
 				@toggle-batch="toggleBatchField(field)"
 			/>
@@ -143,6 +144,18 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 
+		const fields = computed(() => {
+			if (props.collection) {
+				return fieldsStore.getFieldsForCollection(props.collection);
+			}
+
+			if (props.fields) {
+				return props.fields;
+			}
+
+			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
+		});
+
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
 		});
@@ -222,18 +235,6 @@ export default defineComponent({
 		};
 
 		function useForm() {
-			const fields = computed(() => {
-				if (props.collection) {
-					return fieldsStore.getFieldsForCollection(props.collection);
-				}
-
-				if (props.fields) {
-					return props.fields;
-				}
-
-				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-			});
-
 			const defaultValues = computed(() => {
 				return fields.value.reduce(function (acc, field) {
 					if (
@@ -310,26 +311,30 @@ export default defineComponent({
 			}
 		}
 
-		function setValue(field: Field, value: any) {
-			if (isDisabled(field)) return;
+		function setValue(fieldKey: string, value: any) {
+			const field = formFields.value?.find((field) => field.field === fieldKey);
+
+			if (!field || isDisabled(field)) return;
 
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
-			edits[field.field] = value;
+			edits[fieldKey] = value;
 			emit('update:modelValue', edits);
 		}
 
 		function apply(updates: { [field: string]: any }) {
-			const updatableKeys = Object.keys(updates).filter((key) => {
-				const field = props.fields?.find((field) => field.field === key);
-				if (!field) return false;
-				return field.schema?.is_primary_key || !isDisabled(field);
-			});
+			const updatableKeys = props.batchMode
+				? Object.keys(updates)
+				: Object.keys(updates).filter((key) => {
+						const field = fields.value?.find((field) => field.field === key);
+						if (!field) return false;
+						return field.schema?.is_primary_key || !isDisabled(field);
+				  });
 
 			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
 		}
 
 		function unsetValue(field: Field) {
-			if (isDisabled(field)) return;
+			if (!props.batchMode && isDisabled(field)) return;
 
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };
@@ -350,7 +355,7 @@ export default defineComponent({
 					unsetValue(field);
 				} else {
 					batchActiveFields.value = [...batchActiveFields.value, field.field];
-					setValue(field, field.schema?.default_value);
+					setValue(field.field, field.schema?.default_value);
 				}
 			}
 		}

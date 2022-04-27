@@ -297,9 +297,7 @@ class OASSpecsService implements SpecificationSubService {
 																schema: {
 																	properties: {
 																		data: {
-																			items: {
-																				$ref: `#/components/schemas/${tag.name}`,
-																			},
+																			$ref: `#/components/schemas/${tag.name}`,
 																		},
 																	},
 																},

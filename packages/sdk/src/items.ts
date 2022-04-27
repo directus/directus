@@ -1,5 +1,6 @@
 import { TransportRequestOptions } from './transport';
 import { ID } from './types';
+import { Aggregate as SharedAggregate } from '@directus/shared/types';
 
 export type Field = string;
 
@@ -42,10 +43,17 @@ export type QueryMany<T> = QueryOne<T> & {
 	offset?: number;
 	page?: number;
 	meta?: keyof ItemMetadata | '*';
+	groupBy?: string | string[];
+	aggregate?: Aggregate;
+	alias?: Record<string, string>;
 };
 
 export type DeepQueryMany<T> = {
 	[K in keyof QueryMany<T> as `_${string & K}`]: QueryMany<T>[K];
+};
+
+export type Aggregate = {
+	[K in keyof SharedAggregate]: string;
 };
 
 export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
@@ -107,4 +115,10 @@ export interface IItems<T extends Item> {
 
 	deleteOne(id: ID, options?: ItemsOptions): Promise<void>;
 	deleteMany(ids: ID[], options?: ItemsOptions): Promise<void>;
+}
+
+export class EmptyParamError extends Error {
+	constructor(paramName?: string) {
+		super(`${paramName ?? 'ID'} cannot be an empty string`);
+	}
 }

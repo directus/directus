@@ -15,6 +15,8 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 	refresh_interval: null,
+	icon: 'bookmark_outline',
+	color: null,
 };
 
 const systemDefaults: Record<string, Partial<Preset>> = {

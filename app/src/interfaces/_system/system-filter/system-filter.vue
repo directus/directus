@@ -55,7 +55,7 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores';
-import { Filter, Type } from '@directus/shared/types';
+import { Filter, Type, FieldFunction } from '@directus/shared/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
@@ -130,15 +130,16 @@ function addNode(key: string) {
 		innerValue.value = innerValue.value.concat({ _and: [] });
 	} else {
 		let type: Type;
+		const field = fieldsStore.getField(collection.value, key);
 
 		if (key.includes('(') && key.includes(')')) {
-			const functionName = key.split('(')[0];
+			const functionName = key.split('(')[0] as FieldFunction;
 			type = getOutputTypeForFunction(functionName);
 		} else {
-			const field = fieldsStore.getField(collection.value, key)!;
 			type = field?.type || 'unknown';
 		}
-		const operator = getFilterOperatorsForType(type)[0];
+		let filterOperators = getFilterOperatorsForType(type);
+		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
 		innerValue.value = innerValue.value.concat(node);
 	}

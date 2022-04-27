@@ -15,11 +15,12 @@ import { AbstractServiceOptions } from '../types';
 import { Field, FieldMeta, RawField, Type, Accountability, SchemaOverview } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { toArray } from '@directus/shared/utils';
+import { toArray, addFieldFlag } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import { getHelpers, Helpers } from '../database/helpers';
 import Keyv from 'keyv';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 
 export class FieldsService {
 	knex: Knex;
@@ -168,6 +169,15 @@ export class FieldsService {
 			});
 		}
 
+		// Update specific database type overrides
+		for (const field of result) {
+			if (field.meta?.special?.includes('cast-timestamp')) {
+				field.type = 'timestamp';
+			} else if (field.meta?.special?.includes('cast-datetime')) {
+				field.type = 'dateTime';
+			}
+		}
+
 		return result;
 	}
 
@@ -206,6 +216,8 @@ export class FieldsService {
 			// Do nothing
 		}
 
+		if (!column && !fieldInfo) throw new ForbiddenException();
+
 		const type = getLocalType(column, fieldInfo);
 
 		const data = {
@@ -238,6 +250,12 @@ export class FieldsService {
 			// Check if field already exists, either as a column, or as a row in directus_fields
 			if (exists) {
 				throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+			}
+
+			// Add flag for specific database type overrides
+			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+			if (flagToAdd) {
+				addFieldFlag(field, flagToAdd);
 			}
 
 			await this.knex.transaction(async (trx) => {
@@ -546,8 +564,18 @@ export class FieldsService {
 		}
 
 		if (field.schema?.default_value !== undefined) {
-			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
+			if (
+				typeof field.schema.default_value === 'string' &&
+				(field.schema.default_value.toLowerCase() === 'now()' || field.schema.default_value === 'CURRENT_TIMESTAMP')
+			) {
 				column.defaultTo(this.knex.fn.now());
+			} else if (
+				typeof field.schema.default_value === 'string' &&
+				field.schema.default_value.includes('CURRENT_TIMESTAMP(') &&
+				field.schema.default_value.includes(')')
+			) {
+				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
+				column.defaultTo(this.knex.fn.now(Number(precision)));
 			} else if (
 				typeof field.schema.default_value === 'string' &&
 				['"null"', 'null'].includes(field.schema.default_value.toLowerCase())

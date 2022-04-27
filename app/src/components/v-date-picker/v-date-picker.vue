@@ -1,6 +1,6 @@
 <template>
 	<div ref="wrapper" class="v-date-picker">
-		<input class="input" type="text" :placeholder="t('enter_a_value')" data-input />
+		<input class="input" type="text" data-input />
 	</div>
 </template>
 

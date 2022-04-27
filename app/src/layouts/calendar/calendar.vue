@@ -40,7 +40,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .calendar-layout {
-	height: calc(100% - calc(61px + 2 * 24px));
+	height: calc(100% - calc(var(--header-bar-height) + 2 * 24px));
 	padding: var(--content-padding);
 	padding-top: 0;
 }

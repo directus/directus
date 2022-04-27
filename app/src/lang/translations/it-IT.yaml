@@ -332,6 +332,7 @@ revision_preview: Anteprima Revisione
 updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
 post_comment_success: Commento pubblicato
+post_comment_updated: Commento aggiornato
 item_create_success: Elemento Creato | Elementi Creati
 item_update_success: Elemento Aggiornato | Elementi Aggiornati
 item_delete_success: Elemento Eliminato| Elementi Eliminati
@@ -351,7 +352,7 @@ import_export: Importa / Esporta
 format: Formato
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
-fill_template: Riempi con il valore del modello
+fill_template: Riempi con i valori del modello
 a_unique_table_name: Un nome di tabella unico...
 a_unique_column_name: Un nome di colonna unico...
 enable_custom_values: Abilita valori personalizzati
@@ -368,6 +369,12 @@ delete_share: Elimina condivisione
 functions:
   year: Anno
   month: Mese
+  week: Settimana
+  day: Giorno
+  weekday: Giorno della settimana
+  hour: Ore
+  minute: Minuti
+  second: Secondi
   count: Quantità
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -634,6 +641,7 @@ advanced_settings: Impostazioni avanzate
 advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
 change_advanced_filter_operator: Cambia Operatore
+advanced: Avanzate
 operators:
   eq: Uguale a
   neq: Diverso da
@@ -706,7 +714,7 @@ role: Ruolo
 edit_role: Modifica ruolo
 rule: Regola
 user: Utente
-no_presets: Nessuna Preset
+no_presets: Nessun Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
@@ -1315,6 +1323,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1510,6 +1519,7 @@ interfaces:
     add_label: 'Etichetta "Crea nuovo"'
     field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
+    incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore
@@ -1732,6 +1742,8 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Data inizio
     end_date_field: Campo Data fine
+    optional: Opzionale
+    first_day: Primo giorno della settimana
   map:
     map: Mappa
     basemap: Mappa base
@@ -1746,6 +1758,35 @@ layouts:
     find_location: Trova una posizione...
     default_template: Uso il default della raccolta...
     no_compatible_fields: Nessun campo compatibile
+  kanban:
+    name: Kanban,
+    group_field: Raggruppa per,
+    group_field_placeholder: Campo di raggruppamento...,
+    group_title: Titolo del gruppo,
+    group_title_placeholder: Campo per i titoli del gruppo...,
+    title: Titolo della scheda,
+    title_placeholder: Campo titolo opzionale...,
+    text: Testo della scheda,
+    text_placeholder: Campo testuale opzionale...,
+    date: Data della scheda,
+    date_placeholder: Campo data opzionale...,
+    tags: Tag della scheda,
+    tags_placeholder: Campo tag opzionale...,
+    user: Utente della scheda,
+    user_placeholder: Campo utente opzionale...,
+    image: Immagine della scheda,
+    image_placeholder: Campo immagine opzionale...,
+    image_fit: Immagine della scheda adattata,
+    crop: Ritaglia,
+    advanced: Avanzate,
+    edit_group: Modifica gruppo,
+    delete_group: Elimina gruppo,
+    add_group: Aggiungi gruppo,
+    add_group_placeholder: Inserisci un nuovo titolo per il gruppo...,
+    show_ungrouped: Mostra separati,
+    show: Mostra,
+    no_group: Nessun gruppo,
+    not_all_loaded: È stato possibile caricare solo i primi 1000 elementi.
 panels:
   metric:
     name: Metrica
@@ -1764,3 +1805,67 @@ panels:
   list:
     name: Elenco
     description: Filtra ed elenca i campi da una collezione
+  barchart:
+    name: Grafico a barre
+    description: Grafici a barre o colonne per confrontare gruppi di valori
+    select_field: Devi selezionare un campo.
+    select_collection: Devi selezionare una raccolta.
+    select_x_axis: Devi selezionare l'asse X.
+    function: Funzione
+    horizontal: Orizzontale
+    x_axis_grouping: Raggruppamento asse X
+    x_axis: Asse X
+    y_axis_function: Funzione dell'asse Y
+    y_axis: Asse Y
+    show_x_axis: Mostra asse X
+    show_y_axis: Mostra asse Y
+    show_data_label: Mostra l'etichetta dei dati
+    group_by: Raggruppato per
+    group_and_function: Devi includere o escludere sia un gruppo che una funzione.
+    y_axix_NaN: L'asse Y deve essere un numero.
+    y_axis_conditional_one: Il valore per la condizione
+    y_axis_conditional_two: deve essere un numero.
+  linechart:
+    name: Grafico a linee
+    description: Grafico a linee per confrontare le variazioni di un campo.
+    select_field: Devi selezionare un campo.
+    select_collection: Devi selezionare una raccolta.
+    select_x_axis: Devi selezionare l'asse X.
+    function: Funzione
+    x_axis: Asse X
+    x_axis_decimals: Decimali dell'asse X
+    disabled_no_grouping: Disabilitato quando non è selezionato un raggruppamento.
+    y_axis: Asse Y
+    datasets: Set di dati
+    show_legend: Mostra legenda
+    show_marker: Mostra indicatore del suggerimento
+    include_dataset: Devi includere almeno un set di dati.
+    include_y_axis: Devi includere un asse Y per ogni set di dati quando non è specificato un gruppo.
+    group_and_function: Devi includere o escludere sia un gruppo che una funzione.
+    smooth: 'Arrotondato'
+    straight: 'Dritto'
+    step_line: 'A gradini'
+  meter:
+    description: Metro per il rilevamento dei valori
+    name: Metro
+    arc: Arco
+    stroke_width: Spessore della linea
+    select_max_value: Devi selezionare un valore massimo.
+    max_greater_than_zero: Il massimo deve essere maggiore di zero.
+    select_field: Devi selezionare un campo.
+    select_collection: Devi selezionare una raccolta.
+    function: Funzione
+    thin: Sottile
+    medium: Medio
+    broad: Largo
+  piechart:
+    name: Grafico a torta o ciambella
+    description: Grafico circolare che mostra i rapporti dei gruppi su una colonna.
+    function: 'Funzione'
+    donut: Ciambella
+    labels: Mostra etichette
+    legend: Mostra legenda
+    right: Destra
+    bottom: In basso
+    monochrome: Monocromatico
+    monochrome_color: Colore monocromatico
