@@ -7,7 +7,7 @@
 ## 1. Create Cloud Account and Login
 
 <video autoplay muted loop controls>
-<source src="" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220427A/create-account-and-login-20220427.mp4" type="video/mp4" />
 </video>
 
 First, you'll need to [create an Account and log in](/cloud/accounts/#create-account-and-login) on
@@ -17,39 +17,42 @@ Your Directus Cloud Account allows you to create and manage any number of Commun
 life easier by giving you the option to create and log in to your free Cloud Account automatically with Github. If you
 don't have a Github account or prefer not to use this login method, email-and-password login is available, as well.
 
+The very first time you log in after account creation, you will be prompted to create a Team. Teams allow you to
+organize Team Members, Projects and Project Billing as desired.
+
 :::tip Learn more About Cloud
 
 - [Overview](/cloud/overview/)
 - [Cloud Accounts](/cloud/accounts/)
+- [Cloud Teams](/cloud/teams/)
 
 :::
 
 ## 2. Create and Access Project
 
 <video autoplay muted loop controls>
-<source src="" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220427A/create-and-access-project-20220427A.mp4" type="video/mp4" />
 </video>
 
 You will need to create a [Team](/cloud/teams/) or navigate to the existing Team under which you want to create a
 Community Project. To create a Community Project, follow the steps below:
 
 1. Open the Team Menu in the Dashboard Header and select or [create](/cloud/teams/#create-a-team) the desired Team.
-2. Click **"Projects"**.
-3. Click **"Create Project"**.
-4. Set the Project Name.
-5. Select the Community tier.
-6. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
+2. Navigate to **"Projects"** and click **"Create Project"**.
+3. Set the Project Name.
+4. Select the Community tier.
+5. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
    Note the **"Demo Project"** adds in dummy data for more in-depth demo purposes.
-7. Click **"Create Project"**.
+6. Click **"Create Project"**.
 
 _It should take around 90 seconds for the Cloud Project to build out. During this time, a link will be sent to the email
 associated with your Cloud Account. The email will contain your Project URL as well as an email and password to login.
 If you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log
 in!_
 
-8. You can [access a Project](/cloud/projects/#access-a-project) from within the Cloud Dashboard or type the URL into
+7. You can [access a Project](/cloud/projects/#access-a-project) from within the Cloud Dashboard or type the URL into
    your browser.
-9. Log in with your username and password from the email.
+8. Log in with your username and password from the email.
 
 :::tip Check All Inboxes
 
@@ -61,14 +64,15 @@ password will end up in another non-primary folder such as "Social" or "Promotio
 :::tip Learn More About Teams and Projects
 
 - [Overview](/cloud/overview/)
-- [Cloud Teams](/cloud/teams/)
 - [Cloud Projects](/cloud/projects/)
 
 :::
 
 ## 3. Create a Collection
 
-![Directus Empty State](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/empty-state-20220217A.webp)
+<video autoplay muted loop controls>
+<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220427A/create-a-collection-20220427A.mp4" type="video/mp4" />
+</video>
 
 Once logged in, you're greeted with the option to create your first
 [Collection](/getting-started/glossary/#collections).
@@ -77,8 +81,8 @@ Once logged in, you're greeted with the option to create your first
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
    For the sake of this demo, we'll be calling ours `articles`, but feel free to make it your own!
-4. Leave the other settings at default and click <span mi btn>arrow_forward</span> and the **"Optional System Fields"**
-   will open. Keep the values in this menu at default _(toggled off)_ for now. You can adjust these later.
+4. Leave the other settings at default and click <span mi btn>arrow*forward</span> and the **"Optional System Fields"**
+   will open. Keep the values in this menu at default *(toggled off)\_ for now. You can adjust these later.
 5. Click <span mi btn>check</span> in the menu header.
 
 :::tip Learn More About Collections
@@ -97,7 +101,7 @@ Change the link to the "Create a Collection" format
 ## 4. Create a Field
 
 <video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/add-field-20220217A.mp4" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220427A/create-a-field-20220427A.mp4" type="video/mp4" />
 </video>
 
 With your first Collection created, it's time to start adding some [Fields](/getting-started/glossary/#fields).
@@ -117,7 +121,9 @@ With your first Collection created, it's time to start adding some [Fields](/get
 
 ## 5. Create an Item
 
-![Directus Create Item](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/create-item-20220217A.webp)
+<video autoplay muted loop controls>
+<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220427A/create-an-item-20220427B.mp4" type="video/mp4" />
+</video>
 
 Now that we have a Collection with a Field configured, it's time to add an [Item](/getting-started/glossary/#).
 
@@ -135,7 +141,9 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 
 ## 6. Set Roles & Permissions
 
-![Directus Permissions](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/permissions-20220217A.webp)
+<video autoplay muted loop controls>
+<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220427A/set-read-permissions-20220427A.mp4" type="video/mp4" />
+</video>
 
 Directus comes with two built-in roles: Public and Admin. The Public Role determines what data is returned to
 non-authenticated users. Public comes with all permissions turned off and can be reconfigured with fully granular
