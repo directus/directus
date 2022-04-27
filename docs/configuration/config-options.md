@@ -595,21 +595,29 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 ## Authentication
 
-| Variable               | Description                            | Default Value |
-| ---------------------- | -------------------------------------- | ------------- |
-| `AUTH_PROVIDERS`       | CSV of auth providers you want to use. | --            |
-| `AUTH_DISABLE_DEFAULT` | Disable the default auth provider      | `false`       |
+| Variable               | Description                               | Default Value |
+| ---------------------- | ----------------------------------------- | ------------- |
+| `AUTH_PROVIDERS`       | A comma-separated list of auth providers. | --            |
+| `AUTH_DISABLE_DEFAULT` | Disable the default auth provider         | `false`       |
 
-For each of the auth providers you list, you must provide the following configuration:
+For each auth provider you list, you must also provide the following configuration:
 
 | Variable                 | Description                                                     | Default Value |
 | ------------------------ | --------------------------------------------------------------- | ------------- |
 | `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap` | --            |
 
-You must also provide a number of extra variables. These differ per auth driver service. The following is a list of
-common required configuration options:
+You may also be required to specify additional variables depending on the auth driver. See configuration details below.
+
+::: warning Multiple Providers
+
+Directus users can only authenticate using the auth provider they are created with. It is not possible to authenticate
+with multiple providers for the same user.
+
+:::
 
 ### Local (`local`)
+
+The default Directus email/password authentication flow.
 
 No additional configuration required.
 
@@ -632,69 +640,80 @@ AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
 AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 ```
 
+More example SSO configurations [can be found here](/configuration/sso-examples/).
+
 ::: warning PUBLIC_URL
 
-These flows rely on the `PUBLIC_URL` variable for redirecting. Make sure that variable is configured correctly.
+These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variable is correctly configured.
 
 :::
 
-#### OAuth 2.0
+### OAuth 2.0
 
-| Variable                                    | Description                                                                                                                        | Default Value    |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | OAuth identifier for the external service.                                                                                         | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OAuth secret for the external service.                                                                                             | --               |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                                                                  | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | The authorize page URL of the external service.                                                                                    | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | The token access URL of the external service.                                                                                      | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | The user profile information URL of the external service.                                                                          | --               |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | OAuth profile email key used to find the email address.                                                                            | `email`          |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OAuth profile identifier key used to verify the user. Will default to `EMAIL_KEY`.                                                 | --               |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                            | `false`          |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --               |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle` |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --               |
+| Variable                                    | Description                                                                                    | Default Value    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                    | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                        | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                        | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                      | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                      | --               |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                       | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                        | `email`          |
+| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                   | --               |
+| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                    | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                        | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                    | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/getting-started/glossary/#icons). | `account_circle` |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                      | --               |
 
-#### OpenID
+<sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a Directus users "External Identifier".
+
+### OpenID
 
 OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
-OpenID offers better user verification and consistent profile information, allowing for more complete user
-registrations.
 
-| Variable                                    | Description                                                                                                                        | Default Value          |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | OpenID identifier for the external service.                                                                                        | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | OpenID secret for the external service.                                                                                            | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of privileges Directus will request.                                                                  | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | The OpenID `.well-known` Discovery Document URL.                                                                                   | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | OpenID profile identifier key used to verify the user.                                                                             | `sub`                  |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                            | `false`                |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require users to have a verified email address.                                                                                    | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | The Directus role ID assigned to created users.                                                                                    | --                     |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. You can choose from [Social icon or Material icon set](/getting-started/glossary/#icons). | `account_circle`       |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom parameters to send to the auth provider                                                                                     | --                     |
+| Variable                                    | Description                                                                                    | Default Value          |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                    | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                        | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                        | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                           | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                    | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                        | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                        | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                    | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/getting-started/glossary/#icons). | `account_circle`       |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                      | --                     |
+
+<sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a Directus users "External Identifier".
+
+<sup>[2]</sup> `sub` represents a unique user identifier defined by the OpenID provider. For users not relying on `PUBLIC_REGISTRATION` it is recommended
+to use a human-readable identifier, such as `email`.
 
 ### LDAP (`ldap`)
 
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                                        | Description                                                            | Default Value |
-| ----------------------------------------------- | ---------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`                    | LDAP connection URL.                                                   | --            |
-| `AUTH_<PROVIDER>_BIND_DN`                       | Bind user <sup>[1]</sup> distinguished name.                           | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`                 | Bind user password.                                                    | --            |
-| `AUTH_<PROVIDER>_USER_DN`                       | Directory path containing users.                                       | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`                | Attribute to identify users by.                                        | `cn`          |
-| `AUTH_<PROVIDER>_USER_SCOPE`                    | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
-| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup>        | Directory path containing groups.                                      | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`               | Attribute to identify user as a member of a group.                     | `member`      |
-| `AUTH_<PROVIDER>_GROUP_SCOPE`                   | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`                | Attribute containing the email of the user.                            | `mail`        |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`<sup>[3]</sup> | Role to use on user sign-up. Only used when GROUP_DN isn't configured. | --            |
+| Variable                                 | Description                                                                  | Default Value |
+| ---------------------------------------- | ---------------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`             | LDAP connection URL.                                                         | --            |
+| `AUTH_<PROVIDER>_BIND_DN`                | Bind user <sup>[1]</sup> distinguished name.                                 | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`          | Bind user password.                                                          | --            |
+| `AUTH_<PROVIDER>_USER_DN`                | Directory path containing users.                                             | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`         | Attribute to identify the user.                                              | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`             | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.        | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`         | User email attribute.                                                        | `mail`        |
+| `AUTH_<PROVIDER>_FIRST_NAME_ATTRIBUTE`   | User first name attribute.                                                   | `givenName`   |
+| `AUTH_<PROVIDER>_LAST_NAME_ATTRIBUTE`    | User last name attribute.                                                    | `sn`          |
+| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup> | Directory path containing groups.                                            | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`        | Attribute to identify user as a member of a group.                           | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`            | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>.       | `one`         |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A Directus role ID to assign created users when `GROUP_DN` isn't configured. | --            |
 
-<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. To bind
-anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
+<sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. Anonymous binding
+can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
 
 <sup>[2]</sup> The scope defines the following behaviors:
 
@@ -702,8 +721,7 @@ anonymously use `AUTH_LDAP_BIND_DN=""` and `AUTH_LDAP_BIND_PASSWORD=""`
 - `one`: Searches all objects within the associated DN.
 - `sub`: Searches all objects and sub-objects within the associated DN.
 
-<sup>[3]</sup> If you specify groupDn, the user's role will always get updated on authentication to what's configured in
-AD. It will fallback to the configured default role id if supplied.
+<sup>[3]</sup> If a `GROUP_DN` is specified, the user's role will always be updated on authentication to what's configured in AD.
 
 ### Example: LDAP
 
@@ -721,25 +739,25 @@ AUTH_LDAP_GROUP_DN="OU=Groups,DC=ldap,DC=directus,DC=io"
 ### Example: Multiple Auth Providers
 
 You can configure multiple providers for handling authentication in Directus. This allows for different options when
-logging in. To do this, you can provide a CSV of provider names, and provide a config block for each of them:
+logging in. To do this, provide a comma-separated list of provider names, and a config block for each provider:
 
 ```
-AUTH_PROVIDERS="google,adobe"
+AUTH_PROVIDERS="google,facebook"
 
 AUTH_GOOGLE_DRIVER="openid"
-AUTH_GOOGLE_CLIENT_ID="<google_application_id>"
-AUTH_GOOGLE_CLIENT_SECRET= "<google_application_secret_key>"
-AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com"
+AUTH_GOOGLE_CLIENT_ID="830d...29sd"
+AUTH_GOOGLE_CLIENT_SECRET="la23...4k2l"
+AUTH_GOOGLE_ISSUER_URL="https://accounts.google.com/.well-known/openid-configuration"
 AUTH_GOOGLE_IDENTIFIER_KEY="email"
 AUTH_GOOGLE_ICON="google"
 
-AUTH_ADOBE_DRIVER="oauth2"
-AUTH_ADOBE_CLIENT_ID="<adobe_application_id>"
-AUTH_ADOBE_CLIENT_SECRET="<adobe_application_secret_key>"
-AUTH_ADOBE_AUTHORIZE_URL="https://ims-na1.adobelogin.com/ims/authorize/v2"
-AUTH_ADOBE_ACCESS_URL="https://ims-na1.adobelogin.com/ims/token/v3"
-AUTH_ADOBE_PROFILE_URL="https://ims-na1.adobelogin.com/ims/userinfo/v2"
-AUTH_ADOBE_ICON="adobe"
+AUTH_FACEBOOK_DRIVER="oauth2"
+AUTH_FACEBOOK_CLIENT_ID="830d...29sd"
+AUTH_FACEBOOK_CLIENT_SECRET="jd8x...685z"
+AUTH_FACEBOOK_AUTHORIZE_URL="https://www.facebook.com/dialog/oauth"
+AUTH_FACEBOOK_ACCESS_URL="https://graph.facebook.com/oauth/access_token"
+AUTH_FACEBOOK_PROFILE_URL="https://graph.facebook.com/me?fields=email"
+AUTH_FACEBOOK_ICON="facebook"
 ```
 
 ## Extensions
