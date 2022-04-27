@@ -77,7 +77,7 @@ type Options = {
 
 const defaultOptions: Options = {
 	schedule: true,
-	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development',
+	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV === 'development',
 };
 
 class ExtensionManager {
