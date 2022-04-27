@@ -649,12 +649,12 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 
 | Variable                                    | Description                                                                                    | Default Value    |
 | ------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                    | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                        | --               |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                    | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                        | --               |
 | `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                        | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the external service.                                                | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the external service.                                                      | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the external service.                                                      | --               |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                      | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                      | --               |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                       | --               |
 | `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                        | `email`          |
 | `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                   | --               |
