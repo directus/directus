@@ -40,7 +40,7 @@
 			{{ t('no_flows_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<v-button @click="toggleFlowCreation">{{ t('create_flow') }}</v-button>
+				<v-button @click="toggleFlowCreation(true)">{{ t('create_flow') }}</v-button>
 			</template>
 		</v-info>
 
