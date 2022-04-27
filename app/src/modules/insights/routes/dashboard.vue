@@ -317,6 +317,7 @@ export default defineComponent({
 
 		const queryObject = computed(() => {
 			const queries = {};
+
 			for (const panel of panels.value) {
 				const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
 				const query = type.query(panel.options);
@@ -506,7 +507,7 @@ export default defineComponent({
 			}
 		}
 
-		// dont make call in this.
+		//  dont make call in this.
 		//  When a new panel is added run the single query for that panel
 		//  and add it to the global query object
 		function stitchQueriesToGql() {
@@ -516,9 +517,10 @@ export default defineComponent({
 			};
 
 			for (const [key, query] of Object.entries(queryObject.value)) {
+				if (!query?.collection || !query.query) continue;
+
 				const sanitizedKey = 'id_' + key.replaceAll('-', '_');
 
-				if (!query?.collection || !query.query) continue;
 				formattedQuery.query[sanitizedKey] = {};
 				formattedQuery.query[sanitizedKey].__aliasFor = query.collection;
 
@@ -532,6 +534,7 @@ export default defineComponent({
 					formattedQuery.query[sanitizedKey].__args = { filter: query.query.filter };
 				}
 			}
+			return jsonToGraphQLQuery(formattedQuery);
 		}
 	},
 });

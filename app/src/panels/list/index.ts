@@ -10,7 +10,7 @@ export default definePanel({
 	icon: 'list',
 	component: PanelList,
 	query: (options) => {
-		if (!options?.collection || !options.sortField || !options.sortDirection) return;
+		if (!options?.collection || !options.sortField) return;
 
 		const fieldsStore = useFieldsStore();
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(options.collection);
