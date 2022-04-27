@@ -6,10 +6,9 @@ import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { set, filter, includes, isNull, isEmpty } from 'lodash';
-import { DiffDeleted, DiffNew } from 'deep-diff';
+import { Diff , DiffDeleted, DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
-import { Diff } from 'deep-diff';
 
 export async function applySnapshot(
 	snapshot: Snapshot,
