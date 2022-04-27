@@ -19,11 +19,5 @@ exports.seed = async function (knex) {
 			permissions: isSqlite ? JSON.stringify({}) : {},
 			fields: ['*'],
 		},
-		// {
-		// 	collection: 'directus_roles',
-		// 	action: 'read',
-		// 	permissions: {},
-		// 	fields: ['*'],
-		// },
 	]);
 };
