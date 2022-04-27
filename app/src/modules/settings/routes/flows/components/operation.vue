@@ -34,7 +34,7 @@
 				<v-icon name="check_circle"></v-icon>
 			</div>
 			<div
-				v-if="editMode && panel.id !== '$trigger'"
+				v-if="panel.id !== '$trigger'"
 				x-small
 				icon
 				rounded
@@ -198,11 +198,11 @@ function pointerup() {
 		}
 	}
 
-	::v-deep(.header .name) {
+	:deep(.header .name) {
 		color: var(--primary);
 	}
 
-	::v-deep(.block) {
+	:deep(.block) {
 		padding: 0px 20px;
 
 		h1 {
@@ -314,7 +314,7 @@ function pointerup() {
 	&.loner {
 		color: var(--foreground-subdued);
 
-		::v-deep(.header) {
+		:deep(.header) {
 			.v-icon {
 				color: var(--foreground-subdued);
 			}
