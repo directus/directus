@@ -54,7 +54,7 @@ export async function applySnapshot(
 
 		const createCollections = async function (collections: CollectionDelta[]) {
 			if (!isEmpty(collections)) {
-				for (const item of collections) {
+				for (const { collection, diff } of collections) {
 					if (item.diff?.[0].kind === 'N' && item.diff[0].rhs) {
 						// We'll nest the to-be-created fields in the same collection creation, to prevent
 						// creating a collection without a primary key
