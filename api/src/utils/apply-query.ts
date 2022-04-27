@@ -1,14 +1,14 @@
 import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
 import { getOutputTypeForFunction } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { clone, get, isPlainObject, set } from 'lodash';
+import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions';
 import { getColumn } from './get-column';
-import { getRelationInfo } from './get-relation-info';
 import { getColumnPath } from './get-column-path';
+import { getRelationInfo } from './get-relation-info';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -125,7 +125,9 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 		}
 
 		const alias = generateAlias();
+
 		set(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts, alias);
+
 		if (relationType === 'm2o') {
 			rootQuery.leftJoin(
 				{ [alias]: relation.related_collection! },
