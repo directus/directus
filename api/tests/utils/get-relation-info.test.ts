@@ -2,6 +2,16 @@ import { getRelationInfo } from '../../src/utils/get-relation-info';
 import { Relation, DeepPartial } from '@directus/shared/types';
 
 describe('getRelationInfo', () => {
+	it('Errors on suspiciously long implicit $FOLLOW', () => {
+		expect(() =>
+			getRelationInfo(
+				[],
+				'related_test_collection',
+				'$FOLLOW(test_collection, test_field, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)'
+			)
+		).toThrowError(Error);
+	});
+
 	it('Generates a new relation object for an implicit o2m relation', () => {
 		const result = getRelationInfo([], 'related_test_collection', '$FOLLOW(test_collection, test_field)');
 

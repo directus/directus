@@ -7,6 +7,10 @@ type RelationInfo = {
 };
 
 export function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
+	if (field.startsWith('$FOLLOW') && field.length > 500) {
+		throw new Error(`Implicit $FOLLOW statement is too big to parse. Got: "${field.substring(500)}..."`);
+	}
+
 	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)(?:,(.*?))?\)$/)?.slice(1);
 
 	if (implicitRelation) {
