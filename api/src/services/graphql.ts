@@ -81,8 +81,8 @@ import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 
-const stringNumber = (value) => {
-	if (!isNaN(value)) {
+const stringNumber = (value: number | string) => {
+	if (!Number.isNaN(value)) {
 		return value;
 	}
 	return String(value);

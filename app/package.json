@@ -85,6 +85,7 @@
 		"front-matter": "4.0.2",
 		"html-entities": "2.3.2",
 		"jest": "27.4.7",
+		"json-to-graphql-query": "^2.2.4",
 		"jsonlint-mod": "1.7.6",
 		"maplibre-gl": "1.15.2",
 		"marked": "4.0.10",
@@ -109,8 +110,5 @@
 		"vue-router": "4.0.12",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
-	},
-	"dependencies": {
-		"json-to-graphql-query": "^2.2.3"
 	}
 }
