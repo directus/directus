@@ -1,21 +1,13 @@
+import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
+import { getOutputTypeForFunction } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { InvalidQueryException } from '../exceptions';
-import {
-	Aggregate,
-	Filter,
-	Query,
-	Relation,
-	RelationMeta,
-	SchemaOverview,
-	FieldFunction,
-} from '@directus/shared/types';
-import { getColumn } from './get-column';
-import { getRelationType } from './get-relation-type';
 import { getHelpers } from '../database/helpers';
-import { getOutputTypeForFunction } from '@directus/shared/utils';
+import { InvalidQueryException } from '../exceptions';
+import { getColumn } from './get-column';
+import { getRelationInfo } from './get-relation-info';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -103,57 +95,6 @@ export default function applyQuery(
  *   )
  * ```
  */
-type RelationInfo = {
-	relation: Relation | null;
-	relationType: string | null;
-};
-
-function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
-	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)(?:,(.*?))?\)$/)?.slice(1);
-
-	if (implicitRelation) {
-		if (implicitRelation[2] === undefined) {
-			const [m2oCollection, m2oField] = implicitRelation;
-
-			const relation: Relation = {
-				collection: m2oCollection,
-				field: m2oField,
-				related_collection: collection,
-				schema: null,
-				meta: null,
-			};
-
-			return { relation, relationType: 'o2m' };
-		} else {
-			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
-
-			const relation: Relation = {
-				collection: a2oCollection,
-				field: a2oItemField,
-				related_collection: collection,
-				schema: null,
-				meta: {
-					one_collection_field: a2oCollectionField,
-					one_field: field,
-				} as RelationMeta,
-			};
-
-			return { relation, relationType: 'o2a' };
-		}
-	}
-
-	const relation =
-		relations.find((relation) => {
-			return (
-				(relation.collection === collection && relation.field === field) ||
-				(relation.related_collection === collection && relation.meta?.one_field === field)
-			);
-		}) ?? null;
-
-	const relationType = relation ? getRelationType({ relation, collection, field }) : null;
-
-	return { relation, relationType };
-}
 
 type AddJoinProps = {
 	path: string[];
