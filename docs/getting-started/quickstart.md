@@ -81,8 +81,8 @@ Once logged in, you're greeted with the option to create your first
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
    For the sake of this demo, we'll be calling ours `articles`, but feel free to make it your own!
-4. Leave the other settings at default and click <span mi btn>arrow*forward</span> and the **"Optional System Fields"**
-   will open. Keep the values in this menu at default *(toggled off)\_ for now. You can adjust these later.
+4. Leave the other settings at default and click <span mi btn>arrow_forward</span> and the **"Optional System Fields"**
+   will open. Keep the values in this menu at default _(toggled off)_ for now. You can adjust these later.
 5. Click <span mi btn>check</span> in the menu header.
 
 :::tip Learn More About Collections
@@ -108,7 +108,7 @@ With your first Collection created, it's time to start adding some [Fields](/get
 
 1. Navigate to **Settings Module > Data Model > `Collection-Name`**.
 2. Click the **"Create Field"** button and select the **"Input"** Field type.
-3. Fill in a Field name under **Key**. We'll be calling our Field `title`.\
+3. Fill in a Field name under **"Key"**. We'll be calling our Field `title`.\
    While Directus offers a range of powerful field customization options, we'll be sticking to the defaults for now. These
    defaults use the "String" datatype.
 4. Select **"Save"**.
@@ -148,7 +148,7 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 Directus comes with two built-in roles: Public and Admin. The Public Role determines what data is returned to
 non-authenticated users. Public comes with all permissions turned off and can be reconfigured with fully granular
 control to expose exactly what you want unauthenticated Users to see. The Admin role has full permissions and this
-cannot be changed. Aside from these built-in Roles, any number of new Roles can be created, all with fully customized,
+cannot be changed. Aside from these built-in Roles, any number of new Roles can be created, all with fully customizable,
 granular permissions.
 
 By Default, content entered into Directus will be considered private, with permissions always set to the default of "No
