@@ -78,7 +78,7 @@ export async function applySnapshot(
 		};
 		const deleteCollections = async function (collections: CollectionDelta[]) {
 			if (!isEmpty(collections)) {
-				for (const item of collections) {
+				for (const { collection, diff } of collections) {
 					if (item.diff?.[0].kind === 'D') {
 						await deleteCollections(getToBeDeleteCollection([item.collection]));
 						try {
