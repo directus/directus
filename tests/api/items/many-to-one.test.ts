@@ -114,7 +114,7 @@ describe('/items', () => {
 
 				const query = `
 				{
-					guests {
+					guests (filter: { name: { _eq: "${name}" } }) {
 						favorite_artist
 					}
 				}`;
@@ -145,7 +145,7 @@ describe('/items', () => {
 
 				const query = `
 				{
-					guests {
+					guests (filter: { name: { _eq: "${name}" } }) {
 						favorite_artist {
 							name
 						}
