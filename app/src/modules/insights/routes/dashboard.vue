@@ -323,14 +323,24 @@ export default defineComponent({
 				const query = type.query(panel.options);
 				queries[panel.id] = { collection: panel.options.collection, query };
 			}
-
 			return queries;
 		});
 
-		stitchQueriesToGql();
+		const gqlQueries = stitchQueriesToGql(queryObject.value);
 
-		watch(queryObject, () => {
-			stitchQueriesToGql();
+		caller(gqlQueries);
+
+		watch(queryObject, (obj, newObj) => {
+			const newQueries = {};
+
+			for (const key of Object.keys(newObj)) {
+				if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+					newQueries[key] = newObj[key];
+				}
+			}
+
+			const gqlQueries = stitchQueriesToGql(newQueries);
+			caller(gqlQueries);
 		});
 
 		onBeforeRouteUpdate(editsGuard);
@@ -507,16 +517,14 @@ export default defineComponent({
 			}
 		}
 
-		//  dont make call in this.
-		//  When a new panel is added run the single query for that panel
-		//  and add it to the global query object
-		function stitchQueriesToGql() {
-			if (!queryObject.value) return '';
+		function stitchQueriesToGql(queries) {
+			if (!queries) return {};
+
 			const formattedQuery = {
 				query: {},
 			};
 
-			for (const [key, query] of Object.entries(queryObject.value)) {
+			for (const [key, query] of Object.entries(queries)) {
 				if (!query?.collection || !query.query) continue;
 
 				const sanitizedKey = 'id_' + key.replaceAll('-', '_');
@@ -535,6 +543,11 @@ export default defineComponent({
 				}
 			}
 			return jsonToGraphQLQuery(formattedQuery);
+		}
+
+		function caller(query) {
+			//  graphQL Call
+			// console.log(query);
 		}
 	},
 });
