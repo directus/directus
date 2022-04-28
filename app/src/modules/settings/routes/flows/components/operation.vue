@@ -24,7 +24,7 @@
 	>
 		<template #body>
 			<div
-				v-if="editMode || (panel.id === '$trigger' && panel?.resolve)"
+				v-if="editMode || panel.id === '$trigger' || panel?.resolve"
 				class="button add-resolve"
 				x-small
 				icon
@@ -34,7 +34,7 @@
 				<v-icon name="check_circle"></v-icon>
 			</div>
 			<div
-				v-if="panel.id !== '$trigger'"
+				v-if="editMode || (panel.id !== '$trigger' && panel?.reject)"
 				x-small
 				icon
 				rounded
