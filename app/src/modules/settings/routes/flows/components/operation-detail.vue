@@ -20,7 +20,7 @@
 						{{ t('name') }}
 						<v-icon v-tooltip="t('required')" class="required" sup name="star" />
 					</div>
-					<v-input v-model="operationName" :placeholder="t('operation_name')">
+					<v-input v-model="operationName" :placeholder="t('operation_name')" autofocus>
 						<template #append>
 							<v-icon name="title" />
 						</template>
