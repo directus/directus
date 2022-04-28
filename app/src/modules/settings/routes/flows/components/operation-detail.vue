@@ -8,7 +8,7 @@
 		@cancel="$emit('cancel')"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!operationType" @click="saveOperation">
+			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" @click="saveOperation">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -16,7 +16,10 @@
 		<div class="content">
 			<div class="grid">
 				<div class="field half">
-					<div class="type-label">{{ t('name') }}</div>
+					<div class="type-label">
+						{{ t('name') }}
+						<v-icon v-tooltip="t('required')" class="required" sup name="star" />
+					</div>
 					<v-input v-model="operationName" :placeholder="t('operation_name')">
 						<template #append>
 							<v-icon name="title" />
@@ -24,8 +27,11 @@
 					</v-input>
 				</div>
 				<div class="field half">
-					<div class="type-label">{{ t('key') }}</div>
-					<v-input v-model="operationKey" :placeholder="t('operation_key')">
+					<div class="type-label">
+						{{ t('key') }}
+						<v-icon v-tooltip="t('required')" class="required" sup name="star" />
+					</div>
+					<v-input v-model="operationKey" db-safe :placeholder="t('operation_key')">
 						<template #append>
 							<v-icon name="vpn_key" />
 						</template>
@@ -90,6 +96,10 @@ const options = ref<Record<string, any>>(props.operation?.options ?? {});
 const operationType = ref<string | undefined>(props.operation?.type);
 const operationKey = ref<string | null>(props.operation?.key ?? null);
 const operationName = ref<string | null>(props.operation?.name ?? null);
+
+const saveDisabled = computed(() => {
+	return !operationType.value || !operationKey.value || !operationName.value;
+});
 
 watch(operationType, () => {
 	options.value = {};
@@ -173,5 +183,12 @@ function saveOperation() {
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.required {
+	--v-icon-color: var(--primary);
+
+	margin-top: -12px;
+	margin-left: -4px;
 }
 </style>
