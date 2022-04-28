@@ -30,7 +30,7 @@ export type Panel = {
 	icon: string;
 	color: string;
 	note: string;
-	query?: Record<string, any>;
+	data?: Record<string, any>;
 	type: string;
 	position_x: number;
 	position_y: number;

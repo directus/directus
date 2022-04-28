@@ -533,7 +533,7 @@ export default defineComponent({
 			}
 		}
 
-		function stitchQueriesToGql(queries) {
+		function stitchQueriesToGql(queries: Record<string, any>) {
 			if (!queries) return {};
 
 			const formattedQuery = {
@@ -562,10 +562,18 @@ export default defineComponent({
 		}
 
 		async function caller(query) {
-			const res = await api.post('/graphql', {
-				query: query,
-			});
-			response.value = res.data.data;
+			try {
+				const res = await api.post('/graphql', {
+					query: query,
+				});
+				for (const panel of panels.value) {
+					const panelId = 'id_' + panel.id.replaceAll('-', '_');
+					if (res.data.data[panelId]) panel.data = res.data.data[panelId];
+				}
+			} catch (error) {
+				// do something with the error
+				error;
+			}
 		}
 	},
 });
