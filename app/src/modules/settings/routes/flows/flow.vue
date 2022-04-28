@@ -59,6 +59,7 @@
 						:panel="panel"
 						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
 						:parent="parentPanels[panel.id]"
+						:flow="flow"
 						@create="createPanel"
 						@edit="editPanel"
 						@move="movePanelID = $event"

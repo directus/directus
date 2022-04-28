@@ -103,6 +103,7 @@ export function getTriggers() {
 			value: 'operation',
 			icon: 'bolt',
 			description: t('triggers.operation.description'),
+			preview: () => [],
 			options: [
 				{
 					field: 'empty',
@@ -147,10 +148,10 @@ export function getTriggers() {
 			value: 'webhook',
 			icon: 'anchor',
 			description: t('triggers.webhook.description'),
-			preview: ({ method }) => [
+			preview: ({ method }, { flow }) => [
 				{
 					label: t('triggers.webhook.preview'),
-					text: `${method ?? 'GET'} /flows/trigger/${'flow'}`,
+					text: `${method ?? 'GET'} /flows/trigger/${flow.id}`,
 				},
 			],
 			options: [

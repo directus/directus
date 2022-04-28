@@ -58,7 +58,10 @@
 		<div v-if="typeof currentOperation?.preview === 'function'" class="block selectable">
 			<div class="name">{{ panel.id === '$trigger' ? panel.options?.name : panel.name }}</div>
 			<dl class="options-preview">
-				<div v-for="{ label, text } of translate(currentOperation?.preview(panel.options ?? {}))" :key="label">
+				<div
+					v-for="{ label, text } of translate(currentOperation?.preview(panel.options ?? {}, { flow }))"
+					:key="label"
+				>
 					<dt>{{ label }}</dt>
 					<dd>{{ text }}</dd>
 				</div>
@@ -74,13 +77,13 @@
 
 <script lang="ts" setup>
 import { getOperations } from '@/operations';
+import { translate } from '@/utils/translate-object-values';
 import { Vector2 } from '@/utils/vector2';
+import { FlowRaw } from '@directus/shared/types';
 import { throttle } from 'lodash';
 import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
-
-import { translate } from '@/utils/translate-object-values';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {
@@ -95,6 +98,7 @@ const props = withDefaults(
 		type?: 'trigger' | 'operation';
 		editMode?: boolean;
 		parent?: { id: string; type: Target; loner: boolean };
+		flow: FlowRaw;
 	}>(),
 	{
 		type: 'operation',

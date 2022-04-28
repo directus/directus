@@ -3,6 +3,7 @@ import { Accountability } from './accountability';
 import { ApiExtensionContext } from './extensions';
 import { Field } from './fields';
 import { DeepPartial } from './misc';
+import { FlowRaw } from './flows';
 
 type OperationContext = ApiExtensionContext & {
 	data: Record<string, unknown>;
@@ -19,7 +20,10 @@ export interface OperationAppConfig {
 	name: string;
 	icon: string;
 	description?: string;
-	preview: ((options: Record<string, any>) => { label: string; text: string }[]) | ComponentOptions | null;
+	preview:
+		| ((options: Record<string, any>, { flow }: { flow: FlowRaw }) => { label: string; text: string }[])
+		| ComponentOptions
+		| null;
 	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]) | ComponentOptions | null;
 }
 
