@@ -158,7 +158,7 @@ import { useInsightsStore, useAppStore, usePermissionsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@directus/shared/types';
 import { nanoid } from 'nanoid';
-import { merge, omit } from 'lodash';
+import { merge, omit, isEmpty } from 'lodash';
 import { router } from '@/router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
@@ -321,11 +321,22 @@ export default defineComponent({
 		const queryObject = computed(() => {
 			const queries = {};
 
-			for (const panel of panels.value) {
-				const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
-				const query = type.query(panel.options);
-				queries[panel.id] = { collection: panel.options.collection, query };
+			if (!isEmpty(stagedPanels.value)) {
+				for (const panel of stagedPanels.value) {
+					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
+					const query = type.query(panel.options);
+					queries[panel.id] = { collection: panel.options.collection, query };
+				}
 			}
+
+			if (!isEmpty(panels.value)) {
+				for (const panel of panels.value) {
+					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
+					const query = type.query(panel.options);
+					queries[panel.id] = { collection: panel.options.collection, query };
+				}
+			}
+
 			return queries;
 		});
 
