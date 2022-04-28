@@ -13,12 +13,27 @@ const router = express.Router();
 
 router.use(useCollection('directus_flows'));
 
+router.get(
+	`/trigger/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, res) => {
+		const flowManager = getFlowManager();
+
+		const result = await flowManager.runWebhookFlow(`${req.method}-${req.params.pk}`, null, {
+			accountability: req.accountability,
+		});
+
+		res.json(result);
+	})
+);
+
 router.post(
 	`/trigger/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res) => {
 		const flowManager = getFlowManager();
 
-		const result = await flowManager.runWebhookFlow(req.params.pk, req.body, { accountability: req.accountability });
+		const result = await flowManager.runWebhookFlow(`${req.method}-${req.params.pk}`, req.body, {
+			accountability: req.accountability,
+		});
 
 		res.json(result);
 	})

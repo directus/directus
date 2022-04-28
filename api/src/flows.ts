@@ -110,7 +110,9 @@ class FlowManager {
 			} else if (flow.trigger === 'webhook') {
 				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
 
-				this.webhookFlowHandlers[flow.id] = handler;
+				const method = flow.options?.method ?? 'GET';
+
+				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
 			}
 		}
 	}

@@ -145,17 +145,25 @@ ${t('triggers.operation.preview')}
 			description: t('triggers.webhook.description'),
 			preview: ({ options, flow }) => `
 # ${options.name}
-**${t('triggers.webhook.preview')}**:\nPOST /flows/trigger/${flow}
+**${t('triggers.webhook.preview')}**:\n${options?.method ?? 'GET'} /flows/trigger/${flow}
 			`,
 			options: [
 				{
-					field: 'empty',
-					type: 'alias',
+					field: 'method',
+					name: t('triggers.webhook.method'),
+					type: 'string',
 					meta: {
-						interface: 'presentation-notice',
+						width: 'full',
+						interface: 'select-dropdown',
 						options: {
-							text: t('no_options_available'),
+							choices: [
+								{ text: 'GET', value: 'GET' },
+								{ text: 'POST', value: 'POST' },
+							],
 						},
+					},
+					schema: {
+						default_value: 'GET',
 					},
 				},
 			],
