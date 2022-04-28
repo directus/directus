@@ -55,23 +55,23 @@ export async function applySnapshot(
 		const createCollections = async function (collections: CollectionDelta[]) {
 			if (!isEmpty(collections)) {
 				for (const { collection, diff } of collections) {
-					if (item.diff?.[0].kind === 'N' && item.diff[0].rhs) {
+					if (diff?.[0].kind === 'N' && diff[0].rhs) {
 						// We'll nest the to-be-created fields in the same collection creation, to prevent
 						// creating a collection without a primary key
 						const fields = snapshotDiff.fields
-							.filter((fieldDiff) => fieldDiff.collection === item.collection)
+							.filter((fieldDiff) => fieldDiff.collection === collection)
 							.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
 						try {
 							await collectionsService.createOne({
-								...item.diff[0].rhs,
+								...diff[0].rhs,
 								fields,
 							});
 						} catch (err: any) {
-							logger.error(`Failed to create collection "${item.collection}"`);
+							logger.error(`Failed to create collection "${collection}"`);
 							throw err;
 						}
-						snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== item.collection);
-						await createCollections(getToBeCreateCollection([item.collection]));
+						snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
+						await createCollections(getToBeCreateCollection([collection]));
 					}
 				}
 			}
@@ -79,12 +79,12 @@ export async function applySnapshot(
 		const deleteCollections = async function (collections: CollectionDelta[]) {
 			if (!isEmpty(collections)) {
 				for (const { collection, diff } of collections) {
-					if (item.diff?.[0].kind === 'D') {
-						await deleteCollections(getToBeDeleteCollection([item.collection]));
+					if (diff?.[0].kind === 'D') {
+						await deleteCollections(getToBeDeleteCollection([collection]));
 						try {
-							await collectionsService.deleteOne(item.collection);
+							await collectionsService.deleteOne(collection);
 						} catch (err) {
-							logger.error(`Failed to delete collection "${item.collection}"`);
+							logger.error(`Failed to delete collection "${collection}"`);
 							throw err;
 						}
 					}
