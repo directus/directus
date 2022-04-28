@@ -9,6 +9,7 @@
 			{
 				'edit-mode': editMode,
 				loner: (parent === undefined || parent.loner) && type === 'operation',
+				reject: isReject,
 			},
 		]"
 		:edit-mode="editMode"
@@ -140,6 +141,8 @@ let down: Target | 'parent' | undefined = undefined;
 let moving = false;
 let workspaceOffset: Vector2 = new Vector2(0, 0);
 
+const isReject = computed(() => props.parent?.type === 'reject');
+
 function pointerdown(target: Target | 'parent') {
 	if (!props.editMode || (target === 'parent' && props.parent === undefined)) return;
 
@@ -250,9 +253,7 @@ function pointerup() {
 
 		cursor: pointer;
 
-		.v-icon {
-			color: var(--primary);
-		}
+		--v-icon-color: var(--primary);
 	}
 
 	.add-resolve {
@@ -288,14 +289,27 @@ function pointerup() {
 
 		.button {
 			border-color: var(--foreground-subdued);
-
-			.v-icon {
-				color: var(--foreground-subdued);
-			}
+			--v-icon-color: var(--foreground-subdued);
 
 			.dot {
 				background-color: var(--foreground-subdued);
 			}
+		}
+	}
+
+	&.reject {
+		:deep(.header) {
+			.v-icon {
+				color: var(--secondary);
+			}
+
+			.name {
+				color: var(--secondary);
+			}
+		}
+
+		.attachment {
+			--v-icon-color: var(--secondary);
 		}
 	}
 }
