@@ -2,7 +2,7 @@
 	<v-drawer
 		:model-value="isOpen"
 		:title="t(operationId === '+' ? 'create_operation' : 'edit_operation')"
-		:subtitle="t('operation_options')"
+		:subtitle="flow.name"
 		icon="offline_bolt"
 		persistent
 		@cancel="$emit('cancel')"
@@ -61,18 +61,20 @@
 
 <script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { computed, ref, watch } from 'vue';
 import { getOperation, getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
+import { FlowRaw } from '@directus/shared/types';
 import slugify from '@sindresorhus/slugify';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
 		primaryKey: string;
 		operationId: string;
 		operation?: Record<string, any>;
+		flow: FlowRaw;
 	}>(),
 	{
 		operation: undefined,

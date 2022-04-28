@@ -132,6 +132,7 @@
 
 		<router-view
 			:operation="panels.find((panel) => panel.id === props.operationId)"
+			:flow="flow"
 			@save="stageOperation"
 			@cancel="$router.replace(`/settings/flows/${primaryKey}`)"
 		/>
