@@ -167,8 +167,7 @@ class FlowManager {
 	public async runWebhookFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook triggered flow with id "${id}"`);
-
-			return null;
+			throw new exceptions.ForbiddenException();
 		}
 
 		const handler = this.webhookFlowHandlers[id];
