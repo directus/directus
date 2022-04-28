@@ -170,6 +170,7 @@ import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-ro
 import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { objDiff } from '../../../utils/object-diff';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -207,6 +208,8 @@ export default defineComponent({
 		const updateAllowed = computed<boolean>(() => {
 			return permissionsStore.hasPermission('directus_panels', 'update');
 		});
+
+		const response = ref();
 
 		useShortcut('meta+s', () => {
 			saveChanges();
@@ -327,20 +330,15 @@ export default defineComponent({
 		});
 
 		const gqlQueries = stitchQueriesToGql(queryObject.value);
-
 		caller(gqlQueries);
 
 		watch(queryObject, (obj, newObj) => {
-			const newQueries = {};
+			const newQueries = objDiff(obj, newObj);
 
-			for (const key of Object.keys(newObj)) {
-				if (!Object.prototype.hasOwnProperty.call(obj, key)) {
-					newQueries[key] = newObj[key];
-				}
+			if (Object.keys(newQueries).length > 0) {
+				const gqlQueries = stitchQueriesToGql(newQueries);
+				caller(gqlQueries);
 			}
-
-			const gqlQueries = stitchQueriesToGql(newQueries);
-			caller(gqlQueries);
 		});
 
 		onBeforeRouteUpdate(editsGuard);
@@ -545,9 +543,11 @@ export default defineComponent({
 			return jsonToGraphQLQuery(formattedQuery);
 		}
 
-		function caller(query) {
-			//  graphQL Call
-			// console.log(query);
+		async function caller(query) {
+			const res = await api.post('/graphql', {
+				query: query,
+			});
+			response.value = res.data.data;
 		}
 	},
 });
