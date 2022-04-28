@@ -185,18 +185,7 @@ function pointerup() {
 <style lang="scss" scoped>
 .v-workspace-panel.block-container {
 	position: relative;
-	box-shadow: none;
-	border: var(--border-width) solid var(--border-normal);
-	background-color: var(--background-page);
 	overflow: visible;
-
-	&.editing.draggable {
-		box-shadow: none;
-
-		&:hover {
-			box-shadow: none;
-		}
-	}
 
 	:deep(.header .name) {
 		color: var(--primary);
@@ -214,8 +203,8 @@ function pointerup() {
 	}
 
 	&.trigger {
-		box-shadow: none;
-		border: var(--border-width) solid var(--primary);
+		border-color: var(--primary);
+		box-shadow: 0 0 0 1px var(--primary);
 
 		&::before {
 			position: absolute;
@@ -229,20 +218,6 @@ function pointerup() {
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 7px var(--primary);
-		}
-
-		&.running {
-			&::before {
-				animation-name: floating;
-				animation-duration: 3s;
-				animation-iteration-count: infinite;
-				animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
-				@keyframes floating {
-					50% {
-						box-shadow: 0 0 0 10px var(--primary);
-					}
-				}
-			}
 		}
 	}
 

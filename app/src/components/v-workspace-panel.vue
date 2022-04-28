@@ -154,7 +154,7 @@ const editedPosition = reactive<Partial<Panel>>({
 	height: undefined,
 });
 
-const { onPointerDown, onPointerUp, onPointerMove, dragging } = useDragDrop();
+const { onPointerDown, dragging } = useDragDrop();
 
 const positioning = computed(() => {
 	if (dragging.value) {
@@ -323,12 +323,6 @@ function useDragDrop() {
 	}
 
 	&.editing {
-		cursor: pointer;
-
-		&:hover {
-			border-color: var(--border-normal-alt);
-		}
-
 		&.draggable {
 			border-color: var(--border-normal);
 			box-shadow: 0 0 0 1px var(--border-normal);
