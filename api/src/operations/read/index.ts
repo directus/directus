@@ -1,5 +1,5 @@
 import { PrimaryKey } from '@directus/shared/types';
-import { defineOperationApi } from '@directus/shared/utils';
+import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { Item } from '../../types';
 
@@ -20,12 +20,14 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		let result: Item | Item[];
+		let result: Item | Item[] | null;
 
 		if (mode === 'one') {
-			result = await itemsService.readOne(key as PrimaryKey, JSON.parse(query));
+			if (!key) result = null;
+			else result = await itemsService.readOne(toArray(key)[0], JSON.parse(query));
 		} else if (mode === 'many') {
-			result = await itemsService.readMany(key as PrimaryKey[], JSON.parse(query));
+			if (!key) result = null;
+			else result = await itemsService.readMany(toArray(key) as PrimaryKey[], JSON.parse(query));
 		} else {
 			result = await itemsService.readByQuery(JSON.parse(query));
 		}

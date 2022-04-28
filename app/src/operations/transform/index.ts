@@ -8,7 +8,7 @@ export default defineOperationApp({
 	preview: ({ json }) => [
 		{
 			label: '$t:json',
-			text: JSON.stringify(json),
+			text: json,
 		},
 	],
 	options: [

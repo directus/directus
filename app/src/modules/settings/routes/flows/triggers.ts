@@ -173,6 +173,20 @@ export function getTriggers() {
 						default_value: 'GET',
 					},
 				},
+				{
+					field: 'return',
+					name: t('triggers.webhook.response_body'),
+					type: 'string',
+					meta: {
+						width: 'full',
+						interface: 'input',
+						options: {
+							font: 'monospace',
+							placeholder: '$last',
+						},
+					},
+					schema: {},
+				},
 			],
 		},
 	]);

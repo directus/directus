@@ -13,7 +13,6 @@ export default defineOperationApi<Options>({
 
 	handler: async ({ url, method, data, headers }) => {
 		const result = await axios({ url, method, data, headers });
-
-		return result;
+		return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
 	},
 });

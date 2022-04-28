@@ -1951,6 +1951,7 @@ triggers:
     description: Triggers based on an incoming HTTP request
     method: Method
     preview: Triggers on
+    response_body: Response Body
 operations:
   auth:
     name: Authenticate

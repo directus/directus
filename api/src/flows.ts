@@ -27,6 +27,7 @@ export function getFlowManager(): FlowManager {
 }
 
 const TRIGGER_KEY = '$trigger';
+const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 
 class FlowManager {
@@ -155,7 +156,6 @@ class FlowManager {
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
 		if (!(id in this.operationFlowHandlers)) {
 			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
-
 			return null;
 		}
 
@@ -188,9 +188,14 @@ class FlowManager {
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {
-		const keyedData: Record<string, unknown> = { [TRIGGER_KEY]: data, [LAST_KEY]: data };
+		const keyedData: Record<string, unknown> = {
+			[TRIGGER_KEY]: data,
+			[LAST_KEY]: data,
+			[ACCOUNTABILITY_KEY]: context?.accountability ?? null,
+		};
 
 		let nextOperation = flow.operation;
+
 		while (nextOperation !== null) {
 			const { successor, data } = await this.executeOperation(nextOperation, keyedData, context);
 
@@ -200,7 +205,11 @@ class FlowManager {
 			nextOperation = successor;
 		}
 
-		return flow.options.return ? get(keyedData, flow.options.return) : undefined;
+		if (flow.options.return) {
+			return get(keyedData, flow.options.return);
+		}
+
+		return null;
 	}
 
 	private async executeOperation(

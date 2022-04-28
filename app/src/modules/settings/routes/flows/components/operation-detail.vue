@@ -108,7 +108,16 @@ watch(operationType, () => {
 watch(
 	operationName,
 	(newName, oldName) => {
-		if (newName === null || operationKey.value === slugify(oldName ?? '')) operationKey.value = slugify(newName ?? '');
+		if (
+			newName === null ||
+			operationKey.value ===
+				slugify(oldName ?? '', {
+					separator: '_',
+				})
+		)
+			operationKey.value = slugify(newName ?? '', {
+				separator: '_',
+			});
 	},
 	{ immediate: true }
 );
