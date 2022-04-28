@@ -240,10 +240,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								field: field.field,
 								collection: field.collection,
 							},
-							sortable:
-								['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
-									field.type
-								) === false && field.key.includes('.') === false,
+							sortable: ['json', 'alias', 'presentation', 'translations'].includes(field.type) === false,
 						} as HeaderRaw;
 					});
 				},
