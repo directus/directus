@@ -14,7 +14,7 @@
 				icon
 				rounded
 				:disabled="!currentTrigger"
-				@click="preview ? $emit('update:open', false) : saveTrigger"
+				@click="preview ? $emit('update:open', false) : saveTrigger()"
 			>
 				<v-icon name="check" />
 			</v-button>

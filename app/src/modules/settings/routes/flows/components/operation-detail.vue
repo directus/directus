@@ -13,7 +13,7 @@
 				icon
 				rounded
 				:disabled="!operationType"
-				@click="preview ? $emit('cancel') : saveOperation"
+				@click="preview ? $emit('cancel') : saveOperation()"
 			>
 				<v-icon name="check" />
 			</v-button>
