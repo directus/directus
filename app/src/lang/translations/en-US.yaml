@@ -762,7 +762,7 @@ flow_name: Name
 start_flow: Start Flow
 stop_flow: Stop Flow
 view_operation: View Operation
-create_operation: Create new Operation
+create_operation: Create Operation
 edit_operation: Edit Operation
 operation_options: Operation Options
 operation_name: Name of operation...
