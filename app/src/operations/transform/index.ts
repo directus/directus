@@ -5,10 +5,12 @@ export default defineOperationApp({
 	icon: 'move_down',
 	name: '$t:operations.transform.name',
 	description: '$t:operations.transform.description',
-	preview: ({ name, options }) => `
-# ${name}
-**$t:json**: ${options.json}
-	`,
+	preview: ({ json }) => [
+		{
+			label: '$t:json',
+			text: JSON.stringify(json),
+		},
+	],
 	options: [
 		{
 			field: 'json',

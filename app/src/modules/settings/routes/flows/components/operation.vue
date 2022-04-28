@@ -55,11 +55,14 @@
 				<v-icon name="adjust" />
 			</div>
 		</template>
-		<div
-			v-if="typeof currentOperation?.preview === 'function'"
-			v-md="translate(currentOperation?.preview(panel))"
-			class="block selectable"
-		></div>
+		<div v-if="typeof currentOperation?.preview === 'function'" class="block selectable">
+			<dl class="options-preview">
+				<div v-for="{ label, text } of translate(currentOperation?.preview(panel.options ?? {}))" :key="label">
+					<dt>{{ label }}</dt>
+					<dd>{{ text }}</dd>
+				</div>
+			</dl>
+		</div>
 		<component
 			:is="`operation-${currentOperation.id}`"
 			v-else-if="currentOperation && 'id' in currentOperation"
@@ -75,6 +78,7 @@ import { throttle } from 'lodash';
 import { computed } from 'vue';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
+
 import { translate } from '@/utils/translate-object-values';
 
 export type Target = 'resolve' | 'reject';
@@ -94,6 +98,7 @@ const props = withDefaults(
 	{
 		type: 'operation',
 		editMode: false,
+		parent: undefined,
 	}
 );
 
@@ -261,29 +266,6 @@ function pointerup() {
 	.attachment {
 		top: var(--attachment-y);
 		left: var(--attachment-x);
-		// width: 20px;
-		// height: 20px;
-		// border: 3px solid var(--primary);
-		// cursor: default;
-		// display: flex;
-		// align-items: center;
-		// justify-content: center;
-		// transform: translate(calc(-50% + 1px), calc(-50% - 2px));
-
-		// &.reject {
-		// 	border-color: var(--secondary);
-
-		// 	.dot {
-		// 		background-color: var(--secondary);
-		// 	}
-		// }
-
-		// .dot {
-		// 	width: 6px;
-		// 	height: 6px;
-		// 	background-color: var(--primary);
-		// 	border-radius: 50%;
-		// }
 	}
 
 	&.loner {
@@ -309,6 +291,21 @@ function pointerup() {
 				background-color: var(--foreground-subdued);
 			}
 		}
+	}
+}
+
+.options-preview {
+	> div {
+		flex-wrap: wrap;
+	}
+
+	dt {
+		flex-basis: 100%;
+	}
+
+	dd {
+		font-family: var(--family-monospace);
+		white-space: normal;
 	}
 }
 </style>

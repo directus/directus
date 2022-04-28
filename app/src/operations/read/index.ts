@@ -5,12 +5,20 @@ export default defineOperationApp({
 	icon: 'download',
 	name: '$t:operations.read.name',
 	description: '$t:operations.read.description',
-	preview: ({ name, options }) => `
-# ${name}
-**$t:operations.read.mode.field**: ${options.mode}\n
-**$t:collection**: ${options.collection}\n
-**$t:operations.read.key**: ${options.key}
-	`,
+	preview: ({ mode, collection, key }) => [
+		{
+			label: '$t:operations.read.mode.field',
+			text: mode,
+		},
+		{
+			label: '$t:collection',
+			text: collection,
+		},
+		{
+			label: '$t:operations.read.key',
+			text: key,
+		},
+	],
 	options: [
 		{
 			field: 'mode',

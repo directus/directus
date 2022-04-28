@@ -7,7 +7,7 @@ export type Trigger = {
 	value: TriggerType;
 	icon: string;
 	description: string;
-	preview: (options: Record<string, any>) => string;
+	preview: (options: Record<string, any>) => { text: string; label: string }[];
 	options: DeepPartial<Field>[];
 };
 
@@ -20,10 +20,12 @@ export function getTriggers() {
 			value: 'filter',
 			icon: 'keyboard_tab',
 			description: t('triggers.filter.description'),
-			preview: ({ options }) => `
-# ${options.name}
-**${t('triggers.filter.event')}**: ${options.event}
-			`,
+			preview: ({ event }) => [
+				{
+					label: t('triggers.filter.event'),
+					text: event,
+				},
+			],
 			options: [
 				{
 					field: 'event',
@@ -41,10 +43,12 @@ export function getTriggers() {
 			value: 'action',
 			icon: 'start',
 			description: t('triggers.action.description'),
-			preview: ({ options }) => `
-# ${options.name}
-**${t('triggers.filter.event')}**: ${options.event}
-			`,
+			preview: ({ event }) => [
+				{
+					label: t('triggers.filter.event'),
+					text: event,
+				},
+			],
 			options: [
 				{
 					field: 'event',
@@ -62,10 +66,12 @@ export function getTriggers() {
 			value: 'init',
 			icon: 'sensors',
 			description: t('triggers.init.description'),
-			preview: ({ options }) => `
-# ${options.name}
-**${t('triggers.filter.event')}**: ${options.event}
-			`,
+			preview: ({ event }) => [
+				{
+					label: t('triggers.filter.event'),
+					text: event,
+				},
+			],
 			options: [
 				{
 					field: 'event',
@@ -97,10 +103,6 @@ export function getTriggers() {
 			value: 'operation',
 			icon: 'bolt',
 			description: t('triggers.operation.description'),
-			preview: ({ options }) => `
-# ${options.name}
-${t('triggers.operation.preview')}
-		`,
 			options: [
 				{
 					field: 'empty',
@@ -119,10 +121,12 @@ ${t('triggers.operation.preview')}
 			value: 'schedule',
 			icon: 'schedule',
 			description: t('triggers.schedule.description'),
-			preview: ({ options }) => `
-# ${options.name}
-**${t('triggers.schedule.cron')}**: ${options.cron}
-            `,
+			preview: ({ cron }) => [
+				{
+					label: t('triggers.schedule.cron'),
+					text: cron,
+				},
+			],
 			options: [
 				{
 					field: 'cron',
@@ -143,10 +147,12 @@ ${t('triggers.operation.preview')}
 			value: 'webhook',
 			icon: 'anchor',
 			description: t('triggers.webhook.description'),
-			preview: ({ options, flow }) => `
-# ${options.name}
-**${t('triggers.webhook.preview')}**:\n${options?.method ?? 'GET'} /flows/trigger/${flow}
-			`,
+			preview: ({ method }) => [
+				{
+					label: t('triggers.webhook.preview'),
+					text: `${method ?? 'GET'} /flows/trigger/${'flow'}`,
+				},
+			],
 			options: [
 				{
 					field: 'method',

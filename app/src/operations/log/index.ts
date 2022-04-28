@@ -5,10 +5,12 @@ export default defineOperationApp({
 	icon: 'terminal',
 	name: '$t:operations.log.name',
 	description: '$t:operations.log.description',
-	preview: ({ name, options }) => `
-# ${name}
-**$t:operations.log.message:** ${options.message}
-	`,
+	preview: ({ message }) => [
+		{
+			label: '$t:operations.log.message',
+			text: message,
+		},
+	],
 	options: [
 		{
 			field: 'message',
