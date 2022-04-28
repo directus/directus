@@ -34,16 +34,6 @@
 					<v-icon name="delete" />
 				</v-button>
 
-				<v-button
-					v-tooltip.bottom="t(flow.status === 'active' ? 'stop_flow' : 'start_flow')"
-					rounded
-					icon
-					secondary
-					@click="toggleFlowActive"
-				>
-					<v-icon :name="flow.status === 'active' ? 'stop' : 'play_arrow'" />
-				</v-button>
-
 				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
 					<v-icon name="edit" />
 				</v-button>
@@ -203,24 +193,6 @@ const flow = computed<FlowRaw | undefined>({
 
 const firstOpen = computed(() => !flow.value?.trigger);
 const editMode = ref(firstOpen.value || props.operationId !== undefined);
-
-async function toggleFlowActive() {
-	if (!flow.value) return;
-	saving.value = true;
-	try {
-		await api.patch(`/flows/${props.primaryKey}`, {
-			status: flow.value.status === 'active' ? 'inactive' : 'active',
-		});
-
-		delete stagedFlow.value.status;
-
-		await flowsStore.hydrate();
-	} catch (error) {
-		unexpectedError(error as Error);
-	} finally {
-		saving.value = false;
-	}
-}
 
 const confirmDelete = ref(false);
 
