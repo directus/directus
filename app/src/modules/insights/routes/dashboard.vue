@@ -157,7 +157,6 @@ import { defineComponent, computed, ref, toRefs, watch } from 'vue';
 import { useInsightsStore, useAppStore, usePermissionsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@directus/shared/types';
-import { nanoid } from 'nanoid';
 import { merge, omit, isEmpty } from 'lodash';
 import { router } from '@/router';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -171,6 +170,7 @@ import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { objDiff } from '../../../utils/object-diff';
+import { v4 as uuid } from 'uuid';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -252,7 +252,10 @@ export default defineComponent({
 
 					return panel;
 				}),
-				...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')),
+				...stagedPanels.value.filter((panel) => {
+					const matchingPanels = savedPanels.find((existingPanel) => existingPanel.id === panel.id);
+					if (isEmpty(matchingPanels)) return panel;
+				}),
 			];
 
 			const withCoords = raw.map((panel) => ({
@@ -324,27 +327,31 @@ export default defineComponent({
 			if (!isEmpty(stagedPanels.value)) {
 				for (const panel of stagedPanels.value) {
 					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
-					const query = type.query(panel.options);
-					queries[panel.id] = { collection: panel.options.collection, query };
+					if (type?.query) {
+						const query = type.query(panel.options);
+						const panelId = panel.id.substring(1);
+						queries[panelId] = { collection: panel.options.collection, query };
+					}
 				}
 			}
-
 			if (!isEmpty(panels.value)) {
 				for (const panel of panels.value) {
 					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
-					const query = type.query(panel.options);
-					queries[panel.id] = { collection: panel.options.collection, query };
+					if (type?.query) {
+						const query = type.query(panel.options);
+						const panelId = panel.id.substring(1);
+						queries[panelId] = { collection: panel.options.collection, query };
+					}
 				}
 			}
-
 			return queries;
 		});
 
 		const gqlQueries = stitchQueriesToGql(queryObject.value);
 		caller(gqlQueries);
 
-		watch(queryObject, (obj, newObj) => {
-			const newQueries = objDiff(obj, newObj);
+		watch(queryObject, (newObj, obj) => {
+			const newQueries = objDiff(newObj, obj);
 
 			if (Object.keys(newQueries).length > 0) {
 				const gqlQueries = stitchQueriesToGql(newQueries);
@@ -393,7 +400,7 @@ export default defineComponent({
 				stagedPanels.value = [
 					...stagedPanels.value,
 					{
-						id: `_${nanoid()}`,
+						id: uuid(),
 						dashboard: props.primaryKey,
 						...event.edits,
 					},
@@ -434,9 +441,10 @@ export default defineComponent({
 				...currentIDs.map((id) => {
 					return stagedPanels.value.find((panel) => panel.id === id) || id;
 				}),
-				...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
+				...stagedPanels.value.map((panel) => {
+					return panel;
+				}),
 			];
-
 			try {
 				if (stagedPanels.value.length > 0) {
 					await api.patch(`/dashboards/${props.primaryKey}`, {
