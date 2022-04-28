@@ -56,6 +56,7 @@
 			</div>
 		</template>
 		<div v-if="typeof currentOperation?.preview === 'function'" class="block selectable">
+			<div class="name">{{ panel.id === '$trigger' ? panel.options?.name : panel.name }}</div>
 			<dl class="options-preview">
 				<div v-for="{ label, text } of translate(currentOperation?.preview(panel.options ?? {}))" :key="label">
 					<dt>{{ label }}</dt>
@@ -191,19 +192,20 @@ function pointerup() {
 .v-workspace-panel.block-container {
 	position: relative;
 	overflow: visible;
+	padding: 4px;
 
 	:deep(.header .name) {
 		color: var(--primary);
 	}
 
-	:deep(.block) {
-		padding: 0px 20px;
+	.block {
+		padding: 0 12px;
 
-		h1 {
+		.name {
 			font-size: 20px;
 			color: var(--foreground-normal-alt);
 			font-weight: 600;
-			margin-bottom: 4px;
+			margin-bottom: 8px;
 		}
 	}
 
