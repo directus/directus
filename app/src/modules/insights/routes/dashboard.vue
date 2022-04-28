@@ -329,8 +329,7 @@ export default defineComponent({
 					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
 					if (type?.query) {
 						const query = type.query(panel.options);
-						const panelId = panel.id.substring(1);
-						queries[panelId] = { collection: panel.options.collection, query };
+						queries[panel.id] = { collection: panel.options.collection, query };
 					}
 				}
 			}
@@ -339,11 +338,11 @@ export default defineComponent({
 					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
 					if (type?.query) {
 						const query = type.query(panel.options);
-						const panelId = panel.id.substring(1);
-						queries[panelId] = { collection: panel.options.collection, query };
+						queries[panel.id] = { collection: panel.options.collection, query };
 					}
 				}
 			}
+
 			return queries;
 		});
 
