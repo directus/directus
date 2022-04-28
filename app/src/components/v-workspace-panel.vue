@@ -57,7 +57,8 @@
 		</div>
 
 		<div class="resize-details">
-			({{ positioning.x - 1 }}:{{ positioning.y - 1 }}) {{ positioning.width }}×{{ positioning.height }}
+			({{ positioning.x - 1 }}:{{ positioning.y - 1 }})
+			<template v-if="resizable">{{ positioning.width }}×{{ positioning.height }}</template>
 		</div>
 
 		<div v-if="editMode && resizable" class="resize-handlers">
