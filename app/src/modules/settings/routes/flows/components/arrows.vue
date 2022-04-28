@@ -6,6 +6,7 @@
 				:key="index"
 				:class="{ [arrow.type]: true, loner: arrow.loner }"
 				:d="arrow.d"
+				stroke-linecap="round"
 			/>
 		</svg>
 	</div>
@@ -24,7 +25,7 @@ const props = defineProps<{
 	parentPanels: Record<string, ParentInfo>;
 }>();
 
-const endOffset = 12;
+const endOffset = 16;
 
 const size = computed(() => {
 	let width = 0,

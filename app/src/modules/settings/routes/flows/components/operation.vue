@@ -31,7 +31,7 @@
 				rounded
 				@pointerdown.stop="pointerdown('resolve')"
 			>
-				<v-icon name="check_circle"></v-icon>
+				<v-icon name="check_circle" />
 			</div>
 			<div
 				v-if="editMode || (panel.id !== '$trigger' && panel?.reject)"
@@ -41,7 +41,7 @@
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon name="cancel"></v-icon>
+				<v-icon name="cancel" />
 			</div>
 			<div
 				v-if="panel.id !== '$trigger'"
@@ -52,7 +52,7 @@
 				:class="{ reject: parent?.type === 'reject' }"
 				@pointerdown.stop="pointerdown('parent')"
 			>
-				<div class="dot" />
+				<v-icon name="adjust" />
 			</div>
 		</template>
 		<div
@@ -259,31 +259,31 @@ function pointerup() {
 	}
 
 	.attachment {
-		width: 20px;
-		height: 20px;
-		border: 3px solid var(--primary);
-		cursor: default;
 		top: var(--attachment-y);
 		left: var(--attachment-x);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transform: translate(calc(-50% + 1px), calc(-50% - 2px));
+		// width: 20px;
+		// height: 20px;
+		// border: 3px solid var(--primary);
+		// cursor: default;
+		// display: flex;
+		// align-items: center;
+		// justify-content: center;
+		// transform: translate(calc(-50% + 1px), calc(-50% - 2px));
 
-		&.reject {
-			border-color: var(--secondary);
+		// &.reject {
+		// 	border-color: var(--secondary);
 
-			.dot {
-				background-color: var(--secondary);
-			}
-		}
+		// 	.dot {
+		// 		background-color: var(--secondary);
+		// 	}
+		// }
 
-		.dot {
-			width: 6px;
-			height: 6px;
-			background-color: var(--primary);
-			border-radius: 50%;
-		}
+		// .dot {
+		// 	width: 6px;
+		// 	height: 6px;
+		// 	background-color: var(--primary);
+		// 	border-radius: 50%;
+		// }
 	}
 
 	&.loner {
