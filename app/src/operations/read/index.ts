@@ -1,4 +1,5 @@
 import { defineOperationApp } from '@directus/shared/utils';
+import { toArray } from '@directus/shared/utils';
 
 export default defineOperationApp({
 	id: 'read',
@@ -16,7 +17,7 @@ export default defineOperationApp({
 		},
 		{
 			label: '$t:operations.read.key',
-			text: key,
+			text: key ? toArray(key).join(', ') : '--',
 		},
 	],
 	options: [
