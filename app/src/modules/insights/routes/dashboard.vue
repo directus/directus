@@ -84,7 +84,7 @@
 
 		<insights-workspace
 			:edit-mode="editMode"
-			:panels="panels"
+			:panels="panelsWithData"
 			:zoom-to-fit="zoomToFit"
 			:now="now"
 			@update="stagePanelEdits"
@@ -192,6 +192,8 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const permissionsStore = usePermissionsStore();
 		const { panels: panelTypes } = getPanels();
+		const response = ref<Record<string, Panel>>({});
+		const panelsWithData = ref([]);
 
 		const { fullScreen } = toRefs(appStore);
 
@@ -208,8 +210,6 @@ export default defineComponent({
 		const updateAllowed = computed<boolean>(() => {
 			return permissionsStore.hasPermission('directus_panels', 'update');
 		});
-
-		const response = ref();
 
 		useShortcut('meta+s', () => {
 			saveChanges();
@@ -346,6 +346,21 @@ export default defineComponent({
 			return queries;
 		});
 
+		watch(panels, () => {
+			const newPanelsWithData = [];
+			for (const panel of panels.value) {
+				const panelId = 'id_' + panel.id.replaceAll('-', '_');
+
+				if (response.value[panelId]) {
+					const panelData = panel;
+					panelData.data = response.value[panelId];
+				}
+
+				newPanelsWithData.push(panel);
+			}
+			panelsWithData.value = newPanelsWithData;
+		});
+
 		const gqlQueries = stitchQueriesToGql(queryObject.value);
 		caller(gqlQueries);
 
@@ -364,8 +379,9 @@ export default defineComponent({
 		return {
 			currentDashboard,
 			editMode,
-			updateAllowed,
 			panels,
+			updateAllowed,
+			panelsWithData,
 			stagePanelEdits,
 			stagedPanels,
 			saving,
@@ -562,17 +578,27 @@ export default defineComponent({
 		}
 
 		async function caller(query) {
+			const newResponse: Record<string, Panel> = {};
+
 			try {
 				const res = await api.post('/graphql', {
 					query: query,
 				});
+
 				for (const panel of panels.value) {
 					const panelId = 'id_' + panel.id.replaceAll('-', '_');
-					if (res.data.data[panelId]) panel.data = res.data.data[panelId];
+					if (response.value[panelId]) newResponse[panelId] = response.value[panelId];
+					if (res.data.data[panelId]) newResponse[panelId] = res.data.data[panelId];
+
+					if (newResponse[panelId]) {
+						panel.data = newResponse[panelId];
+						panelsWithData.value.push(panel);
+					}
 				}
+
+				response.value = newResponse;
 			} catch (error) {
-				// do something with the error
-				error;
+				// do something with error
 			}
 		}
 	},

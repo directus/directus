@@ -1,11 +1,10 @@
 <template>
-	<div class="list" :class="{ 'has-header': showHeader, loading, 'no-data': !hasData }">
-		<v-progress-circular v-if="loading" indeterminate />
-		<span v-else-if="!hasData" class="type-note">{{ t('no_data') }}</span>
+	<div class="list" :class="{ 'has-header': showHeader, 'no-data': !hasData }">
+		<span v-if="!hasData" class="type-note">{{ t('no_data') }}</span>
 		<div v-else>
 			<v-list>
 				<v-list-item
-					v-for="row in list"
+					v-for="row in data"
 					:key="row[primaryKeyField.field]"
 					class="selectable"
 					clickable
@@ -29,15 +28,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, computed, PropType } from 'vue';
+import { defineComponent, ref, computed, PropType } from 'vue';
 import api from '@/api';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getEndpoint } from '@directus/shared/utils';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -72,6 +68,10 @@ export default defineComponent({
 			type: Object as PropType<Filter>,
 			default: () => ({}),
 		},
+		data: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 	setup(props) {
 		const { t } = useI18n();
@@ -81,12 +81,8 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 
-		const list = ref<Record<string, any>[]>([]);
-		const loading = ref(false);
-		const error = ref();
-
 		const hasData = computed(() => {
-			return list.value && list.value.length > 0;
+			return props.data && props.data.length > 0;
 		});
 
 		const renderTemplate = computed(() => {
@@ -95,11 +91,7 @@ export default defineComponent({
 
 		const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 
-		watchEffect(async () => await fetchData());
-
 		return {
-			list,
-			loading,
 			renderTemplate,
 			primaryKeyField,
 			startEditing,
@@ -110,35 +102,6 @@ export default defineComponent({
 			hasData,
 			t,
 		};
-
-		async function fetchData() {
-			if (!props) return;
-
-			loading.value = true;
-
-			try {
-				const sort = props.sortField;
-
-				const res = await api.get(getEndpoint(props.collection), {
-					params: {
-						fields: [
-							primaryKeyField.value.field,
-							...adjustFieldsForDisplays(getFieldsFromTemplate(renderTemplate.value), props.collection),
-						],
-						filter: props.filter,
-						sort: props.sortDirection === 'desc' ? `-${sort}` : sort,
-						limit: props.limit ?? 5,
-					},
-				});
-
-				list.value = res.data.data;
-			} catch (err) {
-				error.value = err;
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
-		}
 
 		function startEditing(item: Record<string, any>) {
 			currentlyEditing.value = item[primaryKeyField.value.field];
@@ -151,8 +114,6 @@ export default defineComponent({
 			} catch (err) {
 				unexpectedError(err);
 			}
-
-			await fetchData();
 		}
 
 		function cancelEdit() {
@@ -174,12 +135,6 @@ export default defineComponent({
 	height: 100%;
 	padding: 0 12px;
 	overflow-y: auto;
-}
-
-.list.loading {
-	display: flex;
-	align-items: center;
-	justify-content: center;
 }
 
 .v-list-item {

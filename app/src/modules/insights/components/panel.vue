@@ -81,6 +81,7 @@
 				:is="`panel-${panel.type}`"
 				v-bind="panel.options"
 				:id="panel.id"
+				:data="panel.data"
 				:show-header="panel.show_header"
 				:height="panel.height"
 				:width="panel.width"
