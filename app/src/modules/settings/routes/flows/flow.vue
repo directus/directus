@@ -141,6 +141,7 @@
 
 		<router-view
 			:operation="panels.find((panel) => panel.id === props.operationId)"
+			:existing-operation-keys="exitingOperationKeys"
 			:flow="flow"
 			@save="stageOperation"
 			@cancel="$router.replace(`/settings/flows/${primaryKey}`)"
@@ -201,6 +202,11 @@ const flow = computed<FlowRaw | undefined>({
 		stagedFlow.value = newFlow ?? {};
 	},
 });
+
+const exitingOperationKeys = computed(() => [
+	...(flow.value?.operations || []).map((operation) => operation.key),
+	...stagedPanels.value.filter((stagedPanel) => stagedPanel.key !== undefined).map((stagedPanel) => stagedPanel.key!),
+]);
 
 const firstOpen = computed(() => !flow.value?.trigger);
 const editMode = ref(firstOpen.value || props.operationId !== undefined);

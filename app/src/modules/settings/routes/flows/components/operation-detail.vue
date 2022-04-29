@@ -81,10 +81,12 @@ const props = withDefaults(
 		primaryKey: string;
 		operationId: string;
 		operation?: Record<string, any>;
+		existingOperationKeys?: string[];
 		flow: FlowRaw;
 	}>(),
 	{
 		operation: undefined,
+		existingOperationKeys: undefined,
 	}
 );
 
@@ -98,9 +100,9 @@ const operationType = ref<string | undefined>(props.operation?.type);
 const operationKey = ref<string | null>(props.operation?.key ?? null);
 const operationName = ref<string | null>(props.operation?.name ?? null);
 
-const allOperationKeys = computed(() => (props.flow.operations || []).map((operation) => operation.key));
 const isOperationKeyUnique = computed(
-	() => operationKey.value === null || props.operation?.key || !allOperationKeys.value.includes(operationKey.value)
+	() =>
+		operationKey.value === null || props.operation?.key || !props.existingOperationKeys?.includes(operationKey.value)
 );
 
 const saveDisabled = computed(() => {
