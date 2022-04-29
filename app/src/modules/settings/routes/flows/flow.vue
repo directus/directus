@@ -68,6 +68,7 @@
 						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
 						:parent="parentPanels[panel.id]"
 						:flow="flow"
+						:panels-to-be-deleted="panelsToBeDeleted"
 						@create="createPanel"
 						@edit="editPanel"
 						@move="movePanelID = $event"

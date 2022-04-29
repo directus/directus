@@ -94,7 +94,7 @@ import { translate } from '@/utils/translate-object-values';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/shared/types';
 import { throttle } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useFlowsStore } from '@/stores';
@@ -116,6 +116,7 @@ const props = withDefaults(
 		editMode?: boolean;
 		parent?: { id: string; type: Target; loner: boolean };
 		flow: FlowRaw;
+		panelsToBeDeleted: string[];
 	}>(),
 	{
 		type: 'operation',
@@ -123,6 +124,8 @@ const props = withDefaults(
 		parent: undefined,
 	}
 );
+
+const { panelsToBeDeleted } = toRefs(props);
 
 const { operations } = getOperations();
 const { triggers } = getTriggers();
@@ -201,7 +204,11 @@ const pointermove = throttle((event: PointerEvent) => {
 }, 20);
 
 function pointerup() {
-	if (!moving && ((down === 'reject' && !props.panel.reject) || (down === 'resolve' && !props.panel.resolve)))
+	if (
+		!moving &&
+		((down === 'reject' && (!props.panel.reject || panelsToBeDeleted.value.includes(props.panel.reject))) ||
+			(down === 'resolve' && (!props.panel.resolve || panelsToBeDeleted.value.includes(props.panel.resolve))))
+	)
 		emit('create', props.panel.id, down);
 	moving = false;
 	down = undefined;
