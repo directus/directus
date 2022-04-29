@@ -33,25 +33,40 @@ conditions: Προϋποθέσεις
 maps: Χάρτες
 switch_user: Εναλλαγή Χρήστη
 item_revision: Αναθεώρηση Αντικειμένου
+enter_a_name: Πληκτρολογήστε ένα όνομα...
 duplicate_field: Αντίγραφο Πεδίου
 half_width: Μισό Πλάτος
 full_width: Πλήρες Πλάτος
+group: Ομάδα
+export_items: Εξαγωγή στοιχείων
+and: Και
+or: Ή
 fill_width: Πλήρες Πλάτος
 field_name_translations: Μεταφράσεις Ονόματος Πεδίου
 enter_password_to_enable_tfa: Εισάγετε τον κωδικό πρόσβασής σας για να ενεργοποιήσετε τον διπλό έλεγχο ταυτότητας
 add_field: Προσθήκη Πεδίου
 role_name: Όνομα Ρόλου
+branch: Κλάδος
+leaf: Φύλλο
+indeterminate: Ενδιάμεσο
+edit_collection: Επεξεργασία συλλογής
 exclusive: Αποκλειστικά
 children: Παιδιά
+db_only_click_to_configure: 'Βάση δεδομένων μόνο: Κάντε κλικ για ρύθμιση'
+show_active_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
 show_archived_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
+show_all_items: Εμφάνιση όλων των αντικειμένων
 edited: Η Τιμή Επεξεργάστηκε
 required: Υποχρεωτικό
 required_for_app_access: Απαιτείται για την πρόσβαση στην εφαρμογή
 requires_value: Απαιτεί τιμή
 create_preset: Δημιουργία προεπιλογής
+create_panel: Δημιουργήστε Πάνελ
 create_role: Δημιουργία ρόλου
 create_user: Δημιουργία Χρήστη
+delete_panel: Διαγραφή Πίνακα
 create_webhook: Δημιουργία Webhook
+create_translation_string: Δημιουργία Μετάφρασης
 invite_users: Πρόσκληση Χρηστών
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
