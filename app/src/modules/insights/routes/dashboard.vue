@@ -352,11 +352,13 @@ export default defineComponent({
 				const panelId = 'id_' + panel.id.replaceAll('-', '_');
 
 				if (response.value[panelId]) {
-					const panelData = panel;
-					panelData.data = response.value[panelId];
-				}
+					const editablePanel = panel;
 
-				newPanelsWithData.push(panel);
+					editablePanel.data = response.value[panelId];
+					newPanelsWithData.push(editablePanel);
+				} else {
+					newPanelsWithData.push(panel);
+				}
 			}
 			panelsWithData.value = newPanelsWithData;
 		});
@@ -592,8 +594,8 @@ export default defineComponent({
 
 					if (newResponse[panelId]) {
 						panel.data = newResponse[panelId];
-						panelsWithData.value.push(panel);
 					}
+					panelsWithData.value.push(panel);
 				}
 
 				response.value = newResponse;

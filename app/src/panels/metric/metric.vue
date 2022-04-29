@@ -11,11 +11,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
-import api from '@/api';
 import { Filter } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { isNil } from 'lodash';
-import { getEndpoint, abbreviateNumber } from '@directus/shared/utils';
+import { abbreviateNumber } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
 
 export default defineComponent({
@@ -24,7 +23,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-
 		abbreviate: {
 			type: Boolean,
 			default: false,
@@ -49,6 +47,10 @@ export default defineComponent({
 		},
 		filter: {
 			type: Object as PropType<Filter>,
+			default: () => ({}),
+		},
+		data: {
+			type: Object,
 			default: () => ({}),
 		},
 		decimals: {
@@ -81,41 +83,20 @@ export default defineComponent({
 		const loading = ref(false);
 
 		watchEffect(async () => {
-			const isRawValue = ['first', 'last'].includes(props.function);
-
 			loading.value = true;
-
 			try {
-				const sort = props.sortField && `${props.function === 'last' ? '-' : ''}${props.sortField}`;
-
-				const aggregate = isRawValue
-					? undefined
-					: {
-							[props.function]: [props.field || '*'],
-					  };
-
-				const res = await api.get(getEndpoint(props.collection), {
-					params: {
-						aggregate,
-						filter: props.filter,
-						sort: sort,
-						limit: 1,
-						fields: [props.field],
-					},
-				});
-
 				if (props.field) {
 					if (props.function === 'first' || props.function === 'last') {
-						if (typeof res.data.data[0][props.field] === 'string') {
-							metric.value = res.data.data[0][props.field];
+						if (typeof props.data[0][props.field] === 'string') {
+							metric.value = props.data[0][props.field];
 						} else {
-							metric.value = Number(res.data.data[0][props.field]);
+							metric.value = Number(props.data[0][props.field]);
 						}
 					} else {
-						metric.value = Number(res.data.data[0][props.function][props.field]);
+						metric.value = Number(props.data[0][props.function][props.field]);
 					}
 				} else {
-					metric.value = Number(res.data.data[0][props.function]);
+					metric.value = Number(props.data[0][props.function]);
 				}
 			} catch (err) {
 				// oh no
@@ -127,12 +108,12 @@ export default defineComponent({
 		const displayValue = computed(() => {
 			if (isNil(metric.value)) return null;
 
-			if (props.abbreviate) {
-				return abbreviateNumber(metric.value, props.decimals ?? 0);
-			}
-
 			if (typeof metric.value === 'string') {
 				return metric.value;
+			}
+
+			if (props.abbreviate) {
+				return abbreviateNumber(metric.value, props.decimals ?? 0);
 			}
 
 			return n(Number(metric.value), 'decimal', {
@@ -144,7 +125,7 @@ export default defineComponent({
 		const color = computed(() => {
 			if (isNil(metric.value)) return null;
 
-			let matchingFormat: MetricOptions['conditionalFormatting'][number] | null = null;
+			let matchingFormat: MetricOptions['conditionalFormatting'][number | string] | null = null;
 
 			for (const format of props.conditionalFormatting || []) {
 				if (matchesOperator(format)) {
@@ -154,28 +135,38 @@ export default defineComponent({
 
 			return matchingFormat ? matchingFormat.color || cssVar('--primary') : null;
 
-			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
-				const value = Number(metric.value);
-				const compareValue = Number(format.value ?? 0);
-
-				switch (format.operator || '>=') {
-					case '=':
-						return value === compareValue;
-					case '!=':
-						return value !== compareValue;
-					case '>':
-						return value > compareValue;
-					case '>=':
-						return value >= compareValue;
-					case '<':
-						return value < compareValue;
-					case '<=':
-						return value < compareValue;
+			function matchesOperator(format: MetricOptions['conditionalFormatting'][number | string]) {
+				if (typeof metric.value === 'string') {
+					const value = metric.value;
+					const compareValue = format.value ?? '';
+					switch (format.operator || '>=') {
+						case '=':
+							return value === compareValue;
+						case '!=':
+							return value !== compareValue;
+					}
+				} else {
+					const value = Number(metric.value);
+					const compareValue = Number(format.value ?? 0);
+					switch (format.operator || '>=') {
+						case '=':
+							return value === compareValue;
+						case '!=':
+							return value !== compareValue;
+						case '>':
+							return value > compareValue;
+						case '>=':
+							return value >= compareValue;
+						case '<':
+							return value < compareValue;
+						case '<=':
+							return value < compareValue;
+					}
 				}
 			}
 		});
 
-		return { metric, loading, displayValue, color };
+		return { displayValue, color, loading };
 	},
 });
 </script>
