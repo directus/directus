@@ -35,7 +35,7 @@
 				v-model="flowEdits.options"
 				class="extension-options"
 				:fields="currentTrigger?.options"
-				:initial-values="flowEdits.options"
+				:initial-values="flow?.options"
 				primary-key="+"
 			/>
 		</div>
