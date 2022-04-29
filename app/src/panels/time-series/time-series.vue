@@ -1,17 +1,19 @@
 <template>
-	<div ref="chartEl" class="time-series" />
+	<div>
+		<v-progress-circular v-if="loading" indeterminate />
+		<div ref="chartEl" class="time-series" />
+	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch, onMounted, onUnmounted, computed } from 'vue';
-import api from '@/api';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
 import { isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
-import { getEndpoint, abbreviateNumber } from '@directus/shared/utils';
+import { abbreviateNumber } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
 import { addWeeks } from 'date-fns';
 
@@ -25,6 +27,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		data: {
+			type: Array,
+			default: () => [],
+		},
 		id: {
 			type: String,
 			required: true,
@@ -37,7 +43,6 @@ export default defineComponent({
 			type: Date,
 			required: true,
 		},
-
 		collection: {
 			type: String,
 			required: true,
@@ -158,39 +163,14 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const results = await api.get(getEndpoint(props.collection), {
-					params: {
-						groupBy: getGroups(),
-						aggregate: {
-							[props.function]: [props.valueField],
-						},
-						filter: {
-							_and: [
-								{
-									[props.dateField]: {
-										_gte: `$NOW(-${props.range || '1 week'})`,
-									},
-								},
-								{
-									[props.dateField]: {
-										_lte: `$NOW`,
-									},
-								},
-								props.filter || {},
-							],
-						},
-						limit: -1,
-					},
-				});
-
-				metrics.value = results.data.data;
+				metrics.value = props.data;
 
 				chart.value?.updateSeries([
 					{
 						name: props.collection,
 						data: metrics.value.map((metric) => ({
-							x: toISO(metric),
-							y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
+							x: metric[props.dateField],
+							y: Number(Number(metric[props.valueField]).toFixed(props.decimals ?? 0)),
 						})),
 					},
 				]);
@@ -220,39 +200,6 @@ export default defineComponent({
 				function getFirstDayOfNWeeksForYear(numberOfWeeks: number, year: number) {
 					return addWeeks(new Date(year, 0, 1), numberOfWeeks).getDate();
 				}
-			}
-
-			function getGroups() {
-				let groups: string[] = [];
-
-				switch (props.precision || 'hour') {
-					case 'year':
-						groups = ['year'];
-						break;
-					case 'month':
-						groups = ['year', 'month'];
-						break;
-					case 'week':
-						groups = ['year', 'month', 'week'];
-						break;
-					case 'day':
-						groups = ['year', 'month', 'day'];
-						break;
-					case 'hour':
-						groups = ['year', 'month', 'day', 'hour'];
-						break;
-					case 'minute':
-						groups = ['year', 'month', 'day', 'hour', 'minute'];
-						break;
-					case 'second':
-						groups = ['year', 'month', 'day', 'hour', 'minute', 'second'];
-						break;
-					default:
-						groups = ['year', 'month', 'day', 'hour'];
-						break;
-				}
-
-				return groups.map((datePart) => `${datePart}(${props.dateField})`);
 			}
 		}
 

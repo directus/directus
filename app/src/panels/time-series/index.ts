@@ -1,4 +1,5 @@
-import { definePanel } from '@directus/shared/utils';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { adjustDate, definePanel } from '@directus/shared/utils';
 import PanelTimeSeries from './time-series.vue';
 
 export default definePanel({
@@ -6,6 +7,81 @@ export default definePanel({
 	name: '$t:panels.time_series.name',
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
+	query: (options: Record<string, any>) => {
+		if (!options?.function || !options.valueField || !options.dateField || !options.range || !options.precision) {
+			return;
+		}
+
+		const response = {
+			groupBy: getGroups(),
+			aggregate: {
+				[options.function]: [options.valueField],
+			},
+			filter: {
+				_and: [
+					{
+						[options.dateField]: {
+							_gte: parseDate(`$NOW(-${options.range || '1 week'})`),
+						},
+					},
+					{
+						[options.dateField]: {
+							_lte: parseDate(`$NOW`),
+						},
+					},
+					options.filter || {},
+				],
+			},
+			limit: -1,
+			fields: [options.valueField, options.dateField],
+		};
+		return response;
+
+		function parseDate(value: string) {
+			if (value.startsWith('$NOW')) {
+				if (value.includes('(') && value.includes(')')) {
+					const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
+					if (!adjustment) return new Date();
+					return adjustDate(new Date(), adjustment)?.toISOString();
+				}
+
+				return new Date().toISOString();
+			}
+		}
+
+		function getGroups() {
+			let groups: string[] = [];
+
+			switch (options.precision || 'hour') {
+				case 'year':
+					groups = ['year'];
+					break;
+				case 'month':
+					groups = ['year', 'month'];
+					break;
+				case 'week':
+					groups = ['year', 'month', 'week'];
+					break;
+				case 'day':
+					groups = ['year', 'month', 'day'];
+					break;
+				case 'hour':
+					groups = ['year', 'month', 'day', 'hour'];
+					break;
+				case 'minute':
+					groups = ['year', 'month', 'day', 'hour', 'minute'];
+					break;
+				case 'second':
+					groups = ['year', 'month', 'day', 'hour', 'minute', 'second'];
+					break;
+				default:
+					groups = ['year', 'month', 'day', 'hour'];
+					break;
+			}
+
+			return groups.map((datePart) => `${datePart}(${options.dateField})`);
+		}
+	},
 	component: PanelTimeSeries,
 	options: [
 		{

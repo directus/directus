@@ -364,6 +364,7 @@ export default defineComponent({
 		});
 
 		const gqlQueries = stitchQueriesToGql(queryObject.value);
+
 		caller(gqlQueries);
 
 		watch(queryObject, (newObj, obj) => {
