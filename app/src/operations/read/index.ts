@@ -65,6 +65,16 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'vpn_key',
 				},
+				conditions: [
+					{
+						rule: {
+							mode: {
+								_eq: 'query',
+							},
+						},
+						hidden: true,
+					},
+				],
 			},
 		},
 		{
