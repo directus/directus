@@ -102,7 +102,8 @@ const operationName = ref<string | null>(props.operation?.name ?? null);
 
 const isOperationKeyUnique = computed(
 	() =>
-		operationKey.value === null || props.operation?.key || !props.existingOperationKeys?.includes(operationKey.value)
+		operationKey.value === null ||
+		!(props.operation?.key !== operationKey.value && props.existingOperationKeys?.includes(operationKey.value))
 );
 
 const saveDisabled = computed(() => {
