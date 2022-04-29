@@ -73,6 +73,18 @@
 			v-else-if="currentOperation && 'id' in currentOperation"
 			:options="currentOperation"
 		/>
+		<template v-if="panel.id === '$trigger'" #footer>
+			<v-select
+				class="flow-status-select"
+				:model-value="flowStatus"
+				:items="[
+					{ text: t('active'), value: 'active' },
+					{ text: t('inactive'), value: 'inactive' },
+				]"
+				:disabled="saving"
+				@update:model-value="flowStatus = $event"
+			/>
+		</template>
 	</v-workspace-panel>
 </template>
 
@@ -82,7 +94,11 @@ import { translate } from '@/utils/translate-object-values';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/shared/types';
 import { throttle } from 'lodash';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { useFlowsStore } from '@/stores';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
 
@@ -122,6 +138,8 @@ const emit = defineEmits([
 	'arrow-move',
 	'arrow-stop',
 ]);
+
+const { t } = useI18n();
 
 const styleVars = {
 	'--reject-left': REJECT_OFFSET.x + 'px',
@@ -193,6 +211,33 @@ function pointerup() {
 	window.removeEventListener('pointermove', pointermove);
 	window.removeEventListener('pointerup', pointerup);
 }
+
+const flowsStore = useFlowsStore();
+
+const flowStatus = computed({
+	get() {
+		return props.flow.status;
+	},
+	set(newVal: string) {
+		toggleFlowStatus(newVal);
+	},
+});
+
+const saving = ref(false);
+
+async function toggleFlowStatus(value: string) {
+	saving.value = true;
+	try {
+		await api.patch(`/flows/${props.flow.id}`, {
+			status: value,
+		});
+		await flowsStore.hydrate();
+	} catch (error) {
+		unexpectedError(error as Error);
+	} finally {
+		saving.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -203,6 +248,10 @@ function pointerup() {
 
 	:deep(.header .name) {
 		color: var(--primary);
+	}
+
+	.flow-status-select {
+		pointer-events: all;
 	}
 
 	.block {

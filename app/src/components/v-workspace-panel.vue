@@ -74,6 +74,9 @@
 
 		<div class="panel-content" :class="{ 'has-header': showHeader }">
 			<slot></slot>
+			<div v-if="$slots['footer']" class="footer">
+				<slot name="footer"></slot>
+			</div>
 		</div>
 		<slot name="body"></slot>
 	</div>
@@ -371,6 +374,8 @@ function useDragDrop() {
 }
 .panel-content {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
@@ -385,6 +390,11 @@ function useDragDrop() {
 	align-items: center;
 	height: 48px;
 	padding: 12px;
+}
+
+.footer {
+	padding: 12px;
+	margin-top: auto;
 }
 
 .icon {
