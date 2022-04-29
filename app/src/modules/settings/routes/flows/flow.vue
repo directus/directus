@@ -11,6 +11,14 @@
 			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
 		</template>
 
+		<template #title:append>
+			<display-color
+				v-tooltip="flow.status"
+				class="status-dot"
+				:value="flow.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+			/>
+		</template>
+
 		<template #actions>
 			<template v-if="editMode">
 				<v-button
@@ -626,6 +634,10 @@ function discardAndLeave() {
 	--v-button-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
+}
+
+.status-dot {
+	margin-left: 6px;
 }
 
 .container {
