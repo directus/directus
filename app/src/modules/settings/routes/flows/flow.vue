@@ -111,7 +111,7 @@
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
-					<v-button danger @click="deleteFlow">{{ t('delete_label') }}</v-button>
+					<v-button danger :loading="deleting" @click="deleteFlow">{{ t('delete_label') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -205,16 +205,20 @@ const firstOpen = computed(() => !flow.value?.trigger);
 const editMode = ref(firstOpen.value || props.operationId !== undefined);
 
 const confirmDelete = ref(false);
+const deleting = ref(false);
 
 async function deleteFlow() {
-	if (!confirmDelete.value) return;
+	if (!flow.value?.id) return;
+
+	deleting.value = true;
 
 	try {
-		await api.delete(`/flows/${confirmDelete.value}`);
+		await api.delete(`/flows/${flow.value.id}`);
 		await flowsStore.hydrate();
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
+		deleting.value = false;
 		router.push('/settings/flows');
 	}
 }
