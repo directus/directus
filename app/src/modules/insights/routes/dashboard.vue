@@ -369,7 +369,7 @@ export default defineComponent({
 		watch(queryObject, (newObj, obj) => {
 			const newQueries = objDiff(newObj, obj);
 
-			if (Object.keys(newQueries).length > 0) {
+			if (!isEmpty(newQueries)) {
 				const gqlQueries = stitchQueriesToGql(newQueries);
 				caller(gqlQueries);
 			}

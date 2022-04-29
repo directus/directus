@@ -11,7 +11,7 @@ export default definePanel({
 	icon: 'functions',
 	component: PanelMetric,
 	query: (options): Query | undefined => {
-		if (!options) return;
+		if (!options || !options.function) return;
 		const isRawValue = ['first', 'last'].includes(options.function);
 
 		const sort = options.sortField && `${options.function === 'last' ? '-' : ''}${options.sortField}`;
@@ -24,7 +24,7 @@ export default definePanel({
 
 		return {
 			aggregate,
-			filter: options.filter,
+			filter: options.filter ?? {},
 			sort: sort,
 			limit: 1,
 			fields: [options.field],
