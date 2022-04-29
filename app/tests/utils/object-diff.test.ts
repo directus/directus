@@ -1,6 +1,6 @@
-import { objDiff } from './object-diff';
+import { objDiff } from '../../src/utils/object-diff';
 
-describe('', () => {
+describe('objDiff', () => {
 	it('returns an empty object if there is no differences', () => {
 		const obj1 = { a: 1 };
 		const obj2 = { a: 1 };
@@ -22,7 +22,6 @@ describe('', () => {
 		expect(objDiff(obj1, obj2)).toStrictEqual({ b: 1 });
 	});
 
-	// needed when a filter is added to a panel
 	it('returns an object of differences when obj2 is deeper', () => {
 		const obj1 = { a: { deeper: { deep: 1 } } };
 		const obj2 = { a: { deep: 1 } };
