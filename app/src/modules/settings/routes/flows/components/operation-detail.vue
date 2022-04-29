@@ -36,6 +36,7 @@
 							<v-icon name="vpn_key" />
 						</template>
 					</v-input>
+					<small v-if="!isOperationKeyUnique" class="error selectable">{{ t('operation_key_unique_error') }}</small>
 				</div>
 			</div>
 
@@ -97,8 +98,13 @@ const operationType = ref<string | undefined>(props.operation?.type);
 const operationKey = ref<string | null>(props.operation?.key ?? null);
 const operationName = ref<string | null>(props.operation?.name ?? null);
 
+const allOperationKeys = computed(() => (props.flow.operations || []).map((operation) => operation.key));
+const isOperationKeyUnique = computed(
+	() => operationKey.value === null || props.operation?.key || !allOperationKeys.value.includes(operationKey.value)
+);
+
 const saveDisabled = computed(() => {
-	return !operationType.value || !operationKey.value || !operationName.value;
+	return !operationType.value || !operationKey.value || !operationName.value || !isOperationKeyUnique.value;
 });
 
 watch(operationType, () => {
@@ -199,5 +205,12 @@ function saveOperation() {
 
 	margin-top: -12px;
 	margin-left: -4px;
+}
+
+.error {
+	display: block;
+	margin-top: 4px;
+	color: var(--danger);
+	font-style: italic;
 }
 </style>
