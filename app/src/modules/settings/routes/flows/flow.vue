@@ -158,7 +158,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import useShortcut from '@/composables/use-shortcut';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
-import { isEmpty, merge, omit } from 'lodash';
+import { isEmpty, merge, omit, cloneDeep } from 'lodash';
 import { router } from '@/router';
 import { nanoid } from 'nanoid';
 
@@ -449,7 +449,7 @@ function getTrees() {
 function addChangesToTree(tree: Tree): Record<string, any> {
 	const edits = stagedPanels.value.find((panel) => panel.id === tree.id);
 
-	const newTree = edits ?? ({ id: tree.id } as Record<string, any>);
+	const newTree = edits ? cloneDeep(edits) : ({ id: tree.id } as Record<string, any>);
 
 	if (tree.reject) newTree.reject = addChangesToTree(tree.reject);
 	if (tree.resolve) newTree.resolve = addChangesToTree(tree.resolve);
