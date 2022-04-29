@@ -2013,3 +2013,11 @@ operations:
   validate:
     name: Validate
     description: Validate an item with a filter
+  write:
+    name: Write
+    description: Write items into the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Multiple Items
+    payload: Payload
