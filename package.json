@@ -54,7 +54,7 @@
 		"postcss": "^8.4.7",
 		"prettier": "2.4.1",
 		"simple-git-hooks": "2.7.0",
-		"sqlite3": "5.0.2",
+		"sqlite3": "5.0.6",
 		"supertest": "6.1.6",
 		"tedious": "13.2.0",
 		"ts-jest": "27.1.3",
