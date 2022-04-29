@@ -198,12 +198,7 @@ export default defineModule({
 							name: 'settings-flows-operation',
 							path: ':operationId',
 							component: FlowOperationDetail,
-							props: (route) => {
-								return {
-									primaryKey: route.params.primaryKey,
-									operationId: route.params.operationId,
-								};
-							},
+							props: true,
 						},
 					],
 				},
