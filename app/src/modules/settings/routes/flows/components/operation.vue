@@ -256,6 +256,8 @@ async function toggleFlowStatus(value: string) {
 
 	.block {
 		padding: 0 12px;
+		height: 100%;
+		overflow-y: auto;
 
 		.name {
 			display: inline-block;
