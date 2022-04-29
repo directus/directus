@@ -752,6 +752,8 @@ create_trigger: Create Trigger
 change_trigger: Change Trigger
 choose_a_trigger: Choose a Trigger...
 flow_delete_confirm: Are you sure you want to delete this Flow? This action can not be undone.
+set_flow_active: Set Flow to Active
+set_flow_inactive: Set Flow to Inactive
 edit_flow: Edit Flow
 delete_flow: Delete Flow
 no_other_flows_copy: You don't have any other Flows yet.

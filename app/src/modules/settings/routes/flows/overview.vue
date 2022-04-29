@@ -65,6 +65,17 @@
 					</template>
 
 					<v-list>
+						<v-list-item clickable @click="toggleFlowStatusById(item.id, item.status)">
+							<template v-if="item.status === 'active'">
+								<v-list-item-icon><v-icon name="block" /></v-list-item-icon>
+								<v-list-item-content>{{ t('set_flow_inactive') }}</v-list-item-content>
+							</template>
+							<template v-else>
+								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
+								<v-list-item-content>{{ t('set_flow_active') }}</v-list-item-content>
+							</template>
+						</v-list-item>
+
 						<v-list-item clickable @click="editFlow = item">
 							<v-list-item-icon>
 								<v-icon name="edit" outline />
@@ -202,6 +213,17 @@ async function toggleFlowCreation(active: boolean) {
 	}
 
 	createDialogActive.value = active;
+}
+
+async function toggleFlowStatusById(id: string, value: string) {
+	try {
+		await api.patch(`/flows/${id}`, {
+			status: value,
+		});
+		await flowsStore.hydrate();
+	} catch (error) {
+		unexpectedError(error as Error);
+	}
 }
 </script>
 
