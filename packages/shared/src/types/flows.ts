@@ -28,6 +28,7 @@ export interface FlowRaw {
 	id: string;
 	name: string;
 	icon: string;
+	color: string;
 	note: string;
 	status: Status;
 	trigger: TriggerType | null;

@@ -41,7 +41,7 @@
 			@click:row="navigateToDashboard"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon" />
+				<v-icon class="icon" :name="item.icon" :color="item.color" />
 			</template>
 
 			<template #item-append="{ item }">
