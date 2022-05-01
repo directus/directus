@@ -647,7 +647,7 @@ been renamed to `.readByQuery`. Please check / update your usage of the SDK befo
   - [#9421](https://github.com/directus/directus/pull/9421) Fix translations layout (by @Nitwel)
 - **API**
   - [#11307](https://github.com/directus/directus/pull/11307) Bearer token no longer case sensitive for API
-    authenticatiom (by @jaycammarano)
+    authentication (by @jaycammarano)
   - [#11279](https://github.com/directus/directus/pull/11279) Resolve transaction unreliability issues in schema
     alterations (by @rijkvanzanten)
   - [#11069](https://github.com/directus/directus/pull/11069) Prevent MySQL collation errors (by @Oreilles)
