@@ -3129,7 +3129,7 @@ You can enable this new module under Project Settings.
 
 - **App**
   - [#8078](https://github.com/directus/directus/pull/8078) make i18n shared ([@Nitwel](https://github.com/Nitwel))
-  - [#8059](https://github.com/directus/directus/pull/8059) Move some compositons, utils and types to shared
+  - [#8059](https://github.com/directus/directus/pull/8059) Move some compositions, utils and types to shared
     ([@Nitwel](https://github.com/Nitwel))
 - **Misc.**
   - [#8062](https://github.com/directus/directus/pull/8062) Add return type to useFilterFields
