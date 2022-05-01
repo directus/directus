@@ -78,7 +78,7 @@
 	"application/vnd.clonk.c4group": "Clonk Game",
 	"image/vnd.dvb.subtitle": "Close Captioning - Subtitle",
 	"application/cdmi-capability": "Cloud Data Management Interface (CDMI) - Capability",
-	"application/cdmi-container": "Cloud Data Management Interface (CDMI) - Contaimer",
+	"application/cdmi-container": "Cloud Data Management Interface (CDMI) - Container",
 	"application/cdmi-domain": "Cloud Data Management Interface (CDMI) - Domain",
 	"application/cdmi-object": "Cloud Data Management Interface (CDMI) - Object",
 	"application/cdmi-queue": "Cloud Data Management Interface (CDMI) - Queue",
