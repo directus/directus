@@ -6,20 +6,27 @@ export default defineOperationApp({
 	icon: 'download',
 	name: '$t:operations.read.name',
 	description: '$t:operations.read.description',
-	preview: ({ mode, collection, key }) => [
-		{
-			label: '$t:operations.read.mode.field',
-			text: mode,
-		},
-		{
-			label: '$t:collection',
-			text: collection,
-		},
-		{
-			label: '$t:operations.read.key',
-			text: key ? toArray(key).join(', ') : '--',
-		},
-	],
+	preview: ({ mode, collection, key }) => {
+		const previewOptions = [
+			{
+				label: '$t:operations.read.mode.field',
+				text: mode,
+			},
+			{
+				label: '$t:collection',
+				text: collection,
+			},
+		];
+
+		if (mode !== 'query') {
+			previewOptions.push({
+				label: '$t:operations.read.key',
+				text: key ? toArray(key).join(', ') : '--',
+			});
+		}
+
+		return previewOptions;
+	},
 	options: [
 		{
 			field: 'mode',
