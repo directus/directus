@@ -99,9 +99,11 @@ const options = ref<Record<string, any>>(props.operation?.options ?? {});
 const operationType = ref<string | undefined>(props.operation?.type);
 const operationKey = ref<string | null>(props.operation?.key ?? null);
 const operationName = ref<string | null>(props.operation?.name ?? null);
+const saving = ref(false);
 
 const isOperationKeyUnique = computed(
 	() =>
+		saving.value ||
 		operationKey.value === null ||
 		!(props.operation?.key !== operationKey.value && props.existingOperationKeys?.includes(operationKey.value))
 );
@@ -154,6 +156,7 @@ const operationOptions = computed(() => {
 });
 
 function saveOperation() {
+	saving.value = true;
 	emit('save', {
 		flow: props.primaryKey,
 		name: operationName.value,
