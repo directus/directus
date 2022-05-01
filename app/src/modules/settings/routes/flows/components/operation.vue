@@ -35,7 +35,7 @@
 				<v-icon name="check_circle" />
 			</div>
 			<div
-				v-if="editMode || (panel.id !== '$trigger' && panel?.reject)"
+				v-if="panel.id !== '$trigger'"
 				x-small
 				icon
 				rounded
