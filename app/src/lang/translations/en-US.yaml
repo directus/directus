@@ -766,6 +766,7 @@ stop_flow: Stop Flow
 view_operation: View Operation
 create_operation: Create Operation
 edit_operation: Edit Operation
+delete_operation: Delete Operation
 operation_options: Operation Options
 operation_name: Name of operation...
 trigger_name: Name of trigger...
