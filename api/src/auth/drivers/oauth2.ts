@@ -92,7 +92,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toString().toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
 		return user?.id;
@@ -125,7 +125,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey] as string | null | undefined) ?? email;
+		const identifier = (userInfo[identifierKey] as any | null | undefined)?.toString() ?? email;
 
 		if (!identifier) {
 			logger.warn(`[OAuth2] Failed to find user identifier for provider "${provider}"`);
