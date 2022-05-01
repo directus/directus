@@ -62,6 +62,10 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	});
 
 	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+		if (!filename) {
+			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
+		}
+
 		fileCount++;
 
 		if (!payload.title) {

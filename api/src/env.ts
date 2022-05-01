@@ -10,7 +10,7 @@ import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
 
-const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
+const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
 
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
@@ -86,6 +86,8 @@ const defaults: Record<string, any> = {
 	EXPORT_BATCH_SIZE: 5000,
 
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
+
+	GRAPHQL_INTROSPECTION: true,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -104,12 +106,14 @@ const typeMap: Record<string, string> = {
 	IMPORT_IP_DENY_LIST: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
+
+	GRAPHQL_INTROSPECTION: 'boolean',
 };
 
 let env: Record<string, any> = {
 	...defaults,
-	...getEnv(),
 	...process.env,
+	...getEnv(),
 };
 
 process.env = env;
@@ -125,8 +129,8 @@ export default env;
 export function refreshEnv(): void {
 	env = {
 		...defaults,
-		...getEnv(),
 		...process.env,
+		...getEnv(),
 	};
 
 	process.env = env;
@@ -257,6 +261,8 @@ function processValues(env: Record<string, any>) {
 				case 'json':
 					env[key] = tryJSON(value);
 					break;
+				case 'boolean':
+					env[key] = value === 'true' || value === true || value === '1' || value === 1;
 			}
 			continue;
 		}

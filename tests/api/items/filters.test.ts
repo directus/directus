@@ -1,10 +1,10 @@
+import knex, { Knex } from 'knex';
+import request from 'supertest';
+import { v4 as uuid } from 'uuid';
 import config, { getUrl } from '../../config';
 import vendors from '../../get-dbs-to-test';
-import request from 'supertest';
-import knex, { Knex } from 'knex';
-import { createArtist, createGuest, seedTable, createMany } from '../../setup/utils/factories';
-import { v4 as uuid } from 'uuid';
-import { internet } from 'faker';
+import { createArtist, createGuest, createMany, seedTable } from '../../setup/utils/factories';
+
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
 
@@ -24,7 +24,7 @@ describe('/items', () => {
 		describe('Mathmatical Operators', () => {
 			describe('returns users with name _eq', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const name = internet.email();
+					const name = 'users-with-eq@example.com';
 					const guests: any[] = createMany(createGuest, 10);
 					for (const guest of guests) {
 						guest.id = uuid();
@@ -63,7 +63,7 @@ describe('/items', () => {
 		describe('Logical Operators', () => {
 			describe('returns users with name equality _AND favorite_artist equality', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const name = internet.email();
+					const name = 'users-with-name-and-favorite-artist@example.com';
 					const guests: any[] = createMany(createGuest, 10, { name });
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 					const artist = createArtist();
@@ -88,7 +88,7 @@ describe('/items', () => {
 			});
 			describe('returns users with name equality _OR favorite_artist equality', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const name = internet.email();
+					const name = 'testing-name-equality@example.com';
 
 					const artist = createArtist();
 					const guests: any[] = createMany(createGuest, 10, { name });
@@ -96,9 +96,10 @@ describe('/items', () => {
 
 					for (const guest of guests) {
 						guest.id = uuid();
-						guest.name = internet.email();
+						guest.name = 'not-equal-test@example.com';
 						guest.favorite_artist = artist.id;
 					}
+
 					await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 

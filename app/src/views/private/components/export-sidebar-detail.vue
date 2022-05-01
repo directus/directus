@@ -218,10 +218,10 @@ import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollection } from '@directus/shared/composables';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/shared/utils';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -273,6 +273,10 @@ const exportSettings = reactive({
 watch(
 	() => props.layoutQuery,
 	() => {
+		if (props.layoutQuery?.fields) {
+			exportSettings.fields = props.layoutQuery?.fields;
+		}
+
 		if (props.layoutQuery?.sort) {
 			if (Array.isArray(props.layoutQuery.sort)) {
 				exportSettings.sort = props.layoutQuery.sort[0];

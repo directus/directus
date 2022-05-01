@@ -1,8 +1,4 @@
-export function abbreviateNumber(
-	number: number,
-	decimalPlaces = 0,
-	units: string[] = ['K', 'M', 'B', 'T']
-): number | string {
+export function abbreviateNumber(number: number, decimalPlaces = 0, units: string[] = ['K', 'M', 'B', 'T']): string {
 	const isNegative = number < 0;
 
 	number = Math.abs(number);

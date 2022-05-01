@@ -400,7 +400,7 @@ export class PayloadService {
 
 			if (allowedCollections.includes(relatedCollection) === false) {
 				throw new InvalidPayloadException(
-					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}`
+					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`
 				);
 			}
 
@@ -713,7 +713,7 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(data: Partial<Item>): Promise<string> {
+	async prepareDelta(data: Partial<Item>): Promise<string | null> {
 		let payload = cloneDeep(data);
 
 		for (const key in payload) {
@@ -723,6 +723,8 @@ export class PayloadService {
 		}
 
 		payload = await this.processValues('read', payload);
+
+		if (Object.keys(payload).length === 0) return null;
 
 		return JSON.stringify(payload);
 	}

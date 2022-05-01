@@ -542,7 +542,7 @@ select_an_item: Избиране...
 edit: Редактиране
 enabled: Включване
 disable_tfa: Изключване на 2FA
-tfa_scan_code: За да завършите настройването на 2FA, сканиране на кода във вашето приложение за оторизация
+tfa_scan_code: За да завършите настройването на 2FA, сканирайте кода в приложението за оторизация
 enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
 create_account: Създаване на профил
 account_created_successfully: Профилът е създаден
@@ -640,6 +640,7 @@ advanced_settings: Разширени настройки
 advanced_filter: Разширен филтър
 delete_advanced_filter: Изтриване на филтър
 change_advanced_filter_operator: Промяна на оператор
+advanced: Разширени
 operators:
   eq: Равно
   neq: Различно
@@ -1516,6 +1517,7 @@ interfaces:
     add_label: 'Текст за „Създаване“'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
+    incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
@@ -1738,6 +1740,8 @@ layouts:
     calendar: Календар
     start_date_field: Начална дата
     end_date_field: Крайна дата
+    optional: По желание
+    first_day: Първи ден от седмицата
   map:
     map: Географска карта
     basemap: Основна карта

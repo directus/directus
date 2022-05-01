@@ -81,6 +81,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (!geometryField.value && fields.length > 0) {
 					geometryField.value = fields[0].field;
 				}
+
+				// clear the location filter when it is no longer using a valid geometryField
+				if (
+					geometryField.value &&
+					locationFilter.value &&
+					!Object.keys(locationFilter.value).includes(geometryField.value)
+				) {
+					locationFilter.value = undefined;
+				}
 			},
 			{ immediate: true }
 		);

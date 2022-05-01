@@ -640,6 +640,7 @@ advanced_settings: Erweiterte Einstellungen
 advanced_filter: Erweiterter Filter
 delete_advanced_filter: Filter zurücksetzen
 change_advanced_filter_operator: Operator ändern
+advanced: Erweitert
 operators:
   eq: Gleich
   neq: Ungleich
@@ -1400,6 +1401,7 @@ interfaces:
     include_seconds: Sekunden einbeziehen
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
+    placeholder: Datum wählen...
   system-display-template:
     display-template: Anzeigevorlage
     description: Statischen Text und dynamische Feldwerte mischen
@@ -1515,6 +1517,7 @@ interfaces:
     add_label: 'Label für "Neu erstellen"'
     field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
+    incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -1532,6 +1535,7 @@ interfaces:
     auto_formatter: Auto-Formatierung für Titel verwenden
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
+    add_tags: Tag hinzufügen und Enter drücken...
   input:
     input: Eingabe
     description: Wert manuell eingeben
@@ -1549,6 +1553,11 @@ interfaces:
   input-multiline:
     textarea: Textfeld (mehrzeilig)
     description: Mehrzeiligen Klartext eingeben
+  input-translated-string:
+    input-translated-string: Übersetzte Elemente
+    description: Übersetzungselement auswählen oder hinzufügen
+    search_placeholder: Suchen...
+    new_translation_string: Neues Übersetzungelement
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
@@ -1731,6 +1740,7 @@ layouts:
     calendar: Kalender
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
+    optional: Optional
   map:
     map: Karte
     basemap: Basiskarte
@@ -1745,6 +1755,35 @@ layouts:
     find_location: Standort suchen...
     default_template: Verwenden des Sammlungs-Standards...
     no_compatible_fields: Keine kompatiblen Felder
+  kanban:
+    name: Kanban,
+    group_field: Gruppieren nach,
+    group_field_placeholder: Feld zum Gruppieren...,
+    group_title: Gruppentitel,
+    group_title_placeholder: Feld für Gruppentitel...,
+    title: Karten-Titel,
+    title_placeholder: Optionales Titelfeld...,
+    text: Karten-Text,
+    text_placeholder: Optionales Textfeld...,
+    date: Karten-Datum,
+    date_placeholder: Optionales Datumsfeld...,
+    tags: Karten-Tags,
+    tags_placeholder: Optionales Tag-Feld...,
+    user: Karten-Benutzer,
+    user_placeholder: Optionales Benutzerfeld...,
+    image: Karten-Bild,
+    image_placeholder: Optionales Bildfeld...,
+    image_fit: Karten-Bildfüllmodus,
+    crop: Beschneiden,
+    advanced: Erweitert,
+    edit_group: Gruppe bearbeiten,
+    delete_group: Gruppe löschen,
+    add_group: Gruppe hinzufügen,
+    add_group_placeholder: Neuen Gruppentitel eingeben...,
+    show_ungrouped: Nicht gruppierte Elemente zeigen,
+    show: Anzeigen,
+    no_group: Keine Gruppe,
+    not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 panels:
   metric:
     name: Metrik
@@ -1763,3 +1802,34 @@ panels:
   list:
     name: Liste
     description: Filtern und Auflisten von Feldern von einer Sammlung
+  barchart:
+    name: Balkendiagramm
+    description: Balken- oder Spaltendiagramme zum Vergleich von Wertegruppen
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    select_x_axis: Sie müssen eine X-Achse auswählen.
+    function: Funktion
+    horizontal: Horizontal
+    x_axis_grouping: Gruppierung X-Achse
+    x_axis: X-Achse
+    y_axis_function: Funktion Y-Achse
+    y_axis: Y-Achse
+    show_x_axis: X-Achse anzeigen
+    show_y_axis: Y-Achse anzeigen
+    show_data_label: Datenbezeichnung anzeigen
+    group_by: Gruppieren nach
+    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+  linechart:
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    select_x_axis: Sie müssen eine X-Achse auswählen.
+    function: Funktion
+    x_axis: X-Achse
+    y_axis: Y-Achse
+    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+  meter:
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    function: Funktion
+  piechart:
+    function: 'Funktion'

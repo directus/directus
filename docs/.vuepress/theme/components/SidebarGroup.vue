@@ -107,7 +107,7 @@ export default {
     top -0.12em
     left 0.5em
   &.clickable
-    &.active
+    &.router-link-active
       font-weight 600
       color var(--primary)
       border-left-color var(--primary)
