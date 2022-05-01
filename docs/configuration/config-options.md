@@ -88,7 +88,7 @@ startup. The JavaScript configuration supports two different formats, either an 
 the environment variable name:
 
 ```js
-// Object Sytax
+// Object Syntax
 
 module.exports = {
 	HOST: '0.0.0.0',
