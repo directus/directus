@@ -135,7 +135,7 @@ be [uploaded programmatically via the API](/reference/files/).
 
 ## Replace a File
 
-When a file is replaced, its existing info and and all relationships are kept.
+When a file is replaced, its existing info and all relationships are kept.
 
 <video alt="Replace a File" loop muted controls autoplay>
   <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/replace-a-file-20220305A.mp4" type="video/mp4">
