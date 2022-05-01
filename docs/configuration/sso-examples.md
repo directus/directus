@@ -50,7 +50,7 @@ Twitter does not provide "email" so we define "username" as the identifier.
 AUTH_MICROSOFT_DRIVER="openid"
 AUTH_MICROSOFT_CLIENT_ID="..."
 AUTH_MICROSOFT_CLIENT_SECRET="..."
-AUTH_MICROSOFT_ISSUER_URL="https://login.microsoftonline.com/<your_tennant_id>/v2.0/.well-known/openid-configuration"
+AUTH_MICROSOFT_ISSUER_URL="https://login.microsoftonline.com/<your_tenant_id>/v2.0/.well-known/openid-configuration"
 AUTH_MICROSOFT_IDENTIFIER_KEY="email"
 ```
 
