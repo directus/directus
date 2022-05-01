@@ -10,7 +10,7 @@ Use the `useGroupableParent` function in a parent component that will contain on
 
 ### `useGroupableParent(state: GroupableParentState, options: GroupableParentOptions, group: string): void`
 
-The `useGroupableParent` composition accepts two paremeters: state and options. State includes a `selection` key that
+The `useGroupableParent` composition accepts two parameters: state and options. State includes a `selection` key that
 can be used to pass an array of selected items, so you can manage this active state from the parent context. The
 `onSelectionChange` property of state is a callback function that fires whenever the selection changes from a child
 groupable item.
