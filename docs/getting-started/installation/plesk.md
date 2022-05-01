@@ -88,7 +88,7 @@ stay empty.
 
 ::: tip Store `document_root` in a version control
 
-If you want to keep the folder in in a version controll like git, create a empty `.gitignore` file inside the folder.
+If you want to keep the folder in in a version control like git, create a empty `.gitignore` file inside the folder.
 
 :::
 
