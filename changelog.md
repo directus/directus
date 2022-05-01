@@ -3767,7 +3767,7 @@ You can enable this new module under Project Settings.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7258](https://github.com/directus/directus/pull/7258) Don't use tags interface for CSV filter
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7253](https://github.com/directus/directus/pull/7253) Fix formatted-value overflow ellpisis on card layout
+  - [#7253](https://github.com/directus/directus/pull/7253) Fix formatted-value overflow ellipsis on card layout
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7252](https://github.com/directus/directus/pull/7252) Handle empty collection group in custom nav
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
