@@ -1531,7 +1531,7 @@ header.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#9982](https://github.com/directus/directus/pull/9982) Allow reordering between groups in data model
     ([@licitdev](https://github.com/licitdev))
-  - [#9924](https://github.com/directus/directus/pull/9924) Fix indeterminate properties in advanded field creation
+  - [#9924](https://github.com/directus/directus/pull/9924) Fix indeterminate properties in advanced field creation
     ([@Oreilles](https://github.com/Oreilles))
   - [#9914](https://github.com/directus/directus/pull/9914) Fix wrong date filter in calendar layout
     ([@Oreilles](https://github.com/Oreilles))
