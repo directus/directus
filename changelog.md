@@ -1269,7 +1269,7 @@ header.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#10151](https://github.com/directus/directus/pull/10151) Cleaned up Oracle duplicate index handling
     ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#10077](https://github.com/directus/directus/pull/10077) Add `limit` to graphql aggegrated queries
+  - [#10077](https://github.com/directus/directus/pull/10077) Add `limit` to graphql aggregated queries
     ([@azrikahar](https://github.com/azrikahar))
   - [#10064](https://github.com/directus/directus/pull/10064) Add status field in the directus_notifications collection
     ([@alejandro-tss](https://github.com/alejandro-tss))
