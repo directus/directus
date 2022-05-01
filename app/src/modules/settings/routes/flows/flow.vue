@@ -469,7 +469,11 @@ async function deletePanel(id: string) {
 	if (!flow.value) return;
 
 	stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
-	if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
+	if (id.startsWith('_') === false) {
+		panelsToBeDeleted.value.push(id);
+	} else if (id.startsWith('_') && stagedFlow.value?.operation === id) {
+		stagedFlow.value = {};
+	}
 }
 
 function createPanel(parent: string, type: 'resolve' | 'reject') {
