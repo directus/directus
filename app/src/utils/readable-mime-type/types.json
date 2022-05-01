@@ -610,7 +610,7 @@
 	"application/x-sv4cpio": "System V Release 4 CPIO Archive",
 	"application/x-sv4crc": "System V Release 4 CPIO Checksum Data",
 	"application/sbml+xml": "Systems Biology Markup Language",
-	"text/tab-separated-values": "Tab Seperated Values",
+	"text/tab-separated-values": "Tab Separated Values",
 	"image/tiff": "TIFF",
 	"application/vnd.tao.intent-module-archive": "Tao Intent",
 	"application/x-tar": "Tar File",
