@@ -1983,7 +1983,7 @@ header.
   ([@jaycammarano](https://github.com/jaycammarano))
 - [#9321](https://github.com/directus/directus/pull/9321) add content and fix broken links
   ([@benhaynes](https://github.com/benhaynes))
-- [#9256](https://github.com/directus/directus/pull/9256) Fixed Github oauth config in docs
+- [#9256](https://github.com/directus/directus/pull/9256) Fixed GitHub oauth config in docs
   ([@aidenfoxx](https://github.com/aidenfoxx))
 - [#9218](https://github.com/directus/directus/pull/9218) Update config-options.md
   ([@aidenfoxx](https://github.com/aidenfoxx))
