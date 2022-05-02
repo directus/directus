@@ -118,6 +118,8 @@ export class Auth extends IAuth {
 	}
 
 	async static(token: AuthToken): Promise<boolean> {
+		if (!this.staticToken) this.staticToken = token;
+
 		await this._transport.get('/users/me', { params: { access_token: token }, headers: { Authorization: null } });
 
 		this.updateStorage<'StaticToken'>({ access_token: token, expires: null, refresh_token: null });

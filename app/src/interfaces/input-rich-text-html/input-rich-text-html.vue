@@ -8,6 +8,7 @@
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
+			@focus="setupContentWatcher"
 		/>
 		<template v-if="softLength">
 			<span
@@ -270,19 +271,6 @@ export default defineComponent({
 
 		let count = ref(0);
 
-		onMounted(() => {
-			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
-
-			const observer = new MutationObserver((_mutations) => {
-				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
-
-				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
-			});
-
-			const config = { characterData: true, childList: true, subtree: true };
-			observer.observe(iframeContents, config);
-		});
-
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
 			imageToken
@@ -362,6 +350,8 @@ export default defineComponent({
 
 		const percRemaining = computed(() => percentage(count.value, props.softLength));
 
+		let observer: MutationObserver;
+
 		return {
 			t,
 			percRemaining,
@@ -395,7 +385,22 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
+			setupContentWatcher,
 		};
+
+		function setupContentWatcher() {
+			if (observer) return;
+
+			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
+
+			observer = new MutationObserver((_mutations) => {
+				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+			});
+
+			const config = { characterData: true, childList: true, subtree: true };
+			observer.observe(iframeContents, config);
+		}
 
 		function setup(editor: any) {
 			editorRef.value = editor;

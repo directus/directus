@@ -1,0 +1,182 @@
+# Item Page
+
+> The Item Page is a tailored form for managing Items and their Field values. This page also includes options for
+> archiving, reverting, and commenting on the Item.
+
+[[toc]]
+
+:::tip Programmatically Manage Items
+
+This page shows you how to manage Items within the no-code app. However, Items can also be [managed](/reference/items/)
+programmatically via the API.
+
+<!--
+@TODO Reference > Items
+Add links once "archive item" is created
+[archived]()
+[reverted](/reference/system/revisions/#revisions)
+[commented on](/reference/system/activity/#create-a-comment)
+-->
+
+:::
+
+## Create an Item
+
+<video autoplay muted loop controls title="Create an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/create-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+To create an Item, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Click <span mi btn>add</span> in the Page Header and the Item Page will open.
+3. Fill in Item details as desired.
+4. Click <span mi btn>check</span> in the Page Header.
+
+::: tip Singletons
+
+If the Collection is configured as a Singleton in the data model settings, then the App will skip step two above and
+automatically open the Item Page.
+
+<!--
+@TODO Config > Data Model
+Link to Singleton once written
+-->
+
+:::
+
+## Edit an Item
+
+<video autoplay muted loop controls title="Edit an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/edit-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+To edit an Item's Field Values, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Click on the desired Item. The Item Page will open.
+3. Update Item details as desired.
+4. Click <span mi btn>check</span> in the header.
+
+::: tip Other Save Options
+
+To the right of the primary Save button, there is a <span mi icon>more_vert</span> menu which contains the following
+alternate save options:
+
+<span mi icon>check</span> Save and Stay (⌘S)\
+<span mi icon>add</span> Save and Create New (⌘⇧S)\
+<span mi icon>done_all</span> Save as Copy\
+<span mi icon>undo</span> Discard all Changes
+
+:::
+
+::: tip Singletons
+
+If the Collection is configured as a "Singleton" in Data Model Settings, then the App will skip step two above and
+automatically open the Item Page.
+
+:::
+
+## Archive an Item
+
+<video autoplay muted loop controls title="Archive an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/archive-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+To archive an Item, follow the steps below. [Learn More](/configuration/data-model/#archive)
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click <span mi btn warn>archive</span> located in the header and a popup will appear.
+4. Click **"Archive"** to confirm the action.
+
+::: warning Requires Configuration
+
+Requires an archive Field to be configured within the Collection's data model settings.
+
+<!--
+@TODO configuration > data model
+Add relevant link here
+-->
+
+:::
+
+## Revert an Item
+
+<video autoplay muted loop controls title="Revert an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/revert-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+As you update Field Values on Items, Directus saves these [Revisions](/getting-started/glossary/#revisions), and they
+can be compared side-by-side to the current state. To revert an Item, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click **"Revisions"** in the page sidebar.
+4. Click on the revision you wish to preview and a side menu will appear.
+5. Go to **"Revisions Made"** in the side menu and view the revision differences.
+6. Click <span mi btn muted>restore</span> to revert the Item's values and return to the Item Page.
+7. Click <span mi btn>check</span> to confirm and exit to the Collection Page.
+
+:::tip Revision Preview
+
+You will also see a **"Revision Preview"** button in the side menu navigation, which will let you preview all the Item's
+values for that revision.
+
+:::
+
+:::tip
+
+Items can also be reverted [programmatically via the API](/reference/system/revisions/).
+
+:::
+
+## Comment on an Item
+
+<video autoplay muted loop controls title="Comment on an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/comment-on-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+Comments, a collaborative tool, are left on an Item in the sidebar and remain there for you and other team-members to
+refer to. To create a comment, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click **"Comments"** in the page sidebar.
+4. Type your message into the input box.
+5. Click the **"Submit"** button.
+
+:::tip Mentions
+
+You can also search and mention any User by typing the **"@"** symbol along with their name or email to send an in-app
+notification as well as an email directing to your comment.
+
+:::
+
+:::tip Edit and Delete Comments
+
+Each comment displays the time it was created in its upper right-hand corner. Hover over this and the
+<span mi icon>more_horiz</span> menu will appear. Click this menu to <span mi icon>edit</span> edit or
+<span mi icon>delete</span> delete the comment.
+
+:::
+
+## Delete an Item
+
+<video autoplay muted loop controls title="Comment on an Item">
+	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/delete-an-item-20220415A.mp4" type="video/mp4" />
+</video>
+
+To delete an Item, follow the steps below.
+
+1. Navigate to the Content Module and select the desired Collection.
+2. Select the desired Item. The Item Page will open.
+3. Click <span mi btn dngr>delete</span> located in the header and a popup will appear.
+4. Click **"Delete"** to confirm the action.
+
+:::tip Soft-Delete
+
+If you wish to remove an Item from view or use without fully deleting it, you may consider
+[archiving the Item](#archive-an-item) instead.
+
+:::
