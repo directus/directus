@@ -74,7 +74,7 @@
 
 		<div class="panel-content" :class="{ 'has-header': showHeader }">
 			<slot></slot>
-			<div v-if="$slots['footer']" class="footer">
+			<div v-if="$slots.footer" class="footer">
 				<slot name="footer"></slot>
 			</div>
 		</div>
