@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<v-progress-circular v-if="loading" indeterminate />
-		<div ref="chartEl" class="time-series" />
+		<span v-if="!hasData" class="type-note">{{ t('no_data') }}</span>
+		<div v-show="hasData" ref="chartEl" class="time-series" />
 	</div>
 </template>
 
@@ -10,7 +11,7 @@ import { defineComponent, PropType, ref, watch, onMounted, onUnmounted, computed
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
-import { isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@directus/shared/utils';
@@ -113,6 +114,7 @@ export default defineComponent({
 
 		const metrics = ref<Record<string, any>[]>([]);
 		const loading = ref(false);
+		const hasData = ref(true);
 		const error = ref();
 		const chartEl = ref();
 		const chart = ref<ApexCharts>();
@@ -125,31 +127,22 @@ export default defineComponent({
 
 		watch(
 			[
-				() => props.collection,
-				() => props.dateField,
-				() => props.valueField,
-				() => props.function,
-				() => props.precision,
-				() => props.range,
+				() => props.data,
 				() => props.color,
 				() => props.fillType,
 				() => props.curveType,
 				() => props.decimals,
 				() => props.min,
 				() => props.max,
-				() => props.filter,
 				() => props.showXAxis,
 				() => props.showYAxis,
 			],
 			() => {
-				fetchData();
-				chart.value?.destroy();
 				setupChart();
+				chart.value?.destroy();
 			},
 			{ deep: true }
 		);
-
-		fetchData();
 
 		onMounted(setupChart);
 
@@ -157,55 +150,23 @@ export default defineComponent({
 			chart.value?.destroy();
 		});
 
-		return { chartEl, metrics, loading, error };
-
-		async function fetchData() {
-			loading.value = true;
-
-			try {
-				metrics.value = props.data.map((metric) => ({
-					x: toISO(metric.group),
-					y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
-				}));
-				chart.value?.updateSeries([
-					{
-						name: props.collection,
-						data: props.data.map((metric) => ({
-							x: toISO(metric.group),
-							y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
-						})),
-					},
-				]);
-			} catch (err) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
-
-			function toISO(metric: Record<string, any>) {
-				const year = metric[`${props.dateField}_year`];
-				const month = padZero(metric[`${props.dateField}_month`] ?? 1);
-				const week = metric[`${props.dateField}_week`];
-				const day = week
-					? padZero(getFirstDayOfNWeeksForYear(week, year))
-					: padZero(metric[`${props.dateField}_day`] ?? 1);
-				const hour = padZero(metric[`${props.dateField}_hour`] ?? 0);
-				const minute = padZero(metric[`${props.dateField}_minute`] ?? 0);
-				const second = padZero(metric[`${props.dateField}_second`] ?? 0);
-
-				return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
-
-				function padZero(value: number) {
-					return String(value).padStart(2, '0');
-				}
-
-				function getFirstDayOfNWeeksForYear(numberOfWeeks: number, year: number) {
-					return addWeeks(new Date(year, 0, 1), numberOfWeeks).getDate();
-				}
-			}
-		}
+		return { chartEl, metrics, loading, error, hasData };
 
 		function setupChart() {
+			if (isEmpty(props.data)) {
+				hasData.value = false;
+				return;
+			}
+
+			loading.value = true;
+
+			metrics.value = [];
+
+			metrics.value = props.data.map((metric) => ({
+				x: toISO(metric.group),
+				y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
+			}));
+
 			chart.value = new ApexCharts(chartEl.value, {
 				colors: [props.color ? props.color : cssVar('--primary')],
 				chart: {
@@ -223,7 +184,12 @@ export default defineComponent({
 					fontFamily: 'var(--family-sans-serif)',
 					foreColor: 'var(--foreground-subdued)',
 				},
-				series: [],
+				series: [
+					{
+						name: props.collection,
+						data: metrics.value,
+					},
+				],
 				stroke: {
 					curve: props.curveType,
 					width: 2,
@@ -341,6 +307,29 @@ export default defineComponent({
 			});
 
 			chart.value.render();
+			loading.value = false;
+
+			function toISO(metric: Record<string, any>) {
+				const year = metric[`${props.dateField}_year`];
+				const month = padZero(metric[`${props.dateField}_month`] ?? 1);
+				const week = metric[`${props.dateField}_week`];
+				const day = week
+					? padZero(getFirstDayOfNWeeksForYear(week, year))
+					: padZero(metric[`${props.dateField}_day`] ?? 1);
+				const hour = padZero(metric[`${props.dateField}_hour`] ?? 0);
+				const minute = padZero(metric[`${props.dateField}_minute`] ?? 0);
+				const second = padZero(metric[`${props.dateField}_second`] ?? 0);
+
+				return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+
+				function padZero(value: number) {
+					return String(value).padStart(2, '0');
+				}
+
+				function getFirstDayOfNWeeksForYear(numberOfWeeks: number, year: number) {
+					return addWeeks(new Date(year, 0, 1), numberOfWeeks).getDate();
+				}
+			}
 		}
 	},
 });
