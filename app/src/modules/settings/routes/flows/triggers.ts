@@ -1,4 +1,4 @@
-import { DeepPartial, Field, TriggerType } from '@directus/shared/types';
+import { DeepPartial, Field, FlowRaw, TriggerType } from '@directus/shared/types';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -7,7 +7,7 @@ export type Trigger = {
 	value: TriggerType;
 	icon: string;
 	description: string;
-	preview: (options: Record<string, any>) => { text: string; label: string }[];
+	preview: (options: Record<string, any>, { flow }: { flow: FlowRaw }) => { text: string; label: string }[];
 	options: DeepPartial<Field>[];
 };
 
