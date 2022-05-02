@@ -33,7 +33,7 @@ export default definePanel({
 				],
 			},
 			limit: -1,
-			fields: [options.valueField, options.dateField],
+			fields: [`${options.function}{${options.valueField}}`, options.dateField],
 		};
 		return response;
 

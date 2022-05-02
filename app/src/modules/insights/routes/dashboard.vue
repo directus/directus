@@ -567,6 +567,10 @@ export default defineComponent({
 				formattedQuery.query[sanitizedKey] = {};
 				formattedQuery.query[sanitizedKey].__aliasFor = query.collection;
 
+				if (query.query.aggregate) {
+					formattedQuery.query[sanitizedKey].__aliasFor = query.collection + '_aggregated';
+				}
+
 				if (query.query.fields) {
 					for (const field of query.query.fields) {
 						formattedQuery.query[sanitizedKey][field] = true;
