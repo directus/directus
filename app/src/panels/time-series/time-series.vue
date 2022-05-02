@@ -28,8 +28,8 @@ export default defineComponent({
 			default: false,
 		},
 		data: {
-			type: Array,
-			default: () => [],
+			type: Object,
+			default: () => ({}),
 		},
 		id: {
 			type: String,
@@ -163,14 +163,16 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				metrics.value = props.data;
-
+				metrics.value = props.data.map((metric) => ({
+					x: toISO(metric.group),
+					y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
+				}));
 				chart.value?.updateSeries([
 					{
 						name: props.collection,
-						data: metrics.value.map((metric) => ({
-							x: metric[props.dateField],
-							y: Number(Number(metric[props.valueField]).toFixed(props.decimals ?? 0)),
+						data: props.data.map((metric) => ({
+							x: toISO(metric.group),
+							y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 						})),
 					},
 				]);

@@ -569,6 +569,19 @@ export default defineComponent({
 
 				if (query.query.aggregate) {
 					formattedQuery.query[sanitizedKey].__aliasFor = query.collection + '_aggregated';
+
+					for (const [aggregateFunc, field] of Object.entries(query.query.aggregate)) {
+						if (!formattedQuery.query[sanitizedKey][aggregateFunc]) {
+							formattedQuery.query[sanitizedKey][aggregateFunc] = {};
+						}
+
+						formattedQuery.query[sanitizedKey][aggregateFunc][field] = true;
+					}
+
+					if (query.query.groupBy) {
+						formattedQuery.query[sanitizedKey].__args = { groupBy: query.query.groupBy };
+						formattedQuery.query[sanitizedKey].group = true;
+					}
 				}
 
 				if (query.query.fields) {
@@ -578,7 +591,10 @@ export default defineComponent({
 				}
 
 				if (query.query.filter) {
-					formattedQuery.query[sanitizedKey].__args = { filter: query.query.filter };
+					if (!formattedQuery.query[sanitizedKey].__args) {
+						formattedQuery.query[sanitizedKey].__args = {};
+					}
+					formattedQuery.query[sanitizedKey].__args.filter = query.query.filter;
 				}
 			}
 			return jsonToGraphQLQuery(formattedQuery);
