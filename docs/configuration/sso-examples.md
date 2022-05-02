@@ -50,7 +50,7 @@ Twitter does not provide "email" so we define "username" as the identifier.
 AUTH_MICROSOFT_DRIVER="openid"
 AUTH_MICROSOFT_CLIENT_ID="..."
 AUTH_MICROSOFT_CLIENT_SECRET="..."
-AUTH_MICROSOFT_ISSUER_URL="https://login.microsoftonline.com/<your_tennant_id>/v2.0/.well-known/openid-configuration"
+AUTH_MICROSOFT_ISSUER_URL="https://login.microsoftonline.com/<your_tenant_id>/v2.0/.well-known/openid-configuration"
 AUTH_MICROSOFT_IDENTIFIER_KEY="email"
 ```
 
@@ -84,7 +84,7 @@ AUTH_KEYCLOAK_ISSUER_URL="http://<your_keycloak_domain>/realms/<your_keycloak_re
 AUTH_KEYCLOAK_IDENTIFIER_KEY="email"
 ```
 
-## Github
+## GitHub
 
 ```
 AUTH_GITHUB_DRIVER="oauth2"
@@ -97,7 +97,7 @@ AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
 
 ::: warning Notice
 
-If the authenticating user has not marked their email as "public" in Github, it will not be accessible by Directus.
+If the authenticating user has not marked their email as "public" in GitHub, it will not be accessible by Directus.
 
 :::
 

@@ -16,7 +16,7 @@ describe('run', () => {
 	});
 
 	describe('when passed the argument up', () => {
-		it('returns "Nothing To Updage" if no directus_migrations', async () => {
+		it('returns "Nothing To Upgrade" if no directus_migrations', async () => {
 			tracker.on.select('directus_migrations').response(['Empty']);
 			await run(db, 'up').catch((e: Error) => {
 				expect(e).toBeInstanceOf(Error);

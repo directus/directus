@@ -1849,7 +1849,7 @@ panels:
     show_data_label: Show Data Label
     group_by: Grouped By
     group_and_function: You must include or omit both a group and a function.
-    y_axix_NaN: The Y axis must be a number.
+    y_axis_NaN: The Y axis must be a number.
     y_axis_conditional_one: The value for condition
     y_axis_conditional_two: must be a number.
   linechart:
