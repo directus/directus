@@ -1763,7 +1763,6 @@ panels:
     show_data_label: Vis Data-Etiket
     group_by: Grupperet Efter
     group_and_function: Du skal inkludere eller udelade både en gruppe og en funktion.
-    y_axix_NaN: Y- aksen skal være et tal.
     y_axis_conditional_one: Værdien for betingelse
     y_axis_conditional_two: skal være et tal.
   linechart:
