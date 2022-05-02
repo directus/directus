@@ -218,7 +218,7 @@ async function toggleFlowCreation(active: boolean) {
 async function toggleFlowStatusById(id: string, value: string) {
 	try {
 		await api.patch(`/flows/${id}`, {
-			status: value,
+			status: value === 'active' ? 'inactive' : 'active',
 		});
 		await flowsStore.hydrate();
 	} catch (error) {
