@@ -1,9 +1,9 @@
 import { listFolders } from './list-folders';
-import { dirSync, SynchronousResult } from 'tmp';
+import { dirSync, SynchrounousResult } from 'tmp';
 
 describe('', () => {
-	let rootDir: SynchronousResult;
-	let childDir: SynchronousResult;
+	let rootDir: SynchrounousResult;
+	let childDir: SynchrounousResult;
 
 	beforeEach(() => {
 		rootDir = dirSync({ unsafeCleanup: true, tmpdir: './' } as any);

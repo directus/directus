@@ -1,9 +1,9 @@
 import { resolvePackage } from './resolve-package';
-import { dirSync, SynchronousResult } from 'tmp';
+import { dirSync, SynchrounousResult } from 'tmp';
 import { ensureDirSync, writeJsonSync } from 'fs-extra';
 import path from 'path';
 describe('', () => {
-	let rootDir: SynchronousResult;
+	let rootDir: SynchrounousResult;
 	beforeEach(() => {
 		rootDir = dirSync({ unsafeCleanup: true, tmpdir: './' } as any);
 		ensureDirSync(`${rootDir.name}/node_modules/`);
