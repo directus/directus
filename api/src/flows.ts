@@ -114,6 +114,10 @@ class FlowManager {
 				const method = flow.options?.method ?? 'GET';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
+			} else if (flow.trigger === 'manual') {
+				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
+
+				this.webhookFlowHandlers[`GET-${flow.id}`] = handler;
 			}
 		}
 	}

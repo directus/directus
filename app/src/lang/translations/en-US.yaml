@@ -1956,6 +1956,10 @@ triggers:
     method: Method
     preview: Triggers on
     response_body: Response Body
+  manual:
+    name: Manual
+    description: Triggers on manual click
+    click: Click
 operations:
   auth:
     name: Authenticate

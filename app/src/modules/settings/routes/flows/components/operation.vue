@@ -66,6 +66,13 @@
 					<dt>{{ label }}</dt>
 					<dd>{{ text }}</dd>
 				</div>
+				<v-button
+					v-if="panel.id === '$trigger' && panel.type === 'manual'"
+					:disabled="manualRunning"
+					@click="manualTrigger"
+				>
+					{{ t('triggers.manual.click') }}
+				</v-button>
 			</dl>
 		</div>
 		<component
@@ -243,6 +250,20 @@ async function toggleFlowStatus(value: string) {
 		unexpectedError(error as Error);
 	} finally {
 		saving.value = false;
+	}
+}
+
+/* Manual Trigger */
+const manualRunning = ref(false);
+
+async function manualTrigger() {
+	manualRunning.value = true;
+	try {
+		await api.get(`/flows/trigger/${props.flow.id}`);
+	} catch (error) {
+		unexpectedError(error as Error);
+	} finally {
+		manualRunning.value = false;
 	}
 }
 </script>

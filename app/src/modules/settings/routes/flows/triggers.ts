@@ -185,7 +185,30 @@ export function getTriggers() {
 							placeholder: '$last',
 						},
 					},
-					schema: {},
+				},
+			],
+		},
+		{
+			text: t('triggers.manual.name'),
+			value: 'manual',
+			icon: 'touch_app',
+			description: t('triggers.manual.description'),
+			preview: () => [
+				{
+					label: t('triggers.manual.description'),
+					text: '',
+				},
+			],
+			options: [
+				{
+					field: 'empty',
+					type: 'alias',
+					meta: {
+						interface: 'presentation-notice',
+						options: {
+							text: t('no_options_available'),
+						},
+					},
 				},
 			],
 		},
