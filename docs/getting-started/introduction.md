@@ -7,7 +7,8 @@
 
 ## What is Directus?
 
-<!--@TODO
+<!--
+@TODO
 getting-started > introduction
 Add 2-4 min Promo Video When Ready
 -->
@@ -70,6 +71,31 @@ If you're looking to see if Directus has a specific feature, the best things you
 In addition, [Cloud Exclusive Extensions]() are always coming out with new features, expanding the Platform and pushing it to new limits.
 -->
 
+## Directus Cloud
+
+**Directus Cloud is the fastest and easiest way to get your Directus Projects going.**
+
+Cloud architecture can be complicated and resource intensive. Directus also has tons of configuration options. Directus
+Cloud provides scalable, optimized hosting and storage, as well as automatic updates so developers can focus on building
+their app. Directus Cloud also offers Cloud Exclusive Extensions, which add even more features and functionality.
+
+Once you've created your free cloud account, you can setup Teams to manage Projects solo or with other Team Members as
+needed. You'll be able get your Projects running in minutes, then as Project needs change, scale up or down as needed at
+the click of a few buttons. The cloud dashboard also provides simple, straight-forward analytics to help understand
+traffic and help make scaling decisions for each Project.
+
+:::tip Ready to test out Directus Cloud?
+
+Setup your free cloud account and learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart/).
+
+:::
+
+:::tip Enterprise Cloud
+
+Need unlimited scalability, total customization, and dedicated support? [Contact us](https://directus.io/contact/)
+
+:::
+
 ## Who's It For?
 
 <!--
@@ -77,10 +103,10 @@ In addition, [Cloud Exclusive Extensions]() are always coming out with new featu
 Video of in-app imports/exports vs API call
 -->
 
-**Directus allows everyone on the team to work together and access data in one place.**
+**Directus lets the whole team to work together and access data in one place.**
 
-Note: in order keep things simpler _(especially for the no-code users)_, Directus uses friendlier names for many
-database terms and technical concepts, including [Project](/getting-started/glossary/#projects) (database),
+In order keep things simpler, _especially for the no-code users_, Directus uses friendlier names for many database terms
+and technical concepts, including [Project](/getting-started/glossary/#projects) (database),
 [Collection](/getting-started/glossary/#collections) (table), [Field](/getting-started/glossary/#fields) (column),
 [Item](/getting-started/glossary/#items) (record), and [Type](/getting-started/glossary/#types) (datatype).
 
@@ -149,14 +175,14 @@ Get a Project running in minutes. Test the API hands-on in the [Quickstart Guide
 **Directus is as flexible as the database itself and can power any data-driven project.**
 
 You can use Directus to build out any data model or app you desire, from ecommerce to IoT fleets and everything in
-between. However, at this time, the core team is focused on four use cases:
+between. However, there are four "most common" use cases:
 
 - **Backend as a Service**\
   An end-to-end data solution for efficiently connecting data and building APIs for projects that scale. Completely detached
   from the database, you're free to link or remove Directus anytime.
 - **Headless CMS**\
-  A modern, flexible way to manage every omnichannel digital experience. Manage content for all your websites, apps, kiosks,
-  digital signage, and other omnichannel digital experiences.
+  Manage every omnichannel digital experience. Deliver file assets or content in beautiful JSON across websites, apps, kiosks,
+  digital signage, and beyond. _The sky's the limit!_
 - **Internal Tool Builder**\
   The whole team can build custom apps! Ditch the spreadsheet and quickly build back-office apps and admin panels for customers,
   inventory, projects, marketing _or anything else._
