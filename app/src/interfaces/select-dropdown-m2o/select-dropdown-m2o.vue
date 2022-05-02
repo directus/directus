@@ -64,19 +64,18 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationM2O, useRelationSingle, RelationQuerySingle } from '@/composables/use-relation';
+import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
+import { usePermissionsStore, useCollectionsStore } from '@/stores';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { useCollection } from '@directus/shared/composables';
+import { parseFilter } from '@/utils/parse-filter';
+import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerItem from '@/views/private/components/drawer-item';
 import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { get } from 'lodash';
+import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item';
-import DrawerCollection from '@/views/private/components/drawer-collection';
-import { parseFilter } from '@/utils/parse-filter';
-import { render } from 'micromustache';
-import { usePermissionsStore } from '@/stores';
 
 const props = withDefaults(
 	defineProps<{
@@ -100,6 +99,8 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 
 const values = inject('values', ref<Record<string, any>>({}));
+
+const collectionsStore = useCollectionsStore();
 
 const customFilter = computed(() => {
 	return parseFilter(
@@ -126,13 +127,15 @@ const value = computed({
 const selectModalActive = ref(false);
 const editModalActive = ref(false);
 
-const { info: collectionInfo } = useCollection(collection);
-
 const displayTemplate = computed(() => {
 	if (props.template) return props.template;
-	return (
-		collectionInfo.value?.meta?.display_template || `{{ ${relationInfo.value?.relatedPrimaryKeyField.field || ''} }}`
-	);
+
+	if (!relationInfo.value) return '';
+
+	const displayTemplate = collectionsStore.getCollection(relationInfo.value.relatedCollection.collection)?.meta
+		?.display_template;
+
+	return displayTemplate || `{{ ${relationInfo.value.relatedPrimaryKeyField.field || ''} }}`;
 });
 
 const requiredFields = computed(() => {

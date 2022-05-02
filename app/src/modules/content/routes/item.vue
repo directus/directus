@@ -365,7 +365,7 @@ export default defineComponent({
 		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
 
-			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field];
+			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field] ?? '+';
 
 			return props.primaryKey;
 		});
