@@ -56,7 +56,7 @@
 				</v-button>
 
 				<button
-					v-tooltip.bottom="t('presentation_only_cannot_be_imported')"
+					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
 					class="download-local"
 					@click="$emit('download')"
 				>
