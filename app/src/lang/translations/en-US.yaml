@@ -2027,3 +2027,4 @@ operations:
       one: One Item
       many: Multiple Items
     payload: Payload
+    emit_events: Emit Events

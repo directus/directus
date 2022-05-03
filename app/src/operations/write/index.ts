@@ -62,5 +62,17 @@ export default defineOperationApp({
 				},
 			},
 		},
+		{
+			field: 'emitEvents',
+			name: '$t:operations.write.emit_events',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: true,
+			},
+		},
 	],
 });
