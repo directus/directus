@@ -19,6 +19,7 @@ import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useFieldsStore } from '@/stores';
+import { saveAsCSV } from '@/utils/save-as-csv';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -125,6 +126,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			selectAll,
 			filter,
 			search,
+			download,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -134,6 +136,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+		}
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, items.value);
 		}
 
 		function toPage(newPage: number) {
