@@ -3,19 +3,17 @@ import { saveAs } from 'file-saver';
 import { parse } from 'json2csv';
 import { getDisplay } from '@/displays';
 import { useFieldsStore } from '@/stores';
+import { get } from 'lodash';
 
 /**
  * Saves the given collection + items combination as a CSV file
  */
-export async function saveAsCSV(collection: string, items: Item[]) {
+export async function saveAsCSV(collection: string, fields: string[], items: Item[]) {
 	const fieldsStore = useFieldsStore();
-
-	// It should be safe to assume that every object in the array of items has the same type signature
-	const fieldKeys = Object.entries(items[0]).map(([key]) => key);
 
 	const fieldsUsed: Record<string, Field | null> = {};
 
-	for (const key of fieldKeys) {
+	for (const key of fields) {
 		fieldsUsed[key] = fieldsStore.getField(collection, key);
 	}
 
@@ -24,8 +22,9 @@ export async function saveAsCSV(collection: string, items: Item[]) {
 	for (const item of items) {
 		const parsedItem: Record<string, any> = {};
 
-		for (const [key, value] of Object.entries(item)) {
+		for (const key of fields) {
 			const name = fieldsUsed[key]?.name ?? key;
+			const value = get(item, key);
 
 			let display: DisplayConfig | undefined;
 

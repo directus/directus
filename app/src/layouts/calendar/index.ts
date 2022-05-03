@@ -92,21 +92,23 @@ export default defineLayout<LayoutOptions>({
 		});
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
+		const queryFields = computed(() => {
+			if (!primaryKeyField.value) return [];
+
+			const fields = [primaryKeyField.value.field];
+			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
+			if (startDateField.value) fields.push(startDateField.value);
+			if (endDateField.value) fields.push(endDateField.value);
+			return fields;
+		});
+
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
 				sort: computed(() => [primaryKeyField.value?.field || '']),
 				page: ref(1),
 				limit: ref(-1),
-				fields: computed(() => {
-					if (!primaryKeyField.value) return [];
-
-					const fields = [primaryKeyField.value.field];
-					if (template.value) fields.push(...getFieldsFromTemplate(template.value));
-					if (startDateField.value) fields.push(startDateField.value);
-					if (endDateField.value) fields.push(endDateField.value);
-					return fields;
-				}),
+				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,
 			},
@@ -254,7 +256,7 @@ export default defineLayout<LayoutOptions>({
 
 		function download() {
 			if (!collection.value) return;
-			saveAsCSV(collection.value, items.value);
+			saveAsCSV(collection.value, queryFields.value, items.value);
 		}
 
 		function updateCalendar() {
