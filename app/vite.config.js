@@ -140,7 +140,7 @@ function directusExtensions() {
 	const prefix = '@directus-extensions-';
 	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
-	let extensionEntries = {};
+	let extensionEntrypoints = {};
 
 	return [
 		{
@@ -163,7 +163,7 @@ function directusExtensions() {
 				if (virtualIds.includes(id)) {
 					const extensionType = id.substring(prefix.length);
 
-					return extensionEntries[extensionType];
+					return extensionEntrypoints[extensionType];
 				}
 			},
 		},
@@ -199,7 +199,7 @@ function directusExtensions() {
 		const extensions = [...packageExtensions, ...localExtensions];
 
 		for (const extensionType of APP_EXTENSION_TYPES) {
-			extensionEntries[extensionType] = generateExtensionsEntry(extensionType, extensions);
+			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
 		}
 	}
 }
