@@ -6,7 +6,6 @@ exports.seed = async function (knex) {
 			many_field: 'favorite_artist',
 			one_collection: 'artists',
 		},
-		{ many_collection: 'artists_events', many_field: 'events_id', one_collection: 'artists' },
 		{
 			many_collection: 'artists_events',
 			many_field: 'events_id',
