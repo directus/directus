@@ -1,4 +1,6 @@
+import { TransportRequestOptions } from './transport';
 import { ID } from './types';
+import { Aggregate as SharedAggregate } from '@directus/shared/types';
 
 export type Field = string;
 
@@ -41,10 +43,17 @@ export type QueryMany<T> = QueryOne<T> & {
 	offset?: number;
 	page?: number;
 	meta?: keyof ItemMetadata | '*';
+	groupBy?: string | string[];
+	aggregate?: Aggregate;
+	alias?: Record<string, string>;
 };
 
 export type DeepQueryMany<T> = {
 	[K in keyof QueryMany<T> as `_${string & K}`]: QueryMany<T>[K];
+};
+
+export type Aggregate = {
+	[K in keyof SharedAggregate]: string;
 };
 
 export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
@@ -86,20 +95,30 @@ export type FieldFilter<T> = {
 
 export type Filter<T> = LogicalFilter<T> | FieldFilter<T extends Array<unknown> ? T[number] : T>;
 
+export type ItemsOptions = {
+	requestOptions: TransportRequestOptions;
+};
+
 /**
  * CRUD at its finest
  */
 export interface IItems<T extends Item> {
-	createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
-	createMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
+	createOne(item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>>;
+	createMany(items: PartialItem<T>[], query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
 
-	readOne(id: ID, query?: QueryOne<T>): Promise<OneItem<T>>;
-	readMany(ids: ID[], query?: QueryMany<T>): Promise<ManyItems<T>>;
-	readByQuery(query?: QueryMany<T>): Promise<ManyItems<T>>;
+	readOne(id: ID, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>>;
+	readMany(ids: ID[], query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
+	readByQuery(query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
 
-	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
-	updateMany(ids: ID[], item: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>>;
+	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>, options?: ItemsOptions): Promise<OneItem<T>>;
+	updateMany(ids: ID[], item: PartialItem<T>, query?: QueryMany<T>, options?: ItemsOptions): Promise<ManyItems<T>>;
 
-	deleteOne(id: ID): Promise<void>;
-	deleteMany(ids: ID[]): Promise<void>;
+	deleteOne(id: ID, options?: ItemsOptions): Promise<void>;
+	deleteMany(ids: ID[], options?: ItemsOptions): Promise<void>;
+}
+
+export class EmptyParamError extends Error {
+	constructor(paramName?: string) {
+		super(`${paramName ?? 'ID'} cannot be an empty string`);
+	}
 }

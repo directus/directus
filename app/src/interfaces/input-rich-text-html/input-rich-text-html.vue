@@ -8,6 +8,7 @@
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
+			@focus="setupContentWatcher"
 		/>
 		<template v-if="softLength">
 			<span
@@ -268,32 +269,7 @@ export default defineComponent({
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
 
-		let tinymceEditor: HTMLElement | null;
 		let count = ref(0);
-		onMounted(() => {
-			let iframe;
-			let contentLoaded = false;
-			const wysiwyg = document.getElementById(props.field);
-
-			if (wysiwyg) iframe = wysiwyg.getElementsByTagName('iframe');
-
-			if (iframe && iframe[0] && iframe[0].contentWindow)
-				tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
-
-			if (tinymceEditor) {
-				const observer = new MutationObserver((_mutations) => {
-					count.value = tinymceEditor?.textContent?.replace('\n', '')?.length ?? 0;
-					if (!contentLoaded) {
-						contentLoaded = true;
-					} else {
-						emit('input', editorRef.value.getContent());
-					}
-				});
-
-				const config = { characterData: true, childList: true, subtree: true };
-				observer.observe(tinymceEditor, config);
-			}
-		});
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
@@ -374,6 +350,8 @@ export default defineComponent({
 
 		const percRemaining = computed(() => percentage(count.value, props.softLength));
 
+		let observer: MutationObserver;
+
 		return {
 			t,
 			percRemaining,
@@ -407,7 +385,22 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
+			setupContentWatcher,
 		};
+
+		function setupContentWatcher() {
+			if (observer) return;
+
+			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
+
+			observer = new MutationObserver((_mutations) => {
+				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+			});
+
+			const config = { characterData: true, childList: true, subtree: true };
+			observer.observe(iframeContents, config);
+		}
 
 		function setup(editor: any) {
 			editorRef.value = editor;
@@ -416,6 +409,13 @@ export default defineComponent({
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 			editor.ui.registry.addToggleButton('customLink', linkButton);
 			editor.ui.registry.addButton('customCode', sourceCodeButton);
+
+			editor.on('init', function () {
+				editor.shortcuts.remove('meta+k');
+				editor.addShortcut('meta+k', 'Insert Link', () => {
+					editor.ui.registry.getAll().buttons.customlink.onAction();
+				});
+			});
 		}
 
 		function setFocus(val: boolean) {

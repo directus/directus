@@ -167,7 +167,10 @@ export class UsersService extends ItemsService {
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (data.role) {
-			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', data.role).first();
+			// data.role will be an object with id with GraphQL mutations
+			const roleId = data.role?.id ?? data.role;
+
+			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
 
 			if (!newRole?.admin_access) {
 				await this.checkRemainingAdminExistence(keys);
@@ -324,7 +327,9 @@ export class UsersService extends ItemsService {
 
 		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
-		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
+		const acceptURL = url
+			? new Url(url).setQuery('token', token).toString()
+			: new Url(env.PUBLIC_URL).addPath('admin', 'reset-password').setQuery('token', token);
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({

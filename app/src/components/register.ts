@@ -29,6 +29,7 @@ import VForm from './v-form';
 import VHover from './v-hover/';
 import VHighlight from './v-highlight.vue';
 import VIcon from './v-icon/';
+import VIconFile from './v-icon-file.vue';
 import VInfo from './v-info/';
 import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
@@ -52,6 +53,7 @@ import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
 import VDatePicker from './v-date-picker';
+import VEmojiPicker from './v-emoji-picker.vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -77,6 +79,7 @@ export function registerComponents(app: App): void {
 	app.component('VHover', VHover);
 	app.component('VHighlight', VHighlight);
 	app.component('VIcon', VIcon);
+	app.component('VIconFile', VIconFile);
 	app.component('VInfo', VInfo);
 	app.component('VInput', VInput);
 	app.component('VItemGroup', VItemGroup);
@@ -110,6 +113,7 @@ export function registerComponents(app: App): void {
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
 	app.component('VDatePicker', VDatePicker);
+	app.component('VEmojiPicker', VEmojiPicker);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);

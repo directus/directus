@@ -113,4 +113,26 @@ describe('', () => {
 			'nintersects_bbox',
 		]);
 	});
+
+	it('includes validation only types', () => {
+		expect(getFilterOperatorsForType(TYPES[0], { includeValidation: true })).toStrictEqual([
+			'contains',
+			'ncontains',
+			'eq',
+			'neq',
+			'lt',
+			'lte',
+			'gt',
+			'gte',
+			'between',
+			'nbetween',
+			'empty',
+			'nempty',
+			'null',
+			'nnull',
+			'in',
+			'nin',
+			'regex',
+		]);
+	});
 });

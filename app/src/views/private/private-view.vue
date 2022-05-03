@@ -118,6 +118,7 @@ useEventListener(window, 'pointermove', onPointerMove);
 useEventListener(window, 'pointerup', onPointerUp);
 
 const { data } = useLocalStorage('module-nav-width');
+
 onMounted(() => {
 	if (!data.value) return;
 	if (Number.isNaN(data.value)) return;
@@ -202,6 +203,7 @@ function useModuleNavResize() {
 	}
 
 	function resetModuleNavWidth() {
+		currentWidth.value = 220;
 		moduleNavEl.value!.style.width = `220px`;
 	}
 

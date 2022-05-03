@@ -103,7 +103,7 @@ following custom script to your `package.json`:
 ```
 
 When you run the command via `npm run create-snapshot` it will create a new snapshot with the following naming schema:
-`[YYYY-MM-DD]-snapshot-[timestamp].json`. This command can be run e.g by your deployent pipeline before each deploy on
+`[YYYY-MM-DD]-snapshot-[timestamp].yaml`. This command can be run e.g by your deployment pipeline before each deploy on
 your server to keep a schema backup.
 
 :::

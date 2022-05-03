@@ -23,10 +23,6 @@ export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
 		icon: 'sourcecode',
 		tooltip: i18n.global.t('wysiwyg_options.source_code'),
 		onAction: () => {
-			if (editor.value.plugins.fullscreen.isFullscreen()) {
-				editor.value.execCommand('mceFullScreen');
-			}
-
 			codeDrawerOpen.value = true;
 			code.value = editor.value.getContent();
 		},
@@ -40,6 +36,7 @@ export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
 
 	function saveCode() {
 		editor.value.setContent(code.value);
+		editor.value.undoManager.add();
 		closeCodeDrawer();
 	}
 }
