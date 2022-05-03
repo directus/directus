@@ -143,7 +143,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const email = userInfo.email as string | null | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
+		const identifier = (userInfo[identifierKey ?? 'sub'] as any | null | undefined)?.toString() ?? email;
 
 		if (!identifier) {
 			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
