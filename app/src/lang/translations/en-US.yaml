@@ -1398,6 +1398,7 @@ interfaces:
     no_rules: No configured rules
     change_value: Click to change value
     placeholder: Drag rules here
+    add_key_placeholder: Add a key and press enter...
   fields:
     name: Fields
   group-accordion:
