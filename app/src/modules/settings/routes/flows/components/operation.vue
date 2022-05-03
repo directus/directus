@@ -359,8 +359,6 @@ function pointerLeave() {
 
 		cursor: pointer;
 		z-index: 10;
-
-		--v-icon-color: var(--primary);
 	}
 
 	.button-hint {
@@ -386,12 +384,18 @@ function pointerLeave() {
 		align-items: center;
 		background-color: var(--background-page);
 		transform: translate(calc(-50% - 1px), calc(-50% - 2px));
+
+		--v-icon-color: var(--primary);
 	}
 
 	.add-resolve,
 	.resolve-hint {
 		top: var(--resolve-top);
 		left: var(--resolve-left);
+
+		.button-hint {
+			--v-icon-color: var(--primary);
+		}
 	}
 
 	.add-reject,
@@ -399,14 +403,32 @@ function pointerLeave() {
 		top: var(--reject-top);
 		left: var(--reject-left);
 
-		.v-icon {
-			color: var(--secondary);
+		--v-icon-color: var(--secondary);
+
+		.button-hint {
+			--v-icon-color: var(--secondary);
 		}
 	}
 
 	.attachment {
 		top: var(--attachment-y);
 		left: var(--attachment-x);
+	}
+
+	&.reject {
+		:deep(.header) {
+			.v-icon {
+				color: var(--secondary);
+			}
+
+			.name {
+				color: var(--secondary);
+			}
+		}
+
+		.attachment {
+			--v-icon-color: var(--secondary);
+		}
 	}
 
 	&.loner {
@@ -428,22 +450,6 @@ function pointerLeave() {
 			.dot {
 				background-color: var(--foreground-subdued);
 			}
-		}
-	}
-
-	&.reject {
-		:deep(.header) {
-			.v-icon {
-				color: var(--secondary);
-			}
-
-			.name {
-				color: var(--secondary);
-			}
-		}
-
-		.attachment {
-			--v-icon-color: var(--secondary);
 		}
 	}
 }
