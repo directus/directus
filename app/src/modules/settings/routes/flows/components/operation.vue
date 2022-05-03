@@ -22,6 +22,8 @@
 		@move="$emit('move', panel.id)"
 		@delete="$emit('delete', panel.id)"
 		@duplicate="$emit('duplicate', panel)"
+		@pointerenter="pointerEnter"
+		@pointerleave="pointerLeave"
 	>
 		<template #body>
 			<div
@@ -34,6 +36,11 @@
 			>
 				<v-icon name="check_circle" />
 			</div>
+			<div v-if="editMode && !panel?.resolve && isHintVisible && !moving" class="hint resolve-hint">
+				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
+					<v-icon name="add_circle_outline" />
+				</div>
+			</div>
 			<div
 				v-if="editMode && panel.id !== '$trigger'"
 				x-small
@@ -44,6 +51,15 @@
 			>
 				<v-icon name="cancel" />
 			</div>
+			<div
+				v-if="editMode && panel.id !== '$trigger' && !panel?.reject && isHintVisible && !moving"
+				class="hint reject-hint"
+			>
+				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
+					<v-icon name="add_circle_outline" />
+				</div>
+			</div>
+
 			<div
 				v-if="panel.id !== '$trigger'"
 				x-small
@@ -100,7 +116,6 @@ import { getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/shared/types';
-import { throttle } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
@@ -124,15 +139,17 @@ const props = withDefaults(
 		parent?: { id: string; type: Target; loner: boolean };
 		flow: FlowRaw;
 		panelsToBeDeleted: string[];
+		isHintVisible: boolean;
 	}>(),
 	{
 		type: 'operation',
 		editMode: false,
 		parent: undefined,
+		isHintVisible: false,
 	}
 );
 
-const { panelsToBeDeleted } = toRefs(props);
+const { panelsToBeDeleted, isHintVisible } = toRefs(props);
 
 const { operations } = getOperations();
 const { triggers } = getTriggers();
@@ -147,6 +164,8 @@ const emit = defineEmits([
 	'duplicate',
 	'arrow-move',
 	'arrow-stop',
+	'show-hint',
+	'hide-hint',
 ]);
 
 const { t } = useI18n();
@@ -166,7 +185,8 @@ const currentOperation = computed(() => {
 });
 
 let down: Target | 'parent' | undefined = undefined;
-let moving = false;
+let rafId: number | null = null;
+let moving = ref(false);
 let workspaceOffset: Vector2 = new Vector2(0, 0);
 
 const isReject = computed(() => props.parent?.type === 'reject');
@@ -185,40 +205,43 @@ function pointerdown(target: Target | 'parent') {
 	window.addEventListener('pointerup', pointerup);
 }
 
-const pointermove = throttle((event: PointerEvent) => {
-	moving = true;
-	if (!down) return;
-	const arrowInfo: ArrowInfo =
-		down === 'parent'
-			? {
-					id: props.parent?.id,
-					type: props.parent?.type as Target,
-					pos: new Vector2(
-						Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-						Math.round((event.pageY - workspaceOffset.y) / 20) * 20
-					),
-			  }
-			: {
-					id: props.panel.id,
-					type: down,
-					pos: new Vector2(
-						Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-						Math.round((event.pageY - workspaceOffset.y) / 20) * 20
-					),
-			  };
+const pointermove = (event: PointerEvent) => {
+	rafId = window.requestAnimationFrame(() => {
+		moving.value = true;
+		if (!down) return;
+		const arrowInfo: ArrowInfo =
+			down === 'parent'
+				? {
+						id: props.parent?.id,
+						type: props.parent?.type as Target,
+						pos: new Vector2(
+							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+						),
+				  }
+				: {
+						id: props.panel.id,
+						type: down,
+						pos: new Vector2(
+							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+						),
+				  };
 
-	emit('arrow-move', arrowInfo);
-}, 20);
+		emit('arrow-move', arrowInfo);
+	});
+};
 
 function pointerup() {
 	if (
-		!moving &&
+		!moving.value &&
 		((down === 'reject' && (!props.panel.reject || panelsToBeDeleted.value.includes(props.panel.reject))) ||
 			(down === 'resolve' && (!props.panel.resolve || panelsToBeDeleted.value.includes(props.panel.resolve))))
 	)
 		emit('create', props.panel.id, down);
-	moving = false;
+	moving.value = false;
 	down = undefined;
+	if (rafId) window.cancelAnimationFrame(rafId);
 
 	emit('arrow-stop');
 
@@ -265,6 +288,16 @@ async function manualTrigger() {
 	} finally {
 		manualRunning.value = false;
 	}
+}
+
+/* show hint buttons */
+function pointerEnter() {
+	if (!props.editMode) return;
+	emit('show-hint', props.panel.id);
+}
+function pointerLeave() {
+	if (!props.editMode) return;
+	emit('hide-hint');
 }
 </script>
 
@@ -319,29 +352,50 @@ async function manualTrigger() {
 		cursor: default;
 	}
 
+	.button-hint,
 	.button {
 		position: absolute;
 		border-radius: 50%;
-		width: 20px;
-		height: 20px;
-		display: flex;
-		background-color: var(--background-page);
-		justify-content: center;
-		align-items: center;
-		z-index: 10;
-		transform: translate(calc(-50% - 1px), calc(-50% - 2px));
 
 		cursor: pointer;
+		z-index: 10;
 
 		--v-icon-color: var(--primary);
 	}
 
-	.add-resolve {
+	.button-hint {
+		width: 32px;
+		height: 32px;
+		padding: 4px;
+	}
+
+	.hint {
+		position: absolute;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 20px 20px 20px 80px;
+		transform: translate(-2px, calc(-50% - 2px));
+	}
+
+	.button {
+		width: 20px;
+		height: 20px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: var(--background-page);
+		transform: translate(calc(-50% - 1px), calc(-50% - 2px));
+	}
+
+	.add-resolve,
+	.resolve-hint {
 		top: var(--resolve-top);
 		left: var(--resolve-left);
 	}
 
-	.add-reject {
+	.add-reject,
+	.reject-hint {
 		top: var(--reject-top);
 		left: var(--reject-left);
 
