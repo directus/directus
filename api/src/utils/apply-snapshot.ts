@@ -10,6 +10,11 @@ import { Diff , DiffDeleted, DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
 
+type CollectionDelta = {
+	collection: string;
+	diff: Diff<Collection | undefined>[];
+};
+
 export async function applySnapshot(
 	snapshot: Snapshot,
 	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff }
@@ -19,11 +24,6 @@ export async function applySnapshot(
 
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
-
-	type CollectionDelta = {
-		collection: string;
-		diff: Diff<Collection | undefined>[];
-	};
 
 	const toBeCreateCollections = filter(
 		snapshotDiff.collections,
