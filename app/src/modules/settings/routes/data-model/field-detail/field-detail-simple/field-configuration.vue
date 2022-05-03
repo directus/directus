@@ -78,25 +78,28 @@ export default defineComponent({
 			type: Number,
 			default: null,
 		},
-		chosenInterface: {
-			type: String,
-			required: true,
-		},
 	},
 	emits: ['save', 'toggleAdvanced'],
-	setup(props) {
+	setup() {
 		const fieldDetailStore = useFieldDetailStore();
 
 		const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
 
 		const { t } = useI18n();
 
-		const chosenInterface = computed(() => getInterface(props.chosenInterface));
+		const key = syncFieldDetailStoreProperty('field.field');
+		const type = syncFieldDetailStoreProperty('field.type');
+		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
+		const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
+		const required = syncFieldDetailStoreProperty('field.meta.required', false);
+		const note = syncFieldDetailStoreProperty('field.meta.note');
+
+		const chosenInterfaceConfig = computed(() => getInterface(chosenInterface.value));
 
 		const typeOptions = computed(() => {
-			if (!chosenInterface.value) return [];
+			if (!chosenInterfaceConfig.value) return [];
 
-			return chosenInterface.value.types.map((type) => ({
+			return chosenInterfaceConfig.value.types.map((type) => ({
 				text: t(type),
 				value: type,
 			}));
@@ -104,25 +107,15 @@ export default defineComponent({
 
 		const typeDisabled = computed(() => typeOptions.value.length === 1 || localType.value !== 'standard');
 
-		const key = syncFieldDetailStoreProperty('field.field');
-		const type = syncFieldDetailStoreProperty('field.type');
-		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
-		const required = syncFieldDetailStoreProperty('field.meta.required', false);
-		const note = syncFieldDetailStoreProperty('field.meta.note');
-
 		const { interfaces } = getInterfaces();
 
 		const interfaceIdsWithHiddenLabel = computed(() =>
 			interfaces.value.filter((inter) => inter.hideLabel === true).map((inter) => inter.id)
 		);
 
-		const extensionInfo = computed(() => {
-			return getInterface(props.chosenInterface);
-		});
-
 		const customOptionsFields = computed(() => {
-			if (typeof extensionInfo.value?.options === 'function') {
-				return extensionInfo.value?.options(fieldDetailStore);
+			if (typeof chosenInterfaceConfig.value?.options === 'function') {
+				return chosenInterfaceConfig.value?.options(fieldDetailStore);
 			}
 
 			return null;
@@ -131,14 +124,12 @@ export default defineComponent({
 		watch(
 			chosenInterface,
 			(newVal, oldVal) => {
-				if (!chosenInterface.value) return;
+				if (!newVal) return;
 
-				if (interfaceIdsWithHiddenLabel.value.includes(chosenInterface.value.id)) {
-					const simplifiedId = chosenInterface.value.id.includes('-')
-						? chosenInterface.value.id.split('-')[1]
-						: chosenInterface.value.id;
+				if (interfaceIdsWithHiddenLabel.value.includes(newVal)) {
+					const simplifiedId = newVal.includes('-') ? newVal.split('-')[1] : newVal;
 					key.value = `${simplifiedId}-${nanoid(6).toLowerCase()}`;
-				} else if (oldVal && interfaceIdsWithHiddenLabel.value.includes(oldVal.id)) {
+				} else if (oldVal && interfaceIdsWithHiddenLabel.value.includes(oldVal)) {
 					key.value = null;
 				}
 			},
@@ -166,6 +157,7 @@ export default defineComponent({
 			typeDisabled,
 			typeOptions,
 			defaultValue,
+			chosenInterface,
 			required,
 			note,
 			interfaceIdsWithHiddenLabel,
