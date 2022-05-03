@@ -21,7 +21,7 @@ describe('/items', () => {
 	});
 
 	describe('/:collection GET', () => {
-		describe('Mathmatical Operators', () => {
+		describe('Mathematical Operators', () => {
 			describe('returns users with name _eq', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					const name = 'users-with-eq@example.com';

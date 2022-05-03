@@ -647,7 +647,7 @@ been renamed to `.readByQuery`. Please check / update your usage of the SDK befo
   - [#9421](https://github.com/directus/directus/pull/9421) Fix translations layout (by @Nitwel)
 - **API**
   - [#11307](https://github.com/directus/directus/pull/11307) Bearer token no longer case sensitive for API
-    authenticatiom (by @jaycammarano)
+    authentication (by @jaycammarano)
   - [#11279](https://github.com/directus/directus/pull/11279) Resolve transaction unreliability issues in schema
     alterations (by @rijkvanzanten)
   - [#11069](https://github.com/directus/directus/pull/11069) Prevent MySQL collation errors (by @Oreilles)
@@ -1269,7 +1269,7 @@ header.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#10151](https://github.com/directus/directus/pull/10151) Cleaned up Oracle duplicate index handling
     ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#10077](https://github.com/directus/directus/pull/10077) Add `limit` to graphql aggegrated queries
+  - [#10077](https://github.com/directus/directus/pull/10077) Add `limit` to graphql aggregated queries
     ([@azrikahar](https://github.com/azrikahar))
   - [#10064](https://github.com/directus/directus/pull/10064) Add status field in the directus_notifications collection
     ([@alejandro-tss](https://github.com/alejandro-tss))
@@ -1531,7 +1531,7 @@ header.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#9982](https://github.com/directus/directus/pull/9982) Allow reordering between groups in data model
     ([@licitdev](https://github.com/licitdev))
-  - [#9924](https://github.com/directus/directus/pull/9924) Fix indeterminate properties in advanded field creation
+  - [#9924](https://github.com/directus/directus/pull/9924) Fix indeterminate properties in advanced field creation
     ([@Oreilles](https://github.com/Oreilles))
   - [#9914](https://github.com/directus/directus/pull/9914) Fix wrong date filter in calendar layout
     ([@Oreilles](https://github.com/Oreilles))
@@ -1983,7 +1983,7 @@ header.
   ([@jaycammarano](https://github.com/jaycammarano))
 - [#9321](https://github.com/directus/directus/pull/9321) add content and fix broken links
   ([@benhaynes](https://github.com/benhaynes))
-- [#9256](https://github.com/directus/directus/pull/9256) Fixed Github oauth config in docs
+- [#9256](https://github.com/directus/directus/pull/9256) Fixed GitHub oauth config in docs
   ([@aidenfoxx](https://github.com/aidenfoxx))
 - [#9218](https://github.com/directus/directus/pull/9218) Update config-options.md
   ([@aidenfoxx](https://github.com/aidenfoxx))
@@ -3129,7 +3129,7 @@ You can enable this new module under Project Settings.
 
 - **App**
   - [#8078](https://github.com/directus/directus/pull/8078) make i18n shared ([@Nitwel](https://github.com/Nitwel))
-  - [#8059](https://github.com/directus/directus/pull/8059) Move some compositons, utils and types to shared
+  - [#8059](https://github.com/directus/directus/pull/8059) Move some compositions, utils and types to shared
     ([@Nitwel](https://github.com/Nitwel))
 - **Misc.**
   - [#8062](https://github.com/directus/directus/pull/8062) Add return type to useFilterFields
@@ -3767,7 +3767,7 @@ You can enable this new module under Project Settings.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7258](https://github.com/directus/directus/pull/7258) Don't use tags interface for CSV filter
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7253](https://github.com/directus/directus/pull/7253) Fix formatted-value overflow ellpisis on card layout
+  - [#7253](https://github.com/directus/directus/pull/7253) Fix formatted-value overflow ellipsis on card layout
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7252](https://github.com/directus/directus/pull/7252) Handle empty collection group in custom nav
     ([@rijkvanzanten](https://github.com/rijkvanzanten))

@@ -88,7 +88,7 @@ startup. The JavaScript configuration supports two different formats, either an 
 the environment variable name:
 
 ```js
-// Object Sytax
+// Object Syntax
 
 module.exports = {
 	HOST: '0.0.0.0',
@@ -209,7 +209,7 @@ variables are passed to the `options` configuration of a
 [`Pino-http` instance](https://github.com/pinojs/pino-http#api). Based on your project's needs, you can extend the
 `LOGGER_*` environment variables with any config you need to pass to the logger instance. If a LOGGER_LEVELS key is
 added, these values will be passed to the logger formatter, as described
-[here](https://github.com/pinojs/pino/blob/master/docs/help.md#mapping-pino-log-levels-to-google-cloud-logging-stackdriver-serverity-levels)
+[here](https://github.com/pinojs/pino/blob/master/docs/help.md#mapping-pino-log-levels-to-google-cloud-logging-stackdriver-severity-levels)
 for example. The format for adding LEVELS values is:
 `LOGGER_LEVELS="trace:DEBUG,debug:DEBUG,info:INFO,warn:WARNING,error:ERROR,fatal:CRITICAL"`
 

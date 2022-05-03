@@ -80,7 +80,7 @@ services:
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
-    shm_size: '1gb' # more like smh-size ammirite 🥁
+    shm_size: '1gb' # more like smh-size amirite 🥁
 
   cockroachdb:
     image: cockroachdb/cockroach:latest-v21.1
