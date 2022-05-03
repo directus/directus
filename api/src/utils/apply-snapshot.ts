@@ -5,8 +5,8 @@ import { Knex } from 'knex';
 import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { set, filter, includes, isNull, isEmpty } from 'lodash';
-import { Diff , DiffDeleted, DiffNew } from 'deep-diff';
+import { set, filter, includes, isNull } from 'lodash';
+import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
 
@@ -53,40 +53,36 @@ export async function applySnapshot(
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
 		const createCollections = async function (collections: CollectionDelta[]) {
-			if (!isEmpty(collections)) {
-				for (const { collection, diff } of collections) {
-					if (diff?.[0].kind === 'N' && diff[0].rhs) {
-						// We'll nest the to-be-created fields in the same collection creation, to prevent
-						// creating a collection without a primary key
-						const fields = snapshotDiff.fields
-							.filter((fieldDiff) => fieldDiff.collection === collection)
-							.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
-						try {
-							await collectionsService.createOne({
-								...diff[0].rhs,
-								fields,
-							});
-						} catch (err: any) {
-							logger.error(`Failed to create collection "${collection}"`);
-							throw err;
-						}
-						snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
-						await createCollections(getToBeCreateCollection([collection]));
+			for (const { collection, diff } of collections) {
+				if (diff?.[0].kind === 'N' && diff[0].rhs) {
+					// We'll nest the to-be-created fields in the same collection creation, to prevent
+					// creating a collection without a primary key
+					const fields = snapshotDiff.fields
+						.filter((fieldDiff) => fieldDiff.collection === collection)
+						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
+					try {
+						await collectionsService.createOne({
+							...diff[0].rhs,
+							fields,
+						});
+					} catch (err: any) {
+						logger.error(`Failed to create collection "${collection}"`);
+						throw err;
 					}
+					snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
+					await createCollections(getToBeCreateCollection([collection]));
 				}
 			}
 		};
 		const deleteCollections = async function (collections: CollectionDelta[]) {
-			if (!isEmpty(collections)) {
-				for (const { collection, diff } of collections) {
-					if (diff?.[0].kind === 'D') {
-						await deleteCollections(getToBeDeleteCollection([collection]));
-						try {
-							await collectionsService.deleteOne(collection);
-						} catch (err) {
-							logger.error(`Failed to delete collection "${collection}"`);
-							throw err;
-						}
+			for (const { collection, diff } of collections) {
+				if (diff?.[0].kind === 'D') {
+					await deleteCollections(getToBeDeleteCollection([collection]));
+					try {
+						await collectionsService.deleteOne(collection);
+					} catch (err) {
+						logger.error(`Failed to delete collection "${collection}"`);
+						throw err;
 					}
 				}
 			}
