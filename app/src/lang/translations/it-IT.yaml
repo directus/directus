@@ -1323,7 +1323,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1822,7 +1821,6 @@ panels:
     show_data_label: Mostra l'etichetta dei dati
     group_by: Raggruppato per
     group_and_function: Devi includere o escludere sia un gruppo che una funzione.
-    y_axix_NaN: L'asse Y deve essere un numero.
     y_axis_conditional_one: Il valore per la condizione
     y_axis_conditional_two: deve essere un numero.
   linechart:
