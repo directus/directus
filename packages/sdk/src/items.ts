@@ -32,7 +32,7 @@ export enum Meta {
 export type QueryOne<T> = {
 	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
 	search?: string;
-	deep?: Record<string, DeepQueryMany<T>>;
+	deep?: { [K in keyof T]?: DeepQueryMany<T[K]> };
 	export?: 'json' | 'csv' | 'xml';
 	filter?: Filter<T>;
 };
