@@ -1,14 +1,19 @@
-import { Snapshot, SnapshotDiff, SnapshotField } from '../types';
+import { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
 import { Knex } from 'knex';
 import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { set, merge } from 'lodash';
-import { Diff, DiffNew } from 'deep-diff';
+import { set, filter, includes, isNull } from 'lodash';
+import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
+
+type CollectionDelta = {
+	collection: string;
+	diff: Diff<Collection | undefined>[];
+};
 
 export async function applySnapshot(
 	snapshot: Snapshot,
@@ -20,63 +25,72 @@ export async function applySnapshot(
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
 
+	const toBeCreateCollections = filter(
+		snapshotDiff.collections,
+		({ diff }) => diff[0].kind === 'N' && isNull((diff[0] as DiffNew<Collection>).rhs.meta?.group)
+	).map((item) => item as CollectionDelta);
+	const toBeDeleteCollections = filter(
+		snapshotDiff.collections,
+		({ diff }) => diff[0].kind === 'D' && isNull((diff[0] as DiffDeleted<Collection>).lhs.meta?.group)
+	).map((item) => item as CollectionDelta);
+
+	const getToBeCreateCollection = function (currentLevelCollections: string[]) {
+		return filter(snapshotDiff.collections, ({ diff }) => {
+			if ((diff[0] as DiffNew<Collection>).rhs) {
+				return includes(currentLevelCollections, (diff[0] as DiffNew<Collection>).rhs.meta?.group);
+			}
+		}).map((item) => item as CollectionDelta);
+	};
+	const getToBeDeleteCollection = function (currentLevelCollections: string[]) {
+		return filter(snapshotDiff.collections, ({ diff }) => {
+			if ((diff[0] as DiffDeleted<Collection>).lhs) {
+				return includes(currentLevelCollections, (diff[0] as DiffDeleted<Collection>).lhs.meta?.group);
+			}
+		}).map((item) => item as CollectionDelta);
+	};
+
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
+		const createCollections = async function (collections: CollectionDelta[]) {
+			for (const { collection, diff } of collections) {
+				if (diff?.[0].kind === 'N' && diff[0].rhs) {
+					// We'll nest the to-be-created fields in the same collection creation, to prevent
+					// creating a collection without a primary key
+					const fields = snapshotDiff.fields
+						.filter((fieldDiff) => fieldDiff.collection === collection)
+						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
+					try {
+						await collectionsService.createOne({
+							...diff[0].rhs,
+							fields,
+						});
+					} catch (err: any) {
+						logger.error(`Failed to create collection "${collection}"`);
+						throw err;
+					}
+					snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
+					await createCollections(getToBeCreateCollection([collection]));
+				}
+			}
+		};
+		const deleteCollections = async function (collections: CollectionDelta[]) {
+			for (const { collection, diff } of collections) {
+				if (diff?.[0].kind === 'D') {
+					await deleteCollections(getToBeDeleteCollection([collection]));
+					try {
+						await collectionsService.deleteOne(collection);
+					} catch (err) {
+						logger.error(`Failed to delete collection "${collection}"`);
+						throw err;
+					}
+				}
+			}
+		};
+		await createCollections(toBeCreateCollections);
+		await deleteCollections(toBeDeleteCollections);
+
 		for (const { collection, diff } of snapshotDiff.collections) {
-			if (diff?.[0].kind === 'D') {
-				try {
-					await collectionsService.deleteOne(collection);
-				} catch (err) {
-					logger.error(`Failed to delete collection "${collection}"`);
-					throw err;
-				}
-			}
-
-			if (diff?.[0].kind === 'N' && diff[0].rhs) {
-				// We'll nest the to-be-created fields in the same collection creation, to prevent
-				// creating a collection without a primary key
-				const fields = snapshotDiff.fields
-					.filter((fieldDiff) => fieldDiff.collection === collection)
-					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
-					.map((fieldDiff) => {
-						// Casts field type to UUID when applying SQLite-based schema on other databases.
-						// This is needed because SQLite snapshots UUID fields as char with length 36, and
-						// it will fail when trying to create relation between char field to UUID field
-						if (
-							!fieldDiff.schema ||
-							fieldDiff.schema.data_type !== 'char' ||
-							fieldDiff.schema.max_length !== 36 ||
-							!fieldDiff.schema.foreign_key_table ||
-							!fieldDiff.schema.foreign_key_column
-						) {
-							return fieldDiff;
-						}
-
-						const matchingForeignKeyTable = schema.collections[fieldDiff.schema.foreign_key_table];
-						if (!matchingForeignKeyTable) return fieldDiff;
-
-						const matchingForeignKeyField = matchingForeignKeyTable.fields[fieldDiff.schema.foreign_key_column];
-						if (!matchingForeignKeyField || matchingForeignKeyField.type !== 'uuid') return fieldDiff;
-
-						return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
-					});
-
-				try {
-					await collectionsService.createOne({
-						...diff[0].rhs,
-						fields,
-					});
-				} catch (err: any) {
-					logger.error(`Failed to create collection "${collection}"`);
-					throw err;
-				}
-
-				// Now that the fields are in for this collection, we can strip them from the field
-				// edits
-				snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
-			}
-
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
 				const newValues = snapshot.collections.find((field) => {
 					return field.collection === collection;
