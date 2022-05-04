@@ -1,15 +1,16 @@
 <template>
 	<div>
-		<interface-list :fields="repeaterFields" template="{{ name }}" :value="conditions" @input="conditions = $event" />
+		<interface-list :fields="repeaterFields" template="{{ name }}" :value="conditions" @input="onInput($event)" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, unref } from 'vue';
 import { Field, DeepPartial } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
+import { getInterface } from '@/interfaces';
 
 export default defineComponent({
 	setup() {
@@ -95,7 +96,61 @@ export default defineComponent({
 			},
 		]);
 
-		return { repeaterFields, conditions };
+		const optionDefaults = computed(() => {
+			const selectedInterface = getInterface(interfaceID.value);
+			if (!selectedInterface) return [];
+
+			let optionsObjectOrArray = [];
+
+			if (typeof selectedInterface.options === 'function') {
+				optionsObjectOrArray = selectedInterface.options({
+					field: {
+						type: 'unknown',
+					},
+					editing: '+',
+					collection: collection,
+					relations: {
+						o2m: undefined,
+						m2o: undefined,
+						m2a: undefined,
+					},
+					collections: {
+						related: undefined,
+						junction: undefined,
+					},
+					fields: {
+						corresponding: undefined,
+						junctionCurrent: undefined,
+						junctionRelated: undefined,
+						sort: undefined,
+					},
+					items: {},
+					localType: 'standard',
+					autoGenerateJunctionRelation: false,
+					saving: false,
+				});
+			} else {
+				optionsObjectOrArray = selectedInterface.value.options;
+			}
+			const optionsArray = Array.isArray(optionsObjectOrArray)
+				? optionsObjectOrArray
+				: [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
+
+			return optionsArray
+				.filter((option) => option.schema?.default_value !== undefined)
+				.reduce((result, option) => ({ ...result, [option.field]: option.schema.default_value }), {});
+		});
+
+		return { repeaterFields, conditions, onInput };
+
+		function onInput(event: Array<any>) {
+			conditions.value = event.map((evt) => {
+				const conditionOptions = evt.options ?? {};
+				const defaultValues = unref(optionDefaults);
+				evt.options = { ...defaultValues, ...conditionOptions };
+				return evt;
+			});
+		}
 	},
 });
 </script>
