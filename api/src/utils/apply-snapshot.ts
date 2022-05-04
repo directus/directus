@@ -1,14 +1,14 @@
+import { Field, Relation, SchemaOverview } from '@directus/shared/types';
+import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import { Knex } from 'knex';
+import { merge, set } from 'lodash';
+import getDatabase from '../database';
+import logger from '../logger';
+import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
+import { getSchema } from './get-schema';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
-import { Knex } from 'knex';
-import getDatabase from '../database';
-import { getSchema } from './get-schema';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { set, merge } from 'lodash';
-import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
-import { Field, Relation, SchemaOverview } from '@directus/shared/types';
-import logger from '../logger';
 
 type CollectionDelta = {
 	collection: string;
