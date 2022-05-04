@@ -630,11 +630,15 @@ export default defineComponent({
 						const field = message.match(/"(.*?)"/)[1];
 						const collection = message.match(/"([^ ]*?)_aggregated/)[1];
 						queriesToRemove[collection] = { field, aggregate: true };
-					} else if (message) {
+					} else if (message && message.includes('_filter')) {
 						const field = message.match(/"([^ ]*?)"/)[1];
 						const collection = message.match(/"([^ ]*?)_filter/)[1];
 
 						queriesToRemove[collection] = { field, filter: true };
+					} else if (message) {
+						const fields = message.match(/"([^ ]*?)"/g)[0];
+
+						queriesToRemove[fields[1]] = { field: fields[0] };
 					}
 				}
 
@@ -648,6 +652,8 @@ export default defineComponent({
 					) {
 						delete queryObject.value[key];
 					} else if (match?.filter && query.query.filter && JSON.stringify(query.query.filter).includes(match.field)) {
+						delete queryObject.value[key];
+					} else if (match && query.query.fields.includes(match.field)) {
 						delete queryObject.value[key];
 					}
 				}
