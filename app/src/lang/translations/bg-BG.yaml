@@ -326,12 +326,14 @@ revision_delta_deleted: Изтрито
 revision_delta_reverted: Възстановен
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
+download_page_as_csv: 'Изтегляне като CSV'
 private_user: Частни потребители
 creation_preview: Първоначален вид
 revision_preview: Преглед на ревизията
 updates_made: Направени промени
 leave_comment: Коментар...
 post_comment_success: Коментарът е изпратен
+post_comment_updated: Коментарът е обновен
 item_create_success: Създаден запис | Създадени записи
 item_update_success: Обновен запис | Обновени записи
 item_delete_success: Изтрит запис | Изтрити записи
@@ -1774,3 +1776,42 @@ panels:
   list:
     name: Списък
     description: Филтриране и показване на полета от колекция
+  barchart:
+    select_x_axis: Трябва да изберете ос по Х.
+    function: Функция
+    horizontal: Хоризонтала
+    x_axis: Ос по X
+    y_axis: Ос по Y
+    show_x_axis: Показване на оста по X
+    show_y_axis: Показване на оста по Y
+    group_by: Групиране по
+    y_axis_NaN: Оста по Y трябва да е число.
+    y_axis_conditional_two: трябва да е число.
+  linechart:
+    name: Линейна диаграма
+    description: Линейна диаграма за сравняване на промените по поле.
+    select_field: Трябва да изберете поле.
+    select_x_axis: Трябва да изберете ос по Х.
+    function: Функция
+    x_axis: Ос по X
+    y_axis: Ос по Y
+    datasets: Набор от данни
+    show_legend: Легенда
+    show_marker: Показване на подсказка
+    include_dataset: Трябва да включите поне един вид данни.
+    smooth: 'Плавна'
+    straight: 'Линейна'
+    step_line: 'Стъпкова'
+  meter:
+    arc: Дъга
+    stroke_width: Ширина на чертите
+    function: Функция
+    thin: Тънък
+    medium: Среден
+    broad: Дебел
+  piechart:
+    name: Кръгова или пръстеновидна диаграма
+    function: 'Функция'
+    donut: Поничка
+    labels: Показване на надписите
+    legend: Легенда
