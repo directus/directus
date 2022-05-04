@@ -5,7 +5,7 @@ import { Knex } from 'knex';
 import getDatabase from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { set, filter, includes, isNull, merge } from 'lodash';
+import { set, merge } from 'lodash';
 import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import logger from '../logger';
@@ -25,34 +25,25 @@ export async function applySnapshot(
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
 
-	const toBeCreateCollections: CollectionDelta[] = filter(
-		snapshotDiff.collections,
-		({ diff }) => diff[0].kind === 'N' && isNull((diff[0] as DiffNew<Collection>).rhs.meta?.group)
-	);
-	const toBeDeleteCollections: CollectionDelta[] = filter(
-		snapshotDiff.collections,
-		({ diff }) => diff[0].kind === 'D' && isNull((diff[0] as DiffDeleted<Collection>).lhs.meta?.group)
-	);
-
-	const getToBeCreateCollection = function (currentLevelCollections: string[]) {
-		return filter(snapshotDiff.collections, ({ diff }) => {
-			if ((diff[0] as DiffNew<Collection>).rhs) {
-				return includes(currentLevelCollections, (diff[0] as DiffNew<Collection>).rhs.meta?.group);
-			}
-		}) as CollectionDelta[];
-	};
-	const getToBeDeleteCollection = function (currentLevelCollections: string[]) {
-		return filter(snapshotDiff.collections, ({ diff }) => {
-			if ((diff[0] as DiffDeleted<Collection>).lhs) {
-				return includes(currentLevelCollections, (diff[0] as DiffDeleted<Collection>).lhs.meta?.group);
-			}
-		}) as CollectionDelta[];
-	};
-
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
-		const createCollections = async function (collections: CollectionDelta[]) {
+		const getToBeCreateCollection = (currentLevelCollections: string[]) => {
+			return snapshotDiff.collections.filter(({ diff }) => {
+				const group = (diff[0] as DiffNew<Collection>).rhs?.meta?.group;
+				if (!group) return false;
+				return currentLevelCollections.includes(group);
+			}) as CollectionDelta[];
+		};
+		const getToBeDeleteCollection = (currentLevelCollections: string[]) => {
+			return snapshotDiff.collections.filter(({ diff }) => {
+				const group = (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group;
+				if (!group) return false;
+				return currentLevelCollections.includes(group);
+			}) as CollectionDelta[];
+		};
+
+		const createCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
 				if (diff?.[0].kind === 'N' && diff[0].rhs) {
 					// We'll nest the to-be-created fields in the same collection creation, to prevent
@@ -97,7 +88,7 @@ export async function applySnapshot(
 				}
 			}
 		};
-		const deleteCollections = async function (collections: CollectionDelta[]) {
+		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
 				if (diff?.[0].kind === 'D') {
 					await deleteCollections(getToBeDeleteCollection([collection]));
@@ -110,8 +101,19 @@ export async function applySnapshot(
 				}
 			}
 		};
+
+		const toBeCreateCollections: CollectionDelta[] = snapshotDiff.collections.filter(
+			({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
+		);
+
 		await createCollections(toBeCreateCollections);
+
+		const toBeDeleteCollections: CollectionDelta[] = snapshotDiff.collections.filter(
+			({ diff }) => diff[0].kind === 'D' && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
+		);
+
 		await deleteCollections(toBeDeleteCollections);
+
 		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
 				const newValues = snapshot.collections.find((field) => {
