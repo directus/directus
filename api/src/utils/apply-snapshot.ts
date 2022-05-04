@@ -25,28 +25,28 @@ export async function applySnapshot(
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
 
-	const toBeCreateCollections = filter(
+	const toBeCreateCollections: CollectionDelta[] = filter(
 		snapshotDiff.collections,
 		({ diff }) => diff[0].kind === 'N' && isNull((diff[0] as DiffNew<Collection>).rhs.meta?.group)
-	).map((item) => item as CollectionDelta);
-	const toBeDeleteCollections = filter(
+	);
+	const toBeDeleteCollections: CollectionDelta[] = filter(
 		snapshotDiff.collections,
 		({ diff }) => diff[0].kind === 'D' && isNull((diff[0] as DiffDeleted<Collection>).lhs.meta?.group)
-	).map((item) => item as CollectionDelta);
+	);
 
 	const getToBeCreateCollection = function (currentLevelCollections: string[]) {
 		return filter(snapshotDiff.collections, ({ diff }) => {
 			if ((diff[0] as DiffNew<Collection>).rhs) {
 				return includes(currentLevelCollections, (diff[0] as DiffNew<Collection>).rhs.meta?.group);
 			}
-		}).map((item) => item as CollectionDelta);
+		}) as CollectionDelta[];
 	};
 	const getToBeDeleteCollection = function (currentLevelCollections: string[]) {
 		return filter(snapshotDiff.collections, ({ diff }) => {
 			if ((diff[0] as DiffDeleted<Collection>).lhs) {
 				return includes(currentLevelCollections, (diff[0] as DiffDeleted<Collection>).lhs.meta?.group);
 			}
-		}).map((item) => item as CollectionDelta);
+		}) as CollectionDelta[];
 	};
 
 	await database.transaction(async (trx) => {
