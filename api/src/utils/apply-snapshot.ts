@@ -28,20 +28,15 @@ export async function applySnapshot(
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
-		const getToBeCreateCollection = (currentLevelCollections: string[]) => {
-			return snapshotDiff.collections.filter(({ diff }) => {
-				const group = (diff[0] as DiffNew<Collection>).rhs?.meta?.group;
-				if (!group) return false;
-				return currentLevelCollections.includes(group);
-			}) as CollectionDelta[];
-		};
-		const getToBeDeleteCollection = (currentLevelCollections: string[]) => {
-			return snapshotDiff.collections.filter(({ diff }) => {
-				const group = (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group;
-				if (!group) return false;
-				return currentLevelCollections.includes(group);
-			}) as CollectionDelta[];
-		};
+		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
+			snapshotDiff.collections.filter(
+				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === currentLevelCollection
+			) as CollectionDelta[];
+
+		const getNestedCollectionsToDelete = (currentLevelCollection: string) =>
+			snapshotDiff.collections.filter(
+				({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === currentLevelCollection
+			) as CollectionDelta[];
 
 		const createCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
@@ -83,15 +78,20 @@ export async function applySnapshot(
 						logger.error(`Failed to create collection "${collection}"`);
 						throw err;
 					}
+
+					// Now that the fields are in for this collection, we can strip them from the field edits
 					snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
-					await createCollections(getToBeCreateCollection([collection]));
+
+					await createCollections(getNestedCollectionsToCreate(collection));
 				}
 			}
 		};
+
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
 				if (diff?.[0].kind === 'D') {
-					await deleteCollections(getToBeDeleteCollection([collection]));
+					await deleteCollections(getNestedCollectionsToDelete(collection));
+
 					try {
 						await collectionsService.deleteOne(collection);
 					} catch (err) {
@@ -102,17 +102,19 @@ export async function applySnapshot(
 			}
 		};
 
-		const toBeCreateCollections: CollectionDelta[] = snapshotDiff.collections.filter(
-			({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
+		// create top level collections (no group) first, then continue with nested collections recursively
+		await createCollections(
+			snapshotDiff.collections.filter(
+				({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
+			)
 		);
 
-		await createCollections(toBeCreateCollections);
-
-		const toBeDeleteCollections: CollectionDelta[] = snapshotDiff.collections.filter(
-			({ diff }) => diff[0].kind === 'D' && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
+		// delete top level collections (no group) first, then continue with nested collections recursively
+		await deleteCollections(
+			snapshotDiff.collections.filter(
+				({ diff }) => diff[0].kind === 'D' && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
+			)
 		);
-
-		await deleteCollections(toBeDeleteCollections);
 
 		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
