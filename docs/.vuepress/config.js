@@ -87,6 +87,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/getting-started/resources',
+						title: 'Resources',
+					},
+					{
+						type: 'page',
 						path: '/getting-started/glossary',
 						title: 'Glossary',
 					},
