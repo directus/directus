@@ -23,6 +23,7 @@ const props = defineProps<{
 	panels: Record<string, any>[];
 	arrowInfo?: ArrowInfo;
 	parentPanels: Record<string, ParentInfo>;
+	hoveredPanel?: string | null;
 }>();
 
 const endOffset = 16;
@@ -43,7 +44,7 @@ const size = computed(() => {
 });
 
 const arrows = computed(() => {
-	const arrows: { d: string; type: Target; loner: boolean }[] = [];
+	const arrows: { d: string; type: Target; loner: boolean; isHint?: boolean }[] = [];
 
 	for (const panel of props.panels) {
 		const resolveChild = props.panels.find((pan) => pan.id === panel.resolve);
@@ -64,6 +65,17 @@ const arrows = computed(() => {
 				type: 'resolve',
 				loner,
 			});
+		} else if (
+			(panel.id == '$trigger' && !panel?.resolve && !props.arrowInfo) ||
+			(props.hoveredPanel === panel.id && !props.arrowInfo)
+		) {
+			const { x: resolveX, y: resolveY } = getPoints(panel, RESOLVE_OFFSET);
+			arrows.push({
+				d: createLine(resolveX, resolveY, resolveX + 4 * 20, resolveY),
+				type: 'resolve',
+				loner,
+				isHint: true,
+			});
 		}
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
@@ -79,6 +91,14 @@ const arrows = computed(() => {
 				d: createLine(x, y, toX as number, toY as number),
 				type: 'reject',
 				loner,
+			});
+		} else if (panel.id !== '$trigger' && props.hoveredPanel === panel.id && !props.arrowInfo) {
+			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
+			arrows.push({
+				d: createLine(rejectX, rejectY, rejectX + 4 * 20, rejectY),
+				type: 'reject',
+				loner,
+				isHint: true,
 			});
 		}
 	}

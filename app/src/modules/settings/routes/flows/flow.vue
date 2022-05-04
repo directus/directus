@@ -59,7 +59,7 @@
 		</template>
 
 		<div class="container">
-			<arrows :panels="panels" :parent-panels="parentPanels" :arrow-info="arrowInfo" />
+			<arrows :panels="panels" :parent-panels="parentPanels" :arrow-info="arrowInfo" :hovered-panel="hoveredPanelID" />
 			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
 					<operation
@@ -69,6 +69,9 @@
 						:parent="parentPanels[panel.id]"
 						:flow="flow"
 						:panels-to-be-deleted="panelsToBeDeleted"
+						:is-hint-visible="
+							(panel.id === '$trigger' && !panel?.resolve && !arrowInfo) || (hoveredPanelID === panel.id && !arrowInfo)
+						"
 						@create="createPanel"
 						@edit="editPanel"
 						@move="movePanelID = $event"
@@ -77,6 +80,8 @@
 						@duplicate="duplicatePanel"
 						@arrow-move="arrowMove"
 						@arrow-stop="arrowStop"
+						@show-hint="hoveredPanelID = $event"
+						@hide-hint="hoveredPanelID = null"
 					/>
 				</template>
 			</v-workspace>
@@ -235,6 +240,7 @@ async function deleteFlow() {
 const triggerDetailOpen = ref(firstOpen.value);
 const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 const panelsToBeDeleted = ref<string[]>([]);
+const hoveredPanelID = ref<string | null>(null);
 
 const panels = computed(() => {
 	const savedPanels = (flow.value?.operations || []).filter(
