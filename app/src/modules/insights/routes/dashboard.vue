@@ -321,7 +321,7 @@ export default defineComponent({
 			}
 		};
 
-		const queryObject = computed(() => {
+		const queryObject = computed<Record<string, any>>(() => {
 			const queries = {};
 
 			if (!isEmpty(stagedPanels.value)) {
@@ -607,7 +607,6 @@ export default defineComponent({
 				const res = await api.post('/graphql', {
 					query: query,
 				});
-
 				for (const panel of panels.value) {
 					const panelId = 'id_' + panel.id.replaceAll('-', '_');
 					if (response.value[panelId]) newResponse[panelId] = response.value[panelId];
@@ -618,10 +617,41 @@ export default defineComponent({
 					}
 					panelsWithData.value.push(panel);
 				}
-
 				response.value = newResponse;
-			} catch (error) {
-				// do something with error
+			} catch (errs) {
+				const queriesToRemove: Record<string, any> = {};
+
+				for (const error of errs.response.data.errors) {
+					const message = error.extensions.graphqlErrors[0].message;
+
+					if (message && message.includes('_aggregated')) {
+						const field = message.match(/"(.*?)"/)[1];
+						const collection = message.match(/"([^ ]*?)_aggregated/)[1];
+						queriesToRemove[collection] = { field, aggregate: true };
+					} else if (message) {
+						const field = message.match(/"([^ ]*?)"/)[1];
+						const collection = message.match(/"([^ ]*?)_filter/)[1];
+
+						queriesToRemove[collection] = { field, filter: true };
+					}
+				}
+
+				for (const [key, query] of Object.entries(queryObject.value)) {
+					const match = queriesToRemove[query?.collection];
+
+					if (
+						match?.aggregate &&
+						query.query.aggregate &&
+						JSON.stringify(query.query.aggregate).includes(match.field)
+					) {
+						delete queryObject.value[key];
+					} else if (match?.filter && query.query.filter && JSON.stringify(query.query.filter).includes(match.field)) {
+						delete queryObject.value[key];
+					}
+				}
+
+				const newQuery = stitchQueriesToGql(queryObject.value);
+				caller(newQuery);
 			}
 		}
 	},
