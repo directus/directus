@@ -1,54 +1,56 @@
 <template>
 	<sidebar-detail icon="import_export" :title="t('import_export')">
 		<div class="fields">
-			<div class="field full">
-				<div v-if="uploading || importing" class="uploading">
-					<div class="type-text">
-						<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
-						<span v-if="!importing">{{ progress }}%</span>
+			<template v-if="createAllowed === true">
+				<div class="field full">
+					<div v-if="uploading || importing" class="uploading">
+						<div class="type-text">
+							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
+							<span v-if="!importing">{{ progress }}%</span>
+						</div>
+						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
 					</div>
-					<v-progress-linear :indeterminate="importing" :value="progress" rounded />
-				</div>
-				<template v-else>
-					<p class="type-label">{{ t('label_import') }}</p>
-					<v-input clickable>
-						<template #prepend>
-							<div class="preview" :class="{ 'has-file': file }">
-								<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
-								<v-icon v-else name="folder_open" />
-							</div>
-						</template>
-						<template #input>
-							<input
-								id="import-file"
-								ref="fileInput"
-								type="file"
-								accept="text/csv, application/json"
-								hidden
-								@change="onChange"
-							/>
-							<label for="import-file" class="import-file-label"></label>
-							<span class="import-file-text" :class="{ 'no-file': !file }">
-								{{ file ? file.name : t('import_data_input_placeholder') }}
-							</span>
-						</template>
-						<template #append>
-							<template v-if="file">
-								<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
+					<template v-else>
+						<p class="type-label">{{ t('label_import') }}</p>
+						<v-input clickable>
+							<template #prepend>
+								<div class="preview" :class="{ 'has-file': file }">
+									<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
+									<v-icon v-else name="folder_open" />
+								</div>
 							</template>
-							<v-icon v-else name="attach_file" />
-						</template>
-					</v-input>
-				</template>
-			</div>
+							<template #input>
+								<input
+									id="import-file"
+									ref="fileInput"
+									type="file"
+									accept="text/csv, application/json"
+									hidden
+									@change="onChange"
+								/>
+								<label for="import-file" class="import-file-label"></label>
+								<span class="import-file-text" :class="{ 'no-file': !file }">
+									{{ file ? file.name : t('import_data_input_placeholder') }}
+								</span>
+							</template>
+							<template #append>
+								<template v-if="file">
+									<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
+								</template>
+								<v-icon v-else name="attach_file" />
+							</template>
+						</v-input>
+					</template>
+				</div>
 
-			<div class="field full">
-				<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
-					{{ t('import_data_button') }}
-				</v-button>
-			</div>
+				<div class="field full">
+					<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
+						{{ t('import_data_button') }}
+					</v-button>
+				</div>
 
-			<v-divider />
+				<v-divider />
+			</template>
 
 			<div class="field full">
 				<v-button small full-width @click="exportDialogActive = true">
@@ -230,6 +232,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
 import { getEndpoint } from '@directus/shared/utils';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
+import { usePermissionsStore, useUserStore } from '@/stores';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -243,6 +246,19 @@ interface Props {
 	filter?: Filter;
 	search?: string;
 }
+
+const userStore = useUserStore();
+const permissionsStore = usePermissionsStore();
+
+const createAllowed = computed(() => {
+	const admin = userStore?.currentUser?.role.admin_access === true;
+	if (admin) return true;
+
+	const createPermissions = permissionsStore.permissions.find(
+		(permission) => permission.action === 'create' && permission.collection === collection.value
+	);
+	return !!createPermissions;
+});
 
 const props = withDefaults(defineProps<Props>(), {
 	layoutQuery: undefined,
