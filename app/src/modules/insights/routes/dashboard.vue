@@ -567,7 +567,7 @@ export default defineComponent({
 				formattedQuery.query[sanitizedKey] = {};
 				formattedQuery.query[sanitizedKey].__aliasFor = query.collection;
 
-				if (query.query.aggregate) {
+				if (!isEmpty(query.query.aggregate)) {
 					formattedQuery.query[sanitizedKey].__aliasFor = query.collection + '_aggregated';
 
 					for (const [aggregateFunc, field] of Object.entries(query.query.aggregate)) {
