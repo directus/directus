@@ -636,9 +636,11 @@ export default defineComponent({
 
 						queriesToRemove[collection] = { field, filter: true };
 					} else if (message) {
-						const fields = message.match(/"([^ ]*?)"/g)[0];
+						const fields = message.match(/"(.*?)"/g);
+						const field = fields[0].match(/"(.*?)"/)[1];
+						const collection = fields[1].match(/"(.*?)"/)[1];
 
-						queriesToRemove[fields[1]] = { field: fields[0] };
+						queriesToRemove[collection] = { field };
 					}
 				}
 
@@ -653,7 +655,7 @@ export default defineComponent({
 						delete queryObject.value[key];
 					} else if (match?.filter && query.query.filter && JSON.stringify(query.query.filter).includes(match.field)) {
 						delete queryObject.value[key];
-					} else if (match && query.query.fields.includes(match.field)) {
+					} else if (match && query.query?.fields && query.query.fields.includes(match.field)) {
 						delete queryObject.value[key];
 					}
 				}
