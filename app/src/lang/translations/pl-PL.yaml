@@ -326,6 +326,7 @@ revision_delta_deleted: Usunięty
 revision_delta_reverted: Odwrócony
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
+download_page_as_csv: 'Pobierz stronę jako CSV'
 private_user: Prywatny Użytkownik
 creation_preview: Podgląd tworzenia
 revision_preview: Podgląd wersji
@@ -1821,6 +1822,7 @@ panels:
     show_data_label: Pokaż etykietę danych
     group_by: Pogrupowane według
     group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    y_axis_NaN: Oś Y musi być liczbą.
     y_axis_conditional_one: Wartość warunku
     y_axis_conditional_two: musi być liczbą.
   linechart:
