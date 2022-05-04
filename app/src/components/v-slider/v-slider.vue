@@ -16,7 +16,7 @@
 			/>
 			<div class="fill" />
 			<div v-if="showTicks" class="ticks">
-				<span v-for="i in (max - min) / step + 1" :key="i" class="tick" />
+				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
 				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
