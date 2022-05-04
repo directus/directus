@@ -326,6 +326,7 @@ revision_delta_deleted: Изтрито
 revision_delta_reverted: Възстановен
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
+presentation_text_values_cannot_be_reimported: "Използват се презентационни текстове, стойностите не могат да бъдат импортирани наново."
 download_page_as_csv: 'Изтегляне като CSV'
 private_user: Частни потребители
 creation_preview: Първоначален вид
