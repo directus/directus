@@ -67,27 +67,9 @@ Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Gui
 
 :::
 
-<!--
-@TODO getting-started > learn-directus
-:::tip
-
-If you're looking to see if Directus has a specific feature, the best things you can do are use the documentation search bar, read "How to Learn Directus" to will help you find information faster, or reach out to the community on [Github]() or [Discord]().
-
-:::
-
--- A CTA for that last paragraph??
-In addition, [Cloud Exclusive Extensions]() are always coming out with new features, expanding the Platform and pushing it to new limits.
--->
-
 ## How It Works
 
 **Directus is installed as a _layer_ on top of your new or existing SQL database.**
-
-<!--
-@TODO
-getting-started > How to Learn Directus
-Add a link to a place that expands on all these terms and describes the whole system as an overview
--->
 
 The App and API dynamically “mirror” your actual schema and content in real-time. This is similar to how technical
 database clients (like _phpMyAdmin_) work. However, database introspection has many unique advantages:
@@ -127,21 +109,19 @@ and run raw SQL queries directly on the database.
 **Business Users** — The no-code app is safe and intuitive enough to make data accessible to everyone, even the most
 non-technical users. Administrators can create absolutely granular permissions for roles as well as individual users.
 
-:::tip
+:::tip Directus Vocabulary
 
 In order keep things simpler, _especially for the no-code users_, Directus uses friendlier names for many database terms
 and technical concepts, including [Project](/getting-started/glossary/#projects) (database),
 [Collection](/getting-started/glossary/#collections) (table), [Field](/getting-started/glossary/#fields) (column),
 [Item](/getting-started/glossary/#items) (record), and [Type](/getting-started/glossary/#types) (datatype).
 
-:::
-
 <!--
-
 @TODO getting-started > learn-directus
 For more information on Directus-specific terms, see the guide on [how to learn Directus](/getting-started/learn-directus).
-
 -->
+
+:::
 
 <!--
 :::tip Ready to see what Directus can do?
@@ -199,7 +179,7 @@ or roles)_.
 <!-- highlight the cost-of-scaling that comes with a platform which charges for users and roles -->
 
 Consider competing platforms in the four general use cases mentioned in the previous section _(BaaS, headless CMS,
-internal tool builder, data management and analytics)_. Due dilligence to select the a viable solution one of these
+internal tool builder, data management and analytics)_. Due diligence to select the a viable solution one of these
 categories can easily take 6 months to be sure the feature list, pricing, scalability, migration options, etc.. all fit
 the project in question. However, thanks to the plug-and-play nature of Directus, you can link it to the database, test
 it immediately on an existing database _or build a new data model from scratch_, then get rid of it at any time.
