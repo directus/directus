@@ -601,6 +601,8 @@ export default defineComponent({
 		}
 
 		async function caller(query) {
+			if (query === 'query') return;
+
 			const newResponse: Record<string, Panel> = {};
 
 			try {
