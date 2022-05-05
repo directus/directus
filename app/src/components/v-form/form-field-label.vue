@@ -75,7 +75,6 @@ export default defineComponent({
 .label {
 	position: relative;
 	display: flex;
-	width: max-content;
 	margin-bottom: 8px;
 	cursor: pointer;
 
@@ -100,9 +99,8 @@ export default defineComponent({
 	}
 
 	.ctx-arrow {
-		position: absolute;
-		top: -3px;
-		right: -24px;
+		margin-top: -3px;
+		margin-left: -4px;
 		color: var(--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
