@@ -1,7 +1,7 @@
 <template>
 	<sidebar-detail icon="import_export" :title="t('import_export')">
 		<div class="fields">
-			<template v-if="createAllowed === true">
+			<template v-if="createAllowed">
 				<div class="field full">
 					<div v-if="uploading || importing" class="uploading">
 						<div class="type-text">
@@ -246,19 +246,6 @@ interface Props {
 	filter?: Filter;
 	search?: string;
 }
-
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	const admin = userStore?.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const createPermissions = permissionsStore.permissions.find(
-		(permission) => permission.action === 'create' && permission.collection === collection.value
-	);
-	return !!createPermissions;
-});
 
 const props = withDefaults(defineProps<Props>(), {
 	layoutQuery: undefined,
@@ -518,6 +505,10 @@ async function exportDataFiles() {
 		exporting.value = false;
 	}
 }
+
+const { hasPermission } = usePermissionsStore();
+
+const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
 </script>
 
 <style lang="scss" scoped>
