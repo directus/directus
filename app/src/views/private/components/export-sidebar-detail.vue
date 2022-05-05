@@ -349,8 +349,7 @@ watch(exportSettings, () => {
 });
 
 watch(primaryKeyField, (newVal) => {
-	if (!newVal) return;
-	exportSettings.sort = newVal.field;
+	exportSettings.sort = newVal?.field ?? '';
 });
 
 const sortDirection = computed({
@@ -463,7 +462,7 @@ function exportDataLocal() {
 		export: format.value,
 	};
 
-	if (exportSettings.sort) params.sort = exportSettings.sort;
+	if (exportSettings.sort && exportSettings.sort !== '') params.sort = exportSettings.sort;
 	if (exportSettings.fields) params.fields = exportSettings.fields;
 	if (exportSettings.limit) params.limit = exportSettings.limit;
 	if (exportSettings.search) params.search = exportSettings.search;
@@ -485,7 +484,7 @@ async function exportDataFiles() {
 		await api.post(`/utils/export/${collection.value}`, {
 			query: {
 				...exportSettings,
-				sort: [exportSettings.sort],
+				...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
 			},
 			format: format.value,
 			file: {
