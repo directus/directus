@@ -348,6 +348,11 @@ watch(exportSettings, () => {
 	getItemCount();
 });
 
+watch(primaryKeyField, (newVal) => {
+	if (!newVal) return;
+	exportSettings.sort = newVal.field;
+});
+
 const sortDirection = computed({
 	get() {
 		return exportSettings.sort.startsWith('-') ? 'DESC' : 'ASC';
