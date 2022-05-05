@@ -326,12 +326,15 @@ revision_delta_deleted: Видалено
 revision_delta_reverted: Відновлено
 revision_delta_other: Редакція
 revision_delta_by: '{date} {user}'
+presentation_text_values_cannot_be_reimported: "Використовує текст презентації, значення не можуть бути повторно імпортовані."
+download_page_as_csv: 'Завантажити сторінку у CSV'
 private_user: Приватний користувач
 creation_preview: Попередній перегляд створення
 revision_preview: Перегляд редакції
 updates_made: Зроблено оновлень
 leave_comment: Залишити коментар...
 post_comment_success: Коментар опубліковано
+post_comment_updated: Коментар оновлено
 item_create_success: Елемент створено | Елементи створено
 item_update_success: Елемент оновлено | Елементи оновлено
 item_delete_success: Елемент видалено | Елементи видалено
@@ -1755,6 +1758,11 @@ layouts:
     find_location: Знайти локацію...
     default_template: Використання колекції за замовчуванням...
     no_compatible_fields: Немає сумісних полів
+  kanban:
+    name: Kanban,
+    group_field: Групувати за,
+    group_field_placeholder: Поле для групування...,
+    group_title: Заголовок групи,
 panels:
   metric:
     name: Метрична
