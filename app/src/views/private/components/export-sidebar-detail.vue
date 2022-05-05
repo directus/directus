@@ -232,7 +232,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
 import { getEndpoint } from '@directus/shared/utils';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores';
 
 type LayoutQuery = {
 	fields?: string[];
