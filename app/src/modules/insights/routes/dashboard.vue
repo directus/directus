@@ -363,12 +363,13 @@ export default defineComponent({
 			panelsWithData.value = newPanelsWithData;
 		});
 
-		const gqlQueries = stitchQueriesToGql(queryObject.value);
+		let newQueries: Record<string, any> = queryObject.value;
+		const gqlQueries = stitchQueriesToGql(newQueries);
 
 		caller(gqlQueries);
 
 		watch(queryObject, (newObj, obj) => {
-			const newQueries = objDiff(newObj, obj);
+			newQueries = objDiff(newObj, obj);
 
 			if (!isEmpty(newQueries)) {
 				const gqlQueries = stitchQueriesToGql(newQueries);
@@ -644,7 +645,7 @@ export default defineComponent({
 					}
 				}
 
-				for (const [key, query] of Object.entries(queryObject.value)) {
+				for (const [key, query] of Object.entries(newQueries)) {
 					const match = queriesToRemove[query?.collection];
 
 					if (
@@ -652,15 +653,15 @@ export default defineComponent({
 						query.query.aggregate &&
 						JSON.stringify(query.query.aggregate).includes(match.field)
 					) {
-						delete queryObject.value[key];
+						delete newQueries[key];
 					} else if (match?.filter && query.query.filter && JSON.stringify(query.query.filter).includes(match.field)) {
-						delete queryObject.value[key];
+						delete newQueries[key];
 					} else if (match && query.query?.fields && query.query.fields.includes(match.field)) {
-						delete queryObject.value[key];
+						delete newQueries[key];
 					}
 				}
 
-				const newQuery = stitchQueriesToGql(queryObject.value);
+				const newQuery = stitchQueriesToGql(newQueries);
 				caller(newQuery);
 			}
 		}
