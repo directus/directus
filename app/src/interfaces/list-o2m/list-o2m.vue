@@ -98,6 +98,7 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp } from 'lodash';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-keyToFields';
 
 const props = withDefaults(
 	defineProps<{
@@ -133,25 +134,6 @@ const value = computed({
 	},
 });
 
-const adjustFieldsForNesting = (fieldKeys: string[]) => {
-	const nestedKeys = fieldKeys
-		.filter((fieldKey) => fieldKey.indexOf('.') > 0)
-		.map((fieldKey) => fieldKey.substring(0, fieldKey.indexOf('.')));
-	for (const field of relationInfo.value?.relatedFields ?? []) {
-		if (field.field === relationInfo.value?.reverseJunctionField?.field) continue;
-		if (Array.isArray(field.meta?.special)) {
-			if (field.meta.special.includes('m2o')) {
-				if (nestedKeys.includes(field.field)) {
-					fieldKeys.push(`${field.field}.${field.schema?.foreign_key_column ?? 'id'}`);
-				} else {
-					fieldKeys.push(`${field.field}`);
-				}
-			}
-		}
-	}
-	return fieldKeys;
-};
-
 const templateWithDefaults = computed(() => {
 	return (
 		props.template ||
@@ -165,16 +147,7 @@ const fields = computed(() => {
 		getFieldsFromTemplate(templateWithDefaults.value),
 		relationInfo.value?.relatedCollection.collection ?? ''
 	);
-	// const relationFields: Array<Field> = getNestedRelationFields();
-	// const nestedRelations = relationFields.map((field) => toRaw(field));
-	// // let relatedFields = relationFields.map((field) => `${field.field}.${field.}`);
-	// // for (const fieldString of displayFields) {
-	// // 	const fieldName = fieldString.indexOf('.') > 0 ? fieldString.split('.')[0] : fieldString;
-	// // 	if (nestedRelations.includes(fieldName)) {
-
-	// // 	}
-	// // }
-	return adjustFieldsForNesting(displayFields);
+	return addRelatedPrimaryKeyToFields(displayFields);
 });
 
 const limit = ref(15);
