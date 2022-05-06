@@ -1,14 +1,13 @@
-import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
-import { getOutputTypeForFunction } from '@directus/shared/utils';
+import { Aggregate, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { getHelpers } from '../database/helpers';
-import { InvalidQueryException } from '../exceptions';
-import { getColumn } from './get-column';
-import { getColumnPath } from './get-column-path';
-import { getRelationInfo } from './get-relation-info';
+import { getHelpers } from '../../database/helpers';
+import { InvalidQueryException } from '../../exceptions/invalid-query';
+import { getColumn } from '../get-column';
+import { getColumnPath } from '../get-column-path';
+import { getRelationInfo } from '../get-relation-info';
 import operators from './operators';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
