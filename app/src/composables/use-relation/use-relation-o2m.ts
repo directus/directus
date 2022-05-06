@@ -37,6 +37,7 @@ export function useRelationO2M(collection: Ref<string>, field: Ref<string>) {
 			relation: relation,
 			relatedCollection: collectionsStore.getCollection(relation.collection),
 			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.collection),
+			relatedFields: fieldsStore.getFieldsForCollection(relation.collection),
 			reverseJunctionField: fieldsStore.getField(relation.collection, relation.meta?.many_field as string),
 			sortField: relation.meta?.sort_field ?? undefined,
 			type: 'o2m',
