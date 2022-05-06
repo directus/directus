@@ -125,7 +125,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey] as string | null | undefined) ?? email;
+		const identifier = ((userInfo[identifierKey] as any | null | undefined) ?? email)?.toString();
 
 		if (!identifier) {
 			logger.warn(`[OAuth2] Failed to find user identifier for provider "${provider}"`);
