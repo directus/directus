@@ -7,7 +7,7 @@
 			@update:model-value="$emit('toggle-batch', field)"
 		/>
 		<span v-tooltip="edited ? t('edited') : null" class="field-name" @click="toggle">
-			{{ field.name }}
+			<v-text-overflow :text="field.name" />
 			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
@@ -78,6 +78,11 @@ export default defineComponent({
 	margin-bottom: 8px;
 	cursor: pointer;
 
+	.v-text-overflow {
+		display: inline;
+		white-space: normal;
+	}
+
 	&.readonly {
 		cursor: not-allowed;
 	}
@@ -95,12 +100,11 @@ export default defineComponent({
 	.required {
 		--v-icon-color: var(--primary);
 
-		margin-left: -3px;
+		margin-left: 3px;
 	}
 
 	.ctx-arrow {
 		margin-top: -3px;
-		margin-left: -4px;
 		color: var(--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -133,6 +137,19 @@ export default defineComponent({
 		.field-name {
 			margin-left: -16px;
 			padding-left: 16px;
+		}
+	}
+
+	@media (min-width: 960px) {
+		display: block;
+
+		.v-text-overflow {
+			display: initial;
+			white-space: nowrap;
+		}
+
+		.field-name {
+			display: flex;
 		}
 	}
 }
