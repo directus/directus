@@ -326,6 +326,8 @@ revision_delta_deleted: Eliminado
 revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
+download_page_as_csv: 'Descargar página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista previa de creación
 revision_preview: Vista Previa de Revisión
