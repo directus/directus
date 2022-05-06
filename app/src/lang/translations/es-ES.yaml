@@ -1822,6 +1822,10 @@ panels:
     show_y_axis: Mostrar Eje Y
     show_data_label: Mostrar Etiqueta de Datos
     group_by: Agrupado Por
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+    y_axis_NaN: El eje Y debe ser un número.
+    y_axis_conditional_one: Valor para la condición
+    y_axis_conditional_two: debe ser un número.
   linechart:
     select_field: Debe seleccionar un campo.
     select_collection: Debe seleccionar una colección.
@@ -1829,6 +1833,7 @@ panels:
     function: Función
     x_axis: Eje X
     y_axis: Eje Y
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
   meter:
     select_field: Debe seleccionar un campo.
     select_collection: Debe seleccionar una colección.
