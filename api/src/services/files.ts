@@ -97,7 +97,22 @@ export class FilesService extends ItemsService {
 			payload.metadata ??= metadata;
 		}
 
-		if (['video/mpeg', 'audio/mpeg', 'audio/mp3', 'video/mp4', 'audio/ogg', 'video/ogg'].includes(payload.type)) {
+		const audioVideoMimetypes = [
+			'video/avi',
+			'video/quicktime',
+			'video/mpeg',
+			'video/mp4',
+			'video/ogg',
+			'video/x-matroska',
+			'video/webm',
+			'audio/mpeg',
+			'audio/mp3',
+			'audio/ogg',
+			'audio/wav',
+			'audio/x-wav',
+		];
+
+		if (audioVideoMimetypes.includes(payload.type)) {
 			const ffprobeStatic = require('@ffprobe-installer/ffprobe');
 			const mediaStream = await storage.disk(data.storage).getStream(payload.filename_disk);
 			const { path, cleanup } = await file();
