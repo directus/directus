@@ -8,7 +8,7 @@ The easiest way to start developing extensions is to use the `create-directus-ex
 npm init directus-extension
 ```
 
-After specifying the the name of the extension, the type of the extension and the programming language you want to use,
+After specifying the name of the extension, the type of the extension and the programming language you want to use,
 the utility will create a folder with the recommended file structure to create an extension.
 
 ### Extension Folder Structure

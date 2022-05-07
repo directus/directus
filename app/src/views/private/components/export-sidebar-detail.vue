@@ -54,6 +54,14 @@
 				<v-button small full-width @click="exportDialogActive = true">
 					{{ t('export_items') }}
 				</v-button>
+
+				<button
+					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
+					class="download-local"
+					@click="$emit('download')"
+				>
+					{{ t('download_page_as_csv') }}
+				</button>
 			</div>
 		</div>
 
@@ -242,7 +250,7 @@ const props = withDefaults(defineProps<Props>(), {
 	search: undefined,
 });
 
-const emit = defineEmits(['refresh']);
+const emit = defineEmits(['refresh', 'download']);
 
 const { t, n } = useI18n();
 
@@ -607,5 +615,18 @@ async function exportDataFiles() {
 
 :deep(.v-button) .button:disabled {
 	--v-button-background-color-disabled: var(--background-normal-alt);
+}
+
+.download-local {
+	color: var(--foreground-subdued);
+	text-align: center;
+	display: block;
+	width: 100%;
+	margin-top: 8px;
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--primary);
+	}
 }
 </style>
