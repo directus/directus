@@ -129,7 +129,7 @@ export default defineComponent({
 			return props.panel.icon ? props.panel.icon : panelTypeInfo.value.icon;
 		});
 		/**
-		 * When drag-n-dropping for positiniong/resizing, we're
+		 * When drag-n-dropping for positioning/resizing, we're
 		 */
 		const editedPosition = reactive<Partial<Panel>>({
 			position_x: undefined,

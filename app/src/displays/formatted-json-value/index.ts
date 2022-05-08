@@ -1,5 +1,7 @@
 import { defineDisplay } from '@directus/shared/utils';
 import DisplayJsonValue from './formatted-json-value.vue';
+import { render } from 'micromustache';
+import { toArray } from '@directus/shared/utils';
 
 export default defineDisplay({
 	id: 'formatted-json-value',
@@ -8,6 +10,11 @@ export default defineDisplay({
 	types: ['json', 'geometry'],
 	icon: 'settings_ethernet',
 	component: DisplayJsonValue,
+	handler: (value, options) => {
+		return toArray(value)
+			.map((val) => (options.format ? render(val, options.format) : val))
+			.join(', ');
+	},
 	options: [
 		{
 			field: 'format',

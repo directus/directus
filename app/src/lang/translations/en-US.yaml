@@ -332,6 +332,8 @@ revision_delta_deleted: Deleted
 revision_delta_reverted: Reverted
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
+presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
@@ -1849,7 +1851,7 @@ panels:
     show_data_label: Show Data Label
     group_by: Grouped By
     group_and_function: You must include or omit both a group and a function.
-    y_axix_NaN: The Y axis must be a number.
+    y_axis_NaN: The Y axis must be a number.
     y_axis_conditional_one: The value for condition
     y_axis_conditional_two: must be a number.
   linechart:
