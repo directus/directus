@@ -1752,6 +1752,13 @@ layouts:
     find_location: Trouver l'emplacement ...
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
+  kanban:
+    edit_group: Éditer le Groupe,
+    delete_group: Supprimer le Groupe,
+    add_group: Ajouter un Groupe,
+    add_group_placeholder: Entrez le nom du nouveau groupe...,
+    show: Afficher,
+    no_group: Aucun Groupe,
 panels:
   metric:
     name: Indicateurs
