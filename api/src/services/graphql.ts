@@ -589,6 +589,7 @@ export class GraphQLService {
 
 			const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
 			const AggregatedFilters: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregatedCountFilters: Record<string, ObjectTypeComposer<any, any>> = {};
 
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
@@ -884,6 +885,15 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
 
+				AggregatedCountFilters[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_count_fields`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						acc[field.field] = { type: getGraphQLType(field.type), description: field.note };
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				});
+
 				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated`,
 					fields: {
@@ -901,11 +911,11 @@ export class GraphQLService {
 						},
 						count: {
 							name: 'count',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedCountFilters[collection.collection],
 						},
 						countDistinct: {
 							name: 'countDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedCountFilters[collection.collection],
 						},
 						avgDistinct: {
 							name: 'avgDistinct',
