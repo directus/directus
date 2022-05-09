@@ -179,8 +179,12 @@ export function useFieldTree(
 	function flattenGroupFields(tree: FieldNode[]) {
 		function flattenGroups(list: FieldNode[]): FieldNode[] {
 			return list.flatMap((item: FieldNode) => {
-				if (item.group === true && Array.isArray(item.children)) {
-					return flattenGroups(item.children);
+				if (Array.isArray(item.children) && item.children.length > 0) {
+					if (item.group === true) {
+						return flattenGroups(item.children);
+					} else {
+						item.children = flattenGroups(item.children);
+					}
 				}
 				return item;
 			});
