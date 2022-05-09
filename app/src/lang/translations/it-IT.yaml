@@ -326,6 +326,8 @@ revision_delta_deleted: Eliminato
 revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
+presentation_text_values_cannot_be_reimported: "Usa il testo di presentazione, i valori non possono essere reimportati."
+download_page_as_csv: 'Scarica la pagina in formato CSV'
 private_user: Utenti privati
 creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
@@ -1323,6 +1325,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1821,6 +1824,7 @@ panels:
     show_data_label: Mostra l'etichetta dei dati
     group_by: Raggruppato per
     group_and_function: Devi includere o escludere sia un gruppo che una funzione.
+    y_axis_NaN: L'asse Y deve essere un numero.
     y_axis_conditional_one: Il valore per la condizione
     y_axis_conditional_two: deve essere un numero.
   linechart:
