@@ -9,6 +9,7 @@ import {
 	InvalidConfigException,
 	InvalidCredentialsException,
 	InvalidTokenException,
+	InvalidProviderException,
 	ServiceUnavailableException,
 } from '../../exceptions';
 import logger from '../../logger';
@@ -142,9 +143,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const { provider, identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
 
-		const email = userInfo.email as string | null | undefined;
+		const email = userInfo.email ? String(userInfo.email) : undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey ?? 'sub'] as any | null | undefined)?.toString() ?? email;
+		const identifier = userInfo[identifierKey ?? 'sub'] ? String(userInfo[identifierKey ?? 'sub']) : email;
 
 		if (!identifier) {
 			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
@@ -322,6 +323,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						reason = 'INVALID_USER';
 					} else if (error instanceof InvalidTokenException) {
 						reason = 'INVALID_TOKEN';
+					} else if (error instanceof InvalidProviderException) {
+						reason = 'INVALID_PROVIDER';
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}
