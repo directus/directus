@@ -7,12 +7,13 @@ type Options = {
 	mode: 'one' | 'many';
 	collection: string;
 	payload: string;
+	emitEvents: boolean;
 };
 
 export default defineOperationApi<Options>({
 	id: 'write',
 
-	handler: async ({ mode, collection, payload }, { accountability, database, getSchema }) => {
+	handler: async ({ mode, collection, payload, emitEvents }, { accountability, database, getSchema }) => {
 		const itemsService = new ItemsService(collection, {
 			schema: await getSchema({ database }),
 			accountability,
@@ -24,10 +25,10 @@ export default defineOperationApi<Options>({
 
 		if (mode === 'one') {
 			if (!parsedPayload) result = null;
-			else result = await itemsService.upsertOne(toArray(parsedPayload)[0]);
+			else result = await itemsService.upsertOne(toArray(parsedPayload)[0], { emitEvents });
 		} else {
 			if (!parsedPayload) result = null;
-			else result = await itemsService.upsertMany(toArray(parsedPayload));
+			else result = await itemsService.upsertMany(toArray(parsedPayload), { emitEvents });
 		}
 
 		return result;
