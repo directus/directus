@@ -148,10 +148,10 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field') {
-			const fieldKey = stripFunction(child.name);
+			const fieldName = stripFunction(child.name);
 
-			if (columnsInCollection.includes(fieldKey) || fieldKey === '*') {
-				columnsToSelectInternal.push(child.name); // maintain original name here (includes functions)
+			if (columnsInCollection.includes(fieldName)) {
+				columnsToSelectInternal.push(child.fieldKey);
 			}
 
 			continue;
@@ -169,14 +169,6 @@ async function parseCurrentLevel(
 		}
 
 		nestedCollectionNodes.push(child);
-	}
-
-	if (query.alias) {
-		columnsToSelectInternal.push(
-			...Object.entries(query.alias)
-				.filter(([_key, value]) => columnsInCollection.includes(value))
-				.map(([key]) => key)
-		);
 	}
 
 	const isAggregate = (query.group || (query.aggregate && Object.keys(query.aggregate).length > 0)) ?? false;
