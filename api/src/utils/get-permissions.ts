@@ -1,15 +1,16 @@
-import { Permission, Accountability, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
 import { deepMap, parseFilter, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
+import hash from 'object-hash';
+import { getCache, setSystemCache } from '../cache';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
+import env from '../env';
+import { RolesService } from '../services/roles';
+import { UsersService } from '../services/users';
 import { mergePermissions } from '../utils/merge-permissions';
 import { mergePermissionsForShare } from './merge-permissions-for-share';
-import { UsersService } from '../services/users';
-import { RolesService } from '../services/roles';
-import { getCache, setSystemCache } from '../cache';
-import hash from 'object-hash';
-import env from '../env';
+import { parseJSON } from './parse-json';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
@@ -117,19 +118,19 @@ function parsePermissions(permissions: any[]) {
 		const permission = cloneDeep(permissionRaw);
 
 		if (permission.permissions && typeof permission.permissions === 'string') {
-			permission.permissions = JSON.parse(permission.permissions);
+			permission.permissions = parseJSON(permission.permissions);
 		} else if (permission.permissions === null) {
 			permission.permissions = {};
 		}
 
 		if (permission.validation && typeof permission.validation === 'string') {
-			permission.validation = JSON.parse(permission.validation);
+			permission.validation = parseJSON(permission.validation);
 		} else if (permission.validation === null) {
 			permission.validation = {};
 		}
 
 		if (permission.presets && typeof permission.presets === 'string') {
-			permission.presets = JSON.parse(permission.presets);
+			permission.presets = parseJSON(permission.presets);
 		} else if (permission.presets === null) {
 			permission.presets = {};
 		}
