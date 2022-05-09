@@ -1759,6 +1759,8 @@ layouts:
     find_location: Определяне на местоположение...
     default_template: По подразбиране от колекцията...
     no_compatible_fields: Няма съвместими полета
+  kanban:
+    not_all_loaded: Може да се заредят само първите 1000 записи.
 panels:
   metric:
     name: Метричен индикатор
@@ -1778,7 +1780,10 @@ panels:
     name: Списък
     description: Филтриране и показване на полета от колекция
   barchart:
+    name: Лентова диаграма
+    description: Лентова или колонна диаграма за сравняване на групи от сойности
     select_field: Трябва да изберете поле.
+    select_collection: Трябва да изберете колекция.
     select_x_axis: Трябва да изберете ос по Х.
     function: Функция
     horizontal: Хоризонтала
@@ -1788,11 +1793,13 @@ panels:
     show_y_axis: Показване на оста по Y
     group_by: Групиране по
     y_axis_NaN: Оста по Y трябва да е число.
+    y_axis_conditional_one: Стойност за условието
     y_axis_conditional_two: трябва да е число.
   linechart:
     name: Линейна диаграма
     description: Линейна диаграма за сравняване на промените по поле.
     select_field: Трябва да изберете поле.
+    select_collection: Трябва да изберете колекция.
     select_x_axis: Трябва да изберете ос по Х.
     function: Функция
     x_axis: Ос по X
@@ -1821,3 +1828,4 @@ panels:
     labels: Показване на надписите
     legend: Легенда
     right: Вдясно
+    bottom: Отдолу
