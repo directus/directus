@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType, computed } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
@@ -74,9 +74,13 @@ export default defineComponent({
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
-		const { treeList, grouplessTree, loadFieldRelations } = useFieldTree(collection, inject);
+		const { treeList, loadFieldRelations, flattenGroupFields } = useFieldTree(collection, inject);
 
 		watch(() => props.modelValue, setContent, { immediate: true });
+
+		const grouplessTree = computed(() => {
+			return flattenGroupFields(treeList.value);
+		});
 
 		onMounted(() => {
 			if (contentEl.value) {
