@@ -98,7 +98,7 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp } from 'lodash';
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-keyToFields';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -147,7 +147,7 @@ const fields = computed(() => {
 		getFieldsFromTemplate(templateWithDefaults.value),
 		relationInfo.value?.relatedCollection.collection ?? ''
 	);
-	return addRelatedPrimaryKeyToFields(displayFields);
+	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
 });
 
 const limit = ref(15);
