@@ -18,6 +18,7 @@ export type FieldNode = {
 
 export type FieldTreeContext = {
 	treeList: Ref<FieldNode[]>;
+	grouplessTree: Ref<FieldNode[]>;
 	loadFieldRelations: (fieldPath: string, root?: FieldNode) => void;
 	refresh: (collection?: string) => void;
 };
@@ -31,11 +32,12 @@ export function useFieldTree(
 	const relationsStore = useRelationsStore();
 
 	const treeList = ref<FieldNode[]>([]);
+	const grouplessTree = ref<FieldNode[]>([]);
 	const visitedPaths = ref<Set<string>>(new Set());
 
 	watch(() => collection.value, refresh, { immediate: true });
 
-	return { treeList, loadFieldRelations, refresh };
+	return { treeList, grouplessTree, loadFieldRelations, refresh };
 
 	function refresh() {
 		visitedPaths.value = new Set();
@@ -46,6 +48,8 @@ export function useFieldTree(
 				node.children = getTree(node.relatedCollection, node);
 			}
 		}
+
+		grouplessTree.value = flattenGroupFields(treeList.value);
 	}
 
 	function getTree(collection?: string | null, parent?: FieldNode) {
@@ -173,5 +177,17 @@ export function useFieldTree(
 				}
 			}
 		}
+	}
+
+	function flattenGroupFields(tree: FieldNode[]) {
+		function flatten(list: FieldNode[]): FieldNode[] {
+			return list.flatMap((item) => {
+				if (item.group === true && Array.isArray(item.children)) {
+					return flatten(item.children);
+				}
+				return item;
+			});
+		}
+		return flatten(tree);
 	}
 }

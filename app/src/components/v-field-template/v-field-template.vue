@@ -74,7 +74,7 @@ export default defineComponent({
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
-		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
+		const { treeList, grouplessTree, loadFieldRelations } = useFieldTree(collection, inject);
 
 		watch(() => props.modelValue, setContent, { immediate: true });
 
@@ -279,7 +279,7 @@ export default defineComponent({
 							loadFieldRelations(fieldPath.slice(0, i).join('.'));
 						}
 
-						const field = findTree(treeList.value, fieldPath);
+						const field = findTree(grouplessTree.value, fieldPath);
 
 						if (!field) return '';
 
