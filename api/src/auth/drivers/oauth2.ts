@@ -13,6 +13,7 @@ import {
 	ServiceUnavailableException,
 	InvalidConfigException,
 	InvalidTokenException,
+	InvalidProviderException,
 } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import asyncHandler from '../../utils/async-handler';
@@ -123,9 +124,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { provider, emailKey, identifierKey, allowPublicRegistration } = this.config;
 
-		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
+		const email = userInfo[emailKey ?? 'email'] ? String(userInfo[emailKey ?? 'email']) : undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = ((userInfo[identifierKey] as any | null | undefined) ?? email)?.toString();
+		const identifier = userInfo[identifierKey] ? String(userInfo[identifierKey]) : email;
 
 		if (!identifier) {
 			logger.warn(`[OAuth2] Failed to find user identifier for provider "${provider}"`);
@@ -298,6 +299,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						reason = 'INVALID_USER';
 					} else if (error instanceof InvalidTokenException) {
 						reason = 'INVALID_TOKEN';
+					} else if (error instanceof InvalidProviderException) {
+						reason = 'INVALID_PROVIDER';
 					} else {
 						logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 					}

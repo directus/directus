@@ -3,6 +3,10 @@
 		<template v-if="ssoProviders.length > 0">
 			<v-divider />
 
+			<v-notice v-if="error" type="warning">
+				{{ errorFormatted }}
+			</v-notice>
+
 			<a v-for="provider in ssoProviders" :key="provider.name" class="sso-link" :href="provider.link">
 				<div class="sso-icon">
 					<v-icon :name="provider.icon" />
@@ -17,9 +21,11 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, toRefs, PropType } from 'vue';
+import { defineComponent, ref, computed, watch, toRefs, PropType } from 'vue';
+import { useRouter } from 'vue-router';
 import { AuthProvider } from '@/types';
 import { AUTH_SSO_DRIVERS } from '@/constants';
+import { translateAPIError } from '@/lang';
 import { getRootPath } from '@/utils/get-root-path';
 import formatTitle from '@directus/format-title';
 
@@ -33,9 +39,11 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const { providers } = toRefs(props);
+		const router = useRouter();
 
+		const { providers } = toRefs(props);
 		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
+		const error = ref<string | undefined>(router.currentRoute.value.query.reason);
 
 		watch(providers, () => {
 			ssoProviders.value = providers.value
@@ -50,7 +58,14 @@ export default defineComponent({
 				}));
 		});
 
-		return { t, ssoProviders };
+		const errorFormatted = computed(() => {
+			if (error.value) {
+				return translateAPIError(error.value);
+			}
+			return null;
+		});
+
+		return { t, ssoProviders, error, errorFormatted };
 	},
 });
 </script>
@@ -58,6 +73,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-divider {
 	margin: 24px 0;
+}
+
+.v-notice {
+	margin-bottom: 20px;
 }
 
 .sso-link {
