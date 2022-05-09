@@ -152,14 +152,6 @@ async function parseCurrentLevel(
 
 			if (columnsInCollection.includes(fieldKey) || fieldKey === '*') {
 				columnsToSelectInternal.push(child.name); // maintain original name here (includes functions)
-
-				if (query.alias) {
-					columnsToSelectInternal.push(
-						...Object.entries(query.alias)
-							.filter(([_key, value]) => value === child.name)
-							.map(([key]) => key)
-					);
-				}
 			}
 
 			continue;
@@ -179,6 +171,14 @@ async function parseCurrentLevel(
 		nestedCollectionNodes.push(child);
 	}
 
+	if (query.alias) {
+		columnsToSelectInternal.push(
+			...Object.entries(query.alias)
+				.filter(([_key, value]) => columnsInCollection.includes(value))
+				.map(([key]) => key)
+		);
+	}
+
 	const isAggregate = (query.group || (query.aggregate && Object.keys(query.aggregate).length > 0)) ?? false;
 
 	/** Always fetch primary key in case there's a nested relation that needs it. Aggregate payloads
@@ -193,9 +193,7 @@ async function parseCurrentLevel(
 
 	const fieldNodes = columnsToSelect.map(
 		(column: string) =>
-			children.find(
-				(childNode) => childNode.type === 'field' && (childNode.fieldKey === column || childNode.name === column)
-			) ?? {
+			children.find((childNode) => childNode.type === 'field' && childNode.fieldKey === column) ?? {
 				type: 'field',
 				name: column,
 				fieldKey: column,
@@ -209,6 +207,12 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 	const helpers = getHelpers(knex);
 
 	return function (fieldNode: FieldNode | M2ONode): Knex.Raw<string> {
+		let alias = undefined;
+
+		if (fieldNode.name !== fieldNode.fieldKey) {
+			alias = fieldNode.fieldKey;
+		}
+
 		let field;
 
 		if (fieldNode.type === 'field') {
@@ -217,13 +221,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
 		}
 
-		let alias = undefined;
-
-		if (fieldNode.name !== fieldNode.fieldKey) {
-			alias = fieldNode.fieldKey;
-		}
-
-		if (field.type.startsWith('geometry')) {
+		if (field?.type?.startsWith('geometry')) {
 			return helpers.st.asText(table, field.field);
 		}
 
