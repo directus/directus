@@ -193,7 +193,7 @@ export default defineComponent({
 		const permissionsStore = usePermissionsStore();
 		const { panels: panelTypes } = getPanels();
 		const response = ref<Record<string, Panel>>({});
-		const panelsWithData = ref([]);
+		const panelsWithData = ref<Panel[]>([]);
 
 		const { fullScreen } = toRefs(appStore);
 
@@ -347,7 +347,7 @@ export default defineComponent({
 		});
 
 		watch(panels, () => {
-			const newPanelsWithData = [];
+			const newPanelsWithData: Panel[] = [];
 			for (const panel of panels.value) {
 				const panelId = 'id_' + panel.id.replaceAll('-', '_');
 
@@ -553,10 +553,10 @@ export default defineComponent({
 			}
 		}
 
-		function stitchQueriesToGql(queries: Record<string, any>) {
-			if (!queries) return {};
+		function stitchQueriesToGql(queries: Record<string, any>): string {
+			if (!queries) return '';
 
-			const formattedQuery = {
+			const formattedQuery: Record<string, any> = {
 				query: {},
 			};
 
@@ -601,7 +601,7 @@ export default defineComponent({
 			return jsonToGraphQLQuery(formattedQuery);
 		}
 
-		async function caller(query) {
+		async function caller(query: string) {
 			if (query === 'query') return;
 
 			const newResponse: Record<string, Panel> = {};
@@ -621,7 +621,7 @@ export default defineComponent({
 					panelsWithData.value.push(panel);
 				}
 				response.value = newResponse;
-			} catch (errs) {
+			} catch (errs: any) {
 				const queriesToRemove: Record<string, any> = {};
 
 				for (const error of errs.response.data.errors) {
