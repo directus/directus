@@ -7,6 +7,7 @@ export * from './invalid-credentials';
 export * from './invalid-ip';
 export * from './invalid-otp';
 export * from './invalid-payload';
+export * from './invalid-provider';
 export * from './invalid-query';
 export * from './invalid-token';
 export * from './method-not-allowed';

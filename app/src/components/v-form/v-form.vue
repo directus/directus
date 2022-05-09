@@ -330,7 +330,7 @@ export default defineComponent({
 						return field.schema?.is_primary_key || !isDisabled(field);
 				  });
 
-			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
+			emit('update:modelValue', assign({}, props.modelValue, pick(updates, updatableKeys)));
 		}
 
 		function unsetValue(field: Field) {
