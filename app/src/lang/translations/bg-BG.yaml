@@ -1778,6 +1778,7 @@ panels:
     name: Списък
     description: Филтриране и показване на полета от колекция
   barchart:
+    select_field: Трябва да изберете поле.
     select_x_axis: Трябва да изберете ос по Х.
     function: Функция
     horizontal: Хоризонтала
@@ -1806,6 +1807,9 @@ panels:
   meter:
     arc: Дъга
     stroke_width: Ширина на чертите
+    select_max_value: Трябва да изберете максимална стойност.
+    select_field: Трябва да изберете поле.
+    select_collection: Трябва да изберете колекция.
     function: Функция
     thin: Тънък
     medium: Среден
@@ -1816,3 +1820,4 @@ panels:
     donut: Поничка
     labels: Показване на надписите
     legend: Легенда
+    right: Вдясно
