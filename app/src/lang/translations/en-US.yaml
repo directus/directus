@@ -567,7 +567,7 @@ errors:
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
-  INVALID_PROVIDER: User exists for different auth provider
+  INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached

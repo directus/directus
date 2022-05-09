@@ -3,7 +3,7 @@
 		<template v-if="ssoProviders.length > 0">
 			<v-divider />
 
-			<v-notice v-if="error" type="warning">
+			<v-notice v-if="errorFormatted" type="warning">
 				{{ errorFormatted }}
 			</v-notice>
 
@@ -43,7 +43,6 @@ export default defineComponent({
 
 		const { providers } = toRefs(props);
 		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
-		const error = ref<string | undefined>(router.currentRoute.value.query.reason);
 
 		watch(providers, () => {
 			ssoProviders.value = providers.value
@@ -59,13 +58,13 @@ export default defineComponent({
 		});
 
 		const errorFormatted = computed(() => {
-			if (error.value) {
-				return translateAPIError(error.value);
+			if (router.currentRoute.value.query.reason) {
+				return translateAPIError(router.currentRoute.value.query.reason);
 			}
 			return null;
 		});
 
-		return { t, ssoProviders, error, errorFormatted };
+		return { t, ssoProviders, errorFormatted };
 	},
 });
 </script>
