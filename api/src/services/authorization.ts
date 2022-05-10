@@ -8,7 +8,7 @@ import {
 	Query,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { validatePayload } from '@directus/shared/utils';
+import { validatePayload, parseFilter } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
 import getDatabase from '../database';
@@ -472,7 +472,7 @@ export class AuthorizationService {
 		const payloadWithPresets = merge({}, preset, payload);
 
 		const fieldValidationRules = Object.values(this.schema.collections[collection].fields)
-			.map((field) => field.validation)
+			.map((field) => parseFilter(field.validation, this.accountability))
 			.filter((v) => v) as Filter[];
 
 		const hasValidationRules =
