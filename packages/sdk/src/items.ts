@@ -58,10 +58,7 @@ export type Aggregate = {
 	[K in keyof SharedAggregate]: string;
 };
 
-export type Sort<T> = (
-	| `${Extract<keyof Exclude<Single<T>, ID>, string>}`
-	| `-${Extract<keyof Exclude<Single<T>, ID>, string>}`
-)[];
+export type Sort<T> = (`${Extract<keyof SingleItem<T>, string>}` | `-${Extract<keyof SingleItem<T>, string>}`)[];
 
 export type FilterOperators<T> = {
 	_eq?: T;
