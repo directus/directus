@@ -71,7 +71,7 @@ export default defineComponent({
 
 		const tooltip = computed(() => {
 			if (!props.edited) return null;
-			return isOverflow.value ? `${t('edited')}: ${props.field.name}` : t('edited');
+			return isOverflow.value ? t('edited_field', { field: props.field.name }) : t('edited');
 		});
 
 		return { t, isOverflow, tooltip };
