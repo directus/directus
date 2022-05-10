@@ -29,7 +29,6 @@
 					<field-configuration
 						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
 						:row="configRow"
-						:chosen-interface="chosenInterface"
 						@save="$emit('save')"
 						@toggleAdvanced="$emit('toggleAdvanced')"
 					/>
