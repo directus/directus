@@ -34,6 +34,7 @@ import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
 import { useFieldTree } from '@/composables/use-field-tree';
+import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -74,12 +75,12 @@ export default defineComponent({
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
-		const { treeList, loadFieldRelations, flattenGroupFields } = useFieldTree(collection, inject);
+		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
 		watch(() => props.modelValue, setContent, { immediate: true });
 
 		const grouplessTree = computed(() => {
-			return flattenGroupFields(treeList.value);
+			return flattenFieldGroups(treeList.value);
 		});
 
 		onMounted(() => {
