@@ -49,12 +49,9 @@ function omitID(item: Record<string, any>) {
 
 function sortDeep(raw: any): any {
 	if (isPlainObject(raw)) {
-		const mapped = mapValues(raw, (value) => {
-			return sortDeep(value);
-		});
-
+		const mapped = mapValues(raw, sortDeep);
 		const pairs = toPairs(mapped);
-		const sorted = sortBy(pairs, 0);
+		const sorted = sortBy(pairs);
 		return fromPairs(sorted);
 	}
 
