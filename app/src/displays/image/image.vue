@@ -55,7 +55,7 @@ img {
 	width: auto;
 	height: 100%;
 	vertical-align: -30%;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	&.circle {
 		border-radius: 100%;

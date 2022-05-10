@@ -68,7 +68,7 @@ export default defineComponent({
 
 <style scoped>
 .system-field-tree {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 }
 </style>

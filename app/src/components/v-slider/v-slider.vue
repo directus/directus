@@ -240,7 +240,7 @@ body {
 			color: var(--foreground-inverted);
 			font-weight: 600;
 			background-color: var(--primary);
-			border-radius: var(--border-radius);
+			border-radius: var(--g-border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);

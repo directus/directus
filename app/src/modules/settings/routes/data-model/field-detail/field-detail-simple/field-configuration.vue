@@ -192,8 +192,8 @@ export default defineComponent({
 
 	grid-column: 1 / span var(--columns);
 	background-color: var(--background-subdued);
-	border-top: var(--border-width) solid var(--border-normal);
-	border-bottom: var(--border-width) solid var(--border-normal);
+	border-top: var(--g-border-width) solid var(--border-normal);
+	border-bottom: var(--g-border-width) solid var(--border-normal);
 }
 
 .setup {

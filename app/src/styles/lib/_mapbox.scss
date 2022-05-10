@@ -144,12 +144,12 @@
 
 .mapboxgl-ctrl-geocoder--input {
 	color: var(--foreground-normal) !important;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
 	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions > li > a {

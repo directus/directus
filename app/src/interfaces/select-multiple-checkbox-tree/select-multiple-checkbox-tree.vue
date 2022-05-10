@@ -89,8 +89,8 @@ export default defineComponent({
 	max-height: var(--input-height-max);
 	overflow: auto;
 	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 }
 
 .search {
@@ -115,7 +115,7 @@ export default defineComponent({
 	padding: 4px 8px;
 	text-align: right;
 	background-color: var(--background-page);
-	border-top-left-radius: var(--border-radius);
+	border-top-left-radius: var(--g-border-radius);
 }
 
 .footer > span {

@@ -269,6 +269,7 @@ body {
 	--v-input-color: var(--foreground-normal);
 	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
+	--v-input-border-radius: var(--g-border-radius);
 
 	display: flex;
 	align-items: center;
@@ -291,8 +292,8 @@ body {
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
 		background-color: var(--v-input-background-color);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
+		border: var(--g-border-width) solid var(--border-normal);
+		border-radius: var(--v-input-border-radius);
 		transition: border-color var(--fast) var(--transition);
 
 		.prepend {

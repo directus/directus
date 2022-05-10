@@ -285,7 +285,7 @@ function useURLImport() {
 	margin-left: -8px;
 	overflow: hidden;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	img {
 		width: 100%;

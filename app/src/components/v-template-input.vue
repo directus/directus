@@ -315,8 +315,8 @@ export default defineComponent({
 	font-family: var(--g-font-family-sans);
 	white-space: nowrap;
 	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	&:empty::before {
@@ -348,7 +348,7 @@ export default defineComponent({
 		line-height: 1;
 		vertical-align: -2px;
 		background: var(--primary-alt);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 		user-select: text;
 
 		&::before {

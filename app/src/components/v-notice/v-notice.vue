@@ -68,7 +68,7 @@ body {
 	color: var(--v-notice-color);
 	line-height: 22px;
 	background-color: var(--v-notice-background-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	overflow: hidden;
 }
 

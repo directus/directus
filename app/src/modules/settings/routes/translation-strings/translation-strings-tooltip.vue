@@ -130,7 +130,7 @@ const displayedTranslation = computed(() => {
 .v-list-item:not(:first-child) {
 	.header {
 		padding-top: 8px;
-		border-top: var(--border-width) solid var(--border-subdued);
+		border-top: var(--g-border-width) solid var(--border-subdued);
 	}
 }
 </style>

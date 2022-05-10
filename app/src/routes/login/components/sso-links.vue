@@ -86,7 +86,7 @@ export default defineComponent({
 	height: var(--input-height);
 	background-color: var(--background-normal);
 	border: $sso-link-border-width var(--background-normal) solid;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	.sso-icon {
@@ -96,7 +96,7 @@ export default defineComponent({
 		width: var(--input-height);
 		margin: -$sso-link-border-width;
 		background-color: var(--background-normal-alt);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 
 		span {
 			--v-icon-size: 28px;

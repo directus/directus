@@ -148,7 +148,7 @@ export default defineComponent({
 	}
 
 	& + .permissions-overview-row {
-		border-top: var(--border-width) solid var(--border-subdued);
+		border-top: var(--g-border-width) solid var(--border-subdued);
 	}
 }
 </style>

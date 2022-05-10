@@ -83,7 +83,7 @@ export default defineComponent({
 		padding: 16px;
 		font-family: var(--g-font-family-mono);
 		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 	}
 }
 </style>

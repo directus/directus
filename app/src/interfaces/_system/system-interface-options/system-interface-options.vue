@@ -135,8 +135,8 @@ export default defineComponent({
 	--form-vertical-gap: 24px;
 
 	padding: 12px;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 
 	:deep(.type-label) {
 		font-size: 1rem;

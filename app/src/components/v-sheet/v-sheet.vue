@@ -39,6 +39,6 @@ body {
 	padding: var(--v-sheet-padding);
 	overflow: auto;
 	background-color: var(--v-sheet-background-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 </style>

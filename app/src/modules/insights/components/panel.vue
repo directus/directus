@@ -353,7 +353,7 @@ export default defineComponent({
 	line-height: 1;
 	text-align: right;
 	background-color: var(--background-page);
-	border-top-right-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--g-border-radius);
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 	pointer-events: none;
@@ -426,7 +426,7 @@ export default defineComponent({
 	align-items: center;
 	padding: 12px 12px 8px;
 	background-color: var(--background-page);
-	border-top-right-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--g-border-radius);
 }
 
 .resize-handlers div {
@@ -497,18 +497,18 @@ export default defineComponent({
 }
 
 .br-tl {
-	border-top-left-radius: var(--border-radius-outline);
+	border-top-left-radius: var(--g-border-radius);
 }
 
 .br-tr {
-	border-top-right-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--g-border-radius);
 }
 
 .br-br {
-	border-bottom-right-radius: var(--border-radius-outline);
+	border-bottom-right-radius: var(--g-border-radius);
 }
 
 .br-bl {
-	border-bottom-left-radius: var(--border-radius-outline);
+	border-bottom-left-radius: var(--g-border-radius);
 }
 </style>

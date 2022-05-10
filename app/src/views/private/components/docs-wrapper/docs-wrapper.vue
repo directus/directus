@@ -138,7 +138,7 @@ export default defineComponent({
 	font-size: 13px;
 	line-height: 24px;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .md :deep(code),
@@ -150,7 +150,7 @@ export default defineComponent({
 	white-space: nowrap;
 	background-color: var(--background-page);
 	border: 1px solid var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .md :deep(pre code) {

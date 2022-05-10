@@ -321,7 +321,7 @@ export default defineComponent({
 	padding: 2px 4px 0;
 	color: var(--primary);
 	background-color: var(--primary-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;
 	user-select: none;

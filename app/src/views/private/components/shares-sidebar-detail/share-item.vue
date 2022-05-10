@@ -107,7 +107,7 @@ export default defineComponent({
 	margin-bottom: 8px;
 	padding: 8px;
 	background-color: var(--background-page);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .item-date {

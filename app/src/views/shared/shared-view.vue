@@ -75,7 +75,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .shared {
-	--border-radius: 6px;
 	--input-height: 60px;
 	--input-padding: 16px;
 
@@ -94,7 +93,7 @@ header {
 	margin-bottom: 32px;
 	padding: 10px;
 	background-color: var(--background-page);
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--g-border-width) solid var(--border-subdued);
 }
 
 .container {
@@ -134,7 +133,7 @@ header {
 	width: 60px;
 	height: 60px;
 	background-color: var(--brand);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	img {
 		width: 40px;
@@ -147,7 +146,7 @@ header {
 .content {
 	padding: 32px;
 	background-color: var(--background-page);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 }
 
@@ -162,7 +161,7 @@ header {
 		max-width: 856px;
 		padding: 32px;
 		background-color: var(--background-page);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 
 		@media (min-width: 618px) {

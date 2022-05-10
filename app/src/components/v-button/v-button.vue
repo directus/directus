@@ -204,6 +204,7 @@ export default defineComponent({
 	--v-button-font-weight: 600;
 	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
+	--v-button-border-radius: var(--g-border-radius);
 }
 
 .info {
@@ -292,8 +293,8 @@ export default defineComponent({
 	line-height: var(--v-button-line-height);
 	text-decoration: none;
 	background-color: var(--v-button-background-color);
-	border: var(--border-width) solid var(--v-button-background-color);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--v-button-background-color);
+	border-radius: var(--v-button-border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
@@ -325,7 +326,7 @@ export default defineComponent({
 .button:disabled {
 	color: var(--v-button-color-disabled);
 	background-color: var(--v-button-background-color-disabled);
-	border: var(--border-width) solid var(--v-button-background-color-disabled);
+	border: var(--g-border-width) solid var(--v-button-background-color-disabled);
 	cursor: not-allowed;
 }
 
@@ -364,7 +365,7 @@ export default defineComponent({
 	--v-button-font-size: 12px;
 	--v-button-font-weight: 600;
 	--v-button-min-width: 60px;
-	--border-radius: 4px;
+	--v-button-border-radius: 4px;
 
 	padding: 0 12px;
 }

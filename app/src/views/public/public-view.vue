@@ -160,7 +160,6 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	.container {
-		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 
@@ -296,7 +295,7 @@ const logoURL = computed<string | null>(() => {
 		width: 56px;
 		height: 56px;
 		background-color: var(--brand);
-		border-radius: calc(var(--border-radius) - 2px);
+		border-radius: calc(var(--g-border-radius) - 2px);
 
 		img {
 			width: 40px;

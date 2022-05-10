@@ -171,14 +171,14 @@ function removeNode(ids: string[]) {
 	:deep(.group) {
 		margin-left: 18px;
 		padding-left: 10px;
-		border-left: var(--border-width) solid var(--border-subdued);
+		border-left: var(--g-border-width) solid var(--border-subdued);
 	}
 
 	.v-list {
 		min-width: auto;
 		margin: 0px 0px 10px;
 		padding: 20px 20px 12px;
-		border: var(--border-width) solid var(--border-subdued);
+		border: var(--g-border-width) solid var(--border-subdued);
 
 		& > :deep(.group) {
 			margin-left: 0px;
@@ -235,7 +235,7 @@ function removeNode(ids: string[]) {
 			padding: 0;
 			color: var(--foreground-subdued);
 			background-color: var(--background-page);
-			border: var(--border-width) solid var(--border-subdued);
+			border: var(--g-border-width) solid var(--border-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);
 			&:hover,

@@ -382,7 +382,7 @@ export default defineComponent({
 	padding: var(--input-padding);
 	padding-top: 40px;
 	padding-bottom: 16px;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	> * {
 		position: relative;
@@ -450,12 +450,12 @@ export default defineComponent({
 
 .field {
 	:deep(.input) {
-		border: var(--border-width) solid var(--border-subdued) !important;
+		border: var(--g-border-width) solid var(--border-subdued) !important;
 	}
 
 	:deep(.input:hover) {
 		background-color: var(--card-face-color) !important;
-		border: var(--border-width) solid var(--border-normal-alt) !important;
+		border: var(--g-border-width) solid var(--border-normal-alt) !important;
 	}
 
 	.label {
@@ -520,7 +520,7 @@ export default defineComponent({
 }
 
 .sortable-ghost {
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	outline: 2px dashed var(--primary);
 
 	> * {

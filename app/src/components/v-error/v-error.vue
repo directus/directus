@@ -69,7 +69,7 @@ export default defineComponent({
 	color: var(--danger);
 	font-family: var(--g-font-family-mono);
 	background-color: var(--danger-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	.copy-error {
 		margin-left: 12px;

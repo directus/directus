@@ -412,7 +412,7 @@ export default defineComponent({
 	overflow: hidden;
 	font-family: var(--g-font-family-sans);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 textarea {
@@ -545,7 +545,7 @@ textarea {
 	line-height: 24px;
 	overflow-wrap: break-word;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .preview-box :deep(pre) {
@@ -556,7 +556,7 @@ textarea {
 	font-family: var(--g-font-family-mono), monospace;
 	line-height: 24px;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .preview-box :deep(blockquote) {
@@ -578,7 +578,7 @@ textarea {
 .preview-box :deep(img) {
 	max-width: 100%;
 	height: auto;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .preview-box :deep(hr) {

@@ -137,6 +137,6 @@ mark {
 	margin: -1px -2px;
 	padding: 1px 2px;
 	background-color: var(--primary-25);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 </style>

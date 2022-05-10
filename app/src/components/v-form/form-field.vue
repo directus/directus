@@ -239,7 +239,7 @@ function useRaw() {
 	margin: -12px;
 	padding: 12px;
 	background-color: var(--danger-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: var(--medium) var(--transition);
 	transition-property: background-color, padding, margin;
 }

@@ -297,8 +297,8 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 	font-family: var(--g-font-family-mono);
 	background-color: var(--background-subdued);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 }
 
 .one-collection-field {

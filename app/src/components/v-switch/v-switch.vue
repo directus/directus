@@ -89,7 +89,7 @@ body {
 		width: 44px;
 		height: 24px;
 		vertical-align: middle;
-		border: var(--border-width) solid var(--border-normal);
+		border: var(--g-border-width) solid var(--border-normal);
 		border-radius: 12px;
 		transition: var(--fast) var(--transition);
 		transition-property: background-color border;

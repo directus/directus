@@ -154,10 +154,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .accordion-section {
-	border-top: var(--border-width) solid var(--border-normal);
+	border-top: var(--g-border-width) solid var(--border-normal);
 
 	&:last-child {
-		border-bottom: var(--border-width) solid var(--border-normal);
+		border-bottom: var(--g-border-width) solid var(--border-normal);
 	}
 }
 

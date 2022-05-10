@@ -575,8 +575,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	padding-bottom: 0px;
 	color: var(--white);
 	background-color: var(--primary);
-	border: var(--border-width) solid var(--primary);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--primary);
+	border-radius: var(--g-border-radius);
 
 	.type-text {
 		display: flex;
@@ -601,7 +601,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	margin-left: -8px;
 	overflow: hidden;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	&.has-file {
 		background-color: var(--primary-alt);

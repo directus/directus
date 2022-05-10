@@ -108,8 +108,8 @@ body {
 	min-height: var(--v-textarea-min-height);
 	max-height: var(--v-textarea-max-height);
 	background-color: var(--background-input);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	.append,

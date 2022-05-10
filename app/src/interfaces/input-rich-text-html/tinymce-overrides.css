@@ -91,7 +91,7 @@
 	min-height: 300px;
 	color: var(--foreground-normal);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color;
 }
@@ -229,7 +229,7 @@ body.dark .tox .tox-toolbar__overflow {
 	font-family: var(--g-font-family-sans);
 	background-color: var(--background-page);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 }
 
@@ -252,11 +252,11 @@ body.dark .tox .tox-toolbar__overflow {
 	font-family: var(--g-font-family-sans);
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .tox .tox-collection__item {
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .tox .tox-collection--list .tox-collection__item {
@@ -295,7 +295,7 @@ body.dark .tox .tox-toolbar__overflow {
 	border: 2px solid var(--primary);
 	border: none;
 	border-color: var(--primary);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	cursor: pointer;
 	-webkit-transition: var(--fast) var(--transition);
 	transition: var(--fast) var(--transition);
@@ -354,7 +354,7 @@ body.dark .tox .tox-toolbar__overflow {
 	font-weight: 500;
 	font-size: 14px;
 	border-bottom: none;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;
 }

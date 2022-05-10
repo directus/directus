@@ -64,8 +64,8 @@ body {
 .input-tall {
 	width: 100%;
 	height: var(--input-height);
-	border: var(--border-width) solid var(--v-skeleton-loader-background-color);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--v-skeleton-loader-background-color);
+	border-radius: var(--g-border-radius);
 
 	@include loader;
 }
@@ -77,7 +77,7 @@ body {
 .block-list-item {
 	width: 100%;
 	height: var(--input-height);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	@include loader;
 
@@ -89,7 +89,7 @@ body {
 .block-list-item-dense {
 	width: 100%;
 	height: 44px;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	@include loader;
 

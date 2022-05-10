@@ -7,7 +7,7 @@
 	overflow: hidden;
 	font-family: var(--v-input-font-family);
 	background: var(--card-face-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	box-shadow: none;
 }
 
@@ -68,7 +68,7 @@
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months {
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	appearance: none;
 	text-align: right;
 	font-size: 16px;
@@ -93,7 +93,7 @@
 
 .flatpickr-current-month .numInputWrapper {
 	background: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: background var(--fast) var(--transition);
 }
 
@@ -108,7 +108,7 @@
 }
 
 .flatpickr-current-month .numInputWrapper {
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .flatpickr-current-month .numInputWrapper span.arrowUp {
@@ -179,7 +179,7 @@ span.flatpickr-weekday {
 
 .flatpickr-day.today {
 	border-color: var(--primary);
-	border-width: var(--border-width);
+	border-width: var(--g-border-width);
 }
 
 .flatpickr-day.today:hover,
@@ -286,7 +286,7 @@ span.flatpickr-weekday {
 .flatpickr-calendar.hasTime .flatpickr-time {
 	height: 43px;
 	margin-top: 8px;
-	border-top: var(--border-width) solid var(--border-subdued);
+	border-top: var(--g-border-width) solid var(--border-subdued);
 }
 
 .flatpickr-calendar.noCalendar .flatpickr-time {
@@ -320,7 +320,7 @@ span.flatpickr-weekday {
 	width: 100%;
 	padding: 8px 0;
 	color: var(--primary);
-	border-top: var(--border-width) solid var(--border-subdued);
+	border-top: var(--g-border-width) solid var(--border-subdued);
 	transition: background-color var(--fast) var(--transition);
 }
 

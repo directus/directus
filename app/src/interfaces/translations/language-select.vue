@@ -72,7 +72,7 @@ export default defineComponent({
 	color: var(--primary);
 	text-align: left;
 	background-color: var(--primary-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	.display-value {
 		flex-grow: 1;

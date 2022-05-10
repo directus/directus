@@ -373,7 +373,7 @@ export default defineComponent({
 	padding-right: 26px;
 	color: var(--foreground-subdued);
 	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	transition: color var(--fast) var(--transition);
 
 	&:hover,

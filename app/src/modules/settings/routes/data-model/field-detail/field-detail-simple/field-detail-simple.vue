@@ -168,7 +168,7 @@ export default defineComponent({
 	margin-bottom: 40px;
 	padding-bottom: 2px;
 	font-weight: 700;
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--g-border-width) solid var(--border-subdued);
 }
 
 .group + .group {
@@ -210,8 +210,8 @@ export default defineComponent({
 	width: 160px;
 	height: 100px;
 	margin-bottom: 8px;
-	border: var(--border-width) solid var(--border-subdued);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-subdued);
+	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
 }
@@ -242,7 +242,7 @@ export default defineComponent({
 	padding: 8px 16px;
 	background-color: var(--background-page);
 	border: 2px solid var(--primary);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	box-shadow: 0 0 8px var(--primary-75);
 }
 

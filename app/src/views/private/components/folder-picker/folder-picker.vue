@@ -162,6 +162,6 @@ export default defineComponent({
 
 	padding: 12px;
 	background-color: var(--folder-picker-background-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 </style>

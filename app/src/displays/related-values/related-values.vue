@@ -145,7 +145,7 @@ export default defineComponent({
 		width: calc(100% + 12px);
 		height: calc(100% + 12px);
 		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';

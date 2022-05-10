@@ -115,7 +115,7 @@ code {
 	padding: 2px 4px;
 	font-family: ${cssVar('--g-font-family-mono')}, monospace;
 	background-color: ${cssVar('--background-normal')};
-	border-radius: ${cssVar('--border-radius')};
+	border-radius: ${cssVar('--g-border-radius')};
 	overflow-wrap: break-word;
 }
 pre {
@@ -125,7 +125,7 @@ pre {
 	padding: 1em;
 	font-family: ${cssVar('--g-font-family-mono')}, monospace;
 	background-color: ${cssVar('--background-normal')};
-	border-radius: ${cssVar('--border-radius')};
+	border-radius: ${cssVar('--g-border-radius')};
 	overflow: auto;
 }
 blockquote {
@@ -140,12 +140,12 @@ blockquote {
 video,
 img {
 	max-width: 100%;
-	border-radius: ${cssVar('--border-radius')};
+	border-radius: ${cssVar('--g-border-radius')};
 	height: auto;
 }
 iframe {
 	max-width: 100%;
-	border-radius: ${cssVar('--border-radius')};
+	border-radius: ${cssVar('--g-border-radius')};
 }
 hr {
 	background-color: ${cssVar('--border-normal')};

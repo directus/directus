@@ -181,7 +181,7 @@ export default defineComponent({
 		border-color: var(--primary-50);
 		border-style: solid;
 		border-width: 0px;
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 		transition: border-width var(--fast) var(--transition);
 
 		&::after {

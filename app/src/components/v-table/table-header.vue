@@ -276,7 +276,7 @@ function toggleManualSort() {
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color);
-		border-bottom: var(--border-width) solid var(--border-subdued);
+		border-bottom: var(--g-border-width) solid var(--border-subdued);
 
 		&.select,
 		&.manual {
@@ -391,7 +391,7 @@ function toggleManualSort() {
 			top: 20%;
 			left: 3px;
 			display: block;
-			width: var(--border-width);
+			width: var(--g-border-width);
 			height: 60%;
 			background-color: var(--border-subdued);
 			content: '';

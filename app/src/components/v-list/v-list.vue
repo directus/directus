@@ -64,7 +64,7 @@ export default defineComponent({
 <style scoped>
 :global(body) {
 	--v-list-padding: 4px 0;
-	--v-list-border-radius: var(--border-radius);
+	--v-list-border-radius: var(--g-border-radius);
 	--v-list-max-height: none;
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;

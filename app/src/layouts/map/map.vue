@@ -225,7 +225,7 @@ export default defineComponent({
 .v-info {
 	padding: 40px;
 	background-color: var(--background-page);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	box-shadow: var(--card-shadow);
 	pointer-events: none;
 }
@@ -277,7 +277,7 @@ export default defineComponent({
 	font-size: 14px;
 	font-family: var(--g-font-family-sans);
 	background-color: var(--background-page);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	box-shadow: var(--card-shadow);
 	transform: translate(-50%, -140%);
 	pointer-events: none;
@@ -295,8 +295,8 @@ export default defineComponent({
 	padding: 10px;
 	color: var(--foreground-subdued);
 	background-color: var(--background-page);
-	border: var(--border-width) solid var(--background-page);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--background-page);
+	border-radius: var(--g-border-radius);
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
 	span {

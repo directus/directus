@@ -83,7 +83,7 @@ function useEdits() {
 	margin-bottom: 8px;
 	padding: 8px;
 	background-color: var(--background-page);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 .comment-item:last-of-type {
@@ -125,7 +125,7 @@ function useEdits() {
 .comment-item .content :deep(img) {
 	max-width: 100%;
 	margin: 8px 0;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	display: block;
 }
 
@@ -142,7 +142,7 @@ function useEdits() {
 	color: var(--primary);
 	line-height: 1;
 	background: var(--primary-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	user-select: text;
 	pointer-events: none;
 }
@@ -151,7 +151,7 @@ function useEdits() {
 	padding: 2px 4px;
 	color: var(--foreground-normal);
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	margin: 2px 0;
 	font-family: var(--g-font-family-mono);
 	white-space: nowrap;
@@ -163,7 +163,7 @@ function useEdits() {
 	padding: 2px 4px;
 	color: var(--foreground-normal);
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	margin: 2px 0;
 	font-family: var(--g-font-family-mono);
 }

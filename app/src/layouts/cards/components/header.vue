@@ -151,8 +151,8 @@ export default defineComponent({
 	margin-bottom: 36px;
 	padding: 0 8px;
 	background-color: var(--background-page);
-	border-top: var(--border-width) solid var(--border-subdued);
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-top: var(--g-border-width) solid var(--border-subdued);
+	border-bottom: var(--g-border-width) solid var(--border-subdued);
 	box-shadow: 0 0 0 2px var(--background-page);
 }
 

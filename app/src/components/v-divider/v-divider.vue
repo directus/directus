@@ -52,7 +52,7 @@ body {
 		margin-top: 8px;
 		border: solid;
 		border-color: var(--v-divider-color);
-		border-width: var(--border-width) 0 0 0;
+		border-width: var(--g-border-width) 0 0 0;
 	}
 
 	span.wrapper {
@@ -101,7 +101,7 @@ body {
 		hr {
 			width: 0px;
 			max-width: 0px;
-			border-width: 0 var(--border-width) 0 0;
+			border-width: 0 var(--g-border-width) 0 0;
 		}
 
 		span.wrapper {

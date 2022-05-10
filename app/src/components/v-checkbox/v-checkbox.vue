@@ -180,8 +180,8 @@ body {
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--background-page);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
+		border: var(--g-border-width) solid var(--border-normal);
+		border-radius: var(--g-border-radius);
 		transition: all var(--fast) var(--transition);
 
 		&:disabled {
@@ -195,7 +195,7 @@ body {
 			z-index: 0;
 			width: 100%;
 			height: 100%;
-			border-radius: var(--border-radius);
+			border-radius: var(--g-border-radius);
 			content: '';
 		}
 

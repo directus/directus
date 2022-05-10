@@ -70,12 +70,12 @@ const isSmall = computed(() => props.height < 528);
 		height: auto;
 		max-height: v-bind(maxHeight);
 		object-fit: contain;
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 	}
 
 	.image {
 		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 
 		img {
 			z-index: 1;
@@ -90,7 +90,7 @@ const isSmall = computed(() => props.height < 528);
 		align-items: center;
 		justify-content: center;
 		height: var(--input-height-tall);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 	}
 
 	&.svg,

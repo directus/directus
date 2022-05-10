@@ -23,7 +23,7 @@
 						:icon="true"
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
+							border: lowContrast === false ? 'none' : 'var(--g-border-width) solid var(--border-normal)',
 						}"
 						@click="activateColorPicker"
 					>
@@ -372,7 +372,7 @@ function useColor() {
 	width: calc(var(--input-height) - 12px);
 	max-height: calc(var(--input-height) - 12px);
 	overflow: hidden;
-	border-radius: calc(var(--border-radius) + 2px);
+	border-radius: calc(var(--g-border-radius) + 2px);
 	cursor: pointer;
 }
 
@@ -424,7 +424,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input {
-	--border-radius: 0px;
+	--v-input-border-radius: 0px;
 }
 
 .color-data-inputs .color-data-input :deep(.input:focus-within),
@@ -440,36 +440,36 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--g-border-width));
 }
 
 .color-data-inputs .color-data-input:first-child {
-	--border-radius: 4px 0px 0px 4px;
+	--v-input-border-radius: var(--g-border-radius) 0px 0px var(--g-border-radius);
 }
 
 .color-data-inputs .color-data-input:last-child {
-	--border-radius: 0px 4px 4px 0px;
+	--v-input-border-radius: 0px var(--g-border-radius) var(--g-border-radius) 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
-	margin-top: calc(-2 * var(--border-width));
+	margin-top: calc(-2 * var(--g-border-width));
 	margin-left: initial;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--g-border-width));
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
-	--border-radius: 4px 4px 0px 0px;
+	--v-input-border-radius: var(--g-border-radius) var(--g-border-radius) 0px 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:nth-child(2) {
-	--border-radius: 0px 0px 0px 4px;
+	--v-input-border-radius: 0px 0px 0px var(--g-border-radius);
 }
 
 .color-data-inputs.stacked .color-data-input:last-child {
-	--border-radius: 0px 0px 4px 0px;
+	--v-input-border-radius: 0px 0px var(--g-border-radius) 0px;
 }
 
 .color-data-alphas {

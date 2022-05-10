@@ -227,7 +227,7 @@ export default defineComponent({
 	height: var(--input-height);
 	padding: 10px;
 	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 
 	input {
 		display: block;

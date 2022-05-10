@@ -546,7 +546,7 @@ export default defineComponent({
 	margin-bottom: var(--form-vertical-gap);
 	padding: 20px;
 	background-color: var(--background-normal);
-	border-radius: calc(var(--border-radius) + 4px);
+	border-radius: calc(var(--g-border-radius) + 4px);
 
 	.avatar {
 		--v-icon-color: var(--foreground-subdued);

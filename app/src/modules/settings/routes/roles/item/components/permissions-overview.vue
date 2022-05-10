@@ -247,8 +247,8 @@ export default defineComponent({
 .table {
 	max-width: 792px;
 	background-color: var(--background-input);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 }
 
 .system-toggle {

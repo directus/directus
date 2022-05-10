@@ -62,7 +62,7 @@ export default defineComponent({
 img {
 	height: 100%;
 	object-fit: cover;
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	aspect-ratio: 1;
 }
 
@@ -76,7 +76,7 @@ img {
 	height: 100%;
 	overflow: hidden;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 	aspect-ratio: 1;
 
 	&.has-file {

@@ -474,8 +474,8 @@ export default defineComponent({
 .interface-map {
 	position: relative;
 	overflow: hidden;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--border-normal);
+	border-radius: var(--g-border-radius);
 
 	.map {
 		position: relative;
@@ -500,7 +500,7 @@ export default defineComponent({
 	.v-info {
 		padding: 20px;
 		background-color: var(--background-input);
-		border-radius: var(--border-radius);
+		border-radius: var(--g-border-radius);
 		box-shadow: var(--card-shadow);
 	}
 
@@ -515,8 +515,8 @@ export default defineComponent({
 		padding: 10px;
 		color: var(--foreground-subdued);
 		background-color: var(--background-page);
-		border: var(--border-width) solid var(--background-page);
-		border-radius: var(--border-radius);
+		border: var(--g-border-width) solid var(--background-page);
+		border-radius: var(--g-border-radius);
 
 		span {
 			width: auto;

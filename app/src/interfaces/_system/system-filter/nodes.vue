@@ -350,7 +350,7 @@ function getCompareOptions(name: string) {
 	padding: 2px 6px;
 	padding-right: 8px;
 	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-subdued);
+	border: var(--g-border-width) solid var(--border-subdued);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
 
