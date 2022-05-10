@@ -131,6 +131,6 @@ function updateTranslationStringsDialog(val: boolean) {
 }
 
 .key {
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 }
 </style>

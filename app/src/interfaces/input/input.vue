@@ -151,15 +151,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-input {
 	&.monospace {
-		--v-input-font-family: var(--family-monospace);
+		--v-input-font-family: var(--g-font-family-mono);
 	}
 
 	&.serif {
-		--v-input-font-family: var(--family-serif);
+		--v-input-font-family: var(--g-font-family-serif);
 	}
 
 	&.sans-serif {
-		--v-input-font-family: var(--family-sans-serif);
+		--v-input-font-family: var(--g-font-family-sans);
 	}
 }
 

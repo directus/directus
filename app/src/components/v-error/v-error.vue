@@ -67,7 +67,7 @@ export default defineComponent({
 	padding: 6px 12px;
 	overflow: auto;
 	color: var(--danger);
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	background-color: var(--danger-alt);
 	border-radius: var(--border-radius);
 

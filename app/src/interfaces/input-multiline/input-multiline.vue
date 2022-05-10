@@ -89,15 +89,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-textarea {
 	&.monospace {
-		--v-textarea-font-family: var(--family-monospace);
+		--v-textarea-font-family: var(--g-font-family-mono);
 	}
 
 	&.serif {
-		--v-textarea-font-family: var(--family-serif);
+		--v-textarea-font-family: var(--g-font-family-serif);
 	}
 
 	&.sans-serif {
-		--v-textarea-font-family: var(--family-sans-serif);
+		--v-textarea-font-family: var(--g-font-family-sans);
 	}
 }
 

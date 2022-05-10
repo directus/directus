@@ -153,7 +153,7 @@ function useEdits() {
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 	margin: 2px 0;
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	white-space: nowrap;
 	max-width: 100%;
 	overflow-x: auto;
@@ -165,7 +165,7 @@ function useEdits() {
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 	margin: 2px 0;
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 }
 
 .comment-item .content :deep(pre > code) {

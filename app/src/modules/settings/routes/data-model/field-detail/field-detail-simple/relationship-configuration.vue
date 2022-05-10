@@ -123,8 +123,8 @@ export default defineComponent({
 .relationship {
 	@include form-grid;
 
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--g-font-family-mono);
+	--v-input-font-family: var(--g-font-family-mono);
 
 	&:not(:empty) {
 		margin-bottom: 20px;

@@ -227,8 +227,8 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--g-font-family-mono);
+	--v-input-font-family: var(--g-font-family-mono);
 
 	position: relative;
 	display: grid;
@@ -269,7 +269,7 @@ export default defineComponent({
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--g-font-family-mono);
 }
 
 .v-notice {
@@ -285,7 +285,7 @@ export default defineComponent({
 	}
 
 	.field-name {
-		font-family: var(--family-monospace);
+		font-family: var(--g-font-family-mono);
 	}
 }
 
@@ -295,7 +295,7 @@ export default defineComponent({
 	padding: var(--input-padding);
 	overflow: auto;
 	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	background-color: var(--background-subdued);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -306,7 +306,7 @@ export default defineComponent({
 }
 
 .sort-field {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--g-font-family-mono);
 
 	.v-divider {
 		margin-top: 48px;

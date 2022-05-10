@@ -257,7 +257,7 @@ function stepDown() {
 
 <style>
 body {
-	--v-input-font-family: var(--family-sans-serif);
+	--v-input-font-family: var(--g-font-family-sans);
 	--v-input-placeholder-color: var(--foreground-subdued);
 }
 </style>

@@ -275,7 +275,7 @@ export default defineComponent({
 	color: var(--foreground-normal-alt);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);

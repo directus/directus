@@ -232,7 +232,7 @@ export default defineComponent({
 	display: block;
 	margin: 0 auto 16px;
 	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	letter-spacing: 2.6px;
 	text-align: center;
 }

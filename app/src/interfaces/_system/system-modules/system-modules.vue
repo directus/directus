@@ -289,7 +289,7 @@ export default defineComponent({
 
 .to {
 	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 }
 
 .enabled .to {

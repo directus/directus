@@ -1,5 +1,5 @@
 .tox {
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 }
 
 .tox .tox-tbtn {
@@ -226,7 +226,7 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--foreground-normal);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 	background-color: var(--background-page);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -234,7 +234,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-textarea {
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 }
 
 .tox .tox-textfield:focus,
@@ -249,7 +249,7 @@ body.dark .tox .tox-toolbar__overflow {
 	box-sizing: border-box;
 	padding: 4px !important;
 	color: var(--foreground-normal);
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -289,7 +289,7 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--white);
 	font-weight: 500;
 	font-size: 16px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 	line-height: 19px;
 	background-color: var(--primary);
 	border: 2px solid var(--primary);

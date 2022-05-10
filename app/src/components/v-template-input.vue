@@ -312,7 +312,7 @@ export default defineComponent({
 	padding-bottom: 32px;
 	overflow: hidden;
 	color: var(--foreground-normal);
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 	white-space: nowrap;
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);

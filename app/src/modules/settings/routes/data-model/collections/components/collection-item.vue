@@ -186,7 +186,7 @@ export default defineComponent({
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	pointer-events: none;
 }
 

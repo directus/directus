@@ -502,8 +502,8 @@ export default defineComponent({
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
-	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--g-font-family-mono);
+	--v-select-font-family: var(--g-font-family-mono);
 }
 
 .required {

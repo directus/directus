@@ -341,11 +341,11 @@ export default defineComponent({
 }
 
 .v-input.monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--g-font-family-mono);
 }
 
 .v-select.monospace {
-	--v-select-font-family: var(--family-monospace);
+	--v-select-font-family: var(--g-font-family-mono);
 }
 
 .v-icon {
@@ -423,7 +423,7 @@ export default defineComponent({
 		margin-bottom: 8px;
 		padding-top: 8px;
 		color: var(--primary);
-		font-family: var(--family-monospace);
+		font-family: var(--g-font-family-mono);
 
 		.drag-handle {
 			--v-icon-color: var(--primary);
@@ -473,13 +473,13 @@ export default defineComponent({
 
 			.name {
 				margin-right: 8px;
-				font-family: var(--family-monospace);
+				font-family: var(--g-font-family-mono);
 			}
 
 			.interface {
 				display: none;
 				color: var(--foreground-subdued);
-				font-family: var(--family-monospace);
+				font-family: var(--g-font-family-mono);
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);
 

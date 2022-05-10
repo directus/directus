@@ -348,7 +348,7 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
@@ -395,7 +395,7 @@ export default defineComponent({
 	color: var(--foreground-normal-alt);
 	font-weight: 600;
 	font-size: 16px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 	font-style: normal;
 }
 

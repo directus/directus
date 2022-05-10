@@ -6,7 +6,7 @@
 	height: auto;
 	color: var(--foreground-normal);
 	font-weight: inherit;
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	line-height: 22px;
 	direction: ltr;
 	background-color: var(--background-input);
@@ -287,7 +287,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	color: var(--foreground-inverted);
 	background-color: var(--background-inverted);
 	border-radius: var(--border-radius);
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	white-space: pre-wrap;
 	overflow: hidden;
 	opacity: 0;

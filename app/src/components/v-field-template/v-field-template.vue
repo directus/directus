@@ -303,7 +303,7 @@ export default defineComponent({
 	padding: var(--input-padding) 0;
 	overflow: hidden;
 	font-size: 14px;
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	white-space: nowrap;
 }
 

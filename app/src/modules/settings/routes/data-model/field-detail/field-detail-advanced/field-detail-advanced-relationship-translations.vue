@@ -256,8 +256,8 @@ export default defineComponent({
 @import '@/styles/mixins/no-wrap';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--g-font-family-mono);
+	--v-input-font-family: var(--g-font-family-mono);
 
 	position: relative;
 	display: grid;
@@ -299,7 +299,7 @@ export default defineComponent({
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--g-font-family-mono);
 }
 
 .v-notice {

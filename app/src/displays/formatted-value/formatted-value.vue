@@ -239,15 +239,15 @@ export default defineComponent({
 	}
 
 	&.sans-serif {
-		font-family: var(--family-sans-serif);
+		font-family: var(--g-font-family-sans);
 	}
 
 	&.serif {
-		font-family: var(--family-serif);
+		font-family: var(--g-font-family-serif);
 	}
 
 	&.monospace {
-		font-family: var(--family-monospace);
+		font-family: var(--g-font-family-mono);
 	}
 
 	.v-icon {

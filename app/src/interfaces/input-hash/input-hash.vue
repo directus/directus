@@ -69,7 +69,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--g-font-family-mono);
 	--v-icon-color: var(--warning);
 
 	&.hashed {

@@ -252,7 +252,7 @@ function useRaw() {
 }
 
 .raw-value {
-	--v-textarea-font-family: var(--family-monospace);
+	--v-textarea-font-family: var(--g-font-family-mono);
 }
 
 .label-spacer {

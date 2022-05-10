@@ -322,7 +322,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 :global(body) {
-	--v-select-font-family: var(--family-sans-serif);
+	--v-select-font-family: var(--g-font-family-sans);
 	--v-select-placeholder-color: var(--foreground-subdued);
 }
 

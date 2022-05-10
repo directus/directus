@@ -203,7 +203,7 @@ function removeNode(ids: string[]) {
 
 		.no-rules {
 			color: var(--foreground-subdued);
-			font-family: var(--family-monospace);
+			font-family: var(--g-font-family-mono);
 		}
 	}
 

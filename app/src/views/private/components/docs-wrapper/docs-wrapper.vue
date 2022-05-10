@@ -146,7 +146,7 @@ export default defineComponent({
 	margin: 0 1px;
 	padding: 0 4px;
 	font-size: 15px;
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	white-space: nowrap;
 	background-color: var(--background-page);
 	border: 1px solid var(--background-normal);

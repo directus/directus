@@ -313,7 +313,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .checksum {
 	dd {
-		font-family: var(--family-monospace);
+		font-family: var(--g-font-family-mono);
 	}
 }
 

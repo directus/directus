@@ -410,7 +410,7 @@ export default defineComponent({
 
 	min-height: 300px;
 	overflow: hidden;
-	font-family: var(--family-sans-serif);
+	font-family: var(--g-font-family-sans);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 }
@@ -541,7 +541,7 @@ textarea {
 	padding: 2px 4px;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
+	font-family: var(--g-font-family-mono), monospace;
 	line-height: 24px;
 	overflow-wrap: break-word;
 	background-color: var(--background-normal);
@@ -553,7 +553,7 @@ textarea {
 	overflow: auto;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
+	font-family: var(--g-font-family-mono), monospace;
 	line-height: 24px;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);

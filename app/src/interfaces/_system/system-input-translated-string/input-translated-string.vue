@@ -194,7 +194,7 @@ function updateTranslationStringsDialog(val: boolean) {
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
 		user-select: none;
-		font-family: var(--family-monospace);
+		font-family: var(--g-font-family-mono);
 	}
 
 	:deep(button:not(:disabled):hover) {

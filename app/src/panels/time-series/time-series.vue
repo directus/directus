@@ -271,7 +271,7 @@ export default defineComponent({
 					zoom: {
 						enabled: false,
 					},
-					fontFamily: 'var(--family-sans-serif)',
+					fontFamily: 'var(--g-font-family-sans)',
 					foreColor: 'var(--foreground-subdued)',
 				},
 				series: [],
@@ -352,7 +352,7 @@ export default defineComponent({
 						show: props.showXAxis ?? true,
 						offsetY: -4,
 						style: {
-							fontFamily: 'var(--family-sans-serif)',
+							fontFamily: 'var(--g-font-family-sans)',
 							foreColor: 'var(--foreground-subdued)',
 							fontWeight: 600,
 							fontSize: '10px',
@@ -382,7 +382,7 @@ export default defineComponent({
 								  } as any);
 						},
 						style: {
-							fontFamily: 'var(--family-sans-serif)',
+							fontFamily: 'var(--g-font-family-sans)',
 							foreColor: 'var(--foreground-subdued)',
 							fontWeight: 600,
 							fontSize: '10px',

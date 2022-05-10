@@ -175,7 +175,7 @@ export default defineComponent({
 	display: flex;
 	justify-content: center;
 	color: var(--primary);
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	cursor: pointer;
@@ -206,7 +206,7 @@ export default defineComponent({
 
 input {
 	color: var(--primary);
-	font-family: var(--family-monospace);
+	font-family: var(--g-font-family-mono);
 	line-height: 1em;
 	background-color: var(--background-page);
 	border: none;
@@ -214,7 +214,7 @@ input {
 	&::placeholder {
 		color: var(--foreground-subdued);
 		font-weight: 500;
-		font-family: var(--family-monospace);
+		font-family: var(--g-font-family-mono);
 	}
 }
 
