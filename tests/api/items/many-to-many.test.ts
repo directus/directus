@@ -57,6 +57,116 @@ describe('/items', () => {
 			});
 		});
 	});
+
+	describe('/:collection/:id GraphQL Query', () => {
+		describe('retrieves an artist and an event off the artists_events table', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const artist = createArtist();
+				const event = createEvent();
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				await seedTable(databases.get(vendor)!, 1, 'events', event);
+
+				const relation = await seedTable(
+					databases.get(vendor)!,
+					1,
+					'artists_events',
+					{
+						artists_id: artist.id,
+						events_id: event.id,
+					},
+					{
+						select: ['id'],
+						where: ['artists_id', artist.id],
+					}
+				);
+
+				const query = `
+				{
+					artists_events_by_id (id: ${relation[relation.length - 1].id}) {
+						artists_id {
+							name
+						}
+						events_id {
+							cost
+						}
+					}
+				}`;
+
+				const response = await request(getUrl(vendor))
+					.post('/graphql')
+					.send({ query })
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const { data } = response.body;
+
+				expect(data.artists_events_by_id).toMatchObject({
+					artists_id: { name: expect.any(String) },
+					events_id: { cost: expect.any(Number) },
+				});
+			});
+		});
+
+		describe('should get users of the directus_roles table with read permissions to directus_users', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const query = `
+				{
+					roles {
+						id
+						users {
+							id
+						}
+					}
+				}`;
+
+				const response = await request(getUrl(vendor))
+					.post('/graphql/system')
+					.send({ query })
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const { data } = response.body;
+
+				expect(data.roles[data.roles.length - 1]).toMatchObject({
+					id: expect.any(String),
+					users: expect.arrayContaining([
+						expect.objectContaining({
+							id: expect.any(String),
+						}),
+					]),
+				});
+			});
+		});
+
+		describe('should not get users of the directus_roles table without read permissions to directus_users', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const query = `
+				{
+					roles {
+						id
+						users
+					}
+				}`;
+
+				const response = await request(getUrl(vendor))
+					.post('/graphql/system')
+					.send({ query })
+					.set('Authorization', 'Bearer UserToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(400);
+
+				const { errors } = response.body;
+
+				expect(errors[0].extensions.code).toBe('GRAPHQL_VALIDATION_EXCEPTION');
+				expect(errors[0].extensions.graphqlErrors[0].message).toBe(
+					'Cannot query field "users" on type "directus_roles".'
+				);
+			});
+		});
+	});
+
 	describe('/:collection/:id PATCH', () => {
 		describe('updates one artists_events to a different artist', () => {
 			it.each(vendors)('%s', async (vendor) => {

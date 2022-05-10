@@ -332,6 +332,8 @@ revision_delta_deleted: Deleted
 revision_delta_reverted: Reverted
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
+presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
@@ -566,7 +568,9 @@ errors:
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
+  INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found

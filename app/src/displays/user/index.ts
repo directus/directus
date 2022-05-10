@@ -1,5 +1,6 @@
 import { defineDisplay } from '@directus/shared/utils';
 import DisplayUser from './user.vue';
+import { userName } from '@/utils/user-name';
 
 export default defineDisplay({
 	id: 'user',
@@ -8,6 +9,7 @@ export default defineDisplay({
 	types: ['uuid'],
 	icon: 'person',
 	component: DisplayUser,
+	handler: (value) => userName(value),
 	options: [
 		{
 			field: 'display',

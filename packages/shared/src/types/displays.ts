@@ -19,6 +19,11 @@ export interface DisplayConfig {
 	description?: string;
 
 	component: Component;
+	handler?: (
+		value: any,
+		options: Record<string, any>,
+		ctx: { interfaceOptions?: Record<string, any>; field?: Field }
+	) => string | null | Promise<string | null>;
 	options:
 		| DeepPartial<Field>[]
 		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }

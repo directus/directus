@@ -1455,6 +1455,7 @@ export class GraphQLService {
 							// add nested aliases into deep query
 							if (selection.selectionSet) {
 								if (!query.deep) query.deep = {};
+
 								set(
 									query.deep,
 									parent,
@@ -1494,9 +1495,9 @@ export class GraphQLService {
 
 						set(
 							query.deep,
-							current,
+							currentAlias ?? current,
 							merge(
-								get(query.deep, current),
+								get(query.deep, currentAlias ?? current),
 								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
 							)
 						);

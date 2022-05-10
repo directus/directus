@@ -1,30 +1,31 @@
-import { Knex } from 'knex';
-import getDatabase from '../database';
-import { AbstractServiceOptions, File } from '../types';
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
+import { queue } from 'async';
+import csv from 'csv-parser';
+import destroyStream from 'destroy';
+import { appendFile, createReadStream } from 'fs-extra';
+import { parse as toXML } from 'js2xmlparser';
+import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
+import { Knex } from 'knex';
+import { set, transform } from 'lodash';
+import StreamArray from 'stream-json/streamers/StreamArray';
+import stripBomStream from 'strip-bom-stream';
+import { file as createTmpFile } from 'tmp-promise';
+import getDatabase from '../database';
+import env from '../env';
 import {
 	ForbiddenException,
 	InvalidPayloadException,
 	ServiceUnavailableException,
 	UnsupportedMediaTypeException,
 } from '../exceptions';
-import StreamArray from 'stream-json/streamers/StreamArray';
-import { ItemsService } from './items';
-import { queue } from 'async';
-import destroyStream from 'destroy';
-import csv from 'csv-parser';
-import { set, transform } from 'lodash';
-import { parse as toXML } from 'js2xmlparser';
-import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
-import { appendFile, createReadStream } from 'fs-extra';
-import { file as createTmpFile } from 'tmp-promise';
-import env from '../env';
-import { FilesService } from './files';
-import { getDateFormatted } from '../utils/get-date-formatted';
-import { toArray } from '@directus/shared/utils';
-import { NotificationsService } from './notifications';
 import logger from '../logger';
-import stripBomStream from 'strip-bom-stream';
+import { AbstractServiceOptions, File } from '../types';
+import { getDateFormatted } from '../utils/get-date-formatted';
+import { parseJSON } from '../utils/parse-json';
+import { FilesService } from './files';
+import { ItemsService } from './items';
+import { NotificationsService } from './notifications';
 
 export class ImportService {
 	knex: Knex;
@@ -126,7 +127,7 @@ export class ImportService {
 								delete result[key];
 							} else {
 								try {
-									const parsedJson = JSON.parse(value);
+									const parsedJson = parseJSON(value);
 									set(result, key, parsedJson);
 								} catch {
 									set(result, key, value);
