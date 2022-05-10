@@ -61,6 +61,7 @@ show_active_items: Show Active Items
 show_archived_items: Show Archived Items
 show_all_items: Show All Items
 edited: Value Edited
+edited_field: 'Value Edited: {field}'
 required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
