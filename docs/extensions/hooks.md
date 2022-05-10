@@ -76,7 +76,7 @@ The context object has the following properties:
 ::: warning Performance
 
 Filters can impact performance when not carefully implemented, as they are executed in a blocking manner. This applies
-in particular to filters firing on `read` events.
+in particular to filters firing on `read` events, where a single request can result in a large amount of database reads.
 
 :::
 
@@ -100,13 +100,6 @@ The context object has the following properties:
 - `database` — The current database transaction
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
-
-::: warning Performance
-
-Actions firing on `read` events can impact performance when not carefully implemented, as a single request can result in
-a large amount of database reads.
-
-:::
 
 ### Init
 

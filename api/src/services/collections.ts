@@ -276,6 +276,9 @@ export class CollectionsService {
 	 */
 	async readOne(collectionKey: string): Promise<Collection> {
 		const result = await this.readMany([collectionKey]);
+
+		if (result.length === 0) throw new ForbiddenException();
+
 		return result[0];
 	}
 

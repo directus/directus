@@ -1,24 +1,18 @@
-import { defineLayout } from '@directus/shared/utils';
+import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
+import { syncRefProperty } from '@/utils/sync-ref-property';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { Field, Filter, GeometryOptions, Item } from '@directus/shared/types';
+import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
+import { cloneDeep, merge } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import MapActions from './actions.vue';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
-import MapActions from './actions.vue';
-
-import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref, watch } from 'vue';
-
-import { toGeoJSON, getGeometryFormatForType } from '@/utils/geometry';
 import { getMapStyle } from './style';
-import { useRouter } from 'vue-router';
-import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
-import { Filter, Item } from '@directus/shared/types';
-import { useCollection } from '@directus/shared/composables';
-import { useItems } from '@directus/shared/composables';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Field, GeometryOptions } from '@directus/shared/types';
-import { syncRefProperty } from '@/utils/sync-ref-property';
-
-import { cloneDeep, merge } from 'lodash';
+import { saveAsCSV } from '@/utils/save-as-csv';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'map',
@@ -318,6 +312,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			template,
 			itemPopup,
 			updateItemPopup,
+			download,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -327,6 +322,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+		}
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, queryFields.value, items.value);
 		}
 
 		function toPage(newPage: number) {

@@ -146,7 +146,18 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
-		const validationErrors = validate(schema, document, specifiedRules);
+		const validationErrors = validate(schema, document, [
+			...specifiedRules,
+			(context) => ({
+				Field(node) {
+					if (env.GRAPHQL_INTROSPECTION === false && (node.name.value === '__schema' || node.name.value === '__type')) {
+						context.reportError(
+							new GraphQLError('GraphQL introspection is not allowed. The query contained __schema or __type.', [node])
+						);
+					}
+				},
+			}),
+		]);
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
@@ -1442,6 +1453,7 @@ export class GraphQLService {
 							// add nested aliases into deep query
 							if (selection.selectionSet) {
 								if (!query.deep) query.deep = {};
+
 								set(
 									query.deep,
 									parent,
@@ -1481,9 +1493,9 @@ export class GraphQLService {
 
 						set(
 							query.deep,
-							current,
+							currentAlias ?? current,
 							merge(
-								get(query.deep, current),
+								get(query.deep, currentAlias ?? current),
 								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
 							)
 						);
@@ -1561,9 +1573,10 @@ export class GraphQLService {
 	 */
 	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
+			error[0].extensions.code = error[0].code;
 			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
 		}
-
+		error.extensions.code = error.code;
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 

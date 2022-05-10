@@ -216,6 +216,8 @@ export class FieldsService {
 			// Do nothing
 		}
 
+		if (!column && !fieldInfo) throw new ForbiddenException();
+
 		const type = getLocalType(column, fieldInfo);
 
 		const data = {

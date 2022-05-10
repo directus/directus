@@ -2,6 +2,163 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.10.0 (May 3, 2022)
+
+### :sparkles: New Features
+
+- **App**
+  - [#13099](https://github.com/directus/directus/pull/13099) Add local export capability (by @rijkvanzanten)
+- **API**
+  - [#13004](https://github.com/directus/directus/pull/13004) Allow configuring the HSTS header (by @rijkvanzanten)
+  - [#12084](https://github.com/directus/directus/pull/12084) Add support to sort on a nested value (by @nodeworks)
+
+### :rocket: Improvements
+
+- **API**
+  - [#13076](https://github.com/directus/directus/pull/13076) Use older Oracle optimizer for faster first execution (by
+    @aidenfoxx)
+  - [#13003](https://github.com/directus/directus/pull/13003) Allow disabling GraphQL introspection (by @rijkvanzanten)
+  - [#8034](https://github.com/directus/directus/pull/8034) Store original error code in extensions (by @gkielwasser)
+- **App**
+  - [#13038](https://github.com/directus/directus/pull/13038) Use transition to fix user avatar tooltip (by @azrikahar)
+- **sdk**
+  - [#13008](https://github.com/directus/directus/pull/13008) Prevent SDK from returning meta property when not
+    available (by @azrikahar)
+
+### :bug: Bug Fixes
+
+- **Misc.**
+  - [#13073](https://github.com/directus/directus/pull/13073) collections broken link fix (by @dcheglakov)
+  - [#13015](https://github.com/directus/directus/pull/13015) Fix graphql schema for m2o fields without permissions to
+    related collection (by @azrikahar)
+- **API**
+  - [#13067](https://github.com/directus/directus/pull/13067) Convert OAuth identifier to string before calling
+    toLowerCase (by @tenebrius)
+  - [#12993](https://github.com/directus/directus/pull/12993) Support BOM in CSV import (by @rijkvanzanten)
+  - [#10106](https://github.com/directus/directus/pull/10106) Ensure all fields are available for conditions/validation
+    on Save (by @t7tran)
+- **App**
+  - [#13021](https://github.com/directus/directus/pull/13021) Fix translations interface when using a single language
+    (by @rijkvanzanten)
+  - [#13014](https://github.com/directus/directus/pull/13014) Allow selecting foreign key fields in relationship setup
+    (by @rijkvanzanten)
+  - [#13012](https://github.com/directus/directus/pull/13012) Fix default display template lookup in m2o interface (by
+    @rijkvanzanten)
+  - [#13011](https://github.com/directus/directus/pull/13011) Fix translations error when finding item (by @azrikahar)
+  - [#12995](https://github.com/directus/directus/pull/12995) Correctly default to + in singleton primary key (by
+    @rijkvanzanten)
+  - [#12968](https://github.com/directus/directus/pull/12968) Fix signin info text in dark mode (by @LasseRosenow)
+- **sdk**
+  - [#13007](https://github.com/directus/directus/pull/13007) Prevent token refreshing when using auth.static() method
+    (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#13091](https://github.com/directus/directus/pull/13091) spelling: extensionentrypoints (by @jsoref)
+- **API**
+  - [#13051](https://github.com/directus/directus/pull/13051) Update knex to version 2.0.0 (by @nickrum)
+
+### :memo: Documentation
+
+- [#13073](https://github.com/directus/directus/pull/13073) collections broken link fix (by @dcheglakov)
+- [#13037](https://github.com/directus/directus/pull/13037) Fix naming & typo in CLI docs (by @azrikahar)
+- [#13000](https://github.com/directus/directus/pull/13000) Clarified auth docs (by @aidenfoxx)
+- [#12999](https://github.com/directus/directus/pull/12999) added tip to exlpain how to formate custom range (by
+  @erondpowell)
+
+## v9.9.1 (April 22, 2022)
+
+### :rocket: Improvements
+
+- **App**
+  - [#12947](https://github.com/directus/directus/pull/12947) Add extensions to fix mp4 file icons (by @azrikahar)
+  - [#12936](https://github.com/directus/directus/pull/12936) Only watch for wysiwyg changes on first interaction (by
+    @rijkvanzanten)
+  - [#12929](https://github.com/directus/directus/pull/12929) Show minutes by default in Calendar month layout (by
+    @azrikahar)
+  - [#12869](https://github.com/directus/directus/pull/12869) Input translated string improvements (by @azrikahar)
+  - [#12865](https://github.com/directus/directus/pull/12865) Improve app loading background (by @LasseRosenow)
+  - [#12822](https://github.com/directus/directus/pull/12822) Tweak default sizing of roles, enable resize (by
+    @rijkvanzanten)
+  - [#11946](https://github.com/directus/directus/pull/11946) Emoji Picker & Comment improvements (by @Nitwel)
+- **API**
+  - [#12839](https://github.com/directus/directus/pull/12839) Don't save directus_revisions row for empty delta (by
+    @rijkvanzanten)
+  - [#12835](https://github.com/directus/directus/pull/12835) Support jsonb in count() (by @rijkvanzanten)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#12957](https://github.com/directus/directus/pull/12957) Check for valid date when parsing end date for Calendar
+    layout (by @azrikahar)
+  - [#12951](https://github.com/directus/directus/pull/12951) Prevent pasting non slug or db safe characters (by
+    @azrikahar)
+  - [#12950](https://github.com/directus/directus/pull/12950) Fix color-scheme for light theme (by @azrikahar)
+  - [#12933](https://github.com/directus/directus/pull/12933) Fix validation check on item update (by @rijkvanzanten)
+  - [#12919](https://github.com/directus/directus/pull/12919) Add missing import for color package (by @azrikahar)
+  - [#12917](https://github.com/directus/directus/pull/12917) Fix apply function not working properly when only passing
+    collection prop (by @azrikahar)
+  - [#12916](https://github.com/directus/directus/pull/12916) Translate validation message in validation errors (by
+    @azrikahar)
+  - [#12904](https://github.com/directus/directus/pull/12904) Prevent passing empty string as json field default value
+    when null (by @azrikahar)
+  - [#12880](https://github.com/directus/directus/pull/12880) Fix unsetting fields in batch mode (by @azrikahar)
+  - [#12872](https://github.com/directus/directus/pull/12872) Refresh datetime display value every minute for relative
+    format (by @azrikahar)
+  - [#12864](https://github.com/directus/directus/pull/12864) Removed trailing comma from barchart name translations (by
+    @jaycammarano)
+  - [#12840](https://github.com/directus/directus/pull/12840) Fix related primary key lookup in list-m2m (by
+    @rijkvanzanten)
+  - [#12834](https://github.com/directus/directus/pull/12834) Fix width detection when using mixed hidden fields (by
+    @rijkvanzanten)
+  - [#12832](https://github.com/directus/directus/pull/12832) Fix update fetchedItems on every param change (by @Nitwel)
+  - [#12821](https://github.com/directus/directus/pull/12821) Fix uploading new files not working (by @Nitwel)
+  - [#12800](https://github.com/directus/directus/pull/12800) Show pagination on readonly (by @Nitwel)
+  - [#12797](https://github.com/directus/directus/pull/12797) Prevent stale filter value when switching between maps (by
+    @azrikahar)
+- **sdk**
+  - [#12955](https://github.com/directus/directus/pull/12955) Remove underscore prefix for deep aggregate operations (by
+    @azrikahar)
+- **API**
+  - [#12952](https://github.com/directus/directus/pull/12952) Fix API response for non existent fields & collections (by
+    @azrikahar)
+  - [#12949](https://github.com/directus/directus/pull/12949) Prevent relational fields without permissions from
+    appearing in GraphQL schema (by @azrikahar)
+  - [#12922](https://github.com/directus/directus/pull/12922) Fix readSingleItems response from array to object (by
+    @azrikahar)
+  - [#12900](https://github.com/directus/directus/pull/12900) Give config file higher priority than existing env (by
+    @rijkvanzanten)
+  - [#12860](https://github.com/directus/directus/pull/12860) Ignore non-alias fields that only exist in directus_fields
+    (by @rijkvanzanten)
+  - [#12852](https://github.com/directus/directus/pull/12852) Only set field default value when available for singleton
+    collections (by @azrikahar)
+  - [#12849](https://github.com/directus/directus/pull/12849) Fix directus_user mutation with role (by @azrikahar)
+  - [#12833](https://github.com/directus/directus/pull/12833) Scope not null in subquery (by @rijkvanzanten)
+  - [#12826](https://github.com/directus/directus/pull/12826) Fix alias (by @azrikahar)
+  - [#12824](https://github.com/directus/directus/pull/12824) Fix casting of duplication fields (by @rijkvanzanten)
+  - [#12785](https://github.com/directus/directus/pull/12785) Throw 400 on file upload with missing filename (by
+    @rijkvanzanten)
+- **specs**
+  - [#12922](https://github.com/directus/directus/pull/12922) Fix readSingleItems response from array to object (by
+    @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#12934](https://github.com/directus/directus/pull/12934) Deprecate use of faker (by @rijkvanzanten)
+- **App**
+  - [#12825](https://github.com/directus/directus/pull/12825) Move more utils to shared (by @jaycammarano)
+
+### :memo: Documentation
+
+- [#12948](https://github.com/directus/directus/pull/12948) Add alwaysdata to one-click installs (by @nferrari)
+- [#12938](https://github.com/directus/directus/pull/12938) fixed tip issue (by @erondpowell)
+
+### :package: Dependency Updates
+
+- [#12934](https://github.com/directus/directus/pull/12934) Deprecate use of faker (by @rijkvanzanten)
+
 ## v9.9.0 (April 15, 2022)
 
 ### :sparkles: New Features
@@ -555,7 +712,7 @@ been renamed to `.readByQuery`. Please check / update your usage of the SDK befo
   - [#9421](https://github.com/directus/directus/pull/9421) Fix translations layout (by @Nitwel)
 - **API**
   - [#11307](https://github.com/directus/directus/pull/11307) Bearer token no longer case sensitive for API
-    authenticatiom (by @jaycammarano)
+    authentication (by @jaycammarano)
   - [#11279](https://github.com/directus/directus/pull/11279) Resolve transaction unreliability issues in schema
     alterations (by @rijkvanzanten)
   - [#11069](https://github.com/directus/directus/pull/11069) Prevent MySQL collation errors (by @Oreilles)
@@ -1177,7 +1334,7 @@ header.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#10151](https://github.com/directus/directus/pull/10151) Cleaned up Oracle duplicate index handling
     ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#10077](https://github.com/directus/directus/pull/10077) Add `limit` to graphql aggegrated queries
+  - [#10077](https://github.com/directus/directus/pull/10077) Add `limit` to graphql aggregated queries
     ([@azrikahar](https://github.com/azrikahar))
   - [#10064](https://github.com/directus/directus/pull/10064) Add status field in the directus_notifications collection
     ([@alejandro-tss](https://github.com/alejandro-tss))
@@ -1439,7 +1596,7 @@ header.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#9982](https://github.com/directus/directus/pull/9982) Allow reordering between groups in data model
     ([@licitdev](https://github.com/licitdev))
-  - [#9924](https://github.com/directus/directus/pull/9924) Fix indeterminate properties in advanded field creation
+  - [#9924](https://github.com/directus/directus/pull/9924) Fix indeterminate properties in advanced field creation
     ([@Oreilles](https://github.com/Oreilles))
   - [#9914](https://github.com/directus/directus/pull/9914) Fix wrong date filter in calendar layout
     ([@Oreilles](https://github.com/Oreilles))
@@ -1891,7 +2048,7 @@ header.
   ([@jaycammarano](https://github.com/jaycammarano))
 - [#9321](https://github.com/directus/directus/pull/9321) add content and fix broken links
   ([@benhaynes](https://github.com/benhaynes))
-- [#9256](https://github.com/directus/directus/pull/9256) Fixed Github oauth config in docs
+- [#9256](https://github.com/directus/directus/pull/9256) Fixed GitHub oauth config in docs
   ([@aidenfoxx](https://github.com/aidenfoxx))
 - [#9218](https://github.com/directus/directus/pull/9218) Update config-options.md
   ([@aidenfoxx](https://github.com/aidenfoxx))
@@ -3037,7 +3194,7 @@ You can enable this new module under Project Settings.
 
 - **App**
   - [#8078](https://github.com/directus/directus/pull/8078) make i18n shared ([@Nitwel](https://github.com/Nitwel))
-  - [#8059](https://github.com/directus/directus/pull/8059) Move some compositons, utils and types to shared
+  - [#8059](https://github.com/directus/directus/pull/8059) Move some compositions, utils and types to shared
     ([@Nitwel](https://github.com/Nitwel))
 - **Misc.**
   - [#8062](https://github.com/directus/directus/pull/8062) Add return type to useFilterFields
@@ -3675,7 +3832,7 @@ You can enable this new module under Project Settings.
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7258](https://github.com/directus/directus/pull/7258) Don't use tags interface for CSV filter
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7253](https://github.com/directus/directus/pull/7253) Fix formatted-value overflow ellpisis on card layout
+  - [#7253](https://github.com/directus/directus/pull/7253) Fix formatted-value overflow ellipsis on card layout
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7252](https://github.com/directus/directus/pull/7252) Handle empty collection group in custom nav
     ([@rijkvanzanten](https://github.com/rijkvanzanten))

@@ -49,11 +49,7 @@ export type QueryMany<T> = QueryOne<T> & {
 };
 
 export type DeepQueryMany<T> = {
-	[K in keyof Omit<QueryMany<T>, 'aggregate'> as `_${string & K}`]: QueryMany<T>[K];
-} & {
-	_aggregate?: {
-		[A in keyof Aggregate as `_${string & A}`]: Aggregate[A];
-	};
+	[K in keyof QueryMany<T> as `_${string & K}`]: QueryMany<T>[K];
 };
 
 export type Aggregate = {
