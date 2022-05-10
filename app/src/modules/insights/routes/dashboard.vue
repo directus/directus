@@ -192,7 +192,7 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const permissionsStore = usePermissionsStore();
 		const { panels: panelTypes } = getPanels();
-		const response = ref<Record<string, Panel>>({});
+		const response = ref<Record<string, Panel | Panel[]>>({});
 		const panelsWithData = ref<Panel[]>([]);
 
 		const { fullScreen } = toRefs(appStore);
@@ -553,6 +553,43 @@ export default defineComponent({
 			}
 		}
 
+		function processQuery(query, collection) {
+			const formattedQuery: Record<string, any> = {};
+
+			formattedQuery.__aliasFor = collection;
+
+			if (!isEmpty(query.aggregate)) {
+				formattedQuery.__aliasFor = collection + '_aggregated';
+
+				for (const [aggregateFunc, field] of Object.entries(query.aggregate)) {
+					if (!formattedQuery[aggregateFunc]) {
+						formattedQuery[aggregateFunc] = {};
+					}
+
+					formattedQuery[aggregateFunc][field] = true;
+				}
+
+				if (query.groupBy) {
+					formattedQuery.__args = { groupBy: query.groupBy };
+					formattedQuery.group = true;
+				}
+			}
+
+			if (query.fields) {
+				for (const field of query.fields) {
+					formattedQuery[field] = true;
+				}
+			}
+
+			if (query.filter) {
+				if (!formattedQuery.__args) {
+					formattedQuery.__args = {};
+				}
+				formattedQuery.__args.filter = query.filter;
+			}
+			return formattedQuery;
+		}
+
 		function stitchQueriesToGql(queries: Record<string, any>): string {
 			if (!queries) return '';
 
@@ -561,69 +598,110 @@ export default defineComponent({
 			};
 
 			for (const [key, query] of Object.entries(queries)) {
-				if (!query?.collection || !query.query) continue;
+				if (Array.isArray(query.query)) {
+					for (let i = 0; i < query.query.length; i++) {
+						const oneQuery = query.query[i];
+						const sanitizedKey = 'id_' + key.replaceAll('-', '_') + '__' + i;
 
-				const sanitizedKey = 'id_' + key.replaceAll('-', '_');
+						formattedQuery.query[sanitizedKey] = {};
+						formattedQuery.query[sanitizedKey] = processQuery(oneQuery, query.collection);
+					}
+				} else {
+					if (!query?.collection || !query.query) continue;
 
-				formattedQuery.query[sanitizedKey] = {};
-				formattedQuery.query[sanitizedKey].__aliasFor = query.collection;
+					const sanitizedKey = 'id_' + key.replaceAll('-', '_');
 
-				if (!isEmpty(query.query.aggregate)) {
-					formattedQuery.query[sanitizedKey].__aliasFor = query.collection + '_aggregated';
+					formattedQuery.query[sanitizedKey] = {};
+					formattedQuery.query[sanitizedKey].__aliasFor = query.collection;
 
-					for (const [aggregateFunc, field] of Object.entries(query.query.aggregate)) {
-						if (!formattedQuery.query[sanitizedKey][aggregateFunc]) {
-							formattedQuery.query[sanitizedKey][aggregateFunc] = {};
+					if (!isEmpty(query.query.aggregate)) {
+						formattedQuery.query[sanitizedKey].__aliasFor = query.collection + '_aggregated';
+
+						for (const [aggregateFunc, field] of Object.entries(query.query.aggregate)) {
+							if (!formattedQuery.query[sanitizedKey][aggregateFunc]) {
+								formattedQuery.query[sanitizedKey][aggregateFunc] = {};
+							}
+
+							formattedQuery.query[sanitizedKey][aggregateFunc][field] = true;
 						}
 
-						formattedQuery.query[sanitizedKey][aggregateFunc][field] = true;
+						if (query.query.groupBy) {
+							formattedQuery.query[sanitizedKey].__args = { groupBy: query.query.groupBy };
+							formattedQuery.query[sanitizedKey].group = true;
+						}
 					}
 
-					if (query.query.groupBy) {
-						formattedQuery.query[sanitizedKey].__args = { groupBy: query.query.groupBy };
-						formattedQuery.query[sanitizedKey].group = true;
+					if (query.query.fields) {
+						for (const field of query.query.fields) {
+							formattedQuery.query[sanitizedKey][field] = true;
+						}
 					}
-				}
 
-				if (query.query.fields) {
-					for (const field of query.query.fields) {
-						formattedQuery.query[sanitizedKey][field] = true;
+					if (query.query.filter) {
+						if (!formattedQuery.query[sanitizedKey].__args) {
+							formattedQuery.query[sanitizedKey].__args = {};
+						}
+						formattedQuery.query[sanitizedKey].__args.filter = query.query.filter;
 					}
-				}
-
-				if (query.query.filter) {
-					if (!formattedQuery.query[sanitizedKey].__args) {
-						formattedQuery.query[sanitizedKey].__args = {};
-					}
-					formattedQuery.query[sanitizedKey].__args.filter = query.query.filter;
 				}
 			}
+
 			return jsonToGraphQLQuery(formattedQuery);
 		}
 
 		async function caller(query: string) {
 			if (query === 'query') return;
 
-			const newResponse: Record<string, Panel> = {};
+			const newResponse: Record<string, Panel | Panel[]> = {};
+			const sortedResponses: Record<string, any> = {};
 
 			try {
 				const res = await api.post('/graphql', {
 					query: query,
 				});
+
+				for (const [id, data] of Object.entries(res.data.data)) {
+					if (id.includes('__')) {
+						const panelId = id.split('__')[0];
+						const index = id.split('__')[1];
+						if (!sortedResponses[panelId]) sortedResponses[panelId] = {};
+
+						sortedResponses[panelId][index] = data;
+					} else {
+						sortedResponses[id] = data;
+					}
+				}
+
 				for (const panel of panels.value) {
 					const panelId = 'id_' + panel.id.replaceAll('-', '_');
-					if (response.value[panelId]) newResponse[panelId] = response.value[panelId];
-					if (res.data.data[panelId]) newResponse[panelId] = res.data.data[panelId];
+					if (sortedResponses[panelId]) {
+						if (Object.keys(sortedResponses[panelId]).length > 0) {
+							newResponse[panelId] = [];
+
+							for (const value of Object.values(sortedResponses[panelId])) {
+								newResponse[panelId].push(value);
+							}
+						} else {
+							newResponse[panelId] = sortedResponses[panelId];
+						}
+					}
+
+					if (res.data.data[panelId]) {
+						if (Array.isArray(res.data.data[panelId])) {
+							// console.log(res.data.data[panelId]);
+						}
+						newResponse[panelId] = res.data.data[panelId];
+					}
 
 					if (newResponse[panelId]) {
 						panel.data = newResponse[panelId];
 					}
 					panelsWithData.value.push(panel);
 				}
+
 				response.value = newResponse;
 			} catch (errs: any) {
 				const queriesToRemove: Record<string, any> = {};
-
 				for (const error of errs.response.data.errors) {
 					const message = error.extensions.graphqlErrors[0].message;
 
@@ -661,8 +739,8 @@ export default defineComponent({
 					}
 				}
 
-				const newQuery = stitchQueriesToGql(newQueries);
-				caller(newQuery);
+				// const newQuery = stitchQueriesToGql(newQueries);
+				// caller(newQuery);
 			}
 		}
 	},
