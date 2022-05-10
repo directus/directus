@@ -1,12 +1,12 @@
 <template>
-	<div ref="el" v-tooltip:[placement]="hasEllipsis && text" class="v-text-overflow">
+	<div ref="el" v-tooltip:[placement]="hasEllipsis && tooltip" class="v-text-overflow">
 		<v-highlight v-if="highlight" :query="highlight" :text="text" />
 		<template v-else>{{ text }}</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, ref, watch, computed } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({
@@ -24,9 +24,16 @@ export default defineComponent({
 			default: 'top',
 			validator: (val: string) => ['top', 'bottom', 'left', 'right', 'start', 'end'].includes(val),
 		},
+		tooltipPrefix: {
+			type: String,
+			default: null,
+		},
+		tooltipSuffix: {
+			type: String,
+			default: null,
+		},
 	},
-	emits: ['overflow'],
-	setup(props, { emit }) {
+	setup(props) {
 		const el = ref<HTMLElement>();
 		const hasEllipsis = ref(false);
 
@@ -37,12 +44,18 @@ export default defineComponent({
 			() => {
 				if (!el.value) return;
 				hasEllipsis.value = el.value.offsetWidth < el.value.scrollWidth;
-				emit('overflow', hasEllipsis.value);
 			},
 			{ immediate: true }
 		);
 
-		return { el, hasEllipsis };
+		const tooltip = computed(() => {
+			const prefix = props.tooltipPrefix ?? '';
+			const suffix = props.tooltipSuffix ?? '';
+
+			return `${prefix}${props.text}${suffix}`;
+		});
+
+		return { el, hasEllipsis, tooltip };
 	},
 });
 </script>
