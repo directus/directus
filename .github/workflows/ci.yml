@@ -89,7 +89,7 @@ jobs:
   e2e_blackbox_tests:
       name: End-to-End Black Box Tests
       needs: pre_check
-      uses: directus/directus/.github/workflows/e2e-blackbox-tests.yml@main
+      uses: licitdev/directus/.github/workflows/e2e-blackbox-tests.yml@feat/black-box-tests
       with:
         should_skip:
           ${{ needs.pre_check.outputs.should_skip == 'true' ||
