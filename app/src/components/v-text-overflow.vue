@@ -25,7 +25,8 @@ export default defineComponent({
 			validator: (val: string) => ['top', 'bottom', 'left', 'right', 'start', 'end'].includes(val),
 		},
 	},
-	setup() {
+	emits: ['overflow'],
+	setup(props, { emit }) {
 		const el = ref<HTMLElement>();
 		const hasEllipsis = ref(false);
 
@@ -36,6 +37,7 @@ export default defineComponent({
 			() => {
 				if (!el.value) return;
 				hasEllipsis.value = el.value.offsetWidth < el.value.scrollWidth;
+				emit('overflow', hasEllipsis.value);
 			},
 			{ immediate: true }
 		);

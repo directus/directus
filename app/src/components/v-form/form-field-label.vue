@@ -6,8 +6,8 @@
 			:value="field.field"
 			@update:model-value="$emit('toggle-batch', field)"
 		/>
-		<span v-tooltip="edited ? t('edited') : null" class="field-name" @click="toggle">
-			<v-text-overflow :text="field.name" />
+		<span v-tooltip="tooltip" class="field-name" @click="toggle">
+			<v-text-overflow :text="field.name" @overflow="isOverflow = $event" />
 			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import { Field } from '@directus/shared/types';
 
 export default defineComponent({
@@ -64,9 +64,17 @@ export default defineComponent({
 		},
 	},
 	emits: ['toggle-batch'],
-	setup() {
+	setup(props) {
 		const { t } = useI18n();
-		return { t };
+
+		const isOverflow = ref(false);
+
+		const tooltip = computed(() => {
+			if (!props.edited) return null;
+			return isOverflow.value ? `${t('edited')}: ${props.field.name}` : t('edited');
+		});
+
+		return { t, isOverflow, tooltip };
 	},
 });
 </script>
@@ -137,6 +145,10 @@ export default defineComponent({
 		.field-name {
 			margin-left: -16px;
 			padding-left: 16px;
+
+			.v-text-overflow {
+				pointer-events: none;
+			}
 		}
 	}
 
