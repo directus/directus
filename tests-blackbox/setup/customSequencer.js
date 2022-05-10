@@ -23,7 +23,7 @@ class CustomSequencer extends Sequencer {
 
 				sortedTests = onlyTests;
 			} else {
-				for (let sequentialTest of sequentialTestsList.before.reverse()) {
+				for (let sequentialTest of sequentialTestsList.before.slice().reverse()) {
 					const testIndex = findIndex(sortedTests, (test) => {
 						return String(test.path).endsWith(sequentialTest.testFilePath);
 					});
