@@ -51,11 +51,11 @@
 			</draggable>
 		</v-list>
 
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed && updateAllowed" @click="createItem">
+		<div class="actions">
+			<v-button v-if="enableCreate && createAllowed && updateAllowed" :disabled="disabled" @click="createItem">
 				{{ t('create_new') }}
 			</v-button>
-			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
+			<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 
@@ -63,7 +63,7 @@
 		</div>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled="disabled"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -87,7 +87,7 @@
 <script setup lang="ts">
 import { useRelationO2M, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
 import { parseFilter } from '@/utils/parse-filter';
-import { Filter } from '@directus/shared/types';
+import { Field, Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
@@ -98,6 +98,7 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp } from 'lodash';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -141,12 +142,13 @@ const templateWithDefaults = computed(() => {
 	);
 });
 
-const fields = computed(() =>
-	adjustFieldsForDisplays(
+const fields = computed(() => {
+	const displayFields: string[] = adjustFieldsForDisplays(
 		getFieldsFromTemplate(templateWithDefaults.value),
 		relationInfo.value?.relatedCollection.collection ?? ''
-	)
-);
+	);
+	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
+});
 
 const limit = ref(15);
 const page = ref(1);

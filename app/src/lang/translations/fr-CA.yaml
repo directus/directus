@@ -326,12 +326,14 @@ revision_delta_deleted: Supprimé
 revision_delta_reverted: Restauré
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
+download_page_as_csv: 'Télécharger la page au format CSV'
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
 revision_preview: Aperçu de la révision
 updates_made: Mises à jour réalisées
 leave_comment: Laisser un commentaire…
 post_comment_success: Commentaire publié
+post_comment_updated: Commentaire mis à jour
 item_create_success: Élément créé | Éléments créés
 item_update_success: Élément mis à jour | Éléments mis à jour
 item_delete_success: Élément supprimé | Éléments supprimés
@@ -640,6 +642,7 @@ advanced_settings: Paramètres Avancés
 advanced_filter: Filtre avancé
 delete_advanced_filter: Supprimer le filtre
 change_advanced_filter_operator: Changer d'opérateur
+advanced: Avancé
 operators:
   eq: Égal à
   neq: Différent de
@@ -1738,6 +1741,8 @@ layouts:
     calendar: Calendrier
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
+    optional: Facultatif
+    first_day: Premier Jour de la Semaine
   map:
     map: Carte
     basemap: Carte de base
@@ -1752,6 +1757,13 @@ layouts:
     find_location: Trouver l'emplacement ...
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
+  kanban:
+    edit_group: Éditer le Groupe,
+    delete_group: Supprimer le Groupe,
+    add_group: Ajouter un Groupe,
+    add_group_placeholder: Entrez le nom du nouveau groupe...,
+    show: Afficher,
+    no_group: Aucun Groupe,
 panels:
   metric:
     name: Indicateurs

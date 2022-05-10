@@ -172,7 +172,7 @@ In order to use this Panel, your Collection will need a datetime Field.
 - **Group Aggregation** – Selects the type of aggregation to perform. [Learn more.](#more-on-aggregate-functions)
 - **Group Precision** – Sets the time interval to aggregate by _(days, weeks, months, etc.)_.
 - **Date Field** – Selects the datetime Field used along the x-axis.
-- **Date Range** – Selects the time range from which data should be displayed.
+- **Date Range** – Sets the time range from which data should be displayed, can be customized.
 - **Value Field** – Sets the Field you wish to aggregate.
 - **Value Decimals** – Changes the number of decimals displayed on the y-axis.
 - **Min Value** – Sets minimum value displayed on y-axis.
@@ -182,6 +182,13 @@ In order to use this Panel, your Collection will need a datetime Field.
 - **Filter** – Allows filtering of Items considered for analysis based on logical conditions.
 - **Show X-axis** – Toggles display of time along X-axis.
 - **Show Y-axis** – Toggles display of numeric values along Y-axis.
+
+:::tip Custom Date Range
+
+Note that `Past` is not prefixed to a custom range as it is on the default ranges. When selecting **"Other"**, simply
+type in `3 years`, `1 month`, `2 weeks`, `5 days`, etc.
+
+:::
 
 ## Extensibility Options
 

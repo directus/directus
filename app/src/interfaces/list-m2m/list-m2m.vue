@@ -46,16 +46,18 @@
 			</draggable>
 		</v-list>
 
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="createItem">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
+		<div class="actions">
+			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+				{{ t('create_new') }}
+			</v-button>
+			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
 		</div>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled="disabled"
 			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -92,6 +94,7 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { isEmpty, get, clamp } from 'lodash';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -153,12 +156,13 @@ const templateWithDefaults = computed(() => {
 	return `{{${relationInfo.value.relation.field}.${relationInfo.value.relatedPrimaryKeyField.field}}}`;
 });
 
-const fields = computed(() =>
-	adjustFieldsForDisplays(
+const fields = computed(() => {
+	const displayFields: string[] = adjustFieldsForDisplays(
 		getFieldsFromTemplate(templateWithDefaults.value),
 		relationInfo.value?.junctionCollection.collection ?? ''
-	)
-);
+	);
+	return addRelatedPrimaryKeyToFields(relationInfo.value?.junctionCollection.collection ?? '', displayFields);
+});
 
 const limit = ref(15);
 const page = ref(1);
@@ -222,6 +226,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
@@ -234,7 +239,7 @@ function editItem(item: DisplayItem) {
 		relatedPrimaryKey.value = null;
 	} else {
 		currentlyEditing.value = get(item, [junctionPkField], null);
-		relatedPrimaryKey.value = get(item, [junctionPkField, relationPkField], null);
+		relatedPrimaryKey.value = get(item, [junctionField, relationPkField], null);
 	}
 }
 

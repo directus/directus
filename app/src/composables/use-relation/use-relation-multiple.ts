@@ -1,10 +1,9 @@
 import api from '@/api';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
-import { Method } from 'axios';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -58,7 +57,7 @@ export function useRelationMultiple(
 		}
 	});
 
-	watch(previewQuery, updateFetchedItems, { immediate: true });
+	watch([previewQuery, itemId, relation], updateFetchedItems, { immediate: true });
 
 	const { fetchedSelectItems, selected, isItemSelected } = useSelected();
 
@@ -279,6 +278,12 @@ export function useRelationMultiple(
 	async function updateFetchedItems() {
 		if (!relation.value) return;
 
+		if (!itemId.value || itemId.value === '+') {
+			existingItemCount.value = 0;
+			fetchedItems.value = [];
+			return;
+		}
+
 		let targetCollection: string;
 		let targetPKField: string;
 		let reverseJunctionField: string;
@@ -318,22 +323,18 @@ export function useRelationMultiple(
 
 			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
-			if (itemId.value === '+') {
-				fetchedItems.value = [];
-			} else {
-				const response = await api.get(getEndpoint(targetCollection), {
-					params: {
-						fields: Array.from(fields),
-						filter: {
-							[reverseJunctionField]: itemId.value,
-						},
-						page: previewQuery.value.page,
-						limit: previewQuery.value.limit,
+			const response = await api.get(getEndpoint(targetCollection), {
+				params: {
+					fields: Array.from(fields),
+					filter: {
+						[reverseJunctionField]: itemId.value,
 					},
-				});
+					page: previewQuery.value.page,
+					limit: previewQuery.value.limit,
+				},
+			});
 
-				fetchedItems.value = response.data.data;
-			}
+			fetchedItems.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -342,10 +343,6 @@ export function useRelationMultiple(
 	}
 
 	async function updateItemCount(targetCollection: string, targetPKField: string, reverseJunctionField: string) {
-		if (itemId.value === '+') {
-			existingItemCount.value = 0;
-			return;
-		}
 		const response = await api.get(getEndpoint(targetCollection), {
 			params: {
 				aggregate: {
