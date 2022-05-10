@@ -43,7 +43,7 @@ jobs:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 
       - name: Start databases
-        run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --wait
+        run: docker compose -f tests-blackbox/docker-compose.yml up -d --quiet-pull --wait
 
       - name: Run tests
         run: npm run test:blackbox
