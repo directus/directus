@@ -291,12 +291,12 @@ function useLanguages() {
 	}
 
 	.secondary {
-		--v-divider-color: var(--secondary-50);
+		--v-divider-color: var(--g-color-secondary-subtle);
 
 		.v-form {
-			--g-color-primary-normal: var(--secondary);
-			--v-chip-color: var(--secondary);
-			--v-chip-background-color: var(--secondary-alt);
+			--g-color-primary-normal: var(-g-color-secondary-normal);
+			--v-chip-color: var(-g-color-secondary-normal);
+			--v-chip-background-color: var(--g-color-secondary-subtle);
 		}
 	}
 

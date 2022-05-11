@@ -373,11 +373,11 @@ function getCompareOptions(name: string) {
 		}
 
 		&.or .key {
-			color: var(--secondary);
-			background-color: var(--secondary-alt);
+			color: var(-g-color-secondary-normal);
+			background-color: var(--g-color-secondary-subtle);
 
 			&:hover {
-				background-color: var(--secondary-25);
+				background-color: var(--g-color-secondary-subtle);
 			}
 		}
 	}

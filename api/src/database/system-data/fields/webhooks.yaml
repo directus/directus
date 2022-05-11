@@ -19,8 +19,8 @@ fields:
           foreground: 'var(--g-color-primary-normal)'
           background: 'var(--g-color-primary-subtle)'
         - value: GET
-          foreground: 'var(--secondary)'
-          background: 'var(--secondary-25)'
+          foreground: 'var(-g-color-secondary-normal)'
+          background: 'var(--g-color-secondary-subtle)'
       format: false
     options:
       choices:
