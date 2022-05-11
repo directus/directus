@@ -55,7 +55,6 @@ export default defineInterface({
 									choices: [
 										{ text: '$t:primary', value: 'primary' },
 										{ text: '$t:normal', value: 'normal' },
-										{ text: '$t:info', value: 'info' },
 										{ text: '$t:success', value: 'success' },
 										{ text: '$t:warning', value: 'warning' },
 										{ text: '$t:danger', value: 'danger' },

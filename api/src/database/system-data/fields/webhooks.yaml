@@ -116,8 +116,8 @@ fields:
           background: 'var(--g-color-primary-subtle)'
         - text: $t:update
           value: update
-          foreground: 'var(--blue)'
-          background: 'var(--blue-25)'
+          foreground: 'var(--g-color-secondary-normal)'
+          background: 'var(--g-color-secondary-subtle)'
         - text: $t:delete_label
           value: delete
           foreground: 'var(--g-color-danger-normal)'

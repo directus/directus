@@ -56,7 +56,7 @@ export default defineComponent({
 			default: false,
 		},
 		kind: {
-			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
+			type: String as PropType<'normal' | 'success' | 'warning' | 'danger'>,
 			default: 'normal',
 		},
 		fullWidth: {
@@ -205,14 +205,6 @@ export default defineComponent({
 	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
 	--v-button-border-radius: var(--g-border-radius);
-}
-
-.info {
-	--v-button-color: var(--white);
-	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--blue);
-	--v-button-background-color-hover: var(--blue-125);
-	--v-button-background-color-active: var(--blue);
 }
 
 .success {

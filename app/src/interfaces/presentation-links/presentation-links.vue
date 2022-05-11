@@ -73,13 +73,6 @@ export default defineComponent({
 }
 
 .action {
-	&.info {
-		--v-button-background-color: var(--blue);
-		--v-button-background-color-hover: var(--blue-125);
-		--v-button-color: var(--blue-alt);
-		--v-button-color-hover: var(--blue-alt);
-	}
-
 	&.success {
 		--v-button-background-color: var(--g-color-success-normal);
 		--v-button-background-color-hover: var(--g-color-success-accent);

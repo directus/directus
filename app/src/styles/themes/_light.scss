@@ -50,6 +50,4 @@
 
 	// Generate color variations
 	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
-
-	--blue-alt: var(--blue-10);
 }
