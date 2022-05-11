@@ -518,7 +518,7 @@ textarea {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--g-color-warning-normal);
 }
 
 .danger {

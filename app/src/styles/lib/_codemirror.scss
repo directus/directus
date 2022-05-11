@@ -213,13 +213,13 @@
 	color: var(--g-color-success-normal);
 }
 .cm-s-default .cm-comment {
-	color: var(--warning);
+	color: var(--g-color-warning-normal);
 }
 .cm-s-default .cm-string {
 	color: var(--g-color-danger-normal);
 }
 .cm-s-default .cm-string-2 {
-	color: var(--warning);
+	color: var(--g-color-warning-normal);
 }
 .cm-s-default .cm-meta {
 	color: var(--g-color-foreground-normal);
@@ -294,7 +294,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	transition: opacity var(--fast) var(--transition);
 }
 .CodeMirror-lint-mark-warning {
-	border-bottom: 2px dashed var(--warning);
+	border-bottom: 2px dashed var(--g-color-warning-normal);
 }
 
 .CodeMirror-lint-mark-error {
@@ -310,7 +310,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	width: 16px;
 }
 .CodeMirror-lint-marker-warning {
-	background-color: var(--warning);
+	background-color: var(--g-color-warning-normal);
 	-webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 	mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }

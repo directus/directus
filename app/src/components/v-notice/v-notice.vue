@@ -106,8 +106,8 @@ body {
 }
 
 .warning {
-	--v-notice-icon-color: var(--warning);
-	--v-notice-border-color: var(--warning);
+	--v-notice-icon-color: var(--g-color-warning-normal);
+	--v-notice-border-color: var(--g-color-warning-normal);
 	--v-notice-color: var(--g-color-foreground-normal);
 	--v-notice-background-color: var(--g-color-background-normal);
 }

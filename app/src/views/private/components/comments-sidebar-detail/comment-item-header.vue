@@ -195,7 +195,7 @@ function useDelete() {
 	height: 6px;
 	margin-right: 4px;
 	vertical-align: middle;
-	background-color: var(--warning);
+	background-color: var(--g-color-warning-normal);
 	border-radius: 3px;
 }
 </style>

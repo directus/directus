@@ -18,6 +18,10 @@
 	--g-color-danger-accent: #e7828f;
 	--g-color-danger-subtle: #231820;
 
+	--g-color-warning-normal: #FBC54F;
+	--g-color-warning-accent: #fcdcac;
+	--g-color-warning-subtle: #1d1b16;
+
 	--g-color-border-normal: #30363d;
 	--g-color-border-accent: #484f58;
 	--g-color-border-subtle: #21262d;
@@ -48,7 +52,4 @@
 	@include generate-colors($color-mapping, $dark-theme-shade, $dark-theme-tint);
 
 	--blue-alt: var(--blue-10);
-	--yellow-alt: var(--yellow-10);
-	--orange-alt: var(--orange-10);
-	--warning-alt: var(--yellow-10);
 }

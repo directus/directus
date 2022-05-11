@@ -120,8 +120,8 @@ export default defineComponent({
 }
 
 .v-list-item.warning {
-	--v-list-item-color: var(--warning);
-	--v-list-item-color-hover: var(--warning);
-	--v-list-item-icon-color: var(--warning);
+	--v-list-item-color: var(--g-color-warning-normal);
+	--v-list-item-color-hover: var(--g-color-warning-normal);
+	--v-list-item-icon-color: var(--g-color-warning-normal);
 }
 </style>

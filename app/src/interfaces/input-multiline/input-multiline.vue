@@ -121,6 +121,6 @@ export default defineComponent({
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--g-color-warning-normal);
 }
 </style>

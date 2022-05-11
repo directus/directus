@@ -92,7 +92,7 @@ export default defineComponent({
 			z-index: 2;
 			width: 12px;
 			height: 12px;
-			background-color: var(--warning);
+			background-color: var(--g-color-warning-normal);
 			border: 2px solid var(--g-color-background-normal);
 			border-radius: 8px;
 

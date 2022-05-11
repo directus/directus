@@ -88,10 +88,10 @@ export default defineComponent({
 	}
 
 	&.warning {
-		--v-button-background-color: var(--warning);
-		--v-button-background-color-hover: var(--warning-125);
-		--v-button-color: var(--warning-alt);
-		--v-button-color-hover: var(--warning-alt);
+		--v-button-background-color: var(--g-color-warning-normal);
+		--v-button-background-color-hover: var(--g-color-warning-accent);
+		--v-button-color: var(--g-color-warning-subtle);
+		--v-button-color-hover: var(--g-color-warning-subtle);
 	}
 
 	&.danger {

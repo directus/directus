@@ -196,11 +196,11 @@ export default defineComponent({
 
 .partial,
 .custom {
-	--v-icon-color: var(--warning);
-	--v-icon-color-hover: var(--warning);
+	--v-icon-color: var(--g-color-warning-normal);
+	--v-icon-color-hover: var(--g-color-warning-normal);
 
 	&::before {
-		background-color: var(--warning-10);
+		background-color: var(--g-color-warning-subtle);
 	}
 }
 

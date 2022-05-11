@@ -70,7 +70,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-input {
 	--v-input-font-family: var(--g-font-family-mono);
-	--v-icon-color: var(--warning);
+	--v-icon-color: var(--g-color-warning-normal);
 
 	&.hashed {
 		--v-icon-color: var(--g-color-primary-normal);
@@ -78,7 +78,7 @@ export default defineComponent({
 }
 
 .lock {
-	--v-icon-color: var(--warning);
+	--v-icon-color: var(--g-color-warning-normal);
 }
 
 .hashed {

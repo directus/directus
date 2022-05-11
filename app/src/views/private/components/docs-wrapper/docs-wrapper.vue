@@ -440,8 +440,8 @@ export default defineComponent({
 }
 
 .md :deep(.hint.warning) {
-	background-color: var(--warning-10);
-	border-left: 2px solid var(--warning);
+	background-color: var(--g-color-warning-subtle);
+	border-left: 2px solid var(--g-color-warning-normal);
 }
 
 .md :deep(.hint.danger) {

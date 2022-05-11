@@ -130,7 +130,7 @@ export default defineComponent({
 		}
 
 		&.suspended {
-			color: var(--warning);
+			color: var(--g-color-warning-normal);
 		}
 
 		&.deleted {

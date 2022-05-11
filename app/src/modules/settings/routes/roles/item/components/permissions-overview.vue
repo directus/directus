@@ -240,7 +240,7 @@ export default defineComponent({
 
 	.instant-save {
 		margin-left: 4px;
-		color: var(--warning);
+		color: var(--g-color-warning-normal);
 	}
 }
 

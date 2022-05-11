@@ -13,7 +13,7 @@ actions.
 	<v-button rounded icon style="--v-button-background-color: var(--g-color-success-normal);">
 		<v-icon name="add" />
 	</v-button>
-	<v-button rounded icon style="--v-button-background-color: var(--warning);">
+	<v-button rounded icon style="--v-button-background-color: var(--g-color-warning-normal);">
 		<v-icon name="delete" />
 	</v-button>
 	<v-button rounded icon style="--v-button-background-color: var(--g-color-danger-normal);">
