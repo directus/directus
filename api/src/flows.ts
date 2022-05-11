@@ -1,25 +1,17 @@
-import { schedule, validate } from 'node-cron';
+import * as sharedExceptions from '@directus/shared/exceptions';
+import { ActionHandler, FilterHandler, Flow, InitHandler, Operation, OperationHandler } from '@directus/shared/types';
 import { get } from 'micromustache';
+import { schedule, validate } from 'node-cron';
 import getDatabase from './database';
 import emitter from './emitter';
-import logger from './logger';
-import { FlowsService } from './services';
-import { EventHandler } from './types';
-import { getSchema } from './utils/get-schema';
-import { constructFlowTree } from './utils/construct-flow-tree';
-import {
-	OperationHandler,
-	Operation,
-	Flow,
-	FilterHandler,
-	ActionHandler,
-	InitHandler,
-	EventContext,
-} from '@directus/shared/types';
 import env from './env';
 import * as exceptions from './exceptions';
-import * as sharedExceptions from '@directus/shared/exceptions';
+import logger from './logger';
 import * as services from './services';
+import { FlowsService } from './services';
+import { EventHandler } from './types';
+import { constructFlowTree } from './utils/construct-flow-tree';
+import { getSchema } from './utils/get-schema';
 import { renderMustache } from './utils/render-mustache';
 
 let flowManager: FlowManager | undefined;
@@ -260,7 +252,7 @@ class FlowManager {
 			return get(keyedData, flow.options.return);
 		}
 
-		return null;
+		return undefined;
 	}
 
 	private async executeOperation(
