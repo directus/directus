@@ -10,7 +10,7 @@ actions.
 
 ```html
 <header-bar-actions>
-	<v-button rounded icon style="--v-button-background-color: var(--success);">
+	<v-button rounded icon style="--v-button-background-color: var(--g-color-success-normal);">
 		<v-icon name="add" />
 	</v-button>
 	<v-button rounded icon style="--v-button-background-color: var(--warning);">

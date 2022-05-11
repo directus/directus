@@ -26,7 +26,7 @@
 .hljs-link,
 .hljs-selector-attr,
 .hljs-selector-pseudo {
-	color: var(--success-125);
+	color: var(--g-color-success-accent);
 }
 
 .hljs-type,
@@ -36,7 +36,7 @@
 .hljs-quote,
 .hljs-template-tag,
 .hljs-deletion {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }
 
 .hljs-title,
@@ -73,5 +73,5 @@
 }
 
 .hljs-number {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }

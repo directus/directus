@@ -426,7 +426,7 @@ function getCompareOptions(name: string) {
 	}
 
 	.value {
-		color: var(--green);
+		color: var(--g-color-success-normal);
 	}
 
 	.delete {

@@ -123,7 +123,7 @@ export default defineComponent({
 
 				&:hover {
 					&.all {
-						color: var(--success);
+						color: var(--g-color-success-normal);
 					}
 
 					&.none {

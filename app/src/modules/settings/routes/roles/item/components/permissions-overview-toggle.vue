@@ -205,11 +205,11 @@ export default defineComponent({
 }
 
 .all {
-	--v-icon-color: var(--success);
-	--v-icon-color-hover: var(--success);
+	--v-icon-color: var(--g-color-success-normal);
+	--v-icon-color-hover: var(--g-color-success-normal);
 
 	&::before {
-		background-color: var(--success-10);
+		background-color: var(--g-color-success-subtle);
 	}
 }
 

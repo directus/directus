@@ -10,6 +10,10 @@
 	--g-color-secondary-accent: #ff77ba;
 	--g-color-secondary-subtle: #ffebf9;
 
+	--g-color-success-normal: #2ECDA7;
+	--g-color-success-accent: #28b694;
+	--g-color-success-subtle: #dbf7f0;
+
 	--g-color-border-normal: #d3dae4;
 	--g-color-border-accent: #a2b5cd;
 	--g-color-border-subtle: #f0f4f9;
@@ -40,11 +44,9 @@
 	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
 
 	--blue-alt: var(--blue-10);
-	--green-alt: var(--green-10);
 	--yellow-alt: var(--yellow-10);
 	--orange-alt: var(--orange-10);
 	--red-alt: var(--red-10);
-	--success-alt: var(--green-10);
 	--warning-alt: var(--yellow-10);
 	--danger-alt: var(--red-10);
 }

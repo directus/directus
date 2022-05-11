@@ -126,7 +126,7 @@ export default defineComponent({
 		}
 
 		&.active {
-			color: var(--success);
+			color: var(--g-color-success-normal);
 		}
 
 		&.suspended {

@@ -88,7 +88,7 @@
 }
 .cm-fat-cursor .CodeMirror-cursor {
 	width: auto;
-	background: var(--success-75);
+	background: var(--g-color-success-normal);
 	border: 0 !important;
 }
 .cm-fat-cursor div.CodeMirror-cursors {
@@ -102,7 +102,7 @@
 }
 .cm-animate-fat-cursor {
 	width: auto;
-	background-color: var(--success-75);
+	background-color: var(--g-color-success-normal);
 	border: 0;
 	-webkit-animation: blink 1.06s steps(1) infinite;
 	-moz-animation: blink 1.06s steps(1) infinite;
@@ -166,13 +166,13 @@
 	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-quote {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }
 .cm-negative {
 	color: var(--danger);
 }
 .cm-positive {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }
 .cm-header,
 .cm-strong {
@@ -195,7 +195,7 @@
 	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-number {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }
 .cm-s-default .cm-def {
 	color: var(--g-color-primary-normal);
@@ -210,7 +210,7 @@
 }
 .cm-s-default .cm-variable-3,
 .cm-s-default .cm-type {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }
 .cm-s-default .cm-comment {
 	color: var(--warning);
@@ -234,7 +234,7 @@
 	color: var(--g-color-foreground-subtle);
 }
 .cm-s-default .cm-tag {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }
 .cm-s-default .cm-attribute {
 	color: var(--g-color-primary-normal);
@@ -260,7 +260,7 @@
 /* Default styles for common addons */
 
 div.CodeMirror span.CodeMirror-matchingbracket {
-	color: var(--success);
+	color: var(--g-color-success-normal);
 }
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	color: var(--danger);

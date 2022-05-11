@@ -160,14 +160,14 @@ export default defineComponent({
 	}
 
 	&.success {
-		background-color: var(--success);
+		background-color: var(--g-color-success-normal);
 
 		&.tail::after {
-			background-color: var(--success);
+			background-color: var(--g-color-success-normal);
 		}
 
 		.text {
-			color: var(--success-alt);
+			color: var(--g-color-success-subtle);
 		}
 	}
 

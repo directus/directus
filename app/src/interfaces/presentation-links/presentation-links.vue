@@ -81,10 +81,10 @@ export default defineComponent({
 	}
 
 	&.success {
-		--v-button-background-color: var(--success);
-		--v-button-background-color-hover: var(--success-125);
-		--v-button-color: var(--success-alt);
-		--v-button-color-hover: var(--success-alt);
+		--v-button-background-color: var(--g-color-success-normal);
+		--v-button-background-color-hover: var(--g-color-success-accent);
+		--v-button-color: var(--g-color-success-subtle);
+		--v-button-color-hover: var(--g-color-success-subtle);
 	}
 
 	&.warning {

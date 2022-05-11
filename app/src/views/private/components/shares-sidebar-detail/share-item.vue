@@ -153,7 +153,7 @@ export default defineComponent({
 	}
 
 	&.upcoming {
-		color: var(--green);
+		color: var(--g-color-success-normal);
 	}
 }
 

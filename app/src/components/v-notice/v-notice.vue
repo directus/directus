@@ -99,9 +99,9 @@ body {
 }
 
 .success {
-	--v-notice-icon-color: var(--success);
-	--v-notice-border-color: var(--success);
-	--v-notice-color: var(--success);
+	--v-notice-icon-color: var(--g-color-success-normal);
+	--v-notice-border-color: var(--g-color-success-normal);
+	--v-notice-color: var(--g-color-success-normal);
 	--v-notice-background-color: var(--g-color-background-normal);
 }
 

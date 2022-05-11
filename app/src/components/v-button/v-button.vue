@@ -218,9 +218,9 @@ export default defineComponent({
 .success {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--success);
-	--v-button-background-color-hover: var(--success-125);
-	--v-button-background-color-active: var(--success);
+	--v-button-background-color: var(--g-color-success-normal);
+	--v-button-background-color-hover: var(--g-color-success-accent);
+	--v-button-background-color-active: var(--g-color-success-normal);
 }
 
 .warning {

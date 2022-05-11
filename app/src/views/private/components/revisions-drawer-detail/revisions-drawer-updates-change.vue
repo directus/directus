@@ -82,12 +82,12 @@ export default defineComponent({
 }
 
 .added {
-	color: var(--success);
-	background-color: var(--success-alt);
+	color: var(--g-color-success-normal);
+	background-color: var(--g-color-success-subtle);
 	border-radius: 0 0 var(--g-border-radius) var(--g-border-radius) !important;
 
 	.changed {
-		background-color: var(--success-25);
+		background-color: var(--g-color-success-subtle);
 	}
 }
 

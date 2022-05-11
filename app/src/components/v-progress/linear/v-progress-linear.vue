@@ -144,7 +144,7 @@ body {
 		}
 
 		&.success .inner {
-			background-color: var(--success);
+			background-color: var(--g-color-success-normal);
 		}
 	}
 }

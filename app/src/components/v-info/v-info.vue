@@ -58,8 +58,8 @@ export default defineComponent({
 }
 
 .success .icon {
-	color: var(--success);
-	background-color: var(--success-alt);
+	color: var(--g-color-success-normal);
+	background-color: var(--g-color-success-subtle);
 }
 
 .warning .icon {
