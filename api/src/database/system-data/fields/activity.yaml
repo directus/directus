@@ -21,8 +21,8 @@ fields:
           background: 'var(--blue-25)'
         - text: $t:field_options.directus_activity.delete
           value: delete
-          foreground: 'var(--danger)'
-          background: 'var(--danger-25)'
+          foreground: 'var(--g-color-danger-normal)'
+          background: 'var(--g-color-danger-subtle)'
         - text: $t:field_options.directus_activity.login
           value: login
           foreground: 'var(--g-color-primary-normal)'

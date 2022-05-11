@@ -127,7 +127,7 @@ export default defineComponent({
 					}
 
 					&.none {
-						color: var(--danger);
+						color: var(--g-color-danger-normal);
 					}
 				}
 			}

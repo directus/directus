@@ -120,8 +120,8 @@ fields:
           background: 'var(--blue-25)'
         - text: $t:delete_label
           value: delete
-          foreground: 'var(--danger)'
-          background: 'var(--danger-25)'
+          foreground: 'var(--g-color-danger-normal)'
+          background: 'var(--g-color-danger-subtle)'
         - text: $t:login
           value: login
           foreground: 'var(--g-color-primary-normal)'

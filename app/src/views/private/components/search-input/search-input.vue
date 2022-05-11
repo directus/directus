@@ -198,7 +198,7 @@ export default defineComponent({
 		margin-left: 8px;
 
 		&:hover {
-			--v-icon-color: var(--danger);
+			--v-icon-color: var(--g-color-danger-normal);
 		}
 	}
 

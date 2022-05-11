@@ -66,9 +66,9 @@ export default defineComponent({
 	max-height: 50vh;
 	padding: 6px 12px;
 	overflow: auto;
-	color: var(--danger);
+	color: var(--g-color-danger-normal);
 	font-family: var(--g-font-family-mono);
-	background-color: var(--danger-alt);
+	background-color: var(--g-color-danger-subtle);
 	border-radius: var(--g-border-radius);
 
 	.copy-error {

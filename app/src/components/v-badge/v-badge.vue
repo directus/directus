@@ -49,7 +49,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 :global(body) {
 	--v-badge-color: var(--white);
-	--v-badge-background-color: var(--red);
+	--v-badge-background-color: var(--g-color-danger-normal);
 	--v-badge-border-color: var(--g-color-background-page);
 	--v-badge-offset-x: 0px;
 	--v-badge-offset-y: 0px;

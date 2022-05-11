@@ -378,17 +378,17 @@ const customFilter = computed(() => {
 	}
 
 	&.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
+		--v-list-item-border-color: var(--g-color-danger-subtle);
+		--v-list-item-border-color-hover: var(--g-color-danger-subtle);
+		--v-list-item-background-color: var(--g-color-danger-subtle);
+		--v-list-item-background-color-hover: var(--g-color-danger-subtle);
 
 		::v-deep(.v-icon) {
-			color: var(--danger-75);
+			color: var(--g-color-danger-normal);
 		}
 
 		.collection {
-			color: var(--danger);
+			color: var(--g-color-danger-normal);
 		}
 	}
 }
@@ -419,20 +419,20 @@ const customFilter = computed(() => {
 	cursor: default;
 
 	.invalid-icon {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--g-color-danger-normal);
 	}
 }
 
 .clear-icon {
 	--v-icon-color: var(--g-color-foreground-subtle);
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color-hover: var(--g-color-danger-normal);
 
 	margin-right: 8px;
 	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--danger);
+		color: var(--g-color-danger-normal);
 	}
 }
 

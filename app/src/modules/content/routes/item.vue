@@ -528,7 +528,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--g-color-danger-normal) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 

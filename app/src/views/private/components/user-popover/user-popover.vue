@@ -134,7 +134,7 @@ export default defineComponent({
 		}
 
 		&.deleted {
-			color: var(--danger);
+			color: var(--g-color-danger-normal);
 		}
 	}
 

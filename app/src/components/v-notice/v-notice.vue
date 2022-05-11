@@ -113,9 +113,9 @@ body {
 }
 
 .danger {
-	--v-notice-icon-color: var(--danger);
-	--v-notice-border-color: var(--danger);
-	--v-notice-color: var(--danger);
+	--v-notice-icon-color: var(--g-color-danger-normal);
+	--v-notice-border-color: var(--g-color-danger-normal);
+	--v-notice-color: var(--g-color-danger-normal);
 	--v-notice-background-color: var(--g-color-background-normal);
 }
 

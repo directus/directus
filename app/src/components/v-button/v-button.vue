@@ -234,9 +234,9 @@ export default defineComponent({
 .danger {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-125);
-	--v-button-background-color-active: var(--danger);
+	--v-button-background-color: var(--g-color-danger-normal);
+	--v-button-background-color-hover: var(--g-color-danger-accent);
+	--v-button-background-color-active: var(--g-color-danger-normal);
 }
 
 .secondary {
@@ -263,10 +263,10 @@ export default defineComponent({
 }
 
 .danger.rounded {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color: var(--g-color-danger-subtle);
+	--v-button-color: var(--g-color-danger-normal);
+	--v-button-background-color-hover: var(--g-color-danger-subtle);
+	--v-button-color-hover: var(--g-color-danger-normal);
 }
 
 .v-button {

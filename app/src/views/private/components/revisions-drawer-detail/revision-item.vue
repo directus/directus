@@ -105,7 +105,7 @@ export default defineComponent({
 			}
 
 			&.delete {
-				background-color: var(--danger);
+				background-color: var(--g-color-danger-normal);
 			}
 		}
 	}

@@ -522,7 +522,7 @@ textarea {
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--g-color-danger-normal);
 }
 
 .preview-box :deep(ul ul),

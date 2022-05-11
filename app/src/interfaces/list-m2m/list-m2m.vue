@@ -349,13 +349,13 @@ const selectAllowed = computed(() => {
 	--v-list-padding: 0 0 4px;
 
 	.v-list-item.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
+		--v-list-item-border-color: var(--g-color-danger-subtle);
+		--v-list-item-border-color-hover: var(--g-color-danger-subtle);
+		--v-list-item-background-color: var(--g-color-danger-subtle);
+		--v-list-item-background-color-hover: var(--g-color-danger-subtle);
 
 		::v-deep(.v-icon) {
-			color: var(--danger-75);
+			color: var(--g-color-danger-normal);
 		}
 	}
 }
@@ -379,7 +379,7 @@ const selectAllowed = computed(() => {
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--g-color-danger-normal);
 	}
 }
 </style>

@@ -238,7 +238,7 @@ function useRaw() {
 .invalid {
 	margin: -12px;
 	padding: 12px;
-	background-color: var(--danger-alt);
+	background-color: var(--g-color-danger-subtle);
 	border-radius: var(--g-border-radius);
 	transition: var(--medium) var(--transition);
 	transition-property: background-color, padding, margin;
@@ -247,7 +247,7 @@ function useRaw() {
 .validation-error {
 	display: block;
 	margin-top: 4px;
-	color: var(--danger);
+	color: var(--g-color-danger-normal);
 	font-style: italic;
 }
 

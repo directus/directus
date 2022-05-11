@@ -186,11 +186,11 @@ export default defineComponent({
 }
 
 .none {
-	--v-icon-color: var(--danger);
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color: var(--g-color-danger-normal);
+	--v-icon-color-hover: var(--g-color-danger-normal);
 
 	&::before {
-		background-color: var(--danger-10);
+		background-color: var(--g-color-danger-subtle);
 	}
 }
 

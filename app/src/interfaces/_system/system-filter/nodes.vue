@@ -431,7 +431,7 @@ function getCompareOptions(name: string) {
 
 	.delete {
 		--v-icon-color: var(--g-color-foreground-subtle);
-		--v-icon-color-hover: var(--danger);
+		--v-icon-color-hover: var(--g-color-danger-normal);
 
 		position: absolute;
 		top: 50%;

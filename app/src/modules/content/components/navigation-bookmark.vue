@@ -194,8 +194,8 @@ function useDeleteBookmark() {
 
 <style lang="scss" scoped>
 .danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--g-color-danger-normal);
+	--v-list-item-icon-color: var(--g-color-danger-normal);
 }
 
 .v-list-item {

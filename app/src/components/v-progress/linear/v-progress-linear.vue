@@ -136,7 +136,7 @@ body {
 
 	&.colorful {
 		&.danger .inner {
-			background-color: var(--danger);
+			background-color: var(--g-color-danger-normal);
 		}
 
 		&.warning .inner {

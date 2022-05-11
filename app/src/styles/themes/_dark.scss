@@ -14,6 +14,10 @@
 	--g-color-success-accent: #35e5bb;
 	--g-color-success-subtle: #0d1e1f;
 
+	--g-color-danger-normal: #E35169;
+	--g-color-danger-accent: #e7828f;
+	--g-color-danger-subtle: #231820;
+
 	--g-color-border-normal: #30363d;
 	--g-color-border-accent: #484f58;
 	--g-color-border-subtle: #21262d;
@@ -46,7 +50,5 @@
 	--blue-alt: var(--blue-10);
 	--yellow-alt: var(--yellow-10);
 	--orange-alt: var(--orange-10);
-	--red-alt: var(--red-10);
 	--warning-alt: var(--yellow-10);
-	--danger-alt: var(--red-10);
 }

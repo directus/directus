@@ -184,14 +184,14 @@ export default defineComponent({
 	}
 
 	&.error {
-		background-color: var(--danger);
+		background-color: var(--g-color-danger-normal);
 
 		&.tail::after {
-			background-color: var(--danger);
+			background-color: var(--g-color-danger-normal);
 		}
 
 		.text {
-			color: var(--danger-alt);
+			color: var(--g-color-danger-subtle);
 		}
 	}
 }

@@ -183,10 +183,10 @@ function useDelete() {
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color: var(--g-color-danger-subtle);
+	--v-button-color: var(--g-color-danger-normal);
+	--v-button-background-color-hover: var(--g-color-danger-subtle);
+	--v-button-color-hover: var(--g-color-danger-normal);
 }
 
 .dot {

@@ -92,12 +92,12 @@ export default defineComponent({
 }
 
 .deleted {
-	color: var(--danger);
-	background-color: var(--danger-alt);
+	color: var(--g-color-danger-normal);
+	background-color: var(--g-color-danger-subtle);
 	border-radius: var(--g-border-radius) var(--g-border-radius) 0 0 !important;
 
 	.changed {
-		background-color: var(--danger-25);
+		background-color: var(--g-color-danger-subtle);
 	}
 }
 

@@ -16,7 +16,7 @@ actions.
 	<v-button rounded icon style="--v-button-background-color: var(--warning);">
 		<v-icon name="delete" />
 	</v-button>
-	<v-button rounded icon style="--v-button-background-color: var(--danger);">
+	<v-button rounded icon style="--v-button-background-color: var(--g-color-danger-normal);">
 		<v-icon name="favorite" />
 	</v-button>
 </header-bar-actions>

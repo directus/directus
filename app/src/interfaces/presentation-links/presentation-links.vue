@@ -96,10 +96,10 @@ export default defineComponent({
 
 	&.danger {
 		--v-button-icon-color: var(--white);
-		--v-button-background-color: var(--danger);
-		--v-button-background-color-hover: var(--danger-125);
-		--v-button-color: var(--danger-alt);
-		--v-button-color-hover: var(--danger-alt);
+		--v-button-background-color: var(--g-color-danger-normal);
+		--v-button-background-color-hover: var(--g-color-danger-accent);
+		--v-button-color: var(--g-color-danger-subtle);
+		--v-button-color-hover: var(--g-color-danger-subtle);
 	}
 }
 </style>

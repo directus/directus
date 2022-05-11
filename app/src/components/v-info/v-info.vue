@@ -68,8 +68,8 @@ export default defineComponent({
 }
 
 .danger .icon {
-	color: var(--danger);
-	background-color: var(--danger-alt);
+	color: var(--g-color-danger-normal);
+	background-color: var(--g-color-danger-subtle);
 }
 
 .title {

@@ -289,8 +289,8 @@ export default defineComponent({
 
 <style scoped>
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--g-color-danger-normal);
+	--v-list-item-color-hover: var(--g-color-danger-normal);
+	--v-list-item-icon-color: var(--g-color-danger-normal);
 }
 </style>

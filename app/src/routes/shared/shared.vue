@@ -226,7 +226,7 @@ h2 {
 	left: -12px;
 	width: calc(100% + 24px);
 	height: calc(100% + 24px);
-	background-color: var(--danger-alt);
+	background-color: var(--g-color-danger-subtle);
 	border-radius: var(--g-border-radius);
 	transition: var(--medium) var(--transition);
 	transition-property: background-color, padding, margin;

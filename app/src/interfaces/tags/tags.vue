@@ -208,7 +208,7 @@ export default defineComponent({
 		.v-chip {
 			--v-chip-background-color: var(--g-color-primary-normal);
 			--v-chip-color: var(--g-color-foreground-invert);
-			--v-chip-background-color-hover: var(--danger);
+			--v-chip-background-color-hover: var(--g-color-danger-normal);
 			--v-chip-color-hover: var(--g-color-foreground-invert);
 
 			&.inactive {
@@ -224,7 +224,7 @@ export default defineComponent({
 		.v-chip {
 			--v-chip-background-color: var(--g-color-primary-normal);
 			--v-chip-color: var(--g-color-foreground-invert);
-			--v-chip-background-color-hover: var(--danger);
+			--v-chip-background-color-hover: var(--g-color-danger-normal);
 			--v-chip-close-color: var(--v-chip-background-color);
 			--v-chip-close-color-hover: var(--white);
 
@@ -234,7 +234,7 @@ export default defineComponent({
 				--v-chip-close-color: var(--white);
 
 				:deep(.chip-content .close-outline .close:hover) {
-					--v-icon-color: var(--danger);
+					--v-icon-color: var(--g-color-danger-normal);
 				}
 			}
 		}

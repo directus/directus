@@ -170,7 +170,7 @@ export default defineComponent({
 		cursor: pointer;
 
 		&:hover {
-			color: var(--danger);
+			color: var(--g-color-danger-normal);
 		}
 	}
 }

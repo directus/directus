@@ -208,7 +208,7 @@ export default defineComponent({
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--g-color-danger-normal);
 }
 
 .fields {

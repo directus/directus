@@ -199,7 +199,7 @@ function updateTranslationStringsDialog(val: boolean) {
 
 	:deep(button:not(:disabled):hover) {
 		color: var(--white);
-		background-color: var(--danger);
+		background-color: var(--g-color-danger-normal);
 	}
 
 	.translate-icon {
