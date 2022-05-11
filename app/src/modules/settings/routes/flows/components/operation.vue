@@ -337,7 +337,7 @@ function pointerLeave() {
 			bottom: 0;
 			left: 0;
 			right: 0;
-			border-radius: 2px;
+			border-radius: 4px;
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 7px var(--primary);
