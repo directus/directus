@@ -110,9 +110,9 @@ export default defineComponent({
 	position: relative;
 
 	.v-avatar {
-		--v-button-color: var(--module-icon);
+		--v-button-color: var(--module-foreground-normal);
 		--v-button-color-hover: var(--white);
-		--v-avatar-color: var(--module-background);
+		--v-avatar-color: var(--module-background-normal);
 
 		position: relative;
 		z-index: 3;
@@ -130,14 +130,14 @@ export default defineComponent({
 				right: 8px;
 				left: 8px;
 				height: 2px;
-				background-color: var(--module-icon);
+				background-color: var(--module-foreground-normal);
 				opacity: 0.25;
 				content: '';
 			}
 		}
 
 		.v-icon {
-			--v-icon-color: var(--module-icon);
+			--v-icon-color: var(--module-foreground-normal);
 		}
 
 		&:hover {
@@ -157,16 +157,16 @@ export default defineComponent({
 	}
 
 	.notifications {
-		--v-button-color: var(--module-icon);
+		--v-button-color: var(--module-foreground-normal);
 		--v-button-color-hover: var(--white);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
+		--v-button-background-color: var(--module-background-normal);
+		--v-button-background-color-hover: var(--module-background-normal);
 	}
 
 	.sign-out {
-		--v-button-color: var(--module-icon);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
+		--v-button-color: var(--module-foreground-normal);
+		--v-button-background-color: var(--module-background-normal);
+		--v-button-background-color-hover: var(--module-background-normal);
 
 		position: absolute;
 		top: 0;

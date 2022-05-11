@@ -43,10 +43,12 @@
 	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 	--overlay-color: rgba(0, 0, 0, 0.9);
 
-	--module-background: var(--g-color-background-page);
-	--module-background-alt: var(--g-color-background-normal);
-	--module-icon: var(--g-color-foreground-subtle);
-	--module-icon-alt: var(--g-color-foreground-accent);
+	--module-background-normal: #0D1117;
+	--module-background-hover: #0D1117;
+	--module-background-active: #21262E;
+	--module-foreground-normal: #666672;
+	--module-foreground-hover: #FFFFFF;
+	--module-foreground-active: #F0F6FC;
 
 	// Generate color variations
 	@include generate-colors($color-mapping, $dark-theme-shade, $dark-theme-tint);
