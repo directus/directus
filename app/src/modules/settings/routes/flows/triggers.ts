@@ -19,12 +19,44 @@ export function getTriggers() {
 			value: 'hook',
 			icon: 'keyboard_tab',
 			description: t('triggers.hook.description'),
-			preview: ({ event }) => [
-				{
-					label: t('triggers.hook.event'),
-					text: event,
-				},
-			],
+			preview: ({ type, actionScope, filterScope, actionCollections, filterCollections }) => {
+				const labels = [
+					{
+						label: t('type'),
+						text: type,
+					},
+				];
+
+				if (type === 'filter') {
+					labels.push({
+						label: t('scope'),
+						text: filterScope.join(', '),
+					});
+
+					if (filterCollections?.length) {
+						labels.push({
+							label: t('collections'),
+							text: filterCollections.join(', '),
+						});
+					}
+				}
+
+				if (type === 'action') {
+					labels.push({
+						label: t('scope'),
+						text: actionScope.join(', '),
+					});
+
+					if (actionCollections?.length) {
+						labels.push({
+							label: t('collections'),
+							text: actionCollections.join(', '),
+						});
+					}
+				}
+
+				return labels;
+			},
 			options: ({ type, actionScope, filterScope }) => {
 				const fields = [
 					{
