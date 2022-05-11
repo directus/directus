@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, computed, inject, toRefs } from 'vue';
+import { ref, computed, inject, toRefs, watch } from 'vue';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import NestedDraggable from './nested-draggable.vue';
 import { Filter } from '@directus/shared/types';
@@ -67,12 +67,20 @@ const _value = computed<ChangesItem>({
 				update: [],
 				delete: [],
 			};
-		return props.value as ChangesItem;
+		return (props.value ?? []) as ChangesItem;
 	},
 	set: (val) => {
 		emit('input', val);
 	},
 });
+
+watch(
+	() => props.value,
+	(val) => {
+		// when Clear Value to null, reset to original value to prevent staging
+		if (val === null) emit('input', primaryKey.value === '+' ? undefined : []);
+	}
+);
 
 const { t } = useI18n();
 

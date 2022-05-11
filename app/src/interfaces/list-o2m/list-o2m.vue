@@ -87,10 +87,10 @@
 <script setup lang="ts">
 import { useRelationO2M, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
 import { parseFilter } from '@/utils/parse-filter';
-import { Field, Filter } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
@@ -128,11 +128,19 @@ const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 
 const value = computed({
-	get: () => props.value,
+	get: () => props.value ?? [],
 	set: (val) => {
 		emit('input', val);
 	},
 });
+
+watch(
+	() => props.value,
+	(val) => {
+		// when Clear Value to null, reset to original value to prevent staging
+		if (val === null) emit('input', primaryKey.value === '+' ? undefined : []);
+	}
+);
 
 const templateWithDefaults = computed(() => {
 	return (
