@@ -296,14 +296,15 @@ export default defineComponent({
 				);
 			}
 
-			function getFieldsForGroup(group: null | string): Field[] {
+			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
 				const fieldsInGroup: Field[] = fieldsParsed.value.filter(
 					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
 				);
 
 				for (const field of fieldsInGroup) {
-					if (field.meta?.special?.includes('group')) {
-						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field));
+					if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
+						passed.push(field.meta!.field);
+						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
 					}
 				}
 
