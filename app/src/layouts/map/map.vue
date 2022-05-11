@@ -310,8 +310,8 @@ export default defineComponent({
 }
 
 .v-progress-circular {
-	--v-progress-circular-background-color: var(--primary-25);
-	--v-progress-circular-color: var(--primary-75);
+	--v-progress-circular-background-color: var(--g-color-primary-subtle);
+	--v-progress-circular-color: var(--g-color-primary-normal);
 }
 
 .reset-preset {

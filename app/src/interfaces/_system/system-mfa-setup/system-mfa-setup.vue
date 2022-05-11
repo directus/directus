@@ -215,7 +215,7 @@ export default defineComponent({
 	--v-icon-color: var(--g-color-foreground-subtle);
 
 	&.enabled {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 	}
 }
 

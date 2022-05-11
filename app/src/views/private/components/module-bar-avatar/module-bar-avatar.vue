@@ -176,7 +176,7 @@ export default defineComponent({
 
 		&:hover {
 			.v-icon {
-				--v-icon-color: var(--primary);
+				--v-icon-color: var(--g-color-primary-normal);
 			}
 		}
 	}

@@ -232,18 +232,18 @@ export default defineComponent({
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--g-color-primary-subtle));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-75);
+	--v-icon-color: var(--g-color-primary-normal);
 
 	display: block;
 	padding: 8px 16px;
 	background-color: var(--g-color-background-page);
-	border: 2px solid var(--primary);
+	border: 2px solid var(--g-color-primary-normal);
 	border-radius: var(--g-border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
+	box-shadow: 0 0 8px var(--g-color-primary-normal);
 }
 
 .interface:hover .preview {
@@ -251,13 +251,13 @@ export default defineComponent({
 }
 
 .interface.active .preview {
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	background-color: var(--g-color-primary-subtle);
+	border-color: var(--g-color-primary-normal);
 }
 
 .interface.gray .preview {
-	--primary: var(--g-color-foreground-subtle);
-	--primary-50: var(--g-color-foreground-subtle);
+	--g-color-primary-normal: var(--g-color-foreground-subtle);
+	--g-color-primary-subtle: var(--g-color-foreground-subtle);
 
 	background-color: var(--g-color-background-subtle);
 }

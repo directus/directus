@@ -1,7 +1,7 @@
 .fc {
-	--fc-event-bg-color: var(--primary);
-	--fc-event-border-color: var(--primary);
-	--fc-today-bg-color: var(--primary-10);
+	--fc-event-bg-color: var(--g-color-primary-normal);
+	--fc-event-border-color: var(--g-color-primary-normal);
+	--fc-today-bg-color: var(--g-color-primary-subtle);
 	--fc-button-bg-color: transparent;
 	--fc-button-active-bg-color: transparent;
 	--fc-button-hover-bg-color: transparent;
@@ -26,7 +26,7 @@
 	}
 
 	.fc-daygrid-more-link {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 		font-weight: 600;
 	}
 
@@ -45,7 +45,7 @@
 
 	.fc-daygrid-dot-event:hover,
 	.fc-daygrid-dot-event.fc-event-mirror {
-		background: var(--primary-25);
+		background: var(--g-color-primary-subtle);
 	}
 
 	.fc-daygrid-event-dot {
@@ -83,10 +83,10 @@
 		}
 
 		&-active {
-			--fc-button-text-color: var(--primary);
+			--fc-button-text-color: var(--g-color-primary-normal);
 
 			&:hover {
-				--fc-button-text-color: var(--primary) !important;
+				--fc-button-text-color: var(--g-color-primary-normal) !important;
 			}
 		}
 	}
@@ -116,6 +116,6 @@
 	}
 
 	.fc-event.selected {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 	}
 }

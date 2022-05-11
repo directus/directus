@@ -112,6 +112,6 @@ export default defineComponent({
 
 <style scoped>
 :deep(.required-mark) {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--g-color-primary-normal);
 }
 </style>

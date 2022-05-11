@@ -43,7 +43,7 @@ export default defineComponent({
 	border-radius: 50%;
 
 	&.on {
-		background-color: var(--primary);
+		background-color: var(--g-color-primary-normal);
 	}
 }
 </style>

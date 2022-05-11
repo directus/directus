@@ -603,10 +603,10 @@ export default defineComponent({
 			margin-top: 4px;
 
 			&.active {
-				--v-chip-color: var(--primary);
-				--v-chip-background-color: var(--primary-25);
-				--v-chip-color-hover: var(--primary);
-				--v-chip-background-color-hover: var(--primary-25);
+				--v-chip-color: var(--g-color-primary-normal);
+				--v-chip-background-color: var(--g-color-primary-subtle);
+				--v-chip-color-hover: var(--g-color-primary-normal);
+				--v-chip-background-color-hover: var(--g-color-primary-subtle);
 			}
 		}
 

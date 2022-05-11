@@ -131,7 +131,7 @@ export default defineComponent({
 	}
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--g-color-primary-normal);
 	}
 }
 </style>

@@ -20,7 +20,7 @@
 				@click="$emit('add', `${fn}(${field.key})`)"
 			>
 				<v-list-item-icon>
-					<v-icon name="auto_awesome" small color="var(--primary)" />
+					<v-icon name="auto_awesome" small color="var(--g-color-primary-normal)" />
 				</v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow
@@ -88,7 +88,7 @@ const supportedFunctions = computed(() => {
 
 <style lang="scss" scoped>
 .functions {
-	--v-icon-color: var(--primary);
-	--v-list-item-color: var(--primary);
+	--v-icon-color: var(--g-color-primary-normal);
+	--v-list-item-color: var(--g-color-primary-normal);
 }
 </style>

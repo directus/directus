@@ -129,6 +129,6 @@ export default defineComponent({
 }
 
 .footer > span.active {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 </style>

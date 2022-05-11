@@ -2,6 +2,10 @@
 @mixin light {
 	color-scheme: light;
 
+	--g-color-primary-normal: #6644FF;
+	--g-color-primary-accent: #4800e2;
+	--g-color-primary-subtle: #f2efff;
+
 	--g-color-border-normal: #d3dae4;
 	--g-color-border-accent: #a2b5cd;
 	--g-color-border-subtle: #f0f4f9;
@@ -31,13 +35,11 @@
 	// Generate color variations
 	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
 
-	--purple-alt: var(--purple-10);
 	--blue-alt: var(--blue-10);
 	--green-alt: var(--green-10);
 	--yellow-alt: var(--yellow-10);
 	--orange-alt: var(--orange-10);
 	--red-alt: var(--red-10);
-	--primary-alt: var(--purple-10);
 	--secondary-alt: var(--pink-10);
 	--success-alt: var(--green-10);
 	--warning-alt: var(--yellow-10);

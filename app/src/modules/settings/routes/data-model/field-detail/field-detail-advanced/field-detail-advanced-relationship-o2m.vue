@@ -168,7 +168,7 @@ export default defineComponent({
 	margin-top: 48px;
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 
 		position: absolute;
 		bottom: 17px;
@@ -178,7 +178,7 @@ export default defineComponent({
 }
 
 .v-input.matches {
-	--v-input-color: var(--primary);
+	--v-input-color: var(--g-color-primary-normal);
 }
 
 .v-list {
@@ -201,7 +201,7 @@ export default defineComponent({
 	margin-top: 48px;
 
 	.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 
 		position: absolute;
 		bottom: 17px;

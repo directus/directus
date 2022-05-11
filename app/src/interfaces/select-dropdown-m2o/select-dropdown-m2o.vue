@@ -252,7 +252,7 @@ const updateAllowed = computed(() => {
 }
 
 .add:hover {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--g-color-primary-normal);
 }
 
 .deselect:hover {

@@ -493,7 +493,7 @@ textarea {
 }
 
 .preview-box :deep(a) {
-	color: var(--primary-125);
+	color: var(--g-color-primary-accent);
 	text-decoration: none;
 }
 

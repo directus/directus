@@ -99,7 +99,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-input.has-value {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--g-color-primary-normal);
 
 	&:focus-within {
 		--v-input-placeholder-color: var(--g-color-foreground-subtle);
@@ -114,7 +114,7 @@ export default defineComponent({
 	}
 
 	.v-icon.active {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 	}
 
 	.v-divider {

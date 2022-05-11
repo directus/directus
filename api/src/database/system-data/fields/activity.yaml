@@ -13,8 +13,8 @@ fields:
       choices:
         - text: $t:field_options.directus_activity.create
           value: create
-          foreground: 'var(--primary)'
-          background: 'var(--primary-25)'
+          foreground: 'var(--g-color-primary-normal)'
+          background: 'var(--g-color-primary-subtle)'
         - text: $t:field_options.directus_activity.update
           value: update
           foreground: 'var(--blue)'
@@ -25,8 +25,8 @@ fields:
           background: 'var(--danger-25)'
         - text: $t:field_options.directus_activity.login
           value: login
-          foreground: 'var(--purple)'
-          background: 'var(--purple-25)'
+          foreground: 'var(--g-color-primary-normal)'
+          background: 'var(--g-color-primary-subtle)'
     width: half
 
   - field: collection

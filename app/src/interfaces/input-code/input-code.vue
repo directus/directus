@@ -334,13 +334,13 @@ export default defineComponent({
 	top: 10px;
 	right: 10px;
 	z-index: 4;
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
 	user-select: none;
 
 	&:hover {
-		color: var(--primary-125);
+		color: var(--g-color-primary-accent);
 		transition: none;
 	}
 }

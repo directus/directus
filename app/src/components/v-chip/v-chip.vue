@@ -84,10 +84,10 @@ body {
 	--v-chip-color: var(--g-color-foreground-normal);
 	--v-chip-background-color: var(--g-color-background-accent);
 	--v-chip-color-hover: var(--white);
-	--v-chip-background-color-hover: var(--primary-125);
+	--v-chip-background-color-hover: var(--g-color-primary-accent);
 	--v-chip-close-color: var(--danger);
-	--v-chip-close-color-disabled: var(--primary);
-	--v-chip-close-color-hover: var(--primary-125);
+	--v-chip-close-color-disabled: var(--g-color-primary-normal);
+	--v-chip-close-color-hover: var(--g-color-primary-accent);
 }
 </style>
 

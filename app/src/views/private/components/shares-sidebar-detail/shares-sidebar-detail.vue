@@ -263,7 +263,7 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .sidebar-detail {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--g-color-primary-normal);
 }
 
 .v-progress-linear {

@@ -23,7 +23,7 @@ export default defineModule({
 	id: 'settings',
 	name: '$t:settings',
 	icon: 'settings',
-	color: 'var(--primary)',
+	color: 'var(--g-color-primary-normal)',
 	routes: [
 		{
 			path: '',

@@ -7,7 +7,7 @@ export function getMapStyle() {
 		cssVar('--black'),
 		['==', ['get', 'active'], 'true'],
 		cssVar('--secondary'),
-		cssVar('--primary'),
+		cssVar('--g-color-primary-normal'),
 	];
 
 	return [

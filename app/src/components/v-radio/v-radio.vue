@@ -69,7 +69,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-radio-color: var(--primary);
+	--v-radio-color: var(--g-color-primary-normal);
 }
 </style>
 

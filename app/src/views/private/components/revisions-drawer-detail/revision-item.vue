@@ -97,11 +97,11 @@ export default defineComponent({
 			border-radius: 8px;
 
 			&.create {
-				background-color: var(--primary);
+				background-color: var(--g-color-primary-normal);
 			}
 
 			&.update {
-				background-color: var(--primary);
+				background-color: var(--g-color-primary-normal);
 			}
 
 			&.delete {

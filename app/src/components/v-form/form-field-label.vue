@@ -94,7 +94,7 @@ export default defineComponent({
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 
 		margin-left: -3px;
 	}

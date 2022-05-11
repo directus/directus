@@ -269,7 +269,7 @@ export default defineComponent({
 	text-align: center;
 
 	button {
-		color: var(--primary) !important;
+		color: var(--g-color-primary-normal) !important;
 		transition: color var(--fast) var(--transition);
 	}
 

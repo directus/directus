@@ -598,10 +598,10 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--g-color-primary-subtle);
+	--v-button-color: var(--g-color-primary-normal);
+	--v-button-background-color-hover: var(--g-color-primary-subtle);
+	--v-button-color-hover: var(--g-color-primary-normal);
 }
 
 .action-delete {
@@ -625,9 +625,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--primary);
-	--sidebar-detail-color: var(--primary);
-	--sidebar-detail-color-active: var(--primary);
+	--sidebar-detail-icon-color: var(--g-color-primary-normal);
+	--sidebar-detail-color: var(--g-color-primary-normal);
+	--sidebar-detail-color-active: var(--g-color-primary-normal);
 	--form-vertical-gap: 24px;
 
 	display: contents;

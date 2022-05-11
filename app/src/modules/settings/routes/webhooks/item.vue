@@ -223,9 +223,9 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--g-color-primary-subtle);
+	--v-button-color: var(--g-color-primary-normal);
+	--v-button-background-color-hover: var(--g-color-primary-subtle);
+	--v-button-color-hover: var(--g-color-primary-normal);
 }
 </style>

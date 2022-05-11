@@ -673,7 +673,7 @@ export default defineComponent({
 .drop-border {
 	position: fixed;
 	z-index: 500;
-	background-color: var(--primary);
+	background-color: var(--g-color-primary-normal);
 
 	&.top,
 	&.bottom {

@@ -103,7 +103,7 @@ export default defineComponent({
 		},
 		color: {
 			type: String,
-			default: 'var(--primary)',
+			default: 'var(--g-color-primary-normal)',
 		},
 		itemsShown: {
 			type: Number,

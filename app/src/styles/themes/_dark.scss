@@ -1,15 +1,10 @@
 // Dark Mode
 @mixin dark {
-	$purple: #8866ff;
-	$color-mapping: map-merge(
-		$color-mapping,
-		(
-			'primary': $purple,
-			'secondary': $pink,
-		)
-	);
-
 	color-scheme: dark;
+
+	--g-color-primary-normal: #8866ff;
+	--g-color-primary-accent: #a48bff;
+	--g-color-primary-subtle: #191a2d;
 
 	--g-color-border-normal: #30363d;
 	--g-color-border-accent: #484f58;
@@ -40,13 +35,11 @@
 	// Generate color variations
 	@include generate-colors($color-mapping, $dark-theme-shade, $dark-theme-tint);
 
-	--purple-alt: var(--purple-10);
 	--blue-alt: var(--blue-10);
 	--green-alt: var(--green-10);
 	--yellow-alt: var(--yellow-10);
 	--orange-alt: var(--orange-10);
 	--red-alt: var(--red-10);
-	--primary-alt: var(--primary-10);
 	--secondary-alt: var(--secondary-10);
 	--success-alt: var(--green-10);
 	--warning-alt: var(--yellow-10);

@@ -308,7 +308,7 @@ function addNew(item: Record<string, any>) {
 }
 
 .ghost .preview {
-	background-color: var(--primary-alt);
+	background-color: var(--g-color-primary-subtle);
 	box-shadow: 0 !important;
 }
 </style>

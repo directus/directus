@@ -66,7 +66,7 @@ export default defineComponent({
 body {
 	--sidebar-detail-icon-color: var(--g-color-foreground-accent);
 	--sidebar-detail-color: var(--g-color-foreground-accent);
-	--sidebar-detail-color-active: var(--primary);
+	--sidebar-detail-color-active: var(--g-color-primary-normal);
 }
 </style>
 
@@ -75,7 +75,7 @@ body {
 	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
 	--v-badge-border-color: var(--g-color-background-accent);
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--g-color-primary-normal);
 	--v-badge-color: var(--g-color-background-normal);
 
 	display: contents;
@@ -170,7 +170,7 @@ body {
 		}
 
 		:deep(.page-description a) {
-			color: var(--primary);
+			color: var(--g-color-primary-normal);
 		}
 	}
 

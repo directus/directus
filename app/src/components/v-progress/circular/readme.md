@@ -13,8 +13,8 @@ The color of the circular progressbar can be changed through the `--v-progress-c
 <v-progress-circular />
 <style>
 	.v-progress-circular {
-		--v-progress-circular-color: var(--red-100);
-		--v-progress-circular-background-color: var(--red-600);
+		--v-progress-circular-color: var(--g-color-primary-normal);
+		--v-progress-circular-background-color: var(--g-color-primary-subtle);
 	}
 </style>
 ```

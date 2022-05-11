@@ -66,7 +66,7 @@ export default defineComponent({
 		},
 		color: {
 			type: String,
-			default: cssVar('--primary'),
+			default: cssVar('--g-color-primary-normal'),
 		},
 		fillType: {
 			type: String,
@@ -258,7 +258,7 @@ export default defineComponent({
 
 		function setupChart() {
 			chart.value = new ApexCharts(chartEl.value, {
-				colors: [props.color ? props.color : cssVar('--primary')],
+				colors: [props.color ? props.color : cssVar('--g-color-primary-normal')],
 				chart: {
 					type: props.fillType === 'disabled' ? 'line' : 'area',
 					height: '100%',
@@ -293,12 +293,12 @@ export default defineComponent({
 							[
 								{
 									offset: 0,
-									color: props.color ? props.color : cssVar('--primary'),
+									color: props.color ? props.color : cssVar('--g-color-primary-normal'),
 									opacity: 0.25,
 								},
 								{
 									offset: 100,
-									color: props.color ? props.color : cssVar('--primary'),
+									color: props.color ? props.color : cssVar('--g-color-primary-normal'),
 									opacity: 0,
 								},
 							],

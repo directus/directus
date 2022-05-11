@@ -318,7 +318,7 @@ export default defineComponent({
 }
 
 button {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .v-divider {

@@ -178,7 +178,7 @@ export default defineComponent({
 		width: 100%;
 		overflow: hidden;
 		background-color: var(--g-color-background-normal);
-		border-color: var(--primary-50);
+		border-color: var(--g-color-primary-subtle);
 		border-style: solid;
 		border-width: 0px;
 		border-radius: var(--g-border-radius);
@@ -294,8 +294,8 @@ export default defineComponent({
 		}
 
 		.selector {
-			--v-icon-color: var(--primary);
-			--v-icon-color-hover: var(--primary);
+			--v-icon-color: var(--g-color-primary-normal);
+			--v-icon-color-hover: var(--g-color-primary-normal);
 
 			opacity: 1;
 		}

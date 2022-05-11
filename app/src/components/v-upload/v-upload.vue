@@ -343,8 +343,8 @@ export default defineComponent({
 	}
 
 	&:not(.uploading):hover {
-		color: var(--primary);
-		border-color: var(--primary);
+		color: var(--g-color-primary-normal);
+		border-color: var(--g-color-primary-normal);
 	}
 }
 
@@ -361,9 +361,9 @@ export default defineComponent({
 }
 
 .dragging {
-	color: var(--primary);
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	color: var(--g-color-primary-normal);
+	background-color: var(--g-color-primary-subtle);
+	border-color: var(--g-color-primary-normal);
 
 	* {
 		pointer-events: none;
@@ -376,8 +376,8 @@ export default defineComponent({
 	--v-progress-linear-height: 8px;
 
 	color: var(--white);
-	background-color: var(--primary);
-	border-color: var(--primary);
+	background-color: var(--g-color-primary-normal);
+	border-color: var(--g-color-primary-normal);
 	border-style: solid;
 
 	.v-progress-linear {
@@ -398,6 +398,6 @@ export default defineComponent({
 }
 
 .v-upload:hover .options {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 </style>

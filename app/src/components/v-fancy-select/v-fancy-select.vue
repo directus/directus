@@ -120,16 +120,16 @@ export default defineComponent({
 
 	&.active {
 		z-index: 2;
-		color: var(--primary);
-		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		color: var(--g-color-primary-normal);
+		background-color: var(--g-color-primary-subtle);
+		border-color: var(--g-color-primary-normal);
 
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--g-color-primary-normal);
 		}
 
 		&:hover {
-			border-color: var(--primary);
+			border-color: var(--g-color-primary-normal);
 		}
 	}
 }

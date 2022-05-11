@@ -53,7 +53,7 @@
 
 .flatpickr-months .flatpickr-prev-month:hover svg,
 .flatpickr-months .flatpickr-next-month:hover svg {
-	fill: var(--primary);
+	fill: var(--g-color-primary-normal);
 }
 
 .flatpickr-current-month {
@@ -74,13 +74,13 @@
 	font-size: 16px;
 	height: 20px;
 	font-weight: 600;
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .flatpickr-current-month input.cur-year {
 	font-size: 16px;
 	font-weight: 600;
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
@@ -178,7 +178,7 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-day.today {
-	border-color: var(--primary);
+	border-color: var(--g-color-primary-normal);
 	border-width: var(--g-border-width);
 }
 
@@ -186,7 +186,7 @@ span.flatpickr-weekday {
 .flatpickr-day.today:focus {
 	color: var(--g-color-foreground-normal);
 	background: var(--g-color-background-accent);
-	border-color: var(--primary);
+	border-color: var(--g-color-primary-normal);
 }
 
 .flatpickr-day.selected,
@@ -207,16 +207,16 @@ span.flatpickr-weekday {
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-	color: var(--primary-alt);
-	background: var(--primary);
-	border-color: var(--primary);
+	color: var(--g-color-primary-subtle);
+	background: var(--g-color-primary-normal);
+	border-color: var(--g-color-primary-normal);
 	box-shadow: none;
 }
 
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
-	box-shadow: -10px 0 0 var(--primary);
+	box-shadow: -10px 0 0 var(--g-color-primary-normal);
 }
 
 .flatpickr-day.inRange {
@@ -236,7 +236,7 @@ span.flatpickr-weekday {
 
 .flatpickr-day.week.selected {
 	border-radius: 0;
-	box-shadow: -5px 0 0 var(--primary), 5px 0 0 var(--primary);
+	box-shadow: -5px 0 0 var(--g-color-primary-normal), 5px 0 0 var(--g-color-primary-normal);
 }
 
 .flatpickr-weekwrapper span.flatpickr-day,
@@ -319,7 +319,7 @@ span.flatpickr-weekday {
 .flatpickr-calendar .set-to-now-button {
 	width: 100%;
 	padding: 8px 0;
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	border-top: var(--g-border-width) solid var(--g-color-border-subtle);
 	transition: background-color var(--fast) var(--transition);
 }

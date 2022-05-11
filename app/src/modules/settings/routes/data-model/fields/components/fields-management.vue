@@ -212,8 +212,8 @@ export default defineComponent({
 
 .add-field {
 	--v-button-font-size: 14px;
-	--v-button-background-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-125);
+	--v-button-background-color: var(--g-color-primary-normal);
+	--v-button-background-color-hover: var(--g-color-primary-accent);
 
 	margin-top: -12px;
 }

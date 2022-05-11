@@ -101,8 +101,8 @@
 }
 
 .wysiwyg:not(.disabled) .tox-tinymce.focus {
-	border-color: var(--primary) !important;
-	box-shadow: 0 0 16px -8px var(--primary) !important;
+	border-color: var(--g-color-primary-normal) !important;
+	box-shadow: 0 0 16px -8px var(--g-color-primary-normal) !important;
 }
 
 .tox .tox-toolbar,
@@ -276,7 +276,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	border-color: var(--primary);
+	border-color: var(--g-color-primary-normal);
 }
 
 .tox .tox-button {
@@ -291,10 +291,10 @@ body.dark .tox .tox-toolbar__overflow {
 	font-size: 16px;
 	font-family: var(--g-font-family-sans);
 	line-height: 19px;
-	background-color: var(--primary);
-	border: 2px solid var(--primary);
+	background-color: var(--g-color-primary-normal);
+	border: 2px solid var(--g-color-primary-normal);
 	border: none;
-	border-color: var(--primary);
+	border-color: var(--g-color-primary-normal);
 	border-radius: var(--g-border-radius);
 	cursor: pointer;
 	-webkit-transition: var(--fast) var(--transition);
@@ -303,8 +303,8 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-button:hover:not(:disabled) {
-	background-color: var(--primary);
-	border-color: var(--primary);
+	background-color: var(--g-color-primary-normal);
+	border-color: var(--g-color-primary-normal);
 }
 
 .tox .tox-button--secondary {
@@ -386,7 +386,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-insert-table-picker .tox-insert-table-picker__selected {
-	border-color: var(--primary);
+	border-color: var(--g-color-primary-normal);
 }
 
 .tox .tox-pop.tox-pop--top::after {

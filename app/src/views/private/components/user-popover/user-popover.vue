@@ -122,7 +122,7 @@ export default defineComponent({
 
 	.status-role {
 		&.invited {
-			color: var(--primary);
+			color: var(--g-color-primary-normal);
 		}
 
 		&.active {

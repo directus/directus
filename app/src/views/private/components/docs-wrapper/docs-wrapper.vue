@@ -67,7 +67,7 @@ export default defineComponent({
 }
 
 .md :deep(a) {
-	color: var(--primary-110);
+	color: var(--g-color-primary-accent);
 	font-weight: 500;
 	text-decoration: none;
 }
@@ -392,7 +392,7 @@ export default defineComponent({
 }
 
 .md :deep(.heading-link:hover) {
-	color: var(--primary-110);
+	color: var(--g-color-primary-accent);
 	text-decoration: none;
 }
 
@@ -416,7 +416,7 @@ export default defineComponent({
 	margin: 20px 0;
 	padding: 0 20px;
 	background-color: var(--g-color-background-subtle);
-	border-left: 2px solid var(--primary);
+	border-left: 2px solid var(--g-color-primary-normal);
 }
 
 .md :deep(.two-up) {
@@ -436,7 +436,7 @@ export default defineComponent({
 }
 
 .md :deep(.hint.tip) {
-	border-left: 2px solid var(--primary);
+	border-left: 2px solid var(--g-color-primary-normal);
 }
 
 .md :deep(.hint.warning) {

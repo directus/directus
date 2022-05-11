@@ -360,15 +360,15 @@ function getCompareOptions(name: string) {
 		.key {
 			margin-right: 4px;
 			padding: 2px 6px;
-			color: var(--primary);
-			background-color: var(--primary-alt);
+			color: var(--g-color-primary-normal);
+			background-color: var(--g-color-primary-subtle);
 			border-radius: 6px;
 			cursor: pointer;
 			transition: var(--fast) var(--transition);
 			transition-property: color, background-color;
 
 			&:hover {
-				background-color: var(--primary-25);
+				background-color: var(--g-color-primary-subtle);
 			}
 		}
 
@@ -484,8 +484,8 @@ function getCompareOptions(name: string) {
 
 .group :deep(.sortable-ghost) {
 	.node .header {
-		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		background-color: var(--g-color-primary-subtle);
+		border-color: var(--g-color-primary-normal);
 
 		> * {
 			opacity: 0;

@@ -35,7 +35,7 @@ export default defineComponent({
 		},
 		colorOn: {
 			type: String,
-			default: 'var(--primary)',
+			default: 'var(--g-color-primary-normal)',
 		},
 		colorOff: {
 			type: String,

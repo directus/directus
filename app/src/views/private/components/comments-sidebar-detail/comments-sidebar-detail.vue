@@ -179,7 +179,7 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 
 <style lang="scss" scoped>
 .sidebar-detail {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--g-color-primary-normal);
 }
 
 .v-progress-linear {

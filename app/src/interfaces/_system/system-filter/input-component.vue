@@ -174,7 +174,7 @@ export default defineComponent({
 .preview {
 	display: flex;
 	justify-content: center;
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	font-family: var(--g-font-family-mono);
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -205,7 +205,7 @@ export default defineComponent({
 }
 
 input {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	font-family: var(--g-font-family-mono);
 	line-height: 1em;
 	background-color: var(--g-color-background-page);

@@ -319,8 +319,8 @@ export default defineComponent({
 :deep(button) {
 	margin: -1px 4px 0;
 	padding: 2px 4px 0;
-	color: var(--primary);
-	background-color: var(--primary-alt);
+	color: var(--g-color-primary-normal);
+	background-color: var(--g-color-primary-subtle);
 	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;

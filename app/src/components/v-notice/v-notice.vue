@@ -92,8 +92,8 @@ body {
 }
 
 .info {
-	--v-notice-icon-color: var(--primary);
-	--v-notice-border-color: var(--primary);
+	--v-notice-icon-color: var(--g-color-primary-normal);
+	--v-notice-border-color: var(--g-color-primary-normal);
 	--v-notice-color: var(--g-color-foreground-normal);
 	--v-notice-background-color: var(--g-color-background-normal);
 }

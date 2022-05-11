@@ -498,7 +498,7 @@ export default defineComponent({
 	--v-button-background-color: var(--g-color-foreground-subtle);
 	--v-button-background-color-hover: var(--g-color-foreground-normal);
 	--v-button-color-active: var(--g-color-foreground-invert);
-	--v-button-background-color-active: var(--primary);
+	--v-button-background-color-active: var(--g-color-primary-normal);
 }
 
 .header-icon {

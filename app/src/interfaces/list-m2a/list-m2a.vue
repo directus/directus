@@ -372,7 +372,7 @@ const customFilter = computed(() => {
 
 .v-list-item {
 	.collection {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 		white-space: nowrap;
 		margin-right: 1ch;
 	}

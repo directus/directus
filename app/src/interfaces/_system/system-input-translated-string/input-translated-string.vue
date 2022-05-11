@@ -188,8 +188,8 @@ function updateTranslationStringsDialog(val: boolean) {
 	:deep(button) {
 		margin-right: auto;
 		padding: 2px 8px 0;
-		color: var(--primary);
-		background-color: var(--primary-alt);
+		color: var(--g-color-primary-normal);
+		background-color: var(--g-color-primary-subtle);
 		border-radius: var(--g-border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
@@ -205,8 +205,8 @@ function updateTranslationStringsDialog(val: boolean) {
 	.translate-icon {
 		&:hover,
 		&.active {
-			--v-icon-color-hover: var(--primary);
-			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--g-color-primary-normal);
+			--v-icon-color: var(--g-color-primary-normal);
 		}
 	}
 }
@@ -239,16 +239,16 @@ function updateTranslationStringsDialog(val: boolean) {
 		flex-basis: auto;
 		flex-grow: 0;
 		flex-shrink: 1;
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 	}
 
 	&.selected {
 		--v-list-item-color-active: var(--g-color-foreground-invert);
-		--v-list-item-background-color-active: var(--primary);
+		--v-list-item-background-color-active: var(--g-color-primary-normal);
 		--v-list-item-color-hover: var(--g-color-foreground-invert);
-		--v-list-item-background-color-hover: var(--primary);
+		--v-list-item-background-color-hover: var(--g-color-primary-normal);
 
-		background-color: var(--primary);
+		background-color: var(--g-color-primary-normal);
 		color: var(--g-color-foreground-invert);
 
 		.v-list-item-icon {
@@ -263,12 +263,12 @@ function updateTranslationStringsDialog(val: boolean) {
 }
 
 .new-translation-string {
-	--v-list-item-color-hover: var(--primary-125);
+	--v-list-item-color-hover: var(--g-color-primary-accent);
 
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 
 	.v-list-item-icon {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 	}
 }
 </style>

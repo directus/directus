@@ -61,17 +61,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .toggle {
-	--v-icon-color: var(--primary);
-	--v-icon-color-hover: var(--primary-150);
+	--v-icon-color: var(--g-color-primary-normal);
+	--v-icon-color-hover: var(--g-color-primary-accent);
 
 	display: flex;
 	align-items: center;
 	width: 100%;
 	height: var(--input-height);
 	padding: var(--input-padding);
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	text-align: left;
-	background-color: var(--primary-alt);
+	background-color: var(--g-color-primary-subtle);
 	border-radius: var(--g-border-radius);
 
 	.display-value {
@@ -85,8 +85,8 @@ export default defineComponent({
 }
 
 .v-input .input {
-	color: var(--primary);
-	background-color: var(--primary-alt);
+	color: var(--g-color-primary-normal);
+	background-color: var(--g-color-primary-subtle);
 	border: 0px;
 }
 

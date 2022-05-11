@@ -196,9 +196,9 @@ export default defineComponent({
 	--v-button-color-hover: var(--g-color-foreground-invert);
 	--v-button-color-active: var(--g-color-foreground-invert);
 	--v-button-color-disabled: var(--g-color-foreground-subtle);
-	--v-button-background-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-125);
-	--v-button-background-color-active: var(--primary);
+	--v-button-background-color: var(--g-color-primary-normal);
+	--v-button-background-color-hover: var(--g-color-primary-accent);
+	--v-button-background-color-active: var(--g-color-primary-normal);
 	--v-button-background-color-disabled: var(--g-color-background-subtle);
 	--v-button-font-size: 16px;
 	--v-button-font-weight: 600;

@@ -152,7 +152,7 @@ export default defineComponent({
 				}
 			}
 
-			return matchingFormat ? matchingFormat.color || cssVar('--primary') : null;
+			return matchingFormat ? matchingFormat.color || cssVar('--g-color-primary-normal') : null;
 
 			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
 				const value = Number(metric.value);

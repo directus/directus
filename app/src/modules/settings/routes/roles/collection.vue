@@ -190,8 +190,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--g-color-primary-normal);
+	--v-button-background-color-disabled: var(--g-color-primary-subtle);
 }
 
 .roles {
@@ -201,9 +201,9 @@ export default defineComponent({
 }
 
 .system {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--g-color-primary-normal);
 
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .description {
@@ -211,8 +211,8 @@ export default defineComponent({
 }
 
 .public {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--g-color-primary-normal);
 
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 </style>

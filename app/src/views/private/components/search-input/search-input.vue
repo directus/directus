@@ -174,7 +174,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .search-badge {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--g-color-primary-normal);
 	--v-badge-offset-y: 8px;
 	--v-badge-offset-x: 8px;
 }
@@ -204,7 +204,7 @@ export default defineComponent({
 
 	.icon-search,
 	.icon-filter {
-		--v-icon-color-hover: var(--primary);
+		--v-icon-color-hover: var(--g-color-primary-normal);
 	}
 
 	.icon-search {
@@ -246,7 +246,7 @@ export default defineComponent({
 		width: 200px;
 
 		.icon-filter {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--g-color-primary-normal);
 		}
 
 		@media (min-width: 600px) {

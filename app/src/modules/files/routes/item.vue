@@ -420,7 +420,7 @@ function useMovetoFolder() {
 }
 
 .replace-toggle {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	cursor: pointer;
 	font-weight: 600;
 	margin-top: 12px;

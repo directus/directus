@@ -294,7 +294,7 @@ function useURLImport() {
 	}
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--g-color-primary-subtle);
 	}
 
 	&.is-svg {
@@ -309,7 +309,7 @@ function useURLImport() {
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;

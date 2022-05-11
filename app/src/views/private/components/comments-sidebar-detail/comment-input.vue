@@ -373,7 +373,7 @@ function pressedEnter() {
 .new-comment:focus {
 	position: relative;
 	overflow: scroll;
-	border-color: var(--primary);
+	border-color: var(--g-color-primary-normal);
 	transition: margin-bottom var(--fast) var(--transition);
 }
 
@@ -413,7 +413,7 @@ function pressedEnter() {
 
 .new-comment .add-mention:hover,
 .new-comment .add-emoji:hover {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .buttons {
@@ -425,7 +425,7 @@ function pressedEnter() {
 	.emoji-button {
 		--v-button-background-color: transparent;
 		--v-button-color: var(--foreground-subdued);
-		--v-button-color-hover: var(--primary);
+		--v-button-color-hover: var(--g-color-primary-normal);
 	}
 
 	.cancel {

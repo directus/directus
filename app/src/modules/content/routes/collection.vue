@@ -724,7 +724,7 @@ export default defineComponent({
 	}
 
 	.saved {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 	}
 }
 </style>

@@ -208,7 +208,7 @@ function removeNode(ids: string[]) {
 	}
 
 	.add-filter {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 	}
 
 	&.inline {
@@ -263,7 +263,7 @@ function removeNode(ids: string[]) {
 
 .field .buttons {
 	button {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 		display: inline-block;
 		cursor: pointer;
 	}

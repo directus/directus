@@ -177,7 +177,7 @@ export default defineComponent({
 		});
 
 		const iconColor = computed(() => ({
-			'--v-icon-color': props.panel.color || 'var(--primary)',
+			'--v-icon-color': props.panel.color || 'var(--g-color-primary-normal)',
 		}));
 
 		return {
@@ -335,8 +335,8 @@ export default defineComponent({
 
 .panel.editing.dragging {
 	z-index: 3 !important;
-	border-color: var(--primary);
-	box-shadow: 0 0 0 1px var(--primary);
+	border-color: var(--g-color-primary-normal);
+	box-shadow: 0 0 0 1px var(--g-color-primary-normal);
 }
 
 .resize-details {

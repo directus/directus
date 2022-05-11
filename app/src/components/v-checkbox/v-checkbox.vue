@@ -118,7 +118,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-checkbox-color: var(--primary);
+	--v-checkbox-color: var(--g-color-primary-normal);
 	--v-checkbox-unchecked-color: var(--g-color-foreground-subtle);
 }
 </style>
@@ -128,7 +128,7 @@ body {
 
 .v-checkbox {
 	--v-icon-color: var(--v-checkbox-unchecked-color);
-	--v-icon-color-hover: var(--primary);
+	--v-icon-color-hover: var(--g-color-primary-normal);
 
 	position: relative;
 	display: flex;
@@ -206,7 +206,7 @@ body {
 
 	&:not(:disabled):hover {
 		.checkbox {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--g-color-primary-normal);
 		}
 
 		&.block {
@@ -216,8 +216,8 @@ body {
 	}
 
 	&:focus:not(:disabled) {
-		border-color: var(--primary);
-		box-shadow: 0 0 16px -8px var(--primary);
+		border-color: var(--g-color-primary-normal);
+		box-shadow: 0 0 16px -8px var(--g-color-primary-normal);
 	}
 
 	&:not(:disabled):not(.indeterminate) {

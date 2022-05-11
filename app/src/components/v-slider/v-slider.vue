@@ -102,8 +102,8 @@ export default defineComponent({
 <style>
 body {
 	--v-slider-color: var(--g-color-border-normal);
-	--v-slider-thumb-color: var(--primary);
-	--v-slider-fill-color: var(--primary);
+	--v-slider-thumb-color: var(--g-color-primary-normal);
+	--v-slider-fill-color: var(--g-color-primary-normal);
 	--v-slider-background: var(--g-color-background-page);
 }
 </style>
@@ -240,7 +240,7 @@ body {
 			padding: 2px 6px;
 			color: var(--g-color-foreground-invert);
 			font-weight: 600;
-			background-color: var(--primary);
+			background-color: var(--g-color-primary-normal);
 			border-radius: var(--g-border-radius);
 			transform: translateX(-50%);
 			opacity: 0;

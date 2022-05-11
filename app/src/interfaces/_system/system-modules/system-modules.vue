@@ -277,13 +277,13 @@ export default defineComponent({
 }
 
 .v-list-item.enabled {
-	--v-list-item-border-color: var(--primary);
-	--v-list-item-color: var(--primary-125);
-	--v-list-item-background-color: var(--primary-10);
-	--v-list-item-border-color-hover: var(--primary-150);
-	--v-list-item-color-hover: var(--primary-125);
-	--v-list-item-background-color-hover: var(--primary-10);
-	--v-icon-color: var(--primary);
+	--v-list-item-border-color: var(--g-color-primary-normal);
+	--v-list-item-color: var(--g-color-primary-accent);
+	--v-list-item-background-color: var(--g-color-primary-subtle);
+	--v-list-item-border-color-hover: var(--g-color-primary-accent);
+	--v-list-item-color-hover: var(--g-color-primary-accent);
+	--v-list-item-background-color-hover: var(--g-color-primary-subtle);
+	--v-icon-color: var(--g-color-primary-normal);
 	--v-icon-color-hover: var(--g-color-foreground-normal);
 }
 
@@ -293,7 +293,7 @@ export default defineComponent({
 }
 
 .enabled .to {
-	color: var(--primary-50);
+	color: var(--g-color-primary-normal);
 }
 
 .drawer-content {

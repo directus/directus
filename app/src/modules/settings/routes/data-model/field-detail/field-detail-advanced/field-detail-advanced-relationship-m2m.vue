@@ -304,7 +304,7 @@ export default defineComponent({
 	margin-top: 48px;
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 
 		position: absolute;
 		transform: translateX(-50%);
@@ -323,7 +323,7 @@ export default defineComponent({
 }
 
 .v-input.matches {
-	--v-input-color: var(--primary);
+	--v-input-color: var(--g-color-primary-normal);
 }
 
 .type-label {
@@ -345,7 +345,7 @@ export default defineComponent({
 	gap: 12px 32px;
 
 	.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 
 		position: absolute;
 		bottom: 17px;

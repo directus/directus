@@ -399,7 +399,7 @@ function toggleManualSort() {
 		}
 
 		&:hover::after {
-			background-color: var(--primary);
+			background-color: var(--g-color-primary-normal);
 		}
 	}
 }
@@ -418,7 +418,7 @@ function toggleManualSort() {
 		right: 0;
 		top: 20%;
 		height: 60%;
-		background-color: var(--primary);
+		background-color: var(--g-color-primary-normal);
 	}
 
 	&::before {

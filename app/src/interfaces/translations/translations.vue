@@ -280,21 +280,21 @@ function useLanguages() {
 
 	.v-form {
 		--form-vertical-gap: 32px;
-		--v-chip-color: var(--primary);
-		--v-chip-background-color: var(--primary-alt);
+		--v-chip-color: var(--g-color-primary-normal);
+		--v-chip-background-color: var(--g-color-primary-subtle);
 
 		margin-top: 32px;
 	}
 
 	.primary {
-		--v-divider-color: var(--primary-50);
+		--v-divider-color: var(--g-color-primary-subtle);
 	}
 
 	.secondary {
 		--v-divider-color: var(--secondary-50);
 
 		.v-form {
-			--primary: var(--secondary);
+			--g-color-primary-normal: var(--secondary);
 			--v-chip-color: var(--secondary);
 			--v-chip-background-color: var(--secondary-alt);
 		}

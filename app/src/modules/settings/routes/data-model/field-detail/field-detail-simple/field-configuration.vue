@@ -231,7 +231,7 @@ export default defineComponent({
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 	}
 }
 </style>

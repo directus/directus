@@ -101,7 +101,7 @@ export default defineComponent({
 	.v-button {
 		--v-button-color: var(--g-color-foreground-subtle);
 		--v-button-background-color: var(--g-color-foreground-subtle);
-		--v-button-background-color-hover: var(--primary);
+		--v-button-background-color-hover: var(--g-color-primary-normal);
 	}
 }
 

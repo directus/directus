@@ -32,8 +32,8 @@
 }
 
 .CodeMirror.CodeMirror-focused {
-	border-color: var(--primary);
-	box-shadow: 0 0 16px -8px var(--primary);
+	border-color: var(--g-color-primary-normal);
+	box-shadow: 0 0 16px -8px var(--g-color-primary-normal);
 }
 
 /* PADDING */
@@ -163,7 +163,7 @@
 /* DEFAULT THEME */
 
 .cm-s-default .cm-header {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-quote {
 	color: var(--success);
@@ -189,16 +189,16 @@
 }
 
 .cm-s-default .cm-keyword {
-	color: var(--purple);
+	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-atom {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-number {
 	color: var(--success);
 }
 .cm-s-default .cm-def {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-variable,
 .cm-s-default .cm-punctuation,
@@ -206,7 +206,7 @@
 .cm-s-default .cm-operator {
 }
 .cm-s-default .cm-variable-2 {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-variable-3,
 .cm-s-default .cm-type {
@@ -228,7 +228,7 @@
 	color: var(--g-color-foreground-normal);
 }
 .cm-s-default .cm-builtin {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-bracket {
 	color: var(--g-color-foreground-subtle);
@@ -237,13 +237,13 @@
 	color: var(--success);
 }
 .cm-s-default .cm-attribute {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 .cm-s-default .cm-hr {
 	color: var(--g-color-border-normal);
 }
 .cm-s-default .cm-link {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .cm-s-default .cm-error {

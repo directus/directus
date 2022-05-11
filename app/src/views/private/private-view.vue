@@ -307,7 +307,7 @@ function openSidebar(event: PointerEvent) {
 			right: -2px;
 			bottom: 0;
 			width: 4px;
-			background-color: var(--primary);
+			background-color: var(--g-color-primary-normal);
 			cursor: ew-resize;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);

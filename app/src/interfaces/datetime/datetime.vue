@@ -123,7 +123,7 @@ export default defineComponent({
 	&.today-icon {
 		&:hover,
 		&.active {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--g-color-primary-normal);
 		}
 	}
 

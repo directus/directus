@@ -136,7 +136,7 @@ export default defineComponent({
 
 <style scoped>
 :global(body) {
-	--v-pagination-active-color: var(--primary);
+	--v-pagination-active-color: var(--g-color-primary-normal);
 }
 
 .v-pagination {
@@ -188,9 +188,9 @@ export default defineComponent({
 }
 
 .v-button.active {
-	--v-button-background-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--g-color-primary-normal);
 	--v-button-color-hover: var(--g-color-foreground-invert);
-	--v-button-background-color: var(--primary);
+	--v-button-background-color: var(--g-color-primary-normal);
 	--v-button-color: var(--g-color-foreground-invert);
 }
 </style>

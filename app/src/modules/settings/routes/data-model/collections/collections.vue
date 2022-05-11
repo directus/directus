@@ -228,8 +228,8 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--g-color-primary-normal);
+	--v-button-background-color-disabled: var(--g-color-primary-subtle);
 }
 
 .collection-item.hidden {
@@ -247,10 +247,10 @@ export default defineComponent({
 
 .draggable-list :deep(.sortable-ghost) {
 	.v-list-item {
-		--v-list-item-background-color: var(--primary-alt);
-		--v-list-item-border-color: var(--primary);
-		--v-list-item-background-color-hover: var(--primary-alt);
-		--v-list-item-border-color-hover: var(--primary);
+		--v-list-item-background-color: var(--g-color-primary-subtle);
+		--v-list-item-border-color: var(--g-color-primary-normal);
+		--v-list-item-background-color-hover: var(--g-color-primary-subtle);
+		--v-list-item-border-color-hover: var(--g-color-primary-normal);
 
 		> * {
 			opacity: 0;

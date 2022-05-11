@@ -132,8 +132,8 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 								display: 'formatted-value',
 								display_options: {
 									font: 'monospace',
-									color: 'var(--primary)',
-									background: 'var(--primary-alt)',
+									color: 'var(--g-color-primary-normal)',
+									background: 'var(--g-color-primary-subtle)',
 								},
 							},
 						},

@@ -355,7 +355,7 @@ export default defineComponent({
 									text: '$t:published',
 									value: 'published',
 									foreground: '#FFFFFF',
-									background: 'var(--primary)',
+									background: 'var(--g-color-primary-normal)',
 								},
 								{
 									text: '$t:draft',
@@ -536,7 +536,7 @@ export default defineComponent({
 }
 
 .required {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .content {

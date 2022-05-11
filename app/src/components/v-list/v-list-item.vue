@@ -225,7 +225,7 @@ body {
 		&:hover,
 		&.active {
 			:deep(.v-text-overflow) {
-				color: var(--primary);
+				color: var(--g-color-primary-normal);
 			}
 		}
 	}
@@ -268,7 +268,7 @@ body {
 		}
 
 		&.sortable-chosen {
-			border: var(--g-border-width) solid var(--primary) !important;
+			border: var(--g-border-width) solid var(--g-color-primary-normal) !important;
 		}
 
 		&.sortable-ghost {

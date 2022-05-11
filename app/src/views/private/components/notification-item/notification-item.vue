@@ -148,14 +148,14 @@ export default defineComponent({
 	}
 
 	&.info {
-		background-color: var(--primary);
+		background-color: var(--g-color-primary-normal);
 
 		&.tail::after {
-			background-color: var(--primary);
+			background-color: var(--g-color-primary-normal);
 		}
 
 		.text {
-			color: var(--primary-alt);
+			color: var(--g-color-primary-subtle);
 		}
 	}
 

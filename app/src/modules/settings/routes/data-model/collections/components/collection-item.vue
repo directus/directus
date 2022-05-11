@@ -13,7 +13,11 @@
 			</v-list-item-icon>
 			<div class="collection-item-detail">
 				<v-icon
-					:color="collection.meta?.hidden ? 'var(--g-color-foreground-subtle)' : collection.color ?? 'var(--primary)'"
+					:color="
+						collection.meta?.hidden
+							? 'var(--g-color-foreground-subtle)'
+							: collection.color ?? 'var(--g-color-primary-normal)'
+					"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>

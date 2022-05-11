@@ -268,7 +268,7 @@ body {
 	--v-icon-color: var(--g-color-foreground-subtle);
 	--v-input-color: var(--g-color-foreground-normal);
 	--v-input-background-color: var(--background-input);
-	--v-input-border-color-focus: var(--primary);
+	--v-input-border-color-focus: var(--g-color-primary-normal);
 	--v-input-border-radius: var(--g-border-radius);
 
 	display: flex;
@@ -315,7 +315,7 @@ body {
 			display: block;
 
 			&:hover:not(.disabled) {
-				--arrow-color: var(--primary);
+				--arrow-color: var(--g-color-primary-normal);
 			}
 
 			&:active:not(.disabled) {
@@ -344,7 +344,7 @@ body {
 			color: var(--v-input-color);
 			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
-			box-shadow: 0 0 16px -8px var(--primary);
+			box-shadow: 0 0 16px -8px var(--g-color-primary-normal);
 		}
 
 		&.disabled {

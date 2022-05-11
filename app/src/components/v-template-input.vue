@@ -336,18 +336,18 @@ export default defineComponent({
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--g-color-primary-normal);
 	}
 
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0px;
 		padding: 2px 4px;
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 		font-size: 0;
 		line-height: 1;
 		vertical-align: -2px;
-		background: var(--primary-alt);
+		background: var(--g-color-primary-subtle);
 		border-radius: var(--g-border-radius);
 		user-select: text;
 

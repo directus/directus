@@ -49,7 +49,7 @@ const validationMessage = syncFieldDetailStoreProperty('field.meta.validation_me
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--g-color-primary-normal);
 }
 
 .v-notice {

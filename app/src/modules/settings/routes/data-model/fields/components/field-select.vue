@@ -396,7 +396,7 @@ export default defineComponent({
 		z-index: 1;
 		width: 4px;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--g-color-primary-normal);
 		border-radius: 2px;
 		content: '';
 	}
@@ -408,7 +408,7 @@ export default defineComponent({
 		z-index: 1;
 		width: 100%;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--g-color-primary-normal);
 		opacity: 0.1;
 		content: '';
 	}
@@ -422,11 +422,11 @@ export default defineComponent({
 		width: 100%;
 		margin-bottom: 8px;
 		padding-top: 8px;
-		color: var(--primary);
+		color: var(--g-color-primary-normal);
 		font-family: var(--g-font-family-mono);
 
 		.drag-handle {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--g-color-primary-normal);
 
 			margin-right: 8px;
 		}
@@ -516,12 +516,12 @@ export default defineComponent({
 .required {
 	position: relative;
 	left: -8px;
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 }
 
 .sortable-ghost {
 	border-radius: var(--g-border-radius);
-	outline: 2px dashed var(--primary);
+	outline: 2px dashed var(--g-color-primary-normal);
 
 	> * {
 		opacity: 0;

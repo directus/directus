@@ -176,7 +176,7 @@ export default defineComponent({
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--g-color-primary-normal);
 
 		margin-top: -12px;
 		margin-left: 2px;

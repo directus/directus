@@ -80,12 +80,12 @@ img {
 	aspect-ratio: 1;
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--g-color-primary-subtle);
 	}
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;
