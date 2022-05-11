@@ -1,9 +1,9 @@
 import { defineOperationApi } from '@directus/shared/utils';
 import { MailService } from '../../services';
+import { md } from '../../utils/md';
 
 type Options = {
-	template: string;
-	data: string;
+	body: string;
 	to: string;
 	subject: string;
 };
@@ -11,14 +11,11 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'mail',
 
-	handler: async ({ template, data, to, subject }, { accountability, database, getSchema }) => {
+	handler: async ({ body, to, subject }, { accountability, database, getSchema }) => {
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 
 		await mailService.send({
-			template: {
-				name: template,
-				data: JSON.parse(data),
-			},
+			html: md(body),
 			to,
 			subject,
 		});

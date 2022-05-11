@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	preview: ({ subject, to, template }) => [
+	preview: ({ subject, to, body }) => [
 		{
 			label: '$t:subject',
 			text: subject,
@@ -15,8 +15,8 @@ export default defineOperationApp({
 			text: to,
 		},
 		{
-			label: '$t:operations.mail.template',
-			text: template,
+			label: '$t:operations.mail.body',
+			text: body,
 		},
 	],
 	options: [
@@ -46,20 +46,12 @@ export default defineOperationApp({
 			},
 		},
 		{
-			field: 'template',
-			name: '$t:operations.mail.template',
+			field: 'body',
+			name: '$t:operations.mail.body',
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-md',
-			},
-		},
-		{
-			field: 'data',
-			name: '$t:operations.mail.data',
-			type: 'string',
-			meta: {
-				interface: 'input-code',
 			},
 		},
 	],

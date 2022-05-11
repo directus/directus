@@ -1976,8 +1976,7 @@ operations:
     description: Send emails to other humans
     to: To
     to_placeholder: Add e-mail addresses and press enter...
-    template: Body
-    data: Data
+    body: Body
   notification:
     name: Notification
     description: Send a notification to someone
