@@ -350,7 +350,7 @@ export default defineComponent({
 
 .v-icon {
 	--v-icon-color: var(--g-color-foreground-subtle);
-	--v-icon-color-hover: var(--foreground);
+	--v-icon-color-hover: var(--g-color-foreground-normal);
 
 	&.hidden-icon {
 		--v-icon-color-hover: var(--g-color-foreground-subtle);

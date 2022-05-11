@@ -250,7 +250,7 @@ body {
 			cursor: grab;
 
 			&:hover {
-				color: var(--foreground-color);
+				color: var(--g-color-foreground-normal);
 			}
 		}
 

@@ -19,7 +19,7 @@
 	--g-color-background-accent: #e4eaf1;
 	--g-color-background-subtle: #f7fafc;
 	--g-color-background-page: #ffffff;
-	--background-input: #ffffff;
+	--background-input: var(--g-color-background-page);
 	--g-color-background-invert: #263238;
 
 	--card-face-color: #fafcfd;

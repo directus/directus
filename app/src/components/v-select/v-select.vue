@@ -378,7 +378,7 @@ export default defineComponent({
 
 	&:hover,
 	&.active {
-		color: var(--foreground);
+		color: var(--g-color-foreground-normal);
 	}
 }
 

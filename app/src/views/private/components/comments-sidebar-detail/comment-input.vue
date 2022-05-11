@@ -365,8 +365,8 @@ function pressedEnter() {
 	overflow: scroll;
 	white-space: pre;
 	background-color: var(--background-input);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
+	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 }
 
@@ -397,7 +397,7 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 8px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
@@ -406,7 +406,7 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 36px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
@@ -424,16 +424,16 @@ function pressedEnter() {
 	.mention,
 	.emoji-button {
 		--v-button-background-color: transparent;
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--g-color-foreground-subtle);
 		--v-button-color-hover: var(--g-color-primary-normal);
 	}
 
 	.cancel {
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--g-color-foreground-subtle);
 	}
 
 	.post-comment {
-		--v-button-background-color-disabled: var(--background-normal-alt);
+		--v-button-background-color-disabled: var(--g-color-background-accent);
 	}
 }
 
