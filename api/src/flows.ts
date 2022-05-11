@@ -285,7 +285,6 @@ class FlowManager {
 
 			return { successor: operation.resolve, data: result ?? null };
 		} catch (error: unknown) {
-			if (!operation.reject) logger.warn(`Unhandled error in operation "${operation.key}": ${error}`);
 			return { successor: operation.reject, data: error ?? null };
 		}
 	}
