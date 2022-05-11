@@ -21,12 +21,14 @@
 #'Proxy', 'Intl'
 identifier: Identifiseerder
 avatar: Profiel prentjie
+application: Toepassing
 default_provider: Verstek
 published: Gepubliseer
 draft: Draft
 archived: Geargiveer
 modules: Modules
 module_bar: Modulebalk
+reset_width: Stel breedte terug
 tile_size: Teëlgrootte
 edit_field: Wysig veld
 conditions: Voorwaardes
@@ -38,8 +40,25 @@ enter_a_name: Voer 'n naam in...
 duplicate_field: Dupliseer veld
 half_width: Halwe breedte
 full_width: Volle breedte
+group: Groep
+export_items: Voer items uit
 and: En
 or: Of
+fill_width: Vulbreedte
+field_name_translations: Veldnaam vertalings
+enter_password_to_enable_tfa: Voer jou wagwoord in om twee-faktor-verifikasie te aktiveer
+add_field: Voeg veld by
+role_name: Rol Naam
+branch: Tak
+leaf: Blaar
+indeterminate: Onbepaald
+edit_collection: Wysig versameling
+exclusive: Eksklusief
+children: Kinders
+db_only_click_to_configure: 'Slegs databasis: Klik om te konfigureer'
+show_active_items: Wys aktiewe items
+show_archived_items: Wys Geargiveerde Items
+show_all_items: Wys alle items
 create_role: Skep Rol
 language: Taal
 create_field: Skep Veld
@@ -125,8 +144,10 @@ fields:
     role: Rol
     password: Wagwoord
   directus_fields:
+    translation: Veldnaam vertalings
     display_template: Modelvorm
   directus_roles:
+    name: Rol Naam
     description: Beskrywing
   directus_webhooks:
     status: Status
