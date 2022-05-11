@@ -388,7 +388,7 @@ function useDragDrop() {
 .header {
 	display: flex;
 	align-items: center;
-	height: 48px;
+	height: 42px;
 	padding: 12px;
 }
 
