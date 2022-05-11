@@ -119,7 +119,7 @@ export default defineComponent({
 <style>
 body {
 	--v-checkbox-color: var(--primary);
-	--v-checkbox-unchecked-color: var(--foreground-subdued);
+	--v-checkbox-unchecked-color: var(--g-color-foreground-subtle);
 }
 </style>
 
@@ -149,7 +149,7 @@ body {
 			width: 100%;
 			background-color: transparent;
 			border: none;
-			border-bottom: 2px solid var(--border-normal);
+			border-bottom: 2px solid var(--g-color-border-normal);
 			border-radius: 0;
 		}
 
@@ -166,11 +166,11 @@ body {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 
 		.checkbox {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--g-color-foreground-subtle);
 		}
 	}
 
@@ -179,13 +179,13 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		background-color: var(--background-page);
-		border: var(--g-border-width) solid var(--border-normal);
+		background-color: var(--g-color-background-page);
+		border: var(--g-border-width) solid var(--g-color-border-normal);
 		border-radius: var(--g-border-radius);
 		transition: all var(--fast) var(--transition);
 
 		&:disabled {
-			background-color: var(--background-subdued);
+			background-color: var(--g-color-background-subtle);
 		}
 
 		&::before {
@@ -210,8 +210,8 @@ body {
 		}
 
 		&.block {
-			background-color: var(--background-subdued);
-			border-color: var(--border-normal-alt);
+			background-color: var(--g-color-background-subtle);
+			border-color: var(--g-color-border-accent);
 		}
 	}
 
@@ -222,7 +222,7 @@ body {
 
 	&:not(:disabled):not(.indeterminate) {
 		.label {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 
 		&.block {

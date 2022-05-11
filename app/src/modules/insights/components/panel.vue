@@ -313,9 +313,9 @@ export default defineComponent({
 	display: block;
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
-	background-color: var(--background-page);
-	border: 1px solid var(--border-subdued);
-	box-shadow: 0 0 0 1px var(--border-subdued);
+	background-color: var(--g-color-background-page);
+	border: 1px solid var(--g-color-border-subtle);
+	box-shadow: 0 0 0 1px var(--g-color-border-subtle);
 }
 
 .panel:hover {
@@ -323,14 +323,14 @@ export default defineComponent({
 }
 
 .panel.editing {
-	border-color: var(--border-normal);
-	box-shadow: 0 0 0 1px var(--border-normal);
+	border-color: var(--g-color-border-normal);
+	box-shadow: 0 0 0 1px var(--g-color-border-normal);
 	cursor: move;
 }
 
 .panel.editing:hover {
-	border-color: var(--border-normal-alt);
-	box-shadow: 0 0 0 1px var(--border-normal-alt);
+	border-color: var(--g-color-border-accent);
+	box-shadow: 0 0 0 1px var(--g-color-border-accent);
 }
 
 .panel.editing.dragging {
@@ -345,14 +345,14 @@ export default defineComponent({
 	right: 0;
 	z-index: 2;
 	padding: 17px 14px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-weight: 500;
 	font-size: 15px;
 	font-family: var(--g-font-family-mono);
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-top-right-radius: var(--g-border-radius);
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
@@ -386,13 +386,13 @@ export default defineComponent({
 }
 
 .icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	margin-right: 4px;
 }
 
 .name {
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
 	font-family: var(--g-font-family-sans);
@@ -406,8 +406,8 @@ export default defineComponent({
 .more-icon,
 .edit-icon,
 .note {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--g-color-foreground-subtle);
+	--v-icon-color-hover: var(--g-color-foreground-normal);
 }
 
 .delete-action {
@@ -425,7 +425,7 @@ export default defineComponent({
 	gap: 4px;
 	align-items: center;
 	padding: 12px 12px 8px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-top-right-radius: var(--g-border-radius);
 }
 

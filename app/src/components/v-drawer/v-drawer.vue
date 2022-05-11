@@ -139,7 +139,7 @@ body {
 	width: 100%;
 	max-width: var(--v-drawer-max-width);
 	height: 100%;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 
 	.cancel {
 		position: absolute;
@@ -152,10 +152,10 @@ body {
 	}
 
 	.header-icon {
-		--v-button-background-color: var(--background-normal);
-		--v-button-background-color-active: var(--background-normal);
-		--v-button-background-color-hover: var(--background-normal-alt);
-		--v-button-color-disabled: var(--foreground-normal);
+		--v-button-background-color: var(--g-color-background-normal);
+		--v-button-background-color-active: var(--g-color-background-normal);
+		--v-button-background-color-hover: var(--g-color-background-accent);
+		--v-button-color-disabled: var(--g-color-foreground-normal);
 	}
 
 	.content {
@@ -173,8 +173,8 @@ body {
 		line-height: 24px;
 
 		.sidebar {
-			--v-list-item-background-color-hover: var(--background-normal-alt);
-			--v-list-item-background-color-active: var(--background-normal-alt);
+			--v-list-item-background-color-hover: var(--g-color-background-accent);
+			--v-list-item-background-color-active: var(--g-color-background-accent);
 
 			display: none;
 
@@ -187,7 +187,7 @@ body {
 				width: 220px;
 				height: 100%;
 				height: auto;
-				background-color: var(--background-normal);
+				background-color: var(--g-color-background-normal);
 			}
 		}
 
@@ -225,7 +225,7 @@ body {
 	margin: var(--content-padding);
 
 	nav {
-		background-color: var(--background-subdued);
+		background-color: var(--g-color-background-subtle);
 		border-radius: var(--g-border-radius);
 	}
 

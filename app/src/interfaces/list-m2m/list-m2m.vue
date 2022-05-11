@@ -375,7 +375,7 @@ const selectAllowed = computed(() => {
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

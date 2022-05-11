@@ -82,7 +82,7 @@ const cssHeight = computed(() => props.height + 2 + 'px');
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color);
-		border-bottom: var(--g-border-width) solid var(--border-subdued);
+		border-bottom: var(--g-border-width) solid var(--g-color-border-subtle);
 
 		&:last-child {
 			padding: 0 12px;
@@ -99,15 +99,15 @@ const cssHeight = computed(() => props.height + 2 + 'px');
 	}
 
 	&.clickable:not(.subdued):hover .cell {
-		background-color: var(--background-subdued);
+		background-color: var(--g-color-background-subtle);
 		cursor: pointer;
 	}
 
 	.drag-handle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 
 		&.sorted-manually {
-			--v-icon-color: var(--foreground-normal);
+			--v-icon-color: var(--g-color-foreground-normal);
 
 			&:hover {
 				cursor: ns-resize;

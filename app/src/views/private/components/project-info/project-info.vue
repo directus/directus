@@ -34,9 +34,9 @@ export default defineComponent({
 	width: 100%;
 	height: 60px;
 	padding-left: 20px;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	text-align: left;
-	background-color: var(--background-normal-alt);
+	background-color: var(--g-color-background-accent);
 
 	.name-container {
 		flex-grow: 1;
@@ -51,7 +51,7 @@ export default defineComponent({
 
 	.descriptor {
 		display: block;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 	}
 }
 </style>

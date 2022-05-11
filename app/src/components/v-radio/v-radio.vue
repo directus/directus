@@ -93,18 +93,18 @@ body {
 	}
 
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 	}
 
 	&:disabled {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--g-color-foreground-subtle);
 		}
 	}
 
@@ -113,7 +113,7 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--background-subdued);
+		border: 2px solid var(--g-color-background-subtle);
 		border-radius: var(--g-border-radius);
 
 		&::before {
@@ -122,7 +122,7 @@ body {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
+			background-color: var(--g-color-background-subtle);
 			border-radius: var(--g-border-radius);
 			content: '';
 		}
@@ -134,7 +134,7 @@ body {
 
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--g-color-foreground-subtle);
 		}
 	}
 

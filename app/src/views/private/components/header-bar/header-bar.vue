@@ -99,7 +99,7 @@ export default defineComponent({
 	height: var(--header-bar-height);
 	margin: 0;
 	padding: 0 10px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	box-shadow: 0;
 	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
 
@@ -145,7 +145,7 @@ export default defineComponent({
 			position: absolute;
 			top: 2px;
 			left: 0;
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 			font-weight: 600;
 			font-size: 12px;
 			white-space: nowrap;

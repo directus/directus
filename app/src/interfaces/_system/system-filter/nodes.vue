@@ -349,13 +349,13 @@ function getCompareOptions(name: string) {
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
-	background-color: var(--background-page);
-	border: var(--g-border-width) solid var(--border-subdued);
+	background-color: var(--g-color-background-page);
+	border: var(--g-border-width) solid var(--g-color-border-subtle);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
 
 	.logic-type {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 
 		.key {
 			margin-right: 4px;
@@ -408,7 +408,7 @@ function getCompareOptions(name: string) {
 			z-index: -1;
 			width: calc(100% + 8px);
 			height: 100%;
-			background-color: var(--background-normal);
+			background-color: var(--g-color-background-normal);
 			border-radius: 6px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -430,7 +430,7 @@ function getCompareOptions(name: string) {
 	}
 
 	.delete {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 		--v-icon-color-hover: var(--danger);
 
 		position: absolute;
@@ -443,7 +443,7 @@ function getCompareOptions(name: string) {
 	}
 
 	&:hover {
-		border-color: var(--border-normal);
+		border-color: var(--g-color-border-normal);
 
 		.delete,
 		&:hover {
@@ -452,7 +452,7 @@ function getCompareOptions(name: string) {
 	}
 
 	.drag-handle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 
 		margin-right: 4px;
 		cursor: grab;
@@ -466,7 +466,7 @@ function getCompareOptions(name: string) {
 		.delete {
 			right: 8px;
 			left: unset;
-			background-color: var(--background-page);
+			background-color: var(--g-color-background-page);
 		}
 	}
 }

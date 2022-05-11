@@ -154,10 +154,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .accordion-section {
-	border-top: var(--g-border-width) solid var(--border-normal);
+	border-top: var(--g-border-width) solid var(--g-color-border-normal);
 
 	&:last-child {
-		border-bottom: var(--g-border-width) solid var(--border-normal);
+		border-bottom: var(--g-border-width) solid var(--g-color-border-normal);
 	}
 }
 
@@ -166,13 +166,13 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	margin: 8px 0;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 
 	&:hover,
 	&.active {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 	}
 
 	.required {
@@ -189,7 +189,7 @@ export default defineComponent({
 		display: block;
 		width: 4px;
 		height: 4px;
-		background-color: var(--foreground-subdued);
+		background-color: var(--g-color-foreground-subtle);
 		border-radius: 4px;
 		content: '';
 		pointer-events: none;

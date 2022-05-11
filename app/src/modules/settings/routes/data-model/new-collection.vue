@@ -516,15 +516,15 @@ export default defineComponent({
 }
 
 .system :deep(.v-input .input) {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .system :deep(.v-input .active .input) {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .system .v-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 }
 
 .spacer {

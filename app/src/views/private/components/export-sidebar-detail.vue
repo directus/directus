@@ -547,8 +547,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .export-fields {
-	--folder-picker-background-color: var(--background-subdued);
-	--folder-picker-color: var(--background-normal);
+	--folder-picker-background-color: var(--g-color-background-subtle);
+	--folder-picker-color: var(--g-color-background-normal);
 
 	margin-top: 24px;
 	padding: var(--content-padding);
@@ -591,7 +591,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	display: flex;
 	align-items: center;
@@ -600,7 +600,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 
 	&.has-file {
@@ -631,16 +631,16 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	flex-grow: 1;
 
 	&.no-file {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 	}
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--g-color-background-accent);
 }
 
 .download-local {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	text-align: center;
 	display: block;
 	width: 100%;

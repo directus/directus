@@ -166,7 +166,7 @@ export default defineComponent({
 .remaining {
 	display: none;
 	width: 24px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;

@@ -35,12 +35,12 @@ export default defineComponent({
 
 			if (value !== null) style['background-color'] = value;
 
-			const pageColorString = getVar('var(--background-page)');
+			const pageColorString = getVar('var(--g-color-background-page)');
 
 			const pageColorRGB = Color(pageColorString);
 			const colorRGB = value === null ? Color(defaultColor) : Color(value);
 
-			if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--border-normal)';
+			if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--g-color-border-normal)';
 
 			return style;
 		});

@@ -284,11 +284,11 @@ export default defineComponent({
 	--v-list-item-color-hover: var(--primary-125);
 	--v-list-item-background-color-hover: var(--primary-10);
 	--v-icon-color: var(--primary);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--g-color-foreground-normal);
 }
 
 .to {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-family: var(--g-font-family-mono);
 }
 

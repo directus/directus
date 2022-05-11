@@ -51,8 +51,8 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	align-items: center;
 
 	.clipboard-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color: var(--g-color-foreground-subtle);
+		--v-icon-color-hover: var(--g-color-foreground-normal);
 
 		margin-left: 4px;
 	}

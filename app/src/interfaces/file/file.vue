@@ -275,7 +275,7 @@ function useURLImport() {
 
 <style lang="scss" scoped>
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	display: flex;
 	align-items: center;
@@ -284,7 +284,7 @@ function useURLImport() {
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 
 	img {
@@ -299,7 +299,7 @@ function useURLImport() {
 
 	&.is-svg {
 		padding: 4px;
-		background-color: var(--background-normal-alt);
+		background-color: var(--g-color-background-accent);
 
 		img {
 			object-fit: contain;
@@ -323,7 +323,7 @@ function useURLImport() {
 	margin-right: 4px;
 
 	&:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--g-color-foreground-normal);
 	}
 }
 </style>

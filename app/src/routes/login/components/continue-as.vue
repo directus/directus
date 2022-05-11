@@ -93,11 +93,11 @@ export default defineComponent({
 }
 
 .continue-as .sign-out {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 }
 
 .continue-as .sign-out:hover {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 </style>

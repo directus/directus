@@ -126,13 +126,13 @@ function useDelete() {
 	margin-bottom: 8px;
 
 	.v-avatar {
-		--v-avatar-color: var(--background-normal-alt);
+		--v-avatar-color: var(--g-color-background-accent);
 
 		flex-basis: 24px;
 		margin-right: 8px;
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--g-color-foreground-subtle);
 		}
 	}
 
@@ -145,7 +145,7 @@ function useDelete() {
 	.header-right {
 		position: relative;
 		flex-basis: 24px;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 
 		.more {
 			cursor: pointer;
@@ -153,7 +153,7 @@ function useDelete() {
 			transition: all var(--slow) var(--transition);
 
 			&:hover {
-				color: var(--foreground-normal);
+				color: var(--g-color-foreground-normal);
 			}
 
 			&.active {

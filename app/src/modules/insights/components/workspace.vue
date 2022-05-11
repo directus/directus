@@ -159,7 +159,7 @@ export default defineComponent({
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);
-	background-image: radial-gradient(var(--border-normal) 10%, transparent 10%);
+	background-image: radial-gradient(var(--g-color-border-normal) 10%, transparent 10%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
 	opacity: 0;

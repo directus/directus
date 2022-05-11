@@ -99,20 +99,20 @@ export default defineComponent({
 
 <style scoped>
 .version .v-icon {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 }
 
 .version :deep(.v-text-overflow) {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 }
 
 .version:hover .v-icon {
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 }
 
 .version:hover :deep(.v-text-overflow) {
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 }
 </style>

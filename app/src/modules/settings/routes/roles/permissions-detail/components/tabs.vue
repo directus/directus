@@ -39,7 +39,7 @@ export default defineComponent({
 .dot {
 	width: 12px;
 	height: 12px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--g-color-foreground-subtle);
 	border-radius: 50%;
 
 	&.on {

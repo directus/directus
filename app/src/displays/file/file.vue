@@ -67,7 +67,7 @@ img {
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	position: relative;
 	display: inline-flex;
@@ -75,7 +75,7 @@ img {
 	justify-content: center;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 	aspect-ratio: 1;
 

@@ -36,7 +36,7 @@
 							display: 'formatted-value',
 							display_options: {
 								font: 'monospace',
-								color: 'var(--foreground-subdued)',
+								color: 'var(--g-color-foreground-subtle)',
 							},
 						},
 						schema: {

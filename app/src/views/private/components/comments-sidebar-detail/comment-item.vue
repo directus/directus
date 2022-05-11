@@ -1,5 +1,11 @@
 <template>
-	<div class="comment-item">
+	<div
+		class="comment-item"
+		:style="{
+			// @ts-ignore
+			'--background-page-rgb': Color(cssVar('--g-color-background-page')).rgb().array().join(', '),
+		}"
+	>
 		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
 
 		<comment-input
@@ -21,6 +27,8 @@ import { ref, watch } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import CommentInput from './comment-input.vue';
+import { cssVar } from '@directus/shared/utils/browser';
+import Color from 'color';
 
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -82,7 +90,7 @@ function useEdits() {
 	position: relative;
 	margin-bottom: 8px;
 	padding: 8px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-radius: var(--g-border-radius);
 }
 
@@ -117,9 +125,9 @@ function useEdits() {
 .comment-item .content :deep(blockquote) {
 	margin: 8px 0;
 	padding-left: 6px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-style: italic;
-	border-left: 2px solid var(--border-normal);
+	border-left: 2px solid var(--g-color-border-normal);
 }
 
 .comment-item .content :deep(img) {
@@ -133,7 +141,7 @@ function useEdits() {
 	height: 2px;
 	margin: 12px 0;
 	border: 0;
-	border-top: 2px solid var(--border-normal);
+	border-top: 2px solid var(--g-color-border-normal);
 }
 
 .comment-item .content :deep(mark) {
@@ -149,8 +157,8 @@ function useEdits() {
 
 .comment-item .content :deep(pre) {
 	padding: 2px 4px;
-	color: var(--foreground-normal);
-	background-color: var(--background-normal);
+	color: var(--g-color-foreground-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 	margin: 2px 0;
 	font-family: var(--g-font-family-mono);
@@ -161,8 +169,8 @@ function useEdits() {
 
 .comment-item .content :deep(code) {
 	padding: 2px 4px;
-	color: var(--foreground-normal);
-	background-color: var(--background-normal);
+	color: var(--g-color-foreground-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 	margin: 2px 0;
 	font-family: var(--g-font-family-mono);
@@ -178,7 +186,7 @@ function useEdits() {
 	margin-top: 12px;
 	font-weight: 600;
 	font-size: 16px;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 }
 
 .comment-item.expand .content::after {
@@ -210,16 +218,16 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text span {
 	padding: 4px 12px 5px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-weight: 600;
 	font-size: 12px;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: 12px;
 	transition: color var(--fast) var(--transition), background-color var(--fast) var(--transition);
 }
 
 .comment-item.expand .content .expand-text:hover span {
-	color: var(--foreground-inverted);
+	color: var(--g-color-foreground-invert);
 	background-color: var(--primary);
 }
 

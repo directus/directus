@@ -102,7 +102,7 @@ export default defineComponent({
 	--v-input-placeholder-color: var(--primary);
 
 	&:focus-within {
-		--v-input-placeholder-color: var(--foreground-subdued);
+		--v-input-placeholder-color: var(--g-color-foreground-subtle);
 	}
 }
 
@@ -110,7 +110,7 @@ export default defineComponent({
 	padding: 8px;
 
 	.v-icon:hover {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 	}
 
 	.v-icon.active {
@@ -118,7 +118,7 @@ export default defineComponent({
 	}
 
 	.v-divider {
-		--v-divider-color: var(--background-normal);
+		--v-divider-color: var(--g-color-background-normal);
 
 		margin: 0 22px;
 	}
@@ -129,7 +129,7 @@ export default defineComponent({
 	grid-gap: 8px;
 	grid-template-columns: repeat(auto-fit, 24px);
 	padding: 20px 0;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .open-indicator {

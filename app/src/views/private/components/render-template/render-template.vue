@@ -147,6 +147,6 @@ export default defineComponent({
 }
 
 .subdued {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 </style>

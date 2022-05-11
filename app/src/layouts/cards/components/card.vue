@@ -177,7 +177,7 @@ export default defineComponent({
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--g-color-background-normal);
 		border-color: var(--primary-50);
 		border-style: solid;
 		border-width: 0px;
@@ -207,12 +207,12 @@ export default defineComponent({
 		}
 
 		.type {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 			text-transform: uppercase;
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--g-color-foreground-subtle);
 		}
 
 		.v-skeleton-loader {
@@ -252,7 +252,7 @@ export default defineComponent({
 		z-index: 2;
 		width: 18px;
 		height: 18px;
-		background-color: var(--background-page);
+		background-color: var(--g-color-background-page);
 		border-radius: 24px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -342,6 +342,6 @@ export default defineComponent({
 
 .subtitle {
 	margin-top: 0px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 </style>

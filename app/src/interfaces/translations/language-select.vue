@@ -125,11 +125,11 @@ export default defineComponent({
 			gap: 10px;
 			align-items: center;
 			justify-content: flex-end;
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 
 		&:hover {
-			background-color: var(--background-normal);
+			background-color: var(--g-color-background-normal);
 		}
 
 		.dot {
@@ -140,7 +140,7 @@ export default defineComponent({
 				display: block;
 				width: 4px;
 				height: 4px;
-				background-color: var(--foreground-subdued);
+				background-color: var(--g-color-foreground-subtle);
 				border-radius: 2px;
 				content: '';
 			}

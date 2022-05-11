@@ -82,8 +82,8 @@ export default defineComponent({
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 12px;
-	background-color: var(--background-normal);
-	border: 2px solid var(--background-normal);
+	background-color: var(--g-color-background-normal);
+	border: 2px solid var(--g-color-background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
 	cursor: pointer;
@@ -92,7 +92,7 @@ export default defineComponent({
 	transition-property: background-color, border-color;
 
 	&:not(.disabled):hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--g-color-background-accent);
 	}
 
 	&.disabled {
@@ -106,7 +106,7 @@ export default defineComponent({
 		width: 44px;
 		height: 44px;
 		margin-right: 12px;
-		background-color: var(--background-page);
+		background-color: var(--g-color-background-page);
 		border-radius: 50%;
 	}
 
@@ -153,7 +153,7 @@ export default defineComponent({
 }
 
 .icon-right {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 }
 
 .v-divider {

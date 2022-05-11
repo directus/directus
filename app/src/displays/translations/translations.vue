@@ -140,7 +140,7 @@ export default defineComponent({
 	display: inline-flex;
 
 	.icon {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
@@ -156,7 +156,7 @@ export default defineComponent({
 	gap: 20px;
 	align-items: center;
 	justify-content: space-between;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-size: 12px;
 
 	.lang {
@@ -183,7 +183,7 @@ export default defineComponent({
 .v-list-item:not(:first-child) {
 	.header {
 		padding-top: 8px;
-		border-top: var(--g-border-width) solid var(--border-subdued);
+		border-top: var(--g-border-width) solid var(--g-color-border-subtle);
 	}
 }
 </style>

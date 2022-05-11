@@ -119,9 +119,9 @@ export default defineComponent({
 
 .close {
 	--v-button-background-color: var(--white);
-	--v-button-color: var(--foreground-subdued);
+	--v-button-color: var(--g-color-foreground-subtle);
 	--v-button-background-color-hover: var(--white);
-	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color-hover: var(--g-color-foreground-normal);
 
 	position: absolute;
 	top: 32px;

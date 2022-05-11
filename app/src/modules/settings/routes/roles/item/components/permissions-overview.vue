@@ -247,15 +247,15 @@ export default defineComponent({
 .table {
 	max-width: 792px;
 	background-color: var(--background-input);
-	border: var(--g-border-width) solid var(--border-normal);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 }
 
 .system-toggle {
 	width: 100%;
 	height: 48px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
+	color: var(--g-color-foreground-subtle);
+	background-color: var(--g-color-background-subtle);
 
 	.v-icon {
 		vertical-align: -7px;
@@ -265,7 +265,7 @@ export default defineComponent({
 .reset-toggle {
 	display: block;
 	margin: 8px auto;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	text-align: center;
 
 	button {
@@ -274,7 +274,7 @@ export default defineComponent({
 	}
 
 	button:hover {
-		color: var(--foreground-normal) !important;
+		color: var(--g-color-foreground-normal) !important;
 	}
 }
 </style>

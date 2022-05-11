@@ -17,7 +17,7 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .permissions-overview-header {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	position: sticky;
 	top: calc(var(--header-bar-height) - 1px); // minus 1px to avoid gaps
@@ -25,7 +25,7 @@ const { t } = useI18n();
 	display: flex;
 	padding: 12px;
 	background-color: var(--background-input);
-	border-bottom: var(--g-border-width) solid var(--border-normal);
+	border-bottom: var(--g-border-width) solid var(--g-color-border-normal);
 
 	.name {
 		flex-grow: 1;

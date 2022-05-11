@@ -212,7 +212,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .checkbox-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	&.enabled {
 		--v-icon-color: var(--primary);
@@ -231,7 +231,7 @@ export default defineComponent({
 .secret {
 	display: block;
 	margin: 0 auto 16px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-family: var(--g-font-family-mono);
 	letter-spacing: 2.6px;
 	text-align: center;

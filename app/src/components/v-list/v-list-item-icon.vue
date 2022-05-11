@@ -19,7 +19,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-list-item-icon-color: var(--foreground-subdued);
+	--v-list-item-icon-color: var(--g-color-foreground-subtle);
 }
 </style>
 
@@ -68,7 +68,7 @@ body {
 			}
 
 			&.disabled #{$this} :slotted(.v-icon) {
-				--v-icon-color: var(--foreground-subdued) !important;
+				--v-icon-color: var(--g-color-foreground-subtle) !important;
 			}
 		}
 	}

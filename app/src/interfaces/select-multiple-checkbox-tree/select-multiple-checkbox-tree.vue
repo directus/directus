@@ -88,8 +88,8 @@ export default defineComponent({
 .select-multiple-checkbox-tree {
 	max-height: var(--input-height-max);
 	overflow: auto;
-	background-color: var(--background-page);
-	border: var(--g-border-width) solid var(--border-normal);
+	background-color: var(--g-color-background-page);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -102,7 +102,7 @@ export default defineComponent({
 }
 
 .search .v-input {
-	box-shadow: 0 0 4px 4px var(--background-page);
+	box-shadow: 0 0 4px 4px var(--g-color-background-page);
 }
 
 .footer {
@@ -114,18 +114,18 @@ export default defineComponent({
 	width: max-content;
 	padding: 4px 8px;
 	text-align: right;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-top-left-radius: var(--g-border-radius);
 }
 
 .footer > span {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
 
 .footer > span:hover {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .footer > span.active {

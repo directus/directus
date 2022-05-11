@@ -38,10 +38,10 @@ export default defineComponent({
 
 <style>
 body {
-	--v-breadcrumb-color: var(--foreground-subdued);
-	--v-breadcrumb-color-hover: var(--foreground-normal);
-	--v-breadcrumb-color-disabled: var(--foreground-subdued);
-	--v-breadcrumb-divider-color: var(--foreground-subdued);
+	--v-breadcrumb-color: var(--g-color-foreground-subtle);
+	--v-breadcrumb-color-hover: var(--g-color-foreground-normal);
+	--v-breadcrumb-color-disabled: var(--g-color-foreground-subtle);
+	--v-breadcrumb-divider-color: var(--g-color-foreground-subtle);
 }
 </style>
 

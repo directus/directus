@@ -207,15 +207,15 @@ export default defineComponent({
 	.presets {
 		.v-chip {
 			--v-chip-background-color: var(--primary);
-			--v-chip-color: var(--foreground-inverted);
+			--v-chip-color: var(--g-color-foreground-invert);
 			--v-chip-background-color-hover: var(--danger);
-			--v-chip-color-hover: var(--foreground-inverted);
+			--v-chip-color-hover: var(--g-color-foreground-invert);
 
 			&.inactive {
-				--v-chip-background-color: var(--background-subdued);
-				--v-chip-color: var(--foreground-subdued);
+				--v-chip-background-color: var(--g-color-background-subtle);
+				--v-chip-color: var(--g-color-foreground-subtle);
 				--v-chip-background-color-hover: var(--primary);
-				--v-chip-color-hover: var(--foreground-inverted);
+				--v-chip-color-hover: var(--g-color-foreground-invert);
 			}
 		}
 	}
@@ -223,7 +223,7 @@ export default defineComponent({
 	.custom {
 		.v-chip {
 			--v-chip-background-color: var(--primary);
-			--v-chip-color: var(--foreground-inverted);
+			--v-chip-color: var(--g-color-foreground-invert);
 			--v-chip-background-color-hover: var(--danger);
 			--v-chip-close-color: var(--v-chip-background-color);
 			--v-chip-close-color-hover: var(--white);

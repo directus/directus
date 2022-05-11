@@ -52,7 +52,7 @@ export default defineComponent({
 
 .md {
 	max-width: 740px;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 400;
 	font-size: 16px;
 	line-height: 27px;
@@ -81,7 +81,7 @@ export default defineComponent({
 	position: relative;
 	margin: 40px 0 8px;
 	padding: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 700;
 	cursor: text;
 }
@@ -110,7 +110,7 @@ export default defineComponent({
 	padding-bottom: 4px;
 	font-size: 24px;
 	line-height: 34px;
-	border-bottom: 2px solid var(--border-subdued);
+	border-bottom: 2px solid var(--g-color-border-subtle);
 }
 
 .md :deep(h3) {
@@ -128,7 +128,7 @@ export default defineComponent({
 }
 
 .md :deep(h6) {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-size: 14px;
 }
 
@@ -137,7 +137,7 @@ export default defineComponent({
 	overflow: auto;
 	font-size: 13px;
 	line-height: 24px;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -148,8 +148,8 @@ export default defineComponent({
 	font-size: 15px;
 	font-family: var(--g-font-family-mono);
 	white-space: nowrap;
-	background-color: var(--background-page);
-	border: 1px solid var(--background-normal);
+	background-color: var(--g-color-background-page);
+	border: 1px solid var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -194,9 +194,9 @@ export default defineComponent({
 	max-width: 740px;
 	margin-bottom: 4rem;
 	padding: 0.25rem 0 0.25rem 1rem;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-size: 18px;
-	border-left: 2px solid var(--background-normal);
+	border-left: 2px solid var(--g-color-background-normal);
 }
 
 .md :deep(blockquote > :first-child) {
@@ -229,11 +229,11 @@ export default defineComponent({
 .md :deep(table tr) {
 	margin: 0;
 	padding: 0;
-	border-top: 1px solid var(--border-normal);
+	border-top: 1px solid var(--g-color-border-normal);
 }
 
 .md :deep(table tr:nth-child(2n)) {
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 }
 
 .md :deep(table tr th) {
@@ -241,14 +241,14 @@ export default defineComponent({
 	padding: 8px 20px;
 	font-weight: bold;
 	text-align: left;
-	border: 1px solid var(--border-normal);
+	border: 1px solid var(--g-color-border-normal);
 }
 
 .md :deep(table tr td) {
 	margin: 0;
 	padding: 8px 20px;
 	text-align: left;
-	border: 1px solid var(--border-normal);
+	border: 1px solid var(--g-color-border-normal);
 }
 
 .md :deep(a:first-child h1),
@@ -387,7 +387,7 @@ export default defineComponent({
 }
 
 .md :deep(.heading-link) {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-size: 16px;
 }
 
@@ -415,7 +415,7 @@ export default defineComponent({
 	width: 100%;
 	margin: 20px 0;
 	padding: 0 20px;
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 	border-left: 2px solid var(--primary);
 }
 
@@ -455,7 +455,7 @@ export default defineComponent({
 
 .md :deep(.two-up .right h5) {
 	margin-top: 20px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .md.page-reference :deep(.definitions) {
@@ -466,11 +466,11 @@ export default defineComponent({
 .md.page-reference :deep(.definitions > p) {
 	margin: 0;
 	padding: 0.8rem 0;
-	border-bottom: 2px solid var(--border-subdued);
+	border-bottom: 2px solid var(--g-color-border-subtle);
 }
 
 .md.page-reference :deep(.definitions > p:first-child) {
-	border-top: 2px solid var(--border-subdued);
+	border-top: 2px solid var(--g-color-border-subtle);
 }
 
 .md.page-reference :deep(.definitions > p > code:first-child) {
@@ -483,7 +483,7 @@ export default defineComponent({
 }
 
 .md.page-reference :deep(.definitions > p > strong) {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 @media (min-width: 1000px) {

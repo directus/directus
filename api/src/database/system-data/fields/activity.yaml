@@ -48,7 +48,7 @@ fields:
   - field: comment
     display: formatted-value
     display_options:
-      color: 'var(--foreground-subdued)'
+      color: 'var(--g-color-foreground-subtle)'
     width: half
 
   - field: user_agent

@@ -4,6 +4,6 @@
 
 <style scoped>
 .null {
-	color: var(--border-normal); /* Don't confuse NULL with subdued value */
+	color: var(--g-color-border-normal); /* Don't confuse NULL with subdued value */
 }
 </style>

@@ -497,7 +497,7 @@ export default defineComponent({
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-style: italic;
 }
 

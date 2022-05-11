@@ -209,6 +209,6 @@ async function deleteCurrentTranslationString() {
 }
 .v-button.delete-action {
 	--v-button-background-color-hover: var(--danger) !important;
-	--v-button-color-hover: var(--foreground-inverted) !important;
+	--v-button-color-hover: var(--g-color-foreground-invert) !important;
 }
 </style>

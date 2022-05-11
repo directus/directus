@@ -182,7 +182,7 @@ export default defineComponent({
 
 	&:empty {
 		&::after {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 			content: '--';
 		}
 	}
@@ -208,11 +208,11 @@ input {
 	color: var(--primary);
 	font-family: var(--g-font-family-mono);
 	line-height: 1em;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border: none;
 
 	&::placeholder {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		font-weight: 500;
 		font-family: var(--g-font-family-mono);
 	}

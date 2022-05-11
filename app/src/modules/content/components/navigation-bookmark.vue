@@ -200,7 +200,7 @@ function useDeleteBookmark() {
 
 .v-list-item {
 	.ctx-toggle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 
 		opacity: 0;
 		user-select: none;

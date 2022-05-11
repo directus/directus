@@ -407,7 +407,7 @@ function useMovetoFolder() {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--g-color-background-normal);
 }
 
 .file-item {

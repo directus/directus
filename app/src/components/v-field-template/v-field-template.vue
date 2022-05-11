@@ -336,7 +336,7 @@ export default defineComponent({
 	position: absolute;
 	top: 50%;
 	left: 14px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	transform: translateY(-50%);
 	user-select: none;
 	pointer-events: none;

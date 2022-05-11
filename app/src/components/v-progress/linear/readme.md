@@ -48,8 +48,8 @@ n/a
 
 ## CSS Variables
 
-| Variable                               | Default                    |
-| -------------------------------------- | -------------------------- |
-| `--v-progress-linear-height`           | `4px`                      |
-| `--v-progress-linear-color`            | `var(--foreground-normal)` |
-| `--v-progress-linear-background-color` | `var(--border-normal)`     |
+| Variable                               | Default                            |
+| -------------------------------------- | ---------------------------------- |
+| `--v-progress-linear-height`           | `4px`                              |
+| `--v-progress-linear-color`            | `var(--g-color-foreground-normal)` |
+| `--v-progress-linear-background-color` | `var(--g-color-border-normal)`     |

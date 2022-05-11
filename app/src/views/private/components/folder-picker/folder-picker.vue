@@ -152,8 +152,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 :global(body) {
-	--folder-picker-background-color: var(--background-normal);
-	--folder-picker-color: var(--background-normal-alt);
+	--folder-picker-background-color: var(--g-color-background-normal);
+	--folder-picker-color: var(--g-color-background-accent);
 }
 
 .folder-picker {

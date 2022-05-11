@@ -69,7 +69,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-switch-color: var(--foreground-normal);
+	--v-switch-color: var(--g-color-foreground-normal);
 }
 </style>
 
@@ -89,7 +89,7 @@ body {
 		width: 44px;
 		height: 24px;
 		vertical-align: middle;
-		border: var(--g-border-width) solid var(--border-normal);
+		border: var(--g-border-width) solid var(--g-color-border-normal);
 		border-radius: 12px;
 		transition: var(--fast) var(--transition);
 		transition-property: background-color border;
@@ -105,14 +105,14 @@ body {
 			display: block;
 			width: 16px;
 			height: 16px;
-			background-color: var(--border-normal);
+			background-color: var(--g-color-border-normal);
 			border-radius: 8px;
 			transition: transform var(--fast) var(--transition);
 			content: '';
 		}
 
 		&:hover {
-			border-color: var(--border-normal);
+			border-color: var(--g-color-border-normal);
 		}
 	}
 
@@ -121,7 +121,7 @@ body {
 		border-color: var(--v-switch-color);
 
 		&::after {
-			background-color: var(--background-page);
+			background-color: var(--g-color-background-page);
 			transform: translateX(20px);
 		}
 	}
@@ -135,20 +135,20 @@ body {
 		cursor: not-allowed;
 
 		.switch {
-			background-color: var(--background-normal-alt);
-			border-color: var(--border-normal);
+			background-color: var(--g-color-background-accent);
+			border-color: var(--g-color-border-normal);
 
 			&::after {
-				background-color: var(--border-normal);
+				background-color: var(--g-color-border-normal);
 			}
 
 			&:hover {
-				border-color: var(--border-normal);
+				border-color: var(--g-color-border-normal);
 			}
 		}
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 	}
 }

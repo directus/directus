@@ -1,8 +1,8 @@
 .tooltip, #tooltip {
 	$arrow-alignment: 5px;
 
-	--tooltip-foreground-color: var(--foreground-inverted);
-	--tooltip-background-color: var(--background-inverted);
+	--tooltip-foreground-color: var(--g-color-foreground-invert);
+	--tooltip-background-color: var(--g-color-background-invert);
 
 	position: absolute;
 	top: 0;
@@ -18,8 +18,8 @@
 	transition: opacity 200ms;
 
 	&.inverted {
-		--tooltip-foreground-color: var(--foreground-normal);
-		--tooltip-background-color: var(--background-subdued);
+		--tooltip-foreground-color: var(--g-color-foreground-normal);
+		--tooltip-background-color: var(--g-color-background-subtle);
 	}
 
 	&.monospace {

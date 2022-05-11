@@ -53,8 +53,8 @@ export default defineComponent({
 }
 
 .info .icon {
-	color: var(--foreground-subdued);
-	background-color: var(--background-normal);
+	color: var(--g-color-foreground-subtle);
+	background-color: var(--g-color-background-normal);
 }
 
 .success .icon {
@@ -78,7 +78,7 @@ export default defineComponent({
 
 .content {
 	max-width: 300px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	line-height: 22px;
 
 	&:not(:last-child) {

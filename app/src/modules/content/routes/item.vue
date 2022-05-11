@@ -533,9 +533,9 @@ export default defineComponent({
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-color-disabled: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
+	--v-button-background-color: var(--g-color-background-normal);
+	--v-button-color-disabled: var(--g-color-foreground-normal);
+	--v-button-color-active: var(--g-color-foreground-normal);
 }
 
 .v-form {

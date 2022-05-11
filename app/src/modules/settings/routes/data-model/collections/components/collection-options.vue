@@ -106,10 +106,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	&:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--g-color-foreground-normal);
 	}
 }
 

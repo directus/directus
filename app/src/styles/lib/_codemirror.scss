@@ -4,31 +4,31 @@
 	width: 100%;
 	height: 300px;
 	height: auto;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-weight: inherit;
 	font-family: var(--g-font-family-mono);
 	line-height: 22px;
 	direction: ltr;
 	background-color: var(--background-input);
-	border: var(--g-border-width) solid var(--border-normal);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	transition: all var(--fast) var(--transition);
 }
 
 .disabled .CodeMirror {
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 }
 
 .CodeMirror .CodeMirror-placeholder {
-	color: var(--foreground-subdued) !important;
+	color: var(--g-color-foreground-subtle) !important;
 }
 
 .CodeMirror:hover {
-	border-color: var(--border-normal-alt);
+	border-color: var(--g-color-border-accent);
 }
 
 .disabled .CodeMirror:hover {
-	border-color: var(--border-normal);
+	border-color: var(--g-color-border-normal);
 }
 
 .CodeMirror.CodeMirror-focused {
@@ -48,30 +48,30 @@
 
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-	background-color: var(--background-page); /* The little square between H and V scrollbars */
+	background-color: var(--g-color-background-page); /* The little square between H and V scrollbars */
 }
 
 /* GUTTER */
 
 .CodeMirror-gutters {
 	white-space: nowrap;
-	background-color: var(--background-subdued);
-	border-right: 2px solid var(--border-normal);
+	background-color: var(--g-color-background-subtle);
+	border-right: 2px solid var(--g-color-border-normal);
 }
 
 .CodeMirror-linenumber {
 	min-width: 20px;
 	padding: 0 3px 0 5px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	white-space: nowrap;
 	text-align: right;
 }
 
 .CodeMirror-guttermarker {
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 }
 .CodeMirror-guttermarker-subtle {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 /* CURSOR */
@@ -79,12 +79,12 @@
 .CodeMirror-cursor {
 	width: 0;
 	border-right: none;
-	border-left: 1px solid var(--foreground-normal);
+	border-left: 1px solid var(--g-color-foreground-normal);
 }
 
 /* Shown when moving in bi-directional text */
 .CodeMirror div.CodeMirror-secondarycursor {
-	border-left: 1px solid var(--foreground-subdued);
+	border-left: 1px solid var(--g-color-foreground-subtle);
 }
 .cm-fat-cursor .CodeMirror-cursor {
 	width: auto;
@@ -157,7 +157,7 @@
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	border-left: 1px solid var(--border-normal);
+	border-left: 1px solid var(--g-color-border-normal);
 }
 
 /* DEFAULT THEME */
@@ -222,16 +222,16 @@
 	color: var(--warning);
 }
 .cm-s-default .cm-meta {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 .cm-s-default .cm-qualifier {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 .cm-s-default .cm-builtin {
 	color: var(--primary);
 }
 .cm-s-default .cm-bracket {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 .cm-s-default .cm-tag {
 	color: var(--success);
@@ -240,7 +240,7 @@
 	color: var(--primary);
 }
 .cm-s-default .cm-hr {
-	color: var(--border-normal);
+	color: var(--g-color-border-normal);
 }
 .cm-s-default .cm-link {
 	color: var(--primary);
@@ -284,8 +284,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	z-index: 850;
 	max-width: 600px;
 	padding: 4px 8px;
-	color: var(--foreground-inverted);
-	background-color: var(--background-inverted);
+	color: var(--g-color-foreground-invert);
+	background-color: var(--g-color-background-invert);
 	border-radius: var(--g-border-radius);
 	font-family: var(--g-font-family-mono);
 	white-space: pre-wrap;
@@ -522,10 +522,10 @@ div.CodeMirror-dragcursors {
 }
 
 .CodeMirror-selected {
-	background: var(--background-normal-alt);
+	background: var(--g-color-background-accent);
 }
 .CodeMirror-focused .CodeMirror-selected {
-	background: var(--background-normal-alt);
+	background: var(--g-color-background-accent);
 }
 .CodeMirror-crosshair {
 	cursor: crosshair;
@@ -533,12 +533,12 @@ div.CodeMirror-dragcursors {
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-	background: var(--background-normal-alt);
+	background: var(--g-color-background-accent);
 }
 .CodeMirror-line::-moz-selection,
 .CodeMirror-line > span::-moz-selection,
 .CodeMirror-line > span > span::-moz-selection {
-	background: var(--background-normal-alt);
+	background: var(--g-color-background-accent);
 }
 
 .cm-searching {

@@ -142,11 +142,11 @@ export default defineComponent({
 }
 
 .forgot-password {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 	}
 }
 </style>

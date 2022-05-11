@@ -493,15 +493,15 @@ export default defineComponent({
 .fullscreen,
 .zoom-to-fit,
 .clear-changes {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-inverted);
+	--v-button-color: var(--g-color-foreground-normal);
+	--v-button-color-hover: var(--g-color-foreground-normal);
+	--v-button-background-color: var(--g-color-foreground-subtle);
+	--v-button-background-color-hover: var(--g-color-foreground-normal);
+	--v-button-color-active: var(--g-color-foreground-invert);
 	--v-button-background-color-active: var(--primary);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--g-color-foreground-normal);
 }
 </style>

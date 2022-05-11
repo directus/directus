@@ -58,7 +58,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	:deep(i) {
 		vertical-align: unset;
@@ -66,7 +66,7 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--g-color-foreground-normal);
 }
 
 .v-table {

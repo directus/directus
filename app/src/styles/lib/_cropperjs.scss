@@ -99,7 +99,7 @@
 .cropper-center::after {
 	position: absolute;
 	display: block;
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 	content: ' ';
 }
 
@@ -130,7 +130,7 @@
 .cropper-face {
 	top: 0;
 	left: 0;
-	background-color: var(--foreground-inverted);
+	background-color: var(--g-color-foreground-invert);
 }
 
 .cropper-line {

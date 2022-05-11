@@ -323,7 +323,7 @@ export default defineComponent({
 <style scoped lang="scss">
 :global(body) {
 	--v-select-font-family: var(--g-font-family-sans);
-	--v-select-placeholder-color: var(--foreground-subdued);
+	--v-select-placeholder-color: var(--g-color-foreground-subtle);
 }
 
 .list {
@@ -371,8 +371,8 @@ export default defineComponent({
 .inline-display.label {
 	padding: 4px 8px;
 	padding-right: 26px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
+	color: var(--g-color-foreground-subtle);
+	background-color: var(--g-color-background-subtle);
 	border-radius: var(--g-border-radius);
 	transition: color var(--fast) var(--transition);
 

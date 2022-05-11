@@ -337,7 +337,7 @@ export default defineComponent({
 }
 
 .v-input.hidden {
-	--background-page: var(--background-subdued);
+	--v-input-background-color: var(--g-color-background-subtle);
 }
 
 .v-input.monospace {
@@ -349,11 +349,11 @@ export default defineComponent({
 }
 
 .v-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 	--v-icon-color-hover: var(--foreground);
 
 	&.hidden-icon {
-		--v-icon-color-hover: var(--foreground-subdued);
+		--v-icon-color-hover: var(--g-color-foreground-subtle);
 	}
 
 	&.unmanaged {
@@ -450,12 +450,12 @@ export default defineComponent({
 
 .field {
 	:deep(.input) {
-		border: var(--g-border-width) solid var(--border-subdued) !important;
+		border: var(--g-border-width) solid var(--g-color-border-subtle) !important;
 	}
 
 	:deep(.input:hover) {
 		background-color: var(--card-face-color) !important;
-		border: var(--g-border-width) solid var(--border-normal-alt) !important;
+		border: var(--g-border-width) solid var(--g-color-border-accent) !important;
 	}
 
 	.label {
@@ -478,7 +478,7 @@ export default defineComponent({
 
 			.interface {
 				display: none;
-				color: var(--foreground-subdued);
+				color: var(--g-color-foreground-subtle);
 				font-family: var(--g-font-family-mono);
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);

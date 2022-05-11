@@ -61,12 +61,12 @@ export default defineComponent({
 
 .link {
 	display: block;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	text-align: center;
 	text-decoration: none;
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 	}
 
 	&.has-items {
@@ -80,7 +80,7 @@ export default defineComponent({
 }
 
 .sidebar-button {
-	background-color: var(--background-normal-alt);
+	background-color: var(--g-color-background-accent);
 }
 
 .inline {
@@ -88,7 +88,7 @@ export default defineComponent({
 	right: 0;
 	bottom: 100%;
 	width: 100%;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {

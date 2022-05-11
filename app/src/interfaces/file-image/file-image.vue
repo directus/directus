@@ -188,7 +188,7 @@ const edits = computed(() => {
 	width: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
-	background-color: var(--background-normal-alt);
+	background-color: var(--g-color-background-accent);
 	border-radius: var(--g-border-radius);
 }
 
@@ -214,8 +214,8 @@ img {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	color: var(--foreground-subdued);
-	background-color: var(--background-normal);
+	color: var(--g-color-foreground-subtle);
+	background-color: var(--g-color-background-normal);
 	padding: 32px;
 
 	.v-icon {
@@ -245,9 +245,9 @@ img {
 }
 
 .actions {
-	--v-button-color: var(--foreground-subdued);
+	--v-button-color: var(--g-color-foreground-subtle);
 	--v-button-background-color: var(--white);
-	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color-hover: var(--g-color-foreground-normal);
 	--v-button-background-color-hover: var(--white);
 
 	position: absolute;
@@ -339,7 +339,7 @@ img {
 }
 
 .fallback {
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	display: flex;
 	align-items: center;
 	justify-content: center;

@@ -675,7 +675,7 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--g-color-foreground-normal);
 }
 
 .layout {
@@ -699,10 +699,10 @@ export default defineComponent({
 	}
 
 	.add {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 
@@ -716,7 +716,7 @@ export default defineComponent({
 
 	.clear {
 		margin-left: 4px;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 
 		&:hover {
 			color: var(--warning);

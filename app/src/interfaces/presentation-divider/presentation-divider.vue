@@ -3,7 +3,7 @@
 		:class="{ 'add-margin-top': icon || title }"
 		:style="{
 			'--v-divider-label-color': color,
-			'--v-divider-color': 'var(--border-subdued)',
+			'--v-divider-color': 'var(--g-color-border-subtle)',
 		}"
 		large
 		:inline-title="inlineTitle"

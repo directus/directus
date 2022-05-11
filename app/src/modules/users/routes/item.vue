@@ -528,7 +528,7 @@ export default defineComponent({
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--g-color-background-normal);
 }
 
 .user-item {
@@ -537,7 +537,7 @@ export default defineComponent({
 }
 
 .user-box {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--g-color-background-normal);
 
 	display: flex;
 	align-items: center;
@@ -545,11 +545,11 @@ export default defineComponent({
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
 	padding: 20px;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: calc(var(--g-border-radius) + 4px);
 
 	.avatar {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 
 		display: flex;
 		flex-shrink: 0;
@@ -559,7 +559,7 @@ export default defineComponent({
 		height: 84px;
 		margin-right: 16px;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--g-color-background-normal);
 		border: solid 6px var(--white);
 		border-radius: 100%;
 		box-shadow: var(--card-shadow);
@@ -595,10 +595,10 @@ export default defineComponent({
 		}
 
 		.v-chip {
-			--v-chip-color: var(--foreground-subdued);
-			--v-chip-background-color: var(--background-subdued);
-			--v-chip-color-hover: var(--foreground-subdued);
-			--v-chip-background-color-hover: var(--background-subdued);
+			--v-chip-color: var(--g-color-foreground-subtle);
+			--v-chip-background-color: var(--g-color-background-subtle);
+			--v-chip-color-hover: var(--g-color-foreground-subtle);
+			--v-chip-background-color-hover: var(--g-color-background-subtle);
 
 			margin-top: 4px;
 
@@ -613,7 +613,7 @@ export default defineComponent({
 		.title,
 		.email,
 		.location {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 
 		.name {

@@ -72,7 +72,7 @@ const displayedTranslation = computed(() => {
 	align-items: center;
 
 	.icon {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
@@ -103,7 +103,7 @@ const displayedTranslation = computed(() => {
 	gap: 20px;
 	align-items: center;
 	justify-content: space-between;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-size: 12px;
 
 	.lang {
@@ -130,7 +130,7 @@ const displayedTranslation = computed(() => {
 .v-list-item:not(:first-child) {
 	.header {
 		padding-top: 8px;
-		border-top: var(--g-border-width) solid var(--border-subdued);
+		border-top: var(--g-border-width) solid var(--g-color-border-subtle);
 	}
 }
 </style>

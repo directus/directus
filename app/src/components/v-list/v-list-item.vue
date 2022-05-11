@@ -144,13 +144,13 @@ body {
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--g-border-radius);
-	--v-list-item-border-color: var(--border-subdued);
-	--v-list-item-border-color-hover: var(--border-normal-alt);
-	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
-	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
-	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
-	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
-	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
+	--v-list-item-border-color: var(--g-color-border-subtle);
+	--v-list-item-border-color-hover: var(--g-color-border-accent);
+	--v-list-item-color: var(--v-list-color, var(--g-color-foreground-normal));
+	--v-list-item-color-hover: var(--v-list-color-hover, var(--g-color-foreground-normal));
+	--v-list-item-color-active: var(--v-list-color-active, var(--g-color-foreground-normal));
+	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--g-color-background-normal));
+	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--g-color-background-normal));
 }
 </style>
 
@@ -183,7 +183,7 @@ body {
 			left: 0;
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
-			border: 2px dashed var(--border-normal);
+			border: 2px dashed var(--g-color-border-normal);
 			content: '';
 			pointer-events: none;
 		}
@@ -212,14 +212,14 @@ body {
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--foreground-subdued) !important;
+		--v-list-item-color: var(--g-color-foreground-subtle) !important;
 
 		cursor: not-allowed;
 	}
 
 	&.dense {
 		:deep(.v-text-overflow) {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 
 		&:hover,
@@ -231,10 +231,10 @@ body {
 	}
 
 	&.block {
-		--v-list-item-border-color: var(--border-subdued);
-		--v-list-item-background-color: var(--background-page);
+		--v-list-item-border-color: var(--g-color-border-subtle);
+		--v-list-item-background-color: var(--g-color-background-page);
 		--v-list-item-background-color-hover: var(--card-face-color);
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 
 		position: relative;
 		display: flex;

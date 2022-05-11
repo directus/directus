@@ -148,14 +148,14 @@ export default defineComponent({
 }
 
 .custom {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
 	display: flex;
 	align-items: center;
 	width: 100%;
 	height: var(--input-height);
 	padding: 10px;
-	border: 2px dashed var(--border-normal);
+	border: 2px dashed var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 
 	input {
@@ -170,13 +170,13 @@ export default defineComponent({
 		border-radius: 0;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 	}
 
 	&.has-value {
-		background-color: var(--background-subdued);
-		border: 2px solid var(--background-subdued);
+		background-color: var(--g-color-background-subtle);
+		border: 2px solid var(--g-color-background-subtle);
 	}
 
 	&.active {
@@ -200,16 +200,16 @@ export default defineComponent({
 	}
 
 	&.disabled {
-		background-color: var(--background-subdued);
+		background-color: var(--g-color-background-subtle);
 		border-color: transparent;
 		cursor: not-allowed;
 
 		input {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 			cursor: not-allowed;
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--g-color-foreground-subtle);
 			}
 		}
 	}

@@ -23,7 +23,7 @@
 						:icon="true"
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: lowContrast === false ? 'none' : 'var(--g-border-width) solid var(--border-normal)',
+							border: lowContrast === false ? 'none' : 'var(--g-border-width) solid var(--g-color-border-normal)',
 						}"
 						@click="activateColorPicker"
 					>
@@ -128,9 +128,9 @@
 					:step="1"
 					:style="{
 						'--v-slider-color': 'none',
-						'--background-page': 'none',
+						'--v-slider-background': 'none',
 						'--v-slider-fill-color': 'none',
-						'--v-slider-thumb-color': 'var(--foreground-normal)',
+						'--v-slider-thumb-color': 'var(--g-color-foreground-normal)',
 						'--v-slider-track-background-image':
 							'linear-gradient(to right, transparent,' +
 							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
@@ -238,7 +238,7 @@ const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutV
 const lowContrast = computed(() => {
 	if (color.value === null) return true;
 
-	const pageColorString = cssVar('--background-page');
+	const pageColorString = cssVar('--g-color-background-page');
 	const pageColor = Color(pageColorString);
 
 	return color.value.contrast(pageColor) < 1.1;
@@ -394,7 +394,7 @@ function useColor() {
 	&.low-contrast {
 		--v-button-height: 18px;
 		--v-button-width: 18px;
-		border: 1px solid var(--border-normal-alt);
+		border: 1px solid var(--g-color-border-accent);
 	}
 }
 

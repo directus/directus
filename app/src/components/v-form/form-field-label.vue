@@ -103,7 +103,7 @@ export default defineComponent({
 		position: absolute;
 		top: -3px;
 		right: -24px;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 
@@ -126,7 +126,7 @@ export default defineComponent({
 			display: block;
 			width: 4px;
 			height: 4px;
-			background-color: var(--foreground-subdued);
+			background-color: var(--g-color-foreground-subtle);
 			border-radius: 4px;
 			content: '';
 			pointer-events: none;

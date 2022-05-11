@@ -106,12 +106,12 @@ export default defineComponent({
 .item {
 	margin-bottom: 8px;
 	padding: 8px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-radius: var(--g-border-radius);
 }
 
 .item-date {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-size: 12px;
 }
 
@@ -130,7 +130,7 @@ export default defineComponent({
 .item-info {
 	display: flex;
 	align-items: center;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .share-uses {
@@ -160,7 +160,7 @@ export default defineComponent({
 .header-right {
 	position: relative;
 	flex-basis: 24px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 
 	.more {
 		cursor: pointer;
@@ -168,7 +168,7 @@ export default defineComponent({
 		transition: all var(--slow) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 
 		&.active {

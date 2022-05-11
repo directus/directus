@@ -96,12 +96,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .picker {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 	}
 }
 
@@ -109,7 +109,7 @@ export default defineComponent({
 	.v-icon {
 		margin-right: 4px;
 		margin-left: -4px;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 	}
 
 	.v-list-item-content {

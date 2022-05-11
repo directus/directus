@@ -168,7 +168,7 @@ export default defineComponent({
 	margin-bottom: 40px;
 	padding-bottom: 2px;
 	font-weight: 700;
-	border-bottom: var(--g-border-width) solid var(--border-subdued);
+	border-bottom: var(--g-border-width) solid var(--g-color-border-subtle);
 }
 
 .group + .group {
@@ -202,7 +202,7 @@ export default defineComponent({
 }
 
 .preview {
-	--v-icon-color: var(--background-page);
+	--v-icon-color: var(--g-color-background-page);
 
 	display: flex;
 	align-items: center;
@@ -210,7 +210,7 @@ export default defineComponent({
 	width: 160px;
 	height: 100px;
 	margin-bottom: 8px;
-	border: var(--g-border-width) solid var(--border-subdued);
+	border: var(--g-border-width) solid var(--g-color-border-subtle);
 	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
@@ -240,14 +240,14 @@ export default defineComponent({
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border: 2px solid var(--primary);
 	border-radius: var(--g-border-radius);
 	box-shadow: 0 0 8px var(--primary-75);
 }
 
 .interface:hover .preview {
-	border-color: var(--border-normal);
+	border-color: var(--g-color-border-normal);
 }
 
 .interface.active .preview {
@@ -256,15 +256,15 @@ export default defineComponent({
 }
 
 .interface.gray .preview {
-	--primary: var(--foreground-subdued);
-	--primary-50: var(--foreground-subdued);
+	--primary: var(--g-color-foreground-subtle);
+	--primary-50: var(--g-color-foreground-subtle);
 
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 }
 
 .interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 
-	box-shadow: 0 0 8px var(--foreground-subdued);
+	box-shadow: 0 0 8px var(--g-color-foreground-subtle);
 }
 </style>

@@ -82,7 +82,7 @@ export default defineComponent({
 	height: 100%;
 	padding-bottom: 64px;
 	overflow: auto;
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 }
 
 .inline-container {
@@ -92,8 +92,8 @@ export default defineComponent({
 header {
 	margin-bottom: 32px;
 	padding: 10px;
-	background-color: var(--background-page);
-	border-bottom: var(--g-border-width) solid var(--border-subdued);
+	background-color: var(--g-color-background-page);
+	border-bottom: var(--g-border-width) solid var(--g-color-border-subtle);
 }
 
 .container {
@@ -113,7 +113,7 @@ header {
 		margin-left: 16px;
 
 		h1 {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 			font-weight: 700;
 			font-size: 24px;
 			line-height: 24px;
@@ -121,7 +121,7 @@ header {
 
 		.subtitle {
 			width: 100%;
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 	}
 }
@@ -145,7 +145,7 @@ header {
 
 .content {
 	padding: 32px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-radius: var(--g-border-radius);
 	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 }
@@ -160,7 +160,7 @@ header {
 		width: 100%;
 		max-width: 856px;
 		padding: 32px;
-		background-color: var(--background-page);
+		background-color: var(--g-color-background-page);
 		border-radius: var(--g-border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 

@@ -93,7 +93,7 @@ export default defineComponent({
 			width: 12px;
 			height: 12px;
 			background-color: var(--warning);
-			border: 2px solid var(--background-normal);
+			border: 2px solid var(--g-color-background-normal);
 			border-radius: 8px;
 
 			&.create {
@@ -117,7 +117,7 @@ export default defineComponent({
 		z-index: 1;
 		width: 2px;
 		height: calc(100% + 12px);
-		background-color: var(--background-normal-alt);
+		background-color: var(--g-color-background-accent);
 		content: '';
 	}
 
@@ -128,7 +128,7 @@ export default defineComponent({
 		z-index: 1;
 		width: calc(100% + 32px);
 		height: calc(100% + 10px);
-		background-color: var(--background-normal-alt);
+		background-color: var(--g-color-background-accent);
 		border-radius: var(--g-border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -141,7 +141,7 @@ export default defineComponent({
 
 		.header {
 			.dot {
-				border-color: var(--background-normal-alt);
+				border-color: var(--g-color-background-accent);
 			}
 		}
 
@@ -158,7 +158,7 @@ export default defineComponent({
 .content {
 	position: relative;
 	z-index: 2;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	line-height: 16px;
 
 	.time {
@@ -173,7 +173,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 }

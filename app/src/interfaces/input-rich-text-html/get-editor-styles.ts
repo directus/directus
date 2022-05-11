@@ -24,10 +24,10 @@ export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospac
 }
 
 ::selection {
-	background: ${cssVar('--background-normal-alt')};
+	background: ${cssVar('--g-color-background-accent')};
 }
 body {
-	color: ${cssVar('--foreground-normal')};
+	color: ${cssVar('--g-color-foreground-normal')};
 	background-color: ${cssVar('--background-input')};
 	margin: 20px;
 	font-family: ${cssVar('--g-font-family-sans')};
@@ -36,15 +36,15 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 body.mce-content-readonly {
-	color: ${cssVar('--foreground-subdued')};
-	background-color: ${cssVar('--background-subdued')};
+	color: ${cssVar('--g-color-foreground-subtle')};
+	background-color: ${cssVar('--g-color-background-subtle')};
 }
 .mce-offscreen-selection {
 	display: none;
 }
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${cssVar(`--family-${font}`)}, serif;
-	color: ${cssVar('--foreground-normal-alt')};
+	color: ${cssVar('--g-color-foreground-accent')};
 	font-weight: 700;
 	margin-bottom: 0;
 }
@@ -114,7 +114,7 @@ code {
 	font-weight: 500;
 	padding: 2px 4px;
 	font-family: ${cssVar('--g-font-family-mono')}, monospace;
-	background-color: ${cssVar('--background-normal')};
+	background-color: ${cssVar('--g-color-background-normal')};
 	border-radius: ${cssVar('--g-border-radius')};
 	overflow-wrap: break-word;
 }
@@ -124,7 +124,7 @@ pre {
 	font-weight: 500;
 	padding: 1em;
 	font-family: ${cssVar('--g-font-family-mono')}, monospace;
-	background-color: ${cssVar('--background-normal')};
+	background-color: ${cssVar('--g-color-background-normal')};
 	border-radius: ${cssVar('--g-border-radius')};
 	overflow: auto;
 }
@@ -133,7 +133,7 @@ blockquote {
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
-	border-left: 2px solid ${cssVar('--border-normal')};
+	border-left: 2px solid ${cssVar('--g-color-border-normal')};
 	padding-left: 1em;
 	margin-left: 0px;
 }
@@ -148,7 +148,7 @@ iframe {
 	border-radius: ${cssVar('--g-border-radius')};
 }
 hr {
-	background-color: ${cssVar('--border-normal')};
+	background-color: ${cssVar('--g-color-border-normal')};
 	height: 1px;
 	border: none;
 	margin-top: 2em;
@@ -162,7 +162,7 @@ table {
 }
 table th,
 table td {
-	border: 1px solid ${cssVar('--border-normal')};
+	border: 1px solid ${cssVar('--g-color-border-normal')};
 	padding: 0.4rem;
 }
 figure {

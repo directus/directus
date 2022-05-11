@@ -223,11 +223,11 @@ export default defineComponent({
 	width: max-content;
 	margin: 0 auto;
 	margin-top: 8px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 	}
 }
 

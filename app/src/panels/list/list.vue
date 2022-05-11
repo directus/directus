@@ -184,10 +184,10 @@ export default defineComponent({
 
 .v-list-item {
 	height: 48px;
-	border-top: var(--g-border-width) solid var(--border-subdued);
+	border-top: var(--g-border-width) solid var(--g-color-border-subtle);
 }
 
 .v-list-item:last-child {
-	border-bottom: var(--g-border-width) solid var(--border-subdued);
+	border-bottom: var(--g-border-width) solid var(--g-color-border-subtle);
 }
 </style>

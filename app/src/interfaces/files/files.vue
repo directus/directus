@@ -420,7 +420,7 @@ const selectAllowed = computed(() => {
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 	margin-right: 4px;
 	transition: color var(--fast) var(--transition);
 

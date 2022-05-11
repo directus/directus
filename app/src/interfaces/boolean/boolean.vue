@@ -47,7 +47,7 @@ export default defineComponent({
 		},
 		colorOff: {
 			type: String,
-			default: 'var(--foreground-subdued)',
+			default: 'var(--g-color-foreground-subtle)',
 		},
 	},
 	emits: ['input'],

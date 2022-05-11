@@ -49,8 +49,8 @@ export default defineComponent({
 	flex-shrink: 0;
 	width: 100%;
 	height: 60px;
-	color: var(--foreground-normal-alt);
-	background-color: var(--background-normal-alt);
+	color: var(--g-color-foreground-accent);
+	background-color: var(--g-color-background-accent);
 
 	.icon {
 		display: flex;
@@ -70,7 +70,7 @@ export default defineComponent({
 	}
 
 	&.active {
-		background-color: var(--background-normal-alt);
+		background-color: var(--g-color-background-accent);
 	}
 }
 </style>

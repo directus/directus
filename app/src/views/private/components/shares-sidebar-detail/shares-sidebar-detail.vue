@@ -278,15 +278,15 @@ export default defineComponent({
 	margin-bottom: 8px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
+	background-color: var(--g-color-background-normal);
+	box-shadow: 0 0 4px 2px var(--g-color-background-normal);
 }
 
 .empty {
 	margin-top: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-style: italic;
 }
 

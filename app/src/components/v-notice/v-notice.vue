@@ -49,10 +49,10 @@ export default defineComponent({
 
 <style>
 body {
-	--v-notice-color: var(--foreground-subdued);
-	--v-notice-background-color: var(--background-subdued);
-	--v-notice-border-color: var(--background-subdued);
-	--v-notice-icon-color: var(--foreground-subdued);
+	--v-notice-color: var(--g-color-foreground-subtle);
+	--v-notice-background-color: var(--g-color-background-subtle);
+	--v-notice-border-color: var(--g-color-background-subtle);
+	--v-notice-icon-color: var(--g-color-foreground-subtle);
 }
 </style>
 
@@ -94,29 +94,29 @@ body {
 .info {
 	--v-notice-icon-color: var(--primary);
 	--v-notice-border-color: var(--primary);
-	--v-notice-color: var(--foreground-normal);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-color: var(--g-color-foreground-normal);
+	--v-notice-background-color: var(--g-color-background-normal);
 }
 
 .success {
 	--v-notice-icon-color: var(--success);
 	--v-notice-border-color: var(--success);
 	--v-notice-color: var(--success);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--g-color-background-normal);
 }
 
 .warning {
 	--v-notice-icon-color: var(--warning);
 	--v-notice-border-color: var(--warning);
-	--v-notice-color: var(--foreground-normal);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-color: var(--g-color-foreground-normal);
+	--v-notice-background-color: var(--g-color-background-normal);
 }
 
 .danger {
 	--v-notice-icon-color: var(--danger);
 	--v-notice-border-color: var(--danger);
 	--v-notice-color: var(--danger);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--g-color-background-normal);
 }
 
 .center {

@@ -159,6 +159,6 @@ export default defineComponent({
 
 <style scoped>
 .hidden {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--g-color-foreground-subtle);
 }
 </style>

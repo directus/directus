@@ -233,7 +233,7 @@ export default defineComponent({
 }
 
 .collection-item.hidden {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--g-color-foreground-subtle);
 }
 
 .collection-icon {
@@ -241,7 +241,7 @@ export default defineComponent({
 }
 
 .hidden .collection-name {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	flex-grow: 1;
 }
 

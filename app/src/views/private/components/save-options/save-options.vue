@@ -50,11 +50,11 @@ export default defineComponent({
 
 <style scoped>
 :deep(.v-icon) {
-	color: var(--foreground-subdued) !important;
+	color: var(--g-color-foreground-subtle) !important;
 }
 
 :deep(.v-icon:hover:not(.disabled)) {
-	color: var(--foreground-normal) !important;
+	color: var(--g-color-foreground-normal) !important;
 }
 
 :deep(.v-icon.disabled) {

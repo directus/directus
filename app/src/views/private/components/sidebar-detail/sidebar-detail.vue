@@ -64,8 +64,8 @@ export default defineComponent({
 
 <style>
 body {
-	--sidebar-detail-icon-color: var(--foreground-normal-alt);
-	--sidebar-detail-color: var(--foreground-normal-alt);
+	--sidebar-detail-icon-color: var(--g-color-foreground-accent);
+	--sidebar-detail-color: var(--g-color-foreground-accent);
 	--sidebar-detail-color-active: var(--primary);
 }
 </style>
@@ -74,9 +74,9 @@ body {
 .sidebar-detail {
 	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
-	--v-badge-border-color: var(--background-normal-alt);
+	--v-badge-border-color: var(--g-color-background-accent);
 	--v-badge-background-color: var(--primary);
-	--v-badge-color: var(--background-normal);
+	--v-badge-color: var(--g-color-background-normal);
 
 	display: contents;
 
@@ -93,7 +93,7 @@ body {
 		width: 100%;
 		height: 60px;
 		color: var(--sidebar-detail-color);
-		background-color: var(--background-normal-alt);
+		background-color: var(--g-color-background-accent);
 
 		.icon {
 			--v-icon-color: var(--sidebar-detail-icon-color);
@@ -125,7 +125,7 @@ body {
 		justify-content: center;
 		width: 60px;
 		height: 60px;
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 		cursor: pointer;
 		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 
@@ -166,7 +166,7 @@ body {
 
 		:deep(.page-description) {
 			margin-bottom: 8px;
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 
 		:deep(.page-description a) {
@@ -175,7 +175,7 @@ body {
 	}
 
 	.expand-icon {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 	}
 }
 </style>

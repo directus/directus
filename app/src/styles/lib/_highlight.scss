@@ -1,6 +1,6 @@
 .hljs,
 .hljs-subst {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .hljs-keyword,
@@ -49,7 +49,7 @@
 }
 
 .hljs-comment {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .hljs-meta-keyword {

@@ -5,21 +5,21 @@
 .tox .tox-tbtn {
 	height: 36px;
 	margin: 0;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .tox .tox-listbox__select-chevron svg,
 .tox .tox-collection__item-caret svg {
-	fill: var(--foreground-normal);
+	fill: var(--g-color-foreground-normal);
 }
 
 .tox .tox-swatches__picker-btn svg {
-	fill: var(--foreground-normal);
+	fill: var(--g-color-foreground-normal);
 }
 
 .tox .tox-tbtn svg,
 .tox .tox-tbtn:hover svg {
-	fill: var(--foreground-normal);
+	fill: var(--g-color-foreground-normal);
 }
 
 .tox-tbtn[aria-label='Bold'] .tox-icon svg {
@@ -29,7 +29,7 @@
 .tox-tbtn[aria-label='Bold'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-size: 24px;
 	font-family: 'Material Icons';
 	content: 'format_bold';
@@ -43,7 +43,7 @@
 .tox-tbtn[aria-label='Italic'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-size: 24px;
 	font-family: 'Material Icons';
 	content: 'format_italic';
@@ -57,7 +57,7 @@
 .tox-tbtn[aria-label='Underline'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-size: 24px;
 	font-family: 'Material Icons';
 	content: 'format_underlined';
@@ -71,7 +71,7 @@
 .tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-size: 24px;
 	font-family: 'Material Icons';
 	content: 'insert_link';
@@ -89,15 +89,15 @@
 
 .tox-tinymce {
 	min-height: 300px;
-	color: var(--foreground-normal);
-	border: 2px solid var(--border-normal);
+	color: var(--g-color-foreground-normal);
+	border: 2px solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color;
 }
 
 .wysiwyg:not(.disabled) .tox-tinymce:hover {
-	border-color: var(--border-normal-alt);
+	border-color: var(--g-color-border-accent);
 }
 
 .wysiwyg:not(.disabled) .tox-tinymce.focus {
@@ -110,8 +110,8 @@
 .tox .tox-toolbar__overflow {
 	min-height: 40px;
 	padding: 2px 0;
-	background: var(--background-subdued);
-	border-bottom: 2px solid var(--border-normal);
+	background: var(--g-color-background-subtle);
+	border-bottom: 2px solid var(--g-color-border-normal);
 }
 
 .tox .tox-pop__dialog .tox-toolbar {
@@ -122,7 +122,7 @@ body.dark .tox .tox-toolbar,
 body.dark .tox .tox-toolbar__primary,
 body.dark .tox .tox-toolbar__overflow {
 	background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23455a64'/%3E%3C/svg%3E")
-		left 0 top 0 var(--background-subdued);
+		left 0 top 0 var(--g-color-background-subtle);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -130,7 +130,7 @@ body.dark .tox .tox-toolbar__overflow {
 	body.auto .tox .tox-toolbar__primary,
 	body.auto .tox .tox-toolbar__overflow {
 		background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23455a64'/%3E%3C/svg%3E")
-			left 0 top 0 var(--background-subdued);
+			left 0 top 0 var(--g-color-background-subtle);
 	}
 }
 
@@ -147,8 +147,8 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-split-button:hover,
 .tox .tox-tbtn:hover,
 .tox .tox-split-button:focus {
-	color: var(--foreground-normal);
-	background: var(--border-normal);
+	color: var(--g-color-foreground-normal);
+	background: var(--g-color-border-normal);
 }
 
 .tox .tox-tbtn + .tox .tox-tbtn {
@@ -185,8 +185,8 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog {
-	color: var(--foreground-normal);
-	background-color: var(--background-page);
+	color: var(--g-color-foreground-normal);
+	background-color: var(--g-color-background-page);
 	border: none;
 	box-shadow: none;
 }
@@ -197,13 +197,13 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog__header {
 	padding: 20px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-size: 16px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 }
 
 .tox .tox-dialog__body {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .tox .tox-dialog__body-content {
@@ -212,8 +212,8 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog__footer {
 	padding: 0 24px 24px;
-	color: var(--foreground-normal);
-	background-color: var(--background-page);
+	color: var(--g-color-foreground-normal);
+	background-color: var(--g-color-background-page);
 	border-top: none;
 }
 
@@ -223,12 +223,12 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-selectfield select,
 .tox .tox-textarea {
 	padding: 12px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-weight: 500;
 	font-size: 14px;
 	font-family: var(--g-font-family-sans);
-	background-color: var(--background-page);
-	border: 2px solid var(--border-normal);
+	background-color: var(--g-color-background-page);
+	border: 2px solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 }
@@ -242,16 +242,16 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-toolbar-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 }
 
 .tox .tox-menu {
 	box-sizing: border-box;
 	padding: 4px !important;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-family: var(--g-font-family-sans);
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
+	background-color: var(--g-color-background-subtle);
+	border: 2px solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -260,13 +260,13 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-collection--list .tox-collection__item {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .tox .tox-collection--list .tox-collection__item--enabled,
 .tox .tox-collection--list .tox-collection__item--active {
-	color: var(--foreground-normal) !important;
-	background-color: var(--background-normal-alt) !important;
+	color: var(--g-color-foreground-normal) !important;
+	background-color: var(--g-color-background-accent) !important;
 }
 
 .tox .tox-collection__item-label {
@@ -308,27 +308,27 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-button--secondary {
-	color: var(--foreground-normal);
-	background-color: var(--background-normal);
-	border-color: var(--background-normal);
+	color: var(--g-color-foreground-normal);
+	background-color: var(--g-color-background-normal);
+	border-color: var(--g-color-background-normal);
 }
 
 .tox .tox-button--secondary:hover:not(:disabled) {
-	color: var(--foreground-normal);
-	background-color: var(--background-normal);
-	border-color: var(--background-normal);
+	color: var(--g-color-foreground-normal);
+	background-color: var(--g-color-background-normal);
+	border-color: var(--g-color-background-normal);
 }
 
 .tox .tox-button--naked {
 	min-width: auto;
 	height: auto;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	background-color: transparent;
 	border-color: transparent;
 }
 
 .tox .tox-button--naked.tox-button--icon:hover:not(:disabled) {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	background-color: transparent;
 	border-color: transparent;
 }
@@ -340,7 +340,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-label,
 .tox .tox-toolbar-label {
 	margin-bottom: 4px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-weight: 500;
 	font-size: 16px;
 }
@@ -350,7 +350,7 @@ body.dark .tox .tox-toolbar__overflow {
 	width: 100%;
 	margin-bottom: 4px;
 	padding: 12px 16px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-weight: 500;
 	font-size: 14px;
 	border-bottom: none;
@@ -360,29 +360,29 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog__body-nav-item:hover {
-	background-color: var(--background-normal-alt);
+	background-color: var(--g-color-background-accent);
 }
 
 .tox .tox-dialog__body-nav-item--active {
-	background-color: var(--background-normal-alt);
+	background-color: var(--g-color-background-accent);
 }
 
 .tox .tox-dialog__body-nav-item--active:focus {
-	background-color: var(--background-normal-alt);
+	background-color: var(--g-color-background-accent);
 }
 
 .tox .tox-pop__dialog,
 .tox:not([dir='rtl']) .tox-toolbar__group:not(:last-of-type),
 .tox .tox-collection--list .tox-collection__group {
-	border-color: var(--border-normal);
+	border-color: var(--g-color-border-normal);
 }
 
 .tox .tox-insert-table-picker__label {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .tox .tox-insert-table-picker > div {
-	border-color: var(--border-normal);
+	border-color: var(--g-color-border-normal);
 }
 
 .tox .tox-insert-table-picker .tox-insert-table-picker__selected {
@@ -390,11 +390,11 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-pop.tox-pop--top::after {
-	border-bottom-color: var(--background-subdued);
+	border-bottom-color: var(--g-color-background-subtle);
 }
 
 .tox .tox-pop.tox-pop--top::before {
-	border-bottom-color: var(--border-normal);
+	border-bottom-color: var(--g-color-border-normal);
 }
 
 .tox .tox-dialog-wrap__backdrop .tox-rgba-preview {

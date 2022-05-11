@@ -122,7 +122,7 @@ function updateTranslationStringsDialog(val: boolean) {
 
 	&.active {
 		width: 300px;
-		border-color: var(--border-normal);
+		border-color: var(--g-color-border-normal);
 
 		.icon-empty {
 			display: block;

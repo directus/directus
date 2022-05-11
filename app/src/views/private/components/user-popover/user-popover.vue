@@ -139,7 +139,7 @@ export default defineComponent({
 	}
 
 	.email {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 	}
 }
 
@@ -147,12 +147,12 @@ export default defineComponent({
 	cursor: help;
 
 	&:hover {
-		border-bottom: 2px dotted var(--foreground-subdued);
+		border-bottom: 2px dotted var(--g-color-foreground-subtle);
 	}
 }
 
 .loading {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--g-color-background-normal);
 
 	display: flex;
 	align-items: center;

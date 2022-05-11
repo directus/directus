@@ -458,7 +458,7 @@ export default defineComponent({
 	width: 100%;
 	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 
 	.editor {
 		flex-grow: 1;
@@ -501,7 +501,7 @@ export default defineComponent({
 
 .dimensions {
 	margin-right: 12px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-feature-settings: 'tnum';
 }
 

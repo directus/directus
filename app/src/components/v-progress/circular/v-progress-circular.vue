@@ -53,8 +53,8 @@ export default defineComponent({
 
 <style>
 body {
-	--v-progress-circular-color: var(--foreground-normal);
-	--v-progress-circular-background-color: var(--border-normal);
+	--v-progress-circular-color: var(--g-color-foreground-normal);
+	--v-progress-circular-background-color: var(--g-color-border-normal);
 	--v-progress-circular-transition: 400ms;
 	--v-progress-circular-speed: 2s;
 	--v-progress-circular-size: 28px;

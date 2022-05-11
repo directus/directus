@@ -22,8 +22,8 @@ export default defineComponent({
 
 <style>
 body {
-	--v-skeleton-loader-color: var(--background-page);
-	--v-skeleton-loader-background-color: var(--background-subdued);
+	--v-skeleton-loader-color: var(--g-color-background-page);
+	--v-skeleton-loader-background-color: var(--g-color-background-subtle);
 }
 </style>
 

@@ -13,7 +13,7 @@
 			</v-list-item-icon>
 			<div class="collection-item-detail">
 				<v-icon
-					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color ?? 'var(--primary)'"
+					:color="collection.meta?.hidden ? 'var(--g-color-foreground-subtle)' : collection.color ?? 'var(--primary)'"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
@@ -195,13 +195,13 @@ export default defineComponent({
 }
 
 .hidden .collection-name {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .collection-note {
 	margin-left: 16px;
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	opacity: 0;

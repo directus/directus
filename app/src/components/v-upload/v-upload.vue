@@ -331,9 +331,9 @@ export default defineComponent({
 	justify-content: center;
 	min-height: var(--input-height-tall);
 	padding: 32px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	text-align: center;
-	border: 2px dashed var(--border-normal);
+	border: 2px dashed var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color, background-color;
@@ -392,7 +392,7 @@ export default defineComponent({
 	position: absolute;
 	top: 12px;
 	right: 12px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--medium) var(--transition);
 }

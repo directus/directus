@@ -16,7 +16,7 @@ export default defineComponent({
 		},
 		color: {
 			type: String,
-			default: 'var(--foreground-normal)',
+			default: 'var(--g-color-foreground-normal)',
 		},
 		name: {
 			type: String,

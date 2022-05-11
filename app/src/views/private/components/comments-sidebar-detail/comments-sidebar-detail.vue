@@ -194,16 +194,16 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	margin-bottom: 2px;
 	padding-top: 4px;
 	padding-bottom: 4px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
-	--v-divider-label-color: var(--foreground-subdued);
+	background-color: var(--g-color-background-normal);
+	box-shadow: 0 0 4px 2px var(--g-color-background-normal);
+	--v-divider-label-color: var(--g-color-foreground-subtle);
 }
 
 .empty {
 	margin-top: 16px;
 	margin-bottom: 8px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-style: italic;
 }
 </style>

@@ -24,7 +24,7 @@ export default defineComponent({
 	display: inline-flex;
 	align-self: center;
 	margin: 8px 0;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 
 	&:not(:only-child) {
 		&:first-child {

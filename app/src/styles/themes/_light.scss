@@ -2,23 +2,21 @@
 @mixin light {
 	color-scheme: light;
 
-	--border-normal: #d3dae4;
-	--border-normal-alt: #a2b5cd;
-	--border-subdued: #f0f4f9;
+	--g-color-border-normal: #d3dae4;
+	--g-color-border-accent: #a2b5cd;
+	--g-color-border-subtle: #f0f4f9;
 
-	--foreground-normal: #4f5464; // Less contrast for improved hierarchy
-	--foreground-normal-alt: #172940; // More contrast for titles and labels
-	--foreground-subdued: #a2b5cd;
-	--foreground-inverted: #fff;
+	--g-color-foreground-normal: #4f5464; // Less contrast for improved hierarchy
+	--g-color-foreground-accent: #172940; // More contrast for titles and labels
+	--g-color-foreground-subtle: #a2b5cd;
+	--g-color-foreground-invert: #fff;
 
-	--background-normal: #f0f4f9;
-	--background-normal-alt: #e4eaf1;
-	--background-subdued: #f7fafc;
-	--background-highlight: #f7f9fd;
-	--background-page: #ffffff;
+	--g-color-background-normal: #f0f4f9;
+	--g-color-background-accent: #e4eaf1;
+	--g-color-background-subtle: #f7fafc;
+	--g-color-background-page: #ffffff;
 	--background-input: #ffffff;
-	--background-page-rgb: 255, 255, 255;
-	--background-inverted: #263238;
+	--g-color-background-invert: #263238;
 
 	--card-face-color: #fafcfd;
 	--card-shadow-color: 23, 41, 64;
@@ -26,9 +24,9 @@
 	--overlay-color: rgba(38, 50, 56, 0.8);
 
 	--module-background: #18222f;
-	--module-background-alt: var(--background-normal);
+	--module-background-alt: var(--g-color-background-normal);
 	--module-icon: #8196b1;
-	--module-icon-alt: var(--foreground-normal-alt);
+	--module-icon-alt: var(--g-color-foreground-accent);
 
 	// Generate color variations
 	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
@@ -44,8 +42,4 @@
 	--success-alt: var(--green-10);
 	--warning-alt: var(--yellow-10);
 	--danger-alt: var(--red-10);
-
-	.alt-colors {
-		--background-subdued: var(--background-page);
-	}
 }

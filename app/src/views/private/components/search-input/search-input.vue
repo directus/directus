@@ -186,13 +186,13 @@ export default defineComponent({
 	max-width: 100%;
 	height: 44px;
 	overflow: hidden;
-	border: 2px solid var(--border-normal);
+	border: 2px solid var(--g-color-border-normal);
 	border-radius: calc(44px / 2);
 	transition: width var(--slow) var(--transition), border-bottom-left-radius var(--fast) var(--transition),
 		border-bottom-right-radius var(--fast) var(--transition);
 
 	.icon-empty {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--g-color-foreground-subtle);
 
 		display: none;
 		margin-left: 8px;
@@ -218,7 +218,7 @@ export default defineComponent({
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--g-color-border-accent);
 	}
 
 	&.has-content {
@@ -235,7 +235,7 @@ export default defineComponent({
 
 	&.active {
 		width: 300px;
-		border-color: var(--border-normal);
+		border-color: var(--g-color-border-normal);
 
 		.icon-empty {
 			display: block;
@@ -276,7 +276,7 @@ export default defineComponent({
 			left: 2px;
 			width: auto;
 			height: 2px;
-			background-color: var(--border-subdued);
+			background-color: var(--g-color-border-subtle);
 			content: '';
 			pointer-events: none;
 		}
@@ -289,14 +289,14 @@ export default defineComponent({
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 		text-overflow: ellipsis;
-		background-color: var(--background-page);
+		background-color: var(--g-color-background-page);
 		border: none;
 		border-radius: 0;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 	}
 }
@@ -314,8 +314,8 @@ export default defineComponent({
 	width: auto;
 	min-width: 100%;
 	padding: 0;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
+	background-color: var(--g-color-background-subtle);
+	border: 2px solid var(--g-color-border-normal);
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
 }

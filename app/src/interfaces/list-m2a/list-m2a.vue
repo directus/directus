@@ -424,11 +424,11 @@ const customFilter = computed(() => {
 }
 
 .clear-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--g-color-foreground-subtle);
 	--v-icon-color-hover: var(--danger);
 
 	margin-right: 8px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
@@ -437,6 +437,6 @@ const customFilter = computed(() => {
 }
 
 .launch-icon {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 </style>

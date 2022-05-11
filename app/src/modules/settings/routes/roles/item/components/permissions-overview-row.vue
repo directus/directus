@@ -113,7 +113,7 @@ export default defineComponent({
 
 		.actions {
 			margin-left: 8px;
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 			font-size: 12px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -148,7 +148,7 @@ export default defineComponent({
 	}
 
 	& + .permissions-overview-row {
-		border-top: var(--g-border-width) solid var(--border-subdued);
+		border-top: var(--g-border-width) solid var(--g-color-border-subtle);
 	}
 }
 </style>

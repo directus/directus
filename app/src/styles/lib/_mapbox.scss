@@ -26,12 +26,12 @@
 		}
 
 		&:hover {
-			background: var(--background-normal) !important;
+			background: var(--g-color-background-normal) !important;
 		}
 
 		&.active {
-			color: var(--background-subdued) !important;
-			background: var(--foreground-normal) !important;
+			color: var(--g-color-background-subtle) !important;
+			background: var(--g-color-foreground-normal) !important;
 		}
 
 		&.hidden {
@@ -79,7 +79,7 @@
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
 	min-height: 24px;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	background: var(--background-input) !important;
 	box-shadow: var(--card-shadow);
 
@@ -95,9 +95,9 @@
 	}
 
 	a {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 		&:hover {
-			color: var(--foreground-normal-alt);
+			color: var(--g-color-foreground-accent);
 		}
 	}
 
@@ -110,16 +110,16 @@
 
 .mapboxgl-ctrl-attrib:not(.mapboxgl-compact) {
 	font-size: 0.8em;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	background: var(--background-input);
 	border-radius: 0 6px 0 0;
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
 	a {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 
 		&:hover {
-			color: var(--foreground-normal-alt);
+			color: var(--g-color-foreground-accent);
 		}
 	}
 }
@@ -133,7 +133,7 @@
 	font-size: inherit !important;
 	font-family: inherit !important;
 	line-height: inherit !important;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	overflow: hidden;
 
 	&,
@@ -143,27 +143,27 @@
 }
 
 .mapboxgl-ctrl-geocoder--input {
-	color: var(--foreground-normal) !important;
+	color: var(--g-color-foreground-normal) !important;
 	border-radius: var(--g-border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 	border-radius: var(--g-border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions > li > a {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
 .mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
 	color: var(--v-list-item-color-active);
-	background-color: var(--background-normal-alt);
+	background-color: var(--g-color-background-accent);
 }
 
 .mapboxgl-ctrl-geocoder--button {
-	background: var(--background-subdued);
+	background: var(--g-color-background-subtle);
 }
 
 .mapboxgl-ctrl-geocoder--icon {
@@ -175,7 +175,7 @@
 }
 
 .mapbox-gl-geocoder--error {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .map-selection-box {

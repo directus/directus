@@ -144,7 +144,7 @@ export default defineComponent({
 		z-index: 1;
 		width: calc(100% + 12px);
 		height: calc(100% + 12px);
-		background-color: var(--background-normal);
+		background-color: var(--g-color-background-normal);
 		border-radius: var(--g-border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -161,12 +161,12 @@ export default defineComponent({
 	}
 
 	&:not(.subdued):active::before {
-		background-color: var(--background-normal-alt);
+		background-color: var(--g-color-background-accent);
 	}
 }
 
 .subdued {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .links {

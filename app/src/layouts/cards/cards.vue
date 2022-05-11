@@ -271,7 +271,7 @@ export default defineComponent({
 		align-items: center;
 		justify-content: flex-end;
 		width: 240px;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 
 		span {
 			width: auto;
@@ -279,7 +279,7 @@ export default defineComponent({
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 }

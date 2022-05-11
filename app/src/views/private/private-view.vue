@@ -244,7 +244,7 @@ function openSidebar(event: PointerEvent) {
 	width: 100%;
 	height: 100%;
 	overflow-x: hidden;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
@@ -289,11 +289,11 @@ function openSidebar(event: PointerEvent) {
 			width: 220px;
 			height: 100%;
 			font-size: 1rem;
-			background-color: var(--background-normal);
+			background-color: var(--g-color-background-normal);
 
 			&-content {
-				--v-list-item-background-color-hover: var(--background-normal-alt);
-				--v-list-item-background-color-active: var(--background-normal-alt);
+				--v-list-item-background-color-hover: var(--g-color-background-accent);
+				--v-list-item-background-color-active: var(--g-color-background-accent);
 
 				height: calc(100% - 64px);
 				overflow-x: hidden;
@@ -374,7 +374,7 @@ function openSidebar(event: PointerEvent) {
 		width: 280px;
 		height: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--g-color-background-normal);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 

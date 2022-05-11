@@ -245,7 +245,7 @@ export default defineComponent({
 }
 
 .v-divider {
-	--v-divider-color: var(--background-normal-alt);
+	--v-divider-color: var(--g-color-background-accent);
 
 	position: sticky;
 	top: 0;
@@ -257,8 +257,8 @@ export default defineComponent({
 	padding-top: 8px;
 	padding-right: 8px;
 	padding-left: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 2px 2px var(--background-normal);
+	background-color: var(--g-color-background-normal);
+	box-shadow: 0 0 2px 2px var(--g-color-background-normal);
 
 	&:first-of-type {
 		margin-top: 0;
@@ -269,18 +269,18 @@ export default defineComponent({
 	margin-top: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-style: italic;
 }
 
 .external {
 	margin-left: 20px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-style: italic;
 }
 
 .other {
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--g-color-foreground-subtle);
 
 	font-style: italic;
 }

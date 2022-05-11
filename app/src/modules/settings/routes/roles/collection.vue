@@ -207,7 +207,7 @@ export default defineComponent({
 }
 
 .description {
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .public {

@@ -124,12 +124,12 @@ export default defineComponent({
 
 	.activator-icon {
 		margin-right: 0 !important;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 
 		&.active {

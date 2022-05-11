@@ -52,7 +52,7 @@ export default defineComponent({
 }
 
 .actions .expand {
-	--v-icon-color: var(--foreground-normal);
+	--v-icon-color: var(--g-color-foreground-normal);
 
 	flex-shrink: 0;
 	margin-right: 8px;
@@ -70,7 +70,7 @@ export default defineComponent({
 }
 
 .actions .action-buttons .v-button.secondary {
-	--v-icon-color: var(--foreground-normal);
+	--v-icon-color: var(--g-color-foreground-normal);
 }
 
 .actions .action-buttons > :deep(*:not(:last-child)) {
@@ -97,7 +97,7 @@ export default defineComponent({
 	height: 100%;
 	padding: inherit;
 	padding-left: 8px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 }
 
 .actions.active .expand {

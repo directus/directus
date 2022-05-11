@@ -146,7 +146,7 @@ export default defineComponent({
 .gap {
 	display: none;
 	margin: 0 4px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	line-height: 2em;
 }
 
@@ -157,9 +157,9 @@ export default defineComponent({
 }
 
 .v-button {
-	--v-button-background-color-hover: var(--background-normal);
-	--v-button-background-color: var(--background-subdued);
-	--v-button-color: var(--foreground-normal);
+	--v-button-background-color-hover: var(--g-color-background-normal);
+	--v-button-background-color: var(--g-color-background-subtle);
+	--v-button-color: var(--g-color-foreground-normal);
 
 	margin: 0 2px;
 	vertical-align: middle;
@@ -189,8 +189,8 @@ export default defineComponent({
 
 .v-button.active {
 	--v-button-background-color-hover: var(--primary);
-	--v-button-color-hover: var(--foreground-inverted);
+	--v-button-color-hover: var(--g-color-foreground-invert);
 	--v-button-background-color: var(--primary);
-	--v-button-color: var(--foreground-inverted);
+	--v-button-color: var(--g-color-foreground-invert);
 }
 </style>

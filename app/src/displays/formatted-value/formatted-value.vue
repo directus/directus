@@ -230,7 +230,7 @@ export default defineComponent({
 	}
 
 	&.bold {
-		color: var(--foreground-normal-alt);
+		color: var(--g-color-foreground-accent);
 		font-weight: 700;
 	}
 

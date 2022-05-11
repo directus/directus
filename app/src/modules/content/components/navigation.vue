@@ -99,8 +99,8 @@ export default defineComponent({
 
 .empty {
 	.v-button {
-		--v-button-color: var(--foreground-subdued);
-		--v-button-background-color: var(--foreground-subdued);
+		--v-button-color: var(--g-color-foreground-subtle);
+		--v-button-background-color: var(--g-color-foreground-subtle);
 		--v-button-background-color-hover: var(--primary);
 	}
 }
@@ -132,7 +132,7 @@ export default defineComponent({
 }
 
 .hidden-collection {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--g-color-foreground-subtle);
 }
 
 .search-input {
@@ -143,6 +143,6 @@ export default defineComponent({
 	z-index: 2;
 	padding: 12px;
 	padding-bottom: 0;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 }
 </style>

@@ -243,20 +243,20 @@ function updateTranslationStringsDialog(val: boolean) {
 	}
 
 	&.selected {
-		--v-list-item-color-active: var(--foreground-inverted);
+		--v-list-item-color-active: var(--g-color-foreground-invert);
 		--v-list-item-background-color-active: var(--primary);
-		--v-list-item-color-hover: var(--foreground-inverted);
+		--v-list-item-color-hover: var(--g-color-foreground-invert);
 		--v-list-item-background-color-hover: var(--primary);
 
 		background-color: var(--primary);
-		color: var(--foreground-inverted);
+		color: var(--g-color-foreground-invert);
 
 		.v-list-item-icon {
-			--v-icon-color: var(--foreground-inverted);
+			--v-icon-color: var(--g-color-foreground-invert);
 		}
 
 		.info :deep(.icon) {
-			color: var(--foreground-inverted);
+			color: var(--g-color-foreground-invert);
 			opacity: 1;
 		}
 	}

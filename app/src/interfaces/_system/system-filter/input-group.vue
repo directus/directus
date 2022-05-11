@@ -166,7 +166,7 @@ export default defineComponent({
 	.v-icon {
 		margin-right: 8px;
 		margin-left: 12px;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		cursor: pointer;
 
 		&:hover {

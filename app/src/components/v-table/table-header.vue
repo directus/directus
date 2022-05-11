@@ -276,7 +276,7 @@ function toggleManualSort() {
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color);
-		border-bottom: var(--g-border-width) solid var(--border-subdued);
+		border-bottom: var(--g-border-width) solid var(--g-color-border-subtle);
 
 		&.select,
 		&.manual {
@@ -288,7 +288,7 @@ function toggleManualSort() {
 			display: flex;
 			align-items: center;
 			height: 100%;
-			color: var(--foreground-normal-alt);
+			color: var(--g-color-foreground-accent);
 			font-weight: 600;
 
 			> span {
@@ -324,7 +324,7 @@ function toggleManualSort() {
 
 		.action-icon {
 			margin-left: 4px;
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 		}
@@ -364,7 +364,7 @@ function toggleManualSort() {
 	}
 
 	.manual {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		cursor: pointer;
 
 		.v-icon {
@@ -373,7 +373,7 @@ function toggleManualSort() {
 		}
 
 		&.sorted-manually {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 
@@ -393,7 +393,7 @@ function toggleManualSort() {
 			display: block;
 			width: var(--g-border-width);
 			height: 60%;
-			background-color: var(--border-subdued);
+			background-color: var(--g-color-border-subtle);
 			content: '';
 			transition: background-color var(--fast) var(--transition);
 		}
@@ -434,7 +434,7 @@ function toggleManualSort() {
 .description-dot {
 	width: 8px;
 	height: 8px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--g-color-foreground-subtle);
 	display: inline-block;
 	border-radius: 50%;
 	margin-right: 8px;

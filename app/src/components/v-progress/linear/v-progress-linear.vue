@@ -79,8 +79,8 @@ export default defineComponent({
 <style>
 body {
 	--v-progress-linear-height: 4px;
-	--v-progress-linear-color: var(--foreground-normal);
-	--v-progress-linear-background-color: var(--border-normal);
+	--v-progress-linear-color: var(--g-color-foreground-normal);
+	--v-progress-linear-background-color: var(--g-color-border-normal);
 	--v-progress-linear-transition: 400ms;
 }
 </style>

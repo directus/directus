@@ -294,10 +294,10 @@ export default defineComponent({
 	grid-column: 3;
 	padding: var(--input-padding);
 	overflow: auto;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-family: var(--g-font-family-mono);
-	background-color: var(--background-subdued);
-	border: var(--g-border-width) solid var(--border-normal);
+	background-color: var(--g-color-background-subtle);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 }
 

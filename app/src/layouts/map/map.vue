@@ -224,7 +224,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-info {
 	padding: 40px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-radius: var(--g-border-radius);
 	box-shadow: var(--card-shadow);
 	pointer-events: none;
@@ -272,11 +272,11 @@ export default defineComponent({
 	z-index: 1;
 	max-width: 80%;
 	padding: 6px 10px;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 500;
 	font-size: 14px;
 	font-family: var(--g-font-family-sans);
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-radius: var(--g-border-radius);
 	box-shadow: var(--card-shadow);
 	transform: translate(-50%, -140%);
@@ -293,9 +293,9 @@ export default defineComponent({
 	justify-content: space-between;
 	height: 36px;
 	padding: 10px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-page);
-	border: var(--g-border-width) solid var(--background-page);
+	color: var(--g-color-foreground-subtle);
+	background-color: var(--g-color-background-page);
+	border: var(--g-border-width) solid var(--g-color-background-page);
 	border-radius: var(--g-border-radius);
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
@@ -305,7 +305,7 @@ export default defineComponent({
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 	}
 }
 

@@ -474,7 +474,7 @@ export default defineComponent({
 .interface-map {
 	position: relative;
 	overflow: hidden;
-	border: var(--g-border-width) solid var(--border-normal);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 
 	.map {
@@ -513,9 +513,9 @@ export default defineComponent({
 		justify-content: space-between;
 		height: 36px;
 		padding: 10px;
-		color: var(--foreground-subdued);
-		background-color: var(--background-page);
-		border: var(--g-border-width) solid var(--background-page);
+		color: var(--g-color-foreground-subtle);
+		background-color: var(--g-color-background-page);
+		border: var(--g-border-width) solid var(--g-color-background-page);
 		border-radius: var(--g-border-radius);
 
 		span {
@@ -524,7 +524,7 @@ export default defineComponent({
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 

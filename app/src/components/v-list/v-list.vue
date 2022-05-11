@@ -69,11 +69,11 @@ export default defineComponent({
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;
 	--v-list-min-height: none;
-	--v-list-color: var(--foreground-normal-alt);
-	--v-list-color-hover: var(--foreground-normal-alt);
-	--v-list-color-active: var(--foreground-normal-alt);
-	--v-list-background-color-hover: var(--background-normal);
-	--v-list-background-color-active: var(--background-normal);
+	--v-list-color: var(--g-color-foreground-accent);
+	--v-list-color-hover: var(--g-color-foreground-accent);
+	--v-list-color-active: var(--g-color-foreground-accent);
+	--v-list-background-color-hover: var(--g-color-background-normal);
+	--v-list-background-color-active: var(--g-color-background-normal);
 }
 
 .v-list {

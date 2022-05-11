@@ -108,7 +108,7 @@ body {
 	min-height: var(--v-textarea-min-height);
 	max-height: var(--v-textarea-max-height);
 	background-color: var(--background-input);
-	border: var(--g-border-width) solid var(--border-normal);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 
@@ -146,7 +146,7 @@ body {
 	}
 
 	&:hover:not(.disabled) {
-		border-color: var(--border-normal-alt);
+		border-color: var(--g-color-border-accent);
 	}
 
 	&:focus:not(.disabled),
@@ -162,20 +162,20 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: var(--input-padding);
-		color: var(--foreground-normal);
+		color: var(--g-color-foreground-normal);
 		font-family: var(--v-textarea-font-family);
 		background-color: transparent;
 		border: 0;
 		resize: none;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 	}
 
 	&.disabled textarea {
-		color: var(--foreground-subdued);
-		background-color: var(--background-subdued);
+		color: var(--g-color-foreground-subtle);
+		background-color: var(--g-color-background-subtle);
 	}
 }
 </style>

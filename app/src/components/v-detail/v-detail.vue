@@ -78,10 +78,10 @@ export default defineComponent({
 }
 
 .v-detail:not(.disabled) .v-divider {
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--g-color-foreground-subtle);
 
 	&:hover {
-		--v-divider-label-color: var(--foreground-normal-alt);
+		--v-divider-label-color: var(--g-color-foreground-accent);
 
 		cursor: pointer;
 	}

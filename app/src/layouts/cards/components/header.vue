@@ -150,10 +150,10 @@ export default defineComponent({
 	height: 52px;
 	margin-bottom: 36px;
 	padding: 0 8px;
-	background-color: var(--background-page);
-	border-top: var(--g-border-width) solid var(--border-subdued);
-	border-bottom: var(--g-border-width) solid var(--border-subdued);
-	box-shadow: 0 0 0 2px var(--background-page);
+	background-color: var(--g-color-background-page);
+	border-top: var(--g-border-width) solid var(--g-color-border-subtle);
+	border-bottom: var(--g-border-width) solid var(--g-color-border-subtle);
+	box-shadow: 0 0 0 2px var(--g-color-background-page);
 }
 
 .start {
@@ -164,11 +164,11 @@ export default defineComponent({
 	}
 
 	.select-all {
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 
@@ -180,14 +180,14 @@ export default defineComponent({
 .end {
 	display: flex;
 	align-items: center;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 
 	.size-selector {
 		margin-right: 16px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 
@@ -196,7 +196,7 @@ export default defineComponent({
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 			cursor: pointer;
 		}
 	}
@@ -209,7 +209,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 			cursor: pointer;
 		}
 	}

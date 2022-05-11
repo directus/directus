@@ -351,7 +351,7 @@ function onSortChange(event: EndEvent) {
 :global(body) {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
-	--v-table-color: var(--foreground-normal);
+	--v-table-color: var(--g-color-foreground-normal);
 	--v-table-background-color: var(--background-input);
 }
 
@@ -418,7 +418,7 @@ table :deep(.loading-indicator > th) {
 }
 
 table :deep(.sortable-ghost .cell) {
-	background-color: var(--background-subdued);
+	background-color: var(--g-color-background-subtle);
 }
 
 .loading table {
@@ -433,7 +433,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator .v-progress-linear {
 	--v-progress-linear-height: 2px;
-	--v-progress-linear-color: var(--border-normal-alt);
+	--v-progress-linear-color: var(--g-color-border-accent);
 
 	position: absolute;
 	top: -2px;
@@ -460,11 +460,11 @@ table :deep(.sortable-ghost .cell) {
 .loading-text td,
 .no-items-text td {
 	padding: 16px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 }
 
 .inline {
-	border: 2px solid var(--border-normal);
+	border: 2px solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -473,7 +473,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .disabled {
-	--v-table-color: var(--foreground-subdued);
-	--v-table-background-color: var(--background-subdued);
+	--v-table-color: var(--g-color-foreground-subtle);
+	--v-table-background-color: var(--g-color-background-subtle);
 }
 </style>

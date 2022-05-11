@@ -105,7 +105,7 @@ export default defineComponent({
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;

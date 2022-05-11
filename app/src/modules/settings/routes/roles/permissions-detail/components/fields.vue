@@ -118,7 +118,7 @@ export default defineComponent({
 	.app-minimal-preview {
 		padding: 16px;
 		font-family: var(--g-font-family-mono);
-		background-color: var(--background-subdued);
+		background-color: var(--g-color-background-subtle);
 		border-radius: var(--g-border-radius);
 	}
 }

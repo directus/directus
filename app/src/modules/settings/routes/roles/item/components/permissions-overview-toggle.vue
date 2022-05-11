@@ -172,7 +172,7 @@ export default defineComponent({
 		left: -4px;
 		width: calc(100% + 8px);
 		height: calc(100% + 8px);
-		background-color: var(--background-highlight);
+		background-color: var(--g-color-background-subtle);
 		border-radius: 50%;
 		opacity: 0;
 		transition: opacity var(--slow) var(--transition);
@@ -215,7 +215,7 @@ export default defineComponent({
 
 .has-app-minimal {
 	&::before {
-		background-color: var(--background-highlight) !important;
+		background-color: var(--g-color-background-subtle) !important;
 	}
 }
 

@@ -304,7 +304,7 @@ function removeField(fieldKey: string) {
 		align-items: center;
 		justify-content: flex-end;
 		width: 240px;
-		color: var(--foreground-subdued);
+		color: var(--g-color-foreground-subtle);
 
 		span {
 			width: auto;
@@ -312,7 +312,7 @@ function removeField(fieldKey: string) {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--g-color-foreground-normal);
 		}
 	}
 }
@@ -322,10 +322,10 @@ function removeField(fieldKey: string) {
 }
 
 .add-field {
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--g-color-foreground-normal);
 
 	&.active {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--g-color-foreground-normal);
 	}
 }
 

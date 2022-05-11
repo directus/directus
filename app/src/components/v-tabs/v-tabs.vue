@@ -51,7 +51,7 @@ export default defineComponent({
 
 <style scoped>
 :global(body) {
-	--v-tabs-underline-color: var(--foreground-normal);
+	--v-tabs-underline-color: var(--g-color-foreground-normal);
 }
 
 .v-tabs.horizontal {

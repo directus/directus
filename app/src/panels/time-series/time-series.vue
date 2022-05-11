@@ -272,7 +272,7 @@ export default defineComponent({
 						enabled: false,
 					},
 					fontFamily: 'var(--g-font-family-sans)',
-					foreColor: 'var(--foreground-subdued)',
+					foreColor: 'var(--g-color-foreground-subtle)',
 				},
 				series: [],
 				stroke: {
@@ -306,7 +306,7 @@ export default defineComponent({
 					},
 				},
 				grid: {
-					borderColor: 'var(--border-subdued)',
+					borderColor: 'var(--g-color-border-subtle)',
 					padding: {
 						top: props.showHeader ? -20 : -4,
 						bottom: 0,
@@ -353,14 +353,14 @@ export default defineComponent({
 						offsetY: -4,
 						style: {
 							fontFamily: 'var(--g-font-family-sans)',
-							foreColor: 'var(--foreground-subdued)',
+							foreColor: 'var(--g-color-foreground-subtle)',
 							fontWeight: 600,
 							fontSize: '10px',
 						},
 					},
 					crosshairs: {
 						stroke: {
-							color: 'var(--border-normal)',
+							color: 'var(--g-color-border-normal)',
 						},
 					},
 				},
@@ -383,7 +383,7 @@ export default defineComponent({
 						},
 						style: {
 							fontFamily: 'var(--g-font-family-sans)',
-							foreColor: 'var(--foreground-subdued)',
+							foreColor: 'var(--g-color-foreground-subtle)',
 							fontWeight: 600,
 							fontSize: '10px',
 						},
@@ -406,16 +406,16 @@ export default defineComponent({
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal) !important;
+	border-color: var(--g-color-border-normal) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal) !important;
+	border-color: var(--g-color-border-normal) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--g-color-background-subtle) !important;
 }
 
 .apexcharts-tooltip-y-group {
@@ -425,7 +425,7 @@ export default defineComponent({
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal) !important;
+	background-color: var(--g-color-background-normal) !important;
 	padding: 0;
 }
 

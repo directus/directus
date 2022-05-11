@@ -5,10 +5,10 @@
 	.axis,
 	.chart-label {
 		font-size: 10px;
-		fill: var(--foreground-normal);
+		fill: var(--g-color-foreground-normal);
 
 		line {
-			stroke: var(--border-normal);
+			stroke: var(--g-color-border-normal);
 		}
 	}
 
@@ -57,7 +57,7 @@
 
 	.legend-dataset-text {
 		font-weight: 600;
-		fill: var(--foreground-normal);
+		fill: var(--g-color-foreground-normal);
 	}
 }
 
@@ -65,7 +65,7 @@
 	position: absolute;
 	z-index: 99999;
 	padding: 10px;
-	color: var(--border-normal);
+	color: var(--g-color-border-normal);
 	font-size: 12px;
 	text-align: center;
 	background: rgba(0, 0, 0, 0.8);

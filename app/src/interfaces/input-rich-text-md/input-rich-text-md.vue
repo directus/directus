@@ -404,14 +404,14 @@ export default defineComponent({
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
-	--v-button-color: var(--foreground-normal);
-	--v-button-background-color-hover: var(--border-normal);
-	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color: var(--g-color-foreground-normal);
+	--v-button-background-color-hover: var(--g-color-border-normal);
+	--v-button-color-hover: var(--g-color-foreground-normal);
 
 	min-height: 300px;
 	overflow: hidden;
 	font-family: var(--g-font-family-sans);
-	border: 2px solid var(--border-normal);
+	border: 2px solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -427,7 +427,7 @@ textarea {
 .preview-box :deep(h1) {
 	margin-top: 1em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 700;
 	font-size: 36px;
 	font-family: v-bind(previewFamily), serif;
@@ -437,7 +437,7 @@ textarea {
 .preview-box :deep(h2) {
 	margin-top: 1.25em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 700;
 	font-size: 24px;
 	font-family: v-bind(previewFamily), serif;
@@ -447,7 +447,7 @@ textarea {
 .preview-box :deep(h3) {
 	margin-top: 1.25em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 700;
 	font-size: 19px;
 	font-family: v-bind(previewFamily), serif;
@@ -457,7 +457,7 @@ textarea {
 .preview-box :deep(h4) {
 	margin-top: 1.5em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 700;
 	font-size: 16px;
 	font-family: v-bind(previewFamily), serif;
@@ -467,7 +467,7 @@ textarea {
 .preview-box :deep(h5) {
 	margin-top: 2em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 700;
 	font-size: 14px;
 	font-family: v-bind(previewFamily), serif;
@@ -477,7 +477,7 @@ textarea {
 .preview-box :deep(h6) {
 	margin-top: 2em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--g-color-foreground-accent);
 	font-weight: 700;
 	font-size: 12px;
 	font-family: v-bind(previewFamily), serif;
@@ -510,7 +510,7 @@ textarea {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -544,7 +544,7 @@ textarea {
 	font-family: var(--g-font-family-mono), monospace;
 	line-height: 24px;
 	overflow-wrap: break-word;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -555,7 +555,7 @@ textarea {
 	font-size: 15px;
 	font-family: var(--g-font-family-mono), monospace;
 	line-height: 24px;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: var(--g-border-radius);
 }
 
@@ -566,7 +566,7 @@ textarea {
 	font-size: 15px;
 	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
-	border-left: 2px solid var(--border-normal);
+	border-left: 2px solid var(--g-color-border-normal);
 }
 
 .preview-box :deep(blockquote blockquote) {
@@ -585,7 +585,7 @@ textarea {
 	height: 1px;
 	margin-top: 2em;
 	margin-bottom: 2em;
-	background-color: var(--border-normal);
+	background-color: var(--g-color-border-normal);
 	border: none;
 }
 
@@ -599,7 +599,7 @@ textarea {
 .preview-box :deep(table th),
 .preview-box :deep(table td) {
 	padding: 0.4rem;
-	border: 1px solid var(--border-normal);
+	border: 1px solid var(--g-color-border-normal);
 }
 
 .preview-box :deep(figure) {
@@ -646,8 +646,8 @@ textarea {
 	align-items: center;
 	min-height: 40px;
 	padding: 0 4px;
-	background-color: var(--background-subdued);
-	border-bottom: 2px solid var(--border-normal);
+	background-color: var(--g-color-background-subtle);
+	border-bottom: 2px solid var(--g-color-border-normal);
 
 	.v-button + .v-button {
 		margin-left: 2px;
@@ -658,12 +658,12 @@ textarea {
 	}
 
 	.view {
-		--v-button-background-color: var(--border-subdued);
-		--v-button-color: var(--foreground-subdued);
-		--v-button-background-color-hover: var(--border-normal);
-		--v-button-color-hover: var(--foreground-normal);
-		--v-button-background-color-active: var(--border-normal);
-		--v-button-color-active: var(--foreground-normal);
+		--v-button-background-color: var(--g-color-border-subtle);
+		--v-button-color: var(--g-color-foreground-subtle);
+		--v-button-background-color-hover: var(--g-color-border-normal);
+		--v-button-color-hover: var(--g-color-foreground-normal);
+		--v-button-background-color-active: var(--g-color-border-normal);
+		--v-button-color-active: var(--g-color-foreground-normal);
 	}
 }
 

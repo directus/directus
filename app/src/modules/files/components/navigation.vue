@@ -124,7 +124,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-skeleton-loader {
-	--v-skeleton-loader-background-color: var(--background-normal-alt);
+	--v-skeleton-loader-background-color: var(--g-color-background-accent);
 }
 
 .folders {

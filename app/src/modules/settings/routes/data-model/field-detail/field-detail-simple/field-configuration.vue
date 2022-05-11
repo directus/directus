@@ -175,7 +175,7 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .field-configuration {
-	--v-button-background-color-disabled: var(--background-normal);
+	--v-button-background-color-disabled: var(--g-color-background-normal);
 	--columns: 1;
 
 	@media (min-width: 400px) {
@@ -191,9 +191,9 @@ export default defineComponent({
 	}
 
 	grid-column: 1 / span var(--columns);
-	background-color: var(--background-subdued);
-	border-top: var(--g-border-width) solid var(--border-normal);
-	border-bottom: var(--g-border-width) solid var(--border-normal);
+	background-color: var(--g-color-background-subtle);
+	border-top: var(--g-border-width) solid var(--g-color-border-normal);
+	border-bottom: var(--g-border-width) solid var(--g-color-border-normal);
 }
 
 .setup {
@@ -220,13 +220,13 @@ export default defineComponent({
 }
 
 :deep(.v-notice.normal) {
-	background-color: var(--foreground-inverted);
+	background-color: var(--g-color-foreground-invert);
 }
 
 .toggle-advanced {
 	width: 100%;
 	margin-top: 20px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	text-align: center;
 	transition: color var(--fast) var(--transition);
 

@@ -41,10 +41,10 @@ export default defineComponent({
 
 <style>
 body {
-	--v-tab-color: var(--foreground-subdued);
-	--v-tab-background-color: var(--background-page);
-	--v-tab-color-active: var(--foreground-normal);
-	--v-tab-background-color-active: var(--background-page);
+	--v-tab-color: var(--g-color-foreground-subtle);
+	--v-tab-background-color: var(--g-color-background-page);
+	--v-tab-color-active: var(--g-color-foreground-normal);
+	--v-tab-background-color-active: var(--g-color-background-page);
 }
 </style>
 

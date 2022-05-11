@@ -18,13 +18,13 @@ html {
 }
 
 body {
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-weight: 500;
 	font-size: 14px;
 	font-family: var(--g-font-family-sans);
 	font-style: normal;
 	line-height: 22px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
@@ -104,7 +104,7 @@ strong {
 }
 
 ::selection {
-	background: var(--background-normal-alt);
+	background: var(--g-color-background-accent);
 }
 
 dl > div {
@@ -126,7 +126,7 @@ dt {
 dd {
 	flex-grow: 1;
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }

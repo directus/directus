@@ -17,7 +17,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-sheet-background-color: var(--background-subdued);
+	--v-sheet-background-color: var(--g-color-background-subtle);
 	--v-sheet-height: auto;
 	--v-sheet-min-height: var(--input-height);
 	--v-sheet-max-height: none;

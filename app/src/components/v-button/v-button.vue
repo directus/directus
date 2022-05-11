@@ -192,14 +192,14 @@ export default defineComponent({
 :global(body) {
 	--v-button-width: auto;
 	--v-button-height: 44px;
-	--v-button-color: var(--foreground-inverted);
-	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-color-active: var(--foreground-inverted);
-	--v-button-color-disabled: var(--foreground-subdued);
+	--v-button-color: var(--g-color-foreground-invert);
+	--v-button-color-hover: var(--g-color-foreground-invert);
+	--v-button-color-active: var(--g-color-foreground-invert);
+	--v-button-color-disabled: var(--g-color-foreground-subtle);
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 	--v-button-background-color-active: var(--primary);
-	--v-button-background-color-disabled: var(--background-subdued);
+	--v-button-background-color-disabled: var(--g-color-background-subtle);
 	--v-button-font-size: 16px;
 	--v-button-font-weight: 600;
 	--v-button-line-height: 22px;
@@ -240,19 +240,19 @@ export default defineComponent({
 }
 
 .secondary {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
-	--v-button-background-color: var(--border-subdued);
-	--v-button-background-color-hover: var(--background-normal-alt);
-	--v-button-background-color-active: var(--background-normal-alt);
+	--v-button-color: var(--g-color-foreground-normal);
+	--v-button-color-hover: var(--g-color-foreground-normal);
+	--v-button-color-active: var(--g-color-foreground-normal);
+	--v-button-background-color: var(--g-color-border-subtle);
+	--v-button-background-color-hover: var(--g-color-background-accent);
+	--v-button-background-color-active: var(--g-color-background-accent);
 }
 
 .secondary.rounded {
-	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-active: var(--background-normal);
-	--v-button-background-color-hover: var(--background-normal-alt);
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-background-color: var(--g-color-background-normal);
+	--v-button-background-color-active: var(--g-color-background-normal);
+	--v-button-background-color-hover: var(--g-color-background-accent);
+	--v-button-color-disabled: var(--g-color-foreground-normal);
 }
 
 .warning.rounded {
@@ -349,7 +349,7 @@ export default defineComponent({
 }
 
 .outlined.secondary {
-	--v-button-color: var(--foreground-subdued);
+	--v-button-color: var(--g-color-foreground-subtle);
 }
 
 .outlined.active {

@@ -396,7 +396,7 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--g-color-foreground-normal);
 }
 
 .layout {

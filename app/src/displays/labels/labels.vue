@@ -85,15 +85,15 @@ export default defineComponent({
 					return {
 						value: item,
 						text: itemStringValue,
-						foreground: 'var(--foreground-normal)',
-						background: 'var(--background-normal)',
+						foreground: 'var(--g-color-foreground-normal)',
+						background: 'var(--g-color-background-normal)',
 					};
 				} else {
 					return translate({
 						value: item,
 						text: choice.text || itemStringValue,
-						foreground: choice.foreground || 'var(--foreground-normal)',
-						background: choice.background || 'var(--background-normal)',
+						foreground: choice.foreground || 'var(--g-color-foreground-normal)',
+						background: choice.background || 'var(--g-color-background-normal)',
 					});
 				}
 			});

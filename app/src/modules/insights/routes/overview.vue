@@ -206,8 +206,8 @@ export default defineComponent({
 }
 
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--g-color-foreground-subtle);
+	--v-icon-color-hover: var(--g-color-foreground-normal);
 }
 
 .v-list-item.danger {
@@ -223,6 +223,6 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--g-color-foreground-normal);
 }
 </style>

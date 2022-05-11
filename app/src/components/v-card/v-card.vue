@@ -32,7 +32,7 @@ body {
 	--v-card-min-height: none;
 	--v-card-max-height: 90vh;
 	--v-card-padding: 16px;
-	--v-card-background-color: var(--background-subdued);
+	--v-card-background-color: var(--g-color-background-subtle);
 }
 </style>
 

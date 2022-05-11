@@ -197,7 +197,7 @@ export default defineComponent({
 }
 
 .v-progress-circular {
-	--v-progress-circular-color: var(--foreground-inverted);
+	--v-progress-circular-color: var(--g-color-foreground-invert);
 	--v-progress-circular-background-color: transparent;
 }
 </style>

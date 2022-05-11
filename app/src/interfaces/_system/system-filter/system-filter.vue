@@ -171,14 +171,14 @@ function removeNode(ids: string[]) {
 	:deep(.group) {
 		margin-left: 18px;
 		padding-left: 10px;
-		border-left: var(--g-border-width) solid var(--border-subdued);
+		border-left: var(--g-border-width) solid var(--g-color-border-subtle);
 	}
 
 	.v-list {
 		min-width: auto;
 		margin: 0px 0px 10px;
 		padding: 20px 20px 12px;
-		border: var(--g-border-width) solid var(--border-subdued);
+		border: var(--g-border-width) solid var(--g-color-border-subtle);
 
 		& > :deep(.group) {
 			margin-left: 0px;
@@ -202,7 +202,7 @@ function removeNode(ids: string[]) {
 		}
 
 		.no-rules {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 			font-family: var(--g-font-family-mono);
 		}
 	}
@@ -233,14 +233,14 @@ function removeNode(ids: string[]) {
 			width: 100%;
 			height: 30px;
 			padding: 0;
-			color: var(--foreground-subdued);
-			background-color: var(--background-page);
-			border: var(--g-border-width) solid var(--border-subdued);
+			color: var(--g-color-foreground-subtle);
+			background-color: var(--g-color-background-page);
+			border: var(--g-border-width) solid var(--g-color-border-subtle);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);
 			&:hover,
 			&.active {
-				border-color: var(--border-normal);
+				border-color: var(--g-color-border-normal);
 			}
 			&.active {
 				.expand_more {

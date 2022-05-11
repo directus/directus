@@ -122,7 +122,7 @@ export default defineComponent({
 .map {
 	height: 400px;
 	overflow: hidden;
-	border: var(--g-border-width) solid var(--border-normal);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 }
 </style>
