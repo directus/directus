@@ -331,7 +331,14 @@ export default defineComponent({
 						return field.schema?.is_primary_key || !isDisabled(field);
 				  });
 
-			emit('update:modelValue', assign({}, props.modelValue, pick(updates, updatableKeys)));
+			if (!isNil(props.group)) {
+				const groupFields = getFieldsForGroup(props.group)
+					.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
+					.map((field) => field.field);
+				emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pick(updates, updatableKeys)));
+			} else {
+				emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
+			}
 		}
 
 		function unsetValue(field: Field) {
