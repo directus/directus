@@ -62,43 +62,6 @@ export function getTriggers() {
 			],
 		},
 		{
-			text: t('triggers.init.name'),
-			value: 'init',
-			icon: 'sensors',
-			description: t('triggers.init.description'),
-			preview: ({ event }) => [
-				{
-					label: t('triggers.filter.event'),
-					text: event,
-				},
-			],
-			options: [
-				{
-					field: 'event',
-					name: t('triggers.init.event'),
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'select-dropdown',
-						options: {
-							choices: [
-								{ text: 'cli.before', value: 'cli.before' },
-								{ text: 'cli.after', value: 'cli.after' },
-								{ text: 'app.before', value: 'app.before' },
-								{ text: 'app.after', value: 'app.after' },
-								{ text: 'routes.before', value: 'routes.before' },
-								{ text: 'routes.after', value: 'routes.after' },
-								{ text: 'routes.custom.before', value: 'routes.custom.before' },
-								{ text: 'routes.custom.after', value: 'routes.custom.after' },
-								{ text: 'middlewares.before', value: 'middlewares.before' },
-								{ text: 'middlewares.after', value: 'middlewares.after' },
-							],
-						},
-					},
-				},
-			],
-		},
-		{
 			text: t('triggers.operation.name'),
 			value: 'operation',
 			icon: 'bolt',

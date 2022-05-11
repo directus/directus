@@ -90,12 +90,6 @@ class FlowManager {
 				emitter.onAction(flow.options.event, handler);
 
 				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
-			} else if (flow.trigger === 'init') {
-				const handler: InitHandler = () => this.executeFlow(flow);
-
-				emitter.onInit(flow.options.event, handler);
-
-				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
 			} else if (flow.trigger === 'schedule') {
 				if (validate(flow.options.cron)) {
 					const task = schedule(flow.options.cron, () => this.executeFlow(flow));
@@ -126,9 +120,6 @@ class FlowManager {
 					break;
 				case 'action':
 					emitter.offAction(trigger.name, trigger.handler);
-					break;
-				case 'init':
-					emitter.offInit(trigger.name, trigger.handler);
 					break;
 				case 'schedule':
 					trigger.task.stop();
