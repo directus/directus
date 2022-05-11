@@ -49,7 +49,4 @@
 	--module-foreground-normal: #8196B1;
 	--module-foreground-hover: #FFFFFF;
 	--module-foreground-active: #172940;
-
-	// Generate color variations
-	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
 }
