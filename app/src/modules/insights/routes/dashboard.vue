@@ -211,6 +211,8 @@ export default defineComponent({
 			return permissionsStore.hasPermission('directus_panels', 'update');
 		});
 
+		let callAttempts = 0;
+
 		useShortcut('meta+s', () => {
 			saveChanges();
 		});
@@ -649,7 +651,14 @@ export default defineComponent({
 			return jsonToGraphQLQuery(formattedQuery);
 		}
 
-		async function caller(query: string) {
+		async function caller(query: string, reattempt?: boolean) {
+			if (reattempt) callAttempts++;
+			if (reattempt && callAttempts >= 5) {
+				callAttempts = 0;
+				// do we want to just trigger the panels separately after this fails?
+				return;
+			}
+
 			if (query === 'query') return;
 
 			const newResponse: Record<string, Panel | Panel[]> = {};
@@ -664,6 +673,7 @@ export default defineComponent({
 					if (id.includes('__')) {
 						const panelId = id.split('__')[0];
 						const index = id.split('__')[1];
+
 						if (!sortedResponses[panelId]) sortedResponses[panelId] = {};
 
 						sortedResponses[panelId][index] = data;
@@ -702,6 +712,7 @@ export default defineComponent({
 				response.value = newResponse;
 			} catch (errs: any) {
 				const queriesToRemove: Record<string, any> = {};
+
 				for (const error of errs.response.data.errors) {
 					const message = error.extensions.graphqlErrors[0].message;
 
@@ -739,8 +750,8 @@ export default defineComponent({
 					}
 				}
 
-				// const newQuery = stitchQueriesToGql(newQueries);
-				// caller(newQuery);
+				const newQuery = stitchQueriesToGql(newQueries);
+				caller(newQuery, true);
 			}
 		}
 	},
