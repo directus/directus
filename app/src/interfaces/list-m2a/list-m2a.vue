@@ -139,7 +139,7 @@
 import { useRelationM2A, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
 import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
@@ -172,19 +172,11 @@ const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationM2A(collection, field);
 
 const value = computed({
-	get: () => props.value ?? [],
+	get: () => props.value,
 	set: (val) => {
 		emit('input', val);
 	},
 });
-
-watch(
-	() => props.value,
-	(val) => {
-		// when Clear Value to null, reset to original value to prevent staging
-		if (val === null) emit('input', primaryKey.value === '+' ? undefined : []);
-	}
-);
 
 const templates = computed(() => {
 	if (!relationInfo.value) return {};
