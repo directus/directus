@@ -125,15 +125,14 @@
 </template>
 
 <script lang="ts" setup>
+import api from '@/api';
 import { getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/shared/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import api from '@/api';
-import { useFlowsStore } from '@/stores';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
 

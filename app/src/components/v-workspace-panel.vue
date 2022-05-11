@@ -393,7 +393,7 @@ function useDragDrop() {
 }
 
 .footer {
-	padding: 12px;
+	padding: 0 12px;
 	margin-top: auto;
 }
 
