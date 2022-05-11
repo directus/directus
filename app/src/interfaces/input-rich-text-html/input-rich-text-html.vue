@@ -9,6 +9,7 @@
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 			@focus="setupContentWatcher"
+			@SetContent="setCount"
 		/>
 		<template v-if="softLength">
 			<span
@@ -163,35 +164,34 @@
 </template>
 
 <script lang="ts">
+import Editor from '@tinymce/tinymce-vue';
+import { percentage } from '@/utils/percentage';
+import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance, onMounted } from 'vue';
+import getEditorStyles from './get-editor-styles';
+import useImage from './useImage';
+import useLink from './useLink';
+import useMedia from './useMedia';
+import useSourceCode from './useSourceCode';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
-import 'tinymce/plugins/media/plugin';
-import 'tinymce/plugins/table/plugin';
+import 'tinymce/plugins/autoresize/plugin';
+import 'tinymce/plugins/code/plugin';
+import 'tinymce/plugins/directionality/plugin';
+import 'tinymce/plugins/fullscreen/plugin';
 import 'tinymce/plugins/hr/plugin';
-import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/image/plugin';
 import 'tinymce/plugins/imagetools/plugin';
-import 'tinymce/plugins/link/plugin';
-import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/code/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
-import 'tinymce/plugins/autoresize/plugin';
+import 'tinymce/plugins/link/plugin';
+import 'tinymce/plugins/lists/plugin';
+import 'tinymce/plugins/media/plugin';
+import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/paste/plugin';
 import 'tinymce/plugins/preview/plugin';
-import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/directionality/plugin';
+import 'tinymce/plugins/table/plugin';
 import 'tinymce/icons/default';
-
-import Editor from '@tinymce/tinymce-vue';
-import getEditorStyles from './get-editor-styles';
-import useImage from './useImage';
-import useMedia from './useMedia';
-import useLink from './useLink';
-import useSourceCode from './useSourceCode';
-import { percentage } from '@/utils/percentage';
 
 type CustomFormat = {
 	title: string;
@@ -386,7 +386,13 @@ export default defineComponent({
 			saveCode,
 			sourceCodeButton,
 			setupContentWatcher,
+			setCount,
 		};
+
+		function setCount() {
+			const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
+			count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+		}
 
 		function setupContentWatcher() {
 			if (observer) return;
