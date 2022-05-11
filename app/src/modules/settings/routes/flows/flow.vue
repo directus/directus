@@ -13,7 +13,7 @@
 
 		<template #title:append>
 			<display-color
-				v-tooltip="flow.status"
+				v-tooltip="flow.status === 'active' ? t('active') : t('inactive')"
 				class="status-dot"
 				:value="flow.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
 			/>
@@ -82,6 +82,7 @@
 						@arrow-stop="arrowStop"
 						@show-hint="hoveredPanelID = $event"
 						@hide-hint="hoveredPanelID = null"
+						@flow-status="stagedFlow.status = $event"
 					/>
 				</template>
 			</v-workspace>

@@ -97,16 +97,29 @@
 			:options="currentOperation"
 		/>
 		<template v-if="panel.id === '$trigger'" #footer>
-			<v-select
-				class="flow-status-select"
-				:model-value="flowStatus"
-				:items="[
-					{ text: t('active'), value: 'active' },
-					{ text: t('inactive'), value: 'inactive' },
-				]"
-				:disabled="saving"
-				@update:model-value="flowStatus = $event"
-			/>
+			<div class="status-footer" :class="flowStatus">
+				<display-color
+					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
+					class="status-dot"
+					:value="flowStatus === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+				/>
+
+				<v-select
+					v-if="editMode"
+					class="flow-status-select"
+					inline
+					:model-value="flowStatus"
+					:items="[
+						{ text: t('active'), value: 'active' },
+						{ text: t('inactive'), value: 'inactive' },
+					]"
+					@update:model-value="flowStatus = $event"
+				/>
+
+				<span v-else>
+					{{ flowStatus === 'active' ? t('active') : t('inactive') }}
+				</span>
+			</div>
 		</template>
 	</v-workspace-panel>
 </template>
@@ -166,6 +179,7 @@ const emit = defineEmits([
 	'arrow-stop',
 	'show-hint',
 	'hide-hint',
+	'flow-status',
 ]);
 
 const { t } = useI18n();
@@ -249,32 +263,14 @@ function pointerup() {
 	window.removeEventListener('pointerup', pointerup);
 }
 
-const flowsStore = useFlowsStore();
-
 const flowStatus = computed({
 	get() {
 		return props.flow.status;
 	},
 	set(newVal: string) {
-		toggleFlowStatus(newVal);
+		emit('flow-status', newVal);
 	},
 });
-
-const saving = ref(false);
-
-async function toggleFlowStatus(value: string) {
-	saving.value = true;
-	try {
-		await api.patch(`/flows/${props.flow.id}`, {
-			status: value,
-		});
-		await flowsStore.hydrate();
-	} catch (error) {
-		unexpectedError(error as Error);
-	} finally {
-		saving.value = false;
-	}
-}
 
 /* Manual Trigger */
 const manualRunning = ref(false);
@@ -467,5 +463,10 @@ function pointerLeave() {
 		font-family: var(--family-monospace);
 		white-space: normal;
 	}
+}
+
+.status-footer {
+	display: flex;
+	gap: 8px;
 }
 </style>
