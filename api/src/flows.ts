@@ -26,6 +26,12 @@ export function getFlowManager(): FlowManager {
 	return flowManager;
 }
 
+type TriggerHandler = {
+	id: string;
+	type: 'filter' | 'action' | 'init' | 'schedule';
+	events: EventHandler[];
+};
+
 const TRIGGER_KEY = '$trigger';
 const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
@@ -33,7 +39,7 @@ const LAST_KEY = '$last';
 class FlowManager {
 	private operations: Record<string, OperationHandler> = {};
 
-	private triggerHandlers: EventHandler[] = [];
+	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
@@ -98,7 +104,11 @@ class FlowManager {
 							?.flat() ?? [];
 
 					events.forEach((event) => emitter.onFilter(event, handler));
-					this.triggerHandlers.push({ type: 'filter', id: flow.id, events, handler });
+					this.triggerHandlers.push({
+						id: flow.id,
+						type: 'filter',
+						events: events.map((event) => ({ type: 'filter', name: event, handler })),
+					});
 				}
 
 				if (flow.options.type === 'action') {
@@ -130,20 +140,28 @@ class FlowManager {
 							?.flat() ?? [];
 
 					events.forEach((event) => emitter.onAction(event, handler));
-					this.triggerHandlers.push({ type: 'action', id: flow.id, events, handler });
+					this.triggerHandlers.push({
+						id: flow.id,
+						type: 'action',
+						events: events.map((event) => ({ type: 'action', name: event, handler })),
+					});
 				}
 
 				if (flow.options.type === 'init') {
 					const handler: InitHandler = () => this.executeFlow(flow);
 					const events: string[] = flow.options.initScope ?? [];
 					events.forEach((event) => emitter.onInit(event, handler));
-					this.triggerHandlers.push({ type: 'init', id: flow.id, events, handler });
+					this.triggerHandlers.push({
+						id: flow.id,
+						type: 'init',
+						events: events.map((event) => ({ type: 'init', name: event, handler })),
+					});
 				}
 			} else if (flow.trigger === 'schedule') {
 				if (validate(flow.options.cron)) {
 					const task = schedule(flow.options.cron, () => this.executeFlow(flow));
 
-					this.triggerHandlers.push({ type: flow.trigger, task });
+					this.triggerHandlers.push({ id: flow.id, type: 'schedule', events: [{ type: flow.trigger, task }] });
 				} else {
 					logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options.cron}`);
 				}
@@ -165,16 +183,16 @@ class FlowManager {
 		for (const trigger of this.triggerHandlers) {
 			switch (trigger.type) {
 				case 'filter':
-					trigger.events.forEach((event) => emitter.offFilter(event, trigger.handler));
+					trigger.events.forEach((event) => emitter.offFilter(event.name, event.handler));
 					break;
 				case 'action':
-					trigger.events.forEach((event) => emitter.offAction(event, trigger.handler));
+					trigger.events.forEach((event) => emitter.offAction(event.name, event.handler));
 					break;
 				case 'init':
-					trigger.events.forEach((event) => emitter.offInit(event, trigger.handler));
+					trigger.events.forEach((event) => emitter.offInit(event.name, event.handler));
 					break;
 				case 'schedule':
-					trigger.task.stop();
+					trigger.events[0].task.stop();
 					break;
 			}
 		}
