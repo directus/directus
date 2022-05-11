@@ -656,13 +656,6 @@ export default defineComponent({
 		}
 
 		async function caller(query: string, reattempt?: boolean) {
-			if (reattempt) callAttempts++;
-			if (reattempt && callAttempts >= 5) {
-				callAttempts = 0;
-				// do we want to just trigger the panels separately after this fails?
-				return;
-			}
-
 			if (query === 'query') return;
 
 			const newResponse: Record<string, Panel | Panel[]> = {};
@@ -715,6 +708,12 @@ export default defineComponent({
 
 				response.value = newResponse;
 			} catch (errs: any) {
+				if (reattempt) callAttempts++;
+				if (reattempt && callAttempts >= 5) {
+					callAttempts = 0;
+					throw new Error(errs);
+				}
+
 				const queriesToRemove: Record<string, any> = {};
 
 				for (const error of errs.response.data.errors) {
