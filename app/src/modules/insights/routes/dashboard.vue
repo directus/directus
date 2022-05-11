@@ -567,6 +567,7 @@ export default defineComponent({
 					if (!formattedQuery[aggregateFunc]) {
 						formattedQuery[aggregateFunc] = {};
 					}
+					if (!field) continue;
 
 					formattedQuery[aggregateFunc][field] = true;
 				}
@@ -579,6 +580,7 @@ export default defineComponent({
 
 			if (query.fields) {
 				for (const field of query.fields) {
+					if (!field) continue;
 					formattedQuery[field] = true;
 				}
 			}
@@ -604,6 +606,8 @@ export default defineComponent({
 					for (let i = 0; i < query.query.length; i++) {
 						const oneQuery = query.query[i];
 						const sanitizedKey = 'id_' + key.replaceAll('-', '_') + '__' + i;
+
+						if (!query?.collection || !oneQuery) continue;
 
 						formattedQuery.query[sanitizedKey] = {};
 						formattedQuery.query[sanitizedKey] = processQuery(oneQuery, query.collection);
