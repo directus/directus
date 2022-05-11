@@ -394,7 +394,9 @@ function useDragDrop() {
 
 .footer {
 	padding: 0 12px;
+	border-top: 2px solid var(--border-subdued);
 	margin-top: auto;
+	padding-top: 8px;
 }
 
 .icon {
