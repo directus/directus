@@ -4,11 +4,15 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
+import { Filter } from '@directus/shared/types';
 
 export type RelationQueryMultiple = {
 	page: number;
 	limit: number;
 	fields: string[];
+	search?: string;
+	sort?: string[];
+	filter?: Filter;
 };
 
 export type DisplayItem = {
@@ -323,14 +327,16 @@ export function useRelationMultiple(
 
 			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
+			const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+			if (previewQuery.value.filter) {
+				filter._and.push(previewQuery.value.filter);
+			}
+
 			const response = await api.get(getEndpoint(targetCollection), {
 				params: {
+					...previewQuery.value,
 					fields: Array.from(fields),
-					filter: {
-						[reverseJunctionField]: itemId.value,
-					},
-					page: previewQuery.value.page,
-					limit: previewQuery.value.limit,
+					filter,
 				},
 			});
 
@@ -343,14 +349,18 @@ export function useRelationMultiple(
 	}
 
 	async function updateItemCount(targetCollection: string, targetPKField: string, reverseJunctionField: string) {
+		const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+		if (previewQuery.value.filter) {
+			filter._and.push(previewQuery.value.filter);
+		}
+
 		const response = await api.get(getEndpoint(targetCollection), {
 			params: {
+				search: previewQuery.value.search,
 				aggregate: {
 					count: targetPKField,
 				},
-				filter: {
-					[reverseJunctionField]: itemId.value,
-				},
+				filter,
 			},
 		});
 

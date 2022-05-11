@@ -12,7 +12,10 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['m2m'],
 	group: 'relational',
-	options: ({ editing, relations }) => {
+	options: ({ editing, relations, field: { meta } }) => {
+		const { collection, related_collection } = relations.o2m ?? {};
+		const options = meta?.options ?? {};
+
 		const displayTemplateMeta =
 			editing === '+'
 				? {
@@ -24,16 +27,84 @@ export default defineInterface({
 				: {
 						interface: 'system-display-template',
 						options: {
-							collectionName: relations.o2m?.collection,
+							collectionName: collection,
 						},
 				  };
 
-		return [
+		const tableOptions = [
+			{
+				field: 'tableSpacing',
+				name: '$t:layouts.tabular.spacing',
+				schema: {
+					default_value: 'cozy',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:layouts.tabular.compact',
+								value: 'compact',
+							},
+							{
+								text: '$t:layouts.tabular.cozy',
+								value: 'cozy',
+							},
+							{
+								text: '$t:layouts.tabular.comfortable',
+								value: 'comfortable',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'fields',
+				name: '$t:columns',
+				meta: {
+					interface: 'system-fields',
+					options: {
+						collectionName: collection,
+					},
+					width: 'full',
+				},
+			},
+		];
+
+		const listOptions = [
 			{
 				field: 'template',
 				name: '$t:display_template',
 				meta: displayTemplateMeta,
 			},
+		];
+
+		return [
+			{
+				field: 'layout',
+				name: 'Layout',
+				schema: {
+					default_value: 'list',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: 'List',
+								value: 'list',
+							},
+							{
+								text: 'Table',
+								value: 'table',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			...(options.layout === 'table' ? tableOptions : listOptions),
 			{
 				field: 'enableCreate',
 				name: '$t:creating_items',
@@ -69,7 +140,7 @@ export default defineInterface({
 				meta: {
 					interface: 'system-filter',
 					options: {
-						collectionName: relations.m2o?.related_collection ?? null,
+						collectionName: related_collection,
 					},
 					conditions: [
 						{
@@ -81,6 +152,34 @@ export default defineInterface({
 							hidden: true,
 						},
 					],
+				},
+			},
+			{
+				field: 'enableSearchFilter',
+				name: 'Search & Filter',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: 'Enable searching & filtering',
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'enableLink',
+				name: 'Item Link',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: 'Show a link to the item',
+					},
+					width: 'half',
 				},
 			},
 		];

@@ -12,10 +12,52 @@ export default defineInterface({
 	localTypes: ['o2m'],
 	group: 'relational',
 	relational: true,
-	options: ({ relations }) => {
+	options: ({ relations, field: { meta } }) => {
 		const collection = relations.o2m?.collection;
+		const options = meta?.options ?? {};
 
-		return [
+		const tableOptions = [
+			{
+				field: 'tableSpacing',
+				name: '$t:layouts.tabular.spacing',
+				schema: {
+					default_value: 'cozy',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:layouts.tabular.compact',
+								value: 'compact',
+							},
+							{
+								text: '$t:layouts.tabular.cozy',
+								value: 'cozy',
+							},
+							{
+								text: '$t:layouts.tabular.comfortable',
+								value: 'comfortable',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'fields',
+				name: '$t:columns',
+				meta: {
+					interface: 'system-fields',
+					options: {
+						collectionName: collection,
+					},
+					width: 'full',
+				},
+			},
+		];
+
+		const listOptions = [
 			{
 				field: 'template',
 				name: '$t:display_template',
@@ -27,6 +69,33 @@ export default defineInterface({
 					width: 'full',
 				},
 			},
+		];
+
+		return [
+			{
+				field: 'layout',
+				name: 'Layout',
+				schema: {
+					default_value: 'list',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: 'List',
+								value: 'list',
+							},
+							{
+								text: 'Table',
+								value: 'table',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			...(options.layout === 'table' ? tableOptions : listOptions),
 			{
 				field: 'enableCreate',
 				name: '$t:creating_items',
@@ -74,6 +143,34 @@ export default defineInterface({
 							hidden: true,
 						},
 					],
+				},
+			},
+			{
+				field: 'enableSearchFilter',
+				name: 'Search & Filter',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: 'Enable searching & filtering',
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'enableLink',
+				name: 'Item Link',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: 'Show a link to the item',
+					},
+					width: 'half',
 				},
 			},
 		];
