@@ -328,11 +328,11 @@ export default defineComponent({
 		);
 
 		const editFamily = computed(() => {
-			return `var(--family-${props.editorFont})`;
+			return `var(--g-font-family-${mapFontType(props.editorFont)})`;
 		});
 
 		const previewFamily = computed(() => {
-			return `var(--family-${props.previewFont})`;
+			return `var(--g-font-family-${mapFontType(props.previewFont)})`;
 		});
 
 		const markdownString = computed(() => {
@@ -393,6 +393,17 @@ export default defineComponent({
 		function edit(type: Alteration, options?: Record<string, any>) {
 			if (codemirror) {
 				applyEdit(codemirror, type, options);
+			}
+		}
+		function mapFontType(font: 'sans-serif' | 'serif' | 'monospace') {
+			switch (font) {
+				case 'monospace':
+					return 'mono';
+				case 'serif':
+					return 'serif';
+				case 'sans-serif':
+				default:
+					return 'sans';
 			}
 		}
 	},
