@@ -7,7 +7,15 @@ import { FlowsService } from './services';
 import { EventHandler } from './types';
 import { getSchema } from './utils/get-schema';
 import { constructFlowTree } from './utils/construct-flow-tree';
-import { OperationHandler, Operation, Flow, FilterHandler, ActionHandler, InitHandler } from '@directus/shared/types';
+import {
+	OperationHandler,
+	Operation,
+	Flow,
+	FilterHandler,
+	ActionHandler,
+	InitHandler,
+	EventContext,
+} from '@directus/shared/types';
 import env from './env';
 import * as exceptions from './exceptions';
 import * as sharedExceptions from '@directus/shared/exceptions';
@@ -64,32 +72,81 @@ class FlowManager {
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
 		for (const flow of flowTrees) {
-			if (flow.trigger === 'filter') {
-				const handler: FilterHandler = (payload, meta, context) =>
-					this.executeFlow(
-						flow,
-						{ payload, ...meta },
-						{
+			if (flow.trigger === 'hook') {
+				if (flow.options.type === 'filter') {
+					const handler: FilterHandler = (payload, meta, context) =>
+						this.executeFlow(
+							flow,
+							{ payload, ...meta },
+							{
+								accountability: context.accountability,
+								database: context.database,
+								getSchema: context.schema ? () => context.schema : getSchema,
+							}
+						);
+
+					const events: string[] =
+						flow.options?.filterScope
+							?.map((scope: string) => {
+								if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
+									return (
+										flow.options?.filterCollections?.map((collection: string) => {
+											if (collection.startsWith('directus_')) {
+												const action = scope.split('.')[1];
+												return collection.substring(9) + '.' + action;
+											}
+
+											return `${collection}.${scope}`;
+										}) ?? []
+									);
+								}
+
+								return scope;
+							})
+							?.flat() ?? [];
+
+					events.forEach((event) => emitter.onFilter(event, handler));
+					this.triggerHandlers.push({ type: 'filter', id: flow.id, events, handler });
+				}
+
+				if (flow.options.type === 'action') {
+					const handler: ActionHandler = (meta, context) =>
+						this.executeFlow(flow, meta, {
 							accountability: context.accountability,
 							database: context.database,
 							getSchema: context.schema ? () => context.schema : getSchema,
-						}
-					);
+						});
 
-				emitter.onFilter(flow.options.event, handler);
+					const events: string[] =
+						flow.options?.actionScope
+							?.map((scope: string) => {
+								if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
+									return (
+										flow.options?.actionCollections?.map((collection: string) => {
+											if (collection.startsWith('directus_')) {
+												const action = scope.split('.')[1];
+												return collection.substring(9) + '.' + action;
+											}
 
-				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
-			} else if (flow.trigger === 'action') {
-				const handler: ActionHandler = (meta, context) =>
-					this.executeFlow(flow, meta, {
-						accountability: context.accountability,
-						database: context.database,
-						getSchema: context.schema ? () => context.schema : getSchema,
-					});
+											return `${collection}.${scope}`;
+										}) ?? []
+									);
+								}
 
-				emitter.onAction(flow.options.event, handler);
+								return scope;
+							})
+							?.flat() ?? [];
 
-				this.triggerHandlers.push({ type: flow.trigger, name: flow.options.event, handler });
+					events.forEach((event) => emitter.onAction(event, handler));
+					this.triggerHandlers.push({ type: 'action', id: flow.id, events, handler });
+				}
+
+				if (flow.options.type === 'init') {
+					const handler: InitHandler = () => this.executeFlow(flow);
+					const events: string[] = flow.options.initScope ?? [];
+					events.forEach((event) => emitter.onInit(event, handler));
+					this.triggerHandlers.push({ type: 'init', id: flow.id, events, handler });
+				}
 			} else if (flow.trigger === 'schedule') {
 				if (validate(flow.options.cron)) {
 					const task = schedule(flow.options.cron, () => this.executeFlow(flow));
@@ -116,10 +173,13 @@ class FlowManager {
 		for (const trigger of this.triggerHandlers) {
 			switch (trigger.type) {
 				case 'filter':
-					emitter.offFilter(trigger.name, trigger.handler);
+					trigger.events.forEach((event) => emitter.offFilter(event, trigger.handler));
 					break;
 				case 'action':
-					emitter.offAction(trigger.name, trigger.handler);
+					trigger.events.forEach((event) => emitter.offAction(event, trigger.handler));
+					break;
+				case 'init':
+					trigger.events.forEach((event) => emitter.offInit(event, trigger.handler));
 					break;
 				case 'schedule':
 					trigger.task.stop();

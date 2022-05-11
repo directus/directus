@@ -1,5 +1,4 @@
-import { DeepPartial, Field, FlowRaw, TriggerType } from '@directus/shared/types';
-import { ref } from 'vue';
+import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 
 export type Trigger = {
@@ -8,58 +7,172 @@ export type Trigger = {
 	icon: string;
 	description: string;
 	preview: (options: Record<string, any>, { flow }: { flow: FlowRaw }) => { text: string; label: string }[];
-	options: DeepPartial<Field>[];
+	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]);
 };
 
 export function getTriggers() {
 	const { t } = useI18n();
 
-	const triggers = ref<Trigger[]>([
+	const triggers: Trigger[] = [
 		{
-			text: t('triggers.filter.name'),
-			value: 'filter',
+			text: t('triggers.hook.name'),
+			value: 'hook',
 			icon: 'keyboard_tab',
-			description: t('triggers.filter.description'),
+			description: t('triggers.hook.description'),
 			preview: ({ event }) => [
 				{
-					label: t('triggers.filter.event'),
+					label: t('triggers.hook.event'),
 					text: event,
 				},
 			],
-			options: [
-				{
-					field: 'event',
-					name: t('triggers.filter.event'),
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input',
+			options: ({ type, actionScope, filterScope }) => {
+				const fields = [
+					{
+						field: 'type',
+						name: t('type'),
+						meta: {
+							interface: 'select-radio',
+							options: {
+								choices: [
+									{
+										text: t('action'),
+										value: 'action',
+									},
+									{
+										text: t('filter'),
+										value: 'filter',
+									},
+									{
+										text: t('init'),
+										value: 'init',
+									},
+								],
+							},
+						},
 					},
-				},
-			],
-		},
-		{
-			text: t('triggers.action.name'),
-			value: 'action',
-			icon: 'start',
-			description: t('triggers.action.description'),
-			preview: ({ event }) => [
-				{
-					label: t('triggers.filter.event'),
-					text: event,
-				},
-			],
-			options: [
-				{
-					field: 'event',
-					name: t('triggers.action.event'),
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input',
+				];
+
+				const actionFields = [
+					{
+						field: 'actionScope',
+						name: t('scope'),
+						meta: {
+							interface: 'select-multiple-dropdown',
+							options: {
+								placeholder: t('scope'),
+								choices: [
+									'items.create',
+									'items.update',
+									'items.delete',
+									{ divider: true },
+									'server.start',
+									'server.stop',
+									'response',
+									'auth.login',
+									'files.upload',
+								],
+								font: 'monospace',
+							},
+							width: 'full',
+						},
 					},
-				},
-			],
+					{
+						field: 'actionCollections',
+						name: t('collections'),
+						meta: {
+							interface: 'system-collections',
+							width: 'full',
+							readonly:
+								!actionScope ||
+								['items.create', 'items.update', 'items.delete'].every((t) => actionScope?.includes(t) === false),
+							options: {
+								includeSystem: true,
+							},
+						},
+					},
+				];
+
+				const filterFields = [
+					{
+						field: 'filterScope',
+						name: t('scope'),
+						meta: {
+							interface: 'select-multiple-dropdown',
+							options: {
+								placeholder: t('scope'),
+								choices: [
+									'items.create',
+									'items.update',
+									'items.delete',
+									{ divider: true },
+									'request.not_found',
+									'request.error',
+									'database.error',
+									'auth.login',
+									'auth.jwt',
+									'authenticate',
+								],
+								font: 'monospace',
+							},
+							width: 'full',
+						},
+					},
+					{
+						field: 'filterCollections',
+						name: t('collections'),
+						meta: {
+							interface: 'system-collections',
+							width: 'full',
+							readonly:
+								!filterScope ||
+								['items.create', 'items.update', 'items.delete'].every((t) => filterScope?.includes(t) === false),
+							options: {
+								includeSystem: true,
+							},
+						},
+					},
+				];
+
+				const initFields = [
+					{
+						field: 'initScope',
+						name: t('scope'),
+						meta: {
+							interface: 'select-dropdown',
+							options: {
+								choices: [
+									'cli.before',
+									'cli.after',
+									'app.before',
+									'app.after',
+									'routes.before',
+									'routes.after',
+									'routes.custom.before',
+									'routes.custom.after',
+									'middlewares.before',
+									'middlewares.after',
+								],
+								font: 'monospace',
+							},
+							width: 'half' as Width,
+						},
+					},
+				];
+
+				if (type === 'action') {
+					return [...fields, ...actionFields];
+				}
+
+				if (type === 'filter') {
+					return [...fields, ...filterFields];
+				}
+
+				if (type === 'init') {
+					return [...fields, ...initFields];
+				}
+
+				return fields;
+			},
 		},
 		{
 			text: t('triggers.operation.name'),
@@ -175,7 +288,7 @@ export function getTriggers() {
 				},
 			],
 		},
-	]);
+	];
 
 	return { triggers };
 }

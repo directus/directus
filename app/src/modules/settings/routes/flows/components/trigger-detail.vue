@@ -34,7 +34,7 @@
 				v-if="flowEdits.trigger"
 				v-model="flowEdits.options"
 				class="extension-options"
-				:fields="currentTrigger?.options"
+				:fields="currentTriggerOptionFields"
 				:initial-values="flow?.options"
 				primary-key="+"
 			/>
@@ -56,6 +56,7 @@ const props = defineProps<{
 	firstOpen: boolean;
 	preview?: boolean;
 }>();
+
 const emit = defineEmits(['update:open', 'update:flow', 'first-save']);
 
 const flowEdits = ref<{
@@ -87,7 +88,17 @@ function saveTrigger() {
 
 const { triggers } = getTriggers();
 
-const currentTrigger = computed(() => triggers.value.find((trigger) => trigger.value === flowEdits.value.trigger));
+const currentTrigger = computed(() => triggers.find((trigger) => trigger.value === flowEdits.value.trigger));
+
+const currentTriggerOptionFields = computed(() => {
+	if (!currentTrigger.value) return [];
+
+	if (typeof currentTrigger.value.options === 'function') {
+		return currentTrigger.value.options(flowEdits.value.options);
+	}
+
+	return currentTrigger.value.options;
+});
 </script>
 
 <style scoped lang="scss">

@@ -194,7 +194,7 @@ const styleVars = {
 
 const currentOperation = computed(() => {
 	if (props.type === 'operation') return operations.value.find((operation) => operation.id === props.panel.type);
-	else return triggers.value.find((trigger) => trigger.value === props.panel.type);
+	else return triggers.find((trigger) => trigger.value === props.panel.type);
 });
 
 let down: Target | 'parent' | undefined = undefined;

@@ -45,6 +45,10 @@ group: Group
 export_items: Export Items
 and: And
 or: Or
+init: Init
+modifier: Modifier
+custom: Custom
+hook: Hook
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -898,6 +902,7 @@ settings_presets: Presets & Bookmarks
 settings_translation_strings: Translation Strings
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
+actions: Actions
 select: Select...
 layout: Layout
 tree_view: Tree View
@@ -1935,18 +1940,16 @@ panels:
     monochrome: Monochrome
     monochrome_color: Monochrome Color
 triggers:
-  filter:
-    name: Event Filter
-    description: Triggers before an event is fired, to check, modify, or cancel the event
+  hook:
+    name: Hook
+    description: Respond to a Hook
     event: Event
-  action:
-    name: Event Action
-    description: Triggers after an event is fired, to automate responses to the event
-    event: Event
-  init:
-    name: Event Init
-    description: Triggered by broader internal services where custom logic can be injected
-    event: Event
+  webhook:
+    name: Webhook
+    description: Triggers based on an incoming HTTP request
+    method: Method
+    preview: Triggers on
+    response_body: Response Body
   operation:
     name: Operation
     description: Triggered by an operation in a different Flow, to chain or reuse Flows
@@ -1955,12 +1958,6 @@ triggers:
     name: Schedule
     description: Triggers at certain points of time
     cron: Interval
-  webhook:
-    name: Webhook
-    description: Triggers based on an incoming HTTP request
-    method: Method
-    preview: Triggers on
-    response_body: Response Body
   manual:
     name: Manual
     description: Triggers on manual click
