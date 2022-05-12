@@ -23,7 +23,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted } from 'vue';
-import { useAppStore, useUserStore, useServerStore } from '@/stores';
+import { useAppStore, useUserStore, useServerStore, useThemeStore } from '@/stores';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import useSystem from '@/composables/use-system';
 
@@ -36,12 +36,13 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
+		const themeStore = useThemeStore();
 
 		const { hydrating } = toRefs(appStore);
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
+				'--brand': serverStore.info?.project?.project_color || 'var(--g-color-primary-normal)',
 			};
 		});
 
@@ -60,19 +61,7 @@ export default defineComponent({
 		watch(
 			() => userStore.currentUser,
 			(newUser) => {
-				document.body.classList.remove('dark');
-				document.body.classList.remove('light');
-				document.body.classList.remove('auto');
-
-				if (newUser !== undefined && newUser !== null && newUser.theme) {
-					document.body.classList.add(newUser.theme);
-					document
-						.querySelector('head meta[name="theme-color"]')
-						?.setAttribute('content', newUser.theme === 'light' ? '#ffffff' : '#263238');
-				} else {
-					// Default to auto mode
-					document.body.classList.add('auto');
-				}
+				themeStore.setAppTheme(newUser?.theme);
 			},
 			{ immediate: true }
 		);
@@ -93,7 +82,13 @@ export default defineComponent({
 
 		useSystem();
 
-		return { t, hydrating, brandStyle, error, customCSS };
+		return {
+			t,
+			hydrating,
+			brandStyle,
+			error,
+			customCSS,
+		};
 	},
 });
 </script>
