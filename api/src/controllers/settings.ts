@@ -24,6 +24,32 @@ router.get(
 );
 
 router.patch(
+	'/themes',
+	asyncHandler(async (req, res, next) => {
+		const service = new SettingsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.updateThemeOverrides(req.body, req.sanitizedQuery);
+
+		try {
+			const record = await service.readSingleton(req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error: any) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
+		return next();
+	}),
+	respond
+);
+
+router.patch(
 	'/',
 	asyncHandler(async (req, res, next) => {
 		const service = new SettingsService({
