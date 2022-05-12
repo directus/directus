@@ -1,0 +1,3 @@
+# Architecture
+
+![Directus Architecture Graphic]()

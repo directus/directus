@@ -72,6 +72,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/getting-started/architecture',
+						title: 'Architecture',
+					},
+					{
+						type: 'page',
 						path: '/getting-started/quickstart',
 						title: 'Quickstart Guide',
 					},
