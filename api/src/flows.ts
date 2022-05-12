@@ -28,7 +28,6 @@ export function getFlowManager(): FlowManager {
 
 type TriggerHandler = {
 	id: string;
-	type: 'filter' | 'action' | 'init' | 'schedule';
 	events: EventHandler[];
 };
 
@@ -106,7 +105,6 @@ class FlowManager {
 					events.forEach((event) => emitter.onFilter(event, handler));
 					this.triggerHandlers.push({
 						id: flow.id,
-						type: 'filter',
 						events: events.map((event) => ({ type: 'filter', name: event, handler })),
 					});
 				}
@@ -142,7 +140,6 @@ class FlowManager {
 					events.forEach((event) => emitter.onAction(event, handler));
 					this.triggerHandlers.push({
 						id: flow.id,
-						type: 'action',
 						events: events.map((event) => ({ type: 'action', name: event, handler })),
 					});
 				}
@@ -153,7 +150,6 @@ class FlowManager {
 					events.forEach((event) => emitter.onInit(event, handler));
 					this.triggerHandlers.push({
 						id: flow.id,
-						type: 'init',
 						events: events.map((event) => ({ type: 'init', name: event, handler })),
 					});
 				}
@@ -161,7 +157,7 @@ class FlowManager {
 				if (validate(flow.options.cron)) {
 					const task = schedule(flow.options.cron, () => this.executeFlow(flow));
 
-					this.triggerHandlers.push({ id: flow.id, type: 'schedule', events: [{ type: flow.trigger, task }] });
+					this.triggerHandlers.push({ id: flow.id, events: [{ type: flow.trigger, task }] });
 				} else {
 					logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options.cron}`);
 				}
@@ -181,20 +177,22 @@ class FlowManager {
 
 	public async reload(): Promise<void> {
 		for (const trigger of this.triggerHandlers) {
-			switch (trigger.type) {
-				case 'filter':
-					trigger.events.forEach((event) => emitter.offFilter(event.name, event.handler));
-					break;
-				case 'action':
-					trigger.events.forEach((event) => emitter.offAction(event.name, event.handler));
-					break;
-				case 'init':
-					trigger.events.forEach((event) => emitter.offInit(event.name, event.handler));
-					break;
-				case 'schedule':
-					trigger.events[0].task.stop();
-					break;
-			}
+			trigger.events.forEach((event) => {
+				switch (event.type) {
+					case 'filter':
+						emitter.offFilter(event.name, event.handler);
+						break;
+					case 'action':
+						emitter.offAction(event.name, event.handler);
+						break;
+					case 'init':
+						emitter.offInit(event.name, event.handler);
+						break;
+					case 'schedule':
+						event.task.stop();
+						break;
+				}
+			});
 		}
 
 		this.triggerHandlers = [];
