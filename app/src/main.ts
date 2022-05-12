@@ -16,6 +16,7 @@ import { loadModules } from './modules/register';
 import { router } from './router';
 import './styles/main.scss';
 import { registerViews } from './views/register';
+import { useThemeStore } from '@/stores/theme';
 
 init();
 
@@ -38,6 +39,20 @@ async function init() {
 	app.use(router);
 	app.use(i18n);
 	app.use(createPinia());
+
+	/**
+	 * Themes depend on Pinia stores - must come after createPinia()
+	 *
+	 * Populating before mounting the app (as opposed to mounting in
+	 * the app routes) allows us to ensure themes are persisted on
+	 * all routes, including the login screen. As well, unless
+	 * explicitly re-rendered, themes will not waste load time
+	 * regenerating on every route.
+	 */
+	const themeStore = useThemeStore();
+	await themeStore.hydrate();
+	await themeStore.populateStyles();
+	await themeStore.populateFonts();
 
 	registerDirectives(app);
 	registerComponents(app);
