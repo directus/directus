@@ -401,6 +401,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				  )
 				: payload;
 
+		// Sort keys to ensure that the order is maintained
+		keys.sort();
+
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
 		}
