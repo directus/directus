@@ -1,3 +1,46 @@
+# The fields directly in the fields array are compiled to the following structure.
+# ---
+# Note - this is not the structure in which the fields should be written in this file.
+# Rather, this is the structure expected by the v-form component on the frontend.
+# ---
+# Directus will automatically parse the first-level fields and return it in this
+# structure. For instance, it'll place the interface, options, width, etc. in the meta
+# property. Of course, it'll also automatically fill the schema from the respective
+# database columns, amongst setting other defaults.
+# ---
+# Automatic parsing only applies to the immediate fields. Some fields, such as
+# `storage_asset_presets`, opt to add an array of sub-fields in the `options` property.
+# Directus will return these options as-is, as part of the field. Thus, any sub-fields
+# defined in such a manner should be written in the structure below.
+
+# - collection: string;
+#   field: string;
+#   type: Type;
+#   schema: Column | null;
+#   meta: FieldMeta | null;
+#     id: number;
+#     collection: string;
+#     field: string;
+#     group: string | null;
+#     hidden: boolean;
+#     interface: string | null;
+#     display: string | null;
+#     options: Record<string, any> | null;
+#     display_options: Record<string, any> | null;
+#     readonly: boolean;
+#     required: boolean;
+#     sort: number | null;
+#     special: string[] | null;
+#     translations: Translations[] | null;
+#     width: Width | null;
+#     note: string | null;
+#     conditions: Condition[] | null;
+#     validation: Filter | null;
+#     validation_message: string | null;
+#
+# For more detailed typing information refer to /shared/src/types/fields.ts
+#
+
 table: directus_settings
 
 fields:
@@ -98,20 +141,9 @@ fields:
       lineNumber: true
       template: |
         #app, #main-content, body {
-          --primary-alt: #F0ECFF !important;
-          --primary-10: #F0ECFF !important;
-          --primary-25: #D9D0FF !important;
-          --primary-50: #B3A1FF !important;
-          --primary-75: #8C73FF !important;
-          --primary-90: #7557FF !important;
-
-          --primary: #6644FF !important;
-
-          --primary-110: #5E41EC !important;
-          --primary-125: #523DCF !important;
-          --primary-150: #3E369F !important;
-          --primary-175: #2B3070 !important;
-          --primary-190: #1F2C53 !important;
+          --g-color-primary-normal: #6644FF !important;
+          --g-color-primary-accent: #4422DD !important;
+          --g-color-primary-subtle: #DDDDFF !important;
 
           --v-button-background-color: #6644FF !important;
           --v-button-background-color-hover: #5E41EC !important;
@@ -390,5 +422,11 @@ fields:
               placeholder: $t:fields.directus_settings.attribution_placeholder
 
   - field: translation_strings
+    special: cast-json
+    hidden: true
+
+  # Theme Overrides are part of settings, but are only edited in the themes endpoint.
+  # We'll set hidden to true so it doesn't appear in the project settings page.
+  - field: theme_overrides
     special: cast-json
     hidden: true
