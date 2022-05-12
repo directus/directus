@@ -21,11 +21,15 @@
 #'Proxy', 'Intl'
 identifier: Identifierare
 avatar: Profilbild
+application: Applikation
 default_provider: Standard
 published: Publicerad
 draft: Utkast
 archived: Arkiverad
 modules: Moduler
+module_bar: Modulfält
+reset_width: Återställ bredd
+tile_size: Rutstorlek
 edit_field: Redigera fält
 conditions: Villkor
 maps: Kartor
@@ -323,11 +327,14 @@ revision_delta_reverted: Annullerad
 revision_delta_other: Revision
 revision_delta_by: '{date} av {user}'
 presentation_text_values_cannot_be_reimported: "Använder presentationstext, värden kan inte återimporteras."
+download_page_as_csv: 'Ladda ned sida som CSV'
 private_user: Privat användare
+creation_preview: Förhandsgranskning av skapande
 revision_preview: Förhandsgranska revision
 updates_made: Uppdateringar gjorda
 leave_comment: Lämna en kommentar...
 post_comment_success: Kommentar inskickad
+post_comment_updated: Kommentar uppdaterad
 item_create_success: Objekt skapat | Objekt skapade
 item_update_success: Objekt uppdaterat | Objekt uppdaterade
 item_delete_success: Objekt raderat | Objekt raderade
@@ -336,7 +343,14 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
+import_data_input_placeholder: CSV eller JSON...
+import_data_button: Starta import
+import_data_indeterminate: Importerar data...
+import_data_success: Data importerades framgångsrikt från {filename}
+import_data_error: Den här filens datastruktur matchar inte samlingen.
 label_import: Importera
+label_export: Exportera
+import_export: Importera/exportera
 format: Format
 last_page: Sista sidan
 last_access: Senaste åtkomsten
@@ -353,13 +367,22 @@ interface_label: Gränssnitt
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
+delete_share: Ta bort delning
 functions:
   year: År
   month: Månad
+  week: Vecka
+  day: Dag
+  weekday: Veckodag
+  hour: Timme
+  minute: Minut
+  second: Sekund
   count: Antal
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -410,6 +433,15 @@ replace_from_library: Ersätt fil från biblioteket
 replace_from_url: Ersätt fil från URL
 no_file_selected: Ingen fil vald
 download_file: Ladda ner fil
+open_file_in_tab: Öppna fil i ny flik
+start_export: Påbörja exportering
+not_available_for_local_downloads: Inte tillgänglig för lokala nedladdningar
+exporting_all_items_in_collection: Exporterar alla {total} objekt inom {collection}.
+exporting_limited_items_in_collection: Exporterar {limit} av {total} objekt inom {collection}.
+exporting_no_items_to_export: Inga objekt att exportera. Justera exportkonfigurationen nedan.
+exporting_download_hint: När den är klar kommer den här {format}-filen att laddas ner till din enhet automatiskt.
+exporting_batch_hint: Denna export kommer att bearbetas i omgångar och när detta är slutfört kommer {format} -filen att sparas i filbiblioteket.
+exporting_batch_hint_forced: På grund av ett stort antal objekt kommer denna export att bearbetas i omgångar, och när detta är slutfört kommer {format} -filen att sparas i filbiblioteket.
 collection_key: Kollektionsnyckel
 name: Namn
 primary_key_field: Primär nyckelfält
@@ -457,6 +489,7 @@ no_notifications: Inga notifikationer
 no_notifications_copy: Inget nytt!
 activity_log: Aktivitetslogg
 all_items: Alla objekt
+any: Valfri
 csv: CSV
 no_collections: Inga kollektioner
 create_collection: Skapa samling
@@ -475,6 +508,7 @@ no_other_dashboards_copy: Du har inga andra kontrollpaneler än.
 inactive: Inaktiv
 users: Användare
 activity: Händelser
+activity_item: Aktivitetsobjekt
 action: Åtgärd
 ip_address: IP-adress
 user_agent: Användaragent
@@ -524,21 +558,31 @@ errors:
   INVALID_CREDENTIALS: Fel användarnamn eller lösenord
   INVALID_OTP: Fel engångslösenord
   INVALID_PAYLOAD: Ogiltig payload
+  INVALID_PROVIDER: Användaren tillhör en annan auth leverantör
   INVALID_QUERY: Ogiltig query
+  INVALID_USER: Det gick inte att autentisera användaren
   ITEM_LIMIT_REACHED: Objektgränsen har uppnåtts
   ITEM_NOT_FOUND: Objektet hittades inte
   ROUTE_NOT_FOUND: Hittades inte
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   USER_SUSPENDED: Användare avstängd
+  CONTAINS_NULL_VALUES: Fältet innehåller nullvärden
+  UNPROCESSABLE_ENTITY: Kan inte processa data
   INTERNAL_SERVER_ERROR: Oväntat fel
   NOT_NULL_VIOLATION: Värdet kan inte vara null
   ILLEGAL_ASSET_TRANSFORMATION: Bildkälla för stor för att förhandsgranska
+  VALUE_TOO_LONG: Värdet är för långt
+  VALUE_OUT_OF_RANGE: Värdet är utanför giltigt intervall
+  INVALID_FOREIGN_KEY: Ogiltig främmande nyckel
   UNKNOWN: Oväntat fel
 security: Säkerhet
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
 create_bookmark: Skapa bokmärke
 edit_bookmark: Redigera bokmärke
+edit_personal_bookmark: Redigera personligt bokmärke
+edit_role_bookmark: Redigera roll-bokmärke
+edit_global_bookmark: Redigera globalt bokmärke
 bookmarks: Bokmärken
 presets: Förval
 unexpected_error: Oväntat fel
@@ -963,6 +1007,7 @@ fields:
     storage_default_folder: Förvald mapp
     storage_asset_transform: Tillåtna transformationer
     custom_css: Custom CSS
+    module_bar: Modulfält
     transformations_all: Tillåt alla transformationer
     transformations_none: Inaktivera transformationer
     transformations_presets: Begränsa transformationer till inställningarna nedan
