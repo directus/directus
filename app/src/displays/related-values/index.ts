@@ -70,20 +70,24 @@ export default defineDisplay({
 		const stringValues: Record<string, string> = {};
 
 		for (const { key, field } of fields) {
+			const fieldValue = get(value, key);
+
+			if (!fieldValue) continue;
+
 			if (!field?.meta?.display) {
-				set(stringValues, key, get(value, key));
+				set(stringValues, key, fieldValue);
 				continue;
 			}
 
 			const display = getDisplay(field.meta.display);
 
 			const stringValue = display?.handler
-				? await display.handler(get(value, key), field?.meta?.display_options ?? {}, {
+				? await display.handler(fieldValue, field?.meta?.display_options ?? {}, {
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,
 				  })
-				: get(value, key);
+				: fieldValue;
 
 			set(stringValues, key, stringValue);
 		}
