@@ -86,6 +86,7 @@
 		"file-saver": "^2.0.5",
 		"flatpickr": "4.6.9",
 		"front-matter": "4.0.2",
+		"hsluv": "^0.1.0",
 		"html-entities": "2.3.2",
 		"jest": "27.4.7",
 		"json2csv": "^5.0.7",
