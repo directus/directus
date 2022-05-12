@@ -557,7 +557,9 @@ errors:
   INVALID_CREDENTIALS: Nieprawidłowa nazwa użytkownika lub hasło
   INVALID_OTP: Złe hasło jednorazowe
   INVALID_PAYLOAD: Błędny payload
+  INVALID_PROVIDER: Użytkownik należy do innego dostawcy autoryzacji
   INVALID_QUERY: Nieprawidłowe zapytanie
+  INVALID_USER: Błąd uwierzytelniania użytkownika
   ITEM_LIMIT_REACHED: Osiągnięto limit przedmiotów
   ITEM_NOT_FOUND: Nie znaleziono elementu
   ROUTE_NOT_FOUND: Nie znaleziono
