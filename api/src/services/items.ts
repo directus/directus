@@ -341,6 +341,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
+		// Set query limit as the number of keys
+		if (!queryWithKey.limit) {
+			queryWithKey.limit = keys.length;
+		}
+
 		const results = await this.readByQuery(queryWithKey, opts);
 
 		return results;
