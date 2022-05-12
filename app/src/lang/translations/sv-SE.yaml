@@ -29,6 +29,7 @@ modules: Moduler
 edit_field: Redigera fält
 conditions: Villkor
 maps: Kartor
+switch_user: Byt användare
 item_creation: Skapa ny
 item_revision: Uppdatera
 enter_a_name: Ange ett namn...
@@ -36,6 +37,7 @@ duplicate_field: Duplicera fält
 half_width: Halv bredd
 full_width: Full bredd
 group: Gruppera
+export_items: Exportera objekt
 and: Och
 or: Eller
 fill_width: Full bredd
@@ -50,7 +52,9 @@ edit_collection: Redigera samling
 exclusive: Exklusiv
 children: Barn
 db_only_click_to_configure: 'Enbart databas: klicka för att konfigurera'
+show_active_items: Visa aktiva objekt
 show_archived_items: Visa arkiverade objekt
+show_all_items: Visa alla objekt
 edited: Redigerat värde
 required: Obligatoriskt
 required_for_app_access: Krävs för tillgång till applikationen
@@ -61,6 +65,12 @@ create_role: Skapa roll
 create_user: Skapa användare
 delete_panel: Ta bort panel
 create_webhook: Skapa webhook
+create_translation_string: Skapa översättnings-sträng
+translation_string_key_placeholder: Översättningsnyckel...
+translation_string_translations_placeholder: Lägg till en ny översättning
+edit_translation_string: Redigera översättnings-sträng
+delete_translation_string_copy: >-
+  Är du säker på att du vill radera översättnings-strängen "{key}"? Den här åtgärden kan inte ångras.
 invite_users: Bjud in användare
 invite: Bjud in
 email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
@@ -81,11 +91,15 @@ update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
 delete_bookmark_copy: >-
   Är du säker på att du vill ta bort bokmärket "{bookmark}"? Denna åtgärd kan inte ångras.
+delete_personal_bookmark: Ta bort personligt bokmärke
+delete_role_bookmark: Radera roll-bokmärke
+delete_global_bookmark: Ta bort globalt bokmärke
 logoutReason:
   SIGN_OUT: Utloggad
   SESSION_EXPIRED: Sessionen har upphört
 public_label: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
+admin_description: Initial administrativ roll med obegränsad app/API-åtkomst.
 not_allowed: Inte tillåtet
 directus_version: Directus Version
 node_version: Node version
@@ -106,6 +120,7 @@ recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
 unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
 nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
+validation_errors_notice: 'Följande fält har ogiltiga värden:'
 validationError:
   eq: Värdet måste vara {valid}
   neq: Värdet kan inte vara {invalid}
@@ -155,6 +170,7 @@ revision_post_create: Så här såg objektet ut när det skapades.
 revision_post_update: Så här såg objektet ut efter uppdateringen.
 changes_made: Nedan följer de specifika ändringarna i denna revision.
 no_relational_data: Tänk på att relationsdata inte ingår här.
+hide_field: Göm fält
 hide_field_on_detail: Dölj fältet på detaljnivå
 show_field_on_detail: Visa fältet på detaljnivå
 delete_field: Radera fält
@@ -163,6 +179,7 @@ field_create_success: 'Skapade fältet: "{field}"'
 field_update_success: 'Uppdaterade fältet: "{field}"'
 duplicate_where_to: Vart vill du duplicera det här fältet någonstans?
 language: Språk
+language_placeholder: Välj ett språk...
 aggregate_function: Funktion för aggregering
 aggregate_precision: Precision för aggregering
 group_aggregation: Aggregera grupp
@@ -173,6 +190,7 @@ camera: Kamera
 show_zero: Visa noll
 create_in_advanced_field_creation_mode: Skapa ett fält i avancerat läge
 continue_in_advanced_field_creation_mode: Fortsätta skapa ett fält i avancerat läge
+validation: Validering
 sum: Summa
 sum_distinct: Summa distinkt
 avg: Genomsnitt
@@ -264,6 +282,7 @@ note: Anteckning
 enter_a_value: Ange ett värde...
 enter_a_placeholder: Ange en platshållare...
 length: Längd
+soft_length: Mjuk gräns
 precision_scale: Precision & skala
 readonly: Skrivskyddad
 unique: Unik
@@ -274,9 +293,19 @@ foreign_key: Främmande nyckel
 finish_setup: Slutför installation
 dismiss: Avfärda
 raw_value: Obearbetat värde
+copy_raw_value: Kopiera obearbetat värde
+copy_raw_value_success: Kopierad
+copy_raw_value_fail: Kopiering misslyckades
+paste_raw_value: Klistra in obearbetat värde
+paste_raw_value_success: Inklistrad
+paste_raw_value_fail: Klistra in misslyckades
+view_raw_value: Visa obearbetat värde
 edit_raw_value: Redigera obearbetat värde
 enter_raw_value: Ange obearbetat värde...
+clear_value: Rensa fält
 clear_changes: Rensa ändringar
+reset_to_default: Återställ Till Standard
+undo_changes: Ångra ändringar
 notifications: Aviseringar
 show_all_activity: Visa all aktivitet
 page_not_found: Sidan hittades inte
@@ -293,6 +322,7 @@ revision_delta_deleted: Raderad
 revision_delta_reverted: Annullerad
 revision_delta_other: Revision
 revision_delta_by: '{date} av {user}'
+presentation_text_values_cannot_be_reimported: "Använder presentationstext, värden kan inte återimporteras."
 private_user: Privat användare
 revision_preview: Förhandsgranska revision
 updates_made: Uppdateringar gjorda
