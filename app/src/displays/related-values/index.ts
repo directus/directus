@@ -72,7 +72,7 @@ export default defineDisplay({
 		for (const { key, field } of fields) {
 			const fieldValue = get(value, key);
 
-			if (!fieldValue) continue;
+			if (fieldValue === null || fieldValue === undefined) continue;
 
 			if (!field?.meta?.display) {
 				set(stringValues, key, fieldValue);
