@@ -4,11 +4,16 @@
 
 At first glance, it may be tempting to think of Directus as an app-centric platform. But that's not the case. The app is
 just a GUI powered by the API. This app allows developers, business users, and analysts equal access to data and asset
-storage, all in one environment.
+storage, all in one place.
 
 Here's how the platform architecture breaks down.
 
-![Directus Architecture Graphic]()
+![Directus Architecture Graphic](https://cdn.directus.io/docs/v9/getting-started/architecture/architecture-20220512/directus-architecture-20220512A.webp)
+
+Directus is plug-and-play. It does not _own_ your data or file assets, but it does create about 10-20 data tables needed
+for platform operation. These tables do not intermingle with the rest of your data, allowing you to remove Directus
+without a trace. You also have the freedom to access the database with raw SQL queries and CLI commands directly or with
+any other platform or service.
 
 At the lowest layer, the platform introspects the database and abstracts away specific SQL details- so no matter what
 SQL vendor, the platform works seamlessly. Similarly, Directus syncs with your configured file storage service,
@@ -18,8 +23,8 @@ The next layer contains logic to access, transmit, query, and transform data, in
 query operations, and file transformations _(like image cropping)_. After that, the data and assets get cached for user
 access.
 
-Directus provides secure user access methods. You have the freedom to choose access token format and configure
-authentication as desired. You can set SSO and allow login through Google, Facebook, etc.
+Directus provides secure user access methods. Choose access token format and configure authentication as desired. You
+can set SSO and allow login through Google, Facebook, etc.
 
 Finally, a complete set of REST and GraphQL endpoints are generated dynamically, based on your data model, configured
 roles, and permissions. The full Directus SDK is on NPM. You also have access to two Command-Line Interfaces (CLI). One
