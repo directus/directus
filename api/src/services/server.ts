@@ -45,6 +45,7 @@ export class ServerService {
 				'public_background',
 				'public_note',
 				'custom_css',
+				'theme_overrides',
 			],
 		});
 
