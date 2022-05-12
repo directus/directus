@@ -49,9 +49,9 @@ export default defineDisplay({
 	handler: async (value, options, { collection, field }) => {
 		if (!field || !collection) return value;
 
-		const relatedCollection = getRelatedCollection(collection, field.field);
+		const relatedCollections = getRelatedCollection(collection, field.field);
 
-		if (!relatedCollection) return value;
+		if (!relatedCollections) return value;
 
 		const fieldsStore = useFieldsStore();
 
@@ -61,7 +61,7 @@ export default defineDisplay({
 			return {
 				key: fieldKey,
 				field: fieldsStore.getField(
-					relatedCollection.junctionCollection ?? relatedCollection.relatedCollection,
+					relatedCollections.junctionCollection ?? relatedCollections.relatedCollection,
 					fieldKey
 				),
 			};
@@ -72,7 +72,7 @@ export default defineDisplay({
 		for (const { key, field } of fields) {
 			if (!field?.meta?.display) {
 				set(stringValues, key, get(value, key));
-				return;
+				continue;
 			}
 
 			const display = getDisplay(field.meta.display);
