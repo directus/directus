@@ -303,13 +303,16 @@ foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 raw_value: Raw value
+copy_color_value: Copy Color
 copy_raw_value: Copy Raw Value
 copy_raw_value_success: Copied
 copy_raw_value_fail: Copy Failed
+paste_color_value: Paste Color
 paste_raw_value: Paste Raw Value
 paste_raw_value_success: Pasted
 paste_raw_value_fail: Paste Failed
 view_raw_value: View Raw Value
+edit_color_value: Edit Color
 edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 clear_value: Clear Value
@@ -324,6 +327,7 @@ confirm_revert: Confirm Revert
 confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
+theme_update_success: Theme updated
 title: Title
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
@@ -332,7 +336,7 @@ revision_delta_deleted: Deleted
 revision_delta_reverted: Reverted
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
@@ -864,6 +868,7 @@ no_options_available: No options available
 settings_data_model: Data Model
 settings_permissions: Roles & Permissions
 settings_project: Project Settings
+settings_theme: Themes & Styling
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 settings_translation_strings: Translation Strings
@@ -906,6 +911,7 @@ page_help_settings_project: "**Project Settings** — Your project's global conf
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
+page_help_settings_theming: '**Theme Editor** — Customize the light and dark theme to suit your project.'
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
@@ -1121,6 +1127,8 @@ fields:
     triggers: Triggers
     actions: Actions
     collections: Collections
+accent: &accent Accent
+subtle: &subtle Subtle
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1152,6 +1160,75 @@ field_options:
     basemaps_style: Mapbox Style
     files_divider_title: Files & Thumbnails
     overrides_divider_title: App Overrides
+    theme_overrides:
+      colors:
+        primary_normal: Primary
+        primary_accent: *accent
+        primary_subtle: *subtle
+        secondary_normal: Secondary
+        secondary_accent: *accent
+        secondary_subtle: *subtle
+        success_normal: Success
+        success_accent: *accent
+        success_subtle: *subtle
+        warning_normal: Warning
+        warning_accent: *accent
+        warning_subtle: *subtle
+        danger_normal: Danger
+        danger_accent: *accent
+        danger_subtle: *subtle
+        border_normal: Border Normal
+        border_accent: Border Accent
+        border_subtle: Border Subtle
+        background_normal: Background Normal
+        background_accent: Background Accent
+        background_subtle: Background Subtle
+        background_page: Background Page
+        background_invert: Background Invert
+        foreground_normal: Foreground Normal
+        foreground_accent: Foreground Accent
+        foreground_subtle: Foreground Subtle
+        foreground_invert: Foreground Invert
+        module_background_normal: Background
+        module_background_hover: Background Hover
+        module_background_active: Background Active
+        module_foreground_normal: Foreground
+        module_foreground_hover: Foreground Hover
+        module_foreground_active: Foreground Active
+      border:
+        width: Border Width
+        radius: Border Radius
+      font:
+        sans: Sans-Serif Font
+        serif: Serif Font
+        mono: Monospace Font
+      sections:
+        select_theme:
+          title: Select Theme to Edit
+        colors:
+          title: Color Variables
+          description: >-
+            Choose the focal colors that will be used throughout Directus. An accent and subtle variant will be automatically generated for you.
+        foreground:
+          title: Fonts & Foreground
+          description: >-
+            Customize the fonts and foreground colors that will be used throughout Directus. Foreground colors apply to foreground elements, such as text and icons.
+        background:
+          title: Background Colors
+          description: >-
+            Customize the background colors that will be used throughout Directus. Background colors appear behind page content. This includes the main content area and the sidebar backdrop, as well as more subtle areas such as tooltips and tertiary action buttons.
+        border:
+          title: Border Options
+          description: >-
+            Set the width of borders, the radius of corners (border radius), and the colors of borders. These options will apply to areas such as input outlines, horizontal bars, and table borders.
+        module:
+          title: Module Bar
+          description: >-
+            Adjust settings specific to the module bar.
+        type_styles:
+          title: Type Styles
+          description: >-
+            Directus utilizes a set of type styles to determine how text should appear throughout the app. In this section, you can customize the type styles to fit your needs. For instance, if you'd prefer to default to a serif font, you could set the main "Text" type style to "Serif" (the font used will be pulled from Fonts & Foreground).
   directus_activity:
     login: Login
     create: Create
@@ -1445,6 +1522,11 @@ interfaces:
     inline_title_label: Show title inside line
     margin_top: Margin Top
     margin_top_label: Increase Top Margin
+  presentation-text-block:
+    text-block: Text Block
+    description: Display a static block of text
+    text: Text Content
+    text_placeholder: Enter any text...
   select-dropdown:
     description: Select a value from a dropdown
     choices_placeholder: Add a new choice
@@ -1640,6 +1722,9 @@ interfaces:
     header_color: Header Color
     start_open: Start Open
     start_closed: Start Closed
+  system-theme:
+    color_generated: Generated Theme Color
+    color_picker: Theme Color Picker
 displays:
   translations:
     translations: Translations
