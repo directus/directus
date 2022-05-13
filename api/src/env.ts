@@ -221,11 +221,14 @@ function isEnvSyntaxPrefixPresent(value: string): boolean {
 function processValues(env: Record<string, any>) {
 	env = clone(env);
 
+	const processEnvFiles = toBoolean(env.PROCESS_ENV_FILES);
+
 	for (let [key, value] of Object.entries(env)) {
 		// If key ends with '_FILE', try to get the value from the file defined in this variable
 		// and store it in the variable with the same name but without '_FILE' at the end
+		// Do this only as opt-in when the PROCESS_ENV_FILES var is set to true
 		let newKey;
-		if (key.length > 5 && key.endsWith('_FILE')) {
+		if (key.length > 5 && key.endsWith('_FILE') && processEnvFiles) {
 			newKey = key.slice(0, -5);
 			if (newKey in env) {
 				throw new Error(
@@ -263,7 +266,7 @@ function processValues(env: Record<string, any>) {
 					env[key] = tryJSON(value);
 					break;
 				case 'boolean':
-					env[key] = value === 'true' || value === true || value === '1' || value === 1;
+					env[key] = toBoolean(value);
 			}
 			continue;
 		}
@@ -321,4 +324,8 @@ function tryJSON(value: any) {
 	} catch {
 		return value;
 	}
+}
+
+function toBoolean(value: any): boolean {
+	return value === 'true' || value === true || value === '1' || value === 1;
 }
