@@ -124,7 +124,10 @@ describe('getLocalExtensions', () => {
 			ensureDirSync(`${rootLocalPackage.name}/${type}s/directus-extension-test`);
 
 			extensionPackages.push({
-				entrypoint: 'index.js',
+				entrypoint: {
+					api: 'api.js',
+					app: 'app.js',
+				},
 				local: true,
 				name: 'directus-extension-test',
 				path: `${rootLocalPackage.name}/${type}s/directus-extension-test`,

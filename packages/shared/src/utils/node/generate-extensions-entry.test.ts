@@ -9,7 +9,7 @@ describe('generateExtensionsEntry', () => {
 			{ path: './extensions', name: 'mockExtension', type: 'panel', entrypoint: 'index.js', local: true },
 		];
 		expect(generateExtensionsEntry(type, mockExtension)).toBe(
-			`import e0 from './extensions';
+			`import e0 from './extensions/index.js';
 export default [e0];`
 		);
 	});
