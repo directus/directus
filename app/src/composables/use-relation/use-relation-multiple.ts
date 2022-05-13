@@ -52,11 +52,12 @@ export function useRelationMultiple(
 	});
 
 	watch(value, (newValue, oldValue) => {
-		if (Array.isArray(newValue) && isPlainObject(oldValue)) {
+		if (
+			(Array.isArray(newValue) && isPlainObject(oldValue)) ||
+			(Array.isArray(newValue) && Array.isArray(oldValue) && oldValue.length === 0)
+		) {
 			updateFetchedItems();
-		}
-
-		if (newValue === null) {
+		} else if (newValue === null) {
 			clear();
 		}
 	});
@@ -277,21 +278,13 @@ export function useRelationMultiple(
 		function clear() {
 			if (!relation.value) return;
 
-			if (fetchedItems.value.length === 0) {
-				value.value = itemId.value === '+' ? undefined : [];
-				return;
-			}
-
-			const pkField =
-				relation.value.type === 'o2m'
-					? relation.value.relatedPrimaryKeyField.field
-					: relation.value.junctionPrimaryKeyField.field;
+			value.value = itemId.value === '+' ? undefined : [];
+			existingItemCount.value = 0;
+			fetchedItems.value = [];
 
 			target.value.create = [];
 			target.value.update = [];
-			target.value.delete = fetchedItems.value.map((item) => item[pkField]);
-
-			updateValue();
+			target.value.delete = [];
 		}
 
 		function updateValue() {
