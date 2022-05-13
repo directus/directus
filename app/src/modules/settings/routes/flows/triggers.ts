@@ -17,7 +17,7 @@ export function getTriggers() {
 		{
 			text: t('triggers.hook.name'),
 			value: 'hook',
-			icon: 'keyboard_tab',
+			icon: 'anchor',
 			description: t('triggers.hook.description'),
 			preview: ({ type, actionScope, filterScope, actionCollections, filterCollections }) => {
 				const labels = [
@@ -254,7 +254,7 @@ export function getTriggers() {
 		{
 			text: t('triggers.webhook.name'),
 			value: 'webhook',
-			icon: 'anchor',
+			icon: 'link',
 			description: t('triggers.webhook.description'),
 			preview: ({ method }, { flow }) => [
 				{
