@@ -35,6 +35,7 @@ tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 condition_rules: Condition Rules
+input: Input
 maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
