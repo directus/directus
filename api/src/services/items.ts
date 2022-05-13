@@ -600,6 +600,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
+
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, keys);
+
 		return keys.length ? await this.deleteMany(keys, opts) : [];
 	}
 
@@ -733,7 +737,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
-		this.validatePrimaryKeys(primaryKeyField, primaryKeyField);
 
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
