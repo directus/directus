@@ -1,4 +1,4 @@
-import { EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES } from '../../constants/extensions';
+import { EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../constants/extensions';
 import { getLocalExtensions, getPackageExtensions } from './get-extensions';
 import { SynchrounousResult, dirSync } from 'tmp';
 import { ensureDirSync, writeJsonSync } from 'fs-extra';
@@ -123,16 +123,26 @@ describe('getLocalExtensions', () => {
 			});
 			ensureDirSync(`${rootLocalPackage.name}/${type}s/directus-extension-test`);
 
-			extensionPackages.push({
-				entrypoint: {
-					api: 'api.js',
-					app: 'app.js',
-				},
-				local: true,
-				name: 'directus-extension-test',
-				path: `${rootLocalPackage.name}/${type}s/directus-extension-test`,
-				type: type,
-			});
+			if (HYBRID_EXTENSION_TYPES.includes(type as any)) {
+				extensionPackages.push({
+					entrypoint: {
+						api: 'api.js',
+						app: 'app.js',
+					},
+					local: true,
+					name: 'directus-extension-test',
+					path: `${rootLocalPackage.name}/${type}s/directus-extension-test`,
+					type: type,
+				});
+			} else {
+				extensionPackages.push({
+					entrypoint: 'index.js',
+					local: true,
+					name: 'directus-extension-test',
+					path: `${rootLocalPackage.name}/${type}s/directus-extension-test`,
+					type: type,
+				});
+			}
 		});
 
 		expect(await getLocalExtensions(rootLocalPackage.name, EXTENSION_TYPES)).toStrictEqual(extensionPackages);
