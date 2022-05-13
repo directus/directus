@@ -34,7 +34,6 @@ const TABLES_AFTER_SEED = [
 	'directus_settings',
 	'directus_shares',
 	'directus_users',
-	'directus_webhooks',
 ];
 
 describe('/collections', () => {

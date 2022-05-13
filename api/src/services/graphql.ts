@@ -78,7 +78,6 @@ import { SpecificationService } from './specifications';
 import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
-import { WebhooksService } from './webhooks';
 import { FlowsService } from './flows';
 import { OperationsService } from './operations';
 
@@ -1614,8 +1613,6 @@ export class GraphQLService {
 				return new SettingsService(opts);
 			case 'directus_users':
 				return new UsersService(opts);
-			case 'directus_webhooks':
-				return new WebhooksService(opts);
 			case 'directus_shares':
 				return new SharesService(opts);
 			case 'directus_flows':

@@ -30,7 +30,6 @@ import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
-import webhooksRouter from './controllers/webhooks';
 import sharesRouter from './controllers/shares';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import emitter from './emitter';
@@ -53,7 +52,6 @@ import schema from './middleware/schema';
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
-import { register as registerWebhooks } from './webhooks';
 import { flushCaches } from './cache';
 import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
@@ -236,7 +234,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
-	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
@@ -247,9 +244,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(errorHandler);
 
 	await emitter.emitInit('routes.after', { app });
-
-	// Register all webhooks
-	await registerWebhooks();
 
 	track('serverStarted');
 
