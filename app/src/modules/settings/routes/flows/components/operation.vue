@@ -474,7 +474,7 @@ function pointerLeave() {
 
 	dd {
 		font-family: var(--family-monospace);
-		white-space: normal;
+		white-space: pre-wrap;
 		line-break: anywhere;
 	}
 }

@@ -9,8 +9,8 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'condition',
 
-	handler: ({ filter, item }) => {
-		const errors = validatePayload(filter, JSON.parse(item));
+	handler: ({ filter }, { data }) => {
+		const errors = validatePayload(filter, data);
 
 		if (errors.length > 0) {
 			throw errors;
