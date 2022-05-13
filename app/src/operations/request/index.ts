@@ -2,7 +2,7 @@ import { defineOperationApp } from '@directus/shared/utils';
 
 export default defineOperationApp({
 	id: 'request',
-	icon: 'cloud_download',
+	icon: 'link',
 	name: '$t:operations.request.name',
 	description: '$t:operations.request.description',
 	preview: ({ url, method }) => [

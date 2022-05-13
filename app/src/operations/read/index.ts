@@ -3,7 +3,7 @@ import { toArray } from '@directus/shared/utils';
 
 export default defineOperationApp({
 	id: 'read',
-	icon: 'download',
+	icon: 'visibility',
 	name: '$t:operations.read.name',
 	description: '$t:operations.read.description',
 	preview: ({ mode, collection, key }) => {

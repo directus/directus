@@ -1911,20 +1911,20 @@ panels:
     monochrome_color: Monochrome Color
 triggers:
   hook:
-    name: Hook
-    description: Respond to an Event Hook
+    name: Event Hook
+    description: Triggers on various platform events
     event: Event
   webhook:
     name: Webhook
-    description: Respond to an incoming HTTP request
+    description: Triggers on an incoming HTTP request
     method: Method
     preview: Triggers on
     response_body: Response Body
     response_body_all: All Data
     response_body_last: Data of Last Operation
   operation:
-    name: Operation
-    description: Triggered by an operation in a different Flow, to chain or reuse Flows
+    name: Another Flow
+    description: Triggered by another Flow, for chaining
     preview: Triggered by an operation in a different Flow
   schedule:
     name: Schedule
@@ -1935,27 +1935,24 @@ triggers:
     description: Triggers on manual click
     click: Click
 operations:
-  auth:
-    name: Authenticate
-    description: Check if something can be performed with a given filter
   log:
     name: Log to Console
-    description: Log something in the console
+    description: Output something to the console
     message: Message
     message_placeholder: Enter a message to show in the console
   mail:
-    name: E-Mail
-    description: Send emails to other humans
+    name: Send Email
+    description: Send an email to one or more people
     to: To
     to_placeholder: Add e-mail addresses and press enter...
     body: Body
   notification:
-    name: Notification
-    description: Send a notification to someone
-    recipient: Users
+    name: Send Notification
+    description: Send an in-app notification to a user
+    recipient: User
     message: Message
   read:
-    name: Read
+    name: Read Data
     description: Read items from the database
     mode:
       field: Mode
@@ -1965,8 +1962,8 @@ operations:
     key: IDs
     query: Query
   request:
-    name: Request
-    description: Make a request to an url
+    name: Webhook / Request URL
+    description: "Make a request to a URL"
     url: URL
     url_placeholder: https://example.com/example
     method: Method
@@ -1977,22 +1974,22 @@ operations:
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
     name: Sleep
-    description: Wait for a given amount of milliseconds
+    description: Wait a given number of milliseconds
     milliseconds: Milliseconds
   transform:
-    name: Transform
-    description: Insert JSON into the flow
+    name: Transform Payload
+    description: Alter the Flow's JSON payload
   trigger:
-    name: Trigger
-    description: Start another flow
+    name: Trigger Flow
+    description: Pass this data to another flow
     flows: Flows
     flow: Flow
     data: Data
   condition:
     name: Condition
-    description: Validate the payload with a filter
+    description: Route a flow based on If / Else logic
   create:
-    name: Create
+    name: Create Data
     description: Create items in the database
     mode:
       field: Mode
