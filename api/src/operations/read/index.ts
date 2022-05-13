@@ -1,9 +1,9 @@
-import { PrimaryKey, Accountability } from '@directus/shared/types';
+import { Accountability, PrimaryKey } from '@directus/shared/types';
 import { defineOperationApi, toArray } from '@directus/shared/utils';
+import { InvalidConfigException } from '../../exceptions';
 import { ItemsService } from '../../services';
 import { Item } from '../../types';
 import { getPermissions } from '../../utils/get-permissions';
-import { InvalidConfigException } from '../../exceptions';
 
 type Options = {
 	mode: 'one' | 'many' | 'query';
