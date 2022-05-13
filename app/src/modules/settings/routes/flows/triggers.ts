@@ -105,7 +105,7 @@ export function getTriggers() {
 								],
 								font: 'monospace',
 							},
-							width: 'full',
+							width: 'full' as Width,
 						},
 					},
 					{
@@ -113,7 +113,7 @@ export function getTriggers() {
 						name: t('collections'),
 						meta: {
 							interface: 'system-collections',
-							width: 'full',
+							width: 'full' as Width,
 							readonly:
 								!actionScope ||
 								['items.create', 'items.update', 'items.delete'].every((t) => actionScope?.includes(t) === false),
@@ -146,7 +146,7 @@ export function getTriggers() {
 								],
 								font: 'monospace',
 							},
-							width: 'full',
+							width: 'full' as Width,
 						},
 					},
 					{
@@ -154,7 +154,7 @@ export function getTriggers() {
 						name: t('collections'),
 						meta: {
 							interface: 'system-collections',
-							width: 'full',
+							width: 'full' as Width,
 							readonly:
 								!filterScope ||
 								['items.create', 'items.update', 'items.delete'].every((t) => filterScope?.includes(t) === false),
@@ -207,51 +207,6 @@ export function getTriggers() {
 			},
 		},
 		{
-			text: t('triggers.operation.name'),
-			value: 'operation',
-			icon: 'bolt',
-			description: t('triggers.operation.description'),
-			preview: () => [],
-			options: [
-				{
-					field: 'empty',
-					type: 'alias',
-					meta: {
-						interface: 'presentation-notice',
-						options: {
-							text: t('no_options_available'),
-						},
-					},
-				},
-			],
-		},
-		{
-			text: t('triggers.schedule.name'),
-			value: 'schedule',
-			icon: 'schedule',
-			description: t('triggers.schedule.description'),
-			preview: ({ cron }) => [
-				{
-					label: t('triggers.schedule.cron'),
-					text: cron,
-				},
-			],
-			options: [
-				{
-					field: 'cron',
-					name: t('triggers.schedule.cron'),
-					type: 'string',
-					meta: {
-						width: 'full',
-						interface: 'input',
-						options: {
-							placeholder: '* * 1 * * *',
-						},
-					},
-				},
-			],
-		},
-		{
 			text: t('triggers.webhook.name'),
 			value: 'webhook',
 			icon: 'link',
@@ -297,16 +252,37 @@ export function getTriggers() {
 			],
 		},
 		{
-			text: t('triggers.manual.name'),
-			value: 'manual',
-			icon: 'touch_app',
-			description: t('triggers.manual.description'),
-			preview: () => [
+			text: t('triggers.schedule.name'),
+			value: 'schedule',
+			icon: 'schedule',
+			description: t('triggers.schedule.description'),
+			preview: ({ cron }) => [
 				{
-					label: t('triggers.manual.description'),
-					text: '',
+					label: t('triggers.schedule.cron'),
+					text: cron,
 				},
 			],
+			options: [
+				{
+					field: 'cron',
+					name: t('triggers.schedule.cron'),
+					type: 'string',
+					meta: {
+						width: 'full',
+						interface: 'input',
+						options: {
+							placeholder: '* * 1 * * *',
+						},
+					},
+				},
+			],
+		},
+		{
+			text: t('triggers.operation.name'),
+			value: 'operation',
+			icon: 'bolt',
+			description: t('triggers.operation.description'),
+			preview: () => [],
 			options: [
 				{
 					field: 'empty',
@@ -320,6 +296,30 @@ export function getTriggers() {
 				},
 			],
 		},
+		// {
+		// 	text: t('triggers.manual.name'),
+		// 	value: 'manual',
+		// 	icon: 'touch_app',
+		// 	description: t('triggers.manual.description'),
+		// 	preview: () => [
+		// 		{
+		// 			label: t('triggers.manual.description'),
+		// 			text: '',
+		// 		},
+		// 	],
+		// 	options: [
+		// 		{
+		// 			field: 'empty',
+		// 			type: 'alias',
+		// 			meta: {
+		// 				interface: 'presentation-notice',
+		// 				options: {
+		// 					text: t('no_options_available'),
+		// 				},
+		// 			},
+		// 		},
+		// 	],
+		// },
 	];
 
 	return { triggers };
