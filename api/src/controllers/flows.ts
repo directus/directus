@@ -16,9 +16,20 @@ router.use(useCollection('directus_flows'));
 const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 	const flowManager = getFlowManager();
 
-	const result = await flowManager.runWebhookFlow(`${req.method}-${req.params.pk}`, req.body, {
-		accountability: req.accountability,
-	});
+	const result = await flowManager.runWebhookFlow(
+		`${req.method}-${req.params.pk}`,
+		{
+			path: req.path,
+			query: req.query,
+			body: req.body,
+			method: req.method,
+			headers: req.headers,
+		},
+		{
+			accountability: req.accountability,
+			schema: req.schema,
+		}
+	);
 
 	res.locals.payload = result;
 	return next();

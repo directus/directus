@@ -24,6 +24,7 @@ identifier: Identifier
 avatar: Avatar
 application: Application
 default_provider: Default
+method: Method
 published: Published
 draft: Draft
 archived: Archived
@@ -1917,6 +1918,8 @@ triggers:
     method: Method
     preview: Triggers on
     response_body: Response Body
+    response_body_all: All Data
+    response_body_last: Data of Last Operation
   operation:
     name: Operation
     description: Triggered by an operation in a different Flow, to chain or reuse Flows
@@ -1986,9 +1989,9 @@ operations:
   validate:
     name: Validate
     description: Validate an item with a filter
-  write:
-    name: Write
-    description: Write items into the database
+  create:
+    name: Create
+    description: Create items in the database
     mode:
       field: Mode
       one: One Item

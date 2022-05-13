@@ -1,44 +1,28 @@
 import { defineOperationApp } from '@directus/shared/utils';
 
 export default defineOperationApp({
-	id: 'write',
+	id: 'create',
 	icon: 'publish',
-	name: '$t:operations.write.name',
-	description: '$t:operations.write.description',
-	preview: ({ mode, collection, payload }) => [
-		{
-			label: '$t:operations.write.mode.field',
-			text: mode,
-		},
+	name: '$t:operations.create.name',
+	description: '$t:operations.create.description',
+	preview: ({ collection, payload }) => [
 		{
 			label: '$t:collection',
 			text: collection,
 		},
 		{
-			label: '$t:operations.write.payload',
+			label: '$t:operations.create.payload',
 			text: payload,
 		},
 	],
 	options: [
 		{
-			field: 'mode',
-			name: '$t:operations.write.mode.field',
+			field: 'collection',
+			name: '$t:collection',
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'select-dropdown',
-				options: {
-					choices: [
-						{
-							text: '$t:operations.write.mode.one',
-							value: 'one',
-						},
-						{
-							text: '$t:operations.write.mode.many',
-							value: 'many',
-						},
-					],
-				},
+				interface: 'system-collection',
 			},
 		},
 		{
@@ -71,17 +55,8 @@ export default defineOperationApp({
 			},
 		},
 		{
-			field: 'collection',
-			name: '$t:collection',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'system-collection',
-			},
-		},
-		{
 			field: 'emitEvents',
-			name: '$t:operations.write.emit_events',
+			name: '$t:operations.create.emit_events',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -93,7 +68,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'payload',
-			name: '$t:operations.write.payload',
+			name: '$t:operations.create.payload',
 			type: 'string',
 			meta: {
 				width: 'full',

@@ -5,17 +5,16 @@ import { Item } from '../../types';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
 
 type Options = {
-	mode: 'one' | 'many' | 'query';
 	collection: string;
-	key: PrimaryKey | PrimaryKey[] | null;
-	query: string;
+	payload: string;
+	emitEvents: boolean;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
 export default defineOperationApi<Options>({
-	id: 'read',
+	id: 'create',
 
-	handler: async ({ mode, collection, key, query, permissions }, { accountability, database, getSchema }) => {
+	handler: async ({ collection, payload, emitEvents, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
 
 		let customAccountability: Accountability | null;
@@ -31,21 +30,20 @@ export default defineOperationApi<Options>({
 		}
 
 		const itemsService = new ItemsService(collection, {
-			schema,
+			schema: await getSchema({ database }),
 			accountability: customAccountability,
 			knex: database,
 		});
 
-		let result: Item | Item[] | null;
+		let result: PrimaryKey[] | null;
 
-		if (mode === 'one') {
-			if (!key) result = null;
-			else result = await itemsService.readOne(toArray(key)[0], query ? JSON.parse(query) : {});
-		} else if (mode === 'many') {
-			if (!key) result = null;
-			else result = await itemsService.readMany(toArray(key) as PrimaryKey[], query ? JSON.parse(query) : {});
+		const parsedPayload: Partial<Item> | Partial<Item>[] | null =
+			typeof payload === 'string' ? JSON.parse(payload) : null;
+
+		if (!parsedPayload) {
+			result = null;
 		} else {
-			result = await itemsService.readByQuery(query ? JSON.parse(query) : {});
+			result = await itemsService.createMany(toArray(parsedPayload), { emitEvents });
 		}
 
 		return result;

@@ -1,5 +1,6 @@
 import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
+import { getPublicURL } from '../../../../utils/get-root-path';
 
 export type Trigger = {
 	text: string;
@@ -213,8 +214,12 @@ export function getTriggers() {
 			description: t('triggers.webhook.description'),
 			preview: ({ method }, { flow }) => [
 				{
-					label: t('triggers.webhook.preview'),
-					text: `${method ?? 'GET'} /flows/trigger/${flow.id}`,
+					label: t('method'),
+					text: `${method ?? 'GET'}`,
+				},
+				{
+					label: t('url'),
+					text: `${getPublicURL()}flows/trigger/${flow.id}`,
 				},
 			],
 			options: [
@@ -240,12 +245,24 @@ export function getTriggers() {
 					field: 'return',
 					name: t('triggers.webhook.response_body'),
 					type: 'string',
+					schema: {
+						default_value: '$last',
+					},
 					meta: {
 						width: 'full',
-						interface: 'input',
+						interface: 'select-radio',
 						options: {
-							font: 'monospace',
-							placeholder: '$last',
+							choices: [
+								{
+									text: '$t:triggers.webhook.response_body_last',
+									value: '$last',
+								},
+								{
+									text: '$t:triggers.webhook.response_body_all',
+									value: '$all',
+								},
+							],
+							allowOther: true,
 						},
 					},
 				},
