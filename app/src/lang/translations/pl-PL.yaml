@@ -1612,7 +1612,7 @@ interfaces:
     header_icon: Ikona nagłówka
     header_color: Kolor nagłówka
     start_open: Rozpocznij rozwinięty
-    start_closed: Rozpocznij zamknięte
+    start_closed: Rozpocznij zwinięty
 displays:
   translations:
     translations: Tłumaczenia
