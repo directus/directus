@@ -15,6 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.json('options');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
+		table.uuid('operation').unique();
 	});
 
 	await knex.schema.createTable('directus_operations', (table) => {
@@ -27,10 +28,6 @@ export async function up(knex: Knex): Promise<void> {
 		table.json('options');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
-	});
-
-	await knex.schema.alterTable('directus_flows', (table) => {
-		table.uuid('operation').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
 	});
 
 	await knex.schema.alterTable('directus_operations', (table) => {
