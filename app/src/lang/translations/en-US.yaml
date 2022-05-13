@@ -34,6 +34,7 @@ reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
+condition_rules: Condition Rules
 maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
@@ -1986,9 +1987,9 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
-  validate:
-    name: Validate
-    description: Validate an item with a filter
+  condition:
+    name: Condition
+    description: Validate the payload with a filter
   create:
     name: Create
     description: Create items in the database
