@@ -21,6 +21,7 @@ import getASTFromQuery from '../utils/get-ast-from-query';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
 import { ActivityService, RevisionsService } from './index';
+import validateUUID from 'uuid-validate';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -319,6 +320,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, key);
 
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
@@ -337,6 +339,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Item[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, keys);
 
 		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
@@ -351,6 +354,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
+
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, keys);
+
 		return keys.length ? await this.updateMany(keys, data, opts) : [];
 	}
 
@@ -358,6 +365,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update a single item by primary key
 	 */
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, key);
+
 		await this.updateMany([key], data, opts);
 		return key;
 	}
@@ -367,6 +377,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, keys);
+
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
 		const aliases = Object.values(this.schema.collections[this.collection].fields)
 			.filter((field) => field.alias === true)
@@ -536,6 +548,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
 
+		if (primaryKey) {
+			this.validatePrimaryKeys(primaryKeyField, primaryKey);
+		}
+
 		const exists =
 			primaryKey &&
 			!!(await this.knex
@@ -591,6 +607,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Delete a single item by primary key
 	 */
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, key);
+
 		await this.deleteMany([key], opts);
 		return key;
 	}
@@ -600,6 +619,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, keys);
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
@@ -713,6 +733,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
+		this.validatePrimaryKeys(primaryKeyField, primaryKeyField);
+
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
 		if (record) {
@@ -720,5 +742,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		return await this.createOne(data, opts);
+	}
+
+	/**
+	 * Validate primary keys based on its type
+	 */
+	validatePrimaryKeys(primaryKeyField: string, keys: PrimaryKey | PrimaryKey[]): void {
+		if (Array.isArray(keys)) {
+			for (const key of keys) {
+				this.validatePrimaryKeys(primaryKeyField, key);
+			}
+		} else {
+			const primaryKeyFieldType = this.schema.collections[this.collection].fields[primaryKeyField].type;
+			if (primaryKeyFieldType === 'uuid' && !validateUUID(String(keys))) {
+				throw new ForbiddenException();
+			} else if (primaryKeyFieldType === 'integer' && !Number.isInteger(Number(keys))) {
+				throw new ForbiddenException();
+			}
+		}
 	}
 }
