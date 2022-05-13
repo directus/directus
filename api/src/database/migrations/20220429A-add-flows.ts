@@ -17,16 +17,6 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
 
-	await knex.schema.createTable('directus_flow_logs', (table) => {
-		table.increments();
-		table.timestamp('timestamp').notNullable().defaultTo(knex.fn.now());
-		table.uuid('flow').references('id').inTable('directus_flows').onDelete('CASCADE');
-		table.json('data');
-		table.string('ip', 50);
-		table.string('user_agent');
-		table.uuid('user').references('id').inTable('directus_users');
-	});
-
 	await knex.schema.createTable('directus_operations', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.string('name');
