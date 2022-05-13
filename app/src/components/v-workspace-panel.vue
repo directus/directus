@@ -320,6 +320,7 @@ function useDragDrop() {
 	background-color: var(--background-page);
 	border: 1px solid var(--border-subdued);
 	box-shadow: 0 0 0 1px var(--border-subdued);
+	z-index: 1;
 
 	&:hover {
 		z-index: 3;

@@ -8,7 +8,7 @@
 			type,
 			{
 				'edit-mode': editMode,
-				loner: (parent === undefined || parent.loner) && type === 'operation',
+				subdued: subdued || ((parent === undefined || parent.loner) && type === 'operation'),
 				reject: isReject,
 			},
 		]"
@@ -152,12 +152,14 @@ const props = withDefaults(
 		flow: FlowRaw;
 		panelsToBeDeleted: string[];
 		isHintVisible: boolean;
+		subdued?: boolean;
 	}>(),
 	{
 		type: 'operation',
 		editMode: false,
 		parent: undefined,
 		isHintVisible: false,
+		subdued: false,
 	}
 );
 
@@ -327,6 +329,8 @@ function pointerLeave() {
 	&.trigger {
 		border-color: var(--primary);
 		box-shadow: 0 0 0 1px var(--primary);
+		transition: var(--fast) var(--transition);
+		transition-property: border-color, box-shadow;
 
 		&::before {
 			position: absolute;
@@ -340,6 +344,16 @@ function pointerLeave() {
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 7px var(--primary);
+		}
+
+		&.subdued {
+			border-color: var(--border-subdued);
+			box-shadow: 0 0 0 1px var(--border-subdued);
+
+			&::before {
+				box-shadow: 0 0 0 7px var(--background-subdued);
+				opacity: 1;
+			}
 		}
 	}
 
@@ -426,7 +440,7 @@ function pointerLeave() {
 		}
 	}
 
-	&.loner {
+	&.subdued {
 		color: var(--foreground-subdued);
 
 		:deep(.header) {

@@ -4,7 +4,7 @@
 			<path
 				v-for="(arrow, index) in arrows"
 				:key="index"
-				:class="{ [arrow.type]: true, loner: arrow.loner }"
+				:class="{ [arrow.type]: true, subdued: subdued || arrow.loner }"
 				:d="arrow.d"
 				stroke-linecap="round"
 			/>
@@ -19,12 +19,20 @@ import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH, REJECT_OFFSET, RESOLVE_OF
 import { ArrowInfo, Target } from './operation.vue';
 import { ParentInfo } from '../flow.vue';
 
-const props = defineProps<{
-	panels: Record<string, any>[];
-	arrowInfo?: ArrowInfo;
-	parentPanels: Record<string, ParentInfo>;
-	hoveredPanel?: string | null;
-}>();
+const props = withDefaults(
+	defineProps<{
+		panels: Record<string, any>[];
+		arrowInfo?: ArrowInfo;
+		parentPanels: Record<string, ParentInfo>;
+		hoveredPanel?: string | null;
+		subdued?: boolean;
+	}>(),
+	{
+		arrowInfo: undefined,
+		hoveredPanel: undefined,
+		subdued: false,
+	}
+);
 
 const endOffset = 16;
 
@@ -241,12 +249,13 @@ const arrows = computed(() => {
 			fill: transparent;
 			stroke: var(--primary);
 			stroke-width: 2px;
+			transition: stroke var(--fast) var(--transition);
 
 			&.reject {
 				stroke: var(--secondary);
 			}
 
-			&.loner {
+			&.subdued {
 				stroke: var(--foreground-subdued);
 			}
 		}

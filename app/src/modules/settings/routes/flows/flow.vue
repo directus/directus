@@ -59,7 +59,13 @@
 		</template>
 
 		<div class="container">
-			<arrows :panels="panels" :parent-panels="parentPanels" :arrow-info="arrowInfo" :hovered-panel="hoveredPanelID" />
+			<arrows
+				:subdued="flow.status === 'inactive'"
+				:panels="panels"
+				:parent-panels="parentPanels"
+				:arrow-info="arrowInfo"
+				:hovered-panel="hoveredPanelID"
+			/>
 			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
 					<operation
@@ -72,6 +78,7 @@
 						:is-hint-visible="
 							(panel.id === '$trigger' && !panel?.resolve && !arrowInfo) || (hoveredPanelID === panel.id && !arrowInfo)
 						"
+						:subdued="flow.status === 'inactive'"
 						@create="createPanel"
 						@edit="editPanel"
 						@move="movePanelID = $event"
