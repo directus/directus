@@ -46,7 +46,7 @@
 
 		<v-table v-else v-model:headers="tableHeaders" :items="flows" show-resize fixed-header @click:row="navigateToFlow">
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color" />
+				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--primary)'" />
 			</template>
 
 			<template #[`item.status`]="{ item }">
