@@ -170,6 +170,9 @@ class FlowManager {
 
 				const method = flow.options?.method ?? 'GET';
 
+				// Default return to $last for webhooks
+				flow.options.return = flow.options.return ?? '$last';
+
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
 			}
 		}
@@ -263,6 +266,16 @@ class FlowManager {
 
 			nextOperation = successor;
 		}
+
+		// console.log('=======================');
+		// console.log({
+		// 	flow: flow.id,
+		// 	data: keyedData,
+		// 	user: context?.accountability?.user,
+		// 	ip: context?.accountability?.ip,
+		// 	user_agent: context?.accountability?.userAgent,
+		// });
+		// console.log('=======================');
 
 		if (flow.options.return) {
 			return get(keyedData, flow.options.return);

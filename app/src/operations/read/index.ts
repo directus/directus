@@ -54,6 +54,35 @@ export default defineOperationApp({
 			},
 		},
 		{
+			field: 'permissions',
+			name: '$t:permissions',
+			type: 'string',
+			schema: {
+				default_value: '$trigger',
+			},
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{
+							text: 'From Trigger',
+							value: '$trigger',
+						},
+						{
+							text: 'Public Role',
+							value: '$public',
+						},
+						{
+							text: 'Full Access',
+							value: '$full',
+						},
+					],
+					allowOther: true,
+				},
+			},
+		},
+		{
 			field: 'collection',
 			name: '$t:collection',
 			type: 'string',
@@ -67,7 +96,7 @@ export default defineOperationApp({
 			name: '$t:operations.read.key',
 			type: 'csv',
 			meta: {
-				width: 'full',
+				width: 'half',
 				interface: 'tags',
 				options: {
 					iconRight: 'vpn_key',
