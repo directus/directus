@@ -4,7 +4,7 @@
 
 		<div class="sidebar-mask" @click="toggleSidebar(false)" />
 
-		<Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar">
+		<Sidebar class="homepage-sidebar" :items="sidebarItems" @toggle-sidebar="toggleSidebar">
 			<template #top>
 				<slot name="sidebar-top" />
 			</template>
@@ -378,7 +378,7 @@ export default {
 }
 
 @media (min-width: $MQMobile) {
-  .sidebar {
+  .homepage-sidebar {
 	  display: none;
   }
 }
