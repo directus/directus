@@ -28,11 +28,8 @@ export async function up(knex: Knex): Promise<void> {
 		table.json('options');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
-	});
-
-	await knex.schema.alterTable('directus_operations', (table) => {
-		table.uuid('resolve').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
-		table.uuid('reject').unique().references('id').inTable('directus_operations').onDelete('SET NULL');
+		table.uuid('resolve').unique().references('id').inTable('directus_operations');
+		table.uuid('reject').unique().references('id').inTable('directus_operations');
 		table.uuid('flow').notNullable().references('id').inTable('directus_flows').onDelete('CASCADE');
 	});
 
