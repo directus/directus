@@ -41,6 +41,7 @@ duplicate_field: Dupliciraj polje
 half_width: Pola širine
 full_width: Puna širina
 group: Grupa
+export_items: Izvoz stavki
 and: I
 or: Ili
 fill_width: Širina ispune
@@ -68,6 +69,12 @@ create_role: Stvori novu ulogu
 create_user: Dodaj korisnika
 delete_panel: Ukloni ploču
 create_webhook: Kreiraj webhook
+create_translation_string: Dodaj prijevodni niz
+translation_string_key_placeholder: Ključ niza prijevoda...
+translation_string_translations_placeholder: Dodaj novi prijevod
+edit_translation_string: Uredi prijevodni niz
+delete_translation_string_copy: >-
+  Jeste li sigurni da želite izbrisati prijevodni niz "{key}"? Ova se radnja ne može poništiti.
 invite_users: Pozovite korisnike
 invite: Pozovi
 email_already_invited: Adresa e-pošte "{email}" već pozvana
@@ -88,6 +95,9 @@ update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
   Jeste li sigurni da želite izbrisati oznaku "{bookmark}"? Ova se radnja ne može poništiti.
+delete_personal_bookmark: Obriši osobnu oznaku
+delete_role_bookmark: Obriši oznaku uloge
+delete_global_bookmark: Obriši globalnu oznaku
 logoutReason:
   SIGN_OUT: Odjavljen
   SESSION_EXPIRED: Istekla sesija
@@ -114,6 +124,7 @@ recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
 unarchive_confirm: Jeste li sigurni da želite poništiti arhiviranje ove stavke?
 nested_files_folders_will_be_moved: Ugniježđene datoteke i mape bit će premještene za jednu razinu gore.
+validation_errors_notice: 'Sljedeća polja imaju nevažeće vrijednosti:'
 validationError:
   eq: Vrijednost mora biti {valid}
   neq: Vrijednost ne može biti {invalid}
@@ -163,6 +174,7 @@ revision_post_create: Evo kako je ova stavka izgledala kada je nastala.
 revision_post_update: Evo kako je ova stavka izgledala nakon ažuriranja.
 changes_made: U nastavku se nalazi pregled promjena nastalih u ovoj reviziji.
 no_relational_data: Vodite računa da ovdje nisu uključeni relacijski podaci.
+hide_field: Sakrij polje
 hide_field_on_detail: Sakrij polje na detaljima
 show_field_on_detail: Prikaži polje na detaljima
 delete_field: Izbriši polje
@@ -171,6 +183,7 @@ field_create_success: 'Polje kreirano: "{field}"'
 field_update_success: 'Polje ažurirano: "{field}"'
 duplicate_where_to: Gdje biste željeli duplicirati ovo polje?
 language: Jezik
+language_placeholder: Odaberite jezik...
 aggregate_function: Zbirna funkcija
 aggregate_precision: Zbirna preciznost
 group_aggregation: Grupno združivanje
@@ -181,6 +194,7 @@ camera: Kamera
 show_zero: Pokaži nulu
 create_in_advanced_field_creation_mode: Kreiraj polje u naprednom načinu rada
 continue_in_advanced_field_creation_mode: Nastavi u naprednom načinu izrade polja
+validation: Validacija
 sum: Zbroj
 sum_distinct: Zbroj razlikovno
 avg: Prosjek
@@ -314,12 +328,15 @@ revision_delta_deleted: Obrisano
 revision_delta_reverted: Vraćeno
 revision_delta_other: Revizija
 revision_delta_by: '{date} od strane {user}'
+presentation_text_values_cannot_be_reimported: "Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti."
+download_page_as_csv: 'Preuzmite stranicu kao CSV'
 private_user: Privatni korisnik
 creation_preview: Pretpregled izrade
 revision_preview: Pretpregled revizije
 updates_made: Ažuriranja napravljena
 leave_comment: Ostavite komentar...
 post_comment_success: Komentar objavljen
+post_comment_updated: Komentar je ažuriran
 item_create_success: Stavka kreirana | Stavke kreirane
 item_update_success: Stavka ažurirana | Stavke ažurirane
 item_delete_success: Stavka obrisana | Stavke obrisane
@@ -356,6 +373,12 @@ delete_share: Izbriši dijeljenje
 functions:
   year: Godina
   month: Mjesec
+  week: Tjedan
+  day: Dan
+  weekday: Dan u tjednu
+  hour: Sat
+  minute: Minuta
+  second: Sekunda
   count: Zbroj
 date-fns_date: PPP
 date-fns_time: 'h:mm.ss a'
@@ -412,6 +435,15 @@ replace_from_library: Zamijenite datoteku iz biblioteke
 replace_from_url: Zamijenite datoteku s URL-a
 no_file_selected: Niti jedna datoteka nije odabrana
 download_file: Preuzmi datoteku
+open_file_in_tab: Otvori datoteku u novoj kartici
+start_export: Pokreni izvoz
+not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
+exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
+exporting_limited_items_in_collection: Izvoz {limit} od {total} stavki unutar {collection}.
+exporting_no_items_to_export: Nema stavki za izvoz. Podesite konfiguraciju izvoza u nastavku.
+exporting_download_hint: Nakon dovršetka, {format} tip datoteke automatski će se preuzeti na vaš uređaj.
+exporting_batch_hint: Ovaj će se izvoz obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
+exporting_batch_hint_forced: Zbog velikog broja stavki, ovaj izvoz se mora obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
 collection_key: Ključ zbirke
 name: Naziv
 primary_key_field: Polje primarnog ključa
