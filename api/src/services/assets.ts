@@ -49,7 +49,7 @@ export class AssetsService {
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
 		 * validity of the uuid ahead of time.
 		 */
-		const isValidUUID = validateUUID(id, 4);
+		const isValidUUID = validateUUID(id);
 
 		if (isValidUUID === false) throw new ForbiddenException();
 
