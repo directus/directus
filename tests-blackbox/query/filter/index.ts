@@ -7,7 +7,11 @@ import { get } from 'lodash';
 export type FilterValidator = (inputValue: any, compareValue: any) => boolean;
 
 export type TestsSchema = {
-	[key: string]: TestsCollectionSchema[];
+	[key: string]: TestsFieldSchema;
+};
+
+export type TestsFieldSchema = {
+	[field: string]: TestsCollectionSchema;
 };
 
 export type TestsCollectionSchema = {
@@ -18,10 +22,10 @@ export type TestsCollectionSchema = {
 	children: TestsCollectionSchema[] | null;
 };
 
-export const CheckQueryFilters = (requestOptions: RequestOptions, schema: TestsCollectionSchema[]) => {
+export const CheckQueryFilters = (requestOptions: RequestOptions, fields: TestsFieldSchema) => {
 	return describe('Test Global Query Filters', () => {
-		for (const schemaField of schema) {
-			processSchemaFields(requestOptions, schemaField);
+		for (const schemaField in fields) {
+			processSchemaFields(requestOptions, fields[schemaField]);
 		}
 	});
 };

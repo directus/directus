@@ -2,15 +2,15 @@ import { CheckQueryFilters } from './';
 import * as common from '@common/index';
 import { RequestOptions } from '@utils/prepare-request';
 
-const sampleSchema = [
-	{
+const sampleSchema = {
+	id: {
 		field: 'id',
 		type: 'integer',
 		filters: true,
 		possibleValues: [1, 2, 3],
 		children: null,
 	},
-	{
+	collection: {
 		field: 'collection',
 		type: 'string',
 		filters: true,
@@ -23,7 +23,7 @@ const sampleSchema = [
 		],
 		children: null,
 	},
-	{
+	something_id: {
 		field: 'something_id',
 		type: 'integer',
 		filters: false,
@@ -38,7 +38,7 @@ const sampleSchema = [
 			},
 		],
 	},
-];
+};
 
 describe('Sample Query Filters Testing', () => {
 	const requestOptions: RequestOptions = {

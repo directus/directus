@@ -1,3 +1,5 @@
+import { PrimaryKeyType } from './types';
+
 export const DEFAULT_DB_TABLES: string[] = [
 	'tests_flow_data',
 	'tests_flow_completed',
@@ -90,4 +92,7 @@ export const USER: UserType = {
 		KEY: 'NO_ROLE',
 	},
 };
+
 export const TEST_USERS = ['ADMIN', 'APP_ACCESS', 'API_ONLY', 'NO_ROLE']; // TESTS_FLOW is exluded
+
+export const PRIMARY_KEY_TYPES: PrimaryKeyType[] = ['integer', 'uuid', 'string'];

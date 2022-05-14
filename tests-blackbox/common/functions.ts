@@ -80,7 +80,7 @@ export type OptionsCreateCollection = {
 	schema?: any;
 	fields?: any;
 	// Automatically removed params
-	primaryKeyType?: 'integer' | 'uuid' | 'string';
+	primaryKeyType?: common.PrimaryKeyType;
 };
 
 export async function CreateCollection(vendor: string, options: Partial<OptionsCreateCollection>) {
@@ -108,6 +108,14 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 				schema: { is_primary_key: true, length: 36, has_auto_increment: false },
 			});
 			break;
+		case 'string':
+			options.fields.push({
+				field: 'id',
+				type: 'string',
+				meta: { hidden: false, readonly: false, interface: 'input' },
+				schema: { is_primary_key: true, length: 255, has_auto_increment: false },
+			});
+			break;
 		case 'integer':
 		default:
 			options.fields.push({
@@ -117,6 +125,10 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 				schema: { is_primary_key: true, has_auto_increment: true },
 			});
 			break;
+	}
+
+	if (options.primaryKeyType) {
+		delete options.primaryKeyType;
 	}
 
 	// Action
@@ -238,7 +250,7 @@ export type OptionsCreateFieldM2O = {
 	field: string;
 	fieldMeta?: any;
 	fieldSchema?: any;
-	primaryKeyType?: 'integer' | 'uuid' | 'string';
+	primaryKeyType?: common.PrimaryKeyType;
 	otherCollection: string;
 	relationMeta?: any;
 	relationSchema?: any;

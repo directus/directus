@@ -1,251 +1,297 @@
 import vendors from '@common/get-dbs-to-test';
-import { CreateCollection, CreateField, CreateFieldM2O, CreateItem, DeleteCollection } from '@common/functions';
+import {
+	CreateCollection,
+	CreateField,
+	CreateFieldM2O,
+	CreateItem,
+	DeleteCollection,
+	SeedFunctions,
+	PrimaryKeyType,
+	PRIMARY_KEY_TYPES,
+} from '@common/index';
 import { TestsSchema } from '@query/filter';
-import { range } from 'lodash';
 
 export const collectionCountries = 'test_items_m2o_countries';
 export const collectionStates = 'test_items_m2o_states';
 export const collectionCities = 'test_items_m2o_cities';
 
 export type Country = {
-	id?: number;
+	id?: number | string;
 	name: string;
 };
 
 export type State = {
-	id?: number;
+	id?: number | string;
 	name: string;
-	country_id?: number;
+	country_id?: number | string | null;
 };
 
 export type City = {
-	id?: number;
+	id?: number | string;
 	name: string;
-	state_id?: number;
+	state_id?: number | string | null;
 };
 
-export const seedSchema: TestsSchema = {
-	[collectionCountries]: [
-		{
-			field: 'id',
-			type: 'integer',
-			filters: true,
-			possibleValues: range(10000, 10002),
-			children: null,
+export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
+	return {
+		[`${collectionCountries}_${pkType}`]: {
+			id: {
+				field: 'id',
+				type: pkType,
+				filters: true,
+				possibleValues:
+					pkType === 'integer'
+						? SeedFunctions.generateValues.integer({ length: 2, integerStartsAt: 10000 })
+						: pkType === 'uuid'
+						? SeedFunctions.generateValues.uuid({ length: 2 })
+						: SeedFunctions.generateValues.string({ length: 2 }),
+				children: null,
+			},
+			name: {
+				field: 'name',
+				type: 'string',
+				filters: true,
+				possibleValues: ['United States', 'Malaysia'],
+				children: null,
+			},
 		},
-		{
-			field: 'name',
-			type: 'string',
-			filters: true,
-			possibleValues: ['United States', 'Malaysia'],
-			children: null,
+		[`${collectionStates}_${pkType}`]: {
+			id: {
+				field: 'id',
+				type: pkType,
+				filters: false,
+				possibleValues:
+					pkType === 'integer'
+						? SeedFunctions.generateValues.integer({ length: 4, integerStartsAt: 10000 })
+						: pkType === 'uuid'
+						? SeedFunctions.generateValues.uuid({ length: 4 })
+						: SeedFunctions.generateValues.string({ length: 4 }),
+				children: null,
+			},
+			name: {
+				field: 'name',
+				type: 'string',
+				filters: false,
+				possibleValues: ['Washington', 'California', 'Johor', 'Sarawak'],
+				children: null,
+			},
+			country_id: {
+				field: 'country_id',
+				type: 'integer',
+				filters: false,
+				possibleValues:
+					pkType === 'integer'
+						? SeedFunctions.generateValues.integer({ length: 2, integerStartsAt: 10000 })
+						: pkType === 'uuid'
+						? SeedFunctions.generateValues.uuid({ length: 2 })
+						: SeedFunctions.generateValues.string({ length: 2 }),
+				children: null,
+			},
 		},
-	],
-	[collectionStates]: [
-		{
-			field: 'id',
-			type: 'integer',
-			filters: false,
-			possibleValues: range(10000, 10004),
-			children: null,
+		[`${collectionCities}_${pkType}`]: {
+			id: {
+				field: 'id',
+				type: 'integer',
+				filters: false,
+				possibleValues:
+					pkType === 'integer'
+						? SeedFunctions.generateValues.integer({ length: 8, integerStartsAt: 10000 })
+						: pkType === 'uuid'
+						? SeedFunctions.generateValues.uuid({ length: 8 })
+						: SeedFunctions.generateValues.string({ length: 8 }),
+				children: null,
+			},
+			name: {
+				field: 'name',
+				type: 'string',
+				filters: false,
+				possibleValues: [
+					'Seattle',
+					'Spokane',
+					'Los Angeles',
+					'San Francisco',
+					'Johor Bahru',
+					'Muar',
+					'Kota Kinabalu',
+					'Sandakan',
+				],
+				children: null,
+			},
+			state_id: {
+				field: 'state_id',
+				type: 'integer',
+				filters: false,
+				possibleValues:
+					pkType === 'integer'
+						? SeedFunctions.generateValues.integer({ length: 4, integerStartsAt: 10000 })
+						: pkType === 'uuid'
+						? SeedFunctions.generateValues.uuid({ length: 4 })
+						: SeedFunctions.generateValues.string({ length: 4 }),
+				children: null,
+			},
 		},
-		{
-			field: 'name',
-			type: 'string',
-			filters: false,
-			possibleValues: ['Washington', 'California', 'Johor', 'Sarawak'],
-			children: null,
-		},
-		{
-			field: 'country_id',
-			type: 'integer',
-			filters: false,
-			possibleValues: range(10000, 10002),
-			children: null,
-		},
-	],
-	[collectionCities]: [
-		{
-			field: 'id',
-			type: 'integer',
-			filters: false,
-			possibleValues: range(10000, 10008),
-			children: null,
-		},
-		{
-			field: 'name',
-			type: 'string',
-			filters: false,
-			possibleValues: [
-				'Seattle',
-				'Spokane',
-				'Los Angeles',
-				'San Francisco',
-				'Johor Bahru',
-				'Muar',
-				'Kota Kinabalu',
-				'Sandakan',
-			],
-			children: null,
-		},
-		{
-			field: 'state_id',
-			type: 'integer',
-			filters: false,
-			possibleValues: range(10000, 10004),
-			children: null,
-		},
-	],
-};
+	};
+}
 
 export const seedDB = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
-			try {
-				// Delete existing collections
-				await DeleteCollection(vendor, { collection: collectionCities });
-				await DeleteCollection(vendor, { collection: collectionStates });
-				await DeleteCollection(vendor, { collection: collectionCountries });
+			for (const pkType of PRIMARY_KEY_TYPES) {
+				try {
+					const schema = getTestsSchema(pkType);
 
-				// Create countries collection
-				await CreateCollection(vendor, {
-					collection: collectionCountries,
-				});
+					const localCollectionCountries = `${collectionCountries}_${pkType}`;
+					const localCollectionStates = `${collectionStates}_${pkType}`;
+					const localCollectionCities = `${collectionCities}_${pkType}`;
 
-				await CreateField(vendor, {
-					collection: collectionCountries,
-					field: 'name',
-					type: 'string',
-				});
+					// Delete existing collections
+					await DeleteCollection(vendor, { collection: localCollectionCities });
+					await DeleteCollection(vendor, { collection: localCollectionStates });
+					await DeleteCollection(vendor, { collection: localCollectionCountries });
 
-				// Create states collection
-				await CreateCollection(vendor, {
-					collection: collectionStates,
-				});
+					// Create countries collection
+					await CreateCollection(vendor, {
+						collection: localCollectionCountries,
+						primaryKeyType: pkType,
+					});
 
-				await CreateField(vendor, {
-					collection: collectionStates,
-					field: 'name',
-					type: 'string',
-				});
+					await CreateField(vendor, {
+						collection: localCollectionCountries,
+						field: 'name',
+						type: 'string',
+					});
 
-				await CreateFieldM2O(vendor, {
-					collection: collectionStates,
-					field: 'country_id',
-					primaryKeyType: 'integer',
-					otherCollection: collectionCountries,
-				});
+					// Create states collection
+					await CreateCollection(vendor, {
+						collection: localCollectionStates,
+						primaryKeyType: pkType,
+					});
 
-				// Create cities collection
-				await CreateCollection(vendor, {
-					collection: collectionCities,
-				});
+					await CreateField(vendor, {
+						collection: localCollectionStates,
+						field: 'name',
+						type: 'string',
+					});
 
-				await CreateField(vendor, {
-					collection: collectionCities,
-					field: 'name',
-					type: 'string',
-				});
+					await CreateFieldM2O(vendor, {
+						collection: localCollectionStates,
+						field: 'country_id',
+						primaryKeyType: pkType,
+						otherCollection: localCollectionCountries,
+					});
 
-				await CreateFieldM2O(vendor, {
-					collection: collectionCities,
-					field: 'state_id',
-					primaryKeyType: 'integer',
-					otherCollection: collectionStates,
-				});
+					// Create cities collection
+					await CreateCollection(vendor, {
+						collection: localCollectionCities,
+						primaryKeyType: pkType,
+					});
 
-				// Create countries
-				await CreateItem(vendor, {
-					collection: collectionCountries,
-					item: [
-						{
-							id: 10000,
-							name: 'United States',
-						},
-						{
-							id: 10001,
-							name: 'Malaysia',
-						},
-					] as Country[],
-				});
+					await CreateField(vendor, {
+						collection: localCollectionCities,
+						field: 'name',
+						type: 'string',
+					});
 
-				// Create states
-				await CreateItem(vendor, {
-					collection: collectionStates,
-					item: [
-						{
-							id: 10000,
-							name: 'Washington',
-							country_id: 10000,
-						},
-						{
-							id: 10001,
-							name: 'California',
-							country_id: 10000,
-						},
-						{
-							id: 10002,
-							name: 'Johor',
-							country_id: 10001,
-						},
-						{
-							id: 10003,
-							name: 'Sabah',
-							country_id: 10001,
-						},
-					] as State[],
-				});
+					await CreateFieldM2O(vendor, {
+						collection: localCollectionCities,
+						field: 'state_id',
+						primaryKeyType: pkType,
+						otherCollection: localCollectionStates,
+					});
 
-				// Create cities
-				await CreateItem(vendor, {
-					collection: collectionCities,
-					item: [
-						{
-							id: 10000,
-							name: 'Seattle',
-							state_id: 10000,
-						},
-						{
-							id: 10001,
-							name: 'Spokane',
-							state_id: 10000,
-						},
-						{
-							id: 10002,
-							name: 'Los Angeles',
-							state_id: 10001,
-						},
-						{
-							id: 10003,
-							name: 'San Francisco',
-							state_id: 10001,
-						},
-						{
-							id: 10004,
-							name: 'Johor Bahru',
-							state_id: 10002,
-						},
-						{
-							id: 10005,
-							name: 'Muar',
-							state_id: 10002,
-						},
-						{
-							id: 10006,
-							name: 'Kota Kinabalu',
-							state_id: 10003,
-						},
-						{
-							id: 10007,
-							name: 'Sandakan',
-							state_id: 10003,
-						},
-					] as City[],
-				});
-				expect(true).toBeTruthy();
-			} catch (error) {
-				expect(error).toBeFalsy();
+					// Create countries
+					await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: [
+							{
+								id: schema[localCollectionCountries].id.possibleValues[0],
+								name: schema[localCollectionCountries].name.possibleValues[0],
+							},
+							{
+								id: schema[localCollectionCountries].id.possibleValues[1],
+								name: schema[localCollectionCountries].name.possibleValues[1],
+							},
+						] as Country[],
+					});
+
+					// Create states
+					await CreateItem(vendor, {
+						collection: localCollectionStates,
+						item: [
+							{
+								id: schema[localCollectionStates].id.possibleValues[0],
+								name: schema[localCollectionStates].name.possibleValues[0],
+								country_id: schema[localCollectionCountries].id.possibleValues[0],
+							},
+							{
+								id: schema[localCollectionStates].id.possibleValues[1],
+								name: schema[localCollectionStates].name.possibleValues[1],
+								country_id: schema[localCollectionCountries].id.possibleValues[0],
+							},
+							{
+								id: schema[localCollectionStates].id.possibleValues[2],
+								name: schema[localCollectionStates].name.possibleValues[2],
+								country_id: schema[localCollectionCountries].id.possibleValues[1],
+							},
+							{
+								id: schema[localCollectionStates].id.possibleValues[3],
+								name: schema[localCollectionStates].name.possibleValues[3],
+								country_id: schema[localCollectionCountries].id.possibleValues[1],
+							},
+						] as State[],
+					});
+
+					// Create cities
+					await CreateItem(vendor, {
+						collection: localCollectionCities,
+						item: [
+							{
+								id: schema[localCollectionCities].id.possibleValues[0],
+								name: schema[localCollectionCities].id.possibleValues[0],
+								state_id: schema[localCollectionStates].id.possibleValues[0],
+							},
+							{
+								id: schema[localCollectionCities].id.possibleValues[1],
+								name: schema[localCollectionCities].id.possibleValues[1],
+								state_id: schema[localCollectionStates].id.possibleValues[0],
+							},
+							{
+								id: schema[localCollectionCities].id.possibleValues[2],
+								name: schema[localCollectionCities].id.possibleValues[2],
+								state_id: schema[localCollectionStates].id.possibleValues[1],
+							},
+							{
+								id: schema[localCollectionCities].id.possibleValues[3],
+								name: schema[localCollectionCities].id.possibleValues[3],
+								state_id: schema[localCollectionStates].id.possibleValues[1],
+							},
+							{
+								id: schema[localCollectionCities].id.possibleValues[4],
+								name: schema[localCollectionCities].id.possibleValues[4],
+								state_id: schema[localCollectionStates].id.possibleValues[2],
+							},
+							{
+								id: schema[localCollectionCities].id.possibleValues[5],
+								name: schema[localCollectionCities].id.possibleValues[5],
+								state_id: schema[localCollectionStates].id.possibleValues[2],
+							},
+							{
+								id: schema[localCollectionCities].id.possibleValues[6],
+								name: schema[localCollectionCities].id.possibleValues[6],
+								state_id: schema[localCollectionStates].id.possibleValues[3],
+							},
+							{
+								id: schema[localCollectionCities].id.possibleValues[7],
+								name: schema[localCollectionCities].id.possibleValues[7],
+								state_id: schema[localCollectionStates].id.possibleValues[3],
+							},
+						] as City[],
+					});
+					expect(true).toBeTruthy();
+				} catch (error) {
+					expect(error).toBeFalsy();
+				}
 			}
 		},
 		30000
