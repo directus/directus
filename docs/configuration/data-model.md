@@ -12,6 +12,7 @@
    default.
 3. Configure the name and type of the **Primary Key**.
    - Auto-Incremented Integer
+   - Auto-Incremented Big Integer (MySQL and PostgreSQL only)
    - Generated UUID
    - Manually Entered String
 4. Click on <span mi btn>arrow_forward</span>
