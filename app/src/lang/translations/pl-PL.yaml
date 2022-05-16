@@ -326,6 +326,7 @@ revision_delta_deleted: Usunięty
 revision_delta_reverted: Odwrócony
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
+presentation_text_values_cannot_be_reimported: "Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane."
 download_page_as_csv: 'Pobierz stronę jako CSV'
 private_user: Prywatny Użytkownik
 creation_preview: Podgląd tworzenia
@@ -1326,6 +1327,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
