@@ -1,16 +1,46 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Indentificador
 avatar: Foto
+application: Aplicació
 default_provider: Predeterminat
+published: Publicat
 draft: Esborrany
 archived: Arxivat
+modules: Mòduls
+module_bar: Barra de mòduls
+reset_width: Restableix l'amplada
+tile_size: Mida del mosaic
 edit_field: Edita el camp
 conditions: Condicions
 maps: Mapes
+switch_user: Canvia d'usuari
+item_creation: Creació d'element
 item_revision: Revisió de l'element
 duplicate_field: Camp duplicat
 half_width: Mitja amplada
 full_width: Amplada Completa
 group: Grup
+export_items: Exporta els elements
 and: I
 or: O
 fill_width: Amplada de l'emplenat
@@ -21,14 +51,19 @@ role_name: Nom del Rol
 branch: Branca
 leaf: Fulla
 indeterminate: Indeterminat
+edit_collection: Edita la col·lecció
 exclusive: Exclusiu
 children: Fills
+db_only_click_to_configure: 'Només base de dades: Clica per configurar'
+show_active_items: Mostra els elements actius
 show_archived_items: Mostra els elements arxivats
+show_all_items: Mostra tots els elements
 edited: Valor editat
 required: Requerit
 required_for_app_access: Requerit per l'accés a l'aplicació
 requires_value: Requereix valor
 create_preset: Crear un predefinit
+create_panel: Crea un panell
 create_role: Crea un rol
 create_user: Crear usuari
 create_webhook: Crear Webhook
@@ -791,6 +826,7 @@ fields:
     auth_login_attempts: Intents d'autenticació
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
+    module_bar: Barra de mòduls
   directus_shares:
     name: Nom
     role: Rol
