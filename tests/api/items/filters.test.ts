@@ -58,6 +58,319 @@ describe('/items', () => {
 					expect(Object.values(response.body.data).includes(guests[0].name)).toBeFalsy();
 				});
 			});
+			describe('returns guest that contains "contains" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-ContAIns-insensitive@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_icontains":"contains"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+				});
+			});
+			describe('returns guest that do not contain "contains" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-does-not-contain-InSeNsiTiVe@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_nicontains":"insensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeFalsy();
+				});
+			});
+			describe('returns guest that ends with "ends_with" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-ends_with-insensitive@enDS_wITH.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_iends_with":"ends_with.com"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(response.body.data.length).toBe(1);
+				});
+			});
+
+			describe('returns guest that does not end with "ends_with" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-ends_with-insensitive@enDS_wITH.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_niends_with":"ends_with.com"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeFalsy();
+				});
+			});
+			describe('returns guest that equal "insensitive" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-equals-InSeNsiTiVe@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_ieq":"insensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+				});
+			});
+			describe('returns guest that do not equal "insensitive" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-does-not-equal-InSeNsiTiVe@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_nieq":"insensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeFalsy();
+				});
+			});
+			describe('returns guest that start with "insensitive" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'insenSITive-testing-starts_with@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_istarts_with":"insensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+				});
+			});
+			describe('returns guest that do not start with "insensitive" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'insenSITive-testing-not-start-with@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_nistarts_with":"insensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeFalsy();
+				});
+			});
+			describe('returns guest that equal "insensitive" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-equals-InSeNsiTiVe@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_ieq":"insensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+				});
+			});
+			describe('returns guest that do not equal "insensitive" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+
+					const name = 'testing-does-not-equal-InSeNsiTiVe@example.com';
+					guest.name = name;
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_nieq":"insensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeFalsy();
+				});
+			});
+
+			//
+			//
+			//
+
+			describe('returns guest that contains "contains"', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+					const iguest = createGuest();
+
+					guest.name = 'testing-contains-case-sensitive@example.com';
+					iguest.name = 'testing-contains-CASE-insensitive@example.com';
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+					await seedTable(databases.get(vendor)!, 1, 'guests', iguest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_contains":"contains-case"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+					expect(Object.values(response.body.data).includes(iguest.name)).toBeFalsy();
+				});
+			});
+			describe('returns guest that do not contain "sensitive" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+					const iguest = createGuest();
+
+					guest.name = 'testing-does-not-contain-sensitive@example.com';
+					iguest.name = 'testing-does-not-contain-inSENsitive@example.com';
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+					await seedTable(databases.get(vendor)!, 1, 'guests', iguest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_ncontains":"sensitive"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+					expect(Object.values(response.body.data).includes(iguest.name)).toBeFalsy();
+				});
+			});
+			describe('returns guest that ends with "ends_with" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const iguest = createGuest();
+					const guest = createGuest();
+
+					iguest.name = 'testing-ends_with-insensitive@enDS_wITH.com';
+					guest.name = 'testing-ends_with-insensitive@ends_with.com';
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+					await seedTable(databases.get(vendor)!, 1, 'guests', iguest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_ends_with":"ends_with.com"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+					expect(Object.values(response.body.data).includes(iguest.name)).toBeFalsy();
+				});
+			});
+
+			describe('returns guest that does not end with "ends_with" case insensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+					const iguest = createGuest();
+
+					guest.name = 'testing-ends_with-sensitive@ends_with.com';
+					iguest.name = 'testing-ends_with-insensitive@enDS_wITH.com';
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+					await seedTable(databases.get(vendor)!, 1, 'guests', iguest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_nends_with":"ends_with.com"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeFalsy();
+					expect(Object.values(response.body.data).includes(iguest.name)).toBeTruthy();
+				});
+			});
+			describe('returns guest that start with "testing" case sensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+					const iguest = createGuest();
+
+					guest.name = 'testing-starts_with@example.com';
+					iguest.name = 'teSTing-starts_with@example.com';
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+					await seedTable(databases.get(vendor)!, 1, 'guests', iguest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_starts_with":"testing"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+					expect(Object.values(response.body.data).includes(iguest.name)).toBeFalsy();
+				});
+			});
+			describe('returns guest that do not start with "testing" case sensitive', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const guest = createGuest();
+					const iguest = createGuest();
+
+					guest.name = 'testing-starts_with-sensitive@example.com';
+					iguest.name = 'TESTing-starts_with-insensitive@example.com';
+
+					await seedTable(databases.get(vendor)!, 1, 'guests', guest);
+					await seedTable(databases.get(vendor)!, 1, 'guests', iguest);
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/guests?filter={{"name":{"_nistarts_with":"testing"}}`)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					expect(Object.values(response.body.data).includes(guest.name)).toBeTruthy();
+					expect(Object.values(response.body.data).includes(iguest.name)).toBeFalsy();
+				});
+			});
 		});
 
 		describe('Logical Operators', () => {
