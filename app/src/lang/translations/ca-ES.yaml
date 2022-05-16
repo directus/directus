@@ -859,7 +859,7 @@ page_help_settings_datamodel_fields: >-
 page_help_settings_roles_collection: '** Fons d''exploració **: Llista dels rols Administrador, públic i personalitzats.'
 page_help_settings_roles_item: "** Detalls del rol **: Gestiona els permisos i altres paràmetres d'un rol."
 page_help_settings_presets_collection: >-
-  ** Cerca predefinits **: Llista de tots els predefinits del projecte, inclosos: marcadors d'usuaris, de rol i globals, així com les vistes predeterminades.
+  ** Examina predefinits **: Llista tots els predefinits del projecte, incloent marcadors d'usuari, rols, globals, així com la vista predeterminada.
 page_help_settings_presets_item: >-
   ** Detall de predefinit **: Un formulari per gestionar adreces d'interès i predefinits de col·lecció predeterminats.
 page_help_settings_webhooks_collection: '** Examina Webhooks **: Llista tots els webhooks del projecte.'
@@ -868,6 +868,8 @@ page_help_settings_translation_strings_collection: '**Examina cadenes de traducc
 page_help_users_collection: '**Directori de l''usuari**.'
 page_help_users_item: >-
   ** Detall de l'usuari **: Gestiona la informació del compte o consulta la informació d'altres usuaris.
+page_help_insights_overview: '**Visió** - Llista de quadres de comandament als que tens accés.'
+page_help_insights_dashboard: '**Quadre de comandament** - Espai de treball per a gestionar un o més panells'
 activity_feed: Canal d'activitat
 add_new: Afegir nou
 create_new: Crea un nou
@@ -877,11 +879,33 @@ no_layout_collection_selected_yet: No s'ha seleccionat cap disposició / col·le
 batch_delete_confirm: >-
   No s'ha seleccionat cap element | Esteu segur que voleu suprimir aquest element? No es pot desfer aquesta acció. | Esteu segur que voleu suprimir aquests {count} elements? No es pot desfer aquesta acció.
 cancel: Cancel · la
+no_upscale: No facis més grans les imatges
 collection: Coŀlecció
 collections: Col·leccions
+content: Contingut
 singleton: Singleton
 singleton_label: Tracta com un objecte únic
 system_fields_locked: Els camps del sistema estan bloquejats i no poden editar-se
+directus_collection:
+  directus_activity: Registres de responsabilitat (autoria) per a tots els esdeveniments
+  directus_collections: Configuració i metadades addicionals de la col·lecció
+  directus_dashboards: Quadres de comandament de tota la visió
+  directus_fields: Configuració i metadades addicionals del camp
+  directus_files: Metadades per a tots els actius de fitxers gestionats
+  directus_folders: Proporciona directoris virtuals per a fitxers
+  directus_migrations: Quina versió de base de dades estàs utilitzant
+  directus_panels: Panells individuals dins dels quadres de comandament de la visió
+  directus_permissions: Permisos d'accés per cada rol
+  directus_notifications: Notificacions enviades als usuaris
+  directus_presets: Predefinits per als ajustaments predeterminat de col·leció i marcadors
+  directus_relations: Configuració i metadades de la relació
+  directus_revisions: Instantània de dades per a totes les activitats
+  directus_roles: Grups de permisos per a usuaris del sistema
+  directus_sessions: Informació de la sessió d'usuari
+  directus_settings: Opcions de configuració del projecte
+  directus_shares: Rastreja els elements compartits externament
+  directus_users: Usuaris del sistema per a la plataforma
+  directus_webhooks: Configuració per a les peticions HTTP basades en esdeveniments
 fields:
   directus_activity:
     item: Clau primaria de l'ítem
@@ -951,24 +975,47 @@ fields:
     admin_options: Opcions d'administrador
     status: Estat
     status_draft: Esborrany
+    status_invited: Convidat
     status_active: Activa
     status_suspended: Suspès
     status_archived: Arxivat
     role: Rol
     token: Token
     token_placeholder: Entra un testimoni d'accés (token) segur...
+    provider: Proveïdor
+    external_identifier: Identificador extern
     last_page: Última pàgina
     last_access: Últim accés
+    email_notifications: Notificacions per correu
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: Mapeig
+    basemaps: Mapes base
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Estil Mapbox
+    mapbox_key: Token d'accés Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribució
+    attribution_placeholder: Contribuïdors OpenStreetMap ©
+    transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor 
+    additional_transforms: Transformacions addicionals
     project_name: Nom del projecte
+    project_descriptor: Descriptor del projecte
     project_url: URL del projecte
     project_color: Color del projecte
     project_logo: Logotip del projecte
+    default_language: Idioma predeterminat
+    branding: Marca i estil
     public_foreground: Primer pla públic
     public_background: Fons públic
     public_note: Anotació de la vista pública
     auth_password_policy: Política de contrasenyes
     auth_login_attempts: Intents d'autenticació
+    files_and_thumbnails: Fitxers i emmagatzematge
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
     module_bar: Barra de mòduls
@@ -1007,6 +1054,14 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Seguretat
+    additional_transforms: Transformacions addicionals
+    transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor 
+    mapbox_key: Token d'accés Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Mapes base
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Estil Mapbox
     files_divider_title: Fitxers i miniatures
     overrides_divider_title: Substitucións de l'aplicació
   directus_activity:
