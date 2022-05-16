@@ -24,11 +24,13 @@ const props = withDefaults(
 		panels: Record<string, any>[];
 		arrowInfo?: ArrowInfo;
 		parentPanels: Record<string, ParentInfo>;
+		editMode?: boolean;
 		hoveredPanel?: string | null;
 		subdued?: boolean;
 	}>(),
 	{
 		arrowInfo: undefined,
+		editMode: false,
 		hoveredPanel: undefined,
 		subdued: false,
 	}
@@ -74,7 +76,7 @@ const arrows = computed(() => {
 				loner,
 			});
 		} else if (
-			(panel.id == '$trigger' && !panel?.resolve && !props.arrowInfo) ||
+			(props.editMode && panel.id == '$trigger' && !panel?.resolve && !props.arrowInfo) ||
 			(props.hoveredPanel === panel.id && !props.arrowInfo)
 		) {
 			const { x: resolveX, y: resolveY } = getPoints(panel, RESOLVE_OFFSET);

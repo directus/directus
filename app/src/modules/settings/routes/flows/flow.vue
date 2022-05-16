@@ -67,11 +67,12 @@
 
 		<div class="container">
 			<arrows
-				:subdued="flow.status === 'inactive'"
 				:panels="panels"
-				:parent-panels="parentPanels"
 				:arrow-info="arrowInfo"
+				:parent-panels="parentPanels"
+				:edit-mode="editMode"
 				:hovered-panel="hoveredPanelID"
+				:subdued="flow.status === 'inactive'"
 			/>
 			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">

@@ -27,7 +27,7 @@
 	>
 		<template #body>
 			<div
-				v-if="editMode || panel.id === '$trigger' || panel?.resolve"
+				v-if="editMode || (panel.id === '$trigger' && panel?.resolve)"
 				class="button add-resolve"
 				x-small
 				icon
