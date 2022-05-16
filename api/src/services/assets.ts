@@ -47,7 +47,7 @@ export class AssetsService {
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
-		 * validity id has type uuid.
+		 * validity of the uuid ahead of time.
 		 */
 		const isValidUUID = validateUUID(id);
 
