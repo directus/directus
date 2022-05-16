@@ -12,7 +12,7 @@ export default defineOperationApp({
 		},
 		{
 			label: '$t:operations.mail.to',
-			text: to,
+			text: Array.isArray(to) ? to.join(', ') : to,
 		},
 		{
 			label: '$t:operations.mail.body',
