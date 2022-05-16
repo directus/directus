@@ -1,5 +1,14 @@
 import * as sharedExceptions from '@directus/shared/exceptions';
-import { ActionHandler, FilterHandler, Flow, InitHandler, Operation, OperationHandler } from '@directus/shared/types';
+import {
+	ActionHandler,
+	FilterHandler,
+	Flow,
+	InitHandler,
+	Operation,
+	OperationHandler,
+	SchemaOverview,
+	Accountability,
+} from '@directus/shared/types';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
 import getDatabase from './database';
@@ -9,10 +18,13 @@ import * as exceptions from './exceptions';
 import logger from './logger';
 import * as services from './services';
 import { FlowsService } from './services';
-import { EventHandler } from './types';
+import { EventHandler, Action } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
 import { renderMustache } from './utils/render-mustache';
+import { ActivityService } from './services/activity';
+import { RevisionsService } from './services/revisions';
+import { Knex } from 'knex';
 
 let flowManager: FlowManager | undefined;
 
@@ -250,6 +262,9 @@ class FlowManager {
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {
+		const database = (context.database as Knex) ?? getDatabase();
+		const schema = (context.schema as SchemaOverview) ?? (await getSchema({ database }));
+
 		const keyedData: Record<string, unknown> = {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
@@ -267,15 +282,37 @@ class FlowManager {
 			nextOperation = successor;
 		}
 
-		// console.log('=======================');
-		// console.log({
-		// 	flow: flow.id,
-		// 	data: keyedData,
-		// 	user: context?.accountability?.user,
-		// 	ip: context?.accountability?.ip,
-		// 	user_agent: context?.accountability?.userAgent,
-		// });
-		// console.log('=======================');
+		if (flow.accountability !== null) {
+			const activityService = new ActivityService({
+				knex: database,
+				schema: schema,
+			});
+
+			const accountability = context?.accountability as Accountability | undefined;
+
+			const activity = await activityService.createOne({
+				action: Action.RUN,
+				user: accountability?.user ?? null,
+				collection: 'directus_flows',
+				ip: accountability?.ip ?? null,
+				user_agent: accountability?.userAgent ?? null,
+				item: flow.id,
+			});
+
+			if (flow.accountability === 'all') {
+				const revisionsService = new RevisionsService({
+					knex: database,
+					schema: schema,
+				});
+
+				await revisionsService.createOne({
+					activity: activity,
+					collection: 'directus_flows',
+					item: flow.id,
+					data: keyedData,
+				});
+			}
+		}
 
 		if (flow.options.return === '$all') {
 			return keyedData;

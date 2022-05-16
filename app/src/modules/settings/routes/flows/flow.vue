@@ -59,6 +59,8 @@
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
 			</sidebar-detail>
+
+			<sidebar-detail :title="t('logs')" icon="fact_check" :badge="5"></sidebar-detail>
 		</template>
 
 		<template #navigation>

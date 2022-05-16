@@ -13,6 +13,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('status').notNullable().defaultTo('active');
 		table.string('trigger');
 		table.json('options');
+		table.string('accountability').defaultTo('all');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 		table.uuid('operation').unique();

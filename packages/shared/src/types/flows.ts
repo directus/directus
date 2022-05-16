@@ -10,6 +10,7 @@ export interface Flow {
 	trigger: TriggerType | null;
 	options: Record<string, any>;
 	operation: Operation | null;
+	accountability: 'all' | 'activity' | null;
 }
 
 export interface Operation {
