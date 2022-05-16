@@ -1918,7 +1918,6 @@ triggers:
     name: Webhook
     description: Triggers on an incoming HTTP request
     method: Method
-    preview: Triggers on
     response_body: Response Body
     response_body_all: All Data
     response_body_last: Data of Last Operation
