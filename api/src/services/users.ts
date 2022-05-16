@@ -121,6 +121,26 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Make sure there's at least one active admin user when updating user status
+	 */
+	private async checkRemainingActiveAdmin(excludeKeys: PrimaryKey[]): Promise<void> {
+		const otherAdminUsers = await this.knex
+			.count('*', { as: 'count' })
+			.from('directus_users')
+			.whereNotIn('directus_users.id', excludeKeys)
+			.andWhere({ 'directus_roles.admin_access': true })
+			.andWhere({ 'directus_users.status': 'active' })
+			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+			.first();
+
+		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+
+		if (otherAdminUsersCount === 0) {
+			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
+		}
+	}
+
+	/**
 	 * Create a new user
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -175,6 +195,10 @@ export class UsersService extends ItemsService {
 			if (!newRole?.admin_access) {
 				await this.checkRemainingAdminExistence(keys);
 			}
+		}
+
+		if (data.status !== 'active') {
+			await this.checkRemainingActiveAdmin(keys);
 		}
 
 		if (data.email) {
