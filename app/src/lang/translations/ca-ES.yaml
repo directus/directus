@@ -325,11 +325,15 @@ revision_delta_deleted: Eliminat
 revision_delta_reverted: Revertit
 revision_delta_other: Revisió
 revision_delta_by: '{date} per {user}'
+presentation_text_values_cannot_be_reimported: "Utilitza text de presentació, els valors no poden ser re-importats."
+download_page_as_csv: 'Descarrega la pàgina com a CSV'
 private_user: Usuari privat
+creation_preview: Previsualització de la creació
 revision_preview: Vista preliminar de la revisió
 updates_made: Actualitzacions fetes
 leave_comment: Deixa un comentari...
 post_comment_success: Comentari publicat
+post_comment_updated: Comentari actualitzat
 item_create_success: Element creat | Elements creats
 item_update_success: Element actualitzat | Elements actualitzats
 item_delete_success: Element eliminat | Elements eliminats
@@ -338,7 +342,13 @@ related_collection: Col·lecció relacionada
 related_collections: Col·leccions relacionades
 translations_collection: Col·lecció de traduccions
 languages_collection: Col·lecció de idiomes
+import_data_input_placeholder: CVS o JSON...
+import_data_button: Comença la importació
+import_data_indeterminate: Important dades...
+import_data_success: Les dades s'han importat correctament des de {filename}
+import_data_error: L'estructura de les dades d'aquest fitxer no correspon a la col·lecció.
 label_import: Importa
+label_export: Exporta
 format: Format
 last_page: Última pàgina
 last_access: Últim accés
@@ -355,16 +365,27 @@ interface_label: Interfície
 today: Avui
 yesterday: Ahir
 delete_comment: Elimina comentari
+delete_share: Elimina la compartició
 functions:
   year: Any
   month: Mes
+  week: Setmana
+  day: Dia
+  weekday: Dia de la setmana
+  hour: Hora
+  minute: Minut
+  second: Segon
   count: Conta
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h.mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+minutes: Minuts
+hours: Hores
 month: Mes
 year: Any
 select_all: Marca totes
@@ -399,6 +420,7 @@ zoom: Zoom
 download: Descarrega
 open: Obre
 open_in_new_window: Obre en una nova finestra
+open_folder: Obre la carpeta "{folder}"
 foreground_color: Color de primer pla
 background_color: Color de fons
 upload_from_device: Carrega el fitxer des del dispositiu
@@ -409,6 +431,15 @@ replace_from_library: Reemplaça el fitxer des de la biblioteca
 replace_from_url: Reemplaça el fitxer des d'una URL
 no_file_selected: Cap fitxer seleccionat
 download_file: Descarrega el fitxer
+open_file_in_tab: Obre el fitxer en una nova pestanya
+start_export: Comença l'exportació
+not_available_for_local_downloads: No disponible per a descàrregues locals
+exporting_all_items_in_collection: Exportant tots els {total} elements de {collection}.
+exporting_limited_items_in_collection: Exportant {limit} dels {total} elements de {collection}.
+exporting_no_items_to_export: No hi ha elements a exportar. Ajusta d'exportació de sota.
+exporting_download_hint: Un cop completat, aquest fitxer {format} es descarregarà autormaticament al teu dispositiu.
+exporting_batch_hint: Aquesta exportació es processarà en lots, i un cop completada, es desarà el fitxer {format} a la biblioteca de fitxers.
+exporting_batch_hint_forced: Degut al gran nombre d'elements, aquesta exportació ha de ser processada en lots, i un cop completada, es desarà el fitxer {format} a la biblioteca de fitxers.
 collection_key: Clau de la col·lecció
 name: Nom
 primary_key_field: Camp de clau primària
@@ -451,6 +482,10 @@ no_files_copy: No hi ha fitxers aquí.
 user_count: 'No hi ha usuaris | Un usuari | {count} usuaris'
 no_users_copy: Encara no hi ha usuaris en aquest rol.
 webhooks_count: 'No hi ha webhooks | Un webhook | {count} webhooks'
+no_webhooks_copy: No s'han configurat webhooks encara. Comença creant-ne un.
+no_notifications: Cap notificació
+no_notifications_copy: Estàs al dia!
+activity_log: Registre d'activitat
 all_items: Tots els elements
 any: Qualsevol
 csv: CSV
@@ -462,15 +497,24 @@ relationship_not_setup: La relació no s'ha configurat correctament
 display_template_not_setup: L'opció de plantilla de disposió no està configurada
 collection_field_not_setup: L'opció de camp de col·lecció no està configurada
 select_a_collection: Selecciona una col·lecció
+select_a_field: Selecciona un camp
 active: Activa
+move_to: Mou a...
 copy: Copia
+copy_to: Copia a...
 inactive: Inactiva
 users: Usuaris
 activity: Activitat
+activity_item: Element d'activitat
 action: Acció
 ip_address: Adreça IP
 user_agent: Agent de l'usuari
 webhooks: Webhooks
+decimals: Decimals
+value_decimals: Valor decimal
+min_value: Valor mínim
+max_value: Valor màxim
+automatic: Automàtic
 field_width: Amplada del camp
 add_filter: Afegeix un filtre
 upper_limit: Límit superior...
@@ -511,7 +555,9 @@ errors:
   INVALID_CREDENTIALS: Identificador o contrasenya incorrectes
   INVALID_OTP: Contrasenya d'un sol ús errònia
   INVALID_PAYLOAD: Payload invàlid
+  INVALID_PROVIDER: Aquest usuari pertany a un proveïdor d'autenticació diferent
   INVALID_QUERY: Consulta invàlida
+  INVALID_USER: No s’ha pogut autenticar l’usuari
   ITEM_LIMIT_REACHED: Límit d'elements assolit
   ITEM_NOT_FOUND: Element no trobat
   ROUTE_NOT_FOUND: No trobat
@@ -521,12 +567,21 @@ errors:
   UNPROCESSABLE_ENTITY: Entitat no processable
   INTERNAL_SERVER_ERROR: Error inesperat
   NOT_NULL_VIOLATION: El valor no pot ser null
+  ILLEGAL_ASSET_TRANSFORMATION: La imatge és massa llarg per previsualitzar-la
+  VALUE_TOO_LONG: El valor és massa gran
+  VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
+  INVALID_FOREIGN_KEY: Clau forana invàlida
   UNKNOWN: Error inesperat
 security: Seguretat
 value_hashed: Aplicat hash segur al valor
 bookmark_name: Nom del marcador...
 create_bookmark: Crea un marcador
 edit_bookmark: Edita el marcador
+edit_personal_bookmark: Edita el marcador personal
+edit_role_bookmark: Edita el marcador de rol
+edit_global_bookmark: Edita el rol global
+cannot_edit_role_bookmarks: No es pot editar marcadors de rol
+cannot_edit_global_bookmarks: No es pot editar marcadors globals
 bookmarks: Favorits
 presets: Predefinits
 unexpected_error: Error inesperat
@@ -537,6 +592,7 @@ no_app_access_copy: Aquest usuari no pot administrar l'aplicació.
 password_reset_sent: T'hem enviat un enllaç segur per restablir la teva contrasenya
 password_reset_successful: Contrasenya restablerta correctament
 back: Enrere
+filter: Filtre
 editing_image: Editant imatge
 square: Quadrat
 free: Lliure
@@ -548,17 +604,24 @@ all_users: Tots els usuaris
 delete_collection: Elimina la col·lecció
 update_collection_success: Actualitza la col·lecció
 delete_collection_success: Col·lecció eliminada
+make_collection_visible: Fes visble la col·lecció
+make_collection_hidden: Amaga la col·lecció
+make_folder_visible: Fes visible la carpeta
+make_folder_hidden: Amaga la carpeta
+goto_collection_content: Mostra el contingut
 start_end_of_count_items: '{start}-{end} de {count} elements'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elements filtrats'
 one_item: '1 element'
 one_filtered_item: '1 element filtrat'
 delete_collection_are_you_sure: >-
   Estàs segur d'eliminar aquesta col·lecció? Això també eliminarà tots els elements que conté. Aquesta acció és permanent.
+delete_folder_are_you_sure: Estàs segur d'eliminar aquesta carpeta? Les carpetes i col·leccions anidades es mouran al nivell més alt.
 collections_shown: Col·leccions mostrades
 visible_collections: Col·leccions visibles
 hidden_collections: Col·leccions amagades
 show_hidden_collections: Mosta les col·leccions amagades
 hide_hidden_collections: Amaga les col·leccions amagades
+show_header: Mostra la capçalera
 unmanaged_collections: Col·leccions no configurades
 system_collections: Col·leccions del sistema
 placeholder: Referència
@@ -574,10 +637,12 @@ color: Color
 circle: Cercle
 empty_item: Element buit
 log_in_with: 'Inicia sessió amb {provider}'
+conditional_styles: Estils condicionals
 advanced_settings: Ajustaments avançats
 advanced_filter: Filtre avançat
 delete_advanced_filter: Elimina filtre
 change_advanced_filter_operator: Operador Canvia
+advanced: Avançat
 operators:
   eq: És igual
   neq: No és igual
@@ -605,6 +670,8 @@ operators:
   nintersects: No intersecta
   intersects_bbox: Intersecta la caixa delimitadora
   nintersects_bbox: No intersecta la caixa delimitadora
+  regex: Correspon a expresió regular
+custom_validation_message: Missatge de validació personalitzat
 loading: Carregant...
 drop_to_upload: Deixa anar per carregar
 item: Element
@@ -635,7 +702,9 @@ all_files: Tots els fitxers
 my_files: Els meus fitxers
 recent_files: Fitxers recents
 create_folder: Crea una carpeta
+edit_folder: Edita la carpeta
 folder_name: Nom de la carpeta...
+folder_key: Clau de la carpeta...
 add_file: Afegeix un fitxer
 replace_file: Reemplaça el fitxer
 no_results: Sense resultats
@@ -643,6 +712,7 @@ no_results_copy: Ajusta o neteja els filtres de cerca per veure els resultats.
 clear_filters: Neteja els filtres
 saves_automatically: Desa automàticament
 role: Rol
+edit_role: Edita el rol
 rule: Regla
 user: Usuari
 no_presets: Sense predefinits
@@ -656,6 +726,7 @@ read: Llegir
 update: Actualitzar
 select_fields: Selecciona els camps
 format_text: Formata el text
+format_value: Formata el valor
 bold: Negreta
 toggle: Canvia
 icon_on: Icona activada
@@ -678,6 +749,8 @@ unlimited: Il·limitat
 open_link_in: Obre l'enllaç a
 new_tab: Nova pestanya
 current_tab: Pestanya actual
+save_image: Desa la imatge
+save_media: Desa l'element media
 wysiwyg_options:
   aligncenter: Alinea al centre
   alignjustify: Justifica
@@ -735,6 +808,7 @@ adding_user: Afegint usuari
 unknown_user: Usuari desconegut
 creating_in: 'Creant element a {collection}'
 editing_in: 'Editant l''element a {collection}'
+viewing_in: 'Visualitzant l''element en {collection}'
 creating_unit: 'Creant {unit}'
 editing_unit: 'Editant {unit}'
 editing_in_batch: 'Editant {count} elements'
@@ -744,6 +818,7 @@ settings_permissions: Rols i permisos
 settings_project: Ajustaments del projecte
 settings_webhooks: Webhooks
 settings_presets: Predefinits i Marcadors
+settings_translation_strings: Cadenes de traducció
 one_or_more_options_are_missing: Falta una o més opcions
 scope: Abast
 select: Selecciona...
@@ -758,7 +833,12 @@ layout_setup: Configuració de la disposició
 unsaved_changes: Canvis no desats
 unsaved_changes_copy: Estàs segur que vols sortir d'aquesta pàgina?
 discard_changes: Descarta els canvis
+discard_all_changes: Descarta els canvis
+discard_changes_copy: Estàs segur de descartar tots els canvis que has fet?
+show_x_axis: Mostra el eix X
+show_y_axis: Mostra l'eix Y
 keep_editing: Continua editant
+page_help_collections_overview: '** Resum de col·leccions **: Llista de totes les col·leccions a les quals tens accés.'
 page_help_collections_collection: >-
   ** Cerca elements **: Llista de tots els elements de {collection} als quals tens accés. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes diferents configuracions per accedir-hi ràpidament.
 page_help_collections_item: >-
@@ -782,8 +862,9 @@ page_help_settings_presets_collection: >-
   ** Cerca predefinits **: Llista de tots els predefinits del projecte, inclosos: marcadors d'usuaris, de rol i globals, així com les vistes predeterminades.
 page_help_settings_presets_item: >-
   ** Detall de predefinit **: Un formulari per gestionar adreces d'interès i predefinits de col·lecció predeterminats.
-page_help_settings_webhooks_collection: '** Examinar Webhooks **: Llista tots els webhooks del projecte.'
+page_help_settings_webhooks_collection: '** Examina Webhooks **: Llista tots els webhooks del projecte.'
 page_help_settings_webhooks_item: '** Detall de webhook **: Un formulari per crear i gestionar webhooks del projecte.'
+page_help_settings_translation_strings_collection: '**Examina cadenes de traducció** - Llista totes les cadenes de traducció del projecte.'
 page_help_users_collection: '**Directori de l''usuari**.'
 page_help_users_item: >-
   ** Detall de l'usuari **: Gestiona la informació del compte o consulta la informació d'altres usuaris.
@@ -1055,6 +1136,7 @@ report_error: Notifica un error
 start: Comença
 interfaces:
   filter:
+    name: Filtre
     add_filter: Afegeix un filtre
     all: Tots
     any: Qualsevol
