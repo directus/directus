@@ -38,7 +38,14 @@
 			</template>
 
 			<template v-else>
-				<v-button v-tooltip.bottom="t('delete_flow')" rounded icon secondary @click="confirmDelete = true">
+				<v-button
+					v-tooltip.bottom="t('delete_flow')"
+					class="delete-flow"
+					rounded
+					icon
+					secondary
+					@click="confirmDelete = true"
+				>
 					<v-icon name="delete" />
 				</v-button>
 
@@ -678,6 +685,11 @@ function discardAndLeave() {
 .clear-changes {
 	--v-button-background-color: var(--foreground-subdued);
 	--v-button-background-color-hover: var(--foreground-normal);
+}
+
+.delete-flow {
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .grid {
