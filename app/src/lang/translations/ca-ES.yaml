@@ -1016,13 +1016,23 @@ fields:
     auth_password_policy: Política de contrasenyes
     auth_login_attempts: Intents d'autenticació
     files_and_thumbnails: Fitxers i emmagatzematge
+    storage_default_folder: Carpeta predeterminada
+    storage_asset_presets: Predefinits de transformació
+    storage_asset_transform: Transformacions permeses
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
     module_bar: Barra de mòduls
+    transformations_all: Permet totes les transformacions
+    transformations_none: Deshabilita les transformacions
+    transformations_presets: Limita les transformacions al predefinits de sota
   directus_shares:
     name: Nom
     role: Rol
     password: Contrasenya
+    date_start: Data d'inici
+    date_end: Data fi
+    max_uses: Usos màxims
+    times_used: Cops utilitzat
   directus_fields:
     collection: Nom de la col·lecció
     icon: Icona de la col·lecció
@@ -1046,13 +1056,18 @@ fields:
     method: Mètode
     status: Estat
     data: Dades
+    header: Capçalera
     value: Valor
+    headers: Capçaleres de petició
     data_label: Envia les dades de l'event
     triggers: Disparadors
     actions: Accions
     collections: Col·leccions
 field_options:
   directus_settings:
+    project_name_placeholder: El meu projecte...
+    project_color_note: Inici de sessió i Logotip de fons
+    project_logo_note: Blanc 40x40 SVG/PNG
     security_divider_title: Seguretat
     additional_transforms: Transformacions addicionals
     transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor 
@@ -1105,6 +1120,7 @@ field_options:
     actions_update: Actualitzar
     actions_delete: Elimina
     headers:
+      header: Capçalera
       value: Valor
 no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
 do_nothing: No facis res
