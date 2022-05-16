@@ -66,10 +66,19 @@ create_preset: Crear un predefinit
 create_panel: Crea un panell
 create_role: Crea un rol
 create_user: Crear usuari
+delete_panel: Elimina el panell
 create_webhook: Crear Webhook
+create_translation_string: Crea una cadena de traducció
+translation_string_key_placeholder: Clau de cadena de traducció...
+translation_string_translations_placeholder: Afegeix una nova traducció
+edit_translation_string: Edita la cadena de traducció
+delete_translation_string_copy: >-
+  Estàs segur d'eliminar la cadena de traducció "{key}"? Aquesta acció no es podrà revertir.
 invite_users: Convidar usuaris
 invite: Convida
 email_already_invited: El correu "{email}" ja s'ha convidat
+subject: Assumpte
+inbox: Bustia d'entrada
 emails: Correus electrònics
 connection_excellent: Connexió excel·lent
 connection_good: Connexió bona
@@ -85,11 +94,15 @@ update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
 delete_bookmark_copy: >-
   Segur que voleu eliminar aquest marcador "{bookmark}"? Aquesta acció no es pot desfer.
+delete_personal_bookmark: Elimina marcador personal
+delete_role_bookmark: Elimina marcador de rol
+delete_global_bookmark: Elimina marcador global
 logoutReason:
   SIGN_OUT: S'ha desconnectat
   SESSION_EXPIRED: Sessió caducada
 public_label: Públic
 public_description: Controla quines dades API estan disponibles sense autenticar.
+admin_description: Rol d'administració inicial sense restriccions d'accés a l'APP/API.
 not_allowed: No permès
 directus_version: Versió de Directus
 node_version: Versió de Node
@@ -110,6 +123,7 @@ recommended_defaults: Predeterminats recomanats
 unarchive: Desarxiva
 unarchive_confirm: Segur que vols desarxivar aquest element?
 nested_files_folders_will_be_moved: Els fitxers i carpetes anidats es mouran un nivell amunt.
+validation_errors_notice: 'Els següents camps tenen valors invàlids:'
 validationError:
   eq: El valor ha de ser {valid}
   neq: El valor no pot ser {invalid}
@@ -155,6 +169,11 @@ fields_for_role: 'Camps del {role} poden {action}.'
 validation_for_role: 'El camp {action} determina que el rol {role} ha de obeir.'
 presets_for_role: 'Valor de camp predeterminat per al rol {role}.'
 presentation_and_aliases: Presentació i àlies
+revision_post_create: Aquest és l'aspecte d'aquest element quan es va crear.
+revision_post_update: Aquest és l'aspecte de l'element després de l'actualització.
+changes_made: A sota hi ha els canvis específics d'aquesta revisió.
+no_relational_data: Tingues present que les dades relacionals no estan incloses aquí.
+hide_field: Amaga el camp
 hide_field_on_detail: Amaga el camp en el detall
 show_field_on_detail: Mostra el camp en el detall
 delete_field: Elimina el camp
@@ -163,9 +182,26 @@ field_create_success: 'Camp creat: "{field}"'
 field_update_success: 'Camp actualitzat: "{field}"'
 duplicate_where_to: A on t'agradaria duplicar aquest camp?
 language: Idioma
+language_placeholder: Selecciona un idioma...
+aggregate_function: Funció d'agregació
+aggregate_precision: Precisió agregada
+group_aggregation: Agregació de grup
+group_precision: Precisió de grup
 global: Global
 admins_have_all_permissions: Els administradors tenen tots els permisos
 camera: Càmera
+show_zero: Mostra Zero
+create_in_advanced_field_creation_mode: Crea el camp en mode avançat
+continue_in_advanced_field_creation_mode: Continua la creació del camp en el mode avançat
+validation: Validació
+sum: Suma
+sum_distinct: Suma distinta
+avg: Mitjana
+avg_distinct: Mitjana distinta
+count: Conta
+count_distinct: Conta distinta
+min: Mínim
+max: Màxim
 exposure: Exposició
 shutter: Obturador
 iso: ISO
@@ -183,8 +219,10 @@ alias: Àlies
 bigInteger: Big Integer
 boolean: Boolean
 date: Data
+date_range: Interval de dates
 datetime: DateTime
 dateTime: DateTime
+precision: Precisió
 decimal: Decimal
 float: Float
 integer: Integer
@@ -196,6 +234,13 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometria (totes)
+geometry.Point: Punt
+geometry.LineString: Cadena Línia 
+geometry.Polygon: Polígon
+geometry.MultiPoint: Multipunt
+geometry.MultiLineString: Cadena Línia múltiple
+geometry.MultiPolygon: Multipolígon
 not_available_for_type: No disponible per aquest Tipus
 create_translations: Crea traduccions
 auto_refresh: Refrescament automàtic
@@ -215,9 +260,14 @@ new_data_alert: 'Es crearà el següent en el teu Model de dades:'
 search_collection: Cerca la col·lecció...
 new_field: 'Nou camp'
 new_collection: 'Nova col·lecció'
+add_m2o_to_collection: 'Afegeix Molts-a-Un a "{collection}"'
+add_o2m_to_collection: 'Afegeix Un-a-Molts a "{collection}"'
+add_m2m_to_collection: 'Afegeix Molts-a-Molts a "{collection}"'
 choose_a_type: Tria un tipus...
 determined_by_relationship: Determinat per la relació
 add_note: Afegiu una nota útil per als usuaris...
+add_link: Afegeix enllaç
+custom_link: Enllaç personalitzat
 default_value: Valor per defecte
 standard_field: Camp estàndard
 single_file: Un fitxer
@@ -230,10 +280,12 @@ invalid_item: Element invàlid
 next: Següent
 field_name: Nom del camp
 translations: Traduccions
+no_translations: Sense traduccions
 note: Nota
 enter_a_value: Introdueix un valor...
 enter_a_placeholder: Introdueix un placeholder...
 length: Mida
+soft_length: Límit suau
 precision_scale: Precisió i escala
 readonly: Només lectura
 unique: Únic
@@ -244,8 +296,19 @@ foreign_key: Clau forana
 finish_setup: Finalitza la configuració
 dismiss: Descarta
 raw_value: Valor en brut
+copy_raw_value: Copia el valor en brut
+copy_raw_value_success: Copiat
+copy_raw_value_fail: La còpia ha fallat
+paste_raw_value: Enganxa el valor en brut
+paste_raw_value_success: Enganxat
+paste_raw_value_fail: L'enganxament ha fallat
+view_raw_value: Mostra el valor en brut
 edit_raw_value: Edita valor en brut
 enter_raw_value: Introdueix valor en brut...
+clear_value: Neteja el valor
+clear_changes: Neteja els canvis
+reset_to_default: Restaura als valors per defecte
+undo_changes: Desfes els canvis
 notifications: Notificacions
 show_all_activity: Mostra tota l'activitat
 page_not_found: Pàgina no trobada
@@ -295,6 +358,7 @@ delete_comment: Elimina comentari
 functions:
   year: Any
   month: Mes
+  count: Conta
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h.mm a'
@@ -1317,7 +1381,7 @@ displays:
     simple: Simple
     simple_label: Mostra estrelles en un format simple
   raw:
-    raw: Calor en brut
+    raw: Valor en brut
   related-values:
     related-values: Valors relacionats
     description: Mostra valors relacionats
