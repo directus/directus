@@ -460,6 +460,10 @@ function pointerLeave() {
 				background-color: var(--foreground-subdued);
 			}
 		}
+
+		.button-hint {
+			--v-icon-color: var(--foreground-subdued);
+		}
 	}
 }
 
