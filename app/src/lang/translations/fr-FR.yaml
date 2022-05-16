@@ -326,6 +326,7 @@ revision_delta_deleted: Supprimé
 revision_delta_reverted: Restauré
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
+presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
 download_page_as_csv: 'Télécharger la page au format CSV'
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
@@ -557,7 +558,9 @@ errors:
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
   INVALID_OTP: Mauvais mot de passe unique
   INVALID_PAYLOAD: Payload invalide
+  INVALID_PROVIDER: L'utilisateur appartient à un autre fournisseur d'authentification
   INVALID_QUERY: Requête invalide
+  INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
   ROUTE_NOT_FOUND: Introuvable
@@ -1758,6 +1761,10 @@ layouts:
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
   kanban:
+    name: Kanban,
+    group_field: Regrouper par,
+    group_field_placeholder: Champ à regrouper par...,
+    group_title: Nom du groupe,
     edit_group: Éditer le Groupe,
     delete_group: Supprimer le Groupe,
     add_group: Ajouter un Groupe,
@@ -1782,3 +1789,7 @@ panels:
   list:
     name: Liste
     description: Filtrer et lister les champs d'une collection
+  barchart:
+    show_x_axis: Afficher l'axe X
+    show_y_axis: Afficher l'axe Y
+    show_data_label: Afficher l'étiquette des données
