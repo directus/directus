@@ -179,6 +179,7 @@ export default defineComponent({
 								props.filter || {},
 							],
 						},
+						sort: [props.dateField],
 						limit: -1,
 					},
 				});
