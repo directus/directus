@@ -32,7 +32,7 @@ describe('utils/flatten-field-groups', () => {
 				],
 			},
 		];
-		expect(flattenFieldGroups(TreeWithGroups)).toEqual([
+		const TreeWithoutGroups: FieldNode[] = [
 			{ name: 'ID', field: 'id', collection: 'test', key: 'id', path: 'id', type: 'integer' },
 			{
 				name: 'Nested Field',
@@ -42,7 +42,8 @@ describe('utils/flatten-field-groups', () => {
 				path: 'group.nested_field',
 				type: 'string',
 			},
-		] as FieldNode[]);
+		];
+		expect(flattenFieldGroups(TreeWithGroups)).toEqual(TreeWithoutGroups);
 	});
 	it('Returns a tree without deeply nested groups', () => {
 		const TreeWithNestedGroups: FieldNode[] = [
@@ -66,6 +67,14 @@ describe('utils/flatten-field-groups', () => {
 						type: 'alias',
 						children: [
 							{
+								name: 'Nested Field 1',
+								field: 'nested_field_1',
+								collection: 'test',
+								key: 'nested_field',
+								path: 'group.nested_field_1',
+								type: 'string',
+							},
+							{
 								name: 'Group',
 								field: 'group3',
 								collection: 'test',
@@ -75,11 +84,11 @@ describe('utils/flatten-field-groups', () => {
 								type: 'alias',
 								children: [
 									{
-										name: 'Nested Field',
-										field: 'nested_field',
+										name: 'Nested Field 2',
+										field: 'nested_field_2',
 										collection: 'test',
 										key: 'nested_field',
-										path: 'group.nested_field',
+										path: 'group.nested_field_2',
 										type: 'string',
 									},
 								],
@@ -89,16 +98,25 @@ describe('utils/flatten-field-groups', () => {
 				],
 			},
 		];
-		expect(flattenFieldGroups(TreeWithNestedGroups)).toEqual([
+		const TreeWithoutGroups: FieldNode[] = [
 			{ name: 'ID', field: 'id', collection: 'test', key: 'id', path: 'id', type: 'integer' },
 			{
-				name: 'Nested Field',
-				field: 'nested_field',
+				name: 'Nested Field 1',
+				field: 'nested_field_1',
 				collection: 'test',
 				key: 'nested_field',
-				path: 'group.nested_field',
+				path: 'group.nested_field_1',
 				type: 'string',
 			},
-		] as FieldNode[]);
+			{
+				name: 'Nested Field 2',
+				field: 'nested_field_2',
+				collection: 'test',
+				key: 'nested_field',
+				path: 'group.nested_field_2',
+				type: 'string',
+			},
+		];
+		expect(flattenFieldGroups(TreeWithNestedGroups)).toEqual(TreeWithoutGroups);
 	});
 });
