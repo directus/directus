@@ -44,7 +44,16 @@
 			</template>
 		</v-info>
 
-		<v-table v-else v-model:headers="tableHeaders" :items="flows" show-resize fixed-header @click:row="navigateToFlow">
+		<v-table
+			v-else
+			v-model:headers="tableHeaders"
+			:items="flows"
+			:sort="internalSort"
+			show-resize
+			fixed-header
+			@click:row="navigateToFlow"
+			@update:sort="internalSort = $event"
+		>
 			<template #[`item.icon`]="{ item }">
 				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--primary)'" />
 			</template>
@@ -118,15 +127,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { FlowRaw } from '@directus/shared/types';
+import api from '@/api';
+import { Sort } from '@/components/v-table/types';
 import { router } from '@/router';
+import { useFlowsStore, usePermissionsStore } from '@/stores';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { FlowRaw } from '@directus/shared/types';
+import { computed, ref, Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDialog from './components/flow-dialog.vue';
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { useFlowsStore, usePermissionsStore } from '@/stores';
 
 const { t } = useI18n();
 
@@ -182,6 +192,8 @@ const tableHeaders = [
 		width: 360,
 	},
 ];
+
+const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
