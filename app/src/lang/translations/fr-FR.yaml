@@ -1765,12 +1765,29 @@ layouts:
     group_field: Regrouper par,
     group_field_placeholder: Champ à regrouper par...,
     group_title: Nom du groupe,
+    group_title_placeholder: Champ pour les titres du groupe...,
+    title: Titre de tuile,
+    title_placeholder: Champ titre optionnel...,
+    text: Texte de tuile,
+    text_placeholder: Champ de texte optionnel...,
+    date: Date de tuile,
+    date_placeholder: Champ de date optionnel...,
+    tags: Étiquettes de tuile,
+    tags_placeholder: Champ de balises optionnelles...,
+    user: Utilisateurs de tuile,
+    user_placeholder: Champ utilisateur optionnel...,
+    image: Image de tuile,
+    image_placeholder: Champ d'image optionnel...,
+    crop: Rogner,
+    advanced: Avancé,
     edit_group: Éditer le Groupe,
     delete_group: Supprimer le Groupe,
     add_group: Ajouter un Groupe,
     add_group_placeholder: Entrez le nom du nouveau groupe...,
+    show_ungrouped: Afficher non-groupé,
     show: Afficher,
     no_group: Aucun Groupe,
+    not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
     name: Indicateurs
@@ -1790,6 +1807,48 @@ panels:
     name: Liste
     description: Filtrer et lister les champs d'une collection
   barchart:
+    name: Graphique en barres
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    function: Fonction
+    horizontal: Horizontal
+    x_axis: Axe X
+    y_axis: Axe Y
     show_x_axis: Afficher l'axe X
     show_y_axis: Afficher l'axe Y
     show_data_label: Afficher l'étiquette des données
+    group_by: 'Groupés par:'
+    y_axis_conditional_one: La valeur de la condition
+    y_axis_conditional_two: doit être un nombre.
+  linechart:
+    name: Graphique linéaire
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    function: Fonction
+    x_axis: Axe X
+    x_axis_decimals: Décimales de l'axe X
+    y_axis: Axe Y
+    datasets: Jeux de données
+    show_legend: Afficher la légende
+    include_dataset: Vous devez sélectionner au moins un élément.
+  meter:
+    description: Compteur pour les valeurs de suivi
+    name: Compteur
+    select_max_value: Vous devez sélectionner une valeur maximale.
+    max_greater_than_zero: La valeur doit être supérieure à 0.
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    function: Fonction
+    thin: Fin
+    medium: Moyen
+    broad: Large
+  piechart:
+    name: Graphique anneau ou circulaire
+    function: 'Fonction'
+    donut: Anneau
+    labels: Afficher les libellés
+    legend: Afficher la légende
+    right: Droite
+    bottom: Bas
+    monochrome: Monochrome
+    monochrome_color: Couleur Monochrome
