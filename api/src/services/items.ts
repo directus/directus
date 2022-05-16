@@ -605,6 +605,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				schema: this.schema,
+				knex: this.knex,
 			});
 
 			await authorizationService.checkAccess('delete', this.collection, keys);
