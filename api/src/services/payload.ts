@@ -597,14 +597,15 @@ export class PayloadService {
 					}
 
 					// If sort field is unset replace with the highest value.
-					const sortField = relation.meta.sort_field
+					const sortField = relation.meta.sort_field;
+
 					if (sortField !== null && parent !== null && record[sortField] === undefined) {
 						const highestOrderNumber = await this.knex
 							.select(sortField)
 							.from(relation.collection)
 							.where({ [relation.field]: parent })
 							.whereNotNull(sortField)
-							.orderBy(sortField, "desc")
+							.orderBy(sortField, 'desc')
 							.first();
 						if (highestOrderNumber === undefined || highestOrderNumber[sortField] === undefined) {
 							record[sortField] = 1;
