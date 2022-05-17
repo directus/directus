@@ -60,7 +60,7 @@
 				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
 			</sidebar-detail>
 
-			<sidebar-detail :title="t('logs')" icon="fact_check" :badge="5"></sidebar-detail>
+			<logs-sidebar-detail :flow="flow" />
 		</template>
 
 		<template #navigation>
@@ -194,6 +194,8 @@ import TriggerDetail from './components/trigger-detail.vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import Arrows from './components/arrows.vue';
 import { Vector2 } from '@/utils/vector2';
+
+import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;
