@@ -31,7 +31,7 @@ post:
       application/json:
         schema:
           anyOf:
-            - $ref: '#/components/schemas/Flows'
+            - $ref: '../../openapi.yaml#/components/schemas/Flows'
   responses:
     '200':
       description: Successful request
