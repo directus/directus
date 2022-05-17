@@ -8,6 +8,7 @@ import {
 	OperationHandler,
 	SchemaOverview,
 	Accountability,
+	Action,
 } from '@directus/shared/types';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
@@ -18,7 +19,7 @@ import * as exceptions from './exceptions';
 import logger from './logger';
 import * as services from './services';
 import { FlowsService } from './services';
-import { EventHandler, Action } from './types';
+import { EventHandler } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
 import { renderMustache } from './utils/render-mustache';

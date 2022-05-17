@@ -1,13 +1,18 @@
 import api from '@/api';
 import formatLocalized from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { Action, Filter } from '@directus/shared/types';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
-import { ref, Ref, unref } from 'vue';
-import { Revision, RevisionsByDate } from '../views/private/components/revisions-drawer-detail/types';
+import { ref, Ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Revision, RevisionsByDate } from '../views/private/components/revisions-drawer-detail/types';
 
-export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | string>) {
+type UseRevisionsOptions = {
+	action?: Action;
+};
+
+export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | string>, options?: UseRevisionsOptions) {
 	const { t } = useI18n();
 
 	const revisions = ref<Revision[] | null>(null);
@@ -17,7 +22,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 	const created = ref<Revision>();
 	const pagesCount = ref(0);
 
-	getRevisions();
+	watch([collection, primaryKey], () => getRevisions(), { immediate: true });
 
 	return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
 
@@ -26,16 +31,34 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 		const pageSize = 100;
 
 		try {
-			const response = await api.get(`/revisions`, {
-				params: {
-					filter: {
+			const filter: Filter = {
+				_and: [
+					{
 						collection: {
 							_eq: unref(collection),
 						},
+					},
+					{
 						item: {
 							_eq: unref(primaryKey),
 						},
 					},
+				],
+			};
+
+			if (options?.action) {
+				filter._and.push({
+					activity: {
+						action: {
+							_eq: options?.action,
+						},
+					},
+				});
+			}
+
+			const response = await api.get(`/revisions`, {
+				params: {
+					filter,
 					sort: '-id',
 					limit: pageSize,
 					page,

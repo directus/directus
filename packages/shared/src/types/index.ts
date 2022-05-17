@@ -1,3 +1,4 @@
+export * from './activity';
 export * from './accountability';
 export * from './collection';
 export * from './displays';

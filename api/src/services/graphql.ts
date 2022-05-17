@@ -1,5 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -52,7 +52,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
-import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../types';
+import { AbstractServiceOptions, GraphQLParams, Item } from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
@@ -63,9 +63,11 @@ import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
+import { FlowsService } from './flows';
 import { FoldersService } from './folders';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
+import { OperationsService } from './operations';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
 import { RelationsService } from './relations';
@@ -78,8 +80,6 @@ import { SpecificationService } from './specifications';
 import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
-import { FlowsService } from './flows';
-import { OperationsService } from './operations';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
