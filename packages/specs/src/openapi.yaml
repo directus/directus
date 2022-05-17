@@ -46,7 +46,7 @@ tags:
       thumbnails for images on the fly.
     x-collection: directus_files
   - name: Flows
-    description: Flows enable custom, event-driven data processing and task automation within Directus.
+    description: Flows enable custom, event-driven data processing and task automation.
     x-collection: directus_flows
   - name: Folders
     description: Group files by virtual folders.
@@ -54,6 +54,9 @@ tags:
   - name: Items
     description:
       Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
+  - name: Operations
+    description: Operations are the building blocks within Data Flows.
+    x-collection: directus_operations
   - name: Permissions
     description: Permissions control who has access to what and when.
     x-collection: directus_permissions
@@ -167,6 +170,12 @@ paths:
   /folders/{id}:
     $ref: './paths/folders/folder.yaml'
 
+  # Operations
+  /operations:
+    $ref: './paths/operations/operations.yaml'
+  /operations/{id}:
+    $ref: './paths/operations/operation.yaml'
+
   # Permissions
   /permissions:
     $ref: './paths/permissions/permissions.yaml'
@@ -244,6 +253,8 @@ components:
       $ref: './components/folder.yaml'
     Items:
       $ref: './components/item.yaml'
+    Operations:
+      $ref: './components/operation.yaml'
     Permissions:
       $ref: './components/permissions.yaml'
     Relations:
