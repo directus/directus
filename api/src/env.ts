@@ -13,6 +13,48 @@ import { parseJSON } from './utils/parse-json';
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
 
+const FILE_ENV_ALLOW_LIST = [
+	// database
+	'DB_DATABASE',
+	'DB_USER',
+	'DB_PASSWORD',
+	'DB_FILENAME',
+	'DB_CONNECTION_STRING',
+	// security
+	'KEY',
+	'SECRET',
+	'PASSWORD_RESET_URL_ALLOW_LIST',
+	'USER_INVITE_URL_ALLOW_LIST',
+	'ASSETS_CONTENT_SECURITY_POLICY',
+	'IMPORT_IP_DENY_LIST',
+	// rate limiting
+	'RATE_LIMITER_REDIS',
+	'RATE_LIMITER_REDIS_PASSWORD',
+	// cache
+	'CACHE_REDIS',
+	'CACHE_REDIS_PASSWORD',
+	// file storage
+	/** these names are dynamic
+	'STORAGE_<LOCATION>_KEY',
+	'STORAGE_<LOCATION>_SECRET',
+	'STORAGE_<LOCATION>_KEY',
+	'STORAGE_<LOCATION>_ACCOUNT_NAME',
+	'STORAGE_<LOCATION>_ACCOUNT_KEY'
+	*/
+	// authentication
+	/** also dynamic
+	 * AUTH_<PROVIDER>_CLIENT_ID
+	 * AUTH_<PROVIDER>_CLIENT_SECRET
+	 * AUTH_<PROVIDER>_BIND_PASSWORD
+	 */
+	// email
+	'EMAIL_SMTP_USER',
+	'EMAIL_SMTP_PASSWORD',
+	// admin
+	'ADMIN_EMAIL',
+	'ADMIN_PASSWORD',
+];
+
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 
@@ -221,25 +263,24 @@ function isEnvSyntaxPrefixPresent(value: string): boolean {
 function processValues(env: Record<string, any>) {
 	env = clone(env);
 
-	const processEnvFiles = toBoolean(env.PROCESS_ENV_FILES);
-
 	for (let [key, value] of Object.entries(env)) {
 		// If key ends with '_FILE', try to get the value from the file defined in this variable
 		// and store it in the variable with the same name but without '_FILE' at the end
-		// Do this only as opt-in when the PROCESS_ENV_FILES var is set to true
 		let newKey;
-		if (key.length > 5 && key.endsWith('_FILE') && processEnvFiles) {
+		if (key.length > 5 && key.endsWith('_FILE')) {
 			newKey = key.slice(0, -5);
-			if (newKey in env) {
-				throw new Error(
-					`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
-				);
-			}
-			try {
-				value = fs.readFileSync(value, { encoding: 'utf8' });
-				key = newKey;
-			} catch {
-				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
+			if (newKey in FILE_ENV_ALLOW_LIST) {
+				if (newKey in env) {
+					throw new Error(
+						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
+					);
+				}
+				try {
+					value = fs.readFileSync(value, { encoding: 'utf8' });
+					key = newKey;
+				} catch {
+					throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
+				}
 			}
 		}
 
