@@ -1,20 +1,16 @@
-import { defineLayout } from '@directus/shared/utils';
+import { useRelationsStore } from '@/stores/';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
+import { clone } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import CardsActions from './actions.vue';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
-import CardsActions from './actions.vue';
-
-import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref } from 'vue';
-import { useCollection } from '@directus/shared/composables';
-import { useItems } from '@directus/shared/composables';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { useRelationsStore } from '@/stores/';
-
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { clone } from 'lodash';
-import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
@@ -127,6 +123,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			resetPresetAndRefresh,
 			filter,
 			search,
+			download,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -136,6 +133,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+		}
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, fields.value, items.value);
 		}
 
 		function toPage(newPage: number) {

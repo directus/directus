@@ -245,6 +245,9 @@ interface_label: Etrefas
 today: Hiziv
 yesterday: Dec'h
 delete_comment: Dilemel an evezhiadenn
+functions:
+  year: Bloaz
+  month: Miz
 month: Miz
 year: Bloaz
 select_all: Dibab pep tra

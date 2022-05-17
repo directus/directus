@@ -41,6 +41,7 @@ duplicate_field: Duplică câmp
 half_width: Lățime înjumătățită
 full_width: Lățime completă
 group: Grup
+export_items: Exportă elemente
 and: Și
 or: Sau
 fill_width: Umple lățimea
@@ -68,6 +69,12 @@ create_role: Creează rol
 create_user: Creează utilizator
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
+create_translation_string: Crează șirul de traducere
+translation_string_key_placeholder: Cheie traducere șir...
+translation_string_translations_placeholder: Adauga o nouă traducere
+edit_translation_string: Editează Șirul de Traduceri
+delete_translation_string_copy: >-
+  Sunteţi sigur că doriţi să ştergeţi câmpul "{key}"? Această acţiune nu poate fi modificată ulterior.
 invite_users: Invită utilizatori
 invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
@@ -88,6 +95,9 @@ update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
 delete_bookmark_copy: >-
   Sigur doriți să ștergeți semnul de carte "{bookmark}"? Această acțiune nu va putea fi anulată.
+delete_personal_bookmark: Ștergere marcaj personal
+delete_role_bookmark: Ștergere marcaj roluri
+delete_global_bookmark: Ștergeți Marcajul Global
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
@@ -114,6 +124,7 @@ recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
 unarchive_confirm: Sigur doriți să dezarhivați acest element?
 nested_files_folders_will_be_moved: Fișierele și dosarele conținute vor fi mutate cu un nivel în sus.
+validation_errors_notice: 'Următoarele câmpuri au valori invalide:'
 validationError:
   eq: Valoarea trebuie să fie {valid}
   neq: Valoarea nu poate fi {invalid}
@@ -163,6 +174,7 @@ revision_post_create: Iată cum arăta acest element când a fost creat.
 revision_post_update: Iată cum arăta acest element după actualizare.
 changes_made: Mai jos sunt modificările specifice aduse acestei revizuiri.
 no_relational_data: Rețineți că datele relaționale nu sunt incluse aici.
+hide_field: Ascundeți câmpul
 hide_field_on_detail: Ascunde câmpul în detalii
 show_field_on_detail: Arată câmpul în detalii
 delete_field: Ștergere câmp
@@ -171,6 +183,7 @@ field_create_success: 'Câmp creat: „{field}”'
 field_update_success: 'Câmp actualizat: „{field}”'
 duplicate_where_to: Unde doriți să duplicați acest câmp?
 language: Limba
+language_placeholder: Selectați o limbă...
 aggregate_function: Funcție agregată
 aggregate_precision: Precizie agregată
 group_aggregation: Agregare de grup
@@ -181,6 +194,7 @@ camera: Cameră
 show_zero: Arată zero
 create_in_advanced_field_creation_mode: Crează câmp în modul avansat
 continue_in_advanced_field_creation_mode: Continuă în modul de creare a câmpurilor avansate
+validation: Validare
 sum: Sum
 sum_distinct: Sumă distinctă
 avg: Medie
@@ -318,6 +332,7 @@ revision_preview: Previzualizare revizie
 updates_made: Actualizări realizate
 leave_comment: Lasă un comentariu...
 post_comment_success: Comentariu postat
+post_comment_updated: Comentariu actualizat
 item_create_success: Element creat | Elemente create
 item_update_success: Element actualizat | Elemente actualizate
 item_delete_success: Element șters | Elemente șterse
@@ -351,6 +366,16 @@ today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
 delete_share: Șterge distribuire
+functions:
+  year: An
+  month: Lună
+  week: Săptămână
+  day: Zi
+  weekday: Zi din săptămână
+  hour: Oră
+  minute: Minut
+  second: Secundă
+  count: Numărătoare
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -406,6 +431,8 @@ replace_from_library: Înlocuiește fișierul din bibliotecă
 replace_from_url: Înlocuiţi fişierul din url
 no_file_selected: Niciun fișier selectat
 download_file: Descarcă fișier
+open_file_in_tab: Deschideți în filă nouă
+start_export: Începe exportul
 collection_key: Cheie colecție
 name: Nume
 primary_key_field: Câmp cheie principală
@@ -993,6 +1020,7 @@ fields:
     project_url: Url proiect
     project_color: Culoare proiect
     project_logo: Logo proiect
+    default_language: Limba implicită
     branding: Branding și stil
     public_foreground: Prim-plan public
     public_background: Fundal public
@@ -1222,6 +1250,11 @@ normal: Normal
 success: Succes
 warning: Avertisment
 danger: Pericol
+colors:
+  orange: Oranj
+  black: Negru
+  gray: Gri
+  white: Alb
 junction_collection: Colecție de joncțiuni
 latency: Latență
 login: Autentificare
@@ -1250,6 +1283,9 @@ sign_out: Deconectare
 sign_out_confirm: Ești sigur că vrei să te deconectezi?
 something_went_wrong: Ceva nu a funcţionat corect.
 sort_direction: Sortează direcția
+export_location: Exportare locație
+export_started: Export inițiat
+export_started_copy: Exportul dvs. a început. Vei fi notificat când este gata de descărcare.
 sort_asc: Sortează ascendent
 sort_desc: Sortează descrescător
 template: Șablon
@@ -1276,6 +1312,8 @@ interfaces:
     no_rules: Nu există reguli configurate
     change_value: Click pentru a schimba valoarea
     placeholder: Trage regulile aici
+  fields:
+    name: Câmpuri
   group-accordion:
     name: Acordeon
     description: Afișează câmpurile sau grupurile ca secțiuni acordeon
@@ -1335,6 +1373,7 @@ interfaces:
     include_seconds: Include secunde
     set_to_now: Setează acum
     use_24: Utilizaţi formatul de 24 de ore
+    placeholder: Alegeți o dată...
   system-display-template:
     display-template: Afişare şablon
     description: Combină textul static cu valorile dinamice ale câmpului
@@ -1450,6 +1489,7 @@ interfaces:
     add_label: 'Eticheta „Creează nou”'
     field_name_placeholder: Introduceți numele câmpului...
     field_note_placeholder: Introduceți nota câmpului...
+    incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
   slider:
     slider: Glisor
     description: Selectați un număr folosind un glisor
@@ -1467,6 +1507,7 @@ interfaces:
     auto_formatter: Folosește formatarea automată pentru titlu
     alphabetize: Așează în ordine alfabetică
     alphabetize_label: Forțează ordinea alfabetică
+    add_tags: Adaugă o etichetă și apasă Enter...
   input:
     input: Input
     description: Introduceți manual o valoare
@@ -1484,6 +1525,11 @@ interfaces:
   input-multiline:
     textarea: Zonă de text
     description: Introduceți text brut pe mai multe linii
+  input-translated-string:
+    input-translated-string: Șiruri traduse
+    description: Selectați sau adăugați un șir de traducere
+    search_placeholder: Caută...
+    new_translation_string: Șirul Traducător nou
   boolean:
     toggle: Comutare
     description: Comutare între pornit și oprit
@@ -1666,6 +1712,8 @@ layouts:
     calendar: Calendar
     start_date_field: Câmp dată de început
     end_date_field: Câmp dată de sfârșit
+    optional: Opţional
+    first_day: Prima zi a săptămânii
   map:
     map: Hartă
     basemap: Basemap
@@ -1680,6 +1728,23 @@ layouts:
     find_location: Găsește locația...
     default_template: Se folosește Implicit Colecția...
     no_compatible_fields: Nu există câmpuri compatibile
+  kanban:
+    name: Kanban,
+    group_field: Grupare după
+    group_field_placeholder: Câmp pentru grup de...,
+    group_title: Titlul grupului
+    group_title_placeholder: Câmp pentru titlurile grupului...,
+    title: Titlu card
+    title_placeholder: Câmp titlu opțional...,
+    text: Text Card,
+    text_placeholder: Câmp text opțional...,
+    date: Data cardului,
+    date_placeholder: Câmp de dată opțional...,
+    tags: Tag-uri de card,
+    tags_placeholder: Câmp etichete opționale...,
+    user: Utilizator Card,
+    user_placeholder: Câmp opțional de utilizator...,
+    image: Imaginea cardului,
 panels:
   metric:
     name: Metric

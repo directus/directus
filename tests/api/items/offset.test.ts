@@ -3,7 +3,6 @@ import vendors from '../../get-dbs-to-test';
 import request from 'supertest';
 import knex, { Knex } from 'knex';
 import { createArtist, createEvent, createGuest, seedTable, createMany } from '../../setup/utils/factories';
-import { internet } from 'faker';
 
 describe('/items', () => {
 	const databases = new Map<string, Knex>();
@@ -23,7 +22,7 @@ describe('/items', () => {
 	describe('/:collection GET', () => {
 		describe('returns offset correctly', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const name = internet.email();
+				const name = 'test@example.com';
 				const guests: any[] = createMany(createGuest, 10, { name });
 				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 

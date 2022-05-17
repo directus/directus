@@ -6,9 +6,9 @@ import vendors from '../get-dbs-to-test';
 import config from '../config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
-import { sleep } from './utils/sleep';
+import axios from 'axios';
 import { writeFileSync } from 'fs';
-import { awaitDatabaseConnection } from './utils/await-connection';
+import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 
 let started = false;
 
@@ -51,7 +51,7 @@ export default async (): Promise<void> => {
 										if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 									});
 									// Give the server some time to start
-									await sleep(5000);
+									await awaitDirectusConnection(Number(config.envs[vendor]!.PORT!));
 									server.on('exit', () => undefined);
 								}
 							},
@@ -59,6 +59,54 @@ export default async (): Promise<void> => {
 					}),
 					{ concurrent: true }
 				);
+			},
+		},
+		{
+			title: 'Setup test data flow',
+			task: async () => {
+				return new Listr([
+					{
+						title: 'Testing server connectivity and bootstrap tests flow',
+						task: async () => {
+							const totalTestsCount = Number(process.env.totalTestsCount);
+							if (isNaN(totalTestsCount)) {
+								throw 'Unable to read totalTestsCount';
+							}
+
+							for (const vendor of vendors) {
+								try {
+									const serverUrl = `http://localhost:${config.envs[vendor]!.PORT}`;
+									let response = await axios.get(`${serverUrl}/items/tests_flow_data?access_token=AdminToken`);
+
+									if (response.status !== 200) {
+										continue;
+									}
+
+									const body = {
+										total_tests_count: totalTestsCount,
+									};
+									response = await axios.post(`${serverUrl}/items/tests_flow_data`, body, {
+										headers: {
+											Authorization: 'Bearer AdminToken',
+											'Content-Type': 'application/json',
+										},
+									});
+
+									if (response.status === 200) {
+										process.env.serverUrl = serverUrl;
+										break;
+									}
+								} catch (err) {
+									continue;
+								}
+							}
+
+							if (!process.env.serverUrl) {
+								throw 'Unable to connect to any directus server';
+							}
+						},
+					},
+				]);
 			},
 		},
 	])

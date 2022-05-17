@@ -5,7 +5,7 @@
 </template>
 
 <style lang="scss">
-/** @NOTE this is not scoped on purpose. The children are outsisde of the tree (teleport) */
+/** @NOTE this is not scoped on purpose. The children are outside of the tree (teleport) */
 
 .bounce-enter-active,
 .bounce-leave-active {

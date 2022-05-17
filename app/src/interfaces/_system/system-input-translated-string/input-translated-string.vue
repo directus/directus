@@ -5,10 +5,14 @@
 				<v-input
 					class="translation-input"
 					:model-value="localValue"
+					:autofocus="autofocus"
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:active="active"
 					@update:model-value="localValue = $event"
+					@focus="isFocused = true"
+					@blur="blur"
+					@keydown.enter="checkKeyValidity"
 				>
 					<template v-if="hasValidKey" #input>
 						<button :disabled="disabled" @click.stop="setValue(null)">{{ value && getKeyWithoutPrefix(value) }}</button>
@@ -19,6 +23,7 @@
 							class="translate-icon"
 							:class="{ active }"
 							clickable
+							:tabindex="-1"
 							:disabled="disabled"
 							@click="toggle"
 						/>
@@ -89,11 +94,17 @@ const translationPrefix = '$t:';
 
 interface Props {
 	value?: string | null;
+	autofocus?: boolean;
 	disabled?: boolean;
 	placeholder?: string | null;
 }
 
-const props = withDefaults(defineProps<Props>(), { value: () => null, disabled: false, placeholder: () => null });
+const props = withDefaults(defineProps<Props>(), {
+	value: () => null,
+	autofocus: false,
+	disabled: false,
+	placeholder: () => null,
+});
 
 const emit = defineEmits(['input']);
 
@@ -101,6 +112,7 @@ const { t } = useI18n();
 
 const menuEl = ref();
 const hasValidKey = ref<boolean>(false);
+const isFocused = ref<boolean>(false);
 const searchValue = ref<string | null>(null);
 
 const { translationStrings } = useTranslationStrings();
@@ -143,18 +155,19 @@ function selectKey(key: string) {
 	searchValue.value = null;
 }
 
-function setValue(newValue: any) {
-	hasValidKey.value = false;
-
-	if (
-		newValue &&
-		newValue.startsWith(translationPrefix) &&
-		translations.value.find((t) => t.key?.includes(getKeyWithoutPrefix(newValue)))
-	) {
-		hasValidKey.value = true;
-	}
-
+function setValue(newValue: string | null) {
+	if (newValue?.startsWith(translationPrefix)) newValue = newValue.replace(/\s/g, '_');
 	localValue.value = newValue;
+	if (!isFocused.value) checkKeyValidity();
+}
+
+function blur() {
+	isFocused.value = false;
+	checkKeyValidity();
+}
+
+function checkKeyValidity() {
+	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
 }
 
 function openNewTranslationStringDialog() {

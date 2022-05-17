@@ -365,7 +365,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for an _between number match`, () => {
 		const mockFieldFilter = { field: { _between: [1, 3] } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: Joi.number().greater(1).less(3),
+			field: Joi.number().min(1).max(3),
 		})
 			.unknown()
 			.describe();
@@ -375,7 +375,7 @@ describe(`generateJoi`, () => {
 	it(`returns the correct schema for an _between date match`, () => {
 		const mockFieldFilter = { field: { _between: [date, compareDate] } } as FieldFilter;
 		const mockSchema = Joi.object({
-			field: Joi.date().greater(date).less(compareDate),
+			field: Joi.date().min(date).max(compareDate),
 		})
 			.unknown()
 			.describe();
