@@ -376,6 +376,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/reference/system/flows',
+						title: 'Flows',
+					},
+					{
+						type: 'page',
 						path: '/reference/system/folders',
 						title: 'Folders',
 					},
@@ -383,6 +388,11 @@ module.exports = {
 						type: 'page',
 						path: '/reference/system/notifications',
 						title: 'Notifications',
+					},
+					{
+						type: 'page',
+						path: '/reference/system/operations',
+						title: 'Operations',
 					},
 					{
 						type: 'page',
