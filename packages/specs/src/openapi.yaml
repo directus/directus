@@ -45,6 +45,9 @@ tags:
       Files can be saved in any given location. Directus has a powerful assets endpoint that can be used to generate
       thumbnails for images on the fly.
     x-collection: directus_files
+  - name: Flows
+    description: Flows enable custom, event-driven data processing and task automation within Directus.
+    x-collection: directus_flows
   - name: Folders
     description: Group files by virtual folders.
     x-collection: directus_folders
@@ -152,6 +155,12 @@ paths:
   /files/{id}:
     $ref: './paths/files/file.yaml'
 
+  # Flows
+  /flows:
+    $ref: './paths/flows/flows.yaml'
+  /flows/{id}:
+    $ref: './paths/flows/flow.yaml'
+
   # Folders
   /folders:
     $ref: './paths/folders/folders.yaml'
@@ -229,6 +238,8 @@ components:
       $ref: './components/field.yaml'
     Files:
       $ref: './components/file.yaml'
+    Flows:
+      $ref: './components/flow.yaml'
     Folders:
       $ref: './components/folder.yaml'
     Items:
