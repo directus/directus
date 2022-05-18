@@ -2008,3 +2008,13 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  delete:
+    name: Delete Data
+    description: Delete items in the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Multiple Items
+      query: Items by Query
+    key: IDs
+    query: Query
