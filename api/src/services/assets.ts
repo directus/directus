@@ -66,7 +66,9 @@ export class AssetsService {
 		if (!exists) throw new ForbiddenException();
 
 		if (range) {
-			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {
+			if (range.end && range.end >= file.filesize) range.end = undefined;
+
+			if (range.start >= file.filesize || (range.end && range.start > range.end)) {
 				throw new RangeNotSatisfiableException(range);
 			}
 		}
