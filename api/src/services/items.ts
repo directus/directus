@@ -1,26 +1,26 @@
-import { Knex } from 'knex';
-import { clone, cloneDeep, pick, without, assign } from 'lodash';
-import { getCache } from '../cache';
+import { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
+import { Knex } from 'knex';
+import { assign, clone, cloneDeep, pick, without } from 'lodash';
+import { getCache } from '../cache';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import { Accountability, Query, PermissionsAction, SchemaOverview } from '@directus/shared/types';
 import {
 	AbstractService,
 	AbstractServiceOptions,
 	Action,
 	Item as AnyItem,
-	PrimaryKey,
 	MutationOptions,
+	PrimaryKey,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { AuthorizationService } from './authorization';
-import { PayloadService } from './payload';
 import { ActivityService, RevisionsService } from './index';
+import { PayloadService } from './payload';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;

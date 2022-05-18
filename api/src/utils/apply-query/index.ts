@@ -511,6 +511,10 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate,
 				dbQuery.avgDistinct(`${collection}.${field}`, { as: `avgDistinct->${field}` });
 			}
 
+			if (operation === 'countAll') {
+				dbQuery.count('*', { as: 'countAll' });
+			}
+
 			if (operation === 'count') {
 				if (field === '*') {
 					dbQuery.count('*', { as: 'count' });
