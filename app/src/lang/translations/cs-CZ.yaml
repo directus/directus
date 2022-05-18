@@ -141,6 +141,7 @@ field_m2m: M2M vazba
 item_permissions: Oprávnění položky
 field_permissions: Oprávnění pole
 field_validation: Validace pole
+field_presets: Předvolby polí
 permissions_for_role: 'Položky, které {role} role může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
 hide_field_on_detail: Skrýt pole v detailu
@@ -154,6 +155,7 @@ language: Jazyk
 global: Globální
 admins_have_all_permissions: Administrátoři mají všechna oprávnění
 camera: Fotoaparát
+count: Počet
 exposure: Expozice
 shutter: Závěrka
 iso: ISO
@@ -190,6 +192,8 @@ related_collection: Související kategorie
 format: Formát
 submit: Potvrdit
 move_to_folder: Přesunout do složky
+functions:
+  count: Počet
 months:
   january: Leden
   february: Únor

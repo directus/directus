@@ -1,8 +1,12 @@
-import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
-import DisplayTranslations from './translations.vue';
-import { useFieldsStore } from '@/stores';
-import { useRelationsStore } from '@/stores';
+import { getDisplay } from '@/displays';
+import { useFieldsStore, useRelationsStore } from '@/stores';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { getRelatedCollection } from '@/utils/get-related-collection';
+import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
+import { get, set } from 'lodash';
+import DisplayTranslations from './translations.vue';
+import { i18n } from '@/lang';
 
 type Options = {
 	template: string;
@@ -15,6 +19,84 @@ export default defineDisplay({
 	description: '$t:displays.translations.description',
 	icon: 'translate',
 	component: DisplayTranslations,
+	handler: async (values, options, { collection, field }) => {
+		if (!field || !collection || !Array.isArray(values)) return values;
+
+		const relatedCollections = getRelatedCollection(collection, field.field);
+
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+
+		const relations = relationsStore.getRelationsForField(collection, field.field);
+
+		const junction = relations.find(
+			(relation) => relation.related_collection === collection && relation.meta?.one_field === field.field
+		);
+
+		if (!junction) return values;
+
+		const relation = relations.find(
+			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field
+		);
+
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollections.relatedCollection);
+
+		if (!relatedCollections || !primaryKeyField || !relation?.related_collection) return values;
+
+		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
+
+		if (!relatedPrimaryKeyField) return values;
+
+		const value =
+			values.find((translatedItem: Record<string, any>) => {
+				const lang = translatedItem[relation!.field][relatedPrimaryKeyField.field];
+
+				// Default to first item if lang can't be found
+				if (!lang) return true;
+
+				if (options.userLanguage) {
+					return lang === i18n.global.locale.value;
+				}
+
+				return lang === options.defaultLanguage;
+			}) ?? values[0];
+
+		const fieldKeys = getFieldsFromTemplate(options.template);
+
+		const fields = fieldKeys.map((fieldKey) => {
+			return {
+				key: fieldKey,
+				field: fieldsStore.getField(relatedCollections.relatedCollection, fieldKey),
+			};
+		});
+
+		const stringValues: Record<string, string> = {};
+
+		for (const { key, field } of fields) {
+			const fieldValue = get(value, key);
+
+			if (fieldValue === null || fieldValue === undefined) continue;
+
+			if (!field?.meta?.display) {
+				set(stringValues, key, fieldValue);
+				continue;
+			}
+
+			const display = getDisplay(field.meta.display);
+
+			const stringValue = display?.handler
+				? await display.handler(fieldValue, field?.meta?.display_options ?? {}, {
+						interfaceOptions: field?.meta?.options ?? {},
+						field: field ?? undefined,
+						collection: collection,
+				  })
+				: fieldValue;
+
+			set(stringValues, key, stringValue);
+		}
+
+		return renderPlainStringTemplate(options.template, stringValues);
+	},
 	options: ({ relations }) => {
 		const fieldsStore = useFieldsStore();
 
