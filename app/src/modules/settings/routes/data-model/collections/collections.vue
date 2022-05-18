@@ -242,6 +242,7 @@ export default defineComponent({
 
 .hidden .collection-name {
 	color: var(--foreground-subdued);
+	flex-grow: 1;
 }
 
 .draggable-list :deep(.sortable-ghost) {

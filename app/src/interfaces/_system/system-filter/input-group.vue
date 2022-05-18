@@ -8,12 +8,18 @@
 			@input="value = $event"
 		/>
 	</template>
-
 	<template
 		v-else-if="
-			['_contains', '_ncontains', '_starts_with', '_nstarts_with', '_ends_with', '_nends_with', '_regex'].includes(
-				getComparator(field)
-			)
+			[
+				'_contains',
+				'_icontains',
+				'_ncontains',
+				'_starts_with',
+				'_nstarts_with',
+				'_ends_with',
+				'_nends_with',
+				'_regex',
+			].includes(getComparator(field))
 		"
 	>
 		<input-component
@@ -145,7 +151,7 @@ export default defineComponent({
 			},
 		});
 
-		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? {}));
+		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? []));
 
 		return { t, choices, fieldInfo, interfaceType, value, setValueAt, getComparator };
 

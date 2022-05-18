@@ -7,7 +7,12 @@ import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
+import {
+	InvalidCredentialsException,
+	InvalidOTPException,
+	UserSuspendedException,
+	InvalidProviderException,
+} from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
@@ -68,7 +73,6 @@ export class AuthenticationService {
 			.from('directus_users as u')
 			.leftJoin('directus_roles as r', 'u.role', 'r.id')
 			.where('u.id', await provider.getUserID(cloneDeep(payload)))
-			.andWhere('u.provider', providerName)
 			.first();
 
 		const updatedPayload = await emitter.emitFilter(
@@ -113,6 +117,9 @@ export class AuthenticationService {
 				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
+		} else if (user.provider !== providerName) {
+			await stall(STALL_TIME, timeStart);
+			throw new InvalidProviderException();
 		}
 
 		const settingsService = new SettingsService({

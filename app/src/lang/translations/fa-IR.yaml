@@ -84,7 +84,6 @@ delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
 reset_bookmark: بازنشانی نشانک
-rename_bookmark: تغییر نام نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
 delete_bookmark_copy: >-
@@ -353,6 +352,10 @@ today: امروز
 yesterday: دیروز
 delete_comment: حذف دیدگاه
 delete_share: حذف به اشتراک گذاری
+functions:
+  year: سال
+  month: ماه
+  count: تعداد
 date-fns_date: فرمت PPP برای تاریخ
 date-fns_time: 'فرمت زمان h:mm:ss a'
 date-fns_time_no_seconds: 'فرمت زمان h:mm a'
@@ -916,6 +919,7 @@ otp: رمز عبور یکبار مصرف
 password: رمز عبور
 reset_password: بازنشانی رمز عبور
 save: ذخیره
+sign_in: ورود
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
 interfaces:

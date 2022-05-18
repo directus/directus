@@ -14,10 +14,9 @@ import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
 import api from '@/api';
 import { Filter } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
-import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { isNil } from 'lodash';
-import { getEndpoint } from '@/utils/get-endpoint';
-import { cssVar } from '@/utils/css-var';
+import { getEndpoint, abbreviateNumber } from '@directus/shared/utils';
+import { cssVar } from '@directus/shared/utils/browser';
 
 export default defineComponent({
 	props: {

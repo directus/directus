@@ -1,6 +1,6 @@
 <p align="center"><img alt="Directus Logo" src="https://user-images.githubusercontent.com/522079/158864859-0fbeae62-9d7a-4619-b35e-f8fa5f68e0c8.png"></p>
 
-<br>
+<br />
 
 ## 🐰 Introduction
 
@@ -10,14 +10,14 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **REST & GraphQL API.** Instantly layers a blazingly fast Node.js API on top of any SQL database.
 - **Manage pure SQL.** Works with new or existing SQL databases, no migration required.
 - **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
-- **On-Prem or Cloud.** Run locally, install on-premises, or use our [self-service Cloud service](https://directus.io/pricing) (free tier available).
+- **On-Prem or Cloud.** Run locally, install on-premises, or use our
+  [self-service Cloud service](https://directus.io/pricing) (free tier available).
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
 **[Learn more about Directus](https://directus.io)**
 
-<br>
-
+<br />
 
 ## 🚀 Directus Cloud
 
@@ -32,7 +32,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 **[Create your Free Project](https://directus.cloud)**
 
-<br>
+<br />
 
 ## ⚙️ Installation
 
@@ -52,7 +52,7 @@ Simply follow the setup prompts and the CLI will create your new project directo
 file, and initial database. To get the most out of Directus, and to ensure you have the latest security patches, it is
 important to keep your projects up-to-date.
 
-<br>
+<br />
 
 ## 📌 Requirements
 
@@ -85,7 +85,7 @@ Directus only requires Node.js and supports most operating systems and SQL datab
 
 _Other operating systems may also work, but are not officially supported._
 
-<br>
+<br />
 
 ## 🤔 Community Help
 
@@ -97,7 +97,7 @@ _Other operating systems may also work, but are not officially supported._
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 
-<br>
+<br />
 
 ## ❤️ Contributing & Sponsoring
 
@@ -109,6 +109,6 @@ All security vulnerabilities should be reported in accordance with our
 Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
 
-<br>
+<br />
 
 © 2004-2022, Monospace Inc

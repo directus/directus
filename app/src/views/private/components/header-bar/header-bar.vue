@@ -96,7 +96,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: 61px;
+	height: var(--header-bar-height);
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--background-page);

@@ -166,13 +166,18 @@ module.exports = {
 						children: [
 							{
 								type: 'page',
-								path: '/app/content-collections',
-								title: 'Content Collections',
+								path: '/app/content/collections',
+								title: 'Collection Page',
 							},
 							{
 								type: 'page',
-								path: '/app/content-items',
-								title: 'Content Items',
+								path: '/app/content/items',
+								title: 'Item Page',
+							},
+							{
+								type: 'page',
+								path: '/app/content/data-sharing',
+								title: 'Data Sharing',
 							},
 						],
 					},
@@ -206,6 +211,16 @@ module.exports = {
 						type: 'page',
 						path: '/app/filters',
 						title: 'Filters',
+					},
+					{
+						type: 'page',
+						path: '/app/layouts',
+						title: 'Layouts',
+					},
+					{
+						type: 'page',
+						path: '/app/import-export',
+						title: 'Import / Export',
 					},
 				],
 			},
@@ -513,6 +528,37 @@ module.exports = {
 						type: 'page',
 						path: '/contributing/translations',
 						title: 'Translating the App',
+					},
+				],
+			},
+			{ type: 'divider' },
+			{
+				title: 'Directus Cloud',
+				children: [
+					{
+						type: 'page',
+						path: '/cloud/overview',
+						title: 'Overview',
+					},
+					{
+						type: 'page',
+						path: '/cloud/accounts',
+						title: 'Accounts',
+					},
+					{
+						type: 'page',
+						path: '/cloud/teams',
+						title: 'Teams',
+					},
+					{
+						type: 'page',
+						path: '/cloud/projects',
+						title: 'Projects',
+					},
+					{
+						type: 'page',
+						path: '/cloud/glossary',
+						title: 'Glossary',
 					},
 				],
 			},

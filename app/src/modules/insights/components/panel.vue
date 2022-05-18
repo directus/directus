@@ -14,7 +14,7 @@
 		@pointerdown="onPointerDown('move', $event)"
 	>
 		<div v-if="panel.show_header" class="header">
-			<v-icon class="icon" :style="iconColor" :name="panel.icon" />
+			<v-icon class="icon" :style="iconColor" :name="headerIcon" />
 			<v-text-overflow class="name selectable" :text="panel.name || ''" />
 			<div class="spacer" />
 			<v-icon v-if="panel.note" v-tooltip="panel.note" class="note" name="info" />
@@ -125,8 +125,11 @@ export default defineComponent({
 			});
 		});
 
+		const headerIcon = computed(() => {
+			return props.panel.icon ? props.panel.icon : panelTypeInfo.value.icon;
+		});
 		/**
-		 * When drag-n-dropping for positiniong/resizing, we're
+		 * When drag-n-dropping for positioning/resizing, we're
 		 */
 		const editedPosition = reactive<Partial<Panel>>({
 			position_x: undefined,
@@ -178,6 +181,7 @@ export default defineComponent({
 		}));
 
 		return {
+			headerIcon,
 			positioning,
 			positionStyling,
 			iconColor,
