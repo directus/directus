@@ -3,6 +3,7 @@ import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { Item } from '../../types';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
+import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
 	mode: 'one' | 'many' | 'query';
@@ -40,12 +41,12 @@ export default defineOperationApi<Options>({
 
 		if (mode === 'one') {
 			if (!key) result = null;
-			else result = await itemsService.readOne(toArray(key)[0], query ? JSON.parse(query) : {});
+			else result = await itemsService.readOne(toArray(key)[0], query ? parseJSON(query) : {});
 		} else if (mode === 'many') {
 			if (!key) result = null;
-			else result = await itemsService.readMany(toArray(key) as PrimaryKey[], query ? JSON.parse(query) : {});
+			else result = await itemsService.readMany(toArray(key) as PrimaryKey[], query ? parseJSON(query) : {});
 		} else {
-			result = await itemsService.readByQuery(query ? JSON.parse(query) : {});
+			result = await itemsService.readByQuery(query ? parseJSON(query) : {});
 		}
 
 		return result;

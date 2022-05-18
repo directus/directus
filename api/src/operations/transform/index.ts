@@ -1,4 +1,5 @@
 import { defineOperationApi } from '@directus/shared/utils';
+import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
 	json: string;
@@ -8,6 +9,6 @@ export default defineOperationApi<Options>({
 	id: 'transform',
 
 	handler: ({ json }) => {
-		return JSON.parse(json);
+		return parseJSON(json);
 	},
 });

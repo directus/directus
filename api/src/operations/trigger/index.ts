@@ -1,5 +1,6 @@
 import { defineOperationApi } from '@directus/shared/utils';
 import { getFlowManager } from '../../flows';
+import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
 	flow: string;
@@ -12,7 +13,7 @@ export default defineOperationApi<Options>({
 	handler: async ({ flow, data }, context) => {
 		const flowManager = getFlowManager();
 
-		const parsedData = JSON.parse(data);
+		const parsedData = parseJSON(data);
 
 		let result: unknown | unknown[];
 

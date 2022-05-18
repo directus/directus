@@ -3,6 +3,7 @@ import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { Item } from '../../types';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
+import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
 	collection: string;
@@ -38,7 +39,7 @@ export default defineOperationApi<Options>({
 		let result: PrimaryKey[] | null;
 
 		const parsedPayload: Partial<Item> | Partial<Item>[] | null =
-			typeof payload === 'string' ? JSON.parse(payload) : null;
+			typeof payload === 'string' ? parseJSON(payload) : null;
 
 		if (!parsedPayload) {
 			result = null;
