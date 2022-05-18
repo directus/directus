@@ -669,6 +669,7 @@ operators:
   null: Is null
   nnull: Isn't null
   contains: Contains
+  icontains: Contains (insensitive)
   ncontains: Doesn't contain
   starts_with: Starts with
   nstarts_with: Doesn't start with
