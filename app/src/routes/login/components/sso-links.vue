@@ -58,7 +58,7 @@ export default defineComponent({
 		});
 
 		const errorFormatted = computed(() => {
-			if (router.currentRoute.value.query.reason) {
+			if (router.currentRoute.value.query.reason && router.currentRoute.value.query.reason !== 'SIGN_OUT') {
 				return translateAPIError(router.currentRoute.value.query.reason);
 			}
 			return null;
