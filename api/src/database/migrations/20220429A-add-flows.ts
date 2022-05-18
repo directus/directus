@@ -12,11 +12,11 @@ export async function up(knex: Knex): Promise<void> {
 		table.text('note');
 		table.string('status').notNullable().defaultTo('active');
 		table.string('trigger');
-		table.json('options');
 		table.string('accountability').defaultTo('all');
+		table.json('options');
+		table.uuid('operation').unique();
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
-		table.uuid('operation').unique();
 	});
 
 	await knex.schema.createTable('directus_operations', (table) => {
@@ -27,11 +27,11 @@ export async function up(knex: Knex): Promise<void> {
 		table.integer('position_x').notNullable();
 		table.integer('position_y').notNullable();
 		table.json('options');
-		table.timestamp('date_created').defaultTo(knex.fn.now());
-		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 		table.uuid('resolve').unique().references('id').inTable('directus_operations');
 		table.uuid('reject').unique().references('id').inTable('directus_operations');
 		table.uuid('flow').notNullable().references('id').inTable('directus_flows').onDelete('CASCADE');
+		table.timestamp('date_created').defaultTo(knex.fn.now());
+		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
 
 	const webhooks = await knex.select('*').from('directus_webhooks');

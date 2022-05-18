@@ -5,9 +5,11 @@ fields:
     special: uuid
   - field: name
   - field: icon
+  - field: color
   - field: note
   - field: status
   - field: trigger
+  - field: accountability
   - field: options
     special: cast-json
   - field: operation
