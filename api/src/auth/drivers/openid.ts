@@ -1,25 +1,27 @@
 import { Router } from 'express';
-import { Issuer, Client, generators, errors } from 'openid-client';
+import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import flatten from 'flat';
-import { LocalAuthDriver } from './local';
+import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
-import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, AuthData } from '../../types';
 import {
-	InvalidCredentialsException,
-	ServiceUnavailableException,
 	InvalidConfigException,
+	InvalidCredentialsException,
 	InvalidTokenException,
+	InvalidProviderException,
+	ServiceUnavailableException,
 } from '../../exceptions';
-import { respond } from '../../middleware/respond';
-import asyncHandler from '../../utils/async-handler';
-import { Url } from '../../utils/url';
 import logger from '../../logger';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { respond } from '../../middleware/respond';
+import { AuthenticationService, UsersService } from '../../services';
+import { AuthData, AuthDriverOptions, User } from '../../types';
+import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { parseJSON } from '../../utils/parse-json';
+import { Url } from '../../utils/url';
+import { LocalAuthDriver } from './local';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -141,9 +143,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const { provider, identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
 
-		const email = userInfo.email as string | null | undefined;
+		const email = userInfo.email ? String(userInfo.email) : undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey ?? 'sub'] as any | null | undefined)?.toString() ?? email;
+		const identifier = userInfo[identifierKey ?? 'sub'] ? String(userInfo[identifierKey ?? 'sub']) : email;
 
 		if (!identifier) {
 			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
@@ -192,7 +194,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		if (typeof authData === 'string') {
 			try {
-				authData = JSON.parse(authData);
+				authData = parseJSON(authData);
 			} catch {
 				logger.warn(`[OpenID] Session data isn't valid JSON: ${authData}`);
 			}
@@ -321,6 +323,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						reason = 'INVALID_USER';
 					} else if (error instanceof InvalidTokenException) {
 						reason = 'INVALID_TOKEN';
+					} else if (error instanceof InvalidProviderException) {
+						reason = 'INVALID_PROVIDER';
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}

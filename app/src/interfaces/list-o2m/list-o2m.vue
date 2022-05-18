@@ -87,7 +87,7 @@
 <script setup lang="ts">
 import { useRelationO2M, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
 import { parseFilter } from '@/utils/parse-filter';
-import { Filter } from '@directus/shared/types';
+import { Field, Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
@@ -98,6 +98,7 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp } from 'lodash';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -141,12 +142,13 @@ const templateWithDefaults = computed(() => {
 	);
 });
 
-const fields = computed(() =>
-	adjustFieldsForDisplays(
+const fields = computed(() => {
+	const displayFields: string[] = adjustFieldsForDisplays(
 		getFieldsFromTemplate(templateWithDefaults.value),
 		relationInfo.value?.relatedCollection.collection ?? ''
-	)
-);
+	);
+	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
+});
 
 const limit = ref(15);
 const page = ref(1);

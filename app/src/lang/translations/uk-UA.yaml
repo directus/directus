@@ -1781,3 +1781,8 @@ panels:
   list:
     name: Список
     description: Фільтрувати та перелічити поля з колекції
+  linechart:
+    name: Лінійна діаграма
+    function: Функція
+  piechart:
+    monochrome_color: Монохромний колір
