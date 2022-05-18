@@ -24,7 +24,7 @@ export class Transport extends ITransport {
 		if (this.config?.beforeRequest) this.beforeRequest = this.config.beforeRequest;
 	}
 
-	beforeRequest(config: AxiosRequestConfig): AxiosRequestConfig {
+	async beforeRequest(config: AxiosRequestConfig): Promise<AxiosRequestConfig> {
 		return config;
 	}
 
@@ -48,7 +48,7 @@ export class Transport extends ITransport {
 				onUploadProgress: options?.onUploadProgress,
 			};
 
-			config = this.beforeRequest(config);
+			config = await this.beforeRequest(config);
 
 			const response = await this.axios.request<any>(config);
 

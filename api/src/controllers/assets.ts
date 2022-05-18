@@ -1,6 +1,7 @@
 import { Range } from '@directus/drive';
 import { Router } from 'express';
-import { pick } from 'lodash';
+import helmet from 'helmet';
+import { merge, pick } from 'lodash';
 import ms from 'ms';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
 import getDatabase from '../database';
@@ -8,8 +9,10 @@ import env from '../env';
 import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
-import { TransformationParams, TransformationMethods, TransformationPreset } from '../types/assets';
+import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
+import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { parseJSON } from '../utils/parse-json';
 
 const router = Router();
 
@@ -45,7 +48,7 @@ router.get(
 
 			// Try parse the JSON array
 			try {
-				transforms = JSON.parse(transformation['transforms'] as string);
+				transforms = parseJSON(transformation['transforms'] as string);
 			} catch {
 				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
 			}
@@ -106,6 +109,18 @@ router.get(
 		}
 	}),
 
+	helmet.contentSecurityPolicy(
+		merge(
+			{
+				useDefaults: false,
+				directives: {
+					defaultSrc: ['none'],
+				},
+			},
+			getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+		)
+	),
+
 	// Return file
 	asyncHandler(async (req, res) => {
 		const id = req.params.pk?.substring(0, 36);
@@ -145,6 +160,12 @@ router.get(
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
+
+		const unixTime = Date.parse(file.modified_on);
+		if (!Number.isNaN(unixTime)) {
+			const lastModifiedDate = new Date(unixTime);
+			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
+		}
 
 		if (range) {
 			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);

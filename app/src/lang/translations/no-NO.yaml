@@ -28,6 +28,8 @@ draft: Utkast
 archived: Arkivert
 modules: Moduler
 module_bar: Modul Bar
+reset_width: Reset Width
+tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
 maps: Kart
@@ -39,6 +41,7 @@ duplicate_field: Dupliser felt
 half_width: Halv vidde
 full_width: Fullbredde
 group: Gruppe
+export_items: Eksporter produkter
 and: Og
 or: Eller
 fill_width: Fyll vidde
@@ -53,7 +56,9 @@ edit_collection: Rediger samling
 exclusive: Eksklusiv
 children: Barn
 db_only_click_to_configure: 'Kun database: Klikk for å konfigurere'
+show_active_items: Show Active Items
 show_archived_items: Vis arkiverte elementer
+show_all_items: Show Active Items
 edited: Verdi endret
 required: Påkrevd
 required_for_app_access: Påkrevd for app-tilgang
@@ -80,7 +85,6 @@ delete_folder: Slett mappe
 prefix: Prefiks
 suffix: Suffiks
 reset_bookmark: Tilbakestill bokmerke
-rename_bookmark: Endre navn på bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
 delete_bookmark_copy: >-
@@ -110,7 +114,6 @@ recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
-unknown_validation_errors: 'Det oppstod valideringsfeil for følgende skjulte felter:'
 validationError:
   eq: Verdien må være {valid}
   neq: Verdien kan ikke være {invalid}
@@ -288,7 +291,6 @@ related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
 label_import: Importer
 format: Format
-use_current_filters_settings: Bruk gjeldende filtre og innstillinger
 last_page: Siste side
 last_access: Siste tilgang
 fill_template: Fyll med malverdi
@@ -304,6 +306,10 @@ interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
+functions:
+  year: År
+  month: Måned
+  count: Antall
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -720,7 +726,6 @@ layouts:
     subtitle: Undertittel
   tabular:
     tabular: Tabell
-    fields: Felter
     spacing: Mellomrom
     comfortable: Komfortabel
     compact: Kompakt

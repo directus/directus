@@ -23,7 +23,7 @@ properties:
       color:
         description: Choose an accent color for this collection.
         type: string
-        example: '#00C897'
+        example: '#6644ff'
         nullable: true
       note:
         description: A note describing the collection.

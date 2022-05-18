@@ -87,6 +87,7 @@ describe('', () => {
 	it('returns the filter operators for binary', () => {
 		expect(getFilterOperatorsForType(TYPES[13])).toStrictEqual([
 			'contains',
+			'icontains',
 			'ncontains',
 			'starts_with',
 			'nstarts_with',
@@ -111,6 +112,28 @@ describe('', () => {
 			'nintersects',
 			'intersects_bbox',
 			'nintersects_bbox',
+		]);
+	});
+
+	it('includes validation only types', () => {
+		expect(getFilterOperatorsForType(TYPES[0], { includeValidation: true })).toStrictEqual([
+			'contains',
+			'ncontains',
+			'eq',
+			'neq',
+			'lt',
+			'lte',
+			'gt',
+			'gte',
+			'between',
+			'nbetween',
+			'empty',
+			'nempty',
+			'null',
+			'nnull',
+			'in',
+			'nin',
+			'regex',
 		]);
 	});
 });

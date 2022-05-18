@@ -42,21 +42,21 @@ fields:
     width: full
 
   - field: hidden
-    special: boolean
+    special: cast-boolean
     interface: boolean
     options:
       label: $t:field_options.directus_collections.hidden_label
     width: half
 
   - field: singleton
-    special: boolean
+    special: cast-boolean
     interface: boolean
     options:
       label: $t:singleton_label
     width: half
 
   - field: translations
-    special: json
+    special: cast-json
     interface: list
     options:
       template: '{{ translation }} ({{ language }})'
@@ -115,7 +115,7 @@ fields:
 
   - field: archive_app_filter
     interface: boolean
-    special: boolean
+    special: cast-boolean
     options:
       label: $t:field_options.directus_collections.archive_app_filter
     width: half
@@ -156,6 +156,8 @@ fields:
         - decimal
         - integer
       allowNone: true
+      allowPrimaryKey: false
+      allowForeignKeys: false
     width: half
 
   - field: accountability_divider
@@ -191,7 +193,7 @@ fields:
 
   - field: item_duplication_fields
     special:
-      - json
+      - cast-json
     interface: system-field-tree
     options:
       collectionField: collection

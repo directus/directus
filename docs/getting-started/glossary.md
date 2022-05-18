@@ -131,15 +131,14 @@ a **column** in your database. For example, an `articles` [Collection](#collecti
 As you might have guessed, files includes images, videos, PDFs, text documents, or anything else. While files can
 technically be stored as code in the database, it is far more common to manage them as individual assets on a "drive".
 The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
-an excellent Digital Asset Management system.
+is an excellent Digital Asset Management system.
 
 ## Icons
 
 ### Material Icons
 
-Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
-outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
-`account_circle_outline`.
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus supports both filled & outlined
+variants of Material icons.
 
 ### Social Icons
 
@@ -163,7 +162,7 @@ proprietary options, such as seating charts, QR codes, or Stripe customer info.
 
 ## Items
 
-Item are objects within a Collection which contain values for one or more fields. Each collection represents a
+Items are objects within a Collection which contain values for one or more fields. Each collection represents a
 **record** in your database.
 
 Items are the primary building blocks of your project content. Similar to a "row" within a spreadsheet, all data within
@@ -252,7 +251,7 @@ within a [Dashboard](#dashboards) and can be positioned and resized as needed.
 
 ## Permissions
 
-Permissions are attached directly to a Role, defining what a user can can create, read, update, and delete within the
+Permissions are attached directly to a Role, defining what a user can create, read, update, and delete within the
 platform. Extremely granular, these filter-based permissions control access for the entire system.
 
 ## Presets
@@ -379,6 +378,12 @@ all of these differences, Directus has a single _superset_ of types that map to 
 - **UUID** — A universally unique identifier saved in UUIDv4 format
 - **Hash** — A string hashed using argon2 cryptographic hash algorithm
 - **Alias** — For fields that do not have a database column [Learn More](#)
+
+::: warning
+
+For **SQLite**, the **Timestamp** type is stored as a **DateTime**.
+
+:::
 
 ## Users
 

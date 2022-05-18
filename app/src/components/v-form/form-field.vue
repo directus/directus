@@ -28,7 +28,7 @@
 				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
-		<div v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" class="label-spacer" />
+		<div v-else-if="['full', 'fill'].includes(field.meta?.width) === false" class="label-spacer" />
 
 		<form-field-interface
 			:autofocus="autofocus"
@@ -40,6 +40,7 @@
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
 			@update:model-value="emitValue($event)"
+			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
@@ -56,211 +57,170 @@
 
 		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
-		<small v-if="validationError" class="validation-error">
-			{{ validationMessage }}
+		<small v-if="validationError" class="validation-error selectable">
+			<template v-if="field.meta?.validation_message">
+				{{ field.meta?.validation_message }}
+				<v-icon v-tooltip="validationMessage" small right name="help_outline" />
+			</template>
+			<template v-else>{{ validationPrefix }}{{ validationMessage }}</template>
 		</small>
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref } from 'vue';
+<script lang="ts" setup>
+import { getJSType } from '@/utils/get-js-type';
 import { Field, ValidationError } from '@directus/shared/types';
+import { isEqual } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
-import FormFieldInterface from './form-field-interface.vue';
-import { getJSType } from '@/utils/get-js-type';
-import { notify } from '@/utils/notify';
-import { isEqual } from 'lodash';
+import { formatFieldFunction } from '@/utils/format-field-function';
+import useClipboard from '@/composables/use-clipboard';
 
-export default defineComponent({
-	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
-	props: {
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActive: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		modelValue: {
-			type: [String, Number, Object, Array, Boolean],
-			default: undefined,
-		},
-		initialValue: {
-			type: [String, Number, Object, Array, Boolean],
-			default: undefined,
-		},
-		primaryKey: {
-			type: [String, Number],
-			default: null,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		validationError: {
-			type: Object as PropType<ValidationError>,
-			default: null,
-		},
-		autofocus: {
-			type: Boolean,
-			default: false,
-		},
-		badge: {
-			type: String,
-			default: null,
-		},
-	},
-	emits: ['toggle-batch', 'unset', 'update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	field: Field;
+	batchMode?: boolean;
+	batchActive?: boolean;
+	disabled?: boolean;
+	modelValue?: any;
+	initialValue?: any;
+	primaryKey?: string | number;
+	loading?: boolean;
+	validationError?: ValidationError;
+	autofocus?: boolean;
+	badge?: string;
+}
 
-		const isDisabled = computed(() => {
-			if (props.disabled) return true;
-			if (props.field?.meta?.readonly === true) return true;
-			if (props.batchMode && props.batchActive === false) return true;
-			return false;
-		});
-
-		const defaultValue = computed(() => {
-			const value = props.field?.schema?.default_value;
-
-			if (value !== undefined) return value;
-			return undefined;
-		});
-
-		const internalValue = computed(() => {
-			if (props.modelValue !== undefined) return props.modelValue;
-			if (props.initialValue !== undefined) return props.initialValue;
-			return defaultValue.value;
-		});
-
-		const isEdited = computed<boolean>(() => {
-			return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
-		});
-
-		const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
-
-		const validationMessage = computed(() => {
-			if (!props.validationError) return null;
-
-			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
-				return t('validationError.unique');
-			} else {
-				return t(`validationError.${props.validationError.type}`, props.validationError);
-			}
-		});
-
-		return {
-			t,
-			isDisabled,
-			internalValue,
-			emitValue,
-			showRaw,
-			rawValue,
-			copyRaw,
-			pasteRaw,
-			validationMessage,
-			isEdited,
-		};
-
-		function emitValue(value: any) {
-			if (
-				(isEqual(value, props.initialValue) ||
-					(props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
-				props.batchMode === false
-			) {
-				emit('unset', props.field);
-			} else {
-				emit('update:modelValue', value);
-			}
-		}
-
-		function useRaw() {
-			const showRaw = ref(false);
-
-			const type = computed(() => {
-				return getJSType(props.field);
-			});
-
-			const rawValue = computed({
-				get() {
-					switch (type.value) {
-						case 'object':
-							return JSON.stringify(internalValue.value, null, '\t');
-						case 'string':
-						case 'number':
-						case 'boolean':
-						default:
-							return internalValue.value;
-					}
-				},
-				set(newRawValue: string) {
-					switch (type.value) {
-						case 'string':
-							emit('update:modelValue', newRawValue);
-							break;
-						case 'number':
-							emit('update:modelValue', Number(newRawValue));
-							break;
-						case 'boolean':
-							emit('update:modelValue', newRawValue === 'true');
-							break;
-						case 'object':
-							emit('update:modelValue', JSON.parse(newRawValue));
-							break;
-						default:
-							emit('update:modelValue', newRawValue);
-							break;
-					}
-				},
-			});
-
-			async function copyRaw() {
-				try {
-					await navigator?.clipboard?.writeText(rawValue.value);
-					notify({
-						type: 'success',
-						title: t('copy_raw_value_success'),
-					});
-				} catch (err: any) {
-					notify({
-						type: 'error',
-						title: t('copy_raw_value_fail'),
-					});
-				}
-			}
-
-			async function pasteRaw() {
-				try {
-					const pasteValue = await navigator?.clipboard?.readText();
-					rawValue.value = pasteValue;
-					notify({
-						type: 'success',
-						title: t('paste_raw_value_success'),
-					});
-				} catch (err: any) {
-					notify({
-						type: 'error',
-						title: t('paste_raw_value_fail'),
-					});
-				}
-			}
-
-			return { showRaw, rawValue, copyRaw, pasteRaw };
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	batchMode: false,
+	batchActive: false,
+	disabled: false,
+	modelValue: undefined,
+	initialValue: undefined,
+	primaryKey: undefined,
+	loading: false,
+	validationError: undefined,
+	autofocus: false,
+	badge: undefined,
 });
+
+const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'setFieldValue']);
+
+const { t } = useI18n();
+
+const isDisabled = computed(() => {
+	if (props.disabled) return true;
+	if (props.field?.meta?.readonly === true) return true;
+	if (props.batchMode && props.batchActive === false) return true;
+	return false;
+});
+
+const defaultValue = computed(() => {
+	const value = props.field?.schema?.default_value;
+
+	if (value !== undefined) return value;
+	return undefined;
+});
+
+const internalValue = computed(() => {
+	if (props.modelValue !== undefined) return props.modelValue;
+	if (props.initialValue !== undefined) return props.initialValue;
+	return defaultValue.value;
+});
+
+const isEdited = computed<boolean>(() => {
+	return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
+});
+
+const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
+
+const validationMessage = computed(() => {
+	if (!props.validationError) return null;
+
+	if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
+		return t('validationError.unique');
+	} else {
+		return t(`validationError.${props.validationError.type}`, props.validationError);
+	}
+});
+
+const validationPrefix = computed(() => {
+	if (!props.validationError) return null;
+
+	if (props.validationError.field.includes('(') && props.validationError.field.includes(')')) {
+		return formatFieldFunction(props.field.collection, props.validationError.field) + ': ';
+	}
+
+	return null;
+});
+
+function emitValue(value: any) {
+	if (
+		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
+		props.batchMode === false
+	) {
+		emit('unset', props.field);
+	} else {
+		emit('update:modelValue', value);
+	}
+}
+
+function useRaw() {
+	const showRaw = ref(false);
+
+	const { copyToClipboard, pasteFromClipboard } = useClipboard();
+
+	const type = computed(() => {
+		return getJSType(props.field);
+	});
+
+	const rawValue = computed({
+		get() {
+			switch (type.value) {
+				case 'object':
+					return JSON.stringify(internalValue.value, null, '\t');
+				case 'string':
+				case 'number':
+				case 'boolean':
+				default:
+					return internalValue.value;
+			}
+		},
+		set(newRawValue: string) {
+			switch (type.value) {
+				case 'string':
+					emit('update:modelValue', newRawValue);
+					break;
+				case 'number':
+					emit('update:modelValue', Number(newRawValue));
+					break;
+				case 'boolean':
+					emit('update:modelValue', newRawValue === 'true');
+					break;
+				case 'object':
+					emit('update:modelValue', JSON.parse(newRawValue));
+					break;
+				default:
+					emit('update:modelValue', newRawValue);
+					break;
+			}
+		},
+	});
+
+	async function copyRaw() {
+		await copyToClipboard(rawValue.value);
+	}
+
+	async function pasteRaw() {
+		const pastedValue = await pasteFromClipboard();
+		if (!pastedValue) return;
+		rawValue.value = pastedValue;
+	}
+
+	return { showRaw, rawValue, copyRaw, pasteRaw };
+}
 </script>
 
 <style lang="scss" scoped>

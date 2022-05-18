@@ -1,6 +1,15 @@
 import { ClientFilterOperator, Type } from '../types';
 
-export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
+type GetFilterOperationsForTypeOptions = {
+	includeValidation?: boolean;
+};
+
+export function getFilterOperatorsForType(
+	type: Type,
+	opts?: GetFilterOperationsForTypeOptions
+): ClientFilterOperator[] {
+	const validationOnlyStringFilterOperators: ClientFilterOperator[] = opts?.includeValidation ? ['regex'] : [];
+
 	switch (type) {
 		// Text
 		case 'binary':
@@ -9,6 +18,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		case 'csv':
 			return [
 				'contains',
+				'icontains',
 				'ncontains',
 				'starts_with',
 				'nstarts_with',
@@ -22,6 +32,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'nnull',
 				'in',
 				'nin',
+				...validationOnlyStringFilterOperators,
 			];
 
 		// JSON
@@ -84,6 +95,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'nnull',
 				'in',
 				'nin',
+				...validationOnlyStringFilterOperators,
 			];
 	}
 }

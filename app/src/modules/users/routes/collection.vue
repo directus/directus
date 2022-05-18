@@ -20,7 +20,7 @@
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="people_alt" outline />
+					<v-icon name="people_alt" />
 				</v-button>
 			</template>
 
@@ -39,9 +39,10 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" />
 						</v-button>
 					</template>
 
@@ -60,15 +61,15 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" />
 				</v-button>
 
 				<v-button
@@ -76,7 +77,7 @@
 					v-tooltip.bottom="t('invite_users')"
 					rounded
 					icon
-					class="invite-user"
+					secondary
 					@click="userInviteModalActive = true"
 				>
 					<v-icon name="person_add" />
@@ -150,6 +151,7 @@
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 				<export-sidebar-detail
 					collection="directus_users"
+					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, roleFilter)"
 					:search="search"
 				/>
@@ -389,17 +391,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
@@ -408,12 +401,5 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
-}
-
-.invite-user {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 </style>

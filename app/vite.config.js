@@ -119,7 +119,10 @@ export default defineConfig({
 		}),
 	],
 	resolve: {
-		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
+		alias: [
+			{ find: '@', replacement: path.resolve(__dirname, 'src') },
+			{ find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
+		],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
 	server: {
@@ -140,7 +143,7 @@ function directusExtensions() {
 	const prefix = '@directus-extensions-';
 	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
-	let extensionEntrys = {};
+	let extensionEntrypoints = {};
 
 	return [
 		{
@@ -163,7 +166,7 @@ function directusExtensions() {
 				if (virtualIds.includes(id)) {
 					const extensionType = id.substring(prefix.length);
 
-					return extensionEntrys[extensionType];
+					return extensionEntrypoints[extensionType];
 				}
 			},
 		},
@@ -199,7 +202,7 @@ function directusExtensions() {
 		const extensions = [...packageExtensions, ...localExtensions];
 
 		for (const extensionType of APP_EXTENSION_TYPES) {
-			extensionEntrys[extensionType] = generateExtensionsEntry(extensionType, extensions);
+			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
 		}
 	}
 }

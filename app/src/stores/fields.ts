@@ -1,6 +1,6 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { useRelationsStore } from '@/stores/';
+import { useRelationsStore, useCollectionsStore } from '@/stores/';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
@@ -75,12 +75,17 @@ export const useFieldsStore = defineStore({
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
+					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
+
 					i18n.global.mergeLocaleMessage(language, {
-						fields: {
-							[field.collection]: {
-								[field.field]: translation,
+						...(literalInterpolatedTranslation && {
+							fields: {
+								[field.collection]: {
+									[field.field]: literalInterpolatedTranslation,
+								},
 							},
-						},
+						}),
 					});
 				}
 			}
@@ -209,6 +214,7 @@ export const useFieldsStore = defineStore({
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
 			const relationsStore = useRelationsStore();
+			const collectionsStore = useCollectionsStore();
 
 			const stateClone = [...this.fields];
 			const relationsStateClone = [...relationsStore.relations];
@@ -219,12 +225,18 @@ export const useFieldsStore = defineStore({
 			});
 
 			relationsStore.relations = relationsStore.relations.filter((relation) => {
-				if (relation.collection === collectionKey && relation.field === fieldKey) return false;
+				if (
+					(relation.collection === collectionKey && relation.field === fieldKey) ||
+					(relation.related_collection === collectionKey && relation.meta?.one_field === fieldKey)
+				) {
+					return false;
+				}
 				return true;
 			});
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
+				await collectionsStore.hydrate();
 			} catch (err: any) {
 				this.fields = stateClone;
 				relationsStore.relations = relationsStateClone;
@@ -253,6 +265,28 @@ export const useFieldsStore = defineStore({
 			});
 		},
 		/**
+		 * Retrieve sorted fields including groups. This is necessary because
+		 * fields inside groups starts their sort number from 1 to N again.
+		 */
+		getFieldsForCollectionSorted(collection: string): Field[] {
+			const fields = orderBy(
+				this.fields.filter((field) => field.collection === collection),
+				'meta.sort'
+			);
+
+			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
+
+			for (const [index, field] of nonGroupFields.entries()) {
+				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+
+				if (groupFields.length) {
+					nonGroupFields.splice(index + 1, 0, ...orderBy(groupFields, 'meta.sort'));
+				}
+			}
+
+			return nonGroupFields;
+		},
+		/**
 		 * Retrieve field info for a field or a related field
 		 */
 		getField(collection: string, fieldKey: string): Field | null {
@@ -261,6 +295,12 @@ export const useFieldsStore = defineStore({
 			} else {
 				return this.fields.find((field) => field.collection === collection && field.field === fieldKey) || null;
 			}
+		},
+		/**
+		 * Retrieve nested fields for a given group field
+		 */
+		getFieldGroupChildren(collection: string, fieldKey: string): Field[] | null {
+			return this.fields.filter((field) => field.collection === collection && field.meta?.group === fieldKey) || null;
 		},
 		/**
 		 * Retrieve field info for a (deeply) nested field

@@ -14,7 +14,7 @@
 		@pointerdown="onPointerDown('move', $event)"
 	>
 		<div v-if="panel.show_header" class="header">
-			<v-icon class="icon" :style="iconColor" :name="panel.icon" />
+			<v-icon class="icon" :style="iconColor" :name="headerIcon" />
 			<v-text-overflow class="name selectable" :text="panel.name || ''" />
 			<div class="spacer" />
 			<v-icon v-if="panel.note" v-tooltip="panel.note" class="note" name="info" />
@@ -93,7 +93,7 @@
 
 <script lang="ts">
 import { getPanels } from '@/panels';
-import { Panel } from '@/types';
+import { Panel } from '@directus/shared/types';
 import { defineComponent, PropType, computed, ref, reactive } from 'vue';
 import { throttle, omit } from 'lodash';
 import { useI18n } from 'vue-i18n';
@@ -125,8 +125,11 @@ export default defineComponent({
 			});
 		});
 
+		const headerIcon = computed(() => {
+			return props.panel.icon ? props.panel.icon : panelTypeInfo.value.icon;
+		});
 		/**
-		 * When drag-n-dropping for positiniong/resizing, we're
+		 * When drag-n-dropping for positioning/resizing, we're
 		 */
 		const editedPosition = reactive<Partial<Panel>>({
 			position_x: undefined,
@@ -174,10 +177,11 @@ export default defineComponent({
 		});
 
 		const iconColor = computed(() => ({
-			'--v-icon-color': props.panel.color,
+			'--v-icon-color': props.panel.color || 'var(--primary)',
 		}));
 
 		return {
+			headerIcon,
 			positioning,
 			positionStyling,
 			iconColor,

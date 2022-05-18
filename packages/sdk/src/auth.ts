@@ -37,6 +37,7 @@ export abstract class IAuth {
 
 	abstract login(credentials: AuthCredentials): Promise<AuthResult>;
 	abstract refresh(): Promise<AuthResult | false>;
+	abstract refreshIfExpired(): Promise<void>;
 	abstract static(token: AuthToken): Promise<boolean>;
 	abstract logout(): Promise<void>;
 }
