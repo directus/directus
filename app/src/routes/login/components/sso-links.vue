@@ -58,7 +58,9 @@ export default defineComponent({
 		});
 
 		const errorFormatted = computed(() => {
-			if (router.currentRoute.value.query.reason && router.currentRoute.value.query.reason !== 'SIGN_OUT') {
+			const validReasons = ['SIGN_OUT', 'SESSION_EXPIRED'];
+
+			if (router.currentRoute.value.query.reason && !validReasons.includes(router.currentRoute.value.query.reason)) {
 				return translateAPIError(router.currentRoute.value.query.reason);
 			}
 			return null;
