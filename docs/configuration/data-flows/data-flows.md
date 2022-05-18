@@ -4,6 +4,14 @@
 
 [[toc]]
 
+<!--
+::: Before You Begin
+
+
+
+:::
+-->
+
 ## What's a Data Flow?
 
 <video autoplay muted loop controls title="">
@@ -36,7 +44,7 @@ or generated in all previous Operations of the Data Flow.
 3. Fill in a name for the Data Flow.\
    _Optional: Set a material icon, color, or note to help differentiate the Flow._
 4. Click **"Save"** and you will be taken to the Flow Grid Page, with the Create Trigger Menu open.
-5. Add a name to identify the Trigger, choose the Trigger Type, and fill in Trigger details _(if any)_.
+5. Add a name to identify the Trigger, choose the Trigger Type, and fill in Trigger details as desired.
 6. Click <span mi icon>done</span> in the Menu Header.
 7. On the Trigger Panel, click <span mi>add</span> and the Create Operation Menu will open.
 8. Create a name, select the Operation type, and configure as desired.
@@ -50,11 +58,21 @@ successfully executed or not._
     - Click <span mi icon>minus</span> to add Operation if failure.
 11. Repeat steps eight and nine as desired, until your Data Flow is complete.
 
+## The Data Flow Object
+
+The JSON input fields in Triggers and Operations can also support variables.
+
+```JSON
+{
+    "some_key": {{$trigger}}
+}
+```
+
+## Payload
+
 ## Trigger Variables
 
-<!-- Not sure what variables are available to triggers yet.-->
-
-- `articles.items.create`
+<!-- Not sure what variables are available to triggers yet => Add tip to check Custom Hooks.-->
 
 ## Flow Object Variables
 
@@ -66,7 +84,7 @@ Remember, data produced in each step of the Data Flow is stored as JSON objects 
 object. As you are configuring your Data Flow, you are able to access the entire Flow Object, as well as the nested
 Objects generated in each previous Operation.
 
-- <!--What is the variable to access the whole flow object?.-->
-- `$trigger` - Returns data produced
+- <!-- What is the variable to access the whole flow object? -->
+- `$trigger` - Returns data produced from the trigger
 - `{{some_operation__key}}` — Allows access to the nested JSON object produced by an Operation with key
   `{{some_operation_key}}`.

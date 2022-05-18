@@ -4,15 +4,49 @@
 
 [[toc]]
 
+## Condition
+
+<video autoplay muted loop controls title="">
+	<source src="https://cdn.directus.io/" type="video/mp4" />
+</video>
+
+Route a flow based on `if` / `else` logic. That means if the condition is met, the flow will move forward with the
+success operation. Otherwise, the failure operation will be initiated.
+
+### Options
+
+- **Condition Rules** — Creates conditions with [Filter Rules](/configuration/filter-rules).
+
+## Create Data
+
+<video autoplay muted loop controls title="">
+	<source src="https://cdn.directus.io/" type="video/mp4" />
+</video>
+
+Creates Items in the database.
+
+### Options
+
+- **Collection** — Provides a dropdown to set the Collection to initialize data write.
+- **Permissions** — Sets the scope of permissions used for this write operation.
+- **Emit Events** — <!-- Not sure what this is -->
+- **Payload** — Creates the Item to write into the database using JSON with keys that match the Collection Fields.
+
+::: Tip
+
+Make sure the Operation is set with the proper write permissions.
+
+:::
+
 ## Log to Console
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Logs a Message to the Console.
+Output something to the server-side console. A key tool for troubleshooting data flow configuration.
 
-### Config Options
+### Options
 
 - **Message** — Sets message to log.
 
@@ -24,32 +58,37 @@ Trigger: {{$trigger}}
 
 ```
 
-## Email <!--Not working for me-->
+## Send Email
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Sends emails to other humans.
+Sends emails to other humans. Variables can be used so that an array of emails could be fetched from a previous step in
+data flows.
 
-### Config Options
+### Options
 
-- **To** — Sets the email addresses.
+- **To** — Sets the email addresses. Hit `↵` to confirm save the email(s). Click emails to remove them.
 - **Subject** — Set subject line.
 - **Body** — Provides WYSIWYG editor to create email body.
-- **Data** — <!-- ???Assuming JSON? What happens to it??? -->
 
-### Config Tips/Details
+:::tip Sending emails from `localhost:8080`
 
-## Notification
+If you are testing out this Operation locally, be sure to check you spam box as you email provider may send it there
+automatically.
+
+:::
+
+## Send Notification <!-- Still Not working for me -->
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-- Description: Send a notification to someone.
+Send a notification to app user(s).
 
-### Config Options
+### Options
 
 - **Users** — <!-- The @ does not autofill users.... idk the syntax -->
 - **Title** — Sets the notification title.
@@ -57,44 +96,36 @@ Sends emails to other humans.
 
 ### Config Tips/Details
 
-<!--Notifications not sending yet... Can we hard code? Dynamic list of emails? SDK? What are the options-->
-<!--Can we send notifications to multiple people?-->
-
-## Read <!--Not working for me-->
+## Read Data
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-- Description: Read Items from the Database.
+Read Items from the Database and adds them to the Data Flow Object for access by subsequent operations.
 
-### Config Options
+### Options
 
 - **Mode** — Provides dropdown menu to read one Item, multiple Items, or Items by query.
-- **Collection** — Select the Collection to read from.
-- **IDs** — <!--Item IDs? syntax? hardcode? SDK?>
-- **Query** — <!-- SDK? -->
+- **Permissions** — Defines Role that this data operation will inherit read permissions from.
+- **Collections** — Select the Collection to read Items from.
+- **IDs** — Input ID for Item(s) you wish to read and press enter.
+- **Query** — Read Items from a query made with [Filter Rules](/configuration/filter-rules).
 
-### Config Tips/Details
-
-<!-- Collection should probably be a dropdown menu, not a form input. -->
-
-## Request
+## Webhook / Request URL
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-- Description: Make a request to a URL.
+Makes a request to a URL.
 
-### Config Options
+### Options
 
 - **Method** — Choose to make a GET or POST request.
 - **URL** — Define the URL to send request to.
 - **Headers** — Create new `header:value` to pass along with the request.
 - **Data** — <!-- Not sure how this works yet. -->
-
-### Config Tips/Details
 
 ## Sleep
 
@@ -102,80 +133,34 @@ Sends emails to other humans.
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Waits for a given amount of milliseconds before executing the next Operation in the Data Flow.
+Pauses for a given amount of milliseconds before executing the next Operation in the Data Flow. This does not affect
+other app functions, just the subsequent Operations in the Data Flow.
 
-### Config Options
+### Options
 
 - **Milliseconds** — Defines the number of milliseconds to pause.
 
-### Config Tips/Details
-
-## Transform
+## Transform Payload
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Inserts JSON into the flow.
+Alters the Flow's JSON payload. Allows you to insert custom-defined JSON into the Data Flow Object.
 
-### Config Options
+### Options
 
-- **Method** —
+- **JSON** — Defines JSON to insert into the Data Flow Object for this Operation.
 
-### Config Tips/Details
-
-The JSON field can also support variables.
-
-```JSON
-{
-    "some_key": {{$trigger}}
-}
-```
-
-## Trigger <!-- Not working for me. No flow keys available. Tried adding "flow name". Did not mess with the data field.>
+## Trigger Flow <!-- Can't get it to work -->
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Start another flow.
+Starts another flow.
 
-### Config Options
+### Options
 
-- **Flow** — <!-- Not sure if supposed to input existing flow name? or....>
+- **Flow** —
 - **Data** —
-
-### Config Tips/Details
-
-## Validate <!-- Not working for me. Can't guess exactly what it does either.-->
-
-<video autoplay muted loop controls title="">
-	<source src="https://cdn.directus.io/" type="video/mp4" />
-</video>
-
-Validate an Item with a Filter.
-
-<!-- Which Items>
-
-### Config Options
-- **Filter** — <!-- Provides a modified version of the filter utility. -->
-
-- **Item** —
-
-### Config Tips/Details
-
-## Write <!-- Single items works! Did not test writing multiple items.-->
-
-<video autoplay muted loop controls title="">
-	<source src="https://cdn.directus.io/" type="video/mp4" />
-</video>
-
-- Description: Write Items into the database.
-
-### Config Options
-
-- **Mode** — Defines whether the operation will write in one item or multiple items.
-- **Collection** — Provides a dropdown to set the Collection name.
-- **Payload** — The Field Values for the Item(s) to write. Create JSON with keys that match the Collection Fields.
-
-### Config Tips/Details
