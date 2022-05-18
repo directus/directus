@@ -70,16 +70,26 @@ export class Auth extends IAuth {
 	async refreshIfExpired() {
 		if (this.staticToken) return;
 		if (!this.autoRefresh) return;
+
 		if (!this._storage.auth_expires_at) {
 			// wait because resetStorage() call in refresh()
-			await this._refreshPromise;
+			try {
+				await this._refreshPromise;
+			} finally {
+				this._refreshPromise = undefined;
+			}
 			return;
 		}
 
 		if (this._storage.auth_expires_at < new Date().getTime() + this.msRefreshBeforeExpires) {
 			this._refreshPromise = this.refresh();
 		}
-		await this._refreshPromise; // wait for refresh
+
+		try {
+			await this._refreshPromise; // wait for refresh
+		} finally {
+			this._refreshPromise = undefined;
+		}
 	}
 
 	async refresh(): Promise<AuthResult | false> {

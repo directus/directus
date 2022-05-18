@@ -9,6 +9,7 @@ import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
+import { parseJSON } from './utils/parse-json';
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
 
@@ -316,7 +317,7 @@ function processValues(env: Record<string, any>) {
 
 function tryJSON(value: any) {
 	try {
-		return JSON.parse(value);
+		return parseJSON(value);
 	} catch {
 		return value;
 	}
