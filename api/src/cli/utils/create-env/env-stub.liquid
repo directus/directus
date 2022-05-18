@@ -142,33 +142,37 @@ RATE_LIMITER_STORE=memory
 # The amount of allowed hits per duration [50]
 RATE_LIMITER_POINTS=25
 
-# The time window in seconds in which the points are counted
+# The time window in seconds in which the hits are counted [1]
 RATE_LIMITER_DURATION=1
 
 ####################################################################################################
 ### Caching
 
+# Whether or not caching is enabled. [false]
 CACHE_ENABLED=false
-# CACHE_ENABLED=true
+
+# How long the cache is persisted ["5m"]
 # CACHE_TTL="30m"
+
+# How to scope the cache data ["directus-cache"]
 # CACHE_NAMESPACE="directus-cache"
+
+# Automatically purge the cache on create, update, and delete actions. [false]
 # CACHE_AUTO_PURGE=true
 
 # memory | redis | memcache
 CACHE_STORE=memory
 
-#
+# How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30m"]
 ASSETS_CACHE_TTL="30m"
 
 # CACHE_REDIS="redis://@127.0.0.1:5105"
-
 # CACHE_MEMCACHE="localhost:5109"
 
 ####################################################################################################
 ### File Storage
 
-
-# CSV of names
+# A CSV of storage locations (eg: local,digitalocean,amazon) to use. You can use any names you'd like for these keys ["local"]
 STORAGE_LOCATIONS="local"
 STORAGE_LOCAL_DRIVER="local"
 STORAGE_LOCAL_ROOT="./uploads"
@@ -187,7 +191,9 @@ STORAGE_LOCAL_ROOT="./uploads"
 # STORAGE_GOOGLE_BUCKET="my-files"
 
 
-## CSV of additional metadata keys
+## A comma-separated list of metadata keys to collect during file upload. Use * for all 
+# Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
+# [ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO]
 # FILE_METADATA_ALLOW_LIST=
 
 ####################################################################################################
@@ -219,31 +225,53 @@ REFRESH_TOKEN_COOKIE_NAME="directus_refresh_token"
 # Which domain to use for the refresh cookie. Useful for development mode.
 # REFRESH_TOKEN_COOKIE_DOMAIN
 
-
+# Whether or not to enable the CORS headers [false]
 CORS_ENABLED="true"
+
+# Value for the Access-Control-Allow-Origin header. Use true to match the Origin header, or provide a domain or a CSV of domains for specific access [false]
 CORS_ORIGIN="true"
+
+# Value for the Access-Control-Allow-Methods header [GET,POST,PATCH,DELETE]
 CORS_METHODS=GET,POST,PATCH,DELETE
+
+# Value for the Access-Control-Allow-Headers header [Content-Type,Authorization]
 CORS_ALLOWED_HEADERS=Content-Type,Authorization
+
+# Value for the Access-Control-Expose-Headers header [Content-R
 CORS_EXPOSED_HEADERS=Content-Range
+
+# Whether or not to send the Access-Control-Allow-Credentials header [true]
 CORS_CREDENTIALS="true"
+
+# Value for the Access-Control-Max-Age header [18000]
 CORS_MAX_AGE=18000
-#
 
 ####################################################################################################
 ### Argon2
 
+# How much memory to use when generating hashes, in KiB [4096]
 # HASH_MEMORY_COST=81920
+
+# The length of the hash function output in bytes [32]
 # HASH_HASH_LENGTH=32
+
+# The amount of passes (iterations) used by the hash function. It increases hash strength at the cost of time required to compute [3]
 # HASH_TIME_COST=10
+
+# The amount of threads to compute the hash on. Each thread has a memory pool with HASH_MEMORY_COST size [1]
 # HASH_PARALLELISM=2
+
+# The variant of the hash function (0: argon2d, 1: argon2i, or 2: argon2id) [1]
 # HASH_TYPE=2
+
+An extra and optional non-secret value. The value will be included B64 encoded in the parameters portion of the digest []
 # HASH_ASSOCIATED_DATA=foo
 
 ####################################################################################################
 ### Auth Providers
 
+# A comma-separated list of auth providers []
 AUTH_PROVIDERS=""
-
 # AUTH_PROVIDERS="github"
 
 # AUTH_GITHUB_DRIVER="oauth2"
@@ -261,24 +289,37 @@ AUTH_PROVIDERS=""
 ####################################################################################################
 ### Extensions
 
+# Path to your local extensions folder ["./extensions"]
 EXTENSIONS_PATH="./extensions"
+
+# Automatically reload extensions when they have changed [false]
+EXTENSIONS_AUTO_RELOAD=false
 
 ####################################################################################################
 ### Email
 
+# Email address from which emails are sent ["no-reply@directus.io"]
 EMAIL_FROM="no-reply@directus.io"
+
+# What to use to send emails. One of 
+# sendmail, smtp, mailgun, ses.
 EMAIL_TRANSPORT="sendmail"
 EMAIL_SENDMAIL_NEW_LINE="unix"
 EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
-
 ## Email (Sendmail Transport)
+
+# What new line style to use in sendmail ["unix"]
 EMAIL_SENDMAIL_NEW_LINE="unix"
+
+# Path to your sendmail executable ["/usr/sbin/sendmail"]
 EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
 ## Email (SMTP Transport)
-# EMAIL_SMTP_POOL=true
 # EMAIL_SMTP_HOST="localhost"
+
+# Use SMTP pooling
+# EMAIL_SMTP_POOL=true
 # EMAIL_SMTP_PORT=465
 # EMAIL_SMTP_SECURE=false # Use TLS
 # EMAIL_SMTP_IGNORE_TLS=false
