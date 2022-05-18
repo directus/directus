@@ -334,6 +334,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
+		// Set query limit as the number of keys
+		if (Array.isArray(keys) && keys.length > 0 && !queryWithKey.limit) {
+			queryWithKey.limit = keys.length;
+		}
+
 		const results = await this.readByQuery(queryWithKey, opts);
 
 		return results;
@@ -393,6 +398,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						}
 				  )
 				: payload;
+
+		// Sort keys to ensure that the order is maintained
+		keys.sort();
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
@@ -598,6 +606,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				schema: this.schema,
+				knex: this.knex,
 			});
 
 			await authorizationService.checkAccess('delete', this.collection, keys);

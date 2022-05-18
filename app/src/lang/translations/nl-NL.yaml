@@ -40,6 +40,7 @@ duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
 group: Groep
+export_items: Exporteer items
 and: En
 or: Of
 fill_width: Vul Breedte
@@ -67,6 +68,7 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
+translation_string_translations_placeholder: Voeg nieuwe vertaling toe
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
@@ -168,6 +170,7 @@ field_create_success: 'Veld aangemaakt: "{field}"'
 field_update_success: 'Veld bijgewerkt: "{field}"'
 duplicate_where_to: Waar wil je dit veld naar dupliceren?
 language: Taal
+language_placeholder: Kies een taal...
 aggregate_function: Geaggregeerde Functie
 global: Wereldwijd
 admins_have_all_permissions: Admins hebben alle permissies

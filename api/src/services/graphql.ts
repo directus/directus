@@ -257,22 +257,9 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
 							`${collection.collection}_by_id`
 						);
-
-						const hasAggregate = Object.values(collection.fields).some((field) => {
-							const graphqlType = getGraphQLType(field.type);
-
-							if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
-								return true;
-							}
-
-							return false;
-						});
-
-						if (hasAggregate) {
-							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
-								`${collection.collection}_aggregated`
-							);
-						}
+						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
+							`${collection.collection}_aggregated`
+						);
 					}
 
 					return acc;
@@ -566,7 +553,8 @@ export class GraphQLService {
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
 			const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
-			const AggregatedFilters: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregatedFields: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregateMethods: Record<string, ObjectTypeComposerFieldConfigMapDefinition<any, any>> = {};
 
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
@@ -841,7 +829,7 @@ export class GraphQLService {
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
 				});
 
-				AggregatedFilters[collection.collection] = schemaComposer.createObjectTC({
+				AggregatedFields[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated_fields`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
 						const graphqlType = getGraphQLType(field.type);
@@ -862,46 +850,77 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
 
-				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
-					name: `${collection.collection}_aggregated`,
-					fields: {
-						group: {
-							name: 'group',
-							type: GraphQLJSON,
-						},
+				AggregateMethods[collection.collection] = {
+					group: {
+						name: 'group',
+						type: GraphQLJSON,
+					},
+					countAll: {
+						name: 'countAll',
+						type: GraphQLInt,
+					},
+					count: {
+						name: 'count',
+						type: schemaComposer.createObjectTC({
+							name: `${collection.collection}_aggregated_count`,
+							fields: Object.values(collection.fields).reduce((acc, field) => {
+								acc[field.field] = {
+									type: GraphQLInt,
+									description: field.note,
+								};
+
+								return acc;
+							}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+						}),
+					},
+				};
+
+				const hasNumericAggregates = Object.values(collection.fields).some((field) => {
+					const graphqlType = getGraphQLType(field.type);
+
+					if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
+						return true;
+					}
+
+					return false;
+				});
+
+				if (hasNumericAggregates) {
+					Object.assign(AggregateMethods[collection.collection], {
 						avg: {
 							name: 'avg',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						sum: {
 							name: 'sum',
-							type: AggregatedFilters[collection.collection],
-						},
-						count: {
-							name: 'count',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						countDistinct: {
 							name: 'countDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						avgDistinct: {
 							name: 'avgDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						sumDistinct: {
 							name: 'sumDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						min: {
 							name: 'min',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						max: {
 							name: 'max',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
-					},
+					});
+				}
+
+				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated`,
+					fields: AggregateMethods[collection.collection],
 				});
 
 				ReadCollectionTypes[collection.collection].addResolver({

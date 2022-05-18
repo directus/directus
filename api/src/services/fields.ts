@@ -543,7 +543,12 @@ export class FieldsService {
 		if (field.type === 'alias' || field.type === 'unknown') return;
 
 		if (field.schema?.has_auto_increment) {
-			column = table.increments(field.field);
+			if (field.type === 'bigInteger') {
+				// Create an auto-incremented big integer (MySQL, PostgreSQL) or an auto-incremented integer (other DBs)
+				column = table.bigIncrements(field.field);
+			} else {
+				column = table.increments(field.field);
+			}
 		} else if (field.type === 'string') {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
