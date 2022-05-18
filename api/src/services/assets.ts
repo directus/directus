@@ -66,10 +66,47 @@ export class AssetsService {
 		if (!exists) throw new ForbiddenException();
 
 		if (range) {
-			if (range.end && range.end >= file.filesize) range.end = undefined;
-
-			if (range.start >= file.filesize || (range.end && range.start > range.end)) {
+			if (!range.start && !range.end) {
 				throw new RangeNotSatisfiableException(range);
+			}
+
+			if (range.end) {
+				if (range.end <= 0) {
+					throw new RangeNotSatisfiableException(range);
+				}
+
+				if (!range.start) {
+					// fetch chunk from tail
+					range.start = file.filesize - range.end;
+					range.end = file.filesize - 1;
+				}
+
+				if (range.end >= file.filesize) {
+					// fetch entire file
+					range.end = undefined;
+				}
+			}
+
+			if (range.start) {
+				if (range.start >= file.filesize) {
+					throw new RangeNotSatisfiableException(range);
+				}
+
+				if (!range.end) {
+					// fetch entire file
+					range.end = file.filesize - 1;
+				}
+
+				if (range.start < 0) {
+					// fetch file from head
+					range.start = 0;
+				}
+			}
+
+			if (range.start && range.end) {
+				if (range.start > range.end) {
+					throw new RangeNotSatisfiableException(range);
+				}
 			}
 		}
 

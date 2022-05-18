@@ -140,11 +140,11 @@ router.get(
 
 		if (req.headers.range) {
 			// substring 6 = "bytes="
-			const rangeParts = req.headers.range.substring(6).split('-');
+			const rangeParts = /bytes=(.*)-(.*)/.exec(req.headers.range);
 
 			range = {
-				start: rangeParts[0] ? Number(rangeParts[0]) : 0,
-				end: rangeParts[1] ? Number(rangeParts[1]) : undefined,
+				start: rangeParts?.[1] ? Number(rangeParts[1]) : undefined,
+				end: rangeParts?.[2] ? Number(rangeParts[2]) : undefined,
 			};
 
 			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
@@ -170,7 +170,7 @@ router.get(
 		if (range) {
 			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);
 			res.status(206);
-			res.setHeader('Content-Length', (range.end ? range.end + 1 : stat.size) - range.start);
+			res.setHeader('Content-Length', (range.end ? range.end + 1 : stat.size) - (range.start || 0));
 		} else {
 			res.setHeader('Content-Length', stat.size);
 		}
