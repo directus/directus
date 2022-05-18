@@ -6,7 +6,6 @@ export * as SchemaFloat from './float';
 
 // String types
 export * as SchemaString from './string';
-export * as SchemaBinary from './binary';
 export * as SchemaCSV from './csv';
 export * as SchemaHash from './hash';
 export * as SchemaText from './text';
@@ -27,9 +26,7 @@ export * as SchemaJSON from './json';
 export * as SchemaUUID from './uuid';
 
 export const SchemaAvailableTypes = [
-	'alias',
 	'bigInteger',
-	'binary',
 	'boolean',
 	'csv',
 	'date',

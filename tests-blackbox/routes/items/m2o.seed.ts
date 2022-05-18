@@ -10,6 +10,7 @@ import {
 	PRIMARY_KEY_TYPES,
 } from '@common/index';
 import { TestsSchema } from '@query/filter';
+import { seedAllTypes, getTestsAllTypesSchema } from './all-types';
 
 export const collectionCountries = 'test_items_m2o_countries';
 export const collectionStates = 'test_items_m2o_states';
@@ -41,10 +42,10 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				filters: true,
 				possibleValues:
 					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ length: 2, integerStartsAt: 10000 })
+						? SeedFunctions.generateValues.integer({ quantity: 2, startsAt: 10000 })
 						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ length: 2 })
-						: SeedFunctions.generateValues.string({ length: 2 }),
+						? SeedFunctions.generateValues.uuid({ quantity: 2 })
+						: SeedFunctions.generateValues.string({ quantity: 2 }),
 				children: null,
 			},
 			name: {
@@ -54,6 +55,7 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				possibleValues: ['United States', 'Malaysia'],
 				children: null,
 			},
+			...getTestsAllTypesSchema(),
 		},
 		[`${collectionStates}_${pkType}`]: {
 			id: {
@@ -62,10 +64,10 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				filters: false,
 				possibleValues:
 					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ length: 4, integerStartsAt: 10000 })
+						? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
 						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ length: 4 })
-						: SeedFunctions.generateValues.string({ length: 4 }),
+						? SeedFunctions.generateValues.uuid({ quantity: 4 })
+						: SeedFunctions.generateValues.string({ quantity: 4 }),
 				children: null,
 			},
 			name: {
@@ -81,12 +83,13 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				filters: false,
 				possibleValues:
 					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ length: 2, integerStartsAt: 10000 })
+						? SeedFunctions.generateValues.integer({ quantity: 2, startsAt: 10000 })
 						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ length: 2 })
-						: SeedFunctions.generateValues.string({ length: 2 }),
+						? SeedFunctions.generateValues.uuid({ quantity: 2 })
+						: SeedFunctions.generateValues.string({ quantity: 2 }),
 				children: null,
 			},
+			...getTestsAllTypesSchema(),
 		},
 		[`${collectionCities}_${pkType}`]: {
 			id: {
@@ -95,10 +98,10 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				filters: false,
 				possibleValues:
 					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ length: 8, integerStartsAt: 10000 })
+						? SeedFunctions.generateValues.integer({ quantity: 8, startsAt: 10000 })
 						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ length: 8 })
-						: SeedFunctions.generateValues.string({ length: 8 }),
+						? SeedFunctions.generateValues.uuid({ quantity: 8 })
+						: SeedFunctions.generateValues.string({ quantity: 8 }),
 				children: null,
 			},
 			name: {
@@ -123,12 +126,13 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				filters: false,
 				possibleValues:
 					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ length: 4, integerStartsAt: 10000 })
+						? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
 						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ length: 4 })
-						: SeedFunctions.generateValues.string({ length: 4 }),
+						? SeedFunctions.generateValues.uuid({ quantity: 4 })
+						: SeedFunctions.generateValues.string({ quantity: 4 }),
 				children: null,
 			},
+			...getTestsAllTypesSchema(),
 		},
 	};
 }
@@ -288,6 +292,11 @@ export const seedDB = () => {
 							},
 						] as City[],
 					});
+
+					await seedAllTypes(vendor, localCollectionCountries, pkType);
+					await seedAllTypes(vendor, localCollectionStates, pkType);
+					await seedAllTypes(vendor, localCollectionCities, pkType);
+
 					expect(true).toBeTruthy();
 				} catch (error) {
 					expect(error).toBeFalsy();

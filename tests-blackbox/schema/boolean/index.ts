@@ -74,8 +74,10 @@ export const getValidatorFunction = (filter: ClientFilterOperator): FilterValida
 };
 
 const _eq = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue === possibleValues) {
-		return true;
+	if (inputValue === true || inputValue === 1 || inputValue === '1') {
+		return possibleValues === true;
+	} else if (inputValue === false || inputValue === 0 || inputValue === '0') {
+		return possibleValues === false;
 	}
 	return false;
 };

@@ -23,7 +23,7 @@ export type TestsCollectionSchema = {
 };
 
 export const CheckQueryFilters = (requestOptions: RequestOptions, fields: TestsFieldSchema) => {
-	return describe('Test Global Query Filters', () => {
+	return describe(`Global Query Filters (${requestOptions.method.toUpperCase()} ${requestOptions.path})`, () => {
 		for (const schemaField in fields) {
 			processSchemaFields(requestOptions, fields[schemaField]);
 		}
@@ -49,9 +49,6 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 			break;
 		case 'string':
 			targetSchema = testsSchema.SchemaString;
-			break;
-		case 'binary':
-			targetSchema = testsSchema.SchemaBinary;
 			break;
 		case 'csv':
 			targetSchema = testsSchema.SchemaCSV;
