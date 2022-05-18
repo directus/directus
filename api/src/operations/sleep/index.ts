@@ -7,7 +7,7 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'sleep',
 
-	handler: ({ milliseconds }) => {
-		return new Promise((resolve) => setTimeout(resolve, Number(milliseconds)));
+	handler: async ({ milliseconds }) => {
+		await new Promise((resolve) => setTimeout(resolve, Number(milliseconds)));
 	},
 });
