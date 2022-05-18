@@ -1997,3 +1997,14 @@ operations:
       many: Multiple Items
     payload: Payload
     emit_events: Emit Events
+  update:
+    name: Update Data
+    description: Update items in the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Multiple Items
+      query: Items by Query
+    key: IDs
+    payload: Payload
+    query: Query
