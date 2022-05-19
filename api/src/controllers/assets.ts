@@ -147,7 +147,7 @@ router.get(
 			};
 
 			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
-				throw new RangeNotSatisfiableException(String(req.headers.range.split('bytes=').pop()));
+				throw new RangeNotSatisfiableException(range);
 			}
 		}
 

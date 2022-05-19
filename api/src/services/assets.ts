@@ -72,7 +72,7 @@ export class AssetsService {
 			const endUnderflow = range.end != null && range.end <= 0;
 
 			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
-				throw new RangeNotSatisfiableException(`${range.start}-${range.end}`);
+				throw new RangeNotSatisfiableException(range);
 			}
 
 			const lastByte = file.filesize - 1;
