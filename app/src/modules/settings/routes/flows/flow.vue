@@ -79,6 +79,7 @@
 			<v-workspace :panels="panels" :edit-mode="editMode">
 				<template #panel="{ panel }">
 					<operation
+						v-if="flow"
 						:edit-mode="editMode"
 						:panel="panel"
 						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
