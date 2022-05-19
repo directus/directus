@@ -46,6 +46,7 @@ const props = withDefaults(
 	}>(),
 	{
 		modelValue: false,
+		flow: undefined,
 	}
 );
 
