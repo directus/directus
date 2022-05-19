@@ -136,7 +136,22 @@ router.get(
 			  )
 			: res.locals.transformation;
 
-		const { stream, file, stat, range } = await service.getAsset(id, transformation, req.headers.range);
+		let range: Range | undefined = undefined;
+
+		if (req.headers.range) {
+			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
+
+			range = {
+				start: rangeParts?.[1] ? Number(rangeParts[1]) : undefined,
+				end: rangeParts?.[2] ? Number(rangeParts[2]) : undefined,
+			};
+
+			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
+				throw new RangeNotSatisfiableException(String(req.headers.range.split('bytes=').pop()));
+			}
+		}
+
+		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
 		const access = req.accountability?.role ? 'private' : 'public';
 
