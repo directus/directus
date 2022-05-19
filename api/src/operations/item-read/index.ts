@@ -9,15 +9,14 @@ type Options = {
 	mode: 'one' | 'many' | 'query';
 	collection: string;
 	key: PrimaryKey | PrimaryKey[] | null;
-	payload: string;
 	query: string;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
 export default defineOperationApi<Options>({
-	id: 'update',
+	id: 'item-read',
 
-	handler: async ({ mode, collection, key, payload, query, permissions }, { accountability, database, getSchema }) => {
+	handler: async ({ mode, collection, key, query, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
 
 		let customAccountability: Accountability | null;
@@ -32,29 +31,22 @@ export default defineOperationApi<Options>({
 			customAccountability = await getAccountabilityForRole(permissions, { database, schema, accountability });
 		}
 
-		const itemsService: ItemsService = new ItemsService(collection, {
-			schema: await getSchema({ database }),
+		const itemsService = new ItemsService(collection, {
+			schema,
 			accountability: customAccountability,
 			knex: database,
 		});
 
-		let result: PrimaryKey | PrimaryKey[] | null;
-
-		const parsedPayload: Partial<Item> | Partial<Item>[] | null =
-			typeof payload === 'string' ? parseJSON(payload) : null;
-
-		if (!parsedPayload) {
-			return null;
-		}
+		let result: Item | Item[] | null;
 
 		if (mode === 'one') {
-			if (!key) return null;
-			result = await itemsService.updateOne(toArray(key)[0] as PrimaryKey, parsedPayload);
+			if (!key) result = null;
+			else result = await itemsService.readOne(toArray(key)[0], query ? parseJSON(query) : {});
 		} else if (mode === 'many') {
-			if (!key) return null;
-			result = await itemsService.updateMany(toArray(key) as PrimaryKey[], parsedPayload);
+			if (!key) result = null;
+			else result = await itemsService.readMany(toArray(key) as PrimaryKey[], query ? parseJSON(query) : {});
 		} else {
-			result = await itemsService.updateByQuery(query ? parseJSON(query) : {}, parsedPayload);
+			result = await itemsService.readByQuery(query ? parseJSON(query) : {});
 		}
 
 		return result;

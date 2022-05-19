@@ -2,14 +2,14 @@ import { defineOperationApp } from '@directus/shared/utils';
 import { toArray } from '@directus/shared/utils';
 
 export default defineOperationApp({
-	id: 'delete',
-	icon: 'delete',
-	name: '$t:operations.delete.name',
-	description: '$t:operations.delete.description',
+	id: 'item-read',
+	icon: 'visibility',
+	name: '$t:operations.item-read.name',
+	description: '$t:operations.item-read.description',
 	preview: ({ mode, collection, key }) => {
 		const previewOptions = [
 			{
-				label: '$t:operations.delete.mode.field',
+				label: '$t:operations.item-read.mode.field',
 				text: mode,
 			},
 			{
@@ -20,7 +20,7 @@ export default defineOperationApp({
 
 		if (mode !== 'query') {
 			previewOptions.push({
-				label: '$t:operations.delete.key',
+				label: '$t:operations.item-read.key',
 				text: key ? toArray(key).join(', ') : '--',
 			});
 		}
@@ -30,7 +30,7 @@ export default defineOperationApp({
 	options: [
 		{
 			field: 'mode',
-			name: '$t:operations.delete.mode.field',
+			name: '$t:operations.item-read.mode.field',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -38,15 +38,15 @@ export default defineOperationApp({
 				options: {
 					choices: [
 						{
-							text: '$t:operations.delete.mode.one',
+							text: '$t:operations.item-read.mode.one',
 							value: 'one',
 						},
 						{
-							text: '$t:operations.delete.mode.many',
+							text: '$t:operations.item-read.mode.many',
 							value: 'many',
 						},
 						{
-							text: '$t:operations.delete.mode.query',
+							text: '$t:operations.item-read.mode.query',
 							value: 'query',
 						},
 					],
@@ -93,7 +93,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'key',
-			name: '$t:operations.delete.key',
+			name: '$t:operations.item-read.key',
 			type: 'csv',
 			meta: {
 				width: 'half',
@@ -115,7 +115,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'query',
-			name: '$t:operations.delete.query',
+			name: '$t:operations.item-read.query',
 			type: 'string',
 			meta: {
 				width: 'full',

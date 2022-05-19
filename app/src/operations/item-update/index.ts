@@ -1,14 +1,14 @@
 import { defineOperationApp, toArray } from '@directus/shared/utils';
 
 export default defineOperationApp({
-	id: 'update',
+	id: 'item-update',
 	icon: 'edit',
-	name: '$t:operations.update.name',
-	description: '$t:operations.update.description',
+	name: '$t:operations.item-update.name',
+	description: '$t:operations.item-update.description',
 	preview: ({ mode, collection, key }) => {
 		const previewOptions = [
 			{
-				label: '$t:operations.update.mode.field',
+				label: '$t:operations.item-update.mode.field',
 				text: mode,
 			},
 			{
@@ -19,7 +19,7 @@ export default defineOperationApp({
 
 		if (mode !== 'query') {
 			previewOptions.push({
-				label: '$t:operations.update.key',
+				label: '$t:operations.item-update.key',
 				text: key ? toArray(key).join(', ') : '--',
 			});
 		}
@@ -29,7 +29,7 @@ export default defineOperationApp({
 	options: [
 		{
 			field: 'mode',
-			name: '$t:operations.update.mode.field',
+			name: '$t:operations.item-update.mode.field',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -37,15 +37,15 @@ export default defineOperationApp({
 				options: {
 					choices: [
 						{
-							text: '$t:operations.update.mode.one',
+							text: '$t:operations.item-update.mode.one',
 							value: 'one',
 						},
 						{
-							text: '$t:operations.update.mode.many',
+							text: '$t:operations.item-update.mode.many',
 							value: 'many',
 						},
 						{
-							text: '$t:operations.update.mode.query',
+							text: '$t:operations.item-update.mode.query',
 							value: 'query',
 						},
 					],
@@ -92,7 +92,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'key',
-			name: '$t:operations.update.key',
+			name: '$t:operations.item-update.key',
 			type: 'csv',
 			meta: {
 				width: 'half',
@@ -114,7 +114,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'payload',
-			name: '$t:operations.update.payload',
+			name: '$t:operations.item-update.payload',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -126,7 +126,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'query',
-			name: '$t:operations.update.query',
+			name: '$t:operations.item-update.query',
 			type: 'string',
 			meta: {
 				width: 'full',

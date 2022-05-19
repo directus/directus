@@ -1936,6 +1936,49 @@ triggers:
     description: Triggers on manual click
     click: Click
 operations:
+  condition:
+    name: Condition
+    description: Route a flow based on If / Else logic
+  item-create:
+    name: Create Data
+    description: Create items in the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Multiple Items
+    payload: Payload
+    emit_events: Emit Events
+  item-delete:
+    name: Delete Data
+    description: Delete items in the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Multiple Items
+      query: Items by Query
+    key: IDs
+    query: Query
+  item-read:
+    name: Read Data
+    description: Read items from the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Multiple Items
+      query: Items by Query
+    key: IDs
+    query: Query
+  item-update:
+    name: Update Data
+    description: Update items in the database
+    mode:
+      field: Mode
+      one: One Item
+      many: Multiple Items
+      query: Items by Query
+    key: IDs
+    payload: Payload
+    query: Query
   log:
     name: Log to Console
     description: Output something to the console
@@ -1952,16 +1995,6 @@ operations:
     description: Send an in-app notification to a user
     recipient: User
     message: Message
-  read:
-    name: Read Data
-    description: Read items from the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
-      query: Items by Query
-    key: IDs
-    query: Query
   request:
     name: Webhook / Request URL
     description: "Make a request to a URL"
@@ -1986,36 +2019,3 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
-  condition:
-    name: Condition
-    description: Route a flow based on If / Else logic
-  create:
-    name: Create Data
-    description: Create items in the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
-    payload: Payload
-    emit_events: Emit Events
-  update:
-    name: Update Data
-    description: Update items in the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
-      query: Items by Query
-    key: IDs
-    payload: Payload
-    query: Query
-  delete:
-    name: Delete Data
-    description: Delete items in the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
-      query: Items by Query
-    key: IDs
-    query: Query

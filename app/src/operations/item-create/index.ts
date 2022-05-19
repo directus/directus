@@ -1,17 +1,17 @@
 import { defineOperationApp } from '@directus/shared/utils';
 
 export default defineOperationApp({
-	id: 'create',
+	id: 'item-create',
 	icon: 'add',
-	name: '$t:operations.create.name',
-	description: '$t:operations.create.description',
+	name: '$t:operations.item-create.name',
+	description: '$t:operations.item-create.description',
 	preview: ({ collection, payload }) => [
 		{
 			label: '$t:collection',
 			text: collection,
 		},
 		{
-			label: '$t:operations.create.payload',
+			label: '$t:operations.item-create.payload',
 			text: payload,
 		},
 	],
@@ -56,7 +56,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'emitEvents',
-			name: '$t:operations.create.emit_events',
+			name: '$t:operations.item-create.emit_events',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -68,7 +68,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'payload',
-			name: '$t:operations.create.payload',
+			name: '$t:operations.item-create.payload',
 			type: 'string',
 			meta: {
 				width: 'full',

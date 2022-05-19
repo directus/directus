@@ -1,21 +1,21 @@
 import { Accountability, PrimaryKey } from '@directus/shared/types';
 import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
-import { Item } from '../../types';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
 import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
+	mode: 'one' | 'many' | 'query';
 	collection: string;
-	payload: string;
-	emitEvents: boolean;
+	key: PrimaryKey | PrimaryKey[] | null;
+	query: string;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
 export default defineOperationApi<Options>({
-	id: 'create',
+	id: 'item-delete',
 
-	handler: async ({ collection, payload, emitEvents, permissions }, { accountability, database, getSchema }) => {
+	handler: async ({ mode, collection, key, query, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
 
 		let customAccountability: Accountability | null;
@@ -30,21 +30,22 @@ export default defineOperationApi<Options>({
 			customAccountability = await getAccountabilityForRole(permissions, { database, schema, accountability });
 		}
 
-		const itemsService = new ItemsService(collection, {
+		const itemsService: ItemsService = new ItemsService(collection, {
 			schema: await getSchema({ database }),
 			accountability: customAccountability,
 			knex: database,
 		});
 
-		let result: PrimaryKey[] | null;
+		let result: PrimaryKey | PrimaryKey[] | null;
 
-		const parsedPayload: Partial<Item> | Partial<Item>[] | null =
-			typeof payload === 'string' ? parseJSON(payload) : null;
-
-		if (!parsedPayload) {
-			result = null;
+		if (mode === 'one') {
+			if (!key) return null;
+			result = await itemsService.deleteOne(toArray(key)[0] as PrimaryKey);
+		} else if (mode === 'many') {
+			if (!key) return null;
+			result = await itemsService.deleteMany(toArray(key) as PrimaryKey[]);
 		} else {
-			result = await itemsService.createMany(toArray(parsedPayload), { emitEvents });
+			result = await itemsService.deleteByQuery(query ? parseJSON(query) : {});
 		}
 
 		return result;
