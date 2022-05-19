@@ -558,7 +558,9 @@ errors:
   INVALID_CREDENTIALS: Грешно потребителско име или парола
   INVALID_OTP: Грешна еднократна парола
   INVALID_PAYLOAD: Невалидни данни
+  INVALID_PROVIDER: Потребителят принадлежи към друг доставчик за удостоверение
   INVALID_QUERY: Невалидна заявка
+  INVALID_USER: Неуспешно удостоверение на потребителя
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
   ROUTE_NOT_FOUND: Не е намерен
