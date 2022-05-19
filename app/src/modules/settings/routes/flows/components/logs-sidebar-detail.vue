@@ -17,7 +17,7 @@
 
 	<v-drawer
 		:model-value="!!previewing"
-		:title="previewing?.timestamp"
+		:title="previewing?.timestamp ?? t('logs')"
 		@cancel="previewing = null"
 		@esc="previewing = null"
 	>
