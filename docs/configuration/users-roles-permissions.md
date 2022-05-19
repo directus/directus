@@ -12,16 +12,25 @@
 
 
 :::
+-->
 
 ## Overview
-Users are managed in the User Directory, while Roles and Permissions are managed in
-However, Roles and Permissions are inherently intwined with Users- as every User must be assigned a Role, which in turn defines access permissions. Directus comes with two Roles out of the box, Admin and Public.
-The Admin role provides full Permissions for all data in the app, and this cannot be limited.
-The Public role comes with all permissions turned off by default and can be fully reconfigured as needed.
-The Public role determines the access permissions for any incoming request from an un-authenticated User.
+
+While this page focuses on configuration of Roles and Permissions, it is important to remember that Roles and
+Permissions are inherently intwined with Users. This is because every User must be assigned a Role to define their
+access permissions.
+
+Directus comes with two Roles out of the box, Admin and Public. The Admin role provides full Permissions for all data in
+the app, and this cannot be limited. This Admin Role provides full, app-wide control to the Project owners,
+administrators, and creators. The Public role comes with all permissions turned off by default and these can be fully
+reconfigured as needed. This Public role determines the access permissions given for any unauthenticated request to app
+data including un-authenticated users, visitors to your website or any other web request to your Directus Project's API.
+
+In addition, Admins can create as many Roles as they wish and configure permissions granularly.
+
+<!--
 Roles with _App Access_ enabled are created with some limited Permissions configured by default, so they can access the app and their own profile information.
 Roles that have neither _Admin_ nor _App Access_ enabled (such as the built-in _Public_ Role) are created with Public access permissions.
-
 ### Configure Public Permissions
 
 The Public permissions control what project data is accessible without authentication. This is managed via the Public
