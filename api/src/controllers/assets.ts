@@ -148,7 +148,7 @@ router.get(
 			};
 
 			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
-				throw new RangeNotSatisfiableException(range);
+				throw new RangeNotSatisfiableException({ start: rangeParts?.[1], end: rangeParts?.[2] });
 			}
 		}
 
