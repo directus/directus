@@ -15,19 +15,6 @@
 		</template>
 
 		<div class="content">
-			<div class="grid">
-				<div class="field full">
-					<div class="type-label">{{ t('name') }}</div>
-					<v-input v-model="name" :placeholder="t('trigger_name')">
-						<template #append>
-							<v-icon name="title" />
-						</template>
-					</v-input>
-				</div>
-			</div>
-
-			<v-divider />
-
 			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" />
 
 			<v-form
@@ -66,13 +53,6 @@ const flowEdits = ref<{
 	trigger: props.flow?.trigger ?? undefined,
 	options: props.flow?.options ?? {
 		name: '',
-	},
-});
-
-const name = computed({
-	get: () => flowEdits.value.options?.name ?? '',
-	set: (newName) => {
-		flowEdits.value.options.name = newName;
 	},
 });
 

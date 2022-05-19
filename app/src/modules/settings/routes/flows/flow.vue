@@ -291,7 +291,7 @@ const panels = computed(() => {
 
 	const trigger: Record<string, any> = {
 		id: '$trigger',
-		panel_name: flow.value?.trigger ? t(`triggers.${flow.value.trigger}.name`) : t('choose_a_trigger'),
+		panel_name: t('trigger'),
 		icon: 'offline_bolt',
 		x: 1,
 		y: 1,

@@ -73,7 +73,9 @@
 			</div>
 		</template>
 		<div v-if="typeof currentOperation?.preview === 'function'" class="block selectable">
-			<div v-tooltip="panel.key" class="name">{{ panel.id === '$trigger' ? panel.options?.name : panel.name }}</div>
+			<div v-tooltip="panel.key" class="name">
+				{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
+			</div>
 			<dl class="options-preview">
 				<div
 					v-for="{ label, text } of translate(currentOperation?.preview(panel.options ?? {}, { flow }))"

@@ -757,11 +757,11 @@ icon_off: Icon Off
 label: Label
 flows: Flows
 flow: Flow
+trigger: Trigger
 trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger
 change_trigger: Change Trigger
-choose_a_trigger: Choose a Trigger...
 flow_delete_confirm: Are you sure you want to delete this Flow? This action can not be undone.
 set_flow_active: Set Flow to Active
 set_flow_inactive: Set Flow to Inactive
@@ -780,7 +780,6 @@ edit_operation: Edit Operation
 delete_operation: Delete Operation
 operation_options: Operation Options
 operation_name: Name of operation...
-trigger_name: Name of trigger...
 operation_key: Identifier for reference...
 operation_key_unique_error: Operation keys must be unique in a Flow
 insights: Insights
