@@ -168,7 +168,13 @@ class FlowManager {
 				}
 			} else if (flow.trigger === 'schedule') {
 				if (validate(flow.options.cron)) {
-					const task = schedule(flow.options.cron, () => this.executeFlow(flow));
+					const task = schedule(flow.options.cron, async () => {
+						try {
+							await this.executeFlow(flow);
+						} catch (error: any) {
+							logger.error(error);
+						}
+					});
 
 					this.triggerHandlers.push({ id: flow.id, events: [{ type: flow.trigger, task }] });
 				} else {
