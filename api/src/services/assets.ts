@@ -66,10 +66,10 @@ export class AssetsService {
 		if (!exists) throw new ForbiddenException();
 
 		if (range) {
-			const missingRangeLimits = range.start == null && range.end == null;
-			const endBeforeStart = range.start != null && range.end != null && range.end <= range.start;
-			const startOverflow = range.start != null && range.start >= file.filesize;
-			const endUnderflow = range.end != null && range.end <= 0;
+			const missingRangeLimits = range.start === undefined && range.end === undefined;
+			const endBeforeStart = range.start !== undefined && range.end !== undefined && range.end <= range.start;
+			const startOverflow = range.start !== undefined && range.start >= file.filesize;
+			const endUnderflow = range.end !== undefined && range.end <= 0;
 
 			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
 				throw new RangeNotSatisfiableException(range);
@@ -78,7 +78,7 @@ export class AssetsService {
 			const lastByte = file.filesize - 1;
 
 			if (range.end) {
-				if (range.start == null) {
+				if (range.start === undefined) {
 					// fetch chunk from tail
 					range.start = file.filesize - range.end;
 					range.end = lastByte;
@@ -91,7 +91,7 @@ export class AssetsService {
 			}
 
 			if (range.start) {
-				if (range.end == null) {
+				if (range.end === undefined) {
 					// fetch entire file
 					range.end = lastByte;
 				}
