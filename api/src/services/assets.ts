@@ -36,7 +36,7 @@ export class AssetsService {
 		id: string,
 		transformation: TransformationParams | TransformationPreset,
 		range?: Range
-	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse; range: Range | undefined }> {
+	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
 		const publicSettings = await this.knex
 			.select('project_logo', 'public_background', 'public_foreground')
 			.from('directus_settings')
@@ -126,7 +126,6 @@ export class AssetsService {
 					stream: storage.disk(file.storage).getStream(assetFilename, range),
 					file,
 					stat: await storage.disk(file.storage).getStat(assetFilename),
-					range,
 				};
 			}
 
@@ -161,13 +160,12 @@ export class AssetsService {
 					stream: storage.disk(file.storage).getStream(assetFilename, range),
 					stat: await storage.disk(file.storage).getStat(assetFilename),
 					file,
-					range,
 				};
 			});
 		} else {
 			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
 			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
-			return { stream: readStream, file, stat, range };
+			return { stream: readStream, file, stat };
 		}
 	}
 }
