@@ -83,7 +83,7 @@ export const SeedFunctions = {
 		// geometry: null,
 		// hash: null,
 		// json: null,
-		// time: generateTime,
+		time: generateTime,
 		timestamp: generateTimestamp,
 	},
 };
@@ -268,7 +268,7 @@ function generateTime(options: OptionsSeedGenerateTime) {
 			values.push(
 				new Date(Math.floor(Math.random() * (timeEnd.getTime() - timeStart.getTime() + 1) + timeStart.getTime()))
 					.toISOString()
-					.slice(11, -1)
+					.slice(11, 19)
 			);
 		}
 	} else if (timeStart) {
@@ -276,16 +276,16 @@ function generateTime(options: OptionsSeedGenerateTime) {
 			values.push(
 				new Date(Math.floor(Math.random() * (86400000 /* 24h */ - timeStart.getTime()) + timeStart.getTime()))
 					.toISOString()
-					.slice(11, -1)
+					.slice(11, 19)
 			);
 		}
 	} else if (timeEnd) {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * timeEnd.getTime())).toISOString().slice(11, -1));
+			values.push(new Date(Math.floor(Math.random() * timeEnd.getTime())).toISOString().slice(11, 19));
 		}
 	} else {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * new Date().getTime())).toISOString().slice(11, -1));
+			values.push(new Date(Math.floor(Math.random() * new Date().getTime())).toISOString().slice(11, 19));
 		}
 	}
 
