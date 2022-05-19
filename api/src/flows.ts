@@ -317,9 +317,7 @@ class FlowManager {
 
 		if (flow.options.return === '$all') {
 			return keyedData;
-		}
-
-		if (flow.options.return) {
+		} else if (flow.options.return) {
 			return get(keyedData, flow.options.return);
 		}
 
