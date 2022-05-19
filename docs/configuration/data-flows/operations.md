@@ -32,7 +32,7 @@ Creates Items in the database.
 - **Emit Events** — <!-- Not sure what this is -->
 - **Payload** — Creates the Item to write into the database using JSON with keys that match the Collection Fields.
 
-::: Tip
+:::tip
 
 Make sure the Operation is set with the proper write permissions.
 
@@ -73,10 +73,10 @@ data flows.
 - **Subject** — Set subject line.
 - **Body** — Provides WYSIWYG editor to create email body.
 
-:::tip Sending emails from `localhost:8080`
+:::tip Sending emails locally
 
-If you are testing out this Operation locally, be sure to check you spam box as you email provider may send it there
-automatically.
+If you are testing out this Operation from `localhost:8080`, be sure to check your spam box as you email provider may
+send it there automatically.
 
 :::
 
