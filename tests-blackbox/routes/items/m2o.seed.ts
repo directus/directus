@@ -34,7 +34,7 @@ export type City = {
 };
 
 export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
-	return {
+	const schema: TestsSchema = {
 		[`${collectionCountries}_${pkType}`]: {
 			id: {
 				field: 'id',
@@ -57,84 +57,86 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 			},
 			...getTestsAllTypesSchema(),
 		},
-		[`${collectionStates}_${pkType}`]: {
-			id: {
-				field: 'id',
-				type: pkType,
-				filters: false,
-				possibleValues:
-					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
-						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ quantity: 4 })
-						: SeedFunctions.generateValues.string({ quantity: 4 }),
-				children: null,
-			},
-			name: {
-				field: 'name',
-				type: 'string',
-				filters: false,
-				possibleValues: ['Washington', 'California', 'Johor', 'Sarawak'],
-				children: null,
-			},
-			country_id: {
-				field: 'country_id',
-				type: 'integer',
-				filters: false,
-				possibleValues:
-					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ quantity: 2, startsAt: 10000 })
-						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ quantity: 2 })
-						: SeedFunctions.generateValues.string({ quantity: 2 }),
-				children: null,
-			},
-			...getTestsAllTypesSchema(),
+	};
+
+	schema[`${collectionStates}_${pkType}`] = {
+		id: {
+			field: 'id',
+			type: pkType,
+			filters: false,
+			possibleValues:
+				pkType === 'integer'
+					? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
+					: pkType === 'uuid'
+					? SeedFunctions.generateValues.uuid({ quantity: 4 })
+					: SeedFunctions.generateValues.string({ quantity: 4 }),
+			children: null,
 		},
-		[`${collectionCities}_${pkType}`]: {
-			id: {
-				field: 'id',
-				type: 'integer',
-				filters: false,
-				possibleValues:
-					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ quantity: 8, startsAt: 10000 })
-						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ quantity: 8 })
-						: SeedFunctions.generateValues.string({ quantity: 8 }),
-				children: null,
-			},
-			name: {
-				field: 'name',
-				type: 'string',
-				filters: false,
-				possibleValues: [
-					'Seattle',
-					'Spokane',
-					'Los Angeles',
-					'San Francisco',
-					'Johor Bahru',
-					'Muar',
-					'Kota Kinabalu',
-					'Sandakan',
-				],
-				children: null,
-			},
-			state_id: {
-				field: 'state_id',
-				type: 'integer',
-				filters: false,
-				possibleValues:
-					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
-						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ quantity: 4 })
-						: SeedFunctions.generateValues.string({ quantity: 4 }),
-				children: null,
-			},
-			...getTestsAllTypesSchema(),
+		name: {
+			field: 'name',
+			type: 'string',
+			filters: false,
+			possibleValues: ['Washington', 'California', 'Johor', 'Sarawak'],
+			children: null,
+		},
+		country_id: {
+			field: 'country_id',
+			type: 'integer',
+			filters: false,
+			possibleValues:
+				pkType === 'integer'
+					? SeedFunctions.generateValues.integer({ quantity: 2, startsAt: 10000 })
+					: pkType === 'uuid'
+					? SeedFunctions.generateValues.uuid({ quantity: 2 })
+					: SeedFunctions.generateValues.string({ quantity: 2 }),
+			children: schema[`${collectionCountries}_${pkType}`],
 		},
 	};
+
+	schema[`${collectionCities}_${pkType}`] = {
+		id: {
+			field: 'id',
+			type: 'integer',
+			filters: false,
+			possibleValues:
+				pkType === 'integer'
+					? SeedFunctions.generateValues.integer({ quantity: 8, startsAt: 10000 })
+					: pkType === 'uuid'
+					? SeedFunctions.generateValues.uuid({ quantity: 8 })
+					: SeedFunctions.generateValues.string({ quantity: 8 }),
+			children: null,
+		},
+		name: {
+			field: 'name',
+			type: 'string',
+			filters: false,
+			possibleValues: [
+				'Seattle',
+				'Spokane',
+				'Los Angeles',
+				'San Francisco',
+				'Johor Bahru',
+				'Muar',
+				'Kota Kinabalu',
+				'Sandakan',
+			],
+			children: null,
+		},
+		state_id: {
+			field: 'state_id',
+			type: 'integer',
+			filters: false,
+			possibleValues:
+				pkType === 'integer'
+					? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
+					: pkType === 'uuid'
+					? SeedFunctions.generateValues.uuid({ quantity: 4 })
+					: SeedFunctions.generateValues.string({ quantity: 4 }),
+			children: schema[`${collectionStates}_${pkType}`],
+		},
+	};
+
+	return schema;
 }
 
 export const seedDB = () => {

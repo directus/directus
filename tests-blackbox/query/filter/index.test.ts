@@ -28,15 +28,15 @@ const sampleSchema = {
 		type: 'integer',
 		filters: false,
 		possibleValues: [1, 2, 3],
-		children: [
-			{
+		children: {
+			name: {
 				field: 'name',
 				type: 'string',
 				filters: false,
 				possibleValues: ['', 'a', 'b'],
 				children: null,
 			},
-		],
+		},
 	},
 };
 

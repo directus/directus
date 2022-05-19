@@ -2,12 +2,12 @@ import { PrepareRequest, RequestOptions } from '@utils/prepare-request';
 import vendors from '@common/get-dbs-to-test';
 import * as testsSchema from '@schema/index';
 import { ClientFilterOperator } from '@directus/shared/types';
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 
 export type FilterValidator = (inputValue: any, compareValue: any) => boolean;
 
 export type TestsSchema = {
-	[key: string]: TestsFieldSchema;
+	[collection: string]: TestsFieldSchema;
 };
 
 export type TestsFieldSchema = {
@@ -19,7 +19,7 @@ export type TestsCollectionSchema = {
 	type: string;
 	filters: string[] | boolean;
 	possibleValues: any;
-	children: TestsCollectionSchema[] | null;
+	children: TestsFieldSchema | null;
 };
 
 export const CheckQueryFilters = (requestOptions: RequestOptions, fields: TestsFieldSchema) => {
@@ -102,29 +102,28 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 	}
 
 	// Process filters
-	for (const key of Object.keys(filters)) {
-		const operatorFilters = filters[key];
+	for (const field of Object.keys(filters)) {
+		const operatorFilters = filters[field];
+		const filterKey = parentField ? `${parentField}.${schema.field}` : schema.field;
 
-		describe(`Field: ${parentField ? parentField + '.' : ''}${schema.field} (${schema.type})`, () => {
-			describe(`_${key}`, () => {
+		describe(`Field: ${filterKey} (${schema.type})`, () => {
+			describe(`_${field}`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					for (const filter of operatorFilters) {
+						// Setup
+						const parsedFilter = {};
+						set(parsedFilter, filterKey, filter.filter);
+
 						// Action
 						const response = await PrepareRequest(vendor, requestOptions).query({
-							filter: {
-								[schema.field]: filter.filter,
-							},
+							filter: parsedFilter,
+							fields: Array(filterKey.split('.').length).fill('*').join('.'),
 						});
 
 						// Assert
 						expect(response.status).toBe(200);
 						for (const item of response.body.data) {
-							expect(
-								filter.validatorFunction(
-									get(item, parentField ? `${parentField}.${schema.field}` : schema.field),
-									filter.value
-								)
-							).toBe(true);
+							expect(filter.validatorFunction(get(item, filterKey), filter.value)).toBe(true);
 						}
 					}
 				});
@@ -134,9 +133,9 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 
 	// Continue to process children schema
 	if (schema.children) {
-		for (const children of schema.children) {
+		for (const child of Object.keys(schema.children)) {
 			const newParentField = parentField ? `${parentField}.${schema.field}` : schema.field;
-			processSchemaFields(requestOptions, children, newParentField);
+			processSchemaFields(requestOptions, schema.children[child], newParentField);
 		}
 	}
 };
