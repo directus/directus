@@ -87,11 +87,13 @@ async function save() {
 	try {
 		if (props.flow) {
 			await api.patch(`/flows/${props.flow.id}`, values, { params: { fields: ['id'] } });
+			await flowsStore.hydrate();
 		} else {
 			const response = await api.post('/flows', values, { params: { fields: ['id'] } });
+			await flowsStore.hydrate();
+
 			router.push(`/settings/flows/${response.data.data.id}`);
 		}
-		await flowsStore.hydrate();
 
 		emit('update:modelValue', false);
 	} catch (err: any) {
