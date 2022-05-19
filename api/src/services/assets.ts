@@ -35,8 +35,8 @@ export class AssetsService {
 	async getAsset(
 		id: string,
 		transformation: TransformationParams | TransformationPreset,
-		range?: Range
-	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
+		rangeValue?: string
+	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse; range: Range | undefined }> {
 		const publicSettings = await this.knex
 			.select('project_logo', 'public_background', 'public_foreground')
 			.from('directus_settings')
@@ -65,14 +65,27 @@ export class AssetsService {
 
 		if (!exists) throw new ForbiddenException();
 
-		if (range) {
+		let range: Range | undefined = undefined;
+
+		if (rangeValue) {
+			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(rangeValue);
+
+			range = {
+				start: rangeParts?.[1] ? Number(rangeParts[1]) : undefined,
+				end: rangeParts?.[2] ? Number(rangeParts[2]) : undefined,
+			};
+
+			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
+				throw new RangeNotSatisfiableException(rangeValue);
+			}
+
 			const missingRangeLimits = range.start == null && range.end == null;
 			const endBeforeStart = range.start != null && range.end != null && range.end <= range.start;
 			const startOverflow = range.start != null && range.start >= file.filesize;
 			const endUnderflow = range.end != null && range.end <= 0;
 
 			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
-				throw new RangeNotSatisfiableException(range);
+				throw new RangeNotSatisfiableException(rangeValue);
 			}
 
 			const lastByte = file.filesize - 1;
@@ -126,6 +139,7 @@ export class AssetsService {
 					stream: storage.disk(file.storage).getStream(assetFilename, range),
 					file,
 					stat: await storage.disk(file.storage).getStat(assetFilename),
+					range,
 				};
 			}
 
@@ -160,12 +174,13 @@ export class AssetsService {
 					stream: storage.disk(file.storage).getStream(assetFilename, range),
 					stat: await storage.disk(file.storage).getStat(assetFilename),
 					file,
+					range,
 				};
 			});
 		} else {
 			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
 			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
-			return { stream: readStream, file, stat };
+			return { stream: readStream, file, stat, range };
 		}
 	}
 }
