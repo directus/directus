@@ -139,8 +139,7 @@ router.get(
 		let range: Range | undefined = undefined;
 
 		if (req.headers.range) {
-			// substring 6 = "bytes="
-			const rangeParts = /bytes=(.*?)-(.*)/.exec(req.headers.range);
+			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
 			range = {
 				start: rangeParts?.[1] ? Number(rangeParts[1]) : undefined,
