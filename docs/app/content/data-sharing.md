@@ -35,10 +35,9 @@ permissions. We welcome any [pull-requests](/contributing/introduction/) to addr
 
 ::: warning Users, Roles and Permissions!
 
-You will need to understand how
-[Users, Roles, and Permissions](/configuration/users-roles-permissions/#configuring-permissions) work in Directus to
-configure Shares properly. That said, if you're unfamiliar with those concepts, it is quite reasonable to learn them in
-tandem with Data Sharing.
+You will need to understand how [Users, Roles, and Permissions](/configuration/users-roles-permissions) work in Directus
+to configure Shares properly. That said, if you're unfamiliar with those concepts, it is quite reasonable to learn them
+in tandem with Data Sharing.
 
 :::
 
@@ -109,8 +108,8 @@ Share permissions.
 Any given Share will inherit the same read permissions as the Role it was associated with in the Share Options Menu.
 
 This system allows for absolutely granular configuration options on Shares... _but it also means you'll need to
-understand [Users, Roles, and Permissions](/configuration/users-roles-permissions/#configuring-permissions) thoroughly
-to use Shares properly_. Here are some highlights of what you can do:
+understand [Users, Roles, and Permissions](/configuration/users-roles-permissions/) thoroughly to use Shares properly_.
+Here are some highlights of what you can do:
 
 - Set the Collections a Role can view or share.
 - Filter for specific Items a Role can view or share.
