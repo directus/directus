@@ -21,10 +21,39 @@ export default defineOperationApp({
 			name: '$t:operations.notification.recipient',
 			type: 'string',
 			meta: {
-				width: 'full',
+				width: 'half',
 				interface: 'input',
 				options: {
 					iconRight: 'people_alt',
+				},
+			},
+		},
+		{
+			field: 'permissions',
+			name: '$t:permissions',
+			type: 'string',
+			schema: {
+				default_value: '$trigger',
+			},
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{
+							text: 'From Trigger',
+							value: '$trigger',
+						},
+						{
+							text: 'Public Role',
+							value: '$public',
+						},
+						{
+							text: 'Full Access',
+							value: '$full',
+						},
+					],
+					allowOther: true,
 				},
 			},
 		},
