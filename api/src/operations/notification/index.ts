@@ -19,6 +19,7 @@ export default defineOperationApi<Options>({
 
 		const result = await notificationsService.createOne({
 			recipient,
+			sender: accountability?.user ?? null,
 			subject,
 			message,
 		});
