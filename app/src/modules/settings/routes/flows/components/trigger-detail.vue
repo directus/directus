@@ -2,7 +2,7 @@
 	<v-drawer
 		:model-value="open"
 		:title="t(firstOpen ? 'create_trigger' : 'change_trigger')"
-		:subtitle="t('panel_options')"
+		:subtitle="t('trigger_options')"
 		icon="offline_bolt"
 		persistent
 		:cancelable="!firstOpen"

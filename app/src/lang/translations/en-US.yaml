@@ -757,6 +757,7 @@ icon_off: Icon Off
 label: Label
 flows: Flows
 flow: Flow
+trigger_options: Trigger Options
 view_trigger: View Trigger
 create_trigger: Create Trigger
 change_trigger: Change Trigger
