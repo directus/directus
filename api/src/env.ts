@@ -10,50 +10,9 @@ import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
 import { parseJSON } from './utils/parse-json';
+import { ALLOWED_ENVIRONMENT_VARIABLES } from './constants';
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
-
-const FILE_ENV_ALLOW_LIST = [
-	// database
-	'DB_DATABASE',
-	'DB_USER',
-	'DB_PASSWORD',
-	'DB_FILENAME',
-	'DB_CONNECTION_STRING',
-	// security
-	'KEY',
-	'SECRET',
-	'PASSWORD_RESET_URL_ALLOW_LIST',
-	'USER_INVITE_URL_ALLOW_LIST',
-	'ASSETS_CONTENT_SECURITY_POLICY',
-	'IMPORT_IP_DENY_LIST',
-	// rate limiting
-	'RATE_LIMITER_REDIS',
-	'RATE_LIMITER_REDIS_PASSWORD',
-	// cache
-	'CACHE_REDIS',
-	'CACHE_REDIS_PASSWORD',
-	// file storage
-	/** these names are dynamic
-	'STORAGE_<LOCATION>_KEY',
-	'STORAGE_<LOCATION>_SECRET',
-	'STORAGE_<LOCATION>_KEY',
-	'STORAGE_<LOCATION>_ACCOUNT_NAME',
-	'STORAGE_<LOCATION>_ACCOUNT_KEY'
-	*/
-	// authentication
-	/** also dynamic
-	 * AUTH_<PROVIDER>_CLIENT_ID
-	 * AUTH_<PROVIDER>_CLIENT_SECRET
-	 * AUTH_<PROVIDER>_BIND_PASSWORD
-	 */
-	// email
-	'EMAIL_SMTP_USER',
-	'EMAIL_SMTP_PASSWORD',
-	// admin
-	'ADMIN_EMAIL',
-	'ADMIN_PASSWORD',
-];
 
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
@@ -152,6 +111,8 @@ const typeMap: Record<string, string> = {
 
 	GRAPHQL_INTROSPECTION: 'boolean',
 };
+
+const allowedFileEnvList = ALLOWED_ENVIRONMENT_VARIABLES.map((name) => new RegExp(`^${name}$`));
 
 let env: Record<string, any> = {
 	...defaults,
@@ -266,10 +227,10 @@ function processValues(env: Record<string, any>) {
 	for (let [key, value] of Object.entries(env)) {
 		// If key ends with '_FILE', try to get the value from the file defined in this variable
 		// and store it in the variable with the same name but without '_FILE' at the end
-		let newKey;
+		let newKey: string | undefined;
 		if (key.length > 5 && key.endsWith('_FILE')) {
 			newKey = key.slice(0, -5);
-			if (newKey in FILE_ENV_ALLOW_LIST) {
+			if (allowedFileEnvList.some((pattern) => pattern.test(newKey as string))) {
 				if (newKey in env) {
 					throw new Error(
 						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
