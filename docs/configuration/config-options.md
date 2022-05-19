@@ -124,12 +124,11 @@ module.exports = function (env) {
 
 ## Environment Variable Files
 
-If enabled any of the environment variable values can be imported from a file, by appending `_FILE` to the environment
-variable name. This is especially useful when used in conjunction with Docker Secrets, so you can keep sensitive data
-out of your compose files. To enable this option `PROCESS_ENV_FILES` has to be set to `true`. For example:
+Any of the environment variable values can be imported from a file, by appending `_FILE` to the environment variable
+name. This is especially useful when used in conjunction with Docker Secrets, so you can keep sensitive data out of your
+compose files. For example:
 
 ```
-PROCESS_ENV_FILES=true
 DB_PASSWORD_FILE="/run/secrets/db_password"
 ```
 
@@ -198,7 +197,6 @@ prefixing the value with `{type}:`. The following types are available:
 | `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 | `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`        |
 | `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`        |
-| `PROCESS_ENV_FILES`        | Whether or not `*_FILE` variables will be loaded from disk.                                                | `false`       |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
