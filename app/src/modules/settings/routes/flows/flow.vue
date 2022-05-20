@@ -510,7 +510,7 @@ function createPanel(parent: string, type: 'resolve' | 'reject') {
 }
 
 function duplicatePanel(panel: OperationRaw) {
-	const newPanel = omit(merge({}, panel), 'id');
+	const newPanel = omit(merge({}, panel), 'id', 'resolve', 'reject');
 	newPanel.position_x = newPanel.position_x + 2;
 	newPanel.position_y = newPanel.position_y + 2;
 	stageOperationEdits({ edits: newPanel, id: '+' });
