@@ -241,7 +241,9 @@ This pane controls the technical details of the field's database column.
 
 ::: danger Immutable Keys
 
-As of now, the key can not be modified after the field has been created. :::
+As of now, the key can not be modified after the field has been created.
+
+:::
 
 ::: warning Composite Keys
 
