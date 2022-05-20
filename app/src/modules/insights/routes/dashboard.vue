@@ -81,7 +81,7 @@
 		<template #navigation>
 			<insights-navigation />
 		</template>
-
+		<span v-if="errors">{errors}</span>
 		<insights-workspace
 			:edit-mode="editMode"
 			:panels="panelsWithData"
@@ -153,7 +153,7 @@
 
 <script lang="ts">
 import InsightsNavigation from '../components/navigation.vue';
-import { defineComponent, computed, ref, toRefs, watch } from 'vue';
+import { defineComponent, computed, ref, toRefs, watch, ComputedRef } from 'vue';
 import { useInsightsStore, useAppStore, usePermissionsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@directus/shared/types';
@@ -168,9 +168,11 @@ import { md } from '@/utils/md';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { objDiff } from '../../../utils/object-diff';
 import { v4 as uuid } from 'uuid';
+import { processQuery } from '../dashboard-utils/process-query';
+import { queryCaller } from '../dashboard-utils/query-caller';
+import { applyDataToPanels } from '../dashboard-utils/apply-data-to-panels';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -193,6 +195,7 @@ export default defineComponent({
 		const permissionsStore = usePermissionsStore();
 		const { panels: panelTypes } = getPanels();
 		const response = ref<Record<string, Panel | Panel[]>>({});
+		const errors = ref();
 		const panelsWithData = ref<Panel[]>([]);
 
 		const { fullScreen } = toRefs(appStore);
@@ -239,7 +242,7 @@ export default defineComponent({
 
 		const now = new Date();
 
-		const panels = computed(() => {
+		const panels: ComputedRef<Partial<Panel>[]> = computed(() => {
 			const savedPanels = (currentDashboard.value?.panels || []).filter(
 				(panel) => panelsToBeDeleted.value.includes(panel.id) === false
 			);
@@ -362,41 +365,45 @@ export default defineComponent({
 			return { systemCollectionQueries, userCollectionQueries };
 		});
 
-		watch(panels, () => {
-			const newPanelsWithData: Panel[] = [];
-			for (const panel of panels.value) {
-				const panelId = 'id_' + panel.id.replaceAll('-', '_');
-
-				if (response.value[panelId]) {
-					const editablePanel = panel;
-
-					editablePanel.data = response.value[panelId];
-					newPanelsWithData.push(editablePanel);
-				} else {
-					newPanelsWithData.push(panel);
-				}
-			}
-			panelsWithData.value = newPanelsWithData;
-		});
-
 		let newQueries: Record<string, any> = queryObject.value;
-		const systemGQLQueries = stitchQueriesToGql(newQueries.systemCollectionQueries);
-		const userGQLQueries = stitchQueriesToGql(newQueries.userCollectionQueries);
 
-		caller(systemGQLQueries, true);
-		caller(userGQLQueries);
+		watch(
+			queryObject,
+			async (newObj, obj) => {
+				newQueries = objDiff(newObj, obj);
 
-		watch(queryObject, (newObj, obj) => {
-			newQueries = objDiff(newObj, obj);
+				if (!isEmpty(newQueries)) {
+					const systemGQLQueries = processQuery(newQueries.systemCollectionQueries);
+					const userGQLQueries = processQuery(newQueries.userCollectionQueries);
 
-			if (!isEmpty(newQueries)) {
-				const systemGQLQueries = stitchQueriesToGql(newQueries.systemCollectionQueries);
-				const userGQLQueries = stitchQueriesToGql(newQueries.userCollectionQueries);
+					response.value = await queryCaller(systemGQLQueries, 0, newQueries, true);
+					response.value = await queryCaller(userGQLQueries, 0, newQueries, false);
+					panelsWithData.value = applyDataToPanels(panels.value, response.value);
+				}
+			},
+			{ immediate: true, deep: true }
+		);
 
-				caller(systemGQLQueries, true);
-				caller(userGQLQueries);
-			}
-		});
+		watch(
+			panels,
+			() => {
+				const newPanelsWithData: Panel[] = [];
+				for (const panel of panels.value) {
+					const panelId = 'id_' + panel.id.replaceAll('-', '_');
+
+					if (response.value[panelId]) {
+						const editablePanel = panel;
+
+						editablePanel.data = response.value[panelId];
+						newPanelsWithData.push(editablePanel);
+					} else {
+						newPanelsWithData.push(panel);
+					}
+				}
+				panelsWithData.value = newPanelsWithData;
+			},
+			{ immediate: true }
+		);
 
 		onBeforeRouteUpdate(editsGuard);
 		onBeforeRouteLeave(editsGuard);
@@ -431,6 +438,7 @@ export default defineComponent({
 			now,
 			confirmCancel,
 			cancelChanges,
+			errors,
 		};
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
@@ -574,112 +582,12 @@ export default defineComponent({
 			}
 		}
 
-		function processQuery(query, collection) {
-			const formattedQuery: Record<string, any> = {};
-
-			formattedQuery.__aliasFor = collection;
-
-			if (!isEmpty(query.aggregate)) {
-				formattedQuery.__aliasFor = collection + '_aggregated';
-
-				for (const [aggregateFunc, field] of Object.entries(query.aggregate)) {
-					if (!formattedQuery[aggregateFunc]) {
-						formattedQuery[aggregateFunc] = {};
-					}
-					if (!field) continue;
-
-					formattedQuery[aggregateFunc][field] = true;
-				}
-
-				if (query.groupBy) {
-					formattedQuery.__args = { groupBy: query.groupBy };
-					formattedQuery.group = true;
-				}
-			}
-
-			if (query.fields) {
-				for (const field of query.fields) {
-					if (!field) continue;
-					formattedQuery[field] = true;
-				}
-			}
-
-			if (query.filter) {
-				if (!formattedQuery.__args) {
-					formattedQuery.__args = {};
-				}
-				formattedQuery.__args.filter = query.filter;
-			}
-			return formattedQuery;
-		}
-
-		function stitchQueriesToGql(queries: Record<string, any>): string {
-			if (!queries) return '';
-
-			const formattedQuery: Record<string, any> = {
-				query: {},
-			};
-
-			for (const [key, query] of Object.entries(queries)) {
-				if (Array.isArray(query.query)) {
-					for (let i = 0; i < query.query.length; i++) {
-						const oneQuery = query.query[i];
-						const sanitizedKey = 'id_' + key.replaceAll('-', '_') + '__' + i;
-
-						if (!query?.collection || !oneQuery) continue;
-
-						formattedQuery.query[sanitizedKey] = {};
-						formattedQuery.query[sanitizedKey] = processQuery(oneQuery, query.collection);
-					}
-				} else {
-					if (!query?.collection || !query.query) continue;
-
-					const sanitizedKey = 'id_' + key.replaceAll('-', '_');
-
-					formattedQuery.query[sanitizedKey] = {};
-					formattedQuery.query[sanitizedKey].__aliasFor = query.collection;
-
-					if (!isEmpty(query.query.aggregate)) {
-						formattedQuery.query[sanitizedKey].__aliasFor = query.collection + '_aggregated';
-
-						for (const [aggregateFunc, field] of Object.entries(query.query.aggregate)) {
-							if (!formattedQuery.query[sanitizedKey][aggregateFunc]) {
-								formattedQuery.query[sanitizedKey][aggregateFunc] = {};
-							}
-
-							formattedQuery.query[sanitizedKey][aggregateFunc][field] = true;
-						}
-
-						if (query.query.groupBy) {
-							formattedQuery.query[sanitizedKey].__args = { groupBy: query.query.groupBy };
-							formattedQuery.query[sanitizedKey].group = true;
-						}
-					}
-
-					if (query.query.fields) {
-						for (const field of query.query.fields) {
-							formattedQuery.query[sanitizedKey][field] = true;
-						}
-					}
-
-					if (query.query.filter) {
-						if (!formattedQuery.query[sanitizedKey].__args) {
-							formattedQuery.query[sanitizedKey].__args = {};
-						}
-						formattedQuery.query[sanitizedKey].__args.filter = query.query.filter;
-					}
-				}
-			}
-
-			return jsonToGraphQLQuery(formattedQuery);
-		}
-
 		async function caller(query: string, system?: boolean, reattempt?: boolean) {
-			if (query === 'query') return;
+			if (query === 'query' || query === '') return;
+			let res;
 
 			const newResponse: Record<string, Panel | Panel[]> = {};
 			const sortedResponses: Record<string, any> = {};
-			let res;
 
 			try {
 				if (system) {
@@ -734,9 +642,10 @@ export default defineComponent({
 				response.value = newResponse;
 			} catch (errs: any) {
 				if (reattempt) callAttempts++;
-				if (reattempt && callAttempts >= 5) {
+				if (reattempt && callAttempts >= 10) {
 					callAttempts = 0;
-					throw new Error(errs);
+					errors.value = errs;
+					// figure out how to load the unerrored panels...
 				}
 
 				const queriesToRemove: Record<string, any> = {};
@@ -778,7 +687,7 @@ export default defineComponent({
 					}
 				}
 
-				const newQuery = stitchQueriesToGql(newQueries);
+				const newQuery = processQuery(newQueries);
 				caller(newQuery, system, true);
 			}
 		}

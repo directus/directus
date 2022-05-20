@@ -1,8 +1,9 @@
 // Not reversible
 import { isEqual } from 'lodash';
 
-export const objDiff = (obj1: Record<any, any>, obj2: Record<any, any>) => {
-	if (!obj1 || !obj2) return {};
+export const objDiff = (obj1: Record<any, any>, obj2: Record<any, any> | undefined) => {
+	if (!obj1) return {};
+	if (!obj2) return obj1;
 
 	const diff: Record<any, any> = {};
 
