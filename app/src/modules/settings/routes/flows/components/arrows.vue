@@ -3,7 +3,7 @@
 		<svg :width="size.width" :height="size.height" class="arrows">
 			<path
 				v-for="(arrow, index) in arrows"
-				:key="index"
+				:key="`${index}-${arrow.d}`"
 				:class="{ [arrow.type]: true, subdued: subdued || arrow.loner }"
 				:d="arrow.d"
 				stroke-linecap="round"
