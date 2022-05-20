@@ -3,7 +3,6 @@ import {
 	ActionHandler,
 	FilterHandler,
 	Flow,
-	InitHandler,
 	Operation,
 	OperationHandler,
 	SchemaOverview,
@@ -156,16 +155,6 @@ class FlowManager {
 						events: events.map((event) => ({ type: 'action', name: event, handler })),
 					});
 				}
-
-				if (flow.options.type === 'init') {
-					const handler: InitHandler = () => this.executeFlow(flow);
-					const events: string[] = flow.options.initScope ?? [];
-					events.forEach((event) => emitter.onInit(event, handler));
-					this.triggerHandlers.push({
-						id: flow.id,
-						events: events.map((event) => ({ type: 'init', name: event, handler })),
-					});
-				}
 			} else if (flow.trigger === 'schedule') {
 				if (validate(flow.options.cron)) {
 					const task = schedule(flow.options.cron, async () => {
@@ -206,9 +195,6 @@ class FlowManager {
 						break;
 					case 'action':
 						emitter.offAction(event.name, event.handler);
-						break;
-					case 'init':
-						emitter.offInit(event.name, event.handler);
 						break;
 					case 'schedule':
 						event.task.stop();

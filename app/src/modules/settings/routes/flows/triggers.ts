@@ -75,10 +75,6 @@ export function getTriggers() {
 										text: t('filter'),
 										value: 'filter',
 									},
-									{
-										text: t('init'),
-										value: 'init',
-									},
 								],
 							},
 						},
@@ -166,42 +162,12 @@ export function getTriggers() {
 					},
 				];
 
-				const initFields = [
-					{
-						field: 'initScope',
-						name: t('scope'),
-						meta: {
-							interface: 'select-dropdown',
-							options: {
-								choices: [
-									'cli.before',
-									'cli.after',
-									'app.before',
-									'app.after',
-									'routes.before',
-									'routes.after',
-									'routes.custom.before',
-									'routes.custom.after',
-									'middlewares.before',
-									'middlewares.after',
-								],
-								font: 'monospace',
-							},
-							width: 'half' as Width,
-						},
-					},
-				];
-
 				if (type === 'action') {
 					return [...fields, ...actionFields];
 				}
 
 				if (type === 'filter') {
 					return [...fields, ...filterFields];
-				}
-
-				if (type === 'init') {
-					return [...fields, ...initFields];
 				}
 
 				return fields;
