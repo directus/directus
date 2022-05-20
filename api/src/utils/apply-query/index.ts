@@ -410,7 +410,24 @@ export function applyFilter(
 					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
 				}
 
-				if (isNegativeOperator(filterOperator)) {
+				const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+					const field = relation!.field;
+					const collection = relation!.collection;
+					const column = `${collection}.${field}`;
+
+					subQueryKnex
+						.select({ [field]: column })
+						.from(collection)
+						.whereNotNull(column);
+
+					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+				};
+
+				if (filterOperator === '_none') {
+					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(filterValue as Filter));
+				} else if (filterOperator === '_some') {
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(filterValue as Filter));
+				} else if (isNegativeOperator(filterOperator)) {
 					inverseFilters(value);
 					dbQuery[logical].whereNotExists(callbackSubqueryRelation(relation, value));
 				} else {
