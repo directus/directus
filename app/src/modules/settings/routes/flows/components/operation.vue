@@ -28,51 +28,35 @@
 		<template #body>
 			<div
 				v-if="editMode || panel?.resolve"
-				v-tooltip="editMode && t('operation_handle_resolve')"
 				class="button add-resolve"
 				x-small
 				icon
 				rounded
 				@pointerdown.stop="pointerdown('resolve')"
 			>
-				<v-icon name="check_circle" />
+				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
 			</div>
 			<div v-if="editMode && !panel?.resolve && isHintVisible && !moving" class="hint resolve-hint">
-				<div
-					v-tooltip="t('operation_handle_resolve')"
-					x-small
-					icon
-					rounded
-					class="button-hint"
-					@pointerdown.stop="pointerdown('resolve')"
-				>
-					<v-icon name="add_circle_outline" />
+				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
+					<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
 				</div>
 			</div>
 			<div
 				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
-				v-tooltip="editMode && t('operation_handle_reject')"
 				x-small
 				icon
 				rounded
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon name="cancel" />
+				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
 			</div>
 			<div
 				v-if="panel.id !== '$trigger' && editMode && !panel?.reject && isHintVisible && !moving"
 				class="hint reject-hint"
 			>
-				<div
-					v-tooltip="t('operation_handle_reject')"
-					x-small
-					icon
-					rounded
-					class="button-hint"
-					@pointerdown.stop="pointerdown('reject')"
-				>
-					<v-icon name="add_circle_outline" />
+				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
+					<v-icon v-tooltip="t('operation_handle_reject')" name="add_circle_outline" />
 				</div>
 			</div>
 
