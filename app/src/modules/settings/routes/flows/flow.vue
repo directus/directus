@@ -440,6 +440,7 @@ async function saveChanges() {
 		await flowsStore.hydrate();
 
 		stagedPanels.value = [];
+		panelsToBeDeleted.value = [];
 		stagedFlow.value = {};
 		editMode.value = false;
 	} catch (error) {
@@ -500,6 +501,12 @@ async function deletePanel(id: string) {
 		panelsToBeDeleted.value.push(id);
 	} else if (id.startsWith('_') && stagedFlow.value?.operation === id) {
 		stagedFlow.value = {};
+	}
+
+	const parent = parentPanels.value[id];
+
+	if (parent) {
+		stageOperationEdits({ edits: { [parent.type]: null }, id: parent.id });
 	}
 }
 
