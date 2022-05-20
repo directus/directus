@@ -21,9 +21,15 @@ export default definePanel({
 			: {
 					[options.function]: [options.field || '*'],
 			  };
-
+		if (aggregate) {
+			return {
+				aggregate,
+				filter: options.filter ?? {},
+				sort: sort,
+				limit: 1,
+			};
+		}
 		return {
-			aggregate,
 			filter: options.filter ?? {},
 			sort: sort,
 			limit: 1,
