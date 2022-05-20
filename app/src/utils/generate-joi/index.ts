@@ -84,8 +84,21 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 				schema[key] = Joi.any().equal(Object.values(value)[0]);
 			}
 
+			if (operator === '_ieq') {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}$`, 'i'), {
+					name: '_ieq',
+				});
+			}
+
 			if (operator === '_neq') {
 				schema[key] = Joi.any().not(Object.values(value)[0]);
+			}
+
+			if (operator === '_nieq') {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}$`, 'i'), {
+					name: '_ieq',
+					invert: true,
+				});
 			}
 
 			if (operator === '_contains') {
@@ -100,9 +113,22 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 				schema[key] = Joi.string().ncontains(Object.values(value)[0]);
 			}
 
+			if (operator === '_nicontains') {
+				schema[key] = Joi.string().pattern(new RegExp(`${escapeRegExp(Object.values(value)[0] as string)}.*`, 'i'), {
+					name: '_nicontains',
+					invert: true,
+				});
+			}
+
 			if (operator === '_starts_with') {
 				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
 					name: 'starts_with',
+				});
+			}
+
+			if (operator === '_istarts_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`, 'i'), {
+					name: 'istarts_with',
 				});
 			}
 
@@ -113,15 +139,35 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 				});
 			}
 
+			if (operator === '_nistarts_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`, 'i'), {
+					name: 'istarts_with',
+					invert: true,
+				});
+			}
+
 			if (operator === '_ends_with') {
 				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
 					name: 'ends_with',
 				});
 			}
 
+			if (operator === '_iends_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`, 'i'), {
+					name: 'iends_with',
+				});
+			}
+
 			if (operator === '_nends_with') {
 				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
 					name: 'ends_with',
+					invert: true,
+				});
+			}
+
+			if (operator === '_niends_with') {
+				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`, 'i'), {
+					name: 'iends_with',
 					invert: true,
 				});
 			}

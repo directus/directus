@@ -1,6 +1,8 @@
 export type FilterOperator =
 	| 'eq'
+	| 'ieq'
 	| 'neq'
+	| 'nieq'
 	| 'lt'
 	| 'lte'
 	| 'gt'
@@ -25,9 +27,13 @@ export type FilterOperator =
 export type ClientFilterOperator =
 	| FilterOperator
 	| 'starts_with'
+	| 'istarts_with'
 	| 'nstarts_with'
+	| 'nistarts_with'
 	| 'ends_with'
+	| 'iends_with'
 	| 'nends_with'
+	| 'niends_with'
 	| 'regex';
 
 export type Filter = LogicalFilter | FieldFilter;

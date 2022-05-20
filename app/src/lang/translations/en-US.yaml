@@ -659,7 +659,9 @@ change_advanced_filter_operator: Change Operator
 advanced: Advanced
 operators:
   eq: Equals
+  ieq: Equals (insensitive)
   neq: Doesn't equal
+  nieq: Doesn't equal (insensitive)
   lt: Less than
   gt: Greater than
   lte: Less than or equal to
@@ -671,10 +673,15 @@ operators:
   contains: Contains
   icontains: Contains (insensitive)
   ncontains: Doesn't contain
+  nicontains: Doesn't contain (insensitive)
   starts_with: Starts with
+  istarts_with: Starts with (insensitive)
   nstarts_with: Doesn't start with
+  nistarts_with: Doesn't start with (insensitive)
   ends_with: Ends with
+  iends_with: Ends with (insensitive)
   nends_with: Doesn't end with
+  niends_with: Doesn't end with (insensitive)
   between: Is between
   nbetween: Isn't between
   empty: Is empty
