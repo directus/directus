@@ -36,7 +36,8 @@ const props = withDefaults(
 	}
 );
 
-const endOffset = 16;
+const startOffset = 2;
+const endOffset = 13;
 
 const size = computed(() => {
 	let width = 0,
@@ -64,7 +65,7 @@ const arrows = computed(() => {
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
 			arrows.push({
-				d: createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y),
+				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
 				type: 'resolve',
 				loner,
 			});
@@ -91,7 +92,7 @@ const arrows = computed(() => {
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
 			const { x, y } = getPoints(panel, REJECT_OFFSET);
 			arrows.push({
-				d: createLine(x, y, props.arrowInfo.pos.x - 2, props.arrowInfo.pos.y),
+				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
 				type: 'reject',
 				loner,
 			});
@@ -119,10 +120,10 @@ const arrows = computed(() => {
 	return arrows;
 
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
-		const x = (panel.x - 1) * 20 + offset.x + 2;
+		const x = (panel.x - 1) * 20 + offset.x;
 		const y = (panel.y - 1) * 20 + offset.y;
 		if (to) {
-			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x + 2;
+			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x;
 			const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
 
 			return { x, y, toX, toY };
@@ -132,12 +133,17 @@ const arrows = computed(() => {
 	}
 
 	function createLine(x: number, y: number, toX: number, toY: number) {
-		if (y === toY) return generatePath(Vector2.fromMany({ x, y }, { x: toX - endOffset, y: toY }));
+		if (y === toY) return generatePath(Vector2.fromMany({ x: x + startOffset, y }, { x: toX - endOffset, y: toY }));
 
 		if (x + 3 * 20 < toX) {
 			const centerX = findBestPosition(new Vector2(x + 2 * 20, y), new Vector2(toX - 2 * 20, toY), 'x');
 			return generatePath(
-				Vector2.fromMany({ x, y }, { x: centerX, y }, { x: centerX, y: toY }, { x: toX - endOffset, y: toY })
+				Vector2.fromMany(
+					{ x: x + startOffset, y },
+					{ x: centerX, y },
+					{ x: centerX, y: toY },
+					{ x: toX - endOffset, y: toY }
+				)
 			);
 		}
 
@@ -145,7 +151,7 @@ const arrows = computed(() => {
 		const centerY = findBestPosition(new Vector2(x + 2 * 20, y), new Vector2(toX - 2 * 20, toY), 'y');
 		return generatePath(
 			Vector2.fromMany(
-				{ x, y },
+				{ x: x + startOffset, y },
 				{ x: x + offsetBox, y },
 				{ x: x + offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: centerY },

@@ -384,7 +384,7 @@ function pointerLeave() {
 		justify-content: center;
 		align-items: center;
 		padding: 20px 20px 20px 80px;
-		transform: translate(-2px, calc(-50% - 2px));
+		transform: translate(-1px, calc(-50% - 2.5px));
 	}
 
 	.button {
@@ -394,7 +394,7 @@ function pointerLeave() {
 		justify-content: center;
 		align-items: center;
 		background-color: var(--background-page);
-		transform: translate(calc(-50% - 1px), calc(-50% - 2px));
+		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
 
 		--v-icon-color: var(--primary);
 	}
