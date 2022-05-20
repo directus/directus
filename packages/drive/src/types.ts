@@ -63,6 +63,6 @@ export interface DeleteResponse extends Response {
 }
 
 export interface Range {
-	start: number;
+	start: number | undefined;
 	end: number | undefined;
 }

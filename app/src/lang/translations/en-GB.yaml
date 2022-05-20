@@ -95,6 +95,7 @@ update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
   Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
+delete_personal_bookmark: Delete Personal Bookmark
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
