@@ -60,7 +60,8 @@ const arrows = computed(() => {
 	for (const panel of props.panels) {
 		const resolveChild = props.panels.find((pan) => pan.id === panel.resolve);
 		const rejectChild = props.panels.find((pan) => pan.id === panel.reject);
-		const loner = Object.values(props.parentPanels).find((pan) => pan.id === panel.id)?.loner ?? false;
+		const parent = props.parentPanels[panel.id];
+		const loner = (parent === undefined || parent.loner) && panel.id !== '$trigger';
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
