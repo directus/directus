@@ -27,7 +27,7 @@
 	>
 		<template #body>
 			<div
-				v-if="editMode || (panel.id === '$trigger' && panel?.resolve)"
+				v-if="editMode || panel?.resolve"
 				class="button add-resolve"
 				x-small
 				icon
@@ -42,7 +42,7 @@
 				</div>
 			</div>
 			<div
-				v-if="editMode && panel.id !== '$trigger'"
+				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
 				x-small
 				icon
 				rounded
@@ -52,7 +52,7 @@
 				<v-icon name="cancel" />
 			</div>
 			<div
-				v-if="editMode && panel.id !== '$trigger' && !panel?.reject && isHintVisible && !moving"
+				v-if="panel.id !== '$trigger' && editMode && !panel?.reject && isHintVisible && !moving"
 				class="hint reject-hint"
 			>
 				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
