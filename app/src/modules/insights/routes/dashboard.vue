@@ -83,6 +83,7 @@
 		</template>
 		<span v-if="errors">{errors}</span>
 		<insights-workspace
+			v-if="!loading"
 			:edit-mode="editMode"
 			:panels="panelsWithData"
 			:zoom-to-fit="zoomToFit"
@@ -196,6 +197,8 @@ export default defineComponent({
 		const { panels: panelTypes } = getPanels();
 		const response = ref<Record<string, Panel | Panel[]>>({});
 		const errors = ref();
+		const loading = ref(false);
+
 		const panelsWithData = ref<Panel[]>([]);
 
 		const { fullScreen } = toRefs(appStore);
@@ -368,18 +371,26 @@ export default defineComponent({
 		let newQueries: Record<string, any> = queryObject.value;
 
 		watch(
-			queryObject,
-			async (newObj, obj) => {
+			[queryObject, currentDashboard],
+			async ([newObj, db], [obj, oldDb]) => {
 				newQueries = objDiff(newObj, obj);
 
 				if (!isEmpty(newQueries)) {
+					loading.value = true;
+
 					const systemGQLQueries = processQuery(newQueries.systemCollectionQueries);
 					const userGQLQueries = processQuery(newQueries.userCollectionQueries);
 
-					response.value = await queryCaller(systemGQLQueries, 0, newQueries, true);
-					response.value = await queryCaller(userGQLQueries, 0, newQueries, false);
+					let system = await queryCaller(systemGQLQueries, 0, newQueries, true);
+					let user = await queryCaller(userGQLQueries, 0, newQueries, false);
+
+					response.value = {
+						...system,
+						...user,
+					};
 					panelsWithData.value = applyDataToPanels(panels.value, response.value);
 				}
+				loading.value = false;
 			},
 			{ immediate: true, deep: true }
 		);
@@ -409,6 +420,7 @@ export default defineComponent({
 		onBeforeRouteLeave(editsGuard);
 
 		return {
+			loading,
 			currentDashboard,
 			editMode,
 			panels,
