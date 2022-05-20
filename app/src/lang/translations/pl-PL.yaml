@@ -326,6 +326,7 @@ revision_delta_deleted: Usunięty
 revision_delta_reverted: Odwrócony
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
+presentation_text_values_cannot_be_reimported: "Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane."
 download_page_as_csv: 'Pobierz stronę jako CSV'
 private_user: Prywatny Użytkownik
 creation_preview: Podgląd tworzenia
@@ -657,6 +658,7 @@ operators:
   null: Jest puste
   nnull: Nie jest puste
   contains: Zawiera
+  icontains: Zawiera (niewrażliwe)
   ncontains: Nie zawiera
   starts_with: Zaczyna się od
   nstarts_with: Nie zaczyna się od
@@ -1326,6 +1328,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1612,7 +1615,7 @@ interfaces:
     header_icon: Ikona nagłówka
     header_color: Kolor nagłówka
     start_open: Rozpocznij rozwinięty
-    start_closed: Rozpocznij zamknięte
+    start_closed: Rozpocznij zwinięty
 displays:
   translations:
     translations: Tłumaczenia
