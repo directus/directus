@@ -79,6 +79,7 @@
 		<div class="panel-content" :class="{ 'has-header': panel.show_header }">
 			<component
 				:is="`panel-${panel.type}`"
+				v-if="!loading"
 				v-bind="panel.options"
 				:id="panel.id"
 				:data="panel.data ?? {}"
@@ -109,6 +110,10 @@ export default defineComponent({
 		editMode: {
 			type: Boolean,
 			default: false,
+		},
+		loading: {
+			type: Boolean,
+			default: true,
 		},
 		now: {
 			type: Date,

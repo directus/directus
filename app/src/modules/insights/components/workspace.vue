@@ -16,6 +16,7 @@
 				v-for="panel in panels"
 				:key="panel.id"
 				:panel="panel"
+				:loading="loading"
 				:edit-mode="editMode"
 				:now="now"
 				@update="$emit('update', { edits: $event, id: panel.id })"
@@ -42,6 +43,10 @@ export default defineComponent({
 			required: true,
 		},
 		editMode: {
+			type: Boolean,
+			default: false,
+		},
+		loading: {
 			type: Boolean,
 			default: false,
 		},

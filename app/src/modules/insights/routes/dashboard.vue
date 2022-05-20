@@ -83,7 +83,7 @@
 		</template>
 		<span v-if="errors">{errors}</span>
 		<insights-workspace
-			v-if="!loading"
+			:loading="loading"
 			:edit-mode="editMode"
 			:panels="panelsWithData"
 			:zoom-to-fit="zoomToFit"
