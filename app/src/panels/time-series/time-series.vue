@@ -150,7 +150,7 @@ export default defineComponent({
 			chart.value?.destroy();
 		});
 
-		return { chartEl, metrics, loading, error, hasData };
+		return { chartEl, metrics, loading, error, hasData, t };
 
 		function setupChart() {
 			if (isEmpty(props.data)) {

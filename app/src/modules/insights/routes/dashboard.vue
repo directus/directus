@@ -324,28 +324,42 @@ export default defineComponent({
 		};
 
 		const queryObject = computed<Record<string, any>>(() => {
-			const queries = {};
+			const systemCollectionQueries = {};
+			const userCollectionQueries = {};
 
 			if (!isEmpty(stagedPanels.value)) {
 				for (const panel of stagedPanels.value) {
 					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
-					if (type?.query) {
-						const query = type.query(panel.options);
-						queries[panel.id] = { collection: panel.options.collection, query };
+					if (type?.query && panel?.id && panel.options?.collection) {
+						if (panel.options?.collection.startsWith('directus')) {
+							const collection = panel.options.collection.substring(7);
+							const query = type.query(panel.options);
+
+							systemCollectionQueries[panel.id] = { collection, query };
+						} else {
+							const query = type.query(panel.options);
+							userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
+						}
 					}
 				}
 			}
 			if (!isEmpty(panels.value)) {
 				for (const panel of panels.value) {
 					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
-					if (type?.query) {
-						const query = type.query(panel.options);
-						queries[panel.id] = { collection: panel.options.collection, query };
+					if (type?.query && panel?.id && panel.options?.collection) {
+						if (panel.options?.collection.startsWith('directus')) {
+							const collection = panel.options.collection.substring(9);
+							const query = type.query(panel.options);
+
+							systemCollectionQueries[panel.id] = { collection, query };
+						} else {
+							const query = type.query(panel.options);
+							userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
+						}
 					}
 				}
 			}
-
-			return queries;
+			return { systemCollectionQueries, userCollectionQueries };
 		});
 
 		watch(panels, () => {
@@ -366,16 +380,21 @@ export default defineComponent({
 		});
 
 		let newQueries: Record<string, any> = queryObject.value;
-		const gqlQueries = stitchQueriesToGql(newQueries);
+		const systemGQLQueries = stitchQueriesToGql(newQueries.systemCollectionQueries);
+		const userGQLQueries = stitchQueriesToGql(newQueries.userCollectionQueries);
 
-		caller(gqlQueries);
+		caller(systemGQLQueries, true);
+		caller(userGQLQueries);
 
 		watch(queryObject, (newObj, obj) => {
 			newQueries = objDiff(newObj, obj);
 
 			if (!isEmpty(newQueries)) {
-				const gqlQueries = stitchQueriesToGql(newQueries);
-				caller(gqlQueries);
+				const systemGQLQueries = stitchQueriesToGql(newQueries.systemCollectionQueries);
+				const userGQLQueries = stitchQueriesToGql(newQueries.userCollectionQueries);
+
+				caller(systemGQLQueries, true);
+				caller(userGQLQueries);
 			}
 		});
 
@@ -481,7 +500,7 @@ export default defineComponent({
 
 				stagedPanels.value = [];
 				editMode.value = false;
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;
@@ -655,16 +674,23 @@ export default defineComponent({
 			return jsonToGraphQLQuery(formattedQuery);
 		}
 
-		async function caller(query: string, reattempt?: boolean) {
+		async function caller(query: string, system?: boolean, reattempt?: boolean) {
 			if (query === 'query') return;
 
 			const newResponse: Record<string, Panel | Panel[]> = {};
 			const sortedResponses: Record<string, any> = {};
+			let res;
 
 			try {
-				const res = await api.post('/graphql', {
-					query: query,
-				});
+				if (system) {
+					res = await api.post('/graphql/system', {
+						query: query,
+					});
+				} else {
+					res = await api.post('/graphql', {
+						query: query,
+					});
+				}
 
 				for (const [id, data] of Object.entries(res.data.data)) {
 					if (id.includes('__')) {
@@ -694,10 +720,9 @@ export default defineComponent({
 					}
 
 					if (res.data.data[panelId]) {
-						if (Array.isArray(res.data.data[panelId])) {
-							// console.log(res.data.data[panelId]);
+						if (!Array.isArray(res.data.data[panelId])) {
+							newResponse[panelId] = res.data.data[panelId];
 						}
-						newResponse[panelId] = res.data.data[panelId];
 					}
 
 					if (newResponse[panelId]) {
@@ -754,7 +779,7 @@ export default defineComponent({
 				}
 
 				const newQuery = stitchQueriesToGql(newQueries);
-				caller(newQuery, true);
+				caller(newQuery, system, true);
 			}
 		}
 	},
