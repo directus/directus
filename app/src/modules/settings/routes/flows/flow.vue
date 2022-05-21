@@ -49,7 +49,7 @@
 					<v-icon name="delete" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
+				<v-button v-tooltip.bottom="t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
 					<v-icon name="edit" />
 				</v-button>
 			</template>
