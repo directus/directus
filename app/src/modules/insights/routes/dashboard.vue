@@ -411,6 +411,7 @@ export default defineComponent({
 				await insightsStore.hydrate();
 
 				stagedPanels.value = [];
+				panelsToBeDeleted.value = [];
 				editMode.value = false;
 			} catch (err) {
 				unexpectedError(err);
