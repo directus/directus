@@ -658,6 +658,7 @@ operators:
   null: Jest puste
   nnull: Nie jest puste
   contains: Zawiera
+  icontains: Zawiera (niewrażliwe)
   ncontains: Nie zawiera
   starts_with: Zaczyna się od
   nstarts_with: Nie zaczyna się od

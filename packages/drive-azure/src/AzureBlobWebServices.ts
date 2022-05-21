@@ -170,7 +170,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 
 		const stream = this.$containerClient
 			.getBlobClient(location)
-			.download(range?.start, range?.end ? range.end - range.start : undefined);
+			.download(range?.start, range?.end ? range.end - (range.start || 0) : undefined);
 
 		try {
 			stream

@@ -658,6 +658,7 @@ operators:
   null: Est nul
   nnull: N'est pas null
   contains: Contient
+  icontains: Contient (insensible)
   ncontains: Ne contient pas
   starts_with: Commence par
   nstarts_with: Ne commence pas par
@@ -1810,9 +1811,12 @@ panels:
     name: Graphique en barres
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
+    select_x_axis: Vous devez sélectionner un axe X.
     function: Fonction
     horizontal: Horizontal
+    x_axis_grouping: Agrégation du groupe d'axe X
     x_axis: Axe X
+    y_axis_function: Fonction Axe-Y
     y_axis: Axe Y
     show_x_axis: Afficher l'axe X
     show_y_axis: Afficher l'axe Y
@@ -1824,16 +1828,22 @@ panels:
     name: Graphique linéaire
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
+    select_x_axis: Vous devez sélectionner un axe X.
     function: Fonction
     x_axis: Axe X
     x_axis_decimals: Décimales de l'axe X
+    disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
     y_axis: Axe Y
     datasets: Jeux de données
     show_legend: Afficher la légende
     include_dataset: Vous devez sélectionner au moins un élément.
+    include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
+    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    smooth: 'Lisse'
   meter:
     description: Compteur pour les valeurs de suivi
     name: Compteur
+    arc: Arc
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
     select_field: Vous devez choisir un champ.
@@ -1844,6 +1854,7 @@ panels:
     broad: Large
   piechart:
     name: Graphique anneau ou circulaire
+    description: Graphique circulaire montrant les ratios de groupes sur une colonne.
     function: 'Fonction'
     donut: Anneau
     labels: Afficher les libellés
