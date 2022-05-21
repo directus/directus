@@ -76,7 +76,6 @@ create_preset: Create Preset
 create_panel: Create Panel
 create_role: Create Role
 create_user: Create User
-delete_panel: Delete Panel
 message: Message
 create_translation_string: Create Translation String
 translation_string_key_placeholder: Translation string key...
@@ -745,6 +744,7 @@ on_create: On Create
 on_update: On Update
 read: Read
 update: Update
+delete: Delete
 select_fields: Select Fields
 format_text: Format Text
 format_value: Format Value
@@ -774,10 +774,8 @@ create_flow: Create Flow
 flow_name: Name
 start_flow: Start Flow
 stop_flow: Stop Flow
-view_operation: View Operation
 create_operation: Create Operation
 edit_operation: Edit Operation
-delete_operation: Delete Operation
 operation_options: Operation Options
 operation_name: Name of operation...
 operation_key: Identifier for reference...

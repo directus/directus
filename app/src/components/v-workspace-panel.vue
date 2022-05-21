@@ -50,7 +50,7 @@
 						<v-list-item-icon>
 							<v-icon name="delete" />
 						</v-list-item-icon>
-						<v-list-item-content>{{ t('delete_operation') }}</v-list-item-content>
+						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
