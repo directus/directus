@@ -86,9 +86,7 @@
 						:parent="parentPanels[panel.id]"
 						:flow="flow"
 						:panels-to-be-deleted="panelsToBeDeleted"
-						:is-hint-visible="
-							(panel.id === '$trigger' && !panel?.resolve && !arrowInfo) || (hoveredPanelID === panel.id && !arrowInfo)
-						"
+						:is-hovered="hoveredPanelID === panel.id"
 						:subdued="flow.status === 'inactive'"
 						@create="createPanel"
 						@edit="editPanel"

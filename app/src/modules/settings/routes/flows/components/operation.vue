@@ -36,7 +36,10 @@
 			>
 				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
 			</div>
-			<div v-if="editMode && !panel?.resolve && isHintVisible && !moving" class="hint resolve-hint">
+			<div
+				v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
+				class="hint resolve-hint"
+			>
 				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
 					<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
 				</div>
@@ -52,7 +55,7 @@
 				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
 			</div>
 			<div
-				v-if="panel.id !== '$trigger' && editMode && !panel?.reject && isHintVisible && !moving"
+				v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
 				class="hint reject-hint"
 			>
 				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
@@ -153,19 +156,19 @@ const props = withDefaults(
 		parent?: { id: string; type: Target; loner: boolean };
 		flow: FlowRaw;
 		panelsToBeDeleted: string[];
-		isHintVisible: boolean;
+		isHovered: boolean;
 		subdued?: boolean;
 	}>(),
 	{
 		type: 'operation',
 		editMode: false,
 		parent: undefined,
-		isHintVisible: false,
+		isHovered: false,
 		subdued: false,
 	}
 );
 
-const { panelsToBeDeleted, isHintVisible } = toRefs(props);
+const { panelsToBeDeleted } = toRefs(props);
 
 const { operations } = getOperations();
 const { triggers } = getTriggers();
