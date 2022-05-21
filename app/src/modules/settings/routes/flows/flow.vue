@@ -430,7 +430,7 @@ async function saveChanges() {
 
 			const trigger = trees.find((tree) => tree.id === '$trigger');
 
-			if (trigger) changes.operation = trigger.resolve;
+			if (trigger && trigger.resolve !== undefined) changes.operation = trigger.resolve;
 
 			await api.patch(`/flows/${props.primaryKey}`, changes);
 		}
@@ -495,16 +495,19 @@ async function deletePanel(id: string) {
 	if (!flow.value) return;
 
 	stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
-	if (id.startsWith('_') === false) {
+
+	if (!id.startsWith('_')) {
 		panelsToBeDeleted.value.push(id);
-	} else if (id.startsWith('_') && stagedFlow.value?.operation === id) {
-		stagedFlow.value = {};
 	}
 
-	const parent = parentPanels.value[id];
+	if (flow.value.operation === id) {
+		stagedFlow.value = { operation: null };
+	} else {
+		const parent = parentPanels.value[id];
 
-	if (parent) {
-		stageOperationEdits({ edits: { [parent.type]: null }, id: parent.id });
+		if (parent) {
+			stageOperationEdits({ edits: { [parent.type]: null }, id: parent.id });
+		}
 	}
 }
 
