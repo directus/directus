@@ -3,6 +3,8 @@
 > These Docs will help you get up-and-running quickly, guide you through advanced features, and explain the core
 > concepts that make Directus so unique.
 
+<Cloud/>
+
 ## What is Directus?
 
 **Directus is an Open Data Platform built to democratize the database.** Its no-code app is safe and intuitive enough to
