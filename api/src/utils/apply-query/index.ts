@@ -319,7 +319,7 @@ export function applyFilter(
 		}
 	}
 
-	function callbackSubqueryRelation(relation: Relation, value: any) {
+	function subQueryBuilderSingle(relation: Relation, value: any) {
 		return function (subQueryKnex: Knex.QueryBuilder<any, any>) {
 			const field = relation!.field;
 			const collection = relation!.collection;
@@ -337,6 +337,22 @@ export function applyFilter(
 				schema,
 				true
 			);
+		};
+	}
+
+	function subQueryBuilderMultiple(relation: Relation, filter: Filter) {
+		return (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+			const field = relation!.field;
+			const collection = relation!.collection;
+			const column = `${collection}.${field}`;
+
+			// specifically used for o2m, m2m subqueries
+			subQueryKnex
+				.select({ [field]: column })
+				.from(collection)
+				.whereNotNull(column);
+
+			applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
 		};
 	}
 
@@ -410,11 +426,15 @@ export function applyFilter(
 					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
 				}
 
-				if (isNegativeOperator(filterOperator)) {
+				if (filterOperator === '_none') {
+					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilderMultiple(relation, filterValue as Filter));
+				} else if (filterOperator === '_some') {
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilderMultiple(relation, filterValue as Filter));
+				} else if (isNegativeOperator(filterOperator)) {
 					inverseFilters(value);
-					dbQuery[logical].whereNotExists(callbackSubqueryRelation(relation, value));
+					dbQuery[logical].whereNotExists(subQueryBuilderSingle(relation, value));
 				} else {
-					dbQuery[logical].whereExists(callbackSubqueryRelation(relation, value));
+					dbQuery[logical].whereExists(subQueryBuilderSingle(relation, value));
 				}
 			}
 		}
