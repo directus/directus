@@ -477,12 +477,28 @@ export function applyFilter(
 				dbQuery[logical].whereNot(selectionRaw, compareValue);
 			}
 
+			if (operator === '_ieq') {
+				dbQuery[logical].whereRaw(`LOWER(??) = ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
+			}
+
+			if (operator === '_nieq') {
+				dbQuery[logical].whereRaw(`LOWER(??) <> ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
+			}
+
 			if (operator === '_contains') {
 				dbQuery[logical].where(selectionRaw, 'like', `%${compareValue}%`);
 			}
 
 			if (operator === '_ncontains') {
 				dbQuery[logical].whereNot(selectionRaw, 'like', `%${compareValue}%`);
+			}
+
+			if (operator === '_icontains') {
+				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+			}
+
+			if (operator === '_nicontains') {
+				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
 			}
 
 			if (operator === '_starts_with') {
@@ -493,12 +509,28 @@ export function applyFilter(
 				dbQuery[logical].whereNot(key, 'like', `${compareValue}%`);
 			}
 
+			if (operator === '_istarts_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
+			}
+
+			if (operator === '_nistarts_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
+			}
+
 			if (operator === '_ends_with') {
 				dbQuery[logical].where(key, 'like', `%${compareValue}`);
 			}
 
 			if (operator === '_nends_with') {
 				dbQuery[logical].whereNot(key, 'like', `%${compareValue}`);
+			}
+
+			if (operator === '_iends_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
+			}
+
+			if (operator === '_niends_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
 			}
 
 			if (operator === '_gt') {
