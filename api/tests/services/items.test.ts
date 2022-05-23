@@ -685,7 +685,7 @@ describe('Integration Tests', () => {
 			const response = await itemsService.readMany([items[0].id, items[1].id], { fields: ['id', 'name'] });
 
 			expect(tracker.history.select.length).toBe(1);
-			expect(tracker.history.select[0].bindings).toStrictEqual([items[0].id, items[1].id, 100]);
+			expect(tracker.history.select[0].bindings).toStrictEqual([items[0].id, items[1].id, 2]);
 			expect(tracker.history.select[0].sql).toBe(
 				`select ${sqlFieldFormatter(
 					schemas[schema].schema,

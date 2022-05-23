@@ -1,27 +1,27 @@
-import { Knex } from 'knex';
-import { clone, cloneDeep, pick, without, assign } from 'lodash';
-import { getCache } from '../cache';
+import { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
+import { Knex } from 'knex';
+import { assign, clone, cloneDeep, pick, without } from 'lodash';
+import { getCache } from '../cache';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import { Accountability, Query, PermissionsAction, SchemaOverview } from '@directus/shared/types';
 import {
 	AbstractService,
 	AbstractServiceOptions,
 	Action,
 	Item as AnyItem,
-	PrimaryKey,
 	MutationOptions,
+	PrimaryKey,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { AuthorizationService } from './authorization';
-import { PayloadService } from './payload';
 import { ActivityService, RevisionsService } from './index';
 import validateUUID from 'uuid-validate';
+import { PayloadService } from './payload';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -344,6 +344,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
+		// Set query limit as the number of keys
+		if (Array.isArray(keys) && keys.length > 0 && !queryWithKey.limit) {
+			queryWithKey.limit = keys.length;
+		}
+
 		const results = await this.readByQuery(queryWithKey, opts);
 
 		return results;
@@ -412,6 +417,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						}
 				  )
 				: payload;
+
+		// Sort keys to ensure that the order is maintained
+		keys.sort();
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
@@ -629,6 +637,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				schema: this.schema,
+				knex: this.knex,
 			});
 
 			await authorizationService.checkAccess('delete', this.collection, keys);

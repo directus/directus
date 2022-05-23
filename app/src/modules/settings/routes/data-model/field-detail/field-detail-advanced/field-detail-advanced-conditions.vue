@@ -144,7 +144,7 @@ export default defineComponent({
 		return { repeaterFields, conditions, onInput };
 
 		function onInput(event: Array<any>) {
-			conditions.value = event.map((evt) => {
+			conditions.value = (event ?? []).map((evt) => {
 				const conditionOptions = evt.options ?? {};
 				const defaultValues = unref(optionDefaults);
 				evt.options = { ...defaultValues, ...conditionOptions };
