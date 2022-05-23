@@ -388,7 +388,8 @@ export default defineComponent({
 						...system,
 						...user,
 					};
-					panelsWithData.value = applyDataToPanels(panels.value, response.value);
+
+					panelsWithData.value = applyDataToPanels(panels.value, response.value, panelsWithData.value);
 				}
 				loading.value = false;
 			},
@@ -398,20 +399,7 @@ export default defineComponent({
 		watch(
 			panels,
 			() => {
-				const newPanelsWithData: Panel[] = [];
-				for (const panel of panels.value) {
-					const panelId = 'id_' + panel.id.replaceAll('-', '_');
-
-					if (response.value[panelId]) {
-						const editablePanel = panel;
-
-						editablePanel.data = response.value[panelId];
-						newPanelsWithData.push(editablePanel);
-					} else {
-						newPanelsWithData.push(panel);
-					}
-				}
-				panelsWithData.value = newPanelsWithData;
+				panelsWithData.value = applyDataToPanels(panelsWithData.value, response.value, panelsWithData.value);
 			},
 			{ immediate: true }
 		);
