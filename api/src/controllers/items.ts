@@ -78,12 +78,18 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+	// if modified payload from the hook is a data set, return it as is
+	// otherwise, accept it as a complete payload object
+	if (Array.isArray(result)) {
+		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-	res.locals.payload = {
-		meta: meta,
-		data: result,
-	};
+		res.locals.payload = {
+			meta: meta,
+			data: result,
+		};
+	} else {
+		res.locals.payload = result;
+	}
 
 	return next();
 });
