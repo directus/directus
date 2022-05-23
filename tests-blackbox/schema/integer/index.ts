@@ -152,56 +152,56 @@ export const getValidatorFunction = (filter: ClientFilterOperator): FilterValida
 };
 
 const _eq = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue === possibleValues) {
+	if (Number(inputValue) === possibleValues) {
 		return true;
 	}
 	return false;
 };
 
 const _neq = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue !== possibleValues) {
+	if (Number(inputValue) !== possibleValues) {
 		return true;
 	}
 	return false;
 };
 
 const _lt = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue < possibleValues) {
+	if (Number(inputValue) < possibleValues) {
 		return true;
 	}
 	return false;
 };
 
 const _lte = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue <= possibleValues) {
+	if (Number(inputValue) <= possibleValues) {
 		return true;
 	}
 	return false;
 };
 
 const _gt = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue > possibleValues) {
+	if (Number(inputValue) > possibleValues) {
 		return true;
 	}
 	return false;
 };
 
 const _gte = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue >= possibleValues) {
+	if (Number(inputValue) >= possibleValues) {
 		return true;
 	}
 	return false;
 };
 
 const _between = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue >= possibleValues[0] && inputValue <= possibleValues[1]) {
+	if (Number(inputValue) >= possibleValues[0] && Number(inputValue) <= possibleValues[1]) {
 		return true;
 	}
 	return false;
 };
 
 const _nbetween = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue < possibleValues[0] || inputValue > possibleValues[1]) {
+	if (Number(inputValue) < possibleValues[0] || Number(inputValue) > possibleValues[1]) {
 		return true;
 	}
 	return false;
@@ -222,14 +222,14 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 };
 
 const _in = (inputValue: any, possibleValues: any): boolean => {
-	if (possibleValues.includes(inputValue)) {
+	if (possibleValues.includes(Number(inputValue))) {
 		return true;
 	}
 	return false;
 };
 
 const _nin = (inputValue: any, possibleValues: any): boolean => {
-	if (!possibleValues.includes(inputValue)) {
+	if (!possibleValues.includes(Number(inputValue))) {
 		return true;
 	}
 	return false;
