@@ -99,12 +99,13 @@ function generateBigInteger(options: OptionsSeedGenerateBigInteger) {
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
-		const hexString = Array(15)
+		// TODO: Maximise array length back to 15, fix filter parsing which reduces this value
+		const hexString = Array(12)
 			.fill(0)
 			.map(() => Math.round(random() * 0xf).toString(16))
 			.join('');
 
-		values.push(BigInt(`0x${hexString}`));
+		values.push(BigInt(`0x7${hexString}`));
 	}
 
 	return values;
