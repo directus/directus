@@ -18,8 +18,8 @@ export function getFilterOperatorsForType(
 		case 'csv':
 			return [
 				'contains',
-				'icontains',
 				'ncontains',
+				'icontains',
 				'starts_with',
 				'nstarts_with',
 				'ends_with',
