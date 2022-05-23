@@ -238,7 +238,7 @@ function generateDateTime(options: OptionsSeedGenerateDateTime) {
 	const values = generateTimestamp(options);
 
 	for (let i = 0; i < values.length; i++) {
-		values[i] = values[i].slice(0, -1);
+		values[i] = values[i].slice(0, -5);
 	}
 
 	return values;

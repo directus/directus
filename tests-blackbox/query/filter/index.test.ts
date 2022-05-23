@@ -8,7 +8,6 @@ const sampleSchema = {
 		type: 'integer',
 		filters: true,
 		possibleValues: [1, 2, 3],
-		children: null,
 	},
 	collection: {
 		field: 'collection',
@@ -21,7 +20,6 @@ const sampleSchema = {
 			'directus_collections',
 			'directus_fields',
 		],
-		children: null,
 	},
 	something_id: {
 		field: 'something_id',
@@ -34,7 +32,6 @@ const sampleSchema = {
 				type: 'string',
 				filters: false,
 				possibleValues: ['', 'a', 'b'],
-				children: null,
 			},
 		},
 	},
