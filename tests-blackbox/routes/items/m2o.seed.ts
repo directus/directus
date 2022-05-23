@@ -10,7 +10,8 @@ import {
 	PRIMARY_KEY_TYPES,
 } from '@common/index';
 import { TestsSchema } from '@query/filter';
-import { seedAllTypes, getTestsAllTypesSchema } from './all-types';
+import { seedAllFieldTypes, getTestsAllTypesSchema } from './seed-all-field-types';
+import { seedRelationalFields } from './seed-relational-fields';
 
 export const collectionCountries = 'test_items_m2o_countries';
 export const collectionStates = 'test_items_m2o_states';
@@ -39,6 +40,7 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 			id: {
 				field: 'id',
 				type: pkType,
+				isPrimaryKey: true,
 				filters: true,
 				possibleValues:
 					pkType === 'integer'
@@ -46,14 +48,12 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 						: pkType === 'uuid'
 						? SeedFunctions.generateValues.uuid({ quantity: 2 })
 						: SeedFunctions.generateValues.string({ quantity: 2 }),
-				children: null,
 			},
 			name: {
 				field: 'name',
 				type: 'string',
 				filters: true,
 				possibleValues: ['United States', 'Malaysia'],
-				children: null,
 			},
 			...getTestsAllTypesSchema(),
 		},
@@ -63,6 +63,7 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 		id: {
 			field: 'id',
 			type: pkType,
+			isPrimaryKey: true,
 			filters: false,
 			possibleValues:
 				pkType === 'integer'
@@ -70,14 +71,12 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 					: pkType === 'uuid'
 					? SeedFunctions.generateValues.uuid({ quantity: 4 })
 					: SeedFunctions.generateValues.string({ quantity: 4 }),
-			children: null,
 		},
 		name: {
 			field: 'name',
 			type: 'string',
 			filters: false,
 			possibleValues: ['Washington', 'California', 'Johor', 'Sarawak'],
-			children: null,
 		},
 		country_id: {
 			field: 'country_id',
@@ -90,6 +89,7 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 					? SeedFunctions.generateValues.uuid({ quantity: 2 })
 					: SeedFunctions.generateValues.string({ quantity: 2 }),
 			children: schema[`${collectionCountries}_${pkType}`],
+			relatedCollection: `${collectionCountries}_${pkType}`,
 		},
 	};
 
@@ -97,6 +97,7 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 		id: {
 			field: 'id',
 			type: 'integer',
+			isPrimaryKey: true,
 			filters: false,
 			possibleValues:
 				pkType === 'integer'
@@ -104,7 +105,6 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 					: pkType === 'uuid'
 					? SeedFunctions.generateValues.uuid({ quantity: 8 })
 					: SeedFunctions.generateValues.string({ quantity: 8 }),
-			children: null,
 		},
 		name: {
 			field: 'name',
@@ -120,7 +120,6 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				'Kota Kinabalu',
 				'Sandakan',
 			],
-			children: null,
 		},
 		state_id: {
 			field: 'state_id',
@@ -133,6 +132,7 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 					? SeedFunctions.generateValues.uuid({ quantity: 4 })
 					: SeedFunctions.generateValues.string({ quantity: 4 }),
 			children: schema[`${collectionStates}_${pkType}`],
+			relatedCollection: `${collectionStates}_${pkType}`,
 		},
 	};
 
@@ -295,9 +295,12 @@ export const seedDB = () => {
 						] as City[],
 					});
 
-					await seedAllTypes(vendor, localCollectionCountries, pkType);
-					await seedAllTypes(vendor, localCollectionStates, pkType);
-					await seedAllTypes(vendor, localCollectionCities, pkType);
+					await seedAllFieldTypes(vendor, localCollectionCountries, pkType);
+					await seedAllFieldTypes(vendor, localCollectionStates, pkType);
+					await seedAllFieldTypes(vendor, localCollectionCities, pkType);
+
+					await seedRelationalFields(vendor, localCollectionStates, pkType, schema[localCollectionStates]);
+					await seedRelationalFields(vendor, localCollectionCities, pkType, schema[localCollectionCities]);
 
 					expect(true).toBeTruthy();
 				} catch (error) {

@@ -1,10 +1,12 @@
 import { v5 as uuid } from 'uuid';
-import { sample } from 'lodash';
+import * as seedrandom from 'seedrandom';
 
 const SEED_UUID_NAMESPACE = 'e81a0012-568b-415c-96fa-66508f594067';
+const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
 
 type OptionsSeedGenerateBase = {
 	quantity: number;
+	seed?: string;
 };
 
 export type OptionsSeedGenerateInteger = OptionsSeedGenerateBase & {
@@ -16,18 +18,13 @@ export type OptionsSeedGenerateBigInteger = OptionsSeedGenerateBase;
 export type OptionsSeedGenerateString = OptionsSeedGenerateBase & {
 	startsWith?: string;
 	endsWith?: string;
-	seed?: string;
 };
 
-export type OptionsSeedGenerateUUID = OptionsSeedGenerateBase & {
-	seed?: string;
-};
+export type OptionsSeedGenerateUUID = OptionsSeedGenerateBase;
 
 export type OptionsSeedGenerateBoolean = OptionsSeedGenerateBase;
 
-export type OptionsSeedGenerateCSV = OptionsSeedGenerateBase & {
-	seed?: string;
-};
+export type OptionsSeedGenerateCSV = OptionsSeedGenerateBase;
 
 export type OptionsSeedGenerateDate = OptionsSeedGenerateBase & {
 	startsFrom?: Date | string;
@@ -45,17 +42,11 @@ export type OptionsSeedGenerateFloat = OptionsSeedGenerateBase & {
 	precision?: number;
 };
 
-export type OptionsSeedGenerateGeometry = OptionsSeedGenerateBase & {
-	seed?: string;
-};
+export type OptionsSeedGenerateGeometry = OptionsSeedGenerateBase;
 
-export type OptionsSeedGenerateHash = OptionsSeedGenerateBase & {
-	seed?: string;
-};
+export type OptionsSeedGenerateHash = OptionsSeedGenerateBase;
 
-export type OptionsSeedGenerateJSON = OptionsSeedGenerateBase & {
-	seed?: string;
-};
+export type OptionsSeedGenerateJSON = OptionsSeedGenerateBase;
 
 export type OptionsSeedGenerateTime = OptionsSeedGenerateBase & {
 	startsFrom?: Date | string;
@@ -89,13 +80,14 @@ export const SeedFunctions = {
 };
 
 function generateInteger(options: OptionsSeedGenerateInteger) {
+	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
 		if (options.startsAt) {
 			values.push(options.startsAt + i);
 		} else {
-			values.push(i);
+			values.push(Math.floor(random.int32() / 2) + i);
 		}
 	}
 
@@ -103,12 +95,13 @@ function generateInteger(options: OptionsSeedGenerateInteger) {
 }
 
 function generateBigInteger(options: OptionsSeedGenerateBigInteger) {
+	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
 		const hexString = Array(15)
 			.fill(0)
-			.map(() => Math.round(Math.random() * 0xf).toString(16))
+			.map(() => Math.round(random() * 0xf).toString(16))
 			.join('');
 
 		values.push(BigInt(`0x${hexString}`));
@@ -118,21 +111,20 @@ function generateBigInteger(options: OptionsSeedGenerateBigInteger) {
 }
 
 function generateFloat(options: OptionsSeedGenerateFloat) {
+	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
 		if (options.startsAt && options.endsAt) {
 			values.push(
-				Number(
-					(options.startsAt + Math.random() * (options.endsAt - options.startsAt + 1)).toFixed(options.precision ?? 3)
-				)
+				Number((options.startsAt + random() * (options.endsAt - options.startsAt + 1)).toFixed(options.precision ?? 3))
 			);
 		} else if (options.startsAt) {
-			values.push(Number((options.startsAt + Math.random() * (options.amount ?? 100)).toFixed(options.precision ?? 3)));
+			values.push(Number((options.startsAt + random() * (options.amount ?? 100)).toFixed(options.precision ?? 3)));
 		} else if (options.endsAt) {
-			values.push(Number((options.endsAt - Math.random() * (options.amount ?? 100)).toFixed(options.precision ?? 3)));
+			values.push(Number((options.endsAt - random() * (options.amount ?? 100)).toFixed(options.precision ?? 3)));
 		} else {
-			values.push(Number((Math.random() * (options.amount ?? 100)).toFixed(options.precision ?? 3)));
+			values.push(Number((random() * (options.amount ?? 100)).toFixed(options.precision ?? 3)));
 		}
 	}
 
@@ -147,7 +139,7 @@ function generateString(options: OptionsSeedGenerateString) {
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
-		let value = uuid(String((options.seed ?? '') + i), SEED_UUID_NAMESPACE);
+		let value = uuid(String((options.seed ?? 'default') + i), SEED_UUID_NAMESPACE);
 		if (options.startsWith) {
 			value = options.startsWith + value;
 		}
@@ -164,17 +156,18 @@ function generateUUID(options: OptionsSeedGenerateUUID) {
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
-		values.push(uuid(String((options.seed ?? '') + i), SEED_UUID_NAMESPACE));
+		values.push(uuid(String((options.seed ?? 'default') + i), SEED_UUID_NAMESPACE));
 	}
 
 	return values;
 }
 
 function generateBoolean(options: OptionsSeedGenerateBoolean) {
+	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
-		values.push(sample([true, false]));
+		values.push(random() >= 0.5);
 	}
 
 	// Ensure that there is always true and false values to test on
@@ -190,13 +183,14 @@ function generateCSV(options: OptionsSeedGenerateCSV) {
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
-		values.push(uuid(String((options.seed ?? '') + i), SEED_UUID_NAMESPACE));
+		values.push(uuid(String((options.seed ?? 'default') + i), SEED_UUID_NAMESPACE));
 	}
 
 	return values;
 }
 
 function generateDate(options: OptionsSeedGenerateDate) {
+	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 
 	if (typeof options.startsFrom === 'string') {
@@ -212,7 +206,7 @@ function generateDate(options: OptionsSeedGenerateDate) {
 			values.push(
 				new Date(
 					Math.floor(
-						Math.random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime()
+						random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime()
 					)
 				)
 					.toISOString()
@@ -222,18 +216,18 @@ function generateDate(options: OptionsSeedGenerateDate) {
 	} else if (options.startsFrom) {
 		for (let i = 0; i < options.quantity; i++) {
 			values.push(
-				new Date(Math.floor(Math.random() * 1576800000000 /* 50 years */ + options.startsFrom.getTime()))
+				new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS + options.startsFrom.getTime()))
 					.toISOString()
 					.substring(0, 10)
 			);
 		}
 	} else if (options.endsOn) {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * options.endsOn.getTime())).toISOString().substring(0, 10));
+			values.push(new Date(Math.floor(random() * options.endsOn.getTime())).toISOString().substring(0, 10));
 		}
 	} else {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * new Date().getTime())).toISOString().substring(0, 10));
+			values.push(new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS)).toISOString().substring(0, 10));
 		}
 	}
 
@@ -251,6 +245,7 @@ function generateDateTime(options: OptionsSeedGenerateDateTime) {
 }
 
 function generateTime(options: OptionsSeedGenerateTime) {
+	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 	let timeStart = options.startsFrom;
 	let timeEnd = options.endsOn;
@@ -266,7 +261,7 @@ function generateTime(options: OptionsSeedGenerateTime) {
 	if (timeStart && timeEnd) {
 		for (let i = 0; i < options.quantity; i++) {
 			values.push(
-				new Date(Math.floor(Math.random() * (timeEnd.getTime() - timeStart.getTime() + 1) + timeStart.getTime()))
+				new Date(Math.floor(random() * (timeEnd.getTime() - timeStart.getTime() + 1) + timeStart.getTime()))
 					.toISOString()
 					.slice(11, 19)
 			);
@@ -274,18 +269,18 @@ function generateTime(options: OptionsSeedGenerateTime) {
 	} else if (timeStart) {
 		for (let i = 0; i < options.quantity; i++) {
 			values.push(
-				new Date(Math.floor(Math.random() * (86400000 /* 24h */ - timeStart.getTime()) + timeStart.getTime()))
+				new Date(Math.floor(random() * (86400000 /* 24h */ - timeStart.getTime()) + timeStart.getTime()))
 					.toISOString()
 					.slice(11, 19)
 			);
 		}
 	} else if (timeEnd) {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * timeEnd.getTime())).toISOString().slice(11, 19));
+			values.push(new Date(Math.floor(random() * timeEnd.getTime())).toISOString().slice(11, 19));
 		}
 	} else {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * new Date().getTime())).toISOString().slice(11, 19));
+			values.push(new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS)).toISOString().slice(11, 19));
 		}
 	}
 
@@ -293,6 +288,7 @@ function generateTime(options: OptionsSeedGenerateTime) {
 }
 
 function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
+	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 
 	if (options.startsFrom && options.endsOn) {
@@ -300,7 +296,7 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 			values.push(
 				new Date(
 					Math.floor(
-						Math.random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime()
+						random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime()
 					)
 				).toISOString()
 			);
@@ -308,16 +304,16 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 	} else if (options.startsFrom) {
 		for (let i = 0; i < options.quantity; i++) {
 			values.push(
-				new Date(Math.floor(Math.random() * 1576800000000 /* 50 years */ + options.startsFrom.getTime())).toISOString()
+				new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS + options.startsFrom.getTime())).toISOString()
 			);
 		}
 	} else if (options.endsOn) {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * options.endsOn.getTime())).toISOString());
+			values.push(new Date(Math.floor(random() * options.endsOn.getTime())).toISOString());
 		}
 	} else {
 		for (let i = 0; i < options.quantity; i++) {
-			values.push(new Date(Math.floor(Math.random() * new Date().getTime())).toISOString());
+			values.push(new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS)).toISOString());
 		}
 	}
 

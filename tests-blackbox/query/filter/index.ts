@@ -17,9 +17,11 @@ export type TestsFieldSchema = {
 export type TestsCollectionSchema = {
 	field: string;
 	type: string;
+	isPrimaryKey?: boolean;
 	filters: string[] | boolean;
 	possibleValues: any;
-	children: TestsFieldSchema | null;
+	children?: TestsFieldSchema;
+	relatedCollection?: string;
 };
 
 export const CheckQueryFilters = (requestOptions: RequestOptions, fields: TestsFieldSchema) => {

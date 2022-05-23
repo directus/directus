@@ -1,10 +1,6 @@
 import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType } from '@common/index';
 import { TestsFieldSchema } from '@query/filter';
 
-export const collectionCountries = 'test_items_all_field_types';
-export const collectionStates = 'test_items_m2o_states';
-export const collectionCities = 'test_items_m2o_cities';
-
 export function getTestsAllTypesSchema(): TestsFieldSchema {
 	const fieldSchema: TestsFieldSchema = {};
 
@@ -15,14 +11,13 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 			type: key,
 			filters: true,
 			possibleValues: SeedFunctions.generateValues[key as keyof typeof SeedFunctions.generateValues]({ quantity: 2 }),
-			children: null,
 		};
 	}
 
 	return fieldSchema;
 }
 
-export const seedAllTypes = async (vendor: string, collection: string, pkType: PrimaryKeyType) => {
+export const seedAllFieldTypes = async (vendor: string, collection: string, pkType: PrimaryKeyType) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
 
