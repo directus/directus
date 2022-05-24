@@ -113,6 +113,7 @@ export default async function createApp(): Promise<express.Application> {
 						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
 						mediaSrc: ["'self'", 'https://cdn.directus.io'],
 						connectSrc: ["'self'", 'https://*'],
+						defaultSrc: ["'self'"],
 					},
 				},
 				getConfigFromEnv('CONTENT_SECURITY_POLICY_')
