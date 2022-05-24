@@ -463,6 +463,7 @@ created_on: Created On
 creating_collection_info: Name the collection and setup its unique “key” field...
 creating_collection_system: Enable and rename any of these optional fields.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Auto-incremented big integer
 generated_uuid: Generated UUID
 manual_string: Manually entered string
 save_and_create_new: Save and Create New
