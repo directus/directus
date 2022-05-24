@@ -659,6 +659,7 @@ operators:
   nnull: Non è null
   contains: contiene
   ncontains: Non contiene
+  icontains: Contiene (ignora maiuscole/minuscole)
   starts_with: Inizia con
   nstarts_with: Non inizia con
   ends_with: Finisce con

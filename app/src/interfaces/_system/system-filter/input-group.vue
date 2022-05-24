@@ -12,8 +12,8 @@
 		v-else-if="
 			[
 				'_contains',
-				'_icontains',
 				'_ncontains',
+				'_icontains',
 				'_starts_with',
 				'_nstarts_with',
 				'_ends_with',

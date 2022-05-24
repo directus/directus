@@ -78,6 +78,8 @@ create_role: Create Role
 create_user: Create User
 message: Message
 create_translation_string: Create Translation String
+no_translation_string: No Translation Strings
+no_translation_string_copy: There are no translation strings yet.
 translation_string_key_placeholder: Translation string key...
 translation_string_translations_placeholder: Add a new translation
 edit_translation_string: Edit Translation String
@@ -674,8 +676,8 @@ operators:
   null: Is null
   nnull: Isn't null
   contains: Contains
-  icontains: Contains (insensitive)
   ncontains: Doesn't contain
+  icontains: Contains (insensitive)
   starts_with: Starts with
   nstarts_with: Doesn't start with
   ends_with: Ends with

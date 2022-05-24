@@ -70,6 +70,8 @@ create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
 create_translation_string: Utwórz tłumaczenia
+no_translation_string: Brak tłumaczeń
+no_translation_string_copy: Nie ma jeszcze żadnych tłumaczeń.
 translation_string_key_placeholder: Klucz tłumaczenia...
 translation_string_translations_placeholder: Dodaj nowe tłumaczenie
 edit_translation_string: Edytuj tłumaczenia
@@ -658,8 +660,8 @@ operators:
   null: Jest puste
   nnull: Nie jest puste
   contains: Zawiera
-  icontains: Zawiera (niewrażliwe)
   ncontains: Nie zawiera
+  icontains: Zawiera (niewrażliwe)
   starts_with: Zaczyna się od
   nstarts_with: Nie zaczyna się od
   ends_with: Kończy się na
