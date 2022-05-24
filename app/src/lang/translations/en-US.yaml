@@ -1039,7 +1039,6 @@ fields:
     status_archived: Archived
     role: Role
     token: Token
-    token_placeholder: Enter a secure access token...
     provider: Provider
     external_identifier: External Identifier
     last_page: Last Page
@@ -1641,6 +1640,15 @@ interfaces:
     header_color: Header Color
     start_open: Start Open
     start_closed: Start Closed
+  system-token:
+    system-token: Token
+    description: Manage static access token
+    placeholder: Click "Generate Token" to create a new access token
+    generate: Generate Token
+    regenerate: Regenerate Token
+    generate_success_copy: Make sure to backup and copy the token below. For security reasons, you will not be able to view the token again after saving and navigating off this page.
+    remove_token_warning_copy: Token has been cleared. Any applications or scripts using the existing token will no longer be able to access the API.
+    remove_token: Remove Token
 displays:
   translations:
     translations: Translations

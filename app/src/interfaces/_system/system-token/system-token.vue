@@ -1,0 +1,111 @@
+<template>
+	<div class="system-token">
+		<v-notice v-if="isNewTokenGenerated && value" type="info">
+			{{ t('interfaces.system-token.generate_success_copy') }}
+		</v-notice>
+
+		<v-input
+			:model-value="localValue"
+			:type="!isNewTokenGenerated ? 'password' : 'text'"
+			:placeholder="value ? t('value_hashed') : t('interfaces.system-token.placeholder')"
+			:disabled="disabled"
+			readonly
+			:class="{ hashed: value && !localValue }"
+			@update:model-value="emitValue"
+		>
+			<template #append>
+				<v-icon
+					v-tooltip="value ? t('interfaces.system-token.regenerate') : t('interfaces.system-token.generate')"
+					:name="value ? 'refresh' : 'add'"
+					class="regenerate-icon"
+					clickable
+					:disabled="loading"
+					@click="generateToken"
+				/>
+				<v-icon
+					v-tooltip="value && t('interfaces.system-token.remove_token')"
+					:name="value ? 'clear' : 'vpn_key'"
+					:class="{ 'clear-icon': !!value }"
+					:clickable="value"
+					:disabled="loading || !value"
+					@click="emitValue(null)"
+				/>
+			</template>
+		</v-input>
+	</div>
+</template>
+
+<script lang="ts" setup>
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
+
+interface Props {
+	value?: string | null;
+	disabled?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), { value: () => null, disabled: false });
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const localValue = ref<string | null>(null);
+const loading = ref(false);
+const isNewTokenGenerated = ref(false);
+const regexp = new RegExp('^[*]+$');
+
+watch(
+	() => props.value,
+	(newValue) => {
+		if (newValue && regexp.test(newValue)) {
+			localValue.value = null;
+			isNewTokenGenerated.value = false;
+		}
+	},
+	{ immediate: true }
+);
+
+async function generateToken() {
+	loading.value = true;
+
+	try {
+		const response = await api.get('/utils/random/string');
+		emitValue(response.data.data);
+		isNewTokenGenerated.value = true;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
+
+function emitValue(newValue: string | null) {
+	emit('input', newValue);
+	localValue.value = newValue;
+}
+</script>
+
+<style lang="scss" scoped>
+.v-input {
+	--v-input-font-family: var(--family-monospace);
+}
+
+.hashed {
+	--v-input-placeholder-color: var(--primary);
+}
+
+.v-notice {
+	margin-bottom: 12px;
+}
+
+.regenerate-icon {
+	margin-right: 4px;
+}
+
+.clear-icon {
+	--v-icon-color-hover: var(--danger);
+}
+</style>
