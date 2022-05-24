@@ -59,7 +59,7 @@ describe('/items', () => {
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
 					const response = await request(getUrl(vendor))
-						.get(`/items/guests?&filter={"name": {"_neq": "${guests[0].name}"}}`)
+						.get(`/items/guests?filter={"name": {"_neq": "${guests[0].name}"}}`)
 						.set('Authorization', 'Bearer AdminToken')
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
@@ -99,7 +99,7 @@ describe('/items', () => {
 					await seedTable(databases.get(vendor)!, 1, 'guests', guests);
 
 					const response = await request(getUrl(vendor))
-						.get(`/items/guests?&filter={"name": {"_nieq": "${guests[0].name.toUpperCase()}"}}`)
+						.get(`/items/guests?filter={"name": {"_nieq": "${guests[0].name.toUpperCase()}"}}`)
 						.set('Authorization', 'Bearer AdminToken')
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
