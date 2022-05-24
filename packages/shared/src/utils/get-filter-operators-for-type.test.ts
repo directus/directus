@@ -87,8 +87,8 @@ describe('', () => {
 	it('returns the filter operators for binary', () => {
 		expect(getFilterOperatorsForType(TYPES[13])).toStrictEqual([
 			'contains',
-			'icontains',
 			'ncontains',
+			'icontains',
 			'starts_with',
 			'nstarts_with',
 			'ends_with',
