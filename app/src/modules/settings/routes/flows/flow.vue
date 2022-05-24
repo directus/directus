@@ -179,8 +179,8 @@ import { computed, ref } from 'vue';
 import { useFlowsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import useEditsGuard from '@/composables/use-edits-guard';
 import useShortcut from '@/composables/use-shortcut';
-import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { isEmpty, merge, omit, cloneDeep } from 'lodash';
 import { router } from '@/router';
 import { nanoid } from 'nanoid';
@@ -631,31 +631,14 @@ function getNearAttachment(pos: Vector2) {
 
 // ------------- Navigation Guard ------------- //
 
+const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
 const confirmCancel = ref(false);
-const confirmLeave = ref(false);
-const leaveTo = ref<string | null>(null);
-
-const editsGuard: NavigationGuard = (to) => {
-	const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
-
-	if (editMode.value && to.params.primaryKey !== props.primaryKey) {
-		if (hasEdits) {
-			confirmLeave.value = true;
-			leaveTo.value = to.fullPath;
-			return false;
-		} else {
-			editMode.value = false;
-		}
-	}
-};
-
-onBeforeRouteUpdate(editsGuard);
-onBeforeRouteLeave(editsGuard);
 
 function attemptCancelChanges(): void {
-	const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
-
-	if (hasEdits) {
+	if (hasEdits.value) {
 		confirmCancel.value = true;
 	} else {
 		cancelChanges();
