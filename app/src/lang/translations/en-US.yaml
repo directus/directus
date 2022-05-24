@@ -71,6 +71,8 @@ create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 create_translation_string: Create Translation String
+no_translation_string: No Translation Strings
+no_translation_string_copy: There are no translation strings yet.
 translation_string_key_placeholder: Translation string key...
 translation_string_translations_placeholder: Add a new translation
 edit_translation_string: Edit Translation String
