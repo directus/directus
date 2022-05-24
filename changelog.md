@@ -2,6 +2,54 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.11.1 (May 24, 2022)
+
+### :rocket: Improvements
+
+- **API**
+  - [#13518](https://github.com/directus/directus/pull/13518) Don't require default connection params when using non
+    default type (by @rijkvanzanten)
+  - [#13514](https://github.com/directus/directus/pull/13514) Default `default-src` to `"self"` in CSP header (by
+    @rijkvanzanten)
+  - [#13492](https://github.com/directus/directus/pull/13492) Allow floats in number validation (by @rijkvanzanten)
+  - [#13274](https://github.com/directus/directus/pull/13274) Environment variable with \_FILE suffix containing invalid
+    path throws error on start (by @br41nslug)
+- **App**
+  - [#13511](https://github.com/directus/directus/pull/13511) Don't show regex on permissions configuration (by
+    @rijkvanzanten)
+  - [#13501](https://github.com/directus/directus/pull/13501) Add empty state for Translation Strings page (by
+    @azrikahar)
+  - [#13462](https://github.com/directus/directus/pull/13462) Improve dashboard saving experience (by @nickrum)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#13497](https://github.com/directus/directus/pull/13497) Fix applyFilter (by @nickrum)
+  - [#13453](https://github.com/directus/directus/pull/13453) Adds \_none and \_some operators (by @br41nslug)
+  - [#13429](https://github.com/directus/directus/pull/13429) Add cast-timestamp field flag to system tables (by
+    @licitdev)
+  - [#13276](https://github.com/directus/directus/pull/13276) Validate type of items' primary keys (by @licitdev)
+- **App**
+  - [#13479](https://github.com/directus/directus/pull/13479) Allow selecting primary key when aggregating count in time
+    series panel (by @azrikahar)
+  - [#13474](https://github.com/directus/directus/pull/13474) Fix field conditions when null (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#13523](https://github.com/directus/directus/pull/13523) Remove unnecessary ampersand from URLs in filter tests (by
+    @nickrum)
+
+### :memo: Documentation
+
+- [#13494](https://github.com/directus/directus/pull/13494) Docs: Display Templates Page (by @erondpowell)
+- [#13489](https://github.com/directus/directus/pull/13489) how to work with nested data (by @erondpowell)
+- [#13486](https://github.com/directus/directus/pull/13486) docs: clarified data, schema, and permissions caching (by
+  @erondpowell)
+- [#13445](https://github.com/directus/directus/pull/13445) no composite key support warning added (by @erondpowell)
+- [#13424](https://github.com/directus/directus/pull/13424) Docs: re-edited user-directory + users-roles-permissions (by
+  @erondpowell)
+
 ## v9.11.0 (May 19, 2022)
 
 ### :sparkles: New Features
