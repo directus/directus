@@ -321,6 +321,7 @@ function useDragDrop() {
 	border: 1px solid var(--border-subdued);
 	box-shadow: 0 0 0 1px var(--border-subdued);
 	z-index: 1;
+	transition: border var(--fast) var(--transition);
 
 	&:hover {
 		z-index: 3;
