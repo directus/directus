@@ -886,6 +886,15 @@ directus_collection:
   directus_panels: Jednotlivé panely uvnitř nástěnek
   directus_permissions: Přístupová práva pro každou roli
   directus_notifications: Oznámení zaslaná uživatelům
+  directus_presets: Předvolby pro výchozí nastavení kolekce a záložky
+  directus_relations: Konfigurace vztahů a metadata
+  directus_revisions: Snímky dat pro všechny aktivity
+  directus_roles: Skupiny oprávnění pro systémové uživatele
+  directus_sessions: Informace o uživatelské relaci
+  directus_settings: Možnosti konfigurace projektu
+  directus_shares: Sleduje externě sdílené položky
+  directus_users: Systémoví uživatelé pro platformu
+  directus_webhooks: Konfigurace HTTP požadavků založených na událostech
 fields:
   directus_activity:
     item: Primární klíč položky
@@ -905,6 +914,7 @@ fields:
     display_template: Šablona zobrazení
     hidden: Skryté
     singleton: Objekt
+    translations: Překlady pojmenování kolekcí
     sort_field: Pole řazení
   directus_files:
     $thumbnail: Náhled
@@ -1048,6 +1058,7 @@ field_options:
     basemaps_style: Styl Mapboxu
     overrides_divider_title: Přepisy aplikace
   directus_activity:
+    login: Přihlášení
     create: Vytořit
     update: Úpravy
   directus_collections:
@@ -1058,11 +1069,21 @@ field_options:
     collection_name: Název kolekce
     archive_divider: Archivovat
     sort_divider: Seřadit
+  directus_files:
+    filename_disk: Název na diskovém úložišti...
+    filename_download: Název při stahování...
   directus_roles:
+    name: Jedinečný název této role...
+    description: Popis této role...
+    ip_access: Přidejte povolené IP adresy, ponechte prázdné pro povolení všech...
     fields:
       icon_name: Ikona
       name_name: Jméno
+      name_placeholder: Zadejte název...
+      link_name: Odkaz
+      link_placeholder: Relativní nebo absolutní URL...
     collections_name: Kategorie
+    collections_addLabel: Přidat kolekci...
   directus_users:
     preferences_divider: Nastavení uživatele
     dropdown_auto: Automaticky (použít dle systému)
@@ -1074,6 +1095,7 @@ field_options:
     status_dropdown_active: Aktivní
     status_dropdown_suspended: Pozastaveno
     status_dropdown_archived: Archivováno
+    token: Zadejte bezpečný přístupový token...
   directus_webhooks:
     status_options_active: Aktivní
     status_options_inactive: Neaktivní
@@ -1081,9 +1103,16 @@ field_options:
     triggers_divider: Spouštěče
     actions_create: Vytořit
     actions_update: Úpravy
+    actions_delete: Smazat
+    actions_login: Přihlášení
     headers:
       header: Hlavička
       value: Hodnota
+      add: Přidat hlavičku
+no_fields_in_collection: 'V "{collection}" zatím nejsou žádná pole'
+no_value: Žádná hodnota
+do_nothing: Nedělat nic
+generate_and_save_uuid: Vygenerovat a uložit UUID
 save_current_user_id: Uložit aktuální ID uživatele
 save_current_user_role: Uložit aktuální uživatelskou roli
 save_current_datetime: Uložit aktuální datum/čas
