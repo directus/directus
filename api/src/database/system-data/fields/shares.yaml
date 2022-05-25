@@ -51,7 +51,9 @@ fields:
     readonly: true
 
   - field: date_created
-    special: date-created
+    special:
+      - date-created
+      - cast-timestamp
     width: half
     readonly: true
     conditions:

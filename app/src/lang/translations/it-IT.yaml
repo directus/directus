@@ -659,6 +659,7 @@ operators:
   nnull: Non è null
   contains: contiene
   ncontains: Non contiene
+  icontains: Contiene (ignora maiuscole/minuscole)
   starts_with: Inizia con
   nstarts_with: Non inizia con
   ends_with: Finisce con
@@ -1327,7 +1328,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
