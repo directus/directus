@@ -106,7 +106,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		appStore.hydrating = false;
 		if (appStore.authenticated === true) {
 			await hydrate();
-			if (userStore.currentUser && to.fullPath === '/tfa-setup') {
+			if (userStore.currentUser && to.fullPath === '/tfa-setup' && !('share' in userStore.currentUser)) {
 				if (userStore.currentUser.tfa_secret === null) {
 					userStore.currentUser.theme = 'light';
 				} else {
@@ -123,7 +123,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 	}
 
-	if (to.meta?.public !== true && userStore.currentUser) {
+	if (to.meta?.public !== true && userStore.currentUser && !('share' in userStore.currentUser)) {
 		if (to.fullPath !== '/tfa-setup') {
 			if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
 				userStore.currentUser.theme = 'light';

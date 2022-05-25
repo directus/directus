@@ -58,17 +58,17 @@ export default defineComponent({
 		);
 
 		watch(
-			() => userStore.currentUser?.theme,
-			(theme) => {
+			() => userStore.currentUser,
+			(newUser) => {
 				document.body.classList.remove('dark');
 				document.body.classList.remove('light');
 				document.body.classList.remove('auto');
 
-				if (theme) {
-					document.body.classList.add(theme);
+				if (newUser && !('share' in newUser) && newUser.theme) {
+					document.body.classList.add(newUser.theme);
 					document
 						.querySelector('head meta[name="theme-color"]')
-						?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');
+						?.setAttribute('content', newUser.theme === 'light' ? '#ffffff' : '#263238');
 				} else {
 					// Default to auto mode
 					document.body.classList.add('auto');
