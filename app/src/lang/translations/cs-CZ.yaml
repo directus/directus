@@ -21,16 +21,19 @@
 #'Proxy', 'Intl'
 identifier: Identifikátor
 avatar: Avatar
+application: Aplikace
 default_provider: Výchozí
 published: Zveřejněno
 draft: Návrh
 archived: Archivováno
 modules: Moduly
 module_bar: Panel modulů
+reset_width: Obnovit šířku
 tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 maps: Mapy
+switch_user: Přepnout uživatele
 item_creation: Vytvoření položky
 item_revision: Revize položky
 enter_a_name: Zadejte název...
@@ -38,6 +41,7 @@ duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
 group: Skupina
+export_items: Exportovat položky
 and: A
 or: Nebo
 fill_width: Plná šířka
@@ -52,7 +56,9 @@ edit_collection: Upravit kolekci
 exclusive: Exkluzivní
 children: Potomci
 db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení'
+show_active_items: Zobrazit aktivní položky
 show_archived_items: Zobrazit archivované položky
+show_all_items: Zobrazit všechny položky
 edited: Hodnota upravena
 required: Povinné
 required_for_app_access: Vyžadováno pro přístup k aplikacím
@@ -63,6 +69,14 @@ create_role: Vytvořit roli
 create_user: Vytvořit uživatele
 delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
+create_translation_string: Vytvořit překlad
+no_translation_string: Žádné překlady
+no_translation_string_copy: Zatím neexistují žádné překlady.
+translation_string_key_placeholder: Textový klíč k překladu...
+translation_string_translations_placeholder: Přidat nový překlad
+edit_translation_string: Upravit překlad
+delete_translation_string_copy: >-
+  Opravdu chcete odstranit překlad "{key}"? Tuto akci nelze vrátit zpět.
 invite_users: Pozvat uživatele
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
@@ -83,6 +97,9 @@ update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
 delete_bookmark_copy: >-
   Jste si jisti, že chcete odstranit záložku "{bookmark}"? Tuto akci nelze vrátit zpět.
+delete_personal_bookmark: Smazat osobní záložku
+delete_role_bookmark: Smazat záložku role
+delete_global_bookmark: Smazat globální záložku
 logoutReason:
   SIGN_OUT: Odhlášen
   SESSION_EXPIRED: Relace vypršela
@@ -107,6 +124,7 @@ recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu
 unarchive_confirm: Skutečně chcete tuto položku obnovit z archivu?
 nested_files_folders_will_be_moved: Vnořené soubory a složky budou přesunuty o úroveň výše.
+validation_errors_notice: 'Následující pole mají neplatné hodnoty:'
 validationError:
   eq: Hodnota musí být {valid}
   neq: Hodnota nemůže být {invalid}
@@ -134,16 +152,21 @@ allow_multiple: Povolit více
 allow_multiple_to_be_open: Povolit více otevřených
 enter_value_to_replace_nulls: Zadejte novou hodnotu, která nahradí všechny NULL, které jsou aktuálně v tomto poli.
 field_standard: Standardní
+field_file: Jeden soubor
+field_files: Více souborů
 field_m2o: M2O vazba
 field_m2a: M2A vazba
 field_o2m: O2M vazba
 field_m2m: M2M vazba
+field_translations: Překlady
+field_group: Skupina polí
 item_permissions: Oprávnění položky
 field_permissions: Oprávnění pole
 field_validation: Validace pole
 field_presets: Předvolby polí
 permissions_for_role: 'Položky, které {role} role může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
+hide_field: Skrýt pole
 hide_field_on_detail: Skrýt pole v detailu
 show_field_on_detail: Zobrazit pole v detailu
 delete_field: Smazat pole
@@ -152,10 +175,22 @@ field_create_success: 'Vytvořeno pole: "{field}"'
 field_update_success: 'Aktualizováno pole: "{field}"'
 duplicate_where_to: Kam chcete zkopírovat toto pole?
 language: Jazyk
+language_placeholder: Vyberte jazyk...
 global: Globální
 admins_have_all_permissions: Administrátoři mají všechna oprávnění
 camera: Fotoaparát
+show_zero: Zobrazit nulu
+create_in_advanced_field_creation_mode: Vytvořit pole v pokročilém režimu
+continue_in_advanced_field_creation_mode: Pokračovat v pokročilém režimu tvorby polí
+validation: Validace
+sum: Součet
+sum_distinct: Součet jedinečných
+avg: Průměr
+avg_distinct: Průměr jedinečných
 count: Počet
+count_distinct: Počet jedinečných
+min: Min
+max: Max
 exposure: Expozice
 shutter: Závěrka
 iso: ISO
@@ -170,11 +205,37 @@ hidden_on_detail: Skryté v detailu
 disabled_editing_value: Zakázat úpravy hodnoty
 key: Klíč
 alias: Alias
+bigInteger: Velké celé číslo
+boolean: Logická hodnota
 date: Datum
+date_range: Časový rozsah
+datetime: Datum a čas
+dateTime: Datum a čas
+precision: Přesnost
+decimal: Desetinná
+float: Plovoucí
+integer: Celé číslo
+json: JSON
+xml: XML
 string: Text
 text: Text
+time: Čas
+timestamp: Časové razítko
+uuid: UUID
+hash: Hash
+geometry.Point: Bod
+geometry.Polygon: Mnohoúhelník
+geometry.MultiPoint: Více bodů
+not_available_for_type: Pro tento typ není k dispozici
+create_translations: Vytvořit překlady
+auto_refresh: Automatické obnovení
+refresh_interval: Interval obnovení
+no_refresh: Neobnovovat
 refresh_interval_seconds: Obnovit okamžitě | Každou sekundu | Každých {seconds} sekund
+refresh_interval_minutes: Každou minutu | Každých {minutes} minut
 auto_generate: Auto-generování
+this_will_auto_setup_fields_relations: Toto automaticky nastaví všechna povinná pole a vztahy.
+search_collection: Vyhledat v kolekci...
 new_field: 'Nové pole'
 add_note: Přidat užitečnou poznámku pro uživatele...
 default_value: Výchozí hodnota
@@ -184,18 +245,61 @@ length: Délka
 readonly: Pouze pro čtení
 unique: Unikátní
 primary_key: Primární klíč
+finish_setup: Dokončit nastavení
+dismiss: Odmítnout
+clear_value: Vymazat hodnotu
+clear_changes: Vymazat změny
+reset_to_default: Obnovit výchozí
+undo_changes: Vrátit změny
 notifications: Notifikace
+show_all_activity: Zobrazit všechnu aktivitu
 page_not_found: Stránka nenalezena
 page_not_found_body: Hledaná stránka nebyla nalezena.
+confirm_revert: Potvrdit vrácení
+confirm_revert_body: Toto vrátí položku do vybraného stavu.
+display: Zobrazení
+settings_update_success: Nastavení aktualizováno
 title: Název
+revision_delta_created: Vytvořena
+revision_delta_created_externally: Vytvořena externě
+revision_delta_updated: 'Aktualizováno 1 pole | Aktualizováno {count} polí'
+revision_delta_deleted: Odstraněna
+revision_delta_reverted: Vrácena
+revision_delta_other: Revize
+revision_delta_by: '{date} od {user}'
+presentation_text_values_cannot_be_reimported: "Používá text prezentace, hodnoty nelze znovu importovat."
+download_page_as_csv: 'Stáhnout stránku jako CSV'
+private_user: Soukromý uživatel
+creation_preview: Náhled vytvoření
+revision_preview: Náhled revize
+updates_made: Vytvořené aktualizace
 leave_comment: Napsat komentář...
+post_comment_success: Komentář zveřejněn
+post_comment_updated: Komentář aktualizován
+item_create_success: Položka vytvořena | Položky vytvořeny
+item_update_success: Položka aktualizována | Položky aktualizovány
+item_delete_success: Položka smazána | Položky odstraněny
 this_collection: Tato kategorie
 related_collection: Související kategorie
+related_collections: Související kolekce
+translations_collection: Kolekce překladů
+languages_collection: Kolekce jazyků
+import_data_input_placeholder: CSV nebo JSON...
+import_data_button: Zahájit import
+import_data_indeterminate: Importuji data...
+import_data_success: Data byla úspěšně importována z {filename}
+import_data_error: Struktura dat tohoto souboru neodpovídá kolekci.
+label_import: Importovat
+label_export: Exportovat
+import_export: Import / Export
 format: Formát
+last_page: Poslední stránka
 submit: Potvrdit
 move_to_folder: Přesunout do složky
 functions:
   count: Počet
+minutes: Minut
+hours: Hodin
 months:
   january: Leden
   february: Únor
@@ -209,22 +313,67 @@ months:
   october: Říjen
   november: Listopad
   december: Prosinec
+created: Vytvořena
 modified: Upraveno
 checksum: Kontrolní součet
 owner: Vlastník
+edited_by: Upravil/a
 folder: Složka
+zoom: Přiblížení
 download: Stáhnout
+open: Otevřít
+open_in_new_window: Otevřít v novém okně
+open_folder: Otevřít složku "{folder}"
+foreground_color: Barva popředí
+background_color: Barva pozadí
+upload_from_device: Nahrát soubor ze zařízení
+choose_from_library: Vybrat soubor z knihovny
+import_from_url: Importovat soubor z URL
+replace_from_device: Nahradit soubor ze zařízení
+replace_from_library: Nahradit soubor z knihovny
+replace_from_url: Nahradit soubor z URL
+no_file_selected: Nebyl vybrán žádný soubor
 download_file: Stáhnout soubor
+open_file_in_tab: Otevřít soubor v nové kartě
+start_export: Zahájit export
+not_available_for_local_downloads: Není k dispozici pro lokální stahování
+collection_key: Klíč kolekce
 name: Jméno
+primary_key_field: Pole primárního klíče
 type: Typ
+creating_new_collection: Vytváření nové kolekce
 created_by: Vytvořil/-a
 created_on: Vytvořeno
+creating_collection_info: Pojmenujte kolekci a nastavte její unikátní pole "klíč"...
+auto_increment_integer: Automaticky zvýšené celé číslo
+auto_increment_big_integer: Automaticky zvýšené velké celé číslo
+generated_uuid: Generované UUID
+manual_string: Ručně zadaný řetězec
+save_and_create_new: Uložit a vytvořit nový
 save_and_stay: Uložit a zůstat
 save_as_copy: Uložit jako kopii
+add_existing: Přidat existující
+creating_items: Vytváření položek
+enable_create_button: Povolit tlačítko Vytvořit
+selecting_items: Výběr položek
+enable_select_button: Povolit tlačítko Vybrat
 comments: Komentáře
 no_comments: Zatím bez komentářů
+click_to_expand: Kliknutím rozbalíte
+select_item: Vybrat položku
+no_items: Žádné položky
+search_items: Hledat položky...
+disabled: Zakázáno
+information: Informace
+report_bug: Nahlásit chybu
 request_feature: Požadavek na funkci
+interface_not_found: 'Rozhraní "{interface}" nenalezeno.'
+reset_interface: Resetovat rozhraní
+display_not_found: 'Zobrazení "{display}" nenalezeno.'
+reset_display: Obnovit zobrazení
+list-m2a: Stavitel (M2A)
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
+no_items_copy: V této kolekci zatím nejsou žádné položky.
 create_collection: Vytvořit kategorii
 copy: Kopírovat
 users: Uživatelé
@@ -240,9 +389,58 @@ duration: Trvání
 modified_on: Upraveno
 status: Stav
 remove: Odebrat
+toggle_manual_sorting: Přepnout ruční řazení
+bookmark_doesnt_exist: Záložka neexistuje
+bookmark_doesnt_exist_copy: Záložka, kterou se snažíte otevřít, nebyla nalezena.
+bookmark_doesnt_exist_cta: Návrat do kolekce
+select_an_item: Vyberte položku...
+edit: Upravit
+enabled: Povoleno
+disable_tfa: Zakázat 2FA
+tfa_scan_code: Naskenujte kód ve vaší ověřovací aplikaci pro dokončení nastavení 2FA
+enter_otp_to_disable_tfa: Zadejte OTP pro vypnutí 2FA
+create_account: Vytvořit účet
+account_created_successfully: Účet byl úspěšně vytvořen
+auto_fill: Automatické vyplnění
+corresponding_field: Odpovídající pole
 errors:
+  COLLECTION_NOT_FOUND: "Kolekce neexistuje"
+  FIELD_NOT_FOUND: Pole nenalezeno
+  FORBIDDEN: Zakázáno
+  INVALID_CREDENTIALS: Nesprávné uživatelské jméno nebo heslo
+  INVALID_OTP: Nesprávné jednorázové heslo
+  INVALID_PROVIDER: Uživatel patří k jinému poskytovateli ověření
+  INVALID_QUERY: Neplatný dotaz
+  INVALID_USER: Ověření uživatele se nezdařilo
+  ITEM_LIMIT_REACHED: Dosažen limit položek
+  ITEM_NOT_FOUND: Položka nebyla nalezena
+  ROUTE_NOT_FOUND: Nenalezeno
+  RECORD_NOT_UNIQUE: Zjištěna duplicitní hodnota
+  USER_SUSPENDED: Uživatel pozastaven
+  CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
+  UNPROCESSABLE_ENTITY: Nezpracovatelná entita
+  INTERNAL_SERVER_ERROR: Neočekávaná chyba
   NOT_NULL_VIOLATION: Hodnota nesmí být null
+  ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je příliš velký pro náhled
+  VALUE_TOO_LONG: Hodnota je příliš dlouhá
+  VALUE_OUT_OF_RANGE: Hodnota je mimo rozsah
+  INVALID_FOREIGN_KEY: Neplatný cizí klíč
+  UNKNOWN: Neočekávaná chyba
+security: Zabezpečení
+value_hashed: Hodnota bezpečně hashována
+bookmark_name: Název záložky...
+create_bookmark: Vytvořit záložku
+edit_bookmark: Upravit záložku
+edit_personal_bookmark: Upravit osobní záložku
+edit_role_bookmark: Upravit záložku role
+edit_global_bookmark: Upravit globální záložku
+cannot_edit_role_bookmarks: Záložky role nelze upravit
+cannot_edit_global_bookmarks: Globální záložky nelze upravit
 bookmarks: Záložky
+presets: Předvolby
+unexpected_error: Neočekávaná chyba
+unexpected_error_copy: Došlo k neočekávané chybě. Opakujte akci později.
+copy_details: Kopírovat podrobnosti
 back: Zpět
 all_users: Všichni uživatelé
 icon_left: Ikona vlevo
@@ -250,22 +448,58 @@ color: Barva
 advanced_filter: Rozšířený filtr
 delete_advanced_filter: Smazat filtr
 operators:
+  eq: Rovná se
+  neq: Není rovno
   lt: Méně než
   gt: Větší než
   lte: Méně nebo rovno než
   gte: Větší nebo rovno než
+  in: Je jeden z
+  nin: Není jeden z
+  null: Je null
+  nnull: Není null
   contains: Obsahuje
   ncontains: Neobsahuje
+  icontains: Obsahuje (necitlivé)
+  starts_with: Začíná na
+  nstarts_with: Nezačíná na
+  ends_with: Končí na
+  nends_with: Nekončí na
+  between: Je mezi
+  nbetween: Není mezi
   empty: Je prázné
+  nempty: Není prázdná
+  all: Obsahuje tyto klíče
+  has: Obsahuje některé z těchto klíčů
+  intersects: Protíná
+  nintersects: Neprotíná
+  intersects_bbox: Protíná ohraničovací pole
+  nintersects_bbox: Neprotíná ohraničovací pole
+  regex: Shoduje se s RegExp
+custom_validation_message: Vlastní validační zpráva
 loading: Nahrávám...
+drop_to_upload: Přetáhněte pro nahrání
+item: Položka
+items: Položky
 upload_file: Nahrát soubor
 upload_file_indeterminate: Nahrávám soubor...
 upload_file_success: Soubor nahrán
 upload_files_indeterminate: 'Nahrávám soubory {done}/{total}'
 upload_files_success: 'Nahráno {count} souborů'
+upload_pending: Čeká na nahrání
 drag_file_here: Přetáhněte sem soubor
+click_to_browse: Klikněte pro procházení
+interface_options: Možnosti rozhraní
 layout_options: Možnosti rozvržení
+rows: Řádky
+columns: Sloupce
+collection_setup: Nastavení kolekce
+optional_system_fields: Volitelná systémová pole
 value_unique: Hodnota musí být unikátní
+all_activity: Všechna aktivita
+create_item: Vytvořit položku
+display_template: Šablona zobrazení
+language_display_template: Šablona zobrazení jazyka
 all_files: Všechny soubory
 my_files: Mé soubory
 recent_files: Nedávné soubory
@@ -284,6 +518,8 @@ select_fields: Vybrat pole
 width: Šířka
 height: Výška
 wysiwyg_options:
+  forecolor: Barva popředí
+  backcolor: Barva pozadí
   copy: Kopírovat
   cut: Vyjmout
   paste: Vložit
@@ -303,6 +539,7 @@ unsaved_changes: Neuložené změny
 unsaved_changes_copy: Jste si jisti, že chcete opustit tuto stránku?
 discard_changes: Ano, odejít bez uložení
 keep_editing: Ne, vrátit se k úpravám
+page_help_settings_project: "**Nastavení projektu** – Možnosti globální konfigurace vašeho projektu."
 add_new: Přidat nový
 all: Vše
 batch_delete_confirm: >-
@@ -325,6 +562,7 @@ fields:
     icon: Ikona
     note: Poznámka
     color: Barva
+    display_template: Šablona zobrazení
     hidden: Skryté
   directus_files:
     title: Název
@@ -358,9 +596,17 @@ fields:
     theme: Téma
     tfa_secret: Dvoufázové ověření
     status: Stav
+    status_invited: Pozván/a
     role: Role
+    last_page: Poslední stránka
   directus_settings:
     project_name: Název projektu
+    project_descriptor: Popis projektu
+    project_url: URL projektu
+    project_color: Barva projektu
+    project_logo: Logo projektu
+    public_foreground: Veřejné popředí
+    public_note: Veřejná poznámka
     module_bar: Panel modulů
   directus_shares:
     name: Jméno
@@ -379,10 +625,16 @@ fields:
     value: Hodnota
     collections: Kategorie
 field_options:
+  directus_settings:
+    project_name_placeholder: Můj projekt...
+    project_color_note: Pozadí přihlášení a loga
+    project_logo_note: Bílé 40x40 SVG/PNG
+    security_divider_title: Zabezpečení
   directus_activity:
     create: Vytořit
     update: Úpravy
   directus_collections:
+    collection_setup: Nastavení kolekce
     language: Jazyk
     translation: Překlad
     archive_divider: Archivovat
@@ -391,6 +643,8 @@ field_options:
       icon_name: Ikona
       name_name: Jméno
     collections_name: Kategorie
+  directus_users:
+    status_dropdown_invited: Pozván/a
   directus_webhooks:
     actions_create: Vytořit
     actions_update: Úpravy
@@ -438,6 +692,7 @@ something_went_wrong: Něco se pokazilo.
 sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
+view_project: Zobrazit projekt
 interfaces:
   filter:
     all: Vše
@@ -449,21 +704,42 @@ interfaces:
     collections: Kategorie
   select-color:
     color: Barva
+  system-display-template:
+    display-template: Šablona zobrazení
   file:
     file: Soubor
     description: Vyberte nebo nahrajte soubor
   files:
     files: Soubory
     description: Vyberte nebo nahrajte soubory
+  input-hash:
+    hash: Hash
+    masked_label: Skrýt skutečné hodnoty
   select-icon:
     icon: Ikona
+  select-dropdown-m2o:
+    display_template: Šablona zobrazení
+  input-rich-text-md:
+    edit: Upravit
+  map:
+    zoom: Přiblížení
   system-folder:
     folder: Složka
   tags:
     tags: Štítky
+  input:
+    trim: Oříznout
+  boolean:
+    label_default: Povoleno
+  translations:
+    display_template: Šablona zobrazení
   user:
     user: Uživatel
+  group-detail:
+    header_color: Barva záhlaví
 displays:
+  boolean:
+    boolean: Logická hodnota
   collection:
     collection: Kategorie
   color:
@@ -484,6 +760,8 @@ displays:
     text: Text
   icon:
     icon: Ikona
+  labels:
+    default_foreground: Výchozí popředí
   user:
     user: Uživatel
     avatar: Avatar
