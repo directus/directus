@@ -454,6 +454,7 @@ created_on: Stworzony dnia
 creating_collection_info: Nazwij kolekcję i ustaw jego unikalne pole "klucz"...
 creating_collection_system: Włącz i zmień nazwę każdego z tych opcjonalnych pól.
 auto_increment_integer: Automatycznie zwiększana liczba całkowita
+auto_increment_big_integer: Automatycznie zwiększana duża liczba całkowita
 generated_uuid: Wygenerowane UUID
 manual_string: Wprowadzony ręcznie ciąg znaków
 save_and_create_new: Zapisz i utwórz nowy
@@ -1330,6 +1331,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
