@@ -71,6 +71,8 @@ create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 create_translation_string: Create Translation String
+no_translation_string: No Translation Strings
+no_translation_string_copy: There are no translation strings yet.
 translation_string_key_placeholder: Translation string key...
 translation_string_translations_placeholder: Add a new translation
 edit_translation_string: Edit Translation String
@@ -461,6 +463,7 @@ created_on: Created On
 creating_collection_info: Name the collection and setup its unique “key” field...
 creating_collection_system: Enable and rename any of these optional fields.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Auto-incremented big integer
 generated_uuid: Generated UUID
 manual_string: Manually entered string
 save_and_create_new: Save and Create New
@@ -669,8 +672,8 @@ operators:
   null: Is null
   nnull: Isn't null
   contains: Contains
-  icontains: Contains (insensitive)
   ncontains: Doesn't contain
+  icontains: Contains (insensitive)
   starts_with: Starts with
   nstarts_with: Doesn't start with
   ends_with: Ends with

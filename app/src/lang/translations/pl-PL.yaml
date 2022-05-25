@@ -70,6 +70,8 @@ create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
 create_translation_string: Utwórz tłumaczenia
+no_translation_string: Brak tłumaczeń
+no_translation_string_copy: Nie ma jeszcze żadnych tłumaczeń.
 translation_string_key_placeholder: Klucz tłumaczenia...
 translation_string_translations_placeholder: Dodaj nowe tłumaczenie
 edit_translation_string: Edytuj tłumaczenia
@@ -452,6 +454,7 @@ created_on: Stworzony dnia
 creating_collection_info: Nazwij kolekcję i ustaw jego unikalne pole "klucz"...
 creating_collection_system: Włącz i zmień nazwę każdego z tych opcjonalnych pól.
 auto_increment_integer: Automatycznie zwiększana liczba całkowita
+auto_increment_big_integer: Automatycznie zwiększana duża liczba całkowita
 generated_uuid: Wygenerowane UUID
 manual_string: Wprowadzony ręcznie ciąg znaków
 save_and_create_new: Zapisz i utwórz nowy
@@ -658,8 +661,8 @@ operators:
   null: Jest puste
   nnull: Nie jest puste
   contains: Zawiera
-  icontains: Zawiera (niewrażliwe)
   ncontains: Nie zawiera
+  icontains: Zawiera (niewrażliwe)
   starts_with: Zaczyna się od
   nstarts_with: Nie zaczyna się od
   ends_with: Kończy się na

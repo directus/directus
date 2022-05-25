@@ -1,14 +1,14 @@
-import { Aggregate, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
+import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { getHelpers } from '../../database/helpers';
-import { InvalidQueryException } from '../../exceptions/invalid-query';
-import { getColumn } from '../get-column';
-import { getColumnPath } from '../get-column-path';
-import { getRelationInfo } from '../get-relation-info';
-import operators from './operators';
+import { getHelpers } from '../database/helpers';
+import { InvalidQueryException } from '../exceptions/invalid-query';
+import { getColumn } from './get-column';
+import { getColumnPath } from './get-column-path';
+import { getRelationInfo } from './get-relation-info';
+import { getOutputTypeForFunction } from '@directus/shared/utils';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -284,10 +284,6 @@ export function applyFilter(
 
 	return rootQuery;
 
-	function isNegativeOperator(operator: string) {
-		return operator.indexOf('_n') === 0;
-	}
-
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
@@ -315,58 +311,6 @@ export function applyFilter(
 					rootQuery,
 					aliasMap,
 				});
-			}
-		}
-	}
-
-	function subQueryBuilderSingle(relation: Relation, value: any) {
-		return function (subQueryKnex: Knex.QueryBuilder<any, any>) {
-			const field = relation!.field;
-			const collection = relation!.collection;
-			const column = `${collection}.${field}`;
-
-			subQueryKnex.from(collection).whereRaw(`${field} = ${column}`);
-
-			applyQuery(
-				knex,
-				relation!.collection,
-				subQueryKnex,
-				{
-					filter: value,
-				},
-				schema,
-				true
-			);
-		};
-	}
-
-	function subQueryBuilderMultiple(relation: Relation, filter: Filter) {
-		return (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-			const field = relation!.field;
-			const collection = relation!.collection;
-			const column = `${collection}.${field}`;
-
-			// specifically used for o2m, m2m subqueries
-			subQueryKnex
-				.select({ [field]: column })
-				.from(collection)
-				.whereNotNull(column);
-
-			applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
-		};
-	}
-
-	function inverseFilters(value: any) {
-		for (const field in value) {
-			for (const operator in value[field]) {
-				let inverseOperator = operator;
-				if (isNegativeOperator(operator)) {
-					inverseOperator = '_' + operator.substring(2);
-				} else {
-					inverseOperator = '_n' + operator.substring(1);
-				}
-				value[field][inverseOperator] = value[field][operator];
-				delete value[field][operator];
 			}
 		}
 	}
@@ -410,7 +354,9 @@ export function applyFilter(
 			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
 				if (filterPath.length > 1) {
 					const columnName = getColumnPath({ path: filterPath, collection, relations, aliasMap });
+
 					if (!columnName) continue;
+
 					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
@@ -426,19 +372,28 @@ export function applyFilter(
 					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
 				}
 
-				if (filterOperator === '_none') {
-					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilderMultiple(relation, filterValue as Filter));
-				} else if (filterOperator === '_some') {
-					dbQuery[logical].whereIn(pkField as string, subQueryBuilderMultiple(relation, filterValue as Filter));
-				} else if (isNegativeOperator(filterOperator)) {
-					inverseFilters(value);
-					dbQuery[logical].whereNotExists(subQueryBuilderSingle(relation, value));
+				const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+					const field = relation!.field;
+					const collection = relation!.collection;
+					const column = `${collection}.${field}`;
+
+					subQueryKnex
+						.select({ [field]: column })
+						.from(collection)
+						.whereNotNull(column);
+
+					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+				};
+
+				if (Object.keys(value)?.[0] === '_none') {
+					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
+				} else if (Object.keys(value)?.[0] === '_some') {
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
 				} else {
-					dbQuery[logical].whereExists(subQueryBuilderSingle(relation, value));
+					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
 				}
 			}
 		}
-
 		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
 			const [table, column] = key.split('.');
 
@@ -448,6 +403,38 @@ export function applyFilter(
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
+			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
+			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
+				dbQuery[logical].whereNull(selectionRaw);
+			}
+
+			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+				dbQuery[logical].whereNotNull(selectionRaw);
+			}
+
+			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.where(key, '=', '');
+				});
+			}
+
+			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.where(key, '!=', '');
+				});
+			}
+
+			// Cast filter value (compareValue) based on function used
+			if (column.includes('(') && column.includes(')')) {
+				const functionName = column.split('(')[0] as FieldFunction;
+				const type = getOutputTypeForFunction(functionName);
+
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+					compareValue = Number(compareValue);
+				}
+			}
+
+			// Cast filter value (compareValue) based on type of field being filtered against
 			const [collection, field] = key.split('.');
 
 			if (collection in schema.collections && field in schema.collections[collection].fields) {
@@ -482,15 +469,132 @@ export function applyFilter(
 				compareValue = compareValue.filter((val) => val !== undefined);
 			}
 
-			if (operator in operators) {
-				operators[operator].apply({
-					query: dbQuery[logical],
-					helpers,
-					selectionRaw,
-					compareValue,
-				});
-			} else {
-				throw new Error(`Operator ${operator} not supported`);
+			if (operator === '_eq') {
+				dbQuery[logical].where(selectionRaw, '=', compareValue);
+			}
+
+			if (operator === '_neq') {
+				dbQuery[logical].whereNot(selectionRaw, compareValue);
+			}
+
+			if (operator === '_ieq') {
+				dbQuery[logical].whereRaw(`LOWER(??) = ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
+			}
+
+			if (operator === '_nieq') {
+				dbQuery[logical].whereRaw(`LOWER(??) <> ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
+			}
+
+			if (operator === '_contains') {
+				dbQuery[logical].where(selectionRaw, 'like', `%${compareValue}%`);
+			}
+
+			if (operator === '_ncontains') {
+				dbQuery[logical].whereNot(selectionRaw, 'like', `%${compareValue}%`);
+			}
+
+			if (operator === '_icontains') {
+				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+			}
+
+			if (operator === '_nicontains') {
+				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+			}
+
+			if (operator === '_starts_with') {
+				dbQuery[logical].where(key, 'like', `${compareValue}%`);
+			}
+
+			if (operator === '_nstarts_with') {
+				dbQuery[logical].whereNot(key, 'like', `${compareValue}%`);
+			}
+
+			if (operator === '_istarts_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
+			}
+
+			if (operator === '_nistarts_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
+			}
+
+			if (operator === '_ends_with') {
+				dbQuery[logical].where(key, 'like', `%${compareValue}`);
+			}
+
+			if (operator === '_nends_with') {
+				dbQuery[logical].whereNot(key, 'like', `%${compareValue}`);
+			}
+
+			if (operator === '_iends_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
+			}
+
+			if (operator === '_niends_with') {
+				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
+			}
+
+			if (operator === '_gt') {
+				dbQuery[logical].where(selectionRaw, '>', compareValue);
+			}
+
+			if (operator === '_gte') {
+				dbQuery[logical].where(selectionRaw, '>=', compareValue);
+			}
+
+			if (operator === '_lt') {
+				dbQuery[logical].where(selectionRaw, '<', compareValue);
+			}
+
+			if (operator === '_lte') {
+				dbQuery[logical].where(selectionRaw, '<=', compareValue);
+			}
+
+			if (operator === '_in') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereIn(selectionRaw, value as string[]);
+			}
+
+			if (operator === '_nin') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
+			}
+
+			if (operator === '_between') {
+				if (compareValue.length !== 2) return;
+
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereBetween(selectionRaw, value);
+			}
+
+			if (operator === '_nbetween') {
+				if (compareValue.length !== 2) return;
+
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereNotBetween(selectionRaw, value);
+			}
+
+			if (operator == '_intersects') {
+				dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
+			}
+
+			if (operator == '_nintersects') {
+				dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
+			}
+
+			if (operator == '_intersects_bbox') {
+				dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
+			}
+
+			if (operator == '_nintersects_bbox') {
+				dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
 			}
 		}
 	}
