@@ -852,12 +852,23 @@ page_help_settings_presets_collection: >-
   **Procházet předvolby** – Zobrazuje všechny předvolby v projektu, včetně: uživatelů, rolí a globálních záložek, stejně jako výchozích pohledů.
 page_help_settings_presets_item: >-
   **Detail předvoleb** – Formulář pro správu záložek a předvoleb pro výchozí kolekci.
+page_help_settings_webhooks_collection: '**Procházet webhooky** — Zobrazuje všechny webhooky v rámci projektu.'
+page_help_settings_webhooks_item: '**Detail webhooku** — Formulář pro tvorbu a správu webhooků projektu.'
+page_help_settings_translation_strings_collection: '**Procházet překlady** — Seznam všech překladů v rámci projektu.'
+page_help_users_collection: '**Uživatelé** — Zobrazuje všechny systémové uživatele v rámci tohoto projektu.'
+page_help_users_item: >-
+  **Detaily uživatele** — Správa informací o Vašem účtu nebo zobrazení detailů ostatních uživatelů.
+page_help_insights_overview: '**Přehledy** — Seznam nástěnek, ke kterým máte přístup.'
+page_help_insights_dashboard: '**Nástěnka** – Pracovní prostor pro správu jednoho nebo více panelů'
+activity_feed: Kanál aktivit
 add_new: Přidat nový
+create_new: Vytvořit
 all: Vše
 no_layout_collection_selected_yet: Zatím nebylo vybráno žádné rozložení/kolekce
 batch_delete_confirm: >-
   Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
 cancel: Zrušit
+no_upscale: Nerozšiřovat obrázky
 collection: Kategorie
 collections: Kategorie
 content: Obsah
