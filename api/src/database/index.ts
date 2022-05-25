@@ -54,7 +54,11 @@ export default function getDatabase(): Knex {
 				requiredEnvVars.push('DB_CONNECTION_STRING');
 			}
 			break;
-
+		case 'mssql':
+			if (!env.DB_TYPE || env.DB_TYPE === 'default') {
+				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+			}
+			break;
 		default:
 			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 	}
@@ -270,12 +274,6 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
 
 	if (getDatabaseClient(database) === 'mysql') {
-		if (env.DB_CHARSET) {
-			logger.warn(
-				`Using custom DB_CHARSET "${env.DB_CHARSET}". Using a charset different from the database's default can cause problems in relationships. Omitting DB_CHARSET is strongly recommended.`
-			);
-		}
-
 		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
 
 		const tables = await database('information_schema.tables')

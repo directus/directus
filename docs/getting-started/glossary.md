@@ -137,9 +137,8 @@ is an excellent Digital Asset Management system.
 
 ### Material Icons
 
-Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
-outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
-`account_circle_outline`.
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus supports both filled & outlined
+variants of Material icons.
 
 ### Social Icons
 
@@ -252,7 +251,7 @@ within a [Dashboard](#dashboards) and can be positioned and resized as needed.
 
 ## Permissions
 
-Permissions are attached directly to a Role, defining what a user can can create, read, update, and delete within the
+Permissions are attached directly to a Role, defining what a user can create, read, update, and delete within the
 platform. Extremely granular, these filter-based permissions control access for the entire system.
 
 ## Presets
@@ -314,9 +313,9 @@ There is also a "Public" role that determines access for unauthenticated access.
 ### Relevant Guides
 
 - [Creating a Role](/configuration/users-roles-permissions/#creating-a-role)
-- [Configuring a Role](/configuration/users-roles-permissions/#configuring-a-role)
-- [Configuring Role Permissions](/configuration/users-roles-permissions/#configuring-permissions)
-- [Configuring System Permissions](/configuration/users-roles-permissions/#configuring-system-permissions)
+- [Configuring a Role](/configuration/users-roles-permissions/#configure-a-role)
+- [Configuring Role Permissions](/configuration/users-roles-permissions/#configure-permissions)
+- [Configuring System Permissions](/configuration/users-roles-permissions/#configure-system-permissions)
 - [Deleting a Role](/configuration/users-roles-permissions/#deleting-a-role)
 
 ## Storage Adapters
@@ -379,6 +378,12 @@ all of these differences, Directus has a single _superset_ of types that map to 
 - **UUID** — A universally unique identifier saved in UUIDv4 format
 - **Hash** — A string hashed using argon2 cryptographic hash algorithm
 - **Alias** — For fields that do not have a database column [Learn More](#)
+
+::: warning
+
+For **SQLite**, the **Timestamp** type is stored as a **DateTime**.
+
+:::
 
 ## Users
 

@@ -97,7 +97,7 @@ export default defineComponent({
 			border-radius: 8px;
 
 			&.create {
-				background-color: var(--success);
+				background-color: var(--primary);
 			}
 
 			&.update {
@@ -148,6 +148,10 @@ export default defineComponent({
 		&::before {
 			opacity: 1;
 		}
+	}
+
+	& + & {
+		margin-top: 12px;
 	}
 }
 

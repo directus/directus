@@ -4,11 +4,11 @@
 			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
 			<v-list-item-content>{{ restricted ? t('view_raw_value') : t('edit_raw_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item :disabled="modelValue === null" clickable @click="$emit('copy-raw')">
+		<v-list-item v-if="isCopySupported" :disabled="modelValue === null" clickable @click="$emit('copy-raw')">
 			<v-list-item-icon><v-icon name="copy_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ t('copy_raw_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item v-if="!restricted" clickable @click="$emit('paste-raw')">
+		<v-list-item v-if="isPasteSupported && !restricted" clickable @click="$emit('paste-raw')">
 			<v-list-item-icon><v-icon name="paste_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ t('paste_raw_value') }}</v-list-item-content>
 		</v-list-item>
@@ -51,6 +51,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@directus/shared/types';
+import useClipboard from '@/composables/use-clipboard';
 
 export default defineComponent({
 	props: {
@@ -75,6 +76,8 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
+		const { isCopySupported, isPasteSupported } = useClipboard();
+
 		const defaultValue = computed(() => {
 			const savedValue = props.field?.schema?.default_value;
 			return savedValue !== undefined ? savedValue : null;
@@ -84,7 +87,7 @@ export default defineComponent({
 			return props.field?.schema?.is_nullable === false;
 		});
 
-		return { t, defaultValue, isRequired };
+		return { t, defaultValue, isRequired, isCopySupported, isPasteSupported };
 	},
 });
 </script>

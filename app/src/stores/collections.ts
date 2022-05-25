@@ -21,7 +21,7 @@ export const useCollectionsStore = defineStore({
 		visibleCollections(): Collection[] {
 			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter((collection) => collection.meta?.hidden !== true);
+				.filter((collection) => collection.meta && collection.meta?.hidden !== true);
 		},
 		allCollections(): Collection[] {
 			return this.collections.filter(({ collection }) => collection.startsWith('directus_') === false);
@@ -54,16 +54,24 @@ export const useCollectionsStore = defineStore({
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
+
 					i18n.global.mergeLocaleMessage(language, {
-						collection_names: {
-							[collection.collection]: translation,
-						},
-						collection_names_singular: {
-							[collection.collection]: singular,
-						},
-						collection_names_plural: {
-							[collection.collection]: plural,
-						},
+						...(literalInterpolatedTranslation && {
+							collection_names: {
+								[collection.collection]: literalInterpolatedTranslation,
+							},
+						}),
+						...(singular && {
+							collection_names_singular: {
+								[collection.collection]: singular,
+							},
+						}),
+						...(plural && {
+							collection_names_plural: {
+								[collection.collection]: plural,
+							},
+						}),
 					});
 				}
 			}
@@ -128,7 +136,6 @@ export const useCollectionsStore = defineStore({
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();
 				notify({
-					type: 'success',
 					title: i18n.global.t('update_collection_success'),
 				});
 			} catch (err: any) {
@@ -143,7 +150,6 @@ export const useCollectionsStore = defineStore({
 				await this.hydrate();
 				await relationsStore.hydrate();
 				notify({
-					type: 'success',
 					title: i18n.global.t('delete_collection_success'),
 				});
 			} catch (err: any) {

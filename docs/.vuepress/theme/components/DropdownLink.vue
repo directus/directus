@@ -97,7 +97,6 @@ export default {
 </script>
 
 <style lang="stylus">
-/* stylelint-disable */
 .dropdown-wrapper
   cursor pointer
   .dropdown-title

@@ -50,7 +50,7 @@ fields:
 
   - field: tags
     interface: tags
-    special: json
+    special: cast-json
     width: full
     options:
       iconRight: local_offer
@@ -72,6 +72,8 @@ fields:
   - field: language
     interface: system-language
     width: half
+    options:
+      includeProjectDefault: true
 
   - field: theme
     interface: select-dropdown
@@ -93,7 +95,7 @@ fields:
   - field: email_notifications
     interface: boolean
     width: half
-    special: boolean
+    special: cast-boolean
 
   - field: admin_divider
     interface: presentation-divider
@@ -152,6 +154,7 @@ fields:
   - field: last_access
     width: half
     display: datetime
+    readonly: true
     display_options:
       relative: true
 

@@ -5,7 +5,7 @@
 > able to setup key data metrics in just a few clicks.
 
 <video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboard-220123A.mp4" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/insights-dashboards-20220216A.mp4" type="video/mp4" />
 </video>
 
 [[toc]]
@@ -16,7 +16,7 @@ First, create a Dashboard, then fill the Dashboard with Panels. Each Panel provi
 insight.
 
 <video autoplay muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/app-guide/insights/create-dashboards-and-panels-220123A.mp4" type="video/mp4" />
+<source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/insights-how-it-works-20220216A_1.mp4" type="video/mp4" />
 </video>
 
 1. Click the "Create Dashboard" action button <span mi btn >add</span> in the page header.
@@ -33,14 +33,14 @@ Each Directus Dashboard provides a drag-and-drop canvas where you can create and
 build out customized analytics. The Dashboard area automatically expands as you add more and more Panels. In theory, a
 Dashboard area can expand infinitely large... but in practice, users will probably only want to build Dashboards as
 large as the screen they will be viewing on. You are able to create as many Dashboards as you need. Additionally, the
-Dashboard view, edit, and create permissions are
-[fully configurable](/configuration/users-roles-permissions/#configuring-permissions) by User Role.
+Dashboard view, edit, and create permissions are [fully configurable](/configuration/users-roles-permissions/) by User
+Role.
 
-![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/dashboards-grid-area-220123A.webp)
+![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/dashboards-overview-20220216A.webp)
 
 ## Create, Edit, and Delete Dashboards
 
-![How to Add, Edit and Delete Dashboards in Directus Insights](https://cdn.directus.io/docs/v9/app-guide/insights/add-edit-delete-dashboards-220123A.webp)
+![How to Add, Edit and Delete Dashboards in Directus Insights](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/create-edit-delete-dashboards-20220216A.webp)
 
 1. Click the <span mi btn >add</span> icon in the page header to create a new Dashboard.
 2. Click the item option to edit or delete a Dashboard.
@@ -50,7 +50,7 @@ Dashboard view, edit, and create permissions are
 Panels are the building-blocks we add onto Insights dashboards to create, save and display data analytics. There are 4
 types of Panels.
 
-![Directus Dashboard Panels](https://cdn.directus.io/docs/v9/app-guide/insights/insights-dashboard-store-220123A.webp)
+![Directus Dashboard Panels](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/panels-overview-20220216A.webp)
 
 1. **Label** – Displays simple header text to describe other groups of panels. Doesn't actually provide data analysis.
 2. **List** – Sortable, filterable list of items within a collection.
@@ -63,7 +63,7 @@ types of Panels.
 All 4 panel types let you set custom text to provide quick and clear context about what a Panel represents. Panel Header
 options are exactly the same for all four Panel types. Headers are also totally optional and can be hidden.
 
-![Panel Header Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-header-options-220123A.webp)
+![Panel Header Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/panel-header-options-20220216A.webp)
 
 - **Visible** – Determines if the header is visible or not.
 - **Name** – Sets a name in the header area.
@@ -78,7 +78,7 @@ Labels simply help visually group the other panels (_which do provide analytics_
 
 ### Label Panel Options
 
-![Label Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-label-options-220123A.webp)
+![Label Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/label-panel-options-20220216A.webp)
 
 - **Label** – Sets the label text.
 - **Color** – Sets the label text color.
@@ -92,7 +92,7 @@ list that could be generated from your dataset.
 
 ### List Panel Options
 
-![List Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-list-options-220123A.webp)
+![List Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/list-panel-options-20220216A.webp)
 
 - **Collection** – Selects the Collection to rank.
 - **Limit** – Limits the number of Items that will appear in the Dashboard.
@@ -108,7 +108,7 @@ Metrics Panels allow you to aggregate all Items in a Field down to a single valu
 
 ### Metrics Panel Options
 
-![Metrics Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-metrics-options-220123A.webp)
+![Metrics Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/metric-panel-options-20220216A.webp)
 
 - **Collection** – Selects the Collection.
 - **Field** – Selects the Field to run aggregate function on.
@@ -165,14 +165,14 @@ In order to use this Panel, your Collection will need a datetime Field.
 
 :::
 
-![Time Series Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/panels-time-series-options-220123A.webp)
+![Time Series Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/time-series-panel-options-20220216A.webp)
 
 - **Collection** – Selects the Collection you want to analyze.
 - **Color** – Sets color of your graph curve.
 - **Group Aggregation** – Selects the type of aggregation to perform. [Learn more.](#more-on-aggregate-functions)
 - **Group Precision** – Sets the time interval to aggregate by _(days, weeks, months, etc.)_.
 - **Date Field** – Selects the datetime Field used along the x-axis.
-- **Date Range** – Selects the time range from which data should be displayed.
+- **Date Range** – Sets the time range from which data should be displayed, can be customized.
 - **Value Field** – Sets the Field you wish to aggregate.
 - **Value Decimals** – Changes the number of decimals displayed on the y-axis.
 - **Min Value** – Sets minimum value displayed on y-axis.
@@ -182,6 +182,13 @@ In order to use this Panel, your Collection will need a datetime Field.
 - **Filter** – Allows filtering of Items considered for analysis based on logical conditions.
 - **Show X-axis** – Toggles display of time along X-axis.
 - **Show Y-axis** – Toggles display of numeric values along Y-axis.
+
+:::tip Custom Date Range
+
+Note that `Past` is not prefixed to a custom range as it is on the default ranges. When selecting **"Other"**, simply
+type in `3 years`, `1 month`, `2 weeks`, `5 days`, etc.
+
+:::
 
 ## Extensibility Options
 

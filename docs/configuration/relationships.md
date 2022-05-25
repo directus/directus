@@ -60,7 +60,7 @@ countries (the "One" Collection)
 
 ### Setup
 
-![M2O](../assets/guides/fields/m2o.png)
+![M2O](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/M2O-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled. All you need to configure is the related collection and its primary key field.
@@ -103,7 +103,7 @@ cities (the "Many" Collection)
 
 ### Setup
 
-![O2M](../assets/guides/fields/o2m.png)
+![O2M](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/O2M-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled. All you need to configure is the related collection and its M2O field.
@@ -142,12 +142,12 @@ languages.
 
 ### Setup
 
-![Translations](../assets/guides/fields/translations.png)
+![Translations](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/translations-wizard-20220216A.webp)
 
 The easiest way to add translations is to use the wizard, which only asks for the Translation field name. All required
 fields and relationships will then be automatically created and configured.
 
-![Translations](../assets/guides/fields/translations-2.png)
+![Translations](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/translations-relations-20220216A.webp)
 
 If you choose to switch to **manual setup**, you will be presented with a similar relationship setup to O2M or M2M. The
 parent collection and primary key are known, so those fields are disabled.
@@ -202,7 +202,7 @@ Articles", where an article might relate to many other articles.
 
 ### Setup
 
-![M2M](../assets/guides/fields/m2m.png)
+![M2M](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/M2M-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled.
@@ -281,7 +281,7 @@ images (Collection)
 
 ### Setup
 
-![M2A](../assets/guides/fields/m2a.png)
+![M2A](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/M2A-20220216A.webp)
 
 The parent collection and field are already known (it's the field you're currently creating), so configuring those are
 disabled.

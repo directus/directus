@@ -116,33 +116,50 @@ body
     margin-bottom 4px
 
     &[dngr]
-      background-color var(--danger-10)
+      background-color var(--danger-light)
       color var(--danger)
 
     &[sec]
-      background-color var(--primary-10)
+      background-color var(--primary-light)
       color var(--primary)
 
     &[warn]
-      background-color var(--warning-10)
+      background-color var(--warning-light)
       color var(--warning)
 
     &[outline]
       background-color transparent
-      border 2px solid var(--primary);
+      border 2px solid var(--primary)
       color var(--primary)
+
+    &[action]
+      background-color var(--success-light)
+      color var(--success)
+
+    &[muted]
+      background-color var(--background-normal)
+      color var(--foreground-normal)
 
   &[icon]
     vertical-align middle
     margin-bottom 4px
     color var(--foreground-subdued)
 
+    &[prmry]
+      color var(--primary)
+
     &[dark]
       color var(--foreground-normal-alt)
 
+    &[dngr]
+      color var(--danger)
+
+    &[warn]
+      color var(--warning)
+
 a
   font-weight 500
-  color var(--primary-110)
+  color var(--primary-dark)
   text-decoration none
 
 p a code
