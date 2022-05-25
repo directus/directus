@@ -171,7 +171,9 @@ disabled_editing_value: Zakázat úpravy hodnoty
 key: Klíč
 alias: Alias
 date: Datum
+string: Text
 text: Text
+refresh_interval_seconds: Obnovit okamžitě | Každou sekundu | Každých {seconds} sekund
 auto_generate: Auto-generování
 new_field: 'Nové pole'
 add_note: Přidat užitečnou poznámku pro uživatele...
