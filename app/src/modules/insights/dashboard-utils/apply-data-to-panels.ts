@@ -3,16 +3,9 @@ import { Panel } from '@directus/shared/types';
 export const applyDataToPanels = (panels: Panel[], incomingData: Record<any, any>, previousPanels?: Panel[]) => {
 	if (!incomingData) return panels;
 
-	const previousPanelMap: Record<string, Panel | Panel[]> = {};
 	const panelData: Record<string, Panel | Panel[]> = {};
 	const multiQueryPanelData: Record<string, any> = {};
 	const panelsWithData: Panel[] = [];
-
-	if (previousPanels) {
-		for (const panel of previousPanels) {
-			previousPanelMap[panel.id] = panel;
-		}
-	}
 
 	for (const [id, data] of Object.entries(incomingData)) {
 		if (id.includes('__')) {
@@ -53,5 +46,6 @@ export const applyDataToPanels = (panels: Panel[], incomingData: Record<any, any
 		}
 		panelsWithData.push(panel);
 	}
+
 	return panelsWithData;
 };

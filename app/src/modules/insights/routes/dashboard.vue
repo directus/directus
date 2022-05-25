@@ -174,7 +174,6 @@ import { processQuery } from '../dashboard-utils/process-query';
 import { queryCaller } from '../dashboard-utils/query-caller';
 import { applyDataToPanels } from '../dashboard-utils/apply-data-to-panels';
 import useEditsGuard from '@/composables/use-edits-guard';
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -360,18 +359,23 @@ export default defineComponent({
 		watch(
 			[queryObject, currentDashboard],
 			async ([newObj, db], [obj, oldDb]) => {
-				newQueries = objDiff(newObj, obj);
+				const systemDiff = objDiff(newObj.systemCollectionQueries, obj?.systemCollectionQueries);
+				const userDiff = objDiff(newObj.userCollectionQueries, obj?.userCollectionQueries);
+				newQueries = {
+					systemCollectionQueries: systemDiff,
+					userCollectionQueries: userDiff,
+				};
 
-				if (!isEmpty(newQueries)) {
+				if (!isEmpty(systemDiff) || !isEmpty(userDiff)) {
 					loading.value = true;
-
-					const systemGQLQueries = processQuery(newQueries.systemCollectionQueries);
-					const userGQLQueries = processQuery(newQueries.userCollectionQueries);
+					const systemGQLQueries = processQuery(systemDiff);
+					const userGQLQueries = processQuery(userDiff);
 
 					let system = await queryCaller(systemGQLQueries, 0, newQueries, true);
 					let user = await queryCaller(userGQLQueries, 0, newQueries, false);
 
 					response.value = {
+						...response.value,
 						...system,
 						...user,
 					};
@@ -386,7 +390,18 @@ export default defineComponent({
 		watch(
 			panels,
 			() => {
-				panelsWithData.value = applyDataToPanels(panelsWithData.value, response.value, panelsWithData.value);
+				const newPanelsWithData: Panel[] = [];
+				for (const panel of panels.value) {
+					const panelId = 'id_' + panel.id.replaceAll('-', '_');
+					if (response.value[panelId]) {
+						const editablePanel = panel;
+						editablePanel.data = response.value[panelId];
+						newPanelsWithData.push(editablePanel);
+					} else {
+						newPanelsWithData.push(panel);
+					}
+				}
+				panelsWithData.value = newPanelsWithData;
 			},
 			{ immediate: true }
 		);
@@ -564,116 +579,6 @@ export default defineComponent({
 				unexpectedError(err);
 			} finally {
 				movePanelLoading.value = false;
-			}
-		}
-
-		async function caller(query: string, system?: boolean, reattempt?: boolean) {
-			if (query === 'query' || query === '') return;
-			let res;
-
-			const newResponse: Record<string, Panel | Panel[]> = {};
-			const sortedResponses: Record<string, any> = {};
-
-			try {
-				if (system) {
-					res = await api.post('/graphql/system', {
-						query: query,
-					});
-				} else {
-					res = await api.post('/graphql', {
-						query: query,
-					});
-				}
-
-				for (const [id, data] of Object.entries(res.data.data)) {
-					if (id.includes('__')) {
-						const panelId = id.split('__')[0];
-						const index = id.split('__')[1];
-
-						if (!sortedResponses[panelId]) sortedResponses[panelId] = {};
-
-						sortedResponses[panelId][index] = data;
-					} else {
-						sortedResponses[id] = data;
-					}
-				}
-
-				for (const panel of panels.value) {
-					const panelId = 'id_' + panel.id.replaceAll('-', '_');
-					if (sortedResponses[panelId]) {
-						if (Object.keys(sortedResponses[panelId]).length > 0) {
-							newResponse[panelId] = [];
-
-							for (const value of Object.values(sortedResponses[panelId])) {
-								newResponse[panelId].push(value);
-							}
-						} else {
-							newResponse[panelId] = sortedResponses[panelId];
-						}
-					}
-
-					if (res.data.data[panelId]) {
-						if (!Array.isArray(res.data.data[panelId])) {
-							newResponse[panelId] = res.data.data[panelId];
-						}
-					}
-
-					if (newResponse[panelId]) {
-						panel.data = newResponse[panelId];
-					}
-					panelsWithData.value.push(panel);
-				}
-
-				response.value = newResponse;
-			} catch (errs: any) {
-				if (reattempt) callAttempts++;
-				if (reattempt && callAttempts >= 10) {
-					callAttempts = 0;
-					errors.value = errs;
-					// figure out how to load the unerrored panels...
-				}
-
-				const queriesToRemove: Record<string, any> = {};
-
-				for (const error of errs.response.data.errors) {
-					const message = error.extensions.graphqlErrors[0].message;
-
-					if (message && message.includes('_aggregated')) {
-						const field = message.match(/"(.*?)"/)[1];
-						const collection = message.match(/"([^ ]*?)_aggregated/)[1];
-						queriesToRemove[collection] = { field, aggregate: true };
-					} else if (message && message.includes('_filter')) {
-						const field = message.match(/"([^ ]*?)"/)[1];
-						const collection = message.match(/"([^ ]*?)_filter/)[1];
-
-						queriesToRemove[collection] = { field, filter: true };
-					} else if (message) {
-						const fields = message.match(/"(.*?)"/g);
-						const field = fields[0].match(/"(.*?)"/)[1];
-						const collection = fields[1].match(/"(.*?)"/)[1];
-
-						queriesToRemove[collection] = { field };
-					}
-				}
-
-				for (const [key, query] of Object.entries(newQueries)) {
-					const match = queriesToRemove[query?.collection];
-
-					if (
-						match?.aggregate &&
-						query.query.aggregate &&
-						JSON.stringify(query.query.aggregate).includes(match.field)
-					) {
-						delete newQueries[key];
-					} else if (match?.filter && query.query.filter && JSON.stringify(query.query.filter).includes(match.field)) {
-						delete newQueries[key];
-					} else if (match && query.query?.fields && query.query.fields.includes(match.field)) {
-						delete newQueries[key];
-					}
-				}
-
-				const newQuery = processQuery(newQueries);
-				caller(newQuery, system, true);
 			}
 		}
 	},

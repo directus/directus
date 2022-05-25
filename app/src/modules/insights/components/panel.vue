@@ -132,7 +132,13 @@ export default defineComponent({
 		});
 
 		const headerIcon = computed(() => {
-			return props.panel.icon ? props.panel.icon : panelTypeInfo.value.icon;
+			if (props.panel.icon) {
+				return props.panel.icon;
+			} else if (panelTypeInfo.value?.icon) {
+				return panelTypeInfo.value?.icon;
+			} else {
+				return 'bar_chart';
+			}
 		});
 		/**
 		 * When drag-n-dropping for positioning/resizing, we're

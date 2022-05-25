@@ -4,7 +4,6 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 export const processQuery = (stagedQueries: Record<string, any>): string => {
 	if (!stagedQueries) return '';
-
 	const allQueries: Record<string, any> = {
 		query: {},
 	};
@@ -58,7 +57,13 @@ const formatQuery = (query: PanelQuery, collection: string) => {
 	if (query.fields) {
 		for (const field of query.fields) {
 			if (!field) continue;
-			formattedQuery[field] = true;
+			const relations = field.split('.');
+			if (relations.length > 1) {
+				const nestedFields = {};
+				formattedQuery[relations[0]] = relationalFieldNesting(relations, nestedFields);
+			} else {
+				formattedQuery[field] = true;
+			}
 		}
 	}
 
@@ -69,4 +74,21 @@ const formatQuery = (query: PanelQuery, collection: string) => {
 		formattedQuery.__args.filter = query.filter;
 	}
 	return formattedQuery;
+};
+
+const relationalFieldNesting = (relations: string[], nestedFields: Record<string, string | boolean>) => {
+	const nameThis = {};
+	for (let i = 0; i < relations.length; i++) {
+		if (i === 0) continue;
+
+		const field = relations[i];
+		const relation = field.split('.');
+
+		if (relation.length > 1) {
+			nameThis[relation[0]] = relationalFieldNesting(relation, nestedFields);
+		} else {
+			nameThis[field] = true;
+		}
+	}
+	return nameThis;
 };

@@ -22,6 +22,7 @@ export const queryCaller = async (
 				query: request,
 			});
 		}
+
 		return response.data.data;
 	} catch (errs: any) {
 		if (reattempt) callAttempts++;
