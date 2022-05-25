@@ -59,8 +59,9 @@ const formatQuery = (query: PanelQuery, collection: string) => {
 			if (!field) continue;
 			const relations = field.split('.');
 			if (relations.length > 1) {
-				const nestedFields = {};
-				formattedQuery[relations[0]] = relationalFieldNesting(relations, nestedFields);
+				formattedQuery[relations[0]] = {};
+
+				relationalNesting(formattedQuery[relations[0]], relations);
 			} else {
 				formattedQuery[field] = true;
 			}
@@ -73,22 +74,16 @@ const formatQuery = (query: PanelQuery, collection: string) => {
 		}
 		formattedQuery.__args.filter = query.filter;
 	}
+
 	return formattedQuery;
 };
 
-const relationalFieldNesting = (relations: string[], nestedFields: Record<string, string | boolean>) => {
-	const nameThis = {};
-	for (let i = 0; i < relations.length; i++) {
-		if (i === 0) continue;
-
-		const field = relations[i];
-		const relation = field.split('.');
-
-		if (relation.length > 1) {
-			nameThis[relation[0]] = relationalFieldNesting(relation, nestedFields);
+const relationalNesting = (query: Record<string, any>, relations: string[]) => {
+	for (let i = 1; i < relations.length; i++) {
+		if (i === relations.length - 1) {
+			query = query[relations[i]] = true;
 		} else {
-			nameThis[field] = true;
+			query = query[relations[i]] = query[relations[i]] || {};
 		}
 	}
-	return nameThis;
 };

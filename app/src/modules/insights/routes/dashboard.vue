@@ -217,8 +217,6 @@ export default defineComponent({
 			return permissionsStore.hasPermission('directus_panels', 'update');
 		});
 
-		let callAttempts = 0;
-
 		useShortcut('meta+s', () => {
 			saveChanges();
 		});
@@ -361,6 +359,7 @@ export default defineComponent({
 			async ([newObj, db], [obj, oldDb]) => {
 				const systemDiff = objDiff(newObj.systemCollectionQueries, obj?.systemCollectionQueries);
 				const userDiff = objDiff(newObj.userCollectionQueries, obj?.userCollectionQueries);
+
 				newQueries = {
 					systemCollectionQueries: systemDiff,
 					userCollectionQueries: userDiff,
@@ -380,7 +379,7 @@ export default defineComponent({
 						...user,
 					};
 
-					panelsWithData.value = applyDataToPanels(panels.value, response.value, panelsWithData.value);
+					panelsWithData.value = applyDataToPanels(panels.value, response.value);
 				}
 				loading.value = false;
 			},

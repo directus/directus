@@ -1,6 +1,6 @@
 import { Panel } from '@directus/shared/types';
 
-export const applyDataToPanels = (panels: Panel[], incomingData: Record<any, any>, previousPanels?: Panel[]) => {
+export const applyDataToPanels = (panels: Panel[], incomingData: Record<any, any>) => {
 	if (!incomingData) return panels;
 
 	const panelData: Record<string, Panel | Panel[]> = {};
