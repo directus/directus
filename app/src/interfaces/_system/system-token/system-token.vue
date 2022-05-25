@@ -7,7 +7,9 @@
 		<v-input
 			:model-value="localValue"
 			:type="!isNewTokenGenerated ? 'password' : 'text'"
-			:placeholder="value ? t('value_hashed') : t('interfaces.system-token.placeholder')"
+			:placeholder="
+				value ? t('interfaces.system-token.value_securely_saved') : t('interfaces.system-token.placeholder')
+			"
 			:disabled="disabled"
 			readonly
 			:class="{ hashed: value && !localValue }"
