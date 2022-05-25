@@ -376,6 +376,12 @@ functions:
   count: Počet
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd. MMM, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: d MMM
 minutes: Minut
 hours: Hodin
 month: Měsíc
@@ -463,14 +469,42 @@ reset_display: Obnovit zobrazení
 list-m2a: Stavitel (M2A)
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
 no_items_copy: V této kolekci zatím nejsou žádné položky.
+file_count: 'Žádné soubory | Jeden soubor | {count} souborů'
+no_files_copy: Nejsou zde žádné soubory.
+user_count: 'Žádní uživatelé | Jeden uživatel | {count} uživatelů'
+no_users_copy: V této roli zatím nejsou žádní uživatelé.
+no_notifications: Žádná oznámení
+no_notifications_copy: Jste v obraze!
+activity_log: Záznam aktivit
+all_items: Všechny položky
+csv: CSV
+no_collections: Žádné kolekce
 create_collection: Vytvořit kategorii
+no_collections_copy_admin: Zatím nemáte žádné kolekce. Začněte kliknutím na tlačítko níže.
+no_collections_copy: Zatím nemáte žádné kolekce. Obraťte se na správce systému.
+relationship_not_setup: Vztah nebyl správně nakonfigurován
+display_template_not_setup: Šablona zobrazení je špatně nakonfigurována
+collection_field_not_setup: Volba pole kolekce je špatně nastavena
+select_a_collection: Vyberte kolekci
+select_a_field: Vyberte pole
+active: Aktivní
+move_to: Přesunout do...
 copy: Kopírovat
+copy_to: Kopírovat do...
+no_other_dashboards_copy: Zatím nemáte žádné další nástěnky.
+inactive: Neaktivní
 users: Uživatelé
 activity: Aktivita
+activity_item: Položka činnosti
 action: Akce
 ip_address: IP adresa
 user_agent: Uživatelský agent
 webhooks: Webhooky
+decimals: Desetinná místa
+value_decimals: Desetinná hodnota
+min_value: Minimální hodnota
+max_value: Maximální hodnota
+automatic: Automatická
 field_width: Šířka pole
 add_filter: Přidat filtr
 upper_limit: Horní limit...
@@ -668,7 +702,22 @@ on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+prefix_placeholder: Text před hodnotou...
+suffix_placeholder: Text za hodnotou...
+decimals_placeholder: Počet desetinných míst...
+no_dashboards: Žádné nástěnky
+no_dashboards_copy: Zatím nemáte žádné nástěnky.
+no_data: Žádná data
+create_dashboard: Vytvořit nástěnku
+dashboard_name: Název nástěnky
 full_screen: Celá obrazovka
+full_text_search: Full-Text vyhledávání
+edit_panels: Upravit panely
+center_align: Zarovnání na střed
+left_align: Zarovnání doleva
+right_align: Zarovnání doprava
+fit_to_screen: Přizpůsobit obrazovce
+image_url: Adresa URL obrázku
 alt_text: Alternativní text
 media: Média
 quality: Kvalita
@@ -776,8 +825,33 @@ unsaved_changes_copy: Jste si jisti, že chcete opustit tuto stránku?
 discard_changes: Ano, odejít bez uložení
 discard_all_changes: Zahodit všechny změny
 discard_changes_copy: Opravdu chcete zahodit všechny provedené změny?
+show_x_axis: Zobrazit osu X
+show_y_axis: Zobrazit osu Y
 keep_editing: Ne, vrátit se k úpravám
+page_help_collections_overview: '**Přehled kolekcí** — Seznam všech kolekcí, ke kterým máte přístup.'
+page_help_collections_collection: >-
+  **Procházet položky** — Zobrazuje všechny položky kolekce {collection}, ke kterým máte přístup. Přizpůsobte si rozvržení, filtry a třídění, abyste mohli přizpůsobit zobrazení a dokonce uložit záložky z těchto různých konfigurací pro rychlý přístup.
+page_help_collections_item: >-
+  **Detail položky** — Formulář pro zobrazení a správu této položky. Tento postranní panel také obsahuje celou historii revizí a vložené komentáře.
+page_help_activity_collection: >-
+  **Procházet aktivitu** — Komplexní seznam systému a aktivity vašeho uživatele.
+page_help_docs_global: >-
+  **Přehled dokumentace** – dokumentace přizpůsobená speciálně verzi a schématu tohoto projektu.
+page_help_files_collection: >-
+  **Knihovna souborů** — Zobrazí všechny soubory nahrané do tohoto projektu. Přizpůsobte si rozvržení, filtry a třídění, abyste mohli přizpůsobit zobrazení a dokonce uložit záložky z těchto různých konfigurací pro rychlý přístup.
+page_help_files_item: >-
+  **Detail souboru** – Formulář pro správu metadat souboru, úpravu původního aktiva a aktualizaci nastavení přístupu.
 page_help_settings_project: "**Nastavení projektu** – Možnosti globální konfigurace vašeho projektu."
+page_help_settings_datamodel_collections: >-
+  **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
+page_help_settings_datamodel_fields: >-
+  **Model dat: Kolekce** – Formulář pro správu této kolekce a jejích polí.
+page_help_settings_roles_collection: '**Procházet role** — Zobrazuje správce, veřejné a vlastní uživatelské role.'
+page_help_settings_roles_item: "**Detail role** — Správa oprávnění role a dalších nastavení."
+page_help_settings_presets_collection: >-
+  **Procházet předvolby** – Zobrazuje všechny předvolby v projektu, včetně: uživatelů, rolí a globálních záložek, stejně jako výchozích pohledů.
+page_help_settings_presets_item: >-
+  **Detail předvoleb** – Formulář pro správu záložek a předvoleb pro výchozí kolekci.
 add_new: Přidat nový
 all: Vše
 no_layout_collection_selected_yet: Zatím nebylo vybráno žádné rozložení/kolekce
@@ -865,37 +939,95 @@ fields:
     last_page: Poslední stránka
     last_access: Poslední přístup
   directus_settings:
+    basemaps_style: Styl Mapboxu
+    mapbox_key: Přístupový token Mapboxu
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribuce
+    attribution_placeholder: '© přispěvatelé OpenStreetMap'
+    transforms_note: Název metody Sharp a její argumenty. Viz https://sharp.pixelplumbing.com/api-constructor pro více informací.
+    additional_transforms: Další transformace
     project_name: Název projektu
     project_descriptor: Popis projektu
     project_url: URL projektu
     project_color: Barva projektu
     project_logo: Logo projektu
+    default_language: Výchozí jazyk
+    branding: Branding a styl
     public_foreground: Veřejné popředí
+    public_background: Veřejné pozadí
     public_note: Veřejná poznámka
+    auth_password_policy: Zásady ověřování hesla
+    auth_login_attempts: Pokusy o přihlášení
+    files_and_thumbnails: Soubory a úložiště
+    storage_default_folder: Výchozí složka
+    storage_asset_presets: Předvolby transformace
+    storage_asset_transform: Povolené transformace
+    overrides: Přepisy aplikace
+    custom_css: Vlastní CSS
     module_bar: Panel modulů
+    transformations_all: Povolit všechny transformace
+    transformations_none: Zakázat transformace
+    transformations_presets: Omezit transformace na přednastavení níže
   directus_shares:
     name: Jméno
     role: Role
     password: Heslo
+    date_start: Datum zahájení
+    date_end: Datum ukončení
+    max_uses: Maximální počet použití
+    times_used: Počet použití
   directus_fields:
+    collection: Název kolekce
+    icon: Ikona kolekce
     note: Poznámka
     hidden: Skryté
     singleton: Objekt
     translation: Překlady názvu polí
+    display_template: Šablona
   directus_roles:
     name: Jméno role
+    icon: Ikona role
     description: Popis
+    app_access: Přístup k aplikaci
+    admin_access: Přístup k administraci
+    ip_access: IP adresa
+    enforce_tfa: Vyžadovat 2FA
+    users: Uživatelé v roli
+    module_list: Navigace modulu
   directus_webhooks:
     name: Jméno
+    method: Metoda
     status: Stav
+    data: Údaje
+    header: Hlavička
     value: Hodnota
+    headers: Hlavičky požadavku
+    data_label: Odeslat data události
+    triggers: Spouštěče
+    actions: Akce
     collections: Kategorie
 field_options:
   directus_settings:
     project_name_placeholder: Můj projekt...
     project_color_note: Pozadí přihlášení a loga
     project_logo_note: Bílé 40x40 SVG/PNG
+    public_note_placeholder: Krátká, veřejná zpráva, která podporuje formátování markdown...
     security_divider_title: Zabezpečení
+    auth_password_policy:
+      none_text: Žádná – Není doporučeno
+      weak_text: Slabé – minimálně 8 znaků
+      strong_text: Silné - velká / malá písmena / čísla / speciální
+    storage_asset_presets:
+      fit_label: Přizpůsobit
+      upscaling: Změna měřítka
+      fit:
+        contain_text: Obsáhnout (zachovat poměr stran)
+    additional_transforms: Další transformace
+    transforms_note: Název metody Sharp a její argumenty. Viz https://sharp.pixelplumbing.com/api-constructor pro více informací.
+    mapbox_key: Přístupový token Mapboxu
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_style: Styl Mapboxu
+    overrides_divider_title: Přepisy aplikace
   directus_activity:
     create: Vytořit
     update: Úpravy
@@ -904,6 +1036,7 @@ field_options:
     singleton: Považovat za jeden objekt
     language: Jazyk
     translation: Překlad
+    collection_name: Název kolekce
     archive_divider: Archivovat
     sort_divider: Seřadit
   directus_roles:
@@ -919,14 +1052,26 @@ field_options:
     admin_divider: Možnosti správce
     status_dropdown_draft: Koncept
     status_dropdown_invited: Pozván/a
+    status_dropdown_active: Aktivní
     status_dropdown_suspended: Pozastaveno
     status_dropdown_archived: Archivováno
   directus_webhooks:
+    status_options_active: Aktivní
+    status_options_inactive: Neaktivní
+    data_label: Odeslat data události
+    triggers_divider: Spouštěče
     actions_create: Vytořit
     actions_update: Úpravy
     headers:
+      header: Hlavička
       value: Hodnota
+save_current_user_id: Uložit aktuální ID uživatele
+save_current_user_role: Uložit aktuální uživatelskou roli
+save_current_datetime: Uložit aktuální datum/čas
+always_open: Vždy otevřít
 comment: Komentář
+unlimited_usage: Neomezené použití
+uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
 description: Popis
@@ -966,6 +1111,7 @@ sign_out: Odhlásit se
 sign_out_confirm: Chcete se odhlásit?
 something_went_wrong: Něco se pokazilo.
 sort_direction: Směr řazení
+template: Šablona
 translation: Překlad
 value: Hodnota
 view_project: Zobrazit projekt
@@ -986,6 +1132,8 @@ interfaces:
     color: Barva
   system-display-template:
     display-template: Šablona zobrazení
+    collection_field_not_setup: Volba pole kolekce je špatně nastavena
+    select_a_collection: Vyberte kolekci
   select-dropdown:
     choices_value_placeholder: Zadejte hodnotu...
   file:
