@@ -990,6 +990,7 @@ sort_direction: Sorteerrichting
 sort_asc: Sorteer Oplopend
 sort_desc: Sorteer Aflopend
 template: Sjabloon
+require_value_to_be_set: Verplicht veld bij aanmaken
 translation: Vertaling
 value: Waarde
 view_project: Bekijk project
