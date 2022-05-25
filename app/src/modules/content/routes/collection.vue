@@ -101,6 +101,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
 							<v-icon name="delete" outline />
@@ -137,7 +138,7 @@
 							:disabled="batchArchiveAllowed !== true"
 							rounded
 							icon
-							class="action-archive"
+							secondary
 							@click="on"
 						>
 							<v-icon name="archive" outline />
@@ -163,7 +164,7 @@
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -247,6 +248,8 @@
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
+					:layout-query="layoutQuery"
+					@download="download"
 					@refresh="refresh"
 				/>
 			</template>
@@ -280,7 +283,6 @@ import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-det
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
-import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import { useRouter } from 'vue-router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
@@ -301,7 +303,6 @@ export default defineComponent({
 		LayoutSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
-		BookmarkEdit,
 		DrawerBatch,
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
@@ -370,7 +371,7 @@ export default defineComponent({
 			batchEditActive,
 		} = useBatch();
 
-		const { bookmarkDialogActive, creatingBookmark, createBookmark, editingBookmark, editBookmark } = useBookmarks();
+		const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
 		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
 
@@ -445,8 +446,6 @@ export default defineComponent({
 			creatingBookmark,
 			createBookmark,
 			bookmarkTitle,
-			editingBookmark,
-			editBookmark,
 			breadcrumb,
 			clearFilters,
 			confirmArchive,
@@ -469,10 +468,15 @@ export default defineComponent({
 			hasArchive,
 			archiveFilter,
 			mergeFilters,
+			download,
 		};
 
 		async function refresh() {
 			await layoutRef.value?.state?.refresh?.();
+		}
+
+		async function download() {
+			await layoutRef.value?.state?.download?.();
 		}
 
 		async function drawerBatchRefresh() {
@@ -581,21 +585,22 @@ export default defineComponent({
 		function useBookmarks() {
 			const bookmarkDialogActive = ref(false);
 			const creatingBookmark = ref(false);
-			const editingBookmark = ref(false);
 
 			return {
 				bookmarkDialogActive,
 				creatingBookmark,
 				createBookmark,
-				editingBookmark,
-				editBookmark,
 			};
 
-			async function createBookmark(name: string) {
+			async function createBookmark(bookmark: any) {
 				creatingBookmark.value = true;
 
 				try {
-					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
+					const newBookmark = await saveCurrentAsBookmark({
+						bookmark: bookmark.name,
+						icon: bookmark.icon,
+						color: bookmark.color,
+					});
 					router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
@@ -604,11 +609,6 @@ export default defineComponent({
 				} finally {
 					creatingBookmark.value = false;
 				}
-			}
-
-			async function editBookmark(name: string) {
-				bookmarkTitle.value = name;
-				bookmarkDialogActive.value = false;
 			}
 		}
 
@@ -670,39 +670,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-archive {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-active: var(--background-normal);
-	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
-}
-
-.header-icon.archive {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .layout {

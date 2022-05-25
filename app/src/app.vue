@@ -48,10 +48,14 @@ export default defineComponent({
 		onMounted(() => startIdleTracking());
 		onUnmounted(() => stopIdleTracking());
 
-		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
-			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
-			setFavicon(serverStore.info?.project?.project_color || '#00C897', hasCustomLogo);
-		});
+		watch(
+			[() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo],
+			() => {
+				const hasCustomLogo = !!serverStore.info?.project?.project_logo;
+				setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
+			},
+			{ immediate: true }
+		);
 
 		watch(
 			() => userStore.currentUser,
@@ -66,17 +70,19 @@ export default defineComponent({
 						.querySelector('head meta[name="theme-color"]')
 						?.setAttribute('content', newUser.theme === 'light' ? '#ffffff' : '#263238');
 				} else {
-					// Default to light mode
-					document.body.classList.add('light');
+					// Default to auto mode
+					document.body.classList.add('auto');
 				}
-			}
+			},
+			{ immediate: true }
 		);
 
 		watch(
 			() => serverStore.info?.project?.project_name,
 			(projectName) => {
 				document.title = projectName || 'Directus';
-			}
+			},
+			{ immediate: true }
 		);
 
 		const customCSS = computed(() => {
@@ -109,7 +115,6 @@ export default defineComponent({
 	justify-content: center;
 	width: 100%;
 	height: 100%;
-	background: rgb(255 255 255 / 0.5);
 	backdrop-filter: blur(10px);
 }
 

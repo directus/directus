@@ -3,6 +3,7 @@ import logger from '../logger';
 import { access } from 'fs-extra';
 import { constants } from 'fs';
 import path from 'path';
+import { toArray } from '@directus/shared/utils';
 
 export async function validateStorage(): Promise<void> {
 	if (env.DB_CLIENT === 'sqlite3') {
@@ -15,7 +16,11 @@ export async function validateStorage(): Promise<void> {
 		}
 	}
 
-	if (env.STORAGE_LOCATIONS.split(',').includes('local')) {
+	const usedStorageDrivers = toArray(env.STORAGE_LOCATIONS).map(
+		(location) => env[`STORAGE_${location.toUpperCase()}_DRIVER`]
+	);
+
+	if (usedStorageDrivers.includes('local')) {
 		try {
 			await access(env.STORAGE_LOCAL_ROOT, constants.R_OK | constants.W_OK);
 		} catch {

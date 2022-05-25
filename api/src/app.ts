@@ -107,9 +107,11 @@ export default async function createApp(): Promise<express.Application> {
 						upgradeInsecureRequests: null,
 
 						// These are required for MapLibre
+						// https://cdn.directus.io is required for images/videos in the official docs
 						workerSrc: ["'self'", 'blob:'],
 						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:'],
+						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
+						mediaSrc: ["'self'", 'https://cdn.directus.io'],
 						connectSrc: ["'self'", 'https://*'],
 					},
 				},
@@ -117,6 +119,10 @@ export default async function createApp(): Promise<express.Application> {
 			)
 		)
 	);
+
+	if (env.HSTS_ENABLED) {
+		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
+	}
 
 	await emitter.emitInit('app.before', { app });
 

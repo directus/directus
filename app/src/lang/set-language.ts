@@ -7,6 +7,7 @@ import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { translate } from '@/utils/translate-object-values';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
+import { useTranslationStrings } from '@/composables/use-translation-strings';
 
 const { modules, modulesRaw } = getModules();
 const { layouts, layoutsRaw } = getLayouts();
@@ -17,6 +18,7 @@ const { displays, displaysRaw } = getDisplays();
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
+	const { mergeTranslationStringsForLanguage } = useTranslationStrings();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
 		// eslint-disable-next-line no-console
@@ -46,6 +48,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
+	mergeTranslationStringsForLanguage(lang);
 
 	return true;
 }

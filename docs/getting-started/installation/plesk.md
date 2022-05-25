@@ -80,16 +80,17 @@ scripts-prepend-node-path=true
 ```
 
 ### 5. Add document_root folder
+
 Lastly, we need to add a `document_root` folder inside our project-directory.
 
-It's required by plesk that the document root must be a subdirectory of the application root directory. The folder can stay empty. 
+It's required by plesk that the document root must be a subdirectory of the application root directory. The folder can
+stay empty.
 
-::: Store `document_root` in a version control
+::: tip Store `document_root` in a version control
 
-If you want to keep the folder in in a version controll like git, create a empty `.gitignore` file inside the folder.
+If you want to keep the folder in in a version control like git, create a empty `.gitignore` file inside the folder.
 
 :::
-
 
 ## Activate and configure node.js
 
@@ -123,6 +124,28 @@ script entry to your package.json:
 Afterwards try `bootstrap` again.
 
 :::
+
+## Use snapshots
+
+On Plesk you can't directly run an npx command. To use the Directus snapshot feature, you'd need to add a script to your
+`package.json`. For snapshot creation you can find an example in the
+[CLI docs: Date-based snapshots](/getting-started/installation/plesk#snapshot-the-data-model)
+
+To apply a snapshot you need a custom wrapper using the non-interactive version:
+
+```json
+    "scripts" {
+    	"apply-snapshot--noninteractive": "npx directus schema apply --yes ./snapshots/\"$npm_config_filename\"",
+        <...>
+    }
+
+```
+
+After that you can apply a snapshot by entering the following command to plesk:
+
+```sh
+apply-snapshot--noninteractive --filename=[file.yaml]
+```
 
 ## Test Directus Access
 

@@ -88,6 +88,7 @@ describe('', () => {
 		expect(getFilterOperatorsForType(TYPES[13])).toStrictEqual([
 			'contains',
 			'ncontains',
+			'icontains',
 			'starts_with',
 			'nstarts_with',
 			'ends_with',
@@ -111,6 +112,28 @@ describe('', () => {
 			'nintersects',
 			'intersects_bbox',
 			'nintersects_bbox',
+		]);
+	});
+
+	it('includes validation only types', () => {
+		expect(getFilterOperatorsForType(TYPES[0], { includeValidation: true })).toStrictEqual([
+			'contains',
+			'ncontains',
+			'eq',
+			'neq',
+			'lt',
+			'lte',
+			'gt',
+			'gte',
+			'between',
+			'nbetween',
+			'empty',
+			'nempty',
+			'null',
+			'nnull',
+			'in',
+			'nin',
+			'regex',
 		]);
 	});
 });

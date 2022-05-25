@@ -24,9 +24,6 @@ export default definePanel({
 			field: 'color',
 			name: '$t:color',
 			type: 'string',
-			schema: {
-				default_value: '#00C897',
-			},
 			meta: {
 				interface: 'select-color',
 				width: 'half',
@@ -197,11 +194,23 @@ export default definePanel({
 			name: '$t:panels.time_series.value_field',
 			meta: {
 				interface: 'system-field',
+				width: 'half',
 				options: {
 					collectionField: 'collection',
 					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 				},
-				width: 'half',
+				conditions: [
+					{
+						rule: {
+							function: {
+								_in: ['count', 'countDistinct'],
+							},
+						},
+						options: {
+							allowPrimaryKey: true,
+						},
+					},
+				],
 			},
 		},
 		{
