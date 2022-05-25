@@ -40,6 +40,7 @@ const allowedEnvironmentVars = [
 	'DB_EXCLUDE_TABLES',
 	'DB_CHARSET',
 	'DB_VERSION',
+	'DB_SSL__.+',
 	// security
 	'KEY',
 	'SECRET',
