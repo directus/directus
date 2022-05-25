@@ -1914,6 +1914,10 @@ panels:
     monochrome: Monochrome
     monochrome_color: Monochrome Color
 triggers:
+  common:
+    response_body: Response Body
+    response_body_all: All Data
+    response_body_last: Data of Last Operation
   hook:
     name: Event Hook
     description: Triggers on various platform events
@@ -1923,9 +1927,6 @@ triggers:
     description: Triggers on an incoming HTTP request
     method: Method
     async: Asynchronous
-    response_body: Response Body
-    response_body_all: All Data
-    response_body_last: Data of Last Operation
   operation:
     name: Another Flow
     description: Triggered by another Flow, for chaining

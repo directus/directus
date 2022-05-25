@@ -163,6 +163,28 @@ export function getTriggers() {
 							},
 						},
 					},
+					{
+						field: 'return',
+						name: t('triggers.common.response_body'),
+						type: 'string',
+						meta: {
+							width: 'full',
+							interface: 'select-radio',
+							options: {
+								choices: [
+									{
+										text: '$t:triggers.common.response_body_last',
+										value: '$last',
+									},
+									{
+										text: '$t:triggers.common.response_body_all',
+										value: '$all',
+									},
+								],
+								allowOther: true,
+							},
+						},
+					},
 				];
 
 				if (type === 'action') {
@@ -226,7 +248,7 @@ export function getTriggers() {
 				},
 				{
 					field: 'return',
-					name: t('triggers.webhook.response_body'),
+					name: t('triggers.common.response_body'),
 					type: 'string',
 					schema: {
 						default_value: '$last',
@@ -237,11 +259,11 @@ export function getTriggers() {
 						options: {
 							choices: [
 								{
-									text: '$t:triggers.webhook.response_body_last',
+									text: '$t:triggers.common.response_body_last',
 									value: '$last',
 								},
 								{
-									text: '$t:triggers.webhook.response_body_all',
+									text: '$t:triggers.common.response_body_all',
 									value: '$all',
 								},
 							],
@@ -286,12 +308,24 @@ export function getTriggers() {
 			preview: () => [],
 			options: [
 				{
-					field: 'empty',
-					type: 'alias',
+					field: 'return',
+					name: t('triggers.common.response_body'),
+					type: 'string',
 					meta: {
-						interface: 'presentation-notice',
+						width: 'full',
+						interface: 'select-radio',
 						options: {
-							text: t('no_options_available'),
+							choices: [
+								{
+									text: '$t:triggers.common.response_body_last',
+									value: '$last',
+								},
+								{
+									text: '$t:triggers.common.response_body_all',
+									value: '$all',
+								},
+							],
+							allowOther: true,
 						},
 					},
 				},
