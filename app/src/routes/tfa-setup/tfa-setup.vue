@@ -46,6 +46,7 @@ import { defineComponent, onMounted } from 'vue';
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { useAppStore, useUserStore } from '@/stores';
 import { router } from '@/router';
+import { User } from '@directus/shared/types';
 
 export default defineComponent({
 	setup() {
@@ -80,7 +81,7 @@ export default defineComponent({
 		async function enable() {
 			await enableTFA();
 			if (error.value === null) {
-				router.push(userStore.currentUser?.last_page || '/login');
+				router.push((userStore.currentUser as User)?.last_page || '/login');
 			}
 		}
 	},

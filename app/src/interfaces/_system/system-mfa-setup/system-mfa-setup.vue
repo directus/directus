@@ -73,6 +73,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed } from 'vue';
 import { useUserStore } from '@/stores';
 import { useTFASetup } from '@/composables/use-tfa-setup';
+import { User } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -92,7 +93,7 @@ export default defineComponent({
 		const enableActive = ref(false);
 		const disableActive = ref(false);
 
-		const isCurrentUser = computed(() => userStore.currentUser?.id === props.primaryKey);
+		const isCurrentUser = computed(() => (userStore.currentUser as User)?.id === props.primaryKey);
 
 		const {
 			generateTFA,
