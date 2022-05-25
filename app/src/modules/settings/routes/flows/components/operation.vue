@@ -105,7 +105,7 @@
 			</dl>
 		</div>
 		<component
-			:is="`operation-${currentOperation.id}`"
+			:is="`operation-preview-${currentOperation.id}`"
 			v-else-if="currentOperation && 'id' in currentOperation"
 			:options="currentOperation"
 		/>

@@ -31,7 +31,7 @@ export async function registerOperations(app: App): Promise<void> {
 			Array.isArray(operation.preview) === false &&
 			operation.preview !== null
 		) {
-			app.component(`operation-${operation.id}`, operation.preview);
+			app.component(`operation-preview-${operation.id}`, operation.preview);
 		}
 
 		if (
