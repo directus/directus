@@ -10,17 +10,16 @@
 	"scripts": {
 		"lint": "npm-run-all --parallel --continue-on-error lint:*",
 		"lint:eslint": "eslint .",
-		"lint:stylelint": "stylelint \"**/*.{css,scss,vue}\" --custom-syntax postcss-html",
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
+		"build:api": "lerna run build --ignore @directus/app",
 		"pack": "node docker/pack",
 		"release": "lerna version --force-publish --exact",
 		"test": "lerna run test",
-		"test:int": "jest tests -c tests/integration/jest.config.js",
-		"test:e2e": "jest tests -c tests/e2e/jest.config.js",
+		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "npm run test:e2e -- --watch",
-		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/e2e/setup/teardown.ts",
+		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
 	},
 	"engines": {
@@ -29,8 +28,7 @@
 	},
 	"devDependencies": {
 		"@types/dockerode": "3.3.0",
-		"@types/faker": "5.5.9",
-		"@types/jest": "27.0.3",
+		"@types/jest": "27.4.1",
 		"@types/listr": "0.14.4",
 		"@types/node": "16.11.9",
 		"@types/supertest": "2.0.11",
@@ -42,10 +40,9 @@
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-prettier": "4.0.0",
 		"eslint-plugin-vue": "7.20.0",
-		"faker": "5.5.3",
 		"globby": "11.0.4",
-		"jest": "27.3.1",
-		"knex": "0.95.14",
+		"jest": "27.5.1",
+		"knex": "2.0.0",
 		"lerna": "4.0.0",
 		"lint-staged": "11.2.6",
 		"listr": "0.14.3",
@@ -54,18 +51,13 @@
 		"npm-run-all": "4.1.5",
 		"oracledb": "5.3.0",
 		"pg": "8.7.1",
+		"postcss": "^8.4.7",
 		"prettier": "2.4.1",
 		"simple-git-hooks": "2.7.0",
-		"sqlite3": "5.0.2",
-		"stylelint": "14.1.0",
-		"stylelint-config-prettier": "9.0.3",
-		"stylelint-config-rational-order": "0.1.2",
-		"stylelint-config-standard": "23.0.0",
-		"stylelint-order": "5.0.0",
-		"stylelint-scss": "4.0.0",
+		"sqlite3": "5.0.6",
 		"supertest": "6.1.6",
 		"tedious": "13.2.0",
-		"ts-jest": "27.0.7",
+		"ts-jest": "27.1.3",
 		"ts-node": "10.4.0"
 	},
 	"simple-git-hooks": {
@@ -73,11 +65,10 @@
 	},
 	"lint-staged": {
 		"*.{js,ts,vue}": "eslint --fix",
-		"*.{md,yaml}": "prettier --write",
-		"*.{css,scss,vue}": "stylelint --fix --custom-syntax postcss-html"
+		"*.{md,yaml}": "prettier --write"
 	},
 	"volta": {
-		"node": "16.13.1",
+		"node": "16.13.2",
 		"npm": "8.1.4"
 	}
 }

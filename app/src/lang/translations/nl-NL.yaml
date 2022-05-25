@@ -1,36 +1,79 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificator
 avatar: Profielafbeelding
+application: Applicatie
+default_provider: Standaard
+published: Gepubliceerd
+draft: Concept
+archived: Gearchiveerd
+modules: Modules
+module_bar: Modulebalk
+tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
-item_revision: Item revisie
+maps: Kaarten
+switch_user: Andere gebruiker
+item_creation: Item Aanmaken
+item_revision: Item Revisie
+enter_a_name: Vul een naam in...
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
 group: Groep
+export_items: Exporteer items
 and: En
 or: Of
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
-enter_password_to_enable_tfa: Voer je wachtwoord in om Two-Factor Authentication te activeren
+enter_password_to_enable_tfa: Voer je wachtwoord in om Tweestapsverificatie in te schakelen
 add_field: Voeg Veld Toe
 role_name: Rol Naam
 branch: Tak
 leaf: Blad
 indeterminate: Onbepaald
+edit_collection: Collectie bewerken
 exclusive: Exclusief
 children: Onderliggende
+db_only_click_to_configure: 'Aleen in de databank: Klik om te configureren'
+show_active_items: Toon actieve items
 show_archived_items: Toon Gearchiveerde Items
+show_all_items: Toon alle items
 edited: Waarde bewerkt
 required: Vereist
 required_for_app_access: Vereist voor toegang tot de app
 requires_value: Vereist waarde
 create_preset: Voorkeur Aanmaken
+create_panel: Paneel maken
 create_role: Maak rol
 create_user: Gebruiker Aanmaken
+delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
+translation_string_translations_placeholder: Voeg nieuwe vertaling toe
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
+subject: Onderwerp
+inbox: Inbox
 emails: E-mails
 connection_excellent: Uitstekende Verbinding
 connection_good: Goede Verbinding
@@ -42,7 +85,6 @@ delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
 reset_bookmark: Reset Bladwijzer
-rename_bookmark: Hernoem Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
 delete_bookmark_copy: >-
@@ -52,6 +94,7 @@ logoutReason:
   SESSION_EXPIRED: Sessie verlopen
 public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
+admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
 not_allowed: Niet toegestaan
 directus_version: Directus Versie
 node_version: Node Versie
@@ -72,7 +115,6 @@ recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
 unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
 nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
-unknown_validation_errors: 'Er waren validatie-fouten voor de volgende verborgen velden:'
 validationError:
   eq: Waarde moet {valid} zijn
   neq: Waarde kan niet {invalid} zijn
@@ -96,6 +138,8 @@ no_access: Geen toegang
 use_custom: Gebruik aangepaste
 nullable: Mag NULL zijn
 allow_null_value: NULL waarde toestaan
+allow_multiple: Meerdere toestaan
+allow_multiple_to_be_open: Toestaan dat meerdere worden geopend
 enter_value_to_replace_nulls: Voer een nieuwe waarde in om alle NULL's in dit veld te vervangen.
 field_standard: Standaard
 field_presentation: Presentatie & Aliasen
@@ -116,6 +160,8 @@ fields_for_role: 'Velden die de rol "{role}" kan {action}.'
 validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
 presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
 presentation_and_aliases: Presentatie & Aliasen
+revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
+revision_post_update: Zo zag dit item eruit na de update.
 hide_field_on_detail: Veld Verbergen
 show_field_on_detail: Veld Tonen
 delete_field: Veld Verwijderen
@@ -124,9 +170,20 @@ field_create_success: 'Veld aangemaakt: "{field}"'
 field_update_success: 'Veld bijgewerkt: "{field}"'
 duplicate_where_to: Waar wil je dit veld naar dupliceren?
 language: Taal
+language_placeholder: Kies een taal...
+aggregate_function: Geaggregeerde Functie
 global: Wereldwijd
 admins_have_all_permissions: Admins hebben alle permissies
 camera: Camera
+show_zero: Toon nul
+sum: Som
+sum_distinct: Som Uniek
+avg: Gemiddeld
+avg_distinct: Gemiddeld Uniek
+count: Aantal
+count_distinct: Aantal Uniek
+min: Minimum
+max: Maximum
 exposure: Exposure
 shutter: Sluitertijd
 iso: ISO
@@ -144,8 +201,10 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Datum
+date_range: Datumbereik
 datetime: DateTime
 dateTime: DateTime
+precision: Precisie
 decimal: Decimaal
 float: Float
 integer: Integer
@@ -157,6 +216,10 @@ time: Tijd
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometrie (Alle)
+geometry.Point: Punt
+geometry.Polygon: Veelhoek
+geometry.MultiPoint: Multipoint
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_refresh: Automatische verversen
@@ -179,6 +242,8 @@ new_collection: 'Nieuwe collectie'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
+add_link: Link toevoegen
+custom_link: Aangepaste Link
 default_value: Standaardwaarde
 standard_field: Standaard veld
 single_file: Enkel bestand
@@ -191,10 +256,12 @@ invalid_item: Ongeldig item
 next: Volgende
 field_name: Veldnaam
 translations: Vertalingen
+no_translations: Geen vertalingen
 note: Notitie
 enter_a_value: Voer een waarde in...
 enter_a_placeholder: Voer een placeholder in...
 length: Lengte
+soft_length: Zachte limiet
 precision_scale: Precisie & schaal
 readonly: Alleen lezen
 unique: Uniek
@@ -205,11 +272,12 @@ foreign_key: Foreign Key
 finish_setup: Setup voltooien
 dismiss: Negeren
 raw_value: Ruwe waarde
+copy_raw_value_success: Gekopieerd
+copy_raw_value_fail: Kopiëren mislukt
+paste_raw_value_success: Geplakt
+paste_raw_value_fail: Plakken mislukt
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
-clear_value: Verwijder waarde
-reset_to_default: Terug naar standaardwaarde
-undo_changes: Ongedaan maken
 notifications: Notificaties
 show_all_activity: Alle activiteiten tonen
 page_not_found: Pagina niet gevonden
@@ -239,10 +307,14 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
-export_data: Gegevens exporteren
+import_data_button: Importeren starten
+import_data_indeterminate: Gegevens importeren...
+import_data_success: Gegevens succesvol geïmporteerd uit {filename}
+import_data_error: De gegevensstructuur van dit bestand komt niet overeen met de collectie.
+label_import: Importeren
+label_export: Exporteren
+import_export: Importeren / Exporteren
 format: Format
-use_current_filters_settings: Gebruik huidige filters & instellingen
-export_collection: 'Exporteer {collection}'
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde
@@ -258,12 +330,18 @@ interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
+functions:
+  year: Jaar
+  month: Maand
+  count: Aantal
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
+minutes: Minuten
+hours: Uren
 month: Maand
 year: Jaar
 select_all: Alles selecteren
@@ -298,6 +376,7 @@ zoom: Zoom
 download: Downloaden
 open: Openen
 open_in_new_window: Openen in nieuw venster
+open_folder: Open map "{folder}"
 foreground_color: Voorgrondkleur
 background_color: Achtergrond kleur
 upload_from_device: Bestand uploaden van apparaat
@@ -350,7 +429,12 @@ no_files_copy: Er zijn geen bestanden hier.
 user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
 no_users_copy: Er zijn nog geen gebruikers in deze rol.
 webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
+no_webhooks_copy: Er zijn nog geen webhooks geconfigureerd. Ga aan de slag door er hieronder een aan te maken.
+no_notifications: Geen meldingen
+no_notifications_copy: Je bent helemaal mee!
+activity_log: Activiteitenlogboek
 all_items: Alle items
+any: Eender
 csv: CSV
 no_collections: Geen collecties
 create_collection: Maak collectie
@@ -432,6 +516,7 @@ no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te geb
 password_reset_sent: We hebben je een beveiligde link gestuurd om je wachtwoord te resetten
 password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
 back: Terug
+filter: Filter
 editing_image: Afbeelding bewerken
 square: Vierkant
 free: Vrij
@@ -443,6 +528,7 @@ all_users: Alle gebruikers
 delete_collection: Collectie verwijderen
 update_collection_success: Collectie bijgewerkt
 delete_collection_success: Collectie verwijderd
+make_collection_visible: Maak Collectie Zichtbaar
 start_end_of_count_items: '{start}-{end} van {count} items'
 start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
 one_item: '1 item'
@@ -525,7 +611,9 @@ all_files: Alle bestanden
 my_files: Mijn bestanden
 recent_files: Recente bestanden
 create_folder: Map aanmaken
+edit_folder: Bewerk Map
 folder_name: Map Naam...
+folder_key: Mapsleutel...
 add_file: Bestand toevoegen
 replace_file: Vervang Bestand
 no_results: Geen resultaten
@@ -550,6 +638,17 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+insights: Inzichten
+dashboard: Dashboard
+panel: Paneel
+panel_options: Paneelopties
+panel_header: Paneelrubriek
+panel_name_placeholder: Benoem dit paneel...
+panel_note_placeholder: Optionele details over dit paneel...
+visible: Zichtbaar
+no_dashboards: Geen Dashboards
+no_dashboards_copy: Je hebt nog geen dashboards.
+no_data: Geen gegevens
 full_screen: Volledig scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
@@ -768,6 +867,7 @@ fields:
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
     custom_css: Aangepastte CSS
+    module_bar: Modulebalk
   directus_shares:
     name: Naam
     role: Rol
@@ -896,8 +996,10 @@ view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
   filter:
+    name: Filter
     add_filter: Filter toevoegen
     all: Alle
+    any: Eender
   presentation-links:
     primary: Primair
   input-code:
@@ -965,7 +1067,6 @@ interfaces:
     edit: Wijzig
     customSyntax: Aangepaste blokken
     box: Blok / Inline
-    imageToken: Afbeeldingstoken
   map:
     zoom: Zoom
   presentation-notice:
@@ -995,7 +1096,6 @@ interfaces:
     auto_formatter: Automatische titel formatter gebruiken
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
-    add_tags: Tags toevoegen...
   input:
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
@@ -1024,7 +1124,6 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
-    imageToken: Afbeeldingstoken
 displays:
   translations:
     translations: Vertalingen
@@ -1133,7 +1232,6 @@ layouts:
     subtitle: Ondertitel
   tabular:
     tabular: Tabel
-    fields: Velden
     spacing: Ruimte
     comfortable: Comfortabel
     compact: Compact

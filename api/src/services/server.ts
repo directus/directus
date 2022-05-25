@@ -12,8 +12,8 @@ import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
@@ -40,6 +40,7 @@ export class ServerService {
 				'project_descriptor',
 				'project_logo',
 				'project_color',
+				'default_language',
 				'public_foreground',
 				'public_background',
 				'public_note',

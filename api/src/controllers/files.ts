@@ -1,23 +1,23 @@
 import formatTitle from '@directus/format-title';
+import { toArray } from '@directus/shared/utils';
 import Busboy, { BusboyHeaders } from 'busboy';
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { toArray } from '@directus/shared/utils';
 
 const router = express.Router();
 
 router.use(useCollection('directus_files'));
 
-const multipartHandler = asyncHandler(async (req, res, next) => {
+export const multipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();
 
 	let headers: BusboyHeaders;
@@ -62,6 +62,10 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	});
 
 	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+		if (!filename) {
+			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
+		}
+
 		fileCount++;
 
 		if (!payload.title) {
@@ -103,16 +107,24 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 
 	function tryDone() {
 		if (savedFiles.length === fileCount) {
+			if (fileCount === 0) {
+				return next(new InvalidPayloadException(`No files where included in the body`));
+			}
+
 			res.locals.savedFiles = savedFiles;
 			return next();
 		}
 	}
-});
+};
 
 router.post(
 	'/',
-	multipartHandler,
+	asyncHandler(multipartHandler),
 	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false) {
+			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+		}
+
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -270,7 +282,7 @@ router.patch(
 
 router.patch(
 	'/:pk',
-	multipartHandler,
+	asyncHandler(multipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability,

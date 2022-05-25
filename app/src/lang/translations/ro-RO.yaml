@@ -1,120 +1,921 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificator
 avatar: Avatar
+application: Aplicație
 default_provider: Implicit
 published: Publicat
 draft: Ciornă
 archived: Arhivat
 modules: Module
 module_bar: Bară module
+reset_width: Resetează lățimea
+tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
-maps: Hărţi
-item_creation: Creare articol
-item_revision: Revizuire element
+maps: Hărți
+switch_user: Schimbă utilizatorul
+item_creation: Creare element
+item_revision: Versiune element
 enter_a_name: Introduceți un nume...
-duplicate_field: Duplicare câmp
-half_width: Jumătate de lăţime
-full_width: Lăţime totală
+duplicate_field: Duplică câmp
+half_width: Lățime înjumătățită
+full_width: Lățime completă
 group: Grup
-and: Şi
+export_items: Exportă elemente
+and: Și
 or: Sau
-fill_width: Umple lăţime
-field_name_translations: Traducerile numelui câmpului
-enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
+fill_width: Umple lățimea
+field_name_translations: Traduceri nume câmp
+enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi pași
 add_field: Adaugă câmp
-role_name: Nume de rol
+role_name: Nume rol
 branch: Ramură
 leaf: Frunză
+indeterminate: Nedeterminat
 edit_collection: Editează colecția
 exclusive: Exclusiv
 children: Copii
 db_only_click_to_configure: 'Doar baza de date: apăsați pentru configurare'
-show_archived_items: Arată elementele arhivate
+show_active_items: Afișează elementele active
+show_archived_items: Afișează elementele arhivate
+show_all_items: Afișează toate elementele
 edited: Valoare editată
-required: Necesar
-required_for_app_access: Necesar pentru acces aplicaţie
-requires_value: Necesită valoare
+required: Obligativitate
+required_for_app_access: Necesar pentru accesul în aplicație
+requires_value: Completare obligatorie
 create_preset: Creează presetare
-create_role: Creează Rol
+create_panel: Creează panou
+create_role: Creează rol
 create_user: Creează utilizator
+delete_panel: Șterge panou
 create_webhook: Creează Webhook
+create_translation_string: Crează șirul de traducere
+translation_string_key_placeholder: Cheie traducere șir...
+translation_string_translations_placeholder: Adauga o nouă traducere
+edit_translation_string: Editează Șirul de Traduceri
+delete_translation_string_copy: >-
+  Sunteţi sigur că doriţi să ştergeţi câmpul "{key}"? Această acţiune nu poate fi modificată ulterior.
 invite_users: Invită utilizatori
 invite: Invită
-emails: E-mailuri
+email_already_invited: Adresa "{email}" a fost deja invitată
+subject: Subiect
+inbox: Inbox
+emails: Emailuri
 connection_excellent: Conexiune excelentă
 connection_good: Conexiune bună
 connection_fair: Conexiune rezonabilă
 connection_poor: Conexiune slabă
-rename_folder: Redenumeşte folderul
-delete_folder: Şterge folderul
+primary: Principal
+rename_folder: Redenumește dosarul
+delete_folder: Șterge dosarul
+prefix: Prefix
+suffix: Sufix
 reset_bookmark: Resetează semnul de carte
-rename_bookmark: Redenumeşte semnul de carte
 update_bookmark: Actualizează semnul de carte
-delete_bookmark: Șterge semn de carte
+delete_bookmark: Șterge semnul de carte
 delete_bookmark_copy: >-
-  Sunteţi sigur că doriţi să ştergeţi semnul de carte "{bookmark}"? Această acţiune nu poate fi modificată ulterior.
+  Sigur doriți să ștergeți semnul de carte "{bookmark}"? Această acțiune nu va putea fi anulată.
+delete_personal_bookmark: Ștergere marcaj personal
+delete_role_bookmark: Ștergere marcaj roluri
+delete_global_bookmark: Ștergeți Marcajul Global
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
+public_label: Public
 public_description: Controlează ce date API sunt disponibile fără autentificare.
+admin_description: Rol administrativ inițial cu acces fără restricții la aplicație/API.
 not_allowed: Nu este permis
 directus_version: Versiune Directus
 node_version: Versiune Node
-node_uptime: Timp de activitate Node
-os_type: Tipul SO
-os_version: Versiunea SO
-os_uptime: Timpul de activitate al SO
-os_totalmem: Memoria SO
+node_uptime: Durată execuție Node
+os_type: Tip SO
+os_version: Versiune SO
+os_uptime: Durată execuție SO
+os_totalmem: Memorie SO
 archive: Arhivează
-archive_confirm: Sunteţi sigur că doriţi să arhivaţi acest element?
+archive_confirm: Sigur doriți să arhivați acest element?
 archive_confirm_count: >-
-  Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi aceste {count} elemente?
-unarchive: Dezarhivare
-unarchive_confirm: Sunteţi sigur că doriţi să dezarhivaţi acest element?
-nested_files_folders_will_be_moved: Fişierele şi folderele suprapuse vor fi mutate cu un nivel mai sus.
+  Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
+reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
+reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
+the_following_are_minimum_permissions: Acestea sunt permisiunile minim necesare pentru activarea opțiunii "Acces aplicații". Puteți extinde aceste permisiuni, dar nu le puteți restrânge.
+app_access_minimum: Minimul necesar pt. acces aplicație
+recommended_defaults: Valorile implicite recomandate
+unarchive: Dezarhivează
+unarchive_confirm: Sigur doriți să dezarhivați acest element?
+nested_files_folders_will_be_moved: Fișierele și dosarele conținute vor fi mutate cu un nivel în sus.
+validation_errors_notice: 'Următoarele câmpuri au valori invalide:'
+validationError:
+  eq: Valoarea trebuie să fie {valid}
+  neq: Valoarea nu poate fi {invalid}
+  in: Valoarea trebuie să fie una dintre {valid}
+  nin: Valoarea nu poate fi una dintre {invalid}
+  contains: Valoarea trebuie să conțină {substring}
+  ncontains: Valoarea nu poate conține {substring}
+  gt: Valoarea trebuie să fie mai mare de {valid}
+  gte: Valoarea trebuie să fie mai mare sau egală cu {valid}
+  lt: Valoarea trebuie să fie mai mică de {valid}
+  lte: Valoarea trebuie să fie mai mică sau egală cu {valid}
+  empty: Valoarea trebuie să fie goală
+  nempty: Valoarea nu poate fi goală
+  null: Valoarea trebuie să fie nulă
+  nnull: Valoarea nu poate fi nulă
+  required: Valoarea este obligatorie
+  unique: Valoarea trebuie să fie unică
+  regex: Valoarea nu are formatul corect
+all_access: Acces complet
+no_access: Fără acces
+use_custom: Acces personalizat
+nullable: Nulabil
+allow_null_value: Permite valoarea NULL
+allow_multiple: Permite mai multe
+allow_multiple_to_be_open: Permite ca mai multe să fie deschise
+enter_value_to_replace_nulls: Vă rugăm să introduceţi o nouă valoare pentru a înlocui orice valoare NULL din acest câmp.
+field_standard: Standard
+field_presentation: Prezentare și alias-uri
+field_file: Fișier unic
+field_files: Fişiere multiple
+field_m2o: Relație M2O
+field_m2a: Relație M2A
+field_o2m: Relație O2M
+field_m2m: Relație M2M
+field_translations: Traduceri
+field_group: Grup de câmpuri
+item_permissions: Permisiuni element
+field_permissions: Permisiuni câmp
+field_validation: Validare câmp
+field_presets: Presetări câmp
+permissions_for_role: 'Elemente pe care rolul {role} le poate {action}.'
+fields_for_role: 'Câmpuri pe care rolul {role} le poate {action}.'
+validation_for_role: 'Reguli ale câmpului {action} pe care rolul {role} trebuie să le respecte.'
+presets_for_role: 'Valori implicite ale câmpului pentru rolul {role}.'
+presentation_and_aliases: Prezentare și alias-uri
+revision_post_create: Iată cum arăta acest element când a fost creat.
+revision_post_update: Iată cum arăta acest element după actualizare.
+changes_made: Mai jos sunt modificările specifice aduse acestei revizuiri.
+no_relational_data: Rețineți că datele relaționale nu sunt incluse aici.
+hide_field: Ascundeți câmpul
+hide_field_on_detail: Ascunde câmpul în detalii
+show_field_on_detail: Arată câmpul în detalii
+delete_field: Ștergere câmp
+fields_and_layout: Câmpuri și aspect
+field_create_success: 'Câmp creat: „{field}”'
+field_update_success: 'Câmp actualizat: „{field}”'
+duplicate_where_to: Unde doriți să duplicați acest câmp?
+language: Limba
+language_placeholder: Selectați o limbă...
+aggregate_function: Funcție agregată
+aggregate_precision: Precizie agregată
+group_aggregation: Agregare de grup
+group_precision: Precizie grup
+global: Global
+admins_have_all_permissions: Administratorii au toate permisiunile
+camera: Cameră
+show_zero: Arată zero
+create_in_advanced_field_creation_mode: Crează câmp în modul avansat
+continue_in_advanced_field_creation_mode: Continuă în modul de creare a câmpurilor avansate
+validation: Validare
+sum: Sum
+sum_distinct: Sumă distinctă
+avg: Medie
+avg_distinct: Medie distinctă
+count: Numărătoare
+count_distinct: Numărătoare distinctă
+min: Minim
+max: Maxim
+exposure: Expunere
+shutter: Obturator
+iso: ISO
+focal_length: Lungime focală
+schema_setup_key: Numele coloanei din baza de date pentru acest câmp și cheia API
 create_field: Creează Câmp
+creating_new_field: 'Câmp nou ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Resetează preferințele paginii
+hidden_field: Câmp ascuns
+hidden_on_detail: Ascuns în detalii
+disabled_editing_value: Dezactivează valoarea de editare
+key: Cheie
+alias: Alias
+bigInteger: Întreg mare
+boolean: Boolean
+date: Data
+date_range: Perioada
+datetime: Dată și Oră
+dateTime: Dată și Oră
+precision: Precizie
+decimal: Zecimal
+float: Float
+integer: Întreg
+json: JSON
+xml: XML
+string: Şir (String)
+text: Text
+time: Timp
+timestamp: Marcă temporală
+uuid: UUID
+hash: Hash
+geometry: Geometrie (toate)
+geometry.Point: Punct
+geometry.LineString: Șir de linii (LineString)
+geometry.Polygon: Poligon
+geometry.MultiPoint: Multi-punct
+geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
+geometry.MultiPolygon: Multipoligon
+not_available_for_type: Indisponibil pentru acest tip
+create_translations: Creare traduceri
+auto_refresh: Actualizare automată
+refresh_interval: Interval de actualizare
+no_refresh: Dezactivat
+refresh_interval_seconds: Actualizează imediat | La fiecare secundă | La fiecare {seconds} secunde
+refresh_interval_minutes: La fiecare minut | La fiecare {minutes} minute
 auto_generate: Generare automată
+this_will_auto_setup_fields_relations: Aceasta va configura automat toate câmpurile şi relaţiile obligatorii.
+click_here: Click aici
+to_manually_setup_translations: pentru a configura manual traducerile.
+click_to_manage_translated_fields: >-
+  Nu există încă câmpuri traduse. Click aici pentru a le crea. | Există un câmp tradus. Click aici pentru a îl gestiona. Există {count} câmpuri traduse. Click aici pentru a le gestiona.
+fields_group: Grup de câmpuri
+no_collections_found: Nicio colecție găsită.
+new_data_alert: 'Următoarele vor fi create în cadrul modelului dumneavoastră de date:'
+search_collection: Căutare în colecție...
+new_field: 'Câmp nou'
+new_collection: 'Colecție nouă'
+add_m2o_to_collection: 'Adaugă M2O la "{collection}"'
+add_o2m_to_collection: 'Adaugă O2M la "{collection}"'
+add_m2m_to_collection: 'Adaugă M2M la "{collection}"'
+choose_a_type: Alege un tip...
+determined_by_relationship: Determinat de Relație
 add_note: Adaugă o notă ajutătoare pentru utilizatori...
+add_link: Adaugă link
+custom_link: Link personalizat
 default_value: Valoare implicită
+standard_field: Câmp standard
+single_file: Fişier unic
+multiple_files: Fişiere multiple
+m2o_relationship: Relație mai multe la unu (M2O)
+o2m_relationship: Relație unu la mai multe (O2M)
+m2m_relationship: Relație mai multe la mai multe (M2M)
+m2a_relationship: Relație mai multe la oricare (M2A)
+invalid_item: Element invalid
+next: Urmatorul
+field_name: Nume câmp
+translations: Traduceri
+no_translations: Nici o traducere
+note: Notă
+enter_a_value: Introduceți o valoare...
+enter_a_placeholder: Introduceți un substituent...
+length: Lungime
+soft_length: Limită permisivă
+precision_scale: Precizie & scară
+readonly: Doar citire (readonly)
+unique: Unic
+updated_on: Actualizat pe
+updated_by: Actualizat de
+primary_key: Cheie principală
+foreign_key: Cheie străină
+finish_setup: Finalizează configurarea
+dismiss: Renunţaţi
+raw_value: Valoare brută
+copy_raw_value: Copiază valoarea brută
+copy_raw_value_success: Copiat
+copy_raw_value_fail: Copiere eșuată
+paste_raw_value: Lipiți valoarea brută
+paste_raw_value_success: Lipit
+paste_raw_value_fail: Lipire eșuată
+view_raw_value: Vezi valoarea brută
+edit_raw_value: Editează valoarea brută
+enter_raw_value: Introduceți valoarea brută...
 clear_value: Șterge valoarea
+clear_changes: Șterge schimbările
+reset_to_default: Resetare la valorile implicite
+undo_changes: Anulează modificările
+notifications: Notificări
+show_all_activity: Afișează toată activitatea
+page_not_found: Pagina nu a fost găsită
+page_not_found_body: Pagina pe care o cauţi nu pare să existe.
+confirm_revert: Confirmare revenire
+confirm_revert_body: Această acțiune va reseta elementul la starea selectată.
+display: Afişare
+settings_update_success: Setări actualizate
 title: Titlu
+revision_delta_created: Creat
+revision_delta_created_externally: Creat extern
+revision_delta_updated: '1 câmp actualizat | {count} câmpuri actualizate'
+revision_delta_deleted: Șters
+revision_delta_reverted: Resetat
+revision_delta_other: Revizuire
+revision_delta_by: '{date} de {user}'
+private_user: Utilizator privat
+creation_preview: Previzualizare creare
+revision_preview: Previzualizare revizie
+updates_made: Actualizări realizate
+leave_comment: Lasă un comentariu...
+post_comment_success: Comentariu postat
+post_comment_updated: Comentariu actualizat
+item_create_success: Element creat | Elemente create
+item_update_success: Element actualizat | Elemente actualizate
+item_delete_success: Element șters | Elemente șterse
+this_collection: Această Colecție
+related_collection: Colecție conexă
+related_collections: Colecții conexe
+translations_collection: Colecție de traduceri
+languages_collection: Colecție de limbi
+import_data_input_placeholder: CSV sau JSON...
+import_data_button: Începe importul
+import_data_indeterminate: Se importă datele...
+import_data_success: Date importate cu succes din {filename}
+import_data_error: Structura de date a acestui fișier nu se potrivește cu colecția.
+label_import: Import
+label_export: Exportă
+import_export: Import / Export
+format: Format
+last_page: Ultima Pagină
+last_access: Ultima accesare
+fill_template: Completează cu valoarea din șablon
+a_unique_table_name: Un nume unic de tabel...
+a_unique_column_name: Un nume unic de coloană...
+enable_custom_values: Activare valori personalizate
+submit: Trimite
+move_to_folder: Mută într-un dosar
+move: Mutare
+system: Sistem
+add_field_related: Adaugă câmp la colecția conexă
+interface_label: Interfață
+today: Azi
+yesterday: Ieri
+delete_comment: Ștergere comentariu
+delete_share: Șterge distribuire
+functions:
+  year: An
+  month: Lună
+  week: Săptămână
+  day: Zi
+  weekday: Zi din săptămână
+  hour: Oră
+  minute: Minut
+  second: Secundă
+  count: Numărătoare
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM, d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: d MMM
+minutes: Minute
+hours: Ore
+month: Lună
+year: An
+select_all: Selectează tot
+months:
+  january: Ianuarie
+  february: Februarie
+  march: Martie
+  april: Aprilie
+  may: Mai
+  june: Iunie
+  july: Iulie
+  august: August
+  september: Septembrie
+  october: Octombrie
+  november: Noiembrie
+  december: Decembrie
+drag_mode: Mod tragere
+cancel_crop: Anulează decuparea
+original: Original
+url: URL
+import_label: Importă
+file_details: Detalii fișier
+dimensions: Dimensiuni
+size: Mărime
+created: Creat
+modified: Modificat
 checksum: Sumă de control
 owner: Proprietar
+edited_by: Editat de
+folder: Dosar
+zoom: Zoom
 download: Descărcați
+open: Deschide
+open_in_new_window: Deschide în fereastră nouă
+open_folder: Deschide dosarul „{folder}”
+foreground_color: Culoare prim plan
+background_color: Culoare fundal
+upload_from_device: Încarcă fișier de pe dispozitiv
+choose_from_library: Alegeți fișierul din bibliotecă
+import_from_url: Importă fișierul din url
+replace_from_device: Înlocuiţi fişierul de pe dispozitiv
+replace_from_library: Înlocuiește fișierul din bibliotecă
+replace_from_url: Înlocuiţi fişierul din url
+no_file_selected: Niciun fișier selectat
+download_file: Descarcă fișier
+open_file_in_tab: Deschideți în filă nouă
+start_export: Începe exportul
+collection_key: Cheie colecție
+name: Nume
+primary_key_field: Câmp cheie principală
+type: Tip
+creating_new_collection: Crearea unei colecții noi
 created_by: Creat De
 created_on: Creat Pe
+creating_collection_info: Numește colecția și setează câmpul său „cheie” unic...
+creating_collection_system: Activează și redenumește oricare dintre aceste câmpuri opționale.
+auto_increment_integer: Numar incrementat automat
+generated_uuid: UUID generat
+manual_string: Șir introdus manual
+save_and_create_new: Salvează și creează nou
+save_and_stay: Salvează și rămâi
+save_as_copy: Salvează sub formă de copie
+add_existing: Adaugă existent
+creating_items: Creare de elemente
+enable_create_button: Activează butonul de creare
+selecting_items: Selectare elemente
+enable_select_button: Activează butonul de selectare
 comments: Comentarii
+no_comments: Nici un comentariu încă
+click_to_expand: Click pentru a extinde
+select_item: Selectaţi elementul
+no_items: Niciun element
+search_items: Caută elemente...
+disabled: Dezactivat
+information: Informaţii
+report_bug: Raportare eroare
+request_feature: Solicită o funcționalitate
+interface_not_found: 'Interfața "{interface}" nu a fost găsită.'
+reset_interface: Resetează interfața
+display_not_found: 'Afișarea "{display}" nu a fost găsită.'
+reset_display: Resetare afişaj
+list-m2a: Constructor (M2A)
+item_count: 'Nu există elemente | Un element | {count} elemente'
+no_items_copy: Această colecție nu conține vreun element.
+file_count: 'Nu există fișiere | Un fișiere | {count} fișiere'
+no_files_copy: Nu există fişiere aici.
+user_count: 'Niciun utilizator | Un Utilizator | {count} utilizatori'
+no_users_copy: Nu sunt utilizatori în acest rol.
+webhooks_count: 'Niciun Webhook | Un Webhook | {count} Webhook-uri'
+no_webhooks_copy: Nici un webhook nu a fost configurat încă. Începeți prin a crea unul de mai jos.
+no_notifications: Nicio notificare
+no_notifications_copy: Ești cu toate la zi!
+activity_log: Jurnal de activitate
+all_items: Toate elementele
+any: Oricare
+csv: CSV
+no_collections: Nicio colecție
 create_collection: Creează Colecție
+no_collections_copy_admin: Încă nu aveți nicio colecție. Click pe butonul de mai jos pentru a începe.
+no_collections_copy: Încă nu aveți nicio colecție. Vă rugăm să contactați administratorul de sistem.
+relationship_not_setup: Relația nu a fost configurată corect
+display_template_not_setup: Opțiunea de afișare a șablonului este configurată greșit
+collection_field_not_setup: Opțiunea câmpului de colecții este configurată greșit
+select_a_collection: Selectează o colecție
+select_a_field: Selectează un câmp
+active: Activ
+move_to: Mutare în...
+copy: Copiază
+copy_to: Copiază în...
+no_other_dashboards_copy: Încă nu aveți alte tablouri de bord.
+inactive: Inactiv
 users: Utilizatori
 activity: Activitate
+activity_item: Element de activitate
 action: Acţiune
 ip_address: Adresă IP
 user_agent: User Agent
+webhooks: Webhook-uri
+decimals: Zecimale
+value_decimals: Valoare zecimale
+min_value: Valoare minimă
+max_value: Valoare maximă
+automatic: Automat
+field_width: Lățime câmp
+add_filter: Adaugă filtru
+upper_limit: Limita superioară...
+lower_limit: Limită inferioară...
+user_directory: Listă utilizatori
+documentation: Documentație
+sidebar: Bară laterală
 duration: Durată
+charset: Setul de caractere
+second: secundă
+file_moved: Fișier mutat
+collection_created: Colecție creată
+modified_on: Modificat la
+card_size: Mărimea cardului
+sort_field: Câmp de sortare
+add_sort_field: Adaugă câmp de sortare
+sort: Sortează
 status: Stare
+remove: Elimină
+toggle_manual_sorting: Activează sortarea manuală
+bookmark_doesnt_exist: Semnul de carte nu există
+bookmark_doesnt_exist_copy: Semnul de carte pe care încerci să îl deschizi nu a putut fi găsit.
+bookmark_doesnt_exist_cta: Revenire la colecție
+select_an_item: Selectați un element...
+edit: Editare
+enabled: Activat
+disable_tfa: Dezactivează 2FA
+tfa_scan_code: Scanează codul din aplicația de autentificare pentru a finaliza configurarea 2FA
+enter_otp_to_disable_tfa: Introduceți OTP pentru a dezactiva 2FA
+create_account: Creare cont
+account_created_successfully: Cont creat cu succes
+auto_fill: Completare automată
+corresponding_field: Câmp corespondent
+errors:
+  COLLECTION_NOT_FOUND: "Colecția nu există"
+  FIELD_NOT_FOUND: Câmpul nu a fost găsit
+  FORBIDDEN: Interzis
+  INVALID_CREDENTIALS: Nume utilizator sau parolă greșite
+  INVALID_OTP: Parolă de unică folosință greșită
+  INVALID_PAYLOAD: Conținut invalid
+  INVALID_QUERY: Interogare invalidă
+  ITEM_LIMIT_REACHED: S-a atins limita de elemente
+  ITEM_NOT_FOUND: Elementul nu a fost găsit
+  ROUTE_NOT_FOUND: Nu a fost găsit
+  RECORD_NOT_UNIQUE: Valoare duplicat detectată
+  USER_SUSPENDED: Utilizator suspendat
+  CONTAINS_NULL_VALUES: Câmpul conține valori null
+  UNPROCESSABLE_ENTITY: Entitate neprocesabilă
+  INTERNAL_SERVER_ERROR: Eroare neașteptată
+  NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
+  ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
+  VALUE_TOO_LONG: Valoarea este prea lungă
+  VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
+  INVALID_FOREIGN_KEY: Cheie străină nevalidă
+  UNKNOWN: Eroare neașteptată
+security: Securitate
+value_hashed: Valoare criptată în mod securizat
+bookmark_name: Denumirea semnului de carte...
+create_bookmark: Creează semn de carte
+edit_bookmark: Editează semn de carte
 bookmarks: Semne de carte
+presets: Presetări
+unexpected_error: Eroare neașteptată
+unexpected_error_copy: A apărut o eroare neașteptată. Te rugăm să încerci din nou mai târziu.
+copy_details: Copiază detaliile
+no_app_access: Fără acces la aplicație
+no_app_access_copy: Acest utilizator nu are permisiunea de a utiliza aplicația de administrare.
+password_reset_sent: Ți-am trimis un link securizat pentru a-ți reseta parola
+password_reset_successful: Parola a fost modificată cu succes
 back: Înapoi
+filter: Filtru
+editing_image: Editare imagine
+square: Pătrat
+free: Liber
+flip_horizontal: Întoarce orizontal
+flip_vertical: Întoarce vertical
+aspect_ratio: Proporție
+rotate: Rotire
+all_users: Toți utilizatorii
+delete_collection: Șterge Colecția
+update_collection_success: Colecție actualizată
+delete_collection_success: Colecție ștearsă
+make_collection_visible: Faceți colecția vizibilă
+make_collection_hidden: Ascundeți colecția
+make_folder_visible: Fă vizibil dosarul
+make_folder_hidden: Ascunde dosarul
+start_end_of_count_items: '{start}-{end} din {count} elemente'
+start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
+one_item: '1 element'
+one_filtered_item: '1 element filtrat'
+delete_collection_are_you_sure: >-
+  Sigur doriți să ștergeți această colecție? Această acțiune va șterge colecția și toate articolele din ea. Acțiunea este permanentă.
+delete_folder_are_you_sure: Sigur doriți să ștergeți acest dosar? Dosarele și colecțiile conținute vor fi mutate la nivelul cel mai de sus.
+collections_shown: Colecții afișate
+visible_collections: Colecții vizibile
+hidden_collections: Colecții ascunse
+show_hidden_collections: Arată colecțiile ascunse
+hide_hidden_collections: Ascunde colecțiile ascunse
+show_header: Arată antet
+unmanaged_collections: Colecții neconfigurate
+system_collections: Colecții de sistem
+placeholder: Substituent (placeholder)
+icon_left: Pictograma stânga
+icon_right: Pictograma dreapta
+count_other_revisions: '{count} alte revizuiri'
+font: Font
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospațiu
+divider: Separator
+color: Culoare
+circle: Cerc
+empty_item: Element gol
+log_in_with: 'Conectează-te cu {provider}'
+conditional_styles: Stiluri condiționale
+advanced_settings: Setări avansate
+advanced_filter: Filtru avansat
+delete_advanced_filter: Ștergere filtru
+change_advanced_filter_operator: Schimbă operatorul
 operators:
+  eq: Egal
+  neq: Nu este egal
+  lt: Mai mic decât
   gt: Mai mare ca
+  lte: Mai mic sau egal cu
   gte: Mai mare sau egal cu
+  in: Este unul dintre
+  nin: Nu este unul dintre
+  null: Este nul
+  nnull: Nu este nul
   contains: Conține
+  ncontains: Nu conține
+  starts_with: Începe cu
+  nstarts_with: Nu începe cu
+  ends_with: Se termină cu
+  nends_with: Nu se termină cu
+  between: Este între
+  nbetween: Nu este între
+  empty: Este gol
+  nempty: Nu este gol
+  all: Conține aceste chei
+  has: Conține unele dintre aceste chei
+  intersects: Intersectează
+  nintersects: Nu intersectează
+  intersects_bbox: Intersectează caseta de încadrare
+  nintersects_bbox: Nu intersectează caseta de încadrare
+loading: Se încarcă...
+drop_to_upload: Plasează pentru a încărca
+item: Element
+items: Elemente
+upload_file: Încarcă fișier
+upload_file_indeterminate: Se încarcă fișierul...
+upload_file_success: Fișier încărcat
+upload_files_indeterminate: 'Se încarcă fișierele {done}/{total}'
+upload_files_success: '{count} fișiere încărcate'
+upload_pending: Încărcare în așteptare
+drag_file_here: Trageți și plasați un fișier aici
+click_to_browse: Click pentru a naviga
+interface_options: Opțiuni interfață
+layout_options: Opțiuni aspect
+rows: Rânduri
+columns: Coloane
+collection_setup: Configurare colecție
+optional_system_fields: Câmpuri de sistem opționale
+value_unique: Valoarea trebuie să fie unică
+all_activity: Toată activitatea
+create_item: Creează element
+display_template: Afişare şablon
+language_display_template: Șablon de afişare a limbii
+translations_display_template: Șablon de afișare a traducerilor
+n_items_selected: 'Niciun element selectat | Un element selectat | {n} elemente selectate'
+per_page: Elemente per pagină
+all_files: Toate fişierele
+my_files: Fișierele mele
+recent_files: Fișiere recente
+create_folder: Adaugă dosar
+edit_folder: Editează dosar
+folder_name: Nume dosar...
+folder_key: Cheie dosar...
+add_file: Adaugă fișier
+replace_file: Înlocuire fişier
+no_results: Niciun rezultat
+no_results_copy: Ajustaţi sau ştergeţi filtrele de căutare pentru a vedea rezultatele.
+clear_filters: Șterge filtrele
+saves_automatically: Se salvează automat
 role: Rol
+rule: Regulă
+user: Utilizator
+no_presets: Fără presetări
+no_presets_copy: Nu au fost salvate deocamdată presetări sau marcaje.
+no_presets_cta: Adăugare presetare
+presets_only: Numai presetări
 create: Creează
+on_create: La creare
+on_update: La actualizare
+read: Citire
+update: Actualizare
+select_fields: Selectare câmpuri
+format_text: Formatați textul
+format_value: Formatați valoarea
+abbreviate_value: Abreviați valoarea
+operator: Operator
+bold: Bold
+toggle: Comutare
+icon_on: Pictogramă activată
+icon_off: Pictogramă dezactivată
+label: Etichetă
+insights: Analize
+dashboard: Panou
+panel: Panou
+panel_options: Opțiuni panou
+panel_header: Antet panou
+panel_name_placeholder: Numește acest panou...
+panel_note_placeholder: Detalii opționale despre acest panou...
+panel_delete_confirm: Sunteţi sigur că doriţi să ştergeţi acest panou? Această acţiune nu poate fi anulată.
+dashboard_delete_confirm: Sunteţi sigur că doriţi să ştergeţi acest tablou de bord? Această acţiune nu poate fi anulată.
+edit_dashboard: Editare tablou de bord
+delete_dashboard: Ştergere tablou de bord
+visible: Vizibil
+prefix_placeholder: Text înainte de valoare...
+suffix_placeholder: Text după valoare...
+decimals_placeholder: Numărul de zecimale...
+no_dashboards: Niciun tablou de bord
+no_dashboards_copy: Încă nu aveți tablouri de bord.
+no_data: Nu există date
+create_dashboard: Creează tablou de bord
+dashboard_name: Nume tablou de bord
+full_screen: Pe tot ecranul
+edit_panels: Editare panouri
+fit_to_screen: Potrivire pe ecran
+image_url: Url imagine
+alt_text: Text alternativ
+media: Media
+quality: Calitate
 width: Lățime
 height: Înălţime
+source: Sursa
+url_placeholder: Introduceți un url...
+display_text: Afișare text
+display_text_placeholder: Introduceți un text de afișat...
+interface_group_text_and_numbers: Text & Numere
+interface_group_selection: Selecţie
+interface_group_relational: Relațional
+interface_group_presentation: Prezentare
+interface_group_groups: Grupuri
+interface_group_other: Altele
+tooltip: Sugestii
+tooltip_placeholder: Introduceți o sugestie...
+unlimited: Nelimitat
+open_link_in: Deschide link-ul în
+new_tab: Tab Nou
+current_tab: Tab curent
+save_image: Salvează imaginea
+save_media: Salvează media
 wysiwyg_options:
+  aligncenter: Aliniere centru
+  alignjustify: Aliniere pe toată lățimea
+  alignleft: Aliniere la stânga
+  alignnone: Nicio aliniere
+  alignright: Aliniere la dreapta
+  forecolor: Culoare prim plan
+  backcolor: Culoare fundal
+  bold: Bold
+  italic: Cursiv
+  underline: Subliniat
+  strikethrough: Tăiat
+  subscript: Scris jos
+  superscript: Scris sus
+  codeblock: Cod
+  blockquote: Citat
+  bullist: Listă punctată
+  numlist: Listă numerotată
+  hr: Linie orizontală
+  link: Adaugă/editează link
+  unlink: Șterge link
+  media: Adaugă/editează media
+  image: Adaugă/editează imagine
+  copy: Copiază
+  cut: Taie
+  paste: Lipește
+  heading: Titlu
+  h1: Titlu 1
+  h2: Titlu 2
+  h3: Titlu 3
+  h4: Titlu 4
+  h5: Titlu 5
+  h6: Titlu 6
+  fontselect: Selectează fontul
+  fontsizeselect: Selectează mărimea fontului
+  indent: Indent
+  outdent: Outdent
+  undo: Anulează
+  redo: Refă
+  remove: Elimină
+  removeformat: Elimină formatarea
+  selectall: Selectează tot
   table: Tabel
+  visualaid: Vezi elementele invizibile
+  source_code: Editează codul sursă
+  fullscreen: Pe tot ecranul
+  directionality: Direcționalitate
+dropdown: Listă verticală
 choices: Opțiuni
+choices_option_configured_incorrectly: Opțiuni configurate incorect
 deselect: Deselectaţi
+deselect_all: Deselectează tot
+other: Altele...
+adding_user: Adăugare utilizator
+unknown_user: Utilizator necunoscut
+creating_in: 'Creare element în {collection}'
+editing_in: 'Editare element în {collection}'
+viewing_in: 'Se vizualizează elementul în {collection}'
+creating_unit: 'Se creează {unit}'
+editing_unit: 'Editare {unit}'
 editing_in_batch: 'Editare lot de {count} elemente'
+no_options_available: Nicio opțiune disponibilă
+settings_data_model: Model de date
+settings_permissions: Roluri şi permisiuni
+settings_project: Setările proiectului
+settings_webhooks: Webhook-uri
+settings_presets: Presetări și semne de carte
+one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
+scope: Scope
+select: Selectare...
+layout: Aspect
+tree_view: Vizualizare ramificată
+changes_are_permanent: Schimbările sunt permanente
+preset_name_placeholder: Servește ca implicit atunci când e gol...
+preset_search_placeholder: Șir de căutare...
+editing_preset: Editare presetare
+layout_preview: Previzualizare aspect
+layout_setup: Configurare aspect
+unsaved_changes: Modificări nesalvate
+unsaved_changes_copy: Ești sigur că vrei să părăsești această pagină?
 discard_changes: Renunță la modificări
+discard_all_changes: Renunță la toate modificările
+discard_changes_copy: Ești sigur că vrei să renunți la toate modificările făcute?
+show_x_axis: Arată axa X
+show_y_axis: Arată axa Y
+keep_editing: Continuă editarea
+page_help_collections_overview: '**Prezentare generală colecție** - Lista tuturor colecțiilor la care aveți acces.'
+page_help_collections_collection: >-
+  **Răsfoiește elementele** — Listează toate elementele {collection} la care ai acces. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
+page_help_collections_item: >-
+  **Detaliile elementului** - Un formular pentru vizualizarea și gestionarea acestui element. Această bară conține de asemenea o istorie completă a revizuirilor și a comentariilor încorporate.
+page_help_activity_collection: >-
+  **Răsfoiește activitatea** — O listare cuprinzătoare a întregii activității în sistem și conținut a utilizatorilor tăi.
+page_help_docs_global: >-
+  **Prezentare generală a documentației** - Documente special adaptate versiunii și schemei acestui proiect.
+page_help_files_collection: >-
+  **Bibliotecă de fișiere** - Listează toate activele fișierelor încărcate în acest proiect. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
+page_help_files_item: >-
+  **Detaliile fișierului** - Un formular pentru gestionarea metadatelor fișierelor, editarea activului original și actualizarea setărilor de acces.
+page_help_settings_project: "**Setări proiect** — Opțiuni de configurare globală a proiectului tău."
+page_help_settings_datamodel_collections: >-
+  **Modelul de date: Colecții** — Listează toate colecțiile disponibile. Aceasta include colecții vizibile, ascunse și de sistem, precum și tabele de baze de date negestionate care pot fi adăugate.
+page_help_settings_datamodel_fields: >-
+  **Modelul de date: Colecție** — Un formular pentru gestionarea acestei colecții și a câmpurilor sale.
+page_help_settings_roles_collection: '**Răsfoiește roluri** — Listează rolurile de utilizator Admin, Public și personalizat.'
+page_help_settings_roles_item: "**Detaliile rolurilor** - Gestionează permisiunile unui rol și alte setări."
+page_help_settings_presets_collection: >-
+  **Răsfoiește presetările** — Listează toate presetările din proiect, inclusiv: utilizatorul, rolul și semnele de carte globale, precum și vizualizările implicite.
+page_help_settings_presets_item: >-
+  **Detalii presetare** — Un formular pentru gestionarea marcajelor și presetărilor implicite de colectare.
+page_help_settings_webhooks_collection: '**Răsfoiește Webhooks** — Listează toate webhook-urile din cadrul proiectului.'
+page_help_settings_webhooks_item: '**Webhook Detail** - Un formular pentru crearea și gestionarea webhook-urilor proiectului.'
+page_help_users_collection: '**Listă utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
+page_help_users_item: >-
+  **Detaliile utilizatorului** - Gestionați informațiile despre cont sau vizualizați detaliile altor utilizatori.
+page_help_insights_overview: '**Analize** - Lista tablourilor de bord la care ai acces.'
+page_help_insights_dashboard: '**Tablou de bord** - Spațiu de lucru pentru administrarea unuia sau mai multor panouri'
+activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
+create_new: Adaugă
 all: Tot
+none: Niciunul
+no_layout_collection_selected_yet: Nici un aspect/colecție selectate încă
 batch_delete_confirm: >-
   Nu au fost selectate articole | Sigur doriți să ștergeți acest articol? Această acțiune nu poate fi anulată. | Sigur doriți să ștergeți aceste {count} elemente? Această acțiune nu poate fi anulată.
 cancel: Anulează
+no_upscale: Nu suprascala imaginile
 collection: Colecție
 collections: Colecții
+content: Conținut
+singleton: Singleton
+singleton_label: Tratează ca un singur obiect
+system_fields_locked: Câmpurile de sistem sunt blocate și nu pot fi editate
+directus_collection:
+  directus_activity: Jurnale de responsabilitate pentru toate evenimentele
+  directus_collections: Configurare suplimentară pentru colecții și metadate
+  directus_dashboards: Tablouri de bord din modulul de analize
+  directus_fields: Configurare suplimentară pentru colecții și metadate
+  directus_files: Metadate pentru toate activele gestionate în fișier
+  directus_folders: Oferă directoare virtuale pentru fișiere
+  directus_migrations: Ce versiune a bazei de date utilizaţi
+  directus_panels: Panouri individuale din tablourile de bord pentru analize
+  directus_permissions: Accesați permisiunile pentru fiecare rol
+  directus_notifications: Notificări trimise utilizatorilor
+  directus_presets: Presetări pentru valorile implicite ale colecțiilor și semne de carte
+  directus_relations: Configurarea relației și metadate
+  directus_revisions: Instantanee cu date pentru toată activitatea
+  directus_roles: Grupuri de permisiuni pentru utilizatorii de sistem
+  directus_sessions: Informații sesiune utilizator
+  directus_settings: Opțiuni de configurare proiect
+  directus_shares: Contorizează elementele partajate extern
+  directus_users: Utilizatorii de sistem pentru platformă
+  directus_webhooks: Configurare pentru cereri HTTP bazate pe evenimente
 fields:
   directus_activity:
     item: Cheia primară a elementului
@@ -125,24 +926,46 @@ fields:
     comment: Comentariu
     user_agent: User Agent
     ip: Adresă IP
+    revisions: Revizii
   directus_collections:
     collection: Colecție
-    icon: Iconiță
+    icon: Pictogramă
+    note: Notă
+    color: Culoare
+    display_template: Afişare şablon
     hidden: Ascuns
+    singleton: Singleton
+    translations: Traduceri pentru denumirile de colecție
+    archive_app_filter: Arhivează filtrul aplicației
+    archive_value: Arhivează valoarea
+    unarchive_value: Dezarhivează valoarea
+    sort_field: Sortează câmpul
+    accountability: Urmărire activitate și revizuire
+    archive_field: Câmp arhivă
+    item_duplication_fields: Câmpuri pentru duplicarea elementului
   directus_files:
+    $thumbnail: Miniatură
     title: Titlu
     description: Descriere
     tags: Etichete
     location: Locație
+    storage: Stocare
+    filename_disk: Nume fișier (Disk)
+    filename_download: Nume fișier (Download)
     metadata: Metadate
+    type: Mime Type
     filesize: Dimensiune fişier
+    modified_by: Modificat de
+    modified_on: Modificat la
     created_on: Creat Pe
     created_by: Creat De
     embed: Încorporați
     uploaded_by: Încărcat de
+    folder: Dosar
     width: Lățime
-    uploaded_on: Încărcat pe
+    uploaded_on: Încărcat la
     height: Înălţime
+    charset: Setul de caractere
     duration: Durată
   directus_users:
     first_name: Prenume
@@ -154,79 +977,789 @@ fields:
     title: Titlu
     description: Descriere
     tags: Etichete
+    user_preferences: Preferințe utilizator
+    language: Limba
     theme: Temă
+    theme_auto: Automat (bazat pe sistem)
+    theme_light: Mod luminos
+    theme_dark: Mod întunecat
     tfa_secret: Autentificare în doi pași
+    admin_options: Opţiuni Admin
     status: Stare
+    status_draft: Ciornă
+    status_invited: Invitat
+    status_active: Activ
+    status_suspended: Suspendat
+    status_archived: Arhivat
     role: Rol
+    token: Token
+    token_placeholder: Introduceți un token de acces securizat...
+    provider: Furnizor
+    external_identifier: Identificator extern
+    last_page: Ultima Pagină
+    last_access: Ultima accesare
+    email_notifications: Notificări prin e-mail
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: Mapare
+    basemaps: Basemaps
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stil Mapbox
+    mapbox_key: Token-ul de acces Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribuire
+    attribution_placeholder: '© contributori OpenStreetMap'
+    transforms_note: Numele metodei Sharp și argumentele sale. Vezi https://sharp.pixelplumbing.com/api-constructor pentru mai multe informații.
+    additional_transforms: Transformări suplimentare
+    project_name: Nume proiect
+    project_descriptor: Descriere proiect
+    project_url: Url proiect
+    project_color: Culoare proiect
+    project_logo: Logo proiect
+    default_language: Limba implicită
+    branding: Branding și stil
+    public_foreground: Prim-plan public
+    public_background: Fundal public
+    public_note: Notă publică
+    auth_password_policy: Politică setări parole
+    auth_login_attempts: Încercări de conectare
+    files_and_thumbnails: Fișiere și stocare
+    storage_default_folder: Dosar implicit
+    storage_asset_presets: Presetări de transformare
+    storage_asset_transform: Transformări permise
+    overrides: Suprascrieri ale aplicației
+    custom_css: CSS personalizat
     module_bar: Bară module
+    transformations_all: Permite toate transformările
+    transformations_none: Dezactivează transformările
+    transformations_presets: Limitează transformările la presetările de mai jos
   directus_shares:
+    name: Nume
     role: Rol
     password: Parolă
+    date_start: Data de început
+    date_end: Data de sfârșit
+    max_uses: Utilizări maxime
+    times_used: Număr de utilizări
   directus_fields:
+    collection: Numele colecției
+    icon: Pictogramă colecție
+    note: Notă
     hidden: Ascuns
-    translation: Traducerile numelui câmpului
+    singleton: Singleton
+    translation: Traduceri nume câmp
+    display_template: Șablon
   directus_roles:
-    name: Nume de rol
+    name: Nume rol
+    icon: Pictogramă rol
     description: Descriere
+    app_access: Acces aplicație
+    admin_access: Acces administrator
+    ip_access: Acces IP
+    enforce_tfa: Necesită 2FA
+    users: Utilizatori în rol
+    module_list: Navigare în module
   directus_webhooks:
+    name: Nume
+    method: Metodă
     status: Stare
+    data: Date
+    header: Antet
+    value: Valoare
+    headers: Antetele cererii (request headers)
+    data_label: Trimite date eveniment
+    triggers: Declanșatori
+    actions: Acțiuni
     collections: Colecții
 field_options:
+  directus_settings:
+    project_name_placeholder: Proiectul meu...
+    project_color_note: Logo și fundal logo
+    project_logo_note: 'Alb: 40x40 SVG/PNG'
+    public_note_placeholder: Un mesaj public scurt care acceptă formatarea markdown...
+    security_divider_title: Securitate
+    auth_password_policy:
+      none_text: Niciunul – nerecomandat
+      weak_text: Slabă – Minim 8 caractere
+      strong_text: Puternică – majusculă / minusculă / numere / special
+    storage_asset_presets:
+      fit_label: Potrivire
+      upscaling: Suprascalare
+      fit:
+        contain_text: Încadrează (păstrează proporția)
+        cover_text: Acoperă (forțează mărime exactă)
+        fit_text: Potrivire în interior
+        outside_text: Potrivire în exterior
+    additional_transforms: Transformări suplimentare
+    transforms_note: Numele metodei Sharp și argumentele sale. Vezi https://sharp.pixelplumbing.com/api-constructor pentru mai multe informații.
+    mapbox_key: Token-ul de acces Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
+    basemaps_name_placeholder: Introduceți numele de basemap...
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stil Mapbox
+    files_divider_title: Fișiere și miniaturi
+    overrides_divider_title: Suprascrieri peste aplicație
   directus_activity:
-    create: Creează
+    login: Autentificare
+    create: Creare
+    update: Actualizare
+    delete: Ștergere
   directus_collections:
-    archive_divider: Arhivează
+    track_activity_revisions: Urmărire activitate și revizii
+    only_track_activity: Urmărește doar activitatea
+    do_not_track_anything: Nu urmări nimic
+    collection_setup: Configurare colecție
+    note_placeholder: O descriere a acestei colecții...
+    hidden_label: Ascunde în aplicație
+    singleton: Tratează ca un singur obiect
+    language: Limba
+    translation: Traducere
+    translation_placeholder: Introduceți o traducere...
+    collection_name: Numele colecției
+    singular_unit: Unitate la singular
+    plural_unit: Unitate la plural
+    archive_divider: Arhivare
+    archive_field_placeholder: Alegeți un câmp...
+    archive_app_filter: Activează filtrul de arhivă al aplicației
+    archive_value: Valoare setată la arhivare...
+    unarchive_value: Valoare setată la dezarhivare...
+    sort_divider: Sortează
+    sort_field: Alegeți un câmp...
+    accountability_divider: Responsabilitate
+    duplication_divider: Duplicare
+  directus_files:
+    title: Un titlu unic...
+    description: O descriere opțională...
+    location: O locație opțională...
+    storage_divider: Numirea fișierelor
+    filename_disk: Nume la stocarea pe disc...
+    filename_download: Nume la descărcare...
   directus_roles:
+    name: Numele unic pentru acest rol...
+    description: O descriere a acestui rol...
+    ip_access: Adaugă adresele IP permise, lasă gol pentru a le permite pe toate...
     fields:
-      icon_name: Iconiță
+      icon_name: Pictogramă
+      name_name: Nume
+      name_placeholder: Introduceți un titlu...
+      link_name: Link
+      link_placeholder: URL relativ sau absolut...
     collections_name: Colecții
+    collections_addLabel: Adaugă Colecție...
+  directus_users:
+    preferences_divider: Preferințe utilizator
+    dropdown_auto: Automat (bazat pe sistem)
+    dropdown_light: Mod luminos
+    dropdown_dark: Mod întunecat
+    admin_divider: Opţiuni Admin
+    status_dropdown_draft: Ciornă
+    status_dropdown_invited: Invitat
+    status_dropdown_active: Activ
+    status_dropdown_suspended: Suspendat
+    status_dropdown_archived: Arhivat
+    token: Introduceți un token de acces securizat...
   directus_webhooks:
+    status_options_active: Activ
+    status_options_inactive: Inactiv
+    data_label: Trimite date eveniment
+    triggers_divider: Declanșatori
     actions_create: Creează
+    actions_update: Actualizare
+    actions_delete: Ștergere
+    actions_login: Autentificare
+    headers:
+      header: Antet
+      value: Valoare
+      add: Adaugă antet
+no_fields_in_collection: 'Încă nu există câmpuri în "{collection}"'
+no_value: Nicio valoare
+do_nothing: Nu face nimic
+generate_and_save_uuid: Generează și salvează UUID
+save_current_user_id: Salvează ID-ul utilizatorului curent
+save_current_user_role: Salvează rolul utilizatorului curent
+save_current_datetime: Salvează Data/Ora Curentă
+always_open: Întotdeauna deschis
+start_open: Începe deschis
+start_collapsed: Începe închis
+block: Blochează
+inline: Pe aceeași linie
 comment: Comentariu
+shares: Distribuiri
+unlimited_usage: Utilizare nelimitată
+uses_left: Nu a mai rămas nicio utilizare | O utilizare rămasă | {n} utilizări rămase
+no_shares: Nici o distribuire de afișat
+new_share: Distribuire nouă
+expired: Expirat
+upcoming: Urmează
+share: Distribuie
+share_item: Distribuie element
+shared_with_you: Un element a fost distribuit către tine
+shared_enter_passcode: Introduceți parola pentru a continua...
+shared_leave_blank_for_unlimited: Lăsați necompletat pentru nelimitat
+shared_times_remaining: Acest link poate fi folosit de doar {n} ori
+shared_last_remaining: Acest link poate fi folosit doar o dată
+shared_uses_left: Pentru securitate suplimentară, această pagină partajată a fost configurată cu un număr limitat de vizualizări. În prezent rămân {n} vizualizări, după care pagina nu va mai fi accesibilă.
+share_access_page: Acces la pagina partajată
+share_access_not_found: Această pagină partajată fie nu există sau a depășit deja numărul maxim de utilizări permise.
+share_access_not_found_desc: Vă rugăm să contactaţi un utilizator autorizat al acestui proiect pentru a solicita acces.
+share_access_not_found_title: Pagină de distribuire necunoscută
+share_copy_link: Copiază link-ul
+share_copy_link_success: Link copiat
+share_copy_link_error: Imposibil de copiat link-ul
+share_send_link: Trimite link
+relational_triggers: Declanșatori relaționali
+referential_action_field_label_m2o: La ștergerea {collection}...
+referential_action_field_label_o2m: La alegerea {collection}...
+referential_action_no_action: Prevenire ștergere
+referential_action_cascade: Ștergeți elementul {collection} (cascade)
+referential_action_set_null: Anulează câmpul {field}
+referential_action_set_default: Setează {field} la valoarea sa implicită
+choose_action: Alege acţiune
+continue_label: Continuă
+continue_as: >-
+  {name} este în prezent autentificat. Dacă recunoașteți acest cont, apăsați continuă.
+editing_role: 'Rolul {role}'
+creating_webhook: Se creează webhook-ul
+default_label: Implicit
+delete_label: Ștergere
+delete_are_you_sure: >-
+  Această acţiune este permanentă şi nu poate fi anulată. Sunteţi sigur că doriţi să continuaţi?
 delete_field_are_you_sure: >-
   Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.
 description: Descriere
 done: Efectuat
 duplicate: Duplicare
+limit: Limită
 email: Email
 embed: Încorporați
+fallback_icon: Pictogramă de rezervă
 field: Câmp | Câmpuri
+file: Fişier
+file_library: Bibliotecă de fișiere
+forgot_password: Am uitat parola
 hidden: Ascuns
-icon: Iconiță
+icon: Pictogramă
 info: Info
+normal: Normal
+success: Succes
+warning: Avertisment
+danger: Pericol
+colors:
+  orange: Oranj
+  black: Negru
+  gray: Gri
+  white: Alb
+junction_collection: Colecție de joncțiuni
+latency: Latență
+login: Autentificare
+my_activity: Activitatea mea
+not_authenticated: Neautentificat
+authenticated: Autentificat
+options: Opţiuni
+otp: Parolă de unică folosință
 password: Parolă
+permissions: Permisiuni
+relationship: Relaţie
+reset: Resetează
+reset_password: Resetează parola
+revisions: Revizii
+no_revisions: Nicio revizuire încă
+revert: Revenire
+save: Salvează
+schema: Schema
+search: Caută
+select_existing: Selectează din ce există
+select_field_type: Selectează un tip de câmp
+select_interface: Selectează o interfață
+settings: Setări
+sign_in: Autentificare
+sign_out: Deconectare
+sign_out_confirm: Ești sigur că vrei să te deconectezi?
+something_went_wrong: Ceva nu a funcţionat corect.
+sort_direction: Sortează direcția
+export_location: Exportare locație
+export_started: Export inițiat
+export_started_copy: Exportul dvs. a început. Vei fi notificat când este gata de descărcare.
+sort_asc: Sortează ascendent
+sort_desc: Sortează descrescător
+template: Șablon
+require_value_to_be_set: Necesită setarea valorii
+translation: Traducere
+translation_placeholder: Introduceți o traducere...
+value: Valoare
+view_project: Vezi proiect
+report_error: Raportare eroare
+start: Pornire
 interfaces:
   filter:
+    name: Filtru
+    description: Configurați un obiect filtru.
+    add_filter: Adaugă filtru
+    add_group: Grup și/sau
+    add_value: Adaugă Valoare
+    logic_type_and: ȘI
+    logic_type_or: SAU
     all: Tot
+    any: Oricare
+    and: şi
+    of_the_following: din următoarele
+    no_rules: Nu există reguli configurate
+    change_value: Click pentru a schimba valoarea
+    placeholder: Trage regulile aici
+  fields:
+    name: Câmpuri
+  group-accordion:
+    name: Acordeon
+    description: Afișează câmpurile sau grupurile ca secțiuni acordeon
+    start: Pornire
+    all_closed: Toate închise
+    first_opened: Prima deschisă
+    all_opened: Toate deschise
+    accordion_mode: Mod acordeon
+    max_one_section_open: Cel mult o secțiune deschisă
+  presentation-links:
+    presentation-links: Link-uri buton
+    links: Link-uri
+    description: Link-uri buton configurabile pentru lansarea de url-uri dinamice
+    style: Stil
+    primary: Principal
+    link: Link-uri
+    button: Butoane
+    error: Nu se poate efectua acțiunea
+  select-multiple-checkbox:
+    checkboxes: Casete de selectare
+    description: Alegeți dintre mai multe opțiuni prin bifarea căsuțelor
+    allow_other: Permite altele
+    show_more: 'Arată încă {count}'
+    items_shown: Elemente afișate
+  select-multiple-checkbox-tree:
+    name: Căsuțe (arbore)
+    description: Alegeți dintre mai multe opțiuni prin intermediul casetelor de selectare imbricate
+    value_combining: Combinare valoare
+    value_combining_note: Controlează ce valoare este stocată când sunt făcute selecții imbricate.
+    show_all: Arată tot
+    show_selected: Arată elementele selectate
+  input-code:
+    code: Cod
+    description: Scrie sau distribuie snippet-uri de cod
+    line_number: Număr linie
+    line_wrapping: Despărțire rânduri
+    placeholder: Introdu codul aici...
   system-collection:
     collection: Colecție
+    description: Alegeți dintre colecțiile existente
+    include_system_collections: Include colecțiile de sistem
   system-collections:
     collections: Colecții
+    description: Selectaţi dintre colecţiile existente
+    include_system_collections: Include colecțiile de sistem
+  select-color:
+    color: Culoare
+    description: Introduceți sau selectați o valoare de culoare
+    placeholder: Alege o culoare...
+    preset_colors: Culori presetate
+    opacity: Opacitate
+    preset_colors_add_label: Adaugă o nouă culoare...
+    name_placeholder: Introduceți numele culorii...
+  datetime:
+    datetime: Data
+    description: Introduceți datele și orele
+    include_seconds: Include secunde
+    set_to_now: Setează acum
+    use_24: Utilizaţi formatul de 24 de ore
+    placeholder: Alegeți o dată...
+  system-display-template:
+    display-template: Afişare şablon
+    description: Combină textul static cu valorile dinamice ale câmpului
+    collection_field: Câmp de colecții
+    collection_field_not_setup: Opțiunea câmpului de colecții este configurată greșit
+    select_a_collection: Selectează o colecție
+  presentation-divider:
+    divider: Separator
+    description: Etichetați și împărțiți câmpurile în secțiuni
+    title_placeholder: Introduceți un titlu sau lăsați necompletat pentru a afișa doar o linie...
+    inline_title: Titlu în linie
+    inline_title_label: Arată titlul în interiorul liniei
+    margin_top: Margine sus
+    margin_top_label: Mărește marginea de sus
+  select-dropdown:
+    description: Selectați o valoare dintr-un dropdown
+    choices_placeholder: Adaugă o nouă opțiune
+    allow_other: Permite altele
+    allow_other_label: Permite alte valori
+    allow_none: Nu permite niciuna
+    allow_none_label: Nu permite nicio selecție
+    choices_name_placeholder: Introduceți un nume...
+    choices_value_placeholder: Introduceți o valoare...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (multiplu)
+    description: Selectați mai multe valori dintr-un dropdown
+  file:
+    file: Fişier
+    description: Selectați sau încărcați un fișier
   files:
     files: Fişiere
+    description: Selectați sau încărcați mai multe fișiere
+  input-hash:
+    hash: Hash
+    description: Introduceți o valoare pentru a fi criptată
+    masked: Mascat
+    masked_label: Ascunde valorile reale
   select-icon:
-    icon: Iconiță
+    icon: Pictogramă
+    description: Selectaţi o pictogramă dintr-o listă
+    search_for_icon: Căutare pictogramă...
+  file-image:
+    image: Imagine
+    description: Selectați sau încărcați o imagine
+    crop: Decupează pentru a potrivi
+    crop_label: Decupează imaginea după necesități
+  system-interface:
+    interface: Interfață
+    description: Selectaţi o interfaţă existentă
+    placeholder: Selectați o interfață...
+  system-interface-options:
+    interface-options: Opțiuni interfață
+    description: Un modal pentru selectarea opțiunilor unei interfețe
+  list-m2m:
+    many-to-many: Multe la multe
+    description: Selectaţi mai multe elemente de joncţiune asociate
+    display_template_configure_notice: Puteți configura șablonul de afișare după crearea acestui câmp.
+  select-dropdown-m2o:
+    many-to-one: Mulți la unu
+    description: Selectați un singur element asociat
+    display_template: Afişare şablon
+  input-rich-text-md:
+    markdown: Markdown
+    description: Introduceți și previzualizați codul markdown
+    edit: Editare
+    preview: Previzualizare
+    editorFont: Font pentru editor
+    previewFont: Font pentru previzualizare
+    customSyntax: Blocuri personalizate
+    customSyntax_label: Adăugați tipuri de sintaxă personalizate
+    customSyntax_add: Adaugă sintaxă personalizată
+    box: Bloc / În linie
+    imageToken: Token acces static
+    imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
+  map:
+    map: Hartă
+    description: Selectați o locație pe hartă
+    zoom: Zoom
+    geometry_type: Tip geometrie
+    geometry_format: Format geometrie
+    default_view: Vizualizare implicită
+    invalid_options: Opțiuni nevalide
+    invalid_format: Format nevalid ({format})
+    unexpected_geometry: Așteptat {expected}, primit {got}.
+    fit_bounds: Potrivește afișarea la date
+    native: Nativ
+    geojson: GeoJSON
+    lnglat: Longitudine, latitudine
+    wkt: WKT
+    wkb: WKO
+    click_to_select: Click pentru a selecta {geometry}
+  presentation-notice:
+    notice: Observație
+    description: Afișează o scurtă observație
+    text: Introduceți conținutul observațiilor aici...
+  list-o2m:
+    one-to-many: Unu la mulți
+    description: Selectați mai multe elemente asociate
+    no_collection: Colecția nu a putut fi găsită
+  system-folder:
+    folder: Dosar
+    description: Selectați un dosar
+    field_hint: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
+    root_name: Rădăcina bibliotecii de fișiere
+    system_default: Setări implicite ale sistemului
+  select-radio:
+    radio-buttons: Butoane radio
+    description: Selectați una dintre mai multe opțiuni
+  list:
+    repeater: Repetator
+    description: Creează mai multe intrări ale aceleiași structuri
+    edit_fields: Editare câmpuri
+    add_label: 'Eticheta „Creează nou”'
+    field_name_placeholder: Introduceți numele câmpului...
+    field_note_placeholder: Introduceți nota câmpului...
+    incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
+  slider:
+    slider: Glisor
+    description: Selectați un număr folosind un glisor
+    always_show_value: Arată întotdeauna valoarea
   tags:
     tags: Etichete
+    description: Selectați sau adăugați etichete
+    whitespace: Spațiu alb
+    hyphen: Înlocuiește cu cratimă
+    underscore: Înlocuiește cu underscore
+    remove: Elimină spațiul alb
+    capitalization: Capitalizare
+    uppercase: Convertește la majuscule
+    lowercase: Convertește la minuscule
+    auto_formatter: Folosește formatarea automată pentru titlu
+    alphabetize: Așează în ordine alfabetică
+    alphabetize_label: Forțează ordinea alfabetică
+    add_tags: Adaugă o etichetă și apasă Enter...
+  input:
+    input: Input
+    description: Introduceți manual o valoare
+    trim: Trunchiază
+    trim_label: Trunchiază începutul și sfârșitul
+    mask: Mascat
+    mask_label: Ascunde valoarea reală
+    clear: Valoare ștearsă
+    clear_label: Salvează ca șir gol
+    minimum_value: Valoare minimă
+    maximum_value: Valoare maximă
+    step_interval: Interval pas
+    slug: Slugify
+    slug_label: Faceți valoarea sigură pentru folosirea ca url
+  input-multiline:
+    textarea: Zonă de text
+    description: Introduceți text brut pe mai multe linii
+  input-translated-string:
+    input-translated-string: Șiruri traduse
+    description: Selectați sau adăugați un șir de traducere
+    search_placeholder: Caută...
+    new_translation_string: Șirul Traducător nou
+  boolean:
+    toggle: Comutare
+    description: Comutare între pornit și oprit
+    color_on: Culoare activată
+    color_off: Culoare dezactivată
+    label_placeholder: Introduceți o etichetă...
+    label_default: Activat
+  translations:
+    display_template: Afişare şablon
+    no_collection: Nicio colecție
+    toggle_split_view: Comutare vizualizare împărțită
+    language_field: Câmp indicator limbă
+  list-o2m-tree-view:
+    description: Vizualizare ramificată pentru elemente imbricate recursive unu-la-mai multe
+    recursive_only: Interfața de vizualizare ramificată funcționează numai pentru relații recursive.
+  user:
+    user: Utilizator
+    description: Selectați un utilizator directus existent
+    select_mode: Selectați modul
+    modes:
+      auto: Automat
+      dropdown: Listă verticală
+      modal: Modal
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Un editor de text formatat care scrie conţinut HTML
+    toolbar: Bară de instrumente
+    custom_formats: Formate personalizate
+    options_override: Suprascriere opțiuni
+    folder_note: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
+    imageToken: Token acces static
+    imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
+  input-autocomplete-api:
+    input-autocomplete-api: Autocompletare input (API)
+    description: O căutare a literelor în avans pentru valori API externe.
+    results_path: Calea rezultatelor
+    value_path: Calea valorii
+    text_path: Calea textului
+    trigger: Declanșator
+    rate: Evaluează
+  group-raw:
+    name: Grup brut
+    description: Redă câmpul așa cum este
+  group-detail:
+    name: Grup de detalii
+    description: Redă câmpurile ca o secțiune care se poate restrânge
+    show_header: Arată antetul grupului
+    header_icon: Pictogramă antet
+    header_color: Culoare antet
+    start_open: Începe deschis
+    start_closed: Începe închis
 displays:
+  translations:
+    translations: Traduceri
+    description: Previzualizare traduceri
+    enable: Activare
+    user_language: Folosește limba curentă a utilizatorului
+    default_language: Limba implicită
+    language_field: Câmp indicator limbă
+  boolean:
+    boolean: Boolean
+    description: Afișare stări pornite și oprite
+    label_on: Etichetă activată
+    label_on_placeholder: Introduceți o etichetă de activare...
+    label_off: Etichetă dezactivată
+    label_off_placeholder: Introduceți o etichetă de dezactivare...
+    icon_on: Pictogramă activată
+    icon_off: Pictogramă dezactivată
+    color_on: Culoare activată
+    color_off: Culoare dezactivată
   collection:
     collection: Colecție
+    description: Afișează o colecție
+    icon_label: Arată pictograma colecției
+  color:
+    color: Culoare
+    description: Afișează un punct colorat
+    default_color: Culoare implicită
+  datetime:
+    datetime: Data
+    description: Afișare valori legate de timp
+    format: Format
+    format_note: >-
+      Formatul personalizat acceptă __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Lung
+    short: Scurt
+    relative: Relativ
+    relative_label: 'Arată timpul relativ, de exemplu: acum 5 minute'
+  file:
+    file: Fişier
+    description: Afişare fişiere
+  filesize:
+    filesize: Dimensiune fișier
+    description: Afișează dimensiunea unui fișier
   formatted-value:
-    icon: Iconiță
+    formatted-value: Valoare formatată
+    description: Afișează o versiune formatată a textului
+    format: Format
+    format_label: Formatează automat
+    font: Font
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospațiu
+    bold: Bold
+    bold_label: Folosește stil îngroșat
+    italic: Cursiv
+    italic_label: Folosește stil cursiv
+    prefix: Prefix
+    prefix_label: Preatașează text
+    suffix: Sufix
+    suffix_label: Text adăugat
+    color: Culoare
+    background: Fundal
+    icon: Pictogramă
+    border: Chenar
+    border_label: Arată chenarul
+    text: Text
+    text_placeholder: Suprascrie valoarea opțională...
+  formatted-json-value:
+    formatted-json-value: Valoare JSON formatată
+    description: Afișează o versiune formatată a obiectului
   icon:
-    icon: Iconiță
+    icon: Pictogramă
+    description: Afișează o pictogramă
+    filled: Completat
+    filled_label: Folosește varianta completată
+  image:
+    image: Imagine
+    description: Afișează o previzualizare minusculă a imaginii
+    circle: Cerc
+    circle_label: Afișează ca cerc
+  labels:
+    labels: Etichete
+    description: Afișează fie o singură etichetă fie o listă
+    default_foreground: Prim-plan implicit
+    default_background: Fundal implicit
+    format_label: Formatează fiecare etichetă
+    show_as_dot: Arată ca punct
+    choices_value_placeholder: Introduceți o valoare...
+    choices_text_placeholder: Introduceți un text...
+  mime-type:
+    mime-type: Tip MIME
+    description: Arată tipul MIME al unui fișier
+    extension_only: Doar extensie
+    extension_only_label: Arată doar extensia fișierului
+  rating:
+    rating: Rating
+    description: Vizualizați un număr ca stele în raport cu valoarea maximă
+    simple: Simplu
+    simple_label: Arată stelele într-un format simplu
+  raw:
+    raw: Valoare brută
+  related-values:
+    related-values: Valori asociate
+    description: Afișare valori relative
+    display_template_configure_notice: Puteți configura șablonul de afișare după crearea acestui câmp.
   user:
+    user: Utilizator
+    description: Afișează un utilizator directus
     avatar: Avatar
+    name: Nume
     both: Ambele
+    circle_label: Arată utilizatorul într-un cerc
 layouts:
   cards:
     cards: Carduri
-    image_source: Sursa Imaginii
+    image_source: Sursa imaginii
+    image_fit: Potrivire imagine
+    crop: Decupare
+    contain: Încadrează
     title: Titlu
     subtitle: Subtitlu
   tabular:
     tabular: Tabel
+    spacing: Spațiere
     comfortable: Confortabil
     compact: Compact
     cozy: Comod
+  calendar:
+    calendar: Calendar
+    start_date_field: Câmp dată de început
+    end_date_field: Câmp dată de sfârșit
+    optional: Opţional
+    first_day: Prima zi a săptămânii
+  map:
+    map: Hartă
+    basemap: Basemap
+    layers: Straturi
+    cluster_options: Opțiuni cluster
+    cluster: Cluster date apropiate
+    cluster_radius: Raza cluster
+    cluster_minpoints: Dimensiune minimă cluster
+    cluster_maxzoom: Zoom maxim pentru cluster
+    field: Câmp geospațial
+    invalid_geometry: Geometrie nevalidă
+    find_location: Găsește locația...
+    default_template: Se folosește Implicit Colecția...
+    no_compatible_fields: Nu există câmpuri compatibile
+  kanban:
+    name: Kanban,
+    group_field: Grupare după
+    group_field_placeholder: Câmp pentru grup de...,
+    group_title: Titlul grupului
+    group_title_placeholder: Câmp pentru titlurile grupului...,
+    title: Titlu card
+    title_placeholder: Câmp titlu opțional...,
+    text: Text Card,
+    text_placeholder: Câmp text opțional...,
+    date: Data cardului,
+    date_placeholder: Câmp de dată opțional...,
+    tags: Tag-uri de card,
+    tags_placeholder: Câmp etichete opționale...,
+    user: Utilizator Card,
+    user_placeholder: Câmp opțional de utilizator...,
+    image: Imaginea cardului,
+panels:
+  metric:
+    name: Metric
+    description: Arată o singură valoare bazată pe o interogare
+    field: Câmp
+  time_series:
+    name: Serii de timp
+    description: Redă o diagramă a liniei bazată pe valorile în timp
+    date_field: Câmp dată
+    value_field: Câmp valoare
+    fill_type: Tip de completare
+    curve_type: Tipul curbei
+  label:
+    name: Etichetă
+    description: Arată niște text
+  list:
+    name: Listă
+    description: Filtrează și afișează câmpuri dintr-o colecție

@@ -58,7 +58,15 @@
 					<v-icon name="fullscreen" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
+				<v-button
+					v-tooltip.bottom="t('edit_panels')"
+					class="edit"
+					rounded
+					icon
+					outlined
+					:disabled="!updateAllowed"
+					@click="editMode = !editMode"
+				>
 					<v-icon name="edit" />
 				</v-button>
 			</template>
@@ -146,9 +154,9 @@
 <script lang="ts">
 import InsightsNavigation from '../components/navigation.vue';
 import { defineComponent, computed, ref, toRefs, watch } from 'vue';
-import { useInsightsStore, useAppStore } from '@/stores';
+import { useInsightsStore, useAppStore, usePermissionsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
-import { Panel } from '@/types';
+import { Panel } from '@directus/shared/types';
 import { nanoid } from 'nanoid';
 import { merge, omit } from 'lodash';
 import { router } from '@/router';
@@ -158,8 +166,8 @@ import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
-import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -179,6 +187,7 @@ export default defineComponent({
 
 		const insightsStore = useInsightsStore();
 		const appStore = useAppStore();
+		const permissionsStore = usePermissionsStore();
 
 		const { fullScreen } = toRefs(appStore);
 
@@ -191,6 +200,10 @@ export default defineComponent({
 		const movePanelID = ref<string | null>();
 
 		const zoomToFit = ref(false);
+
+		const updateAllowed = computed<boolean>(() => {
+			return permissionsStore.hasPermission('directus_panels', 'update');
+		});
 
 		useShortcut('meta+s', () => {
 			saveChanges();
@@ -281,30 +294,16 @@ export default defineComponent({
 			return withBorderRadii;
 		});
 
+		const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
+
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
 		const confirmCancel = ref(false);
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
-
-			if (editMode.value && to.params.primaryKey !== props.primaryKey) {
-				if (hasEdits) {
-					confirmLeave.value = true;
-					leaveTo.value = to.fullPath;
-					return false;
-				} else {
-					editMode.value = false;
-				}
-			}
-		};
-
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
 
 		return {
 			currentDashboard,
 			editMode,
+			updateAllowed,
 			panels,
 			stagePanelEdits,
 			stagedPanels,
@@ -397,6 +396,7 @@ export default defineComponent({
 				await insightsStore.hydrate();
 
 				stagedPanels.value = [];
+				panelsToBeDeleted.value = [];
 				editMode.value = false;
 			} catch (err) {
 				unexpectedError(err);
@@ -413,9 +413,7 @@ export default defineComponent({
 		}
 
 		function attemptCancelChanges(): void {
-			const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
-
-			if (hasEdits) {
+			if (hasEdits.value) {
 				confirmCancel.value = true;
 			} else {
 				cancelChanges();

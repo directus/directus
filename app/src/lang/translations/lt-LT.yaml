@@ -39,7 +39,6 @@ delete_folder: Trinti aplanką
 prefix: Priešdėlis
 suffix: Priesaga
 reset_bookmark: Atstatyti skirtuką
-rename_bookmark: Pervadinti žymę
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
 delete_bookmark_copy: >-
@@ -68,7 +67,6 @@ recommended_defaults: Rekomenduojami "Pagal nutylėjimą"
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
-unknown_validation_errors: 'Šie paslėpti laukai turi validavimo klaidų:'
 validationError:
   eq: Reikšmė turi būti {valid}
   neq: Reikšmė negali būti {invalid}
@@ -202,9 +200,6 @@ dismiss: Atmesti
 raw_value: Neapdorota reikšmė
 edit_raw_value: Redaguoti neapdorotą reikšmę
 enter_raw_value: Įvesti neapdorotą reikšmę...
-clear_value: Išvalyti reikšmę
-reset_to_default: Atstatyti numatytuosius
-undo_changes: Anuliuoti pakeitimus
 notifications: Pranešimai
 show_all_activity: Rodyti visą veiklos istoriją
 page_not_found: Puslapis nerastas
@@ -233,10 +228,7 @@ this_collection: Ši kolekcija
 related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 languages_collection: Kalbų kolekcija
-export_data: Eksportuoti duomenis
 format: Formatas
-use_current_filters_settings: Naudoti dabartinius filtrus ir nustatymus
-export_collection: 'Exportuoti {collection}'
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
 fill_template: Užpildyti reikšme iš ruošinio
@@ -252,6 +244,9 @@ interface_label: Sąsaja
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
+functions:
+  year: Metai
+  month: Mėnuo
 month: Mėnuo
 year: Metai
 select_all: Pažymėti visus
@@ -875,7 +870,6 @@ interfaces:
     auto_formatter: Naudoti automatinį antraštės formatavimą
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
-    add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
     color_on: Spalva, kai įjungta

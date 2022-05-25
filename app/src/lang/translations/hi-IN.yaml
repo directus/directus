@@ -21,14 +21,17 @@
 #'Proxy', 'Intl'
 identifier: पहचानकर्ता
 avatar: अवतार
+application: एप्लीकेशन
 default_provider: Hi
 published: प्रकाशित
 draft: प्रारूप
 archived: संग्रह
+modules: मॉड्यूल
 tile_size: टाइल आकार
 edit_field: एडिट फील्ड
 conditions: शर्तेँ
 maps: मानचित्र
+switch_user: उपयोगकर्ता/यूजर बदले
 item_revision: आइटम संशोधन
 enter_a_name: कोई नाम प्रविष्ट करें
 duplicate_field: डुप्लिकेट फ़ील्ड
@@ -47,6 +50,7 @@ leaf: पत्ता
 edit_collection: कलेक्शन संपादित करें
 exclusive: विशेष
 children: बच्चे
+db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें'
 show_archived_items: आर्काइव आइटम दिखाएं
 edited: डेटा संपादित
 required: आवश्यक
@@ -57,6 +61,7 @@ create_panel: पैनल बनाएँ
 create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
 create_webhook: Webhook बनाएं
+translation_string_translations_placeholder: नया अनुवाद जोड़ें
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
@@ -73,7 +78,6 @@ delete_folder: डिलीट फोल्डर
 prefix: प्रीफिक्स
 suffix: सफिक्स
 reset_bookmark: रीसेट बुकमार्क
-rename_bookmark: रीनेम बुकमार्क
 update_bookmark: अपडेट बुकमार्क
 delete_bookmark: डिलीट बुकमार्क
 delete_bookmark_copy: >-
@@ -103,7 +107,6 @@ recommended_defaults: अनुशंसित डिफ़ॉल्ट
 unarchive: अनआर्काइव
 unarchive_confirm: क्या आप वाकई इस आइटम को अनआर्काइव करना चाहते हैं?
 nested_files_folders_will_be_moved: नेस्टेड फ़ाइलें और फ़ोल्डर एक स्तर ऊपर ले जाया जाएगा
-unknown_validation_errors: 'निम्न छिपा क्षेत्रों में मान्यकरण त्रुटियों थे:'
 validationError:
   eq: मान {valid} होना चाहिए
   neq: मान {invalid} नहीं हो सकता
@@ -145,11 +148,15 @@ validation_for_role: 'फील्ड {action} नियमों जो {role} 
 presets_for_role: '{role} भूमिका के लिए फ़ील्ड मान जो डिफ़ॉल्ट होगा'
 presentation_and_aliases: प्रस्तुति और उपनाम
 revision_post_update: यहां देखें कि अपडेट के बाद यह आइटम कैसा दिखता है
+hide_field: फ़ील्ड छुपाएँ
+hide_field_on_detail: विवरण पर फ़ील्ड छुपाएँ
 language: भाषा
+language_placeholder: भाषा चुनें
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
 camera: कैमरा
 show_zero: शून्य दिखाओ
+validation: मान्यकरण
 avg: औसत
 count: गिनती
 min: न्यूनतम
@@ -185,11 +192,34 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+finish_setup: सेटअप खत्म करें
+dismiss: ख़ारिज करें
+label_import: आयात करें
+label_export: निर्यात करें
+import_export: आयात / निर्यात
+format: प्रारूप
+submit: दर्ज करें
+system: प्रणाली
+interface_label: इंटरफ़ेस
+today: आज
+yesterday: बीता कल
+delete_comment: टिप्पणी हटाएँ
+functions:
+  year: साल
+  month: महीना
+  week: सप्ताह
+  day: दिन
+  weekday: सप्ताह के दिन
+  hour: घंटा
+  minute: मिनट
+  second: सेकंड
+  count: गिनती
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
+hours: घंटे
 month: महीना
 year: साल
 select_all: सभी चुनें
@@ -206,13 +236,41 @@ months:
   october: अक्तूबर
   november: नवम्बर
   december: दिसंबर
+original: मूल
 url: URL
+import_label: आयात करें
+dimensions: आयाम
 size: साइज़
+created: बनाया गया
+modified: संशोधन का समय
+checksum: चेकसम
 owner: मालिक
+edited_by: द्वारा संपादित
+folder: फ़ोल्डर
+zoom: छोटा-बड़ा करें
 download: डाउनलोड
+open: खोलें
+open_in_new_window: नए विंडो में खोलें
+foreground_color: अग्रभूमि रंग
+background_color: पृष्ठभूमि रंग
+upload_from_device: डिवाइस से अपलोड करें
+choose_from_library: पुस्तकालय से चुनें
 name: नाम
+comments: टिप्पणियाँ
+no_comments: अभी तक कोई टिप्पणी नहीं
+click_to_expand: फ़ैलाने के लिए यहाँ क्लिक करें
+select_item: आइटम का चयन करें
+no_items: कोई आइटम नहीं
+search_items: आइटम्स खोजें
+disabled: निष्क्रिय
+information: जानकारी
+report_bug: बग रिपोर्ट करें
+request_feature: सुविधा के लिए अनुरोध करें
 csv: CSV
 webhooks: Webhooks
+upper_limit: ऊपरी सीमा
+lower_limit: निचली सीमा
+documentation: दस्तावेज़ीकरण
 sidebar: साइड बार
 duration: अवधि
 modified_on: संशोधन का समय
@@ -222,6 +280,7 @@ add_sort_field: Add Sort Field
 sort: सॉर्ट
 errors:
   NOT_NULL_VIOLATION: मान null नहीं हो सकता
+bookmarks: पृष्टस्मृतियाँ
 flip_horizontal: फ्लिप हॉरिजॉन्टल
 one_item: '1 समान'
 font: फ़ॉन्ट
@@ -246,11 +305,15 @@ add_file: ऐड फाइल
 replace_file: फ़ाइल बदलें
 no_results: कोई परिणाम नहीं मिला
 role: भूमिका
+rule: नियम
 user: यूज़र
 create: Create
 read: Read
 update: Update
+toggle: टॉगल करें
 wysiwyg_options:
+  forecolor: अग्रभूमि रंग
+  backcolor: पृष्ठभूमि रंग
   selectall: सभी चुनें
 settings_webhooks: Webhooks
 fields:
@@ -259,6 +322,7 @@ fields:
     sort_field: Sort Field
   directus_files:
     modified_on: संशोधन का समय
+    folder: फ़ोल्डर
     duration: अवधि
   directus_users:
     language: भाषा
@@ -295,6 +359,12 @@ interfaces:
     divider: Divider
   input-hash:
     hash: Hash
+  map:
+    zoom: छोटा-बड़ा करें
+  system-folder:
+    folder: फ़ोल्डर
+  boolean:
+    toggle: टॉगल करें
   user:
     user: यूज़र
 displays:
@@ -302,7 +372,10 @@ displays:
     boolean: Boolean
   color:
     color: Color
+  datetime:
+    format: प्रारूप
   formatted-value:
+    format: प्रारूप
     font: फ़ॉन्ट
     font_serif: Serif
     font_monospace: Monospace

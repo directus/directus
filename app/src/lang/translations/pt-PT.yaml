@@ -41,7 +41,6 @@ delete_folder: Eliminar pasta
 prefix: Prefixo
 suffix: Sufixo
 reset_bookmark: Restaurar marcador
-rename_bookmark: Mudar o nome do marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
 delete_bookmark_copy: >-
@@ -71,7 +70,6 @@ recommended_defaults: Predefinições recomendadas
 unarchive: Desarquivar
 unarchive_confirm: Tem a certeza que pretende desarquivar este item?
 nested_files_folders_will_be_moved: Ficheiros e pastas neste grupo vão ser movidos um nível acima.
-unknown_validation_errors: 'Foram encontrados erros de validação nos seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -206,9 +204,6 @@ dismiss: Dispensar
 raw_value: Valor bruto
 edit_raw_value: Editar Valor Bruto
 enter_raw_value: Insira valor bruto...
-clear_value: Limpar valor
-reset_to_default: Restaurar predefinições
-undo_changes: Anular alterações
 notifications: Notificações
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página Não Encontrada
@@ -238,10 +233,7 @@ related_collection: Coleção relacionada
 related_collections: Coleções relacionadas
 translations_collection: Coleção de tradução
 languages_collection: Coleção de idiomas
-export_data: Exportar dados
 format: Formatar
-use_current_filters_settings: Usar filtros e configurações atuais
-export_collection: 'Exportar {collection}'
 last_page: Última página
 last_access: Último Acesso
 fill_template: Preencher com valor do modelo
@@ -257,6 +249,9 @@ interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Remover comentário
+functions:
+  year: Ano
+  month: Mês
 date-fns_date: dd MMM u
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'

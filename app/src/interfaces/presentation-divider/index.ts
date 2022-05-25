@@ -20,7 +20,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:interfaces.presentation-divider.title_placeholder',
 				},
@@ -42,21 +42,6 @@ export default defineInterface({
 			meta: {
 				width: 'half',
 				interface: 'select-icon',
-			},
-		},
-		{
-			field: 'marginTop',
-			name: '$t:interfaces.presentation-divider.margin_top',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:interfaces.presentation-divider.margin_top_label',
-				},
-			},
-			schema: {
-				default_value: true,
 			},
 		},
 		{

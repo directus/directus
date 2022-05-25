@@ -2,10 +2,15 @@ import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { nanoid } from 'nanoid';
-import { ForbiddenException, InvalidPayloadException, InvalidQueryException } from '../exceptions';
+import {
+	ForbiddenException,
+	InvalidPayloadException,
+	InvalidQueryException,
+	UnsupportedMediaTypeException,
+} from '../exceptions';
 import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
-import { RevisionsService, UtilsService, ImportService } from '../services';
+import { RevisionsService, UtilsService, ImportService, ExportService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import Busboy, { BusboyHeaders } from 'busboy';
 import { flushCaches } from '../cache';
@@ -94,6 +99,9 @@ router.post(
 	'/import/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false)
+			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+
 		const service = new ImportService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -129,13 +137,40 @@ router.post(
 );
 
 router.post(
+	'/export/:collection',
+	collectionExists,
+	asyncHandler(async (req, res, next) => {
+		if (!req.body.query) {
+			throw new InvalidPayloadException(`"query" is required.`);
+		}
+
+		if (!req.body.format) {
+			throw new InvalidPayloadException(`"format" is required.`);
+		}
+
+		const service = new ExportService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// We're not awaiting this, as it's supposed to run async in the background
+		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
+			file: req.body.file,
+		});
+
+		return next();
+	}),
+	respond
+);
+
+router.post(
 	'/cache/clear',
 	asyncHandler(async (req, res) => {
 		if (req.accountability?.admin !== true) {
 			throw new ForbiddenException();
 		}
 
-		await flushCaches();
+		await flushCaches(true);
 
 		res.status(200).end();
 	})

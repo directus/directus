@@ -8,6 +8,7 @@ enum Keys {
 	AuthToken = 'auth_token',
 	RefreshToken = 'auth_refresh_token',
 	Expires = 'auth_expires',
+	ExpiresAt = 'auth_expires_at',
 }
 
 export abstract class BaseStorage extends IStorage {
@@ -38,6 +39,22 @@ export abstract class BaseStorage extends IStorage {
 			this.delete(Keys.Expires);
 		} else {
 			this.set(Keys.Expires, value!.toString());
+		}
+	}
+
+	get auth_expires_at(): number | null {
+		const value = this.get(Keys.ExpiresAt);
+		if (value === null) {
+			return null;
+		}
+		return parseInt(value);
+	}
+
+	set auth_expires_at(value: number | null) {
+		if (value === null) {
+			this.delete(Keys.ExpiresAt);
+		} else {
+			this.set(Keys.ExpiresAt, value!.toString());
 		}
 	}
 

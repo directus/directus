@@ -2,8 +2,9 @@ import { Knex } from 'knex';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, PrimaryKey, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, PrimaryKey } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
+import emitter from '../emitter';
 
 export class UtilsService {
 	knex: Knex;
@@ -56,7 +57,7 @@ export class UtilsService {
 				.from(collection)
 				.whereNull(sortField);
 
-			let lastSortValue = lastSortValueResponse ? Object.values(lastSortValueResponse)[0] : 0;
+			let lastSortValue: any = lastSortValueResponse ? Object.values(lastSortValueResponse)[0] : 0;
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;
@@ -119,5 +120,19 @@ export class UtilsService {
 				.andWhere(sortField, '<=', sourceSortValue)
 				.andWhereNot({ [primaryKeyField]: item });
 		}
+
+		emitter.emitAction(
+			['items.sort', `${collection}.items.sort`],
+			{
+				collection,
+				item,
+				to,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 }

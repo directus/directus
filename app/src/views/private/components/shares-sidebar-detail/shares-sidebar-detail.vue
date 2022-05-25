@@ -27,7 +27,7 @@
 
 		<v-dialog :model-value="!!shareToDelete" @update:model-value="shareToDelete = null" @esc="shareToDelete = null">
 			<v-card>
-				<v-card-title>{{ t('delete_comment') }}</v-card-title>
+				<v-card-title>{{ t('delete_share') }}</v-card-title>
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
 
 				<v-card-actions>
@@ -81,6 +81,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Share } from '@directus/shared/types';
+import useClipboard from '@/composables/use-clipboard';
 
 import api from '@/api';
 import ShareItem from './share-item.vue';
@@ -103,6 +104,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
+
+		const { copyToClipboard } = useClipboard();
 
 		const shares = ref<Share[] | null>(null);
 		const count = ref(0);
@@ -167,7 +170,7 @@ export default defineComponent({
 
 		async function copy(id: string) {
 			const url = window.location.origin + getRootPath() + 'admin/shared/' + id;
-			await navigator?.clipboard?.writeText(url);
+			await copyToClipboard(url, { success: t('share_copy_link_success'), fail: t('share_copy_link_error') });
 		}
 
 		function select(id: string) {

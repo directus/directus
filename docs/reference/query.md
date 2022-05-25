@@ -474,6 +474,7 @@ The following aggregation functions are available in Directus:
 | `avgDistinct`   | Get the average value of the unique values in the given field |
 | `min`           | Return the lowest value in the field                          |
 | `max`           | Return the highest value in the field                         |
+| `countAll`      | Equivalent to `?aggregate[count]=*` (GraphQL only)            |
 
 ### Grouping
 
@@ -595,6 +596,19 @@ query {
 Aliases allow you rename fields on the fly, and request the same nested data set multiple times using different filters.
 
 </div>
+</div>
+<div class="two-up">
+<div class="left">
+
+::: warning Nested fields
+
+It is only possible to alias same level fields.\
+Alias for nested fields, f.e. `field.nested`, will not work.
+
+:::
+
+</div>
+
 <div class="right">
 
 ### REST API
@@ -675,7 +689,7 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 
 `timestamp` -> `year(timestamp)`
 
-### DateTime Filters
+### DateTime Functions
 
 | Filter    | Description                                              |
 | --------- | -------------------------------------------------------- |
@@ -688,12 +702,18 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 | `minute`  | Extract the minute from a datetime/date/timestamp field  |
 | `second`  | Extract the second from a datetime/date/timestamp field  |
 
+### Array Functions
+
+| Filter  | Description                                                       |
+| ------- | ----------------------------------------------------------------- |
+| `count` | Extract the number of items from a JSON array or relational field |
+
 ::: warning GraphQL
 
 Names aren't allowed to include any special characters in GraphQL, preventing the `()` syntax from being used.
 
 As an alternative, the above functions can be used by appending `_func` at the end of the field name, and using the
-function name as the nested field (see the example on the right).
+function name as the nested field (see the example that follows).
 
 :::
 

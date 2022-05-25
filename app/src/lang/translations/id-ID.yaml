@@ -54,7 +54,9 @@ edit_collection: Edit Koleksi
 exclusive: Ekklusif
 children: Anak
 db_only_click_to_configure: 'Hanya Database: Tekan untuk Konfigurasi'
+show_active_items: Tampilkan Item Aktif
 show_archived_items: Tampilkan Yang Diarsipkan
+show_all_items: Tampilkan semua item
 edited: Nilai Diedit
 required: Diperlukan
 required_for_app_access: Diperlukan untuk Akses Aplikasi
@@ -81,7 +83,6 @@ delete_folder: Hapus Folder
 prefix: Awalan
 suffix: Akhiran
 reset_bookmark: Hapus Markah
-rename_bookmark: Ubah Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
 delete_bookmark_copy: >-
@@ -91,6 +92,7 @@ logoutReason:
   SESSION_EXPIRED: Sesi kadaluarsa
 public_label: Publik
 public_description: Kendalikan data API yang tersedia tanpa autentikasi.
+admin_description: Peran administratif awal tanpa batasan akses aplikasi/API.
 not_allowed: Tidak Diizinkan
 directus_version: Versi Directus
 node_version: Versi Node
@@ -111,7 +113,6 @@ recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 nested_files_folders_will_be_moved: Berkas dan folder yang disarang akan dipindahkan satu tingkat keatas.
-unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'
 validationError:
   eq: Nilai harus {valid}
   neq: Nilai tidak boleh {invalid}
@@ -224,6 +225,8 @@ geometry.Point: Titik
 geometry.LineString: StringGaris
 geometry.Polygon: Poligon
 geometry.MultiPoint: TitikMulti
+geometry.MultiLineString: Rangkaian beberapa baris
+geometry.MultiPolygon: Banyak poligon
 not_available_for_type: Tidak Tersedia Untuk Tipe Ini
 create_translations: Buat Terjemahan
 auto_refresh: Penyegaran Otomatis
@@ -243,6 +246,9 @@ new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
+add_m2o_to_collection: 'Tambah M2O ke "{collection}"'
+add_o2m_to_collection: 'Tambah O2M ke "{collection}"'
+add_m2m_to_collection: 'Tambah M2M ke "{collection}"'
 choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
@@ -275,10 +281,18 @@ foreign_key: Kunci Asing
 finish_setup: Selesai Setup
 dismiss: Abaikan
 raw_value: Nilai mentah
+copy_raw_value: Salin Nilai Asli
+copy_raw_value_success: Disalin
+copy_raw_value_fail: Gagal menyalin
+paste_raw_value: Tempel Nilai Asli
+paste_raw_value_success: Ditempelkan
+paste_raw_value_fail: Gagal Menempelkan
+view_raw_value: Lihat Nilai Asli
 edit_raw_value: Sunting Nilai Mentah
 enter_raw_value: Masukkan nilai mentah...
-clear_value: Bersihkan nilai
-reset_to_default: Kembalikan ke default
+clear_value: Kosongkan Nilai
+clear_changes: Kosongkan Perubahan
+reset_to_default: Atur Ulang ke Bawaan
 undo_changes: Batalkan Perubahan
 notifications: Notifikasi
 show_all_activity: Tampilkan Semua Aktivitas
@@ -297,6 +311,7 @@ revision_delta_reverted: Dikembalikan
 revision_delta_other: Revisi
 revision_delta_by: '{date} oleh {user}'
 private_user: Pengguna Pribadi
+creation_preview: Pratinjau Kreasi
 revision_preview: Pratinjau Revisi
 updates_made: Pembaruan Dibuat
 leave_comment: Tinggalkan komentar...
@@ -309,10 +324,14 @@ related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
 translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
-export_data: Ekspor Data
+import_data_input_placeholder: CSV atau JSON...
+import_data_button: Mulai Impor
+import_data_indeterminate: Mengimpor Data...
+import_data_success: Data berhasil diimpor dari {filename}
+label_import: Impor
+label_export: Ekspor
+import_export: Impor / Ekspor
 format: Format
-use_current_filters_settings: Gunakan Filter Saat Ini & Pengaturan
-export_collection: 'Ekspor {collection}'
 last_page: Halaman Terakhir
 last_access: Akses Terakhir
 fill_template: Isi dengan Nilai Template
@@ -328,6 +347,10 @@ interface_label: Antarmuka
 today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
+functions:
+  year: Tahun
+  month: Bulan
+  count: Hitung
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -415,6 +438,7 @@ interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
 reset_interface: Atur ulang Antarmuka
 display_not_found: 'Tampilan "{display}" tidka ditemukan.'
 reset_display: Set ulang Tampilan
+list-m2a: Pembangun (M2A)
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
 no_items_copy: Belum ada item pada koleksi ini.
 file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
@@ -422,29 +446,37 @@ no_files_copy: Tidak ada berkas disini.
 user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
 no_users_copy: Belum ada pengguna didalam peran ini.
 webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
+no_webhooks_copy: Belum ada webhook yang dikonfigurasi. Mulailah dengan membuat satu di bawah ini.
 no_notifications: Tidak ada Pemberitahuan
 no_notifications_copy: Selesai!
 activity_log: Catatan Aktifitas
 all_items: Semua Item
+any: Setiap
 csv: CSV
 no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
+no_collections_copy: Kamu belum memiliki Koleksi. Silakan hubungi administrator sistem.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
+display_template_not_setup: Opsi templat tampilan disalahkonfigurasikan
+collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
 select_a_collection: Pilih Koleksi
 select_a_field: Pilih Bidang
 active: Aktif
 move_to: Pindahkan ke...
 copy: Salin
 copy_to: Salin ke...
+no_other_dashboards_copy: Anda belum memiliki Dasbor lainnya.
 inactive: Tidak aktif
 users: Pengguna
 activity: Aktivitas
+activity_item: Item Aktifitas
 action: Aksi
 ip_address: Alamat IP
 user_agent: Agen pengguna
 webhooks: Webhooks
 decimals: Desimal
+value_decimals: Nilai Desimal
 min_value: Nilai minimal
 max_value: Nilai maksimal
 automatic: Otomatis
@@ -457,6 +489,7 @@ documentation: Dokumentasi
 sidebar: Bilahsamping
 duration: Durasi
 charset: Charset
+second: detik
 file_moved: Berkas Dipindahkan
 collection_created: Koleksi Dibuat
 modified_on: Dimodifikasi Pada
@@ -479,6 +512,7 @@ enter_otp_to_disable_tfa: Masukkan kode OTP untuk menonaktifkan 2FA
 create_account: Buat Akun
 account_created_successfully: Akun Berhasil Dibuat
 auto_fill: Isi Otomatis
+corresponding_field: Bidang yang sesuai
 errors:
   COLLECTION_NOT_FOUND: "Koleksi tidak tersedia"
   FIELD_NOT_FOUND: Baris tidak ditemukan
@@ -491,8 +525,15 @@ errors:
   ITEM_NOT_FOUND: Item tidak ditemukan
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
+  USER_SUSPENDED: Pengguna Ditangguhkan
+  CONTAINS_NULL_VALUES: Bidang berisi nilai nol
+  UNPROCESSABLE_ENTITY: Entitas yang tidak dapat diproses
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
+  ILLEGAL_ASSET_TRANSFORMATION: Sumber gambar terlalu besar untuk diratinjau
+  VALUE_TOO_LONG: Nilai terlalu panjang
+  VALUE_OUT_OF_RANGE: Nilai di luar rentang
+  INVALID_FOREIGN_KEY: Foreign key tidak valid
   UNKNOWN: Kesalahan Tidak Terduga
 security: Keamanan
 value_hashed: Nilai telah Di-hash secara Aman
@@ -523,15 +564,26 @@ update_collection_success: Perbarui Koleksi
 delete_collection_success: Koleksi yang Dihapus
 make_collection_visible: Buat Koleksi Terlihat
 make_collection_hidden: Buat Koleksi Tersembunyi
+make_folder_visible: Buat Folder Terlihat
+make_folder_hidden: Buat Folder Tersembunyi
 start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
+delete_collection_are_you_sure: >-
+  Apakah anda yakin ingin menghapus koleksi ini? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
+collections_shown: Koleksi yang ditampilkan
+visible_collections: Koleksi yang terlihat
+hidden_collections: Koleksi yang tersembunyi
+show_hidden_collections: Tampilkan koleksi yang tersembunyi
+hide_hidden_collections: Sembunyikan koleksi yang tersembunyi
 show_header: Tampilkan Tajuk
+unmanaged_collections: Koleksi yang tidak dikonfigurasi
 system_collections: Koleksi Sistem
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
 icon_right: Ikon Kanan
+count_other_revisions: '{count} Perbaikan lainnya'
 font: Huruf
 sans_serif: Sans Serif
 serif: Serif
@@ -539,16 +591,23 @@ monospace: Monospace
 divider: Pembagi/Pemecah
 color: Warna
 circle: Lingkaran
+empty_item: Item kosong
 log_in_with: 'Masuk dengan {provider}'
+conditional_styles: Gaya Bersyarat
 advanced_settings: Pengaturan Lanjutan
 advanced_filter: Filter Lanjutan
 delete_advanced_filter: Hapus Filter
 change_advanced_filter_operator: Ganti Operator
 operators:
+  eq: Sama dengan
+  neq: Tidak sama dengan
   lt: Kurang dari
   gt: Lebih besar dari
   lte: Kurang dari atau sama dengan
   gte: Lebih besar dari atau sama dengan
+  in: Adalah salah satu dari
+  nin: Bukan salah satu dari
+  null: Adalah kosong
   nnull: Bukan null
   contains: Mengandung
   ncontains: Tidak mengandung
@@ -560,32 +619,99 @@ operators:
   nbetween: Tidak Diantara
   empty: Kosong
   nempty: Tidak kosong
+  all: Berisi kunci-kunci ini
+  has: Berisi sebagian kunci ini
+  intersects: Beririsan
+  nintersects: Tidak beririsan
+  intersects_bbox: Memotong kotak pembatas
+  nintersects_bbox: Tidak memotong kotak pembatas
 loading: Memuat...
+drop_to_upload: Lepas untuk mengunggah
+item: Barang
+items: Barang-barang
+upload_file: Unggah Berkas
+upload_file_indeterminate: Mengunggah Berkas...
+upload_file_success: Berkas Diunggah
+upload_files_indeterminate: 'Mengunggah berkas {done}/{total}'
+upload_files_success: '{count} Berkas Diunggah'
+upload_pending: Unggahan Tertunda
+drag_file_here: Geser & Lepas berkas disini
+click_to_browse: Klik untuk jelajahi
 interface_options: Pilihan Antarmuka
 layout_options: Pilihan Tata Letak
 rows: Baris
 columns: Kolom
 collection_setup: Penyiapan Koleksi
+optional_system_fields: Bidang sistem opsional
 value_unique: Nilai harus unik
+all_activity: Semua Aktivitas
+create_item: Buat item
 display_template: Tampilan Template
+language_display_template: Templat Tampilan Bahasa
+translations_display_template: Templat Tampilan Terjemahan
+n_items_selected: 'Tidak ada Item yang Dipilih | 1 Item Dipilih | {n} Item Dipilih'
+per_page: Per Halaman
+all_files: Semua Berkas
+my_files: Berkas Saya
+recent_files: Berkas Terbaru
+create_folder: Buat Map
+edit_folder: Sunting Map
+folder_name: Nama Folder...
+folder_key: Kunci Map...
+add_file: Tambahkan berkas
+replace_file: Ganti berkas
 no_results: Tidak Ada Hasil
+no_results_copy: Sesuaikan atau bersihkan filter pencarian untuk melihat hasil.
+clear_filters: Bersihkan Filter
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
+rule: Aturan
 user: Pengguna
+no_presets: Tidak ada preset
+no_presets_copy: Belum ada preset atau penanda buku yang disimpan.
+no_presets_cta: Tambahkan preset
+presets_only: Hanya Preset
 create: Buat
+on_create: Saat Dibuat
 on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
 select_fields: Pilih Bidang
+format_text: Format Teks
+format_value: Nilai Format
+abbreviate_value: Singkatan Nilai
+operator: Operator
 bold: Tebal
+toggle: Beralih
+icon_on: Ikon Aktif
+icon_off: Ikon Tidak Aktif
 label: Label
+insights: Wawasan
+dashboard: Dasbor
+panel: Panel
+panel_options: Opsi Panel
+panel_header: Judul Panel
+panel_name_placeholder: Beri nama panel ini...
+panel_note_placeholder: Opsi detail tentang panel ini...
+panel_delete_confirm: Apakah Anda yakin ingin menghapus panel ini? Tindakan ini tidak dapat dibatalkan.
+dashboard_delete_confirm: Apakah Anda yakin ingin menghapus dasbor ini? Tindakan ini tidak dapat dibatalkan.
+edit_dashboard: Sunting papan instrumen
+delete_dashboard: Menghapus Dasbor
+visible: Terlihat
+prefix_placeholder: Teks sebelum nilai...
+suffix_placeholder: Teks setelah nilai...
+decimals_placeholder: Jumlah tempat desimal...
 no_dashboards: Tidak ada Dasbor
+no_dashboards_copy: Anda belum memiliki dasbor.
 no_data: Tidak ada Data
 create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
 full_screen: Layar Penuh
+edit_panels: Sunting Panel
+fit_to_screen: Sesuaikan dengan Layar
 image_url: Tautan Gambar
 alt_text: Teks Alternatif
+media: Media
 quality: Kualitas
 width: Lebar
 height: Tinggi
@@ -594,53 +720,133 @@ url_placeholder: Masukkan tautan...
 display_text: Teks Tampilan
 display_text_placeholder: Masukkan teks tampilan...
 interface_group_text_and_numbers: Teks & Angka
+interface_group_selection: Pilihan
+interface_group_relational: Relasional
 interface_group_presentation: Presentasi
+interface_group_groups: Kelompok
 interface_group_other: Lainnya
+tooltip: Keterangan alat
+tooltip_placeholder: Masukkan keterangan alat...
 unlimited: Tak terbatas
 open_link_in: Buka tautan di
 new_tab: Tab baru
 current_tab: Tab saat ini
+save_image: Simpan Gambar
+save_media: Simpan Media
 wysiwyg_options:
   aligncenter: Rata Tengah
   alignjustify: Rata Kanan-Kiri
   alignleft: Rata Kiri
+  alignnone: Tidak Sejajar
   alignright: Rata Kanan
   forecolor: Warna Latar Depan
   backcolor: Warna Latar Belakang
   bold: Tebal
   italic: Miring
   underline: Garis Bawah
+  strikethrough: Coret Garis
+  subscript: Berlangganan
+  superscript: Superscript
   codeblock: Kode
+  blockquote: Blockquote
+  bullist: Daftar Bullet
+  numlist: Daftar Nomor
+  hr: Garis Horizontal
+  link: Tambah/Sunting Tautan
+  unlink: Hapus Tautan
+  media: Tambah /Sunting Media
+  image: Tambahkan/Sunting Gambar
   copy: Salin
+  cut: Potong
+  paste: Tempel
+  heading: Judul
+  h1: Judul 1
+  h2: Judul 2
+  h3: Judul 3
+  h4: Judul 4
+  h5: Judul 5
+  h6: Judul 6
+  fontselect: Pilih Fon
+  fontsizeselect: Pilih Ukuran Fon
+  indent: Indentasi
+  outdent: Outdent
+  undo: Undo
+  redo: Ulangi
   remove: Hapus
+  removeformat: Hapus Format
   selectall: Pilih Semua
   table: Tabel
+  visualaid: Lihat elemen tak terlihat
+  source_code: Edit Kode Sumber
+  fullscreen: Layar Penuh
+  directionality: Keterarahan
 dropdown: Dropwdown
 choices: Pilihan
+choices_option_configured_incorrectly: Pilihan dikonfigurasi dengan tidak benar
 deselect: Hapus pilihan
+deselect_all: Hapus Semua
+other: Lainnya...
+adding_user: Menambahkan Pengguna
+unknown_user: Pengguna Tidak Dikenal
+creating_in: 'Membuat Item di {collection}'
+editing_in: 'Mengedit Item di {collection}'
+viewing_in: 'Melihat Item di {collection}'
+creating_unit: 'Membuat {unit}'
+editing_unit: 'Mengedit {unit}'
 editing_in_batch: 'Mengedit Masal {count} item'
+no_options_available: Tidak ada opsi tersedia
+settings_data_model: Model Data
 settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
+settings_presets: Preset & Markah
+one_or_more_options_are_missing: Satu atau lebih opsi hilang
 scope: Lingkup
 select: Pilih...
+layout: Tata letak
+tree_view: Tampilan Pohon
+changes_are_permanent: Perubahan bersifat permanen
+preset_name_placeholder: Berfungsi sebagai bawaan saat kosong...
+preset_search_placeholder: Kueri penelusuran...
+editing_preset: Mengedit Preset
+layout_preview: Pratinjau Tata Letak
+layout_setup: Pengaturan Tata Letak
+unsaved_changes: Perubahan Tidak Disimpan
+unsaved_changes_copy: Anda yakin ingin meninggalkan halaman ini?
 discard_changes: Batalkan Perubahan
+discard_all_changes: Buang Semua Perubahan
+discard_changes_copy: Apakah Anda yakin ingin membatalkan semua perubahan yang dibuat?
+show_x_axis: Menunjukkan Sumbu X
+show_y_axis: Menunjukkan Sumbu Y
 keep_editing: Tetap Mengedit
+page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
+page_help_collections_collection: >-
+  **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
+activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
 all: Semua
+none: Tidak ada
 batch_delete_confirm: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
 cancel: Batal
 collection: Koleksi
 collections: Pengumpulan
+content: Konten
+singleton_label: Perlakukan sebagai objek tunggal
+directus_collection:
+  directus_activity: Log akuntabilitas untuk semua kejadian
+  directus_collections: Konfigurasi koleksi tambahan dan metadata
+  directus_fields: Isian konfigurasi tambahan dan metadata
 fields:
   directus_activity:
+    item: Kunci Utama Item
     action: Aksi
     collection: Koleksi
     comment: Komentar
     user_agent: Agen pengguna
     ip: Alamat IP
+    revisions: Revisi
   directus_collections:
     collection: Koleksi
     icon: Ikon
@@ -648,13 +854,26 @@ fields:
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
+    archive_app_filter: Filter Aplikasi Arsip
+    archive_value: Nilai Arsip
+    unarchive_value: Batalkan pengarsipan Nilai
     sort_field: Sortir Baris
+    accountability: Pelacakan Aktifitas & Revisi
+    archive_field: Bidang Arsip
+    item_duplication_fields: Bidang Duplikasi Item
   directus_files:
+    $thumbnail: Gambar kecil
     title: Judul
     description: Deskripsi
+    tags: Tagar
     location: Lokasi
+    storage: Penyimpanan
+    filename_disk: Nama file (Piringan)
+    filename_download: Nama file (Unduh)
     metadata: Metadata
+    type: Tipe Mime
     filesize: Ukuran berkas
+    modified_by: Dimodifikasi Oleh
     modified_on: Dimodifikasi Pada
     created_on: Dibuat Pada
     created_by: Dibuat Oleh
@@ -675,24 +894,62 @@ fields:
     location: Lokasi
     title: Judul
     description: Deskripsi
+    tags: Tagar
+    user_preferences: Preferensi Pengguna
     language: Bahasa
     theme: Tema
+    theme_auto: Otomatis (Berdasarkan Sistem)
     theme_light: Mode Terang
     theme_dark: Mode Gelap
     tfa_secret: Otentikasi Dua Faktor
+    admin_options: Opsi Admin
     status: Status
     status_draft: Konsep
+    status_invited: Diundang
     status_active: Aktif
+    status_suspended: Tergantung
+    status_archived: Diarsipkan
     role: Peran
+    token: Token
+    token_placeholder: Masukkan token akses aman...
+    provider: Penyedia
+    external_identifier: Pengidentifikasi Eksternal
     last_page: Halaman Terakhir
     last_access: Akses Terakhir
+    email_notifications: Email pemberitahuan
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: JaringanP
+    tiff: Bercekcok
+    mapping: Pemetaan
+    basemaps: Peta dasar
+    basemaps_raster: Raster
+    basemaps_tile: Ubin RasterJSON
+    basemaps_style: Gaya Kotak peta
+    mapbox_key: Token Akses Kotak peta
+    attribution: Atribusi
+    attribution_placeholder: Kontributor © OpenStreetMap
+    transforms_note: Nama metode Sharp dan argumennya. Lihat konstruktor https://sharp.pixelplumbing.com/api- untuk informasi lebih.
+    additional_transforms: Transformasi Tambahan
     project_name: Nama Proyek
+    project_descriptor: Deskriptor Proyek
+    project_url: URL Proyek
+    project_color: Warna Proyek
+    project_logo: Logo Proyek
+    branding: Merk & Gaya
+    public_foreground: Latar depan Publik
+    public_background: Latar belakang Publik
+    public_note: Catatan Publik
+    auth_password_policy: Kebijakan Kata sandi Autentik
+    auth_login_attempts: Upaya Login Autentik
+    files_and_thumbnails: File & Penyimpanan
     module_bar: Papan Modul
   directus_shares:
     name: Nama
     role: Peran
     password: Kata Sandi
+    date_start: Tanggal Mulai
   directus_fields:
     note: Catatan
     hidden: Tersembunyi
@@ -709,33 +966,103 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Keamanan
+    additional_transforms: Transformasi Tambahan
+    transforms_note: Nama metode Sharp dan argumennya. Lihat konstruktor https://sharp.pixelplumbing.com/api- untuk informasi lebih.
+    mapbox_key: Token Akses Kotak peta
+    basemaps: Peta dasar
+    basemaps_raster: Raster
+    basemaps_tile: Ubin RasterJSON
+    basemaps_style: Gaya Kotak peta
   directus_activity:
+    login: Masuk
     create: Buat
     update: Perbarui
+    delete: Hapus
   directus_collections:
+    track_activity_revisions: Lacak Aktifitas & Revisi
+    only_track_activity: Hanya Aktifitas Melacak
+    do_not_track_anything: Jangan Lacak Apapun
     collection_setup: Penyiapan Koleksi
+    note_placeholder: Deskripsi koleksi ini...
+    hidden_label: Sembunyikan di dalam Aplikasi
+    singleton: Perlakukan sebagai objek tunggal
     language: Bahasa
+    translation: Terjemahan
+    translation_placeholder: Masukkan terjemahan...
+    collection_name: Nama Koleksi
+    singular_unit: Satuan Tunggal
+    plural_unit: Satuan Jamak
     archive_divider: Arsip
+    archive_field_placeholder: Pilih bidang...
+    archive_app_filter: Aktifkan Filter Arsip Aplikasi
+    archive_value: Nilai yang ditetapkan saat pengarsipan...
+    unarchive_value: Nilai yang ditetapkan saat membatalkan pengarsipan...
     sort_divider: Sortir
+    sort_field: Pilih bidang...
+    accountability_divider: Akuntabilitas
+    duplication_divider: Duplikasi
+  directus_files:
+    title: Judul yang unik...
+    description: Deskripsi opsional...
+    location: Lokasi opsional...
+    storage_divider: Penamaan File
+    filename_disk: Nama pada penyimpanan disk...
+    filename_download: Nama saat mengunduh...
   directus_roles:
+    name: Nama unik untuk peran ini...
+    description: Deskripsi peran ini...
+    ip_access: Tambahkan alamat IP yang diizinkan, biarkan kosong untuk mengizinkan semua...
     fields:
       icon_name: Ikon
       name_name: Nama
+      name_placeholder: Masukkan judul...
+      link_name: Tautan
+      link_placeholder: URL Relatif atau absolut...
     collections_name: Pengumpulan
+    collections_addLabel: Tambah Koleksi...
   directus_users:
+    preferences_divider: Preferensi Pengguna
+    dropdown_auto: Otomatis (Berdasarkan Sistem)
     dropdown_light: Mode Terang
     dropdown_dark: Mode Gelap
+    admin_divider: Opsi Admin
     status_dropdown_draft: Konsep
+    status_dropdown_invited: Diundang
     status_dropdown_active: Aktif
+    status_dropdown_suspended: Tergantung
+    status_dropdown_archived: Diarsipkan
+    token: Masukkan token akses aman...
   directus_webhooks:
     status_options_active: Aktif
     status_options_inactive: Tidak aktif
+    data_label: Kirim Data Acara
+    triggers_divider: Pencetus
     actions_create: Buat
     actions_update: Perbarui
+    actions_delete: Hapus
+    actions_login: Masuk
     headers:
+      header: Header
       value: Nilai
+      add: Tambah Header
+no_fields_in_collection: 'Belum ada bidang pada "{collection}" ini'
+no_value: Tidak berharga
+do_nothing: Tidak Ada
+generate_and_save_uuid: Hasilkan dan Simpan UUID
+save_current_user_id: Simpan ID Pengguna Saat ini
+save_current_user_role: Simpan Peran Pengguna Saat ini
+save_current_datetime: Simpan Tanggal/Waktu Saat ini
+always_open: Selalu Buka
+start_open: Mulai Terbuka
+start_collapsed: Mulai Runtuh
+block: Blokir
+inline: Inline
 comment: Komentar
+expired: Kedaluwarsa
+share: Bagikan
+continue_label: Lanjut
 editing_role: 'Peraturan {role}'
+delete_label: Hapus
 delete_field_are_you_sure: >-
   Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.
 description: Deskripsi
@@ -750,52 +1077,120 @@ forgot_password: Lupa Kata Sandi
 hidden: Tersembunyi
 icon: Ikon
 info: Info
+normal: Normal
+success: Sukses
+warning: Peringatan
+danger: Bahaya
 junction_collection: Pengumpulan Persimpangan
 latency: Latensi
 login: Masuk
 my_activity: Aktivitas Saya
+not_authenticated: Tidak diautentikasi
+authenticated: Terautentikasi
 options: Pilihan
 otp: Kata Sandi Sekali Pakai
 password: Kata Sandi
 permissions: Izin
 relationship: Hubungan
+reset: Setel ulang
 reset_password: Atur Ulang Kata Sandi
+revisions: Revisi
+no_revisions: Belum Ada Revisi
 revert: Pulihkan
 save: Simpan
 schema: Skema
 search: Cari
 select_existing: Pilih yang Ada
+select_field_type: Pilih kolom
 select_interface: Pilih antarmuka
 settings: Pengaturan
 sign_in: Masuk
 sign_out: Keluar
 sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
+sort_desc: Mengurut Turun
 template: Templat
+require_value_to_be_set: Membutuhkan nilai untuk ditetapkan
+translation: Terjemahan
+translation_placeholder: Masukkan terjemahan...
 value: Nilai
+view_project: Lihat Proyek
+report_error: Lapor Kesalahan
+start: Mulai
 interfaces:
   filter:
     name: Penyaring
+    description: Konfigurasikan filter objek.
     add_filter: Tambah Filter
+    add_group: Dan / Atau kelompok
+    add_value: Tambahkan Nilai
+    logic_type_and: DAN
+    logic_type_or: ATAU
     all: Semua
+    any: Setiap
+    and: dan
+    of_the_following: sebagai berikut
+    no_rules: Tidak ada aturan yang dikonfigurasi
+    change_value: Klik untuk ubah nilai
+    placeholder: Seret aturan di sini
+  group-accordion:
+    name: Akordeon
+    description: Tampilkan bidang atau grup sebagai bagian akordeon
+    start: Mulai
+    all_closed: Semua Tertutup
+    first_opened: Pertama kali Dibuka
+    all_opened: Semua Dibuka
+    accordion_mode: Mode Akordeon
+    max_one_section_open: Maks 1 Bagian Dibuka
   presentation-links:
+    presentation-links: Tautan Tombol
+    links: Tautan
+    description: Tombol tautan yang dapat dikonfigurasi untuk meluncurkan URL dinamis
+    style: Gaya
     primary: Primer
+    link: Tautan
+    button: Tombol
+    error: Tidak dapat melakukan aksi ini
+  select-multiple-checkbox:
+    checkboxes: Kotak centang
+    description: Pilih diantara beberapa opsi melalui kotak centang
+    allow_other: Izinkan Lainnya
+    show_more: 'Tampilkan {count} lebih banyak'
+    items_shown: Items yang Ditampilkan
+  select-multiple-checkbox-tree:
+    name: Kotak centang (Pohon)
+    description: Pilih diantara beberapa opsi melalui kotak centang bersarang
+    value_combining: Menggabungkan Nilai
+    value_combining_note: Mengontrol nilai apa yang disimpan saat pilihan bersarang dibuat.
+    show_all: Tampilkan Semua
+    show_selected: Tampilkan yang Dipilih
   input-code:
     code: Kode
+    description: Tulis atau bagikan cuplikan kode
+    line_number: Nomor Baris
+    line_wrapping: Pembungkus Garis
+    placeholder: Masukkan kode di sini...
   system-collection:
     collection: Koleksi
+    description: Pilih diantara koleksi yang ada
+    include_system_collections: Termasuk Koleksi Sistem
   system-collections:
     collections: Pengumpulan
+    description: Pilih diantara koleksi yang ada
+    include_system_collections: Termasuk Koleksi Sistem
   select-color:
     color: Warna
+    description: Masukan atau pilih nilai warna
   datetime:
     datetime: Datetime
   system-display-template:
     display-template: Tampilan Template
+    collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
     select_a_collection: Pilih Koleksi
   presentation-divider:
     divider: Pembagi/Pemecah
   select-dropdown:
+    allow_other: Izinkan Lainnya
     choices_value_placeholder: Masukkan sebuah nilai...
   file:
     file: Berkas
@@ -805,17 +1200,28 @@ interfaces:
     hash: Hash
   select-icon:
     icon: Ikon
+    search_for_icon: Cari ikon...
+  file-image:
+    image: Gambar
   system-interface:
     interface: Antarmuka
   select-dropdown-m2o:
     display_template: Tampilan Template
   input-rich-text-md:
     edit: Edit
+    previewFont: Font Pratinjau
+    customSyntax: Blok Kustom
+    customSyntax_label: Tambahkan jenis sintaks khusus
+    customSyntax_add: Tambahkan sintaks khusus
+    box: Blokir / Sebaris
   map:
     zoom: Perbesar
   system-folder:
     folder: Direktori
+  tags:
+    tags: Tagar
   boolean:
+    toggle: Beralih
     label_default: Diaktifkan
   translations:
     display_template: Tampilan Template
@@ -828,6 +1234,8 @@ displays:
     translations: Terjemahan
   boolean:
     boolean: Boolean
+    icon_on: Ikon Aktif
+    icon_off: Ikon Tidak Aktif
   collection:
     collection: Koleksi
   color:
@@ -870,7 +1278,6 @@ layouts:
     subtitle: Subjudul
   tabular:
     tabular: Tabel
-    fields: Bidang
     spacing: Spasi
     comfortable: Longgar
     compact: Rapat

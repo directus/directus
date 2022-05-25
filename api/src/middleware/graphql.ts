@@ -3,6 +3,7 @@ import { DocumentNode, getOperationAST, parse, Source } from 'graphql';
 import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions';
 import { GraphQLParams } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { parseJSON } from '../utils/parse-json';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (req.method !== 'GET' && req.method !== 'POST') {
@@ -19,7 +20,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 
 		if (req.query.variables) {
 			try {
-				variables = JSON.parse(req.query.variables as string);
+				variables = parseJSON(req.query.variables as string);
 			} catch {
 				throw new InvalidQueryException(`Variables are invalid JSON.`);
 			}

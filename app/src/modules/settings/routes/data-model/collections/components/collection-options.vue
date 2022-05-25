@@ -1,41 +1,56 @@
 <template>
 	<div v-if="collection.collection.startsWith('directus_') === false">
 		<v-menu placement="left-start" show-arrow>
-			<template #activator="{ toggle, deactivate }">
-				<v-icon name="more_vert" clickable class="ctx-toggle" @click.stop.prevent="toggle" @focusout="deactivate" />
+			<template #activator="{ toggle }">
+				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<v-list>
-				<v-list-item clickable class="danger" @click="deleteActive = true">
+				<v-list-item v-if="collection.schema" clickable :to="`/content/${collection.collection}`">
 					<v-list-item-icon>
-						<v-icon name="delete" outline />
+						<v-icon name="box" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('delete_collection') }}
+						{{ t('goto_collection_content') }}
 					</v-list-item-content>
 				</v-list-item>
 
 				<v-list-item clickable @click="update({ meta: { hidden: !collection.meta?.hidden } })">
 					<template v-if="collection.meta?.hidden === false">
 						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-						<v-list-item-content>{{ t('make_collection_hidden') }}</v-list-item-content>
+						<v-list-item-content>
+							{{ collection.schema ? t('make_collection_hidden') : t('make_folder_hidden') }}
+						</v-list-item-content>
 					</template>
 					<template v-else>
 						<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-						<v-list-item-content>{{ t('make_collection_visible') }}</v-list-item-content>
+						<v-list-item-content>
+							{{ collection.schema ? t('make_collection_visible') : t('make_folder_visible') }}
+						</v-list-item-content>
 					</template>
+				</v-list-item>
+
+				<v-list-item clickable class="danger" @click="deleteActive = true">
+					<v-list-item-icon>
+						<v-icon name="delete" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+					</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
 
 		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
-				<v-card-title>{{ t('delete_collection_are_you_sure') }}</v-card-title>
+				<v-card-title>
+					{{ collection.schema ? t('delete_collection_are_you_sure') : t('delete_folder_are_you_sure') }}
+				</v-card-title>
 				<v-card-actions>
 					<v-button :disabled="deleting" secondary @click="deleteActive = null">
 						{{ t('cancel') }}
 					</v-button>
 					<v-button :loading="deleting" kind="danger" @click="deleteCollection">
-						{{ t('delete_collection') }}
+						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

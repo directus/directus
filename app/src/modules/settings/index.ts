@@ -17,12 +17,13 @@ import RolesPermissionsDetail from './routes/roles/permissions-detail/permission
 import RolesPublicItem from './routes/roles/public-item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
+import TranslationStringsCollection from './routes/translation-strings/collection.vue';
 
 export default defineModule({
 	id: 'settings',
 	name: '$t:settings',
 	icon: 'settings',
-	color: 'var(--warning)',
+	color: 'var(--primary)',
 	routes: [
 		{
 			path: '',
@@ -62,12 +63,19 @@ export default defineModule({
 					async beforeEnter(to) {
 						const collectionsStore = useCollectionsStore();
 						const info = collectionsStore.getCollection(to.params.collection as string);
-						const fieldsStore = useFieldsStore();
+
+						if (!info) {
+							return {
+								name: 'settings-not-found',
+								params: { _: to.path.split('/').slice(1) },
+							};
+						}
 
 						if (!info?.meta) {
 							await api.patch(`/collections/${to.params.collection}`, { meta: {} });
 						}
 
+						const fieldsStore = useFieldsStore();
 						fieldsStore.hydrate();
 					},
 					props: (route) => ({
@@ -165,6 +173,17 @@ export default defineModule({
 					path: ':primaryKey',
 					component: WebhooksItem,
 					props: true,
+				},
+			],
+		},
+		{
+			path: 'translation-strings',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-translation-strings-collection',
+					path: '',
+					component: TranslationStringsCollection,
 				},
 			],
 		},

@@ -7,20 +7,17 @@ import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
+import {
+	InvalidCredentialsException,
+	InvalidOTPException,
+	UserSuspendedException,
+	InvalidProviderException,
+} from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
-import {
-	AbstractServiceOptions,
-	Action,
-	SchemaOverview,
-	Session,
-	User,
-	DirectusTokenPayload,
-	LoginResult,
-} from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, Session, User, DirectusTokenPayload, LoginResult } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { SettingsService } from './settings';
 import { clone, cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
@@ -74,9 +71,8 @@ export class AuthenticationService {
 				'u.auth_data'
 			)
 			.from('directus_users as u')
-			.innerJoin('directus_roles as r', 'u.role', 'r.id')
+			.leftJoin('directus_roles as r', 'u.role', 'r.id')
 			.where('u.id', await provider.getUserID(cloneDeep(payload)))
-			.andWhere('u.provider', providerName)
 			.first();
 
 		const updatedPayload = await emitter.emitFilter(
@@ -121,6 +117,9 @@ export class AuthenticationService {
 				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
+		} else if (user.provider !== providerName) {
+			await stall(STALL_TIME, timeStart);
+			throw new InvalidProviderException();
 		}
 
 		const settingsService = new SettingsService({
@@ -273,7 +272,9 @@ export class AuthenticationService {
 			.from('directus_sessions AS s')
 			.leftJoin('directus_users AS u', 's.user', 'u.id')
 			.leftJoin('directus_shares AS d', 's.share', 'd.id')
-			.joinRaw('LEFT JOIN directus_roles AS r ON r.id IN (u.role, d.role)')
+			.leftJoin('directus_roles AS r', (join) => {
+				join.onIn('r.id', [this.knex.ref('u.role'), this.knex.ref('d.role')]);
+			})
 			.where('s.token', refreshToken)
 			.andWhere('s.expires', '>=', new Date())
 			.andWhere((subQuery) => {
@@ -321,6 +322,10 @@ export class AuthenticationService {
 				collection: record.share_collection,
 				item: record.share_item,
 			};
+			tokenPayload.app_access = false;
+			tokenPayload.admin_access = false;
+
+			delete tokenPayload.id;
 		}
 
 		const customClaims = await emitter.emitFilter(

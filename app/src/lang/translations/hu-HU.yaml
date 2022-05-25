@@ -1,15 +1,39 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Azonosító
 avatar: Profilkép
+application: Alkalmazás
 default_provider: Alapértelmezett
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
 modules: Modulok
 module_bar: Modulsáv
+reset_width: Széllesség visszaállítása
 tile_size: Csempeméret
 edit_field: Mező szerkesztése
 conditions: Feltételek
 maps: Térképek
+switch_user: Felhasználó váltása
 item_creation: Elem létrehozása
 item_revision: Nézet revíziója
 enter_a_name: Adjon meg egy nevet...
@@ -17,6 +41,7 @@ duplicate_field: Mező másolása
 half_width: Fél szélesség
 full_width: Teljes szélesség
 group: Csoport
+export_items: Elemek exportálása
 and: És
 or: Vagy
 fill_width: Teret kitöltő
@@ -31,7 +56,9 @@ edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
 db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához'
+show_active_items: Aktív elemek megjelenítése
 show_archived_items: Archivált elemek megjelenítése
+show_all_items: Összes elem megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
 required_for_app_access: Alkalmazás-hozzáféréshez szükséges
@@ -42,9 +69,17 @@ create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 delete_panel: Panel törlése
 create_webhook: Webhook létrehozása
+create_translation_string: Fordítás létrehozása
+translation_string_key_placeholder: Fordítási karakterlánc kulcs...
+translation_string_translations_placeholder: Új fordítás hozzáadása
+edit_translation_string: Fordítás módosítása
+delete_translation_string_copy: >-
+  Biztosan törörlni szeretné a "{key}" fordítási karakterláncot? Ez a művelet nem visszavonható.
 invite_users: Felhasználók meghívása
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
+subject: Tárgy
+inbox: Bejövő
 emails: Emailek
 connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
@@ -56,16 +91,19 @@ delete_folder: Mappa törlése
 prefix: Előtag
 suffix: Utótag
 reset_bookmark: Könyvjelző visszaállítása
-rename_bookmark: Könyvjelző átnevezése
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
 delete_bookmark_copy: >-
   Biztosan törölni szeretnéd a "{bookmark}" könyvjelzőt? Ez a művelet nem visszavonható.
+delete_personal_bookmark: Személyes könyvjelző törlése
+delete_role_bookmark: Szerepkör könyvjelző törlése
+delete_global_bookmark: Globális könyvjelző törlése
 logoutReason:
   SIGN_OUT: Kijelentkezve
   SESSION_EXPIRED: A munkamenet lejárt
 public_label: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
+admin_description: Alapértelmezett adminisztrátori szerepkör korlátlan alkalmazás és API hozzáféréssel.
 not_allowed: Nem engedélyezett
 directus_version: Directus verzió
 node_version: Node verzió
@@ -86,7 +124,7 @@ recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
-unknown_validation_errors: 'A következő rejtett mezőknél érvényesítési hibák merültek fel:'
+validation_errors_notice: 'A következő mezők értéke érvénytelen:'
 validationError:
   eq: Az érték {valid} kell legyen
   neq: Az érték nem lehet {invalid}
@@ -136,6 +174,7 @@ revision_post_create: Ez az elem így nézett ki létrehozásakor.
 revision_post_update: Ez az elem így nézett ki a frissítés után.
 changes_made: A revízió végrehajtása soránz az alábbi változások történtek.
 no_relational_data: Ne feledje, hogy a relációs adatok nem tartoznak ide.
+hide_field: Mező elrejtése
 hide_field_on_detail: Mező elrejtése a Részleteken
 show_field_on_detail: Mező megjelenítése a Részleteken
 delete_field: Mező törlése
@@ -144,6 +183,7 @@ field_create_success: 'Létrehozott mező: "{field}"'
 field_update_success: 'Módosított mező: "{field}"'
 duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
+language_placeholder: Válasszon nyelvet...
 aggregate_function: Aggregáló függvény
 aggregate_precision: Aggregálás pontossága
 group_aggregation: Csoport aggregáció
@@ -152,6 +192,8 @@ global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
 show_zero: Zéró megjelenítése
+continue_in_advanced_field_creation_mode: Folytassa a Speciális mező létrehozási módban
+validation: Érvényesítés
 sum: Össz.
 avg: Átlag
 count: Mennyiség
@@ -242,10 +284,7 @@ dismiss: Elutasít
 raw_value: Nyers érték
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
-clear_value: Érték törlése
 clear_changes: Változások törlése
-reset_to_default: Visszaállítás alaphelyzetbe
-undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
@@ -276,10 +315,8 @@ related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
-export_data: Adatok exportálása
+label_import: Importálás
 format: Formátum
-use_current_filters_settings: Aktuális szűrők és beállítások használata
-export_collection: '{collection} exportálása'
 last_page: Utolsó oldal
 last_access: Utolsó hozzáférés
 fill_template: Kitöltés sablon értékkel
@@ -295,6 +332,10 @@ interface_label: Kezelőfelület
 today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
+functions:
+  year: év
+  month: hónap
+  count: Mennyiség
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -391,6 +432,7 @@ user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasznál�
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
 no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
+activity_log: Tevékenységnapló
 all_items: Minden elem
 any: Bármely
 csv: CSV
@@ -471,6 +513,7 @@ errors:
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
   NOT_NULL_VIOLATION: Az érték nem lehet null
   ILLEGAL_ASSET_TRANSFORMATION: A forráskép túl nagy az előnézethez
+  VALUE_TOO_LONG: Az érték túl hosszú
   UNKNOWN: Váratlan hiba történt
 security: Biztonság
 value_hashed: Biztonságosan hashelt érték
@@ -501,6 +544,7 @@ update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
 make_collection_visible: A Gyűjtemény legyen látható
 make_collection_hidden: A Gyűjtemény legyen rejtett
+goto_collection_content: Tartalom megtekintése
 start_end_of_count_items: '{start}-{end} {count} elemből'
 start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
@@ -533,6 +577,7 @@ advanced_settings: Haladó beállítások
 advanced_filter: Bővített szűrés
 delete_advanced_filter: Szűrő törlése
 change_advanced_filter_operator: Operátor cseréje
+advanced: Speciális
 operators:
   eq: Egyenlő
   neq: Nem egyenlő
@@ -642,6 +687,8 @@ create_dashboard: Irányítópult létrehozása
 dashboard_name: Irányítópult neve
 full_screen: Teljes képernyő
 edit_panels: Panel szerkesztése
+left_align: Balra igazítás
+right_align: Jobbra igazítás
 fit_to_screen: Képernyőhöz igazítva
 image_url: Kép URL
 alt_text: Alternatív szöveg
@@ -653,6 +700,7 @@ source: Forrás
 url_placeholder: Írjon be egy url-t...
 display_text: Szöveg megjelenítése
 display_text_placeholder: Írjon be egy megjelenítendő szöveget...
+interface_group_other: Egyéb
 tooltip: Buboréksúgó
 tooltip_placeholder: Írjon be egy buboréksúgó szöveget...
 unlimited: Korlátlan
@@ -786,6 +834,7 @@ cancel: Mégse
 no_upscale: Ne méretezze fel a képeket
 collection: Gyűjtemény
 collections: Gyűjtemények
+content: Tartalom
 singleton: Egyedüli
 singleton_label: Egyetlen objektumként kezelendő
 system_fields_locked: A rendszermezők zároltak és nem szerkeszthetők
@@ -1254,8 +1303,6 @@ interfaces:
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása
     box: Block / Inline
-    imageToken: Kép token
-    imageToken_label: Milyen (statikus) tokent csatoljunk a képforrásokhoz
   map:
     map: Térkép
     description: Hely megadása térképen
@@ -1309,7 +1356,6 @@ interfaces:
     auto_formatter: Cím automatikus formázó használata
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
-    add_tags: Címkék hozzáadása...
   input:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!
@@ -1355,8 +1401,6 @@ interfaces:
     toolbar: Eszköztár
     custom_formats: Egyéni formátumok
     options_override: Beállítások felülírása
-    imageToken: Kép token
-    imageToken_label: Milyen (statikus) tokent csatoljunk a képforrásokhoz
   input-autocomplete-api:
     input-autocomplete-api: Automatikus kiegészítés (API)
     description: Külső API-értékek keresési típusvezetője (automatikus kiegészítés).
@@ -1482,7 +1526,6 @@ layouts:
     subtitle: Alcím
   tabular:
     tabular: Táblázat
-    fields: Mezők
     spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt

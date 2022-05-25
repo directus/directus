@@ -44,10 +44,6 @@ export class AssetsService {
 
 		const systemPublicKeys = Object.values(publicSettings || {});
 
-		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
-			await this.authorizationService.checkAccess('read', 'directus_files', id);
-		}
-
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
@@ -56,6 +52,10 @@ export class AssetsService {
 		const isValidUUID = validateUUID(id, 4);
 
 		if (isValidUUID === false) throw new ForbiddenException();
+
+		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
+			await this.authorizationService.checkAccess('read', 'directus_files', id);
+		}
 
 		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
 
@@ -66,8 +66,40 @@ export class AssetsService {
 		if (!exists) throw new ForbiddenException();
 
 		if (range) {
-			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {
+			const missingRangeLimits = range.start === undefined && range.end === undefined;
+			const endBeforeStart = range.start !== undefined && range.end !== undefined && range.end <= range.start;
+			const startOverflow = range.start !== undefined && range.start >= file.filesize;
+			const endUnderflow = range.end !== undefined && range.end <= 0;
+
+			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
 				throw new RangeNotSatisfiableException(range);
+			}
+
+			const lastByte = file.filesize - 1;
+
+			if (range.end) {
+				if (range.start === undefined) {
+					// fetch chunk from tail
+					range.start = file.filesize - range.end;
+					range.end = lastByte;
+				}
+
+				if (range.end >= file.filesize) {
+					// fetch entire file
+					range.end = lastByte;
+				}
+			}
+
+			if (range.start) {
+				if (range.end === undefined) {
+					// fetch entire file
+					range.end = lastByte;
+				}
+
+				if (range.start < 0) {
+					// fetch file from head
+					range.start = 0;
+				}
 			}
 		}
 

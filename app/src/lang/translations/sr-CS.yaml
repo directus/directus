@@ -34,7 +34,6 @@ delete_folder: Obriši Fasciklu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi postavljanje oznake
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
@@ -63,7 +62,6 @@ recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
 unarchive_confirm: Da li ste sigurni da želite da vratite iz arhive ovu stavku?
 nested_files_folders_will_be_moved: Ugnježđeni fajlovi i fascikle će biti pomjereni na jedan nivo iznad.
-unknown_validation_errors: 'Došlo je do greške u validaciji kod sljedećih sakrivenih polja:'
 validationError:
   eq: Vrijednost treba biti {valid}
   neq: Vrijednost ne može biti {invalid}
@@ -197,9 +195,6 @@ dismiss: Ignoriši
 raw_value: Vrijednost
 edit_raw_value: Izmijeni Vrijednost
 enter_raw_value: Unesi vrijednost...
-clear_value: Obriši vrijednost
-reset_to_default: Vrati na podrazumijevano
-undo_changes: Poništi izmjene
 notifications: Obavještenja
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nijе pronađеna
@@ -229,10 +224,7 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
-export_data: Izvoz Podataka
 format: Format
-use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
-export_collection: 'Izvoz {collection}'
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
@@ -248,6 +240,9 @@ interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
+functions:
+  year: Godina
+  month: Mjesec
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -991,8 +986,6 @@ interfaces:
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
     box: Blok / Linijski
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   map:
     zoom: Uvеćanjе
   presentation-notice:
@@ -1032,7 +1025,6 @@ interfaces:
     auto_formatter: Koristi automatski format naslova
     alphabetize: Po abecedi
     alphabetize_label: Abecedni red
-    add_tags: Dodaj tagove...
   input:
     input: Unos
     description: Ručno unesite vrijednost
@@ -1077,8 +1069,6 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.
@@ -1194,7 +1184,6 @@ layouts:
     subtitle: Pod naslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno

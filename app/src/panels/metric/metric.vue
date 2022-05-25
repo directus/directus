@@ -14,9 +14,9 @@ import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
 import api from '@/api';
 import { Filter } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
-import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { isNil } from 'lodash';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint, abbreviateNumber } from '@directus/shared/utils';
+import { cssVar } from '@directus/shared/utils/browser';
 
 export default defineComponent({
 	props: {
@@ -43,7 +43,7 @@ export default defineComponent({
 		},
 		function: {
 			type: String as PropType<
-				'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max' | 'first' | 'last'
+				'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max' | 'first' | 'last'
 			>,
 			required: true,
 		},
@@ -77,7 +77,7 @@ export default defineComponent({
 	setup(props) {
 		const { n } = useI18n();
 
-		const metric = ref();
+		const metric = ref<number | string>();
 		const loading = ref(false);
 
 		watchEffect(async () => {
@@ -106,7 +106,11 @@ export default defineComponent({
 
 				if (props.field) {
 					if (props.function === 'first' || props.function === 'last') {
-						metric.value = Number(res.data.data[0][props.field]);
+						if (typeof res.data.data[0][props.field] === 'string') {
+							metric.value = res.data.data[0][props.field];
+						} else {
+							metric.value = Number(res.data.data[0][props.field]);
+						}
 					} else {
 						metric.value = Number(res.data.data[0][props.function][props.field]);
 					}
@@ -127,6 +131,10 @@ export default defineComponent({
 				return abbreviateNumber(metric.value, props.decimals ?? 0);
 			}
 
+			if (typeof metric.value === 'string') {
+				return metric.value;
+			}
+
 			return n(Number(metric.value), 'decimal', {
 				minimumFractionDigits: props.decimals ?? 0,
 				maximumFractionDigits: props.decimals ?? 0,
@@ -144,7 +152,7 @@ export default defineComponent({
 				}
 			}
 
-			return matchingFormat ? matchingFormat.color || '#00C897' : null;
+			return matchingFormat ? matchingFormat.color || cssVar('--primary') : null;
 
 			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
 				const value = Number(metric.value);

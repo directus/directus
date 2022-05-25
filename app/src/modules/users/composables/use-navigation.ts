@@ -14,7 +14,7 @@ export default function useNavigation(): { roles: Ref<Role[] | null>; loading: R
 		loading = ref(false);
 	}
 
-	if (roles.value === null && loading?.value === false) {
+	if (loading?.value === false) {
 		fetchRoles();
 	}
 
@@ -22,7 +22,7 @@ export default function useNavigation(): { roles: Ref<Role[] | null>; loading: R
 
 	async function fetchRoles() {
 		if (!loading || !roles) return;
-		loading.value = true;
+		if (!roles.value) loading.value = true;
 
 		const rolesResponse = await api.get(`/roles`, {
 			params: {

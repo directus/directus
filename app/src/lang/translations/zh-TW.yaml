@@ -35,6 +35,7 @@ create_webhook: 建立 Webhook
 invite_users: 邀請用戶
 invite: 邀请
 email_already_invited: 此電郵 "{email}" 已被邀請
+inbox: 收件匣
 emails: 信件
 connection_excellent: 優秀的連接
 connection_good: 好的連接
@@ -46,7 +47,6 @@ delete_folder: 刪除資料夾
 prefix: 前綴
 suffix: 後綴
 reset_bookmark: 重設書籤
-rename_bookmark: 重新命名書籤
 update_bookmark: 更新書籤
 delete_bookmark: 刪除書籤
 delete_bookmark_copy: >-
@@ -71,7 +71,6 @@ reset_system_permissions_copy: 此動作會取代你先前自設的系統權限�
 unarchive: 取消封存
 unarchive_confirm: 您確定要解除封存這個項目嗎？
 nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
-unknown_validation_errors: '下列的隱藏欄位驗證錯誤：'
 validationError:
   eq: 值必須為 {valid}
   neq: 值不能為 {invalid}
@@ -126,8 +125,10 @@ field_create_success: '建立欄位: "{field}"'
 field_update_success: '更新欄位: "{field}"'
 duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
+language_placeholder: 選擇語言...
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
+camera: 相機
 show_zero: 顯示零值
 sum: 總和
 avg: 平均
@@ -197,10 +198,7 @@ dismiss: 忽略
 raw_value: 原始值
 edit_raw_value: 編輯原始值
 enter_raw_value: 輸入原始值...
-clear_value: 清除內容
 clear_changes: 清除更改
-reset_to_default: 重設為預設值
-undo_changes: 還原變更
 notifications: 通知
 show_all_activity: 顯示所有活動
 page_not_found: 無法找到網頁
@@ -225,10 +223,11 @@ this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
 languages_collection: 語系集合
-export_data: 匯出資料
+import_data_input_placeholder: CSV 或 JSON...
+import_data_button: 開始匯入
+import_data_indeterminate: 正在匯入資料...
+label_import: 匯入
 format: 格式
-use_current_filters_settings: 使用當前篩選器及設置
-export_collection: '匯出 {collection}'
 last_page: 最後一頁
 last_access: 最後存取
 fill_template: 使用範本填充
@@ -244,6 +243,10 @@ interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
+functions:
+  year: 年
+  month: 月
+  count: 數量
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 minutes: 分
@@ -757,7 +760,6 @@ interfaces:
     auto_formatter: 使用標題自動格式化
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
-    add_tags: 新增標籤...
   boolean:
     toggle: 切換
     label_default: 已啟用
@@ -840,7 +842,6 @@ layouts:
     subtitle: 副標題
   tabular:
     tabular: 表格
-    fields: 欄位
     spacing: 間距
     comfortable: 舒適
     compact: 精簡

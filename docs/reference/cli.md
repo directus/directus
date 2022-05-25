@@ -29,8 +29,8 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/) or
-[AWS Elastic Beanstalk](/getting-started/installation/aws)
+[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/),
+[Google Cloud Platform](/getting-started/installation/gcp) or [AWS Elastic Beanstalk](/getting-started/installation/aws)
 
 ::: tip First User
 
@@ -85,6 +85,29 @@ with your team. To generate the snapshot, run
 npx directus schema snapshot ./snapshot.yaml
 ```
 
+To run non-interactively (e.g. when running in a CI/CD workflow), run
+
+```
+npx directus schema snapshot --yes ./snapshot.yaml
+```
+
+Note, that this will force overwrite existing snapshot files.
+
+::: tip Date-based snapshots
+
+To keep multiple snapshot organized by date, create a folder `snapshots` in your project root directory add the
+following custom script to your `package.json`:
+
+```
+"create-snapshot": "npx directus schema snapshot ./snapshots/\"$(date \"+%F\")\"-snapshot-\"$(date \"+%s\")\".yaml"
+```
+
+When you run the command via `npm run create-snapshot` it will create a new snapshot with the following naming schema:
+`[YYYY-MM-DD]-snapshot-[timestamp].yaml`. This command can be run e.g by your deployment pipeline before each deploy on
+your server to keep a schema backup.
+
+:::
+
 #### Applying a Snapshot
 
 To make a different instance up to date with the latest changes in your data model, you can apply the snapshot. By
@@ -96,6 +119,18 @@ To apply the generated snapshot, run
 
 ```
 npx directus schema apply ./path/to/snapshot.yaml
+```
+
+To run non-interactively (e.g. when running in a CI/CD workflow), run
+
+```
+npx directus schema apply --yes ./path/to/snapshot.yaml
+```
+
+To diff the schema and database and print out the planned changes, run
+
+```
+npx directus schema apply --dry-run ./path/to/snapshot.yaml
 ```
 
 ### Creating Users
@@ -123,8 +158,8 @@ npx directus roles create --role <role-name>
 ```
 
 These roles are created with the
-[minimum permissions required](/configuration/users-roles-permissions/#configuring-system-permissions) to properly
-access the App by default.
+[minimum permissions required](/configuration/users-roles-permissions/#configure-system-permissions) to properly access
+the App by default.
 
 To create a new role with admin access, set the `--admin` flag to `true`, such as
 

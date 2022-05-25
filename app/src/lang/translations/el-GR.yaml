@@ -1,26 +1,72 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Ταυτοποιητής
 avatar: Άβαταρ
+application: Εφαρμογή
+default_provider: Προεπιλογή
+published: Δημοσιευμένο
+draft: Πρόχειρο
+archived: Αρχειοθετήθηκε
+modules: Ενότητες
+tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
+conditions: Προϋποθέσεις
+maps: Χάρτες
+switch_user: Εναλλαγή Χρήστη
 item_revision: Αναθεώρηση Αντικειμένου
+enter_a_name: Πληκτρολογήστε ένα όνομα...
 duplicate_field: Αντίγραφο Πεδίου
 half_width: Μισό Πλάτος
 full_width: Πλήρες Πλάτος
+group: Ομάδα
+export_items: Εξαγωγή στοιχείων
+and: Και
+or: Ή
 fill_width: Πλήρες Πλάτος
 field_name_translations: Μεταφράσεις Ονόματος Πεδίου
 enter_password_to_enable_tfa: Εισάγετε τον κωδικό πρόσβασής σας για να ενεργοποιήσετε τον διπλό έλεγχο ταυτότητας
 add_field: Προσθήκη Πεδίου
 role_name: Όνομα Ρόλου
+branch: Κλάδος
+leaf: Φύλλο
+indeterminate: Ενδιάμεσο
+edit_collection: Επεξεργασία συλλογής
 exclusive: Αποκλειστικά
 children: Παιδιά
+db_only_click_to_configure: 'Βάση δεδομένων μόνο: Κάντε κλικ για ρύθμιση'
+show_active_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
 show_archived_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
+show_all_items: Εμφάνιση όλων των αντικειμένων
 edited: Η Τιμή Επεξεργάστηκε
 required: Υποχρεωτικό
 required_for_app_access: Απαιτείται για την πρόσβαση στην εφαρμογή
 requires_value: Απαιτεί τιμή
 create_preset: Δημιουργία προεπιλογής
+create_panel: Δημιουργήστε Πάνελ
 create_role: Δημιουργία ρόλου
 create_user: Δημιουργία Χρήστη
+delete_panel: Διαγραφή Πίνακα
 create_webhook: Δημιουργία Webhook
+create_translation_string: Δημιουργία Μετάφρασης
 invite_users: Πρόσκληση Χρηστών
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
@@ -35,7 +81,6 @@ delete_folder: Διαγραφή Φακέλου
 prefix: Πρόθεμα
 suffix: Επίθεμα
 reset_bookmark: Επαναφορά Σελιδοδείκτη
-rename_bookmark: Μετονομασία Σελιδοδείκτη
 update_bookmark: Ενημέρωση Σελιδοδείκτη
 delete_bookmark: Διαγραφή σελιδοδείκτη
 logoutReason:
@@ -85,7 +130,6 @@ next: Επόμενο
 note: Σημείωση
 length: Μήκος
 unique: Μοναδικό
-clear_value: Εκκαθάριση αξίας
 title: Τίτλος
 leave_comment: Άφηστε ένα σχόλιο...
 submit: Υποβολή

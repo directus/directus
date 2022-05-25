@@ -2,15 +2,7 @@ export type Role = {
 	id: string;
 	name: string;
 	description: string;
-	collection_list:
-		| null
-		| {
-				group_name: string;
-				accordion: string;
-				collections: {
-					collection: string;
-				}[];
-		  }[];
+	icon: string;
 	enforce_tfa: null | boolean;
 	external_id: null | string;
 	ip_whitelist: string[];

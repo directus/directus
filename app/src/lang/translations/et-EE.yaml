@@ -58,7 +58,6 @@ delete_folder: Kustuta kaust
 prefix: Eesliide
 suffix: Järelliide
 reset_bookmark: Kustuta järjehoidja
-rename_bookmark: Järjehoidja ümbernimetamine
 update_bookmark: Järjehoidja uuendamine
 delete_bookmark: Kustuta järjehoidja
 delete_bookmark_copy: >-
@@ -87,7 +86,6 @@ recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
-unknown_validation_errors: 'Olid valideerimise vead nende peidetud väljadele:'
 validationError:
   eq: Väärtus peab olema {valid}
   neq: Väärtus ei saa olla {invalid}
@@ -221,9 +219,6 @@ dismiss: Loobu
 raw_value: Algne väärtus
 edit_raw_value: Muuda algväärtust
 enter_raw_value: Sisesta väärtus...
-clear_value: Tühjenda väärtus
-reset_to_default: Taasta vaikeväärtused
-undo_changes: Tühista muudatused
 notifications: Teavitused
 show_all_activity: Näita kogu aktiivsust
 page_not_found: Lehekülge ei leitud
@@ -253,10 +248,7 @@ related_collection: Seotud kogu
 related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
-export_data: Ekspordi andmed
 format: Vorming
-use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
-export_collection: 'Ekspordi {collection}'
 last_page: Viimane leht
 last_access: Viimati vaadatud
 fill_template: Täida mallist
@@ -272,6 +264,9 @@ interface_label: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
+functions:
+  year: Aasta
+  month: Kuu
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -1019,8 +1014,6 @@ interfaces:
     customSyntax_label: Lisa kohandatud süntaksi tüüpe
     customSyntax_add: Lisa kohandatud süntaks
     box: Plokk / Tekstisisene
-    imageToken: Pildi kood
-    imageToken_label: Milline (staatiline) kood lisada piltide allikatele
   map:
     map: Kaart
     description: Vali asukoht kaardil
@@ -1068,7 +1061,6 @@ interfaces:
     auto_formatter: Kasuta pealkirja stiili
     alphabetize: Järjesta tähestikuliselt
     alphabetize_label: Sorteeri tähestikuliselt ümber
-    add_tags: Lisa märksõnu...
   input:
     input: Sisend
     description: Sisesta väärtus käsitsi
@@ -1114,8 +1106,6 @@ interfaces:
     custom_formats: Kohandatud vormingud
     options_override: Valikute ülekirjutamine
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
-    imageToken: Pildi kood
-    imageToken_label: Milline (staatiline) kood lisada piltide allikatele
   input-autocomplete-api:
     input-autocomplete-api: Automaatselt täidetav väli (API)
     description: Otsingutulemused välisest APIst
@@ -1231,7 +1221,6 @@ layouts:
     subtitle: Alampealkiri
   tabular:
     tabular: Tabel
-    fields: Väljad
     spacing: Vahed
     comfortable: Mugav
     compact: Kompaktne
