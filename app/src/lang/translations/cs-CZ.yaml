@@ -44,7 +44,7 @@ group: Skupina
 export_items: Exportovat položky
 and: A
 or: Nebo
-fill_width: Plná šířka
+fill_width: Celá šířka
 field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
 add_field: Přidat pole
@@ -105,6 +105,7 @@ logoutReason:
   SESSION_EXPIRED: Relace vypršela
 public_label: Veřejný
 public_description: Určuje, která API data jsou dostupná bez ověřování.
+admin_description: Počáteční administrativní role s neomezeným přístupem k Aplikaci/API.
 not_allowed: Nepovoleno
 directus_version: Verze Directusu
 node_version: Node verze
@@ -120,6 +121,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
 reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
 the_following_are_minimum_permissions: Následující oprávnění jsou vyžadována v případě, že je povolen "Přístup k aplikaci". Můžete rozšířit oprávnění nad tuto úroveň, ale ne níže.
+app_access_minimum: Minimální přístup k aplikaci
 recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu
 unarchive_confirm: Skutečně chcete tuto položku obnovit z archivu?
@@ -152,6 +154,7 @@ allow_multiple: Povolit více
 allow_multiple_to_be_open: Povolit více otevřených
 enter_value_to_replace_nulls: Zadejte novou hodnotu, která nahradí všechny NULL, které jsou aktuálně v tomto poli.
 field_standard: Standardní
+field_presentation: Prezentace a aliasy
 field_file: Jeden soubor
 field_files: Více souborů
 field_m2o: M2O vazba
@@ -166,6 +169,11 @@ field_validation: Validace pole
 field_presets: Předvolby polí
 permissions_for_role: 'Položky, které {role} role může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
+presentation_and_aliases: Prezentace a aliasy
+revision_post_create: Zde je jak položka vypadala po jejím vytvoření.
+revision_post_update: Zde je jak položka vypadala po její aktualizaci.
+changes_made: Níže jsou uvedeny konkrétní změny provedené v této revizi.
+no_relational_data: Mějte na paměti, že údaje o vztazích zde nejsou zahrnuty.
 hide_field: Skrýt pole
 hide_field_on_detail: Skrýt pole v detailu
 show_field_on_detail: Zobrazit pole v detailu
@@ -176,6 +184,10 @@ field_update_success: 'Aktualizováno pole: "{field}"'
 duplicate_where_to: Kam chcete zkopírovat toto pole?
 language: Jazyk
 language_placeholder: Vyberte jazyk...
+aggregate_function: Agregační funkce
+aggregate_precision: Přesnost agregace
+group_aggregation: Agregace skupiny
+group_precision: Přesnost skupiny
 global: Globální
 admins_have_all_permissions: Administrátoři mají všechna oprávnění
 camera: Fotoaparát
@@ -257,6 +269,10 @@ default_value: Výchozí hodnota
 standard_field: Standardní pole
 single_file: Jeden soubor
 multiple_files: Více souborů
+m2o_relationship: Vztah N:1
+o2m_relationship: Vztah 1:N
+m2m_relationship: Vztah N:N
+m2a_relationship: Vztah N:cokoliv
 invalid_item: Neplatná položka
 next: Další
 field_name: Název pole
@@ -276,6 +292,16 @@ primary_key: Primární klíč
 foreign_key: Cizí klíč
 finish_setup: Dokončit nastavení
 dismiss: Odmítnout
+raw_value: Surová hodnota
+copy_raw_value: Kopírovat surovou hodnotu
+copy_raw_value_success: Zkopírováno
+copy_raw_value_fail: Kopírování selhalo
+paste_raw_value: Vložit surovou hodnotu
+paste_raw_value_success: Vloženo
+paste_raw_value_fail: Vložení se nezdařilo
+view_raw_value: Zobrazit surovou hodnotu
+edit_raw_value: Upravit surovou hodnotu
+enter_raw_value: Zadejte surovou hodnotu...
 clear_value: Vymazat hodnotu
 clear_changes: Vymazat změny
 reset_to_default: Obnovit výchozí
@@ -323,15 +349,33 @@ label_export: Exportovat
 import_export: Import / Export
 format: Formát
 last_page: Poslední stránka
+last_access: Poslední přístup
+fill_template: Vyplnit šablonou
+a_unique_table_name: Jedinečný název tabulky...
+a_unique_column_name: Jedinečný název sloupce...
+enable_custom_values: Povolit vlastní hodnoty
 submit: Potvrdit
 move_to_folder: Přesunout do složky
+move: Přesunout
+system: Systém
+add_field_related: Přidat pole do související kolekce
+interface_label: Rozhraní
+today: Dnes
+yesterday: Včera
+delete_comment: Odstranit komentář
+delete_share: Odstranit sdílení
 functions:
   year: Rok
   month: Měsíc
+  week: Týden
+  day: Den
+  weekday: Den v týdnu
   hour: Hodina
   minute: Minuta
   second: Sekunda
   count: Počet
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
 minutes: Minut
 hours: Hodin
 month: Měsíc
@@ -428,10 +472,22 @@ ip_address: IP adresa
 user_agent: Uživatelský agent
 webhooks: Webhooky
 field_width: Šířka pole
+add_filter: Přidat filtr
+upper_limit: Horní limit...
+lower_limit: Nižší limit...
 user_directory: Uživatelé
 documentation: Dokumentace
+sidebar: Postranní lišta
 duration: Trvání
+charset: Znaková sada
+second: sekunda
+file_moved: Soubor přesunut
+collection_created: Kolekce vytvořena
 modified_on: Upraveno
+card_size: Velikost karty
+sort_field: Pole řazení
+add_sort_field: Přidat pole řazení
+sort: Seřadit
 status: Stav
 remove: Odebrat
 toggle_manual_sorting: Přepnout ruční řazení
@@ -486,9 +542,47 @@ presets: Předvolby
 unexpected_error: Neočekávaná chyba
 unexpected_error_copy: Došlo k neočekávané chybě. Opakujte akci později.
 copy_details: Kopírovat podrobnosti
+no_app_access: Žádný přístup k aplikaci
+no_app_access_copy: Tento uživatel nemá oprávnění používat aplikaci pro správu.
+password_reset_sent: Poslali jsme vám bezpečný odkaz pro obnovení hesla
+password_reset_successful: Heslo bylo úspěšně obnoveno
 back: Zpět
+filter: Filtr
+editing_image: Úprava obrázku
+square: Čtverec
+free: Volný
+flip_horizontal: Překlopit vodorovně
+flip_vertical: Překlopit svisle
+aspect_ratio: Poměr stran
+rotate: Otočit
 all_users: Všichni uživatelé
+delete_collection: Odstranit kolekci
+update_collection_success: Aktualizovaná kolekce
+delete_collection_success: Smazaná kolekce
+make_collection_visible: Zviditelnit kolekci
+make_collection_hidden: Skrýt kolekci
+make_folder_visible: Zviditelnit složku
+make_folder_hidden: Skrýt složku
+goto_collection_content: Zobrazit obsah
+start_end_of_count_items: '{start}-{end} z {count} položek'
+start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položek'
+one_item: '1 položka'
+one_filtered_item: '1 filtrovaná položka'
+delete_collection_are_you_sure: >-
+  Jste si jisti, že chcete odstranit tuto kolekci? Tato akce odstraní kolekci a všechny její položky. Tato akce je trvalá.
+delete_folder_are_you_sure: Jste si jisti, že chcete odstranit tuto složku? Vnořené složky a kolekce budou přesunuty na nejvyšší úroveň.
+collections_shown: Zobrazené kolekce
+visible_collections: Viditelné kolekce
+hidden_collections: Skryté kolekce
+show_hidden_collections: Zobrazit skryté kolekce
+hide_hidden_collections: Skrýt skryté kolekce
+show_header: Zobrazit záhlaví
+unmanaged_collections: Nenastavené kolekce
+system_collections: Systémové kolekce
+placeholder: Placeholder
 icon_left: Ikona vlevo
+icon_right: Ikona vpravo
+count_other_revisions: '{count} dalších revizí'
 color: Barva
 advanced_filter: Rozšířený filtr
 delete_advanced_filter: Smazat filtr
@@ -575,8 +669,20 @@ read: Číst
 update: Úpravy
 select_fields: Vybrat pole
 full_screen: Celá obrazovka
+alt_text: Alternativní text
+media: Média
+quality: Kvalita
 width: Šířka
 height: Výška
+source: Zdroj
+url_placeholder: Zadejte adresu url...
+display_text: Zobrazený text
+display_text_placeholder: Zadejte zobrazený text...
+interface_group_text_and_numbers: Text a čísla
+interface_group_selection: Výběr
+interface_group_relational: Relační
+interface_group_presentation: Prezentace
+interface_group_groups: Skupiny
 interface_group_other: Ostatní
 tooltip: Popisek
 tooltip_placeholder: Zadejte popisek...
@@ -598,7 +704,10 @@ wysiwyg_options:
   italic: Kurzíva
   underline: Podtržení
   strikethrough: Přeškrtnutí
+  subscript: Dolní index
+  superscript: Horní index
   codeblock: Kód
+  blockquote: Citát
   bullist: Seznam s odrážkami
   numlist: Číslovaný seznam
   hr: Vodorovná čára
@@ -629,21 +738,44 @@ wysiwyg_options:
   visualaid: Zobrazit neviditelné prvky
   source_code: Upravit zdrojový kód
   fullscreen: Celá obrazovka
+  directionality: Směr
 dropdown: Rozbalovací nabídka
 choices: Volby
 choices_option_configured_incorrectly: Volby nastaveny nesprávně
 deselect: Zrušit výběr
 deselect_all: Zrušit celý výběr
 other: Ostatní...
+adding_user: Přidávání uživatele
+unknown_user: Neznámý uživatel
+creating_in: 'Vytváření položky v {collection}'
+editing_in: 'Úprava položky v {collection}'
+viewing_in: 'Zobrazení položky v {collection}'
+creating_unit: 'Vytváření {unit}'
+editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položek'
+no_options_available: Žádné možnosti nejsou k dispozici
+settings_data_model: Datový model
 settings_permissions: Role a oprávnění
 settings_project: Nastavení projektu
 settings_webhooks: Webhooky
+settings_presets: Předvolby a záložky
+settings_translation_strings: Překlady
+one_or_more_options_are_missing: Chybí jedna nebo více možností
+scope: Rozsah
+select: Vybrat...
 layout: Rozvržení
+tree_view: Stromové zobrazení
+changes_are_permanent: Změny jsou trvalé
+preset_name_placeholder: Slouží jako výchozí, když je prázdný...
+preset_search_placeholder: Hledat dotaz...
+editing_preset: Úprava předvolby
 layout_preview: Náhled rozvržení
+layout_setup: Nastavení rozvržení
 unsaved_changes: Neuložené změny
 unsaved_changes_copy: Jste si jisti, že chcete opustit tuto stránku?
 discard_changes: Ano, odejít bez uložení
+discard_all_changes: Zahodit všechny změny
+discard_changes_copy: Opravdu chcete zahodit všechny provedené změny?
 keep_editing: Ne, vrátit se k úpravám
 page_help_settings_project: "**Nastavení projektu** – Možnosti globální konfigurace vašeho projektu."
 add_new: Přidat nový
@@ -680,6 +812,7 @@ fields:
     display_template: Šablona zobrazení
     hidden: Skryté
     singleton: Objekt
+    sort_field: Pole řazení
   directus_files:
     $thumbnail: Náhled
     title: Název
@@ -730,6 +863,7 @@ fields:
     status_archived: Archivováno
     role: Role
     last_page: Poslední stránka
+    last_access: Poslední přístup
   directus_settings:
     project_name: Název projektu
     project_descriptor: Popis projektu
@@ -771,6 +905,7 @@ field_options:
     language: Jazyk
     translation: Překlad
     archive_divider: Archivovat
+    sort_divider: Seřadit
   directus_roles:
     fields:
       icon_name: Ikona
@@ -836,6 +971,8 @@ value: Hodnota
 view_project: Zobrazit projekt
 interfaces:
   filter:
+    name: Filtr
+    add_filter: Přidat filtr
     all: Vše
   presentation-links:
     primary: Primární
@@ -928,3 +1065,6 @@ layouts:
     comfortable: Komfortní
     compact: Kompaktní
     cozy: Pohodlný
+panels:
+  meter:
+    stroke_width: Tloušťka tahu
