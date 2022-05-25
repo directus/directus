@@ -235,8 +235,21 @@ refresh_interval_seconds: Obnovit okamžitě | Každou sekundu | Každých {seco
 refresh_interval_minutes: Každou minutu | Každých {minutes} minut
 auto_generate: Auto-generování
 this_will_auto_setup_fields_relations: Toto automaticky nastaví všechna povinná pole a vztahy.
+click_here: Klikněte zde
+to_manually_setup_translations: pro ruční nastavení překladů.
+click_to_manage_translated_fields: >-
+  Zatím nejsou žádná přeložená pole. Klikněte zde pro jejich vytvoření. | Je zde jedno přeložené pole. Klikněte zde pro jeho správu. | K dispozici je {count} přeložených polí. Klikněte zde pro jejich správu.
+fields_group: Skupina polí
+no_collections_found: Nebyly nalezeny žádné kolekce.
+new_data_alert: 'V rámci vašeho datového modelu bude vytvořeno toto:'
 search_collection: Vyhledat v kolekci...
 new_field: 'Nové pole'
+new_collection: 'Nová kolekce'
+add_m2o_to_collection: 'Přidat M2O do "{collection}"'
+add_o2m_to_collection: 'Přidat O2M do "{collection}"'
+add_m2m_to_collection: 'Přidat M2M do "{collection}"'
+choose_a_type: Vyberte typ...
+determined_by_relationship: Určeno vztahem
 add_note: Přidat užitečnou poznámku pro uživatele...
 default_value: Výchozí hodnota
 next: Další
@@ -500,35 +513,96 @@ all_activity: Všechna aktivita
 create_item: Vytvořit položku
 display_template: Šablona zobrazení
 language_display_template: Šablona zobrazení jazyka
+translations_display_template: Šablona pro zobrazení překladů
+n_items_selected: 'Nebyly vybrány žádné položky | 1 položka vybrána | {n} položek vybráno'
+per_page: Na stránku
 all_files: Všechny soubory
 my_files: Mé soubory
 recent_files: Nedávné soubory
 create_folder: Vytvořit složku
+edit_folder: Upravit složku
 folder_name: Název složky...
+folder_key: Klíč složky...
 add_file: Přidat soubor
 replace_file: Nahradit soubor
 no_results: Bez výsledků
+no_results_copy: Upravte nebo vymažte vyhledávací filtry pro zobrazení výsledků.
+clear_filters: Vymazat filtry
+saves_automatically: Automaticky uložit
 role: Role
+edit_role: Upravit roli
+rule: Pravidlo
 user: Uživatel
+no_presets: Žádné předvolby
+no_presets_copy: Zatím nebyly uloženy žádné předvolby ani záložky.
+no_presets_cta: Přidat předvolbu
+presets_only: Pouze předvolby
 create: Vytořit
 on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+full_screen: Celá obrazovka
 width: Šířka
 height: Výška
+interface_group_other: Ostatní
+tooltip: Popisek
+tooltip_placeholder: Zadejte popisek...
+unlimited: Bez omezení
+open_link_in: Otevřít odkaz v
+new_tab: Nové kartě
+current_tab: Aktuální kartě
+save_image: Uložit obrázek
+save_media: Uložit média
 wysiwyg_options:
+  aligncenter: Zarovnat na střed
+  alignjustify: Zarovnat do bloku
+  alignleft: Zarovnat vlevo
+  alignnone: Bez zarovnání
+  alignright: Zarovnat vpravo
   forecolor: Barva popředí
   backcolor: Barva pozadí
+  bold: Tučné
+  italic: Kurzíva
+  underline: Podtržení
+  strikethrough: Přeškrtnutí
+  codeblock: Kód
+  bullist: Seznam s odrážkami
+  numlist: Číslovaný seznam
+  hr: Vodorovná čára
+  link: Přidat/upravit odkaz
+  unlink: Odstranit odkaz
+  media: Přidat/upravit média
+  image: Přidat/upravit obrázek
   copy: Kopírovat
   cut: Vyjmout
   paste: Vložit
+  heading: Nadpis
+  h1: Nadpis 1
+  h2: Nadpis 2
+  h3: Nadpis 3
+  h4: Nadpis 4
+  h5: Nadpis 5
+  h6: Nadpis 6
   fontselect: Výběr písma
   fontsizeselect: Výběr velikosti písma
+  indent: Odsadit
+  outdent: Předsadit
+  undo: Zpět
+  redo: Vpřed
   remove: Odebrat
+  removeformat: Odebrat formátování
+  selectall: Vybrat vše
   table: Tabulka
+  visualaid: Zobrazit neviditelné prvky
+  source_code: Upravit zdrojový kód
+  fullscreen: Celá obrazovka
+dropdown: Rozbalovací nabídka
 choices: Volby
+choices_option_configured_incorrectly: Volby nastaveny nesprávně
 deselect: Zrušit výběr
+deselect_all: Zrušit celý výběr
+other: Ostatní...
 editing_in_batch: 'Hromadná úprava {count} položek'
 settings_permissions: Role a oprávnění
 settings_project: Nastavení projektu
@@ -542,11 +616,19 @@ keep_editing: Ne, vrátit se k úpravám
 page_help_settings_project: "**Nastavení projektu** – Možnosti globální konfigurace vašeho projektu."
 add_new: Přidat nový
 all: Vše
+no_layout_collection_selected_yet: Zatím nebylo vybráno žádné rozložení/kolekce
 batch_delete_confirm: >-
   Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
 cancel: Zrušit
 collection: Kategorie
 collections: Kategorie
+content: Obsah
+singleton: Objekt
+singleton_label: Považovat za jeden objekt
+system_fields_locked: Systémová pole jsou uzamčena a nelze je upravovat
+directus_collection:
+  directus_activity: Záznamy o odpovědnosti za všechny události
+  directus_collections: Dodatečná konfigurace kolekce a metadata
 fields:
   directus_activity:
     item: Primární klíč položky
@@ -557,6 +639,7 @@ fields:
     comment: Komentář
     user_agent: Uživatelský agent
     ip: IP adresa
+    revisions: Revize
   directus_collections:
     collection: Kategorie
     icon: Ikona
@@ -564,12 +647,18 @@ fields:
     color: Barva
     display_template: Šablona zobrazení
     hidden: Skryté
+    singleton: Objekt
   directus_files:
+    $thumbnail: Náhled
     title: Název
     description: Popis
     tags: Štítky
     location: Poloha
+    storage: Úložiště
+    filename_disk: Název souboru (Disk)
+    filename_download: Název souboru (Stahování)
     metadata: Metadata
+    type: Mime typ
     filesize: Velikost souboru
     modified_by: Upravil/-a
     modified_on: Upraveno
@@ -581,6 +670,7 @@ fields:
     width: Šířka
     uploaded_on: Nahráno
     height: Výška
+    charset: Znaková sada
     duration: Trvání
   directus_users:
     first_name: Křestní jméno
@@ -592,11 +682,20 @@ fields:
     title: Název
     description: Popis
     tags: Štítky
+    user_preferences: Nastavení uživatele
     language: Jazyk
     theme: Téma
+    theme_auto: Automaticky (použít dle systému)
+    theme_light: Světlý režim
+    theme_dark: Tmavý režim
     tfa_secret: Dvoufázové ověření
+    admin_options: Možnosti správce
     status: Stav
+    status_draft: Koncept
     status_invited: Pozván/a
+    status_active: Aktivní
+    status_suspended: Pozastaveno
+    status_archived: Archivováno
     role: Role
     last_page: Poslední stránka
   directus_settings:
@@ -615,6 +714,7 @@ fields:
   directus_fields:
     note: Poznámka
     hidden: Skryté
+    singleton: Objekt
     translation: Překlady názvu polí
   directus_roles:
     name: Jméno role
@@ -635,6 +735,7 @@ field_options:
     update: Úpravy
   directus_collections:
     collection_setup: Nastavení kolekce
+    singleton: Považovat za jeden objekt
     language: Jazyk
     translation: Překlad
     archive_divider: Archivovat
@@ -644,7 +745,15 @@ field_options:
       name_name: Jméno
     collections_name: Kategorie
   directus_users:
+    preferences_divider: Nastavení uživatele
+    dropdown_auto: Automaticky (použít dle systému)
+    dropdown_light: Světlý režim
+    dropdown_dark: Tmavý režim
+    admin_divider: Možnosti správce
+    status_dropdown_draft: Koncept
     status_dropdown_invited: Pozván/a
+    status_dropdown_suspended: Pozastaveno
+    status_dropdown_archived: Archivováno
   directus_webhooks:
     actions_create: Vytořit
     actions_update: Úpravy
@@ -698,6 +807,8 @@ interfaces:
     all: Vše
   presentation-links:
     primary: Primární
+  input-code:
+    code: Kód
   system-collection:
     collection: Kategorie
   system-collections:
@@ -735,6 +846,8 @@ interfaces:
     display_template: Šablona zobrazení
   user:
     user: Uživatel
+    modes:
+      dropdown: Rozbalovací nabídka
   group-detail:
     header_color: Barva záhlaví
 displays:
@@ -753,6 +866,7 @@ displays:
     filesize: Velikost souboru
   formatted-value:
     format: Formát
+    italic: Kurzíva
     prefix: Prefix
     suffix: Přípona
     color: Barva
