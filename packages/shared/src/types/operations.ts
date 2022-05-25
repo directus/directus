@@ -21,7 +21,10 @@ export interface OperationAppConfig {
 	icon: string;
 	description?: string;
 	preview:
-		| ((options: Record<string, any>, { flow }: { flow: FlowRaw }) => { label: string; text: string }[])
+		| ((
+				options: Record<string, any>,
+				{ flow }: { flow: FlowRaw }
+		  ) => { label: string; text: string; copyable?: boolean }[])
 		| ComponentOptions
 		| null;
 	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]) | ComponentOptions | null;

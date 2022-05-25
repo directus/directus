@@ -7,7 +7,10 @@ export type Trigger = {
 	value: TriggerType;
 	icon: string;
 	description: string;
-	preview: (options: Record<string, any>, { flow }: { flow: FlowRaw }) => { text: string; label: string }[];
+	preview: (
+		options: Record<string, any>,
+		{ flow }: { flow: FlowRaw }
+	) => { text: string; label: string; copyable?: boolean }[];
 	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]);
 };
 
@@ -186,6 +189,7 @@ export function getTriggers() {
 				{
 					label: t('url'),
 					text: `${getPublicURL()}flows/trigger/${flow.id}`,
+					copyable: true,
 				},
 			],
 			options: ({ async }) => [

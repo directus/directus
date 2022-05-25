@@ -81,11 +81,19 @@
 			</div>
 			<dl class="options-preview">
 				<div
-					v-for="{ label, text } of translate(currentOperation?.preview(panel.options ?? {}, { flow }))"
+					v-for="{ label, text, copyable } of translate(currentOperation?.preview(panel.options ?? {}, { flow }))"
 					:key="label"
 				>
 					<dt>{{ label }}</dt>
 					<dd>{{ text }}</dd>
+					<v-icon
+						v-if="isCopySupported && copyable"
+						name="copy"
+						small
+						clickable
+						class="clipboard-icon"
+						@click="copyToClipboard(text)"
+					/>
 				</div>
 				<v-button
 					v-if="panel.id === '$trigger' && panel.type === 'manual'"
@@ -131,6 +139,7 @@
 
 <script lang="ts" setup>
 import api from '@/api';
+import useClipboard from '@/composables/use-clipboard';
 import { getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -189,6 +198,8 @@ const emit = defineEmits([
 ]);
 
 const { t } = useI18n();
+
+const { isCopySupported, copyToClipboard } = useClipboard();
 
 const styleVars = {
 	'--reject-left': REJECT_OFFSET.x + 'px',
@@ -475,6 +486,7 @@ function pointerLeave() {
 .options-preview {
 	> div {
 		flex-wrap: wrap;
+		align-items: center;
 	}
 
 	dt {
@@ -483,8 +495,13 @@ function pointerLeave() {
 
 	dd {
 		font-family: var(--family-monospace);
-		white-space: pre-wrap;
-		line-break: anywhere;
+		flex-basis: 0;
+	}
+
+	.clipboard-icon {
+		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color-hover: var(--foreground-normal);
+		margin-left: 4px;
 	}
 }
 
