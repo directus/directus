@@ -1326,12 +1326,10 @@ export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy b
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
-require_value_to_be_set: Wymagaj ustawienia wartości
 translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
