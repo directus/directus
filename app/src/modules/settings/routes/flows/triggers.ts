@@ -188,13 +188,13 @@ export function getTriggers() {
 					text: `${getPublicURL()}flows/trigger/${flow.id}`,
 				},
 			],
-			options: [
+			options: ({ async }) => [
 				{
 					field: 'method',
 					name: t('triggers.webhook.method'),
 					type: 'string',
 					meta: {
-						width: 'full',
+						width: 'half',
 						interface: 'select-dropdown',
 						options: {
 							choices: [
@@ -205,6 +205,19 @@ export function getTriggers() {
 					},
 					schema: {
 						default_value: 'GET',
+					},
+				},
+				{
+					field: 'async',
+					name: t('triggers.webhook.async'),
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'toggle',
+						required: true,
+					},
+					schema: {
+						default_value: false,
 					},
 				},
 				{
@@ -230,6 +243,7 @@ export function getTriggers() {
 							],
 							allowOther: true,
 						},
+						hidden: async,
 					},
 				},
 			],
