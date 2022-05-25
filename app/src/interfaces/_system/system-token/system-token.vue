@@ -1,9 +1,5 @@
 <template>
 	<div class="system-token">
-		<v-notice v-if="isNewTokenGenerated && value" type="info">
-			{{ t('interfaces.system-token.generate_success_copy') }}
-		</v-notice>
-
 		<v-input
 			:model-value="localValue"
 			:type="!isNewTokenGenerated ? 'password' : 'text'"
@@ -34,6 +30,10 @@
 				/>
 			</template>
 		</v-input>
+
+		<v-notice v-if="isNewTokenGenerated && value" type="info">
+			{{ t('interfaces.system-token.generate_success_copy') }}
+		</v-notice>
 	</div>
 </template>
 
@@ -100,7 +100,7 @@ function emitValue(newValue: string | null) {
 }
 
 .v-notice {
-	margin-bottom: 12px;
+	margin-top: 12px;
 }
 
 .regenerate-icon {
