@@ -16,7 +16,7 @@
 	>
 		<div v-if="showHeader" class="header">
 			<v-icon class="icon" :style="iconColor" :name="icon" small />
-			<v-text-overflow class="name selectable" :text="name || ''" />
+			<v-text-overflow class="name" :text="name || ''" />
 			<div class="spacer" />
 			<v-icon v-if="note" v-tooltip="note" class="note" name="info" />
 		</div>

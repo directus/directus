@@ -75,7 +75,7 @@
 				<v-icon name="adjust" />
 			</div>
 		</template>
-		<div v-if="typeof currentOperation?.preview === 'function'" class="block selectable">
+		<div v-if="typeof currentOperation?.preview === 'function'" class="block">
 			<div v-tooltip="panel.key" class="name">
 				{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
 			</div>
