@@ -1224,7 +1224,6 @@ sort_direction: Sort Direction
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
-require_value_to_be_set: Require value to be set
 translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
