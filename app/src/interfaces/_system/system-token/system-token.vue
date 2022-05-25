@@ -62,6 +62,11 @@ const regexp = new RegExp('^[*]+$');
 watch(
 	() => props.value,
 	(newValue) => {
+		if (!newValue) {
+			localValue.value = null;
+			return;
+		}
+
 		if (newValue && regexp.test(newValue)) {
 			localValue.value = null;
 			isNewTokenGenerated.value = false;
