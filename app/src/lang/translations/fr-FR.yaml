@@ -658,8 +658,8 @@ operators:
   null: Est nul
   nnull: N'est pas null
   contains: Contient
-  icontains: Contient (insensible)
   ncontains: Ne contient pas
+  icontains: Contient (insensible)
   starts_with: Commence par
   nstarts_with: Ne commence pas par
   ends_with: Termine par

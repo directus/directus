@@ -166,7 +166,6 @@ import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
-import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
 import { objDiff } from '../../../utils/object-diff';
@@ -174,6 +173,8 @@ import { v4 as uuid } from 'uuid';
 import { processQuery } from '../dashboard-utils/process-query';
 import { queryCaller } from '../dashboard-utils/query-caller';
 import { applyDataToPanels } from '../dashboard-utils/apply-data-to-panels';
+import useEditsGuard from '@/composables/use-edits-guard';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -311,23 +312,9 @@ export default defineComponent({
 			return withBorderRadii;
 		});
 
-		const confirmCancel = ref(false);
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
+		const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
 
-		const editsGuard: NavigationGuard = (to) => {
-			const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
-
-			if (editMode.value && to.params.primaryKey !== props.primaryKey) {
-				if (hasEdits) {
-					confirmLeave.value = true;
-					leaveTo.value = to.fullPath;
-					return false;
-				} else {
-					editMode.value = false;
-				}
-			}
-		};
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		const queryObject = computed<Record<string, any>>(() => {
 			const systemCollectionQueries = {};
@@ -404,8 +391,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const confirmCancel = ref(false);
 
 		return {
 			loading,
@@ -507,6 +493,7 @@ export default defineComponent({
 				await insightsStore.hydrate();
 
 				stagedPanels.value = [];
+				panelsToBeDeleted.value = [];
 				editMode.value = false;
 			} catch (err: any) {
 				unexpectedError(err);
@@ -523,9 +510,7 @@ export default defineComponent({
 		}
 
 		function attemptCancelChanges(): void {
-			const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
-
-			if (hasEdits) {
+			if (hasEdits.value) {
 				confirmCancel.value = true;
 			} else {
 				cancelChanges();

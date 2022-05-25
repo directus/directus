@@ -41,6 +41,7 @@ duplicate_field: فیلد تکراری
 half_width: نصف عرض
 full_width: عرض کامل
 group: گروه
+export_items: خروجی گرفتن از موارد
 and: و
 or: یا
 fill_width: عرض کامل
@@ -68,6 +69,7 @@ create_role: ایجاد نقش
 create_user: ایجاد کاربر
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک
+edit_translation_string: ویرایش متن ترجمه
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: قبلاً برای ایمیل {email}، دعوت نامه ارسال شده است
@@ -164,6 +166,7 @@ revision_post_create: شکل ظاهری این آیتم وقتی که ساخته
 revision_post_update: شکل ظاهری این آیتم پس از بروزرسانی، به این صورت بوده است.
 changes_made: ذیلاً، تغییرات خاصی که در این نسخه انجام شده، قابل مشاهده است.
 no_relational_data: به خاطر داشته باشید که داده های مربوط به ارتباطات، در اینجا گنجانده نشده است.
+hide_field: مخفی کردن فیلد
 hide_field_on_detail: مخفی کردن فیلد در بخش جزییات آیتم
 show_field_on_detail: نمایش فیلد در بخش جزییات آیتم
 delete_field: حذف فیلد
