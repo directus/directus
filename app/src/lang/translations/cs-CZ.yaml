@@ -878,6 +878,14 @@ system_fields_locked: Systémová pole jsou uzamčena a nelze je upravovat
 directus_collection:
   directus_activity: Záznamy o odpovědnosti za všechny události
   directus_collections: Dodatečná konfigurace kolekce a metadata
+  directus_dashboards: Nástěnky v modulu přehledů
+  directus_fields: Další konfigurace polí a metadata
+  directus_files: Metadata pro všechny spravované soubory
+  directus_folders: Poskytuje virtuální adresáře souborů
+  directus_migrations: Jakou verzi databáze používáte
+  directus_panels: Jednotlivé panely uvnitř nástěnek
+  directus_permissions: Přístupová práva pro každou roli
+  directus_notifications: Oznámení zaslaná uživatelům
 fields:
   directus_activity:
     item: Primární klíč položky
