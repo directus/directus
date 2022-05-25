@@ -251,13 +251,29 @@ add_m2m_to_collection: 'Přidat M2M do "{collection}"'
 choose_a_type: Vyberte typ...
 determined_by_relationship: Určeno vztahem
 add_note: Přidat užitečnou poznámku pro uživatele...
+add_link: Přidat odkaz
+custom_link: Vlastní odkaz
 default_value: Výchozí hodnota
+standard_field: Standardní pole
+single_file: Jeden soubor
+multiple_files: Více souborů
+invalid_item: Neplatná položka
 next: Další
+field_name: Název pole
+translations: Překlady
+no_translations: Žádné překlady
 note: Poznámka
+enter_a_value: Zadejte hodnotu...
+enter_a_placeholder: Zadejte placeholder...
 length: Délka
+soft_length: Měkký limit
+precision_scale: Přesnost a měřítko
 readonly: Pouze pro čtení
 unique: Unikátní
+updated_on: Aktualizováno
+updated_by: Aktualizoval/a
 primary_key: Primární klíč
+foreign_key: Cizí klíč
 finish_setup: Dokončit nastavení
 dismiss: Odmítnout
 clear_value: Vymazat hodnotu
@@ -310,9 +326,17 @@ last_page: Poslední stránka
 submit: Potvrdit
 move_to_folder: Přesunout do složky
 functions:
+  year: Rok
+  month: Měsíc
+  hour: Hodina
+  minute: Minuta
+  second: Sekunda
   count: Počet
 minutes: Minut
 hours: Hodin
+month: Měsíc
+year: Rok
+select_all: Vybrat vše
 months:
   january: Leden
   february: Únor
@@ -326,6 +350,14 @@ months:
   october: Říjen
   november: Listopad
   december: Prosinec
+drag_mode: Režim přetáhnutí
+cancel_crop: Zrušit oříznutí
+original: Originál
+url: URL
+import_label: Importovat
+file_details: Detaily souboru
+dimensions: Rozměry
+size: Velikost
 created: Vytvořena
 modified: Upraveno
 checksum: Kontrolní součet
@@ -817,6 +849,8 @@ interfaces:
     color: Barva
   system-display-template:
     display-template: Šablona zobrazení
+  select-dropdown:
+    choices_value_placeholder: Zadejte hodnotu...
   file:
     file: Soubor
     description: Vyberte nebo nahrajte soubor
@@ -851,6 +885,8 @@ interfaces:
   group-detail:
     header_color: Barva záhlaví
 displays:
+  translations:
+    translations: Překlady
   boolean:
     boolean: Logická hodnota
   collection:
@@ -876,6 +912,7 @@ displays:
     icon: Ikona
   labels:
     default_foreground: Výchozí popředí
+    choices_value_placeholder: Zadejte hodnotu...
   user:
     user: Uživatel
     avatar: Avatar
