@@ -1298,10 +1298,41 @@ interfaces:
     notice: Upozornění
     description: Zobrazit krátké upozornění
     text: Zde zadejte obsah upozornění...
+  list-o2m:
+    one-to-many: 1:N
+    description: Vyberte více souvisejících položek
+    no_collection: Kolekce nebyla nalezena
   system-folder:
     folder: Složka
+    description: Vyberte složku
+    field_hint: Složka pro nahrané soubory. Nemá vliv na existující soubory.
+    root_name: Kořenový adresář knihovny souborů
+    system_default: Výchozí nastavení systému
+  select-radio:
+    radio-buttons: Přepínací tlačítka
+    description: Vyberte jednu z více možností
+  list:
+    repeater: Opakovač
+    description: Vytvořit více záznamů ve stejné struktuře
+    edit_fields: Upravit pole
+    add_label: 'Štítek "Vytvořit nový"'
+    field_name_placeholder: Zadejte název pole...
+    field_note_placeholder: Zadejte poznámku k poli...
+    incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
+  slider:
+    slider: Posuvník
+    description: Vyberte číslo pomocí posuvníku
+    always_show_value: Vždy zobrazovat hodnotu
   tags:
     tags: Štítky
+    description: Vybrat nebo přidat štítky
+    whitespace: Mezery
+    hyphen: Nahradit pomlčkou
+    underscore: Nahradit podtržítkem
+    remove: Odstranit mezery
+    capitalization: Kapitalizace
+    uppercase: Převést velká písmena
+    lowercase: Převést malá písmena
   input:
     trim: Oříznout
   boolean:
@@ -1312,6 +1343,8 @@ interfaces:
     user: Uživatel
     modes:
       dropdown: Rozbalovací nabídka
+  input-rich-text-html:
+    folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
   group-detail:
     header_color: Barva záhlaví
 displays:
