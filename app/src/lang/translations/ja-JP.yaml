@@ -520,6 +520,8 @@ interfaces:
     no_collection: コレクションがありません
   user:
     user: ユーザー
+  system-token:
+    system-token: トークン
 displays:
   translations:
     translations: 翻訳
