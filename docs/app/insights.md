@@ -33,8 +33,8 @@ Each Directus Dashboard provides a drag-and-drop canvas where you can create and
 build out customized analytics. The Dashboard area automatically expands as you add more and more Panels. In theory, a
 Dashboard area can expand infinitely large... but in practice, users will probably only want to build Dashboards as
 large as the screen they will be viewing on. You are able to create as many Dashboards as you need. Additionally, the
-Dashboard view, edit, and create permissions are
-[fully configurable](/configuration/users-roles-permissions/#configuring-permissions) by User Role.
+Dashboard view, edit, and create permissions are [fully configurable](/configuration/users-roles-permissions/) by User
+Role.
 
 ![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/dashboards-overview-20220216A.webp)
 
@@ -172,7 +172,7 @@ In order to use this Panel, your Collection will need a datetime Field.
 - **Group Aggregation** – Selects the type of aggregation to perform. [Learn more.](#more-on-aggregate-functions)
 - **Group Precision** – Sets the time interval to aggregate by _(days, weeks, months, etc.)_.
 - **Date Field** – Selects the datetime Field used along the x-axis.
-- **Date Range** – Selects the time range from which data should be displayed.
+- **Date Range** – Sets the time range from which data should be displayed, can be customized.
 - **Value Field** – Sets the Field you wish to aggregate.
 - **Value Decimals** – Changes the number of decimals displayed on the y-axis.
 - **Min Value** – Sets minimum value displayed on y-axis.
@@ -182,6 +182,13 @@ In order to use this Panel, your Collection will need a datetime Field.
 - **Filter** – Allows filtering of Items considered for analysis based on logical conditions.
 - **Show X-axis** – Toggles display of time along X-axis.
 - **Show Y-axis** – Toggles display of numeric values along Y-axis.
+
+:::tip Custom Date Range
+
+Note that `Past` is not prefixed to a custom range as it is on the default ranges. When selecting **"Other"**, simply
+type in `3 years`, `1 month`, `2 weeks`, `5 days`, etc.
+
+:::
 
 ## Extensibility Options
 

@@ -326,12 +326,15 @@ revision_delta_deleted: Изтрито
 revision_delta_reverted: Възстановен
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
+presentation_text_values_cannot_be_reimported: "Използват се презентационни текстове, стойностите не могат да бъдат импортирани наново."
+download_page_as_csv: 'Изтегляне като CSV'
 private_user: Частни потребители
 creation_preview: Първоначален вид
 revision_preview: Преглед на ревизията
 updates_made: Направени промени
 leave_comment: Коментар...
 post_comment_success: Коментарът е изпратен
+post_comment_updated: Коментарът е обновен
 item_create_success: Създаден запис | Създадени записи
 item_update_success: Обновен запис | Обновени записи
 item_delete_success: Изтрит запис | Изтрити записи
@@ -542,7 +545,7 @@ select_an_item: Избиране...
 edit: Редактиране
 enabled: Включване
 disable_tfa: Изключване на 2FA
-tfa_scan_code: За да завършите настройването на 2FA, сканиране на кода във вашето приложение за оторизация
+tfa_scan_code: За да завършите настройването на 2FA, сканирайте кода в приложението за оторизация
 enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
 create_account: Създаване на профил
 account_created_successfully: Профилът е създаден
@@ -555,7 +558,9 @@ errors:
   INVALID_CREDENTIALS: Грешно потребителско име или парола
   INVALID_OTP: Грешна еднократна парола
   INVALID_PAYLOAD: Невалидни данни
+  INVALID_PROVIDER: Потребителят принадлежи към друг доставчик за удостоверение
   INVALID_QUERY: Невалидна заявка
+  INVALID_USER: Неуспешно удостоверение на потребителя
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
   ROUTE_NOT_FOUND: Не е намерен
@@ -640,6 +645,7 @@ advanced_settings: Разширени настройки
 advanced_filter: Разширен филтър
 delete_advanced_filter: Изтриване на филтър
 change_advanced_filter_operator: Промяна на оператор
+advanced: Разширени
 operators:
   eq: Равно
   neq: Различно
@@ -1516,6 +1522,7 @@ interfaces:
     add_label: 'Текст за „Създаване“'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
+    incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
@@ -1738,6 +1745,8 @@ layouts:
     calendar: Календар
     start_date_field: Начална дата
     end_date_field: Крайна дата
+    optional: По желание
+    first_day: Първи ден от седмицата
   map:
     map: Географска карта
     basemap: Основна карта
@@ -1752,6 +1761,8 @@ layouts:
     find_location: Определяне на местоположение...
     default_template: По подразбиране от колекцията...
     no_compatible_fields: Няма съвместими полета
+  kanban:
+    not_all_loaded: Може да се заредят само първите 1000 записи.
 panels:
   metric:
     name: Метричен индикатор
@@ -1770,3 +1781,53 @@ panels:
   list:
     name: Списък
     description: Филтриране и показване на полета от колекция
+  barchart:
+    name: Лентова диаграма
+    description: Лентова или колонна диаграма за сравняване на групи от сойности
+    select_field: Трябва да изберете поле.
+    select_collection: Трябва да изберете колекция.
+    select_x_axis: Трябва да изберете ос по Х.
+    function: Функция
+    horizontal: Хоризонтала
+    x_axis: Ос по X
+    y_axis: Ос по Y
+    show_x_axis: Показване на оста по X
+    show_y_axis: Показване на оста по Y
+    group_by: Групиране по
+    y_axis_NaN: Оста по Y трябва да е число.
+    y_axis_conditional_one: Стойност за условието
+    y_axis_conditional_two: трябва да е число.
+  linechart:
+    name: Линейна диаграма
+    description: Линейна диаграма за сравняване на промените по поле.
+    select_field: Трябва да изберете поле.
+    select_collection: Трябва да изберете колекция.
+    select_x_axis: Трябва да изберете ос по Х.
+    function: Функция
+    x_axis: Ос по X
+    y_axis: Ос по Y
+    datasets: Набор от данни
+    show_legend: Легенда
+    show_marker: Показване на подсказка
+    include_dataset: Трябва да включите поне един вид данни.
+    smooth: 'Плавна'
+    straight: 'Линейна'
+    step_line: 'Стъпкова'
+  meter:
+    arc: Дъга
+    stroke_width: Ширина на чертите
+    select_max_value: Трябва да изберете максимална стойност.
+    select_field: Трябва да изберете поле.
+    select_collection: Трябва да изберете колекция.
+    function: Функция
+    thin: Тънък
+    medium: Среден
+    broad: Дебел
+  piechart:
+    name: Кръгова или пръстеновидна диаграма
+    function: 'Функция'
+    donut: Поничка
+    labels: Показване на надписите
+    legend: Легенда
+    right: Вдясно
+    bottom: Отдолу

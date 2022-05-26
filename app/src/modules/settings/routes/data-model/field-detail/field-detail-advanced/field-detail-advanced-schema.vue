@@ -110,7 +110,7 @@
 				/>
 				<interface-input-code
 					v-else-if="type === 'json'"
-					:value="defaultValue || ''"
+					:value="defaultValue"
 					language="JSON"
 					placeholder="NULL"
 					type="json"

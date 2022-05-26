@@ -100,8 +100,9 @@ you can set a rule for the `author.name` field using the following syntax.
 
 ## Logical Operators
 
-You can nest or group multiple rules using the `_and` or `_or` logical operators. Each operator holds an array of rules,
-allowing for more complex filtering.
+You can nest or group multiple rules using the `_and` or `_or` logical operators. Each logical operator holds an array
+of Filter Rules, allowing for more complex filtering. Also note in the example that Logical Operators can be sub-nested
+into Logical Operators. However, they cannot be sub-nested into Filter Rules.
 
 ```json
 {
@@ -137,6 +138,37 @@ allowing for more complex filtering.
 	]
 }
 ```
+
+### Some vs None in One-to-Many
+
+When applying filters to a one-to-many field, Directus will default to a "some" search, for example in:
+
+```json
+{
+	"categories": {
+		"name": {
+			"_eq": "Recipe"
+		}
+	}
+}
+```
+
+the top level parent will be returned if _one of_ the categories has the name `Recipe`. This behavior can be overridden
+by using the explicit `_some` and `_none` operators, for example:
+
+```json
+{
+	"categories": {
+		"_none": {
+			"name": {
+				"_eq": "Recipe"
+			}
+		}
+	}
+}
+```
+
+will fetch all parent items that don't have the category "Recipe"
 
 ## Dynamic Variables
 

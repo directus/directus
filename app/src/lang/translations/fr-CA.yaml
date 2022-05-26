@@ -326,12 +326,15 @@ revision_delta_deleted: Supprimé
 revision_delta_reverted: Restauré
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
+presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
+download_page_as_csv: 'Télécharger la page au format CSV'
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
 revision_preview: Aperçu de la révision
 updates_made: Mises à jour réalisées
 leave_comment: Laisser un commentaire…
 post_comment_success: Commentaire publié
+post_comment_updated: Commentaire mis à jour
 item_create_success: Élément créé | Éléments créés
 item_update_success: Élément mis à jour | Éléments mis à jour
 item_delete_success: Élément supprimé | Éléments supprimés
@@ -555,7 +558,9 @@ errors:
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
   INVALID_OTP: Mauvais mot de passe unique
   INVALID_PAYLOAD: Payload invalide
+  INVALID_PROVIDER: L'utilisateur appartient à un autre fournisseur d'authentification
   INVALID_QUERY: Requête invalide
+  INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
   ROUTE_NOT_FOUND: Introuvable
@@ -640,6 +645,7 @@ advanced_settings: Paramètres Avancés
 advanced_filter: Filtre avancé
 delete_advanced_filter: Supprimer le filtre
 change_advanced_filter_operator: Changer d'opérateur
+advanced: Avancé
 operators:
   eq: Égal à
   neq: Différent de
@@ -653,6 +659,7 @@ operators:
   nnull: N'est pas null
   contains: Contient
   ncontains: Ne contient pas
+  icontains: Contient (insensible)
   starts_with: Commence par
   nstarts_with: Ne commence pas par
   ends_with: Termine par
@@ -1738,6 +1745,8 @@ layouts:
     calendar: Calendrier
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
+    optional: Facultatif
+    first_day: Premier Jour de la Semaine
   map:
     map: Carte
     basemap: Carte de base
@@ -1752,6 +1761,34 @@ layouts:
     find_location: Trouver l'emplacement ...
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
+  kanban:
+    name: Kanban,
+    group_field: Regrouper par,
+    group_field_placeholder: Champ à regrouper par...,
+    group_title: Nom du groupe,
+    group_title_placeholder: Champ pour les titres du groupe...,
+    title: Titre de tuile,
+    title_placeholder: Champ titre optionnel...,
+    text: Texte de tuile,
+    text_placeholder: Champ de texte optionnel...,
+    date: Date de tuile,
+    date_placeholder: Champ de date optionnel...,
+    tags: Étiquettes de tuile,
+    tags_placeholder: Champ de balises optionnelles...,
+    user: Utilisateurs de tuile,
+    user_placeholder: Champ utilisateur optionnel...,
+    image: Image de tuile,
+    image_placeholder: Champ d'image optionnel...,
+    crop: Rogner,
+    advanced: Avancé,
+    edit_group: Éditer le Groupe,
+    delete_group: Supprimer le Groupe,
+    add_group: Ajouter un Groupe,
+    add_group_placeholder: Entrez le nom du nouveau groupe...,
+    show_ungrouped: Afficher non-groupé,
+    show: Afficher,
+    no_group: Aucun Groupe,
+    not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
     name: Indicateurs
@@ -1770,3 +1807,59 @@ panels:
   list:
     name: Liste
     description: Filtrer et lister les champs d'une collection
+  barchart:
+    name: Graphique en barres
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    select_x_axis: Vous devez sélectionner un axe X.
+    function: Fonction
+    horizontal: Horizontal
+    x_axis_grouping: Agrégation du groupe d'axe X
+    x_axis: Axe X
+    y_axis_function: Fonction Axe-Y
+    y_axis: Axe Y
+    show_x_axis: Afficher l'axe X
+    show_y_axis: Afficher l'axe Y
+    show_data_label: Afficher l'étiquette des données
+    group_by: 'Groupés par:'
+    y_axis_conditional_one: La valeur de la condition
+    y_axis_conditional_two: doit être un nombre.
+  linechart:
+    name: Graphique linéaire
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    select_x_axis: Vous devez sélectionner un axe X.
+    function: Fonction
+    x_axis: Axe X
+    x_axis_decimals: Décimales de l'axe X
+    disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
+    y_axis: Axe Y
+    datasets: Jeux de données
+    show_legend: Afficher la légende
+    include_dataset: Vous devez sélectionner au moins un élément.
+    include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
+    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    smooth: 'Lisse'
+  meter:
+    description: Compteur pour les valeurs de suivi
+    name: Compteur
+    arc: Arc
+    select_max_value: Vous devez sélectionner une valeur maximale.
+    max_greater_than_zero: La valeur doit être supérieure à 0.
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    function: Fonction
+    thin: Fin
+    medium: Moyen
+    broad: Large
+  piechart:
+    name: Graphique anneau ou circulaire
+    description: Graphique circulaire montrant les ratios de groupes sur une colonne.
+    function: 'Fonction'
+    donut: Anneau
+    labels: Afficher les libellés
+    legend: Afficher la légende
+    right: Droite
+    bottom: Bas
+    monochrome: Monochrome
+    monochrome_color: Couleur Monochrome
