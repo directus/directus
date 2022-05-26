@@ -179,20 +179,24 @@ export default defineComponent({
 								props.filter || {},
 							],
 						},
-						sort: [props.dateField],
 						limit: -1,
 					},
 				});
-
 				metrics.value = results.data.data;
 
 				chart.value?.updateSeries([
 					{
 						name: props.collection,
-						data: metrics.value.map((metric) => ({
-							x: toISO(metric),
-							y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
-						})),
+						data: metrics.value
+							.map((metric) => ({
+								x: toISO(metric),
+								y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
+							}))
+							.sort((a, b) => {
+								if (a.x < b.x) {
+									return a;
+								}
+							}),
 					},
 				]);
 			} catch (err) {
