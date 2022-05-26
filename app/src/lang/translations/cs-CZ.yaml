@@ -1280,6 +1280,8 @@ interfaces:
     masked_label: Skrýt skutečné hodnoty
   select-icon:
     icon: Ikona
+  file-image:
+    image: Obrázek
   select-dropdown-m2o:
     display_template: Šablona zobrazení
   input-rich-text-md:
@@ -1429,8 +1431,20 @@ displays:
     description: Zobrazit formátovanou verzi objektu
   icon:
     icon: Ikona
+    description: Zobrazit ikonu
+    filled: Vyplněné
+    filled_label: Použít vyplněnou variantu
+  image:
+    image: Obrázek
+    description: Zobrazit náhled malého obrázku
+    circle: Kruh
+    circle_label: Zobrazit jako kruh
   labels:
+    labels: Popisky
+    description: Zobrazit buď jeden nebo seznam štítků
     default_foreground: Výchozí popředí
+    default_background: Výchozí pozadí
+    format_label: Formátovat každý štítek
     choices_value_placeholder: Zadejte hodnotu...
   user:
     user: Uživatel
@@ -1447,6 +1461,100 @@ layouts:
     comfortable: Komfortní
     compact: Kompaktní
     cozy: Pohodlný
+  kanban:
+    user_placeholder: Volitelné uživatelské pole...,
+    image: Obrázek karty,
+    image_placeholder: Volitelné pole obrázku...,
+    image_fit: Přizpůsobení karty obrázku,
+    crop: Oříznout,
+    advanced: Pokročilé,
+    edit_group: Upravit skupinu,
+    delete_group: Odstranit skupinu,
+    add_group: Přidat skupinu,
+    add_group_placeholder: Zadejte nový název skupiny...,
+    show_ungrouped: Zobrazit rozdělené,
+    show: Zobrazit,
+    no_group: Žádná skupina,
+    not_all_loaded: Podařilo se načíst pouze prvních 1000 položek.
 panels:
+  metric:
+    name: Metrika
+    description: Zobrazit jednu hodnotu založenou na dotazu
+    field: Pole
+  time_series:
+    name: Časová řada
+    description: Vykreslit čárový graf založený na hodnotách v průběhu času
+    date_field: Pole data
+    value_field: Pole hodnoty
+    fill_type: Typ výplně
+    curve_type: Typ křivky
+  label:
+    name: Popisek
+    description: Zobrazit text
+  list:
+    name: Seznam
+    description: Filtr a seznam polí z kolekce
+  barchart:
+    name: Pruhový graf
+    description: Pruhový nebo sloupcový graf pro porovnání skupin hodnot
+    select_field: Musíte vybrat pole.
+    select_collection: Musíte vybrat kolekci.
+    select_x_axis: Musíte vybrat osu X.
+    function: Funkce
+    horizontal: Horizontální
+    x_axis_grouping: Agregace skupiny os X
+    x_axis: Osa X
+    y_axis_function: Funkce osy Y
+    y_axis: Osa Y
+    show_x_axis: Zobrazit osu X
+    show_y_axis: Zobrazit osu Y
+    show_data_label: Zobrazit popisek dat
+    group_by: Seskupeno podle
+    group_and_function: Musíte zahrnout nebo vynechat jak skupinu, tak funkci.
+    y_axis_NaN: Osa Y musí být číslo.
+    y_axis_conditional_one: Hodnota podmínky
+    y_axis_conditional_two: musí být číslo.
+  linechart:
+    name: Čárový graf
+    description: Čárový graf pro porovnání změny pole.
+    select_field: Musíte vybrat pole.
+    select_collection: Musíte vybrat kolekci.
+    select_x_axis: Musíte vybrat osu X.
+    function: Funkce
+    x_axis: Osa X
+    x_axis_decimals: Desetiny osy X
+    disabled_no_grouping: Zakázáno, pokud není vybrána žádná skupina.
+    y_axis: Osa Y
+    datasets: Datové sady
+    show_legend: Zobrazit legendu
+    show_marker: Zobrazit značku popisku
+    include_dataset: Musíte zahrnout alespoň jednu datovou sadu.
+    include_y_axis: Musíte zahrnout osu Y pro každou datovou sadu, pokud není zadána žádná skupina.
+    group_and_function: Musíte zahrnout nebo vynechat jak skupinu, tak funkci.
+    smooth: 'Hladká'
+    straight: 'Rovná'
+    step_line: 'Kroková čára'
   meter:
+    description: Měřič pro sledování hodnot
+    name: Měřič
+    arc: Oblouk
     stroke_width: Tloušťka tahu
+    select_max_value: Musíte vybrat maximální hodnotu.
+    max_greater_than_zero: Maximální hodnota musí být větší než 0.
+    select_field: Musíte vybrat pole.
+    select_collection: Musíte vybrat kolekci.
+    function: Funkce
+    thin: Tenký
+    medium: Střední
+    broad: Široký
+  piechart:
+    name: Koláčový nebo prstencový graf
+    description: Kruhový graf zobrazující poměry skupin ve sloupci.
+    function: 'Funkce'
+    donut: Prstenec
+    labels: Zobrazit popisky
+    legend: Zobrazit legendu
+    right: Vpravo
+    bottom: Dole
+    monochrome: Monochromatický
+    monochrome_color: Monochromatická barva
