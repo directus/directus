@@ -3,9 +3,7 @@
 		<v-input
 			:model-value="localValue"
 			:type="!isNewTokenGenerated ? 'password' : 'text'"
-			:placeholder="
-				value ? t('interfaces.system-token.value_securely_saved') : t('interfaces.system-token.placeholder')
-			"
+			:placeholder="placeholder"
 			:disabled="disabled"
 			readonly
 			:class="{ saved: value && !localValue }"
@@ -13,18 +11,19 @@
 		>
 			<template #append>
 				<v-icon
+					v-if="!disabled"
 					v-tooltip="value ? t('interfaces.system-token.regenerate') : t('interfaces.system-token.generate')"
 					:name="value ? 'refresh' : 'add'"
 					class="regenerate-icon"
 					clickable
-					:disabled="loading"
+					:disabled="disabled || loading"
 					@click="generateToken"
 				/>
 				<v-icon
-					v-tooltip="value && t('interfaces.system-token.remove_token')"
-					:name="value ? 'clear' : 'vpn_key'"
-					:class="{ 'clear-icon': !!value }"
-					:clickable="value"
+					v-tooltip="!disabled && value && t('interfaces.system-token.remove_token')"
+					:name="!disabled && value ? 'clear' : 'vpn_key'"
+					:class="{ 'clear-icon': !disabled && !!value, 'default-icon': disabled && value }"
+					:clickable="!disabled && !!value"
 					:disabled="loading || !value"
 					@click="emitValue(null)"
 				/>
@@ -38,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -53,6 +52,11 @@ const props = withDefaults(defineProps<Props>(), { value: () => null, disabled: 
 const emit = defineEmits(['input']);
 
 const { t } = useI18n();
+
+const placeholder = computed(() => {
+	if (props.disabled && !props.value) return null;
+	return props.value ? t('interfaces.system-token.value_securely_saved') : t('interfaces.system-token.placeholder');
+});
 
 const localValue = ref<string | null>(null);
 const loading = ref(false);
@@ -114,5 +118,9 @@ function emitValue(newValue: string | null) {
 
 .clear-icon {
 	--v-icon-color-hover: var(--danger);
+}
+
+.default-icon {
+	--v-icon-color: var(--primary);
 }
 </style>
