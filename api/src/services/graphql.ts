@@ -149,7 +149,7 @@ export class GraphQLService {
 
 		const validationErrors = validate(schema, document, [
 			...specifiedRules,
-      validateGraphQLDepth,
+			validateGraphQLDepth,
 			(context) => ({
 				Field(node) {
 					if (env.GRAPHQL_INTROSPECTION === false && (node.name.value === '__schema' || node.name.value === '__type')) {
