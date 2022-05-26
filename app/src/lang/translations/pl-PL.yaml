@@ -1024,7 +1024,6 @@ fields:
     status_archived: Zarchiwizowane
     role: Rola
     token: Token
-    token_placeholder: Wprowadź bezpieczny token dostępu...
     provider: Dostawca
     external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
@@ -1331,7 +1330,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1619,6 +1617,8 @@ interfaces:
     header_color: Kolor nagłówka
     start_open: Rozpocznij rozwinięty
     start_closed: Rozpocznij zwinięty
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Tłumaczenia
