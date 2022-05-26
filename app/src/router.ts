@@ -128,7 +128,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		if (userStore.currentUser && !('share' in userStore.currentUser) && userStore.currentUser.role) {
 			if (to.path !== '/tfa-setup') {
 				if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
-					return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+					if (userStore.currentUser.last_page === to.fullPath) {
+						return '/tfa-setup';
+					} else {
+						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+					}
 				}
 			} else if (userStore.currentUser.tfa_secret !== null) {
 				return userStore.currentUser.last_page || '/login';
