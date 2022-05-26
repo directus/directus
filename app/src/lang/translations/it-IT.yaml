@@ -1323,7 +1323,6 @@ export_started_copy: La tua esportazione √® iniziata. Sarai avvisato quando sar√
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
 template: Template
-require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore

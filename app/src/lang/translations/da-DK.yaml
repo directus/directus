@@ -1277,7 +1277,6 @@ export_started_copy: Din eksport er startet. Du får besked, når den er klar ti
 sort_asc: Sortér Stigende
 sort_desc: Sortér Faldende
 template: Skabelon
-require_value_to_be_set: Kræv værdi for at være indstillet
 translation: Oversættelse
 translation_placeholder: Indtast en oversættelse...
 value: Værdi

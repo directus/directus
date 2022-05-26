@@ -1323,7 +1323,6 @@ export_started_copy: Votre exportation a commencé. Vous serez notifié quand el
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
-require_value_to_be_set: La valeur est requise
 translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
