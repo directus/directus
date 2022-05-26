@@ -193,9 +193,7 @@ export default defineComponent({
 								y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 							}))
 							.sort((a, b) => {
-								if (a.x < b.x) {
-									return a;
-								}
+								return new Date(a.x).getTime() - new Date(b.x).getTime();
 							}),
 					},
 				]);
@@ -219,7 +217,12 @@ export default defineComponent({
 				return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
 
 				function padZero(value: number) {
-					return String(value).padStart(2, '0');
+					const intAndDecimal = String(value).split('.');
+
+					if (intAndDecimal.length > 1) {
+						return `${String(intAndDecimal[0]).padStart(2, '0')}.${intAndDecimal[1]}`;
+					}
+					return String(intAndDecimal[0]).padStart(2, '0');
 				}
 
 				function getFirstDayOfNWeeksForYear(numberOfWeeks: number, year: number) {
