@@ -405,7 +405,7 @@ export function applyFilter(
 			operator: string,
 			compareValue: any,
 			logical: 'and' | 'or' = 'and',
-			aliasedCollection?: string
+			originalCollectionName?: string
 		) {
 			const [table, column] = key.split('.');
 
@@ -448,7 +448,7 @@ export function applyFilter(
 
 			// Cast filter value (compareValue) based on type of field being filtered against
 			const [collection, field] = key.split('.');
-			const mappedCollection = aliasedCollection || collection;
+			const mappedCollection = originalCollectionName || collection;
 
 			if (mappedCollection in schema.collections && field in schema.collections[mappedCollection].fields) {
 				const type = schema.collections[mappedCollection].fields[field].type;
