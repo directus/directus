@@ -85,7 +85,7 @@ Once logged in, you're greeted with the option to create your first
    _For the sake of this demo, we'll be calling ours `articles`, but feel free to make it your own!_
 4. Leave the other settings at default and click <span mi btn>arrow*forward</span> and the **"Optional System Fields"**
    will open.\
-   \_Keep the values in this menu at the default, toggled off, for now. You can adjust these later.*
+   *Keep the values in this menu at the default, toggled off, for now. You can adjust these later.\*
 5. Click <span mi btn>check</span> in the menu header.
 
 :::tip Learn More About Collections
