@@ -1319,7 +1319,6 @@ export_started_copy: Ваш експорт розпочато. Ви отрима
 sort_asc: Впорядкувати за збільшенням
 sort_desc: Впорядкувати за зменшенням
 template: Шаблон
-require_value_to_be_set: Потрібно встановити значення
 translation: Переклад
 translation_placeholder: Введіть переклад...
 value: Значення

@@ -197,7 +197,7 @@ export class UsersService extends ItemsService {
 			}
 		}
 
-		if (data.status !== 'active') {
+		if (data.status !== undefined && data.status !== 'active') {
 			await this.checkRemainingActiveAdmin(keys);
 		}
 
