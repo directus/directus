@@ -326,6 +326,8 @@ revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
+download_page_as_csv: 'Descargar página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista Previa de Creación
 revision_preview: Vista Previa de Revisión
@@ -1318,7 +1320,6 @@ export_started_copy: Tu exportación ha comenzado. Serás notificado cuando est�
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
-require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
@@ -1757,6 +1758,35 @@ layouts:
     find_location: Buscar ubicación...
     default_template: Usando la colección por defecto...
     no_compatible_fields: No hay campos compatibles
+  kanban:
+    name: Kanban,
+    group_field: Agrupar,
+    group_field_placeholder: Campo para agrupar,
+    group_title: Título del Grupo,
+    group_title_placeholder: Campo para títulos de grupo...,
+    title: Título de la Tarjeta
+    title_placeholder: Campo de título opcional...,
+    text: Texto de la Tarjeta,
+    text_placeholder: Campo de texto opcional...,
+    date: Fecha de la Tarjeta,
+    date_placeholder: Campo de fecha opcional...,
+    tags: Etiquetas de la Tarjeta,
+    tags_placeholder: Campo de etiquetas opcional...,
+    user: Usuario de la Tarjeta,
+    user_placeholder: Campo de usuario opcional...,
+    image: Imagen de la Tarjeta,
+    image_placeholder: Campo de imagen opcional...,
+    image_fit: Ajuste de Imagen de la Tarjeta,
+    crop: Recortar,
+    advanced: Avanzado,
+    edit_group: Editar Grupo,
+    delete_group: Eliminar Grupo,
+    add_group: Añadir Grupo,
+    add_group_placeholder: Introduzca un nuevo título para el grupo...,
+    show_ungrouped: Mostrar Desagrupado,
+    show: Mostrar,
+    no_group: Sin Agrupar,
+    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 panels:
   metric:
     name: Métrico
@@ -1775,3 +1805,37 @@ panels:
   list:
     name: Lista
     description: Filtrar y listar campos de una colección
+  barchart:
+    name: Gráfico de Barras
+    description: Gráficos de barra o columna para comparar grupos de valores
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    horizontal: Horizontal
+    x_axis_grouping: Agregación de Grupo del Eje X
+    x_axis: Eje X
+    y_axis_function: Función del Eje Y
+    y_axis: Eje Y
+    show_x_axis: Mostrar Eje X
+    show_y_axis: Mostrar Eje Y
+    show_data_label: Mostrar Etiqueta de Datos
+    group_by: Agrupado Por
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+    y_axis_NaN: El eje Y debe ser un número.
+    y_axis_conditional_one: Valor para la condición
+    y_axis_conditional_two: debe ser un número.
+  linechart:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    x_axis: Eje X
+    y_axis: Eje Y
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+  meter:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    function: Función
+  piechart:
+    function: 'Función'

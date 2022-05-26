@@ -152,6 +152,11 @@ module.exports = {
 					{ type: 'divider' },
 					{
 						type: 'page',
+						path: '/app/display-templates',
+						title: 'Display Templates',
+					},
+					{
+						type: 'page',
 						path: '/app/filters',
 						title: 'Filters',
 					},

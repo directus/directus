@@ -90,9 +90,13 @@ Once logged in, you're greeted with the option to create your first
 
 :::tip Learn More About Collections
 
+<<<<<<< HEAD
+
 - [The Content Module](/app/content)
 - [Create and Manage a Collection](/configuration/data-model/)
-- [Build Relationships Between Collections](/configuration/relationships/)
+- # [Build Relationships Between Collections](/configuration/relationships/)
+  For a more in-depth guide to setting up Collections, see [Collections](/app/content/collections).
+  > > > > > > > main
 
 :::
 
