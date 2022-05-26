@@ -432,6 +432,12 @@ download_file: Stáhnout soubor
 open_file_in_tab: Otevřít soubor v nové kartě
 start_export: Zahájit export
 not_available_for_local_downloads: Není k dispozici pro lokální stahování
+exporting_all_items_in_collection: Exportuji všech {total} položek z {collection}.
+exporting_limited_items_in_collection: Exportuji {limit} z {total} položek z {collection}.
+exporting_no_items_to_export: Žádné položky k exportu. Upravte nastavení exportu níže.
+exporting_download_hint: Po dokončení bude tento soubor {format} automaticky stažen do vašeho zařízení.
+exporting_batch_hint: Tento export bude zpracován v dávkách a po dokončení bude soubor {format} uložen do knihovny souborů.
+exporting_batch_hint_forced: Vzhledem k velkému počtu položek musí být tento vývoz zpracován v dávkách, a po dokončení bude soubor {format} uložen do knihovny souborů.
 collection_key: Klíč kolekce
 name: Jméno
 primary_key_field: Pole primárního klíče
@@ -440,6 +446,7 @@ creating_new_collection: Vytváření nové kolekce
 created_by: Vytvořil/-a
 created_on: Vytvořeno
 creating_collection_info: Pojmenujte kolekci a nastavte její unikátní pole "klíč"...
+creating_collection_system: Povolit a přejmenovat některé z těchto volitelných polí.
 auto_increment_integer: Automaticky zvýšené celé číslo
 auto_increment_big_integer: Automaticky zvýšené velké celé číslo
 generated_uuid: Generované UUID
@@ -473,10 +480,13 @@ file_count: 'Žádné soubory | Jeden soubor | {count} souborů'
 no_files_copy: Nejsou zde žádné soubory.
 user_count: 'Žádní uživatelé | Jeden uživatel | {count} uživatelů'
 no_users_copy: V této roli zatím nejsou žádní uživatelé.
+webhooks_count: 'Žádné webhooky | 1 webhook | {count} webhooků'
+no_webhooks_copy: Zatím nebyly nakonfigurovány žádné webhooky. Začněte vytvořením jednoho níže.
 no_notifications: Žádná oznámení
 no_notifications_copy: Jste v obraze!
 activity_log: Záznam aktivit
 all_items: Všechny položky
+any: Jakýkoliv
 csv: CSV
 no_collections: Žádné kolekce
 create_collection: Vytvořit kategorii
@@ -544,6 +554,7 @@ errors:
   FORBIDDEN: Zakázáno
   INVALID_CREDENTIALS: Nesprávné uživatelské jméno nebo heslo
   INVALID_OTP: Nesprávné jednorázové heslo
+  INVALID_PAYLOAD: Neplatný payload
   INVALID_PROVIDER: Uživatel patří k jinému poskytovateli ověření
   INVALID_QUERY: Neplatný dotaz
   INVALID_USER: Ověření uživatele se nezdařilo
@@ -617,9 +628,21 @@ placeholder: Placeholder
 icon_left: Ikona vlevo
 icon_right: Ikona vpravo
 count_other_revisions: '{count} dalších revizí'
+font: Písmo
+sans_serif: Bezpatkové
+serif: Patkové
+monospace: Neproporcionální
+divider: Oddělovač
 color: Barva
+circle: Kruh
+empty_item: Prázdná položka
+log_in_with: 'Přihlásit se pomocí {provider}'
+conditional_styles: Podmíněné styly
+advanced_settings: Pokročilá nastavení
 advanced_filter: Rozšířený filtr
 delete_advanced_filter: Smazat filtr
+change_advanced_filter_operator: Změnit operátor
+advanced: Rozšířené
 operators:
   eq: Rovná se
   neq: Není rovno
@@ -698,10 +721,31 @@ no_presets_copy: Zatím nebyly uloženy žádné předvolby ani záložky.
 no_presets_cta: Přidat předvolbu
 presets_only: Pouze předvolby
 create: Vytořit
+on_create: Při vytvoření
 on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+format_text: Formátovat text
+format_value: Formátovat hodnotu
+abbreviate_value: Zkrátit hodnotu
+operator: Operátor
+bold: Tučné
+toggle: Přepínač
+icon_on: Ikona zapnuto
+icon_off: Ikona vypnuto
+label: Popisek
+insights: Přehledy
+dashboard: Nástěnka
+panel: Panel
+panel_options: Možnosti panelu
+panel_header: Záhlaví panelu
+panel_name_placeholder: Pojmenovat tento panel...
+panel_note_placeholder: Volitelné podrobnosti o tomto panelu...
+panel_delete_confirm: Opravdu chcete odstranit tento panel? Tuto akci nelze vrátit zpět.
+dashboard_delete_confirm: Jste si jisti, že chcete odstranit tuto nástěnku? Tuto akci nelze vrátit zpět.
+edit_dashboard: Upravit nástěnku
+delete_dashboard: Odstranit nástěnku
 prefix_placeholder: Text před hodnotou...
 suffix_placeholder: Text za hodnotou...
 decimals_placeholder: Počet desetinných míst...
@@ -968,6 +1012,14 @@ fields:
     last_page: Poslední stránka
     last_access: Poslední přístup
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: Mapování
+    basemaps: Základní mapy
+    basemaps_raster: Rastr
+    basemaps_tile: Rastr TileJSON
     basemaps_style: Styl Mapboxu
     mapbox_key: Přístupový token Mapboxu
     mapbox_placeholder: pk.eyJ1Ijo.....
@@ -1055,6 +1107,9 @@ field_options:
     transforms_note: Název metody Sharp a její argumenty. Viz https://sharp.pixelplumbing.com/api-constructor pro více informací.
     mapbox_key: Přístupový token Mapboxu
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Základní mapy
+    basemaps_raster: Rastr
+    basemaps_tile: Rastr TileJSON
     basemaps_style: Styl Mapboxu
     overrides_divider_title: Přepisy aplikace
   directus_activity:
@@ -1062,13 +1117,24 @@ field_options:
     create: Vytořit
     update: Úpravy
   directus_collections:
+    track_activity_revisions: Sledovat aktivitu a revize
+    only_track_activity: Pouze sledovat aktivitu
+    do_not_track_anything: Nesledovat nic
     collection_setup: Nastavení kolekce
+    note_placeholder: Popis této kolekce...
+    hidden_label: Skrýt v aplikaci
     singleton: Považovat za jeden objekt
     language: Jazyk
     translation: Překlad
+    translation_placeholder: Zadejte překlad...
     collection_name: Název kolekce
+    singular_unit: Jednotné číslo
+    plural_unit: Množné číslo
     archive_divider: Archivovat
+    archive_field_placeholder: Vyberte pole...
     sort_divider: Seřadit
+    sort_field: Vyberte pole...
+    accountability_divider: Odpovědnost
   directus_files:
     filename_disk: Název na diskovém úložišti...
     filename_download: Název při stahování...
@@ -1163,11 +1229,23 @@ forgot_password: Zapomenuté heslo
 hidden: Skryté
 icon: Ikona
 info: Informace
+danger: Nebezpečí
+colors:
+  purple: Fialová
+  blue: Modrá
+  green: Zelená
+  yellow: Žlutá
+  orange: Oranžová
+  red: Červená
+  black: Černá
+  gray: Šedá
+  white: Bílá
 junction_collection: Spojovací kategorie
 latency: Latence
 login: Přihlásit
 my_activity: Moje aktivita
 not_authenticated: Neověřená/-ý
+authenticated: Ověřeno
 options: Možnosti
 otp: Jednorázové heslo
 password: Heslo
@@ -1175,11 +1253,14 @@ permissions: Oprávnění
 relationship: Vztah
 reset: Resetovat
 reset_password: Obnovit heslo
+revisions: Revize
+no_revisions: Zatím žádné revize
 revert: Vrátit
 save: Uložit
 schema: Schéma
 search: Vyhledat
 select_existing: Vybrat z uložených
+select_field_type: Vyberte typ pole
 select_interface: Vyberte rozhraní
 settings: Nastavení
 sign_in: Přihlásit se
@@ -1187,15 +1268,34 @@ sign_out: Odhlásit se
 sign_out_confirm: Chcete se odhlásit?
 something_went_wrong: Něco se pokazilo.
 sort_direction: Směr řazení
+export_location: Kam exportovat
+export_started: Export zahájen
+export_started_copy: Váš export byl zahájen. Až bude připraven ke stažení, budete upozorněni.
+sort_asc: Seřadit vzestupně
+sort_desc: Seřadit sestupně
 template: Šablona
+require_value_to_be_set: Požadovat hodnotu při vytvoření
 translation: Překlad
+translation_placeholder: Zadejte překlad...
 value: Hodnota
 view_project: Zobrazit projekt
+report_error: Nahlásit chybu
 interfaces:
   filter:
     name: Filtr
+    description: Konfigurace objektu filtru.
     add_filter: Přidat filtr
+    add_group: A / nebo skupina
+    add_value: Přidat hodnotu
+    logic_type_and: A
+    logic_type_or: NEBO
     all: Vše
+    any: Jakýkoliv
+    and: a
+    of_the_following: z následujících
+    no_rules: Žádná konfigurovaná pravidla
+    change_value: Kliknutím změníte hodnotu
+    placeholder: Sem přetáhněte pravidla
   fields:
     name: Pole
   group-accordion:
@@ -1350,6 +1450,7 @@ interfaces:
     clear_label: Uložit jako prázdný řetězec
     minimum_value: Minimální hodnota
   boolean:
+    toggle: Přepínač
     color_on: Barva zapnuto
     color_off: Barva vypnuto
     label_default: Povoleno
