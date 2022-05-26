@@ -102,35 +102,37 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		await serverStore.hydrate();
 	}
 
-	if (to.meta?.public !== true && appStore.hydrated === false) {
-		appStore.hydrating = false;
-		if (appStore.authenticated === true) {
-			await hydrate();
-			if (
-				userStore.currentUser &&
-				to.fullPath === '/tfa-setup' &&
-				!('share' in userStore.currentUser) &&
-				userStore.currentUser.tfa_secret !== null
-			) {
-				return userStore.currentUser.last_page || '/login';
-			}
-			return to.fullPath;
-		} else {
-			if (to.fullPath) {
-				return '/login?redirect=' + encodeURIComponent(to.fullPath);
+	if (to.meta?.public !== true) {
+		if (appStore.hydrated === false) {
+			appStore.hydrating = false;
+			if (appStore.authenticated === true) {
+				await hydrate();
+				if (
+					userStore.currentUser &&
+					to.fullPath === '/tfa-setup' &&
+					!('share' in userStore.currentUser) &&
+					userStore.currentUser.tfa_secret !== null
+				) {
+					return userStore.currentUser.last_page || '/login';
+				}
+				return to.fullPath;
 			} else {
-				return '/login';
+				if (to.fullPath) {
+					return '/login?redirect=' + encodeURIComponent(to.fullPath);
+				} else {
+					return '/login';
+				}
 			}
 		}
-	}
 
-	if (to.meta?.public !== true && userStore.currentUser && !('share' in userStore.currentUser)) {
-		if (to.fullPath !== '/tfa-setup') {
-			if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
-				return '/tfa-setup';
+		if (userStore.currentUser && !('share' in userStore.currentUser)) {
+			if (to.fullPath !== '/tfa-setup') {
+				if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+					return '/tfa-setup';
+				}
+			} else if (userStore.currentUser.tfa_secret !== null) {
+				return userStore.currentUser.last_page || '/login';
 			}
-		} else if (userStore.currentUser.tfa_secret !== null) {
-			return userStore.currentUser.last_page || '/login';
 		}
 	}
 };
