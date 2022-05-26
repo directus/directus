@@ -1333,9 +1333,23 @@ interfaces:
     capitalization: Kapitalizace
     uppercase: Převést velká písmena
     lowercase: Převést malá písmena
+    auto_formatter: Použít automatický formát popisku
+    alphabetize: Abecedně
+    alphabetize_label: Vynutit abecední pořadí
+    add_tags: Přidat značku a stiskněte Enter...
   input:
+    input: Vstup
+    description: Ručně zadejte hodnotu
     trim: Oříznout
+    trim_label: Oříznout začátek a konec
+    mask: Maskovaná
+    mask_label: Skrýt skutečnou hodnotu
+    clear: Vymazaná hodnota
+    clear_label: Uložit jako prázdný řetězec
+    minimum_value: Minimální hodnota
   boolean:
+    color_on: Barva zapnuto
+    color_off: Barva vypnuto
     label_default: Povoleno
   translations:
     display_template: Šablona zobrazení
@@ -1350,28 +1364,69 @@ interfaces:
 displays:
   translations:
     translations: Překlady
+    language_field: Indikátor jazyka
   boolean:
     boolean: Logická hodnota
+    description: Zobrazit stav zapnuto a vypnuto
+    label_on: Popisek zapnuto
+    label_on_placeholder: Zadejte popisek zapnutého stavu...
+    label_off: Popisek vypnuto
+    label_off_placeholder: Zadejte popisek vypnutého stavu...
+    icon_on: Ikona zapnuto
+    icon_off: Ikona vypnuto
+    color_on: Barva zapnuto
+    color_off: Barva vypnuto
   collection:
     collection: Kategorie
+    description: Zobrazit kolekci
+    icon_label: Zobrazit ikonu kolekce
   color:
     color: Barva
+    description: Zobrazit barevnou tečku
+    default_color: Výchozí barva
   datetime:
     datetime: Datum a čas
+    description: Zobrazit hodnoty související s časem
     format: Formát
+    format_note: >-
+      Vlastní formát přijímá __[Symbol datového pole](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Dlouhý
+    short: Krátký
+    relative: Relativní
+    relative_label: 'Zobrazit relativní čas, např.: před 5 minutami'
   file:
     file: Soubor
     description: Zobrazit soubory
   filesize:
     filesize: Velikost souboru
+    description: Zobrazit velikost souboru
   formatted-value:
+    formatted-value: Formátovaná hodnota
+    description: Zobrazit formátovanou verzi textu
     format: Formát
+    format_label: Automatický formát
+    font: Písmo
+    font_sans_serif: Bezpatkové
+    font_serif: Patkové
+    font_monospace: Neproporcionální
+    bold: Tučné
+    bold_label: Použít tučný styl
     italic: Kurzíva
+    italic_label: Použít styl kurzívy
     prefix: Prefix
+    prefix_label: Přidat před text
     suffix: Přípona
+    suffix_label: Připojený text
     color: Barva
+    background: Pozadí
     icon: Ikona
+    border: Ohraničení
+    border_label: Zobrazit ohraničení
     text: Text
+    text_placeholder: Volitelné přetížení hodnoty...
+  formatted-json-value:
+    formatted-json-value: Formátovaná hodnota JSON
+    description: Zobrazit formátovanou verzi objektu
   icon:
     icon: Ikona
   labels:
