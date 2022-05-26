@@ -1366,9 +1366,24 @@ interfaces:
     select_a_collection: Vyberte kolekci
   presentation-divider:
     divider: Rozdělovač
+    description: Označit a rozdělit pole na sekce
+    title_placeholder: Zadejte název, nebo ponechte prázdné pro zobrazení pouze čáry...
+    inline_title: Vložený název
+    inline_title_label: Zobrazit název uvnitř čáry
+    margin_top: Horní okraj
+    margin_top_label: Zvětšit horní okraj
   select-dropdown:
+    description: Vyberte hodnotu z rozevíracího seznamu
+    choices_placeholder: Přidat novou volbu
     allow_other: Povolit ostatní
+    allow_other_label: Povolit další hodnoty
+    allow_none: Povolit žádnou hodnotu
+    allow_none_label: Povolit žádný výběr
+    choices_name_placeholder: Zadejte název...
     choices_value_placeholder: Zadejte hodnotu...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Rozbalovací nabídka (Více možností)
+    description: Vyberte více hodnot z rozevíracího seznamu
   file:
     file: Soubor
     description: Vyberte nebo nahrajte soubor
@@ -1377,9 +1392,13 @@ interfaces:
     description: Vyberte nebo nahrajte soubory
   input-hash:
     hash: Hash
+    description: Zadejte hodnotu, která má být hashována
+    masked: Maskovaná
     masked_label: Skrýt skutečné hodnoty
   select-icon:
     icon: Ikona
+    description: Vyberte ikonu z rozevíracího seznamu
+    search_for_icon: Hledat ikonu...
   file-image:
     image: Obrázek
   select-dropdown-m2o:
@@ -1458,15 +1477,44 @@ interfaces:
     display_template: Šablona zobrazení
   user:
     user: Uživatel
+    select_mode: Režim výběru
     modes:
+      auto: Automatický
       dropdown: Rozbalovací nabídka
+      modal: Modál
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Bohatý textový editor, který píše HTML obsah
+    toolbar: Nástrojová lišta
+    custom_formats: Vlastní formáty
+    options_override: Přetížení nastavení
     folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
+    imageToken: Statický přístupový token
+    imageToken_label: Statický přístupový token je připojen k URL aktiva
+  input-autocomplete-api:
+    input-autocomplete-api: Vstup s našeptávačem (API)
+    description: Vyhledávání typeahead pro externí hodnoty API.
+    results_path: Cesta k výsledkům
+    value_path: Cesta k hodnotě
+    text_path: Cesta textu
+    trigger: Spouštěč
+    rate: Četnost
+  group-raw:
+    name: Nezpracovaná skupina
+    description: Vykreslit pole tak jak je
   group-detail:
+    name: Detail skupiny
+    description: Vykreslit pole jako sbalitelnou sekci
+    show_header: Zobrazit záhlaví skupiny
+    header_icon: Ikona záhlaví
     header_color: Barva záhlaví
 displays:
   translations:
     translations: Překlady
+    description: Náhled překladů
+    enable: Povolit
+    user_language: Použít aktuální jazyk uživatele
+    default_language: Výchozí jazyk
     language_field: Indikátor jazyka
   boolean:
     boolean: Logická hodnota
@@ -1546,16 +1594,41 @@ displays:
     default_foreground: Výchozí popředí
     default_background: Výchozí pozadí
     format_label: Formátovat každý štítek
+    show_as_dot: Zobrazit jako tečku
     choices_value_placeholder: Zadejte hodnotu...
+    choices_text_placeholder: Zadejte text...
+  mime-type:
+    mime-type: Typ MIME
+    description: Zobrazit MIME-typ souboru
+    extension_only: Pouze příponu
+    extension_only_label: Zobrazit pouze příponu souboru
+  rating:
+    rating: Hodnocení
+    description: Zobrazit číslo jako hvězdy vzhledem k maximální hodnotě
+    simple: Jednoduchý
+    simple_label: Zobrazit hvězdičky v jednoduchém formátu
+  raw:
+    raw: Nezpracovaná hodnota
+  related-values:
+    related-values: Relativní hodnoty
+    description: Zobrazit relativní hodnoty
+    display_template_configure_notice: Po vytvoření tohoto pole můžete nakonfigurovat šablonu zobrazení.
   user:
     user: Uživatel
+    description: Zobrazit uživatele directus
     avatar: Avatar
     name: Jméno
     both: Vše
+    circle_label: Zobrazit uživatele v kruhu
 layouts:
   cards:
     cards: Karty
+    image_source: Zdroj obrázku
+    image_fit: Přizpůsobit obrázek
+    crop: Oříznout
+    contain: Obsáhnout
     title: Název
+    subtitle: Podnadpis
   tabular:
     tabular: Tabulka
     spacing: Odsazení
