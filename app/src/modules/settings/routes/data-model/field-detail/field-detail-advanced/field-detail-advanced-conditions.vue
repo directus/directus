@@ -130,7 +130,7 @@ export default defineComponent({
 					saving: false,
 				});
 			} else {
-				optionsObjectOrArray = selectedInterface.value.options;
+				optionsObjectOrArray = selectedInterface.options;
 			}
 			const optionsArray = Array.isArray(optionsObjectOrArray)
 				? optionsObjectOrArray
