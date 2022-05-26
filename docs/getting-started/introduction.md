@@ -21,45 +21,40 @@ getting-started > introduction
 Add 2-4 min Promo Video When Ready
 -->
 
-**Directus is an Open Data Platform built to democratize the database.**
-
-This platform can manage any data, or data model, in any SQL database. Directus uses a technique called
-[Database Introspection](#how-it-works), which identifies your full database structure and creates an abstraction layer,
-then dynamically generates REST and GraphQL API endpoints to manage the data with exhaustive, granular control. These
-APIs are available for devs, but also used to power the intuitive no-code app.
-
-<!--Anything that the APIs can do can also be done in the app and vice versa.-->
+**Directus is an Open Data Platform built to democratize the database.**\
+This platform provides everyone on your team, _regardless of technical skill_, equal access to data and digital file asset
+management, for any data model or project. First, link Directus to your desired SQL database and file storage adapter. After
+that, Directus enables you to perform CRUD operations, create users, assign roles with fully configurable permissions, build
+complex and granular queries, configure event-driven webhooks and task automation... _the list goes on and on!_
 
 **Database Introspection & Abstraction**\
-SQL flavors each have slightly different data types and other idiosyncrasies. In order to work seamlessly with any SQL database,
-Directus has a sophisticated introspection and abstraction layer that reads your data and data model, then handles all nitty-gritty
-details behind-the-scenes. Simply link Directus to your new or pre-existing database and it works out-of-the-box. This approach
-also lets you to link or remove it any time without a trace and zero impact on your data.
+SQL flavors all come with slightly different data types and idiosyncrasies. Directus uses [Database Introspection](#how-it-works)
+to read your database structure and create an abstraction layer to handle all the nitty-gritty details behind the scenes.
+This technique works seamlessly with any SQL database. It also lets you link Directus to your new or pre-existing database
+or remove it anytime, with no impact on your existing data model. That means you'll never encounter vendor lock-in.
 
-**The REST and GraphQL APIs**\
-Developers have the power to do everything programmatically from the REST or GraphQL APIs: handle CRUD operations, set roles
-and permissions, create incredibly complex and granular queries, build simple event-driven webhooks and sophisticated task
-automation, upload and download digital file assets, upload and download data in file format... _the list goes on and on!_
+**The App and APIs**\
+Once your database is introspected and abstracted, Directus dynamically generates REST and GraphQL API endpoints to manage
+your data with granular control. You also get CLI tools for file management and a complete Javascript SDK.
 
-**The No-Code App**\
-Remember: the App itself is powered by the API. Anything that the APIs can do can also be done in the app and vice versa.
-To organize features and functionality, Directus is broken into [Modules](/getting-started/glossary/#modules), which allow
-you to interact with data in a specific way, such as data and content management, digital file asset management, drag and
-drop analytics dashboard creation, and so on. Each Module contains tons of features and functionalities to help manage your
-data.
+The API and CLI power the no-code App. In other words, the App is just a GUI that provides no-code access to the API.
+This architecture is how Directus democratizes the database and provides control to [the whole team](#who-s-it-for).
 
----
+**Open-Source, Modular, Extensible, Scalable**\
+At the highest level, Directus organizes its features and functionality into Modules. Each Module allows you to interact
+with data in some specific way, such as data and content management, digital file asset management, drag and drop analytics
+dashboard creation, or whatever. If you find Directus is missing something that your project needs, _no problem!_
 
-**Completely Customizable**\
-Built entirely in Typescript, primarily on [Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org), Directus is completely
-open-source, modular and extensible, ensuring your project never hits a hard feature ceiling. The platform scales without
-issue, _and some Projects have hundreds of millions of users._ The platform is also API-driven, so you can use it with any
-_(or many)_ stacks or frontend frameworks.
+Built entirely in Typescript, primarily on [Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org), Directus is
+100% open-source, modular and extensible, ensuring your project never hits a hard feature ceiling. The platform scales
+without issue, _and some Projects have hundreds of millions of users._
 
-**Extensive Configuration Options**\
-[Configuration options](/configuration/config-options/) are also available as global variables in the codebase so developers
-can custom configure SSO authentication, caching, default file storage location (local, S3, google, etc.) for digital assets,
-emails, _and much more._
+You can use it with any _(or many)_ stacks or frontend frameworks.
+
+**Custom Configuration Options**\
+Extensive [configuration options](/configuration/config-options/) are also available as global variables in the codebase.
+Developers can custom configure SSO authentication method, caching details, default file storage location (local, S3, google,
+etc.) for digital assets, emails, _and much more._
 
 :::tip Ready to dive-in?
 
@@ -72,7 +67,7 @@ Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Gui
 **Directus is installed as a _layer_ on top of your new or existing SQL database.**
 
 The App and API dynamically “mirror” your actual schema and content in real-time. This is similar to how technical
-database clients (like _phpMyAdmin_) work. However, database introspection has many unique advantages:
+database clients (like _phpMyAdmin_) work. However, Database Introspection has many unique advantages:
 
 - Absolute control over your pure SQL database schema.
 - Complete transparency, portability, and security for your data.
@@ -98,16 +93,18 @@ Get a Project running in minutes. Test the API hands-on in the [Quickstart Guide
 
 **Directus lets the whole team to work together and access data in one place.**
 
-**Developers** — Developers get a complete data connection toolkit with REST and GraphQL APIs, a JavaScript SDK, access
-to global variables to customize [configuration options](/configuration/config-options/), and direct command line access
-to digital assets.
+**Developers**\
+Developers get a complete data connection toolkit with REST and GraphQL APIs, a JavaScript SDK, access to global variables
+to customize [configuration options](/configuration/config-options/), and direct command line access to digital assets.
 
-**Power Users** — Data analysts and data scientists have in-app tools to query data, build out in-app analytics
-dashboards, and extract or upload data in file format. Additionally, these users are still free to link other services
-and run raw SQL queries directly on the database.
+**Power Users**\
+Data analysts and data scientists have in-app tools to query data, build out in-app analytics dashboards, and extract or
+upload data in file format. Additionally, these users are still free to link other services and run raw SQL queries directly
+on the database.
 
-**Business Users** — The no-code app is safe and intuitive enough to make data accessible to everyone, even the most
-non-technical users. Administrators can create absolutely granular permissions for roles as well as individual users.
+**Business Users**\
+The no-code app is safe and intuitive enough to make data accessible to everyone, even the most non-technical users. Administrators
+can create absolutely granular permissions for roles as well as individual users.
 
 :::tip Directus Vocabulary
 
@@ -138,23 +135,26 @@ Change this CTA to the 20-30 min crashcourse
 
 **Directus can power any data-driven project and can be linked or removed at any time.**
 
-You'll be able to build, monitor or manage any data model or app you desire: IoT fleets, ecommerce, SaaS, business data
-analytics, multi-channel content, _or anything else_.... If it involves SQL and digital files, you can use Directus.
-With this in mind, four broad use cases emerge:
+Build, monitor or manage any data model or app you desire: IoT fleets, ecommerce, SaaS, business data analytics,
+multi-channel content, _or anything else_.... If it involves SQL and digital files, you can use Directus. With this in
+mind, four broad use cases do emerge:
 
-- **Backend as a Service**\
-  An end-to-end data solution. Efficiently connects data, auto-generates exhaustive APIs for projects that scale, provides
-  webhooks and task automation. Completely detached from the database, you're free to link and remove Directus anytime or
-  use any other service in tandem.
-- **Headless CMS**\
-  Remember: _content_ is just data from a database! Manage any omnichannel digital experience. Deliver file assets and data
-  across websites, apps, kiosks, digital signage... _the sky's the limit!_
-- **Internal Tool Builder**\
-  The whole team can build custom apps! Ditch the spreadsheet and quickly build back-office apps and admin panels for customers,
-  inventory, projects, marketing _or anything else._
-- **Data Management and Analytics**\
-  Establish _a single source of truth_ for all data. Build no-code analytics dashboards to gain insights into company KPIs
-  and other metrics. Coalesce previously siloed department data.
+**Backend as a Service**\
+An end-to-end data solution. Efficiently connects data, auto-generates exhaustive APIs for projects that scale, provides
+webhooks and task automation. Completely detached from the database, you're free to link and remove Directus anytime or use
+any other service in tandem.
+
+**Headless CMS**\
+Remember, _content_ is just data from a database! Manage any omnichannel digital experience. Deliver file assets and data
+across websites, apps, kiosks, digital signage... _the sky's the limit!_
+
+**Internal Tool Builder**\
+The whole team can build custom apps! Ditch the spreadsheet and quickly build back-office apps and admin panels for customers,
+inventory, projects, marketing _or anything else._
+
+**Data Management and Analytics**\
+Establish _a single source of truth_ for all data. Build no-code analytics dashboards to gain insights into company KPIs
+and other metrics. Coalesce previously siloed department data.
 
 <!--
 mention SaaS in there
@@ -168,21 +168,21 @@ Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Gui
 
 ## Why Use It?
 
-**Directus is a simple, data-first solution to complex problems and using it has no downsides.**
+**Directus is a simple, data-first solution to complex problems, with no real downsides.**
 
 Directus was created in 2004, and has been slowly, iteratively improved on for a long time. The core team has carefully
 thought through the app, beginning-to-end, to make sure that using this platform is an all-benefit and no downside
 experience. This platform is plug-and-play, so you're free to link or remove it any time, with no impact on your data.
-You have no vendor lock-in whatsoever, your data is yours. There are no artificial limits on data _(e.g. limits on users
+You have no vendor lock-in whatsoever _(your data is yours)_. There are no artificial data limits _(e.g. limits on users
 or roles)_.
 
 <!-- highlight the cost-of-scaling that comes with a platform which charges for users and roles -->
 
-Consider competing platforms in the four general use cases mentioned in the previous section _(BaaS, headless CMS,
-internal tool builder, data management and analytics)_. Due diligence to select the a viable solution one of these
-categories can easily take 6 months to be sure the feature list, pricing, scalability, migration options, etc.. all fit
-the project in question. However, thanks to the plug-and-play nature of Directus, you can link it to the database, test
-it immediately on an existing database _or build a new data model from scratch_, then get rid of it at any time.
+Consider competing platforms in the four general use cases [mentioned above](#when-to-use-it). Due diligence to select a
+viable solution from any one of these categories can easily take 6 months to ensure the feature list, pricing,
+scalability, migration options, etc.. all match the project in question. However, thanks to the plug-and-play nature of
+Directus, you can link it to the database, test it immediately on an existing database _or build a new data model from
+scratch_, then get rid of it at any time.
 
 The platform is guided by the following core principles:
 
@@ -202,13 +202,13 @@ The platform is guided by the following core principles:
 
 Cloud architecture can be complicated and resource intensive. Directus also has tons of configuration options. Directus
 Cloud provides scalable, optimized hosting and storage, as well as automatic updates so developers can focus on building
-their app. Directus Cloud also offers [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), which add even
-more features and functionality onto your projects.
+their app. Directus Cloud also offers [Cloud Exclusive Extensions](/cloud/glossary/#cloud-exclusives), adding even more
+features to the Directus Core Platform.
 
 Once you've created your free cloud account, you can setup Teams to manage Projects solo or with other Team Members as
 needed. You'll be able get a Project running in 90 seconds on average, then as Project needs change, scale up or down as
-needed at the click of a few buttons. The cloud dashboard also provides simple, straight-forward analytics to help
-understand traffic and inform make scaling decisions.
+needed at the click of a button. The cloud dashboard also provides simple, straight-forward analytics to help understand
+traffic and inform scaling decisions.
 
 :::tip Ready to test out Directus Cloud?
 
