@@ -15,7 +15,7 @@
 						{{ t('enter_password_to_enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" />
+						<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
 
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
@@ -35,7 +35,7 @@
 						<v-card-text>
 							<canvas :id="canvasID" class="qr" />
 							<output class="secret selectable">{{ secret }}</output>
-							<v-input v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
+							<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
 							<v-error v-if="error" :error="error" />
 						</v-card-text>
 						<v-card-actions>
@@ -54,7 +54,7 @@
 						{{ t('enter_otp_to_disable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
+						<v-input v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" autofocus />
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
@@ -86,7 +86,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed } from 'vue';
+import { defineComponent, ref, watch, computed, nextTick } from 'vue';
 import { useUserStore } from '@/stores';
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { User } from '@directus/shared/types';
@@ -108,6 +108,8 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const enableActive = ref(false);
 		const disableActive = ref(false);
+
+		const inputOTP = ref<any>(null);
 
 		const isCurrentUser = computed(() => (userStore.currentUser as User)?.id === props.primaryKey);
 
@@ -134,6 +136,16 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
+		watch(
+			() => tfaGenerated.value,
+			async (generated) => {
+				if (generated) {
+					await nextTick();
+					(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
+				}
+			}
+		);
+
 		return {
 			t,
 			tfaEnabled,
@@ -152,11 +164,16 @@ export default defineComponent({
 			otp,
 			error,
 			isCurrentUser,
+			inputOTP,
 		};
 
 		async function enable() {
 			const success = await enableTFA();
 			enableActive.value = !success;
+
+			if (!success) {
+				(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
+			}
 		}
 
 		async function disable() {

@@ -9,7 +9,7 @@
 				{{ t('enter_password_to_enable_tfa') }}
 			</div>
 			<div>
-				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" />
+				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
 
 				<v-error v-if="error" :error="error" />
 			</div>
@@ -26,7 +26,7 @@
 				<div>
 					<canvas :id="canvasID" class="qr" />
 					<output class="secret selectable">{{ secret }}</output>
-					<v-input v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
+					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
 					<v-error v-if="error" :error="error" />
 				</div>
 				<v-button type="submit" :disabled="otp.length !== 6" @click="enable">{{ t('done') }}</v-button>
@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, nextTick, onMounted, ref, watch } from 'vue';
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { useAppStore, useUserStore } from '@/stores';
 import { router } from '@/router';
@@ -54,6 +54,8 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 
+		const inputOTP = ref<any>(null);
+
 		onMounted(() => {
 			if (appStore.authenticated === false) {
 				router.push('/login');
@@ -62,6 +64,16 @@ export default defineComponent({
 
 		const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
 			useTFASetup(false);
+
+		watch(
+			() => tfaGenerated.value,
+			async (generated) => {
+				if (generated) {
+					await nextTick();
+					(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
+				}
+			}
+		);
 
 		return {
 			t,
@@ -76,6 +88,7 @@ export default defineComponent({
 			error,
 			canvasID,
 			enable,
+			inputOTP,
 		};
 
 		async function enable() {
@@ -83,6 +96,8 @@ export default defineComponent({
 			if (error.value === null) {
 				const redirectQuery = router.currentRoute.value.query.redirect as string;
 				router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
+			} else {
+				(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 			}
 		}
 	},
