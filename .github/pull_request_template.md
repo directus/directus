@@ -17,8 +17,6 @@ Fixes #
 - [ ] Refactor / codestyle updates
 - [ ] Other, please describe:
 
-- [ ] This PR includes a breaking change
-
 ## Requirements Checklist
 
 - [ ] New / updated tests are included
