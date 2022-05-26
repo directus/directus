@@ -169,6 +169,8 @@ field_validation: Validace pole
 field_presets: Předvolby polí
 permissions_for_role: 'Položky, které {role} role může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
+validation_for_role: 'Pole {action} praví, že role {role} musí uposlechnout.'
+presets_for_role: 'Výchozí hodnota pole pro roli {role}.'
 presentation_and_aliases: Prezentace a aliasy
 revision_post_create: Zde je jak položka vypadala po jejím vytvoření.
 revision_post_update: Zde je jak položka vypadala po její aktualizaci.
@@ -235,9 +237,13 @@ time: Čas
 timestamp: Časové razítko
 uuid: UUID
 hash: Hash
+geometry: Geometrie (vše)
 geometry.Point: Bod
+geometry.LineString: LineString
 geometry.Polygon: Mnohoúhelník
 geometry.MultiPoint: Více bodů
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Pro tento typ není k dispozici
 create_translations: Vytvořit překlady
 auto_refresh: Automatické obnovení
@@ -746,6 +752,7 @@ panel_delete_confirm: Opravdu chcete odstranit tento panel? Tuto akci nelze vrá
 dashboard_delete_confirm: Jste si jisti, že chcete odstranit tuto nástěnku? Tuto akci nelze vrátit zpět.
 edit_dashboard: Upravit nástěnku
 delete_dashboard: Odstranit nástěnku
+visible: Viditelné
 prefix_placeholder: Text před hodnotou...
 suffix_placeholder: Text za hodnotou...
 decimals_placeholder: Počet desetinných míst...
@@ -908,6 +915,7 @@ activity_feed: Kanál aktivit
 add_new: Přidat nový
 create_new: Vytvořit
 all: Vše
+none: Žádné
 no_layout_collection_selected_yet: Zatím nebylo vybráno žádné rozložení/kolekce
 batch_delete_confirm: >-
   Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
@@ -959,10 +967,13 @@ fields:
     hidden: Skryté
     singleton: Objekt
     translations: Překlady pojmenování kolekcí
+    archive_app_filter: Archivovat filtr aplikace
     archive_value: Hodnota archivace
     unarchive_value: Hodnota odarchivace
     sort_field: Pole řazení
+    accountability: Sledování aktivit a revizí
     archive_field: Pole pro archivaci
+    item_duplication_fields: Pole pro duplikaci
   directus_files:
     $thumbnail: Náhled
     title: Název
@@ -1013,8 +1024,12 @@ fields:
     status_archived: Archivováno
     role: Role
     token: Token
+    token_placeholder: Zadejte token bezpečného přístupu...
+    provider: Poskytovatel
+    external_identifier: Externí identifikátor
     last_page: Poslední stránka
     last_access: Poslední přístup
+    email_notifications: E-mailová upozornění
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1107,19 +1122,25 @@ field_options:
       upscaling: Změna měřítka
       fit:
         contain_text: Obsáhnout (zachovat poměr stran)
+        cover_text: Překrýt (vnutí přesný rozměr)
+        fit_text: Přizpůsobit dovnitř
+        outside_text: Přizpůsobit vně
     additional_transforms: Další transformace
     transforms_note: Název metody Sharp a její argumenty. Viz https://sharp.pixelplumbing.com/api-constructor pro více informací.
     mapbox_key: Přístupový token Mapboxu
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Základní mapy
+    basemaps_name_placeholder: Zadejte název základní mapy...
     basemaps_raster: Rastr
     basemaps_tile: Rastr TileJSON
     basemaps_style: Styl Mapboxu
+    files_divider_title: Soubory a náhledy
     overrides_divider_title: Přepisy aplikace
   directus_activity:
     login: Přihlášení
     create: Vytořit
     update: Úpravy
+    delete: Smazat
   directus_collections:
     track_activity_revisions: Sledovat aktivitu a revize
     only_track_activity: Pouze sledovat aktivitu
@@ -1136,10 +1157,18 @@ field_options:
     plural_unit: Množné číslo
     archive_divider: Archivovat
     archive_field_placeholder: Vyberte pole...
+    archive_app_filter: Povolit filtr archivace
+    archive_value: Hodnota nastavena při archivaci...
+    unarchive_value: Hodnota nastavena při odarchivování...
     sort_divider: Seřadit
     sort_field: Vyberte pole...
     accountability_divider: Odpovědnost
+    duplication_divider: Duplikace
   directus_files:
+    title: Jedinečný název...
+    description: Volitelný popis...
+    location: Volitelné umístění...
+    storage_divider: Pojmenování souborů
     filename_disk: Název na diskovém úložišti...
     filename_download: Název při stahování...
   directus_roles:
@@ -1187,6 +1216,10 @@ save_current_user_id: Uložit aktuální ID uživatele
 save_current_user_role: Uložit aktuální uživatelskou roli
 save_current_datetime: Uložit aktuální datum/čas
 always_open: Vždy otevřít
+start_open: Začít otevřený
+start_collapsed: Začít sbalený
+block: Blok
+inline: Řádek
 comment: Komentář
 shares: Sdílení
 unlimited_usage: Neomezené použití
@@ -1211,6 +1244,7 @@ share_copy_link: Kopírovat odkaz
 share_copy_link_success: Odkaz zkopírován
 share_copy_link_error: Nelze zkopírovat odkaz
 share_send_link: Poslat odkaz
+relational_triggers: Vztahové spouštěče
 referential_action_field_label_m2o: Při smazání {collection}...
 referential_action_field_label_o2m: Při zrušení výběru {collection}...
 referential_action_no_action: Zabránit odstranění
@@ -1218,6 +1252,15 @@ referential_action_cascade: Odstranit položku {collection} (kaskáda)
 referential_action_set_null: Vymazat pole {field}
 referential_action_set_default: Nastavit {field} na výchozí hodnotu
 choose_action: Zvolte akci
+continue_label: Pokračovat
+continue_as: >-
+  {name} je aktuálně ověřen. Pokud tento účet poznáváte, stiskněte pokračovat.
+editing_role: '{role} role'
+creating_webhook: Vytvoření webhooku
+default_label: Výchozí
+delete_label: Odstranit
+delete_are_you_sure: >-
+  Tato akce je trvalá a nelze ji vrátit zpět. Jste si jisti, že chcete pokračovat?
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
 description: Popis
@@ -1226,13 +1269,18 @@ duplicate: Duplikovat
 limit: Limit
 email: E-mail
 embed: Vložení
+fallback_icon: Záložní ikona
 field: Pole | Pole
 file: Soubor
 file_library: Složka souborů
 forgot_password: Zapomenuté heslo
 hidden: Skryté
+hidden_in_group: Skrytý v {group}
 icon: Ikona
 info: Informace
+normal: Normální
+success: Úspěch
+warning: Varování
 danger: Nebezpečí
 colors:
   purple: Fialová
@@ -1283,7 +1331,9 @@ translation: Překlad
 translation_placeholder: Zadejte překlad...
 value: Hodnota
 view_project: Zobrazit projekt
+weeks: { }
 report_error: Nahlásit chybu
+start: Začátek
 interfaces:
   filter:
     name: Filtr
@@ -1405,12 +1455,46 @@ interfaces:
     search_for_icon: Hledat ikonu...
   file-image:
     image: Obrázek
+    description: Vyberte nebo nahrajte obrázek
+    crop: Oříznout na přizpůsobení
+    crop_label: Oříznout obrázek podle potřeby
+  system-interface:
+    interface: Rozhraní
+    description: Vyberte existující rozhraní
+    placeholder: Vyberte rozhraní...
+  system-interface-options:
+    interface-options: Možnosti rozhraní
+    description: Modal pro výběr možností rozhraní
+  list-m2m:
+    many-to-many: M:N
+    description: Vyberte více souvisejících položek
+    display_template_configure_notice: Po vytvoření tohoto pole můžete nakonfigurovat šablonu zobrazení.
   select-dropdown-m2o:
+    many-to-one: N:1
+    description: Vyberte jednu související položku
     display_template: Šablona zobrazení
   input-rich-text-md:
+    markdown: Markdown
+    description: Zadat a zobrazit náhled markdown
     edit: Upravit
+    preview: Náhled
+    editorFont: Písmo editoru
+    previewFont: Písmo náhledu
+    customSyntax: Vlastní bloky
+    customSyntax_label: Přidat vlastní typy syntaxe
+    customSyntax_add: Přidat vlastní syntaxi
+    box: Blok / řádek
+    imageToken: Statický přístupový token
+    imageToken_label: Statický přístupový token je připojen k URL aktiv
   map:
+    map: Mapa
+    description: Vyberte umístění na mapě
     zoom: Přiblížení
+    geometry_type: Typ geometrie
+    geometry_format: Formát geometrie
+    default_view: Výchozí zobrazení
+    invalid_options: Neplatné možnosti
+    invalid_format: Neplatný formát ({format})
     unexpected_geometry: Očekáván {expected}, obdržen {got}.
     fit_bounds: Přizpůsobit zobrazení datům
     native: Původní
@@ -1472,15 +1556,36 @@ interfaces:
     clear: Vymazaná hodnota
     clear_label: Uložit jako prázdný řetězec
     minimum_value: Minimální hodnota
+    maximum_value: Maximální hodnota
+    step_interval: Interval kroků
+    slug: Slugify
+    slug_label: Udělat zadanou hodnotu bezpečnou pro URL
+  input-multiline:
+    textarea: Textové pole
+    description: Zadejte víceřádkový prostý text
+  input-translated-string:
+    input-translated-string: Překlady
+    description: Vyberte nebo přidejte překlad
+    search_placeholder: Hledat...
+    new_translation_string: Nový překlad
   boolean:
     toggle: Přepínač
+    description: Přepínání mezi zapnutím a vypnutím
     color_on: Barva zapnuto
     color_off: Barva vypnuto
+    label_placeholder: Zadejte štítek...
     label_default: Povoleno
   translations:
     display_template: Šablona zobrazení
+    no_collection: Žádná kolekce
+    toggle_split_view: Přepnout rozdělené zobrazení
+    language_field: Pole indikátoru jazyka
+  list-o2m-tree-view:
+    description: Zobrazení stromu pro vnořené rekurentní položky 1:N
+    recursive_only: Rozhraní stromového pohledu funguje pouze pro rekurentní vztahy.
   user:
     user: Uživatel
+    description: Vyberte existujícího uživatele directus
     select_mode: Režim výběru
     modes:
       auto: Automatický
@@ -1512,6 +1617,8 @@ interfaces:
     show_header: Zobrazit záhlaví skupiny
     header_icon: Ikona záhlaví
     header_color: Barva záhlaví
+    start_open: Začít otevřený
+    start_closed: Začít zavřený
 displays:
   translations:
     translations: Překlady
@@ -1639,7 +1746,41 @@ layouts:
     comfortable: Komfortní
     compact: Kompaktní
     cozy: Pohodlný
+  calendar:
+    calendar: Kalendář
+    start_date_field: Pole počátečního data
+    end_date_field: Pole koncového data
+    optional: Nepovinné
+    first_day: První den v týdnu
+  map:
+    map: Mapa
+    basemap: Základní mapa
+    layers: Vrstvy
+    cluster_options: Možnosti klastrování
+    cluster: Klastrovat blízká data
+    cluster_radius: Poloměr klastrování
+    cluster_minpoints: Minimální velikost klastru
+    cluster_maxzoom: Maximální přiblížení pro klastrování
+    field: Geoprostorové pole
+    invalid_geometry: Neplatná geometrie
+    find_location: Najít umístění...
+    default_template: Použití výchozího nastavení kolekce...
+    no_compatible_fields: Žádná kompatibilní pole
   kanban:
+    name: Kanban,
+    group_field: Seskupit podle,
+    group_field_placeholder: Pole pro seskupení...,
+    group_title: Název skupiny,
+    group_title_placeholder: Pole pro názvy skupiny...,
+    title: Název karty,
+    title_placeholder: Volitelné pole názvu...,
+    text: Text karty
+    text_placeholder: Volitelné textové pole...,
+    date: Datum karty,
+    date_placeholder: Volitelné pole data...,
+    tags: Štítky karet,
+    tags_placeholder: Volitelné pole štítků...,
+    user: Uživatel karty,
     user_placeholder: Volitelné uživatelské pole...,
     image: Obrázek karty,
     image_placeholder: Volitelné pole obrázku...,
