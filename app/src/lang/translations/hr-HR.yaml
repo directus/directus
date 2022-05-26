@@ -1311,7 +1311,6 @@ sort_direction: Smjer sortiranja
 sort_asc: Sortiraj uzlazno
 sort_desc: Sortiraj silazno
 template: Predložak
-require_value_to_be_set: Zahtijevj postavljanje vrijednosti
 translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost

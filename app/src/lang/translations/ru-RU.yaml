@@ -1239,7 +1239,6 @@ sort_direction: Направление сортировки
 sort_asc: По Возрастанию
 sort_desc: По Убыванию
 template: Шаблон
-require_value_to_be_set: Требовать установки значения
 translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение

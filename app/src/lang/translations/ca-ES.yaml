@@ -1199,7 +1199,6 @@ sort_direction: Direcció de l'ordenació
 sort_asc: Ordre ascendent
 sort_desc: Ordre descendent
 template: Plantilla
-require_value_to_be_set: Requereix un valor
 translation: Traducció
 value: Valor
 view_project: Veure el projecte

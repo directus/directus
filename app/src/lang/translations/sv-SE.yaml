@@ -1214,7 +1214,6 @@ sort_direction: Sorteringsordning
 sort_asc: Sortera stigande
 sort_desc: Sortera fallande
 template: Mall
-require_value_to_be_set: Kräv att värde ska anges
 translation: Översättning
 translation_placeholder: Ange en översättning...
 value: Värde
