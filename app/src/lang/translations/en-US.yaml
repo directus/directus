@@ -1651,7 +1651,6 @@ interfaces:
     generate: Generate Token
     regenerate: Regenerate Token
     generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
-    remove_token_warning_copy: Token has been cleared. Any applications or scripts using the existing token will no longer be able to access the API.
     remove_token: Remove Token
 displays:
   translations:
