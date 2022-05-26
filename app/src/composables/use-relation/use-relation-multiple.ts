@@ -1,7 +1,7 @@
 import api from '@/api';
 import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
+import { clamp, cloneDeep, isEqual, merge, mergeWith, isPlainObject } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
 
@@ -94,10 +94,15 @@ export function useRelationMultiple(
 			const updatedItem = cloneDeep(item);
 
 			if (editsIndex !== -1) {
-				merge(
+				mergeWith(
 					updatedItem,
 					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
-					_value.value.update[editsIndex]
+					_value.value.update[editsIndex],
+					(obj, src) => {
+						if (Array.isArray(obj) && Array.isArray(src)) {
+							return src;
+						}
+					}
 				);
 			}
 			if (deleteIndex !== -1) {
