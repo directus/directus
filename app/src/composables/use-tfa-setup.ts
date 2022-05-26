@@ -58,8 +58,10 @@ export function useTFASetup(initialEnabled: boolean) {
 
 		loading.value = true;
 
+		let success = false;
 		try {
 			await api.post('/users/me/tfa/enable', { otp: otp.value, secret: secret.value });
+			success = true;
 			tfaEnabled.value = true;
 			tfaGenerated.value = false;
 			password.value = '';
@@ -72,13 +74,16 @@ export function useTFASetup(initialEnabled: boolean) {
 		} finally {
 			loading.value = false;
 		}
+		return success;
 	}
 
 	async function disableTFA() {
 		loading.value = true;
+		let success = false;
 
 		try {
 			await api.post('/users/me/tfa/disable', { otp: otp.value });
+			success = true;
 			await userStore.hydrate();
 			tfaEnabled.value = false;
 			otp.value = '';
@@ -88,5 +93,6 @@ export function useTFASetup(initialEnabled: boolean) {
 		} finally {
 			loading.value = false;
 		}
+		return success;
 	}
 }

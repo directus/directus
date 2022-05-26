@@ -47,7 +47,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="disableActive" @esc="disableActive = false">
+		<v-dialog v-model="disableActive" persistent @esc="cancelAndClose">
 			<v-card>
 				<form @submit.prevent="disable">
 					<v-card-title>
@@ -58,6 +58,7 @@
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
+						<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
 						<v-button type="submit" kind="warning" :loading="loading" :disabled="otp.length !== 6">
 							{{ t('disable_tfa') }}
 						</v-button>
@@ -138,13 +139,13 @@ export default defineComponent({
 		};
 
 		async function enable() {
-			await enableTFA();
-			enableActive.value = false;
+			const success = await enableTFA();
+			enableActive.value = !success;
 		}
 
 		async function disable() {
-			await disableTFA();
-			disableActive.value = false;
+			const success = await disableTFA();
+			disableActive.value = !success;
 		}
 
 		function toggle() {
@@ -158,9 +159,11 @@ export default defineComponent({
 		function cancelAndClose() {
 			tfaGenerated.value = false;
 			enableActive.value = false;
+			disableActive.value = false;
 			password.value = '';
 			otp.value = '';
 			secret.value = '';
+			error.value = null;
 		}
 	},
 });
