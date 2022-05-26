@@ -1289,7 +1289,6 @@ export_started_copy: Exportul dvs. a început. Vei fi notificat când este gata 
 sort_asc: Sortează ascendent
 sort_desc: Sortează descrescător
 template: Șablon
-require_value_to_be_set: Necesită setarea valorii
 translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
