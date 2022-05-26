@@ -36,7 +36,7 @@ export default function getDatabase(): Knex {
 			break;
 
 		case 'oracledb':
-			if (!connectionString) {
+			if (!env.DB_CONNECT_STRING) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			} else {
 				requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
