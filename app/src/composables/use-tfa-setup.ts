@@ -24,6 +24,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		generateTFA,
 		enableTFA,
 		disableTFA,
+		adminDisableTFA,
 		loading,
 		password,
 		tfaEnabled,
@@ -85,6 +86,24 @@ export function useTFASetup(initialEnabled: boolean) {
 			await api.post('/users/me/tfa/disable', { otp: otp.value });
 			success = true;
 			await userStore.hydrate();
+			tfaEnabled.value = false;
+			otp.value = '';
+			error.value = null;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
+		return success;
+	}
+
+	async function adminDisableTFA(pk: string) {
+		loading.value = true;
+		let success = false;
+
+		try {
+			await api.post(`/users/${pk}/tfa/disable`);
+			success = true;
 			tfaEnabled.value = false;
 			otp.value = '';
 			error.value = null;

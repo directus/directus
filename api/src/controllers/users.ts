@@ -394,4 +394,26 @@ router.post(
 	respond
 );
 
+router.post(
+	'/:pk/tfa/disable',
+	asyncHandler(async (req, _res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		if (!req.accountability.admin || !req.params.pk) {
+			throw new ForbiddenException();
+		}
+
+		const service = new TFAService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.disableTFA(req.params.pk);
+		return next();
+	}),
+	respond
+);
+
 export default router;

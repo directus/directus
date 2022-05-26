@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-checkbox block :model-value="tfaEnabled" :disabled="!isCurrentUser" @click="toggle">
+		<v-checkbox block :model-value="tfaEnabled" :disabled="!isCurrentUser && !tfaEnabled" @click="toggle">
 			{{ tfaEnabled ? t('enabled') : t('disabled') }}
 			<div class="spacer" />
 			<template #append>
@@ -49,7 +49,7 @@
 
 		<v-dialog v-model="disableActive" persistent @esc="cancelAndClose">
 			<v-card>
-				<form @submit.prevent="disable">
+				<form v-if="isCurrentUser" @submit.prevent="disable">
 					<v-card-title>
 						{{ t('enter_otp_to_disable_tfa') }}
 					</v-card-title>
@@ -59,7 +59,22 @@
 					</v-card-text>
 					<v-card-actions>
 						<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
-						<v-button type="submit" kind="warning" :loading="loading" :disabled="otp.length !== 6">
+						<v-button type="submit" kind="danger" :loading="loading" :disabled="otp.length !== 6">
+							{{ t('disable_tfa') }}
+						</v-button>
+					</v-card-actions>
+				</form>
+				<form v-else @submit.prevent="disable">
+					<v-card-title>
+						{{ t('disable_tfa') }}
+					</v-card-title>
+					<v-card-text>
+						{{ t('admin_disable_tfa_text') }}
+						<v-error v-if="error" :error="error" />
+					</v-card-text>
+					<v-card-actions>
+						<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
+						<v-button type="submit" kind="danger" :loading="loading">
 							{{ t('disable_tfa') }}
 						</v-button>
 					</v-card-actions>
@@ -100,6 +115,7 @@ export default defineComponent({
 			generateTFA,
 			enableTFA,
 			disableTFA,
+			adminDisableTFA,
 			loading,
 			password,
 			tfaEnabled,
@@ -144,7 +160,7 @@ export default defineComponent({
 		}
 
 		async function disable() {
-			const success = await disableTFA();
+			const success = await (isCurrentUser.value ? disableTFA() : adminDisableTFA(props.primaryKey));
 			disableActive.value = !success;
 		}
 
