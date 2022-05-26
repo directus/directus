@@ -959,7 +959,10 @@ fields:
     hidden: Skryté
     singleton: Objekt
     translations: Překlady pojmenování kolekcí
+    archive_value: Hodnota archivace
+    unarchive_value: Hodnota odarchivace
     sort_field: Pole řazení
+    archive_field: Pole pro archivaci
   directus_files:
     $thumbnail: Náhled
     title: Název
@@ -1009,6 +1012,7 @@ fields:
     status_suspended: Pozastaveno
     status_archived: Archivováno
     role: Role
+    token: Token
     last_page: Poslední stránka
     last_access: Poslední přístup
   directus_settings:
