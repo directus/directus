@@ -8,7 +8,7 @@
 			"
 			:disabled="disabled"
 			readonly
-			:class="{ hashed: value && !localValue }"
+			:class="{ saved: value && !localValue }"
 			@update:model-value="emitValue"
 		>
 			<template #append>
@@ -100,7 +100,7 @@ function emitValue(newValue: string | null) {
 	--v-input-font-family: var(--family-monospace);
 }
 
-.hashed {
+.saved {
 	--v-input-placeholder-color: var(--primary);
 }
 
