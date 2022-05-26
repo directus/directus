@@ -1200,21 +1200,74 @@ interfaces:
     name: Pole
   group-accordion:
     name: Harmonika
+    description: Zobrazit pole nebo skupiny jako sekce harmoniky
+    start: Začátek
+    all_closed: Všechny uzavřené
+    first_opened: První otevřená
+    all_opened: Všechny otevřené
+    accordion_mode: Režim harmoniky
+    max_one_section_open: Max. 1 otevřená sekce
   presentation-links:
+    presentation-links: Tlačítkové odkazy
+    links: Odkazy
+    description: Konfigurovatelná tlačítka odkazů pro spouštění dynamických URL
+    style: Styl
     primary: Primární
+    link: Odkazy
+    button: Tlačítka
+    error: Akci nelze provést
+  select-multiple-checkbox:
+    checkboxes: Zaškrtávací pole
+    description: Vyberte si mezi více možnostmi prostřednictvím zaškrtávacích polí
+    allow_other: Povolit ostatní
+    show_more: 'Zobrazit dalších {count}'
+    items_shown: Zobrazené položky
+  select-multiple-checkbox-tree:
+    name: Zaškrtávací pole (Strom)
+    description: Vyberte si mezi více možnostmi pomocí vnořených zaškrtávacích polí
+    value_combining: Kombinace hodnot
+    value_combining_note: Určuje, jaká hodnota je uložena, když je proveden vnořený výběr.
+    show_all: Zobrazit vše
+    show_selected: Zobrazit vybrané
   input-code:
     code: Kód
+    description: Napsat nebo sdílet textové bloky kódu
+    line_number: Číslo řádku
+    line_wrapping: Zalamování řádků
+    placeholder: Sem zadejte kód...
   system-collection:
     collection: Kategorie
+    description: Vybrat mezi existujícími kolekcemi
+    include_system_collections: Zahrnout systémové kolekce
   system-collections:
     collections: Kategorie
+    description: Vybrat mezi existujícími kolekcemi
+    include_system_collections: Zahrnout systémové kolekce
   select-color:
     color: Barva
+    description: Zadejte nebo vyberte hodnotu barvy
+    placeholder: Vyberte barvu...
+    preset_colors: Přednastavené barvy
+    opacity: Neprůhlednost
+    preset_colors_add_label: Přidat novou barvu...
+    name_placeholder: Zadejte název barvy...
+  datetime:
+    datetime: Datum a čas
+    description: Zadejte data a časy
+    include_seconds: Zahrnout vteřiny
+    set_to_now: Nastavit na teď
+    use_24: Používat 24hodinový formát
+    placeholder: Vyberte datum a čas...
   system-display-template:
     display-template: Šablona zobrazení
+    description: Směs statických hodnot textu a dynamického pole
+    collection_field: Pole kolekce
     collection_field_not_setup: Volba pole kolekce je špatně nastavena
     select_a_collection: Vyberte kolekci
+  presentation-divider:
+    divider: Rozdělovač
   select-dropdown:
+    allow_other: Povolit ostatní
     choices_value_placeholder: Zadejte hodnotu...
   file:
     file: Soubor
@@ -1233,6 +1286,18 @@ interfaces:
     edit: Upravit
   map:
     zoom: Přiblížení
+    unexpected_geometry: Očekáván {expected}, obdržen {got}.
+    fit_bounds: Přizpůsobit zobrazení datům
+    native: Původní
+    geojson: GeoJSON
+    lnglat: Zeměpisná délka, zeměpisná šířka
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Kliknutím vyberte {geometry}
+  presentation-notice:
+    notice: Upozornění
+    description: Zobrazit krátké upozornění
+    text: Zde zadejte obsah upozornění...
   system-folder:
     folder: Složka
   tags:
@@ -1259,6 +1324,7 @@ displays:
   color:
     color: Barva
   datetime:
+    datetime: Datum a čas
     format: Formát
   file:
     file: Soubor
