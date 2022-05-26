@@ -1118,8 +1118,36 @@ save_current_user_role: Uložit aktuální uživatelskou roli
 save_current_datetime: Uložit aktuální datum/čas
 always_open: Vždy otevřít
 comment: Komentář
+shares: Sdílení
 unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
+no_shares: Nic sdíleného k zobrazení
+new_share: Nové sdílení
+expired: Vypršela platnost
+upcoming: Nadcházející
+share: Sdílet
+share_item: Sdílet položku
+shared_with_you: Byla s Vámi sdílena položka
+shared_enter_passcode: Pro pokračování zadejte své heslo...
+shared_leave_blank_for_unlimited: Ponechte prázdné pro neomezené
+shared_times_remaining: Tento odkaz může být použit pouze {n} krát
+shared_last_remaining: Tento odkaz může být použit pouze jednou
+shared_uses_left: Pro zvýšení bezpečnosti byla tato sdílená stránka nakonfigurována s omezeným počtem zobrazení. V současné době zbývá {n} zobrazení, poté stránka již nebude přístupná.
+share_access_page: Přístup ke sdílené stránce
+share_access_not_found: Tato sdílená stránka buď neexistuje, nebo již překročila maximální počet povolených použití.
+share_access_not_found_desc: Chcete-li požádat o přístup, kontaktujte autorizovaného uživatele tohoto projektu.
+share_access_not_found_title: Neznámá stránka sdílení
+share_copy_link: Kopírovat odkaz
+share_copy_link_success: Odkaz zkopírován
+share_copy_link_error: Nelze zkopírovat odkaz
+share_send_link: Poslat odkaz
+referential_action_field_label_m2o: Při smazání {collection}...
+referential_action_field_label_o2m: Při zrušení výběru {collection}...
+referential_action_no_action: Zabránit odstranění
+referential_action_cascade: Odstranit položku {collection} (kaskáda)
+referential_action_set_null: Vymazat pole {field}
+referential_action_set_default: Nastavit {field} na výchozí hodnotu
+choose_action: Zvolte akci
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
 description: Popis
@@ -1168,6 +1196,10 @@ interfaces:
     name: Filtr
     add_filter: Přidat filtr
     all: Vše
+  fields:
+    name: Pole
+  group-accordion:
+    name: Harmonika
   presentation-links:
     primary: Primární
   input-code:
