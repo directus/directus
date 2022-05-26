@@ -993,7 +993,6 @@ fields:
     status_archived: Arhivat
     role: Rol
     token: Token
-    token_placeholder: Introduceți un token de acces securizat...
     provider: Furnizor
     external_identifier: Identificator extern
     last_page: Ultima Pagină
@@ -1580,6 +1579,8 @@ interfaces:
     header_color: Culoare antet
     start_open: Începe deschis
     start_closed: Începe închis
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduceri
