@@ -14,8 +14,8 @@ First, you'll need to [create an Account and log in](/cloud/accounts/#create-acc
 [Directus Cloud](https://directus.cloud/login)
 
 Your Directus Cloud Account allows you to create and manage any number of Community and Standard Projects. We've made
-life easier by giving you the option to create and log in to your free Cloud Account automatically with Github. If you
-don't have a Github account or prefer not to use this login method, email-and-password login is available as well.
+life easier by giving you the option to create and log in to your free Cloud Account automatically with GitHub. If you
+don't have a GitHub account or prefer not to use this login method, email-and-password login is available as well.
 
 The very first time you log in to your cloud account, you will be prompted to create a Team. Teams are totally free to
 create. Each Directus Cloud Project exists within the scope of one Team. They allow you to organize Team Members,
@@ -85,7 +85,7 @@ Once logged in, you're greeted with the option to create your first
    _For the sake of this demo, we'll be calling ours `articles`, but feel free to make it your own!_
 4. Leave the other settings at default and click <span mi btn>arrow*forward</span> and the **"Optional System Fields"**
    will open.\
-   *Keep the values in this menu at the default, toggled off, for now. You can adjust these later.\*
+   \_Keep the values in this menu at the default, toggled off, for now. You can adjust these later.*
 5. Click <span mi btn>check</span> in the menu header.
 
 :::tip Learn More About Collections
