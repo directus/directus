@@ -135,10 +135,8 @@ fields:
       template: '{{ name }}'
 
   - field: token
-    interface: token
-    options:
-      iconRight: vpn_key
-      placeholder: $t:fields.directus_users.token_placeholder
+    interface: system-token
+    special: conceal
     width: full
 
   - field: id

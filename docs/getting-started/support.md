@@ -3,46 +3,60 @@
 > Directus is offered completely free and open-source for anyone wishing to self-host the platform. If you have
 > questions along the way, there are many resources, both free and paid, to help you get up-and-running smoothly.
 
+[[toc]]
+
 ## Troubleshooting Steps
 
 If you're experiencing issues or think you have found a problem in Directus, be sure to follow these steps before
 [Reporting a Bug](/contributing/introduction/#bug-reporting):
 
-1. Ensure your server/database meet the
-   [minimum requirements](/getting-started/installation/cli/#_1-confirm-minimum-requirements)
-2. Ensure you’re on the [latest version of Directus](https://github.com/directus/directus/releases/latest)
-3. Stop (`CTRL+C`) and restart the server (`npx directus start`)
-4. Run the database migration script: `directus database migrate:latest` (backup your database first)
-5. Disable any data-caching within your project
-6. Test any App issues with browser extensions and cache disabled (eg: Incognito Mode)
-7. Confirm the issue is not related to your own custom code
+1. Ensure your server and database meet the
+   [minimum requirements](/getting-started/installation/cli/#_1-confirm-minimum-requirements).
+2. Ensure you’re on the [latest version](https://github.com/directus/directus/releases/latest) of Directus.
+3. Stop `CTRL+C` and restart the server `npx directus start`.
+4. Run the database migration script: `directus database migrate:latest`\
+   _Note: backup your database first._
+5. Disable any data-caching within your project.
+6. Test any app issues with both browser extensions and caching disabled _(i.e. Incognito Mode)_.
+7. Confirm the issue is not related to your own custom code.
 8. Check for [existing Issues](https://github.com/directus/directus/issues?q=is%3Aissue) (and
-   [Discussions](https://github.com/directus/directus/discussions)) that match your problem
+   [Discussions](https://github.com/directus/directus/discussions)) that match your problem.
 
 ::: tip Source Contributors
 
-Those who have installed from source should also remove all dependencies (`npx lerna clean -y`) and then reinstall them
-(`npm install`).
+If you have installed from source, then you should also remove all dependencies by running `npx lerna clean -y` and
+reinstall them with `npm install`
 
 :::
 
 If you're still experiencing a problem after completing the above steps, you can chat through things on our
 [community support](#community-support) or [report a bug](/contributing/introduction/#bug-reporting).
 
-## Community Support
+## Support Tiers
 
-[GitHub Discussions](https://github.com/directus/directus/discussions) is great first place to reach out for help. Our
+### Community Support
+
+[GitHub Discussions](https://github.com/directus/directus/discussions) is a great first place to reach out for help. Our
 community and core developers often check this platform and answer posts. It has the added benefit of being an archival
 resource for others developers with similar questions.
 
 Our [Discord Community](https://directus.chat) is another great way to get assistance. Please keep all questions on the
 `#help` channel, be considerate, and remember that you are getting free help from the community for a free product.
 
-## Premium Support
+:::warning No Guaranteed Response Time
 
-Premium support is included with our Enterprise Cloud service. On-Demand Cloud customers and Self-Hosted users
-interested in learning more about our monthly retainer agreements should contact us at
-[support@directus.io](mailto:support@directus.io).
+While the Directus Core Team plays an active and engaged role in community discussions, there is no guaranteed response
+time for Community Support.
+
+:::
+
+### Basic and Premium Support
+
+Basic and Premium Support offer direct communication with the Directus Core Team. Basic support is included on all
+Enterprise Projects, and Premium Support adds 24/7 response times for critical software issues only.
+
+Cloud customers and Self-Hosted users interested in learning more about our monthly retainer agreements should contact
+us at [support@directus.io](mailto:support@directus.io).
 
 ## Sponsored Work
 
@@ -76,7 +90,7 @@ Our platform is feature-rich, however we strictly adhere to our
 [80/20 Rule](/contributing/introduction/#feature-requests) to avoid a messy/bloated codebase. Directus is also quite
 stable, however new issues still arise, some of which may be triaged with a lower prioritization.
 
-If you require more expeditious updates, you can contact us regarding [sponsoring expedited fixes](#expedited-fixes) or
+If you need, you can contact us about [sponsoring expedited fixes](#expedited-fixes) or
 [commissioning new features](#commissioned-features). You can also
 [submit a pull request](https://github.com/directus/directus/pulls) — after all, it is open-source!
 
@@ -88,5 +102,5 @@ not. This is open-source software, work is prioritized internally, and all timel
 ### But this is an emergency, my very important project requires it now!
 
 We understand, and are here to help. If you need something prioritized, you can reach out to us to discuss
-[premium support](#premium-support), [sponsoring expedited fixes](#expedited-fixes) or
+[premium support](#basic-and-premium-support), [sponsoring expedited fixes](#expedited-fixes) or
 [commissioning new features](#commissioned-features).

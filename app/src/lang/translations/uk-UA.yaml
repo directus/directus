@@ -1319,7 +1319,6 @@ export_started_copy: Ваш експорт розпочато. Ви отрима
 sort_asc: Впорядкувати за збільшенням
 sort_desc: Впорядкувати за зменшенням
 template: Шаблон
-require_value_to_be_set: Потрібно встановити значення
 translation: Переклад
 translation_placeholder: Введіть переклад...
 value: Значення
@@ -1781,3 +1780,8 @@ panels:
   list:
     name: Список
     description: Фільтрувати та перелічити поля з колекції
+  linechart:
+    name: Лінійна діаграма
+    function: Функція
+  piechart:
+    monochrome_color: Монохромний колір
