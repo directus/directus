@@ -6,7 +6,7 @@ export const collectionGuests = 'test_items_no_relations_guests';
 export const collectionEvents = 'test_items_no_relations_events';
 export const collectionArtistsEvents = 'test_items_no_relations_artists_events';
 
-export const seedDB = () => {
+export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {

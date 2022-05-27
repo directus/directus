@@ -5,7 +5,7 @@ export const collectionName = 'common_test_collection';
 export const collectionNameM2O = 'common_test_collection_m2o';
 export const collectionNameO2M = 'common_test_collection_o2m';
 
-export const seedDB = () => {
+export const seedDBStructure = () => {
 	it.each(vendors)('%s', async (vendor) => {
 		try {
 			// Delete existing collections

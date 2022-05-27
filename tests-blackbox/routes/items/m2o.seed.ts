@@ -9,8 +9,8 @@ import {
 	PrimaryKeyType,
 	PRIMARY_KEY_TYPES,
 } from '@common/index';
-import { TestsSchema } from '@query/filter';
-import { seedAllFieldTypes, getTestsAllTypesSchema } from './seed-all-field-types';
+import { CachedTestsSchema, TestsSchema } from '@query/filter';
+import { seedAllFieldTypesStructure, seedAllFieldTypesValues, getTestsAllTypesSchema } from './seed-all-field-types';
 import { seedRelationalFields } from './seed-relational-fields';
 
 export const collectionCountries = 'test_items_m2o_countries';
@@ -139,14 +139,12 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 	return schema;
 }
 
-export const seedDB = () => {
+export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
 			for (const pkType of PRIMARY_KEY_TYPES) {
 				try {
-					const schema = getTestsSchema(pkType);
-
 					const localCollectionCountries = `${collectionCountries}_${pkType}`;
 					const localCollectionStates = `${collectionStates}_${pkType}`;
 					const localCollectionCities = `${collectionCities}_${pkType}`;
@@ -205,6 +203,32 @@ export const seedDB = () => {
 						primaryKeyType: pkType,
 						otherCollection: localCollectionStates,
 					});
+
+					await seedAllFieldTypesStructure(vendor, localCollectionCountries);
+					await seedAllFieldTypesStructure(vendor, localCollectionStates);
+					await seedAllFieldTypesStructure(vendor, localCollectionCities);
+
+					expect(true).toBeTruthy();
+				} catch (error) {
+					expect(error).toBeFalsy();
+				}
+			}
+		},
+		300000
+	);
+};
+
+export const seedDBValues = (cachedSchema: CachedTestsSchema) => {
+	it.each(vendors)(
+		'%s',
+		async (vendor) => {
+			for (const pkType of PRIMARY_KEY_TYPES) {
+				try {
+					const schema = cachedSchema[pkType];
+
+					const localCollectionCountries = `${collectionCountries}_${pkType}`;
+					const localCollectionStates = `${collectionStates}_${pkType}`;
+					const localCollectionCities = `${collectionCities}_${pkType}`;
 
 					// Create countries
 					await CreateItem(vendor, {
@@ -295,9 +319,9 @@ export const seedDB = () => {
 						] as City[],
 					});
 
-					await seedAllFieldTypes(vendor, localCollectionCountries, pkType);
-					await seedAllFieldTypes(vendor, localCollectionStates, pkType);
-					await seedAllFieldTypes(vendor, localCollectionCities, pkType);
+					await seedAllFieldTypesValues(vendor, localCollectionCountries, pkType);
+					await seedAllFieldTypesValues(vendor, localCollectionStates, pkType);
+					await seedAllFieldTypesValues(vendor, localCollectionCities, pkType);
 
 					await seedRelationalFields(vendor, localCollectionStates, pkType, schema[localCollectionStates]);
 					await seedRelationalFields(vendor, localCollectionCities, pkType, schema[localCollectionCities]);

@@ -1,6 +1,6 @@
 import globby from 'globby';
 
-describe('Seed Database', () => {
+describe('Seed Database Structure', () => {
 	const paths = globby.sync('**.seed.ts', {
 		cwd: `${__dirname}/../`,
 	});
@@ -14,9 +14,9 @@ describe('Seed Database', () => {
 	for (const path of paths) {
 		const importedTest = require(`../${path}`);
 
-		if (typeof importedTest.seedDB === 'function') {
+		if (typeof importedTest.seedDBStructure === 'function') {
 			describe(`Seeding "${path}"`, () => {
-				importedTest.seedDB();
+				importedTest.seedDBStructure();
 			});
 		}
 	}

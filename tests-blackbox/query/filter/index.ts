@@ -3,8 +3,13 @@ import vendors from '@common/get-dbs-to-test';
 import * as testsSchema from '@schema/index';
 import { ClientFilterOperator } from '@directus/shared/types';
 import { get, set } from 'lodash';
+import { PrimaryKeyType } from '@common/types';
 
 export type FilterValidator = (inputValue: any, compareValue: any) => boolean;
+
+export type CachedTestsSchema = {
+	[pkType in PrimaryKeyType]: TestsSchema;
+};
 
 export type TestsSchema = {
 	[collection: string]: TestsFieldSchema;

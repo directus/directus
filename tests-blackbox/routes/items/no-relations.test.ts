@@ -4,13 +4,7 @@ import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem } from '@common/functions';
 import * as common from '@common/index';
-import {
-	collectionArtists,
-	collectionGuests,
-	collectionEvents,
-	collectionArtistsEvents,
-	// seedDB,
-} from './no-relations.seed';
+import { collectionArtists, collectionGuests, collectionEvents, collectionArtistsEvents } from './no-relations.seed';
 
 type Artist = {
 	id?: number;
@@ -49,10 +43,6 @@ function createEvent(): Event {
 }
 
 describe('/items', () => {
-	// beforeAll(async () => {
-	// 	await seedDB();
-	// });
-
 	describe('GET /:collection/:id', () => {
 		describe('retrieves one artist', () => {
 			it.each(vendors)('%s', async (vendor) => {

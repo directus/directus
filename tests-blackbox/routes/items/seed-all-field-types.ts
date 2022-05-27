@@ -17,7 +17,7 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 	return fieldSchema;
 }
 
-export const seedAllFieldTypes = async (vendor: string, collection: string, pkType: PrimaryKeyType) => {
+export const seedAllFieldTypesStructure = async (vendor: string, collection: string) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
 
@@ -29,6 +29,16 @@ export const seedAllFieldTypes = async (vendor: string, collection: string, pkTy
 				type: fieldSchema[key].type,
 			});
 		}
+
+		expect(true).toBeTruthy();
+	} catch (error) {
+		expect(error).toBeFalsy();
+	}
+};
+
+export const seedAllFieldTypesValues = async (vendor: string, collection: string, pkType: PrimaryKeyType) => {
+	try {
+		const fieldSchema = getTestsAllTypesSchema();
 
 		// Create items
 		let generatedStringIdCounter = 0;

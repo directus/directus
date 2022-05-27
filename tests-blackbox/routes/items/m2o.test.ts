@@ -3,6 +3,7 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem } from '@common/functions';
+import { CachedTestsSchema } from '@query/filter';
 import * as common from '@common/index';
 import {
 	collectionCountries,
@@ -12,6 +13,7 @@ import {
 	State,
 	City,
 	getTestsSchema,
+	seedDBValues,
 } from './m2o.seed';
 import { CheckQueryFilters } from '@query/filter';
 
@@ -51,7 +53,16 @@ function createCity(pkType: common.PrimaryKeyType) {
 	return item;
 }
 
-describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
+const cachedSchema = common.PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
+	acc[pkType] = getTestsSchema(pkType);
+	return acc;
+}, {} as CachedTestsSchema);
+
+describe('Seed Database Values', () => {
+	seedDBValues(cachedSchema);
+});
+
+describe.each(common.PRIMARY_KEY_TYPES.filter((e) => e === 'integer'))('/items', (pkType) => {
 	const localCollectionCountries = `${collectionCountries}_${pkType}`;
 	const localCollectionStates = `${collectionStates}_${pkType}`;
 	const localCollectionCities = `${collectionCities}_${pkType}`;

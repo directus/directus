@@ -4,10 +4,6 @@ import { CreateItem, SeedFunctions, PrimaryKeyType } from '@common/index';
 import { TestsFieldSchema } from '@query/filter';
 import * as common from '@common/index';
 
-export const collectionCountries = 'test_items_all_field_types';
-export const collectionStates = 'test_items_m2o_states';
-export const collectionCities = 'test_items_m2o_cities';
-
 export const seedRelationalFields = async (
 	vendor: string,
 	collection: string,
