@@ -83,7 +83,6 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 reset_bookmark: Reset Bookmark
-rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
@@ -114,7 +113,6 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
-unknown_validation_errors: 'There were validation errors for the following hidden fields:'
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -318,7 +316,6 @@ translations_collection: Translation Collection
 languages_collection: Languages Collection
 label_import: Import
 format: Format
-use_current_filters_settings: Use Current Filters & Settings
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
@@ -334,6 +331,10 @@ interface_label: Interface
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
+functions:
+  year: Year
+  month: Month
+  count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -938,7 +939,6 @@ fields:
     status_archived: Archived
     role: Role
     token: Token
-    token_placeholder: Enter a secure access token...
     provider: Provider
     external_identifier: External Identifier
     last_page: Last Page
@@ -964,6 +964,7 @@ fields:
     project_url: Project URL
     project_color: Project Colour
     project_logo: Project Logo
+    default_language: Default Language
     branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
@@ -1222,7 +1223,6 @@ sort_direction: Sort Direction
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
-require_value_to_be_set: Require value to be set
 translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
@@ -1434,7 +1434,6 @@ interfaces:
     auto_formatter: Use Title Auto-Formatter
     alphabetize: Alphabetise
     alphabetize_label: Force Alphabetical Order
-    add_tags: Add tags...
   input:
     input: Input
     description: Manually enter a value
@@ -1501,6 +1500,8 @@ interfaces:
     header_color: Header Colour
     start_open: Start Open
     start_closed: Start Closed
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Translations
@@ -1624,7 +1625,6 @@ layouts:
     subtitle: Subtitle
   tabular:
     tabular: Table
-    fields: Fields
     spacing: Spacing
     comfortable: Comfortable
     compact: Compact

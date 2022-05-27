@@ -3,6 +3,7 @@ export type Alignment = 'left' | 'center' | 'right';
 export type HeaderRaw = {
 	text: string;
 	value: string;
+	description?: string | null;
 	align?: Alignment;
 	sortable?: boolean;
 	width?: number | null;
