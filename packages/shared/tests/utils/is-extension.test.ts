@@ -1,4 +1,4 @@
-import { isExtension, isAppExtension, isApiExtension, isExtensionPackage } from './is-extension';
+import { isExtension, isAppExtension, isApiExtension, isExtensionPackage } from '../../src/utils/is-extension';
 
 describe('is extension type', () => {
 	it('returns true when passed a valid extension_type', () => {

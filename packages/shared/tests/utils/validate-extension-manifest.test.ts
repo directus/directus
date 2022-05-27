@@ -1,4 +1,4 @@
-import { validateExtensionManifest } from './validate-extension-manifest';
+import { validateExtensionManifest } from '../../src/utils/validate-extension-manifest';
 
 describe('', () => {
 	it('returns false when passed item has no name or version', () => {

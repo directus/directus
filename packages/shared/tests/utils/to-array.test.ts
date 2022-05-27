@@ -1,4 +1,4 @@
-import { toArray } from './to-array';
+import { toArray } from '../../src/utils/to-array';
 
 describe('toArray', () => {
 	it('takes in a string and returns an array', () => {

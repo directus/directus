@@ -1,6 +1,6 @@
-import { ensureExtensionDirs } from './ensure-extension-dirs';
-import { EXTENSION_TYPES } from '../../constants/extensions';
-import { ExtensionType } from '../../types';
+import { ensureExtensionDirs } from '../../../src/utils/node/ensure-extension-dirs';
+import { EXTENSION_TYPES } from '../../../src/constants/extensions';
+import { ExtensionType } from '../../../src/types';
 import { dirSync, SynchrounousResult } from 'tmp';
 
 describe('ensureExtensionDirs', () => {

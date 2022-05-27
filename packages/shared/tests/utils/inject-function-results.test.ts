@@ -1,4 +1,4 @@
-import { injectFunctionResults } from './inject-function-results';
+import { injectFunctionResults } from '../../src/utils/inject-function-results';
 
 describe('injectFunctionResults', () => {
 	it('Passes the original object unchanged if no filter rules apply', () => {

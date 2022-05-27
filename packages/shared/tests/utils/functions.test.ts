@@ -1,4 +1,4 @@
-import { functions } from './functions';
+import { functions } from '../../src/utils/functions';
 
 describe('Data Functions', () => {
 	describe('year', () => {

@@ -1,4 +1,4 @@
-import { pluralize, depluralize } from './pluralize';
+import { pluralize, depluralize } from '../../src/utils/pluralize';
 
 describe('pluralize', () => {
 	it('adds an s to the end of the string', () => {

@@ -1,6 +1,6 @@
-import { generateExtensionsEntry } from './generate-extensions-entry';
-import { APP_EXTENSION_TYPES } from '../../constants/extensions';
-import { Extension } from '../../types/extensions';
+import { generateExtensionsEntry } from '../../../src/utils/node/generate-extensions-entry';
+import { APP_EXTENSION_TYPES } from '../../../src/constants/extensions';
+import { Extension } from '../../../src/types/extensions';
 
 describe('generateExtensionsEntry', () => {
 	const type = APP_EXTENSION_TYPES[4];
