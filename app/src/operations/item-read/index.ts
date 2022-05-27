@@ -6,8 +6,8 @@ export default defineOperationApp({
 	icon: 'visibility',
 	name: '$t:operations.item-read.name',
 	description: '$t:operations.item-read.description',
-	preview: ({ mode, collection, key }) => {
-		const previewOptions = [
+	overview: ({ mode, collection, key }) => {
+		const overviewItems = [
 			{
 				label: '$t:operations.item-read.mode.field',
 				text: mode,
@@ -19,13 +19,13 @@ export default defineOperationApp({
 		];
 
 		if (mode !== 'query') {
-			previewOptions.push({
+			overviewItems.push({
 				label: '$t:operations.item-read.key',
 				text: key ? toArray(key).join(', ') : '--',
 			});
 		}
 
-		return previewOptions;
+		return overviewItems;
 	},
 	options: [
 		{

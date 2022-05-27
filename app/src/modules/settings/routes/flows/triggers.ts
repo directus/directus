@@ -7,7 +7,7 @@ export type Trigger = {
 	value: TriggerType;
 	icon: string;
 	description: string;
-	preview: (
+	overview: (
 		options: Record<string, any>,
 		{ flow }: { flow: FlowRaw }
 	) => { text: string; label: string; copyable?: boolean }[];
@@ -23,7 +23,7 @@ export function getTriggers() {
 			value: 'hook',
 			icon: 'anchor',
 			description: t('triggers.hook.description'),
-			preview: ({ type, actionScope, filterScope, actionCollections, filterCollections }) => {
+			overview: ({ type, actionScope, filterScope, actionCollections, filterCollections }) => {
 				const labels = [
 					{
 						label: t('type'),
@@ -203,7 +203,7 @@ export function getTriggers() {
 			value: 'webhook',
 			icon: 'link',
 			description: t('triggers.webhook.description'),
-			preview: ({ method }, { flow }) => [
+			overview: ({ method }, { flow }) => [
 				{
 					label: t('method'),
 					text: `${method ?? 'GET'}`,
@@ -279,7 +279,7 @@ export function getTriggers() {
 			value: 'schedule',
 			icon: 'schedule',
 			description: t('triggers.schedule.description'),
-			preview: ({ cron }) => [
+			overview: ({ cron }) => [
 				{
 					label: t('triggers.schedule.cron'),
 					text: cron,
@@ -305,7 +305,7 @@ export function getTriggers() {
 			value: 'operation',
 			icon: 'bolt',
 			description: t('triggers.operation.description'),
-			preview: () => [],
+			overview: () => [],
 			options: [
 				{
 					field: 'return',
@@ -336,7 +336,7 @@ export function getTriggers() {
 		// 	value: 'manual',
 		// 	icon: 'touch_app',
 		// 	description: t('triggers.manual.description'),
-		// 	preview: () => [
+		// 	overview: () => [
 		// 		{
 		// 			label: t('triggers.manual.description'),
 		// 			text: '',

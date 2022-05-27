@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'rule',
 	name: '$t:operations.condition.name',
 	description: '$t:operations.condition.description',
-	preview: ({ filter }) => [
+	overview: ({ filter }) => [
 		{
 			label: '$t:condition_rules',
 			text: filter,

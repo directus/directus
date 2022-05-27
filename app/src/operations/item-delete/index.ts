@@ -6,8 +6,8 @@ export default defineOperationApp({
 	icon: 'delete',
 	name: '$t:operations.item-delete.name',
 	description: '$t:operations.item-delete.description',
-	preview: ({ mode, collection, key }) => {
-		const previewOptions = [
+	overview: ({ mode, collection, key }) => {
+		const overviewItems = [
 			{
 				label: '$t:operations.item-delete.mode.field',
 				text: mode,
@@ -19,13 +19,13 @@ export default defineOperationApp({
 		];
 
 		if (mode !== 'query') {
-			previewOptions.push({
+			overviewItems.push({
 				label: '$t:operations.item-delete.key',
 				text: key ? toArray(key).join(', ') : '--',
 			});
 		}
 
-		return previewOptions;
+		return overviewItems;
 	},
 	options: [
 		{

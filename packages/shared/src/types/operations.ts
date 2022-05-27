@@ -20,7 +20,7 @@ export interface OperationAppConfig {
 	name: string;
 	icon: string;
 	description?: string;
-	preview:
+	overview:
 		| ((
 				options: Record<string, any>,
 				{ flow }: { flow: FlowRaw }

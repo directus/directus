@@ -75,13 +75,13 @@
 				<v-icon name="adjust" />
 			</div>
 		</template>
-		<div v-if="typeof currentOperation?.preview === 'function'" class="block">
+		<div v-if="typeof currentOperation?.overview === 'function'" class="block">
 			<div v-tooltip="panel.key" class="name">
 				{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
 			</div>
-			<dl class="options-preview">
+			<dl class="options-overview">
 				<div
-					v-for="{ label, text, copyable } of translate(currentOperation?.preview(panel.options ?? {}, { flow }))"
+					v-for="{ label, text, copyable } of translate(currentOperation?.overview(panel.options ?? {}, { flow }))"
 					:key="label"
 				>
 					<dt>{{ label }}</dt>
@@ -105,7 +105,7 @@
 			</dl>
 		</div>
 		<component
-			:is="`operation-preview-${currentOperation.id}`"
+			:is="`operation-overview-${currentOperation.id}`"
 			v-else-if="currentOperation && 'id' in currentOperation"
 			:options="currentOperation"
 		/>
@@ -483,7 +483,7 @@ function pointerLeave() {
 	}
 }
 
-.options-preview {
+.options-overview {
 	> div {
 		flex-wrap: wrap;
 		align-items: center;

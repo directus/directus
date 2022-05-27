@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'terminal',
 	name: '$t:operations.log.name',
 	description: '$t:operations.log.description',
-	preview: ({ message }) => [
+	overview: ({ message }) => [
 		{
 			label: '$t:operations.log.message',
 			text: message,

@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'flag',
 	name: '$t:operations.trigger.name',
 	description: '$t:operations.trigger.description',
-	preview: ({ flow }) => [
+	overview: ({ flow }) => [
 		{
 			label: '$t:operations.trigger.flow',
 			text: flow,

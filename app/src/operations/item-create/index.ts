@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'add',
 	name: '$t:operations.item-create.name',
 	description: '$t:operations.item-create.description',
-	preview: ({ collection, payload }) => [
+	overview: ({ collection, payload }) => [
 		{
 			label: '$t:collection',
 			text: collection,

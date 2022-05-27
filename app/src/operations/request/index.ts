@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'link',
 	name: '$t:operations.request.name',
 	description: '$t:operations.request.description',
-	preview: ({ url, method }) => [
+	overview: ({ url, method }) => [
 		{
 			label: '$t:operations.request.url',
 			text: url,

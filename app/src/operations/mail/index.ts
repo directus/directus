@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	preview: ({ subject, to, body }) => [
+	overview: ({ subject, to, body }) => [
 		{
 			label: '$t:subject',
 			text: subject,

@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'schedule',
 	name: '$t:operations.sleep.name',
 	description: '$t:operations.sleep.description',
-	preview: ({ milliseconds }) => [
+	overview: ({ milliseconds }) => [
 		{
 			label: '$t:operations.sleep.milliseconds',
 			text: milliseconds,

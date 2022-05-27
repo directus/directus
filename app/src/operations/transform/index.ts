@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'move_down',
 	name: '$t:operations.transform.name',
 	description: '$t:operations.transform.description',
-	preview: ({ json }) => [
+	overview: ({ json }) => [
 		{
 			label: '$t:json',
 			text: json,

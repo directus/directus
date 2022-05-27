@@ -5,8 +5,8 @@ export default defineOperationApp({
 	icon: 'edit',
 	name: '$t:operations.item-update.name',
 	description: '$t:operations.item-update.description',
-	preview: ({ mode, collection, key }) => {
-		const previewOptions = [
+	overview: ({ mode, collection, key }) => {
+		const overviewItems = [
 			{
 				label: '$t:operations.item-update.mode.field',
 				text: mode,
@@ -18,13 +18,13 @@ export default defineOperationApp({
 		];
 
 		if (mode !== 'query') {
-			previewOptions.push({
+			overviewItems.push({
 				label: '$t:operations.item-update.key',
 				text: key ? toArray(key).join(', ') : '--',
 			});
 		}
 
-		return previewOptions;
+		return overviewItems;
 	},
 	options: [
 		{

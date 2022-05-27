@@ -27,11 +27,11 @@ export async function registerOperations(app: App): Promise<void> {
 
 	operationsRaw.value.forEach((operation: OperationAppConfig) => {
 		if (
-			typeof operation.preview !== 'function' &&
-			Array.isArray(operation.preview) === false &&
-			operation.preview !== null
+			typeof operation.overview !== 'function' &&
+			Array.isArray(operation.overview) === false &&
+			operation.overview !== null
 		) {
-			app.component(`operation-preview-${operation.id}`, operation.preview);
+			app.component(`operation-overview-${operation.id}`, operation.overview);
 		}
 
 		if (
