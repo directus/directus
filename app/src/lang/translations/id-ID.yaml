@@ -83,7 +83,6 @@ delete_folder: Hapus Folder
 prefix: Awalan
 suffix: Akhiran
 reset_bookmark: Hapus Markah
-rename_bookmark: Ubah Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
 delete_bookmark_copy: >-
@@ -114,7 +113,6 @@ recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 nested_files_folders_will_be_moved: Berkas dan folder yang disarang akan dipindahkan satu tingkat keatas.
-unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'
 validationError:
   eq: Nilai harus {valid}
   neq: Nilai tidak boleh {invalid}
@@ -334,8 +332,6 @@ label_import: Impor
 label_export: Ekspor
 import_export: Impor / Ekspor
 format: Format
-use_current_filters_settings: Gunakan Filter Saat Ini & Pengaturan
-export_data_button: Mulai Ekspor
 last_page: Halaman Terakhir
 last_access: Akses Terakhir
 fill_template: Isi dengan Nilai Template
@@ -351,6 +347,10 @@ interface_label: Antarmuka
 today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
+functions:
+  year: Tahun
+  month: Bulan
+  count: Hitung
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -911,7 +911,6 @@ fields:
     status_archived: Diarsipkan
     role: Peran
     token: Token
-    token_placeholder: Masukkan token akses aman...
     provider: Penyedia
     external_identifier: Pengidentifikasi Eksternal
     last_page: Halaman Terakhir
@@ -1110,7 +1109,6 @@ sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
 sort_desc: Mengurut Turun
 template: Templat
-require_value_to_be_set: Membutuhkan nilai untuk ditetapkan
 translation: Terjemahan
 translation_placeholder: Masukkan terjemahan...
 value: Nilai
@@ -1229,6 +1227,8 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Terjemahan
@@ -1278,7 +1278,6 @@ layouts:
     subtitle: Subjudul
   tabular:
     tabular: Tabel
-    fields: Bidang
     spacing: Spasi
     comfortable: Longgar
     compact: Rapat

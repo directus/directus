@@ -8,6 +8,8 @@
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
+			@focus="setupContentWatcher"
+			@SetContent="setCount"
 		/>
 		<template v-if="softLength">
 			<span
@@ -162,35 +164,34 @@
 </template>
 
 <script lang="ts">
+import Editor from '@tinymce/tinymce-vue';
+import { percentage } from '@/utils/percentage';
+import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance, onMounted } from 'vue';
+import getEditorStyles from './get-editor-styles';
+import useImage from './useImage';
+import useLink from './useLink';
+import useMedia from './useMedia';
+import useSourceCode from './useSourceCode';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
-import 'tinymce/plugins/media/plugin';
-import 'tinymce/plugins/table/plugin';
+import 'tinymce/plugins/autoresize/plugin';
+import 'tinymce/plugins/code/plugin';
+import 'tinymce/plugins/directionality/plugin';
+import 'tinymce/plugins/fullscreen/plugin';
 import 'tinymce/plugins/hr/plugin';
-import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/image/plugin';
 import 'tinymce/plugins/imagetools/plugin';
-import 'tinymce/plugins/link/plugin';
-import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/code/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
-import 'tinymce/plugins/autoresize/plugin';
+import 'tinymce/plugins/link/plugin';
+import 'tinymce/plugins/lists/plugin';
+import 'tinymce/plugins/media/plugin';
+import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/paste/plugin';
 import 'tinymce/plugins/preview/plugin';
-import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/directionality/plugin';
+import 'tinymce/plugins/table/plugin';
 import 'tinymce/icons/default';
-
-import Editor from '@tinymce/tinymce-vue';
-import getEditorStyles from './get-editor-styles';
-import useImage from './useImage';
-import useMedia from './useMedia';
-import useLink from './useLink';
-import useSourceCode from './useSourceCode';
-import { percentage } from '@/utils/percentage';
 
 type CustomFormat = {
 	title: string;
@@ -268,32 +269,7 @@ export default defineComponent({
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
 
-		let tinymceEditor: HTMLElement | null;
 		let count = ref(0);
-		onMounted(() => {
-			let iframe;
-			let contentLoaded = false;
-			const wysiwyg = document.getElementById(props.field);
-
-			if (wysiwyg) iframe = wysiwyg.getElementsByTagName('iframe');
-
-			if (iframe && iframe[0] && iframe[0].contentWindow)
-				tinymceEditor = iframe[0].contentWindow.document.getElementById('tinymce');
-
-			if (tinymceEditor) {
-				const observer = new MutationObserver((_mutations) => {
-					count.value = tinymceEditor?.textContent?.replace('\n', '')?.length ?? 0;
-					if (!contentLoaded) {
-						contentLoaded = true;
-					} else {
-						emit('input', editorRef.value.getContent());
-					}
-				});
-
-				const config = { characterData: true, childList: true, subtree: true };
-				observer.observe(tinymceEditor, config);
-			}
-		});
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
@@ -374,6 +350,8 @@ export default defineComponent({
 
 		const percRemaining = computed(() => percentage(count.value, props.softLength));
 
+		let observer: MutationObserver;
+
 		return {
 			t,
 			percRemaining,
@@ -407,7 +385,28 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
+			setupContentWatcher,
+			setCount,
 		};
+
+		function setCount() {
+			const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
+			count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+		}
+
+		function setupContentWatcher() {
+			if (observer) return;
+
+			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
+
+			observer = new MutationObserver((_mutations) => {
+				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+			});
+
+			const config = { characterData: true, childList: true, subtree: true };
+			observer.observe(iframeContents, config);
+		}
 
 		function setup(editor: any) {
 			editorRef.value = editor;
@@ -416,6 +415,13 @@ export default defineComponent({
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 			editor.ui.registry.addToggleButton('customLink', linkButton);
 			editor.ui.registry.addButton('customCode', sourceCodeButton);
+
+			editor.on('init', function () {
+				editor.shortcuts.remove('meta+k');
+				editor.addShortcut('meta+k', 'Insert Link', () => {
+					editor.ui.registry.getAll().buttons.customlink.onAction();
+				});
+			});
 		}
 
 		function setFocus(val: boolean) {

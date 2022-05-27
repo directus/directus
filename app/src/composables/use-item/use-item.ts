@@ -1,20 +1,17 @@
 import api from '@/api';
-import { useCollection } from '@directus/shared/composables';
-import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { AxiosResponse } from 'axios';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { validatePayload } from '@directus/shared/utils';
-import { Item, LogicalFilterAND } from '@directus/shared/types';
-import { isNil, flatten } from 'lodash';
-import { FailedValidationException } from '@directus/shared/exceptions';
-import { getEndpoint } from '@/utils/get-endpoint';
-import { applyConditions } from '@/utils/apply-conditions';
 import { translate } from '@/utils/translate-object-values';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { validateItem } from '@/utils/validate-item';
+import { useCollection } from '@directus/shared/composables';
+import { getEndpoint } from '@directus/shared/utils';
+import { AxiosResponse } from 'axios';
+import { merge } from 'lodash';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from '../use-permissions';
 
 type UsableItem = {
@@ -63,7 +60,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const { fields } = usePermissions(collection, item, isNew);
+	const { fields: fieldsWithPermissions } = usePermissions(collection, item, isNew);
 
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
@@ -114,7 +111,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validate(edits.value);
+		const errors = validateItem(merge({}, item.value, edits.value), fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -215,7 +212,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			}
 		}
 
-		const errors = validate(newItem);
+		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -360,37 +357,5 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = valuesThatAreEqual;
 		}
-	}
-
-	function validate(item: Item) {
-		const validationRules = {
-			_and: [],
-		} as LogicalFilterAND;
-
-		const fieldsWithConditions = fields.value.map((field) => applyConditions(item, field));
-
-		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
-
-		for (const field of requiredFields) {
-			if (isNew.value === true && isNil(field.schema?.default_value)) {
-				validationRules._and.push({
-					[field.field]: {
-						_submitted: true,
-					},
-				});
-			}
-
-			validationRules._and.push({
-				[field.field]: {
-					_nnull: true,
-				},
-			});
-		}
-
-		return flatten(
-			validatePayload(validationRules, item).map((error) =>
-				error.details.map((details) => new FailedValidationException(details).extensions)
-			)
-		);
 	}
 }

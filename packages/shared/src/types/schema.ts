@@ -1,5 +1,6 @@
 import { Type } from './fields';
 import { Relation } from './relations';
+import { Filter } from './filter';
 
 export type FieldOverview = {
 	field: string;
@@ -12,6 +13,7 @@ export type FieldOverview = {
 	scale: number | null;
 	special: string[];
 	note: string | null;
+	validation: Filter | null;
 	alias: boolean;
 };
 

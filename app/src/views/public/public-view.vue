@@ -62,7 +62,7 @@ import { useServerStore } from '@/stores';
 import { storeToRefs } from 'pinia';
 import { getRootPath } from '@/utils/get-root-path';
 import { useI18n } from 'vue-i18n';
-import { cssVar } from '@/utils/css-var';
+import { cssVar } from '@directus/shared/utils/browser';
 import Color from 'color';
 
 interface Props {
@@ -152,7 +152,6 @@ const logoURL = computed<string | null>(() => {
 	display: flex;
 	width: 100%;
 	height: 100%;
-	color: #263238;
 
 	:slotted(.v-icon) {
 		--v-icon-color: var(--foreground-subdued);
@@ -180,7 +179,6 @@ const logoURL = computed<string | null>(() => {
 		/* Page Content Spacing */
 		font-size: 15px;
 		line-height: 24px;
-		background-color: #fff;
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-width var(--medium) var(--transition);
 
@@ -291,6 +289,7 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	.logo {
+		flex-shrink: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
