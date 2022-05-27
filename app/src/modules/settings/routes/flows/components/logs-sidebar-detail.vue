@@ -146,7 +146,7 @@ const steps = computed(() => {
 			return {
 				id: operation,
 				name: operationConfiguration?.name ?? key,
-				data: unref(previewing).data?.[key] ?? null,
+				data: unref(previewing).data?.data?.[key] ?? null,
 				options: options ?? null,
 				operationType: operationType?.name ?? operationConfiguration?.type ?? '--',
 				key,
