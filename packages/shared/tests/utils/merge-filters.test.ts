@@ -1,4 +1,4 @@
-import { mergeFilters } from './merge-filters';
+import { mergeFilters } from '../../src/utils/merge-filters';
 
 describe('merge filters', () => {
 	it('defaults to A when B is null', () => {

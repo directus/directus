@@ -1,5 +1,5 @@
-import { getFilterOperatorsForType } from './get-filter-operators-for-type';
-import { TYPES } from '../constants/fields';
+import { getFilterOperatorsForType } from '../../src/utils/get-filter-operators-for-type';
+import { TYPES } from '../../src/constants/fields';
 
 describe('', () => {
 	it('returns the filter operators for alias', () => {

@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash';
-import { FieldFilter } from '../types';
-import { generateJoi, Joi, JoiOptions, StringSchema } from './generate-joi';
+import { FieldFilter } from '../../src/types';
+import { generateJoi, Joi, JoiOptions, StringSchema } from '../../src/utils/generate-joi';
 
 describe(`generateJoi`, () => {
 	const date = new Date(1632431505992);

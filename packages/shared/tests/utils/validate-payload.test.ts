@@ -1,5 +1,5 @@
-import { validatePayload } from './validate-payload';
-import { Filter } from '../types/filter';
+import { validatePayload } from '../../src/utils/validate-payload';
+import { Filter } from '../../src/types/filter';
 
 describe('validatePayload', () => {
 	it('returns an empty array when there are no errors', () => {
