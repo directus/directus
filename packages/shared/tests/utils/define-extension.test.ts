@@ -5,8 +5,8 @@ import {
 	defineLayout,
 	defineHook,
 	defineEndpoint,
-} from './define-extension';
-import { Type } from '../types/fields';
+} from '../../src/utils/define-extension';
+import { Type } from '../../src/types/fields';
 import { defineComponent } from 'vue';
 
 const mockComponent = defineComponent({});

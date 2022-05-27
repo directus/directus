@@ -1,4 +1,4 @@
-import { resolvePackage } from './resolve-package';
+import { resolvePackage } from '../../../src/utils/node/resolve-package';
 import { dirSync, SynchrounousResult } from 'tmp';
 import { ensureDirSync, writeJsonSync } from 'fs-extra';
 import path from 'path';

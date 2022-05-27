@@ -1,5 +1,5 @@
-import { parseFilter } from './parse-filter';
-import { Filter } from '../types/filter';
+import { parseFilter } from '../../src/utils/parse-filter';
+import { Filter } from '../../src/types/filter';
 
 describe('', () => {
 	beforeEach(() => {

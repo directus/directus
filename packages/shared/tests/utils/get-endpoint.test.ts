@@ -1,4 +1,4 @@
-import { getEndpoint } from './get-endpoint';
+import { getEndpoint } from '../../src/utils/get-endpoint';
 
 describe('getEndpoint', () => {
 	it('When a system collection is passed in', () => {

@@ -1,5 +1,5 @@
-import { EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES } from '../../constants/extensions';
-import { getLocalExtensions, getPackageExtensions } from './get-extensions';
+import { EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES } from '../../../src/constants/extensions';
+import { getLocalExtensions, getPackageExtensions } from '../../../src/utils/node/get-extensions';
 import { SynchrounousResult, dirSync } from 'tmp';
 import { ensureDirSync, writeJsonSync } from 'fs-extra';
 
