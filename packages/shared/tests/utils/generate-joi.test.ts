@@ -263,10 +263,50 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for an _in number array match`, () => {
+		const mockFieldFilter = { field: { _in: [1] } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(...[1]),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an _in a string array match`, () => {
+		const mockFieldFilter = { field: { _in: ['field', 'secondField'] } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(...['field', 'secondField']),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for a _nin match`, () => {
 		const mockFieldFilter = { field: { _nin: 'field' } } as FieldFilter;
 		const mockSchema = Joi.object({
 			field: Joi.any().not(...'field'),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an _nin number array match`, () => {
+		const mockFieldFilter = { field: { _nin: [1] } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(...[1]),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an _nin a string array match`, () => {
+		const mockFieldFilter = { field: { _nin: ['field', 'secondField'] } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(...['field', 'secondField']),
 		})
 			.unknown()
 			.describe();
@@ -285,6 +325,16 @@ describe(`generateJoi`, () => {
 
 	it(`returns the correct schema for an _gt date match`, () => {
 		const mockFieldFilter = { field: { _gt: date } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.date().greater(date),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an _gt string match`, () => {
+		const mockFieldFilter = { field: { _gt: date.toISOString() } } as FieldFilter;
 		const mockSchema = Joi.object({
 			field: Joi.date().greater(date),
 		})
@@ -313,6 +363,16 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for an _gte string match`, () => {
+		const mockFieldFilter = { field: { _gte: date.toISOString() } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.date().min(date),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for an _lt number match`, () => {
 		const mockFieldFilter = { field: { _lt: 1 } } as FieldFilter;
 		const mockSchema = Joi.object({
@@ -333,6 +393,16 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for an _lt string match`, () => {
+		const mockFieldFilter = { field: { _lt: date.toISOString() } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.date().less(date),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for an _lte number match`, () => {
 		const mockFieldFilter = { field: { _lte: 1 } } as FieldFilter;
 		const mockSchema = Joi.object({
@@ -345,6 +415,16 @@ describe(`generateJoi`, () => {
 
 	it(`returns the correct schema for an _lte date match`, () => {
 		const mockFieldFilter = { field: { _lte: date } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.date().max(date),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an _lte string match`, () => {
+		const mockFieldFilter = { field: { _lte: date.toISOString() } } as FieldFilter;
 		const mockSchema = Joi.object({
 			field: Joi.date().max(date),
 		})

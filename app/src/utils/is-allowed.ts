@@ -1,6 +1,6 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { Permission } from '@directus/shared/types';
-import { generateJoi } from '@directus/shared/utils';
+import { FieldFilter, Permission } from '@directus/shared/types';
+import { generateJoi, JoiOptions } from '@directus/shared/utils';
 
 export function isAllowed(
 	collection: string,
@@ -29,9 +29,12 @@ export function isAllowed(
 		if (attemptedFields.every((field) => allowedFields!.includes(field)) === false) return false;
 	}
 
-	const schema = generateJoi(permissionInfo.permissions, {
-		allowUnknown: true,
-	});
+	const schema = generateJoi(
+		permissionInfo.permissions as FieldFilter,
+		{
+			allowUnknown: true,
+		} as JoiOptions
+	);
 
 	const { error } = schema.validate(value);
 
