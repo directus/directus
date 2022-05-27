@@ -1,6 +1,6 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
 import { Permission } from '@directus/shared/types';
-import generateJoi from '@/utils/generate-joi';
+import { generateJoi } from '@directus/shared/utils';
 
 export function isAllowed(
 	collection: string,

@@ -58,10 +58,12 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 });
 
 export type JoiOptions = {
+	allowUnknown?: boolean;
 	requireAll?: boolean;
 };
 
 const defaults: JoiOptions = {
+	// TODO: allowUnknown: true,
 	requireAll: false,
 };
 
@@ -72,7 +74,7 @@ const defaults: JoiOptions = {
  * @param {JoiOptions} [options] - Options for the schema generation.
  * @returns {AnySchema} Joi schema.
  */
-export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchema {
+export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): AnySchema {
 	filter = filter || {};
 
 	options = merge({}, defaults, options);
@@ -113,6 +115,14 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_contains') {
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().contains(compareValue);
+			}
+		}
+
+		if (operator === '_icontains') {
 			if (compareValue === null || compareValue === undefined) {
 				schema[key] = Joi.any().equal(true);
 			} else {
@@ -250,6 +260,10 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 	}
 
 	schema[key] = schema[key] ?? Joi.any();
+
+	if (options.allowUnknown) {
+		return Joi.object(schema).unknown();
+	}
 
 	if (options.requireAll) {
 		schema[key] = schema[key]!.required();
