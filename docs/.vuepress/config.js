@@ -77,63 +77,6 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/getting-started/installation',
-						title: 'Installation',
-						children: [
-							{
-								type: 'page',
-								path: '/getting-started/installation/aws',
-								title: 'AWS',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/cloudron',
-								title: 'Cloudron',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/cli',
-								title: 'CLI',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/digitalocean-app-platform',
-								title: 'DigitalOcean',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/docker',
-								title: 'Docker',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/gcp',
-								title: 'Google Cloud Platform',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/iis',
-								title: 'IIS',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/manual',
-								title: 'Manual',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/plesk',
-								title: 'Plesk',
-							},
-							{
-								type: 'page',
-								path: '/getting-started/installation/ubuntu',
-								title: 'Ubuntu',
-							},
-						],
-					},
-					{
-						type: 'page',
 						path: '/getting-started/support',
 						title: 'Help & Support',
 					},
@@ -564,6 +507,74 @@ module.exports = {
 						type: 'page',
 						path: '/cloud/glossary',
 						title: 'Glossary',
+					},
+				],
+			},
+			{ type: 'divider' },
+			{
+				title: 'Self Hosted',
+				children: [
+					{
+						type: 'page',
+						path: '/self-hosted/quickstart',
+						title: 'Quickstart',
+					},
+					{
+						type: 'page',
+						path: '/self-hosted/installation',
+						title: 'Installation',
+						children: [
+							{
+								type: 'page',
+								path: '/self-hosted/installation/aws',
+								title: 'AWS',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/cloudron',
+								title: 'Cloudron',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/cli',
+								title: 'CLI',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/digitalocean-app-platform',
+								title: 'DigitalOcean',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/docker',
+								title: 'Docker',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/gcp',
+								title: 'Google Cloud Platform',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/iis',
+								title: 'IIS',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/manual',
+								title: 'Manual',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/plesk',
+								title: 'Plesk',
+							},
+							{
+								type: 'page',
+								path: '/self-hosted/installation/ubuntu',
+								title: 'Ubuntu',
+							},
+						],
 					},
 				],
 			},
