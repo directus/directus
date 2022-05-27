@@ -237,7 +237,7 @@ Member.
 
 To destroy a Team:
 
-1. Open the Team Menu in the Dashboard Header and and select the desired Team.
+1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Settings"** to enter the Team Settings Page.
 3. Scroll down to the "Destroy this Team" section.
 4. Toggle <span mi icon dngr>local_fire_department</span> and an input box will appear.

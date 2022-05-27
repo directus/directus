@@ -1113,6 +1113,8 @@ interfaces:
     value_path: Väärtuse väli
     trigger: Päästik
     rate: Hinnang
+  system-token:
+    system-token: Kontrollkood
 displays:
   translations:
     translations: Tõlked
