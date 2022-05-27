@@ -805,6 +805,10 @@ no_dashboards_copy: You don’t have any Dashboards yet.
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
 no_data: No Data
+no_data_in_flow: No data was produced or accessed within this Flow
+accountability: Accountability
+payload: Payload
+details: Details
 full_screen: Full Screen
 full_text_search: Full-Text Search
 edit_panels: Edit Panels

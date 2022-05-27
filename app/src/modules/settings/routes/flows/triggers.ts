@@ -3,8 +3,8 @@ import { useI18n } from 'vue-i18n';
 import { getPublicURL } from '../../../../utils/get-root-path';
 
 export type Trigger = {
-	text: string;
-	value: TriggerType;
+	name: string;
+	id: TriggerType;
 	icon: string;
 	description: string;
 	overview: (
@@ -19,8 +19,8 @@ export function getTriggers() {
 
 	const triggers: Trigger[] = [
 		{
-			text: t('triggers.hook.name'),
-			value: 'hook',
+			id: 'hook',
+			name: t('triggers.hook.name'),
 			icon: 'anchor',
 			description: t('triggers.hook.description'),
 			overview: ({ type, actionScope, filterScope, actionCollections, filterCollections }) => {
@@ -199,8 +199,8 @@ export function getTriggers() {
 			},
 		},
 		{
-			text: t('triggers.webhook.name'),
-			value: 'webhook',
+			id: 'webhook',
+			name: t('triggers.webhook.name'),
 			icon: 'link',
 			description: t('triggers.webhook.description'),
 			overview: ({ method }, { flow }) => [
@@ -275,8 +275,8 @@ export function getTriggers() {
 			],
 		},
 		{
-			text: t('triggers.schedule.name'),
-			value: 'schedule',
+			id: 'schedule',
+			name: t('triggers.schedule.name'),
 			icon: 'schedule',
 			description: t('triggers.schedule.description'),
 			overview: ({ cron }) => [
@@ -301,8 +301,8 @@ export function getTriggers() {
 			],
 		},
 		{
-			text: t('triggers.operation.name'),
-			value: 'operation',
+			id: 'operation',
+			name: t('triggers.operation.name'),
 			icon: 'bolt',
 			description: t('triggers.operation.description'),
 			overview: () => [],
@@ -332,8 +332,8 @@ export function getTriggers() {
 			],
 		},
 		// {
-		// 	text: t('triggers.manual.name'),
-		// 	value: 'manual',
+		// 	id: 'manual',
+		// 	name: t('triggers.manual.name'),
 		// 	icon: 'touch_app',
 		// 	description: t('triggers.manual.description'),
 		// 	overview: () => [

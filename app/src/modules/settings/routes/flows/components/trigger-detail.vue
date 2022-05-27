@@ -15,7 +15,7 @@
 		</template>
 
 		<div class="content">
-			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" />
+			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
 
 			<v-form
 				v-if="flowEdits.trigger"
@@ -68,7 +68,7 @@ function saveTrigger() {
 
 const { triggers } = getTriggers();
 
-const currentTrigger = computed(() => triggers.find((trigger) => trigger.value === flowEdits.value.trigger));
+const currentTrigger = computed(() => triggers.find((trigger) => trigger.id === flowEdits.value.trigger));
 
 const currentTriggerOptionFields = computed(() => {
 	if (!currentTrigger.value) return [];
