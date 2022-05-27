@@ -2,8 +2,6 @@
 
 const base = require('../jest.config.js');
 
-require('dotenv').config();
-
 module.exports = {
 	...base,
 	moduleNameMapper: {
