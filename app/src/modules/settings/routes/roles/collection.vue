@@ -26,8 +26,9 @@
 
 		<div class="roles">
 			<v-table
+				v-model:headers="tableHeaders"
+				show-resize
 				:items="roles"
-				:headers="tableHeaders"
 				fixed-header
 				item-key="id"
 				:loading="loading"
@@ -38,9 +39,7 @@
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<span class="name" :class="{ public: item.public }">
-						{{ item.name }}
-					</span>
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
@@ -48,7 +47,7 @@
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<span class="description">{{ item.description }}</span>
+					<v-text-overflow :text="item.description" class="description" />
 				</template>
 			</v-table>
 		</div>
@@ -90,20 +89,22 @@ export default defineComponent({
 			return adminRoles.length === 1 ? adminRoles[0].id : null;
 		});
 
-		const tableHeaders: TableHeader[] = [
+		const tableHeaders = ref<TableHeader[]>([
 			{
 				text: '',
 				value: 'icon',
 				sortable: false,
 				width: 42,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('name'),
 				value: 'name',
 				sortable: false,
-				width: 140,
+				width: 200,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('users'),
@@ -111,6 +112,7 @@ export default defineComponent({
 				sortable: false,
 				width: 140,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('description'),
@@ -118,8 +120,9 @@ export default defineComponent({
 				sortable: false,
 				width: 470,
 				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		fetchRoles();
 

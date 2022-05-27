@@ -16,17 +16,11 @@
 		<v-hover v-slot="{ hover }">
 			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
-					<v-button
-						v-tooltip.right="t('sign_out')"
-						tile
-						icon
-						x-large
-						:class="{ show: hover }"
-						class="sign-out"
-						@click="on"
-					>
-						<v-icon name="logout" />
-					</v-button>
+					<transition name="sign-out">
+						<v-button v-if="hover" v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
+							<v-icon name="logout" />
+						</v-button>
+					</transition>
 				</template>
 
 				<v-card>
@@ -178,21 +172,26 @@ export default defineComponent({
 		top: 0;
 		left: 0;
 		z-index: 2;
-		transform: translateY(-100%);
 		transition: transform var(--fast) var(--transition);
-
-		@media (min-width: 960px) {
-			transform: translateY(100%);
-		}
-
-		&.show {
-			transform: translateY(0%);
-		}
 
 		&:hover {
 			.v-icon {
 				--v-icon-color: var(--primary);
 			}
+		}
+	}
+
+	.sign-out-enter-active,
+	.sign-out-leave-active {
+		transform: translateY(0%);
+	}
+
+	.sign-out-enter-from,
+	.sign-out-leave-to {
+		transform: translateY(-100%);
+
+		@media (min-width: 960px) {
+			transform: translateY(100%);
 		}
 	}
 }

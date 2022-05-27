@@ -70,6 +70,8 @@ create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
 create_translation_string: Utwórz tłumaczenia
+no_translation_string: Brak tłumaczeń
+no_translation_string_copy: Nie ma jeszcze żadnych tłumaczeń.
 translation_string_key_placeholder: Klucz tłumaczenia...
 translation_string_translations_placeholder: Dodaj nowe tłumaczenie
 edit_translation_string: Edytuj tłumaczenia
@@ -326,12 +328,15 @@ revision_delta_deleted: Usunięty
 revision_delta_reverted: Odwrócony
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
+presentation_text_values_cannot_be_reimported: "Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane."
+download_page_as_csv: 'Pobierz stronę jako CSV'
 private_user: Prywatny Użytkownik
 creation_preview: Podgląd tworzenia
 revision_preview: Podgląd wersji
 updates_made: Aktualizacje wykonane
 leave_comment: Napisz komentarz...
 post_comment_success: Komentarz dodany
+post_comment_updated: Komentarz zaktualizowany
 item_create_success: Element utworzony | Elementy utworzone
 item_update_success: Element zaktualizowany | Elementy zaktualizowane
 item_delete_success: Element usunięty | Elementy usunięte
@@ -449,6 +454,7 @@ created_on: Stworzony dnia
 creating_collection_info: Nazwij kolekcję i ustaw jego unikalne pole "klucz"...
 creating_collection_system: Włącz i zmień nazwę każdego z tych opcjonalnych pól.
 auto_increment_integer: Automatycznie zwiększana liczba całkowita
+auto_increment_big_integer: Automatycznie zwiększana duża liczba całkowita
 generated_uuid: Wygenerowane UUID
 manual_string: Wprowadzony ręcznie ciąg znaków
 save_and_create_new: Zapisz i utwórz nowy
@@ -555,7 +561,9 @@ errors:
   INVALID_CREDENTIALS: Nieprawidłowa nazwa użytkownika lub hasło
   INVALID_OTP: Złe hasło jednorazowe
   INVALID_PAYLOAD: Błędny payload
+  INVALID_PROVIDER: Użytkownik należy do innego dostawcy autoryzacji
   INVALID_QUERY: Nieprawidłowe zapytanie
+  INVALID_USER: Błąd uwierzytelniania użytkownika
   ITEM_LIMIT_REACHED: Osiągnięto limit przedmiotów
   ITEM_NOT_FOUND: Nie znaleziono elementu
   ROUTE_NOT_FOUND: Nie znaleziono
@@ -654,6 +662,7 @@ operators:
   nnull: Nie jest puste
   contains: Zawiera
   ncontains: Nie zawiera
+  icontains: Zawiera (niewrażliwe)
   starts_with: Zaczyna się od
   nstarts_with: Nie zaczyna się od
   ends_with: Kończy się na
@@ -1015,7 +1024,6 @@ fields:
     status_archived: Zarchiwizowane
     role: Rola
     token: Token
-    token_placeholder: Wprowadź bezpieczny token dostępu...
     provider: Dostawca
     external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
@@ -1317,12 +1325,11 @@ export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy b
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
-require_value_to_be_set: Wymagaj ustawienia wartości
+require_value_to_be_set: Wymaga ustawienia wartości przy tworzeniu
 translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1609,7 +1616,9 @@ interfaces:
     header_icon: Ikona nagłówka
     header_color: Kolor nagłówka
     start_open: Rozpocznij rozwinięty
-    start_closed: Rozpocznij zamknięte
+    start_closed: Rozpocznij zwinięty
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Tłumaczenia
@@ -1757,6 +1766,35 @@ layouts:
     find_location: Znajdź lokalizację...
     default_template: Używanie domyślnej kolekcji...
     no_compatible_fields: Brak kompatybilnych pól
+  kanban:
+    name: Kanban,
+    group_field: Grupuj według,
+    group_field_placeholder: Pole do grupowania przez...,
+    group_title: Tytuł grupy,
+    group_title_placeholder: Pole dla tytułów grupy...,
+    title: Tytuł karty,
+    title_placeholder: Opcjonalne pole tytułu...,
+    text: Tekst karty,
+    text_placeholder: Opcjonalne pole tekstowe...,
+    date: Data Karty,
+    date_placeholder: Opcjonalnie pole daty...,
+    tags: Tagi karty,
+    tags_placeholder: Opcjonalne pole tagów...,
+    user: Użytkownik karty,
+    user_placeholder: Opcjonalne pole użytkownika...,
+    image: Obraz karty,
+    image_placeholder: Opcjonalne pole obrazów...,
+    image_fit: Dopasuj obraz karty,
+    crop: Przytnij,
+    advanced: Zaawansowane,
+    edit_group: Edytuj grupę,
+    delete_group: Usuń grupę,
+    add_group: Dodaj grupę,
+    add_group_placeholder: Wprowadź nowy tytuł grupy...,
+    show_ungrouped: Show Ungrouped,
+    show: Pokaż,
+    no_group: Brak Grupy,
+    not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 panels:
   metric:
     name: Metryczny
@@ -1775,3 +1813,67 @@ panels:
   list:
     name: Lista
     description: Filtruj i wyświetl pola z kolekcji
+  barchart:
+    name: Wykres słupkowy
+    description: Pasek lub wykresy kolumnowe do porównywania grup wartości
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    select_x_axis: Musisz wybrać oś X.
+    function: Funkcja
+    horizontal: Poziomy
+    x_axis_grouping: Agregacja grup osi X
+    x_axis: Oś X
+    y_axis_function: Funkcja osi Y
+    y_axis: Oś Y
+    show_x_axis: Pokaż oś X
+    show_y_axis: Pokaż Oś Y
+    show_data_label: Pokaż etykietę danych
+    group_by: Pogrupowane według
+    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    y_axis_NaN: Oś Y musi być liczbą.
+    y_axis_conditional_one: Wartość warunku
+    y_axis_conditional_two: musi być liczbą.
+  linechart:
+    name: Wykres liniowy
+    description: Wykres liniowy do porównywania zmiany pola.
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    select_x_axis: Musisz wybrać oś X.
+    function: Funkcja
+    x_axis: Oś X
+    x_axis_decimals: Ułamki dziesiętne osi X
+    disabled_no_grouping: Wyłączone, gdy nie wybrano grupowania.
+    y_axis: Oś Y
+    datasets: Zestawy danych
+    show_legend: Pokaż Legendę
+    show_marker: Pokaż znacznik podpowiedzi
+    include_dataset: Musisz podać co najmniej jeden zbiór danych.
+    include_y_axis: Musisz podać oś Y dla każdego zbioru danych, gdy nie określono żadnej grupy.
+    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    smooth: 'Gładki'
+    straight: 'Prosta'
+    step_line: 'Linia kroku'
+  meter:
+    description: Licznik wartości śledzenia
+    name: Licznik
+    arc: Łuk
+    stroke_width: Szerokość obrysu
+    select_max_value: Musisz wybrać maksymalną wartość.
+    max_greater_than_zero: Maksymalna wartość musi być większa niż 0.
+    select_field: Musisz wybrać pole.
+    select_collection: Musisz wybrać kolekcję.
+    function: Funkcja
+    thin: Cienka
+    medium: Średni
+    broad: Szeroki
+  piechart:
+    name: Wykres kołowy lub pączkowy
+    description: Okrągły wykres przedstawiający współczynniki grup w kolumnie.
+    function: 'Funkcja'
+    donut: Pączek
+    labels: Pokaż etykiety
+    legend: Pokaż Legendę
+    right: Prawy
+    bottom: Dolny
+    monochrome: Monochromatyczne
+    monochrome_color: Kolor monochromatyczny

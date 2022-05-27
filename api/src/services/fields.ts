@@ -20,6 +20,7 @@ import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import { getHelpers, Helpers } from '../database/helpers';
 import Keyv from 'keyv';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 
 export class FieldsService {
 	knex: Knex;
@@ -214,6 +215,8 @@ export class FieldsService {
 		} catch {
 			// Do nothing
 		}
+
+		if (!column && !fieldInfo) throw new ForbiddenException();
 
 		const type = getLocalType(column, fieldInfo);
 
@@ -425,16 +428,6 @@ export class FieldsService {
 			);
 
 			await this.knex.transaction(async (trx) => {
-				if (
-					this.schema.collections[collection] &&
-					field in this.schema.collections[collection].fields &&
-					this.schema.collections[collection].fields[field].alias === false
-				) {
-					await trx.schema.table(collection, (table) => {
-						table.dropColumn(field);
-					});
-				}
-
 				const relations = this.schema.relations.filter((relation) => {
 					return (
 						(relation.collection === collection && relation.field === field) ||
@@ -472,6 +465,17 @@ export class FieldsService {
 							.update({ one_field: null })
 							.where({ many_collection: relation.collection, many_field: relation.field });
 					}
+				}
+
+				// Delete field only after foreign key constraints are removed
+				if (
+					this.schema.collections[collection] &&
+					field in this.schema.collections[collection].fields &&
+					this.schema.collections[collection].fields[field].alias === false
+				) {
+					await trx.schema.table(collection, (table) => {
+						table.dropColumn(field);
+					});
 				}
 
 				const collectionMeta = await trx
@@ -539,7 +543,12 @@ export class FieldsService {
 		if (field.type === 'alias' || field.type === 'unknown') return;
 
 		if (field.schema?.has_auto_increment) {
-			column = table.increments(field.field);
+			if (field.type === 'bigInteger') {
+				// Create an auto-incremented big integer (MySQL, PostgreSQL) or an auto-incremented integer (other DBs)
+				column = table.bigIncrements(field.field);
+			} else {
+				column = table.increments(field.field);
+			}
 		} else if (field.type === 'string') {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
@@ -561,8 +570,18 @@ export class FieldsService {
 		}
 
 		if (field.schema?.default_value !== undefined) {
-			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
+			if (
+				typeof field.schema.default_value === 'string' &&
+				(field.schema.default_value.toLowerCase() === 'now()' || field.schema.default_value === 'CURRENT_TIMESTAMP')
+			) {
 				column.defaultTo(this.knex.fn.now());
+			} else if (
+				typeof field.schema.default_value === 'string' &&
+				field.schema.default_value.includes('CURRENT_TIMESTAMP(') &&
+				field.schema.default_value.includes(')')
+			) {
+				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
+				column.defaultTo(this.knex.fn.now(Number(precision)));
 			} else if (
 				typeof field.schema.default_value === 'string' &&
 				['"null"', 'null'].includes(field.schema.default_value.toLowerCase())

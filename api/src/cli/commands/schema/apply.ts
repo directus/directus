@@ -3,13 +3,14 @@ import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
-import getDatabase, { validateDatabaseConnection, isInstalled } from '../../../database';
+import { flushCaches } from '../../../cache';
+import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
 import logger from '../../../logger';
 import { Snapshot } from '../../../types';
+import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
-import { applySnapshot } from '../../../utils/apply-snapshot';
-import { flushCaches } from '../../../cache';
+import { parseJSON } from '../../../utils/parse-json';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
@@ -34,7 +35,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 		if (filename.endsWith('.yaml') || filename.endsWith('.yml')) {
 			snapshot = (await loadYaml(fileContents)) as Snapshot;
 		} else {
-			snapshot = JSON.parse(fileContents) as Snapshot;
+			snapshot = parseJSON(fileContents) as Snapshot;
 		}
 
 		const currentSnapshot = await getSnapshot({ database });
@@ -82,13 +83,17 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				message += '\n\n' + chalk.black.underline.bold('Fields:');
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
-					if (diff[0]?.kind === 'E') {
+					if (diff[0]?.kind === 'E' || isNestedMetaUpdate(diff[0])) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
+							const path = change.path!.slice(1).join('.');
 							if (change.kind === 'E') {
-								const path = change.path!.slice(1).join('.');
 								message += `\n    - Set ${path} to ${change.rhs}`;
+							} else if (change.kind === 'D') {
+								message += `\n    - Remove ${path}`;
+							} else if (change.kind === 'N') {
+								message += `\n    - Add ${path} and set it to ${change.rhs}`;
 							}
 						}
 					} else if (diff[0]?.kind === 'D') {

@@ -29,7 +29,7 @@ archived: 已存档
 modules: 模块
 module_bar: 模块栏
 reset_width: 重置宽度
-tile_size: 图块大小：
+tile_size: 瓦块大小
 edit_field: 编辑
 conditions: 条件
 maps: 地图
@@ -41,19 +41,19 @@ duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
 group: 群组
-export_items: 导出条目
-and: 和
+export_items: 导出
+and: 与
 or: 或
-fill_width: 填充宽度
+fill_width: 适应页面宽度
 field_name_translations: 字段名称翻译
-enter_password_to_enable_tfa: 输入您的密码以启用两步验证
+enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
-branch: 分支
-leaf: Leaf
-indeterminate: 不确定的状态
+branch: 父节点优先
+leaf: 叶节点优先
+indeterminate: 不确定状态，总是保留分支节点
 edit_collection: 编辑模型
-exclusive: 唯一的
+exclusive: 排他，分支或叶节点间互斥
 children: 子页面
 db_only_click_to_configure: '仅限数据库：点击配置'
 show_active_items: 显示活动项
@@ -344,7 +344,7 @@ import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
 import_data_indeterminate: 导入数据中
 import_data_success: 成功从 {filename} 导入数据
-import_data_error: 此文件的数据结构与收藏不匹配。
+import_data_error: 此文件的数据结构与模型不匹配。
 label_import: 导入
 label_export: 导出
 import_export: 导入 / 导出
@@ -368,6 +368,12 @@ delete_share: 删除分享
 functions:
   year: 年
   month: 月
+  week: 周
+  day: 日
+  weekday: 星期几
+  hour: 时
+  minute: 分
+  second: 秒
   count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -634,6 +640,7 @@ advanced_settings: 高级设置
 advanced_filter: 高级过滤器
 delete_advanced_filter: 删除过滤器
 change_advanced_filter_operator: 更改操作者
+advanced: 高级
 operators:
   eq: 等于
   neq: 不等于
@@ -898,7 +905,7 @@ page_help_insights_dashboard: '**仪表盘** — 管理工作区面板'
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
-all: 全部
+all: 全部，全选时保留分支节点
 none: 无
 no_layout_collection_selected_yet: 尚未选择布局/模型
 batch_delete_confirm: >-
@@ -1008,7 +1015,6 @@ fields:
     status_archived: 已存档
     role: 角色
     token: Token
-    token_placeholder: 请输入安全访问令牌...
     provider: 提供方
     external_identifier: 外部标识符
     last_page: 尾页
@@ -1310,7 +1316,6 @@ export_started_copy: 您的导出已经开始。当准备下载时，您会收�
 sort_asc: 升序
 sort_desc: 降序
 template: 模板
-require_value_to_be_set: 需要设置值
 translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
@@ -1326,7 +1331,7 @@ interfaces:
     add_value: 添加值
     logic_type_and: 逻辑与 - AND
     logic_type_or: 逻辑或 - OR
-    all: 全部
+    all: 全部，全选时保留分支节点
     any: 任意
     and: 和
     of_the_following: 条件时生效
@@ -1602,6 +1607,8 @@ interfaces:
     header_color: 颜色
     start_open: 默认打开
     start_closed: 默认收起
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: 翻译
@@ -1733,6 +1740,8 @@ layouts:
     calendar: 日历
     start_date_field: 开始日期
     end_date_field: 结束日期
+    optional: 可选的
+    first_day: 一周的起始日
   map:
     map: 地图
     basemap: 底图
