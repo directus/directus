@@ -13,6 +13,7 @@ export type FilterOperator =
 	| 'nnull'
 	| 'contains'
 	| 'ncontains'
+	| 'nicontains'
 	| 'icontains'
 	| 'between'
 	| 'nbetween'
