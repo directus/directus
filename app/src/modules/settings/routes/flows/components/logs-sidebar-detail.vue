@@ -8,8 +8,8 @@
 			start-open
 		>
 			<div class="scroll-container">
-				<div class="log">
-					<button v-for="revision in group.revisions" :key="revision.id" @click="previewing = revision">
+				<div v-for="revision in group.revisions" :key="revision.id" class="log">
+					<button @click="previewing = revision">
 						<v-icon name="play_arrow" color="var(--primary)" small />
 						{{ getTime(revision.activity.timestamp) }}
 					</button>
@@ -205,6 +205,10 @@ function getTime(timestamp: string) {
 		&::before {
 			opacity: 1;
 		}
+	}
+
+	& + & {
+		margin-top: 8px;
 	}
 }
 
