@@ -28,6 +28,7 @@ draft: Concept
 archived: Gearchiveerd
 modules: Modules
 module_bar: Modulebalk
+reset_width: Stel breedte terug
 tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
@@ -68,7 +69,13 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
+create_translation_string: Vertalingen aanmaken
+no_translation_string: Vertaalde Strings
+translation_string_key_placeholder: Tekenreeks van vertalingen...
 translation_string_translations_placeholder: Voeg nieuwe vertaling toe
+edit_translation_string: Vertaalstring bewerken
+delete_translation_string_copy: >-
+  Weet je zeker dat je het {key} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
@@ -89,6 +96,9 @@ update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
 delete_bookmark_copy: >-
   Weet je zeker dat je de bladwijzer "{bookmark}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+delete_personal_bookmark: Verwijder persoonlijke bladwijzer
+delete_role_bookmark: Bladwijzer verwijderen
+delete_global_bookmark: Verwijder globale bladwijzer
 logoutReason:
   SIGN_OUT: Uitgelogd
   SESSION_EXPIRED: Sessie verlopen
@@ -115,6 +125,7 @@ recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
 unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
 nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
+validation_errors_notice: 'De volgende velden hebben ongeldige waarden:'
 validationError:
   eq: Waarde moet {valid} zijn
   neq: Waarde kan niet {invalid} zijn
@@ -162,6 +173,9 @@ presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
 presentation_and_aliases: Presentatie & Aliasen
 revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
 revision_post_update: Zo zag dit item eruit na de update.
+changes_made: Hieronder staan de specifieke wijzigingen die zijn aangebracht in deze herziening.
+no_relational_data: Houd er rekening mee dat relatiegegevens hier niet bij betrokken zijn.
+hide_field: Veld verbergen
 hide_field_on_detail: Veld Verbergen
 show_field_on_detail: Veld Tonen
 delete_field: Veld Verwijderen
@@ -172,10 +186,16 @@ duplicate_where_to: Waar wil je dit veld naar dupliceren?
 language: Taal
 language_placeholder: Kies een taal...
 aggregate_function: Geaggregeerde Functie
+aggregate_precision: Geaggregeerde Functie
+group_aggregation: Groep Aggregatie
+group_precision: Groep Precisie
 global: Wereldwijd
 admins_have_all_permissions: Admins hebben alle permissies
 camera: Camera
 show_zero: Toon nul
+create_in_advanced_field_creation_mode: Maak veld in geavanceerde modus
+continue_in_advanced_field_creation_mode: Doorgaan in geavanceerde veld aanmaak modus
+validation: Validatie
 sum: Som
 sum_distinct: Som Uniek
 avg: Gemiddeld
@@ -218,8 +238,10 @@ uuid: UUID
 hash: Hash
 geometry: Geometrie (Alle)
 geometry.Point: Punt
+geometry.LineString: LineString
 geometry.Polygon: Veelhoek
 geometry.MultiPoint: Multipoint
+geometry.MultiLineString: MultiLineString
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_refresh: Automatische verversen
