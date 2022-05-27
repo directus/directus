@@ -5,7 +5,7 @@
 		"docs",
 		"api"
 	],
-	"version": "9.11.0",
+	"version": "9.11.1",
 	"command": {
 		"bootstrap": {
 			"npmClientArgs": [

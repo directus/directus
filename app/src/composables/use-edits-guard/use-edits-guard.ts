@@ -1,7 +1,9 @@
 import { ref, Ref, onBeforeMount, onBeforeUnmount } from 'vue';
-import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard, useRoute } from 'vue-router';
 
 export function useEditsGuard(hasEdits: Ref<boolean>) {
+	const { path } = useRoute();
+
 	const confirmLeave = ref(false);
 	const leaveTo = ref<string | null>(null);
 
@@ -14,7 +16,7 @@ export function useEditsGuard(hasEdits: Ref<boolean>) {
 	};
 
 	const editsGuard: NavigationGuard = (to) => {
-		if (hasEdits.value) {
+		if (hasEdits.value && !to.path.startsWith(path)) {
 			confirmLeave.value = true;
 			leaveTo.value = to.fullPath;
 			return false;

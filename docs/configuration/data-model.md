@@ -41,8 +41,7 @@ the database, and it will automatically appear within Directus. The first time y
 
 ## Configuring a Collection
 
-You can configure a collection by clicking on it within **Settings > Data Model**. On this page the following options
-are available:
+You can configure a collection by clicking on it within **Settings > Data Model**. The following options are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
@@ -243,6 +242,12 @@ This pane controls the technical details of the field's database column.
 ::: danger Immutable Keys
 
 As of now, the key can not be modified after the field has been created.
+
+:::
+
+::: warning Composite Keys
+
+At this time, Directus does not support composite keys.
 
 :::
 

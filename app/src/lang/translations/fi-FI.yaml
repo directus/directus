@@ -926,7 +926,6 @@ fields:
     status_archived: Arkistoitu
     role: Rooli
     token: Token
-    token_placeholder: Syötä suojatun pääsyn tunniste...
     provider: Tarjoaja
     external_identifier: Ulkopuoliset tunnistautumiset
     last_page: Viimeinen sivu
@@ -1162,7 +1161,6 @@ sort_direction: Järjestyssuunta
 sort_asc: Järjestä nousevasti
 sort_desc: Lajittele laskeva
 template: Pohja
-require_value_to_be_set: Vaadi arvoa asetettavaksi
 translation: Käännös
 translation_placeholder: Syötä käännös...
 value: Arvo
@@ -1428,6 +1426,8 @@ interfaces:
     header_color: Otsikon väri
     start_open: Aloita avattuna
     start_closed: Aloita suljettuna
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Käännökset
