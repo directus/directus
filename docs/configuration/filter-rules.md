@@ -179,6 +179,7 @@ In addition to static values, you can also filter against _dynamic_ values using
 - `$NOW` — The current timestamp
 - `$NOW(<adjustment>)` - The current timestamp plus/minus a given distance, for example `$NOW(-1 year)`,
   `$NOW(+2 hours)`
+- `$NOW(<adjustment> | <format: yyyy-MM-dd HH:mm:ss>)` - After a given adjustment, format the timestamp to your needs.
 
 ::: tip Nested User / Role variables in Permissions
 
@@ -188,5 +189,19 @@ includes custom fields that were added to the directus_users/directus_roles tabl
 
 Note: This feature is only available for permissions, validation, and presets. Regular filters and conditional fields
 currently only support the root ID.
+
+:::
+
+::: tip Formatting an adjustment
+
+We can achieve many different relative moments by formatting the adjustment.
+
+Lets say "tomorrow", use: `$NOW(+1 day | format: yyyy-MM-dd 00:00)`
+
+For "on the 15th of following month", use: `$NOW(+1 month | format: yyyy-MM-15 00:00)`
+
+Getting more creative, "ISO day of week", use: `$NOW(+0 minutes | format: iiii)` (i.e. "Monday", "Tuesday", etc.)
+
+To read all about the extensive offering in formatting, check out the [data-fns docs](https://date-fns.org/docs/format).
 
 :::
