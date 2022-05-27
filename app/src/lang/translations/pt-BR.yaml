@@ -978,7 +978,6 @@ fields:
     status_archived: Arquivado
     role: Função
     token: Token
-    token_placeholder: Digite um token de acesso seguro...
     provider: Provedor
     external_identifier: Identificador externo
     last_page: Última página
@@ -1516,6 +1515,8 @@ interfaces:
     header_color: Cor do Cabeçalho
     start_open: Iniciar Aberto
     start_closed: Iniciar Fechado
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduções

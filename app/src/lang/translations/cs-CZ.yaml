@@ -1024,7 +1024,6 @@ fields:
     status_archived: Archivováno
     role: Role
     token: Token
-    token_placeholder: Zadejte token bezpečného přístupu...
     provider: Poskytovatel
     external_identifier: Externí identifikátor
     last_page: Poslední stránka
@@ -1331,7 +1330,6 @@ translation: Překlad
 translation_placeholder: Zadejte překlad...
 value: Hodnota
 view_project: Zobrazit projekt
-weeks: { }
 report_error: Nahlásit chybu
 start: Začátek
 interfaces:
@@ -1619,6 +1617,8 @@ interfaces:
     header_color: Barva záhlaví
     start_open: Začít otevřený
     start_closed: Začít zavřený
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Překlady

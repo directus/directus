@@ -1017,7 +1017,6 @@ fields:
     status_archived: Архівовані
     role: Роль
     token: Ключ
-    token_placeholder: Введіть надійний ключ доступу...
     provider: Провайдер
     external_identifier: Зовнішній ідентифікатор
     last_page: Остання сторінка
@@ -1610,6 +1609,8 @@ interfaces:
     header_color: Колір заголовку
     start_open: Почати відкритим
     start_closed: Почати закритим
+  system-token:
+    system-token: Ключ
 displays:
   translations:
     translations: Переклади

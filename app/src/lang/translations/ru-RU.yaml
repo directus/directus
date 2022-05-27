@@ -967,7 +967,6 @@ fields:
     status_archived: В архиве
     role: Роль
     token: Ключ доступа
-    token_placeholder: Укажите достаточно защищенный ключ доступа
     provider: Провайдер
     external_identifier: Внешний Идентификатор
     last_page: Последняя Страница
@@ -1510,6 +1509,8 @@ interfaces:
     header_color: Цвет заголовка
     start_open: Раскрыта
     start_closed: Свёрнута
+  system-token:
+    system-token: Ключ доступа
 displays:
   translations:
     translations: Переводы

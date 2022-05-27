@@ -779,7 +779,6 @@ fields:
     status_archived: Arhivirano
     role: Vloga
     token: Žeton
-    token_placeholder: Vnesite žeton ...
     last_page: Zadnja stran
     last_access: Zadnji dostop
   directus_settings:
@@ -1239,6 +1238,8 @@ interfaces:
     header_color: Barva glave
     start_open: Začni odprto
     start_closed: Začni zaprto
+  system-token:
+    system-token: Žeton
 displays:
   translations:
     translations: Prevodi

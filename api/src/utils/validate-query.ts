@@ -107,7 +107,7 @@ function validateFilterPrimitive(value: any, key: string) {
 		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
 	}
 
-	if (typeof value === 'number' && Number.isNaN(value) && value <= Number.MAX_SAFE_INTEGER) {
+	if (typeof value === 'number' && (Number.isNaN(value) || value > Number.MAX_SAFE_INTEGER)) {
 		throw new InvalidQueryException(`The filter value for "${key}" is not a valid number`);
 	}
 
