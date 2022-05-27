@@ -1015,7 +1015,6 @@ fields:
     status_archived: 已存档
     role: 角色
     token: Token
-    token_placeholder: 请输入安全访问令牌...
     provider: 提供方
     external_identifier: 外部标识符
     last_page: 尾页
@@ -1608,6 +1607,8 @@ interfaces:
     header_color: 颜色
     start_open: 默认打开
     start_closed: 默认收起
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: 翻译

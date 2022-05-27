@@ -854,7 +854,6 @@ fields:
     status_archived: เก็บถาวร
     role: บทบาท
     token: โทเค็น
-    token_placeholder: ระบุโทเค็นความปลอดภัย
     provider: ผู้ให้บริการ
     last_page: หน้าสุดท้าย
     last_access: การเข้าถึงล่าสุด
@@ -1250,6 +1249,8 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
+  system-token:
+    system-token: โทเค็น
 displays:
   translations:
     translations: การแปลภาษา

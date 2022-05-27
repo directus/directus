@@ -926,7 +926,6 @@ fields:
     status_archived: Arkistoitu
     role: Rooli
     token: Token
-    token_placeholder: Syötä suojatun pääsyn tunniste...
     provider: Tarjoaja
     external_identifier: Ulkopuoliset tunnistautumiset
     last_page: Viimeinen sivu
@@ -1427,6 +1426,8 @@ interfaces:
     header_color: Otsikon väri
     start_open: Aloita avattuna
     start_closed: Aloita suljettuna
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Käännökset

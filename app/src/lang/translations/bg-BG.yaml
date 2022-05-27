@@ -1020,7 +1020,6 @@ fields:
     status_archived: Архивиран
     role: Роля
     token: Токен
-    token_placeholder: Въвеждане на сигурен токен...
     provider: Доставчик
     external_identifier: Външен идентификатор
     last_page: Последна страница
@@ -1613,6 +1612,8 @@ interfaces:
     header_color: Цвят на заглавието
     start_open: Отворена в началото
     start_closed: Затворена в началото
+  system-token:
+    system-token: Токен
 displays:
   translations:
     translations: Преводи

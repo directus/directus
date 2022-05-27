@@ -911,7 +911,6 @@ fields:
     status_archived: Diarsipkan
     role: Peran
     token: Token
-    token_placeholder: Masukkan token akses aman...
     provider: Penyedia
     external_identifier: Pengidentifikasi Eksternal
     last_page: Halaman Terakhir
@@ -1228,6 +1227,8 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Terjemahan

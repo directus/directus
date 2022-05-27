@@ -1018,7 +1018,6 @@ fields:
     status_archived: Archivado
     role: Rol
     token: Token
-    token_placeholder: Introduzca un token de acceso seguro...
     provider: Proveedor
     external_identifier: Identificador externo
     last_page: Última página
@@ -1611,6 +1610,8 @@ interfaces:
     header_color: Color del encabezado
     start_open: Iniciar apertura
     start_closed: Iniciar colapsado
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traducciónes

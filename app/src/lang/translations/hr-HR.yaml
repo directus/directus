@@ -1022,7 +1022,6 @@ fields:
     status_archived: Arhivirano
     role: Uloge
     token: Token
-    token_placeholder: Unesite siguran pristupni token...
     provider: Pružatelj
     external_identifier: Vanjski identifikator
     last_page: Zadnja stranica
@@ -1592,6 +1591,8 @@ interfaces:
     header_color: Boja zaglavlja
     start_open: Počni otvoren
     start_closed: Započni zatvoren
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Prijevodi
