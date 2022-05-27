@@ -64,6 +64,6 @@ describe('isAllowed', () => {
 	}); // 5
 
 	it('returns false if action is not share and there is no matching fields', () => {
-		expect(isAllowed('test', 'update', { testField: 'field' }, false)).toBe(true);
+		expect(isAllowed('test', 'update', { no: 'no-match' }, true)).toBe(false);
 	}); // 6
 });
