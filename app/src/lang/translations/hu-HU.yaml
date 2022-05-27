@@ -1160,7 +1160,6 @@ sort_direction: Rendezés iránya
 sort_asc: Növekvő sorrend
 sort_desc: Csökkenő sorrend
 template: Sablon
-require_value_to_be_set: Az érték beállítása kötelező
 translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték

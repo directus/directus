@@ -326,6 +326,7 @@ revision_delta_deleted: Gelöscht
 revision_delta_reverted: Zurückgesetzt
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+download_page_as_csv: 'Als CSV herunterladen'
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
 revision_preview: Überarbeitungs-Vorschau
@@ -1317,7 +1318,6 @@ export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die 
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
-require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
@@ -1741,6 +1741,7 @@ layouts:
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
     optional: Optional
+    first_day: Erster Tag der Woche
   map:
     map: Karte
     basemap: Basiskarte

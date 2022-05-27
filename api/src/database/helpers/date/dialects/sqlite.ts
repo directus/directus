@@ -2,8 +2,13 @@ import { DateHelper } from '../types';
 
 export class DateHelperSQLite extends DateHelper {
 	parse(date: string): string {
-		const newDate = new Date(date);
-		return (newDate.getTime() - newDate.getTimezoneOffset() * 60 * 1000).toString();
+		// Return the time as string
+		if (date.length <= 8 && date.includes(':')) {
+			return date;
+		}
+
+		// Return dates in epoch milliseconds
+		return String(new Date(date).getTime());
 	}
 
 	fieldFlagForField(fieldType: string): string {

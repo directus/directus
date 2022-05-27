@@ -115,7 +115,6 @@ Only available if a Sort column has been configured in the Collection's Data Mod
 Link
 -->
 
-
 :::
 
 ## Card Layout
@@ -228,7 +227,6 @@ Link to Map Field
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
 task, because it groups Items onto columns according to their status _(e.g. "Not Started", "In Progress", "Under
 Review", "Complete", or any other status defined)_. The following controls are available.
-
 
 **Layout Options**
 

@@ -53,6 +53,10 @@
 									value: 'auto_int',
 								},
 								{
+									text: t('auto_increment_big_integer'),
+									value: 'auto_big_int',
+								},
+								{
 									text: t('generated_uuid'),
 									value: 'uuid',
 								},
@@ -196,7 +200,7 @@ export default defineComponent({
 		const collectionName = ref(null);
 		const singleton = ref(false);
 		const primaryKeyFieldName = ref('id');
-		const primaryKeyFieldType = ref<'auto_int' | 'uuid' | 'manual'>('auto_int');
+		const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
 
 		const sortField = ref<string>();
 
@@ -306,7 +310,7 @@ export default defineComponent({
 			} else {
 				return {
 					field: primaryKeyFieldName.value,
-					type: 'integer',
+					type: primaryKeyFieldType.value === 'auto_big_int' ? 'bigInteger' : 'integer',
 					meta: {
 						hidden: true,
 						interface: 'input',
