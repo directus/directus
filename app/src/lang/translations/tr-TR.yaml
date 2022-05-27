@@ -966,7 +966,6 @@ fields:
     status_archived: Arşivlenmiş
     role: Rol
     token: Erişim Anahtarı (Token)
-    token_placeholder: Güvenli bir erişim anahtarı girin...
     provider: Sağlayıcı
     external_identifier: Dış Tanımlayıcı
     last_page: Son Sayfa
@@ -1531,6 +1530,8 @@ interfaces:
     header_color: Başlık Rengi
     start_open: Açık Başla
     start_closed: Kapalı Başla
+  system-token:
+    system-token: Erişim Anahtarı (Token)
 displays:
   translations:
     translations: Çeviriler

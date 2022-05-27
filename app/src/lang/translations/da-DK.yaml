@@ -991,7 +991,6 @@ fields:
     status_suspended: Suspenderet
     status_archived: Arkiveret
     role: Rolle
-    token_placeholder: Indtast en sikker adgangstok...
     provider: Udbyder
     external_identifier: External Identifier
     last_page: Sidste side

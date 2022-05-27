@@ -981,7 +981,6 @@ fields:
     status_archived: Arkiverad
     role: Roll
     token: Token
-    token_placeholder: Ange ett säkert åtkomsttoken...
     provider: Leverantör
     external_identifier: Extern identifierare
     last_page: Sista sidan
@@ -1468,6 +1467,8 @@ interfaces:
     header_color: Färg sidhuvud
     start_open: Start öppen
     start_closed: Start stängd
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Översättningar

@@ -928,7 +928,6 @@ fields:
     status_archived: Archiválva
     role: Szerepkör
     token: Token
-    token_placeholder: Írja be a biztonságos hozzáférés tokenjét...
     provider: Szolgáltató
     external_identifier: Külső azonosító
     last_page: Utolsó oldal
@@ -1417,6 +1416,8 @@ interfaces:
     header_color: Fejléc színe
     start_open: Indíts nyitva!
     start_closed: Indíts zárva!
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Fordítások

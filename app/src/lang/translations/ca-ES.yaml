@@ -981,7 +981,6 @@ fields:
     status_archived: Arxivat
     role: Rol
     token: Token
-    token_placeholder: Entra un testimoni d'accés (token) segur...
     provider: Proveïdor
     external_identifier: Identificador extern
     last_page: Última pàgina
@@ -1447,6 +1446,8 @@ interfaces:
     header_color: Color de la capçalera
     start_open: Comença obert
     start_closed: Comená tancat
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduccions

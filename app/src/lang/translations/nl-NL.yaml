@@ -990,7 +990,6 @@ sort_direction: Sorteerrichting
 sort_asc: Sorteer Oplopend
 sort_desc: Sorteer Aflopend
 template: Sjabloon
-require_value_to_be_set: Verplicht veld bij aanmaken
 translation: Vertaling
 value: Waarde
 view_project: Bekijk project
@@ -1125,6 +1124,8 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Vertalingen

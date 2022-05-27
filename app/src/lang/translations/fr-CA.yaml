@@ -1021,7 +1021,6 @@ fields:
     status_archived: Archivé
     role: Rôle
     token: Token
-    token_placeholder: Entrez un jeton d'accès sécurisé...
     provider: Fournisseur
     external_identifier: Identifiant externe
     last_page: Dernière page
@@ -1613,6 +1612,8 @@ interfaces:
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traductions
