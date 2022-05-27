@@ -8,9 +8,12 @@
 			start-open
 		>
 			<div class="scroll-container">
-				<button v-for="revision in group.revisions" :key="revision.id" class="log" @click="previewing = revision">
-					{{ getTime(revision.activity.timestamp) }}
-				</button>
+				<div class="log">
+					<button v-for="revision in group.revisions" :key="revision.id" @click="previewing = revision">
+						<v-icon name="play_arrow" color="var(--primary)" small />
+						{{ getTime(revision.activity.timestamp) }}
+					</button>
+				</div>
 			</div>
 		</v-detail>
 	</sidebar-detail>
@@ -48,7 +51,7 @@
 					</div>
 				</div>
 
-				<div v-for="step of status" :key="step.id" class="step">
+				<div v-for="step of steps" :key="step.id" class="step">
 					<div class="header">
 						<span class="dot" :class="step.status" />
 						<span v-tooltip="step.key" class="type-label">
@@ -74,12 +77,12 @@
 
 <script lang="ts" setup>
 import { useRevisions } from '@/composables/use-revisions';
+import { getOperations } from '@/operations';
 import { Action, FlowRaw } from '@directus/shared/types';
+import { format } from 'date-fns';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { format } from 'date-fns';
 import { getTriggers } from '../triggers';
-import { getOperations } from '@/operations';
 
 const { t, d } = useI18n();
 
@@ -120,12 +123,22 @@ const triggerData = computed(() => {
 	};
 });
 
-const status = computed(() => {
-	if (!unref(previewing)?.data?.status) return [];
-	const { status } = unref(previewing).data;
+const steps = computed(() => {
+	if (!unref(previewing)?.data?.steps) return [];
+	const { steps } = unref(previewing).data;
 
-	return status.map(
-		({ operation, status, key }: { operation: string; status: 'reject' | 'resolve' | 'unknown'; key: string }) => {
+	return steps.map(
+		({
+			operation,
+			status,
+			key,
+			options,
+		}: {
+			operation: string;
+			status: 'reject' | 'resolve' | 'unknown';
+			key: string;
+			options: Record<string, any>;
+		}) => {
 			const operationConfiguration = props.flow.operations.find((operationConfig) => operationConfig.id === operation);
 
 			const operationType = operations.value.find((operation) => operation.id === operationConfiguration?.type);
@@ -134,7 +147,7 @@ const status = computed(() => {
 				id: operation,
 				name: operationConfiguration?.name ?? key,
 				data: unref(previewing).data?.[key] ?? null,
-				options: operationConfiguration?.options ?? null,
+				options: options ?? null,
 				operationType: operationType?.name ?? operationConfiguration?.type ?? '--',
 				key,
 				status,
@@ -154,7 +167,45 @@ function getTime(timestamp: string) {
 }
 
 .log {
+	position: relative;
 	display: block;
+
+	button {
+		position: relative;
+		z-index: 2;
+		display: block;
+		width: 100%;
+		text-align: left;
+	}
+
+	&::before {
+		position: absolute;
+		top: -4px;
+		left: -4px;
+		z-index: 1;
+		width: calc(100% + 8px);
+		height: calc(100% + 8px);
+		background-color: var(--background-normal-alt);
+		border-radius: var(--border-radius);
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+		content: '';
+		pointer-events: none;
+	}
+
+	&:hover {
+		cursor: pointer;
+
+		.header {
+			.dot {
+				border-color: var(--background-normal-alt);
+			}
+		}
+
+		&::before {
+			opacity: 1;
+		}
+	}
 }
 
 .json {
@@ -163,6 +214,7 @@ function getTime(timestamp: string) {
 	border-radius: var(--border-radius);
 	padding: 20px;
 	margin-top: 20px;
+	white-space: pre-wrap;
 }
 
 .steps {

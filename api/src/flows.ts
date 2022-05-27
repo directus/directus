@@ -273,14 +273,14 @@ class FlowManager {
 
 		let nextOperation = flow.operation;
 
-		const statuses: { operation: string; key: string; status: 'resolve' | 'reject' | 'unknown' }[] = [];
+		const steps: { operation: string; key: string; status: 'resolve' | 'reject' | 'unknown' }[] = [];
 
 		while (nextOperation !== null) {
-			const { successor, data, status } = await this.executeOperation(nextOperation, keyedData, context);
+			const { successor, data, status, options } = await this.executeOperation(nextOperation, keyedData, context);
 
 			keyedData[nextOperation.key] = data;
 			keyedData[LAST_KEY] = data;
-			statuses.push({ operation: nextOperation!.id, key: nextOperation.key, status });
+			steps.push({ operation: nextOperation!.id, key: nextOperation.key, status, options });
 
 			nextOperation = successor;
 		}
@@ -313,7 +313,7 @@ class FlowManager {
 					collection: 'directus_flows',
 					item: flow.id,
 					data: {
-						status: statuses,
+						steps: steps,
 						data: omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
 					},
 				});
@@ -333,10 +333,15 @@ class FlowManager {
 		operation: Operation,
 		keyedData: Record<string, unknown>,
 		context: Record<string, unknown> = {}
-	): Promise<{ successor: Operation | null; status: 'resolve' | 'reject' | 'unknown'; data: unknown }> {
+	): Promise<{
+		successor: Operation | null;
+		status: 'resolve' | 'reject' | 'unknown';
+		data: unknown;
+		options: Record<string, any> | null;
+	}> {
 		if (!(operation.type in this.operations)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
-			return { successor: null, status: 'unknown', data: null };
+			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
 		const handler = this.operations[operation.type];
@@ -356,9 +361,9 @@ class FlowManager {
 				...context,
 			});
 
-			return { successor: operation.resolve, status: 'resolve', data: result ?? null };
+			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error: unknown) {
-			return { successor: operation.reject, status: 'reject', data: error ?? null };
+			return { successor: operation.reject, status: 'reject', data: error ?? null, options };
 		}
 	}
 }
