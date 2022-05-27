@@ -1,4 +1,4 @@
-import { abbreviateNumber } from './abbreviate-number';
+import { abbreviateNumber } from '../../src/utils/abbreviate-number';
 
 describe('when no unit is given', () => {
 	it('when under 1000', () => {

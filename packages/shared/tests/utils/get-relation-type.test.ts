@@ -1,5 +1,5 @@
-import { getRelationType } from './get-relation-type';
-import { Relation } from '../types';
+import { getRelationType } from '../../src/utils/get-relation-type';
+import { Relation } from '../../src/types';
 
 describe('getRelationType', () => {
 	it('returns m2o when relation is the same as collection and field', () => {
