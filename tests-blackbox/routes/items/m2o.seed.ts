@@ -34,7 +34,7 @@ export type City = {
 	state_id?: number | string | null;
 };
 
-export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
+export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSchema {
 	const schema: TestsSchema = {
 		[`${collectionCountries}_${pkType}`]: {
 			id: {
@@ -42,12 +42,11 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 				type: pkType,
 				isPrimaryKey: true,
 				filters: true,
-				possibleValues:
-					pkType === 'integer'
-						? SeedFunctions.generateValues.integer({ quantity: 2, startsAt: 10000 })
-						: pkType === 'uuid'
-						? SeedFunctions.generateValues.uuid({ quantity: 2 })
-						: SeedFunctions.generateValues.string({ quantity: 2 }),
+				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+					quantity: 2,
+					seed: `collectionCountries${seed}`,
+					incremental: true,
+				}),
 			},
 			name: {
 				field: 'name',
@@ -65,12 +64,11 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 			type: pkType,
 			isPrimaryKey: true,
 			filters: false,
-			possibleValues:
-				pkType === 'integer'
-					? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
-					: pkType === 'uuid'
-					? SeedFunctions.generateValues.uuid({ quantity: 4 })
-					: SeedFunctions.generateValues.string({ quantity: 4 }),
+			possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+				quantity: 4,
+				seed: `collectionStates${seed}`,
+				incremental: true,
+			}),
 		},
 		name: {
 			field: 'name',
@@ -82,12 +80,11 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 			field: 'country_id',
 			type: 'integer',
 			filters: false,
-			possibleValues:
-				pkType === 'integer'
-					? SeedFunctions.generateValues.integer({ quantity: 2, startsAt: 10000 })
-					: pkType === 'uuid'
-					? SeedFunctions.generateValues.uuid({ quantity: 2 })
-					: SeedFunctions.generateValues.string({ quantity: 2 }),
+			possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+				quantity: 2,
+				seed: `collectionCountries${seed}`,
+				incremental: true,
+			}),
 			children: schema[`${collectionCountries}_${pkType}`],
 			relatedCollection: `${collectionCountries}_${pkType}`,
 		},
@@ -99,12 +96,11 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 			type: 'integer',
 			isPrimaryKey: true,
 			filters: false,
-			possibleValues:
-				pkType === 'integer'
-					? SeedFunctions.generateValues.integer({ quantity: 8, startsAt: 10000 })
-					: pkType === 'uuid'
-					? SeedFunctions.generateValues.uuid({ quantity: 8 })
-					: SeedFunctions.generateValues.string({ quantity: 8 }),
+			possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+				quantity: 8,
+				seed: `collectionCities${seed}`,
+				incremental: true,
+			}),
 		},
 		name: {
 			field: 'name',
@@ -125,12 +121,11 @@ export function getTestsSchema(pkType: PrimaryKeyType): TestsSchema {
 			field: 'state_id',
 			type: 'integer',
 			filters: false,
-			possibleValues:
-				pkType === 'integer'
-					? SeedFunctions.generateValues.integer({ quantity: 4, startsAt: 10000 })
-					: pkType === 'uuid'
-					? SeedFunctions.generateValues.uuid({ quantity: 4 })
-					: SeedFunctions.generateValues.string({ quantity: 4 }),
+			possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+				quantity: 4,
+				seed: `collectionCountries${seed}`,
+				incremental: true,
+			}),
 			children: schema[`${collectionStates}_${pkType}`],
 			relatedCollection: `${collectionStates}_${pkType}`,
 		},

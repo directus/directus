@@ -1,16 +1,20 @@
 import { v5 as uuid } from 'uuid';
 import * as seedrandom from 'seedrandom';
+import { PrimaryKeyType } from '@common/types';
 
 const SEED_UUID_NAMESPACE = 'e81a0012-568b-415c-96fa-66508f594067';
 const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
 
 type OptionsSeedGenerateBase = {
 	quantity: number;
-	seed?: string;
+	seed?: string | undefined;
 };
+
+export type OptionsSeedGeneratePrimaryKeys = OptionsSeedGenerateBase & OptionsSeedGenerateInteger;
 
 export type OptionsSeedGenerateInteger = OptionsSeedGenerateBase & {
 	startsAt?: number;
+	incremental?: boolean;
 };
 
 export type OptionsSeedGenerateBigInteger = OptionsSeedGenerateBase;
@@ -59,6 +63,7 @@ export type OptionsSeedGenerateTimestamp = OptionsSeedGenerateBase & {
 };
 
 export const SeedFunctions = {
+	generatePrimaryKeys,
 	generateValues: {
 		integer: generateInteger,
 		bigInteger: generateBigInteger,
@@ -79,15 +84,40 @@ export const SeedFunctions = {
 	},
 };
 
+function generatePrimaryKeys(pkType: PrimaryKeyType, options: OptionsSeedGeneratePrimaryKeys) {
+	switch (pkType) {
+		case 'integer':
+			return generateInteger(options);
+		case 'uuid':
+			return generateUUID(options);
+		case 'string':
+			return generateString(options);
+		default:
+			throw new Error(`Unsupported primary key type: ${pkType}`);
+	}
+}
+
 function generateInteger(options: OptionsSeedGenerateInteger) {
 	const random = seedrandom.xor128(options.seed ?? 'default');
 	const values = [];
 
-	for (let i = 0; i < options.quantity; i++) {
-		if (options.startsAt) {
-			values.push(options.startsAt + i);
-		} else {
-			values.push(Math.floor(random.int32() / 2) + i);
+	if (options.incremental) {
+		const randomStartValue = Math.floor((random() * Number.MAX_SAFE_INTEGER) / 2);
+
+		for (let i = 0; i < options.quantity; i++) {
+			if (options.startsAt) {
+				values.push(options.startsAt + i);
+			} else {
+				values.push(randomStartValue + i);
+			}
+		}
+	} else {
+		for (let i = 0; i < options.quantity; i++) {
+			if (options.startsAt) {
+				values.push(Math.floor((random() * Number.MAX_SAFE_INTEGER) / 2) + options.startsAt + i);
+			} else {
+				values.push(Math.floor((random() * Number.MAX_SAFE_INTEGER) / 2) + i);
+			}
 		}
 	}
 
@@ -140,7 +170,7 @@ function generateString(options: OptionsSeedGenerateString) {
 	const values = [];
 
 	for (let i = 0; i < options.quantity; i++) {
-		let value = uuid(String((options.seed ?? 'default') + i), SEED_UUID_NAMESPACE);
+		let value = uuid(String((options.seed ?? 'default') + i), SEED_UUID_NAMESPACE).replace(/-/g, '');
 		if (options.startsWith) {
 			value = options.startsWith + value;
 		}
