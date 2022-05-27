@@ -13,7 +13,7 @@
 			}"
 		>
 			<template v-if="!$slots.panel">
-				<v-workspace-panel
+				<v-workspace-tile
 					v-for="panel in panels"
 					:key="panel.id"
 					v-bind="panel"
@@ -27,7 +27,7 @@
 					@duplicate="$emit('duplicate', panel)"
 				>
 					<slot :panel="panel"></slot>
-				</v-workspace-panel>
+				</v-workspace-tile>
 			</template>
 			<template v-else>
 				<template v-for="panel in panels" :key="panel.id">
@@ -41,12 +41,12 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
-import { AppPanel } from './v-workspace-panel.vue';
+import { AppTile } from './v-workspace-tile.vue';
 import { cssVar } from '@directus/shared/utils/browser';
 
 const props = withDefaults(
 	defineProps<{
-		panels: AppPanel[];
+		panels: AppTile[];
 		editMode?: boolean;
 		zoomToFit?: boolean;
 		resizable?: boolean;

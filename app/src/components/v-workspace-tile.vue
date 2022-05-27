@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="v-workspace-panel"
+		class="v-workspace-tile"
 		:style="positionStyling"
 		:class="{
 			editing: editMode,
@@ -72,7 +72,7 @@
 			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
 		</div>
 
-		<div class="panel-content" :class="{ 'has-header': showHeader }">
+		<div class="tile-content" :class="{ 'has-header': showHeader }">
 			<slot></slot>
 			<div v-if="$slots.footer" class="footer">
 				<slot name="footer"></slot>
@@ -88,7 +88,7 @@ import { computed, ref, reactive, StyleValue } from 'vue';
 import { throttle } from 'lodash';
 import { useI18n } from 'vue-i18n';
 
-export type AppPanel = {
+export type AppTile = {
 	id: string;
 	x: number;
 	y: number;
@@ -105,7 +105,7 @@ export type AppPanel = {
 	borderRadius?: [boolean, boolean, boolean, boolean];
 };
 
-// Right now, it is not possible to do type Props = AppPanel & {resizable?: boolean; editMode?: boolean}
+// Right now, it is not possible to do type Props = AppTile & {resizable?: boolean; editMode?: boolean}
 type Props = {
 	id: string;
 	x: number;
@@ -307,7 +307,7 @@ function useDragDrop() {
 </script>
 
 <style scoped lang="scss">
-.v-workspace-panel {
+.v-workspace-tile {
 	--pos-x: 1;
 	--pos-y: 1;
 	--width: 6;
@@ -349,7 +349,7 @@ function useDragDrop() {
 			opacity: 1;
 		}
 
-		& .panel-content {
+		& .tile-content {
 			pointer-events: none;
 		}
 	}
@@ -374,7 +374,7 @@ function useDragDrop() {
 	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 	pointer-events: none;
 }
-.panel-content {
+.tile-content {
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -383,7 +383,7 @@ function useDragDrop() {
 	overflow: hidden;
 }
 
-.panel-content.has-header {
+.tile-content.has-header {
 	height: calc(100% - 48px);
 }
 

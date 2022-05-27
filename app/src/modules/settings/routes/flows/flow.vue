@@ -188,7 +188,7 @@ import { nanoid } from 'nanoid';
 import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import Operation, { ArrowInfo, Target } from './components/operation.vue';
-import { AppPanel } from '@/components/v-workspace-panel.vue';
+import { AppTile } from '@/components/v-workspace-tile.vue';
 import TriggerDetail from './components/trigger-detail.vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import Arrows from './components/arrows.vue';
@@ -524,7 +524,7 @@ function duplicatePanel(panel: OperationRaw) {
 	stageOperationEdits({ edits: newPanel, id: '+' });
 }
 
-function editPanel(panel: AppPanel) {
+function editPanel(panel: AppTile) {
 	if (panel.id === '$trigger') triggerDetailOpen.value = true;
 	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
 }

@@ -1,5 +1,5 @@
 <template>
-	<v-workspace-panel
+	<v-workspace-tile
 		v-bind="panel"
 		:name="panel.panel_name"
 		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
@@ -134,7 +134,7 @@
 				</span>
 			</div>
 		</template>
-	</v-workspace-panel>
+	</v-workspace-tile>
 </template>
 
 <script lang="ts" setup>
@@ -315,7 +315,7 @@ function pointerLeave() {
 </script>
 
 <style lang="scss" scoped>
-.v-workspace-panel.block-container {
+.v-workspace-tile.block-container {
 	position: relative;
 	overflow: visible;
 	padding: 4px;
