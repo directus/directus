@@ -19,44 +19,57 @@
 		<v-tabs-items v-model="currentTab" class="content">
 			<v-tab-item value="flow_setup">
 				<div class="fields">
-					<div class="field full">
+					<div class="field half">
 						<div class="type-label">
 							{{ t('flow_name') }}
 							<v-icon v-tooltip="t('required')" class="required" name="star" sup />
 						</div>
 						<v-input v-model="values.name" autofocus :placeholder="t('flow_name')" />
 					</div>
-					<div class="field half-left">
-						<div class="type-label">{{ t('icon') }}</div>
-						<interface-select-icon :value="values.icon" @input="values.icon = $event" />
-					</div>
-					<div class="field half-right">
-						<div class="type-label">{{ t('color') }}</div>
-						<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
+					<div class="field half">
+						<div class="type-label">{{ t('status') }}</div>
+						<v-select
+							v-model="values.status"
+							:items="[
+								{
+									text: t('active'),
+									value: 'active',
+								},
+								{
+									text: t('inactive'),
+									value: 'inactive',
+								},
+							]"
+						/>
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ t('note') }}</div>
 						<v-input v-model="values.note" :placeholder="t('note')" />
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ t('status') }}</div>
-						<v-checkbox v-model="values.status" block :label="t('active')" />
+						<div class="type-label">{{ t('icon') }}</div>
+						<interface-select-icon :value="values.icon" @input="values.icon = $event" />
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ t('fields.directus_collections.accountability') }}</div>
+						<div class="type-label">{{ t('color') }}</div>
+						<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
+					</div>
+					<v-divider class="full" />
+					<div class="field half-left">
+						<div class="type-label">{{ t('flow_tracking') }}</div>
 						<v-select
 							v-model="values.accountability"
 							:items="[
 								{
-									text: t('field_options.directus_collections.track_activity_revisions'),
+									text: t('flow_tracking_all'),
 									value: 'all',
 								},
 								{
-									text: t('field_options.directus_collections.only_track_activity'),
+									text: t('flow_tracking_activity'),
 									value: 'activity',
 								},
 								{
-									text: t('field_options.directus_collections.do_not_track_anything'),
+									text: t('flow_tracking_null'),
 									value: null,
 								},
 							]"
@@ -118,7 +131,7 @@ interface Values {
 	icon: string | null;
 	color: string | null;
 	note: string | null;
-	status: boolean;
+	status: string;
 	accountability: string | null;
 	trigger?: string;
 	options: Record<string, any>;
@@ -139,7 +152,7 @@ const values: Values = reactive({
 	icon: 'bolt',
 	color: null,
 	note: null,
-	status: true,
+	status: 'active',
 	accountability: 'all',
 	trigger: undefined,
 	options: {},
@@ -165,11 +178,7 @@ async function save() {
 	saving.value = true;
 
 	try {
-		const response = await api.post(
-			'/flows',
-			{ ...values, status: values.status ? 'active' : 'inactive' },
-			{ params: { fields: ['id'] } }
-		);
+		const response = await api.post('/flows', values, { params: { fields: ['id'] } });
 		await flowsStore.hydrate();
 
 		router.push({

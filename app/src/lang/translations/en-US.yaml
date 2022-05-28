@@ -778,6 +778,10 @@ create_flow: Create Flow
 creating_new_flow: Creating New Flow
 flow_setup: Flow Setup
 flow_name: Name
+flow_tracking: Activity & Logs Tracking
+flow_tracking_all: Track Activity & Logs
+flow_tracking_activity: Only Track Activity
+flow_tracking_null: Do Not Track Anything
 start_flow: Start Flow
 stop_flow: Stop Flow
 create_operation: Create Operation
