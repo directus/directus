@@ -1,8 +1,9 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import getLocalType from './get-local-type';
-import logger from '../logger';
 import env from '../env';
+import logger from '../logger';
+import getLocalType from './get-local-type';
+import { parseJSON } from './parse-json';
 
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column
@@ -59,7 +60,7 @@ function castToObject(value: any): any | any[] {
 
 	if (typeof value === 'string') {
 		try {
-			return JSON.parse(value);
+			return parseJSON(value);
 		} catch (err: any) {
 			if (env.NODE_ENV === 'development') {
 				logger.error(err);

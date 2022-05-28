@@ -32,7 +32,7 @@ export enum Meta {
 export type QueryOne<T> = {
 	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
 	search?: string;
-	deep?: Record<string, DeepQueryMany<T>>;
+	deep?: Deep<T>;
 	export?: 'json' | 'csv' | 'xml';
 	filter?: Filter<T>;
 };
@@ -48,15 +48,17 @@ export type QueryMany<T> = QueryOne<T> & {
 	alias?: Record<string, string>;
 };
 
+export type Deep<T> = { [K in keyof SingleItem<T>]?: DeepQueryMany<SingleItem<T>[K]> };
+
 export type DeepQueryMany<T> = {
-	[K in keyof QueryMany<T> as `_${string & K}`]: QueryMany<T>[K];
+	[K in keyof QueryMany<SingleItem<T>> as `_${string & K}`]: QueryMany<SingleItem<T>>[K];
 };
 
 export type Aggregate = {
 	[K in keyof SharedAggregate]: string;
 };
 
-export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
+export type Sort<T> = (`${Extract<keyof SingleItem<T>, string>}` | `-${Extract<keyof SingleItem<T>, string>}`)[];
 
 export type FilterOperators<T> = {
 	_eq?: T;
@@ -90,14 +92,17 @@ export type LogicalFilterOr<T> = { _or: Filter<T>[] };
 export type LogicalFilter<T> = LogicalFilterAnd<T> | LogicalFilterOr<T>;
 
 export type FieldFilter<T> = {
-	[K in keyof T]?: FilterOperators<T[K]> | FieldFilter<T[K]>;
+	[K in keyof SingleItem<T>]?: FilterOperators<SingleItem<T>[K]> | FieldFilter<SingleItem<T>[K]>;
 };
 
-export type Filter<T> = LogicalFilter<T> | FieldFilter<T extends Array<unknown> ? T[number] : T>;
+export type Filter<T> = LogicalFilter<T> | FieldFilter<T>;
 
 export type ItemsOptions = {
 	requestOptions: TransportRequestOptions;
 };
+
+type SingleItem<T> = Exclude<Single<T>, ID>;
+type Single<T> = T extends Array<unknown> ? T[number] : T;
 
 /**
  * CRUD at its finest

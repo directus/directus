@@ -95,6 +95,7 @@ update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
   Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
+delete_personal_bookmark: Delete Personal Bookmark
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
@@ -997,7 +998,6 @@ fields:
     status_archived: Archived
     role: Role
     token: Token
-    token_placeholder: Enter a secure access token...
     provider: Provider
     external_identifier: External Identifier
     last_page: Last Page
@@ -1299,7 +1299,6 @@ export_started_copy: Your export has started. You'll be notified when it's ready
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
-require_value_to_be_set: Require value to be set
 translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
@@ -1590,6 +1589,8 @@ interfaces:
     header_color: Header Colour
     start_open: Start Open
     start_closed: Start Closed
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Translations

@@ -326,6 +326,8 @@ revision_delta_deleted: Eliminato
 revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
+presentation_text_values_cannot_be_reimported: "Usa il testo di presentazione, i valori non possono essere reimportati."
+download_page_as_csv: 'Scarica la pagina in formato CSV'
 private_user: Utenti privati
 creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
@@ -556,7 +558,9 @@ errors:
   INVALID_CREDENTIALS: Nome utente o password sbagliati
   INVALID_OTP: Password monouso errata
   INVALID_PAYLOAD: Payload non valido
+  INVALID_PROVIDER: L'utente appartiene a un provider di autenticazione diverso
   INVALID_QUERY: Query non valida
+  INVALID_USER: Autenticazione dell'utente fallita
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
@@ -655,6 +659,7 @@ operators:
   nnull: Non è null
   contains: contiene
   ncontains: Non contiene
+  icontains: Contiene (ignora maiuscole/minuscole)
   starts_with: Inizia con
   nstarts_with: Non inizia con
   ends_with: Finisce con
@@ -1016,7 +1021,6 @@ fields:
     status_archived: Archiviato
     role: Ruolo
     token: Token
-    token_placeholder: Inserisci un token di accesso sicuro...
     provider: Provider
     external_identifier: Identificatore esterno
     last_page: Ultima Pagina
@@ -1318,7 +1322,6 @@ export_started_copy: La tua esportazione è iniziata. Sarai avvisato quando sar�
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
 template: Template
-require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
@@ -1610,6 +1613,8 @@ interfaces:
     header_color: Colore dell'intestazione
     start_open: Inizia aperto
     start_closed: Inizia chiuso
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduzioni
@@ -1821,6 +1826,7 @@ panels:
     show_data_label: Mostra l'etichetta dei dati
     group_by: Raggruppato per
     group_and_function: Devi includere o escludere sia un gruppo che una funzione.
+    y_axis_NaN: L'asse Y deve essere un numero.
     y_axis_conditional_one: Il valore per la condizione
     y_axis_conditional_two: deve essere un numero.
   linechart:

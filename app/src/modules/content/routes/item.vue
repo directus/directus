@@ -134,7 +134,7 @@
 				<template #append-outer>
 					<save-options
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
-						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
+						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -366,6 +366,12 @@ export default defineComponent({
 			return props.primaryKey;
 		});
 
+		const disabledOptions = computed(() => {
+			if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
+			if (isNew.value) return ['save-as-copy'];
+			return [];
+		});
+
 		return {
 			t,
 			router,
@@ -384,6 +390,7 @@ export default defineComponent({
 			confirmArchive,
 			deleting,
 			archiving,
+			disabledOptions,
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,

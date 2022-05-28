@@ -1,18 +1,19 @@
-import { format } from 'date-fns';
-import Joi from 'joi';
-import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
-import getDatabase from '../database';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, Alterations } from '../types';
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
-import { ItemsService } from './items';
+import { format } from 'date-fns';
 import { unflatten } from 'flat';
-import { getHelpers, Helpers } from '../database/helpers';
+import Joi from 'joi';
+import { Knex } from 'knex';
+import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
+import getDatabase from '../database';
+import { getHelpers, Helpers } from '../database/helpers';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { AbstractServiceOptions, Alterations, Item, PrimaryKey } from '../types';
 import { generateHash } from '../utils/generate-hash';
+import { parseJSON } from '../utils/parse-json';
+import { ItemsService } from './items';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -81,7 +82,7 @@ export class PayloadService {
 			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
-						return JSON.parse(value);
+						return parseJSON(value);
 					} catch {
 						return value;
 					}
@@ -241,7 +242,7 @@ export class PayloadService {
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
-				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
+				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
