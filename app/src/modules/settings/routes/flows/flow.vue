@@ -104,7 +104,7 @@
 			</v-workspace>
 		</div>
 
-		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" :first-open="firstOpen" />
+		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" />
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -205,6 +205,7 @@ const { t } = useI18n();
 const props = defineProps<{
 	primaryKey: string;
 	operationId?: string;
+	firstOpen?: boolean;
 }>();
 
 const saving = ref(false);
@@ -232,7 +233,7 @@ const exitingOperationKeys = computed(() => [
 	...stagedPanels.value.filter((stagedPanel) => stagedPanel.key !== undefined).map((stagedPanel) => stagedPanel.key!),
 ]);
 
-const firstOpen = computed(() => !flow.value?.trigger);
+const firstOpen = computed(() => !flow.value?.trigger || !!props.firstOpen);
 const editMode = ref(firstOpen.value || props.operationId !== undefined);
 
 const confirmDelete = ref(false);
@@ -256,7 +257,7 @@ async function deleteFlow() {
 
 // ------------- Manage Panels ------------- //
 
-const triggerDetailOpen = ref(firstOpen.value);
+const triggerDetailOpen = ref(false);
 const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 const panelsToBeDeleted = ref<string[]>([]);
 const hoveredPanelID = ref<string | null>(null);

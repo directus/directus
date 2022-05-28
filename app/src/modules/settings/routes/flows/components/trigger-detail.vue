@@ -1,11 +1,10 @@
 <template>
 	<v-drawer
 		:model-value="open"
-		:title="t(firstOpen ? 'create_trigger' : 'change_trigger')"
+		:title="t('change_trigger')"
 		:subtitle="t('trigger_options')"
 		icon="offline_bolt"
 		persistent
-		:cancelable="!firstOpen"
 		@cancel="$emit('update:open', false)"
 	>
 		<template #actions>
@@ -40,7 +39,6 @@ const { t } = useI18n();
 const props = defineProps<{
 	open: boolean;
 	flow?: FlowRaw;
-	firstOpen: boolean;
 	preview?: boolean;
 }>();
 

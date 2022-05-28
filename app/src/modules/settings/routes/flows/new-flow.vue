@@ -172,7 +172,10 @@ async function save() {
 		);
 		await flowsStore.hydrate();
 
-		router.push(`/settings/flows/${response.data.data.id}`);
+		router.push({
+			name: 'settings-flows-item',
+			params: { primaryKey: response.data.data.id, firstOpen: 'true' },
+		});
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
