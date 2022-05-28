@@ -978,7 +978,6 @@ fields:
     status_archived: Arquivado
     role: Função
     token: Token
-    token_placeholder: Digite um token de acesso seguro...
     provider: Provedor
     external_identifier: Identificador externo
     last_page: Última página
@@ -1249,7 +1248,6 @@ sort_direction: Direção da ordenação
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
 template: Template
-require_value_to_be_set: Valor a ser definido é requerido
 translation: Tradução
 translation_placeholder: Insira uma tradução...
 value: Valor
@@ -1517,6 +1515,8 @@ interfaces:
     header_color: Cor do Cabeçalho
     start_open: Iniciar Aberto
     start_closed: Iniciar Fechado
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduções

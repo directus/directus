@@ -33,8 +33,8 @@ Each Directus Dashboard provides a drag-and-drop canvas where you can create and
 build out customized analytics. The Dashboard area automatically expands as you add more and more Panels. In theory, a
 Dashboard area can expand infinitely large... but in practice, users will probably only want to build Dashboards as
 large as the screen they will be viewing on. You are able to create as many Dashboards as you need. Additionally, the
-Dashboard view, edit, and create permissions are
-[fully configurable](/configuration/users-roles-permissions/#configuring-permissions) by User Role.
+Dashboard view, edit, and create permissions are [fully configurable](/configuration/users-roles-permissions/) by User
+Role.
 
 ![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/dashboards-overview-20220216A.webp)
 

@@ -911,7 +911,6 @@ fields:
     status_archived: Diarsipkan
     role: Peran
     token: Token
-    token_placeholder: Masukkan token akses aman...
     provider: Penyedia
     external_identifier: Pengidentifikasi Eksternal
     last_page: Halaman Terakhir
@@ -1110,7 +1109,6 @@ sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
 sort_desc: Mengurut Turun
 template: Templat
-require_value_to_be_set: Membutuhkan nilai untuk ditetapkan
 translation: Terjemahan
 translation_placeholder: Masukkan terjemahan...
 value: Nilai
@@ -1229,6 +1227,8 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Terjemahan

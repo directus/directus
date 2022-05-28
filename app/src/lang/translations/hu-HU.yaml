@@ -928,7 +928,6 @@ fields:
     status_archived: Archiválva
     role: Szerepkör
     token: Token
-    token_placeholder: Írja be a biztonságos hozzáférés tokenjét...
     provider: Szolgáltató
     external_identifier: Külső azonosító
     last_page: Utolsó oldal
@@ -1160,7 +1159,6 @@ sort_direction: Rendezés iránya
 sort_asc: Növekvő sorrend
 sort_desc: Csökkenő sorrend
 template: Sablon
-require_value_to_be_set: Az érték beállítása kötelező
 translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
@@ -1418,6 +1416,8 @@ interfaces:
     header_color: Fejléc színe
     start_open: Indíts nyitva!
     start_closed: Indíts zárva!
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Fordítások
