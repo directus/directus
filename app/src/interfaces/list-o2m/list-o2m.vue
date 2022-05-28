@@ -40,11 +40,12 @@
 			<v-table
 				v-if="layout === LAYOUTS.TABLE"
 				v-model:sort="sort"
+				v-model:headers="headers"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
-				:headers="headers"
 				:items="displayItems"
 				:row-height="tableRowHeight"
+				show-resize
 				@click:row="editRow"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
@@ -289,33 +290,40 @@ const showingCount = computed(() => {
 	);
 });
 
-const headers = computed(() => {
-	if (!relationInfo.value) {
-		return [];
-	}
+const headers = ref<Array<any>>([]);
 
-	const contentWidth: Record<string, number> = {};
-	(displayItems.value ?? []).forEach((item: Record<string, any>) => {
-		props.fields.forEach((key) => {
-			if (!contentWidth[key]) {
-				contentWidth[key] = 5;
-			}
-			if (String(item[key]).length > contentWidth[key]) {
-				contentWidth[key] = String(item[key]).length;
-			}
+watch(
+	[props, relationInfo, displayItems],
+	() => {
+		if (!relationInfo.value) {
+			headers.value = [];
+		}
+
+		const contentWidth: Record<string, number> = {};
+		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
+			props.fields.forEach((key) => {
+				if (!contentWidth[key]) {
+					contentWidth[key] = 5;
+				}
+				if (String(item[key]).length > contentWidth[key]) {
+					contentWidth[key] = String(item[key]).length;
+				}
+			});
 		});
-	});
 
-	return props.fields.map((key) => {
-		const { name, field } = fieldsStore.getField(relatedCollection.value, key) as Field;
+		headers.value = props.fields.map((key) => {
+			const { name, field, type } = fieldsStore.getField(relatedCollection.value, key) as Field;
 
-		return {
-			text: name,
-			value: field,
-			width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
-		};
-	});
-});
+			return {
+				text: name,
+				value: field,
+				width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+				sortable: !['json'].includes(type),
+			};
+		});
+	},
+	{ immediate: true }
+);
 
 const spacings = {
 	compact: 32,
