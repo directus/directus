@@ -16,6 +16,7 @@ import RolesItem from './routes/roles/item/item.vue';
 import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
 import RolesPublicItem from './routes/roles/public-item.vue';
 import FlowsOverview from './routes/flows/overview.vue';
+import NewFlow from './routes/flows/new-flow.vue';
 import FlowsDetail from './routes/flows/flow.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import TranslationStringsCollection from './routes/translation-strings/collection.vue';
@@ -168,6 +169,15 @@ export default defineModule({
 					name: 'settings-flows-collection',
 					path: '',
 					component: FlowsOverview,
+					children: [
+						{
+							path: '+',
+							name: 'settings-flows-add-new',
+							components: {
+								add: NewFlow,
+							},
+						},
+					],
 				},
 				{
 					name: 'settings-flows-item',

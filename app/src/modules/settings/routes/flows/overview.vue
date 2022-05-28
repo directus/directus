@@ -15,19 +15,15 @@
 		</template>
 
 		<template #actions>
-			<flow-dialog :model-value="createDialogActive" @update:model-value="toggleFlowCreation">
-				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="createAllowed ? t('create_flow') : t('not_allowed')"
-						rounded
-						icon
-						:disabled="createAllowed === false"
-						@click="on"
-					>
-						<v-icon name="add" />
-					</v-button>
-				</template>
-			</flow-dialog>
+			<v-button
+				v-tooltip.bottom="createAllowed ? t('create_flow') : t('not_allowed')"
+				rounded
+				icon
+				:disabled="createAllowed === false"
+				to="/settings/flows/+"
+			>
+				<v-icon name="add" />
+			</v-button>
 		</template>
 
 		<template #sidebar>
@@ -40,7 +36,7 @@
 			{{ t('no_flows_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<v-button @click="toggleFlowCreation(true)">{{ t('create_flow') }}</v-button>
+				<v-button to="/settings/flows/+">{{ t('create_flow') }}</v-button>
 			</template>
 		</v-info>
 
@@ -123,6 +119,8 @@
 		</v-dialog>
 
 		<flow-dialog :model-value="!!editFlow" :flow="editFlow" @update:model-value="editFlow = undefined" />
+
+		<router-view name="add" />
 	</private-view>
 </template>
 
@@ -145,8 +143,6 @@ const permissionsStore = usePermissionsStore();
 const confirmDelete = ref<string | null>(null);
 const deletingFlow = ref(false);
 const editFlow = ref<FlowRaw | undefined>();
-
-const createDialogActive = ref(false);
 
 const createAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_flows', 'create');
@@ -217,14 +213,6 @@ async function deleteFlow() {
 	} finally {
 		deletingFlow.value = false;
 	}
-}
-
-async function toggleFlowCreation(active: boolean) {
-	if (active === false) {
-		await flowsStore.hydrate();
-	}
-
-	createDialogActive.value = active;
 }
 
 async function toggleFlowStatusById(id: string, value: string) {

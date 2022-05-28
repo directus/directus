@@ -5,8 +5,7 @@
 		</template>
 
 		<v-card>
-			<v-card-title v-if="!flow">{{ t('create_flow') }}</v-card-title>
-			<v-card-title v-else>{{ t('edit_flow') }}</v-card-title>
+			<v-card-title>{{ t('edit_flow') }}</v-card-title>
 
 			<v-card-text>
 				<div class="fields">
@@ -33,7 +32,6 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ref, reactive, watch } from 'vue';
-import { router } from '@/router';
 import { FlowRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
@@ -85,15 +83,8 @@ async function save() {
 	saving.value = true;
 
 	try {
-		if (props.flow) {
-			await api.patch(`/flows/${props.flow.id}`, values, { params: { fields: ['id'] } });
-			await flowsStore.hydrate();
-		} else {
-			const response = await api.post('/flows', values, { params: { fields: ['id'] } });
-			await flowsStore.hydrate();
-
-			router.push(`/settings/flows/${response.data.data.id}`);
-		}
+		await api.patch(`/flows/${props.flow.id}`, values, { params: { fields: ['id'] } });
+		await flowsStore.hydrate();
 
 		emit('update:modelValue', false);
 	} catch (err: any) {
