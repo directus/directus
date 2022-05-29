@@ -1330,6 +1330,7 @@ translation: Překlad
 translation_placeholder: Zadejte překlad...
 value: Hodnota
 view_project: Zobrazit projekt
+weeks: { }
 report_error: Nahlásit chybu
 start: Začátek
 interfaces:
@@ -1619,6 +1620,13 @@ interfaces:
     start_closed: Začít zavřený
   system-token:
     system-token: Token
+    description: Správa statického přístupového tokenu
+    placeholder: Klikněte na "Generovat token" pro vytvoření nového statického přístupového tokenu
+    value_securely_saved: Hodnota bezpečně uložena
+    generate: Generovat token
+    regenerate: Obnovit token
+    generate_success_copy: Ujistěte se, že si zálohujete a zkopírujete token uvedený výše. Z bezpečnostních důvodů nebudete moci znovu zobrazit token po uložení a opuštění této stránky.
+    remove_token: Odstranit token
 displays:
   translations:
     translations: Překlady
