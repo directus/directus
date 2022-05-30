@@ -993,7 +993,6 @@ fields:
     status_archived: Arhivat
     role: Rol
     token: Token
-    token_placeholder: Introduceți un token de acces securizat...
     provider: Furnizor
     external_identifier: Identificator extern
     last_page: Ultima Pagină
@@ -1289,7 +1288,6 @@ export_started_copy: Exportul dvs. a început. Vei fi notificat când este gata 
 sort_asc: Sortează ascendent
 sort_desc: Sortează descrescător
 template: Șablon
-require_value_to_be_set: Necesită setarea valorii
 translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
@@ -1581,6 +1579,8 @@ interfaces:
     header_color: Culoare antet
     start_open: Începe deschis
     start_closed: Începe închis
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduceri

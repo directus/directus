@@ -981,7 +981,6 @@ fields:
     status_archived: Arxivat
     role: Rol
     token: Token
-    token_placeholder: Entra un testimoni d'accés (token) segur...
     provider: Proveïdor
     external_identifier: Identificador extern
     last_page: Última pàgina
@@ -1199,7 +1198,6 @@ sort_direction: Direcció de l'ordenació
 sort_asc: Ordre ascendent
 sort_desc: Ordre descendent
 template: Plantilla
-require_value_to_be_set: Requereix un valor
 translation: Traducció
 value: Valor
 view_project: Veure el projecte
@@ -1448,6 +1446,8 @@ interfaces:
     header_color: Color de la capçalera
     start_open: Comença obert
     start_closed: Comená tancat
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduccions

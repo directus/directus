@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.11.0",
+	"version": "9.11.1",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
@@ -47,7 +47,7 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@directus/shared": "9.11.0",
+		"@directus/shared": "9.11.1",
 		"axios": "^0.24.0"
 	},
 	"devDependencies": {

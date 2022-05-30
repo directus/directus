@@ -1,6 +1,6 @@
 <template>
 	<sidebar-detail icon="info_outline" :title="t('information')" close>
-		<template v-if="!isNew && role">
+		<template v-if="role">
 			<dl>
 				<div class="description-list">
 					<dt>{{ t('primary_key') }}</dt>
@@ -11,7 +11,7 @@
 						small
 						clickable
 						class="clipboard-icon"
-						@click="copyToClipboard(role.id)"
+						@click="copyToClipboard(role!.id)"
 					/>
 				</div>
 			</dl>
@@ -27,12 +27,10 @@ import { useI18n } from 'vue-i18n';
 import useClipboard from '@/composables/use-clipboard';
 
 interface Props {
-	isNew: boolean;
 	role?: Record<string, any> | null;
 }
 
 withDefaults(defineProps<Props>(), {
-	isNew: false,
 	role: () => null,
 });
 
