@@ -273,7 +273,12 @@ class FlowManager {
 
 		let nextOperation = flow.operation;
 
-		const steps: { operation: string; key: string; status: 'resolve' | 'reject' | 'unknown' }[] = [];
+		const steps: {
+			operation: string;
+			key: string;
+			status: 'resolve' | 'reject' | 'unknown';
+			options: Record<string, any> | null;
+		}[] = [];
 
 		while (nextOperation !== null) {
 			const { successor, data, status, options } = await this.executeOperation(nextOperation, keyedData, context);
