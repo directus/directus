@@ -230,6 +230,15 @@ export class AuthorizationService {
 							// Filter value is not a filter, so we should skip it
 							return result;
 						}
+						// virtual o2m/o2a filter in the form of `$FOLLOW(...)`
+						else if (collection && filterKey.startsWith('$FOLLOW')) {
+							(result[collection] || (result[collection] = new Set())).add(filterKey);
+							// add virtual relation to the required permissions
+							const { relation } = getRelationInfo([], collection, filterKey);
+							if (relation?.collection && relation?.field) {
+								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
+							}
+						}
 						// m2a filter in the form of `item:collection`
 						else if (filterKey.includes(':')) {
 							const [field, collectionScope] = filterKey.split(':');
@@ -371,18 +380,7 @@ export class AuthorizationService {
 					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
-						if (field.startsWith('$FOLLOW')) {
-							const { relation } = getRelationInfo([], collection, field);
-							if (!relation) throw new ForbiddenException();
-							const relationAllowedFields =
-								accountability?.permissions?.find(
-									(permission) => permission.collection === relation?.collection && permission.action === 'read'
-								)?.fields || [];
-							if (!relationAllowedFields.includes('*') && !relationAllowedFields.includes(relation?.field)) {
-								throw new ForbiddenException();
-							}
-							continue;
-						}
+						if (field.startsWith('$FOLLOW')) continue;
 						if (!allowedFields.includes(field)) throw new ForbiddenException();
 					}
 				}
