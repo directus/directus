@@ -681,6 +681,8 @@ interfaces:
     display_template: Templates de Exibição
   user:
     user: Utilizador
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduções

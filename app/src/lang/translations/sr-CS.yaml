@@ -1076,6 +1076,8 @@ interfaces:
     value_path: Putanja Vrijednosti
     trigger: Okidač
     rate: Ocjena
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Prevodi

@@ -981,7 +981,6 @@ fields:
     status_archived: Arkiverad
     role: Roll
     token: Token
-    token_placeholder: Ange ett säkert åtkomsttoken...
     provider: Leverantör
     external_identifier: Extern identifierare
     last_page: Sista sidan
@@ -1214,7 +1213,6 @@ sort_direction: Sorteringsordning
 sort_asc: Sortera stigande
 sort_desc: Sortera fallande
 template: Mall
-require_value_to_be_set: Kräv att värde ska anges
 translation: Översättning
 translation_placeholder: Ange en översättning...
 value: Värde
@@ -1469,6 +1467,8 @@ interfaces:
     header_color: Färg sidhuvud
     start_open: Start öppen
     start_closed: Start stängd
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Översättningar
