@@ -226,93 +226,78 @@ export const seedDBValues = (cachedSchema: CachedTestsSchema) => {
 					const localCollectionCities = `${collectionCities}_${pkType}`;
 
 					// Create countries
-					await CreateItem(vendor, {
+					const itemCountries = [];
+
+					for (let i = 0; i < schema[localCollectionCountries].id.possibleValues.length; i++) {
+						const country: Country = {
+							name: schema[localCollectionCountries].name.possibleValues[i],
+						};
+
+						if (pkType === 'string') {
+							country.id = schema[localCollectionCountries].id.possibleValues[i];
+						}
+
+						itemCountries.push(country);
+					}
+
+					const countries = await CreateItem(vendor, {
 						collection: localCollectionCountries,
-						item: [
-							{
-								id: schema[localCollectionCountries].id.possibleValues[0],
-								name: schema[localCollectionCountries].name.possibleValues[0],
-							},
-							{
-								id: schema[localCollectionCountries].id.possibleValues[1],
-								name: schema[localCollectionCountries].name.possibleValues[1],
-							},
-						] as Country[],
+						item: itemCountries,
 					});
+
+					schema[localCollectionCountries].id.possibleValues = countries.map((country: Country) => country.id);
 
 					// Create states
-					await CreateItem(vendor, {
+					const itemStates = [];
+
+					for (let i = 0; i < schema[localCollectionStates].id.possibleValues.length; i++) {
+						const state: State = {
+							name: schema[localCollectionStates].name.possibleValues[i],
+							country_id:
+								schema[localCollectionCountries].id.possibleValues[
+									i % schema[localCollectionCountries].id.possibleValues.length
+								],
+						};
+
+						if (pkType === 'string') {
+							state.id = schema[localCollectionStates].id.possibleValues[i];
+						}
+
+						itemStates.push(state);
+					}
+
+					const states = await CreateItem(vendor, {
 						collection: localCollectionStates,
-						item: [
-							{
-								id: schema[localCollectionStates].id.possibleValues[0],
-								name: schema[localCollectionStates].name.possibleValues[0],
-								country_id: schema[localCollectionCountries].id.possibleValues[0],
-							},
-							{
-								id: schema[localCollectionStates].id.possibleValues[1],
-								name: schema[localCollectionStates].name.possibleValues[1],
-								country_id: schema[localCollectionCountries].id.possibleValues[0],
-							},
-							{
-								id: schema[localCollectionStates].id.possibleValues[2],
-								name: schema[localCollectionStates].name.possibleValues[2],
-								country_id: schema[localCollectionCountries].id.possibleValues[1],
-							},
-							{
-								id: schema[localCollectionStates].id.possibleValues[3],
-								name: schema[localCollectionStates].name.possibleValues[3],
-								country_id: schema[localCollectionCountries].id.possibleValues[1],
-							},
-						] as State[],
+						item: itemStates,
 					});
 
+					schema[localCollectionStates].id.possibleValues = states.map((state: State) => state.id);
+
 					// Create cities
-					await CreateItem(vendor, {
+					const itemCities = [];
+
+					for (let i = 0; i < schema[localCollectionCities].id.possibleValues.length; i++) {
+						const city: City = {
+							name: schema[localCollectionCities].name.possibleValues[i],
+							state_id:
+								schema[localCollectionStates].id.possibleValues[
+									i % schema[localCollectionStates].id.possibleValues.length
+								],
+						};
+
+						if (pkType === 'string') {
+							city.id = schema[localCollectionCities].id.possibleValues[i];
+						}
+
+						itemCities.push(city);
+					}
+
+					const cities = await CreateItem(vendor, {
 						collection: localCollectionCities,
-						item: [
-							{
-								id: schema[localCollectionCities].id.possibleValues[0],
-								name: schema[localCollectionCities].id.possibleValues[0],
-								state_id: schema[localCollectionStates].id.possibleValues[0],
-							},
-							{
-								id: schema[localCollectionCities].id.possibleValues[1],
-								name: schema[localCollectionCities].id.possibleValues[1],
-								state_id: schema[localCollectionStates].id.possibleValues[0],
-							},
-							{
-								id: schema[localCollectionCities].id.possibleValues[2],
-								name: schema[localCollectionCities].id.possibleValues[2],
-								state_id: schema[localCollectionStates].id.possibleValues[1],
-							},
-							{
-								id: schema[localCollectionCities].id.possibleValues[3],
-								name: schema[localCollectionCities].id.possibleValues[3],
-								state_id: schema[localCollectionStates].id.possibleValues[1],
-							},
-							{
-								id: schema[localCollectionCities].id.possibleValues[4],
-								name: schema[localCollectionCities].id.possibleValues[4],
-								state_id: schema[localCollectionStates].id.possibleValues[2],
-							},
-							{
-								id: schema[localCollectionCities].id.possibleValues[5],
-								name: schema[localCollectionCities].id.possibleValues[5],
-								state_id: schema[localCollectionStates].id.possibleValues[2],
-							},
-							{
-								id: schema[localCollectionCities].id.possibleValues[6],
-								name: schema[localCollectionCities].id.possibleValues[6],
-								state_id: schema[localCollectionStates].id.possibleValues[3],
-							},
-							{
-								id: schema[localCollectionCities].id.possibleValues[7],
-								name: schema[localCollectionCities].id.possibleValues[7],
-								state_id: schema[localCollectionStates].id.possibleValues[3],
-							},
-						] as City[],
+						item: itemCities,
 					});
+
+					schema[localCollectionCities].id.possibleValues = cities.map((city: City) => city.id);
 
 					await seedAllFieldTypesValues(vendor, localCollectionCountries, pkType);
 					await seedAllFieldTypesValues(vendor, localCollectionStates, pkType);
