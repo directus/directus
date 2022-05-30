@@ -370,6 +370,7 @@ export class AuthorizationService {
 					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
+						if (field.startsWith('$FOLLOW')) continue;
 						if (!allowedFields.includes(field)) throw new ForbiddenException();
 					}
 				}
