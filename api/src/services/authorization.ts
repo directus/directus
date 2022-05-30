@@ -17,6 +17,7 @@ import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, Pri
 import { stripFunction } from '../utils/strip-function';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
+import { getRelationInfo } from '../utils/get-relation-info';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -370,7 +371,18 @@ export class AuthorizationService {
 					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
-						if (field.startsWith('$FOLLOW')) continue;
+						if (field.startsWith('$FOLLOW')) {
+							const { relation } = getRelationInfo([], collection, field);
+							if (!relation) throw new ForbiddenException();
+							const relationAllowedFields =
+								accountability?.permissions?.find(
+									(permission) => permission.collection === relation?.collection && permission.action === 'read'
+								)?.fields || [];
+							if (!relationAllowedFields.includes('*') && !relationAllowedFields.includes(relation?.field)) {
+								throw new ForbiddenException();
+							}
+							continue;
+						}
 						if (!allowedFields.includes(field)) throw new ForbiddenException();
 					}
 				}
