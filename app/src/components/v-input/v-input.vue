@@ -210,9 +210,6 @@ function emitValue(event: InputEvent) {
 		}
 	} else {
 		if (props.slug === true) {
-			// prevent pasting of non slugSafeCharacters from bypassing the keydown checks
-			value = value.replace(/[^a-zA-Z0-9\-_~\s]/g, '');
-
 			const endsWithSpace = value.endsWith(' ');
 			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
 			if (endsWithSpace) value += props.slugSeparator;

@@ -97,17 +97,10 @@ describe('/items', () => {
 							return error;
 						});
 
-					if (vendor === 'mssql' || vendor === 'postgres' || vendor === 'cockroachdb') {
-						expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
-						expect(response.response.status).toBe(500);
-						expect(response.response.statusText).toBe('Internal Server Error');
-						expect(response.message).toBe('Request failed with status code 500');
-					} else if (vendor === 'mysql' || vendor === 'maria') {
-						expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
-						expect(response.response.status).toBe(403);
-						expect(response.response.statusText).toBe('Forbidden');
-						expect(response.message).toBe('Request failed with status code 403');
-					}
+					expect(response.response.headers['content-type']).toBe('application/json; charset=utf-8');
+					expect(response.response.status).toBe(403);
+					expect(response.response.statusText).toBe('Forbidden');
+					expect(response.message).toBe('Request failed with status code 403');
 				});
 			});
 			describe('returns an error when an invalid table is used', () => {

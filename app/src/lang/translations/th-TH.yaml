@@ -854,7 +854,6 @@ fields:
     status_archived: เก็บถาวร
     role: บทบาท
     token: โทเค็น
-    token_placeholder: ระบุโทเค็นความปลอดภัย
     provider: ผู้ให้บริการ
     last_page: หน้าสุดท้าย
     last_access: การเข้าถึงล่าสุด
@@ -1029,7 +1028,6 @@ sort_direction: รูปแบบการเรียง
 sort_asc: เรียงจากน้อยไปมาก
 sort_desc: เรียงจากมากไปน้อย
 template: แม่แบบ
-require_value_to_be_set: ต้องระบุ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
@@ -1251,6 +1249,8 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
+  system-token:
+    system-token: โทเค็น
 displays:
   translations:
     translations: การแปลภาษา

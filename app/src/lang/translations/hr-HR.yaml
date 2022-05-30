@@ -1022,7 +1022,6 @@ fields:
     status_archived: Arhivirano
     role: Uloge
     token: Token
-    token_placeholder: Unesite siguran pristupni token...
     provider: Pružatelj
     external_identifier: Vanjski identifikator
     last_page: Zadnja stranica
@@ -1311,7 +1310,6 @@ sort_direction: Smjer sortiranja
 sort_asc: Sortiraj uzlazno
 sort_desc: Sortiraj silazno
 template: Predložak
-require_value_to_be_set: Zahtijevj postavljanje vrijednosti
 translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
@@ -1593,6 +1591,8 @@ interfaces:
     header_color: Boja zaglavlja
     start_open: Počni otvoren
     start_closed: Započni zatvoren
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Prijevodi
