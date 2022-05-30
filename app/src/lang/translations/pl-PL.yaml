@@ -1330,6 +1330,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1619,6 +1620,13 @@ interfaces:
     start_closed: Rozpocznij zwinięty
   system-token:
     system-token: Token
+    description: Zarządzaj tokenami dostępu statycznego
+    placeholder: Kliknij "Generuj token", aby utworzyć nowy token statycznego dostępu
+    value_securely_saved: Wartość bezpiecznie zapisana
+    generate: Generuj token
+    regenerate: Wygeneruj ponownie token
+    generate_success_copy: Wykonaj kopię zapasową i skopiuj token powyżej. Ze względów bezpieczeństwa nie będziesz w stanie wyświetlić tokenu ponownie po zapisaniu i opuszczeniu tej strony.
+    remove_token: Usuń token
 displays:
   translations:
     translations: Tłumaczenia
