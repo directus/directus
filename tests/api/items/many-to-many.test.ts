@@ -63,7 +63,7 @@ describe('/items', () => {
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 				await seedTable(databases.get(vendor)!, 1, 'events', event);
 
-				const relation = await seedTable(
+				await seedTable(
 					databases.get(vendor)!,
 					1,
 					'artists_events',
@@ -85,10 +85,12 @@ describe('/items', () => {
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
-				expect(response.body.data).toMatchObject({
-					id: artist.id,
-					name: artist.name,
-				});
+				expect(response.body.data).toMatchObject([
+					{
+						id: artist.id,
+						name: artist.name,
+					},
+				]);
 			});
 		});
 	});
