@@ -428,8 +428,6 @@ start_end_of_count_items: '{start}-{end} {count} elfenn'
 start_end_of_count_filtered_items: '{start}-{end} diwar {count} elfenn silet'
 one_item: '1 elfenn'
 one_filtered_item: '1 elfenn silet'
-delete_collection_are_you_sure: >-
-  Sur oc'h e fell deoc'h dilemel an dastumad-mañ ? Dilemet e vo an dastumad hag an holl elfennoù e-barzh. N'haller ket mont war-gil.
 collections_shown: Dastumadoù diskouezhet
 visible_collections: Dastumadoù da wel
 hidden_collections: Dastumadoù kuzhet
