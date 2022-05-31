@@ -81,7 +81,7 @@ describe('/items', () => {
 					.get(
 						`/items/artists?fields=id,name&filter={"_and":[{"$FOLLOW(artists_events,artists_id)":{"_some":{"events_id":{"_eq":"${event.id}"}}}}]}`
 					)
-					.set('Authorization', 'Bearer UserToken')
+					.set('Authorization', 'Bearer User2Token')
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 

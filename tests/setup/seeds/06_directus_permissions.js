@@ -16,19 +16,19 @@ exports.seed = async function (knex) {
 			fields: '*',
 		},
 		{
-			role: '214faee7-d6a6-4a4c-b1cd-f9e9bd0b6fb7',
+			role: '67ce831d-7a02-4a06-a8c9-c8ea16d71e91',
 			collection: 'artists',
 			action: 'read',
 			fields: 'id,name',
 		},
 		{
-			role: '214faee7-d6a6-4a4c-b1cd-f9e9bd0b6fb7',
+			role: '67ce831d-7a02-4a06-a8c9-c8ea16d71e91',
 			collection: 'artists_events',
 			action: 'read',
 			fields: '*',
 		},
 		{
-			role: '214faee7-d6a6-4a4c-b1cd-f9e9bd0b6fb7',
+			role: '67ce831d-7a02-4a06-a8c9-c8ea16d71e91',
 			collection: 'events',
 			action: 'read',
 			fields: '*',
