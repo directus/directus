@@ -45,7 +45,7 @@ export async function up(knex: Knex): Promise<void> {
 		flows.push({
 			id: flowID,
 			name: webhook.name,
-			status: webhook.status,
+			status: 'inactive',
 			trigger: 'hook',
 			options: JSON.stringify({
 				name: webhook.name,
@@ -81,23 +81,9 @@ export async function up(knex: Knex): Promise<void> {
 			await knex('directus_flows').update({ operation: operation.id }).where({ id: operation.flow });
 		}
 	}
-
-	await knex.schema.dropTable('directus_webhooks');
 }
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.dropTable('directus_operations');
 	await knex.schema.dropTable('directus_flows');
-
-	await knex.schema.createTable('directus_webhooks', (table) => {
-		table.increments();
-		table.string('name').notNullable();
-		table.string('method', 10).notNullable().defaultTo('POST');
-		table.string('url').notNullable();
-		table.string('status', 10).notNullable().defaultTo('active');
-		table.boolean('data').notNullable().defaultTo(true);
-		table.string('actions', 100).notNullable();
-		table.string('collections').notNullable();
-		table.json('headers').nullable();
-	});
 }
