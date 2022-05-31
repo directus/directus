@@ -570,8 +570,6 @@ start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
-delete_collection_are_you_sure: >-
-  Apakah anda yakin ingin menghapus koleksi ini? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
 collections_shown: Koleksi yang ditampilkan
 visible_collections: Koleksi yang terlihat
 hidden_collections: Koleksi yang tersembunyi
