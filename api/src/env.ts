@@ -1,6 +1,6 @@
 /**
  * @NOTE
- * For all possible keys see: https://docs.directus.io/configuration/config-options/
+ * For all possible keys, see: https://docs.directus.io/configuration/config-options/
  */
 
 import dotenv from 'dotenv';
