@@ -416,8 +416,6 @@ delete_collection: 刪除集合
 update_collection_success: 已更新集合
 delete_collection_success: 已刪除集合
 start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
-delete_collection_are_you_sure: >-
-  是否確認要刪除此集合？這將刪除集合及其中的所有項目。此操作是永久性的。
 visible_collections: 可見集合
 hidden_collections: 隱藏集合
 unmanaged_collections: 未配置集合
