@@ -614,9 +614,6 @@ start_end_of_count_items: '{start}-{end} з {count} об''єктів'
 start_end_of_count_filtered_items: '{start}-{end} з {count} відсортованих об''єктів'
 one_item: '1 об''єкт'
 one_filtered_item: '1 відсортований об''єкт'
-delete_collection_are_you_sure: >-
-  Ви впевнені, що хочете видалити цю колекцію? Це призведе до видалення колекції та всіх елементів у ній. Ця дія безповоротна.
-delete_folder_are_you_sure: Ви впевнені, що ви хочете видалити цю теку? Вкладені теки та підбірки будуть переміщеними на найвищий рівень.
 collections_shown: Показані колекції
 visible_collections: Видимі колекції
 hidden_collections: Приховані колекції
