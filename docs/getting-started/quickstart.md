@@ -83,9 +83,9 @@ Once logged in, you're greeted with the option to create your first
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
    _For this demo, we'll be calling ours `articles`, but feel free to make it your own!_
-4. Leave the other options at default. Click <span mi btn>arrow_forward</span> and the **"Optional System Fields"** menu
+4. Leave the other options at default. Click <span mi btn>arrow*forward</span> and the **"Optional System Fields"** menu
    will open.\
-   _Keep the values in this menu at the default, toggled off, for now. You can adjust them later._
+   \_Keep the values in this menu at the default, toggled off, for now. You can adjust these later.*
 5. Click <span mi btn>check</span> in the menu header.
 
 :::tip Learn More About Collections
