@@ -483,7 +483,6 @@ unexpected_error_copy: En uventet feil oppstod, vennligst forsøk igjen.
 copy_details: Kopier detaljer
 no_app_access: Ingen app-tilgang
 no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
-password_reset_sent: Vi har sendt deg en sikker lenke for å tilbakestille passordet ditt
 password_reset_successful: Passord tilbakestilt
 back: Tilbake
 filter: Filter

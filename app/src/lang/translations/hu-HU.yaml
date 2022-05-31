@@ -527,7 +527,6 @@ unexpected_error_copy: Váratlan hiba történt. Kérjük, próbálja meg késő
 copy_details: Részletek másolása
 no_app_access: Nincs alkalmazás hozzáférés
 no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás használatára.
-password_reset_sent: Küldtünk egy biztonságos linket a jelszó visszaállításához
 password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
 filter: Szűrő

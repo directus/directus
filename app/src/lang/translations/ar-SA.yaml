@@ -517,7 +517,6 @@ unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
-password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
 editing_image: تحرير صورة

@@ -580,7 +580,6 @@ unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
 copy_details: Kopiér Detaljer
 no_app_access: Ingen App Adgang
 no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.
-password_reset_sent: Vi har sendt dig et sikkert link til at nulstille din adgangskode
 password_reset_successful: Adgangskode nulstillet
 back: Tilbage
 filter: Filtrer

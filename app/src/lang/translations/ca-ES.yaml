@@ -589,7 +589,6 @@ unexpected_error_copy: Hi ha hagut un error inesperat. Si us plau, prova més ta
 copy_details: Copia detalls
 no_app_access: Sense accés a l'aplicació
 no_app_access_copy: Aquest usuari no pot administrar l'aplicació.
-password_reset_sent: T'hem enviat un enllaç segur per restablir la teva contrasenya
 password_reset_successful: Contrasenya restablerta correctament
 back: Enrere
 filter: Filtre
