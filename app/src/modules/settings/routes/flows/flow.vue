@@ -183,7 +183,7 @@ import useEditsGuard from '@/composables/use-edits-guard';
 import useShortcut from '@/composables/use-shortcut';
 import { isEmpty, merge, omit, cloneDeep } from 'lodash';
 import { router } from '@/router';
-import { nanoid } from 'nanoid';
+import { nanoid, customAlphabet } from 'nanoid';
 
 import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -520,8 +520,10 @@ function createPanel(parent: string, type: 'resolve' | 'reject') {
 
 function duplicatePanel(panel: OperationRaw) {
 	const newPanel = omit(merge({}, panel), 'id', 'resolve', 'reject');
+	const newKey = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5)();
 	newPanel.position_x = newPanel.position_x + 2;
 	newPanel.position_y = newPanel.position_y + 2;
+	newPanel.key = `${newPanel.key}_${newKey}`;
 	stageOperationEdits({ edits: newPanel, id: '+' });
 }
 
