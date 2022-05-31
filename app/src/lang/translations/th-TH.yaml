@@ -509,8 +509,6 @@ start_end_of_count_items: '{start}-{end} ของ {count} ไอเท็ม'
 start_end_of_count_filtered_items: '{start}-{end} ของ {count} ไอเท็มที่ถูกกรอง'
 one_item: '1 รายการ'
 one_filtered_item: 'มี 1 ไอเท็มที่ถูกกรอง'
-delete_collection_are_you_sure: >-
-  แน่ใจหรือว่าต้องการลบคอลเลกชันนี้? นี่คือการลบคอลเลกชันและรายการทั้งหมดที่มีอยู่ในคอลเลกชัน ไม่สามารถกู้คืนได้
 collections_shown: แสดงคอลเลกชัน
 visible_collections: คอลเลกชันที่มองเห็นได้
 hidden_collections: คอลเลกชันที่ซ่อนอยู่
