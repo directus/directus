@@ -472,8 +472,6 @@ start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 one_item: '1 sản phẩm'
 one_filtered_item: 'Đã lọc được 1 mục'
-delete_collection_are_you_sure: >-
-  Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
 collections_shown: Những Danh Mục Đang Hiển Thị
 visible_collections: Ứng dụng có thể nhìn thấy
 hidden_collections: Bảng Ẩn
