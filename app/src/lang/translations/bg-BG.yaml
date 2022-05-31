@@ -619,9 +619,6 @@ start_end_of_count_items: '{start}-{end} от {count} записа'
 start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
 one_item: '1 запис'
 one_filtered_item: '1 филтриран запис'
-delete_collection_are_you_sure: >-
-  Сигурни ли сте, че искате да изтриете колекцията? Всички записи и самата колекция ще бъдат изтрити. Действието е завинаги.
-delete_folder_are_you_sure: Сигурни ли сте, че искате да изтриете папката? Подпапките и колекциите ще бъдат преместени към кореновата папка.
 collections_shown: Показани колекции
 visible_collections: Видими колекции
 hidden_collections: Скрити колекции

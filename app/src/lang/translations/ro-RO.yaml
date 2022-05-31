@@ -599,9 +599,6 @@ start_end_of_count_items: '{start}-{end} din {count} elemente'
 start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
 one_item: '1 element'
 one_filtered_item: '1 element filtrat'
-delete_collection_are_you_sure: >-
-  Sigur doriți să ștergeți această colecție? Această acțiune va șterge colecția și toate articolele din ea. Acțiunea este permanentă.
-delete_folder_are_you_sure: Sigur doriți să ștergeți acest dosar? Dosarele și colecțiile conținute vor fi mutate la nivelul cel mai de sus.
 collections_shown: Colecții afișate
 visible_collections: Colecții vizibile
 hidden_collections: Colecții ascunse

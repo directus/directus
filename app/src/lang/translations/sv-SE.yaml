@@ -609,8 +609,6 @@ start_end_of_count_items: '{start}-{end} av {count} objekt'
 start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
 one_item: '1 objekt'
 one_filtered_item: '1 filtrerat objekt'
-delete_collection_are_you_sure: >-
-  Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 collections_shown: Visade kollektioner
 visible_collections: Synliga kollektioner
 hidden_collections: Dolda kollektioner

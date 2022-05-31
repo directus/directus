@@ -454,8 +454,6 @@ start_end_of_count_items: '{start}-{end} od {count} zapisov'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih zapisov'
 one_item: '1 zapis'
 one_filtered_item: '1 filtriran zapis'
-delete_collection_are_you_sure: >-
-  Ste prepričani, da želit brisati to zbirko? Obrisana bo zbirka in vsi zapisni v njej. Vračanje podatkov ne bo mogoče.
 collections_shown: zbirk prikazanih
 visible_collections: Vidne zbirke
 hidden_collections: Skrite zbirke

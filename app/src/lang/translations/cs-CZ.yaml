@@ -619,9 +619,6 @@ start_end_of_count_items: '{start}-{end} z {count} položek'
 start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položek'
 one_item: '1 položka'
 one_filtered_item: '1 filtrovaná položka'
-delete_collection_are_you_sure: >-
-  Jste si jisti, že chcete odstranit tuto kolekci? Tato akce odstraní kolekci a všechny její položky. Tato akce je trvalá.
-delete_folder_are_you_sure: Jste si jisti, že chcete odstranit tuto složku? Vnořené složky a kolekce budou přesunuty na nejvyšší úroveň.
 collections_shown: Zobrazené kolekce
 visible_collections: Viditelné kolekce
 hidden_collections: Skryté kolekce
@@ -1330,7 +1327,6 @@ translation: Překlad
 translation_placeholder: Zadejte překlad...
 value: Hodnota
 view_project: Zobrazit projekt
-weeks: { }
 report_error: Nahlásit chybu
 start: Začátek
 interfaces:

@@ -504,8 +504,6 @@ start_end_of_count_items: '{start}–{end} av {count} artikler'
 start_end_of_count_filtered_items: '{start}–{end} av {count} filtrerte artikler'
 one_item: '1 element'
 one_filtered_item: '1 filtrert element'
-delete_collection_are_you_sure: >-
-  Er du sikker på at du vil slette denne samlingen? Dette vil slette samlingen og alle elementene i den. Denne handlingen er permanent.
 collections_shown: Samlinger vises
 visible_collections: Synlige samlinger
 empty_item: Tomt element

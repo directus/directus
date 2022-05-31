@@ -616,9 +616,6 @@ start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
 one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
-delete_collection_are_you_sure: >-
-  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
-delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer ce dossier ? Les dossiers imbriqués et les collections seront déplacés au niveau le plus haut.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées

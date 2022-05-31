@@ -612,9 +612,6 @@ start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
-delete_collection_are_you_sure: >-
-  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
-delete_folder_are_you_sure: Sind Sie sicher, dass Sie diesen Ordner löschen möchten? Verschachtelte Ordner und Sammlungen werden in die oberste Ebene verschoben.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen

@@ -535,8 +535,6 @@ start_end_of_count_items: '{start}-{end} من {count} عناصر'
 start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
 one_filtered_item: '1 عنصر مصفى'
-delete_collection_are_you_sure: >-
-  هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
 collections_shown: المجموعات المعروضة
 visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
