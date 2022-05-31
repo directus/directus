@@ -416,8 +416,6 @@ delete_collection: Trinti kolekciją
 update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
 start_end_of_count_items: '{start}-{end} iš {count} elementų'
-delete_collection_are_you_sure: >-
-  Ar tikrai norite ištrinti tią kolekciją? Bus ištrinta visa kolekcija su jai priklausančiais elementais. Šio veiksmo atstatyti negalima.
 collections_shown: Rodomos kolekcijos
 visible_collections: Matomos kolekcijos
 hidden_collections: Paslėptos kolekcijos
