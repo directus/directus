@@ -22,12 +22,12 @@ The following guides will walk you through the self-hosted installation process 
 These options are only recommended for developers familiar with these services and comfortable with more advanced setup.
 While Directus is always completely free, you will likely need to pay for these services.
 
-- [Generic Ubuntu](/getting-started/installation/ubuntu/)
-- [Internet Information Services (IIS)](/getting-started/installation/iis)
-- [Amazon AWS](/getting-started/installation/aws)
-- [Google Cloud Platform](/getting-started/installation/gcp)
-- [DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform)
-- [Shared Hosting with Plesk](/getting-started/installation/plesk)
+- [Generic Ubuntu](/self-hosted/installation/ubuntu/)
+- [Internet Information Services (IIS)](/self-hosted/installation/iis)
+- [Amazon AWS](/self-hosted/installation/aws)
+- [Google Cloud Platform](/self-hosted/installation/gcp)
+- [DigitalOcean App Platform](/self-hosted/installation/digitalocean-app-platform)
+- [Shared Hosting with Plesk](/self-hosted/installation/plesk)
 - [Cleavr.io](https://docs.cleavr.io/guides/directus)
 
 ## One-Click Installs
@@ -36,7 +36,7 @@ If you would like to completely avoid the manual installation process, the follo
 handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these
 services.
 
-- [Cloudron](/getting-started/installation/cloudron)
+- [Cloudron](/self-hosted/installation/cloudron)
 - [DigitalOcean](https://marketplace.digitalocean.com/apps/directus?action=deploy&refcode=4c0b6062c16e)
 - [Heroku](https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template)
 - [Platform.sh](https://console.platform.sh/projects/create-project?template=https%3A%2F%2Fraw.githubusercontent.com%2Fplatformsh%2Ftemplate-builder%2Fmaster%2Ftemplates%2Fdirectus%2F.platform.template.yaml)

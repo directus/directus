@@ -70,6 +70,8 @@ create_user: Crea utente
 delete_panel: Elimina Pannello
 create_webhook: Crea webhook
 create_translation_string: Crea stringa di traduzione
+no_translation_string: Nessuna stringa di traduzione
+no_translation_string_copy: Non ci sono ancora stringhe di traduzione.
 translation_string_key_placeholder: Chiave della stringa di traduzione...
 translation_string_translations_placeholder: Aggiungi una nuova traduzione
 edit_translation_string: Modifica stringa di traduzione
@@ -452,6 +454,7 @@ created_on: Creato il
 creating_collection_info: Dare un nome alla raccolta e impostare il suo campo unico “chiave”...
 creating_collection_system: Abilita e rinomina uno di questi campi opzionali.
 auto_increment_integer: Intero incrementato automaticamente
+auto_increment_big_integer: Big integer incrementato automaticamente
 generated_uuid: UUID Generato
 manual_string: Stringa inserita manualmente
 save_and_create_new: Salva e Crea nuovo
@@ -1322,10 +1325,12 @@ export_started_copy: La tua esportazione è iniziata. Sarai avvisato quando sar�
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
 template: Template
+require_value_to_be_set: Richiede che il valore sia impostato alla creazione
 translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1615,6 +1620,13 @@ interfaces:
     start_closed: Inizia chiuso
   system-token:
     system-token: Token
+    description: Gestisci il token di accesso statico
+    placeholder: Fare clic su "Genera Token" per creare un nuovo token di accesso statico
+    value_securely_saved: Valore salvato in sicurezza
+    generate: Genera token
+    regenerate: Rigenera Token
+    generate_success_copy: Assicurati di copiare e salvare il token qui sopra. Per motivi di sicurezza, non sarà possibile visualizzare nuovamente il token dopo aver salvato e navigato fuori da questa pagina.
+    remove_token: Cancellare il token
 displays:
   translations:
     translations: Traduzioni
