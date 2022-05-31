@@ -613,9 +613,6 @@ start_end_of_count_items: '{start}-{end} de {count} elements'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elements filtrats'
 one_item: '1 element'
 one_filtered_item: '1 element filtrat'
-delete_collection_are_you_sure: >-
-  Estàs segur d'eliminar aquesta col·lecció? Això també eliminarà tots els elements que conté. Aquesta acció és permanent.
-delete_folder_are_you_sure: Estàs segur d'eliminar aquesta carpeta? Les carpetes i col·leccions anidades es mouran al nivell més alt.
 collections_shown: Col·leccions mostrades
 visible_collections: Col·leccions visibles
 hidden_collections: Col·leccions amagades
