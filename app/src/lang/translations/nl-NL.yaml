@@ -535,7 +535,6 @@ unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opn
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
-password_reset_sent: We hebben je een beveiligde link gestuurd om je wachtwoord te resetten
 password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
 back: Terug
 filter: Filter

@@ -576,7 +576,6 @@ unexpected_error_copy: A apărut o eroare neașteptată. Te rugăm să încerci 
 copy_details: Copiază detaliile
 no_app_access: Fără acces la aplicație
 no_app_access_copy: Acest utilizator nu are permisiunea de a utiliza aplicația de administrare.
-password_reset_sent: Ți-am trimis un link securizat pentru a-ți reseta parola
 password_reset_successful: Parola a fost modificată cu succes
 back: Înapoi
 filter: Filtru

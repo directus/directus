@@ -547,7 +547,6 @@ unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi n
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
-password_reset_sent: Kami telah mengirimkan surel berisi tautan aman untuk menyetel ulang kata sandi Anda
 password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring

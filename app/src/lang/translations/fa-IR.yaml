@@ -517,7 +517,6 @@ unexpected_error_copy: یک خطای غیر منتظره رخ داده است، 
 copy_details: کپی کردنِ جزئیات
 no_app_access: عدم دسترسی به برنامه
 no_app_access_copy: کاربر اجازه دسترسی به سامانه مدیریت را ندارد.
-password_reset_sent: ما پیوندی ایمن را برای شما ایمیل کردیم تا به کمک آن رمز عبور خود را بازنشانی کنید
 password_reset_successful: رمز عبور با موفقیت بازنشانی شد
 back: بازگشت
 filter: فیلتر

@@ -594,7 +594,6 @@ unexpected_error_copy: Došlo je do neočekivane greške, molimo pokušajte pono
 copy_details: Kopiraj pojedinosti
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
-password_reset_sent: Poslali smo vam sigurnu vezu za poništavanje lozinke
 password_reset_successful: Lozinka je uspješno resetirana
 back: Povratak
 filter: Filter

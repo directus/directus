@@ -436,7 +436,6 @@ unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
 copy_details: Kopeeri detailid
 no_app_access: Rakenduse ligipääs puudub
 no_app_access_copy: See kasutaja ei tohi adminni rakendust kasutada.
-password_reset_sent: Saadame teile lingi salasõna muutmiseks
 password_reset_successful: Salasõna on edukalt lähtestatud
 back: Tagasi
 editing_image: Pildi muutmine

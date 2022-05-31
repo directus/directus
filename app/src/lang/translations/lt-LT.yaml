@@ -401,7 +401,6 @@ unexpected_error_copy: Nutiko nenumatyta klaida. Prašome pabandyti vėliau.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
 no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
-password_reset_sent: Išsiuntėme saugiai sugeneruotą nuorodą slaptažodžio atstatymui
 password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
 editing_image: Paveikslėlio redagavimas

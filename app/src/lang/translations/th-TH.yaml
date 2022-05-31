@@ -488,7 +488,6 @@ unexpected_error_copy: เกิดข้อผิดพลาดที่ไม
 copy_details: คัดลอกรายละเอียด
 no_app_access: ไม่สามารถเข้าถึงแอป
 no_app_access_copy: ผู้ใช้นี้ไม่ได้รับอนุญาตให้เข้าถึงส่วนแอดมิน
-password_reset_sent: เราได้ส่งขั้นตอนการกำหนดรหัสผ่านใหม่ให้คุณแล้วทางอีเมล
 password_reset_successful: รหัสผ่านถูกรีเซ็ตแล้ว
 back: ย้อนกลับ
 filter: ตัวกรอง

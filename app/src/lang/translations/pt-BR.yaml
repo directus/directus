@@ -562,7 +562,6 @@ unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
-password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
 filter: Filtro

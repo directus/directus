@@ -551,7 +551,6 @@ unexpected_error_copy: Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar d
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
-password_reset_sent: Sana parolanı sıfırlamanı sağlayacak güvenli bir bağlantı gönderdik
 password_reset_successful: Parola başarıyla sıfırlandı
 back: Geri
 filter: Filtrele
