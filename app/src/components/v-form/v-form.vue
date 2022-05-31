@@ -28,6 +28,7 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-errors="validationErrors"
+				:badge="badge"
 				v-bind="field.meta?.options || {}"
 				@apply="apply"
 			/>
