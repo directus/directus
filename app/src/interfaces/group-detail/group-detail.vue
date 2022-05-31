@@ -97,6 +97,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+
 		start: {
 			type: String,
 			enum: ['open', 'closed'],
