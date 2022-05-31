@@ -430,8 +430,6 @@ start_end_of_count_items: '{start}-{end} od {count} stavki'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
 one_item: '1 Stavka'
 one_filtered_item: '1 Filtrirana Stavka'
-delete_collection_are_you_sure: >-
-  Da li ste sigurni da želite da obrišete ovu kolekciju? Ova operacija će obrisati kolekciju i sve stavke unutar iste. Ova operacija je trajna.
 collections_shown: Prikazano Kolekcija
 visible_collections: Vidljive Kolekcije
 hidden_collections: Sakrivene Kolekcije
