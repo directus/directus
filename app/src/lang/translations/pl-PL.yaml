@@ -595,6 +595,7 @@ unexpected_error_copy: Wystąpił nieoczekiwany błąd. Spróbuj ponownie późn
 copy_details: Kopiuj szczegóły
 no_app_access: Brak dostępu do aplikacji
 no_app_access_copy: Ten użytkownik nie może używać aplikacji administracyjnej.
+password_reset_sent: Jeśli masz konto to wysłaliśmy Ci bezpieczny link do zresetowania hasła
 password_reset_successful: Hasło zostało pomyślnie zresetowane
 back: Wstecz
 filter: Filtr
@@ -618,6 +619,9 @@ start_end_of_count_items: '{start}-{end} z {count} elementów'
 start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
 one_item: '1 element'
 one_filtered_item: '1 przefiltrowany element'
+delete_collection_are_you_sure: >-
+  Czy na pewno chcesz usunąć kolekcję "{collection}"? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. To działanie jest nieodwracalne.
+delete_folder_are_you_sure: Czy na pewno chcesz usunąć folder "{folder}"? Zagnieżdżone foldery i kolekcje zostaną przeniesione do najwyższego poziomu.
 collections_shown: Wyświetlane kolekcje
 visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
@@ -1326,6 +1330,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
