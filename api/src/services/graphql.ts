@@ -80,6 +80,7 @@ import { SpecificationService } from './specifications';
 import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
+import { WebhooksService } from './webhooks';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -1632,6 +1633,8 @@ export class GraphQLService {
 				return new SettingsService(opts);
 			case 'directus_users':
 				return new UsersService(opts);
+			case 'directus_webhooks':
+				return new WebhooksService(opts);
 			case 'directus_shares':
 				return new SharesService(opts);
 			case 'directus_flows':

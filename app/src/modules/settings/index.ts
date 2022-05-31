@@ -15,6 +15,8 @@ import RolesCollection from './routes/roles/collection.vue';
 import RolesItem from './routes/roles/item/item.vue';
 import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
 import RolesPublicItem from './routes/roles/public-item.vue';
+import WebhooksCollection from './routes/webhooks/collection.vue';
+import WebhooksItem from './routes/webhooks/item.vue';
 import FlowsOverview from './routes/flows/overview.vue';
 import NewFlow from './routes/flows/new-flow.vue';
 import FlowsDetail from './routes/flows/flow.vue';
@@ -157,6 +159,23 @@ export default defineModule({
 					name: 'settings-presets-item',
 					path: ':id',
 					component: PresetsItem,
+					props: true,
+				},
+			],
+		},
+		{
+			path: 'webhooks',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-webhooks-collection',
+					path: '',
+					component: WebhooksCollection,
+				},
+				{
+					name: 'settings-webhooks-item',
+					path: ':primaryKey',
+					component: WebhooksItem,
 					props: true,
 				},
 			],
