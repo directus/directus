@@ -87,8 +87,8 @@ describe('/items', () => {
 
 				expect(response.body.data).toMatchObject([
 					{
-						id: artist.id,
-						name: artist.name,
+						id: expect.any(String),
+						name: expect.any(String),
 					},
 				]);
 			});
