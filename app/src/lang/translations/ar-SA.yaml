@@ -517,7 +517,6 @@ unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
-password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
 editing_image: تحرير صورة
@@ -535,8 +534,6 @@ start_end_of_count_items: '{start}-{end} من {count} عناصر'
 start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
 one_filtered_item: '1 عنصر مصفى'
-delete_collection_are_you_sure: >-
-  هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
 collections_shown: المجموعات المعروضة
 visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية

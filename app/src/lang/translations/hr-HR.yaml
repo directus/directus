@@ -594,7 +594,6 @@ unexpected_error_copy: Došlo je do neočekivane greške, molimo pokušajte pono
 copy_details: Kopiraj pojedinosti
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
-password_reset_sent: Poslali smo vam sigurnu vezu za poništavanje lozinke
 password_reset_successful: Lozinka je uspješno resetirana
 back: Povratak
 filter: Filter
@@ -618,9 +617,6 @@ start_end_of_count_items: '{start}-{end} od {count} stavki'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
 one_item: '1 stavka'
 one_filtered_item: '1 filtrirana stavka'
-delete_collection_are_you_sure: >-
-  Jeste li sigurni da želite izbrisati ovu zbirku? Time ćete izbrisati zbirku i sve stavke u njoj. Radnju nije moguće poništiti.
-delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati ovu mapu? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke

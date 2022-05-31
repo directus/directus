@@ -7,7 +7,7 @@
 			</v-divider>
 		</slot>
 		<transition-expand>
-			<div v-show="internalActive" class="content">
+			<div v-if="internalActive" class="content">
 				<slot />
 			</div>
 		</transition-expand>

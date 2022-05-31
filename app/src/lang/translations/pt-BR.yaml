@@ -562,7 +562,6 @@ unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
-password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
 filter: Filtro
@@ -585,8 +584,6 @@ start_end_of_count_items: '{start}-{end} de {count} itens'
 start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
 one_item: '1 item'
 one_filtered_item: '1 item filtrado'
-delete_collection_are_you_sure: >-
-  Tem certeza que deseja excluir esta coleção? Isto irá apagar a coleção e todos os itens nela. Esta ação é permanente.
 collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas

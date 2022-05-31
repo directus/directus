@@ -402,7 +402,6 @@ bookmarks: 書籤
 unexpected_error: 未預期的錯誤
 unexpected_error_copy: 發生意外的錯誤，請稍後再試。
 copy_details: 複製詳細資訊
-password_reset_sent: 我們已經把重設密碼連結寄到您的電子信箱
 password_reset_successful: 密碼重設成功
 back: 返回
 editing_image: 編輯圖像
@@ -416,8 +415,6 @@ delete_collection: 刪除集合
 update_collection_success: 已更新集合
 delete_collection_success: 已刪除集合
 start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
-delete_collection_are_you_sure: >-
-  是否確認要刪除此集合？這將刪除集合及其中的所有項目。此操作是永久性的。
 visible_collections: 可見集合
 hidden_collections: 隱藏集合
 unmanaged_collections: 未配置集合

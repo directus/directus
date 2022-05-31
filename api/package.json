@@ -73,8 +73,7 @@
 	"files": [
 		"dist",
 		"LICENSE",
-		"README.md",
-		"example.env"
+		"README.md"
 	],
 	"dependencies": {
 		"@aws-sdk/client-ses": "^3.40.0",
