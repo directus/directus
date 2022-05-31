@@ -79,18 +79,13 @@ describe('/items', () => {
 
 				const response = await request(getUrl(vendor))
 					.get(
-						`/items/artists?fields=id,name&filter={"_and":[{"$FOLLOW(artists_events,artists_id)":{"_some":{"events_id":{"_eq":"${event.id}"}}}}]}`
+						`/items/artists?fields=name&filter={"_and":[{"$FOLLOW(artists_events,artists_id)":{"_some":{"events_id":{"_eq":"${event.id}"}}}}]}`
 					)
 					.set('Authorization', 'Bearer User2Token')
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
-				expect(response.body.data).toMatchObject([
-					{
-						id: expect.any(String),
-						name: expect.any(String),
-					},
-				]);
+				expect(response.body.data).toMatchObject([{ name: artist.name }]);
 			});
 		});
 	});
