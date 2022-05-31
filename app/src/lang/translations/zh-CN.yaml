@@ -587,7 +587,6 @@ unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
 no_app_access_copy: 此用户不允许使用管理员应用程序。
-password_reset_sent: 我们已经给你发送了一封电子邮件, 您可以选择访问此安全链接来重置您的密码
 password_reset_successful: 密码重置成功。
 back: 后退
 filter: 筛选
