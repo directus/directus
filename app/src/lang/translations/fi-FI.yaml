@@ -544,8 +544,6 @@ start_end_of_count_items: '{start}-{end} / {count} kohdetta'
 start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
 one_item: '1 kohde'
 one_filtered_item: '1 suodatettu kohde'
-delete_collection_are_you_sure: >-
-  Oletko varma, että haluat poistaa tämän kokoelman? Tämä poistaa kokoelman ja kaikki sen kohteet. Tämä toiminto on lopullinen.
 collections_shown: Näytettävät kokoelmat
 visible_collections: Näkyvät kokoelmat
 hidden_collections: Piilotetut kokoelmat
