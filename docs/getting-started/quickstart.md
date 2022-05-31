@@ -82,7 +82,7 @@ Once logged in, you're greeted with the option to create your first
 1. Navigate into the Content Module.
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
-   For this demo, we'll call ours `articles`, but feel free to make it your own!
+   For the sake of this demo, we'll call ours `articles`, but feel free to make it your own!
 4. Leave the other options at default. Click <span mi btn>arrow_forward</span> and the **"Optional System Fields"** menu
    will open.\
    Keep the values in this menu at the default, toggled off, for now. You can adjust them later.
