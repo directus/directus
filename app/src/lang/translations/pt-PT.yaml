@@ -416,8 +416,6 @@ start_end_of_count_items: '{start}-{end} de {count} documentos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} documentos filtrados'
 one_item: '1 documento'
 one_filtered_item: '1 documento filtrado'
-delete_collection_are_you_sure: >-
-  Tem a certeza que deseja remover esta coleção? Isto irá apagar a coleção e todos os documentos associados. Esta ação é irreversível.
 collections_shown: Coleções visíveis
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas

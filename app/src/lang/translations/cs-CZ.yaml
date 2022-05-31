@@ -619,9 +619,6 @@ start_end_of_count_items: '{start}-{end} z {count} položek'
 start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položek'
 one_item: '1 položka'
 one_filtered_item: '1 filtrovaná položka'
-delete_collection_are_you_sure: >-
-  Jste si jisti, že chcete odstranit tuto kolekci? Tato akce odstraní kolekci a všechny její položky. Tato akce je trvalá.
-delete_folder_are_you_sure: Jste si jisti, že chcete odstranit tuto složku? Vnořené složky a kolekce budou přesunuty na nejvyšší úroveň.
 collections_shown: Zobrazené kolekce
 visible_collections: Viditelné kolekce
 hidden_collections: Skryté kolekce
@@ -1619,6 +1616,13 @@ interfaces:
     start_closed: Začít zavřený
   system-token:
     system-token: Token
+    description: Správa statického přístupového tokenu
+    placeholder: Klikněte na "Generovat token" pro vytvoření nového statického přístupového tokenu
+    value_securely_saved: Hodnota bezpečně uložena
+    generate: Generovat token
+    regenerate: Obnovit token
+    generate_success_copy: Ujistěte se, že si zálohujete a zkopírujete token uvedený výše. Z bezpečnostních důvodů nebudete moci znovu zobrazit token po uložení a opuštění této stránky.
+    remove_token: Odstranit token
 displays:
   translations:
     translations: Překlady

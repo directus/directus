@@ -611,9 +611,6 @@ start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤条目'
-delete_collection_are_you_sure: >-
-  您确定要删除此模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
-delete_folder_are_you_sure: 您确定要删除此文件夹吗？嵌套文件夹和收藏将被移动到最上层。
 collections_shown: 展开模型
 visible_collections: 显示模型
 hidden_collections: 隐藏模型

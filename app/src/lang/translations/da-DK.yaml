@@ -604,9 +604,6 @@ start_end_of_count_items: '{start}-{end} af {count} varer'
 start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede emner'
 one_item: '1 vare'
 one_filtered_item: '1 filtreret genstand'
-delete_collection_are_you_sure: >-
-  Er du sikker på, at du vil slette denne samling? Dette vil slette samlingen og alle elementer i den. Denne handling er permanent.
-delete_folder_are_you_sure: Er du sikker på, at du vil slette denne mappe? Indlejrede mapper og samlinger vil blive flyttet til det øverste niveau.
 collections_shown: Viste Samlinger
 visible_collections: Synlige Samlinger
 hidden_collections: Skjulte Samlinger

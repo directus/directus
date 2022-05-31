@@ -454,8 +454,6 @@ start_end_of_count_items: '{start}-{end} / {count}'
 start_end_of_count_filtered_items: '{start}-{end} / {count}'
 one_item: '1 kirje'
 one_filtered_item: '1 filtreeritud kirje'
-delete_collection_are_you_sure: >-
-  Kas sa kindlasti soovid selle andmekogu täielikult kustutada? Seda ei saa hiljem enam taastada!
 collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud

@@ -574,9 +574,6 @@ start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler göster
 start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler gösteriliyor'
 one_item: '1 öğe'
 one_filtered_item: '1 filtrelenmiş öğe'
-delete_collection_are_you_sure: >-
-  Bu koleksiyonu silmek istediğinizden emin misiniz? Bu işlem, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem geri alınamaz.
-delete_folder_are_you_sure: Bu klasörü silmek istediğinizden emin misiniz? Bu klasörün içindeki klasörler ve koleksiyonlar en üst seviyeye taşınacaktır.
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar

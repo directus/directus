@@ -540,9 +540,6 @@ start_end_of_count_items: '{start}-{end} از {count} آیتم'
 start_end_of_count_filtered_items: '{start}-{end} از {count} آیتم فیلتر شده'
 one_item: '۱ آیتم'
 one_filtered_item: '۱ آیتم فیلتر شده'
-delete_collection_are_you_sure: >-
-  آیا مطمئنید که میخواهید این مجموعه را حذف کنید؟ این عمل، مجموعه مورد نظر و تمامی آیتمهای آن را حذف خواهد کرد و نتیجه غیرقابل بازگشت خواهد بود.
-delete_folder_are_you_sure: آیا مطمئنید که میخواهید این پوشه را حذف کنید؟ پوشه ها و مجموعه های موجود در این پوشه به بالاترین سطح منتقل خواهد شد.
 collections_shown: مجموعه های نشان داده شده
 visible_collections: مجموعه های هویدا
 hidden_collections: مجموعه های پنهان
