@@ -614,9 +614,6 @@ start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
-delete_collection_are_you_sure: >-
-  ¿Seguro que quieres eliminar esta colección? Esto eliminará la colección y todos los elementos que contiene. Esta acción es permanente.
-delete_folder_are_you_sure: '¿Está seguro que desea eliminar esta carpeta? Las carpetas anidadas y las colecciones se moverán al nivel más alto.'
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
