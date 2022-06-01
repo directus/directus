@@ -1979,7 +1979,7 @@ triggers:
     response_body_last: Data of Last Operation
   event:
     name: Event Hook
-    description: Triggers on various platform events
+    description: Triggers on various platform events like item creates, updates, new collections, etc
   webhook:
     name: Webhook
     description: Triggers on an incoming HTTP request
@@ -1990,8 +1990,8 @@ triggers:
     description: Triggered by another Flow, for chaining
     preview: Triggered by an operation in a different Flow
   schedule:
-    name: Schedule
-    description: Triggers at certain points of time
+    name: Schedule (CRON)
+    description: Triggers at regular points in time
     cron: Interval
   manual:
     name: Manual
