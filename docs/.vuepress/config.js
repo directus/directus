@@ -77,6 +77,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/getting-started/learn-directus',
+						title: 'Learn Directus',
+					},
+					{
+						type: 'page',
 						path: '/getting-started/support',
 						title: 'Help & Support',
 					},
