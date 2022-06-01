@@ -606,7 +606,7 @@ module.exports = {
 		// === 1. Compute props for thumbnail
 
 		// Page title
-		let title = $page.title ?? $page._context.siteConfig.title;
+		let title = $page.title || $page._context.siteConfig.title;
 
 		// Last updated date in a human readable format, ex: December 16, 2021
 		const lastUpdated = new Date($page.lastUpdated)
@@ -678,6 +678,6 @@ module.exports = {
 
 		// === 4. Append custom metadata to frontmatter meta
 
-		$page.frontmatter.meta = [...($page.frontmatter.meta ?? []), ...meta];
+		$page.frontmatter.meta = [...($page.frontmatter.meta || []), ...meta];
 	}
 };
