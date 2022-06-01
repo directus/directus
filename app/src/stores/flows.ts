@@ -10,10 +10,10 @@ export const useFlowsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
-			const userStore = useUserStore();
-			const permissionsStore = usePermissionsStore();
+			const { isAdmin } = useUserStore();
+			const { hasPermission } = usePermissionsStore();
 
-			if (userStore.isAdmin !== true && !permissionsStore.hasPermission('directus_dashboards', 'read')) {
+			if (isAdmin !== true && !hasPermission('directus_flows', 'read')) {
 				this.flows = [];
 			} else {
 				try {
@@ -29,6 +29,9 @@ export const useFlowsStore = defineStore({
 		},
 		async dehydrate() {
 			this.$reset();
+		},
+		getManualFlowsForCollection(collection: string): FlowRaw[] {
+			return this.flows.filter((flow) => flow.trigger === 'manual' && flow.options?.collections.includes(collection));
 		},
 	},
 });

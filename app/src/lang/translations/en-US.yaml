@@ -763,6 +763,10 @@ icon_off: Icon Off
 label: Label
 flows: Flows
 flow: Flow
+select_a_flow: Select a Flow
+run_flow_on_current: Run flow on Current Item
+run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
+run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
 trigger_options: Trigger Options
 view_trigger: View Trigger
@@ -1990,8 +1994,7 @@ triggers:
     cron: Interval
   manual:
     name: Manual
-    description: Triggers on manual click
-    click: Click
+    description: Triggers on manual run within selected collection(s)
 operations:
   condition:
     name: Condition

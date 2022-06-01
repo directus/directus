@@ -183,7 +183,7 @@ class FlowManager {
 					}
 				};
 
-				const method = flow.options?.method ?? 'GET';
+				const method = flow.trigger === 'webhook' ? flow.options?.method ?? 'GET' : 'POST';
 
 				// Default return to $last for webhooks
 				flow.options.return = flow.options.return ?? '$last';
@@ -240,7 +240,7 @@ class FlowManager {
 
 	public async runWebhookFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
 		if (!(id in this.webhookFlowHandlers)) {
-			logger.warn(`Couldn't find webhook triggered flow with id "${id}"`);
+			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new exceptions.ForbiddenException();
 		}
 

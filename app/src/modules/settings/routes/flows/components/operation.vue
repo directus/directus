@@ -95,13 +95,6 @@
 						@click="copyToClipboard(text)"
 					/>
 				</div>
-				<v-button
-					v-if="panel.id === '$trigger' && panel.type === 'manual'"
-					:disabled="manualRunning"
-					@click="manualTrigger"
-				>
-					{{ t('triggers.manual.click') }}
-				</v-button>
 			</dl>
 		</div>
 		<component
@@ -138,11 +131,9 @@
 </template>
 
 <script lang="ts" setup>
-import api from '@/api';
 import useClipboard from '@/composables/use-clipboard';
 import { getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/shared/types';
 import { computed, ref, toRefs } from 'vue';
@@ -288,20 +279,6 @@ const flowStatus = computed({
 		emit('flow-status', newVal);
 	},
 });
-
-/* Manual Trigger */
-const manualRunning = ref(false);
-
-async function manualTrigger() {
-	manualRunning.value = true;
-	try {
-		await api.get(`/flows/trigger/${props.flow.id}`);
-	} catch (error) {
-		unexpectedError(error as Error);
-	} finally {
-		manualRunning.value = false;
-	}
-}
 
 /* show hint buttons */
 function pointerEnter() {

@@ -331,30 +331,32 @@ export function getTriggers() {
 				},
 			],
 		},
-		// {
-		// 	id: 'manual',
-		// 	name: t('triggers.manual.name'),
-		// 	icon: 'touch_app',
-		// 	description: t('triggers.manual.description'),
-		// 	overview: () => [
-		// 		{
-		// 			label: t('triggers.manual.description'),
-		// 			text: '',
-		// 		},
-		// 	],
-		// 	options: [
-		// 		{
-		// 			field: 'empty',
-		// 			type: 'alias',
-		// 			meta: {
-		// 				interface: 'presentation-notice',
-		// 				options: {
-		// 					text: t('no_options_available'),
-		// 				},
-		// 			},
-		// 		},
-		// 	],
-		// },
+		{
+			id: 'manual',
+			name: t('triggers.manual.name'),
+			icon: 'touch_app',
+			description: t('triggers.manual.description'),
+			overview: ({ collections }) => [
+				{
+					label: t('triggers.manual.description'),
+					text: '',
+				},
+				{
+					label: t('collections'),
+					text: collections.join(', '),
+				},
+			],
+			options: [
+				{
+					field: 'collections',
+					name: t('collections'),
+					meta: {
+						interface: 'system-collections',
+						width: 'full' as Width,
+					},
+				},
+			],
+		},
 	];
 
 	return { triggers };
