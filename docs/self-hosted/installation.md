@@ -6,9 +6,9 @@
 While our CLI is the recommended method for self-hosting, you can use whichever of these self-hosted options best suits
 your needs. These methods offer a high level of customization and are ideal for intermediate developers.
 
-- [Command Line Interface (CLI)](/getting-started/installation/cli/)
-- [Docker](/getting-started/installation/docker/)
-- [Manually](/getting-started/installation/manual/)
+- [Command Line Interface (CLI)](/self-hosted/installation/cli/)
+- [Docker](/self-hosted/installation/docker/)
+- [Manually](/self-hosted/installation/manual/)
 
 ::: tip Development Environment
 
