@@ -2006,40 +2006,21 @@ operations:
   item-create:
     name: Create Data
     description: Create items in the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
     payload: Payload
     emit_events: Emit Events
   item-delete:
     name: Delete Data
     description: Delete items in the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
-      query: Items by Query
     key: IDs
     query: Query
   item-read:
     name: Read Data
     description: Read items from the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
-      query: Items by Query
     key: IDs
     query: Query
   item-update:
     name: Update Data
     description: Update items in the database
-    mode:
-      field: Mode
-      one: One Item
-      many: Multiple Items
-      query: Items by Query
     key: IDs
     payload: Payload
     query: Query

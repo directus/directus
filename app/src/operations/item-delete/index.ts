@@ -29,31 +29,6 @@ export default defineOperationApp({
 	},
 	options: [
 		{
-			field: 'mode',
-			name: '$t:operations.item-delete.mode.field',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'select-dropdown',
-				options: {
-					choices: [
-						{
-							text: '$t:operations.item-delete.mode.one',
-							value: 'one',
-						},
-						{
-							text: '$t:operations.item-delete.mode.many',
-							value: 'many',
-						},
-						{
-							text: '$t:operations.item-delete.mode.query',
-							value: 'query',
-						},
-					],
-				},
-			},
-		},
-		{
 			field: 'permissions',
 			name: '$t:permissions',
 			type: 'string',
@@ -61,7 +36,7 @@ export default defineOperationApp({
 				default_value: '$trigger',
 			},
 			meta: {
-				width: 'half',
+				width: 'full',
 				interface: 'select-dropdown',
 				options: {
 					choices: [

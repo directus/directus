@@ -5,7 +5,6 @@ import { getAccountabilityForRole } from '../../utils/get-accountability-for-rol
 import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
-	mode: 'one' | 'many' | 'query';
 	collection: string;
 	key: PrimaryKey | PrimaryKey[] | null;
 	query: string;
@@ -15,7 +14,7 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'item-delete',
 
-	handler: async ({ mode, collection, key, query, permissions }, { accountability, database, getSchema }) => {
+	handler: async ({ collection, key, query, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
 
 		let customAccountability: Accountability | null;
@@ -38,14 +37,16 @@ export default defineOperationApi<Options>({
 
 		let result: PrimaryKey | PrimaryKey[] | null;
 
-		if (mode === 'one') {
-			if (!key) return null;
-			result = await itemsService.deleteOne(toArray(key)[0] as PrimaryKey);
-		} else if (mode === 'many') {
-			if (!key) return null;
-			result = await itemsService.deleteMany(toArray(key) as PrimaryKey[]);
-		} else {
+		if (key === null) {
 			result = await itemsService.deleteByQuery(query ? parseJSON(query) : {});
+		} else {
+			const keys = toArray(key);
+
+			if (keys.length === 1) {
+				result = await itemsService.deleteOne(keys[0]);
+			} else {
+				result = await itemsService.deleteMany(keys);
+			}
 		}
 
 		return result;

@@ -6,7 +6,6 @@ import { getAccountabilityForRole } from '../../utils/get-accountability-for-rol
 import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
-	mode: 'one' | 'many' | 'query';
 	collection: string;
 	key: PrimaryKey | PrimaryKey[] | null;
 	payload: string;
@@ -17,7 +16,7 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'item-update',
 
-	handler: async ({ mode, collection, key, payload, query, permissions }, { accountability, database, getSchema }) => {
+	handler: async ({ collection, key, payload, query, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
 
 		let customAccountability: Accountability | null;
@@ -47,14 +46,16 @@ export default defineOperationApi<Options>({
 			return null;
 		}
 
-		if (mode === 'one') {
-			if (!key) return null;
-			result = await itemsService.updateOne(toArray(key)[0] as PrimaryKey, parsedPayload);
-		} else if (mode === 'many') {
-			if (!key) return null;
-			result = await itemsService.updateMany(toArray(key) as PrimaryKey[], parsedPayload);
-		} else {
+		if (key === null) {
 			result = await itemsService.updateByQuery(query ? parseJSON(query) : {}, parsedPayload);
+		} else {
+			const keys = toArray(key);
+
+			if (keys.length === 1) {
+				result = await itemsService.updateOne(keys[0], parsedPayload);
+			} else {
+				result = await itemsService.updateMany(keys, parsedPayload);
+			}
 		}
 
 		return result;
