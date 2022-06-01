@@ -348,24 +348,50 @@ export function getTriggers() {
 			],
 			options: [
 				{
-					field: 'async',
-					name: t('triggers.webhook.async'),
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'toggle',
-						required: true,
-					},
-					schema: {
-						default_value: false,
-					},
-				},
-				{
 					field: 'collections',
 					name: t('collections'),
 					meta: {
 						interface: 'system-collections',
 						width: 'full' as Width,
+					},
+				},
+				{
+					field: 'location',
+					name: t('location'),
+					meta: {
+						interface: 'select-dropdown',
+						width: 'half' as Width,
+						options: {
+							choices: [
+								{
+									text: t('triggers.manual.collection_and_item'),
+									value: 'both',
+								},
+								{
+									text: t('triggers.manual.collection_only'),
+									value: 'collection',
+								},
+								{
+									text: t('triggers.manual.item_only'),
+									value: 'item',
+								},
+							],
+						},
+					},
+					schema: {
+						default_value: 'both',
+					},
+				},
+				{
+					field: 'async',
+					name: t('triggers.webhook.async'),
+					type: 'boolean',
+					meta: {
+						width: 'half' as Width,
+						interface: 'toggle',
+					},
+					schema: {
+						default_value: false,
 					},
 				},
 			],

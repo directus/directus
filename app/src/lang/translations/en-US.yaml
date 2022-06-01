@@ -35,6 +35,7 @@ reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
+location: Location
 condition_rules: Condition Rules
 input: Input
 maps: Maps
@@ -1996,6 +1997,9 @@ triggers:
   manual:
     name: Manual
     description: Triggers on manual run within selected collection(s)
+    collection_and_item: Collection & Item Pages
+    collection_only: Collection Page Only
+    item_only: Item Page Only
 operations:
   condition:
     name: Condition

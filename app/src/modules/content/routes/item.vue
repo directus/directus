@@ -199,6 +199,7 @@
 			/>
 			<flow-sidebar-detail
 				v-if="isNew === false && internalPrimaryKey"
+				location="item"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 			/>

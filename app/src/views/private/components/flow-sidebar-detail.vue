@@ -31,6 +31,7 @@ interface Props {
 	collection: string;
 	primaryKey?: string;
 	selection: (number | string)[];
+	location: 'collection' | 'item';
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -48,7 +49,11 @@ const { primaryKeyField } = useCollection(collection);
 
 const flowsStore = useFlowsStore();
 
-const manualFlows = computed(() => flowsStore.getManualFlowsForCollection(collection.value));
+const manualFlows = computed(() =>
+	flowsStore
+		.getManualFlowsForCollection(collection.value)
+		.filter((flow) => flow.options?.location === 'both' || flow.options?.location === props.location)
+);
 
 const runningFlows = ref<string[]>([]);
 
