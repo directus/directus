@@ -1218,7 +1218,6 @@ export class GraphQLService {
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 
 		let query: Record<string, any>;
-
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
 		if (isAggregate) {
@@ -1378,13 +1377,11 @@ export class GraphQLService {
 		variableValues: GraphQLResolveInfo['variableValues']
 	): Record<string, any> {
 		if (!args || args.length === 0) return {};
-
 		const parseObjectValue = (arg: ObjectValueNode) => {
 			return this.parseArgs(arg.fields, variableValues);
 		};
 
 		const argsObject: any = {};
-
 		for (const argument of args) {
 			if (argument.value.kind === 'ObjectValue') {
 				argsObject[argument.name.value] = parseObjectValue(argument.value);
@@ -1397,7 +1394,11 @@ export class GraphQLService {
 					if (valueNode.kind === 'ObjectValue') {
 						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
-						values.push((valueNode as any).value);
+						if (valueNode.kind === 'Variable') {
+							values.push(variableValues[valueNode.name.value]);
+						} else {
+							values.push((valueNode as any).value);
+						}
 					}
 				}
 
