@@ -26,6 +26,7 @@ import { ActivityService } from './services/activity';
 import { RevisionsService } from './services/revisions';
 import { Knex } from 'knex';
 import { omit } from 'lodash';
+import { getMessenger } from './messenger';
 
 let flowManager: FlowManager | undefined;
 
@@ -222,6 +223,12 @@ class FlowManager {
 				this.webhookFlowHandlers[`POST-${flow.id}`] = handler;
 			}
 		}
+
+		getMessenger().subscribe('flows', (event) => {
+			if (event.type === 'reload') {
+				this.reload();
+			}
+		});
 	}
 
 	public async reload(): Promise<void> {
