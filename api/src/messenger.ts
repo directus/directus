@@ -3,7 +3,7 @@ import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { parseJSON } from './utils/parse-json';
 
-type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;
+export type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;
 
 export interface Messenger {
 	publish: (channel: string, payload: Record<string, any>) => void;
