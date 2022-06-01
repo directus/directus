@@ -1,21 +1,16 @@
 <template>
-	<sidebar-detail v-if="selectableFlows.length > 0" icon="bolt" :title="t('flows')">
+	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="t('flows')">
 		<div class="fields">
-			<div class="field full">
-				<v-select v-model="selectedFlowId" :items="selectableFlows" :placeholder="t('select_a_flow')" item-icon="icon">
-					<template v-if="selectedFlow" #prepend>
-						<v-icon :name="selectedFlow!.icon" />
-					</template>
-				</v-select>
-			</div>
-			<div class="field full">
+			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
 				<v-button
+					v-tooltip="primaryKey ? t('run_flow_on_current') : t('run_flow_on_selected', selection.length)"
 					small
 					full-width
-					:disabled="!selectedFlowId || (!primaryKey && selection.length === 0)"
-					@click="runManualFlow"
+					:disabled="runningFlows.includes(manualFlow.id) || (!primaryKey && selection.length === 0)"
+					@click="runManualFlow(manualFlow.id)"
 				>
-					{{ primaryKey ? t('run_flow_on_current') : t('run_flow_on_selected', selection.length) }}
+					<v-icon :name="manualFlow.icon ?? 'bolt'" small />
+					{{ manualFlow.name }}
 				</v-button>
 			</div>
 		</div>
@@ -28,7 +23,7 @@ import { useFlowsStore } from '@/stores';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/shared/composables';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
@@ -52,39 +47,27 @@ const flowsStore = useFlowsStore();
 
 const manualFlows = computed(() => flowsStore.getManualFlowsForCollection(collection.value));
 
-const selectableFlows = computed(() =>
-	manualFlows.value.map((flow) => {
-		return { text: flow.name, value: flow.id, icon: flow.icon ?? 'bolt' };
-	})
-);
+const runningFlows = ref<string[]>([]);
 
-const selectedFlowId = ref<string | null>(null);
+async function runManualFlow(flowId: string) {
+	const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
 
-watch(collection, () => {
-	selectedFlowId.value = null;
-});
+	if (!selectedFlow || !!primaryKeyField.value) return;
 
-const selectedFlow = computed(() => manualFlows.value.find((flow) => flow.id === selectedFlowId.value));
-
-const isRunning = ref<boolean>(false);
-
-async function runManualFlow() {
-	if (!selectedFlow.value || !primaryKeyField.value) return;
-
-	isRunning.value = true;
+	runningFlows.value = [...runningFlows.value, flowId];
 
 	try {
 		const keys = primaryKey.value ? [primaryKey.value] : selection.value;
 
-		await api.post(`/flows/trigger/${selectedFlow.value.id}`, { collection: collection.value, keys });
+		await api.post(`/flows/trigger/${flowId}`, { collection: collection.value, keys });
 
 		notify({
-			title: t('run_flow_success', { flow: selectedFlow.value.name }),
+			title: t('run_flow_success', { flow: selectedFlow.name }),
 		});
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
-		isRunning.value = false;
+		runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 	}
 }
 </script>
@@ -108,16 +91,7 @@ async function runManualFlow() {
 	--v-button-background-color-disabled: var(--background-normal-alt);
 }
 
-.download-local {
-	color: var(--foreground-subdued);
-	text-align: center;
-	display: block;
-	width: 100%;
-	margin-top: 8px;
-	transition: color var(--fast) var(--transition);
-
-	&:hover {
-		color: var(--primary);
-	}
+.v-icon {
+	margin-right: 8px;
 }
 </style>
