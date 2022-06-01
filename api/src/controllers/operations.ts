@@ -1,7 +1,5 @@
 import express from 'express';
-import { UUID_REGEX } from '../constants';
 import { ForbiddenException } from '../exceptions';
-import { getFlowManager } from '../flows';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
@@ -12,21 +10,6 @@ import asyncHandler from '../utils/async-handler';
 const router = express.Router();
 
 router.use(useCollection('directus_operations'));
-
-router.post(
-	`/trigger/:pk(${UUID_REGEX})`,
-	asyncHandler(async (req, res) => {
-		if (!req.accountability?.admin) {
-			throw new ForbiddenException();
-		}
-
-		const flowManager = getFlowManager();
-
-		const result = await flowManager.runOperation(req.params.pk, req.body);
-
-		res.json(result);
-	})
-);
 
 router.post(
 	'/',

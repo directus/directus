@@ -63,8 +63,6 @@ class FlowManager {
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
-	private flowOperations: Record<string, any> = {};
-
 	public async initialize(): Promise<void> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
@@ -72,20 +70,6 @@ class FlowManager {
 			filter: { status: { _eq: 'active' } },
 			fields: ['*', 'operations.*'],
 		});
-
-		for (const flow of flows) {
-			for (const operationRaw of flow.operations) {
-				const operation = {
-					...operationRaw,
-					resolve: null,
-					reject: null,
-				};
-
-				const handler = (data: Record<string, unknown>) => this.executeOperation(operation, data);
-
-				this.flowOperations[operation.id] = handler;
-			}
-		}
 
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
@@ -259,8 +243,6 @@ class FlowManager {
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
 
-		this.flowOperations = {};
-
 		await this.initialize();
 	}
 
@@ -292,18 +274,6 @@ class FlowManager {
 		const handler = this.webhookFlowHandlers[id];
 
 		return handler(data, context);
-	}
-
-	public async runOperation(id: string, data: unknown): Promise<unknown> {
-		if (!(id in this.flowOperations)) {
-			logger.warn(`Couldn't find operation with id "${id}"`);
-
-			return null;
-		}
-
-		const handler = this.flowOperations[id];
-
-		return handler(data);
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {
