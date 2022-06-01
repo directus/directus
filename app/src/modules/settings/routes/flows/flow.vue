@@ -104,7 +104,13 @@
 			</v-workspace>
 		</div>
 
-		<trigger-detail v-model:open="triggerDetailOpen" v-model:flow="flow" />
+		<flow-drawer
+			:active="triggerDetailOpen"
+			:primary-key="flow.id"
+			:start-tab="'trigger_setup'"
+			@cancel="triggerDetailOpen = false"
+			@done="triggerDetailOpen = false"
+		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -189,10 +195,10 @@ import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
-import TriggerDetail from './components/trigger-detail.vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import Arrows from './components/arrows.vue';
 import { Vector2 } from '@/utils/vector2';
+import FlowDrawer from './flow-drawer.vue';
 
 import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 

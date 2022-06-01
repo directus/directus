@@ -783,6 +783,7 @@ no_flows: No Flows
 no_flows_copy: You don't have any Flows yet.
 create_flow: Create Flow
 creating_new_flow: Creating New Flow
+updating_flow: Updating Flow
 flow_setup: Flow Setup
 flow_name: Name
 flow_tracking: Activity & Logs Tracking

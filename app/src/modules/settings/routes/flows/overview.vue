@@ -20,7 +20,7 @@
 				rounded
 				icon
 				:disabled="createAllowed === false"
-				to="/settings/flows/+"
+				@click="editFlow = '+'"
 			>
 				<v-icon name="add" />
 			</v-button>
@@ -81,7 +81,7 @@
 							</template>
 						</v-list-item>
 
-						<v-list-item clickable @click="editFlow = item">
+						<v-list-item clickable @click="editFlow = item.id">
 							<v-list-item-icon>
 								<v-icon name="edit" outline />
 							</v-list-item-icon>
@@ -118,7 +118,12 @@
 			</v-card>
 		</v-dialog>
 
-		<flow-dialog :model-value="!!editFlow" :flow="editFlow" @update:model-value="editFlow = undefined" />
+		<flow-drawer
+			:active="editFlow !== undefined"
+			:primary-key="editFlow"
+			@cancel="editFlow = undefined"
+			@done="onFlowDrawerCompletion"
+		/>
 
 		<router-view name="add" />
 	</private-view>
@@ -134,7 +139,7 @@ import { FlowRaw } from '@directus/shared/types';
 import { computed, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
-import FlowDialog from './components/flow-dialog.vue';
+import FlowDrawer from './flow-drawer.vue';
 
 const { t } = useI18n();
 
@@ -142,7 +147,7 @@ const permissionsStore = usePermissionsStore();
 
 const confirmDelete = ref<string | null>(null);
 const deletingFlow = ref(false);
-const editFlow = ref<FlowRaw | undefined>();
+const editFlow = ref<string | undefined>();
 
 const createAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_flows', 'create');
@@ -224,6 +229,14 @@ async function toggleFlowStatusById(id: string, value: string) {
 	} catch (error) {
 		unexpectedError(error as Error);
 	}
+}
+
+function onFlowDrawerCompletion(id: string) {
+	if (editFlow.value === '+') {
+		router.push(`/settings/flows/${id}`);
+	}
+
+	editFlow.value = undefined;
 }
 </script>
 

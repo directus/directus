@@ -1,11 +1,12 @@
 <template>
 	<v-drawer
-		:title="t('creating_new_flow')"
-		:model-value="isOpen"
+		:title="isNew ? t('creating_new_flow') : t('updating_flow')"
 		class="new-flow"
 		persistent
+		:model-value="active"
 		:sidebar-label="t(currentTab[0])"
-		@cancel="router.push('/settings/flows')"
+		@cancel="$emit('cancel')"
+		@esc="$emit('cancel')"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>
@@ -118,12 +119,11 @@
 
 <script lang="ts" setup>
 import api from '@/api';
-import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useFlowsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { computed, reactive, ref } from 'vue';
+import { TriggerType } from '@directus/shared/types';
+import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import { getTriggers } from './triggers';
 
 interface Values {
@@ -133,19 +133,27 @@ interface Values {
 	note: string | null;
 	status: string;
 	accountability: string | null;
-	trigger?: string;
+	trigger?: TriggerType | null;
 	options: Record<string, any>;
 }
 
-const { t } = useI18n();
+interface Props {
+	primaryKey?: string;
+	active: boolean;
+	startTab?: string;
+}
 
-const router = useRouter();
+const props = withDefaults(defineProps<Props>(), { primaryKey: '+', startTab: 'flow_setup' });
+
+const emit = defineEmits(['cancel', 'done']);
+
+const { t } = useI18n();
 
 const flowsStore = useFlowsStore();
 
-const isOpen = useDialogRoute();
-
 const currentTab = ref(['flow_setup']);
+
+const isNew = computed(() => props.primaryKey === '+');
 
 const values: Values = reactive({
 	name: null,
@@ -157,6 +165,36 @@ const values: Values = reactive({
 	trigger: undefined,
 	options: {},
 });
+
+watch(
+	() => props.primaryKey,
+	(newKey) => {
+		currentTab.value = [props.startTab];
+
+		if (newKey === '+') {
+			values.name = null;
+			values.icon = 'bolt';
+			values.color = null;
+			values.note = null;
+			values.status = 'active';
+			values.accountability = 'all';
+			values.trigger = undefined;
+			values.options = {};
+		} else {
+			const existing = flowsStore.flows.find((existingFlow) => existingFlow.id === newKey)!;
+
+			values.name = existing.name;
+			values.icon = existing.icon;
+			values.color = existing.color;
+			values.note = existing.note;
+			values.status = existing.status;
+			values.accountability = existing.accountability;
+			values.trigger = existing.trigger;
+			values.options = existing.options;
+		}
+	},
+	{ immediate: true }
+);
 
 const { triggers } = getTriggers();
 
@@ -178,13 +216,19 @@ async function save() {
 	saving.value = true;
 
 	try {
-		const response = await api.post('/flows', values, { params: { fields: ['id'] } });
+		let id: string;
+
+		if (isNew.value) {
+			id = await api.post('/flows', values, { params: { fields: ['id'] } }).then((res) => res.data.data.id);
+		} else {
+			id = await api
+				.patch(`/flows/${props.primaryKey}`, values, { params: { fields: ['id'] } })
+				.then((res) => res.data.data.id);
+		}
+
 		await flowsStore.hydrate();
 
-		router.push({
-			name: 'settings-flows-item',
-			params: { primaryKey: response.data.data.id, firstOpen: 'true' },
-		});
+		emit('done', id);
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
