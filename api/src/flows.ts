@@ -27,8 +27,15 @@ import { RevisionsService } from './services/revisions';
 import { Knex } from 'knex';
 import { omit } from 'lodash';
 import { getMessenger } from './messenger';
+import fastRedact from 'fast-redact';
 
 let flowManager: FlowManager | undefined;
+
+const redactLogs = fastRedact({
+	censor: '--redacted--',
+	paths: ['*.headers.authorization', '*.access_token', '*.headers.cookie'],
+	serialize: false,
+});
 
 export function getFlowManager(): FlowManager {
 	if (flowManager) {
@@ -357,7 +364,7 @@ class FlowManager {
 					item: flow.id,
 					data: {
 						steps: steps,
-						data: omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
+						data: redactLogs(omit(keyedData, '$accountability.permissions')), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
 					},
 				});
 			}
