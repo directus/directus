@@ -74,7 +74,7 @@ class FlowManager {
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
 		for (const flow of flowTrees) {
-			if (flow.trigger === 'hook') {
+			if (flow.trigger === 'event') {
 				if (flow.options.type === 'filter') {
 					const handler: FilterHandler = (payload, meta, context) =>
 						this.executeFlow(

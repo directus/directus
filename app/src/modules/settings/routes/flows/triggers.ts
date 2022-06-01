@@ -19,10 +19,10 @@ export function getTriggers() {
 
 	const triggers: Trigger[] = [
 		{
-			id: 'hook',
-			name: t('triggers.hook.name'),
+			id: 'event',
+			name: t('triggers.event.name'),
 			icon: 'anchor',
-			description: t('triggers.hook.description'),
+			description: t('triggers.event.description'),
 			overview: ({ type, actionScope, filterScope, actionCollections, filterCollections }) => {
 				const labels = [
 					{
