@@ -28,7 +28,6 @@ import { useFlowsStore } from '@/stores';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/shared/composables';
-import { getEndpoint } from '@directus/shared/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -75,32 +74,9 @@ async function runManualFlow() {
 	isRunning.value = true;
 
 	try {
-		let payloadResponse;
+		const keys = primaryKey.value ? [primaryKey.value] : selection.value;
 
-		if (primaryKey.value) {
-			payloadResponse = await api.get(
-				`${getEndpoint(collection.value)}/${encodeURIComponent(primaryKey.value as string)}`,
-				{
-					params: {
-						fields: ['*'],
-					},
-				}
-			);
-		} else {
-			payloadResponse = await api.get(getEndpoint(collection.value), {
-				params: {
-					fields: ['*'],
-					filter: {
-						[primaryKeyField.value.field]: {
-							_in: selection.value,
-						},
-					},
-					limit: -1,
-				},
-			});
-		}
-
-		await api.post(`/flows/trigger/${selectedFlow.value.id}`, payloadResponse.data.data);
+		await api.post(`/flows/trigger/${selectedFlow.value.id}`, { collection: collection.value, keys });
 
 		notify({
 			title: t('run_flow_success', { flow: selectedFlow.value.name }),
