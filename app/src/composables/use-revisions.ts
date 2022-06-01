@@ -27,6 +27,8 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 	return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
 
 	async function getRevisions(page = 0) {
+		if (typeof unref(primaryKey) === 'undefined') return;
+
 		loading.value = true;
 		const pageSize = 100;
 
