@@ -10,7 +10,7 @@
 					:disabled="!primaryKey && selection.length === 0"
 					@click="runManualFlow(manualFlow.id)"
 				>
-					<v-icon :name="manualFlow.icon ?? 'bolt'" small />
+					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
 					{{ manualFlow.name }}
 				</v-button>
 			</div>
@@ -52,7 +52,10 @@ const flowsStore = useFlowsStore();
 const manualFlows = computed(() =>
 	flowsStore
 		.getManualFlowsForCollection(collection.value)
-		.filter((flow) => flow.options?.location === 'both' || flow.options?.location === props.location)
+		.filter(
+			(flow) =>
+				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location
+		)
 );
 
 const runningFlows = ref<string[]>([]);
