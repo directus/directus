@@ -56,6 +56,38 @@ describe('/items', () => {
 				});
 			});
 		});
+		describe(`retrieve an item using the $FOLLOW filter`, () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const artist = createArtist();
+				const event = createEvent();
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				await seedTable(databases.get(vendor)!, 1, 'events', event);
+
+				await seedTable(
+					databases.get(vendor)!,
+					1,
+					'artists_events',
+					{
+						artists_id: artist.id,
+						events_id: event.id,
+					},
+					{
+						select: ['id'],
+						where: ['artists_id', artist.id],
+					}
+				);
+
+				const response = await request(getUrl(vendor))
+					.get(
+						`/items/artists?fields=name&filter={"_and":[{"$FOLLOW(artists_events,artists_id)":{"_some":{"events_id":{"_eq":"${event.id}"}}}}]}`
+					)
+					.set('Authorization', 'Bearer User2Token')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				expect(response.body.data).toMatchObject([{ name: artist.name }]);
+			});
+		});
 	});
 
 	describe('/:collection/:id GraphQL Query', () => {

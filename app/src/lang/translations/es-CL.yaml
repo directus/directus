@@ -590,7 +590,6 @@ unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo má
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
-password_reset_sent: Le hemos enviado un enlace seguro para restablecer su contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
@@ -614,9 +613,6 @@ start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
-delete_collection_are_you_sure: >-
-  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
-delete_folder_are_you_sure: '¿Está seguro que desea eliminar esta carpeta? Las carpetas anidadas y las colecciones se moverán al nivel más alto.'
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas

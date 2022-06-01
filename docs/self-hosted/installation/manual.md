@@ -40,7 +40,4 @@ npm install directus
 Finally, you'll need to setup your `.env` file, or configure the environment variables through other means, such as
 Docker, etc.
 
-You can use a copy of [the `example.env` file](https://github.com/directus/directus/blob/main/api/example.env) as a
-starting point.
-
 See [Environment Variables](/configuration/config-options/#general) for all available variables.
