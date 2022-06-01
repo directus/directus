@@ -16,4 +16,4 @@ jobs:
       - uses: actions/add-to-project@v0.0.3
         with:
           project-url: https://github.com/orgs/directus/projects/6
-          github-token: ${{ secrets.ADD_TO_PROJECT_PAT || github.token }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
