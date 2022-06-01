@@ -348,6 +348,19 @@ export function getTriggers() {
 			],
 			options: [
 				{
+					field: 'async',
+					name: t('triggers.webhook.async'),
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'toggle',
+						required: true,
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
 					field: 'collections',
 					name: t('collections'),
 					meta: {

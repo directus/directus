@@ -6,7 +6,8 @@
 					v-tooltip="primaryKey ? t('run_flow_on_current') : t('run_flow_on_selected', selection.length)"
 					small
 					full-width
-					:disabled="runningFlows.includes(manualFlow.id) || (!primaryKey && selection.length === 0)"
+					:loading="runningFlows.includes(manualFlow.id)"
+					:disabled="!primaryKey && selection.length === 0"
 					@click="runManualFlow(manualFlow.id)"
 				>
 					<v-icon :name="manualFlow.icon ?? 'bolt'" small />
@@ -52,7 +53,7 @@ const runningFlows = ref<string[]>([]);
 async function runManualFlow(flowId: string) {
 	const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
 
-	if (!selectedFlow || !!primaryKeyField.value) return;
+	if (!selectedFlow || !primaryKeyField.value) return;
 
 	runningFlows.value = [...runningFlows.value, flowId];
 
