@@ -38,6 +38,8 @@ const props = withDefaults(defineProps<Props>(), {
 	selection: () => [],
 });
 
+const emit = defineEmits(['refresh']);
+
 const { t } = useI18n();
 
 const { collection, primaryKey, selection } = toRefs(props);
@@ -61,6 +63,8 @@ async function runManualFlow(flowId: string) {
 		const keys = primaryKey.value ? [primaryKey.value] : selection.value;
 
 		await api.post(`/flows/trigger/${flowId}`, { collection: collection.value, keys });
+
+		emit('refresh');
 
 		notify({
 			title: t('run_flow_success', { flow: selectedFlow.name }),

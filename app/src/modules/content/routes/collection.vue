@@ -252,7 +252,7 @@
 					@download="download"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail :collection="collection" :selection="selection" />
+				<flow-sidebar-detail :collection="collection" :selection="selection" @refresh="refresh" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
