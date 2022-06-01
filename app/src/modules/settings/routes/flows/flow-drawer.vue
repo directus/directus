@@ -56,7 +56,7 @@
 						<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
 					</div>
 					<v-divider class="full" />
-					<div class="field half-left">
+					<div class="field full">
 						<div class="type-label">{{ t('flow_tracking') }}</div>
 						<v-select
 							v-model="values.accountability"
