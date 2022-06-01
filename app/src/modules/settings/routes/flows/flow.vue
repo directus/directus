@@ -166,7 +166,7 @@
 			:existing-operation-keys="exitingOperationKeys"
 			:flow="flow"
 			@save="stageOperation"
-			@cancel="$router.replace(`/settings/flows/${primaryKey}`)"
+			@cancel="cancelOperation"
 		/>
 	</private-view>
 </template>
@@ -403,6 +403,14 @@ function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string 
 
 function stageOperation(edits: Partial<OperationRaw>) {
 	stageOperationEdits({ edits });
+	parentId = undefined;
+	attachType = undefined;
+	router.replace(`/settings/flows/${props.primaryKey}`);
+}
+
+function cancelOperation() {
+	parentId = undefined;
+	attachType = undefined;
 	router.replace(`/settings/flows/${props.primaryKey}`);
 }
 
