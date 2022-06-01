@@ -53,7 +53,7 @@ import schema from './middleware/schema';
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
-import { register as registerWebhooks } from './webhooks';
+import { init as initWebhooks } from './webhooks';
 import { flushCaches } from './cache';
 import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
@@ -249,7 +249,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	// Register all webhooks
-	await registerWebhooks();
+	await initWebhooks();
 
 	track('serverStarted');
 
