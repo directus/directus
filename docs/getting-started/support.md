@@ -11,7 +11,7 @@ If you're experiencing issues or think you have found a problem in Directus, be 
 [Reporting a Bug](/contributing/introduction/#bug-reporting):
 
 1. Ensure your server and database meet the
-   [minimum requirements](/getting-started/installation/cli/#_1-confirm-minimum-requirements).
+   [minimum requirements](/self-hosted/installation/cli/#_1-confirm-minimum-requirements).
 2. Ensure you’re on the [latest version](https://github.com/directus/directus/releases/latest) of Directus.
 3. Stop `CTRL+C` and restart the server `npx directus start`.
 4. Run the database migration script: `directus database migrate:latest`\
