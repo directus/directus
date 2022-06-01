@@ -1,7 +1,7 @@
 import IORedis from 'ioredis';
+import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { parseJSON } from './utils/parse-json';
-import env from './env';
 
 type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;
 
