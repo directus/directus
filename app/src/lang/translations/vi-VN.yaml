@@ -28,6 +28,7 @@ draft: Bản nháp
 archived: Đã lưu trữ
 modules: Mô đun
 module_bar: Thanh công cụ
+reset_width: Đặt lại Chiều rộng
 tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
@@ -40,6 +41,7 @@ duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
 group: Chọn nhóm
+export_items: Xuất các mục
 and: Và
 or: Hoặc
 fill_width: Rộng toàn bộ
