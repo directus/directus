@@ -8,8 +8,8 @@ The easiest way to start developing extensions is to use the `create-directus-ex
 npm init directus-extension
 ```
 
-After specifying the the name of the extension, the type of the extension and the programming language you want to use,
-the utility will create a folder with the recommended file structure to create an extension.
+After specifying the name of the extension, the type of the extension and the programming language you want to use, the
+utility will create a folder with the recommended file structure to create an extension.
 
 ### Extension Folder Structure
 
@@ -119,3 +119,11 @@ To learn more about developing extensions of a specific type, you can refer to o
 
 - [Hooks](/extensions/hooks/)
 - [Endpoints](/extensions/endpoints/)
+
+::: tip Live Reloading
+
+When working on extensions, try setting the
+[`EXTENSIONS_AUTO_RELOAD` environment variable](/configuration/config-options). This will make the API reload extensions
+on changes automatically.
+
+:::

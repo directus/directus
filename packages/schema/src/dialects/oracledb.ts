@@ -49,17 +49,20 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 		 */
 		const columns = await this.knex.raw<RawColumn[]>(`
 			WITH "uc" AS (
-				SELECT /*+ materialize */
+				SELECT /*+ MATERIALIZE */
 					"uc"."TABLE_NAME",
 					"ucc"."COLUMN_NAME",
 					"uc"."CONSTRAINT_TYPE",
-					COUNT(*) OVER(PARTITION BY "uc"."CONSTRAINT_NAME") "CONSTRAINT_COUNT"
+					COUNT(*) OVER(
+						PARTITION BY
+							"uc"."CONSTRAINT_NAME"
+					) "CONSTRAINT_COUNT"
 				FROM "USER_CONSTRAINTS" "uc"
 				INNER JOIN "USER_CONS_COLUMNS" "ucc"
 					ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
 					AND "uc"."CONSTRAINT_TYPE" = 'P'
 			)
-			SELECT
+			SELECT /*+ OPTIMIZER_FEATURES_ENABLE('11.2.0.4') */
 				"c"."TABLE_NAME" "table_name",
 				"c"."COLUMN_NAME" "column_name",
 				"c"."DATA_DEFAULT" "default_value",

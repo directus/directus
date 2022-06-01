@@ -1,9 +1,7 @@
 import { Knex } from 'knex';
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, SchemaOverview, Relation, RelationMeta } from '../types';
-import { Query } from '@directus/shared/types';
-import { Accountability } from '@directus/shared/types';
+import { SchemaOverview, Relation, RelationMeta, Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
@@ -11,8 +9,9 @@ import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache';
 import Keyv from 'keyv';
+import { AbstractServiceOptions } from '../types';
 
 export class RelationsService {
 	knex: Knex;
@@ -144,6 +143,13 @@ export class RelationsService {
 			);
 		}
 
+		// A primary key should not be a foreign key
+		if (this.schema.collections[relation.collection].primary === relation.field) {
+			throw new InvalidPayloadException(
+				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
+			);
+		}
+
 		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
 			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
 		}
@@ -159,43 +165,45 @@ export class RelationsService {
 			);
 		}
 
-		const metaRow = {
-			...(relation.meta || {}),
-			many_collection: relation.collection,
-			many_field: relation.field,
-			one_collection: relation.related_collection || null,
-		};
+		try {
+			const metaRow = {
+				...(relation.meta || {}),
+				many_collection: relation.collection,
+				many_field: relation.field,
+				one_collection: relation.related_collection || null,
+			};
 
-		await this.knex.transaction(async (trx) => {
-			if (relation.related_collection) {
-				await trx.schema.alterTable(relation.collection!, async (table) => {
-					this.alterType(table, relation);
+			await this.knex.transaction(async (trx) => {
+				if (relation.related_collection) {
+					await trx.schema.alterTable(relation.collection!, async (table) => {
+						this.alterType(table, relation);
 
-					const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
-					const builder = table
-						.foreign(relation.field!, constraintName)
-						.references(
-							`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
-						);
+						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
+						const builder = table
+							.foreign(relation.field!, constraintName)
+							.references(
+								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
+							);
 
-					if (relation.schema?.on_delete) {
-						builder.onDelete(relation.schema.on_delete);
-					}
+						if (relation.schema?.on_delete) {
+							builder.onDelete(relation.schema.on_delete);
+						}
+					});
+				}
+
+				const relationsItemService = new ItemsService('directus_relations', {
+					knex: trx,
+					schema: this.schema,
+					// We don't set accountability here. If you have read access to certain fields, you are
+					// allowed to extract the relations regardless of permissions to directus_relations. This
+					// happens in `filterForbidden` down below
 				});
-			}
 
-			const relationsItemService = new ItemsService('directus_relations', {
-				knex: trx,
-				schema: this.schema,
-				// We don't set accountability here. If you have read access to certain fields, you are
-				// allowed to extract the relations regardless of permissions to directus_relations. This
-				// happens in `filterForbidden` down below
+				await relationsItemService.createOne(metaRow);
 			});
-
-			await relationsItemService.createOne(metaRow);
-		});
-
-		await this.systemCache.clear();
+		} finally {
+			await clearSystemCache();
+		}
 	}
 
 	/**
@@ -224,56 +232,58 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
 		}
 
-		await this.knex.transaction(async (trx) => {
-			if (existingRelation.related_collection) {
-				await trx.schema.alterTable(collection, async (table) => {
-					let constraintName: string = getDefaultIndexName('foreign', collection, field);
+		try {
+			await this.knex.transaction(async (trx) => {
+				if (existingRelation.related_collection) {
+					await trx.schema.alterTable(collection, async (table) => {
+						let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
-					// If the FK already exists in the DB, drop it first
-					if (existingRelation?.schema) {
-						constraintName = existingRelation.schema.constraint_name || constraintName;
-						table.dropForeign(field, constraintName);
-					}
+						// If the FK already exists in the DB, drop it first
+						if (existingRelation?.schema) {
+							constraintName = existingRelation.schema.constraint_name || constraintName;
+							table.dropForeign(field, constraintName);
+						}
 
-					this.alterType(table, relation);
+						this.alterType(table, relation);
 
-					const builder = table
-						.foreign(field, constraintName || undefined)
-						.references(
-							`${existingRelation.related_collection!}.${
-								this.schema.collections[existingRelation.related_collection!].primary
-							}`
-						);
+						const builder = table
+							.foreign(field, constraintName || undefined)
+							.references(
+								`${existingRelation.related_collection!}.${
+									this.schema.collections[existingRelation.related_collection!].primary
+								}`
+							);
 
-					if (relation.schema?.on_delete) {
-						builder.onDelete(relation.schema.on_delete);
-					}
-				});
-			}
-
-			const relationsItemService = new ItemsService('directus_relations', {
-				knex: trx,
-				schema: this.schema,
-				// We don't set accountability here. If you have read access to certain fields, you are
-				// allowed to extract the relations regardless of permissions to directus_relations. This
-				// happens in `filterForbidden` down below
-			});
-
-			if (relation.meta) {
-				if (existingRelation?.meta) {
-					await relationsItemService.updateOne(existingRelation.meta.id, relation.meta);
-				} else {
-					await relationsItemService.createOne({
-						...(relation.meta || {}),
-						many_collection: relation.collection,
-						many_field: relation.field,
-						one_collection: existingRelation.related_collection || null,
+						if (relation.schema?.on_delete) {
+							builder.onDelete(relation.schema.on_delete);
+						}
 					});
 				}
-			}
-		});
 
-		await this.systemCache.clear();
+				const relationsItemService = new ItemsService('directus_relations', {
+					knex: trx,
+					schema: this.schema,
+					// We don't set accountability here. If you have read access to certain fields, you are
+					// allowed to extract the relations regardless of permissions to directus_relations. This
+					// happens in `filterForbidden` down below
+				});
+
+				if (relation.meta) {
+					if (existingRelation?.meta) {
+						await relationsItemService.updateOne(existingRelation.meta.id, relation.meta);
+					} else {
+						await relationsItemService.createOne({
+							...(relation.meta || {}),
+							many_collection: relation.collection,
+							many_field: relation.field,
+							one_collection: existingRelation.related_collection || null,
+						});
+					}
+				}
+			});
+		} finally {
+			await clearSystemCache();
+		}
 	}
 
 	/**
@@ -300,19 +310,27 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
 		}
 
-		await this.knex.transaction(async (trx) => {
-			if (existingRelation.schema?.constraint_name) {
-				await trx.schema.alterTable(existingRelation.collection, (table) => {
-					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
-				});
-			}
+		try {
+			await this.knex.transaction(async (trx) => {
+				const existingConstraints = await this.schemaInspector.foreignKeys();
+				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
-			if (existingRelation.meta) {
-				await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
-			}
-		});
+				if (
+					existingRelation.schema?.constraint_name &&
+					constraintNames.includes(existingRelation.schema.constraint_name)
+				) {
+					await trx.schema.alterTable(existingRelation.collection, (table) => {
+						table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
+					});
+				}
 
-		await this.systemCache.clear();
+				if (existingRelation.meta) {
+					await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
+				}
+			});
+		} finally {
+			await clearSystemCache();
+		}
 	}
 
 	/**

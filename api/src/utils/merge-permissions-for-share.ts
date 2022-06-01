@@ -1,5 +1,5 @@
-import { Permission, Accountability, Filter } from '@directus/shared/types';
-import { SchemaOverview } from '../types';
+import { Permission, Accountability, Filter, SchemaOverview } from '@directus/shared/types';
+
 import { assign, set, uniq } from 'lodash';
 import { mergePermissions } from './merge-permissions';
 import { schemaPermissions } from '../database/system-data/app-access-permissions';
@@ -64,7 +64,9 @@ export function mergePermissionsForShare(
 	}
 
 	// Explicitly filter out permissions to collections unrelated to the root parent item.
-	const limitedPermissions = currentPermissions.filter(({ collection }) => allowedCollections.includes(collection));
+	const limitedPermissions = currentPermissions.filter(
+		({ action, collection }) => allowedCollections.includes(collection) && action === 'read'
+	);
 
 	return mergePermissions('and', limitedPermissions, generatedPermissions);
 }

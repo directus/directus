@@ -7,7 +7,7 @@
     border-radius 3px
     .token
       &.deleted
-        color var(--danger-90)
+        color var(--danger)
       &.inserted
         color var(--primary)
 
@@ -31,7 +31,7 @@
 
 div[class*="language-"]
   position relative
-  background-color var(--background-normal)
+  background-color var(--background-subdued)
   border-radius 6px
   .highlight-lines
     user-select none
@@ -220,7 +220,7 @@ pre[class*="language-"] {
 .token.class-name,
 .token.constant,
 .token.symbol {
-	color: var(--secondary);
+	color: var(--secondary-dark);
 }
 
 .token.selector,
@@ -228,7 +228,7 @@ pre[class*="language-"] {
 .token.atrule,
 .token.keyword,
 .token.builtin {
-	color: var(--secondary-75);
+	color: var(--secondary-dark);
 }
 
 .token.string,
@@ -236,13 +236,13 @@ pre[class*="language-"] {
 .token.attr-value,
 .token.regex,
 .token.variable {
-	color: var(--primary);
+	color: var(--primary-dark);
 }
 
 .token.operator,
 .token.entity,
 .token.url {
-	color: var(--secondary);
+	color: var(--secondary-dark);
 }
 
 .token.important,
@@ -264,4 +264,4 @@ pre[class*="language-"] {
 @media (prefers-color-scheme: dark)
   {$contentClass}
     pre[class*="language-"]
-      border 2px solid #2e3f47 !important
+      border 2px solid var(--border-normal) !important

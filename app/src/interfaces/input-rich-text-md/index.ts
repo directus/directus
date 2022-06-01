@@ -92,7 +92,7 @@ export default defineInterface({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						placeholder: '$t:enter_a_placeholder',
 					},
@@ -123,6 +123,19 @@ export default defineInterface({
 			},
 		],
 		advanced: [
+			{
+				field: 'softLength',
+				name: '$t:soft_length',
+				type: 'integer',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						placeholder: '255',
+						min: 1,
+					},
+				},
+			},
 			{
 				field: 'editorFont',
 				name: '$t:interfaces.input-rich-text-md.editorFont',

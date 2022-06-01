@@ -6,8 +6,8 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
-import { AbstractServiceOptions, SchemaOverview } from '../../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
 import { Url } from '../../utils/url';
@@ -92,7 +92,7 @@ export class MailService {
 
 	private async getDefaultTemplateData() {
 		const projectInfo = await this.knex
-			.select(['project_name', 'project_logo', 'project_color'])
+			.select(['project_name', 'project_logo', 'project_color', 'project_url'])
 			.from('directus_settings')
 			.first();
 
@@ -100,6 +100,7 @@ export class MailService {
 			projectName: projectInfo?.project_name || 'Directus',
 			projectColor: projectInfo?.project_color || '#546e7a',
 			projectLogo: getProjectLogoURL(projectInfo?.project_logo),
+			projectUrl: projectInfo?.project_url || '',
 		};
 
 		function getProjectLogoURL(logoID?: string) {

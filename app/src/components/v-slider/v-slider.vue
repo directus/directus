@@ -16,7 +16,7 @@
 			/>
 			<div class="fill" />
 			<div v-if="showTicks" class="ticks">
-				<span v-for="i in (max - min) / step + 1" :key="i" class="tick" />
+				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
 				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
@@ -63,7 +63,7 @@ export default defineComponent({
 		},
 		alwaysShowValue: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		modelValue: {
 			type: Number,
@@ -131,6 +131,8 @@ body {
 			height: 4px;
 			padding: 8px 0;
 			background-color: var(--background-page);
+			background-image: var(--v-slider-track-background-image);
+			border-radius: 10px;
 			cursor: pointer;
 			appearance: none;
 

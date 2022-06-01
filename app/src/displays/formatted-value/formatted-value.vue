@@ -143,7 +143,8 @@ export default defineComponent({
 
 		const displayValue = computed(() => {
 			if (computedFormat.value.text) {
-				return computedFormat.value.text;
+				const { text } = computedFormat.value;
+				return text.startsWith('$t:') ? t(text.slice(3)) : text;
 			}
 
 			if (isNil(props.value) || props.value === '') return null;
@@ -211,7 +212,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .display-formatted {
-	display: inline-block;
+	display: inline;
+	overflow: hidden;
+	text-overflow: ellipsis;
 
 	&.has-background,
 	&.has-border {

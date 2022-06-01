@@ -41,13 +41,9 @@ npm run build
 
 ## 5. Create a `.env` file
 
-Create a `.env` file under the `api` folder. You can use the `example.env` file provided under `api` as a starting
-point.
+Create an `.env` file under the `api` folder using vars from the online 
+[config help](https://docs.directus.io/configuration/config-options/)
 
-```bash
-# To use the example file
-cp api/example.env api/.env
-```
 
 ## 6. Initialize the database
 
@@ -138,3 +134,24 @@ introduction to [Contributing](/contributing/introduction).
 Check our Wiki for a [guide](https://github.com/directus/directus/wiki/debugging) on debugging the app and api.
 
 :::
+
+## 9. Running tests
+
+Tests run automatically through GitHub Actions. However you may wish to run the tests locally especially when you write
+tests.
+
+Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is running.
+
+```bash
+# Ensure that you are testing on the lastest codebase
+npm run build
+
+# Clean up in case you ran the tests before
+docker compose -f tests/docker-compose.yml down -v
+
+# Start the necessary containers
+docker compose -f tests/docker-compose.yml up -d --wait
+
+# Run the tests
+npm run test:e2e
+```

@@ -1,7 +1,7 @@
 import api from '@/api';
 import { useUserStore } from '@/stores/';
 import { Preset } from '@directus/shared/types';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
@@ -15,6 +15,8 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 	refresh_interval: null,
+	icon: 'bookmark_outline',
+	color: null,
 };
 
 const systemDefaults: Record<string, Partial<Preset>> = {
@@ -30,7 +32,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 			cards: {
 				icon: 'insert_drive_file',
 				title: '{{ title }}',
-				subtitle: '{{ type }} • {{ filesize }}',
+				subtitle: '{{ type }} • {{ filesize }}',
 				size: 4,
 				imageFit: 'crop',
 			},
@@ -122,7 +124,14 @@ export const usePresetsStore = defineStore({
 	}),
 	getters: {
 		bookmarks(): Preset[] {
-			return this.collectionPresets.filter((preset) => preset.bookmark !== null);
+			return orderBy(
+				this.collectionPresets.filter((preset) => preset.bookmark !== null),
+				[
+					(preset) => preset.user === null && preset.role === null,
+					(preset) => preset.user === null && preset.role !== null,
+					'bookmark',
+				]
+			);
 		},
 	},
 	actions: {
@@ -204,18 +213,18 @@ export const usePresetsStore = defineStore({
 
 			return response.data.data;
 		},
-		async delete(id: number) {
-			await api.delete(`/presets/${id}`);
+		async delete(ids: number[]) {
+			await api.delete('/presets', { data: ids });
 
 			this.collectionPresets = this.collectionPresets.filter((preset) => {
-				return preset.id !== id;
+				return !ids.includes(preset.id!);
 			});
 		},
 
 		/**
 		 * Retrieves the most specific preset that applies to the given collection for the current
 		 * user. If the user doesn't have a preset for this collection, it will fallback to the
-		 * role and collection presets respectivly.
+		 * role and collection presets respectively.
 		 */
 		getPresetForCollection(collection: string) {
 			const userStore = useUserStore();

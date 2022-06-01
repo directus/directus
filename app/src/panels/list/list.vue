@@ -29,16 +29,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, PropType } from 'vue';
+import { defineComponent, ref, watchEffect, computed, PropType } from 'vue';
 import api from '@/api';
-import { isEqual } from 'lodash';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/shared/utils';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -96,16 +95,7 @@ export default defineComponent({
 
 		const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 
-		fetchData();
-
-		watch(
-			() => props,
-			(newOptions, oldOptions) => {
-				if (isEqual(newOptions, oldOptions)) return;
-				fetchData();
-			},
-			{ deep: true, immediate: true }
-		);
+		watchEffect(async () => await fetchData());
 
 		return {
 			list,

@@ -89,6 +89,9 @@ fields:
     role: תפקיד
   directus_settings:
     module_bar: סרגל מודולים
+  directus_shares:
+    role: תפקיד
+    password: סיסמה
   directus_fields:
     translation: תרגומי שמות שדות
   directus_roles:
@@ -122,7 +125,5 @@ layouts:
   cards:
     title: כותרת
     subtitle: כותרת משנית
-  tabular:
-    fields: שדות
   calendar:
     calendar: לוח שנה

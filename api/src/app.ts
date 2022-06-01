@@ -3,6 +3,7 @@ import express, { Request, Response, RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
+import helmet from 'helmet';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
@@ -49,10 +50,12 @@ import schema from './middleware/schema';
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
-import { register as registerWebhooks } from './webhooks';
+import { init as initWebhooks } from './webhooks';
 import { flushCaches } from './cache';
 import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
+import { getConfigFromEnv } from './utils/get-config-from-env';
+import { merge } from 'lodash';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -86,8 +89,40 @@ export default async function createApp(): Promise<express.Application> {
 	const app = express();
 
 	app.disable('x-powered-by');
-	app.set('trust proxy', true);
+	app.set('trust proxy', env.IP_TRUST_PROXY);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
+
+	app.use(
+		helmet.contentSecurityPolicy(
+			merge(
+				{
+					useDefaults: true,
+					directives: {
+						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
+						scriptSrc: ["'self'", "'unsafe-eval'"],
+
+						// Even though this is recommended to have enabled, it breaks most local
+						// installations. Making this opt-in rather than opt-out is a little more
+						// friendly. Ref #10806
+						upgradeInsecureRequests: null,
+
+						// These are required for MapLibre
+						// https://cdn.directus.io is required for images/videos in the official docs
+						workerSrc: ["'self'", 'blob:'],
+						childSrc: ["'self'", 'blob:'],
+						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
+						mediaSrc: ["'self'", 'https://cdn.directus.io'],
+						connectSrc: ["'self'", 'https://*'],
+					},
+				},
+				getConfigFromEnv('CONTENT_SECURITY_POLICY_')
+			)
+		)
+	);
+
+	if (env.HSTS_ENABLED) {
+		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
+	}
 
 	await emitter.emitInit('app.before', { app });
 
@@ -207,7 +242,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	// Register all webhooks
-	await registerWebhooks();
+	await initWebhooks();
 
 	track('serverStarted');
 

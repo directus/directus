@@ -12,17 +12,27 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['m2m'],
 	group: 'relational',
-	options: ({ relations }) => {
+	options: ({ editing, relations }) => {
+		const displayTemplateMeta =
+			editing === '+'
+				? {
+						interface: 'presentation-notice',
+						options: {
+							text: '$t:interfaces.list-m2m.display_template_configure_notice',
+						},
+				  }
+				: {
+						interface: 'system-display-template',
+						options: {
+							collectionName: relations.o2m?.collection,
+						},
+				  };
+
 		return [
 			{
 				field: 'template',
 				name: '$t:display_template',
-				meta: {
-					interface: 'system-display-template',
-					options: {
-						collectionName: relations.o2m?.collection,
-					},
-				},
+				meta: displayTemplateMeta,
 			},
 			{
 				field: 'enableCreate',

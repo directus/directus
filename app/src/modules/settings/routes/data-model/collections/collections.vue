@@ -11,7 +11,7 @@
 		<template #actions>
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('create_folder')" rounded icon class="add-folder" @click="on">
+					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
 						<v-icon name="create_new_folder" />
 					</v-button>
 				</template>
@@ -27,7 +27,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')">
+			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -228,17 +228,12 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .collection-item.hidden {
 	--v-list-item-color: var(--foreground-subdued);
-}
-
-.collection-name {
-	flex-grow: 1;
-	font-family: var(--family-monospace);
 }
 
 .collection-icon {
@@ -247,6 +242,7 @@ export default defineComponent({
 
 .hidden .collection-name {
 	color: var(--foreground-subdued);
+	flex-grow: 1;
 }
 
 .draggable-list :deep(.sortable-ghost) {
@@ -260,13 +256,6 @@ export default defineComponent({
 			opacity: 0;
 		}
 	}
-}
-
-.add-folder {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 
 .db-only {

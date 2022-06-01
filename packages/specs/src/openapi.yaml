@@ -298,6 +298,17 @@ components:
       type: apiKey
       in: header
       name: 'Authorization'
+  x-metadata:
+    type: object
+    properties:
+      total_count:
+        description: Returns the total item count of the collection you're querying.
+        type: integer
+      filter_count:
+        description:
+          Returns the item count of the collection you're querying, taking the current filter/search parameters into
+          account.
+        type: integer
 security:
   - Auth: []
   - KeyAuth: []

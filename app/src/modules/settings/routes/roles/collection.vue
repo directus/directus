@@ -4,7 +4,7 @@
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="admin_panel_settings" outline />
+				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
 
@@ -26,8 +26,9 @@
 
 		<div class="roles">
 			<v-table
+				v-model:headers="tableHeaders"
+				show-resize
 				:items="roles"
-				:headers="tableHeaders"
 				fixed-header
 				item-key="id"
 				:loading="loading"
@@ -38,9 +39,7 @@
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<span class="name" :class="{ public: item.public }">
-						{{ item.name }}
-					</span>
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
@@ -48,7 +47,7 @@
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<span class="description">{{ item.description }}</span>
+					<v-text-overflow :text="item.description" class="description" />
 				</template>
 			</v-table>
 		</div>
@@ -67,12 +66,10 @@ import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
+import { Role } from '@directus/shared/types';
 
-type Role = {
-	id: number;
-	name: string;
-	description: string;
-	count: number;
+type RoleItem = Partial<Role> & {
+	count?: number;
 };
 
 export default defineComponent({
@@ -84,23 +81,30 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const roles = ref<Role[]>([]);
+		const roles = ref<RoleItem[]>([]);
 		const loading = ref(false);
 
-		const tableHeaders: TableHeader[] = [
+		const lastAdminRoleId = computed(() => {
+			const adminRoles = roles.value.filter((role) => role.admin_access === true);
+			return adminRoles.length === 1 ? adminRoles[0].id : null;
+		});
+
+		const tableHeaders = ref<TableHeader[]>([
 			{
 				text: '',
 				value: 'icon',
 				sortable: false,
 				width: 42,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('name'),
 				value: 'name',
 				sortable: false,
-				width: 140,
+				width: 200,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('users'),
@@ -108,6 +112,7 @@ export default defineComponent({
 				sortable: false,
 				width: 140,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('description'),
@@ -115,8 +120,9 @@ export default defineComponent({
 				sortable: false,
 				width: 470,
 				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		fetchRoles();
 
@@ -133,7 +139,7 @@ export default defineComponent({
 				const response = await api.get(`/roles`, {
 					params: {
 						limit: -1,
-						fields: ['id', 'name', 'description', 'icon', 'users'],
+						fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
 						deep: {
 							users: {
 								_aggregate: { count: 'id' },
@@ -169,7 +175,14 @@ export default defineComponent({
 		}
 
 		function navigateToRole({ item }: { item: Role }) {
-			router.push(`/settings/roles/${item.id}`);
+			if (item.id !== 'public' && lastAdminRoleId.value) {
+				router.push({
+					name: 'settings-roles-item',
+					params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+				});
+			} else {
+				router.push(`/settings/roles/${item.id}`);
+			}
 		}
 	},
 });
@@ -177,8 +190,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--primary-10);
 }
 
 .roles {

@@ -19,6 +19,7 @@ import { UsersService } from './users';
 import { MailService } from './mail';
 import { userName } from '../utils/user-name';
 import { md } from '../utils/md';
+import { Url } from '../utils/url';
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -54,10 +55,10 @@ export class SharesService extends ItemsService {
 			.from('directus_shares')
 			.where('id', payload.share)
 			.andWhere((subQuery) => {
-				subQuery.whereNull('date_end').orWhere('date_end', '>=', this.knex.fn.now());
+				subQuery.whereNull('date_end').orWhere('date_end', '>=', new Date());
 			})
 			.andWhere((subQuery) => {
-				subQuery.whereNull('date_start').orWhere('date_start', '<=', this.knex.fn.now());
+				subQuery.whereNull('date_start').orWhere('date_start', '<=', new Date());
 			})
 			.andWhere((subQuery) => {
 				subQuery.whereNull('max_uses').orWhere('max_uses', '>=', this.knex.ref('times_used'));
@@ -137,7 +138,7 @@ Hello!
 
 ${userName(userInfo)} has invited you to view an item in ${share.collection}.
 
-[Open](${env.PUBLIC_URL}/admin/shared/${payload.share})
+[Open](${new Url(env.PUBLIC_URL).addPath('admin', 'shared', payload.share).toString()})
 `;
 
 		for (const email of payload.emails) {

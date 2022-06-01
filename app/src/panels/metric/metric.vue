@@ -10,14 +10,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, computed } from 'vue';
+import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
 import api from '@/api';
-import { isEqual } from 'lodash';
 import { Filter } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
-import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { isNil } from 'lodash';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint, abbreviateNumber } from '@directus/shared/utils';
+import { cssVar } from '@directus/shared/utils/browser';
 
 export default defineComponent({
 	props: {
@@ -44,7 +43,7 @@ export default defineComponent({
 		},
 		function: {
 			type: String as PropType<
-				'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max' | 'first' | 'last'
+				'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max' | 'first' | 'last'
 			>,
 			required: true,
 		},
@@ -78,72 +77,10 @@ export default defineComponent({
 	setup(props) {
 		const { n } = useI18n();
 
-		const metric = ref();
+		const metric = ref<number | string>();
 		const loading = ref(false);
 
-		fetchData();
-
-		watch(
-			() => props,
-			(newOptions, oldOptions) => {
-				if (isEqual(newOptions, oldOptions)) return;
-				fetchData();
-			},
-			{ deep: true }
-		);
-
-		const displayValue = computed(() => {
-			if (isNil(metric.value)) return null;
-
-			if (props.abbreviate) {
-				return abbreviateNumber(metric.value, props.decimals ?? 0);
-			}
-
-			return n(Number(metric.value), 'decimal', {
-				minimumFractionDigits: props.decimals ?? 0,
-				maximumFractionDigits: props.decimals ?? 0,
-			} as any);
-		});
-
-		const color = computed(() => {
-			if (isNil(metric.value)) return null;
-
-			let matchingFormat: MetricOptions['conditionalFormatting'][number] | null = null;
-
-			for (const format of props.conditionalFormatting || []) {
-				if (matchesOperator(format)) {
-					matchingFormat = format;
-				}
-			}
-
-			return matchingFormat ? matchingFormat.color || '#00C897' : null;
-
-			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
-				const value = Number(metric.value);
-				const compareValue = Number(format.value ?? 0);
-
-				switch (format.operator || '>=') {
-					case '=':
-						return value === compareValue;
-					case '!=':
-						return value !== compareValue;
-					case '>':
-						return value > compareValue;
-					case '>=':
-						return value >= compareValue;
-					case '<':
-						return value < compareValue;
-					case '<=':
-						return value < compareValue;
-				}
-			}
-		});
-
-		return { metric, loading, displayValue, color };
-
-		async function fetchData() {
-			if (!props) return;
-
+		watchEffect(async () => {
 			const isRawValue = ['first', 'last'].includes(props.function);
 
 			loading.value = true;
@@ -169,7 +106,11 @@ export default defineComponent({
 
 				if (props.field) {
 					if (props.function === 'first' || props.function === 'last') {
-						metric.value = Number(res.data.data[0][props.field]);
+						if (typeof res.data.data[0][props.field] === 'string') {
+							metric.value = res.data.data[0][props.field];
+						} else {
+							metric.value = Number(res.data.data[0][props.field]);
+						}
 					} else {
 						metric.value = Number(res.data.data[0][props.function][props.field]);
 					}
@@ -181,7 +122,60 @@ export default defineComponent({
 			} finally {
 				loading.value = false;
 			}
-		}
+		});
+
+		const displayValue = computed(() => {
+			if (isNil(metric.value)) return null;
+
+			if (props.abbreviate) {
+				return abbreviateNumber(metric.value, props.decimals ?? 0);
+			}
+
+			if (typeof metric.value === 'string') {
+				return metric.value;
+			}
+
+			return n(Number(metric.value), 'decimal', {
+				minimumFractionDigits: props.decimals ?? 0,
+				maximumFractionDigits: props.decimals ?? 0,
+			} as any);
+		});
+
+		const color = computed(() => {
+			if (isNil(metric.value)) return null;
+
+			let matchingFormat: MetricOptions['conditionalFormatting'][number] | null = null;
+
+			for (const format of props.conditionalFormatting || []) {
+				if (matchesOperator(format)) {
+					matchingFormat = format;
+				}
+			}
+
+			return matchingFormat ? matchingFormat.color || cssVar('--primary') : null;
+
+			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
+				const value = Number(metric.value);
+				const compareValue = Number(format.value ?? 0);
+
+				switch (format.operator || '>=') {
+					case '=':
+						return value === compareValue;
+					case '!=':
+						return value !== compareValue;
+					case '>':
+						return value > compareValue;
+					case '>=':
+						return value >= compareValue;
+					case '<':
+						return value < compareValue;
+					case '<=':
+						return value < compareValue;
+				}
+			}
+		});
+
+		return { metric, loading, displayValue, color };
 	},
 });
 </script>

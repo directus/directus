@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
-import { SchemaOverview } from '../types';
-import { Permission, PermissionsAction } from '@directus/shared/types';
+
+import { Permission, PermissionsAction, SchemaOverview } from '@directus/shared/types';
 
 /**
  * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only
@@ -36,24 +36,43 @@ export function reduceSchema(
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
 		if (
-			permissions?.some((permission) => permission.collection === collectionName && actions.includes(permission.action))
+			!permissions?.some(
+				(permission) => permission.collection === collectionName && actions.includes(permission.action)
+			)
 		) {
-			const fields: SchemaOverview['collections'][string]['fields'] = {};
+			continue;
+		}
 
-			for (const [fieldName, field] of Object.entries(schema.collections[collectionName].fields)) {
-				if (
-					allowedFieldsInCollection[collectionName]?.includes('*') ||
-					allowedFieldsInCollection[collectionName]?.includes(fieldName)
-				) {
-					fields[fieldName] = field;
-				}
+		const fields: SchemaOverview['collections'][string]['fields'] = {};
+
+		for (const [fieldName, field] of Object.entries(schema.collections[collectionName].fields)) {
+			if (
+				!allowedFieldsInCollection[collectionName]?.includes('*') &&
+				!allowedFieldsInCollection[collectionName]?.includes(fieldName)
+			) {
+				continue;
 			}
 
-			reduced.collections[collectionName] = {
-				...collection,
-				fields,
-			};
+			const o2mRelation = schema.relations.find(
+				(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName
+			);
+
+			if (
+				o2mRelation &&
+				!permissions?.some(
+					(permission) => permission.collection === o2mRelation.collection && actions.includes(permission.action)
+				)
+			) {
+				continue;
+			}
+
+			fields[fieldName] = field;
 		}
+
+		reduced.collections[collectionName] = {
+			...collection,
+			fields,
+		};
 	}
 
 	reduced.relations = schema.relations.filter((relation) => {

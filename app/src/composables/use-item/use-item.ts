@@ -1,22 +1,22 @@
 import api from '@/api';
-import { useCollection } from '@directus/shared/composables';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { AxiosResponse } from 'axios';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { validatePayload } from '@directus/shared/utils';
-import { Item, LogicalFilterAND } from '@directus/shared/types';
-import { isNil, flatten } from 'lodash';
-import { FailedValidationException } from '@directus/shared/exceptions';
-import { getEndpoint } from '@/utils/get-endpoint';
-import { applyConditions } from '@/utils/apply-conditions';
 import { translate } from '@/utils/translate-object-values';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { validateItem } from '@/utils/validate-item';
+import { useCollection } from '@directus/shared/composables';
+import { getEndpoint } from '@directus/shared/utils';
+import { AxiosResponse } from 'axios';
+import { merge } from 'lodash';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { usePermissions } from '../use-permissions';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
+	hasEdits: Ref<boolean>;
 	item: Ref<Record<string, any> | null>;
 	error: Ref<any>;
 	loading: Ref<boolean>;
@@ -36,7 +36,7 @@ type UsableItem = {
 };
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
-	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
@@ -45,6 +45,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const deleting = ref(false);
 	const archiving = ref(false);
 	const edits = ref<Record<string, any>>({});
+	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
@@ -59,6 +60,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
+	const { fields: fieldsWithPermissions } = usePermissions(collection, item, isNew);
+
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
 			return getEndpoint(collection.value);
@@ -71,6 +74,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	return {
 		edits,
+		hasEdits,
 		item,
 		error,
 		loading,
@@ -107,7 +111,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validate(edits.value);
+		const errors = validateItem(merge({}, item.value, edits.value), fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -123,14 +127,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 				notify({
 					title: i18n.global.t('item_create_success', isBatch.value ? 2 : 1),
-					type: 'success',
 				});
 			} else {
 				response = await api.patch(itemEndpoint.value, edits.value);
 
 				notify({
 					title: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
-					type: 'success',
 				});
 			}
 
@@ -138,25 +140,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 			return response.data.data;
 		} catch (err: any) {
-			if (err?.response?.data?.errors) {
-				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
-					.map((err: APIError) => {
-						return err.extensions;
-					});
-
-				const otherErrors = err.response.data.errors.filter(
-					(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
-				);
-
-				if (otherErrors.length > 0) {
-					otherErrors.forEach(unexpectedError);
-				}
-			} else {
-				unexpectedError(err);
-			}
-
-			throw err;
+			saveErrorHandler(err);
 		} finally {
 			saving.value = false;
 		}
@@ -180,7 +164,55 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			delete newItem[primaryKeyField.value.field];
 		}
 
-		const errors = validate(newItem);
+		// Make sure to delete nested relational primary keys
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+		const relations = relationsStore.getRelationsForCollection(collection.value);
+		for (const relation of relations) {
+			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
+			const existsJunctionRelated = relationsStore.relations.find(
+				(r) => r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field
+			);
+
+			if (relation.meta?.one_field && relation.meta.one_field in newItem) {
+				const fieldsToFetch = fields
+					.filter((field) => field.startsWith(relation.meta!.one_field!))
+					.map((field) => field.split('.').slice(1).join('.'));
+
+				const existingIds = newItem[relation.meta.one_field].filter((item: any) => typeof item !== 'object');
+
+				let existingItems: any[] = [];
+
+				if (existingIds.length > 0) {
+					const response = await api.get(getEndpoint(relation.collection), {
+						params: {
+							fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
+							[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
+						},
+					});
+
+					existingItems = response.data.data;
+				}
+
+				newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
+					if (typeof relatedItem !== 'object' && existingItems.length > 0) {
+						relatedItem = existingItems.find((existingItem: any) => existingItem.id === relatedItem);
+					}
+
+					delete relatedItem[relatedPrimaryKeyField!.field];
+
+					if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
+						const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
+							existsJunctionRelated.related_collection
+						);
+						delete relatedItem[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
+					}
+					return relatedItem;
+				});
+			}
+		}
+
+		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -193,7 +225,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.global.t('item_create_success', 1),
-				type: 'success',
 			});
 
 			// Reset edits to the current item
@@ -201,19 +232,31 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (err: any) {
-			if (err?.response?.data?.errors) {
-				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
-					.map((err: APIError) => {
-						return err.extensions;
-					});
-			} else {
-				unexpectedError(err);
-				throw err;
-			}
+			saveErrorHandler(err);
 		} finally {
 			saving.value = false;
 		}
+	}
+
+	function saveErrorHandler(err: any) {
+		if (err?.response?.data?.errors) {
+			validationErrors.value = err.response.data.errors
+				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
+				.map((err: APIError) => {
+					return err.extensions;
+				});
+
+			const otherErrors = err.response.data.errors.filter(
+				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+			);
+
+			if (otherErrors.length > 0) {
+				otherErrors.forEach(unexpectedError);
+			}
+		} else {
+			unexpectedError(err);
+		}
+		throw err;
 	}
 
 	async function archive() {
@@ -251,7 +294,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					value === archiveValue
 						? i18n.global.t('item_delete_success', isBatch.value ? 2 : 1)
 						: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
-				type: 'success',
 			});
 		} catch (err: any) {
 			unexpectedError(err);
@@ -271,7 +313,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
-				type: 'success',
 			});
 		} catch (err: any) {
 			unexpectedError(err);
@@ -316,37 +357,5 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = valuesThatAreEqual;
 		}
-	}
-
-	function validate(item: Item) {
-		const validationRules = {
-			_and: [],
-		} as LogicalFilterAND;
-
-		const fieldsWithConditions = fields.value.map((field) => applyConditions(item, field));
-
-		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
-
-		for (const field of requiredFields) {
-			if (isNew.value === true && isNil(field.schema?.default_value)) {
-				validationRules._and.push({
-					[field.field]: {
-						_submitted: true,
-					},
-				});
-			}
-
-			validationRules._and.push({
-				[field.field]: {
-					_nnull: true,
-				},
-			});
-		}
-
-		return flatten(
-			validatePayload(validationRules, item).map((error) =>
-				error.details.map((details) => new FailedValidationException(details).extensions)
-			)
-		);
 	}
 }
