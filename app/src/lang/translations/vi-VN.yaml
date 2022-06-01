@@ -68,9 +68,11 @@ create_role: Tạo vai trò (phân quyền)
 create_user: Tạo Người dùng
 delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
+translation_string_translations_placeholder: Thêm bản dịch mới
 invite_users: Mời Người dùng
 invite: Mời
 email_already_invited: Email "{email}" đã được mời
+subject: Chủ đề
 inbox: Hộp thư đến
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
@@ -87,6 +89,7 @@ update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-
   Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Dữ liệu đã xóa sẽ không thể khôi phục lại được.
+delete_personal_bookmark: Xóa đánh dấu trang cá nhân
 logoutReason:
   SIGN_OUT: Đăng Xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
@@ -112,6 +115,7 @@ recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
 unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
 nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
+validation_errors_notice: 'Các trường sau đây có giá trị không hợp lệ:'
 validationError:
   eq: Dữ liệu phải là {valid}
   neq: Dữ liệu không thể là {invalid}
