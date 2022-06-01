@@ -128,7 +128,7 @@ Afterwards try `bootstrap` again.
 
 On Plesk you can't directly run an npx command. To use the Directus snapshot feature, you'd need to add a script to your
 `package.json`. For snapshot creation you can find an example in the
-[CLI docs: Date-based snapshots](/getting-started/installation/plesk#snapshot-the-data-model)
+[CLI docs: Date-based snapshots](/self-hosted/installation/plesk#snapshot-the-data-model)
 
 To apply a snapshot you need a custom wrapper using the non-interactive version:
 

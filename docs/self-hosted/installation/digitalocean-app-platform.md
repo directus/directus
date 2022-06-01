@@ -2,8 +2,7 @@
 
 ## 1. Setup a repo on GitHub
 
-See the doc on [installing Directus manually](/getting-started/installation/manual/) to learn how to configure this
-repo.
+See the doc on [installing Directus manually](/self-hosted/installation/manual/) to learn how to configure this repo.
 
 ## 2. Sign up for a DigitalOcean account
 
@@ -24,7 +23,7 @@ Make sure to select the database you created in step 2 during the configuration 
 While Directus itself doesn't have to be built from source in order to use it on App Platform, we do recommend adding
 `npx directus bootstrap` as the "build" step for DigitalOcean. This will automatically provision the database if it's
 empty, and migrate it to the latest version in case of upgrades. See
-[Command Line Interface](/getting-started/installation/cli/) for more information.
+[Command Line Interface](/self-hosted/installation/cli/) for more information.
 
 ## 6. Configure the environment variables
 
