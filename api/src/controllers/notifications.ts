@@ -70,7 +70,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_presets', req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_notifications', req.sanitizedQuery);
 
 	res.locals.payload = { data: result, meta };
 	return next();
