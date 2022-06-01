@@ -174,7 +174,7 @@ class FlowManager {
 				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
 
 				this.operationFlowHandlers[flow.id] = handler;
-			} else if (flow.trigger === 'webhook' || flow.trigger === 'manual') {
+			} else if (flow.trigger === 'webhook') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
 					if (flow.options.async) {
 						this.executeFlow(flow, data, context);
@@ -183,12 +183,43 @@ class FlowManager {
 					}
 				};
 
-				const method = flow.trigger === 'webhook' ? flow.options?.method ?? 'GET' : 'POST';
+				const method = flow.options?.method ?? 'GET';
 
 				// Default return to $last for webhooks
 				flow.options.return = flow.options.return ?? '$last';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
+			} else if (flow.trigger === 'manual') {
+				const handler = (data: unknown, context: Record<string, unknown>) => {
+					const enabledCollections = flow.options?.collections ?? [];
+					const targetCollection = (data as Record<string, any>)?.body.collection;
+
+					if (!targetCollection) {
+						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
+						throw new exceptions.ForbiddenException();
+					}
+
+					if (enabledCollections.length === 0) {
+						logger.warn(`There is no collections configured for this manual trigger`);
+						throw new exceptions.ForbiddenException();
+					}
+
+					if (!enabledCollections.includes(targetCollection)) {
+						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
+						throw new exceptions.ForbiddenException();
+					}
+
+					if (flow.options.async) {
+						this.executeFlow(flow, data, context);
+					} else {
+						return this.executeFlow(flow, data, context);
+					}
+				};
+
+				// Default return to $last for manual
+				flow.options.return = '$last';
+
+				this.webhookFlowHandlers[`POST-${flow.id}`] = handler;
 			}
 		}
 	}
