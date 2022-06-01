@@ -38,6 +38,7 @@ order to start initiate.
 </video>
 
 This Trigger allows you to create Data at scheduled intervals. The interval is set with a 6-point cron job syntax.
+
 <!--Elaborate on the 6 points and link to wikipedia or sthg.-->
 
 ### Trigger Options
@@ -50,7 +51,8 @@ This Trigger allows you to create Data at scheduled intervals. The interval is s
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Triggered by another flow, for chaining.
+This Trigger is triggered by a [Trigger Flow](/configuration/data-flows/operations/#another-flow) Operation by another
+flow, for chaining.
 
 ### Trigger Options
 

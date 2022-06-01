@@ -50,13 +50,13 @@ Output something to the server-side console. A key tool for troubleshooting data
 
 - **Message** — Sets message to log.
 
-### Config Tips/Details
+### Logs
 
-```CLI
+You will be able to see your console logs for the given Data Flow from the Sidebar.
 
-Trigger: {{$trigger}}
-
-```
+1. Open Logs and a list of timestamps will appear.
+2. Click the timestamp to see the values logged at that moment.
+3. Click <span mi btn muted>close</span> to close the log.
 
 ## Send Email
 
@@ -158,7 +158,7 @@ Alters the Flow's JSON payload. Allows you to insert custom-defined JSON into th
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Starts another flow.
+Starts another Data Flow.
 
 ### Options
 
