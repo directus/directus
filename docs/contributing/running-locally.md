@@ -41,13 +41,9 @@ npm run build
 
 ## 5. Create a `.env` file
 
-Create a `.env` file under the `api` folder. You can use the `example.env` file provided under `api` as a starting
-point.
+Create an `.env` file under the `api` folder using vars from the online 
+[config help](https://docs.directus.io/configuration/config-options/)
 
-```bash
-# To use the example file
-cp api/example.env api/.env
-```
 
 ## 6. Initialize the database
 
