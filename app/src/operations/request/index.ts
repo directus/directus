@@ -87,12 +87,15 @@ export default defineOperationApp({
 			},
 		},
 		{
-			field: 'payload',
-			name: '$t:payload',
-			type: 'json',
+			field: 'body',
+			name: '$t:request_body',
+			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'input-code',
+				interface: 'input-multiline',
+				options: {
+					font: 'monospace',
+				},
 			},
 		},
 	],

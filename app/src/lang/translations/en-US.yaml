@@ -50,6 +50,7 @@ group: Group
 export_items: Export Items
 and: And
 or: Or
+
 init: Init
 modifier: Modifier
 custom: Custom
@@ -494,6 +495,7 @@ disabled: Disabled
 information: Information
 report_bug: Report Bug
 request_feature: Request Feature
+request_body: Request Body
 interface_not_found: 'Interface "{interface}" not found.'
 operation_not_found: 'Operation "{operation}" not found.'
 reset_interface: Reset Interface
@@ -937,6 +939,7 @@ preset_search_placeholder: Search query...
 editing_preset: Editing Preset
 layout_preview: Layout Preview
 layout_setup: Layout Setup
+data: Data
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
