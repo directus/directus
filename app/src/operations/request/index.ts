@@ -95,6 +95,7 @@ export default defineOperationApp({
 				interface: 'input-multiline',
 				options: {
 					font: 'monospace',
+					placeholder: '$t:any_string_or_json',
 				},
 			},
 		},

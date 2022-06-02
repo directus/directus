@@ -21,6 +21,7 @@ export default defineOperationApp({
 				interface: 'input',
 				options: {
 					iconRight: 'bolt',
+					placeholder: '$t:a_flow_uuid',
 				},
 			},
 		},
@@ -33,6 +34,22 @@ export default defineOperationApp({
 				interface: 'input-code',
 				options: {
 					language: 'json',
+					placeholder: JSON.stringify(
+						{
+							user: '{{ $accountability.user }}',
+							data: '{{ $last }}',
+						},
+						null,
+						2
+					),
+					template: JSON.stringify(
+						{
+							user: '{{ $accountability.user }}',
+							data: '{{ $last }}',
+						},
+						null,
+						2
+					),
 				},
 			},
 		},
