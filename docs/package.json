@@ -12,7 +12,8 @@
 		"build": "node build.js",
 		"dev": "npm-watch build",
 		"dev:site": "vuepress dev",
-		"build:site": "vuepress build"
+		"build:site": "vuepress build && npm run update-thumbnail",
+		"update-thumbnail": "thumbsmith deploy .vuepress/.thumbsmith/docs.thumbnail.html"
 	},
 	"watch": {
 		"build": {
@@ -33,11 +34,14 @@
 	"license": "ISC",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
+		"@thumbsmith/cli": "^0.1.8",
+		"@thumbsmith/url": "0.1.2",
 		"directory-tree": "3.0.1",
 		"fs-extra": "10.0.0",
 		"lodash.get": "4.4.2",
 		"micromark": "3.0.8",
 		"npm-watch": "0.11.0",
+		"reading-time": "1.5.0",
 		"slugify": "1.6.2",
 		"vuepress": "1.8.2",
 		"vuepress-plugin-clean-urls": "1.1.2"
