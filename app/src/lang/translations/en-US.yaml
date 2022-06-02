@@ -1981,8 +1981,8 @@ triggers:
   event:
     name: Event Hook
     description: Triggers on platform or data events
-    action: 'Action (After Event)'
-    filter: 'Filter (Before Event)'
+    action: 'Action (Non-Blocking)'
+    filter: 'Filter (Blocking)'
   webhook:
     name: Webhook
     description: Triggers on an incoming HTTP request
