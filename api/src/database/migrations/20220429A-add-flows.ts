@@ -50,8 +50,8 @@ export async function up(knex: Knex): Promise<void> {
 			options: JSON.stringify({
 				name: webhook.name,
 				type: 'action',
-				actionScope: toArray(webhook.actions).map((scope) => `items.${scope}`),
-				actionCollections: toArray(webhook.collections),
+				scope: toArray(webhook.actions).map((scope) => `items.${scope}`),
+				collections: toArray(webhook.collections),
 			}),
 		});
 

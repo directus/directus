@@ -23,7 +23,7 @@ export function getTriggers() {
 			name: t('triggers.event.name'),
 			icon: 'anchor',
 			description: t('triggers.event.description'),
-			overview: ({ type, actionScope, filterScope, actionCollections, filterCollections }) => {
+			overview: ({ type, scope, collections }) => {
 				const labels = [
 					{
 						label: t('type'),
@@ -31,37 +31,21 @@ export function getTriggers() {
 					},
 				];
 
-				if (type === 'filter') {
+				labels.push({
+					label: t('scope'),
+					text: scope.join(', '),
+				});
+
+				if (collections?.length) {
 					labels.push({
-						label: t('scope'),
-						text: filterScope.join(', '),
+						label: t('collections'),
+						text: collections.join(', '),
 					});
-
-					if (filterCollections?.length) {
-						labels.push({
-							label: t('collections'),
-							text: filterCollections.join(', '),
-						});
-					}
-				}
-
-				if (type === 'action') {
-					labels.push({
-						label: t('scope'),
-						text: actionScope.join(', '),
-					});
-
-					if (actionCollections?.length) {
-						labels.push({
-							label: t('collections'),
-							text: actionCollections.join(', '),
-						});
-					}
 				}
 
 				return labels;
 			},
-			options: ({ type, actionScope, filterScope }) => {
+			options: ({ type, scope }) => {
 				const fields = [
 					{
 						field: 'type',
@@ -86,7 +70,7 @@ export function getTriggers() {
 
 				const actionFields = [
 					{
-						field: 'actionScope',
+						field: 'scope',
 						name: t('scope'),
 						meta: {
 							interface: 'select-multiple-dropdown',
@@ -109,14 +93,13 @@ export function getTriggers() {
 						},
 					},
 					{
-						field: 'actionCollections',
+						field: 'collections',
 						name: t('collections'),
 						meta: {
 							interface: 'system-collections',
 							width: 'full' as Width,
 							readonly:
-								!actionScope ||
-								['items.create', 'items.update', 'items.delete'].every((t) => actionScope?.includes(t) === false),
+								!scope || ['items.create', 'items.update', 'items.delete'].every((t) => scope?.includes(t) === false),
 							options: {
 								includeSystem: true,
 							},
@@ -126,7 +109,7 @@ export function getTriggers() {
 
 				const filterFields = [
 					{
-						field: 'filterScope',
+						field: 'scope',
 						name: t('scope'),
 						meta: {
 							interface: 'select-multiple-dropdown',
@@ -150,14 +133,13 @@ export function getTriggers() {
 						},
 					},
 					{
-						field: 'filterCollections',
+						field: 'collections',
 						name: t('collections'),
 						meta: {
 							interface: 'system-collections',
 							width: 'full' as Width,
 							readonly:
-								!filterScope ||
-								['items.create', 'items.update', 'items.delete'].every((t) => filterScope?.includes(t) === false),
+								!scope || ['items.create', 'items.update', 'items.delete'].every((t) => scope?.includes(t) === false),
 							options: {
 								includeSystem: true,
 							},

@@ -75,6 +75,26 @@ class FlowManager {
 
 		for (const flow of flowTrees) {
 			if (flow.trigger === 'event') {
+				const events: string[] =
+					flow.options?.scope
+						?.map((scope: string) => {
+							if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
+								return (
+									flow.options?.collections?.map((collection: string) => {
+										if (collection.startsWith('directus_')) {
+											const action = scope.split('.')[1];
+											return collection.substring(9) + '.' + action;
+										}
+
+										return `${collection}.${scope}`;
+									}) ?? []
+								);
+							}
+
+							return scope;
+						})
+						?.flat() ?? [];
+
 				if (flow.options.type === 'filter') {
 					const handler: FilterHandler = (payload, meta, context) =>
 						this.executeFlow(
@@ -87,60 +107,18 @@ class FlowManager {
 							}
 						);
 
-					const events: string[] =
-						flow.options?.filterScope
-							?.map((scope: string) => {
-								if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
-									return (
-										flow.options?.filterCollections?.map((collection: string) => {
-											if (collection.startsWith('directus_')) {
-												const action = scope.split('.')[1];
-												return collection.substring(9) + '.' + action;
-											}
-
-											return `${collection}.${scope}`;
-										}) ?? []
-									);
-								}
-
-								return scope;
-							})
-							?.flat() ?? [];
-
 					events.forEach((event) => emitter.onFilter(event, handler));
 					this.triggerHandlers.push({
 						id: flow.id,
 						events: events.map((event) => ({ type: 'filter', name: event, handler })),
 					});
-				}
-
-				if (flow.options.type === 'action') {
+				} else if (flow.options.type === 'action') {
 					const handler: ActionHandler = (meta, context) =>
 						this.executeFlow(flow, meta, {
 							accountability: context.accountability,
 							database: context.database,
 							getSchema: context.schema ? () => context.schema : getSchema,
 						});
-
-					const events: string[] =
-						flow.options?.actionScope
-							?.map((scope: string) => {
-								if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
-									return (
-										flow.options?.actionCollections?.map((collection: string) => {
-											if (collection.startsWith('directus_')) {
-												const action = scope.split('.')[1];
-												return collection.substring(9) + '.' + action;
-											}
-
-											return `${collection}.${scope}`;
-										}) ?? []
-									);
-								}
-
-								return scope;
-							})
-							?.flat() ?? [];
 
 					events.forEach((event) => emitter.onAction(event, handler));
 					this.triggerHandlers.push({

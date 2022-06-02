@@ -79,7 +79,7 @@
 				</div>
 			</v-tab-item>
 			<v-tab-item value="trigger_setup">
-				<v-fancy-select v-model="trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+				<v-fancy-select v-model="values.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
 
 				<v-form
 					v-if="values.trigger"
@@ -196,15 +196,21 @@ watch(
 	{ immediate: true }
 );
 
-const trigger = computed<TriggerType | null | undefined>({
-	get() {
-		return values.trigger;
-	},
-	set(trigger) {
+watch(
+	() => values.trigger,
+	() => {
 		values.options = {};
-		values.trigger = trigger;
-	},
-});
+	}
+);
+
+watch(
+	() => values.options?.type,
+	(type) => {
+		values.options = {
+			type,
+		};
+	}
+);
 
 const { triggers } = getTriggers();
 
