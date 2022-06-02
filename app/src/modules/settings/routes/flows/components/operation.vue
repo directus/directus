@@ -374,7 +374,7 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 20px 20px 20px 80px;
+		padding: 20px 20px 20px 60px;
 		transform: translate(-1px, calc(-50% - 2.5px));
 	}
 
