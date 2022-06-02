@@ -80,7 +80,7 @@ const arrows = computed(() => {
 		} else if (props.editMode && !props.arrowInfo && (panel.id === '$trigger' || props.hoveredPanel === panel.id)) {
 			const { x: resolveX, y: resolveY } = getPoints(panel, RESOLVE_OFFSET);
 			arrows.push({
-				d: createLine(resolveX, resolveY, resolveX + 4 * 20, resolveY),
+				d: createLine(resolveX, resolveY, resolveX + 3 * 20, resolveY),
 				type: 'resolve',
 				loner,
 				isHint: true,
@@ -104,7 +104,7 @@ const arrows = computed(() => {
 		} else if (props.editMode && !props.arrowInfo && panel.id !== '$trigger' && props.hoveredPanel === panel.id) {
 			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
 			arrows.push({
-				d: createLine(rejectX, rejectY, rejectX + 4 * 20, rejectY),
+				d: createLine(rejectX, rejectY, rejectX + 3 * 20, rejectY),
 				type: 'reject',
 				loner,
 				isHint: true,
