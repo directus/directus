@@ -199,7 +199,7 @@ export default defineComponent({
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 	--v-button-background-color-active: var(--primary);
-	--v-button-background-color-disabled: var(--background-subdued);
+	--v-button-background-color-disabled: var(--background-normal);
 	--v-button-font-size: 16px;
 	--v-button-font-weight: 600;
 	--v-button-line-height: 22px;
