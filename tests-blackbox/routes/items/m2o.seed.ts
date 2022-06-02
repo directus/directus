@@ -78,7 +78,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 		},
 		country_id: {
 			field: 'country_id',
-			type: 'integer',
+			type: pkType,
 			filters: false,
 			possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
 				quantity: 2,
@@ -93,7 +93,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 	schema[`${collectionCities}_${pkType}`] = {
 		id: {
 			field: 'id',
-			type: 'integer',
+			type: pkType,
 			isPrimaryKey: true,
 			filters: false,
 			possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
@@ -119,7 +119,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 		},
 		state_id: {
 			field: 'state_id',
-			type: 'integer',
+			type: pkType,
 			filters: false,
 			possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
 				quantity: 4,
