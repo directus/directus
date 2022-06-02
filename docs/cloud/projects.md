@@ -114,7 +114,7 @@ Enterprise tier offers power and scale to meet any Project's needs and offers 19
 [Datacenter regions](/cloud/glossary/#datacenter-regions), upgraded [support options](/cloud/glossary/#support-options),
 and much more.
 
-:::tip Ready to to go Enterprise?
+:::tip Ready to go Enterprise?
 
 [Contact Sales](https://directus.io/contact/)
 
@@ -203,7 +203,7 @@ On Standard Projects, it's possible to change the Project Name as well as reconf
 Each Enterprise Project is customized, so it can't be managed from the Cloud Dashboard. The Project will be managed in
 tandem with the Directus Core Team.
 
-:::tip Ready to to go Enterprise?
+:::tip Ready to go Enterprise?
 
 [Contact Sales](https://directus.io/contact/)
 
