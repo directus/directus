@@ -637,7 +637,7 @@ module.exports = {
 		findCurrentPage(sidebar, []);
 
 		// Avoid cases where the breadcrumb is the same as the title
-		if (breadcrumb && breadcrumb.at(-1) === title) {
+		if (Array.isArray(breadcrumb) && breadcrumb[breadcrumb.length-1] === title) {
 			title = pageTitleInMenu;
 		}
 
