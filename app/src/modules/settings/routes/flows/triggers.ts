@@ -336,16 +336,23 @@ export function getTriggers() {
 			name: t('triggers.manual.name'),
 			icon: 'touch_app',
 			description: t('triggers.manual.description'),
-			overview: ({ collections }) => [
-				{
-					label: t('triggers.manual.description'),
-					text: '',
-				},
-				{
-					label: t('collections'),
-					text: collections.join(', '),
-				},
-			],
+			overview: ({ collections }) => {
+				const labels = [
+					{
+						label: t('triggers.manual.description'),
+						text: '',
+					},
+				];
+
+				if (collections?.length) {
+					labels.push({
+						label: t('collections'),
+						text: collections.join(', '),
+					});
+				}
+
+				return labels;
+			},
 			options: [
 				{
 					field: 'collections',
