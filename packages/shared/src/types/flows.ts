@@ -5,7 +5,7 @@ export interface Flow {
 	id: string;
 	name: string;
 	icon: string;
-	note: string;
+	description: string;
 	status: Status;
 	trigger: TriggerType | null;
 	options: Record<string, any>;
@@ -30,7 +30,7 @@ export interface FlowRaw {
 	name: string;
 	icon: string;
 	color: string;
-	note: string;
+	description: string;
 	status: Status;
 	trigger: TriggerType | null;
 	options: Record<string, any>;
