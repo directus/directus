@@ -87,8 +87,8 @@ export default defineOperationApp({
 			},
 		},
 		{
-			field: 'data',
-			name: '$t:operations.request.data',
+			field: 'payload',
+			name: '$t:payload',
 			type: 'json',
 			meta: {
 				width: 'full',

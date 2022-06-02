@@ -4,21 +4,21 @@ import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
 	flow: string;
-	data: string;
+	payload: string;
 };
 
 export default defineOperationApi<Options>({
 	id: 'trigger',
 
-	handler: async ({ flow, data }, context) => {
+	handler: async ({ flow, payload }, context) => {
 		const flowManager = getFlowManager();
 
-		const parsedData = parseJSON(data);
+		const parsedData = parseJSON(payload);
 
 		let result: unknown | unknown[];
 
 		if (Array.isArray(parsedData)) {
-			result = await Promise.all(parsedData.map((data) => flowManager.runOperationFlow(flow, data, context)));
+			result = await Promise.all(parsedData.map((payload) => flowManager.runOperationFlow(flow, payload, context)));
 		} else {
 			result = await flowManager.runOperationFlow(flow, parsedData, context);
 		}

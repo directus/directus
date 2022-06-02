@@ -25,8 +25,8 @@ export default defineOperationApp({
 			},
 		},
 		{
-			field: 'data',
-			name: '$t:operations.trigger.data',
+			field: 'payload',
+			name: '$t:payload',
 			type: 'string',
 			meta: {
 				width: 'full',
