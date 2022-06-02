@@ -90,7 +90,7 @@
 							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item class="danger" clickable @click="confirmDelete = item.id">
+						<v-list-item class="danger" clickable @click="confirmDelete = item">
 							<v-list-item-icon>
 								<v-icon name="delete" outline />
 							</v-list-item-icon>
@@ -105,7 +105,7 @@
 
 		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
 			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm') }}</v-card-title>
+				<v-card-title>{{ t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</v-card-title>
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = null">
@@ -145,7 +145,7 @@ const { t } = useI18n();
 
 const permissionsStore = usePermissionsStore();
 
-const confirmDelete = ref<string | null>(null);
+const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
 const editFlow = ref<string | undefined>();
 
@@ -210,7 +210,7 @@ async function deleteFlow() {
 	deletingFlow.value = true;
 
 	try {
-		await api.delete(`/flows/${confirmDelete.value}`);
+		await api.delete(`/flows/${confirmDelete.value.id}`);
 		await flowsStore.hydrate();
 		confirmDelete.value = null;
 	} catch (err: any) {

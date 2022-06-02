@@ -136,7 +136,7 @@
 
 		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
 			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm') }}</v-card-title>
+				<v-card-title>{{ t('flow_delete_confirm', { flow: flow.name }) }}</v-card-title>
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
@@ -211,7 +211,6 @@ const { t } = useI18n();
 const props = defineProps<{
 	primaryKey: string;
 	operationId?: string;
-	firstOpen?: boolean;
 }>();
 
 const saving = ref(false);
@@ -224,6 +223,7 @@ useShortcut('meta+s', () => {
 
 const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
+
 const flow = computed<FlowRaw | undefined>({
 	get() {
 		const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
@@ -239,8 +239,7 @@ const exitingOperationKeys = computed(() => [
 	...stagedPanels.value.filter((stagedPanel) => stagedPanel.key !== undefined).map((stagedPanel) => stagedPanel.key!),
 ]);
 
-const firstOpen = computed(() => !flow.value?.trigger || !!props.firstOpen);
-const editMode = ref(firstOpen.value || props.operationId !== undefined);
+const editMode = ref(flow.value?.operations.length === 0 || props.operationId !== undefined);
 
 const confirmDelete = ref(false);
 const deleting = ref(false);

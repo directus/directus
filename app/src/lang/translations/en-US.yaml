@@ -774,7 +774,7 @@ view_trigger: View Trigger
 create_trigger: Create Trigger
 trigger_setup: Trigger Setup
 change_trigger: Change Trigger
-flow_delete_confirm: Are you sure you want to delete this Flow? This action can not be undone.
+flow_delete_confirm: Are you sure you want to delete Flow "{flow}"? This action can not be undone.
 set_flow_active: Set Flow to Active
 set_flow_inactive: Set Flow to Inactive
 edit_flow: Edit Flow
