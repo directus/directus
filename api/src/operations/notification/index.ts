@@ -1,12 +1,13 @@
 import { Accountability } from '@directus/shared/types';
 import { defineOperationApi } from '@directus/shared/utils';
 import { NotificationsService } from '../../services';
+import { optionToString } from '../../utils/operation-options';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
 
 type Options = {
 	recipient: string;
 	subject: string;
-	message: string | null;
+	message: unknown | null;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
@@ -34,11 +35,13 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
+		const messageString = message !== null ? optionToString(message) : null;
+
 		const result = await notificationsService.createOne({
 			recipient,
 			sender: customAccountability?.user ?? null,
 			subject,
-			message,
+			message: messageString,
 		});
 
 		return result;

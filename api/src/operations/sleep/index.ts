@@ -1,7 +1,7 @@
 import { defineOperationApi } from '@directus/shared/utils';
 
 type Options = {
-	milliseconds: string;
+	milliseconds: string | number;
 };
 
 export default defineOperationApi<Options>({

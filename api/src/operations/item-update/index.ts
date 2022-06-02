@@ -2,14 +2,14 @@ import { Accountability, PrimaryKey } from '@directus/shared/types';
 import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { Item } from '../../types';
+import { optionToObject } from '../../utils/operation-options';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
-import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
 	collection: string;
 	key: PrimaryKey | PrimaryKey[] | null;
-	payload: string;
-	query: string;
+	payload: Record<string, any> | string | null;
+	query: Record<string, any> | string | null;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
@@ -37,24 +37,25 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		let result: PrimaryKey | PrimaryKey[] | null;
+		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload);
 
-		const parsedPayload: Partial<Item> | Partial<Item>[] | null =
-			typeof payload === 'string' ? parseJSON(payload) : null;
+		const queryObject = query !== null ? optionToObject(query) : {};
 
-		if (!parsedPayload) {
+		if (!payloadObject) {
 			return null;
 		}
 
+		let result: PrimaryKey | PrimaryKey[] | null;
+
 		if (key === null) {
-			result = await itemsService.updateByQuery(query ? parseJSON(query) : {}, parsedPayload);
+			result = await itemsService.updateByQuery(queryObject, payloadObject);
 		} else {
 			const keys = toArray(key);
 
 			if (keys.length === 1) {
-				result = await itemsService.updateOne(keys[0], parsedPayload);
+				result = await itemsService.updateOne(keys[0], payloadObject);
 			} else {
-				result = await itemsService.updateMany(keys, parsedPayload);
+				result = await itemsService.updateMany(keys, payloadObject);
 			}
 		}
 

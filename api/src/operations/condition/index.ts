@@ -3,7 +3,6 @@ import { defineOperationApi, validatePayload } from '@directus/shared/utils';
 
 type Options = {
 	filter: Filter;
-	item: string;
 };
 
 export default defineOperationApi<Options>({

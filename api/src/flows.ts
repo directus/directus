@@ -21,13 +21,13 @@ import { FlowsService } from './services';
 import { EventHandler } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
-import { renderMustache } from './utils/render-mustache';
 import { ActivityService } from './services/activity';
 import { RevisionsService } from './services/revisions';
 import { Knex } from 'knex';
 import { omit } from 'lodash';
 import { getMessenger } from './messenger';
 import fastRedact from 'fast-redact';
+import { applyOperationOptions } from './utils/operation-options';
 
 let flowManager: FlowManager | undefined;
 
@@ -366,7 +366,7 @@ class FlowManager {
 
 		const handler = this.operations[operation.type];
 
-		const options = renderMustache(operation.options, keyedData);
+		const options = applyOperationOptions(operation.options, keyedData);
 
 		try {
 			const result = await handler(options, {

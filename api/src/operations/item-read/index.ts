@@ -2,13 +2,13 @@ import { Accountability, PrimaryKey } from '@directus/shared/types';
 import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { Item } from '../../types';
+import { optionToObject } from '../../utils/operation-options';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
-import { parseJSON } from '../../utils/parse-json';
 
 type Options = {
 	collection: string;
 	key: PrimaryKey | PrimaryKey[] | null;
-	query: string;
+	query: Record<string, any> | string | null;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
@@ -36,19 +36,19 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
+		const queryObject = query !== null ? optionToObject(query) : {};
+
 		let result: Item | Item[] | null;
 
-		const parsedQuery = query ? parseJSON(query) : {};
-
 		if (key === null) {
-			result = await itemsService.readByQuery(parsedQuery);
+			result = await itemsService.readByQuery(queryObject);
 		} else {
 			const keys = toArray(key);
 
 			if (keys.length === 1) {
-				result = await itemsService.readOne(keys[0], parsedQuery);
+				result = await itemsService.readOne(keys[0], queryObject);
 			} else {
-				result = await itemsService.readMany(keys, parsedQuery);
+				result = await itemsService.readMany(keys, queryObject);
 			}
 		}
 
