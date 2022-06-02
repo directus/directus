@@ -23,6 +23,7 @@ identifier: Identificatore
 avatar: Avatar
 application: Applicazione
 default_provider: Predefinito
+method: Metodo
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
@@ -32,6 +33,8 @@ reset_width: Reimposta larghezza
 tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
+location: Posizione
+input: Input
 maps: Mappe
 switch_user: Cambia utente
 item_creation: Creazione elemento
@@ -731,6 +734,7 @@ on_create: Alla creazione
 on_update: Alla modifica
 read: Lettura
 update: Modifica
+delete: Elimina
 select_fields: Seleziona campi
 format_text: Formato testo
 format_value: Formatta il valore
@@ -741,6 +745,10 @@ toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
+trigger: Trigger
+flow_name: Nome
+flow_tracking_activity: Traccia solo Attività
+flow_tracking_null: Non Tracciare nulla
 insights: Approfondimenti
 dashboard: Bacheca
 panel: Pannello
@@ -758,9 +766,10 @@ suffix_placeholder: Testo dopo il valore...
 decimals_placeholder: Numero di decimali...
 no_dashboards: Nessuna bacheca
 no_dashboards_copy: Non hai ancora bacheche.
-no_data: Nessun dato
 create_dashboard: Crea bacheca
 dashboard_name: Nome della bacheca
+no_data: Nessun dato
+accountability: Autorizzazioni
 full_screen: Schermo Intero
 full_text_search: Ricerca full-text
 edit_panels: Modifica pannelli
@@ -862,6 +871,7 @@ settings_presets: Preset & Segnalibri
 settings_translation_strings: Stringhe di Traduzione
 one_or_more_options_are_missing: Mancano una o più opzioni
 scope: Ambito
+actions: Azioni
 select: Seleziona...
 layout: Layout
 tree_view: Struttura ad albero
@@ -871,6 +881,7 @@ preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
+data: Dati
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
@@ -935,9 +946,9 @@ directus_collection:
   directus_files: Metadati per tutti i file degli asset gestiti
   directus_folders: Fornisce directory virtuali per i file
   directus_migrations: Quale versione del database stai usando
+  directus_notifications: Notifiche inviate agli utenti
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
   directus_permissions: Autorizzazioni di accesso per ciascun ruolo
-  directus_notifications: Notifiche inviate agli utenti
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
   directus_revisions: Snapshot dei dati per tutte le attività
@@ -1330,7 +1341,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1885,3 +1895,16 @@ panels:
     bottom: In basso
     monochrome: Monocromatico
     monochrome_color: Colore monocromatico
+triggers:
+  webhook:
+    method: Metodo
+operations:
+  notification:
+    recipient: Utente
+  request:
+    url: URL
+    method: Metodo
+    data: Dati
+    header: Header
+  trigger:
+    data: Dati
