@@ -468,10 +468,12 @@ function pointerLeave() {
 	> div {
 		flex-wrap: wrap;
 		align-items: center;
+		margin-bottom: 6px;
 	}
 
 	dt {
 		flex-basis: 100%;
+		margin-bottom: -2px;
 	}
 
 	dd {
