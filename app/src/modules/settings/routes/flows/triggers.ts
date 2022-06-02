@@ -71,11 +71,11 @@ export function getTriggers() {
 							options: {
 								choices: [
 									{
-										text: t('action'),
+										text: t('triggers.event.action'),
 										value: 'action',
 									},
 									{
-										text: t('filter'),
+										text: t('triggers.event.filter'),
 										value: 'filter',
 									},
 								],

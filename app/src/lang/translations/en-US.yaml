@@ -1980,7 +1980,9 @@ triggers:
     response_body_last: Data of Last Operation
   event:
     name: Event Hook
-    description: Triggers on various platform events
+    description: Triggers on platform or data events
+    action: 'Action (After Event)'
+    filter: 'Filter (Before Event)'
   webhook:
     name: Webhook
     description: Triggers on an incoming HTTP request
