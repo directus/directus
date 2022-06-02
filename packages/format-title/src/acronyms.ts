@@ -3,7 +3,6 @@ export default [
 	'3D',
 	'4WD',
 	'API',
-	'BASIC',
 	'BIOS',
 	'CCTV',
 	'CC',

@@ -410,7 +410,6 @@ unexpected_error_copy: Ur fazi dianv zo bet. Klaskit diwezhatoc'h mar plij.
 copy_details: Eilañ ar munudoù
 no_app_access: Ne c'heller ket implijout an arload
 no_app_access_copy: An implijer-mañ, n'eus ket ar gwir da implijout an arload mererezh.
-password_reset_sent: Ul liamm sur hon 'neus kaset deoc'h evit adderaouiñ ho ker-tremen
 password_reset_successful: Adderaouet eo bet ar ger-tremen
 back: Distreiñ
 editing_image: Chañj ar skeudenn
@@ -428,8 +427,6 @@ start_end_of_count_items: '{start}-{end} {count} elfenn'
 start_end_of_count_filtered_items: '{start}-{end} diwar {count} elfenn silet'
 one_item: '1 elfenn'
 one_filtered_item: '1 elfenn silet'
-delete_collection_are_you_sure: >-
-  Sur oc'h e fell deoc'h dilemel an dastumad-mañ ? Dilemet e vo an dastumad hag an holl elfennoù e-barzh. N'haller ket mont war-gil.
 collections_shown: Dastumadoù diskouezhet
 visible_collections: Dastumadoù da wel
 hidden_collections: Dastumadoù kuzhet

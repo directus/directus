@@ -590,7 +590,6 @@ unexpected_error_copy: Ett oväntat fel har inträffat. Försök igen senare.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
 no_app_access_copy: Den här användaren får inte använda administratörs-appen.
-password_reset_sent: Vi har skickat en säker länk till dig för att återställa ditt lösenord
 password_reset_successful: Lösenordet har återställts
 back: Tillbaka
 filter: Filtrera
@@ -609,8 +608,6 @@ start_end_of_count_items: '{start}-{end} av {count} objekt'
 start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
 one_item: '1 objekt'
 one_filtered_item: '1 filtrerat objekt'
-delete_collection_are_you_sure: >-
-  Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 collections_shown: Visade kollektioner
 visible_collections: Synliga kollektioner
 hidden_collections: Dolda kollektioner
