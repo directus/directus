@@ -3,11 +3,12 @@
 		<template #activator="{ toggle, active }">
 			<v-input
 				:active="active"
+				:class="{ invalid }"
+				:disabled="disabled"
+				:model-value="displayValue"
+				:placeholder="!isValidValue ? value : t('enter_a_value')"
 				clickable
 				readonly
-				:model-value="displayValue"
-				:disabled="disabled"
-				:placeholder="!isValidValue ? value : t('enter_a_value')"
 				@click="toggle"
 			>
 				<template v-if="!disabled" #append>
@@ -36,7 +37,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed, defineComponent, inject, PropType, ref, watch } from 'vue';
+import { ComputedRef, computed, defineComponent, inject, PropType, ref, watch } from 'vue';
 import formatLocalized from '@/utils/localized-format';
 import { isValid, parse, parseISO } from 'date-fns';
 import { get } from 'lodash';
@@ -81,10 +82,23 @@ export default defineComponent({
 
 		const { displayValue, isValidValue } = useDisplayValue();
 
-		const values = inject('values') as object;
+		const values = inject('values') as ComputedRef<Record<string, any>>;
 
-		const min = computed(() => (props.minField ? get(values, props.minField) : ''));
-		const max = computed(() => (props.maxField ? get(values, props.maxField) : ''));
+		const min = computed(() => (props.minField ? get(values.value, props.minField) : ''));
+		const max = computed(() => (props.maxField ? get(values.value, props.maxField) : ''));
+
+		const invalid = computed(() => {
+			if (!props.value) {
+				return false;
+			}
+			if (min.value && props.value < min.value) {
+				return true;
+			}
+			if (max.value && props.value > max.value) {
+				return true;
+			}
+			return false;
+		});
 
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
@@ -129,12 +143,15 @@ export default defineComponent({
 			emit('input', null);
 		}
 
-		return { t, displayValue, unsetValue, dateTimeMenu, isValidValue, min, max };
+		return { t, displayValue, unsetValue, dateTimeMenu, isValidValue, min, max, invalid };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+.v-input.invalid {
+	--border-normal: var(--danger);
+}
 .v-icon {
 	&.today-icon {
 		&:hover,

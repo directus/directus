@@ -3,6 +3,7 @@ import InterfaceDateTime from './datetime.vue';
 import PreviewSVG from './preview.svg?raw';
 import type { DeepPartial } from '@directus/shared/src/types/misc';
 import type { Field } from '@directus/shared/src/types/fields';
+import { useFieldsStore } from '@/stores';
 
 export default defineInterface({
 	id: 'datetime',
@@ -12,72 +13,92 @@ export default defineInterface({
 	component: InterfaceDateTime,
 	types: ['dateTime', 'date', 'time', 'timestamp'],
 	group: 'selection',
-	options: ({ field, collection }) => {
+	options: (ctx) => {
+		const { field, collection } = ctx;
 		const label = field.type === 'time' ? 'time' : 'date';
-		const opts: DeepPartial<Field>[] = [
-			{
-				field: 'minField',
-				name: `$t:interfaces.datetime.min_${label}_field`,
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'system-field',
-					options: {
-						collection: collection,
-						typeAllowList: ['dateTime', 'date', 'time', 'timestamp'],
-					},
-				},
-			},
-			{
-				field: 'maxField',
-				name: `$t:interfaces.datetime.max_${label}_field`,
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'system-field',
-					options: {
-						collection: collection,
-						typeAllowList: ['dateTime', 'date', 'time', 'timestamp'],
-					},
-				},
-			},
-		];
 
-		if (field.type === 'date') {
-			if (field.meta?.options) {
-				field.meta.options = {};
-			}
-			return opts;
+		const opts: DeepPartial<Field>[] = [];
+		const allowedTypes = ['dateTime', 'date', 'time', 'timestamp'];
+
+		if (collection) {
+			const fieldsStore = useFieldsStore();
+
+			const choices: { text: string; value: string }[] = [];
+			fieldsStore.getFieldsForCollection(collection).forEach((otherField) => {
+				if (allowedTypes.includes(otherField.type) && otherField.field !== field.field) {
+					choices.push({
+						text: otherField.name,
+						value: otherField.field,
+					});
+				}
+			});
+
+			opts.push(
+				{
+					field: 'minField',
+					name: `$t:interfaces.datetime.min_${label}_field`,
+					type: 'string',
+					meta: {
+						width: 'half',
+						interface: 'select-dropdown',
+						options: {
+							choices,
+							showDeselect: true,
+						},
+					},
+				},
+				{
+					field: 'maxField',
+					name: `$t:interfaces.datetime.max_${label}_field`,
+					type: 'string',
+					meta: {
+						width: 'half',
+						interface: 'select-dropdown',
+						options: {
+							choices,
+							showDeselect: true,
+						},
+					},
+				}
+			);
 		}
 
-		opts.push(
-			{
-				field: 'includeSeconds',
-				name: '$t:interfaces.datetime.include_seconds',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-				},
-				schema: {
-					default_value: false,
-				},
-			},
-			{
-				field: 'use24',
-				name: '$t:interfaces.datetime.use_24',
-				type: 'boolean',
-				meta: {
-					width: 'half',
-					interface: 'boolean',
-				},
-				schema: {
-					default_value: true,
-				},
-			}
-		);
+		if (field.type === 'date') {
+			return {
+				standard: [],
+				advanced: opts,
+			};
+		}
 
-		return opts;
+		return {
+			standard: [
+				{
+					field: 'includeSeconds',
+					name: '$t:interfaces.datetime.include_seconds',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
+					field: 'use24',
+					name: '$t:interfaces.datetime.use_24',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+					},
+					schema: {
+						default_value: true,
+					},
+				},
+			],
+			advanced: opts,
+		};
 	},
 	recommendedDisplays: ['datetime'],
 	preview: PreviewSVG,
