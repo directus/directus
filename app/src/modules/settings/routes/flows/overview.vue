@@ -188,8 +188,8 @@ const tableHeaders = [
 		width: 240,
 	},
 	{
-		text: t('note'),
-		value: 'note',
+		text: t('description'),
+		value: 'description',
 		width: 360,
 	},
 ];

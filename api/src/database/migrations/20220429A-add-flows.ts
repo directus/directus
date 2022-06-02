@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('name').notNullable();
 		table.string('icon', 30);
 		table.string('color').nullable();
-		table.text('note');
+		table.text('description');
 		table.string('status').notNullable().defaultTo('active');
 		table.string('trigger');
 		table.string('accountability').defaultTo('all');

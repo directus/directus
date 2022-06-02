@@ -12,7 +12,7 @@
 					<v-input v-model="values.name" class="full" autofocus :placeholder="t('flow_name')" />
 					<interface-select-icon :value="values.icon" @input="values.icon = $event" />
 					<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
-					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
+					<v-input v-model="values.description" class="full" />
 				</div>
 			</v-card-text>
 
@@ -58,7 +58,7 @@ const values = reactive({
 	name: props.flow?.name ?? null,
 	icon: props.flow?.icon ?? 'bolt',
 	color: props.flow?.color ?? null,
-	note: props.flow?.note ?? null,
+	description: props.flow?.description ?? null,
 });
 
 watch(
@@ -68,7 +68,7 @@ watch(
 			values.name = props.flow?.name ?? null;
 			values.icon = props.flow?.icon ?? 'bolt';
 			values.color = props.flow?.color ?? null;
-			values.note = props.flow?.note ?? null;
+			values.description = props.flow?.description ?? null;
 		}
 	}
 );

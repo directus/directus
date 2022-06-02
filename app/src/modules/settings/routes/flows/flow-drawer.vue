@@ -44,8 +44,8 @@
 						/>
 					</div>
 					<div class="field full">
-						<div class="type-label">{{ t('note') }}</div>
-						<v-input v-model="values.note" :placeholder="t('note')" />
+						<div class="type-label">{{ t('description') }}</div>
+						<v-input v-model="values.description" :placeholder="t('description')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('icon') }}</div>
@@ -130,7 +130,7 @@ interface Values {
 	name: string | null;
 	icon: string | null;
 	color: string | null;
-	note: string | null;
+	description: string | null;
 	status: string;
 	accountability: string | null;
 	trigger?: TriggerType | null;
@@ -159,7 +159,7 @@ const values: Values = reactive({
 	name: null,
 	icon: 'bolt',
 	color: null,
-	note: null,
+	description: null,
 	status: 'active',
 	accountability: 'all',
 	trigger: undefined,
@@ -175,7 +175,7 @@ watch(
 			values.name = null;
 			values.icon = 'bolt';
 			values.color = null;
-			values.note = null;
+			values.description = null;
 			values.status = 'active';
 			values.accountability = 'all';
 			values.trigger = undefined;
@@ -186,7 +186,7 @@ watch(
 			values.name = existing.name;
 			values.icon = existing.icon;
 			values.color = existing.color;
-			values.note = existing.note;
+			values.description = existing.description;
 			values.status = existing.status;
 			values.accountability = existing.accountability;
 			values.trigger = existing.trigger;
