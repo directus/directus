@@ -2,7 +2,7 @@
 
 > This guide explains how to install the _Development_ version of Directus locally so that you can work on the
 > platform's source code. To install the _Production_ version locally, please follow to our
-> [standard installation guides](/getting-started/installation/).
+> [standard installation guides](/self-hosted/installation/).
 
 ::: tip Minimum Requirements
 
@@ -41,9 +41,8 @@ npm run build
 
 ## 5. Create a `.env` file
 
-Create an `.env` file under the `api` folder using vars from the online 
+Create an `.env` file under the `api` folder using vars from the online
 [config help](https://docs.directus.io/configuration/config-options/)
-
 
 ## 6. Initialize the database
 

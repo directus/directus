@@ -101,7 +101,7 @@
 					<li><a href="/configuration/config-options/">Environment Variables</a></li>
 					<li><a href="/configuration/relationships/">Data Relationships</a></li>
 					<li><a href="/configuration/config-options/#authentication">Single Sign-On (SSO)</a></li>
-					<li><a href="/getting-started/installation/docker/">Installing with Docker</a></li>
+					<li><a href="/self-hosted/installation/docker/">Installing with Docker</a></li>
 				</ul>
 			</div>
 
