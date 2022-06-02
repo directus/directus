@@ -22,6 +22,7 @@ export default defineOperationApp({
 				options: {
 					placeholder: '$t:operations.log.message_placeholder',
 				},
+				note: '$t:operation_variables_note',
 			},
 		},
 	],
