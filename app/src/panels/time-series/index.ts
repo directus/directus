@@ -8,7 +8,7 @@ export default definePanel({
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
 	query: (options: Record<string, any>) => {
-		if (!options?.function || !options.valueField || !options.dateField || !options.range) {
+		if (!options?.function || !options.valueField || !options.dateField) {
 			return;
 		}
 
