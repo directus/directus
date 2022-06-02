@@ -34,7 +34,11 @@
 						<v-icon name="delete" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+						{{
+							collection.schema
+								? t('delete_collection', { collection: collection.collection })
+								: t('delete_folder', { folder: folder.folder })
+						}}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
