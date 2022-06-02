@@ -1,8 +1,9 @@
 import api from '@/api';
-import formatLocalized from '@/utils/localized-format';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action, Filter } from '@directus/shared/types';
-import { isThisYear, isToday, isYesterday } from 'date-fns';
+import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { ref, Ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -142,13 +143,29 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 
 				if (today) dateFormatted = t('today');
 				else if (yesterday) dateFormatted = t('yesterday');
-				else if (thisYear) dateFormatted = await formatLocalized(date, String(t('date-fns_date_short_no_year')));
-				else dateFormatted = await formatLocalized(date, String(t('date-fns_date_short')));
+				else if (thisYear) dateFormatted = await localizedFormat(date, String(t('date-fns_date_short_no_year')));
+				else dateFormatted = await localizedFormat(date, String(t('date-fns_date_short')));
+
+				const revisions = [];
+
+				for (const revision of value) {
+					revisions.push({
+						...revision,
+						timestampFormatted: await getFormattedDate(revision.activity?.timestamp),
+						timeRelative: `${getTime(revision.activity?.timestamp)} (${await localizedFormatDistance(
+							parseISO(revision.activity?.timestamp),
+							new Date(),
+							{
+								addSuffix: true,
+							}
+						)})`,
+					});
+				}
 
 				revisionsGrouped.push({
 					date: date,
 					dateFormatted: String(dateFormatted),
-					revisions: orderBy(value, ['activity.timestamp'], ['desc']),
+					revisions,
 				});
 			}
 
@@ -165,5 +182,16 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 
 	async function refresh(page = 0) {
 		await getRevisions(page);
+	}
+
+	function getTime(timestamp: string) {
+		return format(new Date(timestamp), String(t('date-fns_time')));
+	}
+
+	async function getFormattedDate(timestamp: string) {
+		const date = await localizedFormat(new Date(timestamp), String(t('date-fns_date_short')));
+		const time = await localizedFormat(new Date(timestamp), String(t('date-fns_time')));
+
+		return `${date} (${time})`;
 	}
 }

@@ -13,7 +13,7 @@
 				<div v-for="revision in group.revisions" :key="revision.id" class="log">
 					<button @click="previewing = revision">
 						<v-icon name="play_arrow" color="var(--primary)" small />
-						{{ getTime(revision.activity.timestamp) }}
+						{{ revision.timeRelative }}
 					</button>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 
 	<v-drawer
 		:model-value="!!previewing"
-		:title="previewing ? d(previewing.activity.timestamp, 'long') : t('logs')"
+		:title="previewing ? previewing.timestampFormatted : t('logs')"
 		icon="fact_check"
 		@cancel="previewing = null"
 		@esc="previewing = null"
@@ -81,12 +81,11 @@
 import { useRevisions } from '@/composables/use-revisions';
 import { getOperations } from '@/operations';
 import { Action, FlowRaw } from '@directus/shared/types';
-import { format } from 'date-fns';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 
-const { t, d } = useI18n();
+const { t } = useI18n();
 
 interface Props {
 	flow: FlowRaw;
@@ -157,10 +156,6 @@ const steps = computed(() => {
 		}
 	);
 });
-
-function getTime(timestamp: string) {
-	return format(new Date(timestamp), String(t('date-fns_time')));
-}
 </script>
 
 <style lang="scss" scoped>
