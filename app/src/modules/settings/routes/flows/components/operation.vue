@@ -340,7 +340,26 @@ function pointerLeave() {
 			border-radius: 4px;
 			z-index: -1;
 			opacity: 0.2;
-			box-shadow: 0 0 0 7px var(--primary);
+			box-shadow: 0 0 0 10px var(--primary);
+
+			animation-name: floating;
+			animation-duration: 3s;
+			animation-iteration-count: infinite;
+			animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+			@keyframes floating {
+				0% {
+					box-shadow: 0 0 0 10px var(--primary);
+					opacity: 0.2;
+				}
+				50% {
+					box-shadow: 0 0 0 8px var(--primary);
+					opacity: 0.3;
+				}
+				100% {
+					box-shadow: 0 0 0 10px var(--primary);
+					opacity: 0.2;
+				}
+			}
 		}
 
 		&.subdued {
