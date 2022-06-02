@@ -1,13 +1,15 @@
 <template>
 	<div class="arrow-container">
 		<svg :width="size.width" :height="size.height" class="arrows">
-			<path
-				v-for="(arrow, index) in arrows"
-				:key="`${index}-${arrow.d}`"
-				:class="{ [arrow.type]: true, subdued: subdued || arrow.loner }"
-				:d="arrow.d"
-				stroke-linecap="round"
-			/>
+			<transition-group name="fade">
+				<path
+					v-for="arrow in arrows"
+					:key="arrow.id"
+					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
+					:d="arrow.d"
+					stroke-linecap="round"
+				/>
+			</transition-group>
 		</svg>
 	</div>
 </template>
@@ -55,7 +57,7 @@ const size = computed(() => {
 });
 
 const arrows = computed(() => {
-	const arrows: { d: string; type: Target; loner: boolean; isHint?: boolean }[] = [];
+	const arrows: { id: string; d: string; type: Target; loner: boolean; isHint?: boolean }[] = [];
 
 	for (const panel of props.panels) {
 		const resolveChild = props.panels.find((pan) => pan.id === panel.resolve);
@@ -66,6 +68,7 @@ const arrows = computed(() => {
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
 			arrows.push({
+				id: panel.id + '_resolve',
 				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
 				type: 'resolve',
 				loner,
@@ -73,6 +76,7 @@ const arrows = computed(() => {
 		} else if (resolveChild) {
 			const { x, y, toX, toY } = getPoints(panel, RESOLVE_OFFSET, resolveChild);
 			arrows.push({
+				id: panel.id + '_resolve',
 				d: createLine(x, y, toX as number, toY as number),
 				type: 'resolve',
 				loner,
@@ -80,6 +84,7 @@ const arrows = computed(() => {
 		} else if (props.editMode && !props.arrowInfo && (panel.id === '$trigger' || props.hoveredPanel === panel.id)) {
 			const { x: resolveX, y: resolveY } = getPoints(panel, RESOLVE_OFFSET);
 			arrows.push({
+				id: panel.id + '_resolve',
 				d: createLine(resolveX, resolveY, resolveX + 3 * 20, resolveY),
 				type: 'resolve',
 				loner,
@@ -90,6 +95,7 @@ const arrows = computed(() => {
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
 			const { x, y } = getPoints(panel, REJECT_OFFSET);
 			arrows.push({
+				id: panel.id + '_reject',
 				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
 				type: 'reject',
 				loner,
@@ -97,6 +103,7 @@ const arrows = computed(() => {
 		} else if (rejectChild) {
 			const { x, y, toX, toY } = getPoints(panel, REJECT_OFFSET, rejectChild);
 			arrows.push({
+				id: panel.id + '_reject',
 				d: createLine(x, y, toX as number, toY as number),
 				type: 'reject',
 				loner,
@@ -104,6 +111,7 @@ const arrows = computed(() => {
 		} else if (props.editMode && !props.arrowInfo && panel.id !== '$trigger' && props.hoveredPanel === panel.id) {
 			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
 			arrows.push({
+				id: panel.id + '_reject',
 				d: createLine(rejectX, rejectY, rejectX + 3 * 20, rejectY),
 				type: 'reject',
 				loner,
@@ -256,6 +264,7 @@ const arrows = computed(() => {
 			stroke: var(--primary);
 			stroke-width: 2px;
 			transition: stroke var(--fast) var(--transition);
+			transform: translateX(0);
 
 			&.reject {
 				stroke: var(--secondary);
@@ -263,6 +272,19 @@ const arrows = computed(() => {
 
 			&.subdued {
 				stroke: var(--foreground-subdued);
+			}
+
+			&.fade-enter-active,
+			&.fade-leave-active {
+				transition: var(--fast) var(--transition);
+				transition-property: opacity transform;
+			}
+
+			&.fade-enter-from,
+			&.fade-leave-to {
+				position: absolute;
+				opacity: 0;
+				transform: translateX(-4px);
 			}
 		}
 	}

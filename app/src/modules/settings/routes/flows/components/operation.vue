@@ -36,14 +36,16 @@
 			>
 				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
 			</div>
-			<div
-				v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
-				class="hint resolve-hint"
-			>
-				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
-					<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
+			<transition name="fade">
+				<div
+					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
+					class="hint resolve-hint"
+				>
+					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
+						<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
+					</div>
 				</div>
-			</div>
+			</transition>
 			<div
 				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
 				x-small
@@ -54,14 +56,16 @@
 			>
 				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
 			</div>
-			<div
-				v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
-				class="hint reject-hint"
-			>
-				<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
-					<v-icon v-tooltip="t('operation_handle_reject')" name="add_circle_outline" />
+			<transition name="fade">
+				<div
+					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
+					class="hint reject-hint"
+				>
+					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
+						<v-icon v-tooltip="t('operation_handle_reject')" name="add_circle_outline" />
+					</div>
 				</div>
-			</div>
+			</transition>
 
 			<div
 				v-if="panel.id !== '$trigger'"
@@ -485,5 +489,16 @@ function pointerLeave() {
 .status-footer {
 	display: flex;
 	gap: 8px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--fast) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	position: absolute;
+	opacity: 0;
 }
 </style>
