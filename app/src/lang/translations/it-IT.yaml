@@ -595,6 +595,7 @@ unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi
 copy_details: Copia Dettagli
 no_app_access: Nessun Accesso all'App
 no_app_access_copy: Questo utente non è autorizzato ad utilizzare l'app amministratore.
+password_reset_sent: Se hai un account riceverai via email un link sicuro per reimpostare la tua password
 password_reset_successful: Password reimpostata con successo
 back: Indietro
 filter: Filtro
@@ -618,6 +619,9 @@ start_end_of_count_items: '{start}-{end} di {count} elementi'
 start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrato'
+delete_collection_are_you_sure: >-
+  Sei sicuro di voler eliminare la raccolta "{collection}"? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione non può essere annullata.
+delete_folder_are_you_sure: Sei sicuro di voler eliminare la cartella "{folder}"? Le cartelle e le raccolte annidate saranno spostate al livello più alto.
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
@@ -1326,6 +1330,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
