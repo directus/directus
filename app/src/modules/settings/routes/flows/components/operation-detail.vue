@@ -18,9 +18,8 @@
 				<div class="field half">
 					<div class="type-label">
 						{{ t('name') }}
-						<v-icon v-tooltip="t('required')" class="required" sup name="star" />
 					</div>
-					<v-input v-model="operationName" :placeholder="t('operation_name')" autofocus>
+					<v-input v-model="operationName" autofocus :placeholder="generatedName">
 						<template #append>
 							<v-icon name="title" />
 						</template>
@@ -29,9 +28,8 @@
 				<div class="field half">
 					<div class="type-label">
 						{{ t('key') }}
-						<v-icon v-tooltip="t('required')" class="required" sup name="star" />
 					</div>
-					<v-input v-model="operationKey" db-safe :placeholder="t('operation_key')">
+					<v-input v-model="operationKey" db-safe :placeholder="generatedKey">
 						<template #append>
 							<v-icon name="vpn_key" />
 						</template>
@@ -75,6 +73,9 @@ import { FlowRaw } from '@directus/shared/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { customAlphabet } from 'nanoid';
+
+const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 
 const props = withDefaults(
 	defineProps<{
@@ -109,7 +110,7 @@ const isOperationKeyUnique = computed(
 );
 
 const saveDisabled = computed(() => {
-	return !operationType.value || !operationKey.value || !operationName.value || !isOperationKeyUnique.value;
+	return !operationType.value || !isOperationKeyUnique.value;
 });
 
 watch(operationType, () => {
@@ -135,6 +136,12 @@ watch(
 
 const selectedOperation = computed(() => getOperation(operationType.value));
 
+const generatedName = computed(() => (selectedOperation.value ? selectedOperation.value?.name : t('operation_name')));
+
+const generatedKey = computed(() =>
+	selectedOperation.value ? selectedOperation.value?.id + '_' + generateSuffix() : t('operation_key')
+);
+
 const { operations } = getOperations();
 
 const displayOperations = computed(() => {
@@ -159,8 +166,8 @@ function saveOperation() {
 	saving.value = true;
 	emit('save', {
 		flow: props.primaryKey,
-		name: operationName.value,
-		key: operationKey.value,
+		name: operationName.value || generatedName.value,
+		key: operationKey.value || generatedKey.value,
 		type: operationType.value,
 		options: options.value,
 	});

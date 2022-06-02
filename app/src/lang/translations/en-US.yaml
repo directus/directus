@@ -2029,7 +2029,7 @@ operations:
     name: Log to Console
     description: Output something to the console
     message: Message
-    message_placeholder: Enter a message to show in the console
+    message_placeholder: Enter a message to show in the console...
   mail:
     name: Send Email
     description: Send an email to one or more people
