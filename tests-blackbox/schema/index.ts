@@ -1,3 +1,6 @@
+// Alias types
+export * as SchemaAlias from './alias';
+
 // Integer types
 export * as SchemaInteger from './integer';
 export * as SchemaBigInteger from './big-integer';
@@ -26,6 +29,7 @@ export * as SchemaJSON from './json';
 export * as SchemaUUID from './uuid';
 
 export const SchemaAvailableTypes = [
+	'alias',
 	'bigInteger',
 	'boolean',
 	'csv',

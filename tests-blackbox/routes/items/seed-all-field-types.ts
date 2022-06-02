@@ -1,6 +1,8 @@
 import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType } from '@common/index';
 import { TestsFieldSchema } from '@query/filter';
 
+const valuesQuantity = 2;
+
 export function getTestsAllTypesSchema(): TestsFieldSchema {
 	const fieldSchema: TestsFieldSchema = {};
 
@@ -10,7 +12,9 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 			field: field,
 			type: key,
 			filters: true,
-			possibleValues: SeedFunctions.generateValues[key as keyof typeof SeedFunctions.generateValues]({ quantity: 2 }),
+			possibleValues: SeedFunctions.generateValues[key as keyof typeof SeedFunctions.generateValues]({
+				quantity: valuesQuantity,
+			}),
 		};
 	}
 
@@ -72,6 +76,56 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 				item: items,
 			});
 		}
+
+		expect(true).toBeTruthy();
+	} catch (error) {
+		expect(error).toBeFalsy();
+	}
+};
+
+export const seedAliasAllFieldTypesValues = async (
+	vendor: string,
+	collection: string,
+	pkType: PrimaryKeyType,
+	aliasField: string,
+	possibleKeys: any[]
+) => {
+	try {
+		const fieldSchema = getTestsAllTypesSchema();
+
+		// Create items
+		let generatedStringIdCounter = 0;
+		const items = [];
+
+		for (const aliasKey of possibleKeys) {
+			for (let i = 0; i < valuesQuantity; i++) {
+				const item: any = {};
+				if (pkType === 'string') {
+					item['id'] = SeedFunctions.generateValues.string({
+						quantity: 1,
+						seed: `id-${generatedStringIdCounter}`,
+					})[0];
+					generatedStringIdCounter++;
+				}
+
+				item[aliasField] = aliasKey;
+
+				for (const key of Object.keys(fieldSchema)) {
+					const castValueToString = ['bigInteger'].includes(fieldSchema[key].type);
+
+					item[fieldSchema[key].field] = castValueToString
+						? String(fieldSchema[key].possibleValues[i])
+						: fieldSchema[key].possibleValues[i];
+				}
+
+				items.push(item);
+			}
+		}
+
+		await CreateItem(vendor, {
+			collection: collection,
+			item: items,
+		});
 
 		expect(true).toBeTruthy();
 	} catch (error) {

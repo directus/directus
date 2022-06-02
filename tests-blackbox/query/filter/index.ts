@@ -42,6 +42,9 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 	let targetSchema = null;
 
 	switch (schema.type) {
+		case 'alias':
+			targetSchema = testsSchema.SchemaAlias;
+			break;
 		case 'integer':
 			targetSchema = testsSchema.SchemaInteger;
 			break;
@@ -130,7 +133,23 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 						// Assert
 						expect(response.status).toBe(200);
 						for (const item of response.body.data) {
-							expect(filter.validatorFunction(get(item, filterKey), filter.value)).toBe(true);
+							const value = get(item, filterKey.slice(0, filterKey.lastIndexOf('.')));
+							if (Array.isArray(value)) {
+								let found = false;
+								for (const itemValue of value) {
+									try {
+										if (filter.validatorFunction(get(itemValue, schema.field), filter.value)) {
+											found = true;
+											break;
+										}
+									} catch (_err) {
+										continue;
+									}
+								}
+								expect(found).toBe(true);
+							} else {
+								expect(filter.validatorFunction(get(item, filterKey), filter.value)).toBe(true);
+							}
 						}
 					}
 				});
