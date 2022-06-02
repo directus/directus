@@ -1,8 +1,8 @@
 <template>
-	<div>
+	<div class="time-series">
 		<v-progress-circular v-if="loading" indeterminate />
 		<span v-if="!hasData" class="type-note">{{ t('no_data') }}</span>
-		<div v-show="hasData" ref="chartEl" class="time-series" />
+		<div v-show="hasData" ref="chartEl" />
 	</div>
 </template>
 

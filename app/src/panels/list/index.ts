@@ -22,12 +22,11 @@ export default definePanel({
 				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection),
 			];
 		}
-
 		return {
 			filter: options.filter ?? {},
 			fields: displayFields,
 			sort: options.sortDirection === 'desc' ? `-${options.sortField}` : options.sortField,
-			limit: options.limit,
+			limit: options.limit === undefined ? 5 : options.limit,
 		};
 	},
 	options: [
