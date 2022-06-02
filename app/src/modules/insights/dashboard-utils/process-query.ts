@@ -68,6 +68,13 @@ const formatQuery = (query: PanelQuery, collection: string) => {
 		}
 	}
 
+	if (query.limit) {
+		if (!formattedQuery.__args) {
+			formattedQuery.__args = {};
+		}
+		formattedQuery.__args.limit = query.limit;
+	}
+
 	if (query.filter) {
 		if (!formattedQuery.__args) {
 			formattedQuery.__args = {};

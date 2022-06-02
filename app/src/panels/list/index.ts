@@ -27,6 +27,7 @@ export default definePanel({
 			filter: options.filter ?? {},
 			fields: displayFields,
 			sort: options.sortDirection === 'desc' ? `-${options.sortField}` : options.sortField,
+			limit: options.limit,
 		};
 	},
 	options: [

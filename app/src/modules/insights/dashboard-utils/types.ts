@@ -5,4 +5,5 @@ export type PanelQuery = {
 	groupBy?: string;
 	fields?: string[];
 	filter?: Filter;
+	limit?: number;
 };
