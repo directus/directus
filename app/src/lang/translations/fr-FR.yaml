@@ -1330,6 +1330,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1791,6 +1792,7 @@ layouts:
     user_placeholder: Champ utilisateur optionnel...,
     image: Image de tuile,
     image_placeholder: Champ d'image optionnel...,
+    image_fit: Image ajustée en tuile
     crop: Rogner,
     advanced: Avancé,
     edit_group: Éditer le Groupe,
@@ -1836,10 +1838,12 @@ panels:
     show_data_label: Afficher l'étiquette des données
     group_by: 'Groupés par:'
     group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    y_axis_NaN: L'ordonnée doit être un nombre.
     y_axis_conditional_one: La valeur de la condition
     y_axis_conditional_two: doit être un nombre.
   linechart:
     name: Graphique linéaire
+    description: Graphique linéaire pour comparer le changement d'un champ.
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
     select_x_axis: Vous devez sélectionner un axe X.
@@ -1850,14 +1854,18 @@ panels:
     y_axis: Axe Y
     datasets: Jeux de données
     show_legend: Afficher la légende
+    show_marker: Afficher l'info-bulle
     include_dataset: Vous devez sélectionner au moins un élément.
     include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
     group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
     smooth: 'Lisse'
+    straight: 'Droit'
+    step_line: 'Pas'
   meter:
     description: Compteur pour les valeurs de suivi
     name: Compteur
     arc: Arc
+    stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
     select_field: Vous devez choisir un champ.
