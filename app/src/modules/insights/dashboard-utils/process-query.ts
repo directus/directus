@@ -59,7 +59,7 @@ const formatQuery = (query: PanelQuery, collection: string) => {
 			if (!field) continue;
 			const relations = field.split('.');
 			if (relations.length > 1) {
-				formattedQuery[relations[0]] = {};
+				formattedQuery[relations[0]] = formattedQuery[relations[0]] ?? {};
 
 				relationalNesting(formattedQuery[relations[0]], relations);
 			} else {
