@@ -92,6 +92,7 @@ export default defineOperationApp({
 				interface: 'input-code',
 				options: {
 					language: 'json',
+					placeholder: '$t:item_payload_placeholder',
 				},
 			},
 		},
