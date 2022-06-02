@@ -93,6 +93,28 @@ export default defineOperationApp({
 				interface: 'input-code',
 				options: {
 					language: 'json',
+					placeholder: JSON.stringify(
+						{
+							filter: {
+								status: {
+									_eq: 'active',
+								},
+							},
+						},
+						null,
+						2
+					),
+					template: JSON.stringify(
+						{
+							filter: {
+								status: {
+									_eq: 'active',
+								},
+							},
+						},
+						null,
+						2
+					),
 				},
 			},
 		},
