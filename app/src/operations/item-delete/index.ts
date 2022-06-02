@@ -9,10 +9,6 @@ export default defineOperationApp({
 	overview: ({ mode, collection, key }) => {
 		const overviewItems = [
 			{
-				label: '$t:operations.item-delete.mode.field',
-				text: mode,
-			},
-			{
 				label: '$t:collection',
 				text: collection,
 			},
