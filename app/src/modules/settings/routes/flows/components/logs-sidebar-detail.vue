@@ -1,5 +1,7 @@
 <template>
 	<sidebar-detail :title="t('logs')" icon="fact_check" :badge="revisionsCount">
+		<div v-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
+
 		<v-detail
 			v-for="group in revisionsByDate"
 			:key="group.dateFormatted"
@@ -284,5 +286,11 @@ function getTime(timestamp: string) {
 			background-color: var(--secondary);
 		}
 	}
+}
+
+.empty {
+	margin-left: 2px;
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 </style>

@@ -1388,6 +1388,7 @@ reset: Reset
 reset_password: Reset Password
 revisions: Revisions
 no_revisions: No Revisions Yet
+no_logs: No Logs Yet
 revert: Revert
 save: Save
 schema: Schema
