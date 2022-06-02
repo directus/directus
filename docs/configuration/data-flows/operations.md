@@ -1,6 +1,8 @@
 # Operations
 
-> Intro about these Operations.
+> Operations are the actions performed after the Data Flow is triggered. Whether you need to access and create Data
+> within Directus, send information off to outside services, create time-oriented flows, set conditional logic or even
+> trigger other Data Flows, these simple but powerful tasks can make it happen.
 
 [[toc]]
 
@@ -10,8 +12,9 @@
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Route a flow based on `if` / `else` logic. That means if the condition is met, the flow will move forward with the
-success operation. Otherwise, the failure operation will be initiated.
+Routes to the next flow based on some conditional `if` / `else` logic defined by a Filter query. That means if the query
+condition is met, the flow will move forward with the success Operation. Otherwise, the failure Operation will be
+initiated.
 
 ### Options
 
@@ -23,7 +26,7 @@ success operation. Otherwise, the failure operation will be initiated.
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Creates Items in the database.
+Creates Items in a Collection.
 
 ### Options
 
@@ -44,17 +47,16 @@ Make sure the Operation is set with the proper write permissions.
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Output something to the server-side console. A key tool for troubleshooting data flow configuration.
+Output something to the console. This will appear in both the server side and in-app Sidebar Console Log. This is key
+tool to help troubleshoot Data Flow configuration.
 
 ### Options
 
 - **Message** — Sets message to log.
 
-### Logs
+### View Logs
 
-You will be able to see your console logs for the given Data Flow from the Sidebar.
-
-1. Open Logs and a list of timestamps will appear.
+1. Open Logs in the Sidebar and a list of timestamps will appear.
 2. Click the timestamp to see the values logged at that moment.
 3. Click <span mi btn muted>close</span> to close the log.
 
@@ -65,22 +67,24 @@ You will be able to see your console logs for the given Data Flow from the Sideb
 </video>
 
 Sends emails to other humans. Variables can be used so that an array of emails could be fetched from a previous step in
-data flows.
+Data Flows.
 
 ### Options
 
-- **To** — Sets the email addresses. Hit `↵` to confirm save the email(s). Click emails to remove them.
+- **To** — Sets email addresses. Hit `↵` to save the email. Click an email to remove it.
 - **Subject** — Set subject line.
 - **Body** — Provides WYSIWYG editor to create email body.
 
 :::tip Sending emails locally
 
-If you are testing out this Operation from `localhost:8080`, be sure to check your spam box as you email provider may
+If you are testing out this Operation from `localhost:8080`, be sure to check your spam box as your email provider may
 send it there automatically.
 
 :::
 
-## Send Notification <!-- Still Not working for me -->
+## Send Notification
+
+<!-- Still Not working for me -->
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
@@ -94,15 +98,13 @@ Send a notification to app user(s).
 - **Title** — Sets the notification title.
 - **Message** — Sets the main body of the notification.
 
-### Config Tips/Details
-
 ## Read Data
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Read Items from the Database and adds them to the Data Flow Object for access by subsequent operations.
+Read Item(s) from the Database and adds them onto the Data Flow Object.
 
 ### Options
 
@@ -110,7 +112,7 @@ Read Items from the Database and adds them to the Data Flow Object for access by
 - **Permissions** — Defines Role that this data operation will inherit read permissions from.
 - **Collections** — Select the Collection to read Items from.
 - **IDs** — Input ID for Item(s) you wish to read and press enter.
-- **Query** — Read Items from a query made with [Filter Rules](/configuration/filter-rules).
+- **Query** — Filter Items with a query. See [Filter Rules](/configuration/filter-rules).
 
 ## Webhook / Request URL
 
@@ -125,7 +127,7 @@ Makes a request to a URL.
 - **Method** — Choose to make a GET or POST request.
 - **URL** — Define the URL to send request to.
 - **Headers** — Create new `header:value` to pass along with the request.
-- **Data** — <!-- Not sure how this works yet. -->
+- **Data** — Defines any data to send off in the webhook.
 
 ## Sleep
 
@@ -133,8 +135,7 @@ Makes a request to a URL.
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Pauses for a given amount of milliseconds before executing the next Operation in the Data Flow. This does not affect
-other app functions, just the subsequent Operations in the Data Flow.
+Pauses Operation Execution in the Data Flow for a given amount of milliseconds before moving to the next Operation.
 
 ### Options
 
@@ -152,13 +153,16 @@ Alters the Flow's JSON payload. Allows you to insert custom-defined JSON into th
 
 - **JSON** — Defines JSON to insert into the Data Flow Object for this Operation.
 
-## Trigger Flow <!-- Can't get it to work -->
+## Trigger Flow
+
+<!-- Can't get it to work -->
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Starts another Data Flow.
+This Operation starts another Data Flow. It should be used in combination with the
+[Another Flow](/configuration/triggers/#another-flow) Trigger.
 
 ### Options
 

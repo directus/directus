@@ -1,5 +1,7 @@
 # Triggers
 
+[[toc]]
+
 ## Event Hook
 
 <!-- Can't make sense of this one. Seems like it should be used with both read and validate operations? -->
@@ -16,7 +18,9 @@ Triggers before an event is fired to check, modify, or cancel the event.
 - **Scope** — Sets the specific events to trip this trigger.
 - **Collections** — Chooses the Collections to trip the trigger.
 
-## Webhook <!-- Halfway works! Not sure what response body does.... Can't see it in network. -->
+## Webhook
+
+<!-- Halfway works! Not sure what response body does.... Can't see it in network. -->
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />
@@ -45,7 +49,9 @@ This Trigger allows you to create Data at scheduled intervals. The interval is s
 
 - **Interval** — Sets an interval to schedule event with 6-point cron job syntax.
 
-## Another Flow <!-- Can't make it work -->
+## Another Flow
+
+<!-- Can't make it work -->
 
 <video autoplay muted loop controls title="">
 	<source src="https://cdn.directus.io/" type="video/mp4" />

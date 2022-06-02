@@ -1,9 +1,6 @@
 # Data Flows
 
-> Data Flows enable custom, event-driven data processing and task automation within Directus. Trigger your Data Flow
-> with a cron job, webhook, or in-app event and then string together multiple Operations to create complex conditional
-> logic such as creating and editing Items in an existing Collection, reading existing data and sending it off to other
-> services, or sending emails and notifications.
+> Data Flows enable event-driven data processing and task automation.
 
 [[toc]]
 
@@ -24,18 +21,20 @@
 Data Flows enable custom, event-driven data processing and task automation within Directus. Each Flow is composed of one
 Trigger, followed by a series of Operations.
 
-The Trigger defines an event which starts the data flow. This could be some action within the app, an incoming webhook,
-a scheduled timer for cron jobs, or some other event. Please see the documentation on
-[Triggers](/configuration/data-flows/triggers) for more details. Operations are actions performed one after the other,
-after the Trigger goes off. Operations are actions like setting a timed delay, sending off emails or in-app
-notifications, or sending off a webhook, just to name a few. You can also set Operations to execute conditionally, based
-on whether the previous Operation passed or if it failed. Please see the documentation on
+The Trigger defines an event which starts the data flow. This could be some event or action within the app, an incoming
+webhook, a scheduled timer for cron jobs, or some other event. Please see the documentation on
+[Triggers](/configuration/data-flows/triggers) for more details.
+
+Operations are the actions performed after the Trigger, which include things like creating new Items in a Collection,
+sending off emails, pushing in-app notifications, and sending webhooks, just to name a few options. You can even set up
+divergent chains of Data Flow Operations, which execute conditionally, based on whether one Operation passed or failed.
+To ensure data is passed on as expected, a [console log](configuration/operations/#log-to-console) is also included to
+help design and troubleshoot your Data Flows. Please see the documentation on
 [Operations](/configuration/data-flows/operations) for more details.
 
-Once a Data Flow is triggered, a JSON object is created which stores data from the Trigger event, as well as each
-Operation executed in the flow is executed. Data generated from each Operation is added onto the Data Flow Object. Each
-subsequent Operation in a Data Flow has access to the Data Flow Object. To ensure data is passed on as expected, console
-log panel is also included to help design and troubleshoot your Data Flows.
+Once a Data Flow is triggered, a [Data Flow JSON Object](#the-data-flow-object) is created which stores data from the
+Trigger event. Then as each Operation in the flow executes, the data generated is added onto this Data Flow Object.
+Every Operation in a Data Flow has access to this Data Flow Object.
 
 ## Create a Data Flow
 
@@ -48,7 +47,7 @@ log panel is also included to help design and troubleshoot your Data Flows.
 3. Fill in a name for the Data Flow.\
    _Optional: Set a material icon, color, or note to help differentiate the Flow._
 4. Click **"Save"** and you will be taken to the Flow Grid Page, with the Create Trigger Menu open.
-5. Add a name to identify the Trigger, choose the Trigger Type, and fill in Trigger details as desired.
+5. Add a name to the Trigger, choose the Trigger Type, and fill in Trigger details as desired.
 6. Click <span mi icon>done</span> in the Menu Header.
 7. On the Trigger Panel, click <span mi>add</span> and the Create Operation Menu will open.
 8. Create a name, select the Operation type, and configure as desired.
@@ -58,9 +57,9 @@ _After your first Operation is created, you have the option to build flows on wh
 successfully executed or not._
 
 10. On the newly created Operation panel:
-    - Click <span mi icon>add</span> to add Operation if success.
-    - Click <span mi icon>minus</span> to add Operation if failure.
-11. Repeat steps eight and nine as desired, until your Data Flow is complete.
+    - Click <span mi icon>add</span> to add Operation after successful execution of current Operation.
+    - Click <span mi icon>remove</span> to add Operation after current Operation fails.
+11. Repeat steps 8-10 as desired, until your Data Flow is complete.
 
 ## The Data Flow Object
 
@@ -68,13 +67,14 @@ successfully executed or not._
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-The Data Flow Object stores all data from a Data Flow. Whenever you created a Trigger or Operation, you were required to
-add a unique name for it, which was turned into a key. This key stores relevant data on the Data Flows Object.
+The Data Flow Object stores all data from a Data Flow. When you create an Operation, you are required to add a unique
+name for it, which into turned into a key. The key are used to add the associated Operation's data on the Data Flows
+Object. Each Operation in the flow has access to the Data Flows Object, and thus all its data.
 
-As you are configuring your Data Flow, you are able to access the entire Flow Object, as well as the nested Objects
-generated in each previous Operation.
-
-This is an example of a simple data flow with two Operations nested:
+This following is an example of a simple Data Flow with two Operations. The `$trigger`, `$last`, and `$accountability`
+keys are included on every Data Flow, though their values will differ. The name and number of Operation keys will
+obviously depend on how you configure your Data Flow and whether each Operation executes successfully and actually
+appends data onto the Data Flow Object.
 
 ```JSON
 {
@@ -115,7 +115,7 @@ This is an example of a simple data flow with two Operations nested:
 
 ### Variables within Flows
 
-The above keynames can also be used as variables throughout your data flow:
+The above key names can also be used as variables throughout your data flow:
 
 ```JSON
 {
