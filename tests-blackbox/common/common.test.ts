@@ -147,7 +147,7 @@ describe('Common', () => {
 					{
 						id: expect.any(String),
 						email: email,
-						token: token,
+						token: expect.any(String),
 						role: expect.any(String),
 					},
 				]);
@@ -187,7 +187,7 @@ describe('Common', () => {
 					{
 						id: expect.any(String),
 						email: email,
-						token: token,
+						token: expect.any(String),
 						role: expect.any(String),
 					},
 				]);
@@ -227,7 +227,7 @@ describe('Common', () => {
 					{
 						id: expect.any(String),
 						email: email,
-						token: token,
+						token: expect.any(String),
 						role: expect.any(String),
 					},
 				]);
@@ -265,7 +265,7 @@ describe('Common', () => {
 					{
 						id: expect.any(String),
 						email: email,
-						token: token,
+						token: expect.any(String),
 						role: null,
 					},
 				]);
