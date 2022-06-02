@@ -7,7 +7,7 @@
 			</v-divider>
 		</slot>
 		<transition-expand>
-			<div v-if="internalActive">
+			<div v-if="internalActive" class="content">
 				<slot />
 			</div>
 		</transition-expand>
@@ -73,7 +73,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-divider {
-	margin-bottom: 12px;
 	cursor: pointer;
 }
 
@@ -89,5 +88,9 @@ export default defineComponent({
 
 .v-icon {
 	margin-right: 4px;
+}
+
+.content {
+	margin-top: 12px;
 }
 </style>

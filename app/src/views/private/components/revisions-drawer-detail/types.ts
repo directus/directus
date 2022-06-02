@@ -18,6 +18,7 @@ export type Revision = {
 					last_name: string;
 			  };
 	};
+	timestampFormatted: string;
 };
 
 export type RevisionsByDate = {

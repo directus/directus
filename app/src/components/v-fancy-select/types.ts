@@ -1,6 +1,6 @@
 export type FancySelectItem = {
 	icon: string;
-	value: string | number;
+	value?: string | number;
 	text: string;
 	description?: string;
 	divider?: boolean;

@@ -1,27 +1,27 @@
+import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
+import { clone, cloneDeep } from 'lodash';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
+import { performance } from 'perf_hooks';
+import { getAuthProvider } from '../auth';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import getDatabase from '../database';
 import emitter from '../emitter';
 import env from '../env';
-import { getAuthProvider } from '../auth';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import {
 	InvalidCredentialsException,
 	InvalidOTPException,
-	UserSuspendedException,
 	InvalidProviderException,
+	UserSuspendedException,
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
-import { ActivityService } from './activity';
-import { TFAService } from './tfa';
-import { AbstractServiceOptions, Action, Session, User, DirectusTokenPayload, LoginResult } from '../types';
-import { Accountability, SchemaOverview } from '@directus/shared/types';
-import { SettingsService } from './settings';
-import { clone, cloneDeep } from 'lodash';
-import { performance } from 'perf_hooks';
+import { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
 import { stall } from '../utils/stall';
+import { ActivityService } from './activity';
+import { SettingsService } from './settings';
+import { TFAService } from './tfa';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 

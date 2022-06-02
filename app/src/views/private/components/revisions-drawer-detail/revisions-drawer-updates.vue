@@ -58,8 +58,8 @@ export default defineComponent({
 
 					if (!name) return null;
 
-					const currentValue = props.revision.delta[fieldKey];
-					const previousValue = previousRevision.value.data[fieldKey];
+					const currentValue = props.revision.delta?.[fieldKey];
+					const previousValue = previousRevision.value.data?.[fieldKey];
 
 					if (isEqual(currentValue, previousValue)) return null;
 

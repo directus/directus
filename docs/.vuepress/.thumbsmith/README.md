@@ -1,4 +1,5 @@
 To develop the thumbnail:
+
 ```
 # Install thumbsmith CLI
 npm i @thumbsmith/cli -g
@@ -8,6 +9,7 @@ thumbsmith docs.thumbnail.html
 ```
 
 To deploy changes:
+
 ```
 thumbsmith deploy docs.thumbnail.html --api-token={{THUMBSMITH_API_TOKEN}}
 ```

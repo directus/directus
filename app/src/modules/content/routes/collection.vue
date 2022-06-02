@@ -252,6 +252,7 @@
 					@download="download"
 					@refresh="refresh"
 				/>
+				<flow-sidebar-detail location="collection" :collection="collection" :selection="selection" @refresh="refresh" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -281,6 +282,7 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import { useRouter } from 'vue-router';
@@ -307,6 +309,7 @@ export default defineComponent({
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
 		ExportSidebarDetail,
+		FlowSidebarDetail,
 	},
 	props: {
 		collection: {

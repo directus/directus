@@ -82,16 +82,29 @@
 			<insights-navigation />
 		</template>
 
-		<insights-workspace
+		<v-workspace
 			:edit-mode="editMode"
 			:panels="panels"
 			:zoom-to-fit="zoomToFit"
 			:now="now"
+			@edit="editPanel"
 			@update="stagePanelEdits"
 			@move="movePanelID = $event"
 			@delete="deletePanel"
 			@duplicate="duplicatePanel"
-		/>
+		>
+			<template #default="{ panel }">
+				<component
+					:is="`panel-${panel.type}`"
+					v-bind="panel.options"
+					:id="panel.id"
+					:show-header="panel.show_header"
+					:height="panel.height"
+					:width="panel.width"
+					:now="now"
+				/>
+			</template>
+		</v-workspace>
 
 		<router-view
 			name="detail"
@@ -164,14 +177,13 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
-import InsightsWorkspace from '../components/workspace.vue';
-import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
+import { getPanels } from '@/panels';
 import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
-	components: { InsightsNotFound, InsightsNavigation, InsightsWorkspace },
+	components: { InsightsNotFound, InsightsNavigation },
 	props: {
 		primaryKey: {
 			type: String,
@@ -184,6 +196,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
+		const { panels: panelsInfo } = getPanels();
 
 		const insightsStore = useInsightsStore();
 		const appStore = useAppStore();
@@ -287,11 +300,22 @@ export default defineComponent({
 
 				return {
 					...panel,
+					x: panel.position_x,
+					y: panel.position_y,
 					borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
 				};
 			});
 
-			return withBorderRadii;
+			const withIcons = withBorderRadii.map((panel) => {
+				if (panel.icon) return panel;
+
+				return {
+					...panel,
+					icon: panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type)?.icon,
+				};
+			});
+
+			return withIcons;
 		});
 
 		const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
@@ -315,13 +339,13 @@ export default defineComponent({
 			deletePanel,
 			attemptCancelChanges,
 			duplicatePanel,
+			editPanel,
 			movePanelLoading,
 			t,
 			toggleFullScreen,
 			zoomToFit,
 			fullScreen,
 			toggleZoomToFit,
-			md,
 			movePanelChoices,
 			movePanelTo,
 			confirmLeave,
@@ -439,6 +463,10 @@ export default defineComponent({
 			newPanel.position_x = newPanel.position_x + 2;
 			newPanel.position_y = newPanel.position_y + 2;
 			stagePanelEdits({ edits: newPanel, id: '+' });
+		}
+
+		function editPanel(panel: Panel) {
+			router.push(`/insights/${panel.dashboard}/${panel.id}`);
 		}
 
 		function toggleFullScreen() {
