@@ -595,7 +595,7 @@ unexpected_error_copy: Wystąpił nieoczekiwany błąd. Spróbuj ponownie późn
 copy_details: Kopiuj szczegóły
 no_app_access: Brak dostępu do aplikacji
 no_app_access_copy: Ten użytkownik nie może używać aplikacji administracyjnej.
-password_reset_sent: Wysłaliśmy Ci bezpieczny link do zresetowania hasła
+password_reset_sent: Jeśli masz konto to wysłaliśmy Ci bezpieczny link do zresetowania hasła
 password_reset_successful: Hasło zostało pomyślnie zresetowane
 back: Wstecz
 filter: Filtr
@@ -620,8 +620,8 @@ start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych prz
 one_item: '1 element'
 one_filtered_item: '1 przefiltrowany element'
 delete_collection_are_you_sure: >-
-  Czy na pewno chcesz usunąć tę kolekcję? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. Ta akcja jest trwała.
-delete_folder_are_you_sure: Czy na pewno chcesz usunąć ten folder? Zagnieżdżone foldery i kolekcje zostaną przeniesione na najwyższy poziom.
+  Czy na pewno chcesz usunąć kolekcję "{collection}"? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. To działanie jest nieodwracalne.
+delete_folder_are_you_sure: Czy na pewno chcesz usunąć folder "{folder}"? Zagnieżdżone foldery i kolekcje zostaną przeniesione do najwyższego poziomu.
 collections_shown: Wyświetlane kolekcje
 visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
@@ -1024,7 +1024,6 @@ fields:
     status_archived: Zarchiwizowane
     role: Rola
     token: Token
-    token_placeholder: Wprowadź bezpieczny token dostępu...
     provider: Dostawca
     external_identifier: Zewnętrzny identyfikator
     last_page: Ostatnia strona
@@ -1326,7 +1325,7 @@ export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy b
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
-require_value_to_be_set: Wymagaj ustawienia wartości
+require_value_to_be_set: Wymaga ustawienia wartości przy tworzeniu
 translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
@@ -1619,6 +1618,15 @@ interfaces:
     header_color: Kolor nagłówka
     start_open: Rozpocznij rozwinięty
     start_closed: Rozpocznij zwinięty
+  system-token:
+    system-token: Token
+    description: Zarządzaj tokenami dostępu statycznego
+    placeholder: Kliknij "Generuj token", aby utworzyć nowy token statycznego dostępu
+    value_securely_saved: Wartość bezpiecznie zapisana
+    generate: Generuj token
+    regenerate: Wygeneruj ponownie token
+    generate_success_copy: Wykonaj kopię zapasową i skopiuj token powyżej. Ze względów bezpieczeństwa nie będziesz w stanie wyświetlić tokenu ponownie po zapisaniu i opuszczeniu tej strony.
+    remove_token: Usuń token
 displays:
   translations:
     translations: Tłumaczenia

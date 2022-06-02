@@ -551,7 +551,6 @@ unexpected_error_copy: Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar d
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
-password_reset_sent: Sana parolanı sıfırlamanı sağlayacak güvenli bir bağlantı gönderdik
 password_reset_successful: Parola başarıyla sıfırlandı
 back: Geri
 filter: Filtrele
@@ -574,9 +573,6 @@ start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler göster
 start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler gösteriliyor'
 one_item: '1 öğe'
 one_filtered_item: '1 filtrelenmiş öğe'
-delete_collection_are_you_sure: >-
-  Bu koleksiyonu silmek istediğinizden emin misiniz? Bu işlem, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem geri alınamaz.
-delete_folder_are_you_sure: Bu klasörü silmek istediğinizden emin misiniz? Bu klasörün içindeki klasörler ve koleksiyonlar en üst seviyeye taşınacaktır.
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar
@@ -966,7 +962,6 @@ fields:
     status_archived: Arşivlenmiş
     role: Rol
     token: Erişim Anahtarı (Token)
-    token_placeholder: Güvenli bir erişim anahtarı girin...
     provider: Sağlayıcı
     external_identifier: Dış Tanımlayıcı
     last_page: Son Sayfa
@@ -1251,7 +1246,6 @@ sort_direction: Sıralama Yönü
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
-require_value_to_be_set: Değeri gerekli kıl
 translation: Çeviri
 translation_placeholder: Bir çeviri girin...
 value: Değer
@@ -1532,6 +1526,8 @@ interfaces:
     header_color: Başlık Rengi
     start_open: Açık Başla
     start_closed: Kapalı Başla
+  system-token:
+    system-token: Erişim Anahtarı (Token)
 displays:
   translations:
     translations: Çeviriler

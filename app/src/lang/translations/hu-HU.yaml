@@ -527,7 +527,6 @@ unexpected_error_copy: Váratlan hiba történt. Kérjük, próbálja meg késő
 copy_details: Részletek másolása
 no_app_access: Nincs alkalmazás hozzáférés
 no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás használatára.
-password_reset_sent: Küldtünk egy biztonságos linket a jelszó visszaállításához
 password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
 filter: Szűrő
@@ -549,8 +548,6 @@ start_end_of_count_items: '{start}-{end} {count} elemből'
 start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
 one_filtered_item: '1 szűrt elem'
-delete_collection_are_you_sure: >-
-  Biztos, hogy törölni szeretné ezt a gyűjteményt? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
 hidden_collections: Rejtett gyűjtemények
@@ -928,7 +925,6 @@ fields:
     status_archived: Archiválva
     role: Szerepkör
     token: Token
-    token_placeholder: Írja be a biztonságos hozzáférés tokenjét...
     provider: Szolgáltató
     external_identifier: Külső azonosító
     last_page: Utolsó oldal
@@ -1160,7 +1156,6 @@ sort_direction: Rendezés iránya
 sort_asc: Növekvő sorrend
 sort_desc: Csökkenő sorrend
 template: Sablon
-require_value_to_be_set: Az érték beállítása kötelező
 translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
@@ -1418,6 +1413,8 @@ interfaces:
     header_color: Fejléc színe
     start_open: Indíts nyitva!
     start_closed: Indíts zárva!
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Fordítások

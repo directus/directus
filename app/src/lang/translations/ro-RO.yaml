@@ -576,7 +576,6 @@ unexpected_error_copy: A apărut o eroare neașteptată. Te rugăm să încerci 
 copy_details: Copiază detaliile
 no_app_access: Fără acces la aplicație
 no_app_access_copy: Acest utilizator nu are permisiunea de a utiliza aplicația de administrare.
-password_reset_sent: Ți-am trimis un link securizat pentru a-ți reseta parola
 password_reset_successful: Parola a fost modificată cu succes
 back: Înapoi
 filter: Filtru
@@ -599,9 +598,6 @@ start_end_of_count_items: '{start}-{end} din {count} elemente'
 start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
 one_item: '1 element'
 one_filtered_item: '1 element filtrat'
-delete_collection_are_you_sure: >-
-  Sigur doriți să ștergeți această colecție? Această acțiune va șterge colecția și toate articolele din ea. Acțiunea este permanentă.
-delete_folder_are_you_sure: Sigur doriți să ștergeți acest dosar? Dosarele și colecțiile conținute vor fi mutate la nivelul cel mai de sus.
 collections_shown: Colecții afișate
 visible_collections: Colecții vizibile
 hidden_collections: Colecții ascunse
@@ -993,7 +989,6 @@ fields:
     status_archived: Arhivat
     role: Rol
     token: Token
-    token_placeholder: Introduceți un token de acces securizat...
     provider: Furnizor
     external_identifier: Identificator extern
     last_page: Ultima Pagină
@@ -1289,7 +1284,6 @@ export_started_copy: Exportul dvs. a început. Vei fi notificat când este gata 
 sort_asc: Sortează ascendent
 sort_desc: Sortează descrescător
 template: Șablon
-require_value_to_be_set: Necesită setarea valorii
 translation: Traducere
 translation_placeholder: Introduceți o traducere...
 value: Valoare
@@ -1581,6 +1575,8 @@ interfaces:
     header_color: Culoare antet
     start_open: Începe deschis
     start_closed: Începe închis
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduceri

@@ -523,7 +523,6 @@ unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
-password_reset_sent: Olemme lähettäneet sinulle turvallisen linkin nollataksesi salasanasi
 password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
 filter: Suodatin
@@ -544,8 +543,6 @@ start_end_of_count_items: '{start}-{end} / {count} kohdetta'
 start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
 one_item: '1 kohde'
 one_filtered_item: '1 suodatettu kohde'
-delete_collection_are_you_sure: >-
-  Oletko varma, että haluat poistaa tämän kokoelman? Tämä poistaa kokoelman ja kaikki sen kohteet. Tämä toiminto on lopullinen.
 collections_shown: Näytettävät kokoelmat
 visible_collections: Näkyvät kokoelmat
 hidden_collections: Piilotetut kokoelmat
@@ -926,7 +923,6 @@ fields:
     status_archived: Arkistoitu
     role: Rooli
     token: Token
-    token_placeholder: Syötä suojatun pääsyn tunniste...
     provider: Tarjoaja
     external_identifier: Ulkopuoliset tunnistautumiset
     last_page: Viimeinen sivu
@@ -1162,7 +1158,6 @@ sort_direction: Järjestyssuunta
 sort_asc: Järjestä nousevasti
 sort_desc: Lajittele laskeva
 template: Pohja
-require_value_to_be_set: Vaadi arvoa asetettavaksi
 translation: Käännös
 translation_placeholder: Syötä käännös...
 value: Arvo
@@ -1428,6 +1423,8 @@ interfaces:
     header_color: Otsikon väri
     start_open: Aloita avattuna
     start_closed: Aloita suljettuna
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Käännökset

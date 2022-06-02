@@ -592,7 +592,6 @@ unexpected_error_copy: Une erreur inconnue s'est produite. Veuillez réessayer p
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
-password_reset_sent: Nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
@@ -616,9 +615,6 @@ start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
 one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
-delete_collection_are_you_sure: >-
-  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
-delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer ce dossier ? Les dossiers imbriqués et les collections seront déplacés au niveau le plus haut.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -1021,7 +1017,6 @@ fields:
     status_archived: Archivé
     role: Rôle
     token: Token
-    token_placeholder: Entrez un jeton d'accès sécurisé...
     provider: Fournisseur
     external_identifier: Identifiant externe
     last_page: Dernière page
@@ -1323,7 +1318,6 @@ export_started_copy: Votre exportation a commencé. Vous serez notifié quand el
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
-require_value_to_be_set: La valeur est requise
 translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
@@ -1614,6 +1608,8 @@ interfaces:
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traductions

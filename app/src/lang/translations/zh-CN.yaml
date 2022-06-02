@@ -587,7 +587,6 @@ unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
 no_app_access_copy: 此用户不允许使用管理员应用程序。
-password_reset_sent: 我们已经给你发送了一封电子邮件, 您可以选择访问此安全链接来重置您的密码
 password_reset_successful: 密码重置成功。
 back: 后退
 filter: 筛选
@@ -611,9 +610,6 @@ start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤条目'
-delete_collection_are_you_sure: >-
-  您确定要删除此模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
-delete_folder_are_you_sure: 您确定要删除此文件夹吗？嵌套文件夹和收藏将被移动到最上层。
 collections_shown: 展开模型
 visible_collections: 显示模型
 hidden_collections: 隐藏模型
@@ -1015,7 +1011,6 @@ fields:
     status_archived: 已存档
     role: 角色
     token: Token
-    token_placeholder: 请输入安全访问令牌...
     provider: 提供方
     external_identifier: 外部标识符
     last_page: 尾页
@@ -1317,7 +1312,6 @@ export_started_copy: 您的导出已经开始。当准备下载时，您会收�
 sort_asc: 升序
 sort_desc: 降序
 template: 模板
-require_value_to_be_set: 需要设置值
 translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
@@ -1609,6 +1603,8 @@ interfaces:
     header_color: 颜色
     start_open: 默认打开
     start_closed: 默认收起
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: 翻译

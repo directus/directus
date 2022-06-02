@@ -562,7 +562,6 @@ unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
-password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
 filter: Filtro
@@ -585,8 +584,6 @@ start_end_of_count_items: '{start}-{end} de {count} itens'
 start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
 one_item: '1 item'
 one_filtered_item: '1 item filtrado'
-delete_collection_are_you_sure: >-
-  Tem certeza que deseja excluir esta coleção? Isto irá apagar a coleção e todos os itens nela. Esta ação é permanente.
 collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
@@ -978,7 +975,6 @@ fields:
     status_archived: Arquivado
     role: Função
     token: Token
-    token_placeholder: Digite um token de acesso seguro...
     provider: Provedor
     external_identifier: Identificador externo
     last_page: Última página
@@ -1249,7 +1245,6 @@ sort_direction: Direção da ordenação
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
 template: Template
-require_value_to_be_set: Valor a ser definido é requerido
 translation: Tradução
 translation_placeholder: Insira uma tradução...
 value: Valor
@@ -1517,6 +1512,8 @@ interfaces:
     header_color: Cor do Cabeçalho
     start_open: Iniciar Aberto
     start_closed: Iniciar Fechado
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduções

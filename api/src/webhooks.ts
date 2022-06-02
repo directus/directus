@@ -6,15 +6,31 @@ import { Webhook, WebhookHeader } from './types';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
 import { ActionHandler } from '@directus/shared/types';
+import { getMessenger } from './messenger';
 
 let registered: { event: string; handler: ActionHandler }[] = [];
 
-export async function register(): Promise<void> {
-	unregister();
+export async function init(): Promise<void> {
+	await register();
+	const messenger = getMessenger();
 
+	messenger.subscribe('webhooks', (event) => {
+		if (event.type === 'reload') {
+			reload();
+		}
+	});
+}
+
+export async function reload(): Promise<void> {
+	unregister();
+	await register();
+}
+
+export async function register(): Promise<void> {
 	const webhookService = new WebhooksService({ knex: getDatabase(), schema: await getSchema() });
 
 	const webhooks = await webhookService.readByQuery({ filter: { status: { _eq: 'active' } } });
+
 	for (const webhook of webhooks) {
 		for (const action of webhook.actions) {
 			const event = `items.${action}`;

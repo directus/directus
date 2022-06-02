@@ -436,7 +436,6 @@ unexpected_error_copy: Nepričakovana napaka. Prosimo, poskusite kasneje.
 copy_details: Kopiraj podrobnosti
 no_app_access: Nimate dostopa do aplikacije
 no_app_access_copy: Ta uporabnik nima dostopa do administracijske aplikacije.
-password_reset_sent: Poslali smo vam povezavo za ponastavitev gesla
 password_reset_successful: Geslo ponastavljeno
 back: Nazaj
 editing_image: Urejanje slike
@@ -454,8 +453,6 @@ start_end_of_count_items: '{start}-{end} od {count} zapisov'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih zapisov'
 one_item: '1 zapis'
 one_filtered_item: '1 filtriran zapis'
-delete_collection_are_you_sure: >-
-  Ste prepričani, da želit brisati to zbirko? Obrisana bo zbirka in vsi zapisni v njej. Vračanje podatkov ne bo mogoče.
 collections_shown: zbirk prikazanih
 visible_collections: Vidne zbirke
 hidden_collections: Skrite zbirke
@@ -779,7 +776,6 @@ fields:
     status_archived: Arhivirano
     role: Vloga
     token: Žeton
-    token_placeholder: Vnesite žeton ...
     last_page: Zadnja stran
     last_access: Zadnji dostop
   directus_settings:
@@ -992,7 +988,6 @@ sort_direction: Smer razvrščanja
 sort_asc: Razvrsti naraščajoče
 sort_desc: Razvrsti padajoče
 template: Predloga
-require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
@@ -1240,6 +1235,8 @@ interfaces:
     header_color: Barva glave
     start_open: Začni odprto
     start_closed: Začni zaprto
+  system-token:
+    system-token: Žeton
 displays:
   translations:
     translations: Prevodi

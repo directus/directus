@@ -604,7 +604,7 @@ unexpected_error_copy: An unexpected error has occurred. Please try again later.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
-password_reset_sent: We've sent you a secure link to reset your password
+password_reset_sent: If you have an account, we've sent you a secure link to reset your password
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
@@ -629,10 +629,8 @@ start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
 one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
-  Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
-  permanent.
-delete_folder_are_you_sure:
-  Are you sure you want to delete this folder? Nested folders and collections will be moved to the top most level.
+  Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it. This action is permanent.
+delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -1042,7 +1040,6 @@ fields:
     status_archived: Archived
     role: Role
     token: Token
-    token_placeholder: Enter a secure access token...
     provider: Provider
     external_identifier: External Identifier
     last_page: Last Page
@@ -1644,6 +1641,15 @@ interfaces:
     header_color: Header Color
     start_open: Start Open
     start_closed: Start Closed
+  system-token:
+    system-token: Token
+    description: Manage static access token
+    placeholder: Click "Generate Token" to create a new static access token
+    value_securely_saved: Value Securely Saved
+    generate: Generate Token
+    regenerate: Regenerate Token
+    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
+    remove_token: Remove Token
 displays:
   translations:
     translations: Translations

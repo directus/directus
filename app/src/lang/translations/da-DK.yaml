@@ -580,7 +580,6 @@ unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
 copy_details: Kopiér Detaljer
 no_app_access: Ingen App Adgang
 no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.
-password_reset_sent: Vi har sendt dig et sikkert link til at nulstille din adgangskode
 password_reset_successful: Adgangskode nulstillet
 back: Tilbage
 filter: Filtrer
@@ -604,9 +603,6 @@ start_end_of_count_items: '{start}-{end} af {count} varer'
 start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede emner'
 one_item: '1 vare'
 one_filtered_item: '1 filtreret genstand'
-delete_collection_are_you_sure: >-
-  Er du sikker på, at du vil slette denne samling? Dette vil slette samlingen og alle elementer i den. Denne handling er permanent.
-delete_folder_are_you_sure: Er du sikker på, at du vil slette denne mappe? Indlejrede mapper og samlinger vil blive flyttet til det øverste niveau.
 collections_shown: Viste Samlinger
 visible_collections: Synlige Samlinger
 hidden_collections: Skjulte Samlinger
@@ -991,7 +987,6 @@ fields:
     status_suspended: Suspenderet
     status_archived: Arkiveret
     role: Rolle
-    token_placeholder: Indtast en sikker adgangstok...
     provider: Udbyder
     external_identifier: External Identifier
     last_page: Sidste side
@@ -1277,7 +1272,6 @@ export_started_copy: Din eksport er startet. Du får besked, når den er klar ti
 sort_asc: Sortér Stigende
 sort_desc: Sortér Faldende
 template: Skabelon
-require_value_to_be_set: Kræv værdi for at være indstillet
 translation: Oversættelse
 translation_placeholder: Indtast en oversættelse...
 value: Værdi

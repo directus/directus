@@ -588,7 +588,6 @@ unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche e
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
-password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 filter: Filter
@@ -612,9 +611,6 @@ start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
-delete_collection_are_you_sure: >-
-  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
-delete_folder_are_you_sure: Sind Sie sicher, dass Sie diesen Ordner löschen möchten? Verschachtelte Ordner und Sammlungen werden in die oberste Ebene verschoben.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -1016,7 +1012,6 @@ fields:
     status_archived: Archiviert
     role: Rolle
     token: Token
-    token_placeholder: Einen sicheren Zugangs-Token eingeben...
     provider: Anbieter
     external_identifier: Externer Identifikator
     last_page: Letzte Seite
@@ -1318,7 +1313,6 @@ export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die 
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
-require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
@@ -1610,6 +1604,8 @@ interfaces:
     header_color: Farbe Kopfzeile
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Übersetzungen

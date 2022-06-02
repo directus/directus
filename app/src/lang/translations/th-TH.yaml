@@ -488,7 +488,6 @@ unexpected_error_copy: เกิดข้อผิดพลาดที่ไม
 copy_details: คัดลอกรายละเอียด
 no_app_access: ไม่สามารถเข้าถึงแอป
 no_app_access_copy: ผู้ใช้นี้ไม่ได้รับอนุญาตให้เข้าถึงส่วนแอดมิน
-password_reset_sent: เราได้ส่งขั้นตอนการกำหนดรหัสผ่านใหม่ให้คุณแล้วทางอีเมล
 password_reset_successful: รหัสผ่านถูกรีเซ็ตแล้ว
 back: ย้อนกลับ
 filter: ตัวกรอง
@@ -509,8 +508,6 @@ start_end_of_count_items: '{start}-{end} ของ {count} ไอเท็ม'
 start_end_of_count_filtered_items: '{start}-{end} ของ {count} ไอเท็มที่ถูกกรอง'
 one_item: '1 รายการ'
 one_filtered_item: 'มี 1 ไอเท็มที่ถูกกรอง'
-delete_collection_are_you_sure: >-
-  แน่ใจหรือว่าต้องการลบคอลเลกชันนี้? นี่คือการลบคอลเลกชันและรายการทั้งหมดที่มีอยู่ในคอลเลกชัน ไม่สามารถกู้คืนได้
 collections_shown: แสดงคอลเลกชัน
 visible_collections: คอลเลกชันที่มองเห็นได้
 hidden_collections: คอลเลกชันที่ซ่อนอยู่
@@ -854,7 +851,6 @@ fields:
     status_archived: เก็บถาวร
     role: บทบาท
     token: โทเค็น
-    token_placeholder: ระบุโทเค็นความปลอดภัย
     provider: ผู้ให้บริการ
     last_page: หน้าสุดท้าย
     last_access: การเข้าถึงล่าสุด
@@ -1029,7 +1025,6 @@ sort_direction: รูปแบบการเรียง
 sort_asc: เรียงจากน้อยไปมาก
 sort_desc: เรียงจากมากไปน้อย
 template: แม่แบบ
-require_value_to_be_set: ต้องระบุ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
@@ -1251,6 +1246,8 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
+  system-token:
+    system-token: โทเค็น
 displays:
   translations:
     translations: การแปลภาษา

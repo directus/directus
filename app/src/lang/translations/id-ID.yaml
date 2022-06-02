@@ -547,7 +547,6 @@ unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi n
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
-password_reset_sent: Kami telah mengirimkan surel berisi tautan aman untuk menyetel ulang kata sandi Anda
 password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring
@@ -570,8 +569,6 @@ start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
-delete_collection_are_you_sure: >-
-  Apakah anda yakin ingin menghapus koleksi ini? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
 collections_shown: Koleksi yang ditampilkan
 visible_collections: Koleksi yang terlihat
 hidden_collections: Koleksi yang tersembunyi
@@ -911,7 +908,6 @@ fields:
     status_archived: Diarsipkan
     role: Peran
     token: Token
-    token_placeholder: Masukkan token akses aman...
     provider: Penyedia
     external_identifier: Pengidentifikasi Eksternal
     last_page: Halaman Terakhir
@@ -1110,7 +1106,6 @@ sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
 sort_desc: Mengurut Turun
 template: Templat
-require_value_to_be_set: Membutuhkan nilai untuk ditetapkan
 translation: Terjemahan
 translation_placeholder: Masukkan terjemahan...
 value: Nilai
@@ -1229,6 +1224,8 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Terjemahan
