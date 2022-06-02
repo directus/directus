@@ -371,10 +371,10 @@ function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string 
 				}
 
 				if (attachType === 'resolve') {
-					attach.position_x = parent.x + PANEL_WIDTH + 6;
+					attach.position_x = parent.x + PANEL_WIDTH + 4;
 					attach.position_y = parent.y;
 				} else {
-					attach.position_x = parent.x + PANEL_WIDTH + 6;
+					attach.position_x = parent.x + PANEL_WIDTH + 4;
 					attach.position_y = parent.y + PANEL_HEIGHT + 2;
 				}
 			}
