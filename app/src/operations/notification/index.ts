@@ -25,6 +25,7 @@ export default defineOperationApp({
 				interface: 'input',
 				options: {
 					iconRight: 'people_alt',
+					placeholder: '$t:a_users_uuid',
 				},
 			},
 		},
