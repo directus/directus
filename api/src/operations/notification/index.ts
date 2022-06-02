@@ -7,7 +7,7 @@ import { getAccountabilityForRole } from '../../utils/get-accountability-for-rol
 type Options = {
 	recipient: string;
 	subject: string;
-	message: unknown | null;
+	message?: unknown | null;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
@@ -35,7 +35,7 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		const messageString = message !== null ? optionToString(message) : null;
+		const messageString = message ? optionToString(message) : null;
 
 		const result = await notificationsService.createOne({
 			recipient,

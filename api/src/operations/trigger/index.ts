@@ -4,7 +4,7 @@ import { optionToObject } from '../../utils/operation-options';
 
 type Options = {
 	flow: string;
-	payload: Record<string, any> | Record<string, any>[] | string | null;
+	payload?: Record<string, any> | Record<string, any>[] | string | null;
 };
 
 export default defineOperationApi<Options>({
@@ -13,7 +13,7 @@ export default defineOperationApi<Options>({
 	handler: async ({ flow, payload }, context) => {
 		const flowManager = getFlowManager();
 
-		const payloadObject = optionToObject(payload);
+		const payloadObject = optionToObject(payload) ?? null;
 
 		let result: unknown | unknown[];
 

@@ -7,8 +7,8 @@ import { getAccountabilityForRole } from '../../utils/get-accountability-for-rol
 
 type Options = {
 	collection: string;
-	key: PrimaryKey | PrimaryKey[] | null;
-	query: Record<string, any> | string | null;
+	key?: PrimaryKey | PrimaryKey[] | null;
+	query?: Record<string, any> | string | null;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
@@ -36,11 +36,11 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		const queryObject = query !== null ? optionToObject(query) : {};
+		const queryObject = query ? optionToObject(query) : {};
 
 		let result: Item | Item[] | null;
 
-		if (key === null) {
+		if (!key) {
 			result = await itemsService.readByQuery(queryObject);
 		} else {
 			const keys = toArray(key);

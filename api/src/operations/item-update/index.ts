@@ -7,9 +7,9 @@ import { getAccountabilityForRole } from '../../utils/get-accountability-for-rol
 
 type Options = {
 	collection: string;
-	key: PrimaryKey | PrimaryKey[] | null;
-	payload: Record<string, any> | string | null;
-	query: Record<string, any> | string | null;
+	key?: PrimaryKey | PrimaryKey[] | null;
+	payload?: Record<string, any> | string | null;
+	query?: Record<string, any> | string | null;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
@@ -37,9 +37,9 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload);
+		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload) ?? null;
 
-		const queryObject = query !== null ? optionToObject(query) : {};
+		const queryObject = query ? optionToObject(query) : {};
 
 		if (!payloadObject) {
 			return null;
@@ -47,7 +47,7 @@ export default defineOperationApi<Options>({
 
 		let result: PrimaryKey | PrimaryKey[] | null;
 
-		if (key === null) {
+		if (!key) {
 			result = await itemsService.updateByQuery(queryObject, payloadObject);
 		} else {
 			const keys = toArray(key);

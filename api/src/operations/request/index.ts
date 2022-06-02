@@ -5,7 +5,7 @@ import { optionToObject } from '../../utils/operation-options';
 type Options = {
 	url: string;
 	method: Method;
-	payload: Record<string, any> | string | null;
+	payload?: Record<string, any> | string | null;
 	headers: Record<string, string>;
 };
 
@@ -13,7 +13,7 @@ export default defineOperationApi<Options>({
 	id: 'request',
 
 	handler: async ({ url, method, payload, headers }) => {
-		const payloadObject = optionToObject(payload);
+		const payloadObject = optionToObject(payload) ?? null;
 
 		const result = await axios({ url, method, data: payloadObject, headers });
 

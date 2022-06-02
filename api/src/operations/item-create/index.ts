@@ -7,7 +7,7 @@ import { getAccountabilityForRole } from '../../utils/get-accountability-for-rol
 
 type Options = {
 	collection: string;
-	payload: Record<string, any> | string | null;
+	payload?: Record<string, any> | string | null;
 	emitEvents: boolean;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
@@ -36,7 +36,7 @@ export default defineOperationApi<Options>({
 			knex: database,
 		});
 
-		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload);
+		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload) ?? null;
 
 		let result: PrimaryKey[] | null;
 
