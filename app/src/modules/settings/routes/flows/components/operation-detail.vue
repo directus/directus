@@ -96,10 +96,11 @@ const emit = defineEmits(['save', 'cancel']);
 const isOpen = useDialogRoute();
 const { t } = useI18n();
 
-const options = ref<Record<string, any>>(props.operation?.options ?? {});
-const operationType = ref<string | undefined>(props.operation?.type);
-const operationKey = ref<string | null>(props.operation?.key ?? null);
-const operationName = ref<string | null>(props.operation?.name ?? null);
+const options = ref<Record<string, any>>({});
+const operationType = ref<string | undefined>();
+const operationKey = ref<string | null>(null);
+const operationName = ref<string | null>(null);
+
 const saving = ref(false);
 
 const isOperationKeyUnique = computed(
@@ -112,6 +113,19 @@ const isOperationKeyUnique = computed(
 const saveDisabled = computed(() => {
 	return !operationType.value || !isOperationKeyUnique.value;
 });
+
+watch(
+	() => props.operation,
+	(operation) => {
+		if (!operation) return;
+
+		options.value = operation.options;
+		operationType.value = operation.type;
+		operationKey.value = operation.key;
+		operationName.value = operation.name;
+	},
+	{ immediate: true }
+);
 
 watch(operationType, () => {
 	options.value = {};
