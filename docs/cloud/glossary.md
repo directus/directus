@@ -61,11 +61,11 @@ Looking to sponsor development of an Extension or Cloud Exclusive? [Contact Us](
 Directus Core is totally detached from the database. Data can be cleanly imported and exported on Projects with the API
 via the schema endpoints. Enterprise clients: the Directus Team will work with you to help you through this process.
 
-## Data Center Regions
+## Datacenter Regions
 
 The location you choose to host your Project can have measurable impact. To optimize your Project and meet any local
 data compliance laws such as GDPR, Standard and Enterprise, you can choose the region your Project is hosted in. There
-are 19 Data Center regions available for Enterprise Projects, 3 for Standard Projects and 1 for Community Projects:
+are 19 Datacenter regions available for Enterprise Projects, 3 for Standard Projects and 1 for Community Projects:
 
 <table>
   <tr>
@@ -78,7 +78,7 @@ are 19 Data Center regions available for Enterprise Projects, 3 for Standard Pro
     <td>United States, East</td>
     <td>✅</td>
     <td>✅</td>
-    <td></td>
+    <td>✅</td>
   </tr>
   <tr>
     <td>Europe, Frankfurt</td>
@@ -190,7 +190,8 @@ are 19 Data Center regions available for Enterprise Projects, 3 for Standard Pro
   </tr>
 </table>
 
-Here is where you do configure the region for your project in Dashboard:
+To configure the region of your project, you just need to edit `Datacenter Region` in Dashboard. This options is only
+available for Standard projects.
 
 ![Datacenter Regions](https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/datacenter-region-20220331A.webp)
 
