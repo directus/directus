@@ -1902,7 +1902,10 @@ operations:
   item-read:
     query: Заявка
   item-update:
+    name: Обновяване на данните
+    description: Обновяване на записите в базата от данни
     payload: Съдържание
+    query: Заявка
   log:
     name: Конзолен изход
     description: Извеждане на нещо към конзолата
@@ -1915,7 +1918,8 @@ operations:
     to_placeholder: Добавете имейл адрес и натиснете enter...
     body: Съдържание
   notification:
-    name: Изпращане на уведомление
+    name: Изпращане на известие
+    description: Изпращане на известие то потребител
     recipient: Потребител
     message: Съобщение
   request:
