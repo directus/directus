@@ -213,7 +213,7 @@ export class ExportService {
 
 				let readCount = 0;
 
-				for (let batch = 0; batch <= batchesRequired; batch++) {
+				for (let batch = 0; batch < batchesRequired; batch++) {
 					let limit = env.EXPORT_BATCH_SIZE;
 
 					if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
