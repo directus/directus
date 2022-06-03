@@ -16,8 +16,10 @@
 				<v-workspace-tile
 					v-for="panel in panels"
 					:key="panel.id"
+					:loading="loading"
 					v-bind="panel"
 					:edit-mode="editMode"
+					:data="panel.data ?? {}"
 					:resizable="resizable"
 					@preview="$emit('preview', panel)"
 					@edit="$emit('edit', panel)"
@@ -50,11 +52,13 @@ const props = withDefaults(
 		editMode?: boolean;
 		zoomToFit?: boolean;
 		resizable?: boolean;
+		loading?: boolean;
 	}>(),
 	{
 		editMode: false,
 		zoomToFit: false,
 		resizable: true,
+		loading: false,
 	}
 );
 
