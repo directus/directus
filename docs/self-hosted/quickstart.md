@@ -11,7 +11,7 @@ database ready to connect to.
 Run the following command in your terminal and follow the prompts.
 
 ```bash
-npm init directus-project example-project
+npx directus init example-project
 ```
 
 Choose SQLite from the list. Use up/down arrow keys to select the SQL type.
