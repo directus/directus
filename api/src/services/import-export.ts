@@ -223,7 +223,7 @@ export class ExportService {
 					const result = await service.readByQuery({
 						...query,
 						limit,
-						page: batch,
+						offset: batch * env.EXPORT_BATCH_SIZE,
 					});
 
 					readCount += result.length;
