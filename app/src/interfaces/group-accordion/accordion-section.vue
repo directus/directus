@@ -3,8 +3,9 @@
 		<template #default="{ active, toggle }">
 			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				{{ field.name }}
+				<span class="field-name">{{ field.name }}</span>
 				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
+				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 				<v-icon
 					v-if="!active && validationMessage"
 					v-tooltip="validationMessage"
@@ -85,11 +86,14 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
 		group: {
 			type: String,
 			required: true,
 		},
-
 		multiple: {
 			type: Boolean,
 			default: false,
@@ -166,13 +170,21 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	margin: 8px 0;
-	color: var(--foreground-subdued);
+
 	cursor: pointer;
-	transition: color var(--fast) var(--transition);
 
 	&:hover,
 	&.active {
-		color: var(--foreground-normal);
+		.field-name,
+		.icon {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.field-name,
+	.icon {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
 	}
 
 	.required {
@@ -180,6 +192,11 @@ export default defineComponent({
 
 		margin-top: -12px;
 		margin-left: 2px;
+	}
+
+	.v-chip {
+		margin: 0;
+		margin-left: 8px;
 	}
 
 	&.edited::before {
