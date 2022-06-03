@@ -119,6 +119,7 @@
 		"graphql-compose": "^9.0.1",
 		"helmet": "^4.6.0",
 		"inquirer": "^8.1.1",
+		"ioredis": "^4.27.6",
 		"joi": "^17.3.0",
 		"js-yaml": "^4.1.0",
 		"js2xmlparser": "^4.0.1",
@@ -164,7 +165,6 @@
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "^2.1.2",
-		"ioredis": "^4.27.6",
 		"keyv-memcache": "^1.2.5",
 		"memcached": "^2.2.2",
 		"mysql": "^2.18.1",
