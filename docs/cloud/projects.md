@@ -84,7 +84,8 @@ Standard Projects come with the following configuration options:
 
 - **Project Name** — Custom. _This can be changed at any time with no impact on the Project_.
 - **Project URL** — Custom URL: `your-custom-url.directus.app`. _This cannot be changed_.
-- [Datacenter Region](/cloud/glossary/#datacenter-regions) — `United States, East` or `Europe, Frankfurt`.
+- [Datacenter Region](/cloud/glossary/#datacenter-regions) — `United States, East`, `Europe, Frankfurt` or
+  `Asia Pacific, Singapore`.
 - [Node Type](/cloud/glossary/#node-types) — General Purpose or Performance Tier Nodes.
 - [Load Balancing](/cloud/glossary/#load-balancing) — 1-6 Active Nodes.
 - [Auto-Scaling](/cloud/glossary/#auto-scaling) — 0-5 Standby Nodes.
