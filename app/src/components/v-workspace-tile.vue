@@ -103,12 +103,10 @@ export type AppTile = {
 	minHeight?: number;
 	draggable?: boolean;
 	borderRadius?: [boolean, boolean, boolean, boolean];
-	data?: object;
 };
 
 // Right now, it is not possible to do type Props = AppTile & {resizable?: boolean; editMode?: boolean}
 type Props = {
-	data?: object;
 	id: string;
 	x: number;
 	y: number;
@@ -145,7 +143,6 @@ const props = withDefaults(defineProps<Props>(), {
 	showOptions: true,
 	loading: false,
 	alwaysUpdatePosition: false,
-	data: () => ({}),
 });
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);

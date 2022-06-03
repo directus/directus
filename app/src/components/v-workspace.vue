@@ -19,7 +19,6 @@
 					:loading="loading"
 					v-bind="panel"
 					:edit-mode="editMode"
-					:data="panel.data ?? {}"
 					:resizable="resizable"
 					@preview="$emit('preview', panel)"
 					@edit="$emit('edit', panel)"
