@@ -180,11 +180,14 @@ export default defineComponent({
 
 				metrics.value = results.data.data;
 
+				const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
+
 				chart.value?.updateSeries([
 					{
 						name: props.collection,
 						data: metrics.value.map((metric) => ({
-							x: toISO(metric),
+							x:
+								new Date(toISO(metric)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0),
 							y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 						})),
 					},
@@ -352,6 +355,7 @@ export default defineComponent({
 							fontWeight: 600,
 							fontSize: '10px',
 						},
+						datetimeUTC: false,
 					},
 					crosshairs: {
 						stroke: {
