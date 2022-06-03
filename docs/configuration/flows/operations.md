@@ -1,8 +1,8 @@
 # Operations
 
-> Operations are the actions performed after the Data Flow is triggered. Whether you need to access and create Data
-> within Directus, send information off to outside services, create time-oriented flows, set conditional logic or even
-> trigger other Data Flows, these simple but powerful tasks can make it happen.
+> Operations are the actions performed after the Flow is triggered. Whether you need to access and create Data within
+> Directus, send information off to outside services, create time-oriented flows, set conditional logic or even trigger
+> other Flows, these simple but powerful tasks can make it happen.
 
 [[toc]]
 
@@ -48,17 +48,11 @@ Make sure the Operation is set with the proper write permissions.
 </video>
 
 Output something to the console. This will appear in both the server side and in-app Sidebar Console Log. This is key
-tool to help troubleshoot Data Flow configuration.
+tool to help troubleshoot Flow configuration.
 
 ### Options
 
-- **Message** — Sets message to log.
-
-### View Logs
-
-1. Open Logs in the Sidebar and a list of timestamps will appear.
-2. Click the timestamp to see the values logged at that moment.
-3. Click <span mi btn muted>close</span> to close the log.
+- **Message** — Input a [log](#configuration/flows/flows/logs) message.
 
 ## Send Email
 
@@ -67,7 +61,7 @@ tool to help troubleshoot Data Flow configuration.
 </video>
 
 Sends emails to other humans. Variables can be used so that an array of emails could be fetched from a previous step in
-Data Flows.
+Flows.
 
 ### Options
 
@@ -104,7 +98,7 @@ Send a notification to app user(s).
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Read Item(s) from the Database and adds them onto the Data Flow Object.
+Read Item(s) from the Database and adds them onto the Flow Object.
 
 ### Options
 
@@ -135,7 +129,7 @@ Makes a request to a URL.
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Pauses Operation Execution in the Data Flow for a given amount of milliseconds before moving to the next Operation.
+Pauses Operation Execution in the Flow for a given amount of milliseconds before moving to the next Operation.
 
 ### Options
 
@@ -147,11 +141,11 @@ Pauses Operation Execution in the Data Flow for a given amount of milliseconds b
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-Alters the Flow's JSON payload. Allows you to insert custom-defined JSON into the Data Flow Object.
+Alters the Flow's JSON payload. Allows you to insert custom-defined JSON into the Flow Object.
 
 ### Options
 
-- **JSON** — Defines JSON to insert into the Data Flow Object for this Operation.
+- **JSON** — Defines JSON to insert into the Flow Object for this Operation.
 
 ## Trigger Flow
 
@@ -161,7 +155,7 @@ Alters the Flow's JSON payload. Allows you to insert custom-defined JSON into th
 	<source src="https://cdn.directus.io/" type="video/mp4" />
 </video>
 
-This Operation starts another Data Flow. It should be used in combination with the
+This Operation starts another Flow. It should be used in combination with the
 [Another Flow](/configuration/triggers/#another-flow) Trigger.
 
 ### Options

@@ -272,18 +272,18 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/configuration/data-flows/data-flows',
-						title: 'Data Flows',
+						path: '/configuration/flows/flows',
+						title: 'Flows',
 						collapsable: false,
 						children: [
 							{
 								type: 'page',
-								path: '/configuration/data-flows/triggers',
+								path: '/configuration/flows/triggers',
 								title: 'Triggers',
 							},
 							{
 								type: 'page',
-								path: '/configuration/data-flows/operations',
+								path: '/configuration/flows/operations',
 								title: 'Operations',
 							},
 						],
