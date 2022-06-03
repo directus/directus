@@ -22,9 +22,8 @@ On the server, create a project folder with 4 files in it.
 ### 1. Add .env file
 
 This file is used to configure Directus. Normally, the `init` script would create it for us. So now we have to do it
-manually. You can just copy it from another Directus installation or use the
-[example file](https://github.com/directus/directus/blob/main/api/example.env) of Directus and then modify it (see
-[Environment Variables](/configuration/config-options/#general)). You likely have to adjust the database information.
+manually. You can just copy it from another Directus installation or add the relevant variables using this help page:
+[Environment Variables](/configuration/config-options/)).
 
 If you have not already a user in the database make sure to add a first user by adding the following two lines so that
 you can later login to Directus.
@@ -129,7 +128,7 @@ Afterwards try `bootstrap` again.
 
 On Plesk you can't directly run an npx command. To use the Directus snapshot feature, you'd need to add a script to your
 `package.json`. For snapshot creation you can find an example in the
-[CLI docs: Date-based snapshots](/getting-started/installation/plesk#snapshot-the-data-model)
+[CLI docs: Date-based snapshots](/self-hosted/installation/plesk#snapshot-the-data-model)
 
 To apply a snapshot you need a custom wrapper using the non-interactive version:
 

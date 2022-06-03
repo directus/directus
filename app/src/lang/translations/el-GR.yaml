@@ -30,6 +30,7 @@ modules: Ενότητες
 tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
+location: Τοποθεσία
 maps: Χάρτες
 switch_user: Εναλλαγή Χρήστη
 item_revision: Αναθεώρηση Αντικειμένου
@@ -179,6 +180,7 @@ role: Ρόλος
 create: Δημιουργία
 read: Ανάγνωση
 update: Ενημέρωση
+flow_name: Όνομα
 width: Πλάτος
 height: Ύψος
 wysiwyg_options:

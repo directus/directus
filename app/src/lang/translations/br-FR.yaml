@@ -1,5 +1,7 @@
 ---
 edit_field: Kemm ar vaezienn
+location: Lec'h
+input: Enkas
 item_revision: Roll-istor ar pennad
 duplicate_field: Eilañ ar vaezienn
 half_width: Hanter-vann
@@ -410,7 +412,6 @@ unexpected_error_copy: Ur fazi dianv zo bet. Klaskit diwezhatoc'h mar plij.
 copy_details: Eilañ ar munudoù
 no_app_access: Ne c'heller ket implijout an arload
 no_app_access_copy: An implijer-mañ, n'eus ket ar gwir da implijout an arload mererezh.
-password_reset_sent: Ul liamm sur hon 'neus kaset deoc'h evit adderaouiñ ho ker-tremen
 password_reset_successful: Adderaouet eo bet ar ger-tremen
 back: Distreiñ
 editing_image: Chañj ar skeudenn
@@ -428,8 +429,6 @@ start_end_of_count_items: '{start}-{end} {count} elfenn'
 start_end_of_count_filtered_items: '{start}-{end} diwar {count} elfenn silet'
 one_item: '1 elfenn'
 one_filtered_item: '1 elfenn silet'
-delete_collection_are_you_sure: >-
-  Sur oc'h e fell deoc'h dilemel an dastumad-mañ ? Dilemet e vo an dastumad hag an holl elfennoù e-barzh. N'haller ket mont war-gil.
 collections_shown: Dastumadoù diskouezhet
 visible_collections: Dastumadoù da wel
 hidden_collections: Dastumadoù kuzhet
@@ -528,6 +527,10 @@ toggle: Enaouiñ/Lazhañ
 icon_on: Arlun dibab
 icon_off: Arlun diziuzañ
 label: Tikedenn
+trigger: Distegner
+flow_name: Anv
+flow_tracking_activity: Enrollañ an obererezh hepken
+flow_tracking_null: Enrollañ netra
 full_screen: Skramm a-bezh
 image_url: Url ar skeudenn
 alt_text: Eil testenn
@@ -1192,3 +1195,6 @@ layouts:
 panels:
   label:
     name: Tikedenn
+operations:
+  notification:
+    recipient: Implijer

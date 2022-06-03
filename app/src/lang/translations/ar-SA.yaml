@@ -32,6 +32,7 @@ reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
+location: الموقع
 maps: الخرائط
 switch_user: تغير المستخدم
 item_creation: إنشاء عنصر
@@ -517,7 +518,6 @@ unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
-password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
 editing_image: تحرير صورة
@@ -535,8 +535,6 @@ start_end_of_count_items: '{start}-{end} من {count} عناصر'
 start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
 one_filtered_item: '1 عنصر مصفى'
-delete_collection_are_you_sure: >-
-  هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
 collections_shown: المجموعات المعروضة
 visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
@@ -641,6 +639,9 @@ toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
+flow_name: الاسم
+flow_tracking_activity: تتبع النشاط فقط
+flow_tracking_null: عدم تتبع أي شيء
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -1162,3 +1163,8 @@ layouts:
 panels:
   label:
     name: تسمية
+operations:
+  notification:
+    recipient: مستخدم
+  request:
+    url: الرابط

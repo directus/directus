@@ -8,6 +8,8 @@
 		v-model="optionsValues"
 		class="extension-options"
 		:fields="optionsFields"
+		:initial-values="disabled ? optionsValues : null"
+		:disabled="disabled"
 		primary-key="+"
 	/>
 
@@ -23,6 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
+import { getOperation } from '@/operations';
 import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
 import { getPanel } from '@/panels';
@@ -33,7 +36,7 @@ import { storeToRefs } from 'pinia';
 export default defineComponent({
 	props: {
 		type: {
-			type: String as PropType<'interface' | 'display' | 'panel'>,
+			type: String as PropType<'interface' | 'display' | 'panel' | 'operation'>,
 			required: true,
 		},
 		extension: {
@@ -52,6 +55,10 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -69,6 +76,8 @@ export default defineComponent({
 					return getDisplay(props.extension);
 				case 'panel':
 					return getPanel(props.extension);
+				case 'operation':
+					return getOperation(props.extension);
 				default:
 					return null;
 			}
