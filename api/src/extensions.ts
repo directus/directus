@@ -350,7 +350,7 @@ class ExtensionManager {
 
 				const config = getModuleDefault(endpointInstance);
 
-				this.registerEndpoint(config, endpointPath, this.endpointRouter);
+				this.registerEndpoint(config, endpointPath, endpoint.name, this.endpointRouter);
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 				logger.warn(error);
@@ -461,9 +461,9 @@ class ExtensionManager {
 		this.apiExtensions.hooks.push(hookHandler);
 	}
 
-	private registerEndpoint(config: EndpointConfig, path: string, router: Router) {
+	private registerEndpoint(config: EndpointConfig, path: string, name: string, router: Router) {
 		const register = typeof config === 'function' ? config : config.handler;
-		const routeName = typeof config === 'function' ? config.name : config.id;
+		const routeName = typeof config === 'function' ? name : config.id;
 
 		const scopedRouter = express.Router();
 		router.use(`/${routeName}`, scopedRouter);
