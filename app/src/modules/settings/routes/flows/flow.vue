@@ -168,7 +168,7 @@
 		</v-dialog>
 
 		<router-view
-			:operation="panels.find((panel) => panel.id === props.operationId)"
+			:operation="currentOperation"
 			:existing-operation-keys="exitingOperationKeys"
 			:flow="flow"
 			@save="stageOperation"
@@ -314,6 +314,12 @@ const panels = computed(() => {
 	panels.push(trigger);
 
 	return panels;
+});
+
+const currentOperation = computed(() => {
+	return panels.value.find((panel) => {
+		return panel.id === props.operationId;
+	});
 });
 
 const parentPanels = computed(() => {
@@ -649,7 +655,9 @@ function getNearAttachment(pos: Vector2) {
 
 const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
 
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, {
+	ignorePrefix: computed(() => `/settings/flows/${props.primaryKey}/`),
+});
 
 const confirmCancel = ref(false);
 
