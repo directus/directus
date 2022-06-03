@@ -29,8 +29,8 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/),
-[Google Cloud Platform](/getting-started/installation/gcp) or [AWS Elastic Beanstalk](/getting-started/installation/aws)
+[DigitalOcean App Platform](/self-hosted/installation/digitalocean-app-platform/),
+[Google Cloud Platform](/self-hosted/installation/gcp) or [AWS Elastic Beanstalk](/self-hosted/installation/aws)
 
 ::: tip First User
 
@@ -158,8 +158,8 @@ npx directus roles create --role <role-name>
 ```
 
 These roles are created with the
-[minimum permissions required](/configuration/users-roles-permissions/#configuring-system-permissions) to properly
-access the App by default.
+[minimum permissions required](/configuration/users-roles-permissions/#configure-system-permissions) to properly access
+the App by default.
 
 To create a new role with admin access, set the `--admin` flag to `true`, such as
 

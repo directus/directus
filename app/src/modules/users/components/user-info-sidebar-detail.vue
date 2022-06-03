@@ -1,9 +1,17 @@
 <template>
 	<sidebar-detail icon="info_outline" :title="t('information')" close>
 		<dl v-if="isNew === false && user">
-			<div v-if="user.id">
+			<div v-if="user.id" class="description-list">
 				<dt>{{ t('key') }}</dt>
 				<dd>{{ user.id }}</dd>
+				<v-icon
+					v-if="isCopySupported"
+					name="copy"
+					small
+					clickable
+					class="clipboard-icon"
+					@click="copyToClipboard(user.id)"
+				/>
 			</div>
 			<div v-if="user.last_page">
 				<dt>{{ t('last_page') }}</dt>
@@ -39,6 +47,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch } from 'vue';
 import localizedFormat from '@/utils/localized-format';
+import useClipboard from '@/composables/use-clipboard';
 
 export default defineComponent({
 	props: {
@@ -53,6 +62,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
+
+		const { isCopySupported, copyToClipboard } = useClipboard();
 
 		const lastAccessDate = ref('');
 
@@ -71,7 +82,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { t, lastAccessDate };
+		return { t, lastAccessDate, isCopySupported, copyToClipboard };
 	},
 });
 </script>
@@ -79,5 +90,17 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-divider {
 	margin: 20px 0;
+}
+
+.description-list {
+	display: flex;
+	align-items: center;
+
+	.clipboard-icon {
+		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color-hover: var(--foreground-normal);
+
+		margin-left: 4px;
+	}
 }
 </style>

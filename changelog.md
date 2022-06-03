@@ -2,6 +2,246 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.12.0 (June 2, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#12522](https://github.com/directus/directus/pull/12522) 🌊 Add Data Flows to Directus 🌊 (by @Nitwel)
+- **App**
+  - [#12522](https://github.com/directus/directus/pull/12522) 🌊 Add Data Flows to Directus 🌊 (by @Nitwel)
+- **Misc.**
+  - [#11186](https://github.com/directus/directus/pull/11186) Docs: Auto-generated "Link preview" thumbnails for all
+    pages (by @loteoo)
+
+### :rocket: Improvements
+
+- **App**
+  - [#13639](https://github.com/directus/directus/pull/13639) Translations: Make password reset notice clearer (by
+    @joselcvarela)
+  - [#13610](https://github.com/directus/directus/pull/13610) add collection and folder names to delete confirmation
+    messages (by @sxsws)
+  - :warning: [#13549](https://github.com/directus/directus/pull/13549) Add System token interface (by @azrikahar)
+  - [#13540](https://github.com/directus/directus/pull/13540) Add copy button to user id on user info page (by @nickrum)
+  - [#13389](https://github.com/directus/directus/pull/13389) Don't consider SIGN_OUT an SSO error (by @aidenfoxx)
+  - [#13363](https://github.com/directus/directus/pull/13363) Improve translation for require_value_to_be_set (by
+    @janwillemvd)
+- **format-title**
+  - [#13629](https://github.com/directus/directus/pull/13629) Remove BASIC acronym (by @azrikahar)
+- **API**
+  - :warning: [#13549](https://github.com/directus/directus/pull/13549) Add System token interface (by @azrikahar)
+  - [#13352](https://github.com/directus/directus/pull/13352) Add comments to the .env file stub (by @sxsws)
+  - [#12033](https://github.com/directus/directus/pull/12033) Add projectUrl to defaultTemplateData (by @ybelenko)
+  - [#11141](https://github.com/directus/directus/pull/11141) Allow authentication using MSSQL
+    azure-active-directory-service-principal-secret (by @erickjth)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#13681](https://github.com/directus/directus/pull/13681) fix collection & folder delete dialog message (by
+    @azrikahar)
+  - [#13630](https://github.com/directus/directus/pull/13630) use v-if instead of v-show in v-detail component (by
+    @azrikahar)
+  - [#13563](https://github.com/directus/directus/pull/13563) Fix field conditions optionDefaults computed property (by
+    @yassilah)
+  - [#13532](https://github.com/directus/directus/pull/13532) Remove the paste value check on slug inputs (by
+    @azrikahar)
+- **API**
+  - [#13660](https://github.com/directus/directus/pull/13660) Fix wrong source of meta info for notifications API (by
+    @tenebrius)
+  - [#13651](https://github.com/directus/directus/pull/13651) Add cross-instance messenger pubsub setup (by
+    @rijkvanzanten)
+  - [#13623](https://github.com/directus/directus/pull/13623) Field permissions and relational interfaces (by
+    @br41nslug)
+  - [#13539](https://github.com/directus/directus/pull/13539) Added missing "DB*SSL*\*\_FILE" to the "\_FILE" allow
+    list. (by @br41nslug)
+  - [#13527](https://github.com/directus/directus/pull/13527) Fix metadata for directus_folders (by @azrikahar)
+- **Misc.**
+  - [#13577](https://github.com/directus/directus/pull/13577) `last_page` type was `date` instead of `str` (by
+    @louisgavalda)
+- **specs**
+  - [#13531](https://github.com/directus/directus/pull/13531) add `meta` to list responses for OAS (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#13648](https://github.com/directus/directus/pull/13648) Use `pull_request_target` instead of `pull_request` for
+    auto-project-assign (by @jaycammarano)
+  - [#13633](https://github.com/directus/directus/pull/13633) Auto approve pull requests from Crowdin (by @paescuj)
+  - [#13455](https://github.com/directus/directus/pull/13455) Remove workaround in release flow (by @nickrum)
+  - [#13444](https://github.com/directus/directus/pull/13444) Remove npmrc files which prevent lockfile creation in
+    workspaces (by @nickrum)
+- **shared**
+  - [#13594](https://github.com/directus/directus/pull/13594) Moved tests from the "shared" package into a single test
+    folder (by @jaycammarano)
+
+### :memo: Documentation
+
+- [#13688](https://github.com/directus/directus/pull/13688) fixed typo (by @erondpowell)
+- [#13656](https://github.com/directus/directus/pull/13656) removing remaining links to example.env (by @sxsws)
+- [#13642](https://github.com/directus/directus/pull/13642) Quickstart fix (by @erondpowell)
+- [#13601](https://github.com/directus/directus/pull/13601) Docs: fix wrong url paths for self-hosted installation
+  guides (by @thammarith)
+- [#13577](https://github.com/directus/directus/pull/13577) `last_page` type was `date` instead of `str` (by
+  @louisgavalda)
+- [#11186](https://github.com/directus/directus/pull/11186) Docs: Auto-generated "Link preview" thumbnails for all pages
+  (by @loteoo)
+
+## v9.11.1 (May 24, 2022)
+
+### :rocket: Improvements
+
+- **API**
+  - [#13518](https://github.com/directus/directus/pull/13518) Don't require default connection params when using non
+    default type (by @rijkvanzanten)
+  - [#13514](https://github.com/directus/directus/pull/13514) Default `default-src` to `"self"` in CSP header (by
+    @rijkvanzanten)
+  - [#13492](https://github.com/directus/directus/pull/13492) Allow floats in number validation (by @rijkvanzanten)
+  - [#13274](https://github.com/directus/directus/pull/13274) Environment variable with \_FILE suffix containing invalid
+    path throws error on start (by @br41nslug)
+- **App**
+  - [#13511](https://github.com/directus/directus/pull/13511) Don't show regex on permissions configuration (by
+    @rijkvanzanten)
+  - [#13501](https://github.com/directus/directus/pull/13501) Add empty state for Translation Strings page (by
+    @azrikahar)
+  - [#13462](https://github.com/directus/directus/pull/13462) Improve dashboard saving experience (by @nickrum)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#13497](https://github.com/directus/directus/pull/13497) Fix applyFilter (by @nickrum)
+  - [#13453](https://github.com/directus/directus/pull/13453) Adds \_none and \_some operators (by @br41nslug)
+  - [#13429](https://github.com/directus/directus/pull/13429) Add cast-timestamp field flag to system tables (by
+    @licitdev)
+  - [#13276](https://github.com/directus/directus/pull/13276) Validate type of items' primary keys (by @licitdev)
+- **App**
+  - [#13479](https://github.com/directus/directus/pull/13479) Allow selecting primary key when aggregating count in time
+    series panel (by @azrikahar)
+  - [#13474](https://github.com/directus/directus/pull/13474) Fix field conditions when null (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#13523](https://github.com/directus/directus/pull/13523) Remove unnecessary ampersand from URLs in filter tests (by
+    @nickrum)
+
+### :memo: Documentation
+
+- [#13494](https://github.com/directus/directus/pull/13494) Docs: Display Templates Page (by @erondpowell)
+- [#13489](https://github.com/directus/directus/pull/13489) how to work with nested data (by @erondpowell)
+- [#13486](https://github.com/directus/directus/pull/13486) docs: clarified data, schema, and permissions caching (by
+  @erondpowell)
+- [#13445](https://github.com/directus/directus/pull/13445) no composite key support warning added (by @erondpowell)
+- [#13424](https://github.com/directus/directus/pull/13424) Docs: re-edited user-directory + users-roles-permissions (by
+  @erondpowell)
+
+## v9.11.0 (May 19, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#11871](https://github.com/directus/directus/pull/11871) GraphQL count aggregation for all fields and \* (by
+    @jeengbe)
+  - [#11737](https://github.com/directus/directus/pull/11737) Add support to insensitive case operators (by
+    @bernatvadell)
+- **App**
+  - [#11737](https://github.com/directus/directus/pull/11737) Add support to insensitive case operators (by
+    @bernatvadell)
+
+### :rocket: Improvements
+
+- **API**
+  - [#13309](https://github.com/directus/directus/pull/13309) Prevent changing active status of the only active admin
+    user (by @azrikahar)
+  - [#13184](https://github.com/directus/directus/pull/13184) Display error message on OAuth errors (by @aidenfoxx)
+- **App**
+  - [#13301](https://github.com/directus/directus/pull/13301) Allow creating big integer auto-incremented primary keys
+    in MySQL and PostgreSQL (by @samdze)
+  - [#13264](https://github.com/directus/directus/pull/13264) fix: AUTH_PROVIDER ibmid should display as IBMid (by
+    @davidnixon)
+  - [#13263](https://github.com/directus/directus/pull/13263) Add string-export support for related-values and
+    translations display (by @rijkvanzanten)
+  - [#13207](https://github.com/directus/directus/pull/13207) Show edit drawer as preview for disabled many to one (by
+    @rijkvanzanten)
+  - [#13126](https://github.com/directus/directus/pull/13126) Hide import if create is not allowed (by @ankitchhatbar)
+  - [#13103](https://github.com/directus/directus/pull/13103) Show collection key instead of name in Data Model (by
+    @azrikahar)
+- **sdk**
+  - [#13214](https://github.com/directus/directus/pull/13214) Improve type definitions for o2m item queries involving
+    deep, filter or sort (by @wfoxall)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#13410](https://github.com/directus/directus/pull/13410) Fix parsing of time and dates when filtering in SQLite (by
+    @licitdev)
+  - [#13388](https://github.com/directus/directus/pull/13388) Fix compareValue check for \_null and \_empty type of
+    operators (by @licitdev)
+  - [#13375](https://github.com/directus/directus/pull/13375) Fix user update going through status check even when the
+    payload does not have `status` in it (by @azrikahar)
+  - [#13307](https://github.com/directus/directus/pull/13307) Stalling Sqlite when using cascading foreign contraints
+    (by @eikaramba)
+  - [#13250](https://github.com/directus/directus/pull/13250) Fix inconsistent revisions after batch update (by
+    @licitdev)
+  - [#13222](https://github.com/directus/directus/pull/13222) Delete field only after foreign key constraints are
+    removed (by @licitdev)
+  - [#13186](https://github.com/directus/directus/pull/13186) Fix aliases (by @rijkvanzanten)
+  - [#13115](https://github.com/directus/directus/pull/13115) Fix incorrect bindings in postgres dialect (by @LookinGit)
+  - [#12907](https://github.com/directus/directus/pull/12907) Sort schema snapshot (by @diegoleme)
+  - [#12198](https://github.com/directus/directus/pull/12198) Fix Invalid foreign key when applying schema snapshot (by
+    @PeeraJ)
+- **App**
+  - [#13409](https://github.com/directus/directus/pull/13409) Hide Save as Copy when creating new item (by @azrikahar)
+  - [#13316](https://github.com/directus/directus/pull/13316) Fix app docs collection & item page (by @azrikahar)
+  - [#13272](https://github.com/directus/directus/pull/13272) Creating corresponding relational field for file fields
+    throws errors (by @br41nslug)
+  - [#13242](https://github.com/directus/directus/pull/13242) Init count of soft limit in wysiwyg on first render (by
+    @rijkvanzanten)
+  - [#13231](https://github.com/directus/directus/pull/13231) Prevent inputs in deeply nested groups being duplicated
+    (by @br41nslug)
+  - [#13223](https://github.com/directus/directus/pull/13223) Form fields in a group unable to reset to default or undo
+    changes (by @br41nslug)
+  - [#13220](https://github.com/directus/directus/pull/13220) Fix limit/filter/search reactivity for export sidebar (by
+    @azrikahar)
+  - [#13158](https://github.com/directus/directus/pull/13158) fixes nested groups filtering out its parents values (by
+    @br41nslug)
+  - [#13151](https://github.com/directus/directus/pull/13151) Fix relational interfaces creating instead of updating
+    nested relational items (by @br41nslug)
+  - [#13147](https://github.com/directus/directus/pull/13147) Fix WYSIWYG being disabled due to loading (by @azrikahar)
+  - [#13133](https://github.com/directus/directus/pull/13133) fix sort field not updating in export sidebar (by
+    @azrikahar)
+  - [#13120](https://github.com/directus/directus/pull/13120) fixes saving interface option values for field conditions
+    (by @br41nslug)
+  - [#13112](https://github.com/directus/directus/pull/13112) Fix slug not turning pasted value with spaces to
+    separators (by @azrikahar)
+  - [#13108](https://github.com/directus/directus/pull/13108) fixes slider component error for value between accepted
+    steps (by @br41nslug)
+  - [#13102](https://github.com/directus/directus/pull/13102) Fix auto generated field keys not being reset (by
+    @azrikahar)
+- **sdk**
+  - [#13189](https://github.com/directus/directus/pull/13189) Reset refresh promise after catch (by @rijkvanzanten)
+
+### :sponge: Optimizations
+
+- **API**
+  - [#13191](https://github.com/directus/directus/pull/13191) Use JSON.parse wrapper function to prevent pollution
+    attacks (by @rijkvanzanten)
+
+### :memo: Documentation
+
+- [#13367](https://github.com/directus/directus/pull/13367) Update hooks.md - Add `query` object to `items.read` filter
+  meta documentation (by @Dominic-Marcelino)
+- [#13333](https://github.com/directus/directus/pull/13333) replaced video (by @erondpowell)
+- [#13327](https://github.com/directus/directus/pull/13327) improved clarity of logical operators explanation (by
+  @erondpowell)
+- [#13285](https://github.com/directus/directus/pull/13285) re-edited support doc (by @erondpowell)
+- [#13270](https://github.com/directus/directus/pull/13270) Fix docs homepage sidebar (by @licitdev)
+
+### :package: Dependency Updates
+
+- [#13190](https://github.com/directus/directus/pull/13190) Update gatsby-\* subpackages in gatsby-source-directus (by
+  @rijkvanzanten)
+
 ## v9.10.0 (May 3, 2022)
 
 ### :sparkles: New Features

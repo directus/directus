@@ -32,6 +32,7 @@ reset_width: تنظیم مجدد عرض
 tile_size: اندازه هر مربع در نقشه
 edit_field: ویرایش فیلد
 conditions: شرایط
+location: موقعیت
 maps: نقشه ها
 switch_user: تغییر کاربر
 item_creation: ساخت یک آیتم
@@ -41,6 +42,7 @@ duplicate_field: فیلد تکراری
 half_width: نصف عرض
 full_width: عرض کامل
 group: گروه
+export_items: خروجی گرفتن از موارد
 and: و
 or: یا
 fill_width: عرض کامل
@@ -68,6 +70,7 @@ create_role: ایجاد نقش
 create_user: ایجاد کاربر
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک
+edit_translation_string: ویرایش متن ترجمه
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: قبلاً برای ایمیل {email}، دعوت نامه ارسال شده است
@@ -164,6 +167,7 @@ revision_post_create: شکل ظاهری این آیتم وقتی که ساخته
 revision_post_update: شکل ظاهری این آیتم پس از بروزرسانی، به این صورت بوده است.
 changes_made: ذیلاً، تغییرات خاصی که در این نسخه انجام شده، قابل مشاهده است.
 no_relational_data: به خاطر داشته باشید که داده های مربوط به ارتباطات، در اینجا گنجانده نشده است.
+hide_field: مخفی کردن فیلد
 hide_field_on_detail: مخفی کردن فیلد در بخش جزییات آیتم
 show_field_on_detail: نمایش فیلد در بخش جزییات آیتم
 delete_field: حذف فیلد
@@ -514,7 +518,6 @@ unexpected_error_copy: یک خطای غیر منتظره رخ داده است، 
 copy_details: کپی کردنِ جزئیات
 no_app_access: عدم دسترسی به برنامه
 no_app_access_copy: کاربر اجازه دسترسی به سامانه مدیریت را ندارد.
-password_reset_sent: ما پیوندی ایمن را برای شما ایمیل کردیم تا به کمک آن رمز عبور خود را بازنشانی کنید
 password_reset_successful: رمز عبور با موفقیت بازنشانی شد
 back: بازگشت
 filter: فیلتر
@@ -537,9 +540,6 @@ start_end_of_count_items: '{start}-{end} از {count} آیتم'
 start_end_of_count_filtered_items: '{start}-{end} از {count} آیتم فیلتر شده'
 one_item: '۱ آیتم'
 one_filtered_item: '۱ آیتم فیلتر شده'
-delete_collection_are_you_sure: >-
-  آیا مطمئنید که میخواهید این مجموعه را حذف کنید؟ این عمل، مجموعه مورد نظر و تمامی آیتمهای آن را حذف خواهد کرد و نتیجه غیرقابل بازگشت خواهد بود.
-delete_folder_are_you_sure: آیا مطمئنید که میخواهید این پوشه را حذف کنید؟ پوشه ها و مجموعه های موجود در این پوشه به بالاترین سطح منتقل خواهد شد.
 collections_shown: مجموعه های نشان داده شده
 visible_collections: مجموعه های هویدا
 hidden_collections: مجموعه های پنهان
@@ -617,6 +617,8 @@ role: نقش
 edit_role: ویرایش نقش
 create: ایجاد
 update: بروزرسانی
+delete: حذف
+flow_name: نام
 insights: بینش های داده ای
 dashboard: پیشخوان
 panel: پنل
@@ -634,9 +636,9 @@ suffix_placeholder: متن پس از مقدار...
 decimals_placeholder: تعداد ارقام اعشاری...
 no_dashboards: هیچ پیشخوانی وجود ندارد
 no_dashboards_copy: هنوز هیچ پیشخوانی ندارید.
-no_data: داده‌ای موجود نیست
 create_dashboard: ایجاد پیشخوان جدید
 dashboard_name: نام پیشخوان
+no_data: داده‌ای موجود نیست
 full_screen: تمام صفحه
 edit_panels: ادیت پنلها
 fit_to_screen: هم اندازه با صفحه نمایش
@@ -716,6 +718,7 @@ settings_webhooks: هوک های تحت وب
 settings_presets: الگوها و نشانک ها
 one_or_more_options_are_missing: یک یا چند مورد از تنظیمات، وجود ندارد
 scope: محدوده در دسترس
+actions: فعالیت ها
 select: انتخاب...
 layout: چیدمان
 tree_view: نمایش درختی
@@ -761,8 +764,8 @@ batch_delete_confirm: >-
   هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
 cancel: انصراف
 directus_collection:
-  directus_permissions: دسترسی به اجازه های این نقش
   directus_notifications: اعلانهای ارسالی به کاربر
+  directus_permissions: دسترسی به اجازه های این نقش
   directus_roles: گروههای اجازه برای کاربران سیستم
 fields:
   directus_activity:
@@ -1016,3 +1019,6 @@ layouts:
   map:
     map: نقشه
     find_location: پیدا کردن موفعیت...
+operations:
+  request:
+    url: URL
