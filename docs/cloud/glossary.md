@@ -65,7 +65,8 @@ via the schema endpoints. Enterprise clients: the Directus Team will work with y
 
 The location you choose to host your Project can have measurable impact. To optimize your Project and meet any local
 data compliance laws such as GDPR, Standard and Enterprise, you can choose the region your Project is hosted in. There
-are 19 Datacenter Regions available to Enterprise Projects and two available to Standard Projects.
+are 19 Datacenter Regions available to Enterprise Projects and three available to Standard Projects: United States,
+East; Europe, Frankfurt; Asia Pacific, Singapore.
 
 ![Datacenter Regions](https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/datacenter-region-20220331A.webp)
 
