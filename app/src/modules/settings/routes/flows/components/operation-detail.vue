@@ -124,7 +124,7 @@ watch(
 		operationKey.value = operation.key;
 		operationName.value = operation.name;
 	},
-	{ immediate: true }
+	{ immediate: true, deep: true }
 );
 
 watch(operationType, () => {
