@@ -49,6 +49,10 @@ group: Grupo
 export_items: Exportar Elementos
 and: "Y"
 or: O
+init: Inicializador
+modifier: Modificador
+custom: Personalizado
+hook: Gancho
 fill_width: Llenar Ancho
 field_name_translations: 'Nombre de Campo: Traducciones'
 enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
