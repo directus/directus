@@ -1,4 +1,5 @@
 import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import { useI18n } from 'vue-i18n';
 import { getPublicURL } from '../../../../utils/get-root-path';
 
@@ -33,15 +34,13 @@ export function getTriggers() {
 
 				labels.push({
 					label: t('scope'),
-					text: scope.join(', '),
+					text: scope ? toArray(scope).join(', ') : '--',
 				});
 
-				if (collections?.length) {
-					labels.push({
-						label: t('collections'),
-						text: collections.join(', '),
-					});
-				}
+				labels.push({
+					label: t('collections'),
+					text: collections ? toArray(collections).join(', ') : '--',
+				});
 
 				return labels;
 			},
@@ -326,12 +325,10 @@ export function getTriggers() {
 					},
 				];
 
-				if (collections?.length) {
-					labels.push({
-						label: t('collections'),
-						text: collections.join(', '),
-					});
-				}
+				labels.push({
+					label: t('collections'),
+					text: collections ? toArray(collections).join(', ') : '--',
+				});
 
 				return labels;
 			},
