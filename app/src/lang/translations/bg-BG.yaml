@@ -485,6 +485,7 @@ disabled: Изключване
 information: Информация
 report_bug: Докладване за проблем
 request_feature: Заявка за функционалност
+request_body: Тяло на заявката
 interface_not_found: 'Интерфейсът „{interface}“ не е намерен.'
 operation_not_found: 'Операцията "{operation}" не е намерена.'
 reset_interface: Нулиране на интерфейс
@@ -607,7 +608,7 @@ copy_details: Копиране на детайли
 no_app_access: Без достъп до приложението
 no_app_access_copy: Не е позволено използването на администраторското приложение от потребителя.
 password_reset_sent: В случай, че имате профил, ще ви бъде изпратена подсигурена връза за нулиране на парола ви
-password_reset_successful: Успешно нулирана парола
+password_reset_successful: Паролата е нулирана успешно
 back: Назад
 filter: Филтриране
 editing_image: Редактиране на изображение
@@ -761,6 +762,7 @@ create_operation: Създаване на операция
 edit_operation: Редактиране на операцията
 operation_options: Настройки на операцията
 operation_name: Име на операцията...
+operation_key: Идентификатор за референцията...
 insights: Задълбочен анализ
 dashboard: Табло
 panel: Панел
@@ -782,6 +784,7 @@ create_dashboard: Създаване на табло
 dashboard_name: Име на таблото
 no_data: Няма данни
 accountability: Профилиране
+payload: Съдържание
 details: Детайли
 full_screen: Пълен екран
 full_text_search: Пълно-текстово търсене
@@ -918,7 +921,7 @@ page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
 page_help_settings_project: "**Настройки за проекта** — Глобална конфигурация и общи настройки за вашият проект."
 page_help_settings_datamodel_collections: >-
-  **Модел на данните: Колекции** — Показване на всички налични колекции. Това включва всички видими, невидими, системни, както и все още неконфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
+  **Модел на данните: Колекции** — Показване на всички налични колекции. Това включва всички видими, невидими, системни, както и все още не конфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
   **Модел на данните: Колекция** — Формуляр за управление на тази колекция и нейните полета.
 page_help_settings_roles_collection: '**Преглед на роли** — Показват се администраторската, публичната и всички собствени роли.'
@@ -1059,7 +1062,7 @@ fields:
     webP: WebP
     tiff: Tiff
     mapping: Картография
-    basemaps: Основни карти
+    basemaps: Базови карти
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Mapbox стил
@@ -1133,7 +1136,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
     project_color_note: Фон на логото и вход-а
-    project_logo_note: Бяла 40x40 в SVG или PNG картинка
+    project_logo_note: Бяла 40x40, SVG или PNG картинка
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
@@ -1152,8 +1155,8 @@ field_options:
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Токен за mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
-    basemaps: Основни карти
-    basemaps_name_placeholder: Въвеждане на името на основната карта...
+    basemaps: Базови карти
+    basemaps_name_placeholder: Въвеждане на името на базовата карта...
     basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Mapbox стил
@@ -1253,9 +1256,9 @@ expired: Просрочен
 upcoming: Предстоящ
 share: Споделяне
 share_item: Споделяне на запис
-shared_with_you: Запис е споделен с вас
-shared_enter_passcode: Въведете паролата си, за да продължите...
-shared_leave_blank_for_unlimited: Оставете празно за без ограничение
+shared_with_you: С вас е споделен запис
+shared_enter_passcode: За да продължите, въведете парола си...
+shared_leave_blank_for_unlimited: Оставете празно за неограничено използване
 shared_times_remaining: Връзката може да бъде използвана само {n} пъти
 shared_last_remaining: Връзката може да бъде използвана само веднъж
 shared_uses_left: За допълнителна сигурност, споделената страница е настроена с ограничение в броя на прегледите. В момента остават {n} прегледи, след това страницата няма да бъде достъпна.
@@ -1272,7 +1275,7 @@ referential_action_field_label_m2o: При изтриване на {collection}.
 referential_action_field_label_o2m: При размаркиране от {collection}...
 referential_action_no_action: Предотвратяване на изтривания
 referential_action_cascade: Каскадно изтриване на {collection}
-referential_action_set_null: Зануляване на {field}
+referential_action_set_null: Нулиране на {field}
 referential_action_set_default: Задаване на {field} към стойността по подразбиране
 choose_action: Изберете действие
 continue_label: Продължаване
@@ -1376,7 +1379,7 @@ interfaces:
     name: Полета
   group-accordion:
     name: Акордеон
-    description: Показване на полетата или групите по секции, като акордеон
+    description: Показване на полетата или групите по секции като акордеон
     start: Начало
     all_closed: Всички са затворени
     first_opened: Първата е отворена
@@ -1592,7 +1595,7 @@ interfaces:
     new_translation_string: Нов превод на низ
   boolean:
     toggle: Превключвател
-    description: Превключване между вкл. и изкл.
+    description: Превключване между активно и неактивно състояние
     color_on: Активен цвят
     color_off: Неактивен цвят
     label_placeholder: Въвеждане на надпис...
@@ -1691,8 +1694,8 @@ displays:
     file: Файл
     description: Показване на файлове
   filesize:
-    filesize: Големина на файла
-    description: Показване на големината на файл
+    filesize: Файлова големина
+    description: Показване като байтова големина на файл
   formatted-value:
     formatted-value: Форматирана стойност
     description: Форматиране на текстовата стойност
@@ -1732,7 +1735,7 @@ displays:
     circle_label: Показване като кръг
   labels:
     labels: Етикети
-    description: Показване на един или списък от от много етикети
+    description: Показване на един или списък от много етикети
     default_foreground: Основен цвят по подразбиране
     default_background: Фонов цвят по подразбиране
     format_label: Форматиране на всеки етикет
@@ -1741,12 +1744,12 @@ displays:
     choices_text_placeholder: Въвеждане на текст...
   mime-type:
     mime-type: MIME тип
-    description: Показване на MIME типа на файла
+    description: Показване на MIME типът на файла
     extension_only: Само разширение
     extension_only_label: Показване само на разширението
   rating:
     rating: Оценка
-    description: Показване на числото, като брой звезди до максималната стойност
+    description: Показване на числото като брой звезди до максималната стойност
     simple: Опростен
     simple_label: Показване на звездите в опростен вид
   raw:
@@ -1761,7 +1764,7 @@ displays:
     avatar: Аватар
     name: Име
     both: Всички
-    circle_label: Показване на потребител в кръг
+    circle_label: Показване на потребителя в кръгче
 layouts:
   cards:
     cards: Карти
@@ -1853,6 +1856,7 @@ panels:
     arc: Дъга
     stroke_width: Ширина на чертите
     select_max_value: Трябва да изберете максимална стойност.
+    max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
     select_field: Трябва да изберете поле.
     select_collection: Трябва да изберете колекция.
     function: Функция
@@ -1880,19 +1884,52 @@ triggers:
     method: Метод
     async: Асинхронно
   schedule:
+    description: Задействане на равни интервали от време
     cron: Интервал
   manual:
     name: Ръчно
+    description: Задействане при ръчно стартиране в избраните колекции
+any_string_or_json: Всякакъв низ или JSON...
 operations:
+  condition:
+    name: Условие
+  item-create:
+    description: Създаване на записи в базата от данни
+    payload: Съдържание
+  item-delete:
+    name: Изтриване на данните
+    description: Изтриване в базата от данни
+  item-read:
+    query: Заявка
+  item-update:
+    payload: Съдържание
   log:
+    name: Конзолен изход
+    description: Извеждане на нещо към конзолата
     message: Съобщение
+    message_placeholder: Въведете съобщение за показване в конзолата...
+  mail:
+    name: Изпращане на имейл
+    description: Изпращане на имейл до един или няколко човека
+    to: До
+    to_placeholder: Добавете имейл адрес и натиснете enter...
+    body: Съдържание
   notification:
+    name: Изпращане на уведомление
     recipient: Потребител
     message: Съобщение
   request:
     url: URL
+    url_placeholder: https://example.com/example
     method: Метод
     data: Данни
+    headers: Хедъри
     header: Хедър
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Заспиване
+    description: Изчакване на определен брой милисекунди
+    milliseconds: Милисекунди
   trigger:
     data: Данни
