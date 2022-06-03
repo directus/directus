@@ -32,6 +32,7 @@ reset_width: Reset Width
 tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
+location: Lokasjon
 maps: Kart
 switch_user: Bytt bruker
 item_creation: Objekt opprettelse
@@ -525,6 +526,7 @@ on_update: Ved oppdatering
 read: Les
 update: Oppdater
 select_fields: Velg felter
+flow_name: Navn
 wysiwyg_options:
   backcolor: Bakgrunnsfarge
   remove: Fjern
@@ -727,3 +729,6 @@ layouts:
     comfortable: Komfortabel
     compact: Kompakt
     cozy: Cozy
+operations:
+  request:
+    url: URL

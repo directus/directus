@@ -7,6 +7,7 @@ import { getDisplays } from '@/displays';
 import { getLayouts } from '@/layouts';
 import { getModules } from '@/modules';
 import { getPanels } from '@/panels';
+import { getOperations } from '@/operations';
 
 export default function useSystem(): void {
 	provide(STORES_INJECT, stores);
@@ -19,5 +20,6 @@ export default function useSystem(): void {
 		layouts: getLayouts().layouts,
 		modules: getModules().modules,
 		panels: getPanels().panels,
+		operations: getOperations().operations,
 	});
 }

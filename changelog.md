@@ -2,6 +2,91 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.12.0 (June 2, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#12522](https://github.com/directus/directus/pull/12522) 🌊 Add Data Flows to Directus 🌊 (by @Nitwel)
+- **App**
+  - [#12522](https://github.com/directus/directus/pull/12522) 🌊 Add Data Flows to Directus 🌊 (by @Nitwel)
+- **Misc.**
+  - [#11186](https://github.com/directus/directus/pull/11186) Docs: Auto-generated "Link preview" thumbnails for all
+    pages (by @loteoo)
+
+### :rocket: Improvements
+
+- **App**
+  - [#13639](https://github.com/directus/directus/pull/13639) Translations: Make password reset notice clearer (by
+    @joselcvarela)
+  - [#13610](https://github.com/directus/directus/pull/13610) add collection and folder names to delete confirmation
+    messages (by @sxsws)
+  - :warning: [#13549](https://github.com/directus/directus/pull/13549) Add System token interface (by @azrikahar)
+  - [#13540](https://github.com/directus/directus/pull/13540) Add copy button to user id on user info page (by @nickrum)
+  - [#13389](https://github.com/directus/directus/pull/13389) Don't consider SIGN_OUT an SSO error (by @aidenfoxx)
+  - [#13363](https://github.com/directus/directus/pull/13363) Improve translation for require_value_to_be_set (by
+    @janwillemvd)
+- **format-title**
+  - [#13629](https://github.com/directus/directus/pull/13629) Remove BASIC acronym (by @azrikahar)
+- **API**
+  - :warning: [#13549](https://github.com/directus/directus/pull/13549) Add System token interface (by @azrikahar)
+  - [#13352](https://github.com/directus/directus/pull/13352) Add comments to the .env file stub (by @sxsws)
+  - [#12033](https://github.com/directus/directus/pull/12033) Add projectUrl to defaultTemplateData (by @ybelenko)
+  - [#11141](https://github.com/directus/directus/pull/11141) Allow authentication using MSSQL
+    azure-active-directory-service-principal-secret (by @erickjth)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#13681](https://github.com/directus/directus/pull/13681) fix collection & folder delete dialog message (by
+    @azrikahar)
+  - [#13630](https://github.com/directus/directus/pull/13630) use v-if instead of v-show in v-detail component (by
+    @azrikahar)
+  - [#13563](https://github.com/directus/directus/pull/13563) Fix field conditions optionDefaults computed property (by
+    @yassilah)
+  - [#13532](https://github.com/directus/directus/pull/13532) Remove the paste value check on slug inputs (by
+    @azrikahar)
+- **API**
+  - [#13660](https://github.com/directus/directus/pull/13660) Fix wrong source of meta info for notifications API (by
+    @tenebrius)
+  - [#13651](https://github.com/directus/directus/pull/13651) Add cross-instance messenger pubsub setup (by
+    @rijkvanzanten)
+  - [#13623](https://github.com/directus/directus/pull/13623) Field permissions and relational interfaces (by
+    @br41nslug)
+  - [#13539](https://github.com/directus/directus/pull/13539) Added missing "DB*SSL*\*\_FILE" to the "\_FILE" allow
+    list. (by @br41nslug)
+  - [#13527](https://github.com/directus/directus/pull/13527) Fix metadata for directus_folders (by @azrikahar)
+- **Misc.**
+  - [#13577](https://github.com/directus/directus/pull/13577) `last_page` type was `date` instead of `str` (by
+    @louisgavalda)
+- **specs**
+  - [#13531](https://github.com/directus/directus/pull/13531) add `meta` to list responses for OAS (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#13648](https://github.com/directus/directus/pull/13648) Use `pull_request_target` instead of `pull_request` for
+    auto-project-assign (by @jaycammarano)
+  - [#13633](https://github.com/directus/directus/pull/13633) Auto approve pull requests from Crowdin (by @paescuj)
+  - [#13455](https://github.com/directus/directus/pull/13455) Remove workaround in release flow (by @nickrum)
+  - [#13444](https://github.com/directus/directus/pull/13444) Remove npmrc files which prevent lockfile creation in
+    workspaces (by @nickrum)
+- **shared**
+  - [#13594](https://github.com/directus/directus/pull/13594) Moved tests from the "shared" package into a single test
+    folder (by @jaycammarano)
+
+### :memo: Documentation
+
+- [#13688](https://github.com/directus/directus/pull/13688) fixed typo (by @erondpowell)
+- [#13656](https://github.com/directus/directus/pull/13656) removing remaining links to example.env (by @sxsws)
+- [#13642](https://github.com/directus/directus/pull/13642) Quickstart fix (by @erondpowell)
+- [#13601](https://github.com/directus/directus/pull/13601) Docs: fix wrong url paths for self-hosted installation
+  guides (by @thammarith)
+- [#13577](https://github.com/directus/directus/pull/13577) `last_page` type was `date` instead of `str` (by
+  @louisgavalda)
+- [#11186](https://github.com/directus/directus/pull/11186) Docs: Auto-generated "Link preview" thumbnails for all pages
+  (by @loteoo)
+
 ## v9.11.1 (May 24, 2022)
 
 ### :rocket: Improvements

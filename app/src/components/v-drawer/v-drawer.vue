@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="$emit('cancel')">
+	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>

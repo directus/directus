@@ -13,12 +13,14 @@ import dashboardsRouter from './controllers/dashboards';
 import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
 import filesRouter from './controllers/files';
+import flowsRouter from './controllers/flows';
 import foldersRouter from './controllers/folders';
 import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
 import panelsRouter from './controllers/panels';
 import notificationsRouter from './controllers/notifications';
+import operationsRouter from './controllers/operations';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -35,6 +37,7 @@ import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
+import { getFlowManager } from './flows';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import getPermissions from './middleware/get-permissions';
@@ -83,8 +86,10 @@ export default async function createApp(): Promise<express.Application> {
 	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
+	const flowManager = getFlowManager();
 
 	await extensionManager.initialize();
+	await flowManager.initialize();
 
 	const app = express();
 
@@ -215,9 +220,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
+	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 	app.use('/notifications', notificationsRouter);
+	app.use('/operations', operationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);

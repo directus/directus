@@ -61,6 +61,20 @@ data:
     many_field: dashboard
     one_collection: directus_dashboards
     one_field: panels
+  - many_collection: directus_flows
+    many_field: operation
+    one_collection: directus_operations
+  - many_collection: directus_operations
+    many_field: flow
+    one_collection: directus_flows
+    one_field: operations
+    one_deselect_action: delete
+  - many_collection: directus_operations
+    many_field: resolve
+    one_collection: directus_operations
+  - many_collection: directus_operations
+    many_field: reject
+    one_collection: directus_operations
   - many_collection: directus_files
     many_field: modified_by
     one_collection: directus_users
@@ -86,6 +100,12 @@ data:
     many_field: user_created
     one_collection: directus_users
   - many_collection: directus_panels
+    many_field: user_created
+    one_collection: directus_users
+  - many_collection: directus_flows
+    many_field: user_created
+    one_collection: directus_users
+  - many_collection: directus_operations
     many_field: user_created
     one_collection: directus_users
   - many_collection: directus_notifications

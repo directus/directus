@@ -33,6 +33,12 @@ declare module 'frappe-charts/src/js/charts/AxisChart' {
 	}
 }
 
+declare module '@directus-extensions-operation' {
+	import { OperationAppConfig } from '@directus/shared/types';
+	const operations: OperationAppConfig[];
+	export default operations;
+}
+
 declare module '@directus-extensions-interface' {
 	import { InterfaceConfig } from '@directus/shared/types';
 	const interfaces: InterfaceConfig[];

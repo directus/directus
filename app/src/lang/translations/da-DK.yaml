@@ -23,6 +23,7 @@ identifier: Identifier
 avatar: Profilbillede
 application: Anvendelse
 default_provider: Standard
+method: Metode
 published: Publiceret
 draft: Kladde
 archived: Arkiveret
@@ -31,6 +32,8 @@ module_bar: Modul Bar
 tile_size: Tile Size
 edit_field: Rediger Felt
 conditions: Betingelser
+location: Placering
+input: Input
 maps: Kort
 switch_user: Skift Bruger
 item_creation: Element Oprettelse
@@ -711,6 +714,7 @@ on_create: Ved Oprettelse
 on_update: Ved Opdatering
 read: Læs
 update: Opdater
+delete: Slet
 select_fields: Vælg felter
 format_text: Formatér Tekst
 format_value: Formatér Værdi
@@ -721,6 +725,10 @@ toggle: Skift
 icon_on: Ikon Til
 icon_off: Ikon Fra
 label: Etiket
+trigger: Udløser
+flow_name: Navn
+flow_tracking_activity: Spor Kun Aktivitet
+flow_tracking_null: Spor Ikke Noget
 insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
@@ -738,9 +746,10 @@ suffix_placeholder: Tekst efter værdi...
 decimals_placeholder: Antal decimaler...
 no_dashboards: Ingen Dashboards
 no_dashboards_copy: Du har ikke nogen Dashboards endnu.
-no_data: Ingen Data
 create_dashboard: Opret Dashboard
 dashboard_name: Betjeningspanels Navn
+no_data: Ingen Data
+accountability: Ansvarlighed
 full_screen: Fuld Skærm
 full_text_search: Fuldtekst Søgning
 edit_panels: Rediger Paneler
@@ -831,6 +840,7 @@ settings_presets: Forudindstillinger Og Bogmærker
 settings_translation_strings: Oversættelsesstrenge
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
+actions: Handlinger
 select: Vælg...
 tree_view: Træ Visning
 changes_are_permanent: Ændringer er permanente
@@ -839,6 +849,7 @@ preset_search_placeholder: Søg forespørgsel...
 editing_preset: Redigerer Forudindstilling
 layout_preview: Layout Forhåndsvisning
 layout_setup: Layout Opsætning
+data: Data
 unsaved_changes: Ikke gemte ændringer
 unsaved_changes_copy: Er du sikker på du vil forlade denne side?
 discard_changes: Kassér Ændringer
@@ -902,9 +913,9 @@ directus_collection:
   directus_files: Metadata for alle administrerede fil-asset'er
   directus_folders: Giver virtuelle mapper til filer
   directus_migrations: Hvilken version af den database, du bruger
+  directus_notifications: Notifikationer sendt til brugere
   directus_panels: Individuelle paneler i Insights dashboards
   directus_permissions: Adgangstilladelser for hver rolle
-  directus_notifications: Notifikationer sendt til brugere
   directus_presets: Forudindstillinger for opsamling standardindstillinger og bogmærker
   directus_relations: Sammenhæng konfiguration og metadata
   directus_revisions: Data snapshots for al aktivitet
@@ -1800,3 +1811,16 @@ panels:
     bottom: Bund
     monochrome: Monokrom
     monochrome_color: Monokrom Farve
+triggers:
+  webhook:
+    method: Metode
+operations:
+  notification:
+    recipient: Bruger
+  request:
+    url: URL
+    method: Metode
+    data: Data
+    header: Overskrift
+  trigger:
+    data: Data

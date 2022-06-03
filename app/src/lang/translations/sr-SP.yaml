@@ -7,6 +7,7 @@ archived: Архивирано
 modules: Модули
 edit_field: Уреди поља
 conditions: Услови
+location: Локација
 maps: Мапе
 item_revision: Ревизија итема
 enter_a_name: Унесите име...
@@ -70,6 +71,7 @@ operators:
   contains: Садржи
 role: Рола
 create: Креирај
+flow_name: Име
 width: Ширина
 height: Висина
 wysiwyg_options:
