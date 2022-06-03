@@ -311,6 +311,7 @@ create: Create
 read: Read
 update: Update
 toggle: टॉगल करें
+flow_name: नाम
 wysiwyg_options:
   forecolor: अग्रभूमि रंग
   backcolor: पृष्ठभूमि रंग
@@ -388,3 +389,8 @@ displays:
   user:
     user: यूज़र
     name: नाम
+operations:
+  notification:
+    recipient: यूज़र
+  request:
+    url: URL

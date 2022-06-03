@@ -26,6 +26,8 @@ published: Avaldatud
 draft: Mustand
 archived: Arhiveeritud
 edit_field: Muuda välja
+location: Asukoht
+input: Sisend
 item_revision: Kirje parandamine
 duplicate_field: Korduv väli
 half_width: Pool laiust
@@ -549,6 +551,10 @@ toggle: Lülita
 icon_on: Ikoon sees
 icon_off: Ikoon väljas
 label: Silt
+trigger: Päästik
+flow_name: Nimi
+flow_tracking_activity: Jälgi ainult aktiivsust
+flow_tracking_null: Ära jälgi midagi
 full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
@@ -1233,3 +1239,8 @@ layouts:
 panels:
   label:
     name: Silt
+operations:
+  notification:
+    recipient: Kasutaja
+  request:
+    url: URL

@@ -32,6 +32,7 @@ reset_width: تنظیم مجدد عرض
 tile_size: اندازه هر مربع در نقشه
 edit_field: ویرایش فیلد
 conditions: شرایط
+location: موقعیت
 maps: نقشه ها
 switch_user: تغییر کاربر
 item_creation: ساخت یک آیتم
@@ -616,6 +617,8 @@ role: نقش
 edit_role: ویرایش نقش
 create: ایجاد
 update: بروزرسانی
+delete: حذف
+flow_name: نام
 insights: بینش های داده ای
 dashboard: پیشخوان
 panel: پنل
@@ -633,9 +636,9 @@ suffix_placeholder: متن پس از مقدار...
 decimals_placeholder: تعداد ارقام اعشاری...
 no_dashboards: هیچ پیشخوانی وجود ندارد
 no_dashboards_copy: هنوز هیچ پیشخوانی ندارید.
-no_data: داده‌ای موجود نیست
 create_dashboard: ایجاد پیشخوان جدید
 dashboard_name: نام پیشخوان
+no_data: داده‌ای موجود نیست
 full_screen: تمام صفحه
 edit_panels: ادیت پنلها
 fit_to_screen: هم اندازه با صفحه نمایش
@@ -715,6 +718,7 @@ settings_webhooks: هوک های تحت وب
 settings_presets: الگوها و نشانک ها
 one_or_more_options_are_missing: یک یا چند مورد از تنظیمات، وجود ندارد
 scope: محدوده در دسترس
+actions: فعالیت ها
 select: انتخاب...
 layout: چیدمان
 tree_view: نمایش درختی
@@ -760,8 +764,8 @@ batch_delete_confirm: >-
   هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
 cancel: انصراف
 directus_collection:
-  directus_permissions: دسترسی به اجازه های این نقش
   directus_notifications: اعلانهای ارسالی به کاربر
+  directus_permissions: دسترسی به اجازه های این نقش
   directus_roles: گروههای اجازه برای کاربران سیستم
 fields:
   directus_activity:
@@ -1015,3 +1019,6 @@ layouts:
   map:
     map: نقشه
     find_location: پیدا کردن موفعیت...
+operations:
+  request:
+    url: URL

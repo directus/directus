@@ -23,6 +23,7 @@ identifier: Identifierare
 avatar: Profilbild
 application: Applikation
 default_provider: Standard
+method: Metod
 published: Publicerad
 draft: Utkast
 archived: Arkiverad
@@ -32,6 +33,8 @@ reset_width: Återställ bredd
 tile_size: Rutstorlek
 edit_field: Redigera fält
 conditions: Villkor
+location: Position
+input: Inmatning
 maps: Kartor
 switch_user: Byt användare
 item_creation: Skapa ny
@@ -708,6 +711,7 @@ on_create: Vid skapande
 on_update: Vid uppdatering
 read: Läsning
 update: Uppdatera
+delete: Radera
 select_fields: Välj fält
 format_text: Formatera text
 format_value: Formatera värde
@@ -717,6 +721,10 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+trigger: Utlösare
+flow_name: Namn
+flow_tracking_activity: Spåra endast aktivitet
+flow_tracking_null: Spåra ingenting
 insights: Insikter
 dashboard: Kontrollpanel
 panel: Panel
@@ -734,9 +742,10 @@ suffix_placeholder: Text efter värde...
 decimals_placeholder: Antal decimaler...
 no_dashboards: Inga kontrollpaneler
 no_dashboards_copy: Du har inga kontrollpaneler än.
-no_data: Ingen data
 create_dashboard: Skapa kontrollpanel
 dashboard_name: Kontrollpanelens namn
+no_data: Ingen data
+accountability: Ansvarsskyldighet
 full_screen: Helskärm
 edit_panels: Redigera paneler
 fit_to_screen: Anpassa till skärm
@@ -830,6 +839,7 @@ settings_webhooks: Webhooks
 settings_presets: Förinställningar & bokmärken
 one_or_more_options_are_missing: Ett eller flera alternativ saknas
 scope: Omfattning
+actions: Åtgärder
 select: Välj...
 layout: Layout
 tree_view: Trädvy
@@ -1606,3 +1616,12 @@ panels:
   list:
     name: Lista
     description: Filtrera och lista fält från en kollektion
+triggers:
+  webhook:
+    method: Metod
+operations:
+  notification:
+    recipient: Användare
+  request:
+    url: URL
+    method: Metod
