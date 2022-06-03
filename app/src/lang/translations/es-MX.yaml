@@ -22,22 +22,23 @@
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
-default_provider: Por defecto
+default_provider: Por Defecto
 method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
 modules: Módulos
-module_bar: Barra de módulos
+module_bar: Barra de Módulos
 logs: Registros
-reset_width: Restablecer ancho
-tile_size: Tamaño del mosaico
+reset_width: Restablecer Ancho
+tile_size: Tamaño del Mosaico
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
+condition_rules: Reglas Condicionales
 input: Entrada
 maps: Mapas
-switch_user: Cambiar de usuario
+switch_user: Cambiar de Usuario
 item_creation: Creación de artículos
 item_revision: Revisión de Elemento
 enter_a_name: Introduce un Nombre...
@@ -1065,7 +1066,7 @@ fields:
     storage_asset_transform: Transformaciones permitidas
     overrides: Reemplazos de la aplicación
     custom_css: CSS Personalizado
-    module_bar: Barra de módulos
+    module_bar: Barra de Módulos
     transformations_all: Permitir todas las transformaciones
     transformations_none: Desactivar transformaciones
     transformations_presets: Limitar las transformaciones a los ajustes de abajo
