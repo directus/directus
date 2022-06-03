@@ -72,7 +72,7 @@
 			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
 		</div>
 
-		<div class="tile-content" :class="{ 'has-header': showHeader }">
+		<div v-if="!loading" class="tile-content" :class="{ 'has-header': showHeader }">
 			<slot></slot>
 			<div v-if="$slots.footer" class="footer">
 				<slot name="footer"></slot>
@@ -103,10 +103,12 @@ export type AppTile = {
 	minHeight?: number;
 	draggable?: boolean;
 	borderRadius?: [boolean, boolean, boolean, boolean];
+	data?: object;
 };
 
 // Right now, it is not possible to do type Props = AppTile & {resizable?: boolean; editMode?: boolean}
 type Props = {
+	data?: object;
 	id: string;
 	x: number;
 	y: number;
@@ -125,6 +127,7 @@ type Props = {
 	editMode?: boolean;
 	showOptions?: boolean;
 	alwaysUpdatePosition?: boolean;
+	loading?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -140,7 +143,9 @@ const props = withDefaults(defineProps<Props>(), {
 	draggable: true,
 	borderRadius: () => [true, true, true, true],
 	showOptions: true,
+	loading: false,
 	alwaysUpdatePosition: false,
+	data: () => ({}),
 });
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
