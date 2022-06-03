@@ -39,16 +39,20 @@ condition_rules: Reglas Condicionales
 input: Entrada
 maps: Mapas
 switch_user: Cambiar de Usuario
-item_creation: Creación de artículos
-item_revision: Revisión de Elemento
-enter_a_name: Introduce un Nombre...
+item_creation: Creación de Elementos
+item_revision: Revisión de Elementos
+enter_a_name: Escribe un Nombre...
 duplicate_field: Duplicar Campo
 half_width: Anchura 50%
 full_width: Ancho Completo
 group: Grupo
-export_items: Exportar elementos
+export_items: Exportar Elementos
 and: "Y"
 or: O
+init: Inicializador
+modifier: Modificador
+custom: Personalizado
+hook: Gancho
 fill_width: Llenar Ancho
 field_name_translations: 'Nombre de Campo: Traducciones'
 enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
