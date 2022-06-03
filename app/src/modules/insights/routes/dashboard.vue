@@ -105,6 +105,7 @@
 					:height="panel.height"
 					:width="panel.width"
 					:now="now"
+					:data="panel.data"
 				/>
 			</template>
 		</v-workspace>
