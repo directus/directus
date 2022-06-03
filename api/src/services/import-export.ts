@@ -340,7 +340,13 @@ export class ExportService {
 				header: options?.includeHeader !== false,
 			});
 
-			return parser.parse(input);
+			let string = parser.parse(input);
+
+			if (options?.includeHeader === false) {
+				string = '\n' + string;
+			}
+
+			return string;
 		}
 
 		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });
