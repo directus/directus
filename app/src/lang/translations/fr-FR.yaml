@@ -768,12 +768,12 @@ create_trigger: Créer un Déclencheur
 trigger_setup: Configuration du Déclencheur
 change_trigger: Changer le Déclencheur
 flow_delete_confirm: Êtes-vous sûr de vouloir supprimer le Flux "{flow}" ? Cette action ne peut pas être annulée.
-set_flow_active: Régler le Flux sur Actif
-set_flow_inactive: Régler le Flux sur Inactif
+set_flow_active: Activer le Flux
+set_flow_inactive: Désactiver le Flux
 edit_flow: Modifier le Flux
 delete_flow: Supprimer le Flux
 no_other_flows_copy: Vous n'avez pas encore d'autres Flux.
-no_flows: Pas de Flux
+no_flows: Aucun Flux
 no_flows_copy: Vous n'avez pas encore de Flux.
 create_flow: Créer un Flux
 creating_new_flow: Création d'un nouveau Flux
@@ -1395,6 +1395,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -2037,6 +2038,7 @@ operations:
     header_placeholder: Authorization...
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
+    name: Pause
     description: Attendre un nombre donné de millisecondes
     milliseconds: Millisecondes
   transform:
