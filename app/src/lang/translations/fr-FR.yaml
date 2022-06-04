@@ -1954,8 +1954,32 @@ triggers:
   common:
     response_body: Corps de la Réponse
     response_body_all: Toutes les Données
+    response_body_last: Données de la Dernière Opération
+  event:
+    name: Crochet d'Événement
+    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    action: 'Action (Non Bloquante)'
+    filter: 'Filtre (Bloquant)'
   webhook:
+    name: Webhook
+    description: Déclencheurs sur une requête HTTP entrante
     method: Méthode
+    async: Asynchrone
+  operation:
+    name: Un autre Flux
+    description: Déclenché par un autre Flux, pour le chaînage
+    preview: Déclenché par une opération dans un Flux différent
+  schedule:
+    name: Planification (CRON)
+    description: Déclencheurs à des moments réguliers dans le temps
+    cron: Intervalle
+  manual:
+    name: Manuelle
+    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
+    collection_and_item: Pages des Collections et des Articles
+    collection_only: Page de la Collection Uniquement
+    item_only: Page de l'Article Uniquement
+a_users_uuid: La Clé Primaire UUID d'un utilisateur...
 operations:
   item-create:
     payload: Données utiles
@@ -1971,7 +1995,14 @@ operations:
     method: Méthode
     data: Données
     header: En-tête
+  sleep:
+    milliseconds: Millisecondes
+  transform:
+    name: Transformer la Charge utile
+    description: Modifier la charge utile JSON du Flux
   trigger:
+    name: Déclencher le Flux
+    description: Transmettre ces données à un autre Flux
     flows: Les Flux
     flow: Flux
     data: Données
