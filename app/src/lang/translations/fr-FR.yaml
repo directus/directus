@@ -1987,21 +1987,57 @@ operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de
 operations:
   condition:
     name: Condition
+    description: Acheminer un flux en fonction de la logique If / Else
   item-create:
+    name: Créer de la donnée
+    description: Créer des éléments dans la base de données
     payload: Données utiles
+    emit_events: Émettre des événements
+  item-delete:
+    name: Suppression des données
+    description: Supprimer des éléments dans la base de données
+    key: IDs
+    query: Requête
+  item-read:
+    name: Lire les données
+    description: Lire les éléments de la base de données
+    key: IDs
+    query: Requête
   item-update:
+    name: Mettre à jour les données
+    description: Mettre à jour les éléments de la base de données
+    key: IDs
     payload: Données utiles
+    query: Requête
   log:
+    name: Log dans la console
+    description: Afficher quelque chose sur la console
     message: Message
+    message_placeholder: Entrez un message à afficher dans la console...
+  mail:
+    name: Envoyer l'e-mail
+    description: Envoyer un email à une ou plusieurs personnes
+    to: À
+    to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
+    body: Corps du mail
   notification:
+    name: Envoyer la Notification
+    description: Envoyer une notification in-app à un utilisateur
     recipient: Utilisateur
     message: Message
   request:
+    name: Webhook / URL de requête
+    description: "Faire une requête à un URL"
     url: URL
+    url_placeholder: https://example.com/example
     method: Méthode
     data: Données
+    headers: En-têtes
     header: En-tête
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
   sleep:
+    description: Attendre un nombre donné de millisecondes
     milliseconds: Millisecondes
   transform:
     name: Transformer la Charge utile
