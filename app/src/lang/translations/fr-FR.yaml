@@ -29,11 +29,13 @@ draft: Brouillon
 archived: Archivé
 modules: Modules
 module_bar: Barre de modules
+logs: Journaux
 reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
 location: Localisation
+condition_rules: Règles de conditions
 input: Texte simple
 maps: Cartes
 switch_user: Changer d'utilisateur
@@ -47,6 +49,11 @@ group: Groupe
 export_items: Exporter
 and: Et
 or: Ou
+init: Initialiser
+dataset_too_large_currently_showing_n_items: L'ensemble de données est trop grand. Il affiche actuellement les {n} premiers éléments.
+modifier: Modificateur
+custom: Personnalisé
+hook: Crochet
 fill_width: Remplir l'espace
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
@@ -70,6 +77,7 @@ create_preset: Créer un préréglage
 create_panel: Créer un panneau
 create_role: Créer un rôle
 create_user: Créer un utilisateur
+message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
 create_translation_string: Créer une chaîne de traduction
@@ -478,7 +486,9 @@ disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
 request_feature: Demander une fonctionnalité
+request_body: Corps de la requête
 interface_not_found: 'L''interface "{interface}" est introuvable.'
+operation_not_found: 'Opération "{operation}" non trouvée.'
 reset_interface: Réinitialiser l'interface
 display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
@@ -745,10 +755,45 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
+flows: Les Flux
+flow: Flux
+select_a_flow: Sélectionner un flux
+run_flow_on_current: Exécuter le flux sur l'élément actuel
+run_flow_on_selected: Aucun élément sélectionné | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
+run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
+trigger_options: Options de Déclenchement
+view_trigger: Voir le déclencheur
+create_trigger: Créer un Déclencheur
+trigger_setup: Configuration du Déclencheur
+change_trigger: Changer le Déclencheur
+flow_delete_confirm: Êtes-vous sûr de vouloir supprimer le Flux "{flow}" ? Cette action ne peut pas être annulée.
+set_flow_active: Régler le Flux sur Actif
+set_flow_inactive: Régler le Flux sur Inactif
+edit_flow: Modifier le Flux
+delete_flow: Supprimer le Flux
+no_other_flows_copy: Vous n'avez pas encore d'autres Flux.
+no_flows: Pas de Flux
+no_flows_copy: Vous n'avez pas encore de Flux.
+create_flow: Créer un Flux
+creating_new_flow: Création d'un nouveau Flux
+updating_flow: Mise à jour du Flux
+flow_setup: Configuration du Flux
 flow_name: Nom
+flow_tracking: Suivi des Activités et des Journaux
+flow_tracking_all: Suivre les Activités et les Journaux
 flow_tracking_activity: Enregistrer seulement l'activité
 flow_tracking_null: Ne rien enregistrer
+start_flow: Démarrer le Flux
+stop_flow: Arrêt du Flux
+create_operation: Créer une Opération
+edit_operation: Modifier l'Opération
+operation_options: Les Options d'Opération
+operation_name: Nom de l'Opération...
+operation_key: Identifiant pour référence...
+operation_key_unique_error: Les clés d'Opération doivent être uniques dans un Flux
+operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
+operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 insights: Analyses
 dashboard: Tableau de bord
 panel: Panneau
@@ -868,6 +913,7 @@ settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
+settings_flows: Les Flux
 settings_presets: Préréglages et favoris
 settings_translation_strings: Chaînes de traduction
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
@@ -1900,12 +1946,17 @@ triggers:
   webhook:
     method: Méthode
 operations:
+  log:
+    message: Message
   notification:
     recipient: Utilisateur
+    message: Message
   request:
     url: URL
     method: Méthode
     data: Données
     header: En-tête
   trigger:
+    flows: Les Flux
+    flow: Flux
     data: Données
