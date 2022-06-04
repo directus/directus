@@ -816,6 +816,8 @@ dashboard_name: Nom du Tableau de bord
 no_data: Pas de donnée
 no_data_in_flow: Aucune donnée n'a été produite ou accédée dans ce flux
 accountability: Traçabilité
+payload: Données utiles
+details: Détails
 full_screen: Plein écran
 full_text_search: Recherche dans l'intégralité du texte
 edit_panels: Modifier le panneau
@@ -963,6 +965,8 @@ page_help_settings_presets_item: >-
   **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
+page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
+page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
 page_help_settings_translation_strings_collection: '**Parcourir les chaînes de traduction** — Liste toutes les chaînes de traduction du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
@@ -991,9 +995,11 @@ directus_collection:
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
+  directus_flows: Flux d'automatisation
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
   directus_notifications: Notifications envoyées aux utilisateurs
+  directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
   directus_permissions: Sélectionner les permissions pour chaque groupe
   directus_presets: Préréglages pour la collection par défaut et les signets
@@ -1364,6 +1370,7 @@ reset: Réinitialiser
 reset_password: Réinitialiser le mot de passe
 revisions: Historique
 no_revisions: Aucune révision pour l'instant
+no_logs: Pas Encore de Logs
 revert: Restaurer
 save: Enregistrer
 schema: Schéma
@@ -1406,6 +1413,7 @@ interfaces:
     no_rules: Configurer les règles
     change_value: Cliquez pour modifier le nom
     placeholder: Glisser les fichiers ici
+    add_key_placeholder: Ajouter une clé et appuyer sur Entrée...
   fields:
     name: Champs
   group-accordion:
@@ -1943,9 +1951,16 @@ panels:
     monochrome: Monochrome
     monochrome_color: Couleur Monochrome
 triggers:
+  common:
+    response_body: Corps de la Réponse
+    response_body_all: Toutes les Données
   webhook:
     method: Méthode
 operations:
+  item-create:
+    payload: Données utiles
+  item-update:
+    payload: Données utiles
   log:
     message: Message
   notification:
