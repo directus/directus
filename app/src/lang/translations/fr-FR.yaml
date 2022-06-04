@@ -769,6 +769,7 @@ no_dashboards_copy: Vous n'avez pas encore de Tableau de bord.
 create_dashboard: Créer un tableau de bord
 dashboard_name: Nom du Tableau de bord
 no_data: Pas de donnée
+no_data_in_flow: Aucune donnée n'a été produite ou accédée dans ce flux
 accountability: Traçabilité
 full_screen: Plein écran
 full_text_search: Recherche dans l'intégralité du texte
