@@ -1399,7 +1399,11 @@ export class GraphQLService {
 					if (valueNode.kind === 'ObjectValue') {
 						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
-						values.push((valueNode as any).value);
+						if (valueNode.kind === 'Variable') {
+							values.push(variableValues[valueNode.name.value]);
+						} else {
+							values.push((valueNode as any).value);
+						}
 					}
 				}
 

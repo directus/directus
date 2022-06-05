@@ -107,7 +107,7 @@ export default defineLayout<LayoutOptions>({
 			{
 				sort: computed(() => [primaryKeyField.value?.field || '']),
 				page: ref(1),
-				limit: ref(-1),
+				limit: ref(10000),
 				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,

@@ -13,6 +13,7 @@
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-errors="validationErrors"
+			:badge="badge"
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
@@ -71,6 +72,10 @@ export default defineComponent({
 		validationErrors: {
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
+		},
+		badge: {
+			type: String,
+			default: null,
 		},
 
 		accordionMode: {

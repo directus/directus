@@ -32,6 +32,7 @@ reset_width: Stel breedte terug
 tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
+location: Locatie
 maps: Kaarten
 switch_user: Andere gebruiker
 item_creation: Item Aanmaken
@@ -657,6 +658,9 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+flow_name: Naam
+flow_tracking_activity: Track alleen activiteiten
+flow_tracking_null: Niets tracken
 insights: Inzichten
 dashboard: Dashboard
 panel: Paneel
@@ -1262,3 +1266,8 @@ layouts:
 panels:
   label:
     name: Label
+operations:
+  notification:
+    recipient: Gebruiker
+  request:
+    url: URL

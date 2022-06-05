@@ -9,6 +9,7 @@ module_bar: סרגל מודולים
 tile_size: גודל צלמית
 edit_field: ערוך שדה
 conditions: תנאים
+location: מיקום
 maps: מפות
 item_creation: יצירת פריט חדש
 item_revision: גרסת פריט

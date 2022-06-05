@@ -23,6 +23,7 @@ identifier: Identifiant
 avatar: Avatar
 application: Application
 default_provider: Défaut
+method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
@@ -32,6 +33,8 @@ reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
+location: Localisation
+input: Texte simple
 maps: Cartes
 switch_user: Changer d'utilisateur
 item_creation: Création d'article
@@ -70,6 +73,8 @@ create_user: Créer un utilisateur
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
 create_translation_string: Créer une chaîne de traduction
+no_translation_string: Aucune chaîne de traduction
+no_translation_string_copy: Il n'y a pas encore de chaîne de traduction.
 translation_string_key_placeholder: Traduction de la clé...
 translation_string_translations_placeholder: Ajouter une nouvelle traduction
 edit_translation_string: Modifier la chaîne de traduction
@@ -452,6 +457,7 @@ created_on: Créé le
 creating_collection_info: Nommez la collection et configurez son champ unique « clé »...
 creating_collection_system: Activer et renommer l'un de ces champs optionnels.
 auto_increment_integer: Entier auto-incrémenté
+auto_increment_big_integer: Big interger auto-incrémenté
 generated_uuid: UUID généré
 manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
@@ -592,6 +598,7 @@ unexpected_error_copy: Une erreur inconnue s'est produite. Veuillez réessayer p
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
+password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
@@ -615,6 +622,9 @@ start_end_of_count_items: '{start}-{end} de {count} éléments'
 start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
 one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
+delete_collection_are_you_sure: >-
+  Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
+delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -724,6 +734,7 @@ on_create: À la Création
 on_update: À la mise à jour
 read: Lecture
 update: Mettre à jour
+delete: Supprimer
 select_fields: Sélectionner des champs
 format_text: Format du texte
 format_value: Valeur de formatage
@@ -734,6 +745,10 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
+trigger: Déclencheur
+flow_name: Nom
+flow_tracking_activity: Enregistrer seulement l'activité
+flow_tracking_null: Ne rien enregistrer
 insights: Analyses
 dashboard: Tableau de bord
 panel: Panneau
@@ -751,9 +766,10 @@ suffix_placeholder: Texte avant la valeur...
 decimals_placeholder: Nombre de décimales
 no_dashboards: Aucun Tableau de bord
 no_dashboards_copy: Vous n'avez pas encore de Tableau de bord.
-no_data: Pas de donnée
 create_dashboard: Créer un tableau de bord
 dashboard_name: Nom du Tableau de bord
+no_data: Pas de donnée
+accountability: Traçabilité
 full_screen: Plein écran
 full_text_search: Recherche dans l'intégralité du texte
 edit_panels: Modifier le panneau
@@ -855,6 +871,7 @@ settings_presets: Préréglages et favoris
 settings_translation_strings: Chaînes de traduction
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
+actions: Actions
 select: Sélectionner...
 layout: Mise en page
 tree_view: Arborescence
@@ -864,6 +881,7 @@ preset_search_placeholder: Recherche...
 editing_preset: Modifier le préréglage
 layout_preview: Aperçu de la mise en page
 layout_setup: Configuration de la mise en page
+data: Données
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
@@ -928,9 +946,9 @@ directus_collection:
   directus_files: Métadonnées pour tous les fichiers gérés
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
+  directus_notifications: Notifications envoyées aux utilisateurs
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
   directus_permissions: Sélectionner les permissions pour chaque groupe
-  directus_notifications: Notifications envoyées aux utilisateurs
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -1318,6 +1336,7 @@ export_started_copy: Votre exportation a commencé. Vous serez notifié quand el
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
+require_value_to_be_set: Nécessite que la valeur soit définie lors de la création
 translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
@@ -1517,6 +1536,7 @@ interfaces:
     add_label: 'Libellé "Créer Nouveau"'
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
+    incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
@@ -1610,6 +1630,13 @@ interfaces:
     start_closed: Fermé par défaut
   system-token:
     system-token: Token
+    description: Gérer un jeton d'accès statique
+    placeholder: Cliquez sur "Générer un jeton" pour créer un nouveau jeton d'accès statique
+    value_securely_saved: Valeur enregistrée en toute sécurité
+    generate: Générer un jeton
+    regenerate: Régénérer le jeton
+    generate_success_copy: Assurez-vous de sauvegarder et de copier le jeton ci-dessus. Pour des raisons de sécurité, vous ne pourrez plus voir le jeton après avoir enregistré et quitté cette page.
+    remove_token: Supprimer le jeton
 displays:
   translations:
     translations: Traductions
@@ -1775,6 +1802,7 @@ layouts:
     user_placeholder: Champ utilisateur optionnel...,
     image: Image de tuile,
     image_placeholder: Champ d'image optionnel...,
+    image_fit: Image ajustée en tuile
     crop: Rogner,
     advanced: Avancé,
     edit_group: Éditer le Groupe,
@@ -1805,6 +1833,7 @@ panels:
     description: Filtrer et lister les champs d'une collection
   barchart:
     name: Graphique en barres
+    description: Graphique en barre ou en colonne pour la comparaison de groupes de valeurs
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
     select_x_axis: Vous devez sélectionner un axe X.
@@ -1818,10 +1847,13 @@ panels:
     show_y_axis: Afficher l'axe Y
     show_data_label: Afficher l'étiquette des données
     group_by: 'Groupés par:'
+    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    y_axis_NaN: L'ordonnée doit être un nombre.
     y_axis_conditional_one: La valeur de la condition
     y_axis_conditional_two: doit être un nombre.
   linechart:
     name: Graphique linéaire
+    description: Graphique linéaire pour comparer le changement d'un champ.
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
     select_x_axis: Vous devez sélectionner un axe X.
@@ -1832,14 +1864,18 @@ panels:
     y_axis: Axe Y
     datasets: Jeux de données
     show_legend: Afficher la légende
+    show_marker: Afficher l'info-bulle
     include_dataset: Vous devez sélectionner au moins un élément.
     include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
     group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
     smooth: 'Lisse'
+    straight: 'Droit'
+    step_line: 'Pas'
   meter:
     description: Compteur pour les valeurs de suivi
     name: Compteur
     arc: Arc
+    stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
     select_field: Vous devez choisir un champ.
@@ -1859,3 +1895,16 @@ panels:
     bottom: Bas
     monochrome: Monochrome
     monochrome_color: Couleur Monochrome
+triggers:
+  webhook:
+    method: Méthode
+operations:
+  notification:
+    recipient: Utilisateur
+  request:
+    url: URL
+    method: Méthode
+    data: Données
+    header: En-tête
+  trigger:
+    data: Données

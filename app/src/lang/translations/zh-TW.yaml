@@ -7,6 +7,7 @@ archived: 已封存
 modules: 模組
 edit_field: 編輯欄位
 conditions: 條件
+location: 位置
 item_revision: 項目修改
 enter_a_name: 輸入名稱...
 duplicate_field: 複製欄位
@@ -466,6 +467,7 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
+flow_name: 名稱
 width: 寬度
 height: 高度
 wysiwyg_options:
@@ -843,3 +845,8 @@ layouts:
     comfortable: 舒適
     compact: 精簡
     cozy: 自在
+operations:
+  notification:
+    recipient: 用戶
+  request:
+    url: URL

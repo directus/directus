@@ -32,6 +32,7 @@ reset_width: Đặt lại Chiều rộng
 tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
+location: Vị trí
 maps: Bản đồ
 switch_user: Đổi tài khoản
 item_creation: Khởi tạo item
@@ -556,6 +557,7 @@ bold: In đậm
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
+flow_name: Tên
 dashboard: Bảng điều khiển
 panel: Bảng
 panel_options: Tùy chọn Bảng
@@ -910,3 +912,8 @@ layouts:
 panels:
   label:
     name: Nhãn
+operations:
+  notification:
+    recipient: Người dùng
+  request:
+    url: Đường Dẫn

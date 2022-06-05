@@ -31,6 +31,7 @@ module_bar: Papan Modul
 tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
+location: Lokasi
 maps: Peta
 switch_user: Beralih/ganti pengguna
 item_creation: Pembuatan Item
@@ -673,6 +674,7 @@ on_create: Saat Dibuat
 on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
+delete: Hapus
 select_fields: Pilih Bidang
 format_text: Format Teks
 format_value: Nilai Format
@@ -683,6 +685,9 @@ toggle: Beralih
 icon_on: Ikon Aktif
 icon_off: Ikon Tidak Aktif
 label: Label
+flow_name: Nama
+flow_tracking_activity: Hanya Aktifitas Melacak
+flow_tracking_null: Jangan Lacak Apapun
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
@@ -700,9 +705,10 @@ suffix_placeholder: Teks setelah nilai...
 decimals_placeholder: Jumlah tempat desimal...
 no_dashboards: Tidak ada Dasbor
 no_dashboards_copy: Anda belum memiliki dasbor.
-no_data: Tidak ada Data
 create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
+no_data: Tidak ada Data
+accountability: Akuntabilitas
 full_screen: Layar Penuh
 edit_panels: Sunting Panel
 fit_to_screen: Sesuaikan dengan Layar
@@ -1282,3 +1288,8 @@ layouts:
 panels:
   label:
     name: Label
+operations:
+  notification:
+    recipient: Pengguna
+  request:
+    url: URL
