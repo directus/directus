@@ -23,8 +23,8 @@ export async function registerOperations(app: App): Promise<void> {
 		console.warn(err);
 	}
 
-	operationsRaw.value = operations;
-
+	// @ts-ignore
+	operationsRaw.value = operations.filter((op: OperationAppConfig) => !op.handler);
 	operationsRaw.value.forEach((operation: OperationAppConfig) => {
 		if (
 			typeof operation.overview !== 'function' &&

@@ -67,10 +67,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 		process.exit(1);
 	}
 
-	const input = options.input || (extensionOptions as { source: string })?.source;
+	const input: any = options.input || (extensionOptions as { source: string })?.source;
 	const output = options.output || (extensionOptions as { path: string })?.path;
 
-	if (!input || !(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
+	if (type !== 'operation' && (!input || !(await fse.pathExists(input)) || !(await fse.stat(input)).isFile())) {
 		log(`Entrypoint ${chalk.bold(input)} does not exist.`, 'error');
 		process.exit(1);
 	}
@@ -80,7 +80,8 @@ export default async function build(options: BuildOptions): Promise<void> {
 		process.exit(1);
 	}
 
-	const language = options.language || getLanguageFromPath(input);
+	const languagePath = type === 'operation' ? input.api : input;
+	const language = options.language || getLanguageFromPath(languagePath);
 
 	if (!isLanguage(language)) {
 		log(`Language ${chalk.bold(language)} is not supported.`, 'error');
@@ -91,9 +92,32 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 	const spinner = ora('Building Directus extension...').start();
 
-	const rollupOptions = getRollupOptions(type, language, input, config.plugins, options);
-	const rollupOutputOptions = getRollupOutputOptions(type, output, options);
+	if (type === 'operation') {
+		// @ts-ignore
+		const rollupOptionsApi = getRollupOptions(type, language, input.api, config.plugins, options);
+		// @ts-ignore
+		const rollupOptionsApp = getRollupOptions(type, language, input.app, config.plugins, options);
+		// @ts-ignore
+		const rollupOutputOptionsApi = getRollupOutputOptions('hook', output.api, options);
+		// @ts-ignore
+		const rollupOutputOptionsApp = getRollupOutputOptions(type, output.app, options);
+		await performRollup(options, rollupOptionsApi, rollupOutputOptionsApi, spinner);
+		await performRollup(options, rollupOptionsApp, rollupOutputOptionsApp, spinner);
+		spinner.succeed(chalk.bold('Done'));
+	} else {
+		const rollupOptions = getRollupOptions(type, language, input, config.plugins, options);
+		const rollupOutputOptions = getRollupOutputOptions(type, output, options);
+		await performRollup(options, rollupOptions, rollupOutputOptions, spinner);
+		spinner.succeed(chalk.bold('Done'));
+	}
+}
 
+async function performRollup(
+	options: BuildOptions,
+	rollupOptions: RollupOptions,
+	rollupOutputOptions: RollupOutputOptions,
+	spinner: ora.Ora
+) {
 	if (options.watch) {
 		const watcher = rollupWatch({
 			...rollupOptions,
@@ -125,8 +149,6 @@ export default async function build(options: BuildOptions): Promise<void> {
 			await bundle.write(rollupOutputOptions);
 
 			await bundle.close();
-
-			spinner.succeed(chalk.bold('Done'));
 		} catch (error) {
 			spinner.fail(chalk.bold('Failed'));
 			handleRollupError(error as RollupError);

@@ -65,14 +65,28 @@ export default async function create(type: string, name: string, options: Create
 	await fse.copy(path.join(TEMPLATE_PATH, type, options.language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
+	let manifestPath: any = 'dist/index.js';
+	let manifestSource: any = `src/index.${languageToShort(options.language)}`;
+	if (type === 'operation') {
+		manifestPath = {
+			app: 'dist/app.js',
+			api: 'dist/api.js',
+		};
+
+		manifestSource = {
+			app: `src/app.${languageToShort(options.language)}`,
+			api: `src/api.${languageToShort(options.language)}`,
+		};
+	}
+
 	const packageManifest = {
 		name: `directus-extension-${name}`,
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
 			type,
-			path: 'dist/index.js',
-			source: `src/index.${languageToShort(options.language)}`,
+			path: manifestPath,
+			source: manifestSource,
 			host: `^${pkg.version}`,
 		},
 		scripts: {
