@@ -59,13 +59,19 @@ Looking to sponsor development of an Extension or Cloud Exclusive? [Contact Us](
 ## Data Portability
 
 Directus Core is totally detached from the database. Data can be cleanly imported and exported on Projects with the API
-via the schema endpoints. Enterprise clients: the Directus Team will work with you to help you through this process.
+via the schema endpoints.
+
+:::tip Enterprise Clients
+
+The Directus Team will help you work through this process on all [Enterprise Projects](https://directus.io/contact/)
+
+:::
 
 ## Datacenter Regions
 
-The location you choose to host your Project can have measurable impact. To optimize your Project and meet any local
-data compliance laws such as GDPR, Standard and Enterprise, you can choose the region your Project is hosted in. There
-are 19 Datacenter regions available for Enterprise Projects, 3 for Standard Projects and 1 for Community Projects:
+The location you choose to host your Project in can have a measurable impact. To help optimize your Project and meet any
+local data compliance laws such as GDPR, Standard and Enterprise offer multiple Datacenter regions to host from. There
+are 19 regions available for Enterprise Projects, 3 for Standard Projects, and 1 for Community Projects:
 
 <table>
   <tr>
@@ -189,17 +195,6 @@ are 19 Datacenter regions available for Enterprise Projects, 3 for Standard Proj
     <td></td>
   </tr>
 </table>
-
-To configure the region of your project, you just need to edit `Datacenter Region` in Dashboard. This options is only
-available for Standard projects.
-
-![Datacenter Regions](https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/datacenter-region-20220331A.webp)
-
-:::tip
-
-You should select the nearest region where the majority of your visitors are located.
-
-:::
 
 ## Encryption and Security
 
