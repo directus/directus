@@ -50,6 +50,7 @@ export_items: Експортиране на записите
 and: И
 or: Или
 init: Инициализиране
+dataset_too_large_currently_showing_n_items: Данните са твърде много. В момента се показват само първите {n} записа.
 modifier: Модификатор
 custom: Персонализиран
 hook: Кука
@@ -1375,6 +1376,7 @@ interfaces:
     no_rules: Няма зададени правила
     change_value: Натиснете за промяна
     placeholder: Привлачете правилата тук
+    add_key_placeholder: Добавете ключова стойност и натиснете Enter...
   fields:
     name: Полета
   group-accordion:
@@ -1875,6 +1877,7 @@ triggers:
   common:
     response_body_all: Всички данни
   event:
+    name: Събитие
     description: Задействане при събитие от платформата или данните
     action: 'Действие (не-блокиращо)'
     filter: 'Филтър (блокиращ)'
@@ -1884,22 +1887,28 @@ triggers:
     method: Метод
     async: Асинхронно
   schedule:
+    name: График (CRON)
     description: Задействане на равни интервали от време
     cron: Интервал
   manual:
     name: Ръчно
     description: Задействане при ръчно стартиране в избраните колекции
 any_string_or_json: Всякакъв низ или JSON...
+item_payload_placeholder: Това трябва да е JSON документа, който ще се използва за актуализирането на полетата на записа...
 operations:
   condition:
     name: Условие
   item-create:
+    name: Създаване на данни
     description: Създаване на записи в базата от данни
     payload: Съдържание
   item-delete:
     name: Изтриване на данните
     description: Изтриване в базата от данни
+    query: Заявка
   item-read:
+    name: Четене на данни
+    description: Четене на записи в базата от данни
     query: Заявка
   item-update:
     name: Обновяване на данните
@@ -1919,7 +1928,7 @@ operations:
     body: Съдържание
   notification:
     name: Изпращане на известие
-    description: Изпращане на известие то потребител
+    description: Изпращане на известие до потребител
     recipient: Потребител
     message: Съобщение
   request:
