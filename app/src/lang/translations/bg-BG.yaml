@@ -427,7 +427,7 @@ dimensions: Размери
 size: Големина
 created: Създаден
 modified: Променен
-checksum: Checksum
+checksum: Контролна сума
 owner: Собственик
 edited_by: Променен от
 folder: Папка
@@ -756,7 +756,10 @@ icon_on: Активна икона
 icon_off: Неактивна икона
 label: Надпис
 trigger: Задействане
+trigger_setup: Задействане
 flow_name: Име
+flow_tracking: Следене за активност и история
+flow_tracking_all: Проследяване на активността и историята
 flow_tracking_activity: Проследяване само на активността
 flow_tracking_null: Без следене
 create_operation: Създаване на операция
@@ -764,6 +767,8 @@ edit_operation: Редактиране на операцията
 operation_options: Настройки на операцията
 operation_name: Име на операцията...
 operation_key: Идентификатор за референцията...
+operation_handle_resolve: 'Решение: Натиснете за добавяне или придърпайте за пренасочване'
+operation_handle_reject: 'Проблем: Натиснете за добавяне или придърпайте за пренасочване'
 insights: Задълбочен анализ
 dashboard: Табло
 panel: Панел
@@ -1142,7 +1147,7 @@ field_options:
     security_divider_title: Сигурност
     auth_password_policy:
       none_text: Няма - не се препоръчва
-      weak_text: Слаба - минимум от 8 символа
+      weak_text: Слаба - минимум от 8 знака
       strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
       fit_label: Напасване
@@ -1398,14 +1403,14 @@ interfaces:
     button: Бутони
     error: Действието не може да бъде изпълнено
   select-multiple-checkbox:
-    checkboxes: Отметки
-    description: Избор измежду множество настройки чрез отметки
+    checkboxes: Полета за отметки
+    description: Избор измежду множество настройки чрез полета за отметки
     allow_other: Други
     show_more: 'Показване на още {count}'
     items_shown: Показани записи
   select-multiple-checkbox-tree:
-    name: Дърво от отметки
-    description: Избор измежду множество стойности чрез вложени отметки
+    name: Полета за отметки (дървовидно подредени)
+    description: Избор измежду множество стойности чрез вложени полета за отметки
     value_combining: Комбиниране на стойностите
     value_combining_note: Контрол върху стойността за запазване при направен избор.
     show_all: Показване на всички
@@ -1875,7 +1880,9 @@ panels:
     bottom: Отдолу
 triggers:
   common:
+    response_body: Изходни данни
     response_body_all: Всички данни
+    response_body_last: Данните от последната операция
   event:
     name: Събитие
     description: Задействане при събитие от платформата или данните
@@ -1893,8 +1900,13 @@ triggers:
   manual:
     name: Ръчно
     description: Задействане при ръчно стартиране в избраните колекции
+    collection_and_item: В колекцията и детайлния изглед
+    collection_only: Само в изгледа на колекцията
+    item_only: Само в детайлния изглед
+a_users_uuid: Потребителски първичен UUID ключ...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва за актуализирането на полетата на записа...
+operation_variables_note: Данните от операцията са достъпни през променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или достъп до предишната операция през **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Условие
@@ -1902,6 +1914,7 @@ operations:
     name: Създаване на данни
     description: Създаване на записи в базата от данни
     payload: Съдържание
+    emit_events: Излъчване на събития
   item-delete:
     name: Изтриване на данните
     description: Изтриване в базата от данни
@@ -1932,6 +1945,8 @@ operations:
     recipient: Потребител
     message: Съобщение
   request:
+    name: Уеб-кука / URL заявка
+    description: "Осъществяване на заявка до URL адрес"
     url: URL
     url_placeholder: https://example.com/example
     method: Метод
@@ -1944,5 +1959,7 @@ operations:
     name: Заспиване
     description: Изчакване на определен брой милисекунди
     milliseconds: Милисекунди
+  transform:
+    name: Трансформиране на работните данни
   trigger:
     data: Данни
