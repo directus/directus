@@ -573,7 +573,7 @@ errors:
   FORBIDDEN: Забранен
   INVALID_CREDENTIALS: Грешно потребителско име или парола
   INVALID_OTP: Грешна еднократна парола
-  INVALID_PAYLOAD: Невалидни данни
+  INVALID_PAYLOAD: Невалидно съдържание
   INVALID_PROVIDER: Потребителят принадлежи към друг доставчик за удостоверение
   INVALID_QUERY: Невалидна заявка
   INVALID_USER: Неуспешно удостоверение на потребителя
@@ -755,18 +755,39 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Надпис
+flows: Автоматични процеси
+flow: Процес
+select_a_flow: Избор на процес
+run_flow_on_current: Стартиране на процеса за текущия запис
+run_flow_on_selected: Не са избрани записи | Стартиране на процеса за 1 запис | Стартиране на процеса за {n} записа
+run_flow_success: Изпълнението на процеса "{flow}" е успешно
 trigger: Задействане
 trigger_setup: Задействане
+flow_delete_confirm: Сигурни ли сте, че искате да изтриете процеса „{flow}“? Действието не може да бъде отменено.
+set_flow_active: Активиране на процеса
+set_flow_inactive: Деактивиране на процеса
+edit_flow: Редактиране на процеса
+delete_flow: Изтриване на процеса
+no_other_flows_copy: Все още нямате други автоматични процеси.
+no_flows: Няма процеси
+no_flows_copy: Все още нямате никакви автоматични процеси.
+create_flow: Създаване на автоматизиран процес
+creating_new_flow: Създаване на нов автоматизиран процес
+updating_flow: Обновяване на процеса
+flow_setup: Настройка на процеса
 flow_name: Име
 flow_tracking: Следене за активност и история
 flow_tracking_all: Проследяване на активността и историята
 flow_tracking_activity: Проследяване само на активността
 flow_tracking_null: Без следене
+start_flow: Стартиране на процеса
+stop_flow: Спиране на процеса
 create_operation: Създаване на операция
 edit_operation: Редактиране на операцията
 operation_options: Настройки на операцията
 operation_name: Име на операцията...
 operation_key: Идентификатор за референцията...
+operation_key_unique_error: Оперативните ключове трябва да са уникални в процеса
 operation_handle_resolve: 'Решение: Натиснете за добавяне или придърпайте за пренасочване'
 operation_handle_reject: 'Проблем: Натиснете за добавяне или придърпайте за пренасочване'
 insights: Задълбочен анализ
@@ -789,6 +810,7 @@ no_dashboards_copy: Все още нямате нито едно табло.
 create_dashboard: Създаване на табло
 dashboard_name: Име на таблото
 no_data: Няма данни
+no_data_in_flow: В този процес не се създават или достъпват никакви данни
 accountability: Профилиране
 payload: Съдържание
 details: Детайли
@@ -889,6 +911,7 @@ settings_data_model: Модел на данните
 settings_permissions: Роли и позволения
 settings_project: Настройки на проекта
 settings_webhooks: Уеб-куки
+settings_flows: Автоматични процеси
 settings_presets: Заготовки и отметки
 settings_translation_strings: Преводи на низове
 one_or_more_options_are_missing: Липсват една или повече настройки
@@ -938,6 +961,8 @@ page_help_settings_presets_item: >-
   **Детайли за заготовка** — Формуляр за управление на отметките и заготовките от изгледи по подразбиране отнасящи се за колекциите.
 page_help_settings_webhooks_collection: '**Преглед на уеб-куки** — Показват се всички уеб-куки в проекта.'
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
+page_help_settings_flows_collection: '**Преглед на автоматизираните процеси** — Показване на списък от всички налични автоматизирани процеси в проекта.'
+page_help_settings_flows_item: '**Детайлен изглед на автоматизиран процес** — Работен плот за управление на един или множество операции.'
 page_help_settings_translation_strings_collection: '**Преглед на преводите на низовете** — Показва се пълен списък на низовете в проекта.'
 page_help_users_collection: '**Потребители** — Показване на всички потребители в системата на проекта.'
 page_help_users_item: >-
@@ -966,6 +991,7 @@ directus_collection:
   directus_dashboards: Табла в модула за задълбочен анализ
   directus_fields: Допълнителна кофигурация и данни
   directus_files: Мета данни за всички файлове
+  directus_flows: Автоматизирани процеси
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
   directus_notifications: Известия, изпратени до потребителите
@@ -1960,6 +1986,10 @@ operations:
     description: Изчакване на определен брой милисекунди
     milliseconds: Милисекунди
   transform:
-    name: Трансформиране на работните данни
+    name: Трансформиране на съдържанието
+    description: Модифициране на данните от процеса
   trigger:
+    description: Подаване на данните към друг процес
+    flows: Автоматични процеси
+    flow: Процес
     data: Данни
