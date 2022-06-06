@@ -15,18 +15,19 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
+import { ArrayChange } from 'diff';
 
 type Change = {
 	added?: boolean;
 	removed?: boolean;
-	count: number;
+	count?: number;
 	value: string;
 };
 
 export default defineComponent({
 	props: {
 		changes: {
-			type: Array as PropType<Change[]>,
+			type: Array as PropType<Change[] | ArrayChange<any>[]>,
 			required: true,
 		},
 		added: {
@@ -41,7 +42,7 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 		const changesFiltered = computed(() => {
-			return props.changes.filter((change) => {
+			return (props.changes as Change[]).filter((change: any) => {
 				if (props.added === true) {
 					return change.removed !== true;
 				}

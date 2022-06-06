@@ -6,10 +6,10 @@
 			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<div v-for="change in changes" :key="change.name" class="change">
-			<div class="type-label">{{ change.name }}</div>
-			<revisions-drawer-updates-change deleted :changes="change.changes" />
-			<revisions-drawer-updates-change added :changes="change.changes" />
+		<div v-for="change in changes" :key="change!.name" class="change">
+			<div class="type-label">{{ change!.name }}</div>
+			<revisions-drawer-updates-change deleted :changes="change!.changes" />
+			<revisions-drawer-updates-change added :changes="change!.changes" />
 		</div>
 	</div>
 </template>
