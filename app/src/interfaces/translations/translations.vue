@@ -25,7 +25,7 @@
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				:autofocus="autofocus"
-				@update:modelValue="updateValue($event, firstLang)"
+				@update:model-value="updateValue($event, firstLang)"
 			/>
 			<v-divider />
 		</div>
@@ -52,7 +52,7 @@
 				:fields="fields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:model-value="secondItem"
-				@update:modelValue="updateValue($event, secondLang)"
+				@update:model-value="updateValue($event, secondLang)"
 			/>
 			<v-divider />
 		</div>

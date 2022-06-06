@@ -42,7 +42,7 @@
 			:title="t('custom_link')"
 			:model-value="!!editing"
 			icon="link"
-			@update:modelValue="editing = null"
+			@update:model-value="editing = null"
 			@cancel="editing = null"
 		>
 			<template #actions>
