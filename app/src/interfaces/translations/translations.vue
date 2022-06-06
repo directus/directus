@@ -287,16 +287,20 @@ function useLanguages() {
 	}
 
 	.primary {
-		--v-divider-color: var(--primary-50);
+		.v-divider {
+			--v-divider-color: var(--primary-50);
+		}
 	}
 
 	.secondary {
-		--v-divider-color: var(--secondary-50);
-
 		.v-form {
 			--primary: var(--secondary);
 			--v-chip-color: var(--secondary);
 			--v-chip-background-color: var(--secondary-alt);
+		}
+
+		.v-divider {
+			--v-divider-color: var(--secondary-50);
 		}
 	}
 

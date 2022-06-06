@@ -32,6 +32,7 @@ reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
+location: الموقع
 maps: الخرائط
 switch_user: تغير المستخدم
 item_creation: إنشاء عنصر
@@ -638,6 +639,9 @@ toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
+flow_name: الاسم
+flow_tracking_activity: تتبع النشاط فقط
+flow_tracking_null: عدم تتبع أي شيء
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -1159,3 +1163,8 @@ layouts:
 panels:
   label:
     name: تسمية
+operations:
+  notification:
+    recipient: مستخدم
+  request:
+    url: الرابط
