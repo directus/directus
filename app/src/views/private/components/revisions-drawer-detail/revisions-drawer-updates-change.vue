@@ -1,9 +1,10 @@
 <template>
-	<div class="change-line" :class="{ added, deleted, 'no-highlight': wholeThing }">
-		<v-icon :name="added ? 'add' : 'remove'" />
+	<div class="change-line" :class="{ added, deleted, updated, 'no-highlight': wholeThing }">
+		<v-icon :name="added ? 'add' : deleted ? 'remove' : 'warning'" />
 		<div class="delta">
 			<span v-for="(part, index) in changesFiltered" :key="index" :class="{ changed: part.added || part.removed }">
-				<template v-if="part.value">{{ part.value }}</template>
+				<template v-if="part.updated">{{ t('revision_delta_update_message') }}</template>
+				<template v-else-if="part.value">{{ part.value }}</template>
 				<template v-else>
 					<span class="no-value">{{ t('no_value') }}</span>
 				</template>
@@ -17,9 +18,10 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { ArrayChange } from 'diff';
 
-type Change = {
+export type Change = {
 	added?: boolean;
 	removed?: boolean;
+	updated?: boolean;
 	count?: number;
 	value: string;
 };
@@ -38,11 +40,17 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		updated: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const { t } = useI18n();
 		const changesFiltered = computed(() => {
 			return (props.changes as Change[]).filter((change: any) => {
+				if (props.updated) return true;
+
 				if (props.added === true) {
 					return change.removed !== true;
 				}
@@ -100,6 +108,12 @@ export default defineComponent({
 	.changed {
 		background-color: var(--danger-25);
 	}
+}
+
+.updated {
+	color: var(--warning);
+	background-color: var(--warning-alt);
+	border-radius: var(--border-radius) !important;
 }
 
 .no-value {
