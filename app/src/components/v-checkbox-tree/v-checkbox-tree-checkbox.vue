@@ -1,5 +1,11 @@
 <template>
-	<v-list-group v-if="children" v-show="groupShown" :value="value" :open="groupOpen" arrow-placement="before">
+	<v-list-group
+		v-if="Array.isArray(children) && children.length > 0"
+		v-show="groupShown"
+		:value="value"
+		:open="groupOpen"
+		arrow-placement="before"
+	>
 		<template #activator>
 			<v-checkbox
 				v-model="treeValue"
@@ -18,7 +24,7 @@
 			:key="choice[itemValue]"
 			v-model="treeValue"
 			:value-combining="valueCombining"
-			:checked="childrenCheckedStateOverride"
+			:checked="!!childrenCheckedStateOverride"
 			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
 			:search="search"
 			:item-text="itemText"
@@ -33,7 +39,7 @@
 		/>
 	</v-list-group>
 
-	<v-list-item v-else-if="!children" v-show="!hidden" class="item">
+	<v-list-item v-else v-show="!hidden" class="item">
 		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
 			<v-highlight :text="text" :query="search" />
 		</v-checkbox>
@@ -131,8 +137,8 @@ export default defineComponent({
 			if (props.showSelectionOnly === true && props.modelValue.includes(props.value)) {
 				return true;
 			}
-
-			return visibleChildrenValues.value.length > 0;
+			// the item should be shown without children if not hidden by parent
+			return visibleChildrenValues.value.length > 0 || !props.hidden;
 		});
 
 		const groupOpen = computed(() => {
