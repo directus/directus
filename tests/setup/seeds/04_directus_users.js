@@ -20,6 +20,14 @@ exports.seed = async function (knex) {
 			token: 'UserToken',
 		},
 		{
+			id: '929a12a9-6717-499f-bb1f-d8742af8d8ca',
+			email: 'test2@user.com',
+			password: await generateHash.hash('TestUser2Password'),
+			status: 'active',
+			role: '67ce831d-7a02-4a06-a8c9-c8ea16d71e91',
+			token: 'User2Token',
+		},
+		{
 			id: 'cb8cd13b-037f-40ca-862a-ea1e1f4bfca3',
 			email: 'test@noroleuser.com',
 			password: await generateHash.hash('TestNoRoleUserPassword'),

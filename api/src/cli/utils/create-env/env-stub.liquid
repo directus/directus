@@ -1,60 +1,317 @@
 ####################################################################################################
-## General
+# 
+# These values set environment variables which modify core settings of Directus.
+#
+# Values in square brackets are the default values.
+#
+# The following options are not all possible options. For more, see 
+# https://docs.directus.io/configuration/config-options/
+# 
+####################################################################################################
+####################################################################################################
 
+### General
+
+# IP or host the API listens on ["0.0.0.0"]
 HOST="0.0.0.0"
+
+# The port Directus will run on [8055]
 PORT=8055
+
+# The URL where your API can be reached on the web. It is also used for things like OAuth redirects, 
+# forgot-password emails, and logos that needs to be publicly available on the internet. ["/"]
 PUBLIC_URL="/"
+# PUBLIC_URL="http://localhost:8055"
+
+# What level of detail to log. [info]
+# "fatal", "error", "warn", "info", "debug", "trace", "silent"
+# LOG_LEVEL="info"
+
+# Render the logs human readable (pretty) or as JSON (raw), [pretty]
+# "pretty", "raw"
+# LOG_STYLE="pretty"
+
+# Controls the maximum request body size. Accepts number of bytes, or human readable string ["100kb"]
+# MAX_PAYLOAD_SIZE="100kb"
+
+# Where to redirect to when navigating to /. Accepts a relative path, absolute URL, or false to disable ["./admin"]
+# ROOT_REDIRECT="./admin"
+
+# Whether or not to serve the Admin App under /admin. [true]
+# SERVE_APP=true
+
+# Whether or not to enable GraphQL Introspection [true]
+# GRAPHQL_INTROSPECTION=true
 
 ####################################################################################################
-## Database
+### Database
+
+# All DB_* environment variables are passed to the connection configuration of a Knex instance. 
+# Based on your project's needs, you can extend the DB_* environment variables with any config 
+# you need to pass to the database instance.
 
 {{ database }}
 
-####################################################################################################
-## Rate Limiting
 
+# These match the databases defined in the docker-compose file in the root of this repo
+
+## Postgres
+# DB_CLIENT="pg"
+# DB_HOST="localhost"
+# DB_PORT=5432
+# DB_DATABASE="directus"
+# DB_USER="postgres"
+# DB_PASSWORD="secret"
+
+## CockroachDB
+# DB_CLIENT="cockroachdb"
+# DB_HOST="localhost"
+# DB_PORT=26257
+# DB_DATABASE="directus"
+# DB_USER="root"
+# DB_PASSWORD=""
+
+## MySQL 8
+# DB_CLIENT="mysql"
+# DB_HOST="localhost"
+# DB_PORT=3306
+# DB_DATABASE="directus"
+# DB_USER="root"
+# DB_PASSWORD="secret"
+
+## MariaDB
+# DB_CLIENT="mysql"
+# DB_HOST="localhost"
+# DB_PORT=3306
+# DB_DATABASE="directus"
+# DB_USER="root"
+# DB_PASSWORD="secret"
+
+## MS SQL
+# DB_CLIENT="mssql"
+# DB_HOST="localhost"
+# DB_PORT=1343
+# DB_DATABASE="directus"
+# DB_USER="sa"
+# DB_PASSWORD="Test@123"
+
+## OracleDB
+# DB_CLIENT="oracledb"
+# DB_CONNECT_STRING="localhost:1521/XE"
+# DB_USER="secretsysuser"
+# DB_PASSWORD="secretpassword"
+
+## SQLite Example
+# DB_CLIENT="sqlite3"
+# DB_FILENAME="./data.db"
+
+## MySQL 5.7
+# DB_CLIENT="mysql"
+# DB_HOST="localhost"
+# DB_PORT=3306
+# DB_DATABASE="directus"
+# DB_USER="root"
+# DB_PASSWORD="secret"
+
+####################################################################################################
+### Rate Limiting
+
+# Whether or not to enable rate limiting on the API [false]
 RATE_LIMITER_ENABLED=false
+
+# Where to store the rate limiter counts [memory]
+# memory, redis, memcache
 RATE_LIMITER_STORE=memory
+# RATE_LIMITER_REDIS="redis://@127.0.0.1:5105"
+# RATE_LIMITER_MEMCACHE="localhost:5109"
+
+# The amount of allowed hits per duration [50]
 RATE_LIMITER_POINTS=25
+
+# The time window in seconds in which the hits are counted [1]
 RATE_LIMITER_DURATION=1
 
 ####################################################################################################
-## Cache
+### Caching
 
+# Whether or not caching is enabled. [false]
 CACHE_ENABLED=false
 
-####################################################################################################
-## File Storage
+# How long the cache is persisted ["5m"]
+# CACHE_TTL="30m"
 
+# How to scope the cache data ["directus-cache"]
+# CACHE_NAMESPACE="directus-cache"
+
+# Automatically purge the cache on create, update, and delete actions. [false]
+# CACHE_AUTO_PURGE=true
+
+# memory | redis | memcache
+CACHE_STORE=memory
+
+# How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30m"]
+ASSETS_CACHE_TTL="30m"
+
+# CACHE_REDIS="redis://@127.0.0.1:5105"
+# CACHE_MEMCACHE="localhost:5109"
+
+####################################################################################################
+### File Storage
+
+# A CSV of storage locations (eg: local,digitalocean,amazon) to use. You can use any names you'd like for these keys ["local"]
 STORAGE_LOCATIONS="local"
 STORAGE_LOCAL_DRIVER="local"
 STORAGE_LOCAL_ROOT="./uploads"
 
+## S3 Example (location name: DigitalOcean)
+# STORAGE_DIGITALOCEAN_DRIVER="s3"
+# STORAGE_DIGITALOCEAN_KEY="abcdef"
+# STORAGE_DIGITALOCEAN_SECRET="ghijkl"
+# STORAGE_DIGITALOCEAN_ENDPOINT="ams3.digitaloceanspaces.com"
+# STORAGE_DIGITALOCEAN_BUCKET="my-files"
+# STORAGE_DIGITALOCEAN_REGION="ams3"
+
+## Google Cloud Storage Example (location name: Google)
+# STORAGE_GOOGLE_DRIVER="gcs"
+# STORAGE_GOOGLE_KEY_FILENAME="abcdef"
+# STORAGE_GOOGLE_BUCKET="my-files"
+
+
+## A comma-separated list of metadata keys to collect during file upload. Use * for all 
+# Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
+# [ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO]
+# FILE_METADATA_ALLOW_LIST=
+
 ####################################################################################################
-## Security
+### Security
 
 {{ security }}
 
+# Unique identifier for the project
+# KEY="xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx"
+
+# Secret string for the project 
+# SECRET="abcdef"
+
+# The duration that the access token is valid ["15m"]
 ACCESS_TOKEN_TTL="15m"
+
+# The duration that the refresh token is valid, and also how long users stay logged-in to the App ["7d"]
 REFRESH_TOKEN_TTL="7d"
+
+# Whether or not to use a secure cookie for the refresh token in cookie mode [false]
 REFRESH_TOKEN_COOKIE_SECURE=false
+
+# Value for sameSite in the refresh token cookie when in cookie mode ["lax"]
 REFRESH_TOKEN_COOKIE_SAME_SITE="lax"
+
+# Name of refresh token cookie ["directus_refresh_token"]
 REFRESH_TOKEN_COOKIE_NAME="directus_refresh_token"
 
-####################################################################################################
-## Auth Providers
+# Which domain to use for the refresh cookie. Useful for development mode.
+# REFRESH_TOKEN_COOKIE_DOMAIN
 
+# Whether or not to enable the CORS headers [false]
+CORS_ENABLED=true
+
+# Value for the Access-Control-Allow-Origin header. Use true to match the Origin header, or provide a domain or a CSV of domains for specific access [false]
+CORS_ORIGIN=true
+
+# Value for the Access-Control-Allow-Methods header [GET,POST,PATCH,DELETE]
+CORS_METHODS=GET,POST,PATCH,DELETE
+
+# Value for the Access-Control-Allow-Headers header [Content-Type,Authorization]
+CORS_ALLOWED_HEADERS=Content-Type,Authorization
+
+# Value for the Access-Control-Expose-Headers header [Content-R
+CORS_EXPOSED_HEADERS=Content-Range
+
+# Whether or not to send the Access-Control-Allow-Credentials header [true]
+CORS_CREDENTIALS=true
+
+# Value for the Access-Control-Max-Age header [18000]
+CORS_MAX_AGE=18000
+
+####################################################################################################
+### Argon2
+
+# How much memory to use when generating hashes, in KiB [4096]
+# HASH_MEMORY_COST=81920
+
+# The length of the hash function output in bytes [32]
+# HASH_HASH_LENGTH=32
+
+# The amount of passes (iterations) used by the hash function. It increases hash strength at the cost of time required to compute [3]
+# HASH_TIME_COST=10
+
+# The amount of threads to compute the hash on. Each thread has a memory pool with HASH_MEMORY_COST size [1]
+# HASH_PARALLELISM=2
+
+# The variant of the hash function (0: argon2d, 1: argon2i, or 2: argon2id) [1]
+# HASH_TYPE=2
+
+An extra and optional non-secret value. The value will be included B64 encoded in the parameters portion of the digest []
+# HASH_ASSOCIATED_DATA=foo
+
+####################################################################################################
+### Auth Providers
+
+# A comma-separated list of auth providers []
 AUTH_PROVIDERS=""
+# AUTH_PROVIDERS="github"
+
+# AUTH_GITHUB_DRIVER="oauth2"
+# AUTH_GITHUB_CLIENT_ID="73e...4b"
+# AUTH_GITHUB_CLIENT_SECRET="b9...98"
+# AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
+# AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
+# AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
+# AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION=true
+# AUTH_GITHUB_DEFAULT_ROLE_ID="82424427-c9d4-4289-8bc5-ed1bf8422c90"
+# AUTH_GITHUB_ICON="github"
+# AUTH_GITHUB_EMAIL_KEY="email"
+# AUTH_GITHUB_IDENTIFIER_KEY="login"
 
 ####################################################################################################
-## Extensions
+### Extensions
 
+# Path to your local extensions folder ["./extensions"]
 EXTENSIONS_PATH="./extensions"
 
-####################################################################################################
-## Email
+# Automatically reload extensions when they have changed [false]
+EXTENSIONS_AUTO_RELOAD=false
 
+####################################################################################################
+### Email
+
+# Email address from which emails are sent ["no-reply@directus.io"]
 EMAIL_FROM="no-reply@directus.io"
+
+# What to use to send emails. One of 
+# sendmail, smtp, mailgun, ses.
 EMAIL_TRANSPORT="sendmail"
 EMAIL_SENDMAIL_NEW_LINE="unix"
 EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
+
+## Email (Sendmail Transport)
+
+# What new line style to use in sendmail ["unix"]
+EMAIL_SENDMAIL_NEW_LINE="unix"
+
+# Path to your sendmail executable ["/usr/sbin/sendmail"]
+EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
+
+## Email (SMTP Transport)
+# EMAIL_SMTP_HOST="localhost"
+
+# Use SMTP pooling
+# EMAIL_SMTP_POOL=true
+# EMAIL_SMTP_PORT=465
+# EMAIL_SMTP_SECURE=false # Use TLS
+# EMAIL_SMTP_IGNORE_TLS=false
+# EMAIL_SMTP_USER="username"
+# EMAIL_SMTP_PASSWORD="password"
+
+## Email (Mailgun Transport)
+# EMAIL_MAILGUN_API_KEY="key-1234123412341234"
+# EMAIL_MAILGUN_DOMAIN="a domain name from https://app.mailgun.com/app/sending/domains"

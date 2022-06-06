@@ -54,6 +54,8 @@ import VTextarea from './v-textarea';
 import VUpload from './v-upload';
 import VDatePicker from './v-date-picker';
 import VEmojiPicker from './v-emoji-picker.vue';
+import VWorkspace from './v-workspace.vue';
+import VWorkspaceTile from './v-workspace-tile.vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -114,6 +116,8 @@ export function registerComponents(app: App): void {
 	app.component('VUpload', VUpload);
 	app.component('VDatePicker', VDatePicker);
 	app.component('VEmojiPicker', VEmojiPicker);
+	app.component('VWorkspace', VWorkspace);
+	app.component('VWorkspaceTile', VWorkspaceTile);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);
