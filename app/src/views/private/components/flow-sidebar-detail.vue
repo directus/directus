@@ -30,7 +30,7 @@ import { useI18n } from 'vue-i18n';
 interface Props {
 	collection: string;
 	primaryKey?: string;
-	selection: (number | string)[];
+	selection?: (number | string)[];
 	location: 'collection' | 'item';
 }
 

@@ -50,8 +50,8 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
-							@editCollection="editCollection = $event"
-							@setNestedSort="onSort"
+							@edit-collection="editCollection = $event"
+							@set-nested-sort="onSort"
 						/>
 					</template>
 				</draggable>

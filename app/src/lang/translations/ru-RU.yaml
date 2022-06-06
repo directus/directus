@@ -29,6 +29,7 @@ draft: Черновик
 archived: В архиве
 modules: Модули
 module_bar: Панель модулей
+logs: Журналы
 reset_width: Сбросить ширину
 tile_size: Размер плитки
 edit_field: Редактировать поле
@@ -600,10 +601,14 @@ make_collection_visible: Сделать коллекцию видимой
 make_collection_hidden: Сделать коллекцию скрытой
 make_folder_visible: Показать папку
 make_folder_hidden: Скрыть папку
+goto_collection_content: Просмотр содержимого
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
 one_filtered_item: '1 отфильтрованный элемент'
+delete_collection_are_you_sure: >-
+  Вы уверены, что хотите удалить коллекцию «{collection}»? Это приведет к удалению коллекции и всех ее элементов. Это действие необратимо.
+delete_folder_are_you_sure: Вы уверены, что хотите удалить папку «{folder}»? Вложенные папки и коллекции будут перемещены на самый верхний уровень.
 collections_shown: Показано Коллекций
 visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
@@ -721,6 +726,7 @@ icon_off: Значок Выкл
 label: Метка
 trigger: Триггер
 flow_name: Имя
+flow_tracking: Отслеживание активности и логов
 flow_tracking_activity: Отслеживать только активность
 flow_tracking_null: Ничего не отслеживать
 insights: Прогнозы
@@ -744,6 +750,7 @@ create_dashboard: Создать доску
 dashboard_name: Имя Доски
 no_data: Нет данных
 accountability: Подотчетность
+details: Подробности
 full_screen: Во Весь Экран
 edit_panels: Редактировать панели
 fit_to_screen: По размеру экрана

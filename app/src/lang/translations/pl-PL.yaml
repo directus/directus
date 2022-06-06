@@ -766,9 +766,31 @@ trigger_setup: Ustawienia wyzwalacza
 change_trigger: Zmień wyzwalacz
 flow_delete_confirm: Czy na pewno chcesz usunąć przepływ "{flow}"? Tej akcji nie można cofnąć.
 set_flow_active: Ustaw przepływ do Aktywnych
+set_flow_inactive: Ustaw przepływ do Nieaktywnych
+edit_flow: Edytuj przepływ
+delete_flow: Usuń przepływ
+no_other_flows_copy: Nie masz jeszcze żadnych innych przepływów.
+no_flows: Brak przepływów
+no_flows_copy: Nie masz jeszcze żadnych przepływów.
+create_flow: Utwórz przepływ
+creating_new_flow: Tworzenie nowego przepływu
+updating_flow: Aktualizacja Przepływu
+flow_setup: Ustawienia przepływu
 flow_name: Nazwa
+flow_tracking: Śledzenie aktywności i logów
+flow_tracking_all: Śledź aktywność i logi
 flow_tracking_activity: Tylko Śledź Aktywność
 flow_tracking_null: Nie śledź niczego
+start_flow: Rozpocznij przepływ
+stop_flow: Zatrzymaj przepływ
+create_operation: Utwórz operację
+edit_operation: Edytuj operację
+operation_options: Opcje operacji
+operation_name: Nazwa operacji...
+operation_key: Identyfikator odniesienia...
+operation_key_unique_error: Klucze operacji muszą być unikalne w przepływie
+operation_handle_resolve: 'Rozwiązanie: Kliknij, aby dodać lub przeciągnąć do przekierowania'
+operation_handle_reject: 'Odrzuć: Kliknij, aby dodać lub przeciągnąć do przekierowania'
 insights: Statystyki
 dashboard: Pulpit
 panel: Panel
@@ -789,7 +811,10 @@ no_dashboards_copy: Nie masz jeszcze żadnych pulpitów.
 create_dashboard: Utwórz pulpit
 dashboard_name: Nazwa Pulpitu
 no_data: Brak danych
+no_data_in_flow: Żadne dane nie zostały wygenerowane lub dostępne w tym przepływie
 accountability: Odpowiedzialność
+payload: Ładunek
+details: Szczegóły
 full_screen: Pełny ekran
 full_text_search: Wyszukiwanie pełnotekstowe
 edit_panels: Edytuj pulpit
@@ -937,6 +962,8 @@ page_help_settings_presets_item: >-
   **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
 page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
+page_help_settings_flows_collection: '**Przeglądaj Przepływy ** — Listy wszystkich Przepływów w ramach projektu.'
+page_help_settings_flows_item: '**Szczegóły przepływu** — Obszar roboczy do zarządzania jedną lub większą liczbą operacji.'
 page_help_settings_translation_strings_collection: '**Przeglądaj Tłumaczenie** — Wyświetla wszystkie ciągi tłumaczeń w projekcie.'
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
@@ -1917,18 +1944,35 @@ panels:
     monochrome: Monochromatyczne
     monochrome_color: Kolor monochromatyczny
 triggers:
+  common:
+    response_body_all: Wszystkie dane
   webhook:
     method: Metoda
 operations:
+  item-create:
+    payload: Ładunek
+  item-update:
+    payload: Ładunek
   log:
+    description: Wyjście czegoś do konsoli
     message: Wiadomość
+    message_placeholder: Wprowadź wiadomość do pokazania w konsoli...
+  mail:
+    name: Wyślij e-mail
+    description: Wyślij e-mail do jednej lub więcej osób
+    to: Do
+    to_placeholder: Dodaj adresy e-mail i naciśnij enter...
   notification:
+    name: Wyślij powiadomienie
+    description: Wyślij powiadomienie w aplikacji do użytkownika
     recipient: Użytkownik
     message: Wiadomość
   request:
+    description: "Złóż prośbę do adresu URL"
     url: Adres URL
     method: Metoda
     data: Dane
+    headers: Nagłówki
     header: Nagłówek
   trigger:
     flows: Przepływy

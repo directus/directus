@@ -27,7 +27,7 @@
 				@click="filterActive = !filterActive"
 			/>
 
-			<transition-expand @beforeEnter="filterBorder = true" @afterLeave="filterBorder = false">
+			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 				<div v-show="filterActive" ref="filterElement" class="filter">
 					<interface-system-filter
 						class="filter-input"

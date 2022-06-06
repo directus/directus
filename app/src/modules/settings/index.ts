@@ -18,7 +18,6 @@ import RolesPublicItem from './routes/roles/public-item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
 import FlowsOverview from './routes/flows/overview.vue';
-import FlowDrawer from './routes/flows/flow-drawer.vue';
 import FlowsDetail from './routes/flows/flow.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import TranslationStringsCollection from './routes/translation-strings/collection.vue';
