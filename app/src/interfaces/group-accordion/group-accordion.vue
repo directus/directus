@@ -17,7 +17,7 @@
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
-			@toggleAll="toggleAll"
+			@toggle-all="toggleAll"
 		/>
 	</v-item-group>
 </template>

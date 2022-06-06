@@ -37,7 +37,7 @@
 							placement="bottom-start"
 							:model-value="filterInfo[index].comparator"
 							:items="getCompareOptions(filterInfo[index].field)"
-							@update:modelValue="updateComparator(index, $event)"
+							@update:model-value="updateComparator(index, $event)"
 						/>
 						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
 						<span class="delete">
