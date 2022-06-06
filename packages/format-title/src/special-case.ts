@@ -8,6 +8,7 @@ export default [
 	'DateTime',
 	'GitHub',
 	'HD',
+	'IBMid',
 	'ID',
 	'IDs',
 	'iMac',

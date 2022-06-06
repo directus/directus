@@ -1,25 +1,27 @@
 import { Router } from 'express';
-import { Issuer, Client, generators, errors } from 'openid-client';
+import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import flatten from 'flat';
-import { LocalAuthDriver } from './local';
+import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
-import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, AuthData } from '../../types';
 import {
-	InvalidCredentialsException,
-	ServiceUnavailableException,
 	InvalidConfigException,
+	InvalidCredentialsException,
 	InvalidTokenException,
+	InvalidProviderException,
+	ServiceUnavailableException,
 } from '../../exceptions';
-import { respond } from '../../middleware/respond';
-import asyncHandler from '../../utils/async-handler';
-import { Url } from '../../utils/url';
 import logger from '../../logger';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { respond } from '../../middleware/respond';
+import { AuthenticationService, UsersService } from '../../services';
+import { AuthData, AuthDriverOptions, User } from '../../types';
+import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { parseJSON } from '../../utils/parse-json';
+import { Url } from '../../utils/url';
+import { LocalAuthDriver } from './local';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -123,9 +125,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { provider, emailKey, identifierKey, allowPublicRegistration } = this.config;
 
-		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
+		const email = userInfo[emailKey ?? 'email'] ? String(userInfo[emailKey ?? 'email']) : undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = ((userInfo[identifierKey] as any | null | undefined) ?? email)?.toString();
+		const identifier = userInfo[identifierKey] ? String(userInfo[identifierKey]) : email;
 
 		if (!identifier) {
 			logger.warn(`[OAuth2] Failed to find user identifier for provider "${provider}"`);
@@ -172,7 +174,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		if (typeof authData === 'string') {
 			try {
-				authData = JSON.parse(authData);
+				authData = parseJSON(authData);
 			} catch {
 				logger.warn(`[OAuth2] Session data isn't valid JSON: ${authData}`);
 			}
@@ -298,6 +300,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						reason = 'INVALID_USER';
 					} else if (error instanceof InvalidTokenException) {
 						reason = 'INVALID_TOKEN';
+					} else if (error instanceof InvalidProviderException) {
+						reason = 'INVALID_PROVIDER';
 					} else {
 						logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 					}

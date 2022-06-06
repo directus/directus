@@ -10,8 +10,9 @@
 
 			<v-card-text>
 				<div class="fields">
-					<v-input v-model="values.name" autofocus :placeholder="t('dashboard_name')" />
+					<v-input v-model="values.name" class="full" autofocus :placeholder="t('dashboard_name')" />
 					<interface-select-icon :value="values.icon" @input="values.icon = $event" />
+					<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
 					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
 				</div>
 			</v-card-text>
@@ -59,6 +60,7 @@ export default defineComponent({
 		const values = reactive({
 			name: props.dashboard?.name ?? null,
 			icon: props.dashboard?.icon ?? 'dashboard',
+			color: props.dashboard?.color ?? null,
 			note: props.dashboard?.note ?? null,
 		});
 
@@ -68,6 +70,7 @@ export default defineComponent({
 				if (isEqual(newValue, oldValue) === false) {
 					values.name = props.dashboard?.name ?? null;
 					values.icon = props.dashboard?.icon ?? 'dashboard';
+					values.color = props.dashboard?.color ?? null;
 					values.note = props.dashboard?.note ?? null;
 				}
 			}
@@ -94,7 +97,7 @@ export default defineComponent({
 					router.push(`/insights/${response.data.data.id}`);
 				}
 				emit('update:modelValue', false);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;

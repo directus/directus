@@ -92,7 +92,7 @@ export class MailService {
 
 	private async getDefaultTemplateData() {
 		const projectInfo = await this.knex
-			.select(['project_name', 'project_logo', 'project_color'])
+			.select(['project_name', 'project_logo', 'project_color', 'project_url'])
 			.from('directus_settings')
 			.first();
 
@@ -100,6 +100,7 @@ export class MailService {
 			projectName: projectInfo?.project_name || 'Directus',
 			projectColor: projectInfo?.project_color || '#546e7a',
 			projectLogo: getProjectLogoURL(projectInfo?.project_logo),
+			projectUrl: projectInfo?.project_url || '',
 		};
 
 		function getProjectLogoURL(logoID?: string) {

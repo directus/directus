@@ -12,25 +12,17 @@
 	</v-detail>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 
 import RevisionItem from './revision-item.vue';
 
-export default defineComponent({
-	components: { RevisionItem },
-	props: {
-		group: {
-			type: Object,
-			required: true,
-		},
-	},
-	emits: ['click'],
-	setup() {
-		const expand = ref(true);
-		return { expand };
-	},
-});
-</script>
+interface Props {
+	group: Record<string, any>;
+}
 
-<style scoped></style>
+defineProps<Props>();
+defineEmits(['click']);
+
+const expand = ref(true);
+</script>

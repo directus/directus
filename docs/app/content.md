@@ -30,7 +30,6 @@ learn more, see our guide on the [Collection Page](/app/content/collections).
 
 :::tip
 
-
 This Module is for managing Items. Collections are not managed through this Module, as that creates changes in the
 fundamental data model. Administrators manage Collections via the Settings menu. To learn more, see our guide on
 [data model configuration](/configuration/data-model).

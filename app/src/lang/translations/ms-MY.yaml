@@ -31,6 +31,7 @@ module_bar: Modul.bar
 tile_size: Saiz jubin
 edit_field: Sunting halaman
 conditions: Syarat
+location: Lokasi
 maps: Peta
 switch_user: Tukar pengguna
 item_creation: Pembuatan barang
@@ -130,6 +131,7 @@ on_update: Apabila Dikemaskini
 read: Baca
 update: Kemaskini
 select_fields: Pilih medan-medan
+flow_name: Nama
 width: Lebar
 height: Tinggi
 wysiwyg_options:

@@ -23,6 +23,7 @@ identifier: Identificador
 avatar: Avatar
 application: Aplicación
 default_provider: Predeterminado
+method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
@@ -32,6 +33,8 @@ reset_width: Reestablecer Ancho
 tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
+location: Ubicación
+input: Entrada
 maps: Mapas
 switch_user: Cambiar usuario
 item_creation: Creación de Elemento
@@ -326,6 +329,8 @@ revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
+download_page_as_csv: 'Descargar página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista Previa de Creación
 revision_preview: Vista Previa de Revisión
@@ -588,7 +593,6 @@ unexpected_error_copy: Ocurrió un error inesperado. Por favor, intente nuevamen
 copy_details: Copiar Detalles
 no_app_access: Sin acceso a la aplicación
 no_app_access_copy: Este usuario no tiene permiso para usar la aplicación de administración.
-password_reset_sent: Te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Restablecimiento de contraseña con éxito
 back: Regresar
 filter: Filtro
@@ -612,9 +616,6 @@ start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
-delete_collection_are_you_sure: >-
-  ¿Seguro que quieres eliminar esta colección? Esto eliminará la colección y todos los elementos que contiene. Esta acción es permanente.
-delete_folder_are_you_sure: '¿Está seguro que desea eliminar esta carpeta? Las carpetas anidadas y las colecciones se moverán al nivel más alto.'
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -723,6 +724,7 @@ on_create: Al Crear
 on_update: Al Actualizar
 read: Leer
 update: Actualizar
+delete: Eliminar
 select_fields: Seleccionar Campos
 format_text: Formatear Texto
 format_value: Formatear Valor
@@ -733,6 +735,10 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+trigger: Disparador
+flow_name: Nombre
+flow_tracking_activity: Sólo seguimiento de actividad
+flow_tracking_null: No realizar seguimiento
 insights: Informes
 dashboard: Tablero
 panel: Panel
@@ -750,9 +756,10 @@ suffix_placeholder: Texto despues de valor...
 decimals_placeholder: Numero de decimales...
 no_dashboards: Sin tableros
 no_dashboards_copy: Todavía no tiene otros paneles.
-no_data: Sin datos
 create_dashboard: Crear panel
 dashboard_name: Nombre del panel
+no_data: Sin datos
+accountability: Responsabilidad
 full_screen: Pantalla completa
 full_text_search: Búsqueda de texto completo
 edit_panels: Editar paneles
@@ -854,6 +861,7 @@ settings_presets: Predefinidos y Marcadores
 settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
+actions: Acciones
 select: Seleccionar...
 layout: Diseño
 tree_view: Vista en árbol
@@ -863,6 +871,7 @@ preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
 layout_setup: Configuración del Diseño
+data: Datos
 unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Realmente desea salir de esta página?'
 discard_changes: Descartar Cambios
@@ -927,9 +936,9 @@ directus_collection:
   directus_files: Metadatos para todos los archivos gestionados
   directus_folders: Proporciona directorios virtuales para archivos
   directus_migrations: Qué versión de la base de datos estás usando
+  directus_notifications: Notificaciones enviadas a usuarios
   directus_panels: Paneles individuales dentro de los paneles de Individual
   directus_permissions: Permisos de acceso para cada rol
-  directus_notifications: Notificaciones enviadas a usuarios
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1016,7 +1025,6 @@ fields:
     status_archived: Archivado
     role: Rol
     token: Token
-    token_placeholder: Introduzca un token de acceso seguro...
     provider: Proveedor
     external_identifier: Identificador externo
     last_page: Última página
@@ -1318,7 +1326,6 @@ export_started_copy: Tu exportación ha comenzado. Serás notificado cuando est�
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
-require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
@@ -1610,6 +1617,8 @@ interfaces:
     header_color: Color del encabezado
     start_open: Iniciar apertura
     start_closed: Iniciar colapsado
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traducciónes
@@ -1757,6 +1766,35 @@ layouts:
     find_location: Buscar ubicación...
     default_template: Usando la colección por defecto...
     no_compatible_fields: No hay campos compatibles
+  kanban:
+    name: Kanban,
+    group_field: Agrupar,
+    group_field_placeholder: Campo para agrupar,
+    group_title: Título del Grupo,
+    group_title_placeholder: Campo para títulos de grupo...,
+    title: Título de la Tarjeta
+    title_placeholder: Campo de título opcional...,
+    text: Texto de la Tarjeta,
+    text_placeholder: Campo de texto opcional...,
+    date: Fecha de la Tarjeta,
+    date_placeholder: Campo de fecha opcional...,
+    tags: Etiquetas de la Tarjeta,
+    tags_placeholder: Campo de etiquetas opcional...,
+    user: Usuario de la Tarjeta,
+    user_placeholder: Campo de usuario opcional...,
+    image: Imagen de la Tarjeta,
+    image_placeholder: Campo de imagen opcional...,
+    image_fit: Ajuste de Imagen de la Tarjeta,
+    crop: Recortar,
+    advanced: Avanzado,
+    edit_group: Editar Grupo,
+    delete_group: Eliminar Grupo,
+    add_group: Añadir Grupo,
+    add_group_placeholder: Introduzca un nuevo título para el grupo...,
+    show_ungrouped: Mostrar Desagrupado,
+    show: Mostrar,
+    no_group: Sin Agrupar,
+    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 panels:
   metric:
     name: Métrico
@@ -1775,3 +1813,50 @@ panels:
   list:
     name: Lista
     description: Filtrar y listar campos de una colección
+  barchart:
+    name: Gráfico de Barras
+    description: Gráficos de barra o columna para comparar grupos de valores
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    horizontal: Horizontal
+    x_axis_grouping: Agregación de Grupo del Eje X
+    x_axis: Eje X
+    y_axis_function: Función del Eje Y
+    y_axis: Eje Y
+    show_x_axis: Mostrar Eje X
+    show_y_axis: Mostrar Eje Y
+    show_data_label: Mostrar Etiqueta de Datos
+    group_by: Agrupado Por
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+    y_axis_NaN: El eje Y debe ser un número.
+    y_axis_conditional_one: Valor para la condición
+    y_axis_conditional_two: debe ser un número.
+  linechart:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    x_axis: Eje X
+    y_axis: Eje Y
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+  meter:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    function: Función
+  piechart:
+    function: 'Función'
+triggers:
+  webhook:
+    method: Método
+operations:
+  notification:
+    recipient: Usuario
+  request:
+    url: URL
+    method: Método
+    data: Datos
+    header: Cabecera
+  trigger:
+    data: Datos

@@ -18,16 +18,16 @@
 				</div>
 			</template>
 
-			<template v-if="!disabled" #append>
+			<template #append>
 				<template v-if="displayItem">
+					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editModalActive = true" />
 					<v-icon
-						v-if="updateAllowed"
-						v-tooltip="t('edit')"
-						name="open_in_new"
-						class="edit"
-						@click.stop="editModalActive = true"
+						v-if="!disabled"
+						v-tooltip="t('deselect')"
+						name="close"
+						class="deselect"
+						@click.stop="$emit('input', null)"
 					/>
-					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', null)" />
 				</template>
 				<template v-else>
 					<v-icon
@@ -43,13 +43,13 @@
 		</v-input>
 
 		<drawer-item
-			v-if="!disabled"
 			v-model:active="editModalActive"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
-			@input="update"
+			:disabled="!updateAllowed || disabled"
+			@input="onDrawerItemInput"
 		/>
 
 		<drawer-collection
@@ -173,6 +173,11 @@ function onPreviewClick() {
 	if (props.disabled) return;
 
 	selectModalActive.value = true;
+}
+
+function onDrawerItemInput(event: any) {
+	if (props.disabled) return;
+	update(event);
 }
 
 const selection = computed<(number | string)[]>(() => {

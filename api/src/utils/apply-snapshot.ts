@@ -1,14 +1,19 @@
-import { Snapshot, SnapshotDiff, SnapshotField } from '../types';
+import { Field, Relation, SchemaOverview } from '@directus/shared/types';
+import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import { Knex } from 'knex';
+import { merge, set } from 'lodash';
+import getDatabase from '../database';
+import logger from '../logger';
+import { CollectionsService, FieldsService, RelationsService } from '../services';
+import { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
+import { getSchema } from './get-schema';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
-import { Knex } from 'knex';
-import getDatabase from '../database';
-import { getSchema } from './get-schema';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { set, merge } from 'lodash';
-import { Diff, DiffNew } from 'deep-diff';
-import { Field, Relation, SchemaOverview } from '@directus/shared/types';
-import logger from '../logger';
+
+type CollectionDelta = {
+	collection: string;
+	diff: Diff<Collection | undefined>[];
+};
 
 export async function applySnapshot(
 	snapshot: Snapshot,
@@ -23,60 +28,95 @@ export async function applySnapshot(
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
+		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
+			snapshotDiff.collections.filter(
+				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === currentLevelCollection
+			) as CollectionDelta[];
+
+		const getNestedCollectionsToDelete = (currentLevelCollection: string) =>
+			snapshotDiff.collections.filter(
+				({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === currentLevelCollection
+			) as CollectionDelta[];
+
+		const createCollections = async (collections: CollectionDelta[]) => {
+			for (const { collection, diff } of collections) {
+				if (diff?.[0].kind === 'N' && diff[0].rhs) {
+					// We'll nest the to-be-created fields in the same collection creation, to prevent
+					// creating a collection without a primary key
+					const fields = snapshotDiff.fields
+						.filter((fieldDiff) => fieldDiff.collection === collection)
+						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
+						.map((fieldDiff) => {
+							// Casts field type to UUID when applying SQLite-based schema on other databases.
+							// This is needed because SQLite snapshots UUID fields as char with length 36, and
+							// it will fail when trying to create relation between char field to UUID field
+							if (
+								!fieldDiff.schema ||
+								fieldDiff.schema.data_type !== 'char' ||
+								fieldDiff.schema.max_length !== 36 ||
+								!fieldDiff.schema.foreign_key_table ||
+								!fieldDiff.schema.foreign_key_column
+							) {
+								return fieldDiff;
+							}
+
+							const matchingForeignKeyTable = schema.collections[fieldDiff.schema.foreign_key_table];
+							if (!matchingForeignKeyTable) return fieldDiff;
+
+							const matchingForeignKeyField = matchingForeignKeyTable.fields[fieldDiff.schema.foreign_key_column];
+							if (!matchingForeignKeyField || matchingForeignKeyField.type !== 'uuid') return fieldDiff;
+
+							return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
+						});
+
+					try {
+						await collectionsService.createOne({
+							...diff[0].rhs,
+							fields,
+						});
+					} catch (err: any) {
+						logger.error(`Failed to create collection "${collection}"`);
+						throw err;
+					}
+
+					// Now that the fields are in for this collection, we can strip them from the field edits
+					snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
+
+					await createCollections(getNestedCollectionsToCreate(collection));
+				}
+			}
+		};
+
+		const deleteCollections = async (collections: CollectionDelta[]) => {
+			for (const { collection, diff } of collections) {
+				if (diff?.[0].kind === 'D') {
+					await deleteCollections(getNestedCollectionsToDelete(collection));
+
+					try {
+						await collectionsService.deleteOne(collection);
+					} catch (err) {
+						logger.error(`Failed to delete collection "${collection}"`);
+						throw err;
+					}
+				}
+			}
+		};
+
+		// create top level collections (no group) first, then continue with nested collections recursively
+		await createCollections(
+			snapshotDiff.collections.filter(
+				({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
+			)
+		);
+
+		// delete top level collections (no group) first, then continue with nested collections recursively
+		await deleteCollections(
+			snapshotDiff.collections.filter(
+				({ diff }) => diff[0].kind === 'D' && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
+			)
+		);
+
 		for (const { collection, diff } of snapshotDiff.collections) {
-			if (diff?.[0].kind === 'D') {
-				try {
-					await collectionsService.deleteOne(collection);
-				} catch (err) {
-					logger.error(`Failed to delete collection "${collection}"`);
-					throw err;
-				}
-			}
-
-			if (diff?.[0].kind === 'N' && diff[0].rhs) {
-				// We'll nest the to-be-created fields in the same collection creation, to prevent
-				// creating a collection without a primary key
-				const fields = snapshotDiff.fields
-					.filter((fieldDiff) => fieldDiff.collection === collection)
-					.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
-					.map((fieldDiff) => {
-						// Casts field type to UUID when applying SQLite-based schema on other databases.
-						// This is needed because SQLite snapshots UUID fields as char with length 36, and
-						// it will fail when trying to create relation between char field to UUID field
-						if (
-							!fieldDiff.schema ||
-							fieldDiff.schema.data_type !== 'char' ||
-							fieldDiff.schema.max_length !== 36 ||
-							!fieldDiff.schema.foreign_key_table ||
-							!fieldDiff.schema.foreign_key_column
-						) {
-							return fieldDiff;
-						}
-
-						const matchingForeignKeyTable = schema.collections[fieldDiff.schema.foreign_key_table];
-						if (!matchingForeignKeyTable) return fieldDiff;
-
-						const matchingForeignKeyField = matchingForeignKeyTable.fields[fieldDiff.schema.foreign_key_column];
-						if (!matchingForeignKeyField || matchingForeignKeyField.type !== 'uuid') return fieldDiff;
-
-						return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
-					});
-
-				try {
-					await collectionsService.createOne({
-						...diff[0].rhs,
-						fields,
-					});
-				} catch (err: any) {
-					logger.error(`Failed to create collection "${collection}"`);
-					throw err;
-				}
-
-				// Now that the fields are in for this collection, we can strip them from the field
-				// edits
-				snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
-			}
-
 			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
 				const newValues = snapshot.collections.find((field) => {
 					return field.collection === collection;
