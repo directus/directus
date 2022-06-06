@@ -9,14 +9,16 @@
 **You can create perfect software, but if no one knows about it, it's all for naught. Marketing and advertising are
 expensive. You can help us cut these costs with the following quick options.**
 
+<!-- @TODO Uncomment when Merch Store is launched.
 **Merchandise**\
 Buy some of our _totally sweet_ merchandise! This is a great way to support Directus. You get some swag, and we get some
 financial support plus advertising. Simply make an appropriate financial donation through [GitHub Sponsors](https://github.com/sponsors/directus)
 or contact us for bulk merch pricing. We'll get it shipped as soon as sizing and shipping details are coordinated!
+-->
 
 **GitHub Stars**\
 As an open-source project, stars are a primary metric by which we measure our success. It only takes a few seconds to head
-to the [Directus GitHub](https://github.com/directus/directus) and click the star. With enough activity in a short period
+to the [Directus GitHub Repo](https://github.com/directus/directus) and click the star. With enough activity in a short period
 of time, we get _even more exposure_ on GitHub's trending page!
 
 **Social Posts**\
