@@ -50,8 +50,10 @@ export_items: Eksportuj elementy
 and: I
 or: Lub
 init: Rozpocznij
+dataset_too_large_currently_showing_n_items: Zbiór danych jest zbyt duży. Obecnie wyświetlane są pierwsze {n} elementów.
 modifier: Modyfikator
 custom: Własny
+hook: Hook
 fill_width: Szerokość wypełnienia
 field_name_translations: Tłumaczenie nazwy pola
 enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie dwuetapowe
@@ -484,6 +486,7 @@ disabled: Wyłączony
 information: Informacja
 report_bug: Zgłoś błąd
 request_feature: Zaproponuj nową funkcjonalność
+request_body: Żądanie treści
 interface_not_found: 'Interfejs "{interface}" nie został znaleziony.'
 operation_not_found: 'Operacja "{operation}" nie została znaleziona.'
 reset_interface: Resetuj interfejs
@@ -992,9 +995,11 @@ directus_collection:
   directus_dashboards: Panel główny w module Insights
   directus_fields: Dodatkowa konfiguracja pola i metadane
   directus_files: Metadane dla wszystkich zarządzanych zasobów plików
+  directus_flows: Automatyzacja przepływów
   directus_folders: Dostarcza wirtualne katalogi dla plików
   directus_migrations: Jaką wersję bazy danych używasz
   directus_notifications: Powiadomienia wysłane do użytkowników
+  directus_operations: Operacje prowadzone w przepływach
   directus_panels: Pojedyncze panele w panelu Insights
   directus_permissions: Uprawnienia dostępu do każdej roli
   directus_presets: Ustawienia domyślne kolekcji i zakładek
@@ -1365,6 +1370,7 @@ reset: Resetuj
 reset_password: Resetuj hasło
 revisions: Wersje
 no_revisions: Brak rewizji
+no_logs: Brak logów
 revert: Przywróć
 save: Zapisz
 schema: Schemat
@@ -1407,6 +1413,7 @@ interfaces:
     no_rules: Brak skonfigurowanych reguł
     change_value: Kliknij, aby zmienić wartość
     placeholder: Przeciągnij tutaj reguły
+    add_key_placeholder: Dodaj klucz i naciśnij Enter...
   fields:
     name: Pola
   group-accordion:
@@ -1945,15 +1952,65 @@ panels:
     monochrome_color: Kolor monochromatyczny
 triggers:
   common:
+    response_body: Treść odpowiedzi
     response_body_all: Wszystkie dane
+    response_body_last: Dane dotyczące ostatniej operacji
+  event:
+    name: Wydarzenie Hook
+    description: Wyzwalacze na platformie lub w wydarzeniach danych
+    action: 'Działanie (bez blokowania)'
+    filter: 'Filtr (blokowanie)'
   webhook:
+    name: Webhook
+    description: Wyzwalacze na przychodzące żądanie HTTP
     method: Metoda
+    async: Asynchroniczny
+  operation:
+    name: Kolejny przepływ
+    description: Wywołane przez inny przepływ dla łańcuchów
+    preview: Wywołane przez operację w innym przepływie
+  schedule:
+    name: Harmonogram (CRON)
+    description: Wyzwalacze w regularnych momentach
+    cron: Interwał
+  manual:
+    name: Ręcznie
+    description: Wyzwalacze przy ręcznym uruchomieniu w wybranych zbiorach
+    collection_and_item: Strony kolekcji i rekordów
+    collection_only: Tylko strona kolekcji
+    item_only: Tylko strona rekordu
+a_users_uuid: Klucz główny użytkownika UUID...
+a_flow_uuid: Podstawowy UUID klucza głównego przepływu...
+any_string_or_json: Dowolny ciąg znaków lub JSON...
+item_payload_placeholder: To jest JSON używany do aktualizacji wartości pola elementu...
+operation_variables_note: Możesz uzyskać dostęp do danych przepływu zmiennymi takimi jak **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, lub odniesienie do poprzednich operacji używając **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Warunek
+    description: Trasa przepływu na podstawie logiki If / Else
   item-create:
+    name: Utwórz dane
+    description: Utwórz elementy w bazie danych
     payload: Ładunek
+    emit_events: Wydaj wydarzenia
+  item-delete:
+    name: Usuń dane
+    description: Usuń elementy w bazie danych
+    key: ID
+    query: Zapytanie
+  item-read:
+    name: Przeczytaj dane
+    description: Czytaj elementy z bazy danych
+    key: ID
+    query: Zapytanie
   item-update:
+    name: Aktualizuj dane
+    description: Aktualizuj elementy w bazie danych
+    key: ID
     payload: Ładunek
+    query: Zapytanie
   log:
+    name: Logi do konsoli
     description: Wyjście czegoś do konsoli
     message: Wiadomość
     message_placeholder: Wprowadź wiadomość do pokazania w konsoli...
@@ -1962,19 +2019,32 @@ operations:
     description: Wyślij e-mail do jednej lub więcej osób
     to: Do
     to_placeholder: Dodaj adresy e-mail i naciśnij enter...
+    body: Treść
   notification:
     name: Wyślij powiadomienie
     description: Wyślij powiadomienie w aplikacji do użytkownika
     recipient: Użytkownik
     message: Wiadomość
   request:
+    name: Webhook / URL żądania
     description: "Złóż prośbę do adresu URL"
     url: Adres URL
+    url_placeholder: https://przyklad.com/przykład
     method: Metoda
     data: Dane
     headers: Nagłówki
     header: Nagłówek
+    header_placeholder: Autoryzacja...
+  sleep:
+    name: Uśpienie
+    description: Poczekaj określoną liczbę milisekund
+    milliseconds: Milisekundy
+  transform:
+    name: Przekształć obciążenie
+    description: Zmień obciążenie JSON przepływów
   trigger:
+    name: Przepływ Wyzwalaczy
+    description: Przenieś te dane do innego przepływu
     flows: Przepływy
     flow: Przepływ
     data: Dane
