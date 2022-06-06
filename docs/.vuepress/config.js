@@ -223,6 +223,24 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/configuration/flows/flows',
+						title: 'Flows',
+						collapsable: false,
+						children: [
+							{
+								type: 'page',
+								path: '/configuration/flows/triggers',
+								title: 'Triggers',
+							},
+							{
+								type: 'page',
+								path: '/configuration/flows/operations',
+								title: 'Operations',
+							},
+						],
+					},
+					{
+						type: 'page',
 						path: '/configuration/activity-log',
 						title: 'Activity Log',
 					},
