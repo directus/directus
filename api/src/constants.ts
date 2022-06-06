@@ -57,3 +57,8 @@ export const COOKIE_OPTIONS = {
 	secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 	sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 };
+
+export const ROBOTSTXT = `
+User-agent: *
+Disallow: /
+`.trim();

@@ -6,7 +6,7 @@ fields:
   - field: name
   - field: icon
   - field: color
-  - field: note
+  - field: description
   - field: status
   - field: trigger
   - field: accountability

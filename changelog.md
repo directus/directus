@@ -2,6 +2,24 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.12.1 (June 3, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#13724](https://github.com/directus/directus/pull/13724) Only render first 10000 items on calendar layout view (by
+    @rijkvanzanten)
+  - [#13723](https://github.com/directus/directus/pull/13723) Don't crash on misconfigured scope trigger (by
+    @rijkvanzanten)
+  - [#13713](https://github.com/directus/directus/pull/13713) Fix flows editing existing operations (by @rijkvanzanten)
+  - [#13635](https://github.com/directus/directus/pull/13635) Add Locale labels to groups (by @azrikahar)
+- **API**
+  - [#13719](https://github.com/directus/directus/pull/13719) Fix installer missing package (by @rijkvanzanten)
+  - [#13694](https://github.com/directus/directus/pull/13694) Fix export offset (by @licitdev)
+- **Extensions**
+  - [#13709](https://github.com/directus/directus/pull/13709) Fix endpoint extensions being registered under wrong route
+    (by @nickrum)
+
 ## v9.12.0 (June 2, 2022)
 
 ### :sparkles: New Features
