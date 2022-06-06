@@ -16,6 +16,7 @@ import { loadModules } from './modules/register';
 import { router } from './router';
 import './styles/main.scss';
 import { registerViews } from './views/register';
+import { registerOperations } from './operations/register';
 
 init();
 
@@ -48,6 +49,7 @@ async function init() {
 		registerPanels(app),
 		registerDisplays(app),
 		registerLayouts(app),
+		registerOperations(app),
 		loadModules(),
 	]);
 

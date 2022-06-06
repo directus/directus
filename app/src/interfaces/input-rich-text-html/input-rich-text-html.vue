@@ -9,7 +9,7 @@
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 			@focus="setupContentWatcher"
-			@SetContent="setCount"
+			@set-content="setCount"
 		/>
 		<template v-if="softLength">
 			<span
