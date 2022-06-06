@@ -84,11 +84,11 @@ project!_
 
 **Directus Cloud**\
 Cloud architecture, software updates, and configuration optimizations require fully dedicated effort. Cut through all that
-digital red-tape and run your projects on Directus Cloud. You get production-ready projects with zero vendor lock-in, 90
-second average build times, incredibly fair pricing, scaling at the click of a button, automatic updates with no downtime
-and a constant stream of new Cloud Exclusive Extensions.
+digital red-tape and run your projects on [Directus Cloud](/cloud/overview). You get production-ready projects with zero
+vendor lock-in, 90 second average build times, incredibly fair pricing, scaling at the click of a button, automatic updates
+with no downtime and a constant stream of new [Cloud Exclusive Extensions](/cloud/glossary/#extensions).
 
-We do everything we can to make hosting on Directus Cloud a no-brainer.
+We do everything we can to make hosting on [Directus Cloud](/cloud/overview) a no-brainer.
 
 :::tip Ready to try out Cloud?
 
