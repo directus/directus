@@ -279,8 +279,8 @@ describe('schema', () => {
 
 					const responseObj = response.body.data as any;
 
-					expect(responseObj.datetime_hour).toBe(parseInt(sampleDates[index]!.datetime.slice(11, 13)));
-					expect(responseObj.timestamp_hour).toBe(
+					expect(parseInt(responseObj.datetime_hour)).toBe(parseInt(sampleDates[index]!.datetime.slice(11, 13)));
+					expect(parseInt(responseObj.timestamp_hour)).toBe(
 						parseInt(new Date(sampleDates[index]!.timestamp).toISOString().slice(11, 13))
 					);
 				}
