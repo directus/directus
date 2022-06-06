@@ -17,7 +17,7 @@
 
 ### Community
 
-- **[Youtube](https://www.youtube.com/c/DirectusVideos)** — Checkout our channel with video tutorials and feature
+- **[YouTube](https://www.youtube.com/c/DirectusVideos)** — Checkout our channel with video tutorials and feature
   overviews.
 - **[Discord](https://directus.chat)** — A growing community of 4K+ developers.
 - **[Twitter](https://twitter.com/directus)** — The latest product info and sneak-peeks.
