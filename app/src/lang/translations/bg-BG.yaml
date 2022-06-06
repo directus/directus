@@ -995,6 +995,7 @@ directus_collection:
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
   directus_notifications: Известия, изпратени до потребителите
+  directus_operations: Задачи които се изпълняват в автоматизиран процес
   directus_panels: Панели в таблото на задълбочения анализ
   directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
@@ -1919,6 +1920,10 @@ triggers:
     description: Задействане при входяща HTTP заявка
     method: Метод
     async: Асинхронно
+  operation:
+    name: Друг процес
+    description: Задействане от друг процес, при навързване
+    preview: Задействан от операция в друг процес
   schedule:
     name: График (CRON)
     description: Задействане на равни интервали от време
@@ -1930,12 +1935,14 @@ triggers:
     collection_only: Само в изгледа на колекцията
     item_only: Само в детайлния изглед
 a_users_uuid: Потребителски първичен UUID ключ...
+a_flow_uuid: Първичен UUID ключ на процеса...
 any_string_or_json: Всякакъв низ или JSON...
-item_payload_placeholder: Това трябва да е JSON документа, който ще се използва за актуализирането на полетата на записа...
+item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
 operation_variables_note: Данните от операцията са достъпни през променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или достъп до предишната операция през **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Условие
+    description: Маршрутизиране на процес базирано на If / Else логика
   item-create:
     name: Създаване на данни
     description: Създаване на записи в базата от данни
@@ -1987,8 +1994,9 @@ operations:
     milliseconds: Милисекунди
   transform:
     name: Трансформиране на съдържанието
-    description: Модифициране на данните от процеса
+    description: Подмяна на JSON съдържанието на процеса
   trigger:
+    name: Задействане на процес
     description: Подаване на данните към друг процес
     flows: Автоматични процеси
     flow: Процес
