@@ -52,7 +52,7 @@ Let's get into it.
 1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install). We will run a lot of `gcloud` commands to
    get your GCP environment setup.
 
-2. Go over the steps for [Manually installing Directus](/getting-started/installation/manual)
+2. Go over the steps for [Manually installing Directus](/self-hosted/installation/manual)
 
 3. Add a start script to your package.json like so:
 

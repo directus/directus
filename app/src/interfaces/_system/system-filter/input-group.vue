@@ -48,7 +48,7 @@
 		</div>
 	</div>
 
-	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))" class="between">
+	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))">
 		<input-component
 			:is="interfaceType"
 			:choices="choices"

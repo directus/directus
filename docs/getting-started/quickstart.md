@@ -44,7 +44,7 @@ To create a Community Project, follow the steps below:
 3. Set the Project Name.
 4. Select the Community tier.
 5. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
-   _Note: The **"Demo Project"** adds in dummy data for in-depth feature demonstrations._
+   Note: The **"Demo Project"** adds in dummy data for in-depth feature demonstrations.
 6. Click **"Create Project"**.
 
 _It should take around 90 seconds for the Cloud Project to build out. During this time, a link will be sent to the email
@@ -82,10 +82,10 @@ Once logged in, you're greeted with the option to create your first
 1. Navigate into the Content Module.
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
-   _For the sake of this demo, we'll be calling ours `articles`, but feel free to make it your own!_
+   For the sake of this demo, we'll call ours `articles`, but feel free to make it your own!
 4. Leave the other options at default. Click <span mi btn>arrow_forward</span> and the **"Optional System Fields"** menu
    will open.\
-   _Keep the values in this menu at the default, toggled off, for now. You can adjust them later._
+   Keep the values in this menu at the default, toggled off, for now. You can adjust them later.
 5. Click <span mi btn>check</span> in the menu header.
 
 :::tip Learn More About Collections
@@ -112,7 +112,7 @@ With your first Collection created, it's time to start adding some [Fields](/get
 1. Navigate to **Settings Module > Data Model > `Collection-Name`**.
 2. Click the **"Create Field"** button and select the **"Input"** Field type.
 3. Fill in a Field name under **Key**. We'll be calling our Field `title`.\
-   _Directus offers powerful Field customization options, but let's stick to the defaults for now._
+   Directus offers powerful Field customization options, but let's stick to the defaults for now.
 4. Select **"Save"**.
 
 ::: tip Learn More About Fields
@@ -160,7 +160,7 @@ of creating a new Role.
 
 1. Navigate to **Settings Module > Roles & Permissions > Public**.
 2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection.\
-   _In our case, the Collection name is `article`._
+   In our case, the Collection name is `article`.
 3. Click **"All Access"** to give the Public Role full read permissions to the Items in this Collection.
 
 ::: tip Learn More About Roles & Permissions
@@ -176,7 +176,7 @@ externally! Data can be accessed in a number of ways, including the REST and Gra
 use the `/items/` [REST API endpoint](/reference/items) to retrieve the Item we just created.
 
 1. Open `http://your-project-url.directus.app/items/articles`.\
-   _You can use the browser or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud)._
+   You can use the browser or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud)
 
 _And there it is! The Article Item you just created is being served in beautiful JSON, ready to be used anywhere and
 everywhere!_
