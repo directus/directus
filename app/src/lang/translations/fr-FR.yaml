@@ -29,11 +29,13 @@ draft: Brouillon
 archived: Archivé
 modules: Modules
 module_bar: Barre de modules
+logs: Journaux
 reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
 location: Localisation
+condition_rules: Règles de conditions
 input: Texte simple
 maps: Cartes
 switch_user: Changer d'utilisateur
@@ -47,6 +49,11 @@ group: Groupe
 export_items: Exporter
 and: Et
 or: Ou
+init: Initialiser
+dataset_too_large_currently_showing_n_items: L'ensemble de données est trop grand. Il affiche actuellement les {n} premiers éléments.
+modifier: Modificateur
+custom: Personnalisé
+hook: Crochet
 fill_width: Remplir l'espace
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
@@ -70,6 +77,7 @@ create_preset: Créer un préréglage
 create_panel: Créer un panneau
 create_role: Créer un rôle
 create_user: Créer un utilisateur
+message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
 create_translation_string: Créer une chaîne de traduction
@@ -478,7 +486,9 @@ disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
 request_feature: Demander une fonctionnalité
+request_body: Corps de la requête
 interface_not_found: 'L''interface "{interface}" est introuvable.'
+operation_not_found: 'Opération "{operation}" non trouvée.'
 reset_interface: Réinitialiser l'interface
 display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
@@ -745,10 +755,45 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
+flows: Les Flux
+flow: Flux
+select_a_flow: Sélectionner un flux
+run_flow_on_current: Exécuter le flux sur l'élément actuel
+run_flow_on_selected: Aucun élément sélectionné | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
+run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
+trigger_options: Options de Déclenchement
+view_trigger: Voir le déclencheur
+create_trigger: Créer un Déclencheur
+trigger_setup: Configuration du Déclencheur
+change_trigger: Changer le Déclencheur
+flow_delete_confirm: Êtes-vous sûr de vouloir supprimer le Flux "{flow}" ? Cette action ne peut pas être annulée.
+set_flow_active: Activer le Flux
+set_flow_inactive: Désactiver le Flux
+edit_flow: Modifier le Flux
+delete_flow: Supprimer le Flux
+no_other_flows_copy: Vous n'avez pas encore d'autres Flux.
+no_flows: Aucun Flux
+no_flows_copy: Vous n'avez pas encore de Flux.
+create_flow: Créer un Flux
+creating_new_flow: Création d'un nouveau Flux
+updating_flow: Mise à jour du Flux
+flow_setup: Configuration du Flux
 flow_name: Nom
+flow_tracking: Suivi des Activités et des Journaux
+flow_tracking_all: Suivre les Activités et les Journaux
 flow_tracking_activity: Enregistrer seulement l'activité
 flow_tracking_null: Ne rien enregistrer
+start_flow: Démarrer le Flux
+stop_flow: Arrêt du Flux
+create_operation: Créer une Opération
+edit_operation: Modifier l'Opération
+operation_options: Les Options d'Opération
+operation_name: Nom de l'Opération...
+operation_key: Identifiant pour référence...
+operation_key_unique_error: Les clés d'Opération doivent être uniques dans un Flux
+operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
+operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 insights: Analyses
 dashboard: Tableau de bord
 panel: Panneau
@@ -769,7 +814,10 @@ no_dashboards_copy: Vous n'avez pas encore de Tableau de bord.
 create_dashboard: Créer un tableau de bord
 dashboard_name: Nom du Tableau de bord
 no_data: Pas de donnée
+no_data_in_flow: Aucune donnée n'a été produite ou accédée dans ce flux
 accountability: Traçabilité
+payload: Données utiles
+details: Détails
 full_screen: Plein écran
 full_text_search: Recherche dans l'intégralité du texte
 edit_panels: Modifier le panneau
@@ -867,6 +915,7 @@ settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
+settings_flows: Les Flux
 settings_presets: Préréglages et favoris
 settings_translation_strings: Chaînes de traduction
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
@@ -916,6 +965,8 @@ page_help_settings_presets_item: >-
   **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
+page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
+page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
 page_help_settings_translation_strings_collection: '**Parcourir les chaînes de traduction** — Liste toutes les chaînes de traduction du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
@@ -944,9 +995,11 @@ directus_collection:
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
+  directus_flows: Flux d'automatisation
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
   directus_notifications: Notifications envoyées aux utilisateurs
+  directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
   directus_permissions: Sélectionner les permissions pour chaque groupe
   directus_presets: Préréglages pour la collection par défaut et les signets
@@ -1317,6 +1370,7 @@ reset: Réinitialiser
 reset_password: Réinitialiser le mot de passe
 revisions: Historique
 no_revisions: Aucune révision pour l'instant
+no_logs: Pas Encore de Logs
 revert: Restaurer
 save: Enregistrer
 schema: Schéma
@@ -1341,6 +1395,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1359,6 +1414,7 @@ interfaces:
     no_rules: Configurer les règles
     change_value: Cliquez pour modifier le nom
     placeholder: Glisser les fichiers ici
+    add_key_placeholder: Ajouter une clé et appuyer sur Entrée...
   fields:
     name: Champs
   group-accordion:
@@ -1896,15 +1952,101 @@ panels:
     monochrome: Monochrome
     monochrome_color: Couleur Monochrome
 triggers:
+  common:
+    response_body: Corps de la Réponse
+    response_body_all: Toutes les Données
+    response_body_last: Données de la Dernière Opération
+  event:
+    name: Crochet d'Événement
+    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    action: 'Action (Non Bloquante)'
+    filter: 'Filtre (Bloquant)'
   webhook:
+    name: Webhook
+    description: Déclencheurs sur une requête HTTP entrante
     method: Méthode
+    async: Asynchrone
+  operation:
+    name: Un autre Flux
+    description: Déclenché par un autre Flux, pour le chaînage
+    preview: Déclenché par une opération dans un Flux différent
+  schedule:
+    name: Planification (CRON)
+    description: Déclencheurs à des moments réguliers dans le temps
+    cron: Intervalle
+  manual:
+    name: Manuelle
+    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
+    collection_and_item: Pages des Collections et des Articles
+    collection_only: Page de la Collection Uniquement
+    item_only: Page de l'Article Uniquement
+a_users_uuid: La Clé Primaire UUID d'un utilisateur...
+a_flow_uuid: La Clé primaire UUID d'un Flux...
+any_string_or_json: Toute chaîne de caractères ou JSON...
+item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
+operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condition
+    description: Acheminer un flux en fonction de la logique If / Else
+  item-create:
+    name: Créer de la donnée
+    description: Créer des éléments dans la base de données
+    payload: Données utiles
+    emit_events: Émettre des événements
+  item-delete:
+    name: Suppression des données
+    description: Supprimer des éléments dans la base de données
+    key: IDs
+    query: Requête
+  item-read:
+    name: Lire les données
+    description: Lire les éléments de la base de données
+    key: IDs
+    query: Requête
+  item-update:
+    name: Mettre à jour les données
+    description: Mettre à jour les éléments de la base de données
+    key: IDs
+    payload: Données utiles
+    query: Requête
+  log:
+    name: Log dans la console
+    description: Afficher quelque chose sur la console
+    message: Message
+    message_placeholder: Entrez un message à afficher dans la console...
+  mail:
+    name: Envoyer l'e-mail
+    description: Envoyer un email à une ou plusieurs personnes
+    to: À
+    to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
+    body: Corps du mail
   notification:
+    name: Envoyer la Notification
+    description: Envoyer une notification in-app à un utilisateur
     recipient: Utilisateur
+    message: Message
   request:
+    name: Webhook / URL de requête
+    description: "Faire une requête à un URL"
     url: URL
+    url_placeholder: https://example.com/example
     method: Méthode
     data: Données
+    headers: En-têtes
     header: En-tête
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Pause
+    description: Attendre un nombre donné de millisecondes
+    milliseconds: Millisecondes
+  transform:
+    name: Transformer la Charge utile
+    description: Modifier la charge utile JSON du Flux
   trigger:
+    name: Déclencher le Flux
+    description: Transmettre ces données à un autre Flux
+    flows: Les Flux
+    flow: Flux
     data: Données
