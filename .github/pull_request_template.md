@@ -1,11 +1,11 @@
 ## Description
 
-<!-- 
+<!--
 
 A summary of the changes and a reference to the Issue that was fixed / implemented.
 
 NOTE: All Pull Requests require a corresponding open Issue.
- 
+
 -->
 
 Fixes #
