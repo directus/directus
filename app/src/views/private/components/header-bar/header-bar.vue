@@ -112,6 +112,10 @@ export default defineComponent({
 	.title-outer-prepend {
 		display: none;
 
+		:deep(.button) {
+			color: var(--primary);
+		}
+
 		@media (min-width: 960px) {
 			display: block;
 		}
