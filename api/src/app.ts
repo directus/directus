@@ -49,6 +49,7 @@ import extractToken from './middleware/extract-token';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
+import { ROBOTSTXT } from './constants';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
@@ -168,6 +169,12 @@ export default async function createApp(): Promise<express.Application> {
 		} else {
 			next();
 		}
+	});
+
+	app.get('/robots.txt', (_, res) => {
+		res.set('Content-Type', 'text/plain');
+		res.status(200);
+		res.send(ROBOTSTXT);
 	});
 
 	if (env.SERVE_APP) {
