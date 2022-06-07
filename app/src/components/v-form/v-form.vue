@@ -28,6 +28,7 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-errors="validationErrors"
+				:badge="badge"
 				v-bind="field.meta?.options || {}"
 				@apply="apply"
 			/>
@@ -144,6 +145,18 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 
+		const fields = computed(() => {
+			if (props.collection) {
+				return fieldsStore.getFieldsForCollection(props.collection);
+			}
+
+			if (props.fields) {
+				return props.fields;
+			}
+
+			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
+		});
+
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
 		});
@@ -223,18 +236,6 @@ export default defineComponent({
 		};
 
 		function useForm() {
-			const fields = computed(() => {
-				if (props.collection) {
-					return fieldsStore.getFieldsForCollection(props.collection);
-				}
-
-				if (props.fields) {
-					return props.fields;
-				}
-
-				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-			});
-
 			const defaultValues = computed(() => {
 				return fields.value.reduce(function (acc, field) {
 					if (
@@ -296,14 +297,15 @@ export default defineComponent({
 				);
 			}
 
-			function getFieldsForGroup(group: null | string): Field[] {
+			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
 				const fieldsInGroup: Field[] = fieldsParsed.value.filter(
 					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
 				);
 
 				for (const field of fieldsInGroup) {
-					if (field.meta?.special?.includes('group')) {
-						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field));
+					if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
+						passed.push(field.meta!.field);
+						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
 					}
 				}
 
@@ -325,16 +327,23 @@ export default defineComponent({
 			const updatableKeys = props.batchMode
 				? Object.keys(updates)
 				: Object.keys(updates).filter((key) => {
-						const field = props.fields?.find((field) => field.field === key);
+						const field = fields.value?.find((field) => field.field === key);
 						if (!field) return false;
 						return field.schema?.is_primary_key || !isDisabled(field);
 				  });
 
-			emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
+			if (!isNil(props.group)) {
+				const groupFields = getFieldsForGroup(props.group)
+					.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
+					.map((field) => field.field);
+				emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pick(updates, updatableKeys)));
+			} else {
+				emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
+			}
 		}
 
 		function unsetValue(field: Field) {
-			if (isDisabled(field)) return;
+			if (!props.batchMode && isDisabled(field)) return;
 
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };

@@ -1,5 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -52,7 +52,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
-import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../types';
+import { AbstractServiceOptions, GraphQLParams, Item } from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
@@ -63,9 +63,11 @@ import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
+import { FlowsService } from './flows';
 import { FoldersService } from './folders';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
+import { OperationsService } from './operations';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
 import { RelationsService } from './relations';
@@ -146,7 +148,18 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
-		const validationErrors = validate(schema, document, specifiedRules);
+		const validationErrors = validate(schema, document, [
+			...specifiedRules,
+			(context) => ({
+				Field(node) {
+					if (env.GRAPHQL_INTROSPECTION === false && (node.name.value === '__schema' || node.name.value === '__type')) {
+						context.reportError(
+							new GraphQLError('GraphQL introspection is not allowed. The query contained __schema or __type.', [node])
+						);
+					}
+				},
+			}),
+		]);
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
@@ -245,22 +258,9 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
 							`${collection.collection}_by_id`
 						);
-
-						const hasAggregate = Object.values(collection.fields).some((field) => {
-							const graphqlType = getGraphQLType(field.type);
-
-							if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
-								return true;
-							}
-
-							return false;
-						});
-
-						if (hasAggregate) {
-							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
-								`${collection.collection}_aggregated`
-							);
-						}
+						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
+							`${collection.collection}_aggregated`
+						);
 					}
 
 					return acc;
@@ -554,7 +554,8 @@ export class GraphQLService {
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
 			const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
-			const AggregatedFilters: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregatedFields: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregateMethods: Record<string, ObjectTypeComposerFieldConfigMapDefinition<any, any>> = {};
 
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
@@ -829,7 +830,7 @@ export class GraphQLService {
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
 				});
 
-				AggregatedFilters[collection.collection] = schemaComposer.createObjectTC({
+				AggregatedFields[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated_fields`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
 						const graphqlType = getGraphQLType(field.type);
@@ -850,46 +851,77 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
 
-				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
-					name: `${collection.collection}_aggregated`,
-					fields: {
-						group: {
-							name: 'group',
-							type: GraphQLJSON,
-						},
+				AggregateMethods[collection.collection] = {
+					group: {
+						name: 'group',
+						type: GraphQLJSON,
+					},
+					countAll: {
+						name: 'countAll',
+						type: GraphQLInt,
+					},
+					count: {
+						name: 'count',
+						type: schemaComposer.createObjectTC({
+							name: `${collection.collection}_aggregated_count`,
+							fields: Object.values(collection.fields).reduce((acc, field) => {
+								acc[field.field] = {
+									type: GraphQLInt,
+									description: field.note,
+								};
+
+								return acc;
+							}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+						}),
+					},
+				};
+
+				const hasNumericAggregates = Object.values(collection.fields).some((field) => {
+					const graphqlType = getGraphQLType(field.type);
+
+					if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
+						return true;
+					}
+
+					return false;
+				});
+
+				if (hasNumericAggregates) {
+					Object.assign(AggregateMethods[collection.collection], {
 						avg: {
 							name: 'avg',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						sum: {
 							name: 'sum',
-							type: AggregatedFilters[collection.collection],
-						},
-						count: {
-							name: 'count',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						countDistinct: {
 							name: 'countDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						avgDistinct: {
 							name: 'avgDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						sumDistinct: {
 							name: 'sumDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						min: {
 							name: 'min',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						max: {
 							name: 'max',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
-					},
+					});
+				}
+
+				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated`,
+					fields: AggregateMethods[collection.collection],
 				});
 
 				ReadCollectionTypes[collection.collection].addResolver({
@@ -1367,7 +1399,11 @@ export class GraphQLService {
 					if (valueNode.kind === 'ObjectValue') {
 						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
-						values.push((valueNode as any).value);
+						if (valueNode.kind === 'Variable') {
+							values.push(variableValues[valueNode.name.value]);
+						} else {
+							values.push((valueNode as any).value);
+						}
 					}
 				}
 
@@ -1442,6 +1478,7 @@ export class GraphQLService {
 							// add nested aliases into deep query
 							if (selection.selectionSet) {
 								if (!query.deep) query.deep = {};
+
 								set(
 									query.deep,
 									parent,
@@ -1481,9 +1518,9 @@ export class GraphQLService {
 
 						set(
 							query.deep,
-							current,
+							currentAlias ?? current,
 							merge(
-								get(query.deep, current),
+								get(query.deep, currentAlias ?? current),
 								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
 							)
 						);
@@ -1561,9 +1598,10 @@ export class GraphQLService {
 	 */
 	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
+			error[0].extensions.code = error[0].code;
 			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
 		}
-
+		error.extensions.code = error.code;
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 
@@ -1603,6 +1641,10 @@ export class GraphQLService {
 				return new WebhooksService(opts);
 			case 'directus_shares':
 				return new SharesService(opts);
+			case 'directus_flows':
+				return new FlowsService(opts);
+			case 'directus_operations':
+				return new OperationsService(opts);
 			default:
 				return new ItemsService(collection, opts);
 		}

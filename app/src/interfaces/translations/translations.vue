@@ -25,7 +25,7 @@
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				:autofocus="autofocus"
-				@update:modelValue="updateValue($event, firstLang)"
+				@update:model-value="updateValue($event, firstLang)"
 			/>
 			<v-divider />
 		</div>
@@ -52,7 +52,7 @@
 				:fields="fields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:model-value="secondItem"
-				@update:modelValue="updateValue($event, secondLang)"
+				@update:model-value="updateValue($event, secondLang)"
 			/>
 			<v-divider />
 		</div>
@@ -60,15 +60,16 @@
 </template>
 
 <script setup lang="ts">
-import LanguageSelect from './language-select.vue';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useFieldsStore, useUserStore } from '@/stores/';
-import { useI18n } from 'vue-i18n';
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { notEmpty } from '@/utils/is-empty';
-import { useWindowSize } from '@/composables/use-window-size';
 import { DisplayItem, RelationQueryMultiple, useRelationM2M, useRelationMultiple } from '@/composables/use-relation';
+import { useWindowSize } from '@/composables/use-window-size';
+import { useFieldsStore, useUserStore } from '@/stores/';
+import { notEmpty } from '@/utils/is-empty';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { toArray } from '@directus/shared/utils';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import LanguageSelect from './language-select.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -148,7 +149,7 @@ function getItemWithLang<T extends Record<string, any>>(items: T[], lang: string
 	const relatedPKField = relationInfo.value?.relatedPrimaryKeyField.field;
 	if (!langField || !relatedPKField || !lang) return;
 
-	return items.find((item) => item[langField][relatedPKField] === lang);
+	return items.find((item) => item?.[langField]?.[relatedPKField] === lang);
 }
 
 function updateValue(item: DisplayItem, lang: string | undefined) {
@@ -246,7 +247,7 @@ function useLanguages() {
 				},
 			});
 
-			languages.value = response.data.data;
+			languages.value = response.data.data ? toArray(response.data.data) : [];
 
 			if (!firstLang.value) {
 				const userLang = languages.value.find(
@@ -256,11 +257,11 @@ function useLanguages() {
 						lang[pkField] === userStore.currentUser.language
 				)?.[pkField];
 
-				firstLang.value = userLang || languages.value[0][pkField];
+				firstLang.value = userLang || languages.value[0]?.[pkField];
 			}
 
 			if (!secondLang.value) {
-				secondLang.value = languages.value[1][pkField];
+				secondLang.value = languages.value[1]?.[pkField];
 			}
 		} catch (err: any) {
 			unexpectedError(err);
@@ -286,16 +287,20 @@ function useLanguages() {
 	}
 
 	.primary {
-		--v-divider-color: var(--primary-50);
+		.v-divider {
+			--v-divider-color: var(--primary-50);
+		}
 	}
 
 	.secondary {
-		--v-divider-color: var(--secondary-50);
-
 		.v-form {
 			--primary: var(--secondary);
 			--v-chip-color: var(--secondary);
 			--v-chip-background-color: var(--secondary-alt);
+		}
+
+		.v-divider {
+			--v-divider-color: var(--secondary-50);
 		}
 	}
 

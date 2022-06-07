@@ -157,6 +157,7 @@
 </template>
 
 <script lang="ts" setup>
+import Color from 'color';
 import { isHex } from '@/utils/color';
 import { cssVar } from '@directus/shared/utils/browser';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';

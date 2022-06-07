@@ -152,7 +152,6 @@ const logoURL = computed<string | null>(() => {
 	display: flex;
 	width: 100%;
 	height: 100%;
-	color: #263238;
 
 	:slotted(.v-icon) {
 		--v-icon-color: var(--foreground-subdued);
@@ -180,7 +179,6 @@ const logoURL = computed<string | null>(() => {
 		/* Page Content Spacing */
 		font-size: 15px;
 		line-height: 24px;
-		background-color: #fff;
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-width var(--medium) var(--transition);
 

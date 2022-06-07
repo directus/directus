@@ -1,17 +1,18 @@
 import api from '@/api';
-import { useCollection } from '@directus/shared/composables';
-import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { AxiosResponse } from 'axios';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { getEndpoint } from '@directus/shared/utils';
 import { translate } from '@/utils/translate-object-values';
-import { usePermissions } from '../use-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+import { useCollection } from '@directus/shared/composables';
+import { getEndpoint } from '@directus/shared/utils';
+import { AxiosResponse } from 'axios';
+import { merge } from 'lodash';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { usePermissions } from '../use-permissions';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -110,7 +111,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validateItem(edits.value, fieldsWithPermissions.value, isNew.value);
+		const errors = validateItem(merge({}, item.value, edits.value), fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;

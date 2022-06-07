@@ -1,25 +1,22 @@
-import { defineLayout } from '@directus/shared/utils';
-import TabularLayout from './tabular.vue';
-import TabularOptions from './options.vue';
-import TabularActions from './actions.vue';
-
-import { useI18n } from 'vue-i18n';
-import { ref, computed, watch, toRefs } from 'vue';
-
 import { HeaderRaw, Item } from '@/components/v-table/types';
-import { Field } from '@directus/shared/types';
-import { useRouter } from 'vue-router';
-import { debounce, clone } from 'lodash';
-import { useCollection } from '@directus/shared/composables';
-import { useItems } from '@directus/shared/composables';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import hideDragImage from '@/utils/hide-drag-image';
-import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { useSync } from '@directus/shared/composables';
-import { LayoutOptions, LayoutQuery } from './types';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useFieldsStore } from '@/stores';
 import useAliasFields from '@/composables/use-alias-fields';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import hideDragImage from '@/utils/hide-drag-image';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { Field } from '@directus/shared/types';
+import { defineLayout } from '@directus/shared/utils';
+import { clone, debounce } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import TabularActions from './actions.vue';
+import TabularOptions from './options.vue';
+import TabularLayout from './tabular.vue';
+import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -136,6 +133,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			selectAll,
 			filter,
 			search,
+			download,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -145,6 +143,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+		}
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, fields.value, items.value);
 		}
 
 		function toPage(newPage: number) {
@@ -251,10 +254,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								field: field.field,
 								collection: field.collection,
 							},
-							sortable:
-								['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
-									field.type
-								) === false && field.key.includes('.') === false,
+							sortable: ['json', 'alias', 'presentation', 'translations'].includes(field.type) === false,
 						} as HeaderRaw;
 					});
 				},

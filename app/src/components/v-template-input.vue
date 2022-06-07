@@ -5,6 +5,7 @@
 		:class="{ multiline }"
 		contenteditable="true"
 		tabindex="1"
+		:placeholder="placeholder"
 		@input="processText"
 	/>
 </template>
@@ -34,6 +35,10 @@ export default defineComponent({
 		items: {
 			type: Object as PropType<Record<string, string>>,
 			required: true,
+		},
+		placeholder: {
+			type: String,
+			default: null,
 		},
 	},
 	emits: ['update:modelValue', 'trigger', 'deactivate', 'up', 'down', 'enter'],
@@ -314,6 +319,12 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
+	&:empty::before {
+		pointer-events: none;
+		content: attr(placeholder);
+		color: var(--foreground-subdued);
+	}
+
 	&.multiline {
 		height: var(--input-height-tall);
 		overflow-y: auto;
@@ -330,7 +341,7 @@ export default defineComponent({
 
 	:deep(.preview) {
 		display: inline-block;
-		margin: 2px;
+		margin: 0px;
 		padding: 2px 4px;
 		color: var(--primary);
 		font-size: 0;
