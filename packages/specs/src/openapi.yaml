@@ -85,6 +85,9 @@ tags:
     x-collection: directus_users
   - name: Utilities
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
+  - name: Webhooks
+    description: Webhooks.
+    x-collection: directus_webhooks
 paths:
   # Activity
   /activity:
@@ -235,6 +238,12 @@ paths:
   /utils/sort/{collection}:
     $ref: './paths/utils/sort.yaml'
 
+  # Webhooks
+  /webhooks:
+    $ref: './paths/webhooks/webhooks.yaml'
+  /webhooks/{id}:
+    $ref: './paths/webhooks/webhook.yaml'
+
 components:
   schemas:
     Activity:
@@ -267,6 +276,8 @@ components:
       $ref: './components/setting.yaml'
     Users:
       $ref: './components/user.yaml'
+    Webhooks:
+      $ref: './components/webhook.yaml'
   parameters:
     # All path parameters
     Id:
