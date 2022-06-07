@@ -113,7 +113,7 @@ The file sidebar also includes the following details, which are not editable and
 Rotate, crop, flip, or adjust aspect ratios of an image.
 
 <video alt="Edit an Image" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/edit-an-image-20220305A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220516A/edit-an-image-20220516A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click a file to open its detail page.

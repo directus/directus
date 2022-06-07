@@ -28,10 +28,13 @@ draft: مسوّدة
 archived: مؤرشف
 modules: الوحدات
 module_bar: شريط الوحدة
+reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
+location: الموقع
 maps: الخرائط
+switch_user: تغير المستخدم
 item_creation: إنشاء عنصر
 item_revision: التعديلات على العنصر
 enter_a_name: أدخل اسم...
@@ -39,6 +42,7 @@ duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
 group: المجموعة
+export_items: تصدير عنصر
 and: و
 or: أو
 fill_width: العرض الكامل
@@ -305,6 +309,8 @@ related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
 label_import: إستيراد
+label_export: تصدير
+import_export: أستيراد / تصدير
 format: التنسيق
 last_page: آخر صفحة
 last_access: آخر وصول
@@ -321,12 +327,22 @@ interface_label: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
+delete_share: حذف المشاركة
 functions:
   year: سنة
   month: شهر
+  week: أسبوع
+  day: يوم
+  weekday: أيام العمل
+  hour: ساعة
+  minute: دقيقة
+  second: ثانية
   count: عدد
+date-fns_date: التوقيت المحلي
 date-fns_time: 'ساعات: دقائق: ثواني'
 date-fns_time_no_seconds: 'س:دد ص'
+date-fns_time_24hour: 'ساعة:دقيقة:ثانية'
+date-fns_time_no_seconds_24hour: 'ساعة:دقيقة'
 minutes: دقائق
 hours: ساعات
 month: شهر
@@ -374,6 +390,7 @@ replace_from_library: استبدال الملف من المكتبة
 replace_from_url: استبدال الملف من رابط
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
+open_file_in_tab: أفتح الملف في علامة تبويب جديدة
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'
@@ -501,7 +518,6 @@ unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
-password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
 editing_image: تحرير صورة
@@ -519,8 +535,6 @@ start_end_of_count_items: '{start}-{end} من {count} عناصر'
 start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
 one_filtered_item: '1 عنصر مصفى'
-delete_collection_are_you_sure: >-
-  هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
 collections_shown: المجموعات المعروضة
 visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
@@ -625,6 +639,9 @@ toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
+flow_name: الاسم
+flow_tracking_activity: تتبع النشاط فقط
+flow_tracking_null: عدم تتبع أي شيء
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -1146,3 +1163,8 @@ layouts:
 panels:
   label:
     name: تسمية
+operations:
+  notification:
+    recipient: مستخدم
+  request:
+    url: الرابط

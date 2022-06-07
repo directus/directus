@@ -68,6 +68,11 @@ export default defineComponent({
 				name: t('settings_webhooks'),
 				to: `/settings/webhooks`,
 			},
+			{
+				icon: 'bolt',
+				name: t('settings_flows'),
+				to: `/settings/flows`,
+			},
 		];
 
 		const externalItems = computed(() => {

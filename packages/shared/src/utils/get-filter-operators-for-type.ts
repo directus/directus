@@ -19,6 +19,7 @@ export function getFilterOperatorsForType(
 			return [
 				'contains',
 				'ncontains',
+				'icontains',
 				'starts_with',
 				'nstarts_with',
 				'ends_with',

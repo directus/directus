@@ -37,6 +37,9 @@ fields:
 
   - field: timestamp
     display: datetime
+    special:
+      - date-created
+      - cast-timestamp
     options:
       relative: true
     width: half

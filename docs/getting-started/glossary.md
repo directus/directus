@@ -277,7 +277,7 @@ often called `id`.
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](/getting-started/installation/)
+- [Creating a Project](/self-hosted/installation/)
 - [Configuring a Project](/configuration/config-options/)
 - [Adjusting Project Settings](/configuration/project-settings/)
 - [Upgrading a Project](/configuration/upgrades-migrations/)
@@ -313,9 +313,9 @@ There is also a "Public" role that determines access for unauthenticated access.
 ### Relevant Guides
 
 - [Creating a Role](/configuration/users-roles-permissions/#creating-a-role)
-- [Configuring a Role](/configuration/users-roles-permissions/#configuring-a-role)
-- [Configuring Role Permissions](/configuration/users-roles-permissions/#configuring-permissions)
-- [Configuring System Permissions](/configuration/users-roles-permissions/#configuring-system-permissions)
+- [Configuring a Role](/configuration/users-roles-permissions/#configure-a-role)
+- [Configuring Role Permissions](/configuration/users-roles-permissions/#configure-permissions)
+- [Configuring System Permissions](/configuration/users-roles-permissions/#configure-system-permissions)
 - [Deleting a Role](/configuration/users-roles-permissions/#deleting-a-role)
 
 ## Storage Adapters

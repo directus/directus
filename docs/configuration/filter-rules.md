@@ -100,8 +100,9 @@ you can set a rule for the `author.name` field using the following syntax.
 
 ## Logical Operators
 
-You can nest or group multiple rules using the `_and` or `_or` logical operators. Each operator holds an array of rules,
-allowing for more complex filtering.
+You can nest or group multiple rules using the `_and` or `_or` logical operators. Each logical operator holds an array
+of Filter Rules, allowing for more complex filtering. Also note in the example that Logical Operators can be sub-nested
+into Logical Operators. However, they cannot be sub-nested into Filter Rules.
 
 ```json
 {

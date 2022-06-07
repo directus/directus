@@ -174,6 +174,16 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		},
 		fields: ['*'],
 	},
+	{
+		collection: 'directus_flows',
+		action: 'read',
+		permissions: {
+			trigger: {
+				_eq: 'manual',
+			},
+		},
+		fields: ['id', 'name', 'icon', 'color', 'options', 'trigger'],
+	},
 ];
 
 export const appMinimalPermissions: Partial<Permission>[] = [

@@ -31,6 +31,7 @@ module_bar: Papan Modul
 tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
+location: Lokasi
 maps: Peta
 switch_user: Beralih/ganti pengguna
 item_creation: Pembuatan Item
@@ -547,7 +548,6 @@ unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi n
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
-password_reset_sent: Kami telah mengirimkan surel berisi tautan aman untuk menyetel ulang kata sandi Anda
 password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring
@@ -570,8 +570,6 @@ start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
-delete_collection_are_you_sure: >-
-  Apakah anda yakin ingin menghapus koleksi ini? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
 collections_shown: Koleksi yang ditampilkan
 visible_collections: Koleksi yang terlihat
 hidden_collections: Koleksi yang tersembunyi
@@ -676,6 +674,7 @@ on_create: Saat Dibuat
 on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
+delete: Hapus
 select_fields: Pilih Bidang
 format_text: Format Teks
 format_value: Nilai Format
@@ -686,6 +685,9 @@ toggle: Beralih
 icon_on: Ikon Aktif
 icon_off: Ikon Tidak Aktif
 label: Label
+flow_name: Nama
+flow_tracking_activity: Hanya Aktifitas Melacak
+flow_tracking_null: Jangan Lacak Apapun
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
@@ -703,9 +705,10 @@ suffix_placeholder: Teks setelah nilai...
 decimals_placeholder: Jumlah tempat desimal...
 no_dashboards: Tidak ada Dasbor
 no_dashboards_copy: Anda belum memiliki dasbor.
-no_data: Tidak ada Data
 create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
+no_data: Tidak ada Data
+accountability: Akuntabilitas
 full_screen: Layar Penuh
 edit_panels: Sunting Panel
 fit_to_screen: Sesuaikan dengan Layar
@@ -911,7 +914,6 @@ fields:
     status_archived: Diarsipkan
     role: Peran
     token: Token
-    token_placeholder: Masukkan token akses aman...
     provider: Penyedia
     external_identifier: Pengidentifikasi Eksternal
     last_page: Halaman Terakhir
@@ -1110,7 +1112,6 @@ sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
 sort_desc: Mengurut Turun
 template: Templat
-require_value_to_be_set: Membutuhkan nilai untuk ditetapkan
 translation: Terjemahan
 translation_placeholder: Masukkan terjemahan...
 value: Nilai
@@ -1229,6 +1230,8 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Terjemahan
@@ -1285,3 +1288,8 @@ layouts:
 panels:
   label:
     name: Label
+operations:
+  notification:
+    recipient: Pengguna
+  request:
+    url: URL
