@@ -9,7 +9,7 @@ import { Theme } from '@directus/shared/types';
 // Matches hex values i.e. #000000
 const hex = Joi.string()
 	.trim()
-	.pattern(/^#(([\da-fA-F]{3}){1,2}|([\da-fA-F]{4}){1,2})$/, 'Hexadecimal color');
+	.pattern(/^#(([\da-fA-F]{3}){1,2})$/, 'Hexadecimal color');
 // Matched css variable references i.e. var(--g-color-background-normal)
 const link = Joi.string()
 	.trim()
