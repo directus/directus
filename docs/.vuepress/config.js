@@ -80,6 +80,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/getting-started/architecture',
+						title: 'Architecture',
+					},
+					{
+						type: 'page',
 						path: '/getting-started/support',
 						title: 'Help & Support',
 					},
