@@ -50,6 +50,7 @@ export_items: Експортиране на записите
 and: И
 or: Или
 init: Инициализиране
+dataset_too_large_currently_showing_n_items: Данните са твърде много. В момента се показват само първите {n} записа.
 modifier: Модификатор
 custom: Персонализиран
 hook: Кука
@@ -426,7 +427,7 @@ dimensions: Размери
 size: Големина
 created: Създаден
 modified: Променен
-checksum: Checksum
+checksum: Контролна сума
 owner: Собственик
 edited_by: Променен от
 folder: Папка
@@ -572,7 +573,7 @@ errors:
   FORBIDDEN: Забранен
   INVALID_CREDENTIALS: Грешно потребителско име или парола
   INVALID_OTP: Грешна еднократна парола
-  INVALID_PAYLOAD: Невалидни данни
+  INVALID_PAYLOAD: Невалидно съдържание
   INVALID_PROVIDER: Потребителят принадлежи към друг доставчик за удостоверение
   INVALID_QUERY: Невалидна заявка
   INVALID_USER: Неуспешно удостоверение на потребителя
@@ -754,15 +755,41 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Надпис
+flows: Автоматични процеси
+flow: Процес
+select_a_flow: Избор на процес
+run_flow_on_current: Стартиране на процеса за текущия запис
+run_flow_on_selected: Не са избрани записи | Стартиране на процеса за 1 запис | Стартиране на процеса за {n} записа
+run_flow_success: Изпълнението на процеса "{flow}" е успешно
 trigger: Задействане
+trigger_setup: Задействане
+flow_delete_confirm: Сигурни ли сте, че искате да изтриете процеса „{flow}“? Действието не може да бъде отменено.
+set_flow_active: Активиране на процеса
+set_flow_inactive: Деактивиране на процеса
+edit_flow: Редактиране на процеса
+delete_flow: Изтриване на процеса
+no_other_flows_copy: Все още нямате други автоматични процеси.
+no_flows: Няма процеси
+no_flows_copy: Все още нямате никакви автоматични процеси.
+create_flow: Създаване на автоматизиран процес
+creating_new_flow: Създаване на нов автоматизиран процес
+updating_flow: Обновяване на процеса
+flow_setup: Настройка на процеса
 flow_name: Име
+flow_tracking: Следене за активност и история
+flow_tracking_all: Проследяване на активността и историята
 flow_tracking_activity: Проследяване само на активността
 flow_tracking_null: Без следене
+start_flow: Стартиране на процеса
+stop_flow: Спиране на процеса
 create_operation: Създаване на операция
 edit_operation: Редактиране на операцията
 operation_options: Настройки на операцията
 operation_name: Име на операцията...
 operation_key: Идентификатор за референцията...
+operation_key_unique_error: Оперативните ключове трябва да са уникални в процеса
+operation_handle_resolve: 'Решение: Натиснете за добавяне или придърпайте за пренасочване'
+operation_handle_reject: 'Проблем: Натиснете за добавяне или придърпайте за пренасочване'
 insights: Задълбочен анализ
 dashboard: Табло
 panel: Панел
@@ -783,6 +810,7 @@ no_dashboards_copy: Все още нямате нито едно табло.
 create_dashboard: Създаване на табло
 dashboard_name: Име на таблото
 no_data: Няма данни
+no_data_in_flow: В този процес не се създават или достъпват никакви данни
 accountability: Профилиране
 payload: Съдържание
 details: Детайли
@@ -883,6 +911,7 @@ settings_data_model: Модел на данните
 settings_permissions: Роли и позволения
 settings_project: Настройки на проекта
 settings_webhooks: Уеб-куки
+settings_flows: Автоматични процеси
 settings_presets: Заготовки и отметки
 settings_translation_strings: Преводи на низове
 one_or_more_options_are_missing: Липсват една или повече настройки
@@ -932,6 +961,8 @@ page_help_settings_presets_item: >-
   **Детайли за заготовка** — Формуляр за управление на отметките и заготовките от изгледи по подразбиране отнасящи се за колекциите.
 page_help_settings_webhooks_collection: '**Преглед на уеб-куки** — Показват се всички уеб-куки в проекта.'
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
+page_help_settings_flows_collection: '**Преглед на автоматизираните процеси** — Показване на списък от всички налични автоматизирани процеси в проекта.'
+page_help_settings_flows_item: '**Детайлен изглед на автоматизиран процес** — Работен плот за управление на един или множество операции.'
 page_help_settings_translation_strings_collection: '**Преглед на преводите на низовете** — Показва се пълен списък на низовете в проекта.'
 page_help_users_collection: '**Потребители** — Показване на всички потребители в системата на проекта.'
 page_help_users_item: >-
@@ -960,9 +991,11 @@ directus_collection:
   directus_dashboards: Табла в модула за задълбочен анализ
   directus_fields: Допълнителна кофигурация и данни
   directus_files: Мета данни за всички файлове
+  directus_flows: Автоматизирани процеси
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
   directus_notifications: Известия, изпратени до потребителите
+  directus_operations: Задачи които се изпълняват в автоматизиран процес
   directus_panels: Панели в таблото на задълбочения анализ
   directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
@@ -1141,7 +1174,7 @@ field_options:
     security_divider_title: Сигурност
     auth_password_policy:
       none_text: Няма - не се препоръчва
-      weak_text: Слаба - минимум от 8 символа
+      weak_text: Слаба - минимум от 8 знака
       strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
       fit_label: Напасване
@@ -1375,6 +1408,7 @@ interfaces:
     no_rules: Няма зададени правила
     change_value: Натиснете за промяна
     placeholder: Привлачете правилата тук
+    add_key_placeholder: Добавете ключова стойност и натиснете Enter...
   fields:
     name: Полета
   group-accordion:
@@ -1396,14 +1430,14 @@ interfaces:
     button: Бутони
     error: Действието не може да бъде изпълнено
   select-multiple-checkbox:
-    checkboxes: Отметки
-    description: Избор измежду множество настройки чрез отметки
+    checkboxes: Полета за отметки
+    description: Избор измежду множество настройки чрез полета за отметки
     allow_other: Други
     show_more: 'Показване на още {count}'
     items_shown: Показани записи
   select-multiple-checkbox-tree:
-    name: Дърво от отметки
-    description: Избор измежду множество стойности чрез вложени отметки
+    name: Полета за отметки (дървовидно подредени)
+    description: Избор измежду множество стойности чрез вложени полета за отметки
     value_combining: Комбиниране на стойностите
     value_combining_note: Контрол върху стойността за запазване при направен избор.
     show_all: Показване на всички
@@ -1873,8 +1907,11 @@ panels:
     bottom: Отдолу
 triggers:
   common:
+    response_body: Изходни данни
     response_body_all: Всички данни
+    response_body_last: Данните от последната операция
   event:
+    name: Събитие
     description: Задействане при събитие от платформата или данните
     action: 'Действие (не-блокиращо)'
     filter: 'Филтър (блокиращ)'
@@ -1883,23 +1920,41 @@ triggers:
     description: Задействане при входяща HTTP заявка
     method: Метод
     async: Асинхронно
+  operation:
+    name: Друг процес
+    description: Задействане от друг процес, при навързване
+    preview: Задействан от операция в друг процес
   schedule:
+    name: График (CRON)
     description: Задействане на равни интервали от време
     cron: Интервал
   manual:
     name: Ръчно
     description: Задействане при ръчно стартиране в избраните колекции
+    collection_and_item: В колекцията и детайлния изглед
+    collection_only: Само в изгледа на колекцията
+    item_only: Само в детайлния изглед
+a_users_uuid: Потребителски първичен UUID ключ...
+a_flow_uuid: Първичен UUID ключ на процеса...
 any_string_or_json: Всякакъв низ или JSON...
+item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
+operation_variables_note: Данните от операцията са достъпни през променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или достъп до предишната операция през **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Условие
+    description: Маршрутизиране на процес базирано на If / Else логика
   item-create:
+    name: Създаване на данни
     description: Създаване на записи в базата от данни
     payload: Съдържание
+    emit_events: Излъчване на събития
   item-delete:
     name: Изтриване на данните
     description: Изтриване в базата от данни
+    query: Заявка
   item-read:
+    name: Четене на данни
+    description: Четене на записи в базата от данни
     query: Заявка
   item-update:
     name: Обновяване на данните
@@ -1919,10 +1974,12 @@ operations:
     body: Съдържание
   notification:
     name: Изпращане на известие
-    description: Изпращане на известие то потребител
+    description: Изпращане на известие до потребител
     recipient: Потребител
     message: Съобщение
   request:
+    name: Уеб-кука / URL заявка
+    description: "Осъществяване на заявка до URL адрес"
     url: URL
     url_placeholder: https://example.com/example
     method: Метод
@@ -1935,5 +1992,12 @@ operations:
     name: Заспиване
     description: Изчакване на определен брой милисекунди
     milliseconds: Милисекунди
+  transform:
+    name: Трансформиране на съдържанието
+    description: Подмяна на JSON съдържанието на процеса
   trigger:
+    name: Задействане на процес
+    description: Подаване на данните към друг процес
+    flows: Автоматични процеси
+    flow: Процес
     data: Данни
