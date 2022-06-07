@@ -343,6 +343,7 @@ revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
 revision_delta_reverted: Reverted
+revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
