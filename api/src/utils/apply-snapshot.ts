@@ -9,6 +9,7 @@ import { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
 import { getSchema } from './get-schema';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
+import { getCache } from '../cache';
 
 type CollectionDelta = {
 	collection: string;
@@ -21,6 +22,7 @@ export async function applySnapshot(
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const schema = options?.schema ?? (await getSchema({ database }));
+	const { systemCache } = getCache();
 
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
@@ -221,6 +223,8 @@ export async function applySnapshot(
 			}
 		}
 	});
+
+	await systemCache?.clear();
 }
 
 export function isNestedMetaUpdate(diff: Diff<SnapshotField | undefined>): boolean {
