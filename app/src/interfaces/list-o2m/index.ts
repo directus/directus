@@ -56,6 +56,17 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'limit',
+				name: '$t:per_page',
+				type: 'integer',
+				meta: {
+					interface: 'input',
+				},
+				schema: {
+					default_value: 15,
+				},
+			},
+			{
 				field: 'filter',
 				name: '$t:filter',
 				type: 'json',
