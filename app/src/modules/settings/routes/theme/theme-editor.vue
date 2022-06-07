@@ -177,6 +177,8 @@ function updateChanges(newEdits: Record<string, any>) {
 
 		const generatedColor = generateColor(type, sourceValue, backgroundValue || null);
 
+		if (!generatedColor) continue;
+
 		if (initialValues.value[field].toLowerCase() === generatedColor.toLowerCase()) {
 			delete newEdits[field];
 		} else {
@@ -188,6 +190,9 @@ function updateChanges(newEdits: Record<string, any>) {
 }
 
 function generateColor(type: string, source: string, background?: string) {
+	// Return early if source is not a valid 3 or 6 character hex value
+	if (!source || typeof source !== 'string' || !/^#(([\da-fA-F]{3}){1,2})$/.test(source)) return null;
+
 	let newColor = '#cccccc';
 	if (type === 'accent') {
 		newColor = generateAccent(source, editingTheme.value === 'dark' ? false : true);
