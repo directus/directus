@@ -79,7 +79,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (!geometryFormat) {
 				return;
 			}
-			return { geometryField, geometryFormat, geometryType };
+			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
 
 		const isGeometryFieldNative = computed(() => geometryOptions.value?.geometryFormat === 'native');
