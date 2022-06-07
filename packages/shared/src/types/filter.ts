@@ -11,6 +11,7 @@ export type FilterOperator =
 	| 'nnull'
 	| 'contains'
 	| 'ncontains'
+	| 'icontains'
 	| 'between'
 	| 'nbetween'
 	| 'empty'
@@ -51,6 +52,7 @@ export type FieldFilterOperator = {
 	_nnull?: boolean;
 	_contains?: string;
 	_ncontains?: string;
+	_icontains?: string;
 	_starts_with?: string;
 	_nstarts_with?: string;
 	_ends_with?: string;

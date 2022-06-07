@@ -59,21 +59,142 @@ Looking to sponsor development of an Extension or Cloud Exclusive? [Contact Us](
 ## Data Portability
 
 Directus Core is totally detached from the database. Data can be cleanly imported and exported on Projects with the API
-via the schema endpoints. Enterprise clients: the Directus Team will work with you to help you through this process.
+via the schema endpoints.
+
+:::tip Enterprise Clients
+
+The Directus Team will help you work through this process on all [Enterprise Projects](https://directus.io/contact/)
+
+:::
 
 ## Datacenter Regions
 
-The location you choose to host your Project can have measurable impact. To optimize your Project and meet any local
-data compliance laws such as GDPR, Standard and Enterprise, you can choose the region your Project is hosted in. There
-are 19 Datacenter Regions available to Enterprise Projects and two available to Standard Projects.
+The location you choose to host your Project in can have a measurable impact. To help optimize your Project and meet any
+local data compliance laws such as GDPR, Standard and Enterprise offer multiple Datacenter regions to host from. There
+are 19 regions available for Enterprise Projects, 3 for Standard Projects, and 1 for Community Projects:
 
-![Datacenter Regions](https://cdn.directus.io/docs/v9/cloud/glossary/glossary-20220322A/datacenter-region-20220331A.webp)
-
-:::tip
-
-Community Projects are hosted in the `United States, East` Region.
-
-:::
+<table>
+  <tr>
+    <th>Region</th>
+    <th>Enterprise</th>
+    <th>Standard</th>
+    <th>Community</th>
+  </tr>
+  <tr>
+    <td>United States, East</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td>Europe, Frankfurt</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Singapore</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>United States, West</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Africa, Cape Town</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Hong Kong</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Jakarta</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Mumbai</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Osaka</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Seoul</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Sydney</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Asia Pacific, Tokyo</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Canada, Central</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Europe, Ireland</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Europe, London</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Europe, Paris</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Europe, Stockholm</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Middle East, Bahrain</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>South America, São Paulo</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
 
 ## Encryption and Security
 

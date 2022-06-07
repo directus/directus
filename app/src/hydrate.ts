@@ -7,6 +7,7 @@ import {
 	useFieldsStore,
 	useLatencyStore,
 	useInsightsStore,
+	useFlowsStore,
 	usePermissionsStore,
 	usePresetsStore,
 	useRelationsStore,
@@ -39,6 +40,7 @@ export function useStores(
 		useRelationsStore,
 		usePermissionsStore,
 		useInsightsStore,
+		useFlowsStore,
 		useNotificationsStore,
 	]
 ): GenericStore[] {

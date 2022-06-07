@@ -23,6 +23,7 @@ identifier: Tanımlayıcı
 avatar: Avatar
 application: Uygulama
 default_provider: Varsayılan
+method: Metod
 published: Yayınlandı
 draft: Taslak
 archived: Arşivlendi
@@ -32,6 +33,8 @@ reset_width: Genişliği Sıfırla
 tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
+location: Konum
+input: Girdi
 maps: Haritalar
 switch_user: Kullanıcı Değiştir
 item_creation: Öğe Oluşturma
@@ -551,7 +554,6 @@ unexpected_error_copy: Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar d
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
-password_reset_sent: Sana parolanı sıfırlamanı sağlayacak güvenli bir bağlantı gönderdik
 password_reset_successful: Parola başarıyla sıfırlandı
 back: Geri
 filter: Filtrele
@@ -574,9 +576,6 @@ start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler göster
 start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler gösteriliyor'
 one_item: '1 öğe'
 one_filtered_item: '1 filtrelenmiş öğe'
-delete_collection_are_you_sure: >-
-  Bu koleksiyonu silmek istediğinizden emin misiniz? Bu işlem, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem geri alınamaz.
-delete_folder_are_you_sure: Bu klasörü silmek istediğinizden emin misiniz? Bu klasörün içindeki klasörler ve koleksiyonlar en üst seviyeye taşınacaktır.
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar
@@ -681,6 +680,7 @@ on_create: Oluşturulduğunda
 on_update: Güncellendiğinde
 read: Görüntüle
 update: Güncelle
+delete: Sil
 select_fields: Alanları Seç
 format_text: Metni Biçimlendir
 format_value: Değeri Biçimlendir
@@ -691,6 +691,10 @@ toggle: Aç/Kapat
 icon_on: Açık İkonu
 icon_off: Kapalı İkonu
 label: Etiket
+trigger: Tetikleme
+flow_name: İsim
+flow_tracking_activity: Sadece Etkinlikleri Takip Et
+flow_tracking_null: Hiçbir Şeyi Takip Etme
 insights: Kontrol Panelleri
 dashboard: Pano
 panel: Panel
@@ -708,9 +712,10 @@ suffix_placeholder: Metinden sonraki değer...
 decimals_placeholder: Ondalık hane sayısı...
 no_dashboards: Hiç Pano Yok
 no_dashboards_copy: Henüz hiç panonuz yok.
-no_data: Hiç Veri Yok
 create_dashboard: Pano Oluştur
 dashboard_name: Pano Adı
+no_data: Hiç Veri Yok
+accountability: İzlenebilirlik
 full_screen: Tam Ekran
 edit_panels: Panelleri Düzenle
 fit_to_screen: Ekrana Sığdır
@@ -806,6 +811,7 @@ settings_webhooks: Webhooklar
 settings_presets: Ön Ayarlar ve Yer İşaretleri
 one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
 scope: Kapsam
+actions: Aksiyonlar
 select: Seç...
 layout: Yerleşim
 tree_view: Ağaç Görünümü
@@ -815,6 +821,7 @@ preset_search_placeholder: Arama sorgusu...
 editing_preset: Ön Ayarı Düzenle
 layout_preview: Sayfa Yerleşimi Önizlemesi
 layout_setup: Sayfa Yerleşimi Ayarları
+data: Veri
 unsaved_changes: Kaydedilmemiş Değişiklikler
 unsaved_changes_copy: Bu sayfayı terketmek istediğinize emin misiniz?
 discard_changes: Değişiklikleri İptal Et
@@ -877,9 +884,9 @@ directus_collection:
   directus_fields: Ek alan ayarları ve metaveri
   directus_files: Yönetilen tüm dosyalar için metaveri
   directus_folders: Dosyalar için sanal klasörler sunar
+  directus_notifications: Bildirimler kullanıcılara gönderildi
   directus_panels: Panolar modülündeki panolardaki tekil paneller
   directus_permissions: Her bir rol için yetkilere eriş
-  directus_notifications: Bildirimler kullanıcılara gönderildi
   directus_presets: Koleksiyon varsayılanları ve yer işaretleri için ön ayarlar
   directus_relations: İlişki ayarı ve metaveri
   directus_revisions: Tüm etkinlikler için anlık veri görüntüleri
@@ -966,7 +973,6 @@ fields:
     status_archived: Arşivlenmiş
     role: Rol
     token: Erişim Anahtarı (Token)
-    token_placeholder: Güvenli bir erişim anahtarı girin...
     provider: Sağlayıcı
     external_identifier: Dış Tanımlayıcı
     last_page: Son Sayfa
@@ -1251,7 +1257,6 @@ sort_direction: Sıralama Yönü
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
-require_value_to_be_set: Değeri gerekli kıl
 translation: Çeviri
 translation_placeholder: Bir çeviri girin...
 value: Değer
@@ -1532,6 +1537,8 @@ interfaces:
     header_color: Başlık Rengi
     start_open: Açık Başla
     start_closed: Kapalı Başla
+  system-token:
+    system-token: Erişim Anahtarı (Token)
 displays:
   translations:
     translations: Çeviriler
@@ -1695,3 +1702,16 @@ panels:
   list:
     name: Liste
     description: Bir koleksiyondan alanları filtrele ve listele
+triggers:
+  webhook:
+    method: Metod
+operations:
+  notification:
+    recipient: Kullanıcı
+  request:
+    url: URL
+    method: Metod
+    data: Veri
+    header: Header
+  trigger:
+    data: Veri

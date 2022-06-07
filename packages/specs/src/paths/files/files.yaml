@@ -24,6 +24,8 @@ get:
                 type: array
                 items:
                   $ref: '../../openapi.yaml#/components/schemas/Files'
+              meta:
+                $ref: '../../openapi.yaml#/components/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
