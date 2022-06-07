@@ -166,6 +166,7 @@ const props = withDefaults(
 	{
 		value: () => null,
 		disabled: false,
+		folder: undefined,
 	}
 );
 

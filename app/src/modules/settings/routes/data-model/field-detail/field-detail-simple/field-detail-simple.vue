@@ -30,7 +30,7 @@
 						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
 						:row="configRow"
 						@save="$emit('save')"
-						@toggleAdvanced="$emit('toggleAdvanced')"
+						@toggle-advanced="$emit('toggleAdvanced')"
 					/>
 				</transition-expand>
 			</div>

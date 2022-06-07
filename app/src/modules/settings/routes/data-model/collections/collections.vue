@@ -3,7 +3,7 @@
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="list_alt" />
 			</v-button>
 		</template>
@@ -50,8 +50,8 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
-							@editCollection="editCollection = $event"
-							@setNestedSort="onSort"
+							@edit-collection="editCollection = $event"
+							@set-nested-sort="onSort"
 						/>
 					</template>
 				</draggable>
@@ -228,8 +228,10 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--g-color-primary-normal);
 	--v-button-background-color-disabled: var(--g-color-primary-subtle);
+	--v-button-color-disabled: var(--g-color-primary-normal);
+	--v-button-background-color-hover-disabled: var(--g-color-primary-subtle);
+	--v-button-color-hover-disabled: var(--g-color-primary-normal);
 }
 
 .collection-item.hidden {

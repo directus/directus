@@ -52,8 +52,8 @@
 				<collection-item
 					:collection="element"
 					:collections="collections"
-					@editCollection="$emit('editCollection', $event)"
-					@setNestedSort="$emit('setNestedSort', $event)"
+					@edit-collection="$emit('editCollection', $event)"
+					@set-nested-sort="$emit('setNestedSort', $event)"
 				/>
 			</template>
 		</draggable>

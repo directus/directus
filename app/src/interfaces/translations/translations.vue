@@ -25,7 +25,7 @@
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				:autofocus="autofocus"
-				@update:modelValue="updateValue($event, firstLang)"
+				@update:model-value="updateValue($event, firstLang)"
 			/>
 			<v-divider />
 		</div>
@@ -52,7 +52,7 @@
 				:fields="fields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:model-value="secondItem"
-				@update:modelValue="updateValue($event, secondLang)"
+				@update:model-value="updateValue($event, secondLang)"
 			/>
 			<v-divider />
 		</div>
@@ -287,16 +287,20 @@ function useLanguages() {
 	}
 
 	.primary {
-		--v-divider-color: var(--g-color-primary-subtle);
+		.v-divider {
+			--v-divider-color: var(--g-color-primary-subtle);
+		}
 	}
 
 	.secondary {
-		--v-divider-color: var(--g-color-secondary-subtle);
-
 		.v-form {
 			--g-color-primary-normal: var(-g-color-secondary-normal);
 			--v-chip-color: var(-g-color-secondary-normal);
 			--v-chip-background-color: var(--g-color-secondary-subtle);
+		}
+
+		.v-divider {
+			--v-divider-color: var(--g-color-secondary-subtle);
 		}
 	}
 

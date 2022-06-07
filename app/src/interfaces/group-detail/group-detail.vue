@@ -35,6 +35,7 @@
 			:loading="loading"
 			:batch-mode="batchMode"
 			:disabled="disabled"
+			:badge="badge"
 			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
@@ -91,6 +92,10 @@ export default defineComponent({
 		validationErrors: {
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
+		},
+		badge: {
+			type: String,
+			default: null,
 		},
 
 		start: {

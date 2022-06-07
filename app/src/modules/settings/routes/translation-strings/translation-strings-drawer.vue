@@ -3,7 +3,7 @@
 		:title="translationString ? t('edit_translation_string') : t('create_translation_string')"
 		icon="translate"
 		:model-value="modelValue"
-		@update:modelValue="closeDialog"
+		@update:model-value="closeDialog"
 		@cancel="closeDialog"
 	>
 		<template #actions>

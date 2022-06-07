@@ -29,15 +29,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		dashboard: {
-			type: String,
-			required: true,
-		},
 		now: {
 			type: Date,
 			required: true,
 		},
-
 		collection: {
 			type: String,
 			required: true,

@@ -16,7 +16,8 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-menu placement="bottom-start" show-arrow>
+						<span v-if="!isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
+						<v-menu v-else placement="bottom-start" show-arrow>
 							<template #activator="{ toggle }">
 								<button class="name" @click="toggle">
 									<span>{{ getFieldPreview(element) }}</span>
@@ -36,7 +37,7 @@
 							placement="bottom-start"
 							:model-value="filterInfo[index].comparator"
 							:items="getCompareOptions(filterInfo[index].field)"
-							@update:modelValue="updateComparator(index, $event)"
+							@update:model-value="updateComparator(index, $event)"
 						/>
 						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
 						<span class="delete">
@@ -332,10 +333,17 @@ function getCompareOptions(name: string) {
 		type = fieldInfo?.type || 'unknown';
 	}
 
-	return getFilterOperatorsForType(type, { includeValidation: true }).map((type) => ({
+	return getFilterOperatorsForType(type, { includeValidation: props.includeValidation }).map((type) => ({
 		text: t(`operators.${type}`),
 		value: `_${type}`,
 	}));
+}
+
+function isExistingField(node: Record<string, any>): boolean {
+	if (!props.collection) return false;
+	const fieldKey = getField(node);
+	const field = fieldsStore.getField(props.collection, fieldKey);
+	return !!field;
 }
 </script>
 
@@ -388,6 +396,11 @@ function getCompareOptions(name: string) {
 		.v-icon {
 			display: none;
 		}
+	}
+
+	.plain-name {
+		display: inline-block;
+		margin-right: 8px;
 	}
 
 	.name {

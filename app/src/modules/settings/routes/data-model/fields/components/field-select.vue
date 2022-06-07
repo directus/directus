@@ -35,8 +35,8 @@
 						<field-select-menu
 							:field="field"
 							:no-delete="nestedFields.length > 0"
-							@toggleVisibility="toggleVisibility"
-							@setWidth="setWidth($event)"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
 							@duplicate="duplicateActive = true"
 							@delete="deleteActive = true"
 						/>
@@ -44,7 +44,7 @@
 				</template>
 
 				<template #item="{ element }">
-					<field-select :field="element" :fields="fields" @setNestedSort="$emit('setNestedSort', $event)" />
+					<field-select :field="element" :fields="fields" @set-nested-sort="$emit('setNestedSort', $event)" />
 				</template>
 			</draggable>
 
@@ -88,8 +88,8 @@
 						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"
-							@toggleVisibility="toggleVisibility"
-							@setWidth="setWidth($event)"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
 							@duplicate="duplicateActive = true"
 							@delete="deleteActive = true"
 						/>

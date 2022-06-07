@@ -78,7 +78,7 @@ Static access token for the user.
 `last_access` **date**\
 Last time the user accessed the API.
 
-`last_page` **date**\
+`last_page` **string**\
 Last page in the app the user used.
 
 `provider` **string**\

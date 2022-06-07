@@ -1,5 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -52,7 +52,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
-import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../types';
+import { AbstractServiceOptions, GraphQLParams, Item } from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
@@ -63,9 +63,11 @@ import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
+import { FlowsService } from './flows';
 import { FoldersService } from './folders';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
+import { OperationsService } from './operations';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
 import { RelationsService } from './relations';
@@ -256,22 +258,9 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
 							`${collection.collection}_by_id`
 						);
-
-						const hasAggregate = Object.values(collection.fields).some((field) => {
-							const graphqlType = getGraphQLType(field.type);
-
-							if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
-								return true;
-							}
-
-							return false;
-						});
-
-						if (hasAggregate) {
-							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
-								`${collection.collection}_aggregated`
-							);
-						}
+						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
+							`${collection.collection}_aggregated`
+						);
 					}
 
 					return acc;
@@ -565,7 +554,8 @@ export class GraphQLService {
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
 			const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
-			const AggregatedFilters: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregatedFields: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregateMethods: Record<string, ObjectTypeComposerFieldConfigMapDefinition<any, any>> = {};
 
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
@@ -840,7 +830,7 @@ export class GraphQLService {
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
 				});
 
-				AggregatedFilters[collection.collection] = schemaComposer.createObjectTC({
+				AggregatedFields[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated_fields`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
 						const graphqlType = getGraphQLType(field.type);
@@ -861,46 +851,77 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
 
-				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
-					name: `${collection.collection}_aggregated`,
-					fields: {
-						group: {
-							name: 'group',
-							type: GraphQLJSON,
-						},
+				AggregateMethods[collection.collection] = {
+					group: {
+						name: 'group',
+						type: GraphQLJSON,
+					},
+					countAll: {
+						name: 'countAll',
+						type: GraphQLInt,
+					},
+					count: {
+						name: 'count',
+						type: schemaComposer.createObjectTC({
+							name: `${collection.collection}_aggregated_count`,
+							fields: Object.values(collection.fields).reduce((acc, field) => {
+								acc[field.field] = {
+									type: GraphQLInt,
+									description: field.note,
+								};
+
+								return acc;
+							}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+						}),
+					},
+				};
+
+				const hasNumericAggregates = Object.values(collection.fields).some((field) => {
+					const graphqlType = getGraphQLType(field.type);
+
+					if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
+						return true;
+					}
+
+					return false;
+				});
+
+				if (hasNumericAggregates) {
+					Object.assign(AggregateMethods[collection.collection], {
 						avg: {
 							name: 'avg',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						sum: {
 							name: 'sum',
-							type: AggregatedFilters[collection.collection],
-						},
-						count: {
-							name: 'count',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						countDistinct: {
 							name: 'countDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						avgDistinct: {
 							name: 'avgDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						sumDistinct: {
 							name: 'sumDistinct',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						min: {
 							name: 'min',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
 						max: {
 							name: 'max',
-							type: AggregatedFilters[collection.collection],
+							type: AggregatedFields[collection.collection],
 						},
-					},
+					});
+				}
+
+				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated`,
+					fields: AggregateMethods[collection.collection],
 				});
 
 				ReadCollectionTypes[collection.collection].addResolver({
@@ -1378,7 +1399,11 @@ export class GraphQLService {
 					if (valueNode.kind === 'ObjectValue') {
 						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
-						values.push((valueNode as any).value);
+						if (valueNode.kind === 'Variable') {
+							values.push(variableValues[valueNode.name.value]);
+						} else {
+							values.push((valueNode as any).value);
+						}
 					}
 				}
 
@@ -1616,6 +1641,10 @@ export class GraphQLService {
 				return new WebhooksService(opts);
 			case 'directus_shares':
 				return new SharesService(opts);
+			case 'directus_flows':
+				return new FlowsService(opts);
+			case 'directus_operations':
+				return new OperationsService(opts);
 			default:
 				return new ItemsService(collection, opts);
 		}

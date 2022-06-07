@@ -215,11 +215,6 @@ body {
 		}
 	}
 
-	&:focus:not(:disabled) {
-		border-color: var(--g-color-primary-normal);
-		box-shadow: 0 0 16px -8px var(--g-color-primary-normal);
-	}
-
 	&:not(:disabled):not(.indeterminate) {
 		.label {
 			color: var(--g-color-foreground-normal);

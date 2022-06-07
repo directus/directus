@@ -19,7 +19,7 @@
 			</template>
 
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
+				<v-button class="header-icon" rounded icon exact disabled>
 					<v-icon name="bookmark_border" />
 				</v-button>
 			</template>
@@ -309,8 +309,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--g-color-primary-normal);
 	--v-button-background-color-disabled: var(--g-color-primary-subtle);
+	--v-button-color-disabled: var(--g-color-primary-normal);
+	--v-button-background-color-hover-disabled: var(--g-color-primary-subtle);
+	--v-button-color-hover-disabled: var(--g-color-primary-normal);
 }
 
 .action-delete {

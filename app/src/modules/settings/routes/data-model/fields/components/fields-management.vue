@@ -18,7 +18,7 @@
 			@update:model-value="setSort"
 		>
 			<template #item="{ element }">
-				<field-select :field="element" :fields="usableFields" @setNestedSort="setNestedSort" />
+				<field-select :field="element" :fields="usableFields" @set-nested-sort="setNestedSort" />
 			</template>
 		</draggable>
 
