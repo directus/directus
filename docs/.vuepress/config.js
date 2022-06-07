@@ -90,6 +90,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/getting-started/resources',
+						title: 'Resources',
+					},
+					{
+						type: 'page',
 						path: '/getting-started/glossary',
 						title: 'Glossary',
 					},
@@ -220,6 +225,24 @@ module.exports = {
 						type: 'page',
 						path: '/configuration/webhooks',
 						title: 'Webhooks',
+					},
+					{
+						type: 'page',
+						path: '/configuration/flows/flows',
+						title: 'Flows',
+						collapsable: false,
+						children: [
+							{
+								type: 'page',
+								path: '/configuration/flows/triggers',
+								title: 'Triggers',
+							},
+							{
+								type: 'page',
+								path: '/configuration/flows/operations',
+								title: 'Operations',
+							},
+						],
 					},
 					{
 						type: 'page',

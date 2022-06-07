@@ -70,6 +70,7 @@ create_preset: Vorlage erstellen
 create_panel: Panel erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
+message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
 create_translation_string: Übersetzungselement erstellen
@@ -1846,8 +1847,11 @@ triggers:
   webhook:
     method: Methode
 operations:
+  log:
+    message: Nachricht
   notification:
     recipient: Benutzer
+    message: Nachricht
   request:
     url: URL
     method: Methode
