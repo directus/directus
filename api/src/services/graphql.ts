@@ -126,7 +126,7 @@ export const FilterStrNumber = new GraphQLScalarType({
 	parseValue: stringNumber,
 	parseLiteral(ast) {
 		if (ast.kind === Kind.INT || ast.kind === Kind.FLOAT) {
-			return stringNumber(Number(ast.kind));
+			return stringNumber(Number(ast.value));
 		}
 		if (ast.kind === Kind.STRING) {
 			return ast.value;

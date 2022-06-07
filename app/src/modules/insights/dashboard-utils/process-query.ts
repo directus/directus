@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { PanelQuery } from './types';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
-export const processQuery = (stagedQueries: Record<string, any>): string => {
+export function processQuery(stagedQueries: Record<string, any>): string {
 	if (!stagedQueries) return '';
 	const allQueries: Record<string, any> = {
 		query: {},
@@ -29,9 +29,9 @@ export const processQuery = (stagedQueries: Record<string, any>): string => {
 	}
 
 	return jsonToGraphQLQuery(allQueries);
-};
+}
 
-const formatQuery = (query: PanelQuery, collection: string) => {
+function formatQuery(query: PanelQuery, collection: string) {
 	const formattedQuery: Record<string, any> = {};
 
 	formattedQuery.__aliasFor = collection;
@@ -83,9 +83,9 @@ const formatQuery = (query: PanelQuery, collection: string) => {
 	}
 
 	return formattedQuery;
-};
+}
 
-const relationalNesting = (query: Record<string, any>, relations: string[]) => {
+function relationalNesting(query: Record<string, any>, relations: string[]) {
 	for (let i = 1; i < relations.length; i++) {
 		if (i === relations.length - 1) {
 			query = query[relations[i]] = true;
@@ -93,4 +93,4 @@ const relationalNesting = (query: Record<string, any>, relations: string[]) => {
 			query = query[relations[i]] = query[relations[i]] || {};
 		}
 	}
-};
+}

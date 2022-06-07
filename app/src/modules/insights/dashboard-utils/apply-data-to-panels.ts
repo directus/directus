@@ -1,10 +1,17 @@
 import { Panel } from '@directus/shared/types';
 
-export const applyDataToPanels = (panels: Panel[], incomingData: Record<any, any>) => {
+export function applyDataToPanels(panels: Panel[], incomingData: Record<any, any> | null) {
 	if (!incomingData) return panels;
+
+	/* 
+	/* panelData is for panels that only have one query.
+	/* multiQueryPanelData is for panels that have more than query.
+	/* Such as a multiline chart.
+	*/
 
 	const panelData: Record<string, Panel | Panel[]> = {};
 	const multiQueryPanelData: Record<string, any> = {};
+
 	const panelsWithData: Panel[] = [];
 
 	for (const [id, data] of Object.entries(incomingData)) {
@@ -48,4 +55,4 @@ export const applyDataToPanels = (panels: Panel[], incomingData: Record<any, any
 	}
 
 	return panelsWithData;
-};
+}

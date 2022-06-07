@@ -85,7 +85,6 @@
 		<span v-if="errors">{errors}</span>
 
 		<v-workspace
-			:loading="loading"
 			:edit-mode="editMode"
 			:panels="panelsWithData"
 			:zoom-to-fit="zoomToFit"
@@ -99,6 +98,7 @@
 			<template #default="{ panel }">
 				<component
 					:is="`panel-${panel.type}`"
+					v-if="loading"
 					v-bind="panel.options"
 					:id="panel.id"
 					:show-header="panel.show_header"
@@ -258,7 +258,7 @@ export default defineComponent({
 
 		const now = new Date();
 
-		const panels: ComputedRef<Partial<Panel>[]> = computed(() => {
+		const panels = computed<Partial<Panel>[]>(() => {
 			const savedPanels = (currentDashboard.value?.panels || []).filter(
 				(panel) => panelsToBeDeleted.value.includes(panel.id) === false
 			);

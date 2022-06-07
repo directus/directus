@@ -1,13 +1,13 @@
 import api from '@/api';
 import { processQuery } from './process-query';
 
-export const queryCaller = async (
+export async function queryCaller(
 	request: string,
 	callAttempts: number,
 	queryObj: Record<string, any>,
 	system?: boolean,
 	reattempt?: boolean
-) => {
+) {
 	if (request === 'query' || request === '') return;
 
 	try {
@@ -37,9 +37,9 @@ export const queryCaller = async (
 		const request = processQuery(queryObj);
 		queryCaller(request, callAttempts, queryObj);
 	}
-};
+}
 
-const errorHandler = (errs: any, queryObj: Record<string, any>) => {
+function errorHandler(errs: any, queryObj: Record<string, any>) {
 	const queriesToRemove: Record<string, any> = {};
 
 	for (const error of errs) {
@@ -76,4 +76,4 @@ const errorHandler = (errs: any, queryObj: Record<string, any>) => {
 			delete queryObj[key];
 		}
 	}
-};
+}
