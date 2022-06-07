@@ -48,8 +48,8 @@ const globalSettings = Joi.object({
 		border: baseColorVariants,
 	}),
 	border: Joi.object({
-		width: Joi.number(),
-		radius: Joi.number(),
+		width: Joi.number().min(0).max(16),
+		radius: Joi.number().min(0).max(64),
 	}),
 });
 
