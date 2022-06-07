@@ -29,11 +29,13 @@ draft: Bozza
 archived: Archiviato
 modules: Moduli
 module_bar: Barra del modulo
+logs: Registri
 reset_width: Reimposta larghezza
 tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 location: Posizione
+condition_rules: Regole per la condizione
 input: Input
 maps: Mappe
 switch_user: Cambia utente
@@ -47,6 +49,11 @@ group: Gruppo
 export_items: Esporta elementi
 and: E
 or: O
+init: Inizializzazione
+dataset_too_large_currently_showing_n_items: Il dataset è troppo grande. Stai vedendo i primi {n} elementi.
+modifier: Modificatore
+custom: Personalizzato
+hook: Hook
 fill_width: Riempi larghezza
 field_name_translations: Traduzioni nome del campo
 enter_password_to_enable_tfa: Inserisci la tua password per abilitare l'autenticazione a due fattori
@@ -70,6 +77,7 @@ create_preset: Crea Preset
 create_panel: Crea pannello
 create_role: Crea ruolo
 create_user: Crea utente
+message: Messaggio
 delete_panel: Elimina Pannello
 create_webhook: Crea webhook
 create_translation_string: Crea stringa di traduzione
@@ -478,7 +486,9 @@ disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta funzionalità
+request_body: Corpo della richiesta
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
+operation_not_found: 'Operazione "{operation}" non trovata.'
 reset_interface: Reimposta interfaccia
 display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
@@ -745,10 +755,45 @@ toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
+flows: Flussi
+flow: Flusso
+select_a_flow: Seleziona un flusso
+run_flow_on_current: Esegui il flusso sull'elemento corrente
+run_flow_on_selected: Nessun elemento selezionato | Eseguire il flusso su 1 elemento selezionato | Eseguire il flusso su {n} elementi selezionati
+run_flow_success: Flusso "{flow}" eseguito con successo
 trigger: Trigger
+trigger_options: Opzioni del trigger
+view_trigger: Visualizza il trigger
+create_trigger: Crea un trigger
+trigger_setup: Impostazione del trigger
+change_trigger: Cambia trigger
+flow_delete_confirm: Sei sicuro di voler eliminare il flusso "{flow}"? Questa azione non può essere annullata.
+set_flow_active: Rendi il flusso attivo
+set_flow_inactive: Rendi il flusso disattivo
+edit_flow: Modifica il flusso
+delete_flow: Elimina il flusso
+no_other_flows_copy: Non hai ancora ancora nessun altro flusso.
+no_flows: Nessun flusso
+no_flows_copy: Non hai ancora ancora nessun flusso.
+create_flow: Crea un flusso
+creating_new_flow: Creazione di un nuovo flusso
+updating_flow: Aggiornamento del flusso
+flow_setup: Configurazione del flusso
 flow_name: Nome
+flow_tracking: Tracciamento attività e registri
+flow_tracking_all: Traccia attività e registri
 flow_tracking_activity: Traccia solo Attività
 flow_tracking_null: Non Tracciare nulla
+start_flow: Avvia il flusso
+stop_flow: Interrompi il flusso
+create_operation: Crea un'operazione
+edit_operation: Modifica l'operazione
+operation_options: Opzioni dell'operazione
+operation_name: Nome dell'operazione...
+operation_key: Identificatore per riferimento...
+operation_key_unique_error: Le chiavi dell'operazione devono essere uniche in un flusso
+operation_handle_resolve: 'Risolvi: fare clic per aggiungere o trascinare per reindirizzare'
+operation_handle_reject: 'Rifiuta: fare clic per aggiungere o trascinare per reindirizzare'
 insights: Approfondimenti
 dashboard: Bacheca
 panel: Pannello
@@ -769,7 +814,10 @@ no_dashboards_copy: Non hai ancora bacheche.
 create_dashboard: Crea bacheca
 dashboard_name: Nome della bacheca
 no_data: Nessun dato
+no_data_in_flow: Nessun dato è stato prodotto o letto in questo flusso
 accountability: Autorizzazioni
+payload: Payload
+details: Dettagli
 full_screen: Schermo Intero
 full_text_search: Ricerca full-text
 edit_panels: Modifica pannelli
@@ -867,6 +915,7 @@ settings_data_model: Modello dei dati
 settings_permissions: Ruoli e permessi
 settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
+settings_flows: Flussi
 settings_presets: Preset & Segnalibri
 settings_translation_strings: Stringhe di Traduzione
 one_or_more_options_are_missing: Mancano una o più opzioni
@@ -916,6 +965,8 @@ page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
 page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
 page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
+page_help_settings_flows_collection: '**Sfoglia i flussi** — Elenca tutti i flussi nel progetto.'
+page_help_settings_flows_item: '**Dettagli del flusso** — Spazio di lavoro per gestire una o più operazioni.'
 page_help_settings_translation_strings_collection: '**Sfoglia le stringhe di traduzione** — Elenca tutte le stringhe di traduzione nel progetto.'
 page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
 page_help_users_item: >-
@@ -944,9 +995,11 @@ directus_collection:
   directus_dashboards: Bacheche nel modulo approfondimenti
   directus_fields: Configurazione e metadati aggiuntivi del campo
   directus_files: Metadati per tutti i file degli asset gestiti
+  directus_flows: Flussi di automazione
   directus_folders: Fornisce directory virtuali per i file
   directus_migrations: Quale versione del database stai usando
   directus_notifications: Notifiche inviate agli utenti
+  directus_operations: Operazioni che vengono eseguite nei flussi
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
   directus_permissions: Autorizzazioni di accesso per ciascun ruolo
   directus_presets: Preset per i default della raccolta e i segnalibri
@@ -1317,6 +1370,7 @@ reset: Resetta
 reset_password: Resetta la password
 revisions: Revisioni
 no_revisions: Non ci sono ancora revisioni
+no_logs: Non c'è ancora nessun registro
 revert: Ripristina
 save: Salva
 schema: Schema
@@ -1341,6 +1395,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1359,6 +1414,7 @@ interfaces:
     no_rules: Nessuna regola configurata
     change_value: Clicca per cambiare il valore
     placeholder: Trascina qui le regole
+    add_key_placeholder: Aggiungi una chiave e premi Invio...
   fields:
     name: Campi
   group-accordion:
@@ -1896,15 +1952,101 @@ panels:
     monochrome: Monocromatico
     monochrome_color: Colore monocromatico
 triggers:
+  common:
+    response_body: Corpo della risposta
+    response_body_all: Tutti i dati
+    response_body_last: Dati dell'ultima operazione
+  event:
+    name: Attività su un evento
+    description: Si attiva su eventi della piattaforma o dei dati
+    action: 'Azione (non bloccante)'
+    filter: 'Filtro (bloccante)'
   webhook:
+    name: Webhook
+    description: Si attiva alla ricezione di una chiamata HTTP
     method: Metodo
+    async: Asincrono
+  operation:
+    name: Un altro flusso
+    description: Attivato da un altro flusso, per concatenazione
+    preview: Attivato da un'operazione in un altro flusso
+  schedule:
+    name: Pianifica (CRON)
+    description: Si attiva a intervalli di tempo regolari
+    cron: Intervallo
+  manual:
+    name: Manuale
+    description: Si attiva manualmente nelle raccolte selezionate
+    collection_and_item: Pagine della raccolta e degli elementi
+    collection_only: Solo pagina della raccolta
+    item_only: Solo pagina dell'elemento
+a_users_uuid: Chiave primaria UUID di un utente...
+a_flow_uuid: Chiave primaria UUID di un flusso...
+any_string_or_json: Qualsiasi stringa o JSON...
+item_payload_placeholder: Questo è il JSON usato per aggiornare i valori dei campi dell'elemento...
+operation_variables_note: Puoi accedere ai dati di flusso con variabili come **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, o fare riferimento alle operazioni precedenti usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condizione
+    description: Stabilisce il percorso di un flusso con una logica Se / Altrimenti
+  item-create:
+    name: Crea dati
+    description: Crea elementi nel database
+    payload: Payload
+    emit_events: Scatena un evento
+  item-delete:
+    name: Elimina dati
+    description: Elimina elementi nel database
+    key: ID
+    query: Interrogazione
+  item-read:
+    name: Leggi dati
+    description: Leggi elementi dal database
+    key: ID
+    query: Interrogazione
+  item-update:
+    name: Aggiorna dati
+    description: Aggiorna elementi nel database
+    key: ID
+    payload: Payload
+    query: Interrogazione
+  log:
+    name: Scrivi nella console
+    description: Scrive qualcosa nella console
+    message: Messaggio
+    message_placeholder: Inserisci un messaggio da mostrare nella console...
+  mail:
+    name: Invia un'email
+    description: Invia un'email a una o più persone
+    to: A
+    to_placeholder: Aggiungi gli indirizzi e-mail e premi invio...
+    body: Contenuto
   notification:
+    name: Invia una notifica
+    description: Invia una notifica in-app a un utente
     recipient: Utente
+    message: Messaggio
   request:
+    name: URL webhook / chiamata
+    description: "Fai una chiamata a un URL"
     url: URL
+    url_placeholder: https://esempio.it/esempio
     method: Metodo
     data: Dati
+    headers: Intestazioni
     header: Header
+    header_placeholder: Autorizzazione...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Attendi
+    description: Aspetta un dato numero di millisecondi
+    milliseconds: Millisecondi
+  transform:
+    name: Trasforma il payload
+    description: Modifica il payload JSON del flusso
   trigger:
+    name: Attiva il flusso
+    description: Passa questi dati a un altro flusso
+    flows: Flussi
+    flow: Flusso
     data: Dati
