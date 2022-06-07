@@ -59,7 +59,7 @@ describe('Integration Tests', () => {
 	});
 
 	describe('readOne', () => {
-		const rawItems = [{ id: 1 }, { id: 2 }];
+		const rawItems = [{ id: 'b5a7dd0f-fc9f-4242-b331-83990990198f' }, { id: '6107c897-9182-40f7-b22e-4f044d1258d2' }];
 
 		describe('Permissions, Authorization, Roles', () => {
 			it.each(Object.keys(schemas))('%s it returns one item from tables as admin', async (schema) => {
@@ -401,7 +401,7 @@ describe('Integration Tests', () => {
 					{
 						id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
 						title: 'A new child item',
-						uploaded_by: 1,
+						uploaded_by: 'b5a7dd0f-fc9f-4242-b331-83990990198f',
 					},
 				];
 
@@ -446,7 +446,7 @@ describe('Integration Tests', () => {
 						{
 							id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
 							title: 'A new child item',
-							uploaded_by: 1,
+							uploaded_by: 'b5a7dd0f-fc9f-4242-b331-83990990198f',
 						},
 					];
 
@@ -668,8 +668,8 @@ describe('Integration Tests', () => {
 
 	describe('readMany', () => {
 		const items = [
-			{ id: 1, name: 'string1' },
-			{ id: 2, name: 'string2' },
+			{ id: 'b5a7dd0f-fc9f-4242-b331-83990990198f', name: 'string1' },
+			{ id: '6107c897-9182-40f7-b22e-4f044d1258d2', name: 'string2' },
 		];
 
 		it.each(Object.keys(schemas))('%s it returns multiple items from tables as admin', async (schema) => {
@@ -682,10 +682,10 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
-			const response = await itemsService.readMany([1, 2], { fields: ['id', 'name'] });
+			const response = await itemsService.readMany([items[0].id, items[1].id], { fields: ['id', 'name'] });
 
 			expect(tracker.history.select.length).toBe(1);
-			expect(tracker.history.select[0].bindings).toStrictEqual([1, 2, 2]);
+			expect(tracker.history.select[0].bindings).toStrictEqual([items[0].id, items[1].id, 2]);
 			expect(tracker.history.select[0].sql).toBe(
 				`select ${sqlFieldFormatter(
 					schemas[schema].schema,
