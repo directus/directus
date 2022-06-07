@@ -81,6 +81,32 @@ export default defineComponent({
 		top: 8px;
 		left: 8px;
 	}
+
+	&.added {
+		color: var(--success);
+		background-color: var(--success-alt);
+		border-radius: 0 0 var(--border-radius) var(--border-radius);
+
+		.changed {
+			background-color: var(--success-25);
+		}
+	}
+
+	&.deleted {
+		color: var(--danger);
+		background-color: var(--danger-alt);
+		border-radius: var(--border-radius) var(--border-radius) 0 0;
+
+		.changed {
+			background-color: var(--danger-25);
+		}
+	}
+
+	&.updated {
+		color: var(--warning);
+		background-color: var(--warning-alt);
+		border-radius: var(--border-radius);
+	}
 }
 
 .changed {
@@ -88,32 +114,6 @@ export default defineComponent({
 	margin-right: 0.2em;
 	padding: 2px;
 	border-radius: var(--border-radius);
-}
-
-.added {
-	color: var(--success);
-	background-color: var(--success-alt);
-	border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
-
-	.changed {
-		background-color: var(--success-25);
-	}
-}
-
-.deleted {
-	color: var(--danger);
-	background-color: var(--danger-alt);
-	border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
-
-	.changed {
-		background-color: var(--danger-25);
-	}
-}
-
-.updated {
-	color: var(--warning);
-	background-color: var(--warning-alt);
-	border-radius: var(--border-radius) !important;
 }
 
 .no-value {
