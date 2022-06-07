@@ -267,6 +267,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/configuration/webhooks',
+						title: 'Webhooks',
+					},
+					{
+						type: 'page',
 						path: '/configuration/activity-log',
 						title: 'Activity Log',
 					},
@@ -433,6 +438,11 @@ module.exports = {
 						type: 'page',
 						path: '/reference/system/utilities',
 						title: 'Utilities',
+					},
+					{
+						type: 'page',
+						path: '/reference/system/webhooks',
+						title: 'Webhooks',
 					},
 				],
 			},

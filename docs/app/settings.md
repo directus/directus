@@ -13,7 +13,7 @@ Only Administrators have access to the Settings Module.
 
 :::
 
-Settings are split into four distinct sections, each described below.
+Settings are split into five distinct sections, each described below.
 
 - [Project Settings](/configuration/project-settings) — Setup branding and other global style options.
 - [Data Model](/configuration/data-model) — Create and modify [Collections](/getting-started/glossary/#collections),
@@ -21,6 +21,7 @@ Settings are split into four distinct sections, each described below.
   [Fields](/getting-started/glossary/#fields).
 - [Roles & Permissions](/configuration/users-roles-permissions) — Create and manage access via Roles and Permissions.
 - [Presets & Bookmarks](/configuration/presets-bookmarks) — Set default views of data and configure bookmarks.
+- [Webhooks](/configuration/webhooks) — Use platform events to trigger external services.
 
 Aside from the above pages, there are three shorthand links:
 
