@@ -5,8 +5,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref, watch, onMounted, onUnmounted, computed } from 'vue';
+<script setup lang="ts">
+import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
@@ -17,318 +17,265 @@ import { abbreviateNumber } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
 import { addWeeks } from 'date-fns';
 
-export default defineComponent({
-	props: {
-		height: {
-			type: Number,
-			required: true,
-		},
-		showHeader: {
-			type: Boolean,
-			default: false,
-		},
-		data: {
-			type: Object,
-			default: () => ({}),
-		},
-		id: {
-			type: String,
-			required: true,
-		},
-		now: {
-			type: Date,
-			required: true,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-		dateField: {
-			type: String,
-			required: true,
-		},
-		valueField: {
-			type: String,
-			required: true,
-		},
-		function: {
-			type: String as PropType<
-				'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max'
-			>,
-			required: true,
-		},
-		precision: {
-			type: String as PropType<'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second'>,
-			default: 'hour',
-		},
-		range: {
-			type: String,
-			default: '1 week',
-		},
-		color: {
-			type: String,
-			default: cssVar('--primary'),
-		},
-		fillType: {
-			type: String,
-			default: 'gradient',
-		},
-		curveType: {
-			type: String,
-			default: 'smooth',
-		},
-		decimals: {
-			type: Number,
-			default: 0,
-		},
-		min: {
-			type: Number,
-			default: undefined,
-		},
-		max: {
-			type: Number,
-			default: undefined,
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: () => ({}),
-		},
-		showXAxis: {
-			type: Boolean,
-			default: true,
-		},
-		showYAxis: {
-			type: Boolean,
-			default: true,
-		},
+const props = withDefaults(
+	defineProps<{
+		height: number;
+		showHeader: boolean;
+		data: object[];
+		id: string;
+		now: Date;
+		collection: string;
+		dateField: string;
+		valueField: string;
+		function: string;
+		precision: string;
+		range: string;
+		color: string;
+		fillType: string;
+		curveType: string;
+		decimals: number;
+		min: number;
+		max: number;
+		filter: Filter;
+		showXAxis: boolean;
+		showYAxis: boolean;
+	}>(),
+	{
+		showHeader: false,
+		data: () => [],
+		precision: 'hour',
+		color: cssVar('--primary'),
+		range: '1 week',
+		fillType: 'gradient',
+		curveType: 'smooth',
+		decimals: 0,
+		min: undefined,
+		max: undefined,
+		filter: () => ({}),
+		showXAxis: true,
+		showYAxis: true,
+	}
+);
+
+const { d, t, n } = useI18n();
+
+const fieldsStore = useFieldsStore();
+
+const metrics = ref<Record<string, any>[]>([]);
+const hasData = ref(true);
+const error = ref();
+const chartEl = ref();
+const chart = ref<ApexCharts>();
+
+const valueLabel = computed(() => {
+	const field = fieldsStore.getField(props.collection, props.valueField)!;
+	const operation = t(props.function);
+	return `${field.name} (${operation})`;
+});
+
+watch(
+	[
+		() => props.data,
+		() => props.color,
+		() => props.fillType,
+		() => props.curveType,
+		() => props.decimals,
+		() => props.min,
+		() => props.max,
+		() => props.showXAxis,
+		() => props.showYAxis,
+	],
+	() => {
+		setupChart();
+		chart.value?.destroy();
 	},
-	setup(props) {
-		const { d, t, n } = useI18n();
+	{ deep: true }
+);
 
-		const fieldsStore = useFieldsStore();
+onMounted(setupChart);
 
-		const metrics = ref<Record<string, any>[]>([]);
-		const hasData = ref(true);
-		const error = ref();
-		const chartEl = ref();
-		const chart = ref<ApexCharts>();
+onUnmounted(() => {
+	chart.value?.destroy();
+});
 
-		const valueLabel = computed(() => {
-			const field = fieldsStore.getField(props.collection, props.valueField)!;
-			const operation = t(props.function);
-			return `${field.name} (${operation})`;
-		});
+function setupChart() {
+	if (isEmpty(props.data)) {
+		hasData.value = false;
+		return;
+	}
 
-		watch(
-			[
-				() => props.data,
-				() => props.color,
-				() => props.fillType,
-				() => props.curveType,
-				() => props.decimals,
-				() => props.min,
-				() => props.max,
-				() => props.showXAxis,
-				() => props.showYAxis,
-			],
-			() => {
-				setupChart();
-				chart.value?.destroy();
+	metrics.value = [];
+
+	const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
+
+	metrics.value = props.data.map((metric) => ({
+		x: new Date(toISO(metric.group)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0),
+
+		y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
+	}));
+
+	chart.value = new ApexCharts(chartEl.value, {
+		colors: [props.color ? props.color : cssVar('--primary')],
+		chart: {
+			type: props.fillType === 'disabled' ? 'line' : 'area',
+			height: '100%',
+			toolbar: {
+				show: false,
 			},
-			{ deep: true }
-		);
-
-		onMounted(setupChart);
-
-		onUnmounted(() => {
-			chart.value?.destroy();
-		});
-
-		return { chartEl, metrics, error, hasData, t };
-
-		function setupChart() {
-			if (isEmpty(props.data)) {
-				hasData.value = false;
-				return;
-			}
-
-			metrics.value = [];
-
-			const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
-
-			metrics.value = props.data.map((metric) => ({
-				x:
-					new Date(toISO(metric.group)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0),
-
-				y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
-			}));
-
-			chart.value = new ApexCharts(chartEl.value, {
-				colors: [props.color ? props.color : cssVar('--primary')],
-				chart: {
-					type: props.fillType === 'disabled' ? 'line' : 'area',
-					height: '100%',
-					toolbar: {
-						show: false,
-					},
-					selection: {
-						enabled: false,
-					},
-					zoom: {
-						enabled: false,
-					},
+			selection: {
+				enabled: false,
+			},
+			zoom: {
+				enabled: false,
+			},
+			fontFamily: 'var(--family-sans-serif)',
+			foreColor: 'var(--foreground-subdued)',
+		},
+		series: [
+			{
+				name: props.collection,
+				data: metrics.value,
+			},
+		],
+		stroke: {
+			curve: props.curveType,
+			width: 2,
+			lineCap: 'round',
+		},
+		markers: {
+			hover: {
+				size: undefined,
+				sizeOffset: 4,
+			},
+		},
+		fill: {
+			type: props.fillType === 'disabled' ? 'solid' : props.fillType,
+			gradient: {
+				colorStops: [
+					[
+						{
+							offset: 0,
+							color: props.color ? props.color : cssVar('--primary'),
+							opacity: 0.25,
+						},
+						{
+							offset: 100,
+							color: props.color ? props.color : cssVar('--primary'),
+							opacity: 0,
+						},
+					],
+				],
+			},
+		},
+		grid: {
+			borderColor: 'var(--border-subdued)',
+			padding: {
+				top: props.showHeader ? -20 : -4,
+				bottom: 0,
+				left: 8,
+			},
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		tooltip: {
+			marker: {
+				show: false,
+			},
+			x: {
+				show: true,
+				formatter(date: number) {
+					return d(new Date(date), 'long');
+				},
+			},
+			y: {
+				title: {
+					formatter: () => valueLabel.value + ': ',
+				},
+				formatter(value: number) {
+					return n(value);
+				},
+			},
+		},
+		xaxis: {
+			type: 'datetime',
+			tooltip: {
+				enabled: false,
+			},
+			axisTicks: {
+				show: false,
+			},
+			axisBorder: {
+				show: false,
+			},
+			range: props.now.getTime() - adjustDate(props.now, `-${props.range}`)!.getTime(),
+			max: props.now.getTime(),
+			labels: {
+				show: props.showXAxis ?? true,
+				offsetY: -4,
+				style: {
 					fontFamily: 'var(--family-sans-serif)',
 					foreColor: 'var(--foreground-subdued)',
+					fontWeight: 600,
+					fontSize: '10px',
 				},
-				series: [
-					{
-						name: props.collection,
-						data: metrics.value,
-					},
-				],
+				datetimeUTC: false,
+			},
+			crosshairs: {
 				stroke: {
-					curve: props.curveType,
-					width: 2,
-					lineCap: 'round',
+					color: 'var(--border-normal)',
 				},
-				markers: {
-					hover: {
-						size: undefined,
-						sizeOffset: 4,
-					},
+			},
+		},
+		yaxis: {
+			show: props.showYAxis ?? true,
+			forceNiceScale: true,
+			min: isNil(props.min) ? undefined : Number(props.min),
+			max: isNil(props.max) ? undefined : Number(props.max),
+			tickAmount: props.height - 4,
+			labels: {
+				offsetY: 1,
+				offsetX: -4,
+				formatter: (value: number) => {
+					return value > 10000
+						? abbreviateNumber(value, 1)
+						: n(value, 'decimal', {
+								minimumFractionDigits: props.decimals ?? 0,
+								maximumFractionDigits: props.decimals ?? 0,
+						  } as any);
 				},
-				fill: {
-					type: props.fillType === 'disabled' ? 'solid' : props.fillType,
-					gradient: {
-						colorStops: [
-							[
-								{
-									offset: 0,
-									color: props.color ? props.color : cssVar('--primary'),
-									opacity: 0.25,
-								},
-								{
-									offset: 100,
-									color: props.color ? props.color : cssVar('--primary'),
-									opacity: 0,
-								},
-							],
-						],
-					},
+				style: {
+					fontFamily: 'var(--family-sans-serif)',
+					foreColor: 'var(--foreground-subdued)',
+					fontWeight: 600,
+					fontSize: '10px',
 				},
-				grid: {
-					borderColor: 'var(--border-subdued)',
-					padding: {
-						top: props.showHeader ? -20 : -4,
-						bottom: 0,
-						left: 8,
-					},
-				},
-				dataLabels: {
-					enabled: false,
-				},
-				tooltip: {
-					marker: {
-						show: false,
-					},
-					x: {
-						show: true,
-						formatter(date: number) {
-							return d(new Date(date), 'long');
-						},
-					},
-					y: {
-						title: {
-							formatter: () => valueLabel.value + ': ',
-						},
-						formatter(value: number) {
-							return n(value);
-						},
-					},
-				},
-				xaxis: {
-					type: 'datetime',
-					tooltip: {
-						enabled: false,
-					},
-					axisTicks: {
-						show: false,
-					},
-					axisBorder: {
-						show: false,
-					},
-					range: props.now.getTime() - adjustDate(props.now, `-${props.range}`)!.getTime(),
-					max: props.now.getTime(),
-					labels: {
-						show: props.showXAxis ?? true,
-						offsetY: -4,
-						style: {
-							fontFamily: 'var(--family-sans-serif)',
-							foreColor: 'var(--foreground-subdued)',
-							fontWeight: 600,
-							fontSize: '10px',
-						},
-						datetimeUTC: false,
-					},
-					crosshairs: {
-						stroke: {
-							color: 'var(--border-normal)',
-						},
-					},
-				},
-				yaxis: {
-					show: props.showYAxis ?? true,
-					forceNiceScale: true,
-					min: isNil(props.min) ? undefined : Number(props.min),
-					max: isNil(props.max) ? undefined : Number(props.max),
-					tickAmount: props.height - 4,
-					labels: {
-						offsetY: 1,
-						offsetX: -4,
-						formatter: (value: number) => {
-							return value > 10000
-								? abbreviateNumber(value, 1)
-								: n(value, 'decimal', {
-										minimumFractionDigits: props.decimals ?? 0,
-										maximumFractionDigits: props.decimals ?? 0,
-								  } as any);
-						},
-						style: {
-							fontFamily: 'var(--family-sans-serif)',
-							foreColor: 'var(--foreground-subdued)',
-							fontWeight: 600,
-							fontSize: '10px',
-						},
-					},
-				},
-			});
+			},
+		},
+	});
 
-			chart.value.render();
+	chart.value.render();
 
-			function toISO(metric: Record<string, any>) {
-				const year = metric[`${props.dateField}_year`];
-				const month = padZero(metric[`${props.dateField}_month`] ?? 1);
-				const week = metric[`${props.dateField}_week`];
-				const day = week
-					? padZero(getFirstDayOfNWeeksForYear(week, year))
-					: padZero(metric[`${props.dateField}_day`] ?? 1);
-				const hour = padZero(metric[`${props.dateField}_hour`] ?? 0);
-				const minute = padZero(metric[`${props.dateField}_minute`] ?? 0);
-				const second = padZero(metric[`${props.dateField}_second`] ?? 0);
+	function toISO(metric: Record<string, any>) {
+		const year = metric[`${props.dateField}_year`];
+		const month = padZero(metric[`${props.dateField}_month`] ?? 1);
+		const week = metric[`${props.dateField}_week`];
+		const day = week ? padZero(getFirstDayOfNWeeksForYear(week, year)) : padZero(metric[`${props.dateField}_day`] ?? 1);
+		const hour = padZero(metric[`${props.dateField}_hour`] ?? 0);
+		const minute = padZero(metric[`${props.dateField}_minute`] ?? 0);
+		const second = padZero(metric[`${props.dateField}_second`] ?? 0);
 
-				return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+		return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
 
-				function padZero(value: number) {
-					return String(value).padStart(2, '0');
-				}
-
-				function getFirstDayOfNWeeksForYear(numberOfWeeks: number, year: number) {
-					return addWeeks(new Date(year, 0, 1), numberOfWeeks).getDate();
-				}
-			}
+		function padZero(value: number) {
+			return String(value).padStart(2, '0');
 		}
-	},
-});
+
+		function getFirstDayOfNWeeksForYear(numberOfWeeks: number, year: number) {
+			return addWeeks(new Date(year, 0, 1), numberOfWeeks).getDate();
+		}
+	}
+}
 </script>
 
 <style scoped>
