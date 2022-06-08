@@ -25,7 +25,7 @@ export type Item = {
 };
 
 export function useRelationMultiple(
-	value: Ref<Record<string, any> | any[]>,
+	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
 	itemId: Ref<string | number>
@@ -38,7 +38,7 @@ export function useRelationMultiple(
 
 	const _value = computed<Item>({
 		get() {
-			if (Array.isArray(value.value))
+			if (!value.value || Array.isArray(value.value))
 				return {
 					create: [],
 					update: [],
@@ -52,8 +52,13 @@ export function useRelationMultiple(
 	});
 
 	watch(value, (newValue, oldValue) => {
-		if (Array.isArray(newValue) && isPlainObject(oldValue)) {
+		if (
+			(Array.isArray(newValue) && isPlainObject(oldValue)) ||
+			(Array.isArray(newValue) && Array.isArray(oldValue) && oldValue.length === 0)
+		) {
 			updateFetchedItems();
+		} else if (newValue === null) {
+			clear();
 		}
 	});
 
@@ -161,7 +166,7 @@ export function useRelationMultiple(
 		});
 	});
 
-	const { create, remove, select, update } = useActions(_value);
+	const { create, remove, select, update, clear } = useActions(_value);
 
 	return {
 		create,
@@ -181,7 +186,7 @@ export function useRelationMultiple(
 	};
 
 	function useActions(target: Ref<Item>) {
-		return { create, update, remove, select };
+		return { create, update, remove, select, clear };
 
 		function create(...items: Record<string, any>[]) {
 			for (const item of items) {
@@ -271,6 +276,18 @@ export function useRelationMultiple(
 
 			if (relation.value?.type === 'o2m') update(...selected);
 			else create(...selected);
+		}
+
+		function clear() {
+			if (!relation.value) return;
+
+			value.value = itemId.value === '+' ? undefined : [];
+			existingItemCount.value = 0;
+			fetchedItems.value = [];
+
+			target.value.create = [];
+			target.value.update = [];
+			target.value.delete = [];
 		}
 
 		function updateValue() {
