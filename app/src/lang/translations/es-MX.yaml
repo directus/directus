@@ -50,12 +50,13 @@ export_items: Exportar Elementos
 and: "Y"
 or: O
 init: Inicializador
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Mostrando los primeros {n} elementos.
 modifier: Modificador
 custom: Personalizado
 hook: Gancho
-fill_width: Llenar Ancho
-field_name_translations: 'Nombre de Campo: Traducciones'
-enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
+fill_width: Ancho Completo
+field_name_translations: Traducciones del Campo de Nombre
+enter_password_to_enable_tfa: Introduzca su contraseña para activar la Autenticación de Dos Factores
 add_field: Agregar Campo
 role_name: Nombre del Rol
 branch: Rama
@@ -65,20 +66,22 @@ edit_collection: Editar Colección
 exclusive: Exclusivo
 children: Subsecciones
 db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
-show_active_items: Mostrar elementos activos
+show_active_items: Mostrar Elementos Activos
 show_archived_items: Mostrar Elementos Archivados
-show_all_items: Mostrar todos los elementos
+show_all_items: Mostrar Todos los Elementos
 edited: Valor Editado
 required: Requerido
-required_for_app_access: Necesario para el acceso a App
-requires_value: Valor obligatorio
+required_for_app_access: Necesario para el Acceso a la Aplicación
+requires_value: Requiere un Valor
 create_preset: Crear Predefinido
 create_panel: Crear Panel
 create_role: Crear Rol
 create_user: Crear Usuario
+message: Mensaje
 delete_panel: Eliminar Panel
 create_webhook: Crear Webhook
-create_translation_string: Crear Traducciones
+create_translation_string: Crear Cadena de Traducción
+no_translation_string: Sin Cadenas de Traducción
 translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
 edit_translation_string: Editar traducción
@@ -1088,7 +1091,7 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: 'Nombre de Campo: Traducciones'
+    translation: Traducciones del Campo de Nombre
     display_template: Plantilla
   directus_roles:
     name: Nombre del Rol
@@ -1857,8 +1860,11 @@ triggers:
   webhook:
     method: Método
 operations:
+  log:
+    message: Mensaje
   notification:
     recipient: Usuario
+    message: Mensaje
   request:
     url: URL
     method: Método
