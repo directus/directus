@@ -11,7 +11,11 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Flows'
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Flows'
+              meta:
+                $ref: '../../openapi.yaml#/components/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
