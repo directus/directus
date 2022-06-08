@@ -24,7 +24,7 @@ get:
     - Operations
 
 post:
-  summary: Create a Operation
+  summary: Create an Operation
   description: Create a new operation.
   operationId: createOperation
   parameters:
