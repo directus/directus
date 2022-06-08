@@ -86,14 +86,14 @@
 							<div class="type-label">{{ t('alt_text') }}</div>
 							<v-input v-model="imageSelection.alt" />
 						</div>
-						<template v-if="storageAssetTransform === 'all' && !imageSelection.transformationKey">
+						<template v-if="storageAssetTransform === 'all'">
 							<div class="field half">
 								<div class="type-label">{{ t('width') }}</div>
-								<v-input v-model="imageSelection.width" />
+								<v-input v-model="imageSelection.width" :disabled="imageSelection.transformationKey" />
 							</div>
 							<div class="field half-right">
 								<div class="type-label">{{ t('height') }}</div>
-								<v-input v-model="imageSelection.height" />
+								<v-input v-model="imageSelection.height" :disabled="imageSelection.transformationKey" />
 							</div>
 						</template>
 						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
