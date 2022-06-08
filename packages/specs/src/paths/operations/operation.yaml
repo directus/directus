@@ -1,5 +1,5 @@
 get:
-  summary: Retrieve a Operation
+  summary: Retrieve an Operation
   description: Retrieve a single operation by unique identifier.
   operationId: getOperation
   responses:
@@ -20,7 +20,7 @@ get:
     - Operations
 
 patch:
-  summary: Update a Operation
+  summary: Update an Operation
   description: Update an existing operation
   operationId: updateOperation
   parameters:
@@ -50,7 +50,7 @@ patch:
     - Operations
 
 delete:
-  summary: Delete a Operation
+  summary: Delete an Operation
   description: Delete an existing operation
   operationId: deleteOperation
   responses:

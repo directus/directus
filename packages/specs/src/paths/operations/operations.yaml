@@ -11,7 +11,11 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Operations'
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Operations'
+              meta:
+                $ref: '../../openapi.yaml#/components/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
@@ -20,7 +24,7 @@ get:
     - Operations
 
 post:
-  summary: Create a Operation
+  summary: Create an Operation
   description: Create a new operation.
   operationId: createOperation
   parameters:
