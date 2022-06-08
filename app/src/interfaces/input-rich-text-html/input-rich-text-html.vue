@@ -86,13 +86,23 @@
 							<div class="type-label">{{ t('alt_text') }}</div>
 							<v-input v-model="imageSelection.alt" />
 						</div>
-						<div class="field half">
-							<div class="type-label">{{ t('width') }}</div>
-							<v-input v-model="imageSelection.width" />
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ t('height') }}</div>
-							<v-input v-model="imageSelection.height" />
+						<template v-if="storageAssetTransform === 'all' && !imageSelection.transformationKey">
+							<div class="field half">
+								<div class="type-label">{{ t('width') }}</div>
+								<v-input v-model="imageSelection.width" />
+							</div>
+							<div class="field half-right">
+								<div class="type-label">{{ t('height') }}</div>
+								<v-input v-model="imageSelection.height" />
+							</div>
+						</template>
+						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
+							<div class="type-label">{{ t('transformation_preset_key') }}</div>
+							<v-select
+								v-model="imageSelection.transformationKey"
+								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
+								:show-deselect="true"
+							/>
 						</div>
 					</div>
 				</template>
@@ -173,6 +183,8 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import { useSettingsStore } from '@/stores';
+import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -268,12 +280,24 @@ export default defineComponent({
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
+		const settingsStore = useSettingsStore();
+
+		let storageAssetTransform = ref('all');
+		let storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+
+		if (settingsStore.settings?.storage_asset_transform) {
+			storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
+			storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
+		}
 
 		let count = ref(0);
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
-			imageToken
+			imageToken,
+			{
+				storageAssetTransform,
+			}
 		);
 
 		const {
@@ -387,6 +411,8 @@ export default defineComponent({
 			sourceCodeButton,
 			setupContentWatcher,
 			setCount,
+			storageAssetTransform,
+			storageAssetPresets,
 		};
 
 		function setCount() {

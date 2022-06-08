@@ -841,6 +841,7 @@ media: Media
 quality: Quality
 width: Width
 height: Height
+transformation_preset_key: Transformation Preset Key
 source: Source
 url_placeholder: Enter an url...
 display_text: Display Text

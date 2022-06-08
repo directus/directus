@@ -9,6 +9,7 @@ type ImageSelection = {
 	alt: string;
 	width?: number;
 	height?: number;
+	transformationKey?: string | null;
 	previewUrl?: string;
 };
 
@@ -28,7 +29,13 @@ type UsableImage = {
 	imageButton: ImageButton;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableImage {
+export default function useImage(
+	editor: Ref<any>,
+	imageToken: Ref<string | undefined>,
+	options: {
+		storageAssetTransform: Ref<string>;
+	}
+): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
@@ -45,6 +52,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 				const alt = node.getAttribute('alt');
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
+				const transformationKey = imageUrlParams?.get('key') || undefined;
 
 				if (imageUrl === null || alt === null) {
 					return;
@@ -55,6 +63,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 					alt,
 					width,
 					height,
+					transformationKey,
 					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value ?? getToken()),
 				};
 			} else {
@@ -96,10 +105,28 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 	function saveImage() {
 		const img = imageSelection.value;
 		if (img === null) return;
-		const resizedImageUrl = addQueryToPath(img.imageUrl, {
-			...(img.width ? { width: img.width.toString() } : {}),
-			...(img.height ? { height: img.height.toString() } : {}),
-		});
+
+		const queries: Record<string, any> = {};
+		const newURL = new URL(img.imageUrl);
+
+		newURL.searchParams.delete('width');
+		newURL.searchParams.delete('height');
+		newURL.searchParams.delete('key');
+
+		if (options.storageAssetTransform.value === 'all') {
+			if (img.transformationKey) {
+				queries['key'] = img.transformationKey;
+			} else {
+				queries['width'] = img.width;
+				queries['height'] = img.height;
+			}
+		} else if (options.storageAssetTransform.value === 'presets') {
+			if (img.transformationKey) {
+				queries['key'] = img.transformationKey;
+			}
+		}
+
+		const resizedImageUrl = addQueryToPath(newURL.toString(), queries);
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();
