@@ -107,6 +107,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		filter?: Filter | null;
+		limit?: number;
 	}>(),
 	{
 		value: () => [],
@@ -115,12 +116,13 @@ const props = withDefaults(
 		enableCreate: true,
 		enableSelect: true,
 		filter: () => null,
+		limit: 15,
 	}
 );
 
 const emit = defineEmits(['input']);
 const { t } = useI18n();
-const { collection, field, primaryKey } = toRefs(props);
+const { collection, field, primaryKey, limit } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 
 const value = computed({
@@ -164,7 +166,6 @@ const fields = computed(() => {
 	return addRelatedPrimaryKeyToFields(relationInfo.value?.junctionCollection.collection ?? '', displayFields);
 });
 
-const limit = ref(15);
 const page = ref(1);
 
 const query = computed<RelationQueryMultiple>(() => ({

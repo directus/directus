@@ -157,18 +157,20 @@ const props = withDefaults(
 		disabled?: boolean;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		limit?: number;
 	}>(),
 	{
 		value: () => [],
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
+		limit: 15,
 	}
 );
 
 const emit = defineEmits(['input']);
 const { t } = useI18n();
-const { collection, field, primaryKey } = toRefs(props);
+const { collection, field, primaryKey, limit } = toRefs(props);
 const { relationInfo } = useRelationM2A(collection, field);
 
 const value = computed({
@@ -206,7 +208,6 @@ const fields = computed(() => {
 	return fields;
 });
 
-const limit = ref(15);
 const page = ref(1);
 
 const query = computed<RelationQueryMultiple>(() => ({
