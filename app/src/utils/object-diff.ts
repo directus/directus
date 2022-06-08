@@ -10,5 +10,6 @@ export const objDiff = (obj1: Record<any, any>, obj2: Record<any, any> | undefin
 	for (const [k, v] of Object.entries(obj1)) {
 		if (!isEqual(v, obj2[k])) diff[k] = v;
 	}
+
 	return diff;
 };

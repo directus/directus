@@ -22,12 +22,12 @@ export default definePanel({
 				_and: [
 					{
 						[options.dateField]: {
-							_gte: parseDate(`$NOW(-${options.range || '1 week'})`),
+							_gte: `$NOW(-${options.range || '1 week'})`,
 						},
 					},
 					{
 						[options.dateField]: {
-							_lte: parseDate(`$NOW`),
+							_lte: `$NOW`,
 						},
 					},
 					options.filter || {},
@@ -36,18 +36,6 @@ export default definePanel({
 			limit: -1,
 		};
 		return response;
-
-		function parseDate(value: string) {
-			if (value.startsWith('$NOW')) {
-				if (value.includes('(') && value.includes(')')) {
-					const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
-					if (!adjustment) return new Date();
-					return adjustDate(new Date(), adjustment)?.toISOString();
-				}
-
-				return new Date().toISOString();
-			}
-		}
 	},
 	component: PanelTimeSeries,
 	options: [
