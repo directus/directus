@@ -4,26 +4,19 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	props: {
-		showHeader: {
-			type: Boolean,
-			default: false,
-		},
-
-		text: {
-			type: String,
-			default: '',
-		},
-		color: {
-			type: String,
-			default: undefined,
-		},
-	},
-});
+<script setup lang="ts">
+const props = withDefaults(
+	defineProps<{
+		showHeader?: boolean;
+		text?: string;
+		color: string | undefined;
+	}>(),
+	{
+		showHeader: false,
+		text: '',
+		color: undefined,
+	}
+);
 </script>
 
 <style scoped>
