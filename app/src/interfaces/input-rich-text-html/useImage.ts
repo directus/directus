@@ -2,7 +2,8 @@ import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
+import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -34,10 +35,26 @@ export default function useImage(
 	imageToken: Ref<string | undefined>,
 	options: {
 		storageAssetTransform: Ref<string>;
+		storageAssetPresets: Ref<SettingsStorageAssetPreset[]>;
 	}
 ): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
+	const selectedPreset = ref<SettingsStorageAssetPreset | undefined>();
+
+	watch(
+		() => imageSelection.value?.transformationKey,
+		(newKey) => {
+			selectedPreset.value = options.storageAssetPresets.value.find(
+				(preset: SettingsStorageAssetPreset) => preset.key === newKey
+			);
+
+			if (selectedPreset.value) {
+				imageSelection.value!.width = selectedPreset.value.width ?? undefined;
+				imageSelection.value!.height = selectedPreset.value.height ?? undefined;
+			}
+		}
+	);
 
 	const imageButton = {
 		icon: 'image',
@@ -58,11 +75,17 @@ export default function useImage(
 					return;
 				}
 
+				if (transformationKey) {
+					selectedPreset.value = options.storageAssetPresets.value.find(
+						(preset: SettingsStorageAssetPreset) => preset.key === transformationKey
+					);
+				}
+
 				imageSelection.value = {
 					imageUrl,
 					alt,
-					width,
-					height,
+					width: selectedPreset.value ? selectedPreset.value.width ?? undefined : width,
+					height: selectedPreset.value ? selectedPreset.value.height ?? undefined : height,
 					transformationKey,
 					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value ?? getToken()),
 				};

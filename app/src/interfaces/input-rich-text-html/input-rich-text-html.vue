@@ -297,6 +297,7 @@ export default defineComponent({
 			imageToken,
 			{
 				storageAssetTransform,
+				storageAssetPresets,
 			}
 		);
 
