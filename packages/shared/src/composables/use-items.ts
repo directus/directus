@@ -138,7 +138,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				params: {
 					limit: unref(limit),
 					fields: fieldsToFetch,
-					...(alias && { alias: unref(alias) }),
+					...(alias ? { alias: unref(alias) } : {}),
 					sort: unref(sort),
 					page: unref(page),
 					search: unref(search),
