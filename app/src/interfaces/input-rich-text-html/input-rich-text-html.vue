@@ -86,13 +86,23 @@
 							<div class="type-label">{{ t('alt_text') }}</div>
 							<v-input v-model="imageSelection.alt" />
 						</div>
-						<div class="field half">
-							<div class="type-label">{{ t('width') }}</div>
-							<v-input v-model="imageSelection.width" />
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ t('height') }}</div>
-							<v-input v-model="imageSelection.height" />
+						<template v-if="storageAssetTransform === 'all'">
+							<div class="field half">
+								<div class="type-label">{{ t('width') }}</div>
+								<v-input v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
+							</div>
+							<div class="field half-right">
+								<div class="type-label">{{ t('height') }}</div>
+								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
+							</div>
+						</template>
+						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
+							<div class="type-label">{{ t('transformation_preset_key') }}</div>
+							<v-select
+								v-model="imageSelection.transformationKey"
+								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
+								:show-deselect="true"
+							/>
 						</div>
 					</div>
 				</template>
@@ -118,7 +128,7 @@
 				<v-tabs-items v-model="openMediaTab">
 					<v-tab-item value="video">
 						<template v-if="mediaSelection">
-							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="controls">
+							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
 								<source :src="mediaSelection.previewUrl" />
 							</video>
 							<iframe
@@ -173,6 +183,8 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import { useSettingsStore } from '@/stores';
+import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -268,12 +280,25 @@ export default defineComponent({
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
+		const settingsStore = useSettingsStore();
+
+		let storageAssetTransform = ref('all');
+		let storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+
+		if (settingsStore.settings?.storage_asset_transform) {
+			storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
+			storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
+		}
 
 		let count = ref(0);
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
-			imageToken
+			imageToken,
+			{
+				storageAssetTransform,
+				storageAssetPresets,
+			}
 		);
 
 		const {
@@ -348,7 +373,7 @@ export default defineComponent({
 			};
 		});
 
-		const percRemaining = computed(() => percentage(count.value, props.softLength));
+		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 		let observer: MutationObserver;
 
@@ -387,6 +412,8 @@ export default defineComponent({
 			sourceCodeButton,
 			setupContentWatcher,
 			setCount,
+			storageAssetTransform,
+			storageAssetPresets,
 		};
 
 		function setCount() {
