@@ -1,6 +1,7 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { adjustDate, definePanel } from '@directus/shared/utils';
 import PanelTimeSeries from './time-series.vue';
+import { getGroups } from '@/utils/get-groups';
 
 export default definePanel({
 	id: 'time-series',
@@ -13,7 +14,7 @@ export default definePanel({
 		}
 
 		const response = {
-			groupBy: getGroups(),
+			groupBy: getGroups(options.precision, options.dateField),
 			aggregate: {
 				[options.function]: [options.valueField],
 			},
@@ -46,39 +47,6 @@ export default definePanel({
 
 				return new Date().toISOString();
 			}
-		}
-
-		function getGroups() {
-			let groups: string[] = [];
-
-			switch (options.precision || 'hour') {
-				case 'year':
-					groups = ['year'];
-					break;
-				case 'month':
-					groups = ['year', 'month'];
-					break;
-				case 'week':
-					groups = ['year', 'month', 'week'];
-					break;
-				case 'day':
-					groups = ['year', 'month', 'day'];
-					break;
-				case 'hour':
-					groups = ['year', 'month', 'day', 'hour'];
-					break;
-				case 'minute':
-					groups = ['year', 'month', 'day', 'hour', 'minute'];
-					break;
-				case 'second':
-					groups = ['year', 'month', 'day', 'hour', 'minute', 'second'];
-					break;
-				default:
-					groups = ['year', 'month', 'day', 'hour'];
-					break;
-			}
-
-			return groups.map((datePart) => `${datePart}(${options.dateField})`);
 		}
 	},
 	component: PanelTimeSeries,
