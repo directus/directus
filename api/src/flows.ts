@@ -28,6 +28,7 @@ import { omit } from 'lodash';
 import { getMessenger } from './messenger';
 import fastRedact from 'fast-redact';
 import { applyOperationOptions } from './utils/operation-options';
+import { JobQueue } from './utils/job-queue';
 
 let flowManager: FlowManager | undefined;
 
@@ -57,13 +58,74 @@ const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 
 class FlowManager {
+	private isLoaded = false;
+
 	private operations: Record<string, OperationHandler> = {};
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
+	private reloadQueue = new JobQueue();
+
+	constructor() {
+		const messenger = getMessenger();
+
+		messenger.subscribe('flows', (event) => {
+			if (event.type === 'reload') {
+				this.reloadQueue.enqueue(async () => {
+					if (this.isLoaded) {
+						await this.unload();
+						await this.load();
+					}
+				});
+			}
+		});
+	}
+
 	public async initialize(): Promise<void> {
+		if (!this.isLoaded) {
+			await this.load();
+		}
+	}
+
+	public async reload(): Promise<void> {
+		const messenger = getMessenger();
+
+		messenger.publish('flows', { type: 'reload' });
+	}
+
+	public addOperation(id: string, operation: OperationHandler): void {
+		this.operations[id] = operation;
+	}
+
+	public clearOperations(): void {
+		this.operations = {};
+	}
+
+	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		if (!(id in this.operationFlowHandlers)) {
+			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
+			return null;
+		}
+
+		const handler = this.operationFlowHandlers[id];
+
+		return handler(data, context);
+	}
+
+	public async runWebhookFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		if (!(id in this.webhookFlowHandlers)) {
+			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
+			throw new exceptions.ForbiddenException();
+		}
+
+		const handler = this.webhookFlowHandlers[id];
+
+		return handler(data, context);
+	}
+
+	private async load(): Promise<void> {
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
 		const flows = await flowsService.readByQuery({
@@ -193,14 +255,10 @@ class FlowManager {
 			}
 		}
 
-		getMessenger().subscribe('flows', (event) => {
-			if (event.type === 'reload') {
-				this.reload();
-			}
-		});
+		this.isLoaded = true;
 	}
 
-	public async reload(): Promise<void> {
+	private async unload(): Promise<void> {
 		for (const trigger of this.triggerHandlers) {
 			trigger.events.forEach((event) => {
 				switch (event.type) {
@@ -221,37 +279,7 @@ class FlowManager {
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
 
-		await this.initialize();
-	}
-
-	public addOperation(id: string, operation: OperationHandler): void {
-		this.operations[id] = operation;
-	}
-
-	public clearOperations(): void {
-		this.operations = {};
-	}
-
-	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
-		if (!(id in this.operationFlowHandlers)) {
-			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
-			return null;
-		}
-
-		const handler = this.operationFlowHandlers[id];
-
-		return handler(data, context);
-	}
-
-	public async runWebhookFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
-		if (!(id in this.webhookFlowHandlers)) {
-			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
-			throw new exceptions.ForbiddenException();
-		}
-
-		const handler = this.webhookFlowHandlers[id];
-
-		return handler(data, context);
+		this.isLoaded = false;
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {
