@@ -3,125 +3,53 @@
 		<span v-if="!hasData" class="type-note">{{ t('no_data') }}</span>
 		<div v-else>
 			<v-list>
-				<v-list-item
-					v-for="row in data"
-					:key="row[primaryKeyField.field]"
-					class="selectable"
-					clickable
-					@click="startEditing(row)"
-				>
-					<render-template :item="row" :collection="collection" :template="renderTemplate" />
+				<v-list-item v-for="row in data" :key="row[primaryKeyField.field]" class="selectable">
+					<render-template :item="row" :collection="collection" :template="displayTemplate" />
 					<div class="spacer" />
 				</v-list-item>
 			</v-list>
 		</div>
-
-		<drawer-item
-			:active="!!currentlyEditing"
-			:collection="collection"
-			:primary-key="currentlyEditing ?? '+'"
-			:edits="editsAtStart"
-			@input="saveEdits"
-			@update:active="cancelEdit"
-		/>
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, PropType } from 'vue';
-import api from '@/api';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
-import DrawerItem from '@/views/private/components/drawer-item';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	components: { DrawerItem },
-	props: {
-		showHeader: {
-			type: Boolean,
-			default: false,
-		},
+const props = withDefaults(
+	defineProps<{
+		showHeader?: boolean;
+		displayTemplate?: string;
+		sortField?: string;
+		sortDirection?: string;
+		collection: string;
+		limit?: number;
+		filter?: Filter;
+		data?: object;
+	}>(),
+	{
+		showHeader: false,
+		displayTemplate: '',
+		sortDirection: 'desc',
+		limit: 5,
+		filter: () => ({}),
+		data: () => ({}),
+	}
+);
+const { t } = useI18n();
 
-		displayTemplate: {
-			type: String,
-			default: '',
-		},
-		sortField: {
-			type: String,
-			default: undefined,
-		},
-		sortDirection: {
-			type: String,
-			default: 'desc',
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-		limit: {
-			type: Number,
-			default: 5,
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: () => ({}),
-		},
-		data: {
-			type: Object,
-			default: () => ({}),
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const currentlyEditing = ref<number | string>();
+const editsAtStart = ref<Record<string, any>>();
 
-		const currentlyEditing = ref<number | string>();
-		const editsAtStart = ref<Record<string, any>>();
+const fieldsStore = useFieldsStore();
 
-		const fieldsStore = useFieldsStore();
-
-		const hasData = computed(() => {
-			return props.data && props.data.length > 0;
-		});
-
-		const renderTemplate = computed(() => {
-			return props.displayTemplate;
-		});
-
-		const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
-
-		return {
-			renderTemplate,
-			primaryKeyField,
-			startEditing,
-			saveEdits,
-			cancelEdit,
-			currentlyEditing,
-			editsAtStart,
-			hasData,
-			t,
-		};
-
-		function startEditing(item: Record<string, any>) {
-			currentlyEditing.value = item[primaryKeyField.value.field];
-			editsAtStart.value = item;
-		}
-
-		async function saveEdits(item: Record<string, any>) {
-			try {
-				await api.patch(`/items/${props.collection}/${currentlyEditing.value}`, item);
-			} catch (err) {
-				unexpectedError(err);
-			}
-		}
-
-		function cancelEdit() {
-			editsAtStart.value = undefined;
-			currentlyEditing.value = undefined;
-		}
-	},
+const hasData = computed(() => {
+	return props.data && props.data.length > 0;
 });
+
+const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 </script>
 
 <style scoped>
