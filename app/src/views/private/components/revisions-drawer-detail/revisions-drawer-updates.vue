@@ -6,10 +6,15 @@
 			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<div v-for="change in changes" :key="change.name" class="change">
-			<div class="type-label">{{ change.name }}</div>
-			<revisions-drawer-updates-change deleted :changes="change.changes" />
-			<revisions-drawer-updates-change added :changes="change.changes" />
+		<div v-for="change in changes" :key="change!.name" class="change">
+			<div class="type-label">{{ change!.name }}</div>
+			<template v-if="change!.updated">
+				<revisions-drawer-updates-change updated :changes="change!.changes" />
+			</template>
+			<template v-else>
+				<revisions-drawer-updates-change deleted :changes="change!.changes" />
+				<revisions-drawer-updates-change added :changes="change!.changes" />
+			</template>
 		</div>
 	</div>
 </template>
@@ -54,18 +59,34 @@ export default defineComponent({
 
 			return changedFields
 				.map((fieldKey) => {
-					const name = fieldsStore.getField(props.revision.collection, fieldKey)?.name;
+					const field = fieldsStore.getField(props.revision.collection, fieldKey);
+					const name = field?.name;
 
 					if (!name) return null;
 
 					const currentValue = props.revision.delta?.[fieldKey];
 					const previousValue = previousRevision.value.data?.[fieldKey];
 
-					if (isEqual(currentValue, previousValue)) return null;
-
 					let changes;
+					let updated = false;
 
-					if (typeof previousValue === 'string' && typeof currentValue === 'string' && currentValue.length > 25) {
+					if (isEqual(currentValue, previousValue)) {
+						if (field?.meta?.special && field.meta.special.includes('conceal')) {
+							updated = true;
+							changes = [
+								{
+									updated: true,
+									value: currentValue,
+								},
+							];
+						} else {
+							return null;
+						}
+					} else if (
+						typeof previousValue === 'string' &&
+						typeof currentValue === 'string' &&
+						currentValue.length > 25
+					) {
 						changes = diffWordsWithSpace(previousValue, currentValue);
 					} else if (Array.isArray(previousValue) && Array.isArray(currentValue)) {
 						changes = diffArrays(previousValue, currentValue);
@@ -90,7 +111,7 @@ export default defineComponent({
 						];
 					}
 
-					return { name, changes };
+					return { name, updated, changes };
 				})
 				.filter((change) => change);
 		});

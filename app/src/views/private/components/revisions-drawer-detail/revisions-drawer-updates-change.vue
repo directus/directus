@@ -1,9 +1,10 @@
 <template>
-	<div class="change-line" :class="{ added, deleted, 'no-highlight': wholeThing }">
-		<v-icon :name="added ? 'add' : 'remove'" />
+	<div class="change-line" :class="{ added, deleted, updated, 'no-highlight': wholeThing }">
+		<v-icon :name="added ? 'add' : deleted ? 'remove' : 'warning'" />
 		<div class="delta">
 			<span v-for="(part, index) in changesFiltered" :key="index" :class="{ changed: part.added || part.removed }">
-				<template v-if="part.value">{{ part.value }}</template>
+				<template v-if="part.updated">{{ t('revision_delta_update_message') }}</template>
+				<template v-else-if="part.value">{{ part.value }}</template>
 				<template v-else>
 					<span class="no-value">{{ t('no_value') }}</span>
 				</template>
@@ -15,18 +16,20 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
+import { ArrayChange } from 'diff';
 
-type Change = {
+export type Change = {
 	added?: boolean;
 	removed?: boolean;
-	count: number;
+	updated?: boolean;
+	count?: number;
 	value: string;
 };
 
 export default defineComponent({
 	props: {
 		changes: {
-			type: Array as PropType<Change[]>,
+			type: Array as PropType<Change[] | ArrayChange<any>[]>,
 			required: true,
 		},
 		added: {
@@ -37,11 +40,17 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		updated: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const { t } = useI18n();
 		const changesFiltered = computed(() => {
-			return props.changes.filter((change) => {
+			return (props.changes as Change[]).filter((change: any) => {
+				if (props.updated) return true;
+
 				if (props.added === true) {
 					return change.removed !== true;
 				}
@@ -72,6 +81,32 @@ export default defineComponent({
 		top: 8px;
 		left: 8px;
 	}
+
+	&.added {
+		color: var(--success);
+		background-color: var(--success-alt);
+		border-radius: 0 0 var(--border-radius) var(--border-radius);
+
+		.changed {
+			background-color: var(--success-25);
+		}
+	}
+
+	&.deleted {
+		color: var(--danger);
+		background-color: var(--danger-alt);
+		border-radius: var(--border-radius) var(--border-radius) 0 0;
+
+		.changed {
+			background-color: var(--danger-25);
+		}
+	}
+
+	&.updated {
+		color: var(--warning);
+		background-color: var(--warning-alt);
+		border-radius: var(--border-radius);
+	}
 }
 
 .changed {
@@ -79,26 +114,6 @@ export default defineComponent({
 	margin-right: 0.2em;
 	padding: 2px;
 	border-radius: var(--border-radius);
-}
-
-.added {
-	color: var(--success);
-	background-color: var(--success-alt);
-	border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
-
-	.changed {
-		background-color: var(--success-25);
-	}
-}
-
-.deleted {
-	color: var(--danger);
-	background-color: var(--danger-alt);
-	border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
-
-	.changed {
-		background-color: var(--danger-25);
-	}
 }
 
 .no-value {
