@@ -1110,7 +1110,6 @@ sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
 sort_desc: Mengurut Turun
 template: Templat
-require_value_to_be_set: Membutuhkan nilai untuk ditetapkan
 translation: Terjemahan
 translation_placeholder: Masukkan terjemahan...
 value: Nilai

@@ -138,7 +138,7 @@ function addNode(key: string) {
 		} else {
 			type = field?.type || 'unknown';
 		}
-		let filterOperators = getFilterOperatorsForType(type);
+		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
 		innerValue.value = innerValue.value.concat(node);

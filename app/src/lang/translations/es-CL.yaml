@@ -1320,7 +1320,6 @@ export_started_copy: Tu exportación ha comenzado. Serás notificado cuando est�
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
-require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor

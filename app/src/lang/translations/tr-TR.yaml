@@ -1251,7 +1251,6 @@ sort_direction: Sıralama Yönü
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
-require_value_to_be_set: Değeri gerekli kıl
 translation: Çeviri
 translation_placeholder: Bir çeviri girin...
 value: Değer

@@ -166,8 +166,8 @@ import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
-import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import useShortcut from '@/composables/use-shortcut';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -294,26 +294,11 @@ export default defineComponent({
 			return withBorderRadii;
 		});
 
+		const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
+
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
 		const confirmCancel = ref(false);
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
-
-			if (editMode.value && to.params.primaryKey !== props.primaryKey) {
-				if (hasEdits) {
-					confirmLeave.value = true;
-					leaveTo.value = to.fullPath;
-					return false;
-				} else {
-					editMode.value = false;
-				}
-			}
-		};
-
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
 
 		return {
 			currentDashboard,
@@ -411,6 +396,7 @@ export default defineComponent({
 				await insightsStore.hydrate();
 
 				stagedPanels.value = [];
+				panelsToBeDeleted.value = [];
 				editMode.value = false;
 			} catch (err) {
 				unexpectedError(err);
@@ -427,9 +413,7 @@ export default defineComponent({
 		}
 
 		function attemptCancelChanges(): void {
-			const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
-
-			if (hasEdits) {
+			if (hasEdits.value) {
 				confirmCancel.value = true;
 			} else {
 				cancelChanges();

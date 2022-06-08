@@ -474,6 +474,7 @@ The following aggregation functions are available in Directus:
 | `avgDistinct`   | Get the average value of the unique values in the given field |
 | `min`           | Return the lowest value in the field                          |
 | `max`           | Return the highest value in the field                         |
+| `countAll`      | Equivalent to `?aggregate[count]=*` (GraphQL only)            |
 
 ### Grouping
 

@@ -6,16 +6,26 @@ draft: 下書き
 archived: アーカイブ済み
 modules: モジュール
 edit_field: フィールドの編集
+conditions: 条件
 maps: 地図
+switch_user: ユーザーを切り替える
 item_creation: アイテム作成
 item_revision: 履歴
 enter_a_name: 名前を入力...
+duplicate_field: フィールドを重複
+half_width: 半値幅
 full_width: 最大幅
 group: グループ
+export_items: アイテムをエクスポート
+and: そして
+or: または
+fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
 enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
 add_field: フィールドの追加
 role_name: 権限名
+branch: 分岐
+leaf: リーフ
 indeterminate: 不確定
 edit_collection: コレクションを編集
 db_only_click_to_configure: 'データベースのみ: クリックして設定する'

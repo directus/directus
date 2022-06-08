@@ -1249,7 +1249,6 @@ sort_direction: Direção da ordenação
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
 template: Template
-require_value_to_be_set: Valor a ser definido é requerido
 translation: Tradução
 translation_placeholder: Insira uma tradução...
 value: Valor

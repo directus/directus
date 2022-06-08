@@ -1162,7 +1162,6 @@ sort_direction: Järjestyssuunta
 sort_asc: Järjestä nousevasti
 sort_desc: Lajittele laskeva
 template: Pohja
-require_value_to_be_set: Vaadi arvoa asetettavaksi
 translation: Käännös
 translation_placeholder: Syötä käännös...
 value: Arvo

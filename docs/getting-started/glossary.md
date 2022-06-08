@@ -313,9 +313,9 @@ There is also a "Public" role that determines access for unauthenticated access.
 ### Relevant Guides
 
 - [Creating a Role](/configuration/users-roles-permissions/#creating-a-role)
-- [Configuring a Role](/configuration/users-roles-permissions/#configuring-a-role)
-- [Configuring Role Permissions](/configuration/users-roles-permissions/#configuring-permissions)
-- [Configuring System Permissions](/configuration/users-roles-permissions/#configuring-system-permissions)
+- [Configuring a Role](/configuration/users-roles-permissions/#configure-a-role)
+- [Configuring Role Permissions](/configuration/users-roles-permissions/#configure-permissions)
+- [Configuring System Permissions](/configuration/users-roles-permissions/#configure-system-permissions)
 - [Deleting a Role](/configuration/users-roles-permissions/#deleting-a-role)
 
 ## Storage Adapters

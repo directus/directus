@@ -1029,7 +1029,6 @@ sort_direction: รูปแบบการเรียง
 sort_asc: เรียงจากน้อยไปมาก
 sort_desc: เรียงจากมากไปน้อย
 template: แม่แบบ
-require_value_to_be_set: ต้องระบุ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ

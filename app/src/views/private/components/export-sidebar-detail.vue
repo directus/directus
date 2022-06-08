@@ -284,6 +284,8 @@ const exportSettings = reactive({
 watch(
 	() => props.layoutQuery,
 	() => {
+		exportSettings.limit = props.layoutQuery?.limit ?? 25;
+
 		if (props.layoutQuery?.fields) {
 			exportSettings.fields = props.layoutQuery?.fields;
 		}
@@ -295,6 +297,15 @@ watch(
 				exportSettings.sort = props.layoutQuery.sort;
 			}
 		}
+	},
+	{ immediate: true }
+);
+
+watch(
+	[() => props.filter, () => props.search],
+	([filter, search]) => {
+		exportSettings.filter = filter;
+		exportSettings.search = search;
 	},
 	{ immediate: true }
 );

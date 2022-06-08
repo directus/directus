@@ -1317,7 +1317,6 @@ export_started_copy: 您的导出已经开始。当准备下载时，您会收�
 sort_asc: 升序
 sort_desc: 降序
 template: 模板
-require_value_to_be_set: 需要设置值
 translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值

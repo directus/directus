@@ -25,7 +25,15 @@
 		</template>
 
 		<div class="translation-strings">
+			<v-info v-if="!loading && tableItems.length === 0" icon="translate" :title="t('no_translation_string')" center>
+				{{ t('no_translation_string_copy') }}
+
+				<template #append>
+					<v-button @click="openTranslationStringDialog">{{ t('create_translation_string') }}</v-button>
+				</template>
+			</v-info>
 			<v-table
+				v-else
 				:headers="tableHeaders"
 				fixed-header
 				item-key="key"

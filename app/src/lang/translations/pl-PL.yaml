@@ -70,6 +70,8 @@ create_user: Utwórz użytkownika
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
 create_translation_string: Utwórz tłumaczenia
+no_translation_string: Brak tłumaczeń
+no_translation_string_copy: Nie ma jeszcze żadnych tłumaczeń.
 translation_string_key_placeholder: Klucz tłumaczenia...
 translation_string_translations_placeholder: Dodaj nowe tłumaczenie
 edit_translation_string: Edytuj tłumaczenia
@@ -326,6 +328,7 @@ revision_delta_deleted: Usunięty
 revision_delta_reverted: Odwrócony
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
+presentation_text_values_cannot_be_reimported: "Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane."
 download_page_as_csv: 'Pobierz stronę jako CSV'
 private_user: Prywatny Użytkownik
 creation_preview: Podgląd tworzenia
@@ -451,6 +454,7 @@ created_on: Stworzony dnia
 creating_collection_info: Nazwij kolekcję i ustaw jego unikalne pole "klucz"...
 creating_collection_system: Włącz i zmień nazwę każdego z tych opcjonalnych pól.
 auto_increment_integer: Automatycznie zwiększana liczba całkowita
+auto_increment_big_integer: Automatycznie zwiększana duża liczba całkowita
 generated_uuid: Wygenerowane UUID
 manual_string: Wprowadzony ręcznie ciąg znaków
 save_and_create_new: Zapisz i utwórz nowy
@@ -557,7 +561,9 @@ errors:
   INVALID_CREDENTIALS: Nieprawidłowa nazwa użytkownika lub hasło
   INVALID_OTP: Złe hasło jednorazowe
   INVALID_PAYLOAD: Błędny payload
+  INVALID_PROVIDER: Użytkownik należy do innego dostawcy autoryzacji
   INVALID_QUERY: Nieprawidłowe zapytanie
+  INVALID_USER: Błąd uwierzytelniania użytkownika
   ITEM_LIMIT_REACHED: Osiągnięto limit przedmiotów
   ITEM_NOT_FOUND: Nie znaleziono elementu
   ROUTE_NOT_FOUND: Nie znaleziono
@@ -656,6 +662,7 @@ operators:
   nnull: Nie jest puste
   contains: Zawiera
   ncontains: Nie zawiera
+  icontains: Zawiera (niewrażliwe)
   starts_with: Zaczyna się od
   nstarts_with: Nie zaczyna się od
   ends_with: Kończy się na
@@ -1319,11 +1326,12 @@ export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy b
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
 template: Szablon
-require_value_to_be_set: Wymagaj ustawienia wartości
+require_value_to_be_set: Wymaga ustawienia wartości przy tworzeniu
 translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 interfaces:
@@ -1610,7 +1618,7 @@ interfaces:
     header_icon: Ikona nagłówka
     header_color: Kolor nagłówka
     start_open: Rozpocznij rozwinięty
-    start_closed: Rozpocznij zamknięte
+    start_closed: Rozpocznij zwinięty
 displays:
   translations:
     translations: Tłumaczenia

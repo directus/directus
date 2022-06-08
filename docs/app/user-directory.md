@@ -1,31 +1,36 @@
 # User Directory
 
 > The User Directory is the management system for all Users within a Project. [Users](/getting-started/glossary#users)
-> are the individual accounts for logging in to the App. Each user belongs to a [Role](/getting-started/glossary#roles)
+> are the individual accounts for logging in to the App. Each User belongs to a [Role](/getting-started/glossary#roles)
 > which defines its [Permissions](/getting-started/glossary#permissions).
 
 ![User Directory Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-directory-20220222A.webp)
 
 [[toc]]
 
+<!-- @TODO getting-started > learn-directus
+
+:::tip Before You Begin
+
+To use this Module effectively, you will need to understand
+[Users, Roles and Permissions](/configuration/users-roles-permissions.md).
+
+:::
+-->
+
 ## How it Works
 
-This Module is a management system that enables one to view, invite, create, edit, and delete Users. In order to
-understand and use this Module effectively, you will need to understand
-[Users, Roles, and Permissions](/configuration/users-roles-permissions.md).
+This Module is a management system that enables one to view, invite, create, edit, and delete Users and User
+information. Users can be created directly in the app, or invited to join via email.
 
-## Access Permissions
+When a User is created, they must also be assigned a Role. This Role defines the User's data access permissions within
+Directus. In other words, it determines what a User can see and do inside the app.
 
-The permissions configured for your Role will determine what you can see and do inside the User Directory. Roles with
-_Admin Access_ enabled are created with full Permissions. Roles with _App Access_ enabled are created with some limited
-Permissions configured by default. Roles that have neither _Admin_ nor _App Access_ enabled (such as the built-in
-_Public_ Role) are created with no access permissions _(to anything)_ by default. Default permissions can be fully
-configured in **Settings > Roles & Permissions**.
+The User Directory is composed of two pages: The User Directory Page and the User Details Page. It has all the same
+features and functionality as the [Content Module](/app/collections) such as manual and automatic sorting, batch
+edit/delete/archive, import/export from files, etc.
 
 ## User Directory Page
-
-Lists all Users in a Project, with a navigation that allows quick access to Users by Role. This page has the same
-functionality as other [Content Pages](/app/content-collections/).
 
 <video title="User Directory Options" autoplay muted loop controls>
 	<source src="https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-directory-options-20220222A.mp4" />
@@ -34,41 +39,83 @@ functionality as other [Content Pages](/app/content-collections/).
 	</p>
 </video>
 
-- **Select All** – Selects all Users currently in queue.
-- **Card Size** – Toggles size of User Displays.
-- **Sort Field** – Selects Field used to Users by.
-- **Sort Direction** – Toggles ascending & descending sort order.
-- **Search** – Enables classic type-based searching.
-- **Filter** – Enables advanced query-based search.
-- <span mi btn sec>person_add</span> – [Invite people](/configuration/users-roles-permissions/#inviting-a-user) to
+The User Directory Page lists all Users in a Project, with a navigation that allows quick access to Users by Role. This
+page has the same functionality as the [Collection Page](/app/content/collections/).
+
+- **Select All** — Selects all Users currently in queue.
+- **Card Size** — Toggles size of User Displays.
+- **Sort Field** — Selects Field used to Users by.
+- **Sort Direction** — Toggles ascending & descending sort order.
+- **Search** — Enables classic type-based searching.
+- **Filter** — Enables advanced query-based search.
+- <span mi btn sec>person_add</span> — [Invite people](/configuration/users-roles-permissions/#inviting-a-user) to
   become Users via email.
-- <span mi btn>add</span> – [Create User](/configuration/users-roles-permissions/#creating-a-user) manually.
+- <span mi btn>add</span> — [Create User](/configuration/users-roles-permissions/#creating-a-user) manually.
 
 _The following are only visible once Users are selected._
 
-- <span mi btn warn>edit</span> – Opens a User Details page to apply a single edit across multiple Users.
-- **<span mi btn dngr>delete</span>** – Deletes one or more Users.
+- <span mi btn warn>edit</span> — Opens a User Details page to apply a single edit across multiple Users.
+- **<span mi btn dngr>delete</span>** — Deletes one or more Users.
 
 ### Layout Options
 
-The **Sidebar > Layout Options** _(denoted by <span mi icon>layers</span> when Sidebar is minimized)_ allows you to
-adjust how Users are displayed on the User Directory.
-
 ![User Directory Layout Options](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-directory-layout-options-20220222A.webp)
 
-#### Layout
+The **Sidebar > Layout Options** _(denoted by <span mi icon>layers</span> when Sidebar is minimized)_ allows you to
+adjust how Users are displayed on the User Directory. To learn more, see [Layouts](/app/layouts/).
 
-- **Layout** – Toggles User Display from a dropdown menu.
-- **Image Source** – Selects the image Field for the User Display.
-- **Title** – Sets a title for the User via Display Templates.
-- **Subtitle** – Sets a subtitle for the User via Display Templates.
+## User Details Page
 
-#### Layout Setup
+![The User Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-profile-20220222A.webp)
 
-- **Image Fit** – Displays the image as cropped or contained.
-- **Fallback Icon** – Sets a default icon for Users that have no image set.
+A User's profile page can be accessed from the User Directory or by clicking the User Menu at the bottom of the
+[Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
+[Item Page](/app/content-items/). Administrators can add and customize Fields under
+[Settings > Data Model > Directus Users](/configuration/data-model), but the following are available by default.
 
-## Viewing a User
+- **First Name** — The given name.
+- **Last Name** — The family/surname.
+- **Email** — A unique email address.
+- **Password** — A hashed system password.
+- **Avatar** — An image to represent the User.
+- **Location** — The city, country, office, or branch name.
+- **Title** — The professional staff title.
+- **Description** — A freeform text description.
+- **Tags** — Keywords for search-ability.
+
+### User Preferences
+
+![User Preferences](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-preferences-20220222A.webp)
+
+- **Language** — The preferred App language/locale.
+- **Theme** — Light or Dark mode (or based on system preferences).
+- **Multi-Factor Authentication** — Configuration for MFA.
+- **Email Notifications** — Receive emails for notifications.
+
+### Admin Options
+
+![Admin Options](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/admin-options-20220222A.webp)
+
+- **Status** — Sets User status as Draft, Invited, Active, Suspended, Archived.
+- **Role** — Defines the User's Role.
+- **Token** — Accepts any string as a User access token.\
+  _Note: At least 19-20 characters recommended for an access token, but we give you the flexibility to set this according
+  to you own internal security policies._
+- **Provider** — _read-only:_ SSO provider associated with User. See our built-in [SSO options](/configuration/sso).
+- **External Identifier** — Displays external identifier generated by SSO provider.
+
+### Read-only Info
+
+![User Profile Sidebar Information](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-profile-sidebar-information-20220309A.webp)
+
+Information in the Sidebar _(denoted by <span mi icon dark>info</span> when Sidebar is minimized)_ also includes the
+following read-only details:
+
+- **User Key** — The Primary Key of the User.
+- **Last Page** — The last App page accessed by the User.
+- **Last Access** — The timestamp of the User's last App or API action.
+
+## View a User
 
 <video autoplay muted loop controls>
 	<source src="https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/viewing-a-user-20220222A.mp4" />
@@ -80,61 +127,78 @@ adjust how Users are displayed on the User Directory.
 Users are referenced throughout the app, often for accountability purposes. Hovering over a User in this context will
 provide a popover with basic information. Clicking that popover will navigate you to a view of that User's profile page.
 
-## User Profile Page
+## Create a User
 
-![The User Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-profile-20220222A.webp)
+To create a User, follow these steps:
 
-A User's profile page can be accessed from the User Directory or by clicking the User Menu at the bottom of the
-[Module Bar](/app/overview/#_1-module-bar). The profile page has the same features and functionality as the
-[Item Page](/app/content-items/). Administrators can customize the Fields on this page, but the following are available
-by default.
+1. Navigate to the **User Library**.
+2. Click <span mi btn>add</span> in the page header.
+3. Enter an **Email Address**.
+4. Optional: Fill in the other User details as desired.
+5. Click <span mi btn>check</span> to save the User.
 
-### User Details
+## Invite a User
 
-![User Details](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-details-20220222A.webp)
+To invite User(s) via email, follow these steps:
 
-- **First Name** – The given name.
-- **Last Name** – The family/surname.
-- **Email** – A unique email address.
-- **Password** – A hashed system password.
-- **Avatar** – An image to represent the User.
-- **Location** – The city, country, office, or branch name.
-- **Title** – The professional staff title.
-- **Description** – A freeform text description.
-- **Tags** – Keywords for search-ability.
+1. Navigate to the **User Library**.
+2. Click <span mi btn sec>person_add</span> in the page header.
+3. Enter one or more email addresses, separated by a comma and a space.\
+   _Tip: You can also add emails on a new line._
+4. Select the **Role** you want to assign to the User(s).
+5. Click **Invite**.
 
-### User Preferences
+After that, the invited User(s) will receive an email with a link to the App where they set a password and enable their
+account.
 
-![User Preferences](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-preferences-20220222A.webp)
+## Edit User Details
 
-- **Language** – The preferred App language/locale.
-- **Theme** – Light or Dark mode (or based on system preferences).
-- **Multi-Factor Authentication** – Configuration for MFA.
-- **Email Notifications** – Receive emails for notifications.
+To edit User details, follow these steps:
 
-### Admin Options
+1. Navigate to the **User Library**.
+2. Click on the User you wish to manage and the User Details Page will open.
+3. Reset User details as desired.
 
-![Admin Options](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/admin-options-20220222A.webp)
+The User Detail is only editable by the current User and admins, and the following fields are only available to admins:
 
-- **Status** – Sets User status as Draft, Invited, Active, Suspended, Archived.
-- **Role** – Defines the User's Role.
-- **Token** – Accepts any string as User access token. At least 19-20 characters recommended, but we give you the tools
-  and flexibility to set this according to you own internal security policies.
-- **Provider** – _read-only:_ SSO provider associated with User. See our built-in [SSO options](/configuration/sso).
-- **External Identifier** – Displays external identifier generated by SSO provider.
+- **Status** — Determines if an account is able to access the platform or not. Only the `active` state is able to
+  authenticate, all others are simply descriptive inactive states.
+  - **Draft** — An incomplete User; no App/API access.
+  - **Invited** — Has a pending invite to the project; no App/API access until accepted.
+  - **Active** — The only status that has proper access to the App and API.
+  - **Suspended** — A User that has been temporarily disabled; no App/API access.
+  - **Archived** — A soft-deleted User; no App/API access.
+- **Role** — The User's role determines their permissions and access.
+- **Token** — A User's token is an alternate way to [authenticate into the API](/reference/authentication/) using a
+  static string. When NULL, the token is disabled. When enabled, ensure that a secure string is used.
 
-### Read-only Info
+## Archive a User
 
-![User Profile Sidebar Information](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-profile-sidebar-information-20220309A.webp)
+To archive a User, follow these steps:
 
-Information in the Sidebar _(denoted by <span mi icon dark>info</span> when Sidebar is minimized)_ also includes the
-following read-only details:
+1. Navigate to the **User Library**.
+2. Click the User you with to archive to go to their User Detail page.
+3. Click on <span mi btn warn>archive</span> in the header.
+4. Confirm this decision by clicking **Archive** in the dialog.
 
-- **User Key** – The Primary Key of the Usser.
-- **Last Page** – The last App page accessed by the user.
-- **Last Access** – The timestamp of the User's last App or API action.
+::: warning Disables Access
 
-## More Help
+Archiving is equivalent to a _soft-delete_. These Users are unable to access the App or API.
 
-Looking for technical support for your non-enterprise project? Chat with thousands of engineers within our growing
-[Community on Discord](https://discord.com/invite/directus)
+:::
+
+## Delete a User
+
+To delete a User, follow these steps:
+
+1. Navigate to the **User Library**.
+2. Select one or more Users you wish to delete.
+3. Click on <span mi btn dngr>delete</span> in the header.
+4. Confirm this decision by clicking **Delete** in the dialog.
+
+::: danger Irreversible Change
+
+This action is permanent and can not be undone. Please proceed with caution. If you wish to soft-delete Users, see
+[Archive a User](#archive-a-user).
+
+:::

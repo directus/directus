@@ -409,26 +409,35 @@ subsequent requests are served straight from this cache. Enabling cache will als
 cache-control headers. Depending on your setup, this will further improve performance by caching the request in
 middleman servers (like CDNs) and even the browser.
 
+:::tip Internal Caching
+
+In addition to data-caching, Directus also does some internal caching. Note `SCHEMA_CACHE` and `CACHE_PERMISSIONS` which
+are enabled by default. These speed up the overall performance of Directus, as we don't want to introspect the whole
+database or check all permissions on every request. When running Directus load balanced, you'll need to use a shared
+cache storage (like [Redis](#redis-2) or [Memcache](#memcache-2)) or else disable all caching.
+
+:::
+
 ::: tip Assets Cache
 
 `Cache-Control` and `Last-Modified` headers for the `/assets` endpoint are separate from the regular data-cache.
 `Last-Modified` comes from `modified_on` DB field. This is useful as it's often possible to cache assets for far longer
-than you would cache database content. [Learn More](#assets)
+than you would cache database content. To learn more, see [Assets](#assets).
 
 :::
 
-| Variable                          | Description                                                                              | Default Value    |
-| --------------------------------- | ---------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                   | Whether or not caching is enabled.                                                       | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the cache is persisted.                                                         | `5m`             |
-| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the cache on `create`, `update`, and `delete` actions.               | `false`          |
-| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long the schema caches (schema/permissions) are persisted.                           | `10m`            |
-| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                     | `true`           |
-| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                   | `true`           |
-| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                             | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                  | `memory`         |
-| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.         | --               |
+| Variable                          | Description                                                                               | Default Value    |
+| --------------------------------- | ----------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`                   | Whether or not data caching is enabled.                                                   | `false`          |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the data cache is persisted.                                                     | `5m`             |
+| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value. | `0`              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the data cache on `create`, `update`, and `delete` actions.           | `false`          |
+| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                            | `10m`            |
+| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                      | `true`           |
+| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                    | `true`           |
+| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                              | `directus-cache` |
+| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                   | `memory`         |
+| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.          | --               |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
