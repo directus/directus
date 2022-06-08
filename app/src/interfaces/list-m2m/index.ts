@@ -68,6 +68,7 @@ export default defineInterface({
 				type: 'integer',
 				meta: {
 					interface: 'input',
+					width: 'half',
 				},
 				schema: {
 					default_value: 15,
