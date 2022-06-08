@@ -28,8 +28,8 @@ const props = withDefaults(
 		data?: object;
 		decimals?: number;
 		conditionalFormatting?: object[];
-		prefix: string | null;
-		suffix: string | null;
+		prefix?: string | null;
+		suffix?: string | null;
 	}>(),
 	{
 		showHeader: false,

@@ -20,25 +20,25 @@ import { addWeeks } from 'date-fns';
 const props = withDefaults(
 	defineProps<{
 		height: number;
-		showHeader: boolean;
-		data: object[];
+		showHeader?: boolean;
+		data?: object[];
 		id: string;
 		now: Date;
 		collection: string;
 		dateField: string;
 		valueField: string;
 		function: string;
-		precision: string;
-		range: string;
-		color: string;
-		fillType: string;
-		curveType: string;
-		decimals: number;
-		min: number;
-		max: number;
-		filter: Filter;
-		showXAxis: boolean;
-		showYAxis: boolean;
+		precision?: string;
+		range?: string;
+		color?: string;
+		fillType?: string;
+		curveType?: string;
+		decimals?: number;
+		min?: number;
+		max?: number;
+		filter?: Filter;
+		showXAxis?: boolean;
+		showYAxis?: boolean;
 	}>(),
 	{
 		showHeader: false,

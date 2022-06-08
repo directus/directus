@@ -382,8 +382,8 @@ export default defineComponent({
 		let newQueries: Record<string, any> = queryObject.value;
 
 		watch(
-			[queryObject, currentDashboard],
-			async ([newObj, db], [obj, oldDb]) => {
+			queryObject,
+			async (newObj, obj) => {
 				const systemDiff = objDiff(newObj.systemCollectionQueries, obj?.systemCollectionQueries);
 				const userDiff = objDiff(newObj.userCollectionQueries, obj?.userCollectionQueries);
 

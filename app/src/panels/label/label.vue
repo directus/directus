@@ -9,7 +9,7 @@ const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		text?: string;
-		color: string | undefined;
+		color?: string | undefined;
 	}>(),
 	{
 		showHeader: false,
