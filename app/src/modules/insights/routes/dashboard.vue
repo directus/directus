@@ -96,9 +96,10 @@
 			@duplicate="duplicatePanel"
 		>
 			<template #default="{ panel }">
+				<v-progress-circular v-if="loading" indeterminate />
 				<component
 					:is="`panel-${panel.type}`"
-					v-if="loading"
+					v-else
 					v-bind="panel.options"
 					:id="panel.id"
 					:show-header="panel.show_header"
@@ -615,6 +616,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.v-progress-circular {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 .fullscreen,
 .zoom-to-fit,
 .clear-changes {

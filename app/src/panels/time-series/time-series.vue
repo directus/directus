@@ -1,6 +1,5 @@
 <template>
 	<div class="time-series">
-		<v-progress-circular v-if="loading" indeterminate />
 		<span v-if="!hasData" class="type-note">{{ t('no_data') }}</span>
 		<div v-show="hasData" ref="chartEl" />
 	</div>
@@ -109,7 +108,6 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const metrics = ref<Record<string, any>[]>([]);
-		const loading = ref(false);
 		const hasData = ref(true);
 		const error = ref();
 		const chartEl = ref();
@@ -146,15 +144,13 @@ export default defineComponent({
 			chart.value?.destroy();
 		});
 
-		return { chartEl, metrics, loading, error, hasData, t };
+		return { chartEl, metrics, error, hasData, t };
 
 		function setupChart() {
 			if (isEmpty(props.data)) {
 				hasData.value = false;
 				return;
 			}
-
-			loading.value = true;
 
 			metrics.value = [];
 
@@ -303,7 +299,6 @@ export default defineComponent({
 			});
 
 			chart.value.render();
-			loading.value = false;
 
 			function toISO(metric: Record<string, any>) {
 				const year = metric[`${props.dateField}_year`];
