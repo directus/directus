@@ -6,4 +6,5 @@ export enum Action {
 	COMMENT = 'comment',
 	UPLOAD = 'upload',
 	LOGIN = 'login',
+	RUN = 'run',
 }

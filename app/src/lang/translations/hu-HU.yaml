@@ -23,6 +23,7 @@ identifier: Azonosító
 avatar: Profilkép
 application: Alkalmazás
 default_provider: Alapértelmezett
+method: Metódus
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
@@ -32,6 +33,8 @@ reset_width: Széllesség visszaállítása
 tile_size: Csempeméret
 edit_field: Mező szerkesztése
 conditions: Feltételek
+location: Pozíció
+input: Bevitel
 maps: Térképek
 switch_user: Felhasználó váltása
 item_creation: Elem létrehozása
@@ -653,6 +656,7 @@ on_create: Létrehozáskor
 on_update: Módosításkor
 read: Olvasás
 update: Frissítés
+delete: Törlés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
 format_value: Érték formázása
@@ -663,6 +667,10 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+trigger: Eseményindító
+flow_name: Név
+flow_tracking_activity: Csak a tevékenység nyomon követése
+flow_tracking_null: Minden nyomkövetés tiltása
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
@@ -679,9 +687,9 @@ suffix_placeholder: Érték utáni szöveg...
 decimals_placeholder: Decimális helyek száma...
 no_dashboards: Nincs irányítópult
 no_dashboards_copy: Önnek egy irányítópultja sincs még.
-no_data: Nincs adat
 create_dashboard: Irányítópult létrehozása
 dashboard_name: Irányítópult neve
+no_data: Nincs adat
 full_screen: Teljes képernyő
 edit_panels: Panel szerkesztése
 left_align: Balra igazítás
@@ -772,6 +780,7 @@ settings_webhooks: Webhookok
 settings_presets: Alapértelmezések és Könyvjelzők
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
+actions: Műveletek
 select: Válasszon...
 layout: Elrendezés
 tree_view: Fa nézet
@@ -781,6 +790,7 @@ preset_search_placeholder: Keresési lekérdezés...
 editing_preset: Alapértelmezés szerkesztése
 layout_preview: Elrendezés előnézet
 layout_setup: További beállítások
+data: Adat
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
@@ -1556,3 +1566,15 @@ panels:
   list:
     name: Lista
     description: Mezők szűrése és listázása egy gyűjteményből
+triggers:
+  webhook:
+    method: Metódus
+operations:
+  notification:
+    recipient: Felhasználó
+  request:
+    url: URL
+    method: Metódus
+    data: Adat
+  trigger:
+    data: Adat

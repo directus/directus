@@ -23,15 +23,19 @@ identifier: Индентификатор
 avatar: Аватар
 application: Приложение
 default_provider: По умолчанию
+method: Метод
 published: Опубликовано
 draft: Черновик
 archived: В архиве
 modules: Модули
 module_bar: Панель модулей
+logs: Журналы
 reset_width: Сбросить ширину
 tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
+location: Локация
+input: Ввод
 maps: Карты
 switch_user: Сменить пользователя
 item_creation: Создание элемента
@@ -597,10 +601,14 @@ make_collection_visible: Сделать коллекцию видимой
 make_collection_hidden: Сделать коллекцию скрытой
 make_folder_visible: Показать папку
 make_folder_hidden: Скрыть папку
+goto_collection_content: Просмотр содержимого
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
 one_filtered_item: '1 отфильтрованный элемент'
+delete_collection_are_you_sure: >-
+  Вы уверены, что хотите удалить коллекцию «{collection}»? Это приведет к удалению коллекции и всех ее элементов. Это действие необратимо.
+delete_folder_are_you_sure: Вы уверены, что хотите удалить папку «{folder}»? Вложенные папки и коллекции будут перемещены на самый верхний уровень.
 collections_shown: Показано Коллекций
 visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
@@ -705,6 +713,7 @@ on_create: При Создании
 on_update: Во время обновления
 read: Чтение
 update: Обновить
+delete: Удалить
 select_fields: Выбрать поля
 format_text: Форматировать Текст
 format_value: Формат значения
@@ -715,6 +724,11 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
+trigger: Триггер
+flow_name: Имя
+flow_tracking: Отслеживание активности и логов
+flow_tracking_activity: Отслеживать только активность
+flow_tracking_null: Ничего не отслеживать
 insights: Прогнозы
 dashboard: Доска
 panel: Панель
@@ -732,9 +746,11 @@ suffix_placeholder: Текст после значения...
 decimals_placeholder: Количество знаков после запятой...
 no_dashboards: Нет досок
 no_dashboards_copy: У вас пока нет ни одной доски.
-no_data: Нет данных
 create_dashboard: Создать доску
 dashboard_name: Имя Доски
+no_data: Нет данных
+accountability: Подотчетность
+details: Подробности
 full_screen: Во Весь Экран
 edit_panels: Редактировать панели
 fit_to_screen: По размеру экрана
@@ -832,6 +848,7 @@ settings_presets: Пресеты и Закладки
 settings_translation_strings: Строки перевода
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
 scope: Область
+actions: Действия
 select: Выбрать...
 layout: Макет
 tree_view: В виде дерева
@@ -841,6 +858,7 @@ preset_search_placeholder: Строка поиска...
 editing_preset: Редактирование Пресета
 layout_preview: Предпросмотр Макета
 layout_setup: Настройка Макета
+data: Данные
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
@@ -905,9 +923,9 @@ directus_collection:
   directus_files: Метаданные для всех управляемых файлов
   directus_folders: Предоставляет виртуальные папки для файлов
   directus_migrations: Какую версию базы данных вы используете
+  directus_notifications: Уведомления, отправленные пользователям
   directus_panels: Индивидуальные панели мониторинга
   directus_permissions: Права доступа для каждой роли
-  directus_notifications: Уведомления, отправленные пользователям
   directus_presets: Пресеты для коллекций по умолчанию и закладки
   directus_relations: Настройки связей и метаданные
   directus_revisions: Снимки данных для всех действий
@@ -1723,3 +1741,16 @@ panels:
     bottom: Снизу
     monochrome: Монохром
     monochrome_color: Монохромный цвет
+triggers:
+  webhook:
+    method: Метод
+operations:
+  notification:
+    recipient: Пользователь
+  request:
+    url: URL
+    method: Метод
+    data: Данные
+    header: Header
+  trigger:
+    data: Данные

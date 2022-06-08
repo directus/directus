@@ -91,7 +91,7 @@ export function useRelationMultiple(
 			);
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
-			const updatedItem = cloneDeep(item);
+			const updatedItem: Record<string, any> = {};
 
 			if (editsIndex !== -1) {
 				merge(
@@ -99,7 +99,10 @@ export function useRelationMultiple(
 					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
 					_value.value.update[editsIndex]
 				);
+			} else {
+				merge(updatedItem, cloneDeep(item));
 			}
+
 			if (deleteIndex !== -1) {
 				merge(updatedItem, { $type: 'deleted', $index: deleteIndex });
 			}
