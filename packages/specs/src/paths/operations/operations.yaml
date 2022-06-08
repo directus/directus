@@ -11,7 +11,9 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Operations'
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Operations'
               meta:
                 $ref: '../../openapi.yaml#/components/x-metadata'
     '401':
