@@ -40,9 +40,6 @@ const props = withDefaults(
 );
 const { t } = useI18n();
 
-const currentlyEditing = ref<number | string>();
-const editsAtStart = ref<Record<string, any>>();
-
 const fieldsStore = useFieldsStore();
 
 const hasData = computed(() => {
