@@ -4,7 +4,7 @@
 			v-if="!showAdvanced"
 			:collection="collectionInfo"
 			@save="save"
-			@toggleAdvanced="simple = false"
+			@toggle-advanced="simple = false"
 		/>
 
 		<template v-if="showAdvanced" #sidebar>

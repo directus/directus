@@ -45,12 +45,18 @@ tags:
       Files can be saved in any given location. Directus has a powerful assets endpoint that can be used to generate
       thumbnails for images on the fly.
     x-collection: directus_files
+  - name: Flows
+    description: Flows enable custom, event-driven data processing and task automation.
+    x-collection: directus_flows
   - name: Folders
     description: Group files by virtual folders.
     x-collection: directus_folders
   - name: Items
     description:
       Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
+  - name: Operations
+    description: Operations are the building blocks within Data Flows.
+    x-collection: directus_operations
   - name: Permissions
     description: Permissions control who has access to what and when.
     x-collection: directus_permissions
@@ -155,11 +161,23 @@ paths:
   /files/{id}:
     $ref: './paths/files/file.yaml'
 
+  # Flows
+  /flows:
+    $ref: './paths/flows/flows.yaml'
+  /flows/{id}:
+    $ref: './paths/flows/flow.yaml'
+
   # Folders
   /folders:
     $ref: './paths/folders/folders.yaml'
   /folders/{id}:
     $ref: './paths/folders/folder.yaml'
+
+  # Operations
+  /operations:
+    $ref: './paths/operations/operations.yaml'
+  /operations/{id}:
+    $ref: './paths/operations/operation.yaml'
 
   # Permissions
   /permissions:
@@ -238,10 +256,14 @@ components:
       $ref: './components/field.yaml'
     Files:
       $ref: './components/file.yaml'
+    Flows:
+      $ref: './components/flow.yaml'
     Folders:
       $ref: './components/folder.yaml'
     Items:
       $ref: './components/item.yaml'
+    Operations:
+      $ref: './components/operation.yaml'
     Permissions:
       $ref: './components/permissions.yaml'
     Relations:

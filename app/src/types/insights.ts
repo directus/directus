@@ -5,6 +5,7 @@ export type Dashboard = {
 	name: string;
 	note: string;
 	icon: string;
+	color: string;
 	panels: Panel[];
 	date_created: string;
 	user_created: string;

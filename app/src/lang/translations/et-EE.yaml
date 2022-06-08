@@ -26,6 +26,8 @@ published: Avaldatud
 draft: Mustand
 archived: Arhiveeritud
 edit_field: Muuda välja
+location: Asukoht
+input: Sisend
 item_revision: Kirje parandamine
 duplicate_field: Korduv väli
 half_width: Pool laiust
@@ -436,7 +438,6 @@ unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
 copy_details: Kopeeri detailid
 no_app_access: Rakenduse ligipääs puudub
 no_app_access_copy: See kasutaja ei tohi adminni rakendust kasutada.
-password_reset_sent: Saadame teile lingi salasõna muutmiseks
 password_reset_successful: Salasõna on edukalt lähtestatud
 back: Tagasi
 editing_image: Pildi muutmine
@@ -454,8 +455,6 @@ start_end_of_count_items: '{start}-{end} / {count}'
 start_end_of_count_filtered_items: '{start}-{end} / {count}'
 one_item: '1 kirje'
 one_filtered_item: '1 filtreeritud kirje'
-delete_collection_are_you_sure: >-
-  Kas sa kindlasti soovid selle andmekogu täielikult kustutada? Seda ei saa hiljem enam taastada!
 collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
@@ -552,6 +551,10 @@ toggle: Lülita
 icon_on: Ikoon sees
 icon_off: Ikoon väljas
 label: Silt
+trigger: Päästik
+flow_name: Nimi
+flow_tracking_activity: Jälgi ainult aktiivsust
+flow_tracking_null: Ära jälgi midagi
 full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
@@ -1113,6 +1116,8 @@ interfaces:
     value_path: Väärtuse väli
     trigger: Päästik
     rate: Hinnang
+  system-token:
+    system-token: Kontrollkood
 displays:
   translations:
     translations: Tõlked
@@ -1234,3 +1239,8 @@ layouts:
 panels:
   label:
     name: Silt
+operations:
+  notification:
+    recipient: Kasutaja
+  request:
+    url: URL

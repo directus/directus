@@ -8,7 +8,11 @@ export type EventContext = {
 	accountability: Accountability | null;
 };
 
-export type FilterHandler = (payload: any, meta: Record<string, any>, context: EventContext) => any | Promise<any>;
+export type FilterHandler<T = unknown> = (
+	payload: T,
+	meta: Record<string, any>,
+	context: EventContext
+) => T | Promise<T>;
 export type ActionHandler = (meta: Record<string, any>, context: EventContext) => void;
 export type InitHandler = (meta: Record<string, any>) => void;
-export type ScheduleHandler = () => void;
+export type ScheduleHandler = () => void | Promise<void>;

@@ -426,7 +426,7 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-An array of partial [item objects](#the-item-object).
+Object containing `data` for the values to set, and either `keys` or `query` to select what items to update.
 
 ### Returns
 

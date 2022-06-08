@@ -1,10 +1,13 @@
 ---
 avatar: Avatar
 default_provider: Privzeto
+method: Metoda
 draft: Osnutek
 archived: Arhivirano
 edit_field: Uredi polje
 conditions: Pogoji
+location: Lokacija
+input: Vnos
 maps: Zemljevidi
 item_revision: Revizija postavke
 duplicate_field: Podvajanje polja
@@ -436,7 +439,6 @@ unexpected_error_copy: Nepričakovana napaka. Prosimo, poskusite kasneje.
 copy_details: Kopiraj podrobnosti
 no_app_access: Nimate dostopa do aplikacije
 no_app_access_copy: Ta uporabnik nima dostopa do administracijske aplikacije.
-password_reset_sent: Poslali smo vam povezavo za ponastavitev gesla
 password_reset_successful: Geslo ponastavljeno
 back: Nazaj
 editing_image: Urejanje slike
@@ -454,8 +456,6 @@ start_end_of_count_items: '{start}-{end} od {count} zapisov'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih zapisov'
 one_item: '1 zapis'
 one_filtered_item: '1 filtriran zapis'
-delete_collection_are_you_sure: >-
-  Ste prepričani, da želit brisati to zbirko? Obrisana bo zbirka in vsi zapisni v njej. Vračanje podatkov ne bo mogoče.
 collections_shown: zbirk prikazanih
 visible_collections: Vidne zbirke
 hidden_collections: Skrite zbirke
@@ -556,6 +556,7 @@ on_create: Pri ustvarjanju
 on_update: Pri urejanju
 read: Beri
 update: Posodobi
+delete: Izbriši
 select_fields: Izberite polja
 format_text: Oblikuj tekst
 bold: Krepko
@@ -563,6 +564,11 @@ toggle: Preklopi
 icon_on: Prikaži ikono
 icon_off: Skrij ikono
 label: Oznaka
+trigger: Sprožilec
+flow_name: Ime
+flow_tracking_activity: Sledi samo aktivnosti
+flow_tracking_null: Ne sledi ničesar
+accountability: Odgovornost
 full_screen: Celozaslonski način
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
@@ -648,6 +654,7 @@ settings_webhooks: Prožilci
 settings_presets: Prednastavitve in zaznamki
 one_or_more_options_are_missing: Manjka ena ali več opcij
 scope: Obseg
+actions: Dejanja
 select: Izberite ...
 layout: Postavitev
 tree_view: Drevesni pogled
@@ -657,6 +664,7 @@ preset_search_placeholder: Iskalna poizvedba ...
 editing_preset: Urejanje prednastavitve
 layout_preview: Predogled postavitve
 layout_setup: Urejanje postavitve
+data: Podatki
 unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
@@ -779,7 +787,6 @@ fields:
     status_archived: Arhivirano
     role: Vloga
     token: Žeton
-    token_placeholder: Vnesite žeton ...
     last_page: Zadnja stran
     last_access: Zadnji dostop
   directus_settings:
@@ -992,7 +999,6 @@ sort_direction: Smer razvrščanja
 sort_asc: Razvrsti naraščajoče
 sort_desc: Razvrsti padajoče
 template: Predloga
-require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
@@ -1240,6 +1246,8 @@ interfaces:
     header_color: Barva glave
     start_open: Začni odprto
     start_closed: Začni zaprto
+  system-token:
+    system-token: Žeton
 displays:
   translations:
     translations: Prevodi
@@ -1368,3 +1376,15 @@ layouts:
 panels:
   label:
     name: Oznaka
+triggers:
+  webhook:
+    method: Metoda
+operations:
+  notification:
+    recipient: Uporabnik
+  request:
+    url: URL
+    method: Metoda
+    data: Podatki
+  trigger:
+    data: Podatki

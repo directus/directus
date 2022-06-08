@@ -5,7 +5,7 @@
 		</v-button>
 
 		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
-			<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="navItem.name" />
 			</v-list-item-content>
@@ -31,6 +31,7 @@ export default defineComponent({
 		const navItems = computed(() =>
 			insightsStore.dashboards.map((dashboard: Dashboard) => ({
 				icon: dashboard.icon,
+				color: dashboard.color,
 				name: dashboard.name,
 				to: `/insights/${dashboard.id}`,
 			}))
