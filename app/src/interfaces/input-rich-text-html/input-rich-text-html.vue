@@ -128,7 +128,7 @@
 				<v-tabs-items v-model="openMediaTab">
 					<v-tab-item value="video">
 						<template v-if="mediaSelection">
-							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="controls">
+							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
 								<source :src="mediaSelection.previewUrl" />
 							</video>
 							<iframe
@@ -372,7 +372,7 @@ export default defineComponent({
 			};
 		});
 
-		const percRemaining = computed(() => percentage(count.value, props.softLength));
+		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 		let observer: MutationObserver;
 
