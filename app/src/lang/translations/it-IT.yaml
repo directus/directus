@@ -326,12 +326,15 @@ revision_delta_deleted: Eliminato
 revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
+presentation_text_values_cannot_be_reimported: "Usa il testo di presentazione, i valori non possono essere reimportati."
+download_page_as_csv: 'Scarica la pagina in formato CSV'
 private_user: Utenti privati
 creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
 updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
 post_comment_success: Commento pubblicato
+post_comment_updated: Commento aggiornato
 item_create_success: Elemento Creato | Elementi Creati
 item_update_success: Elemento Aggiornato | Elementi Aggiornati
 item_delete_success: Elemento Eliminato| Elementi Eliminati
@@ -555,7 +558,9 @@ errors:
   INVALID_CREDENTIALS: Nome utente o password sbagliati
   INVALID_OTP: Password monouso errata
   INVALID_PAYLOAD: Payload non valido
+  INVALID_PROVIDER: L'utente appartiene a un provider di autenticazione diverso
   INVALID_QUERY: Query non valida
+  INVALID_USER: Autenticazione dell'utente fallita
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
@@ -654,6 +659,7 @@ operators:
   nnull: Non è null
   contains: contiene
   ncontains: Non contiene
+  icontains: Contiene (ignora maiuscole/minuscole)
   starts_with: Inizia con
   nstarts_with: Non inizia con
   ends_with: Finisce con
@@ -1820,7 +1826,7 @@ panels:
     show_data_label: Mostra l'etichetta dei dati
     group_by: Raggruppato per
     group_and_function: Devi includere o escludere sia un gruppo che una funzione.
-    y_axix_NaN: L'asse Y deve essere un numero.
+    y_axis_NaN: L'asse Y deve essere un numero.
     y_axis_conditional_one: Il valore per la condizione
     y_axis_conditional_two: deve essere un numero.
   linechart:

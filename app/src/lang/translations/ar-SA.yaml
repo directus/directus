@@ -28,10 +28,12 @@ draft: مسوّدة
 archived: مؤرشف
 modules: الوحدات
 module_bar: شريط الوحدة
+reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 maps: الخرائط
+switch_user: تغير المستخدم
 item_creation: إنشاء عنصر
 item_revision: التعديلات على العنصر
 enter_a_name: أدخل اسم...
@@ -39,6 +41,7 @@ duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
 group: المجموعة
+export_items: تصدير عنصر
 and: و
 or: أو
 fill_width: العرض الكامل
@@ -305,6 +308,8 @@ related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
 label_import: إستيراد
+label_export: تصدير
+import_export: أستيراد / تصدير
 format: التنسيق
 last_page: آخر صفحة
 last_access: آخر وصول
@@ -321,12 +326,22 @@ interface_label: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
+delete_share: حذف المشاركة
 functions:
   year: سنة
   month: شهر
+  week: أسبوع
+  day: يوم
+  weekday: أيام العمل
+  hour: ساعة
+  minute: دقيقة
+  second: ثانية
   count: عدد
+date-fns_date: التوقيت المحلي
 date-fns_time: 'ساعات: دقائق: ثواني'
 date-fns_time_no_seconds: 'س:دد ص'
+date-fns_time_24hour: 'ساعة:دقيقة:ثانية'
+date-fns_time_no_seconds_24hour: 'ساعة:دقيقة'
 minutes: دقائق
 hours: ساعات
 month: شهر
@@ -374,6 +389,7 @@ replace_from_library: استبدال الملف من المكتبة
 replace_from_url: استبدال الملف من رابط
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
+open_file_in_tab: أفتح الملف في علامة تبويب جديدة
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'

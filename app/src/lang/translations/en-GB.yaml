@@ -95,6 +95,7 @@ update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
   Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
+delete_personal_bookmark: Delete Personal Bookmark
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
@@ -1299,7 +1300,7 @@ export_started_copy: Your export has started. You'll be notified when it's ready
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
-require_value_to_be_set: Require value to be set
+require_value_to_be_set: Require value to be set on creation
 translation: Translation
 translation_placeholder: Enter a translation...
 value: Value

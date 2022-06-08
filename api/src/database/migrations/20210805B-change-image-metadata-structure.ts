@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { parseJSON } from '../../utils/parse-json';
 
 // Change image metadata structure to match the output from 'exifr'
 export async function up(knex: Knex): Promise<void> {
@@ -11,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 		let prevMetadata;
 
 		try {
-			prevMetadata = JSON.parse(metadata);
+			prevMetadata = parseJSON(metadata);
 		} catch {
 			continue;
 		}
@@ -58,7 +59,7 @@ export async function down(knex: Knex): Promise<void> {
 		.whereNot('metadata', '{}');
 
 	for (const { id, metadata } of files) {
-		const prevMetadata = JSON.parse(metadata);
+		const prevMetadata = parseJSON(metadata);
 
 		// Update only required if metadata has keys other than 'icc' and 'iptc'
 		if (Object.keys(prevMetadata).filter((key) => key !== 'icc' && key !== 'iptc').length > 0) {

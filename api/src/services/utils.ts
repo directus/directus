@@ -57,7 +57,7 @@ export class UtilsService {
 				.from(collection)
 				.whereNull(sortField);
 
-			let lastSortValue = lastSortValueResponse ? Object.values(lastSortValueResponse)[0] : 0;
+			let lastSortValue: any = lastSortValueResponse ? Object.values(lastSortValueResponse)[0] : 0;
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;

@@ -103,7 +103,7 @@ following custom script to your `package.json`:
 ```
 
 When you run the command via `npm run create-snapshot` it will create a new snapshot with the following naming schema:
-`[YYYY-MM-DD]-snapshot-[timestamp].json`. This command can be run e.g by your deployent pipeline before each deploy on
+`[YYYY-MM-DD]-snapshot-[timestamp].yaml`. This command can be run e.g by your deployment pipeline before each deploy on
 your server to keep a schema backup.
 
 :::
@@ -158,8 +158,8 @@ npx directus roles create --role <role-name>
 ```
 
 These roles are created with the
-[minimum permissions required](/configuration/users-roles-permissions/#configuring-system-permissions) to properly
-access the App by default.
+[minimum permissions required](/configuration/users-roles-permissions/#configure-system-permissions) to properly access
+the App by default.
 
 To create a new role with admin access, set the `--admin` flag to `true`, such as
 

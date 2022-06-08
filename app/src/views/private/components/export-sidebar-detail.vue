@@ -1,59 +1,69 @@
 <template>
 	<sidebar-detail icon="import_export" :title="t('import_export')">
 		<div class="fields">
-			<div class="field full">
-				<div v-if="uploading || importing" class="uploading">
-					<div class="type-text">
-						<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
-						<span v-if="!importing">{{ progress }}%</span>
+			<template v-if="createAllowed">
+				<div class="field full">
+					<div v-if="uploading || importing" class="uploading">
+						<div class="type-text">
+							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
+							<span v-if="!importing">{{ progress }}%</span>
+						</div>
+						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
 					</div>
-					<v-progress-linear :indeterminate="importing" :value="progress" rounded />
-				</div>
-				<template v-else>
-					<p class="type-label">{{ t('label_import') }}</p>
-					<v-input clickable>
-						<template #prepend>
-							<div class="preview" :class="{ 'has-file': file }">
-								<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
-								<v-icon v-else name="folder_open" />
-							</div>
-						</template>
-						<template #input>
-							<input
-								id="import-file"
-								ref="fileInput"
-								type="file"
-								accept="text/csv, application/json"
-								hidden
-								@change="onChange"
-							/>
-							<label for="import-file" class="import-file-label"></label>
-							<span class="import-file-text" :class="{ 'no-file': !file }">
-								{{ file ? file.name : t('import_data_input_placeholder') }}
-							</span>
-						</template>
-						<template #append>
-							<template v-if="file">
-								<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
+					<template v-else>
+						<p class="type-label">{{ t('label_import') }}</p>
+						<v-input clickable>
+							<template #prepend>
+								<div class="preview" :class="{ 'has-file': file }">
+									<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
+									<v-icon v-else name="folder_open" />
+								</div>
 							</template>
-							<v-icon v-else name="attach_file" />
-						</template>
-					</v-input>
-				</template>
-			</div>
+							<template #input>
+								<input
+									id="import-file"
+									ref="fileInput"
+									type="file"
+									accept="text/csv, application/json"
+									hidden
+									@change="onChange"
+								/>
+								<label for="import-file" class="import-file-label"></label>
+								<span class="import-file-text" :class="{ 'no-file': !file }">
+									{{ file ? file.name : t('import_data_input_placeholder') }}
+								</span>
+							</template>
+							<template #append>
+								<template v-if="file">
+									<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
+								</template>
+								<v-icon v-else name="attach_file" />
+							</template>
+						</v-input>
+					</template>
+				</div>
 
-			<div class="field full">
-				<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
-					{{ t('import_data_button') }}
-				</v-button>
-			</div>
+				<div class="field full">
+					<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
+						{{ t('import_data_button') }}
+					</v-button>
+				</div>
 
-			<v-divider />
+				<v-divider />
+			</template>
 
 			<div class="field full">
 				<v-button small full-width @click="exportDialogActive = true">
 					{{ t('export_items') }}
 				</v-button>
+
+				<button
+					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
+					class="download-local"
+					@click="$emit('download')"
+				>
+					{{ t('download_page_as_csv') }}
+				</button>
 			</div>
 		</div>
 
@@ -222,6 +232,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
 import { getEndpoint } from '@directus/shared/utils';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
+import { usePermissionsStore } from '@/stores';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -242,7 +253,7 @@ const props = withDefaults(defineProps<Props>(), {
 	search: undefined,
 });
 
-const emit = defineEmits(['refresh']);
+const emit = defineEmits(['refresh', 'download']);
 
 const { t, n } = useI18n();
 
@@ -273,6 +284,8 @@ const exportSettings = reactive({
 watch(
 	() => props.layoutQuery,
 	() => {
+		exportSettings.limit = props.layoutQuery?.limit ?? 25;
+
 		if (props.layoutQuery?.fields) {
 			exportSettings.fields = props.layoutQuery?.fields;
 		}
@@ -284,6 +297,15 @@ watch(
 				exportSettings.sort = props.layoutQuery.sort;
 			}
 		}
+	},
+	{ immediate: true }
+);
+
+watch(
+	[() => props.filter, () => props.search],
+	([filter, search]) => {
+		exportSettings.filter = filter;
+		exportSettings.search = search;
 	},
 	{ immediate: true }
 );
@@ -338,6 +360,10 @@ getItemCount();
 
 watch(exportSettings, () => {
 	getItemCount();
+});
+
+watch(primaryKeyField, (newVal) => {
+	exportSettings.sort = newVal?.field ?? '';
 });
 
 const sortDirection = computed({
@@ -450,7 +476,7 @@ function exportDataLocal() {
 		export: format.value,
 	};
 
-	if (exportSettings.sort) params.sort = exportSettings.sort;
+	if (exportSettings.sort && exportSettings.sort !== '') params.sort = exportSettings.sort;
 	if (exportSettings.fields) params.fields = exportSettings.fields;
 	if (exportSettings.limit) params.limit = exportSettings.limit;
 	if (exportSettings.search) params.search = exportSettings.search;
@@ -472,7 +498,7 @@ async function exportDataFiles() {
 		await api.post(`/utils/export/${collection.value}`, {
 			query: {
 				...exportSettings,
-				sort: [exportSettings.sort],
+				...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
 			},
 			format: format.value,
 			file: {
@@ -494,6 +520,10 @@ async function exportDataFiles() {
 		exporting.value = false;
 	}
 }
+
+const { hasPermission } = usePermissionsStore();
+
+const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
 </script>
 
 <style lang="scss" scoped>
@@ -607,5 +637,18 @@ async function exportDataFiles() {
 
 :deep(.v-button) .button:disabled {
 	--v-button-background-color-disabled: var(--background-normal-alt);
+}
+
+.download-local {
+	color: var(--foreground-subdued);
+	text-align: center;
+	display: block;
+	width: 100%;
+	margin-top: 8px;
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--primary);
+	}
 }
 </style>

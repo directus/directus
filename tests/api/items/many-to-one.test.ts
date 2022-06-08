@@ -66,6 +66,109 @@ describe('/items', () => {
 		});
 	});
 
+	describe('/:collection GraphQL Query', () => {
+		describe('retrieves all items from guest table with favorite_artist', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const artist = createArtist();
+				const name = 'test-user';
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				const guests = createMany(createGuest, 10, { name, favorite_artist: artist.id });
+				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+
+				const query = `
+				{
+					guests (filter: { name: { _eq: "${name}" } }) {
+						birthday
+						favorite_artist {
+							name
+						}
+					}
+				}`;
+
+				const response = await request(getUrl(vendor))
+					.post('/graphql')
+					.send({ query })
+					.set('Authorization', 'Bearer AdminToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const { data } = response.body;
+
+				expect(data.guests.length).toBeGreaterThanOrEqual(10);
+				expect(data.guests[data.guests.length - 1]).toMatchObject({
+					birthday: expect.any(String),
+					favorite_artist: expect.objectContaining({
+						name: expect.any(String),
+					}),
+				});
+			});
+		});
+
+		describe('Should get "favorite_artist" field with ID string when retrieving all items from guests without read permission to artists', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const artist = createArtist();
+				const name = 'test-user';
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				const guests = createMany(createGuest, 10, { name, favorite_artist: artist.id });
+				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+
+				const query = `
+				{
+					guests (filter: { name: { _eq: "${name}" } }) {
+						favorite_artist
+					}
+				}`;
+
+				const response = await request(getUrl(vendor))
+					.post('/graphql')
+					.send({ query })
+					.set('Authorization', 'Bearer UserToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const { data } = response.body;
+
+				expect(data.guests.length).toBeGreaterThanOrEqual(10);
+				expect(data.guests[data.guests.length - 1]).toMatchObject({
+					favorite_artist: expect.any(String),
+				});
+			});
+		});
+
+		describe('Should not get nested fields in "favourite_artist" when retrieving all items from guests without read permission to artists', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const artist = createArtist();
+				const name = 'test-user';
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				const guests = createMany(createGuest, 10, { name, favorite_artist: artist.id });
+				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+
+				const query = `
+				{
+					guests (filter: { name: { _eq: "${name}" } }) {
+						favorite_artist {
+							name
+						}
+					}
+				}`;
+
+				const response = await request(getUrl(vendor))
+					.post('/graphql')
+					.send({ query })
+					.set('Authorization', 'Bearer UserToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(400);
+
+				const { errors } = response.body;
+
+				expect(errors[0].extensions.code).toBe('GRAPHQL_VALIDATION_EXCEPTION');
+				expect(errors[0].extensions.graphqlErrors[0].message).toBe(
+					'Field "favorite_artist" must not have a selection since type "String" has no subfields.'
+				);
+			});
+		});
+	});
+
 	describe('/:collection POST', () => {
 		describe('createOne', () => {
 			describe('creates one guest with a favorite_artist', () => {

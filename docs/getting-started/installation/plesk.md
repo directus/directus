@@ -88,7 +88,7 @@ stay empty.
 
 ::: tip Store `document_root` in a version control
 
-If you want to keep the folder in in a version controll like git, create a empty `.gitignore` file inside the folder.
+If you want to keep the folder in in a version control like git, create a empty `.gitignore` file inside the folder.
 
 :::
 
@@ -131,7 +131,7 @@ On Plesk you can't directly run an npx command. To use the Directus snapshot fea
 `package.json`. For snapshot creation you can find an example in the
 [CLI docs: Date-based snapshots](/getting-started/installation/plesk#snapshot-the-data-model)
 
-To apply a snapshot you need a custom wrapper wrapper using the non-interactive version:
+To apply a snapshot you need a custom wrapper using the non-interactive version:
 
 ```json
     "scripts" {

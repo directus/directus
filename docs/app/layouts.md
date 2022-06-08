@@ -20,7 +20,7 @@ The following sections detail the Layouts managed and supported by the Directus 
 open-source, modular and extensible. You are free to create any Layout you need on self-hosted and Enterprise Cloud
 Projects. Additionally, Directus Cloud is always adding more Layouts to its
 [Cloud Exclusive Extensions](/cloud/glossary/#extensions), so check back often to stay up-to-date with the latest and
-greatest. Additionaly, you can join the community on [Discord](https://discord.com/invite/directus) and
+greatest. Additionally, you can join the community on [Discord](https://discord.com/invite/directus) and
 [GitHub](https://github.com/directus/directus/discussions) to find thousands of engineers guiding development of the
 Directus platform.
 
@@ -114,7 +114,6 @@ Only available if a Sort column has been configured in the Collection's Data Mod
 @TODO configuration > data-model
 Link
 -->
-
 
 :::
 
@@ -228,7 +227,6 @@ Link to Map Field
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
 task, because it groups Items onto columns according to their status _(e.g. "Not Started", "In Progress", "Under
 Review", "Complete", or any other status defined)_. The following controls are available.
-
 
 **Layout Options**
 

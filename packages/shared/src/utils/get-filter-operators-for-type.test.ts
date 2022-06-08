@@ -88,6 +88,7 @@ describe('', () => {
 		expect(getFilterOperatorsForType(TYPES[13])).toStrictEqual([
 			'contains',
 			'ncontains',
+			'icontains',
 			'starts_with',
 			'nstarts_with',
 			'ends_with',

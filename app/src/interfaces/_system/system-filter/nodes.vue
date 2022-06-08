@@ -332,7 +332,7 @@ function getCompareOptions(name: string) {
 		type = fieldInfo?.type || 'unknown';
 	}
 
-	return getFilterOperatorsForType(type, { includeValidation: true }).map((type) => ({
+	return getFilterOperatorsForType(type, { includeValidation: props.includeValidation }).map((type) => ({
 		text: t(`operators.${type}`),
 		value: `_${type}`,
 	}));

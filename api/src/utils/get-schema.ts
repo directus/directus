@@ -13,6 +13,7 @@ import logger from '../logger';
 import { RelationsService } from '../services';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
+import { parseJSON } from './parse-json';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -142,7 +143,7 @@ async function getDatabaseSchema(
 		const type = (existing && getLocalType(column, { special })) || 'alias';
 		let validation = field.validation ?? null;
 
-		if (validation && typeof validation === 'string') validation = JSON.parse(validation);
+		if (validation && typeof validation === 'string') validation = parseJSON(validation);
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,

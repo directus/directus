@@ -22,43 +22,43 @@
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
-default_provider: Proveedor predeterminado
+default_provider: Predeterminado
 published: Publicado
 draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
-reset_width: Restablecer ancho
+reset_width: Reestablecer Ancho
 tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 maps: Mapas
 switch_user: Cambiar usuario
-item_creation: Creación de ítem
+item_creation: Creación de Elemento
 item_revision: Revisión de Elemento
-enter_a_name: Ingresa_un_nombre...
-duplicate_field: Campo duplicado
+enter_a_name: Ingresa un Nombre...
+duplicate_field: Duplicar Campo
 half_width: Ancho a la Mitad
 full_width: Ancho completo
 group: Grupo
-export_items: Exportar elementos
+export_items: Exportar Elementos
 and: "Y"
 or: O
-fill_width: Ajustar ancho
+fill_width: Llenar ancho
 field_name_translations: Traducciónes del nombre de campo
-enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar "Two-Factor Authentication"
+enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar el doble factor de autenticación
 add_field: Añade un campo
 role_name: Nombra un rol
-branch: Marca
+branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
-edit_collection: Editar_Colección
+edit_collection: Editar Colección
 exclusive: Exclusivo
-children: Hijo
-db_only_click_to_configure: 'Base_de_Datos_Solamente_Click_para_Configurar'
-show_active_items: Muestre_Items_Activos
+children: Descendientes
+db_only_click_to_configure: 'Sólo Base de Datos: Clic para Configurar'
+show_active_items: Mostrar Elementos Activos
 show_archived_items: Mostrar los registros archivados
-show_all_items: Muestre_Todos_los _Items
+show_all_items: Mostrar todos los elementos
 edited: Valor editado
 required: Requerido
 required_for_app_access: Requerido para acceso a la App
@@ -67,12 +67,12 @@ create_preset: Crear ajuste
 create_panel: Crear Panel
 create_role: Crear rol
 create_user: Crear Usuario
-delete_panel: Borrar_Panel
+delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
 create_translation_string: Crear Traducciones
 translation_string_key_placeholder: Clave de cadena de traducción...
-translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar traducción
+translation_string_translations_placeholder: Agregar una nueva traducción
+edit_translation_string: Editar Texto de Traducción
 delete_translation_string_copy: >-
   ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
@@ -138,7 +138,7 @@ validationError:
   lte: El_Valor_Tiene_Que_Ser_Menor_O_Igual_A{valid}
   empty: El_Valor_Tiene_Que_Estar_Vacío
   nempty: Este valor no puede quedar vacío
-  null: El_Valor_Tiene_Que_Ser_Nulo
+  null: El valor debe ser null
   nnull: El_Valor_No_Puede_Ser_Nulo
   required: Valor requerido
   unique: El valor debe de ser único
@@ -166,15 +166,15 @@ field_permissions: Permisos de campo
 field_validation: Validación de campo
 field_presets: Ajustes prefijados de campo
 permissions_for_role: 'Items_El{role}_Rol_Puede{action}.'
-fields_for_role: 'Campos_El{role}_Rol_puede{action}.'
-validation_for_role: 'Reglas{action}_De_Campo_El{role}_Rol_Debe_Obedecer.'
+fields_for_role: 'Campos que {role} puede {action}.'
+validation_for_role: 'Reglas del campo {action} que el Rol {role} debe obedecer.'
 presets_for_role: 'Valor del campo por defecto para el rol {role}.'
 presentation_and_aliases: Presentación_y_Aliases
 revision_post_create: Aspecto_Una_Vez_Creado.
 revision_post_update: Aspecto_Luego_De_Actualizado.
 changes_made: Cambios.
 no_relational_data: Tenga presente que datos relacionales no están incluídos.
-hide_field: Ocultar campo
+hide_field: Ocultar Campo
 hide_field_on_detail: Oculto en Detalle
 show_field_on_detail: Mostrar en Detalle
 delete_field: Borrar Campo
@@ -286,7 +286,7 @@ note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
 length: Largó
-soft_length: Límite suave
+soft_length: Límite Suave
 precision_scale: Precisión y Escala
 readonly: Solo Lectura
 unique: Único
@@ -297,13 +297,13 @@ foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
 dismiss: Ignorar
 raw_value: Valor sin interpretar
-copy_raw_value: Copiar valor exacto
+copy_raw_value: Copiar Valor Exacto
 copy_raw_value_success: Copiado
-copy_raw_value_fail: Copia fallida
-paste_raw_value: Pegar valor exacto
+copy_raw_value_fail: Copia Fallida
+paste_raw_value: Pegar Valor Exacto
 paste_raw_value_success: Pegado
 paste_raw_value_fail: Fallo al Pegar
-view_raw_value: Ver valor exacto
+view_raw_value: Ver Valor Exacto
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar Valor
@@ -326,12 +326,15 @@ revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
+download_page_as_csv: 'Descargar página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista Previa de Creación
 revision_preview: Vista Previa de Revisión
 updates_made: Actualizaciones Finalizadas
 leave_comment: Deje su Comentario...
 post_comment_success: Comentario Publicado
+post_comment_updated: Comentario Actualizado
 item_create_success: Registro Creado | Registros Creados
 item_update_success: Registro Actualizado | Registros Actualizados
 item_delete_success: Registro Borrado | Registros Borrados
@@ -343,7 +346,7 @@ languages_collection: Coleccion de Idiomas
 import_data_input_placeholder: CSV o JSON...
 import_data_button: Empezar Importación
 import_data_indeterminate: Importando Datos...
-import_data_success: Datos importados correctamente desde {filename}
+import_data_success: Datos importados con éxito desde {filename}
 import_data_error: La estructura de datos de este archivo no coincide con la colección.
 label_import: Importar
 label_export: Exportar
@@ -370,7 +373,7 @@ functions:
   month: Mes
   week: Semana
   day: Día
-  weekday: Día laborable
+  weekday: Día de la semana
   hour: Hora
   minute: Minuto
   second: Segundo
@@ -431,17 +434,17 @@ replace_from_url: Reemplazar Archivo desde Enlace
 no_file_selected: No hay Archivo Seleccionado
 download_file: Bajar Archivo
 open_file_in_tab: Abrir archivo en nueva pestaña
-start_export: Iniciar exportación
+start_export: Iniciar Exportación
 not_available_for_local_downloads: No disponible para descargas locales
-exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
-exporting_limited_items_in_collection: Exportando {limit} de {total} elementos dentro de {collection}.
+exporting_all_items_in_collection: Exportando todos los {total} elementos de {collection}.
+exporting_limited_items_in_collection: Exportando {limit} de los {total} elementos en {collection}.
 exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación a continuación.
 exporting_download_hint: Una vez completado, este archivo {format} se descargará automáticamente a tu dispositivo.
 exporting_batch_hint: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 exporting_batch_hint_forced: Debido al gran número de artículos, esta exportación debe ser procesada en lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
-primary_key_field: Campo Llave Primaria
+primary_key_field: Campo de la Llave Principal
 type: Tipo
 creating_new_collection: Crear Nueva Colección
 created_by: Creado Por
@@ -465,9 +468,9 @@ click_to_expand: Haga Clic para Expandir
 select_item: Seleccionar Elemento
 no_items: Sin Registros
 search_items: Buscar elementos...
-disabled: Desactivado
+disabled: Deshabilitado
 information: Información
-report_bug: Reportar Problema
+report_bug: Reportar Error
 request_feature: Solicitar Características
 interface_not_found: 'Interfaz "{interface}" no encontrada.'
 reset_interface: Restablecer Interfaz
@@ -699,16 +702,16 @@ per_page: Por Página
 all_files: Todos los Archivos
 my_files: Mis Archivos
 recent_files: Archivos Recientes
-create_folder: Crear Directorio
+create_folder: Crear Carpeta
 edit_folder: Editar Carpeta
-folder_name: Nombre del Directorio...
-folder_key: Clave de carpeta...
+folder_name: Nombre de Carpeta...
+folder_key: Llave de Carpeta...
 add_file: Agregar Archivo
 replace_file: Reemplazar Archivo
 no_results: Sin Resultados
 no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
 clear_filters: Limpiar Filtros
-saves_automatically: Guardar Automáticamente
+saves_automatically: Guarda Automáticamente
 role: Rol
 edit_role: Editar rol
 rule: Regla
@@ -721,7 +724,7 @@ create: Crear
 on_create: Al Crear
 on_update: Al Actualizar
 read: Leer
-update: Actualización
+update: Actualizar
 select_fields: Seleccionar Campos
 format_text: Formatear Texto
 format_value: Formatear Valor
@@ -733,7 +736,7 @@ icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
 insights: Informes
-dashboard: Panel de control
+dashboard: Tablero
 panel: Panel
 panel_options: Opciones del Panel
 panel_header: Encabezado del Panel
@@ -1130,7 +1133,7 @@ field_options:
   directus_activity:
     login: Iniciar sesión
     create: Crear
-    update: Actualización
+    update: Actualizar
     delete: Eliminar
   directus_collections:
     track_activity_revisions: Rastrear actividad y revisiones
@@ -1756,6 +1759,35 @@ layouts:
     find_location: Buscar ubicación...
     default_template: Usando la colección por defecto...
     no_compatible_fields: No hay campos compatibles
+  kanban:
+    name: Kanban,
+    group_field: Agrupar,
+    group_field_placeholder: Campo para agrupar,
+    group_title: Título del Grupo,
+    group_title_placeholder: Campo para títulos de grupo...,
+    title: Título de la Tarjeta
+    title_placeholder: Campo de título opcional...,
+    text: Texto de la Tarjeta,
+    text_placeholder: Campo de texto opcional...,
+    date: Fecha de la Tarjeta,
+    date_placeholder: Campo de fecha opcional...,
+    tags: Etiquetas de la Tarjeta,
+    tags_placeholder: Campo de etiquetas opcional...,
+    user: Usuario de la Tarjeta,
+    user_placeholder: Campo de usuario opcional...,
+    image: Imagen de la Tarjeta,
+    image_placeholder: Campo de imagen opcional...,
+    image_fit: Ajuste de Imagen de la Tarjeta,
+    crop: Recortar,
+    advanced: Avanzado,
+    edit_group: Editar Grupo,
+    delete_group: Eliminar Grupo,
+    add_group: Añadir Grupo,
+    add_group_placeholder: Introduzca un nuevo título para el grupo...,
+    show_ungrouped: Mostrar Desagrupado,
+    show: Mostrar,
+    no_group: Sin Agrupar,
+    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 panels:
   metric:
     name: Métrico
@@ -1774,3 +1806,37 @@ panels:
   list:
     name: Lista
     description: Filtrar y listar campos de una colección
+  barchart:
+    name: Gráfico de Barras
+    description: Gráficos de barra o columna para comparar grupos de valores
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    horizontal: Horizontal
+    x_axis_grouping: Agregación de Grupo del Eje X
+    x_axis: Eje X
+    y_axis_function: Función del Eje Y
+    y_axis: Eje Y
+    show_x_axis: Mostrar Eje X
+    show_y_axis: Mostrar Eje Y
+    show_data_label: Mostrar Etiqueta de Datos
+    group_by: Agrupado Por
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+    y_axis_NaN: El eje Y debe ser un número.
+    y_axis_conditional_one: Valor para la condición
+    y_axis_conditional_two: debe ser un número.
+  linechart:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    x_axis: Eje X
+    y_axis: Eje Y
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+  meter:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    function: Función
+  piechart:
+    function: 'Función'

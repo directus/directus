@@ -97,7 +97,7 @@ to make it your own!
 
 ::: tip More Info on Collections
 
-For a more in-depth guide to setting up Collections, see [Collections](/app/content-collections).
+For a more in-depth guide to setting up Collections, see [Collections](/app/content/collections).
 
 :::
 

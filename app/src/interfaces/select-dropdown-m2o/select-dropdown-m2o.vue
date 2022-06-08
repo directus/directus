@@ -18,16 +18,16 @@
 				</div>
 			</template>
 
-			<template v-if="!disabled" #append>
+			<template #append>
 				<template v-if="displayItem">
+					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editModalActive = true" />
 					<v-icon
-						v-if="updateAllowed"
-						v-tooltip="t('edit')"
-						name="open_in_new"
-						class="edit"
-						@click.stop="editModalActive = true"
+						v-if="!disabled"
+						v-tooltip="t('deselect')"
+						name="close"
+						class="deselect"
+						@click.stop="$emit('input', null)"
 					/>
-					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', null)" />
 				</template>
 				<template v-else>
 					<v-icon
@@ -43,13 +43,13 @@
 		</v-input>
 
 		<drawer-item
-			v-if="!disabled"
 			v-model:active="editModalActive"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
-			@input="update"
+			:disabled="!updateAllowed || disabled"
+			@input="onDrawerItemInput"
 		/>
 
 		<drawer-collection
@@ -64,19 +64,18 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationM2O, useRelationSingle, RelationQuerySingle } from '@/composables/use-relation';
+import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
+import { usePermissionsStore, useCollectionsStore } from '@/stores';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { useCollection } from '@directus/shared/composables';
+import { parseFilter } from '@/utils/parse-filter';
+import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerItem from '@/views/private/components/drawer-item';
 import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { get } from 'lodash';
+import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item';
-import DrawerCollection from '@/views/private/components/drawer-collection';
-import { parseFilter } from '@/utils/parse-filter';
-import { render } from 'micromustache';
-import { usePermissionsStore } from '@/stores';
 
 const props = withDefaults(
 	defineProps<{
@@ -100,6 +99,8 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 
 const values = inject('values', ref<Record<string, any>>({}));
+
+const collectionsStore = useCollectionsStore();
 
 const customFilter = computed(() => {
 	return parseFilter(
@@ -126,13 +127,15 @@ const value = computed({
 const selectModalActive = ref(false);
 const editModalActive = ref(false);
 
-const { info: collectionInfo } = useCollection(collection);
-
 const displayTemplate = computed(() => {
 	if (props.template) return props.template;
-	return (
-		collectionInfo.value?.meta?.display_template || `{{ ${relationInfo.value?.relatedPrimaryKeyField.field || ''} }}`
-	);
+
+	if (!relationInfo.value) return '';
+
+	const displayTemplate = collectionsStore.getCollection(relationInfo.value.relatedCollection.collection)?.meta
+		?.display_template;
+
+	return displayTemplate || `{{ ${relationInfo.value.relatedPrimaryKeyField.field || ''} }}`;
 });
 
 const requiredFields = computed(() => {
@@ -170,6 +173,11 @@ function onPreviewClick() {
 	if (props.disabled) return;
 
 	selectModalActive.value = true;
+}
+
+function onDrawerItemInput(event: any) {
+	if (props.disabled) return;
+	update(event);
 }
 
 const selection = computed<(number | string)[]>(() => {

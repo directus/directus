@@ -35,6 +35,7 @@ create_webhook: 建立 Webhook
 invite_users: 邀請用戶
 invite: 邀请
 email_already_invited: 此電郵 "{email}" 已被邀請
+inbox: 收件匣
 emails: 信件
 connection_excellent: 優秀的連接
 connection_good: 好的連接
@@ -124,8 +125,10 @@ field_create_success: '建立欄位: "{field}"'
 field_update_success: '更新欄位: "{field}"'
 duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
+language_placeholder: 選擇語言...
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
+camera: 相機
 show_zero: 顯示零值
 sum: 總和
 avg: 平均
@@ -220,6 +223,9 @@ this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
 languages_collection: 語系集合
+import_data_input_placeholder: CSV 或 JSON...
+import_data_button: 開始匯入
+import_data_indeterminate: 正在匯入資料...
 label_import: 匯入
 format: 格式
 last_page: 最後一頁

@@ -23,7 +23,7 @@ module.exports = {
 		ecmaVersion: 2020,
 	},
 	overrides: [
-		// Parse rollup configration as module
+		// Parse rollup configuration as module
 		{
 			files: ['rollup.config.js', 'vite.config.js'],
 			parserOptions: {

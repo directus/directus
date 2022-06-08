@@ -32,6 +32,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import { render } from 'micromustache';
 import { deepMap } from '@directus/shared/utils';
 import { ChangesItem, useRelationO2M } from '@/composables/use-relation';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -122,7 +123,10 @@ const template = computed(() => {
 });
 
 const fields = computed(() => {
-	return getFieldsFromTemplate(template.value);
+	return addRelatedPrimaryKeyToFields(
+		relationInfo.value?.relatedCollection.collection ?? '',
+		getFieldsFromTemplate(template.value)
+	);
 });
 </script>
 

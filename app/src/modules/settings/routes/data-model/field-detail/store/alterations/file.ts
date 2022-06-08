@@ -1,5 +1,6 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
+import { setRelatedOneFieldForCorrespondingField } from './m2o';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged, getCurrent } = helperFn;
@@ -11,6 +12,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 
 	if (hasChanged('field.field')) {
 		updateRelationField(updates);
+	}
+
+	if (hasChanged('fields.corresponding')) {
+		setRelatedOneFieldForCorrespondingField(updates);
 	}
 
 	if (hasChanged('field.schema.is_nullable')) {

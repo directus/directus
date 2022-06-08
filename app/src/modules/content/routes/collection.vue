@@ -249,6 +249,7 @@
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
 					:layout-query="layoutQuery"
+					@download="download"
 					@refresh="refresh"
 				/>
 			</template>
@@ -467,10 +468,15 @@ export default defineComponent({
 			hasArchive,
 			archiveFilter,
 			mergeFilters,
+			download,
 		};
 
 		async function refresh() {
 			await layoutRef.value?.state?.refresh?.();
+		}
+
+		async function download() {
+			await layoutRef.value?.state?.download?.();
 		}
 
 		async function drawerBatchRefresh() {

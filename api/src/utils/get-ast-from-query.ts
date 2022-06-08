@@ -119,12 +119,6 @@ export default async function getASTFromQuery(
 				if (name in query.alias) {
 					name = query.alias[fieldKey];
 				}
-
-				// check for junction alias (it is one of the value instead of the key)
-				if (Object.values(query.alias).includes(name)) {
-					const aliasKey = Object.keys(query.alias).find((key) => query.alias?.[key] === name);
-					if (aliasKey && fieldKey !== aliasKey) name = aliasKey;
-				}
 			}
 
 			const isRelational =
@@ -137,7 +131,7 @@ export default async function getASTFromQuery(
 
 			if (isRelational) {
 				// field is relational
-				const parts = name.split('.');
+				const parts = fieldKey.split('.');
 
 				let rootField = parts[0];
 				let collectionScope: string | null = null;

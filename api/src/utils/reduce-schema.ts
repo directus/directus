@@ -53,17 +53,14 @@ export function reduceSchema(
 				continue;
 			}
 
-			const relatedCollection: string | undefined =
-				schema.relations.find((relation) => relation.collection === collectionName && relation.field === fieldName)
-					?.related_collection ||
-				schema.relations.find(
-					(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName
-				)?.collection;
+			const o2mRelation = schema.relations.find(
+				(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName
+			);
 
 			if (
-				relatedCollection &&
+				o2mRelation &&
 				!permissions?.some(
-					(permission) => permission.collection === relatedCollection && actions.includes(permission.action)
+					(permission) => permission.collection === o2mRelation.collection && actions.includes(permission.action)
 				)
 			) {
 				continue;

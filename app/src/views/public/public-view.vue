@@ -152,7 +152,6 @@ const logoURL = computed<string | null>(() => {
 	display: flex;
 	width: 100%;
 	height: 100%;
-	color: #263238;
 
 	:slotted(.v-icon) {
 		--v-icon-color: var(--foreground-subdued);

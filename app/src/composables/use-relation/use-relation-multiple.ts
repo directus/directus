@@ -278,6 +278,12 @@ export function useRelationMultiple(
 	async function updateFetchedItems() {
 		if (!relation.value) return;
 
+		if (!itemId.value || itemId.value === '+') {
+			existingItemCount.value = 0;
+			fetchedItems.value = [];
+			return;
+		}
+
 		let targetCollection: string;
 		let targetPKField: string;
 		let reverseJunctionField: string;
@@ -317,22 +323,18 @@ export function useRelationMultiple(
 
 			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
-			if (!itemId.value || itemId.value === '+') {
-				fetchedItems.value = [];
-			} else {
-				const response = await api.get(getEndpoint(targetCollection), {
-					params: {
-						fields: Array.from(fields),
-						filter: {
-							[reverseJunctionField]: itemId.value,
-						},
-						page: previewQuery.value.page,
-						limit: previewQuery.value.limit,
+			const response = await api.get(getEndpoint(targetCollection), {
+				params: {
+					fields: Array.from(fields),
+					filter: {
+						[reverseJunctionField]: itemId.value,
 					},
-				});
+					page: previewQuery.value.page,
+					limit: previewQuery.value.limit,
+				},
+			});
 
-				fetchedItems.value = response.data.data;
-			}
+			fetchedItems.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -341,10 +343,6 @@ export function useRelationMultiple(
 	}
 
 	async function updateItemCount(targetCollection: string, targetPKField: string, reverseJunctionField: string) {
-		if (!itemId.value || itemId.value === '+') {
-			existingItemCount.value = 0;
-			return;
-		}
 		const response = await api.get(getEndpoint(targetCollection), {
 			params: {
 				aggregate: {
