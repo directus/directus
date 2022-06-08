@@ -63,7 +63,6 @@ const fieldsStore = useFieldsStore();
 
 const metrics = ref<Record<string, any>[]>([]);
 const hasData = ref(true);
-const error = ref();
 const chartEl = ref();
 const chart = ref<ApexCharts>();
 

@@ -96,7 +96,7 @@
 			@duplicate="duplicatePanel"
 		>
 			<template #default="{ panel }">
-				<v-progress-circular v-if="loading" indeterminate />
+				<v-progress-circular v-if="loadingPanels.includes(panel.id)" indeterminate />
 				<component
 					:is="`panel-${panel.type}`"
 					v-else
@@ -213,7 +213,7 @@ export default defineComponent({
 		const { panels: panelTypes } = getPanels();
 		const response = ref<Record<string, Panel | Panel[]>>({});
 		const errors = ref();
-		const loading = ref(false);
+		const loadingPanels = ref<string[]>([]);
 
 		const panelsWithData = ref<Panel[]>([]);
 
@@ -393,7 +393,7 @@ export default defineComponent({
 				};
 
 				if (!isEmpty(systemDiff) || !isEmpty(userDiff)) {
-					loading.value = true;
+					loadingPanels.value = Object.keys(systemDiff).concat(Object.keys(userDiff));
 					const systemGQLQueries = processQuery(systemDiff);
 					const userGQLQueries = processQuery(userDiff);
 
@@ -408,7 +408,7 @@ export default defineComponent({
 
 					panelsWithData.value = applyDataToPanels(panels.value, response.value);
 				}
-				loading.value = false;
+				loadingPanels.value = [];
 			},
 			{ immediate: true, deep: true }
 		);
@@ -435,7 +435,6 @@ export default defineComponent({
 		const confirmCancel = ref(false);
 
 		return {
-			loading,
 			currentDashboard,
 			editMode,
 			panels,
@@ -466,6 +465,7 @@ export default defineComponent({
 			confirmCancel,
 			cancelChanges,
 			errors,
+			loadingPanels,
 		};
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
