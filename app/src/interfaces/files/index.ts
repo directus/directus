@@ -65,6 +65,17 @@ export default defineInterface({
 					width: 'half',
 				},
 			},
+			{
+				field: 'limit',
+				name: '$t:per_page',
+				type: 'integer',
+				meta: {
+					interface: 'input',
+				},
+				schema: {
+					default_value: 15,
+				},
+			},
 		];
 	},
 	recommendedDisplays: ['related-values'],
