@@ -424,9 +424,10 @@ export default defineComponent({
 		}
 
 		function contentUpdated() {
+			setCount();
+
 			if (!observer) return;
 
-			setCount();
 			emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
 		}
 
