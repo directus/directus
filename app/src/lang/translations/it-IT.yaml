@@ -832,6 +832,7 @@ media: Media
 quality: Qualità
 width: Larghezza
 height: Altezza
+transformation_preset_key: Chiave della trasformazione preimpostata
 source: Sorgente
 url_placeholder: Inserisci url...
 display_text: Visualizza testo
@@ -1396,6 +1397,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
