@@ -154,7 +154,6 @@ import SearchInput from '@/views/private/components/search-input';
 import { usePermissionsStore, useUserStore, usePresetsStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { getLayouts } from '@/layouts';
-import { Filter } from '@directus/shared/types';
 import usePreset from '@/composables/use-preset';
 
 export default defineComponent({
