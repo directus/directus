@@ -10,7 +10,7 @@
 			@focusout="setFocus(false)"
 			@focus="setupContentWatcher"
 			@set-content="contentUpdated"
-			@init="contentUpdated"
+			@init="setCount"
 		/>
 		<template v-if="softLength">
 			<span
@@ -412,14 +412,19 @@ export default defineComponent({
 			saveCode,
 			sourceCodeButton,
 			setupContentWatcher,
+			setCount,
 			contentUpdated,
 			storageAssetTransform,
 			storageAssetPresets,
 		};
 
-		function contentUpdated() {
+		function setCount() {
 			const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
 			count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+		}
+
+		function contentUpdated() {
+			setCount();
 			emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
 		}
 
