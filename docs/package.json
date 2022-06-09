@@ -12,8 +12,8 @@
 		"build": "node build.js",
 		"dev": "npm-watch build",
 		"dev:site": "vuepress dev",
-		"build:site": "vuepress build",
-		"update-thumbnail": "thumbsmith deploy .vuepress/.thumbsmith/docs.thumbnail.html"
+		"build:site": "vuepress build && npm run update-thumbnail",
+		"update-thumbnail": "thumbsmith deploy .vuepress/.thumbsmith/docs.thumbnail.html || exit 0"
 	},
 	"watch": {
 		"build": {
