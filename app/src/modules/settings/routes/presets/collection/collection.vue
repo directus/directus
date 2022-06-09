@@ -170,12 +170,8 @@ export default defineComponent({
 	setup() {
 		const layout = ref('tabular');
 		const collection = ref('directus_presets');
+		const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
 
-		const { layoutOptions, layoutQuery } = usePreset(collection);
-
-		const filter = ref<Filter | null>(null);
-		const search = ref<string | null>(null);
-		const refreshInterval = ref<number | null>(null);
 		const { t } = useI18n();
 
 		const { layouts } = getLayouts();
