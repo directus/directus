@@ -5,11 +5,12 @@
 			v-model="internalValue"
 			:init="editorOptions"
 			:disabled="disabled"
-			model-events="change keydown blur focus paste ExecCommand SetContent"
+			model-events="change keydown blur focus paste ExecCommand SetContent Init"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 			@focus="setupContentWatcher"
 			@set-content="contentUpdated"
+			@init="contentUpdated"
 		/>
 		<template v-if="softLength">
 			<span
