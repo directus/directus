@@ -5,11 +5,11 @@
 			v-model="internalValue"
 			:init="editorOptions"
 			:disabled="disabled"
-			model-events="change keydown blur focus paste ExecCommand SetContent"
+			model-events="change keydown blur focus paste ExecCommand SetContent Init"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 			@focus="setupContentWatcher"
-			@set-content="setCount"
+			@set-content="contentUpdated"
 		/>
 		<template v-if="softLength">
 			<span
@@ -412,6 +412,7 @@ export default defineComponent({
 			sourceCodeButton,
 			setupContentWatcher,
 			setCount,
+			contentUpdated,
 			storageAssetTransform,
 			storageAssetPresets,
 		};
@@ -421,14 +422,21 @@ export default defineComponent({
 			count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
 		}
 
+		function contentUpdated() {
+			setCount();
+
+			if (!observer) return;
+
+			emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+		}
+
 		function setupContentWatcher() {
 			if (observer) return;
 
 			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
 
 			observer = new MutationObserver((_mutations) => {
-				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
-				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+				contentUpdated();
 			});
 
 			const config = { characterData: true, childList: true, subtree: true };
