@@ -9,6 +9,7 @@ import { Query, PermissionsAction, Accountability, SchemaOverview } from '@direc
 import { getRelationType } from '../utils/get-relation-type';
 import env from '../env';
 import { InvalidQueryException } from '../exceptions';
+import { calculateFieldDepth } from './calculate-field-depth';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -75,33 +76,8 @@ export default async function getASTFromQuery(
 		}
 	}
 
-	const calculateDepth = (object: any): number => {
-		if (typeof object !== 'object' || object === null) {
-			return 0;
-		}
-
-		// Group keys do not add to depth
-		const groupKeys = ['_filter', '_and', '_or'];
-
-		const keys = Object.keys(object).filter((key) => {
-			return !key.startsWith('_') || groupKeys.includes(key);
-		});
-
-		return Math.max(
-			0,
-			...keys.map((key: any) => {
-				// _and & _or are arrays of objects
-				if (groupKeys.includes(key) || Array.isArray(object)) {
-					return calculateDepth(object[key]);
-				} else {
-					return calculateDepth(object[key]) + 1;
-				}
-			})
-		);
-	};
-
 	if (query.filter) {
-		const filterRelationalDepth = calculateDepth(query.filter);
+		const filterRelationalDepth = calculateFieldDepth(query.filter);
 
 		if (filterRelationalDepth > env.MAX_RELATIONAL_DEPTH) {
 			throw new InvalidQueryException('Max relational depth exceeded.');
@@ -110,7 +86,7 @@ export default async function getASTFromQuery(
 
 	const deep = query.deep || {};
 
-	const deepRelationalDepth = calculateDepth(deep);
+	const deepRelationalDepth = calculateFieldDepth(deep);
 
 	if (deepRelationalDepth > env.MAX_RELATIONAL_DEPTH) {
 		throw new InvalidQueryException('Max relational depth exceeded.');
