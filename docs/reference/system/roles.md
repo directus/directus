@@ -42,8 +42,7 @@ Description for the role. Displayed in the Admin App.
 CSV of IP addresses that have access to this role. Allows you to configure an allowlist of IP addresses.
 
 `enforce_tfa` **boolean**\
-Whether or not Two-Factor Authentication is required for users in this role. When enabling, ensure that the role has `update`
-permissions for the `tfa_secret` field in [Directus Users](https://docs.directus.io/reference/system/users/#the-user-object).
+Whether or not Two-Factor Authentication is required for users in this role.
 
 `admin_access` **boolean**\
 If this role is considered an admin role. This means that users in this role have full permissions to everything.
