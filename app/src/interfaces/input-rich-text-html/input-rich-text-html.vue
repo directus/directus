@@ -457,6 +457,7 @@ export default defineComponent({
 				editor.addShortcut('meta+k', 'Insert Link', () => {
 					editor.ui.registry.getAll().buttons.customlink.onAction();
 				});
+				setCount();
 			});
 		}
 

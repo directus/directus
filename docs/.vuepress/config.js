@@ -233,7 +233,7 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/configuration/flows/flows',
+						path: '/configuration/flows',
 						title: 'Flows',
 						collapsable: false,
 						children: [

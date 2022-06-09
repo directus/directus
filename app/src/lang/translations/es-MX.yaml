@@ -50,12 +50,13 @@ export_items: Exportar Elementos
 and: "Y"
 or: O
 init: Inicializador
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Mostrando los primeros {n} elementos.
 modifier: Modificador
 custom: Personalizado
 hook: Gancho
-fill_width: Llenar Ancho
-field_name_translations: 'Nombre de Campo: Traducciones'
-enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
+fill_width: Ancho Completo
+field_name_translations: Traducciones del Campo de Nombre
+enter_password_to_enable_tfa: Introduzca su contraseña para activar la Autenticación de Dos Factores
 add_field: Agregar Campo
 role_name: Nombre del Rol
 branch: Rama
@@ -65,80 +66,83 @@ edit_collection: Editar Colección
 exclusive: Exclusivo
 children: Subsecciones
 db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
-show_active_items: Mostrar elementos activos
+show_active_items: Mostrar Elementos Activos
 show_archived_items: Mostrar Elementos Archivados
-show_all_items: Mostrar todos los elementos
+show_all_items: Mostrar Todos los Elementos
 edited: Valor Editado
 required: Requerido
-required_for_app_access: Necesario para el acceso a App
-requires_value: Valor obligatorio
+required_for_app_access: Necesario para el Acceso a la Aplicación
+requires_value: Requiere un Valor
 create_preset: Crear Predefinido
 create_panel: Crear Panel
 create_role: Crear Rol
 create_user: Crear Usuario
+message: Mensaje
 delete_panel: Eliminar Panel
 create_webhook: Crear Webhook
-create_translation_string: Crear Traducciones
-translation_string_key_placeholder: Clave de cadena de traducción...
+create_translation_string: Crear Cadena de Traducción
+no_translation_string: Sin Cadenas de Traducción
+no_translation_string_copy: Todavía no hay cadenas de traducción.
+translation_string_key_placeholder: Clave de la cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar traducción
+edit_translation_string: Editar Cadena de Traducción
 delete_translation_string_copy: >-
-  ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
+  ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
-subject: Sujeto
+subject: Asunto
 inbox: Buzón
-emails: Correos Electrónicos
+emails: Correos
 connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
-connection_fair: Conexión Suficiente
+connection_fair: Conexión Justa
 connection_poor: Conexión Pobre
 primary: Principal
-rename_folder: Renombrar Directorio
-delete_folder: Eliminar Directorio
+rename_folder: Renombrar Carpeta
+delete_folder: Eliminar Carpeta
 prefix: Prefijo
 suffix: Sufijo
 reset_bookmark: Restablecer Marcador
 update_bookmark: Actualizar Marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
-  ¿Está seguro que desea eliminar el Marcador "{bookmark}"? Esta acción no es reversible.
-delete_personal_bookmark: Eliminar marcador personal
-delete_role_bookmark: Eliminar marcador de rol
-delete_global_bookmark: Eliminar marcador global
+  ¿Estás seguro de que quieres eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
+delete_personal_bookmark: Borrar el Marcador Personal
+delete_role_bookmark: Borrar el Marcador de Función
+delete_global_bookmark: Eliminar Marcador Global
 logoutReason:
-  SIGN_OUT: Sesión terminada
+  SIGN_OUT: Sesión cerrada
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
-public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
-admin_description: Función administrativa inicial con acceso sin restricciones App/API.
+public_description: Controla qué datos de la API están disponibles sin autenticar.
+admin_description: Rol administrativo inicial con acceso ilimitado a la App/API.
 not_allowed: No Permitido
 directus_version: Versión de Directus
 node_version: Versión de Node
-node_uptime: Tiempo de actividad de Node
+node_uptime: Tiempo de Actividad de Node
 os_type: Tipo de SO
 os_version: Versión de SO
-os_uptime: Tiempo de actividad del SO
+os_uptime: Tiempo de Actividad del SO
 os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Está seguro que desea archivar este elemento?'
 archive_confirm_count: >-
   Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
-reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
+reset_system_permissions_to: 'Restablecer los Permisos del Sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
 the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
-app_access_minimum: Mínimo acceso a App
-recommended_defaults: Valores predeterminados recomendados
+app_access_minimum: Acceso Mínimo a la Aplicación
+recommended_defaults: Valores Predeterminados Recomendados
 unarchive: Desarchivar
-unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
-nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
+unarchive_confirm: '¿Está seguro de que quiere desarchivar este elemento?'
+nested_files_folders_will_be_moved: Los archivos y carpetas anidados se moverán un nivel hacia arriba.
 validation_errors_notice: 'Los siguientes campos tienen valores no válidos:'
 validationError:
   eq: El valor tiene que ser {valid}
   neq: El valor no puede ser {invalid}
-  in: 'El valor tiene que ser uno de estos: {valid}'
-  nin: 'El valor no puede ser uno de estos: {invalid}'
+  in: El valor tiene que ser uno de {valid}
+  nin: El valor no puede ser uno de {invalid}
   contains: El valor tiene que contener {substring}
   ncontains: El valor no puede contener {substring}
   gt: El valor tiene que ser mayor a {valid}
@@ -152,24 +156,24 @@ validationError:
   required: El valor es requerido
   unique: El Valor tiene que ser único
   regex: El valor no tiene el formato correcto
-all_access: Todos los accesos
+all_access: Todos los Accesos
 no_access: Sin Acceso
 use_custom: Personalizar
-nullable: Acepta valores nulos
+nullable: Anulable
 allow_null_value: Permitir valor NULL
 allow_multiple: Permitir Múltiples
-allow_multiple_to_be_open: Permitir que se abran múltiples
+allow_multiple_to_be_open: Permitir la Apertura de Múltiples
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
 field_presentation: Presentación y Alias
 field_file: Un Archivo
 field_files: Múltiples Archivos
-field_m2o: Relación MAU
+field_m2o: Relación M2O
 field_m2a: Relación M2A
-field_o2m: Relación UAM
-field_m2m: Relación MAM
+field_o2m: Relación O2M
+field_m2m: Relación M2M
 field_translations: Traducciones
-field_group: Grupo de campos
+field_group: Grupo de Campos
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
 field_validation: Validación de Campo
@@ -1088,7 +1092,7 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: 'Nombre de Campo: Traducciones'
+    translation: Traducciones del Campo de Nombre
     display_template: Plantilla
   directus_roles:
     name: Nombre del Rol
@@ -1857,8 +1861,11 @@ triggers:
   webhook:
     method: Método
 operations:
+  log:
+    message: Mensaje
   notification:
     recipient: Usuario
+    message: Mensaje
   request:
     url: URL
     method: Método
