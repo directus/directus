@@ -23,6 +23,7 @@ identifier: 标识符（identifier）
 avatar: 头像
 application: 应用程序
 default_provider: 默认值
+method: 方法
 published: 已发布
 draft: 草稿
 archived: 已存档
@@ -32,6 +33,8 @@ reset_width: 重置宽度
 tile_size: 瓦块大小
 edit_field: 编辑
 conditions: 条件
+location: 地理位置
+input: Input
 maps: 地图
 switch_user: 切换用户
 item_creation: 新建
@@ -587,7 +590,6 @@ unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
 no_app_access_copy: 此用户不允许使用管理员应用程序。
-password_reset_sent: 我们已经给你发送了一封电子邮件, 您可以选择访问此安全链接来重置您的密码
 password_reset_successful: 密码重置成功。
 back: 后退
 filter: 筛选
@@ -611,9 +613,6 @@ start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤条目'
-delete_collection_are_you_sure: >-
-  您确定要删除此模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
-delete_folder_are_you_sure: 您确定要删除此文件夹吗？嵌套文件夹和收藏将被移动到最上层。
 collections_shown: 展开模型
 visible_collections: 显示模型
 hidden_collections: 隐藏模型
@@ -722,6 +721,7 @@ on_create: 创建时
 on_update: 在更新操作上
 read: 查看
 update: 更新
+delete: 删除
 select_fields: 选择字段
 format_text: 格式化文本
 format_value: 格式化
@@ -732,6 +732,10 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+trigger: 触发器
+flow_name: 名称
+flow_tracking_activity: 仅跟踪活动
+flow_tracking_null: 不跟踪任何内容
 insights: 洞察分析
 dashboard: 控制面板
 panel: 面板
@@ -749,9 +753,10 @@ suffix_placeholder: 后缀
 decimals_placeholder: 小数位数...
 no_dashboards: 没有仪表盘
 no_dashboards_copy: 您还没有任何工作台。
-no_data: 没有数据
 create_dashboard: 创建Dashboard
 dashboard_name: Dashboard名称
+no_data: 没有数据
+accountability: 访问控制
 full_screen: 全屏显示
 full_text_search: 全文搜索
 edit_panels: 编辑面板
@@ -853,6 +858,7 @@ settings_presets: 预设&书签
 settings_translation_strings: 翻译字符串
 one_or_more_options_are_missing: 缺少一个或多个选项
 scope: Scope
+actions: 操作
 select: 选择...
 layout: 布局
 tree_view: 树状图
@@ -862,6 +868,7 @@ preset_search_placeholder: 搜索...
 editing_preset: 编辑预设​​​​​​​
 layout_preview: 布局预览
 layout_setup: 布局设置
+data: 数据
 unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
@@ -926,9 +933,9 @@ directus_collection:
   directus_files: 文件资源元数据
   directus_folders: 虚拟文件目录
   directus_migrations: 您的数据库版本是
+  directus_notifications: 发送给用户的通知
   directus_panels: Insights仪表板中的个别面板
   directus_permissions: 每个角色的访问权限
-  directus_notifications: 发送给用户的通知
   directus_presets: 书签/预设默认值
   directus_relations: 元数据和关系配置
   directus_revisions: 数据快照
@@ -1015,7 +1022,6 @@ fields:
     status_archived: 已存档
     role: 角色
     token: Token
-    token_placeholder: 请输入安全访问令牌...
     provider: 提供方
     external_identifier: 外部标识符
     last_page: 尾页
@@ -1317,7 +1323,6 @@ export_started_copy: 您的导出已经开始。当准备下载时，您会收�
 sort_asc: 升序
 sort_desc: 降序
 template: 模板
-require_value_to_be_set: 需要设置值
 translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
@@ -1609,6 +1614,8 @@ interfaces:
     header_color: 颜色
     start_open: 默认打开
     start_closed: 默认收起
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: 翻译
@@ -1774,3 +1781,16 @@ panels:
   list:
     name: 列表
     description: 筛选并列出表模型中的字段
+triggers:
+  webhook:
+    method: 方法
+operations:
+  notification:
+    recipient: 用户
+  request:
+    url: URl
+    method: 方法
+    data: 数据
+    header: 报头
+  trigger:
+    data: 数据

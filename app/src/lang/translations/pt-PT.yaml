@@ -1,6 +1,7 @@
 ---
 edit_field: Editar campo
 conditions: Condições
+location: Localização
 item_revision: Revisão do documento
 duplicate_field: Duplicar este campo
 half_width: Metade da largura
@@ -416,8 +417,6 @@ start_end_of_count_items: '{start}-{end} de {count} documentos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} documentos filtrados'
 one_item: '1 documento'
 one_filtered_item: '1 documento filtrado'
-delete_collection_are_you_sure: >-
-  Tem a certeza que deseja remover esta coleção? Isto irá apagar a coleção e todos os documentos associados. Esta ação é irreversível.
 collections_shown: Coleções visíveis
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
@@ -477,6 +476,9 @@ user: Utilizador
 no_presets: Sem predefinições
 no_presets_copy: Nenhuma predefinição ou marcador foi guardado ainda.
 no_presets_cta: Adicionar predefinição
+flow_name: Nome
+flow_tracking_activity: Apenas rastrear Atividade
+flow_tracking_null: Não rastrear nada
 full_screen: Ecrã completo
 wysiwyg_options:
   forecolor: Cor principal
@@ -681,6 +683,8 @@ interfaces:
     display_template: Templates de Exibição
   user:
     user: Utilizador
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduções
@@ -709,3 +713,8 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabela
+operations:
+  notification:
+    recipient: Utilizador
+  request:
+    url: URL
