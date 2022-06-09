@@ -8,7 +8,8 @@ function resolveFn(path: string, scope?: Scope): unknown {
 	if (!scope) return undefined;
 
 	const value = get(scope, path);
-
+	// handle array differently so they don't get stringified
+	if (Array.isArray(value)) return value;
 	return typeof value === 'object' ? JSON.stringify(value) : value;
 }
 
@@ -16,7 +17,8 @@ function renderMustache<T extends Mustacheable>(item: T, scope: Scope): GenericS
 	if (typeof item === 'string') {
 		return renderFn(item, resolveFn, scope, { explicit: true }) as GenericString<T>;
 	} else if (Array.isArray(item)) {
-		return item.map((element) => renderMustache(element, scope)) as GenericString<T>;
+		// joining arrays like this has to break something elsewhere!
+		return item.map((element) => renderMustache(element, scope)).join(',') as GenericString<T>;
 	} else if (typeof item === 'object' && item !== null) {
 		return Object.fromEntries(
 			Object.entries(item).map(([key, value]) => [key, renderMustache(value, scope)])
@@ -37,7 +39,8 @@ export function applyOperationOptions(options: Record<string, any>, data: Record
 				}
 			}
 
-			return [key, renderMustache(value, data)];
+			const renderedData = renderMustache(value, data);
+			return [key, renderedData];
 		})
 	);
 }
