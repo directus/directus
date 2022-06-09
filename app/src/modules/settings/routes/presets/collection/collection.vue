@@ -155,6 +155,7 @@ import { usePermissionsStore, useUserStore, usePresetsStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { getLayouts } from '@/layouts';
 import { Filter } from '@directus/shared/types';
+import usePreset from '@/composables/use-preset';
 
 export default defineComponent({
 	name: 'ContentCollection',
@@ -169,8 +170,9 @@ export default defineComponent({
 	setup() {
 		const layout = ref('tabular');
 		const collection = ref('directus_presets');
-		const layoutOptions = ref<Record<string, any>>({});
-		const layoutQuery = ref<Record<string, any>>({});
+
+		const { layoutOptions, layoutQuery } = usePreset(collection);
+
 		const filter = ref<Filter | null>(null);
 		const search = ref<string | null>(null);
 		const refreshInterval = ref<number | null>(null);
