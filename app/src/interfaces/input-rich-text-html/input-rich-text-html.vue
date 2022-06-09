@@ -9,7 +9,7 @@
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 			@focus="setupContentWatcher"
-			@set-content="setCount"
+			@set-content="contentUpdated"
 		/>
 		<template v-if="softLength">
 			<span
@@ -411,14 +411,15 @@ export default defineComponent({
 			saveCode,
 			sourceCodeButton,
 			setupContentWatcher,
-			setCount,
+			contentUpdated,
 			storageAssetTransform,
 			storageAssetPresets,
 		};
 
-		function setCount() {
+		function contentUpdated() {
 			const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
 			count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+			emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
 		}
 
 		function setupContentWatcher() {
@@ -427,8 +428,7 @@ export default defineComponent({
 			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
 
 			observer = new MutationObserver((_mutations) => {
-				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
-				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+				contentUpdated();
 			});
 
 			const config = { characterData: true, childList: true, subtree: true };
