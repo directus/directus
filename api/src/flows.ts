@@ -66,9 +66,11 @@ class FlowManager {
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
-	private reloadQueue = new JobQueue();
+	private reloadQueue: JobQueue;
 
 	constructor() {
+		this.reloadQueue = new JobQueue();
+
 		const messenger = getMessenger();
 
 		messenger.subscribe('flows', (event) => {
@@ -77,6 +79,8 @@ class FlowManager {
 					if (this.isLoaded) {
 						await this.unload();
 						await this.load();
+					} else {
+						logger.warn('Flows have to be loaded before they can be reloaded');
 					}
 				});
 			}
