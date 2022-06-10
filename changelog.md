@@ -2,6 +2,81 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.12.2 (June 9, 2022)
+
+### :rocket: Improvements
+
+- **Extensions**
+  - [#13797](https://github.com/directus/directus/pull/13797) Use latest vue version when scaffolding extension packages
+    (by @nickrum)
+- **API**
+  - [#13796](https://github.com/directus/directus/pull/13796) Use JobQueue when reloading extensions (by @nickrum)
+  - [#12044](https://github.com/directus/directus/pull/12044) Enable activity tracking at password reset (by @ybelenko)
+- **App**
+  - [#13777](https://github.com/directus/directus/pull/13777) Allow selection of image transformation in the WYSIWYG
+    interface (by @licitdev)
+  - [#13772](https://github.com/directus/directus/pull/13772) Add configurable page-size to files/o2m/m2m/m2a interfaces
+    (by @rijkvanzanten)
+  - [#12804](https://github.com/directus/directus/pull/12804) Take into account the format option when displaying dates
+    relative. (by @u12206050)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#13821](https://github.com/directus/directus/pull/13821) Fix preset layouts not persisting. (by @jaycammarano)
+  - [#13802](https://github.com/directus/directus/pull/13802) Emit input whenever WYSIWYG content is updated (by
+    @licitdev)
+  - [#13799](https://github.com/directus/directus/pull/13799) Make UUID/manual primary keys selectable with count in
+    Time Series panels (by @azrikahar)
+  - [#13789](https://github.com/directus/directus/pull/13789) Set count on fresh init of defered tinymce (by
+    @rijkvanzanten)
+  - [#13768](https://github.com/directus/directus/pull/13768) Fix filter error when switching between collections with
+    map layout (by @azrikahar)
+  - [#13757](https://github.com/directus/directus/pull/13757) header bar icon color: var(--primary) (by @jaycammarano)
+  - [#13750](https://github.com/directus/directus/pull/13750) Searching the top level bug (by @br41nslug)
+  - [#13701](https://github.com/directus/directus/pull/13701) Fix range to be based on current time (by @licitdev)
+  - [#13574](https://github.com/directus/directus/pull/13574) fix nested array updates for relational interfaces (by
+    @azrikahar)
+  - [#13224](https://github.com/directus/directus/pull/13224) Fix clear value for relational interfaces (by @azrikahar)
+  - [#13187](https://github.com/directus/directus/pull/13187) Show fields inside groups correctly in display templates
+    for relational interfaces (by @br41nslug)
+  - [#13141](https://github.com/directus/directus/pull/13141) Fix form field label responsiveness (by @azrikahar)
+  - [#12759](https://github.com/directus/directus/pull/12759) Use aliases for relational fields (by @azrikahar)
+- **API**
+  - [#13783](https://github.com/directus/directus/pull/13783) Fix flow triggers being registered multiple times (by
+    @nickrum)
+  - [#13762](https://github.com/directus/directus/pull/13762) Flush caches after applying schema snapshot (by
+    @rijkvanzanten)
+  - [#13759](https://github.com/directus/directus/pull/13759) Fix formatting of headers in request operation (by
+    @rijkvanzanten)
+  - [#13754](https://github.com/directus/directus/pull/13754) Serve robots.txt from root (by @rijkvanzanten)
+  - [#13751](https://github.com/directus/directus/pull/13751) Fix description field in directus_flows (by @azrikahar)
+  - [#13701](https://github.com/directus/directus/pull/13701) Fix range to be based on current time (by @licitdev)
+- **specs**
+  - [#13776](https://github.com/directus/directus/pull/13776) Fixes OAS specs for Flows & Operations (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **App**
+  - [#13755](https://github.com/directus/directus/pull/13755) Fix various linter warnings, disable new rule (by
+    @rijkvanzanten)
+- **Misc.**
+  - [#13714](https://github.com/directus/directus/pull/13714) disable thumbsmith update blocking the docs build (by
+    @br41nslug)
+
+### :memo: Documentation
+
+- [#13794](https://github.com/directus/directus/pull/13794) tweaks done for today (by @erondpowell)
+- [#13793](https://github.com/directus/directus/pull/13793) replaced replace a file video file (by @erondpowell)
+- [#13692](https://github.com/directus/directus/pull/13692) Docs/Cloud: Add "Asia Pacific, Singapore" to regions (by
+  @joselcvarela)
+- [#13672](https://github.com/directus/directus/pull/13672) Docs: Fix one last link to installation (by @erondpowell)
+- [#13358](https://github.com/directus/directus/pull/13358) Docs & Specs update for Data Flows (by @azrikahar)
+- [#13258](https://github.com/directus/directus/pull/13258) Docs: getting-started > architecture (by @erondpowell)
+- [#13246](https://github.com/directus/directus/pull/13246) Docs: Configuration > Data Flows (by @erondpowell)
+- [#13122](https://github.com/directus/directus/pull/13122) Docs: getting-started > backing-directus (by @erondpowell)
+- [#13055](https://github.com/directus/directus/pull/13055) Docs: getting-started > Introduction (by @erondpowell)
+
 ## v9.12.1 (June 3, 2022)
 
 ### :bug: Bug Fixes

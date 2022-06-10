@@ -337,6 +337,7 @@ revision_delta_created_externally: Utworzono zewnętrznie
 revision_delta_updated: 'Zaktualizowano 1 pole | Zaktualizowano {count} pól'
 revision_delta_deleted: Usunięty
 revision_delta_reverted: Odwrócony
+revision_delta_update_message: To pole zostało zaktualizowane, ale jego wartość jest ukrywana ze względów bezpieczeństwa.
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
 presentation_text_values_cannot_be_reimported: "Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane."
@@ -831,6 +832,7 @@ media: Media
 quality: Jakość
 width: Szerokość
 height: Wysokość
+transformation_preset_key: Klucz ustawień transformacji
 source: Źródło
 url_placeholder: Wprowadź adres url...
 display_text: Wyświetl tekst
