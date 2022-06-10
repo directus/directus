@@ -6,12 +6,19 @@
 [[toc]]
 
 <!--
-::: Before You Begin
+:::tip Before You Begin
 
-[Learn Directus](/getting-started/learn-directus)
+Please be sure to read [Learn Directus](/getting-started/learn-directus).
 
 :::
 -->
+
+:::tip Learn More
+
+There is also dedicated API documentation on [Flows](/docs/reference/system/flows.md) and
+[Operations](docs/reference/system/operations.md).
+
+:::
 
 ## What's a Flow?
 
@@ -28,13 +35,13 @@ ensure data is passed on as expected, a [console log](configuration/flows/operat
 to help design and troubleshoot your Flows. Please see the documentation on
 [Operations](/configuration/flows/operations) for more details.
 
-Once a Flow is triggered, a [Flow JSON Object](#the-flow-object) is created which stores data from the Trigger event.
-Then as each Operation in the flow executes, the data generated is added onto this Flow Object. Every Operation in a
-Flow has access to this Flow Object.
+Once a Flow is triggered, a [Flow Object](#the-flow-object) is created which stores data from the Trigger event. Then as
+each Operation in the flow executes, the data generated is added onto this Flow Object. Every Operation in a Flow has
+access to this Flow Object.
 
 ## Create a Flow
 
-<video autoplay muted loop controls title="">
+<video autoplay muted loop controls title="Create a Flow">
 	<source src="https://cdn.directus.io/docs/v9/configuration/flows/flows/flows-20220603A/create-a-flow-20220603A.mp4" type="video/mp4" />
 </video>
 
