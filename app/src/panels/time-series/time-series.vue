@@ -107,6 +107,21 @@ export default defineComponent({
 		const chartEl = ref();
 		const chart = ref<ApexCharts>();
 
+		const yAxisRange = computed(() => {
+			let min = isNil(props.min) ? undefined : Number(props.min);
+			let max = isNil(props.max) ? undefined : Number(props.max);
+
+			if (max && !min) {
+				min = 0;
+			}
+
+			if (max && min && max < min) {
+				max = min;
+				min = Number(props.max);
+			}
+			return { max, min };
+		});
+
 		const valueLabel = computed(() => {
 			const field = fieldsStore.getField(props.collection, props.valueField)!;
 			const operation = t(props.function);
@@ -366,8 +381,8 @@ export default defineComponent({
 				yaxis: {
 					show: props.showYAxis ?? true,
 					forceNiceScale: true,
-					min: isNil(props.min) ? undefined : Number(props.min),
-					max: isNil(props.max) ? undefined : Number(props.max),
+					min: yAxisRange.value.min,
+					max: yAxisRange.value.max,
 					tickAmount: props.height - 4,
 					labels: {
 						offsetY: 1,
