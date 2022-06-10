@@ -211,7 +211,6 @@ export class FieldsService {
 
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
-			column.default_value = getDefaultValue(column);
 		} catch {
 			// Do nothing
 		}
@@ -220,12 +219,19 @@ export class FieldsService {
 
 		const type = getLocalType(column, fieldInfo);
 
+		const columnWithCastDefaultValue = column
+			? {
+					...column,
+					default_value: getDefaultValue(column),
+			  }
+			: null;
+
 		const data = {
 			collection,
 			field,
 			type,
 			meta: fieldInfo || null,
-			schema: type === 'alias' ? null : column,
+			schema: type === 'alias' ? null : columnWithCastDefaultValue,
 		};
 
 		return data;
