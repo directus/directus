@@ -37,7 +37,7 @@ export function getColumn(
 				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 			}
 
-			const result = fn[functionName as keyof typeof fn](table, columnName) as Knex.Raw;
+			const result = fn[functionName as keyof typeof fn](table, columnName, { type }) as Knex.Raw;
 
 			if (alias) {
 				return knex.raw(result + ' AS ??', [alias]);

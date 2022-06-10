@@ -1,6 +1,7 @@
 ---
 edit_field: Editar campo
 conditions: Condições
+location: Localização
 item_revision: Revisão do documento
 duplicate_field: Duplicar este campo
 half_width: Metade da largura
@@ -475,6 +476,9 @@ user: Utilizador
 no_presets: Sem predefinições
 no_presets_copy: Nenhuma predefinição ou marcador foi guardado ainda.
 no_presets_cta: Adicionar predefinição
+flow_name: Nome
+flow_tracking_activity: Apenas rastrear Atividade
+flow_tracking_null: Não rastrear nada
 full_screen: Ecrã completo
 wysiwyg_options:
   forecolor: Cor principal
@@ -709,3 +713,8 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabela
+operations:
+  notification:
+    recipient: Utilizador
+  request:
+    url: URL

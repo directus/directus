@@ -1,8 +1,8 @@
 <template>
-	<v-notice v-if="!collectionField && !collection" type="warning">
+	<v-notice v-if="collectionRequired && !collectionField && !collection" type="warning">
 		{{ t('collection_field_not_setup') }}
 	</v-notice>
-	<v-notice v-else-if="!collection" type="warning">
+	<v-notice v-else-if="collectionRequired && !collection" type="warning">
 		{{ t('select_a_collection') }}
 	</v-notice>
 
@@ -29,7 +29,7 @@
 			<button @click="addNode('$group')">{{ t('interfaces.filter.add_group') }}</button>
 		</div>
 		<div v-else class="buttons">
-			<v-menu placement="bottom-start" show-arrow>
+			<v-menu ref="menuEl" placement="bottom-start" show-arrow>
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
 						<v-icon v-if="inline" name="add" class="add" small />
@@ -38,7 +38,12 @@
 					</button>
 				</template>
 
-				<v-field-list :collection="collection" include-functions @select-field="addNode($event)">
+				<v-field-list
+					v-if="collectionRequired"
+					:collection="collection"
+					include-functions
+					@select-field="addNode($event)"
+				>
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
 							<v-list-item-content>
@@ -48,6 +53,25 @@
 						<v-divider />
 					</template>
 				</v-field-list>
+
+				<v-list v-else :mandatory="false">
+					<v-list-item clickable @click="addNode('$group')">
+						<v-list-item-content>
+							<v-text-overflow :text="t('interfaces.filter.add_group')" />
+						</v-list-item-content>
+					</v-list-item>
+					<v-divider />
+					<v-list-item @click.stop>
+						<v-list-item-content>
+							<input
+								v-model="newKey"
+								class="new-key-input"
+								:placeholder="t('interfaces.filter.add_key_placeholder')"
+								@keydown.enter="addKeyAsNode"
+							/>
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
 			</v-menu>
 		</div>
 	</div>
@@ -68,6 +92,7 @@ interface Props {
 	disabled?: boolean;
 	collectionName?: string;
 	collectionField?: string;
+	collectionRequired?: boolean;
 	fieldName?: string;
 	inline?: boolean;
 	includeValidation?: boolean;
@@ -78,6 +103,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	collectionName: undefined,
 	collectionField: undefined,
+	collectionRequired: true,
 	fieldName: undefined,
 	inline: false,
 	includeValidation: false,
@@ -86,6 +112,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['input']);
 
 const { t } = useI18n();
+
+const menuEl = ref();
 
 const values = inject('values', ref<Record<string, any>>({}));
 
@@ -158,6 +186,16 @@ function removeNode(ids: string[]) {
 	list = list.filter((_node, index) => index !== Number(id));
 
 	innerValue.value = set(innerValue.value, ids.join('.'), list);
+}
+
+// For adding any new fields (eg. flow Validate operation rule)
+const newKey = ref<string | null>(null);
+
+function addKeyAsNode() {
+	if (!newKey.value) return;
+	if (menuEl.value) menuEl.value.deactivate();
+	addNode(newKey.value);
+	newKey.value = null;
 }
 </script>
 
@@ -270,6 +308,19 @@ function removeNode(ids: string[]) {
 
 	button + button {
 		margin-left: 24px;
+	}
+}
+
+.new-key-input {
+	margin: 0;
+	padding: 0;
+	line-height: 1.2;
+	background-color: transparent;
+	border: none;
+	border-radius: 0;
+
+	&::placeholder {
+		color: var(--v-input-placeholder-color);
 	}
 }
 </style>
