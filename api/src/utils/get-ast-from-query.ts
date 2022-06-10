@@ -84,6 +84,14 @@ export default async function getASTFromQuery(
 		}
 	}
 
+	if (query.sort) {
+		for (const sort of query.sort) {
+			if (sort.split('.').length > env.MAX_RELATIONAL_DEPTH) {
+				throw new InvalidQueryException('Max relational depth exceeded.');
+			}
+		}
+	}
+
 	const deep = query.deep || {};
 
 	const deepRelationalDepth = calculateFieldDepth(deep);

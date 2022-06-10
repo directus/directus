@@ -44,20 +44,34 @@ export function calculateFieldDepth(obj?: Record<string, any> | null): number {
 	for (const key of keys) {
 		const nestedValue = obj[key];
 
-		if (!isPlainObject(nestedValue) && !isArray(nestedValue)) continue;
+		if (key === '_sort' && nestedValue) {
+			let sortDepth = 0;
 
-		let nestedDepth = 0;
+			for (const sortKey of nestedValue) {
+				if (sortKey) {
+					sortDepth = Math.max(sortKey.split('.').length, sortDepth);
+				}
+			}
 
-		if (Array.isArray(nestedValue)) {
-			nestedDepth = Math.max(...nestedValue.map(calculateFieldDepth));
+			if (sortDepth > depth) {
+				depth = sortDepth;
+			}
 		} else {
-			nestedDepth = calculateFieldDepth(nestedValue);
-		}
+			if (!isPlainObject(nestedValue) && !isArray(nestedValue)) continue;
 
-		if (key.startsWith('_') === false) nestedDepth += 1;
+			let nestedDepth = 0;
 
-		if (nestedDepth > depth) {
-			depth = nestedDepth;
+			if (Array.isArray(nestedValue)) {
+				nestedDepth = Math.max(...nestedValue.map(calculateFieldDepth));
+			} else {
+				nestedDepth = calculateFieldDepth(nestedValue);
+			}
+
+			if (key.startsWith('_') === false) nestedDepth += 1;
+
+			if (nestedDepth > depth) {
+				depth = nestedDepth;
+			}
 		}
 	}
 
