@@ -35,8 +35,7 @@ interface Props {
 	sourceName?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	sourceName: '',
 });
 

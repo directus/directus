@@ -23,8 +23,7 @@ interface Props {
 	loading?: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	disabled: false,
 	validationErrors: () => [],
 	batchMode: false,
@@ -32,6 +31,5 @@ const props = withDefaults(defineProps<Props>(), {
 	loading: false,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const emit = defineEmits(['input']);
+defineEmits(['input']);
 </script>

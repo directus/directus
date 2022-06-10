@@ -55,10 +55,11 @@ const { t } = useI18n();
 interface Props {
 	currentTheme?: string;
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const props = withDefaults(defineProps<Props>(), {
+
+withDefaults(defineProps<Props>(), {
 	currentTheme: 'light',
 });
+
 function isSVG(path: string) {
 	return path.startsWith('<svg');
 }
