@@ -246,7 +246,7 @@ export const useThemeStore = defineStore({
 			}
 
 			try {
-				const response = await api.patch(`/settings/themes`, changes);
+				const response = await api.patch(`/settings`, { theme_overrides: changes });
 				this.themeOverrides = response.data.data.theme_overrides;
 				notify({
 					title: i18n.global.t('theme_update_success'),
