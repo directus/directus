@@ -72,6 +72,22 @@ const valueLabel = computed(() => {
 	return `${field.name} (${operation})`;
 });
 
+const yAxisRange = computed(() => {
+	let min = isNil(props.min) ? undefined : Number(props.min);
+	let max = isNil(props.max) ? undefined : Number(props.max);
+
+	if (max !== undefined && !min) {
+		min = 0;
+	}
+
+	if (max !== undefined && min !== undefined && max < min) {
+		max = min;
+		min = Number(props.max);
+	}
+
+	return { max, min };
+});
+
 watch(
 	[
 		() => props.data,
@@ -243,11 +259,30 @@ function setupChart() {
 								maximumFractionDigits: props.decimals ?? 0,
 						  } as any);
 				},
-				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
-					fontWeight: 600,
-					fontSize: '10px',
+				yaxis: {
+					show: props.showYAxis ?? true,
+					forceNiceScale: true,
+					min: yAxisRange.value.min,
+					max: yAxisRange.value.max,
+					tickAmount: props.height - 4,
+					labels: {
+						offsetY: 1,
+						offsetX: -4,
+						formatter: (value: number) => {
+							return value > 10000
+								? abbreviateNumber(value, 1)
+								: n(value, 'decimal', {
+										minimumFractionDigits: props.decimals ?? 0,
+										maximumFractionDigits: props.decimals ?? 0,
+								  } as any);
+						},
+						style: {
+							fontFamily: 'var(--family-sans-serif)',
+							foreColor: 'var(--foreground-subdued)',
+							fontWeight: 600,
+							fontSize: '10px',
+						},
+					},
 				},
 			},
 		},
