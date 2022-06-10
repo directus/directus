@@ -63,6 +63,7 @@ import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { Field } from '@directus/shared/types';
+import Color from 'color';
 const { t } = useI18n();
 
 const router = useRouter();
@@ -175,6 +176,9 @@ function updateChanges(newEdits: Record<string, any>) {
 		const sourceValue = newEdits?.[sourcePath] || initialValues.value[sourcePath];
 		const backgroundValue = newEdits?.[backgroundPath] || initialValues.value[backgroundPath];
 
+		if (!validColor(sourceValue)) continue;
+		if (backgroundPath && !validColor(backgroundValue)) continue;
+
 		const generatedColor = generateColor(type, sourceValue, backgroundValue || null);
 
 		if (!generatedColor) continue;
@@ -189,9 +193,18 @@ function updateChanges(newEdits: Record<string, any>) {
 	pendingChanges.value = newEdits as Record<string, any>;
 }
 
+function validColor(colorString?: string) {
+	try {
+		Color(colorString);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 function generateColor(type: string, source: string, background?: string) {
 	// Return early if source is not a valid 3 or 6 character hex value
-	if (!source || typeof source !== 'string' || !/^#(([\da-fA-F]{3}){1,2})$/.test(source)) return null;
+	if (!validColor(source)) return null;
 
 	let newColor = '#cccccc';
 	if (type === 'accent') {

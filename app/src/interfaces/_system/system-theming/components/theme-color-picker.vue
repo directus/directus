@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { Field, ValidationError } from '@directus/shared/types';
-import { computed, ref, Ref } from 'vue';
+import { computed, ref, Ref, ComputedRef } from 'vue';
 import Color from 'color';
 
 interface Props {
@@ -45,8 +45,13 @@ const emit = defineEmits(['update:modelValue']);
 
 const hiddenSourceInput: Ref<HTMLInputElement | null> = ref(null);
 
-const inputValue = computed(() => {
-	return props.modelValue.toUpperCase();
+const inputValue: ComputedRef<string> = computed(() => {
+	try {
+		const receivedColor = Color(props.modelValue);
+		return receivedColor.hex().toUpperCase();
+	} catch {
+		return inputValue.value || '#cccccc';
+	}
 });
 
 const inputAsRGB = computed(() => Color(inputValue.value).rgb().object());

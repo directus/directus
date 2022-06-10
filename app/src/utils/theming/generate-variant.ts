@@ -53,13 +53,16 @@ function normalizedLumSensitivity(r: number, g: number, b: number) {
  * @returns {string}       Hex color string
  */
 export function generateAccent(baseColor: string, darken = true, targetDifference = 5.76) {
+	// Ensure we're using the same base color (The hsluv package converts 3 and 4 character hex incorrectly)
+	const baseColorObj = Color(baseColor);
+
 	// RGB array for calculating a less-than-accurate approximation of luminance
-	const baseInRGB = Color(baseColor).rgb().array();
+	const baseInRGB = baseColorObj.rgb().array();
 
 	const [baseR, baseG, baseB] = baseInRGB;
 
 	// Human-friendly, perceptual implementation of HSL
-	const baseInHSLuv = hexToHsluv(baseColor);
+	const baseInHSLuv = hexToHsluv(baseColorObj.hex());
 
 	const requiredShift = targetDifference / normalizedLumSensitivity(baseR, baseG, baseB);
 
@@ -90,6 +93,9 @@ export function generateSubtle(baseColor: string, backgroundColor: string, weigh
 	// If no difference, return
 	if (baseColor === backgroundColor) return baseColor;
 
+	// Ensure we're using the same background color (The hsluv package converts 3 and 4 character hex incorrectly)
+	const bgColorObj = Color(backgroundColor);
+
 	/**
 	 * Lab isn't quite as nice perceptually as HSLuv, however, it's easier to work with
 	 * using the tools available in Color. As well, since we're typically mixing background
@@ -98,7 +104,7 @@ export function generateSubtle(baseColor: string, backgroundColor: string, weigh
 	 * the mid ranges.
 	 */
 	const baseInLab = Color(baseColor).lab();
-	const bgInLab = Color(backgroundColor).lab();
+	const bgInLab = bgColorObj.lab();
 
 	const mixAtWght = bgInLab.mix(baseInLab, weight);
 
@@ -112,7 +118,7 @@ export function generateSubtle(baseColor: string, backgroundColor: string, weigh
 	 * hue and saturation when we shift the luminosity.
 	 */
 	const mixInHSLuv = hexToHsluv(mixAtWght.hex());
-	const bgInHSLuv = hexToHsluv(backgroundColor);
+	const bgInHSLuv = hexToHsluv(bgColorObj.hex());
 
 	const bgLum = bgInHSLuv[2];
 
