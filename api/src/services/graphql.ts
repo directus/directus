@@ -34,7 +34,6 @@ import {
 	StringValueNode,
 	validate,
 } from 'graphql';
-import { validateGraphQLDepth } from '../utils/validate-graphql-depth';
 import {
 	GraphQLJSON,
 	InputTypeComposer,
@@ -151,7 +150,6 @@ export class GraphQLService {
 
 		const validationErrors = validate(schema, document, [
 			...specifiedRules,
-			validateGraphQLDepth,
 			(context) => ({
 				Field(node) {
 					if (env.GRAPHQL_INTROSPECTION === false && (node.name.value === '__schema' || node.name.value === '__type')) {
