@@ -111,14 +111,15 @@ export default defineComponent({
 			let min = isNil(props.min) ? undefined : Number(props.min);
 			let max = isNil(props.max) ? undefined : Number(props.max);
 
-			if (max && !min) {
+			if (max !== undefined && !min) {
 				min = 0;
 			}
 
-			if (max && min && max < min) {
+			if (max !== undefined && min !== undefined && max < min) {
 				max = min;
 				min = Number(props.max);
 			}
+
 			return { max, min };
 		});
 
