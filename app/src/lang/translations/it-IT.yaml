@@ -337,6 +337,7 @@ revision_delta_created_externally: Creato Esternamente
 revision_delta_updated: 'Aggiornato 1 Campo | Aggiornati {count} Campi'
 revision_delta_deleted: Eliminato
 revision_delta_reverted: Ripristinato
+revision_delta_update_message: Questo campo è stato aggiornato, ma il suo valore è nascosto per motivi di sicurezza.
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 presentation_text_values_cannot_be_reimported: "Usa il testo di presentazione, i valori non possono essere reimportati."
@@ -831,6 +832,7 @@ media: Media
 quality: Qualità
 width: Larghezza
 height: Altezza
+transformation_preset_key: Chiave della trasformazione preimpostata
 source: Sorgente
 url_placeholder: Inserisci url...
 display_text: Visualizza testo
@@ -1395,6 +1397,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
