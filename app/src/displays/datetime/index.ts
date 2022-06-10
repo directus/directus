@@ -49,42 +49,85 @@ export default defineDisplay({
 			return await localizedFormat(value, format);
 		}
 	},
-	options: [
-		{
-			field: 'format',
-			name: '$t:displays.datetime.format',
-			type: 'string',
-			meta: {
-				interface: 'select-dropdown',
-				width: 'half',
-				options: {
-					choices: [
-						{ text: '$t:displays.datetime.long', value: 'long' },
-						{ text: '$t:displays.datetime.short', value: 'short' },
-					],
-					allowOther: true,
+	options: ({ field }) => {
+		const options = field.meta?.display_options || {};
+		const fields = [
+			{
+				field: 'relative',
+				name: '$t:displays.datetime.relative',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.datetime.relative_label',
+					},
 				},
-				note: '$t:displays.datetime.format_note',
-			},
-			schema: {
-				default_value: 'long',
-			},
-		},
-		{
-			field: 'relative',
-			name: '$t:displays.datetime.relative',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:displays.datetime.relative_label',
+				schema: {
+					default_value: false,
 				},
 			},
-			schema: {
-				default_value: false,
-			},
-		},
-	],
+		];
+
+		if (!options.relative) {
+			fields.push({
+				field: 'format',
+				name: '$t:displays.datetime.format',
+				type: 'string',
+				meta: {
+					interface: 'select-dropdown',
+					width: 'half',
+					options: {
+						choices: [
+							{ text: '$t:displays.datetime.long', value: 'long' },
+							{ text: '$t:displays.datetime.short', value: 'short' },
+						],
+						allowOther: true,
+					},
+					note: '$t:displays.datetime.format_note',
+				},
+				schema: {
+					default_value: 'long',
+				},
+			});
+		} else {
+			fields.push(
+				{
+					field: 'suffix',
+					name: 'Suffix',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+						options: {
+							label: 'Show relative indicator',
+						},
+						note: "Uses words like 'in' and 'ago'",
+					},
+					schema: {
+						default_value: true,
+					},
+				},
+				{
+					field: 'strict',
+					name: 'Strict',
+					type: 'boolean',
+					meta: {
+						width: 'full',
+						interface: 'boolean',
+						options: {
+							label: 'Use strict units',
+						},
+						note: "Removes words like 'almost', 'over', 'less than'",
+					},
+					schema: {
+						default_value: false,
+					},
+				}
+			);
+		}
+
+		return fields;
+	},
 	types: ['dateTime', 'date', 'time', 'timestamp'],
 });

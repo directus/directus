@@ -1,6 +1,7 @@
 ---
 avatar: Nuotrauka
 edit_field: Redaguoti lauką
+location: Vietovė
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
@@ -401,7 +402,6 @@ unexpected_error_copy: Nutiko nenumatyta klaida. Prašome pabandyti vėliau.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
 no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
-password_reset_sent: Išsiuntėme saugiai sugeneruotą nuorodą slaptažodžio atstatymui
 password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
 editing_image: Paveikslėlio redagavimas
@@ -416,8 +416,6 @@ delete_collection: Trinti kolekciją
 update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
 start_end_of_count_items: '{start}-{end} iš {count} elementų'
-delete_collection_are_you_sure: >-
-  Ar tikrai norite ištrinti tią kolekciją? Bus ištrinta visa kolekcija su jai priklausančiais elementais. Šio veiksmo atstatyti negalima.
 collections_shown: Rodomos kolekcijos
 visible_collections: Matomos kolekcijos
 hidden_collections: Paslėptos kolekcijos
@@ -506,6 +504,7 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+flow_name: Pavadinimas
 full_screen: Per visą ekraną
 width: Plotis
 height: Aukštis
@@ -976,3 +975,8 @@ layouts:
 panels:
   label:
     name: Žyma
+operations:
+  notification:
+    recipient: Vartotojas
+  request:
+    url: URL

@@ -1,5 +1,6 @@
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores';
+import useAliasFields from '@/composables/use-alias-fields';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import hideDragImage from '@/utils/hide-drag-image';
@@ -44,13 +45,23 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
+		const { aliasFields, aliasQuery } = useAliasFields(fieldsWithRelational);
+
+		const fieldsWithRelationalAliased = computed(() => {
+			if (!aliasFields.value) return fieldsWithRelational.value;
+			return fieldsWithRelational.value.map((field) =>
+				aliasFields.value?.[field] ? aliasFields.value[field].fullAlias : field
+			);
+		});
+
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
 				sort,
 				limit,
 				page,
-				fields: fieldsWithRelational,
+				fields: fieldsWithRelationalAliased,
+				alias: aliasQuery,
 				filter,
 				search,
 			}

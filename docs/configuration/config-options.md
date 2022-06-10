@@ -779,6 +779,16 @@ AUTH_FACEBOOK_ICON="facebook"
 | `EXTENSIONS_PATH`        | Path to your local extensions folder.                   | `./extensions` |
 | `EXTENSIONS_AUTO_RELOAD` | Automatically reload extensions when they have changed. | `false`        |
 
+## Messenger
+
+| Variable              | Description                                       | Default Value |
+| --------------------- | ------------------------------------------------- | ------------- |
+| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup>            | `memory`      |
+| `MESSENGER_NAMESPACE` | How to scope the channels in Redis                | `directus`    |
+| `MESSENGER_REDIS_*`   | The Redis configuration for the pubsub connection | --            |
+
+<sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
+
 ## Email
 
 | Variable          | Description                                                              | Default Value          |
