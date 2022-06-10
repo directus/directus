@@ -8,7 +8,7 @@
 
 :::tip Before You Begin
 
-Please be sure to read the documentation on [Flows](/configuration/flows/flows) and [Triggers](flows/triggers).
+Please be sure to read the documentation on [Flows](/configuration/flows) and [Triggers](/configuration/flows/triggers).
 
 :::
 
@@ -31,11 +31,11 @@ Creates some Item(s) in a Collection.
 - **Collection** — Use the dropdown to select a Collection to create Items in.
 - **Permissions** — Set the scope of permissions used for this Operation.
 - **Emit Events** — Toggle whether the event is emitted.
-- **Payload** — Create Item(s) in a Collection. To learn more, see [API > Items](reference/items/).
+- **Payload** — Create Item(s) in a Collection. To learn more, see [API > Items](/reference/items/).
 
 :::tip
 
-Make sure the Operation is scoped with the [permissions](configuration/users-roles-permissions) necessary to create
+Make sure the Operation is scoped with the [permissions](/configuration/users-roles-permissions) necessary to create
 Items.
 
 :::
@@ -53,7 +53,7 @@ Deletes some Item(s) from a Collection by ID or query.
 
 :::tip
 
-Make sure the Operation is scoped with the [permissions](configuration/users-roles-permissions) necessary to delete
+Make sure the Operation is scoped with the [permissions](/configuration/users-roles-permissions) necessary to delete
 Items.
 
 :::
@@ -79,7 +79,7 @@ Updates Item(s) in a Collection. You may select Items by their ID or run a query
 - **Permissions** — Defines Role that this Operation will inherit permissions from.
 - **Collections** — Select the Collection to read Items from.
 - **IDs** — Input ID for Item(s) you wish to read and press enter. Click the ID to remove.
-- **Payload** — Updates Item(s) in a Collection. To learn more, see [API > Items](reference/items/).
+- **Payload** — Updates Item(s) in a Collection. To learn more, see [API > Items](/reference/items/).
 - **Query** — Select Items to update with a query. To learn more, see [Filter Rules](/configuration/filter-rules).
 
 ## Log to Console
@@ -89,7 +89,7 @@ Updates Item(s) in a Collection. You may select Items by their ID or run a query
 Output something to the console. This will appear in both the server side and in-app Sidebar Console Log. This is a key
 tool to help troubleshoot Flow configuration.
 
-- **Message** — Sets a [log message](#configuration/flows/flows/logs).
+- **Message** — Sets a [log message](/configuration/flows/#logs).
 
 :::tip
 
@@ -121,8 +121,8 @@ provider may send it there automatically.
 
 Sends a notification to an app user.
 
-- **Users** — Defines a User by their primary key UUID. Use [Flow keys](/configuration/flows/flows/#the-flow-object) to
-  set this dynamically.
+- **Users** — Defines a User by their primary key UUID. Use [Flow keys](/configuration/flows/#the-flow-object) to set
+  this dynamically.
 - **Permissions** — Defines Role that this Operation will inherit permissions from.
 - **Title** — Sets the notification title.
 - **Message** — Sets the main body of the notification.
