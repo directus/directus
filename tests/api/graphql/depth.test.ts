@@ -90,7 +90,7 @@ describe('/graphql', () => {
 					events_id: event.id,
 				});
 
-				await request(getUrl(vendor))
+				const response = await request(getUrl(vendor))
 					.post(`/graphql`)
 					.set('Authorization', 'Bearer AdminToken')
 					.set('Content-Type', 'application/json')
@@ -104,7 +104,9 @@ describe('/graphql', () => {
 												events {
 													artists_id {
 														events {
-															id
+															artists_id {
+																id
+															}
 														}
 													}
 												}
@@ -114,7 +116,10 @@ describe('/graphql', () => {
 								}`,
 					})
 					.expect('Content-Type', /application\/json/)
-					.expect(400);
+					.expect(200);
+
+				expect(response.body.errors).toBeDefined();
+				expect(response.body.errors.length).toEqual(1);
 			});
 		});
 
@@ -183,12 +188,25 @@ describe('/graphql', () => {
 				const event = createEvent();
 				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
 				await seedTable(databases.get(vendor)!, 1, 'events', event);
-				await seedTable(databases.get(vendor)!, 1, 'artists_events', {
-					artists_id: artist.id,
-					events_id: event.id,
-				});
+				const artistsEvents = await seedTable(
+					databases.get(vendor)!,
+					1,
+					'artists_events',
+					{
+						artists_id: artist.id,
+						events_id: event.id,
+					},
+					{
+						select: ['id'],
+						where: ['artists_id', artist.id],
+					}
+				);
 
-				await request(getUrl(vendor))
+				expect(artistsEvents).toBeDefined();
+				expect(artistsEvents.length).toEqual(1);
+				expect(artistsEvents[0].id).toEqual(expect.any(Number));
+
+				const response = await request(getUrl(vendor))
 					.post(`/graphql`)
 					.set('Authorization', 'Bearer AdminToken')
 					.set('Content-Type', 'application/json')
@@ -198,7 +216,7 @@ describe('/graphql', () => {
 										events {
 											artists_id {
 												events {
-													artists_id (filter: { events: { id: { _eq: "${event.id}" } } }) {
+													artists_id (filter: { events: { id: { _eq: ${artistsEvents[0].id} } } }) {
 														id
 													}
 												}
@@ -208,7 +226,122 @@ describe('/graphql', () => {
 								}`,
 					})
 					.expect('Content-Type', /application\/json/)
-					.expect(400);
+					.expect(200);
+
+				expect(response.body.errors).toBeDefined();
+				expect(response.body.errors.length).toEqual(1);
+			});
+		});
+
+		describe('allow queries up to sort depth limit', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const artist = createArtist();
+				const event = createEvent();
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				await seedTable(databases.get(vendor)!, 1, 'events', event);
+				await seedTable(databases.get(vendor)!, 1, 'artists_events', {
+					artists_id: artist.id,
+					events_id: event.id,
+				});
+
+				const response = await request(getUrl(vendor))
+					.post(`/graphql`)
+					.set('Authorization', 'Bearer AdminToken')
+					.set('Content-Type', 'application/json')
+					.send({
+						query: `query test {
+									artists (filter: {
+										id: { _eq: "${artist.id}" } 
+									}) {
+										events {
+											artists_id {
+												events {
+													artists_id (sort: "id") {
+														id
+													}
+												}
+											}
+										}
+									}
+								}`,
+					})
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				expect(response.body.data).toEqual(
+					expect.objectContaining({
+						artists: expect.arrayContaining([
+							expect.objectContaining({
+								events: expect.arrayContaining([
+									expect.objectContaining({
+										artists_id: expect.objectContaining({
+											events: expect.arrayContaining([
+												expect.objectContaining({
+													artists_id: expect.objectContaining({
+														id: expect.any(String),
+													}),
+												}),
+											]),
+										}),
+									}),
+								]),
+							}),
+						]),
+					})
+				);
+			});
+		});
+
+		describe('deny queries over the sort depth limit', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const artist = createArtist();
+				const event = createEvent();
+				await seedTable(databases.get(vendor)!, 1, 'artists', artist);
+				await seedTable(databases.get(vendor)!, 1, 'events', event);
+				const artistsEvents = await seedTable(
+					databases.get(vendor)!,
+					1,
+					'artists_events',
+					{
+						artists_id: artist.id,
+						events_id: event.id,
+					},
+					{
+						select: ['id'],
+						where: ['artists_id', artist.id],
+					}
+				);
+
+				expect(artistsEvents).toBeDefined();
+				expect(artistsEvents.length).toEqual(1);
+				expect(artistsEvents[0].id).toEqual(expect.any(Number));
+
+				const response = await request(getUrl(vendor))
+					.post(`/graphql`)
+					.set('Authorization', 'Bearer AdminToken')
+					.set('Content-Type', 'application/json')
+					.send({
+						query: `query test {
+							artists (filter: {
+								id: { _eq: "${artist.id}" } 
+							}) {
+								events {
+									artists_id {
+										events {
+											artists_id (sort: "events.id") {
+												id
+											}
+										}
+									}
+								}
+							}
+						}`,
+					})
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				expect(response.body.errors).toBeDefined();
+				expect(response.body.errors.length).toEqual(1);
 			});
 		});
 	});
