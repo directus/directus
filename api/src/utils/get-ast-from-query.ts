@@ -46,6 +46,8 @@ export default async function getASTFromQuery(
 		children: [],
 	};
 
+	const maxRelationalDepth = Number(env.MAX_RELATIONAL_DEPTH) > 2 ? Number(env.MAX_RELATIONAL_DEPTH) : 1;
+
 	let fields = ['*'];
 
 	if (query.fields) {
@@ -71,7 +73,7 @@ export default async function getASTFromQuery(
 	fields = uniq(fields);
 
 	for (const field of fields) {
-		if (field.split('.').length > env.MAX_RELATIONAL_DEPTH) {
+		if (field.split('.').length > maxRelationalDepth) {
 			throw new InvalidQueryException('Max relational depth exceeded.');
 		}
 	}
@@ -79,14 +81,14 @@ export default async function getASTFromQuery(
 	if (query.filter) {
 		const filterRelationalDepth = calculateFieldDepth(query.filter);
 
-		if (filterRelationalDepth > env.MAX_RELATIONAL_DEPTH) {
+		if (filterRelationalDepth > maxRelationalDepth) {
 			throw new InvalidQueryException('Max relational depth exceeded.');
 		}
 	}
 
 	if (query.sort) {
 		for (const sort of query.sort) {
-			if (sort.split('.').length > env.MAX_RELATIONAL_DEPTH) {
+			if (sort.split('.').length > maxRelationalDepth) {
 				throw new InvalidQueryException('Max relational depth exceeded.');
 			}
 		}
@@ -96,7 +98,7 @@ export default async function getASTFromQuery(
 
 	const deepRelationalDepth = calculateFieldDepth(deep);
 
-	if (deepRelationalDepth > env.MAX_RELATIONAL_DEPTH) {
+	if (deepRelationalDepth > maxRelationalDepth) {
 		throw new InvalidQueryException('Max relational depth exceeded.');
 	}
 
