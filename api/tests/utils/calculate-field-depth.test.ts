@@ -75,3 +75,15 @@ test('Skips underscore prefix in tree', () => {
 
 	expect(result).toBe(3);
 });
+
+test('Calculates _sort in deep correctly', () => {
+	const deep = {
+		articles: {
+			_sort: ['sort', 'category.type.sort'],
+		},
+	};
+
+	const result = calculateFieldDepth(deep);
+
+	expect(result).toBe(4);
+});
