@@ -80,6 +80,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/getting-started/architecture',
+						title: 'Architecture',
+					},
+					{
+						type: 'page',
 						path: '/getting-started/support',
 						title: 'Help & Support',
 					},
@@ -228,7 +233,7 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/configuration/flows/flows',
+						path: '/configuration/flows',
 						title: 'Flows',
 						collapsable: false,
 						children: [
@@ -350,6 +355,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/reference/system/flows',
+						title: 'Flows',
+					},
+					{
+						type: 'page',
 						path: '/reference/system/folders',
 						title: 'Folders',
 					},
@@ -357,6 +367,11 @@ module.exports = {
 						type: 'page',
 						path: '/reference/system/notifications',
 						title: 'Notifications',
+					},
+					{
+						type: 'page',
+						path: '/reference/system/operations',
+						title: 'Operations',
 					},
 					{
 						type: 'page',

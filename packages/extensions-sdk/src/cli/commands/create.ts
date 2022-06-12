@@ -105,7 +105,7 @@ async function getPackageDeps(type: ExtensionType, language: Language) {
 						typescript: `^${await getPackageVersion('typescript')}`,
 				  }
 				: {}),
-			vue: `^${await getPackageVersion('vue', 'next')}`,
+			vue: `^${await getPackageVersion('vue')}`,
 		};
 	} else {
 		return {

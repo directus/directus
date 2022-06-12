@@ -1,8 +1,16 @@
 # Triggers
 
-> Each Flow is triggered by some internal or external event.
+> Triggers allow you to activate Flows on just about any conceivable internal or external event, including any in-app
+> activities, incoming webhooks, cron jobs, Operations in other Flows, or the manual click of a button in the Directus
+> App.
 
 [[toc]]
+
+:::tip Before You Begin
+
+Please be sure to read the documentation on [Flows](/configuration/flows).
+
+:::
 
 ## Event Hook
 

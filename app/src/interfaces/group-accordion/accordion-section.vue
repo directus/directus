@@ -2,6 +2,7 @@
 	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
 			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
+				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				<span class="field-name">{{ field.name }}</span>
 				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
@@ -124,7 +125,7 @@ export default defineComponent({
 			if (!props.values) return false;
 
 			const editedFields = Object.keys(props.values);
-			return fieldsInSection.value.some((field) => editedFields.includes(field.field)) ? true : false;
+			return fieldsInSection.value.some((field) => editedFields.includes(field.field));
 		});
 
 		const validationMessage = computed(() => {
@@ -138,7 +139,7 @@ export default defineComponent({
 			}
 		});
 
-		return { fieldsInSection, edited, handleModifier, validationMessage };
+		return { t, fieldsInSection, edited, handleModifier, validationMessage };
 
 		function handleModifier(event: MouseEvent, toggle: () => void) {
 			if (props.multiple === false) {
@@ -199,7 +200,7 @@ export default defineComponent({
 		margin-left: 8px;
 	}
 
-	&.edited::before {
+	.edit-dot {
 		position: absolute;
 		top: 14px;
 		left: -7px;
@@ -209,7 +210,6 @@ export default defineComponent({
 		background-color: var(--foreground-subdued);
 		border-radius: 4px;
 		content: '';
-		pointer-events: none;
 	}
 }
 

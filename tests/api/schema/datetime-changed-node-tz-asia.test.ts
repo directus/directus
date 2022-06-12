@@ -349,5 +349,26 @@ describe('schema', () => {
 				);
 			});
 		});
+
+		describe('retrieve the correct hour values for date functions', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				for (let index = 10; index < 13; index++) {
+					const response = await request(getUrl(vendor))
+						.get(
+							`/items/schema_date_types/${sampleDatesAsia[index]!.id}?fields[]=hour(datetime)&fields[]=hour(timestamp)`
+						)
+						.set('Authorization', 'Bearer AdminToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					const responseObj = response.body.data as any;
+
+					expect(parseInt(responseObj.datetime_hour)).toBe(parseInt(sampleDatesAsia[index]!.datetime.slice(11, 13)));
+					expect(parseInt(responseObj.timestamp_hour)).toBe(
+						parseInt(new Date(sampleDatesAsia[index]!.timestamp).toISOString().slice(11, 13))
+					);
+				}
+			});
+		});
 	});
 });

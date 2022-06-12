@@ -195,6 +195,7 @@ const props = withDefaults(
 		filter?: Filter | null;
 		enableSearchFilter?: boolean;
 		enableLink?: boolean;
+		limit?: number;
 	}>(),
 	{
 		value: () => [],
@@ -208,6 +209,7 @@ const props = withDefaults(
 		filter: () => null,
 		enableSearchFilter: false,
 		enableLink: false,
+		limit: 15,
 	}
 );
 
@@ -243,7 +245,7 @@ const fields = computed(() => {
 	return addRelatedPrimaryKeyToFields(relatedCollection.value, displayFields);
 });
 
-const limit = ref(10);
+const limit = ref(props.limit);
 const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();

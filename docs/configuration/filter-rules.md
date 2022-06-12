@@ -180,6 +180,12 @@ In addition to static values, you can also filter against _dynamic_ values using
 - `$NOW(<adjustment>)` - The current timestamp plus/minus a given distance, for example `$NOW(-1 year)`,
   `$NOW(+2 hours)`
 
+:::tip Functions
+
+You can also use [Function Parameters](/reference/query/#functions) when building Filters.
+
+:::
+
 ::: tip Nested User / Role variables in Permissions
 
 When configuring permissions, `$CURRENT_USER` and `$CURRENT_ROLE` allow you to specify any (nested) field under the
