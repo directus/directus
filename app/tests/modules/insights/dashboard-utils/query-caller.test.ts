@@ -124,7 +124,7 @@ describe('queryCaller', () => {
 		});
 	});
 
-	it('when passed when passed a invalid filter query it removes the query.', async () => {
+	it(']when passed a invalid filter query it removes the query.', async () => {
 		const filterQueries = cloneDeep(queries);
 		filterQueries['c810d079-9757-482e-ba87-c070bb82972e'].query.filter = { this: { _eq: 'that' } };
 		const numberOfCalls = 0;
