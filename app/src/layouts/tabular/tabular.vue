@@ -183,12 +183,12 @@ import useShortcut from '@/composables/use-shortcut';
 import { Collection } from '@/types';
 import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch, computed, unref, toRaw } from 'vue';
+import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@/utils/get-with-arrays';
 import useAliasFields from '@/composables/use-alias-fields';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { merge, pick, flatten } from 'lodash';
+import { merge } from 'lodash';
 
 interface Props {
 	collection: string;
@@ -271,19 +271,18 @@ function getAliasedValue(item: Record<string, any>, field: string) {
 
 	const matchingAliasFields = Object.values(aliasFields.value!).filter((aliasField) => aliasField.fieldName === field);
 	const matchingKeys = matchingAliasFields.map((aliasField) => aliasField.fieldAlias);
-	// const matchingPaths = matchingAliasFields.map((aliasField) => aliasField.fullAlias);
-	const result = Object.entries(item).reduce((acc, [key, value]) => {
-		// console.log(acc, key, toRaw(value));
-		if (matchingKeys.includes(key)) {
-			// pivot the values
-			value.forEach((v, i) => {
-				acc[i] = merge(acc[i] || {}, v);
-			});
-			// acc.push(value); // merge(acc, value);
-		}
-		return acc;
-	}, [] as any[]);
-	return result;
+
+	// pivot alias values for displays
+	return matchingKeys
+		.map((key) => item[key] ?? [])
+		.reduce((acc, items) => {
+			if (Array.isArray(items) && items.length > 0) {
+				for (let i = 0; i < items.length; i++) {
+					acc[i] = merge(acc[i], items[i]);
+				}
+			}
+			return acc;
+		}, []);
 }
 
 function addField(fieldKey: string) {
