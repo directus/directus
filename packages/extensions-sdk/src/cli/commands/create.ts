@@ -6,7 +6,7 @@ import ora from 'ora';
 import { EXTENSION_TYPES, EXTENSION_PKG_KEY, EXTENSION_LANGUAGES } from '@directus/shared/constants';
 import { isAppExtension, isExtension } from '@directus/shared/utils';
 import { ExtensionType } from '@directus/shared/types';
-import log from '../utils/logger';
+import { log } from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
 import renameMap from '../utils/rename-map';
 import { Language } from '../types';

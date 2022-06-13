@@ -21,7 +21,7 @@ import vue from 'rollup-plugin-vue';
 import { EXTENSION_PKG_KEY, EXTENSION_TYPES, APP_SHARED_DEPS, API_SHARED_DEPS } from '@directus/shared/constants';
 import { isAppExtension, isExtension, validateExtensionManifest } from '@directus/shared/utils';
 import { ExtensionManifestRaw, ExtensionType } from '@directus/shared/types';
-import log from '../utils/logger';
+import { log, clear } from '../utils/logger';
 import { getLanguageFromPath, isLanguage } from '../utils/languages';
 import { Language } from '../types';
 import loadConfig from '../utils/load-config';
@@ -89,7 +89,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 	const config = await loadConfig();
 
-	const spinner = ora('Building Directus extension...').start();
+	const spinner = ora('Building Directus extension...');
 
 	const rollupOptions = getRollupOptions(type, language, input, config.plugins, options);
 	const rollupOutputOptions = getRollupOutputOptions(type, output, options);
@@ -102,35 +102,37 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 		watcher.on('event', async (event) => {
 			switch (event.code) {
-				case 'ERROR': {
-					spinner.fail(chalk.bold('Failed'));
-					handleRollupError(event.error);
-					spinner.start(chalk.bold('Watching files for changes...'));
+				case 'BUNDLE_START':
+					clear();
+					spinner.start();
 					break;
-				}
 				case 'BUNDLE_END':
 					await event.result.close();
+
 					spinner.succeed(chalk.bold('Done'));
-					spinner.start(chalk.bold('Watching files for changes...'));
+					log(chalk.bold.green('Watching files for changes...'));
 					break;
-				case 'BUNDLE_START':
-					spinner.text = 'Building Directus extension...';
+				case 'ERROR': {
+					spinner.fail(chalk.bold('Failed'));
+					logRollupError(event.error);
 					break;
+				}
 			}
 		});
 	} else {
 		try {
+			spinner.start();
+
 			const bundle = await rollup(rollupOptions);
-
 			await bundle.write(rollupOutputOptions);
-
 			await bundle.close();
 
 			spinner.succeed(chalk.bold('Done'));
 		} catch (error) {
 			spinner.fail(chalk.bold('Failed'));
-			handleRollupError(error as RollupError);
-			process.exitCode = 1;
+			logRollupError(error as RollupError);
+
+			process.exit(1);
 		}
 	}
 }
@@ -204,18 +206,17 @@ function getRollupOutputOptions(type: ExtensionType, output: string, options: Bu
 	}
 }
 
-function handleRollupError(error: RollupError): void {
-	const pluginPrefix = error.plugin ? `(plugin ${error.plugin}) ` : '';
-	log('\n' + chalk.red.bold(`${pluginPrefix}${error.name}: ${error.message}`));
+function logRollupError(error: RollupError): void {
+	log(`${error.plugin ? `(plugin ${error.plugin}) ` : ''}${error.name}: ${error.message}\n`, 'error');
 
 	if (error.url) {
-		log(chalk.cyan(error.url), 'error');
+		log(chalk.cyan(error.url));
 	}
 
 	if (error.loc) {
-		log(`${(error.loc.file || error.id)!} (${error.loc.line}:${error.loc.column})`);
+		log(chalk.cyan(`${error.loc.file ?? error.id}:${error.loc.line}:${error.loc.column}`));
 	} else if (error.id) {
-		log(error.id);
+		log(chalk.cyan(error.id));
 	}
 
 	if (error.frame) {
