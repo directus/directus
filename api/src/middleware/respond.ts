@@ -8,16 +8,27 @@ import { getCacheControlHeader } from '../utils/get-cache-headers';
 import logger from '../logger';
 import { ExportService } from '../services';
 import { getDateFormatted } from '../utils/get-date-formatted';
+import { stringByteSize } from '../utils/get-string-byte-size';
+import { parse as parseBytesConfiguration } from 'bytes';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
+
+	let exceedsMaxSize = false;
+
+	if (env.CACHE_VALUE_MAX_SIZE !== false) {
+		const valueSize = stringByteSize(JSON.stringify(res.locals.payload));
+		const maxSize = parseBytesConfiguration(env.CACHE_VALUE_MAX_SIZE);
+		exceedsMaxSize = valueSize > maxSize;
+	}
 
 	if (
 		req.method.toLowerCase() === 'get' &&
 		env.CACHE_ENABLED === true &&
 		cache &&
 		!req.sanitizedQuery.export &&
-		res.locals.cache !== false
+		res.locals.cache !== false &&
+		exceedsMaxSize === false
 	) {
 		const key = getCacheKey(req);
 
