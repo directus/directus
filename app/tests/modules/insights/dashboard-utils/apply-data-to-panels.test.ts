@@ -61,7 +61,7 @@ describe('applyDataToPanels', () => {
 		]);
 	});
 
-	it.only('adds a multiple datasets to a panel', () => {
+	it('adds a multiple datasets to a panel', () => {
 		const fakeData = {
 			__id_c810d079_9757_482e_ba87_c070bb82972e_1: [
 				{
