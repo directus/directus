@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash';
 import { processQuery } from '../../../../src/modules/insights/dashboard-utils/process-query';
-import { PanelQuery } from '../../../../src/modules/insights/dashboard-utils/types';
 
 describe('processQuery', () => {
 	const queries: Record<string, { query: any; collection: string }> = {
