@@ -74,6 +74,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PORT',
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
+	'CACHE_VALUE_MAX_SIZE',
 	// storage
 	'STORAGE_LOCATIONS',
 	'STORAGE_.+_DRIVER',
@@ -206,6 +207,7 @@ const defaults: Record<string, any> = {
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
 	CACHE_PERMISSIONS: true,
+	CACHE_VALUE_MAX_SIZE: false,
 
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,

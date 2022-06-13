@@ -4,7 +4,7 @@
 	<component
 		:is="`display-${display}`"
 		v-else
-		v-bind="translate(options)"
+		v-bind="translate(options ?? {})"
 		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
