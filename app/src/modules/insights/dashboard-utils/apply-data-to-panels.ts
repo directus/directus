@@ -16,8 +16,9 @@ export function applyDataToPanels(panels: Panel[], incomingData: Record<any, any
 
 	for (const [id, data] of Object.entries(incomingData)) {
 		if (id.includes('__')) {
-			const panelId = id.split('__')[0];
-			const index = id.split('__')[1];
+			const split = id.split('_');
+			const index = split[split.length - 1];
+			const panelId = id.substring(2, 41).replaceAll('-', '_');
 
 			if (!multiQueryPanelData[panelId]) multiQueryPanelData[panelId] = {};
 
@@ -29,22 +30,19 @@ export function applyDataToPanels(panels: Panel[], incomingData: Record<any, any
 
 	for (const panel of panels) {
 		const panelId = 'id_' + panel.id.replaceAll('-', '_');
+		const currentPanelData = multiQueryPanelData[panelId];
 
-		if (multiQueryPanelData[panelId]) {
-			if (Object.keys(multiQueryPanelData[panelId]).length > 0) {
-				panelData[panelId] = [];
+		if (currentPanelData) {
+			if (Object.keys(currentPanelData).length > 0) {
+				if (!Array.isArray(panelData[panelId])) panelData[panelId] = [];
 
-				for (const value of Object.values(multiQueryPanelData[panelId])) {
-					panelData[panelId].push(value);
+				const currentPanel = panelData[panelId] as Panel[];
+
+				for (const value of Object.values(currentPanelData)) {
+					currentPanel.push(value as Panel);
 				}
 			} else {
-				panelData[panelId] = multiQueryPanelData[panelId];
-			}
-		}
-
-		if (incomingData[panelId]) {
-			if (!Array.isArray(incomingData[panelId])) {
-				panelData[panelId] = incomingData[panelId];
+				panelData[panelId] = currentPanelData;
 			}
 		}
 
