@@ -1,16 +1,10 @@
 import { Panel } from '@directus/shared/types';
 
-export function applyDataToPanels(panels: Panel[], incomingData: Record<any, any> | null) {
+export function applyDataToPanels(panels: Panel[], incomingData: Record<string, any> | null) {
 	if (!incomingData) return panels;
 
-	/* 
-	/* panelData is for panels that only have one query.
-	/* multiQueryPanelData is for panels that have more than query.
-	/* Such as a multiline chart.
-	*/
-
 	const panelData: Record<string, Panel | Panel[]> = {};
-	const multiQueryPanelData: Record<string, any> = {};
+	const justData: Record<string, any> = {};
 
 	const panelsWithData: Panel[] = [];
 
@@ -20,17 +14,17 @@ export function applyDataToPanels(panels: Panel[], incomingData: Record<any, any
 			const index = split[split.length - 1];
 			const panelId = id.substring(2, 41).replaceAll('-', '_');
 
-			if (!multiQueryPanelData[panelId]) multiQueryPanelData[panelId] = {};
+			if (!justData[panelId]) justData[panelId] = {};
 
-			multiQueryPanelData[panelId][index] = data;
+			justData[panelId][index] = data;
 		} else {
-			multiQueryPanelData[id] = data;
+			justData[id] = data;
 		}
 	}
 
 	for (const panel of panels) {
 		const panelId = 'id_' + panel.id.replaceAll('-', '_');
-		const currentPanelData = multiQueryPanelData[panelId];
+		const currentPanelData = justData[panelId];
 
 		if (currentPanelData) {
 			if (Object.keys(currentPanelData).length > 0) {
