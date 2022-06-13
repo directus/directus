@@ -1520,6 +1520,7 @@ export class GraphQLService {
 							query.deep,
 							currentAlias ?? current,
 							merge(
+								{},
 								get(query.deep, currentAlias ?? current),
 								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
 							)
