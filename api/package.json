@@ -95,6 +95,7 @@
 		"async-mutex": "^0.3.2",
 		"axios": "^0.27.2",
 		"busboy": "^0.3.1",
+		"bytes": "^3.1.2",
 		"camelcase": "^6.2.0",
 		"chalk": "^4.1.1",
 		"chokidar": "^3.5.3",
