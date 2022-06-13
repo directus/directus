@@ -88,7 +88,7 @@ describe('queryCaller', () => {
 		expect(await queryCaller(request, 0, valid, false)).toStrictEqual({ content: '' });
 	});
 
-	it('when passed when passed a invalid aggregation query it errors.', async () => {
+	it('when passed when passed a invalid aggregation query it removes the query.', async () => {
 		const aggregateQueries = cloneDeep(queries);
 
 		await queryCaller(request, 0, aggregateQueries, false);
@@ -106,25 +106,6 @@ describe('queryCaller', () => {
 	});
 
 	it('when passed an invalid filter query it removes the query.', async () => {
-		const filterQueries = cloneDeep(queries);
-		filterQueries['c810d079-9757-482e-ba87-c070bb82972e'].query.filter = { this: { _eq: 'that' } };
-		const numberOfCalls = 0;
-
-		expect(await queryCaller(request, numberOfCalls, filterQueries, true, true)).toBe(undefined);
-
-		expect(filterQueries).toStrictEqual({
-			'c956d079-9757-482e-ba87-c070bb82972e': {
-				collection: 'directus_users',
-				query: {
-					aggregate: {
-						count: ['id'],
-					},
-				},
-			},
-		});
-	});
-
-	it(']when passed a invalid filter query it removes the query.', async () => {
 		const filterQueries = cloneDeep(queries);
 		filterQueries['c810d079-9757-482e-ba87-c070bb82972e'].query.filter = { this: { _eq: 'that' } };
 		const numberOfCalls = 0;
