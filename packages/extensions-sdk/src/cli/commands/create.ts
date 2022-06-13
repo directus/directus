@@ -4,7 +4,7 @@ import fse from 'fs-extra';
 import execa from 'execa';
 import ora from 'ora';
 import { EXTENSION_TYPES, EXTENSION_PKG_KEY, EXTENSION_LANGUAGES } from '@directus/shared/constants';
-import { isAppExtension, isExtension } from '@directus/shared/utils';
+import { isApiExtension, isAppExtension, isExtension, isHybridExtension } from '@directus/shared/utils';
 import { ExtensionType } from '@directus/shared/types';
 import { log } from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
@@ -65,14 +65,19 @@ export default async function create(type: string, name: string, options: Create
 	await fse.copy(path.join(TEMPLATE_PATH, type, options.language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
+	const entryPath = isHybridExtension(type) ? { app: 'dist/app.js', api: 'dist/api.js' } : 'dist/index.js';
+	const sourcePath = isHybridExtension(type)
+		? { app: `src/app.${languageToShort(options.language)}`, api: `src/api.${languageToShort(options.language)}` }
+		: `src/index.${languageToShort(options.language)}`;
+
 	const packageManifest = {
 		name: `directus-extension-${name}`,
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
 			type,
-			path: 'dist/index.js',
-			source: `src/index.${languageToShort(options.language)}`,
+			path: entryPath,
+			source: sourcePath,
 			host: `^${pkg.version}`,
 		},
 		scripts: {
@@ -97,25 +102,14 @@ Build your extension by running:
 }
 
 async function getPackageDeps(type: ExtensionType, language: Language) {
-	if (isAppExtension(type)) {
-		return {
-			'@directus/extensions-sdk': pkg.version,
-			...(language === 'typescript'
-				? {
-						typescript: `^${await getPackageVersion('typescript')}`,
-				  }
-				: {}),
-			vue: `^${await getPackageVersion('vue')}`,
-		};
-	} else {
-		return {
-			'@directus/extensions-sdk': pkg.version,
-			...(language === 'typescript'
-				? {
-						'@types/node': `^${await getPackageVersion('@types/node')}`,
-						typescript: `^${await getPackageVersion('typescript')}`,
-				  }
-				: {}),
-		};
-	}
+	return {
+		'@directus/extensions-sdk': pkg.version,
+		...(language === 'typescript'
+			? {
+					...(isApiExtension(type) ? { '@types/node': `^${await getPackageVersion('@types/node')}` } : {}),
+					typescript: `^${await getPackageVersion('typescript')}`,
+			  }
+			: {}),
+		...(isAppExtension(type) ? { vue: `^${await getPackageVersion('vue')}` } : {}),
+	};
 }
