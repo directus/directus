@@ -272,11 +272,18 @@ function getAliasedValue(item: Record<string, any>, field: string) {
 	const matchingAliasFields = Object.values(aliasFields.value!).filter((aliasField) => aliasField.fieldName === field);
 	const matchingKeys = matchingAliasFields.map((aliasField) => aliasField.fieldAlias);
 	// const matchingPaths = matchingAliasFields.map((aliasField) => aliasField.fullAlias);
-	return Object.entries(item).reduce((acc, [key, value]) => {
+	const result = Object.entries(item).reduce((acc, [key, value]) => {
 		// console.log(acc, key, toRaw(value));
-		if (matchingKeys.includes(key)) acc.push(value); // merge(acc, value);
+		if (matchingKeys.includes(key)) {
+			// pivot the values
+			value.forEach((v, i) => {
+				acc[i] = merge(acc[i] || {}, v);
+			});
+			// acc.push(value); // merge(acc, value);
+		}
 		return acc;
 	}, [] as any[]);
+	return result;
 }
 
 function addField(fieldKey: string) {
