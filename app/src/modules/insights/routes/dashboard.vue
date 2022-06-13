@@ -165,21 +165,22 @@
 </template>
 
 <script lang="ts">
-import InsightsNavigation from '../components/navigation.vue';
-import { defineComponent, computed, ref, toRefs, watch } from 'vue';
-import { useInsightsStore, useAppStore, usePermissionsStore } from '@/stores';
-import InsightsNotFound from './not-found.vue';
-import { Panel } from '@directus/shared/types';
-import { nanoid } from 'nanoid';
-import { merge, omit } from 'lodash';
-import { router } from '@/router';
-import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
-import { useI18n } from 'vue-i18n';
-import { pointOnLine } from '@/utils/point-on-line';
+import useEditsGuard from '@/composables/use-edits-guard';
 import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { router } from '@/router';
+import { useAppStore, useInsightsStore, usePermissionsStore } from '@/stores';
+import { pointOnLine } from '@/utils/point-on-line';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Panel } from '@directus/shared/types';
+import camelCase from 'camelcase';
+import { mapKeys, merge, omit } from 'lodash';
+import { nanoid } from 'nanoid';
+import { computed, defineComponent, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import InsightsNavigation from '../components/navigation.vue';
+import InsightsNotFound from './not-found.vue';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -315,7 +316,10 @@ export default defineComponent({
 				};
 			});
 
-			return withIcons;
+			// The workspace-tile relies on camelCased props, and these keys are passed as props with a v-bind
+			const camelCased = withIcons.map((panel) => mapKeys(panel, (_value, key) => camelCase(key)));
+
+			return camelCased;
 		});
 
 		const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
