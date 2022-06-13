@@ -1,4 +1,5 @@
 import api from '@/api';
+import { isNil } from 'lodash';
 import { processQuery } from './process-query';
 
 export async function queryCaller(
@@ -25,12 +26,13 @@ export async function queryCaller(
 
 		return response.data.data;
 	} catch (errs: any) {
-		if (reattempt) callAttempts++;
+		callAttempts++;
 		if (reattempt && callAttempts >= 10) {
 			callAttempts = 0;
 			return errs;
 			// figure out how to load the unerrored panels...
 		}
+		if (!errs.response?.data.errors) return;
 
 		errorHandler(errs.response.data.errors, queryObj);
 
@@ -43,6 +45,8 @@ function errorHandler(errs: any, queryObj: Record<string, any>) {
 	const queriesToRemove: Record<string, any> = {};
 
 	for (const error of errs) {
+		if (isNil(error.extensions.graphqlErrors[0].message)) continue;
+
 		const message = error.extensions.graphqlErrors[0].message;
 
 		if (message && message.includes('_aggregated')) {
@@ -67,12 +71,13 @@ function errorHandler(errs: any, queryObj: Record<string, any>) {
 
 	for (const [key, query] of Object.entries(queryObj)) {
 		const match = queriesToRemove[query?.collection];
+		if (!match) continue;
 
-		if (match?.aggregate && query.query.aggregate && JSON.stringify(query.query.aggregate).includes(match.field)) {
+		if (match.aggregate && query.query.aggregate && JSON.stringify(query.query.aggregate).includes(match.field)) {
 			delete queryObj[key];
-		} else if (match?.filter && query.query.filter && JSON.stringify(query.query.filter).includes(match.field)) {
+		} else if (match.filter && query.query.filter && JSON.stringify(query.query.filter).includes(match.field)) {
 			delete queryObj[key];
-		} else if (match && query.query?.fields && query.query.fields.includes(match.field)) {
+		} else if (query.query?.fields && query.query.fields.includes(match.field)) {
 			delete queryObj[key];
 		}
 	}
