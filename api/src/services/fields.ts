@@ -588,11 +588,6 @@ export class FieldsService {
 			) {
 				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
 				column.defaultTo(this.knex.fn.now(Number(precision)));
-			} else if (
-				typeof field.schema.default_value === 'string' &&
-				['"null"', 'null'].includes(field.schema.default_value.toLowerCase())
-			) {
-				column.defaultTo(null);
 			} else {
 				column.defaultTo(field.schema.default_value);
 			}
