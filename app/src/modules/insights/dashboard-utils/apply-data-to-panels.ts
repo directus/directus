@@ -34,13 +34,7 @@ export function applyDataToPanels(panels: Panel[], incomingData: Record<any, any
 
 		if (currentPanelData) {
 			if (Object.keys(currentPanelData).length > 0) {
-				if (!Array.isArray(panelData[panelId])) panelData[panelId] = [];
-
-				const currentPanel = panelData[panelId] as Panel[];
-
-				for (const value of Object.values(currentPanelData)) {
-					currentPanel.push(value as Panel);
-				}
+				panelData[panelId] = Object.values(currentPanelData);
 			} else {
 				panelData[panelId] = currentPanelData;
 			}
