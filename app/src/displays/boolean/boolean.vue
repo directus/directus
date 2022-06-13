@@ -3,13 +3,14 @@
 		<value-null v-if="value === null" />
 		<template v-else>
 			<v-icon v-if="iconOn !== null && iconOff !== null" :name="value ? iconOn : iconOff"></v-icon>
-			<span v-if="labelOn !== null && labelOff !== null">{{ value ? labelOn : labelOff }}</span>
+			<span v-if="labelOn !== null && labelOff !== null">{{ value ? translate(labelOn) : translate(labelOff) }}</span>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { translate } from '@/utils/translate-literal';
 
 export default defineComponent({
 	props: {
@@ -53,7 +54,7 @@ export default defineComponent({
 			return style;
 		});
 
-		return { styles };
+		return { styles, translate };
 	},
 });
 </script>
