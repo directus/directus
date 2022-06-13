@@ -48,6 +48,16 @@
 				<v-divider />
 			</template>
 
+			<v-list-item v-if="items?.length">
+				<v-list-item-content>
+					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
+						<template #append>
+							<v-icon small name="search" />
+						</template>
+					</v-input>
+				</v-list-item-content>
+			</v-list-item>
+
 			<template v-for="(item, index) in internalItems" :key="index">
 				<select-list-item-group
 					v-if="item.children"
@@ -117,14 +127,14 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, toRefs, Ref } from 'vue';
 import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
-import { get } from 'lodash';
+import { Placement } from '@popperjs/core';
+import { debounce, get } from 'lodash';
+import { computed, defineComponent, PropType, Ref, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import SelectListItemGroup from './select-list-item-group.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
-import { Placement } from '@popperjs/core';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
@@ -217,7 +227,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { internalItems } = useItems();
+		const { internalItems, internalSearch } = useItems();
 		const { displayValue } = useDisplayValue();
 		const { modelValue } = toRefs(props);
 		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
@@ -229,6 +239,14 @@ export default defineComponent({
 			(value) => emit('update:modelValue', value)
 		);
 
+		const search = ref<string | null>(null);
+		watch(
+			search,
+			debounce((val: string | null) => {
+				internalSearch.value = val;
+			}, 250)
+		);
+
 		return {
 			t,
 			internalItems,
@@ -238,9 +256,12 @@ export default defineComponent({
 			otherValues,
 			addOtherValue,
 			setOtherValue,
+			search,
 		};
 
 		function useItems() {
+			const internalSearch = ref<string | null>(null);
+
 			const internalItems = computed(() => {
 				const parseItem = (item: Record<string, any>): Option => {
 					if (typeof item === 'string') {
@@ -260,16 +281,26 @@ export default defineComponent({
 						icon: get(item, props.itemIcon),
 						disabled: get(item, props.itemDisabled),
 						selectable: get(item, props.itemSelectable),
-						children,
+						children: children ? children.filter(filterItem) : children,
 					};
 				};
 
-				const items = props.items.map(parseItem);
+				const filterItem = (item: Record<string, any>): boolean => {
+					if (!internalSearch.value) return true;
+
+					const searchValue = internalSearch.value.toLowerCase();
+
+					return item?.children
+						? item.children.some((item: Record<string, any>) => filterItem(item))
+						: item.text?.toLowerCase().includes(searchValue) || item.value?.toLowerCase().includes(searchValue);
+				};
+
+				const items = internalSearch.value ? props.items.filter(filterItem).map(parseItem) : props.items.map(parseItem);
 
 				return items;
 			});
 
-			return { internalItems };
+			return { internalItems, internalSearch };
 		}
 
 		function useDisplayValue() {
