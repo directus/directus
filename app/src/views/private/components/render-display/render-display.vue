@@ -4,7 +4,7 @@
 	<component
 		:is="`display-${display}`"
 		v-else
-		v-bind="options"
+		v-bind="translate(options)"
 		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
@@ -18,6 +18,7 @@
 import { defineComponent, computed } from 'vue';
 import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -57,7 +58,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const displayInfo = computed(() => getDisplay(props.display));
-		return { displayInfo };
+		return { displayInfo, translate };
 	},
 });
 </script>
