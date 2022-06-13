@@ -183,12 +183,12 @@ import useShortcut from '@/composables/use-shortcut';
 import { Collection } from '@/types';
 import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
+import { ComponentPublicInstance, inject, ref, Ref, watch, computed, unref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@/utils/get-with-arrays';
 import useAliasFields from '@/composables/use-alias-fields';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { merge, pick } from 'lodash';
+import { merge, pick, flatten } from 'lodash';
 
 interface Props {
 	collection: string;
@@ -271,11 +271,12 @@ function getAliasedValue(item: Record<string, any>, field: string) {
 
 	const matchingAliasFields = Object.values(aliasFields.value!).filter((aliasField) => aliasField.fieldName === field);
 	const matchingKeys = matchingAliasFields.map((aliasField) => aliasField.fieldAlias);
-	const matchingPaths = matchingAliasFields.map((aliasField) => aliasField.fullAlias);
-	return Object.entries(pick(item, matchingPaths)).reduce((acc, [key, value]) => {
-		if (matchingKeys.includes(key)) merge(acc, value);
+	// const matchingPaths = matchingAliasFields.map((aliasField) => aliasField.fullAlias);
+	return Object.entries(item).reduce((acc, [key, value]) => {
+		// console.log(acc, key, toRaw(value));
+		if (matchingKeys.includes(key)) acc.push(value); // merge(acc, value);
 		return acc;
-	}, {});
+	}, [] as any[]);
 }
 
 function addField(fieldKey: string) {
