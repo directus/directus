@@ -33,6 +33,8 @@ tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 location: الموقع
+condition_rules: قوانين الشرط
+input: إدخال
 maps: الخرائط
 switch_user: تغير المستخدم
 item_creation: إنشاء عنصر
@@ -45,6 +47,7 @@ group: المجموعة
 export_items: تصدير عنصر
 and: و
 or: أو
+hook: ربط
 fill_width: العرض الكامل
 field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
@@ -90,6 +93,7 @@ update_bookmark: تحديث المفضلة
 delete_bookmark: حذف إشارة مرجعية
 delete_bookmark_copy: >-
   هل تريد بالتأكيد حذف ال "{bookmark} "؟ لا يمكن التراجع عن هذا الإجراء.
+delete_personal_bookmark: حذف الإشارة المرجعية الشخصية
 logoutReason:
   SIGN_OUT: تسجيل الخروج
   SESSION_EXPIRED: انتهت الجلسة
