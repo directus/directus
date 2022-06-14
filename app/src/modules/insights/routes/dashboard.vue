@@ -188,6 +188,8 @@ import { processQuery } from '../dashboard-utils/process-query';
 import { queryCaller } from '../dashboard-utils/query-caller';
 import { applyDataToPanels } from '../dashboard-utils/apply-data-to-panels';
 import { v4 as uuid } from 'uuid';
+import InsightsNavigation from '../components/navigation.vue';
+import InsightsNotFound from './not-found.vue';
 
 interface Props {
 	primaryKey: string;
