@@ -7,9 +7,6 @@ import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
 import { AST, FieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
-import env from '../env';
-import { InvalidQueryException } from '../exceptions';
-import { calculateFieldDepth } from './calculate-field-depth';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -46,8 +43,6 @@ export default async function getASTFromQuery(
 		children: [],
 	};
 
-	const maxRelationalDepth = Number(env.MAX_RELATIONAL_DEPTH) > 2 ? Number(env.MAX_RELATIONAL_DEPTH) : 1;
-
 	let fields = ['*'];
 
 	if (query.fields) {
@@ -72,35 +67,7 @@ export default async function getASTFromQuery(
 
 	fields = uniq(fields);
 
-	for (const field of fields) {
-		if (field.split('.').length > maxRelationalDepth) {
-			throw new InvalidQueryException('Max relational depth exceeded.');
-		}
-	}
-
-	if (query.filter) {
-		const filterRelationalDepth = calculateFieldDepth(query.filter);
-
-		if (filterRelationalDepth > maxRelationalDepth) {
-			throw new InvalidQueryException('Max relational depth exceeded.');
-		}
-	}
-
-	if (query.sort) {
-		for (const sort of query.sort) {
-			if (sort.split('.').length > maxRelationalDepth) {
-				throw new InvalidQueryException('Max relational depth exceeded.');
-			}
-		}
-	}
-
 	const deep = query.deep || {};
-
-	const deepRelationalDepth = calculateFieldDepth(deep);
-
-	if (deepRelationalDepth > maxRelationalDepth) {
-		throw new InvalidQueryException('Max relational depth exceeded.');
-	}
 
 	// Prevent fields/deep from showing up in the query object in further use
 	delete query.fields;
