@@ -78,7 +78,7 @@ export default defineComponent({
 		});
 
 		const localType = computed(() => {
-			return getLocalTypeForField(props.collection, props.field) ?? 'standard';
+			return getLocalTypeForField(props.collection, props.field);
 		});
 
 		const { primaryKeyField } = useCollection(relatedCollection);
@@ -86,7 +86,7 @@ export default defineComponent({
 		const primaryKeyFieldPath = computed(() => {
 			return relatedCollectionData.value.path
 				? [...relatedCollectionData.value.path, primaryKeyField.value?.field].join('.')
-				: primaryKeyField.value?.field || 'id';
+				: primaryKeyField.value?.field;
 		});
 
 		const internalTemplate = computed(() => {
