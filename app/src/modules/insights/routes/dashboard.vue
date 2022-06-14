@@ -188,6 +188,7 @@ import { processQuery } from '../dashboard-utils/process-query';
 import { queryCaller } from '../dashboard-utils/query-caller';
 import { applyDataToPanels } from '../dashboard-utils/apply-data-to-panels';
 import { v4 as uuid } from 'uuid';
+
 interface Props {
 	primaryKey: string;
 	panelKey?: string | null;
@@ -217,7 +218,8 @@ const movePanelID = ref<string | null>();
 const zoomToFit = ref(false);
 
 const loadingPanels = ref();
-const errors = ref([]);
+const errors = ref();
+
 const panelsWithData = ref<Panel[]>([]);
 
 const updateAllowed = computed<boolean>(() => {
