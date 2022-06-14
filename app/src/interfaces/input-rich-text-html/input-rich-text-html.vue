@@ -5,7 +5,7 @@
 			v-model="internalValue"
 			:init="editorOptions"
 			:disabled="disabled"
-			model-events="change keydown blur focus paste ExecCommand SetContent Init"
+			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
 			@focus="setupContentWatcher"
