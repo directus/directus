@@ -357,7 +357,7 @@ export function applyFilter(
 
 					if (!columnName) continue;
 
-					if (relation && relation.related_collection) {
+					if (relation?.related_collection) {
 						applyFilterToQuery(columnName, filterOperator, filterValue, logical, relation.related_collection); // m2o
 					} else if (filterPath[0].includes(':')) {
 						applyFilterToQuery(columnName, filterOperator, filterValue, logical, filterPath[0].split(':')[1]); // a2o
