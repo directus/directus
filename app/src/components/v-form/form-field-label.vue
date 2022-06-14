@@ -97,6 +97,7 @@ export default defineComponent({
 	.v-chip {
 		margin: 0;
 		flex-shrink: 0;
+		margin-left: 3px;
 	}
 
 	.required {
@@ -105,7 +106,7 @@ export default defineComponent({
 		margin-left: 3px;
 
 		&.has-badge {
-			margin-right: 8px;
+			margin-right: 6px;
 		}
 	}
 
