@@ -48,7 +48,7 @@
 				<v-divider />
 			</template>
 
-			<v-list-item v-if="items?.length">
+			<v-list-item v-if="internalItemsCount > 20">
 				<v-list-item-content>
 					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
 						<template #append>
@@ -227,7 +227,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { internalItems, internalSearch } = useItems();
+		const { internalItems, internalItemsCount, internalSearch } = useItems();
 		const { displayValue } = useDisplayValue();
 		const { modelValue } = toRefs(props);
 		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
@@ -250,6 +250,7 @@ export default defineComponent({
 		return {
 			t,
 			internalItems,
+			internalItemsCount,
 			displayValue,
 			otherValue,
 			usesOtherValue,
@@ -300,7 +301,22 @@ export default defineComponent({
 				return items;
 			});
 
-			return { internalItems, internalSearch };
+			const internalItemsCount = computed<number>(() => {
+				const countItems = (items: Option[]): number => {
+					const count = items.reduce((acc, item): number => {
+						if (item?.children) {
+							acc += countItems(item.children);
+						}
+						return acc + 1;
+					}, 0);
+
+					return count;
+				};
+
+				return countItems(internalItems.value);
+			});
+
+			return { internalItems, internalItemsCount, internalSearch };
 		}
 
 		function useDisplayValue() {
