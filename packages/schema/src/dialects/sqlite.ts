@@ -1,9 +1,8 @@
-import KnexSQLite from 'knex-schema-inspector/dist/dialects/sqlite';
+import KnexSQLite, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/sqlite';
 import extractMaxLength from 'knex-schema-inspector/dist/utils/extract-max-length';
 import extractType from 'knex-schema-inspector/dist/utils/extract-type';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
-import { stripQuotes } from '../utils/strip-quotes';
 
 type RawColumn = {
 	cid: number;
@@ -42,7 +41,7 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 					default_value:
 						column.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table)
 							? 'AUTO_INCREMENT'
-							: stripQuotes(column.dflt_value),
+							: parseDefaultValue(column.dflt_value),
 					is_nullable: column.notnull == 0,
 					is_generated: column.hidden !== 0,
 					data_type: extractType(column.type),
