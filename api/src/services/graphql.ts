@@ -1505,7 +1505,7 @@ export class GraphQLService {
 								set(
 									query.deep,
 									parent,
-									merge(get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } })
+									merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } })
 								);
 							}
 						}
@@ -1543,6 +1543,7 @@ export class GraphQLService {
 							query.deep,
 							currentAlias ?? current,
 							merge(
+								{},
 								get(query.deep, currentAlias ?? current),
 								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
 							)

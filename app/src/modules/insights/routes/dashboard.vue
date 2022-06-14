@@ -102,7 +102,7 @@
 					v-else
 					v-bind="panel.options"
 					:id="panel.id"
-					:show-header="panel.show_header"
+					:show-header="panel.showHeader"
 					:height="panel.height"
 					:width="panel.width"
 					:now="now"
@@ -114,7 +114,7 @@
 		<router-view
 			name="detail"
 			:dashboard-key="primaryKey"
-			:panel="panelKey ? panels.find((panel) => panel.id === panelKey) : null"
+			:panel="panelKey ? rawPanels.find((panel) => panel.id === panelKey) : null"
 			@save="stageConfiguration"
 			@cancel="$router.replace(`/insights/${primaryKey}`)"
 		/>
@@ -169,450 +169,406 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import InsightsNavigation from '../components/navigation.vue';
-import { defineComponent, computed, ref, toRefs, watch, ComputedRef } from 'vue';
-import { useInsightsStore, useAppStore, usePermissionsStore } from '@/stores';
-import InsightsNotFound from './not-found.vue';
-import { Panel } from '@directus/shared/types';
-import { merge, omit, isEmpty } from 'lodash';
-import { router } from '@/router';
-import { unexpectedError } from '@/utils/unexpected-error';
+<script lang="ts" setup>
 import api from '@/api';
-import { useI18n } from 'vue-i18n';
-import { pointOnLine } from '@/utils/point-on-line';
+import useEditsGuard from '@/composables/use-edits-guard';
 import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
-import { objDiff } from '../../../utils/object-diff';
-import { v4 as uuid } from 'uuid';
+import { router } from '@/router';
+import { useAppStore, useInsightsStore, usePermissionsStore } from '@/stores';
+import { objDiff } from '@/utils/object-diff';
+import { pointOnLine } from '@/utils/point-on-line';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Panel } from '@directus/shared/types';
+import camelCase from 'camelcase';
+import { mapKeys, merge, omit, isEmpty } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { processQuery } from '../dashboard-utils/process-query';
 import { queryCaller } from '../dashboard-utils/query-caller';
 import { applyDataToPanels } from '../dashboard-utils/apply-data-to-panels';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { v4 as uuid } from 'uuid';
+interface Props {
+	primaryKey: string;
+	panelKey?: string | null;
+}
 
-export default defineComponent({
-	name: 'InsightsDashboard',
-	components: { InsightsNotFound, InsightsNavigation },
-	props: {
-		primaryKey: {
-			type: String,
-			required: true,
-		},
-		panelKey: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
-		const { panels: panelsInfo } = getPanels();
+const props = withDefaults(defineProps<Props>(), { panelKey: null });
+const response = ref<Record<string, Panel | Panel[]>>({});
 
-		const insightsStore = useInsightsStore();
-		const appStore = useAppStore();
-		const permissionsStore = usePermissionsStore();
-		const { panels: panelTypes } = getPanels();
-		const response = ref<Record<string, Panel | Panel[]>>({});
-		const errors = ref();
-		const loadingPanels = ref<string[]>([]);
+const { t } = useI18n();
 
-		const panelsWithData = ref<Panel[]>([]);
+const { panels: panelsInfo } = getPanels();
 
-		const { fullScreen } = toRefs(appStore);
+const insightsStore = useInsightsStore();
+const appStore = useAppStore();
+const permissionsStore = usePermissionsStore();
 
-		const editMode = ref(false);
-		const saving = ref(false);
-		const movePanelLoading = ref(false);
+const { fullScreen } = toRefs(appStore);
 
-		const movePanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
+const editMode = ref(false);
+const saving = ref(false);
+const movePanelLoading = ref(false);
 
-		const movePanelID = ref<string | null>();
+const movePanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
 
-		const zoomToFit = ref(false);
+const movePanelID = ref<string | null>();
 
-		const updateAllowed = computed<boolean>(() => {
-			return permissionsStore.hasPermission('directus_panels', 'update');
-		});
+const zoomToFit = ref(false);
 
-		useShortcut('meta+s', () => {
-			saveChanges();
-		});
+const loadingPanels = ref();
+const errors = ref([]);
+const panelsWithData = ref<Panel[]>([]);
 
-		watch(editMode, (editModeEnabled) => {
-			if (editModeEnabled) {
-				zoomToFit.value = false;
-				window.onbeforeunload = () => '';
-			} else {
-				window.onbeforeunload = null;
+const updateAllowed = computed<boolean>(() => {
+	return permissionsStore.hasPermission('directus_panels', 'update');
+});
+
+useShortcut('meta+s', () => {
+	saveChanges();
+});
+
+watch(editMode, (editModeEnabled) => {
+	if (editModeEnabled) {
+		zoomToFit.value = false;
+		window.onbeforeunload = () => '';
+	} else {
+		window.onbeforeunload = null;
+	}
+});
+
+const currentDashboard = computed(() =>
+	insightsStore.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
+);
+
+const movePanelChoices = computed(() => {
+	return insightsStore.dashboards.filter((dashboard) => dashboard.id !== props.primaryKey);
+});
+
+const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
+const panelsToBeDeleted = ref<string[]>([]);
+
+const now = new Date();
+
+const rawPanels = computed(() => {
+	const savedPanels = (currentDashboard.value?.panels || []).filter(
+		(panel) => panelsToBeDeleted.value.includes(panel.id) === false
+	);
+
+	const raw = [
+		...savedPanels.map((panel) => {
+			const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
+
+			if (updates) {
+				return merge({}, panel, updates);
 			}
-		});
 
-		const currentDashboard = computed(() =>
-			insightsStore.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
-		);
+			return panel;
+		}),
+		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')),
+	];
 
-		const movePanelChoices = computed(() => {
-			return insightsStore.dashboards.filter((dashboard) => dashboard.id !== props.primaryKey);
-		});
+	return raw;
+});
 
-		const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
-		const panelsToBeDeleted = ref<string[]>([]);
+const panels = computed<Partial<Panel>[]>(() => {
+	const withCoords = rawPanels.value.map((panel) => ({
+		...panel,
+		_coordinates: [
+			[panel.position_x!, panel.position_y!],
+			[panel.position_x! + panel.width!, panel.position_y!],
+			[panel.position_x! + panel.width!, panel.position_y! + panel.height!],
+			[panel.position_x!, panel.position_y! + panel.height!],
+		] as [number, number][],
+	}));
 
-		const now = new Date();
+	const withBorderRadii = withCoords.map((panel) => {
+		let topLeftIntersects = false;
+		let topRightIntersects = false;
+		let bottomRightIntersects = false;
+		let bottomLeftIntersects = false;
 
-		const panels = computed<Partial<Panel>[]>(() => {
-			const savedPanels = (currentDashboard.value?.panels || []).filter(
-				(panel) => panelsToBeDeleted.value.includes(panel.id) === false
-			);
+		for (const otherPanel of withCoords) {
+			if (otherPanel.id === panel.id) continue;
 
-			const raw = [
-				...savedPanels.map((panel) => {
-					const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
-
-					if (updates) {
-						return merge({}, panel, updates);
-					}
-
-					return panel;
-				}),
-				...stagedPanels.value.filter((panel) => {
-					const matchingPanels = savedPanels.find((existingPanel) => existingPanel.id === panel.id);
-					if (isEmpty(matchingPanels)) return panel;
-				}),
+			const borders = [
+				[otherPanel._coordinates[0], otherPanel._coordinates[1]],
+				[otherPanel._coordinates[1], otherPanel._coordinates[2]],
+				[otherPanel._coordinates[2], otherPanel._coordinates[3]],
+				[otherPanel._coordinates[3], otherPanel._coordinates[0]],
 			];
 
-			const withCoords = raw.map((panel) => ({
-				...panel,
-				_coordinates: [
-					[panel.position_x!, panel.position_y!],
-					[panel.position_x! + panel.width!, panel.position_y!],
-					[panel.position_x! + panel.width!, panel.position_y! + panel.height!],
-					[panel.position_x!, panel.position_y! + panel.height!],
-				] as [number, number][],
-			}));
-
-			const withBorderRadii = withCoords.map((panel) => {
-				let topLeftIntersects = false;
-				let topRightIntersects = false;
-				let bottomRightIntersects = false;
-				let bottomLeftIntersects = false;
-
-				for (const otherPanel of withCoords) {
-					if (otherPanel.id === panel.id) continue;
-
-					const borders = [
-						[otherPanel._coordinates[0], otherPanel._coordinates[1]],
-						[otherPanel._coordinates[1], otherPanel._coordinates[2]],
-						[otherPanel._coordinates[2], otherPanel._coordinates[3]],
-						[otherPanel._coordinates[3], otherPanel._coordinates[0]],
-					];
-
-					if (topLeftIntersects === false)
-						topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[0], p1, p2));
-					if (topRightIntersects === false)
-						topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[1], p1, p2));
-					if (bottomRightIntersects === false)
-						bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[2], p1, p2));
-					if (bottomLeftIntersects === false)
-						bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[3], p1, p2));
-				}
-
-				return {
-					...panel,
-					x: panel.position_x,
-					y: panel.position_y,
-					borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
-				};
-			});
-
-			const withIcons = withBorderRadii.map((panel) => {
-				if (panel.icon) return panel;
-
-				return {
-					...panel,
-					icon: panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type)?.icon,
-				};
-			});
-
-			return withIcons;
-		});
-
-		const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		const queryObject = computed<Record<string, any>>(() => {
-			const systemCollectionQueries = {};
-			const userCollectionQueries = {};
-
-			if (!isEmpty(stagedPanels.value)) {
-				for (const panel of stagedPanels.value) {
-					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
-					if (type?.query && panel?.id && panel.options?.collection) {
-						if (panel.options?.collection.startsWith('directus')) {
-							const collection = panel.options.collection.substring(7);
-							const query = type.query(panel.options);
-
-							systemCollectionQueries[panel.id] = { collection, query };
-						} else {
-							const query = type.query(panel.options);
-							userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
-						}
-					}
-				}
-			}
-			if (!isEmpty(panels.value)) {
-				for (const panel of panels.value) {
-					const type = panelTypes.value.find((panelType) => panelType.id === panel.type);
-					if (type?.query && panel?.id && panel.options?.collection) {
-						if (panel.options?.collection.startsWith('directus')) {
-							const collection = panel.options.collection.substring(9);
-							const query = type.query(panel.options);
-
-							systemCollectionQueries[panel.id] = { collection, query };
-						} else {
-							const query = type.query(panel.options);
-							userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
-						}
-					}
-				}
-			}
-			return { systemCollectionQueries, userCollectionQueries };
-		});
-
-		let newQueries: Record<string, any> = queryObject.value;
-
-		watch(
-			queryObject,
-			async (newObj, obj) => {
-				const systemDiff = objDiff(newObj.systemCollectionQueries, obj?.systemCollectionQueries);
-				const userDiff = objDiff(newObj.userCollectionQueries, obj?.userCollectionQueries);
-
-				newQueries = {
-					systemCollectionQueries: systemDiff,
-					userCollectionQueries: userDiff,
-				};
-
-				if (!isEmpty(systemDiff) || !isEmpty(userDiff)) {
-					loadingPanels.value = Object.keys(systemDiff).concat(Object.keys(userDiff));
-					const systemGQLQueries = processQuery(systemDiff);
-					const userGQLQueries = processQuery(userDiff);
-
-					let system = await queryCaller(systemGQLQueries, 0, newQueries, true);
-					let user = await queryCaller(userGQLQueries, 0, newQueries, false);
-
-					response.value = {
-						...response.value,
-						...system,
-						...user,
-					};
-
-					panelsWithData.value = applyDataToPanels(panels.value, response.value);
-				}
-				loadingPanels.value = [];
-			},
-			{ immediate: true, deep: true }
-		);
-
-		watch(
-			panels,
-			() => {
-				const newPanelsWithData: Panel[] = [];
-				for (const panel of panels.value) {
-					const panelId = 'id_' + panel.id.replaceAll('-', '_');
-					if (response.value[panelId]) {
-						const editablePanel = panel;
-						editablePanel.data = response.value[panelId];
-						newPanelsWithData.push(editablePanel);
-					} else {
-						newPanelsWithData.push(panel);
-					}
-				}
-				panelsWithData.value = newPanelsWithData;
-			},
-			{ immediate: true }
-		);
-
-		const confirmCancel = ref(false);
+			if (topLeftIntersects === false)
+				topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[0], p1, p2));
+			if (topRightIntersects === false)
+				topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[1], p1, p2));
+			if (bottomRightIntersects === false)
+				bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[2], p1, p2));
+			if (bottomLeftIntersects === false)
+				bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[3], p1, p2));
+		}
 
 		return {
-			currentDashboard,
-			editMode,
-			panels,
-			updateAllowed,
-			panelsWithData,
-			stagePanelEdits,
-			stagedPanels,
-			saving,
-			saveChanges,
-			stageConfiguration,
-			movePanelID,
-			movePanel,
-			deletePanel,
-			attemptCancelChanges,
-			duplicatePanel,
-			editPanel,
-			movePanelLoading,
-			t,
-			toggleFullScreen,
-			zoomToFit,
-			fullScreen,
-			toggleZoomToFit,
-			movePanelChoices,
-			movePanelTo,
-			confirmLeave,
-			discardAndLeave,
-			now,
-			confirmCancel,
-			cancelChanges,
-			errors,
-			loadingPanels,
+			...panel,
+			x: panel.position_x,
+			y: panel.position_y,
+			borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
+		};
+	});
+
+	const withIcons = withBorderRadii.map((panel) => {
+		if (panel.icon) return panel;
+
+		return {
+			...panel,
+			icon: panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type)?.icon,
+		};
+	});
+
+	// The workspace-tile relies on camelCased props, and these keys are passed as props with a v-bind
+	const camelCased = withIcons.map((panel) => mapKeys(panel, (_value, key) => camelCase(key)));
+
+	return camelCased;
+});
+
+const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+const queryObject = computed<Record<string, any>>(() => {
+	const systemCollectionQueries: Record<string, any> = {};
+	const userCollectionQueries: Record<string, any> = {};
+
+	if (!isEmpty(stagedPanels.value)) {
+		for (const panel of stagedPanels.value) {
+			const type = panelsInfo.value.find((panelsInfo) => panelsInfo.id === panel.type);
+			if (type?.query && panel?.id && panel.options?.collection) {
+				if (panel.options?.collection.startsWith('directus')) {
+					const collection = panel.options.collection.substring(7);
+					const query = type.query(panel.options);
+
+					systemCollectionQueries[panel.id] = { collection, query };
+				} else {
+					const query = type.query(panel.options);
+					userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
+				}
+			}
+		}
+	}
+	if (!isEmpty(panels.value)) {
+		for (const panel of panels.value) {
+			const type = panelsInfo.value.find((panelType) => panelType.id === panel.type);
+			if (type?.query && panel?.id && panel.options?.collection) {
+				if (panel.options?.collection.startsWith('directus')) {
+					const collection = panel.options.collection.substring(9);
+					const query = type.query(panel.options);
+
+					systemCollectionQueries[panel.id] = { collection, query };
+				} else {
+					const query = type.query(panel.options);
+					userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
+				}
+			}
+		}
+	}
+	return { systemCollectionQueries, userCollectionQueries };
+});
+
+let newQueries: Record<string, any> = queryObject.value;
+
+watch(
+	queryObject,
+	async (newObj, obj) => {
+		const systemDiff = objDiff(newObj.systemCollectionQueries, obj?.systemCollectionQueries);
+		const userDiff = objDiff(newObj.userCollectionQueries, obj?.userCollectionQueries);
+
+		newQueries = {
+			systemCollectionQueries: systemDiff,
+			userCollectionQueries: userDiff,
 		};
 
-		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
-			const key = event.id ?? props.panelKey;
+		if (!isEmpty(systemDiff) || !isEmpty(userDiff)) {
+			loadingPanels.value = Object.keys(systemDiff).concat(Object.keys(userDiff));
+			const systemGQLQueries = processQuery(systemDiff);
+			const userGQLQueries = processQuery(userDiff);
 
-			if (key === '+') {
-				stagedPanels.value = [
-					...stagedPanels.value,
-					{
-						id: uuid(),
-						dashboard: props.primaryKey,
-						...event.edits,
-					},
-				];
-			} else {
-				if (stagedPanels.value.some((panel) => panel.id === key)) {
-					stagedPanels.value = stagedPanels.value.map((panel) => {
-						if (panel.id === key) {
-							return merge({ id: key, dashboard: props.primaryKey }, panel, event.edits);
-						}
+			let system = await queryCaller(systemGQLQueries, 0, newQueries, true);
+			let user = await queryCaller(userGQLQueries, 0, newQueries, false);
 
-						return panel;
-					});
-				} else {
-					stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...event.edits }];
-				}
-			}
+			response.value = {
+				...response.value,
+				...system,
+				...user,
+			};
+
+			panelsWithData.value = applyDataToPanels(panels.value, response.value);
 		}
-
-		function stageConfiguration(edits: Partial<Panel>) {
-			stagePanelEdits({ edits });
-			router.replace(`/insights/${props.primaryKey}`);
-		}
-
-		async function saveChanges() {
-			if (!currentDashboard.value) return;
-
-			if (stagedPanels.value.length === 0 && panelsToBeDeleted.value.length === 0) {
-				editMode.value = false;
-				return;
-			}
-
-			saving.value = true;
-
-			const currentIDs = currentDashboard.value.panels.map((panel) => panel.id);
-
-			const updatedPanels = [
-				...currentIDs.map((id) => {
-					return stagedPanels.value.find((panel) => panel.id === id) || id;
-				}),
-				...stagedPanels.value.map((panel) => {
-					return panel;
-				}),
-			];
-			try {
-				if (stagedPanels.value.length > 0) {
-					await api.patch(`/dashboards/${props.primaryKey}`, {
-						panels: updatedPanels,
-					});
-				}
-
-				if (panelsToBeDeleted.value.length > 0) {
-					await api.delete(`/panels`, { data: panelsToBeDeleted.value });
-				}
-
-				await insightsStore.hydrate();
-
-				stagedPanels.value = [];
-				panelsToBeDeleted.value = [];
-				editMode.value = false;
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				saving.value = false;
-			}
-		}
-
-		async function deletePanel(id: string) {
-			if (!currentDashboard.value) return;
-
-			stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
-			if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
-		}
-
-		function attemptCancelChanges(): void {
-			if (hasEdits.value) {
-				confirmCancel.value = true;
-			} else {
-				cancelChanges();
-			}
-		}
-
-		function cancelChanges() {
-			confirmCancel.value = false;
-			stagedPanels.value = [];
-			panelsToBeDeleted.value = [];
-			editMode.value = false;
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			cancelChanges();
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-
-		function duplicatePanel(panel: Panel) {
-			const newPanel = omit(merge({}, panel), 'id');
-			newPanel.position_x = newPanel.position_x + 2;
-			newPanel.position_y = newPanel.position_y + 2;
-			stagePanelEdits({ edits: newPanel, id: '+' });
-		}
-
-		function editPanel(panel: Panel) {
-			router.push(`/insights/${panel.dashboard}/${panel.id}`);
-		}
-
-		function toggleFullScreen() {
-			fullScreen.value = !fullScreen.value;
-		}
-
-		function toggleZoomToFit() {
-			zoomToFit.value = !zoomToFit.value;
-		}
-
-		async function movePanel() {
-			movePanelLoading.value = true;
-
-			const currentPanel = panels.value.find((panel) => panel.id === movePanelID.value);
-
-			try {
-				await api.post(`/panels`, {
-					...omit(currentPanel, ['id']),
-					dashboard: movePanelTo.value,
-				});
-
-				await insightsStore.hydrate();
-
-				movePanelID.value = null;
-			} catch (err) {
-				unexpectedError(err);
-			} finally {
-				movePanelLoading.value = false;
-			}
-		}
+		loadingPanels.value = [];
 	},
-});
+	{ immediate: true, deep: true }
+);
+
+watch(
+	panels,
+	() => {
+		const newPanelsWithData: Panel[] = [];
+		for (const panel of panels.value) {
+			const panelId = 'id_' + panel.id.replaceAll('-', '_');
+			if (response.value[panelId]) {
+				const editablePanel = panel;
+				editablePanel.data = response.value[panelId];
+				newPanelsWithData.push(editablePanel);
+			} else {
+				newPanelsWithData.push(panel);
+			}
+		}
+		panelsWithData.value = newPanelsWithData;
+	},
+	{ immediate: true }
+);
+
+const confirmCancel = ref(false);
+function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
+	const key = event.id ?? props.panelKey;
+
+	if (key === '+') {
+		stagedPanels.value = [
+			...stagedPanels.value,
+			{
+				id: uuid(),
+				dashboard: props.primaryKey,
+				...event.edits,
+			},
+		];
+	} else {
+		if (stagedPanels.value.some((panel) => panel.id === key)) {
+			stagedPanels.value = stagedPanels.value.map((panel) => {
+				if (panel.id === key) {
+					return merge({ id: key, dashboard: props.primaryKey }, panel, event.edits);
+				}
+
+				return panel;
+			});
+		} else {
+			stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...event.edits }];
+		}
+	}
+}
+function stageConfiguration(edits: Partial<Panel>) {
+	stagePanelEdits({ edits });
+	router.replace(`/insights/${props.primaryKey}`);
+}
+
+async function saveChanges() {
+	if (!currentDashboard.value) return;
+
+	if (stagedPanels.value.length === 0 && panelsToBeDeleted.value.length === 0) {
+		editMode.value = false;
+		return;
+	}
+
+	saving.value = true;
+
+	const currentIDs = currentDashboard.value.panels.map((panel) => panel.id);
+
+	const updatedPanels = [
+		...currentIDs.map((id) => {
+			return stagedPanels.value.find((panel) => panel.id === id) || id;
+		}),
+		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
+	];
+
+	try {
+		if (stagedPanels.value.length > 0) {
+			await api.patch(`/dashboards/${props.primaryKey}`, {
+				panels: updatedPanels,
+			});
+		}
+
+		if (panelsToBeDeleted.value.length > 0) {
+			await api.delete(`/panels`, { data: panelsToBeDeleted.value });
+		}
+
+		await insightsStore.hydrate();
+
+		stagedPanels.value = [];
+		panelsToBeDeleted.value = [];
+		editMode.value = false;
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		saving.value = false;
+	}
+}
+
+async function deletePanel(id: string) {
+	if (!currentDashboard.value) return;
+
+	stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
+	if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
+}
+
+function attemptCancelChanges(): void {
+	if (hasEdits.value) {
+		confirmCancel.value = true;
+	} else {
+		cancelChanges();
+	}
+}
+
+function cancelChanges() {
+	confirmCancel.value = false;
+	stagedPanels.value = [];
+	panelsToBeDeleted.value = [];
+	editMode.value = false;
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	cancelChanges();
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+
+function duplicatePanel(panel: Panel) {
+	const newPanel = omit(merge({}, panel), 'id');
+	newPanel.position_x = newPanel.position_x + 2;
+	newPanel.position_y = newPanel.position_y + 2;
+	stagePanelEdits({ edits: newPanel, id: '+' });
+}
+
+function editPanel(panel: Panel) {
+	router.push(`/insights/${panel.dashboard}/${panel.id}`);
+}
+
+function toggleFullScreen() {
+	fullScreen.value = !fullScreen.value;
+}
+
+function toggleZoomToFit() {
+	zoomToFit.value = !zoomToFit.value;
+}
+
+async function movePanel() {
+	movePanelLoading.value = true;
+
+	const currentPanel = panels.value.find((panel) => panel.id === movePanelID.value);
+
+	try {
+		await api.post(`/panels`, {
+			...omit(currentPanel, ['id']),
+			dashboard: movePanelTo.value,
+		});
+
+		await insightsStore.hydrate();
+
+		movePanelID.value = null;
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		movePanelLoading.value = false;
+	}
+}
 </script>
 
 <style scoped>
