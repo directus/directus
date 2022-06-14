@@ -223,7 +223,7 @@ function validateRelationalDepth(query: Query) {
 	}
 
 	if (query.deep) {
-		const deepRelationalDepth = calculateFieldDepth(query.deep);
+		const deepRelationalDepth = calculateFieldDepth(query.deep, true);
 
 		if (deepRelationalDepth > maxRelationalDepth) {
 			throw new InvalidQueryException('Max relational depth exceeded.');
