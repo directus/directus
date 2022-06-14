@@ -186,7 +186,7 @@ import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@/utils/get-with-arrays';
-import useAliasFields from '@/composables/use-alias-fields';
+import useAliasFields, { AliasField } from '@/composables/use-alias-fields';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { merge } from 'lodash';
 
@@ -269,20 +269,21 @@ const { aliasFields } = useAliasFields(fieldsWithRelational);
 function getAliasedValue(item: Record<string, any>, field: string) {
 	if (aliasFields.value![field]) return get(item, aliasFields.value![field].fullAlias);
 
-	const matchingAliasFields = Object.values(aliasFields.value!).filter((aliasField) => aliasField.fieldName === field);
-	const matchingKeys = matchingAliasFields.map((aliasField) => aliasField.fieldAlias);
-
-	// pivot alias values for displays
-	return matchingKeys
-		.map((key) => item[key] ?? [])
-		.reduce((acc, items) => {
-			if (Array.isArray(items) && items.length > 0) {
-				for (let i = 0; i < items.length; i++) {
-					acc[i] = merge(acc[i], items[i]);
-				}
+	const matchingAliasFields = Object.values(aliasFields.value!).filter(
+		(aliasField: AliasField) => aliasField.fieldName === field
+	);
+	const matchingValues = matchingAliasFields.map(({ fieldAlias }) => item[fieldAlias]);
+	// if we have multiple results for each field pivot the data into a list of records
+	if (matchingValues.every((val) => Array.isArray(val))) {
+		return matchingValues.reduce((result, data) => {
+			for (let i = 0; i < data.length; i++) {
+				result[i] = merge(result[i], data[i]);
 			}
-			return acc;
+			return result;
 		}, []);
+	}
+	// merge into a single record
+	return matchingValues.reduce((result, data) => merge(result, data), {});
 }
 
 function addField(fieldKey: string) {
