@@ -75,6 +75,7 @@
 		"apexcharts": "3.30.0",
 		"axios": "0.24.0",
 		"base-64": "1.0.0",
+		"camelcase": "^7.0.0",
 		"caret-pos": "2.0.0",
 		"codemirror": "5.64.0",
 		"copyfiles": "2.4.1",

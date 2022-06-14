@@ -1,5 +1,3 @@
-import { SchemaOverview } from '@directus/schema/dist/types/overview';
-import { Column } from 'knex-schema-inspector/dist/types/column';
 import { FieldMeta, Type } from '@directus/shared/types';
 
 const localTypeMap: Record<string, Type | 'unknown'> = {
