@@ -83,7 +83,7 @@ test('Calculates _sort in deep correctly', () => {
 		},
 	};
 
-	const result = calculateFieldDepth(deep, true);
+	const result = calculateFieldDepth(deep, ['_sort']);
 
 	expect(result).toBe(4);
 });

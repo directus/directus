@@ -32,7 +32,7 @@ import { isPlainObject, isArray } from 'lodash';
  * const result = calculateFieldDepth(deep); // => 3
  * ```
  */
-export function calculateFieldDepth(obj?: Record<string, any> | null, isQueryDeep = false): number {
+export function calculateFieldDepth(obj?: Record<string, any> | null, dotNotationKeys: string[] = []): number {
 	if (!obj) {
 		return 0;
 	}
@@ -44,7 +44,7 @@ export function calculateFieldDepth(obj?: Record<string, any> | null, isQueryDee
 	for (const key of keys) {
 		const nestedValue = obj[key];
 
-		if (isQueryDeep && key === '_sort' && nestedValue) {
+		if (dotNotationKeys.includes(key) && nestedValue) {
 			let sortDepth = 0;
 
 			for (const sortKey of nestedValue) {
@@ -62,9 +62,9 @@ export function calculateFieldDepth(obj?: Record<string, any> | null, isQueryDee
 			let nestedDepth = 0;
 
 			if (Array.isArray(nestedValue)) {
-				nestedDepth = Math.max(...nestedValue.map((val) => calculateFieldDepth(val, isQueryDeep)));
+				nestedDepth = Math.max(...nestedValue.map((val) => calculateFieldDepth(val, dotNotationKeys)));
 			} else {
-				nestedDepth = calculateFieldDepth(nestedValue, isQueryDeep);
+				nestedDepth = calculateFieldDepth(nestedValue, dotNotationKeys);
 			}
 
 			if (key.startsWith('_') === false) nestedDepth += 1;
