@@ -29,6 +29,8 @@ export function isAllowed(
 		if (attemptedFields.every((field) => allowedFields!.includes(field)) === false) return false;
 	}
 
+	if (!permissionInfo.permissions || Object.keys(permissionInfo.permissions).length === 0) return true;
+
 	const schema = generateJoi(
 		permissionInfo.permissions as FieldFilter,
 		{
