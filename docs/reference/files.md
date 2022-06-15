@@ -34,7 +34,7 @@ example.com/assets/<file-id>
 example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4
 ```
 
-::: tip SEO Optimization
+::: tip SEO
 
 You can provide an optional filename after the UUID to optimize for SEO, for example:
 
