@@ -28,7 +28,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { eq: { _eq: 'field' } } } as unknown as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: { field: Joi.object({ eq: Joi.any().equal('field') }).unknown() },
+			field: Joi.object({ eq: Joi.any().equal('field') }).unknown(),
 		})
 			.unknown()
 			.describe();
