@@ -42,10 +42,12 @@ export const useUserStore = defineStore({
 					'email',
 					'last_page',
 					'theme',
+					'tfa_secret',
 					'avatar.id',
 					'role.admin_access',
 					'role.app_access',
 					'role.id',
+					'role.enforce_tfa',
 				];
 
 				const { data } = await api.get(`/users/me`, { params: { fields } });
