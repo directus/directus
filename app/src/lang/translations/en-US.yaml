@@ -570,11 +570,9 @@ bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
 enabled: Enabled
-tfa_setup: Setup 2FA
 disable_tfa: Disable 2FA
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
-admin_disable_tfa_text: The user will have to re-enable 2FA after it is disabled.
 create_account: Create Account
 account_created_successfully: Account Created Successfully
 auto_fill: Auto Fill
