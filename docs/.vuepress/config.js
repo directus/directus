@@ -228,6 +228,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/configuration/translation-strings',
+						title: 'Translation Strings',
+					},
+					{
+						type: 'page',
 						path: '/configuration/webhooks',
 						title: 'Webhooks',
 					},
