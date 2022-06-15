@@ -86,28 +86,7 @@ import { WebhooksService } from '../webhooks';
 import { GraphQLVoid } from './types/void';
 import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLDate } from './types/date';
-
-const stringNumber = (value: number | string) => {
-	if (!Number.isNaN(value)) {
-		return value;
-	}
-	return String(value);
-};
-
-export const FilterStrNumber = new GraphQLScalarType({
-	name: 'FilterStrNumber',
-	serialize: stringNumber,
-	parseValue: stringNumber,
-	parseLiteral(ast) {
-		if (ast.kind === Kind.INT || ast.kind === Kind.FLOAT) {
-			return stringNumber(Number(ast.value));
-		}
-		if (ast.kind === Kind.STRING) {
-			return ast.value;
-		}
-		return undefined;
-	},
-});
+import { GraphQLStringOrFloat } from './types/string-or-float';
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
@@ -650,32 +629,33 @@ export class GraphQLService {
 				},
 			});
 
+			// Uses StringOrFloat rather than Float to support api dynamic variables (like `$NOW`)
 			const NumberFilterOperators = schemaComposer.createInputTC({
 				name: 'number_filter_operators',
 				fields: {
 					_eq: {
-						type: FilterStrNumber,
+						type: GraphQLStringOrFloat,
 					},
 					_neq: {
-						type: FilterStrNumber,
+						type: GraphQLStringOrFloat,
 					},
 					_in: {
-						type: new GraphQLList(FilterStrNumber),
+						type: new GraphQLList(GraphQLStringOrFloat),
 					},
 					_nin: {
-						type: new GraphQLList(FilterStrNumber),
+						type: new GraphQLList(GraphQLStringOrFloat),
 					},
 					_gt: {
-						type: FilterStrNumber,
+						type: GraphQLStringOrFloat,
 					},
 					_gte: {
-						type: FilterStrNumber,
+						type: GraphQLStringOrFloat,
 					},
 					_lt: {
-						type: FilterStrNumber,
+						type: GraphQLStringOrFloat,
 					},
 					_lte: {
-						type: FilterStrNumber,
+						type: GraphQLStringOrFloat,
 					},
 					_null: {
 						type: GraphQLBoolean,
