@@ -25,7 +25,7 @@ your event generates data, this will be stored in the Flow Object.
 
 ![Webhook](https://cdn.directus.io/docs/v9/configuration/flows/triggers/triggers-20220603A/webhook-20220602A.webp)
 
-A Webhook is triggered by an incoming HTTP request to: `/flows/trigger/:this-webhook-trigger-id`.
+Triggers on an incoming HTTP request to: `/flows/trigger/:this-webhook-trigger-id`.
 
 - **Method** — Choose to make a GET, POST, PATCH, DELETE or other request from the dropdown.
 - **Asynchronous** — Toggle whether or not the Trigger responds asynchronously.
@@ -45,7 +45,7 @@ This Trigger enables you to create Data at scheduled intervals, via 6-point cron
 ![Another Flow](https://cdn.directus.io/docs/v9/configuration/flows/triggers/triggers-20220603A/another-flow-20220602A.webp)
 
 This Trigger executes a Flow via the [Trigger Flow](/configuration/flows/operations/#another-flow) Operation, allowing
-you to connect Flows together in a chain.
+you to chain Flows together.
 
 - **Response Body** — Select data to return in the response to the Trigger Flow.
 

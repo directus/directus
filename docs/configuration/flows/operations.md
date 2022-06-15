@@ -87,15 +87,10 @@ select the Items you wish to update.
 
 ![Log to Console](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/log-to-console-20220603A.webp)
 
-This Operation outputs something to the console. This Operation is a key tool for troubleshooting Flow configuration.
+This Operation outputs something to the server-side console as well as the [Log Panel](/configuration/flows/#logs). This
+is a key tool for troubleshooting Flow configuration.
 
 - **Message** — Sets a [log message](#configuration/flows/flows/logs).
-
-:::tip
-
-This Operation will be delivered to your in-app Log Panel and also logged to the server-side console.
-
-:::
 
 ## Send Email
 
