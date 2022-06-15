@@ -9,12 +9,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue';
 import { Filter } from '@directus/shared/types';
-import { useI18n } from 'vue-i18n';
-import { isNil } from 'lodash';
 import { abbreviateNumber } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
+import { isNil } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	showHeader?: boolean;
@@ -24,7 +24,7 @@ interface Props {
 	field: string;
 	function: string;
 	filter?: Filter;
-	data?: Record<string, any>;
+	data?: Record<string, any>[];
 	decimals?: number;
 	conditionalFormatting?: Record<string, any>[];
 	prefix?: string | null;
@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
 	showHeader: false,
 	abbreviate: false,
 	sortField: undefined,
-	data: () => ({}),
+	data: () => [],
 	filter: () => ({}),
 	decimals: 0,
 	conditionalFormatting: () => [],
@@ -46,6 +46,8 @@ const props = withDefaults(defineProps<Props>(), {
 const { n } = useI18n();
 
 const metric = computed(() => {
+	if (!props.data || props.data.length === 0) return null;
+
 	if (props.field) {
 		if (props.function === 'first' || props.function === 'last') {
 			if (typeof props.data[0][props.field] === 'string') {
