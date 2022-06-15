@@ -233,7 +233,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 		if (operator === '_between') {
 			if (
-				(compareValue as any).every((value: any) => Number.isSafeInteger(Number(value instanceof Date ? NaN : value)))
+				(compareValue as any).every((value: any) => {
+					const val = Number(value instanceof Date ? NaN : value);
+					return !Number.isNaN(val) && Math.abs(val) <= Number.MAX_SAFE_INTEGER;
+				})
 			) {
 				const values = compareValue as [number, number];
 				schema[key] = getNumberSchema().min(Number(values[0])).max(Number(values[1]));
@@ -245,7 +248,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 		if (operator === '_nbetween') {
 			if (
-				(compareValue as any).every((value: any) => Number.isSafeInteger(Number(value instanceof Date ? NaN : value)))
+				(compareValue as any).every((value: any) => {
+					const val = Number(value instanceof Date ? NaN : value);
+					return !Number.isNaN(val) && Math.abs(val) <= Number.MAX_SAFE_INTEGER;
+				})
 			) {
 				const values = compareValue as [number, number];
 				schema[key] = getNumberSchema().less(Number(values[0])).greater(Number(values[1]));

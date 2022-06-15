@@ -483,6 +483,16 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for an _between float match`, () => {
+		const mockFieldFilter = { field: { _between: [1.111, 3.333] } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.number().min(1.111).max(3.333),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for an _between date match`, () => {
 		const mockFieldFilter = { field: { _between: [date, compareDate] } } as FieldFilter;
 		const mockSchema = Joi.object({
@@ -497,6 +507,16 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _nbetween: [1, 3] } } as FieldFilter;
 		const mockSchema = Joi.object({
 			field: Joi.number().less(1).greater(3),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an _nbetween float match`, () => {
+		const mockFieldFilter = { field: { _nbetween: [1.111, 3.333] } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.number().less(1.111).greater(3.333),
 		})
 			.unknown()
 			.describe();
