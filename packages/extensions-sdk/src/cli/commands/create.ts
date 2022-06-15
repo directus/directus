@@ -30,7 +30,7 @@ export default async function create(type: string, name: string, options: Create
 
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
-			`Extension type ${chalk.bold(type)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) =>
+			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
 				chalk.bold.magenta(t)
 			).join(', ')}.`,
 			'error'
