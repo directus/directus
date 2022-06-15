@@ -1,7 +1,6 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { adjustDate, definePanel } from '@directus/shared/utils';
-import PanelTimeSeries from './time-series.vue';
 import { getGroups } from '@/utils/get-groups';
+import { definePanel } from '@directus/shared/utils';
+import PanelTimeSeries from './time-series.vue';
 
 export default definePanel({
 	id: 'time-series',
@@ -13,7 +12,7 @@ export default definePanel({
 			return;
 		}
 
-		const response = {
+		return {
 			groupBy: getGroups(options.precision, options.dateField),
 			aggregate: {
 				[options.function]: [options.valueField],
@@ -35,7 +34,6 @@ export default definePanel({
 			},
 			limit: -1,
 		};
-		return response;
 	},
 	component: PanelTimeSeries,
 	options: [
