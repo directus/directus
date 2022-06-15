@@ -15,8 +15,8 @@ Please be sure to read [Learn Directus](/getting-started/learn-directus).
 
 :::tip Learn More
 
-There is also dedicated API documentation on [Flows](/docs/reference/system/flows.md) and
-[Operations](docs/reference/system/operations.md).
+There is also dedicated API documentation on [Flows](/reference/system/flows) and
+[Operations](/reference/system/operations).
 
 :::
 
