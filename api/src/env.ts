@@ -171,6 +171,7 @@ const defaults: Record<string, any> = {
 	PORT: 8055,
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
+	MAX_RELATIONAL_DEPTH: 10,
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 

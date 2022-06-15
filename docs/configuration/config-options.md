@@ -197,6 +197,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 | `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`        |
 | `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`        |
+| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`          |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
