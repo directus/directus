@@ -27,13 +27,13 @@ import {
 	GraphQLUnionType,
 	InlineFragmentNode,
 	IntValueNode,
-	Kind,
 	ObjectFieldNode,
 	ObjectValueNode,
 	SelectionNode,
 	specifiedRules,
 	StringValueNode,
 	validate,
+	Kind,
 } from 'graphql';
 import {
 	GraphQLJSON,
@@ -47,41 +47,45 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, isObject, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
-import { clearSystemCache, getCache } from '../cache';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
-import { getExtensionManager } from '../extensions';
-import { AbstractServiceOptions, GraphQLParams, Item } from '../types';
-import { generateHash } from '../utils/generate-hash';
-import { getGraphQLType } from '../utils/get-graphql-type';
-import { reduceSchema } from '../utils/reduce-schema';
-import { sanitizeQuery } from '../utils/sanitize-query';
-import { validateQuery } from '../utils/validate-query';
-import { ActivityService } from './activity';
-import { AuthenticationService } from './authentication';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
-import { FilesService } from './files';
-import { FlowsService } from './flows';
-import { FoldersService } from './folders';
-import { ItemsService } from './items';
-import { NotificationsService } from './notifications';
-import { OperationsService } from './operations';
-import { PermissionsService } from './permissions';
-import { PresetsService } from './presets';
-import { RelationsService } from './relations';
-import { RevisionsService } from './revisions';
-import { RolesService } from './roles';
-import { ServerService } from './server';
-import { SettingsService } from './settings';
-import { SharesService } from './shares';
-import { SpecificationService } from './specifications';
-import { TFAService } from './tfa';
-import { UsersService } from './users';
-import { UtilsService } from './utils';
-import { WebhooksService } from './webhooks';
+import { clearSystemCache, getCache } from '../../cache';
+import { DEFAULT_AUTH_PROVIDER } from '../../constants';
+import getDatabase from '../../database';
+import env from '../../env';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
+import { getExtensionManager } from '../../extensions';
+import { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
+import { generateHash } from '../../utils/generate-hash';
+import { getGraphQLType } from '../../utils/get-graphql-type';
+import { reduceSchema } from '../../utils/reduce-schema';
+import { sanitizeQuery } from '../../utils/sanitize-query';
+import { validateQuery } from '../../utils/validate-query';
+import { ActivityService } from '../activity';
+import { AuthenticationService } from '../authentication';
+import { CollectionsService } from '../collections';
+import { FieldsService } from '../fields';
+import { FilesService } from '../files';
+import { FlowsService } from '../flows';
+import { FoldersService } from '../folders';
+import { ItemsService } from '../items';
+import { NotificationsService } from '../notifications';
+import { OperationsService } from '../operations';
+import { PermissionsService } from '../permissions';
+import { PresetsService } from '../presets';
+import { RelationsService } from '../relations';
+import { RevisionsService } from '../revisions';
+import { RolesService } from '../roles';
+import { ServerService } from '../server';
+import { SettingsService } from '../settings';
+import { SharesService } from '../shares';
+import { SpecificationService } from '../specifications';
+import { TFAService } from '../tfa';
+import { UsersService } from '../users';
+import { UtilsService } from '../utils';
+import { WebhooksService } from '../webhooks';
+
+import { GraphQLVoid } from './types/void';
+import { GraphQLGeoJSON } from './types/geojson';
+import { GraphQLDate } from './types/date';
 
 const stringNumber = (value: number | string) => {
 	if (!Number.isNaN(value)) {
@@ -89,36 +93,6 @@ const stringNumber = (value: number | string) => {
 	}
 	return String(value);
 };
-
-const GraphQLVoid = new GraphQLScalarType({
-	name: 'Void',
-
-	description: 'Represents NULL values',
-
-	serialize() {
-		return null;
-	},
-
-	parseValue() {
-		return null;
-	},
-
-	parseLiteral() {
-		return null;
-	},
-});
-
-export const GraphQLGeoJSON = new GraphQLScalarType({
-	...GraphQLJSON,
-	name: 'GraphQLGeoJSON',
-	description: 'GeoJSON value',
-});
-
-export const GraphQLDate = new GraphQLScalarType({
-	...GraphQLString,
-	name: 'Date',
-	description: 'ISO8601 Date values',
-});
 
 export const FilterStrNumber = new GraphQLScalarType({
 	name: 'FilterStrNumber',
