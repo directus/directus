@@ -63,6 +63,7 @@ export type JoiOptions = {
 };
 
 const defaults: JoiOptions = {
+	allowUnknown: true,
 	requireAll: false,
 };
 
@@ -273,13 +274,13 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 	schema[key] = schema[key] ?? Joi.any();
 
-	if (options.allowUnknown) {
-		return Joi.object(schema).unknown();
-	}
-
 	if (options.requireAll) {
 		schema[key] = schema[key]!.required();
 	}
 
-	return Joi.object(schema).unknown();
+	if (options.allowUnknown) {
+		return Joi.object(schema).unknown();
+	}
+
+	return Joi.object(schema);
 }
