@@ -927,7 +927,7 @@ select: Seleziona...
 layout: Layout
 tree_view: Struttura ad albero
 changes_are_permanent: Modifiche sono permanenti
-preset_name_placeholder: Serve come predefinito quando vuoto...
+preset_name_placeholder: Se il nome è vuoto è il preset predefinito...
 preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
@@ -1397,7 +1397,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
