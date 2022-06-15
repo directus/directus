@@ -98,9 +98,9 @@ export default defineComponent({
 
 		const optionDefaults = computed(() => {
 			const selectedInterface = getInterface(interfaceID.value);
-			if (!selectedInterface) return [];
+			if (!selectedInterface || !selectedInterface.options) return [];
 
-			let optionsObjectOrArray = [];
+			let optionsObjectOrArray;
 
 			if (typeof selectedInterface.options === 'function') {
 				optionsObjectOrArray = selectedInterface.options({
@@ -108,7 +108,7 @@ export default defineComponent({
 						type: 'unknown',
 					},
 					editing: '+',
-					collection: collection,
+					collection: collection.value,
 					relations: {
 						o2m: undefined,
 						m2o: undefined,
@@ -130,7 +130,7 @@ export default defineComponent({
 					saving: false,
 				});
 			} else {
-				optionsObjectOrArray = selectedInterface.value.options;
+				optionsObjectOrArray = selectedInterface.options;
 			}
 			const optionsArray = Array.isArray(optionsObjectOrArray)
 				? optionsObjectOrArray

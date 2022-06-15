@@ -1,6 +1,6 @@
 /**
  * @NOTE
- * See example.env for all possible keys
+ * For all possible keys, see: https://docs.directus.io/configuration/config-options/
  */
 
 import dotenv from 'dotenv';
@@ -24,22 +24,11 @@ const allowedEnvironmentVars = [
 	'ROOT_REDIRECT',
 	'SERVE_APP',
 	'GRAPHQL_INTROSPECTION',
+	'LOGGER_.+',
 	// server
-	'SERVER_KEEP_ALIVE_TIMEOUT',
-	'SERVER_HEADERS_TIMEOUT',
+	'SERVER_.+',
 	// database
-	'DB_CLIENT',
-	'DB_HOST',
-	'DB_PORT',
-	'DB_DATABASE',
-	'DB_USER',
-	'DB_PASSWORD',
-	'DB_FILENAME',
-	'DB_CONNECTION_STRING',
-	'DB_POOL_.+',
-	'DB_EXCLUDE_TABLES',
-	'DB_CHARSET',
-	'DB_VERSION',
+	'DB_.+',
 	// security
 	'KEY',
 	'SECRET',
@@ -56,14 +45,9 @@ const allowedEnvironmentVars = [
 	'ASSETS_CONTENT_SECURITY_POLICY',
 	'IMPORT_IP_DENY_LIST',
 	'CONTENT_SECURITY_POLICY_.+',
-	'HSTS_.+', // covers 'HSTS_ENABLED' too
+	'HSTS_.+',
 	// hashing
-	'HASH_MEMORY_COST',
-	'HASH_LENGTH',
-	'HASH_TIME_COST',
-	'HASH_PARALLELISM',
-	'HASH_TYPE',
-	'HASH_ASSOCIATED_DATA',
+	'HASH_.+',
 	// cors
 	'CORS_ENABLED',
 	'CORS_ORIGIN',
@@ -73,15 +57,7 @@ const allowedEnvironmentVars = [
 	'CORS_CREDENTIALS',
 	'CORS_MAX_AGE',
 	// rate limiting
-	'RATE_LIMITER_ENABLED',
-	'RATE_LIMITER_POINTS',
-	'RATE_LIMITER_DURATION',
-	'RATE_LIMITER_STORE',
-	'RATE_LIMITER_REDIS',
-	'RATE_LIMITER_REDIS_HOST',
-	'RATE_LIMITER_REDIS_PORT',
-	'RATE_LIMITER_REDIS_PASSWORD',
-	'RATE_LIMITER_MEMCACHE',
+	'RATE_LIMITER_.+',
 	// cache
 	'CACHE_ENABLED',
 	'CACHE_TTL',
@@ -98,6 +74,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PORT',
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
+	'CACHE_VALUE_MAX_SIZE',
 	// storage
 	'STORAGE_LOCATIONS',
 	'STORAGE_.+_DRIVER',
@@ -194,6 +171,7 @@ const defaults: Record<string, any> = {
 	PORT: 8055,
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
+	MAX_RELATIONAL_DEPTH: 10,
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
@@ -230,6 +208,7 @@ const defaults: Record<string, any> = {
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
 	CACHE_PERMISSIONS: true,
+	CACHE_VALUE_MAX_SIZE: false,
 
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
