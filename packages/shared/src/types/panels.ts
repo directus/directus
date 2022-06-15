@@ -8,7 +8,7 @@ export interface PanelConfig {
 	name: string;
 	icon: string;
 	description?: string;
-	query?: (options: Record<string, any>) => (Record<string, any> | Query) | Record<string, any> | undefined;
+	query?: (options: Record<string, any>) => Query | undefined;
 	component: Component;
 	options:
 		| DeepPartial<Field>[]
