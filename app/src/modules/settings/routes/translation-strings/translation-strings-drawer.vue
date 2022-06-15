@@ -79,7 +79,7 @@ const formValues = computed<TranslationString>({
 		values.value.key = val.key;
 
 		if (!val.translations) {
-			values.value.translations = null;
+			values.value.translations = val.translations;
 			return;
 		}
 
