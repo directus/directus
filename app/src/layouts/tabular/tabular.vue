@@ -200,7 +200,7 @@ interface Props {
 	loading: boolean;
 	error?: any;
 	totalPages: number;
-	tableSort?: { by: string; desc: boolean } | null;
+	tableSort?: { by: string; desc: boolean; cast?: 'numeric' } | null;
 	onRowClick: (item: Item) => void;
 	tableRowHeight: number;
 	page: number;
@@ -216,7 +216,7 @@ interface Props {
 	selectAll: () => void;
 	filterUser?: Filter;
 	search?: string;
-	onSortChange?: (newSort: { by: string; desc: boolean }) => void;
+	onSortChange?: (newSort: { by: string; desc: boolean; cast?: 'numeric' }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
 }
 

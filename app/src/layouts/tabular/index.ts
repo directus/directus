@@ -184,16 +184,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useTable() {
-			const tableSort = computed(() => {
-				if (!sort.value?.[0]) {
-					return null;
-				} else if (sort.value?.[0].startsWith('-')) {
-					return { by: sort.value[0].substring(1), desc: true };
-				} else {
-					return { by: sort.value[0], desc: false };
-				}
-			});
-
 			const localWidths = ref<{ [field: string]: number }>({});
 
 			watch(
@@ -287,6 +277,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					case 'comfortable':
 						return 64;
 				}
+			});
+
+			const tableSort = computed(() => {
+				if (!sort.value?.[0]) {
+					return null;
+				}
+				const sortBy: string = sort.value[0];
+				const sortDesc: boolean = sortBy.startsWith('-');
+				const sortType = tableHeaders.value.find((h) => h.value === sortBy)?.field?.type;
+				if (sortType === 'bigInteger') {
+					// these are sent as strings in JSON
+					return { by: sortBy, desc: sortDesc, cast: 'numeric' };
+				}
+				return { by: sortBy, desc: sortDesc };
 			});
 
 			return {
