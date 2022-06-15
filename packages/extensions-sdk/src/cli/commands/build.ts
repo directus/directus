@@ -18,8 +18,14 @@ import typescript from 'rollup-plugin-typescript2';
 import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
-import { EXTENSION_PKG_KEY, EXTENSION_TYPES, APP_SHARED_DEPS, API_SHARED_DEPS } from '@directus/shared/constants';
-import { isAppExtension, isExtension, validateExtensionManifest } from '@directus/shared/utils';
+import {
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+	API_SHARED_DEPS,
+	APP_EXTENSION_TYPES,
+} from '@directus/shared/constants';
+import { isIn, validateExtensionManifest } from '@directus/shared/utils';
 import { ExtensionManifestRaw, ExtensionType } from '@directus/shared/types';
 import { log, clear } from '../utils/logger';
 import { getLanguageFromPath, isLanguage } from '../utils/languages';
@@ -57,7 +63,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 	const type = options.type || extensionOptions?.type;
 
-	if (!type || !isExtension(type)) {
+	if (!type || !isIn(type, EXTENSION_TYPES)) {
 		log(
 			`Extension type ${chalk.bold(type)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) =>
 				chalk.bold.magenta(t)
@@ -144,7 +150,7 @@ function getRollupOptions(
 	plugins: Plugin[] = [],
 	options: BuildOptions
 ): RollupOptions {
-	if (isAppExtension(type)) {
+	if (isIn(type, APP_EXTENSION_TYPES)) {
 		return {
 			input,
 			external: APP_SHARED_DEPS,
@@ -188,7 +194,7 @@ function getRollupOptions(
 }
 
 function getRollupOutputOptions(type: ExtensionType, output: string, options: BuildOptions): RollupOutputOptions {
-	if (isAppExtension(type)) {
+	if (isIn(type, APP_EXTENSION_TYPES)) {
 		return {
 			file: output,
 			format: 'es',

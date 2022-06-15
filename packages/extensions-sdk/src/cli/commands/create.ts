@@ -3,8 +3,15 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import execa from 'execa';
 import ora from 'ora';
-import { EXTENSION_TYPES, EXTENSION_PKG_KEY, EXTENSION_LANGUAGES } from '@directus/shared/constants';
-import { isApiExtension, isAppExtension, isExtension, isHybridExtension } from '@directus/shared/utils';
+import {
+	EXTENSION_TYPES,
+	EXTENSION_PKG_KEY,
+	EXTENSION_LANGUAGES,
+	HYBRID_EXTENSION_TYPES,
+	API_OR_HYBRID_EXTENSION_TYPES,
+	APP_OR_HYBRID_EXTENSION_TYPES,
+} from '@directus/shared/constants';
+import { isIn } from '@directus/shared/utils';
 import { ExtensionType } from '@directus/shared/types';
 import { log } from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
@@ -21,7 +28,7 @@ type CreateOptions = { language: string };
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
 	const targetPath = path.resolve(name);
 
-	if (!isExtension(type)) {
+	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
 			`Extension type ${chalk.bold(type)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) =>
 				chalk.bold.magenta(t)
@@ -65,8 +72,8 @@ export default async function create(type: string, name: string, options: Create
 	await fse.copy(path.join(TEMPLATE_PATH, type, options.language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
-	const entryPath = isHybridExtension(type) ? { app: 'dist/app.js', api: 'dist/api.js' } : 'dist/index.js';
-	const sourcePath = isHybridExtension(type)
+	const entryPath = isIn(type, HYBRID_EXTENSION_TYPES) ? { app: 'dist/app.js', api: 'dist/api.js' } : 'dist/index.js';
+	const sourcePath = isIn(type, HYBRID_EXTENSION_TYPES)
 		? { app: `src/app.${languageToShort(options.language)}`, api: `src/api.${languageToShort(options.language)}` }
 		: `src/index.${languageToShort(options.language)}`;
 
@@ -106,10 +113,12 @@ async function getPackageDeps(type: ExtensionType, language: Language) {
 		'@directus/extensions-sdk': pkg.version,
 		...(language === 'typescript'
 			? {
-					...(isApiExtension(type) ? { '@types/node': `^${await getPackageVersion('@types/node')}` } : {}),
+					...(isIn(type, API_OR_HYBRID_EXTENSION_TYPES)
+						? { '@types/node': `^${await getPackageVersion('@types/node')}` }
+						: {}),
 					typescript: `^${await getPackageVersion('typescript')}`,
 			  }
 			: {}),
-		...(isAppExtension(type) ? { vue: `^${await getPackageVersion('vue')}` } : {}),
+		...(isIn(type, APP_OR_HYBRID_EXTENSION_TYPES) ? { vue: `^${await getPackageVersion('vue')}` } : {}),
 	};
 }

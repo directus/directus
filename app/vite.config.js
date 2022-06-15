@@ -9,7 +9,11 @@ import {
 	getLocalExtensions,
 	generateExtensionsEntry,
 } from '@directus/shared/utils/node';
-import { APP_SHARED_DEPS, APP_EXTENSION_TYPES, APP_EXTENSION_PACKAGE_TYPES } from '@directus/shared/constants';
+import {
+	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
+	APP_OR_HYBRID_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+} from '@directus/shared/constants';
 import hljs from 'highlight.js';
 import hljsGraphQL from './src/utils/hljs-graphql';
 
@@ -144,7 +148,7 @@ export default defineConfig({
 
 function directusExtensions() {
 	const prefix = '@directus-extensions-';
-	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
+	const virtualIds = APP_OR_HYBRID_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
 	let extensionEntrypoints = {};
 
@@ -198,13 +202,13 @@ function directusExtensions() {
 		const apiPath = path.join('..', 'api');
 		const extensionsPath = path.join(apiPath, 'extensions');
 
-		await ensureExtensionDirs(extensionsPath, APP_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(apiPath, APP_EXTENSION_PACKAGE_TYPES);
-		const localExtensions = await getLocalExtensions(extensionsPath, APP_EXTENSION_TYPES);
+		await ensureExtensionDirs(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
+		const packageExtensions = await getPackageExtensions(apiPath, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const localExtensions = await getLocalExtensions(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
 
 		const extensions = [...packageExtensions, ...localExtensions];
 
-		for (const extensionType of APP_EXTENSION_TYPES) {
+		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
 			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
 		}
 	}
