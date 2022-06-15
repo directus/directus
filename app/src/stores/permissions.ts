@@ -1,6 +1,7 @@
 import api from '@/api';
 import { Permission } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
+import { parsePreset } from '@/utils/parse-preset';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
 
@@ -24,6 +25,10 @@ export const usePermissionsStore = defineStore({
 
 				if (rawPermission.validation) {
 					rawPermission.validation = parseFilter(rawPermission.validation);
+				}
+
+				if (rawPermission.presets) {
+					rawPermission.presets = parsePreset(rawPermission.presets);
 				}
 
 				return rawPermission;

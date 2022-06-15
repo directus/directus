@@ -1,5 +1,5 @@
 <template>
-	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
+	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
 		<v-checkbox
 			v-if="batchMode"
 			:model-value="batchActive"
@@ -9,10 +9,10 @@
 		<span class="field-name" @click="toggle">
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />
-			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
+			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
+			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
-		<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 	</div>
 </template>
 
@@ -74,7 +74,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.label {
+.field-label {
 	position: relative;
 	display: flex;
 	margin-bottom: 8px;
@@ -96,13 +96,18 @@ export default defineComponent({
 
 	.v-chip {
 		margin: 0;
-		margin-left: 8px;
+		flex-shrink: 0;
+		margin-left: 3px;
 	}
 
 	.required {
 		--v-icon-color: var(--primary);
 
 		margin-left: 3px;
+
+		&.has-badge {
+			margin-right: 6px;
+		}
 	}
 
 	.ctx-arrow {

@@ -126,6 +126,8 @@ export default function useImage(
 	}
 
 	function saveImage() {
+		editor.value.fire('focus');
+
 		const img = imageSelection.value;
 		if (img === null) return;
 
