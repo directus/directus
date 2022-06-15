@@ -2724,26 +2724,6 @@ export class GraphQLService {
 			});
 		}
 
-		if ('directus_settings' in schema.update.collections) {
-			schemaComposer.Mutation.addFields({
-				update_theme_overrides: {
-					type: ReadCollectionTypes['directus_settings'],
-					args: {
-						data: GraphQLJSON,
-					},
-					resolve: async (_, args, { req }) => {
-						const service = new SettingsService({
-							accountability: this.accountability,
-							schema: this.schema,
-						});
-						await service.updateThemeOverrides(args.data, req!.sanitizedQuery);
-						const result = await service.readSingleton(req!.sanitizedQuery);
-						return result;
-					},
-				},
-			});
-		}
-
 		return schemaComposer;
 	}
 }
