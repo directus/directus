@@ -15,6 +15,17 @@ export type SettingsModuleBarLink = {
 	locked?: boolean;
 };
 
+export type SettingsStorageAssetPreset = {
+	key: string | null;
+	fit: 'contain' | 'cover' | 'inside' | 'outside' | null;
+	width: number | null;
+	height: number | null;
+	quality: number | null;
+	withoutEnlargement: boolean | null;
+	format: 'jpeg' | 'png' | 'webp' | 'tiff' | null;
+	transforms: any[] | null;
+};
+
 export type Settings = {
 	id: 1;
 	project_name: string;
@@ -27,18 +38,7 @@ export type Settings = {
 	auth_login_attempts: number;
 	auth_password_policy: string | null;
 	storage_asset_transform: string;
-	storage_asset_presets:
-		| {
-				key: string | null;
-				fit: 'contain' | 'cover' | 'inside' | 'outside' | null;
-				width: number | null;
-				height: number | null;
-				quality: number | null;
-				withoutEnlargement: boolean | null;
-				format: 'jpeg' | 'png' | 'webp' | 'tiff' | null;
-				transforms: any[] | null;
-		  }[]
-		| null;
+	storage_asset_presets: SettingsStorageAssetPreset[] | null;
 	custom_css: string | null;
 	storage_default_folder: string | null;
 	basemaps: any[] | null;

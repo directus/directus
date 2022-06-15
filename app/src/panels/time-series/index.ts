@@ -208,6 +208,7 @@ export default definePanel({
 						},
 						options: {
 							allowPrimaryKey: true,
+							typeAllowList: ['integer', 'bigInteger', 'uuid', 'string'],
 						},
 					},
 				],

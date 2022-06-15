@@ -183,6 +183,8 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 	}
 
 	function saveMedia() {
+		editor.value.fire('focus');
+
 		if (embed.value === '') return;
 
 		if (startEmbed.value !== '') {

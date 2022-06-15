@@ -84,7 +84,8 @@ Standard Projects come with the following configuration options:
 
 - **Project Name** — Custom. _This can be changed at any time with no impact on the Project_.
 - **Project URL** — Custom URL: `your-custom-url.directus.app`. _This cannot be changed_.
-- [Datacenter Region](/cloud/glossary/#datacenter-regions) — `United States, East` or `Europe, Frankfurt`.
+- [Datacenter Region](/cloud/glossary/#datacenter-regions) — `United States, East`, `Europe, Frankfurt` or
+  `Asia Pacific, Singapore`.
 - [Node Type](/cloud/glossary/#node-types) — General Purpose or Performance Tier Nodes.
 - [Load Balancing](/cloud/glossary/#load-balancing) — 1-6 Active Nodes.
 - [Auto-Scaling](/cloud/glossary/#auto-scaling) — 0-5 Standby Nodes.
@@ -114,7 +115,7 @@ Enterprise tier offers power and scale to meet any Project's needs and offers 19
 [Datacenter regions](/cloud/glossary/#datacenter-regions), upgraded [support options](/cloud/glossary/#support-options),
 and much more.
 
-:::tip Ready to to go Enterprise?
+:::tip Ready to go Enterprise?
 
 [Contact Sales](https://directus.io/contact/)
 
@@ -203,7 +204,7 @@ On Standard Projects, it's possible to change the Project Name as well as reconf
 Each Enterprise Project is customized, so it can't be managed from the Cloud Dashboard. The Project will be managed in
 tandem with the Directus Core Team.
 
-:::tip Ready to to go Enterprise?
+:::tip Ready to go Enterprise?
 
 [Contact Sales](https://directus.io/contact/)
 

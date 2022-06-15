@@ -1,5 +1,4 @@
-export const TYPES = [
-	'alias',
+export const KNEX_TYPES = [
 	'bigInteger',
 	'boolean',
 	'date',
@@ -14,6 +13,11 @@ export const TYPES = [
 	'timestamp',
 	'binary',
 	'uuid',
+] as const;
+
+export const TYPES = [
+	...KNEX_TYPES,
+	'alias',
 	'hash',
 	'csv',
 	'geometry',
