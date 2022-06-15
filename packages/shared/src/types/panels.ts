@@ -3,12 +3,14 @@ import { DeepPartial } from './misc';
 import { Field } from './fields';
 import { Query } from './query';
 
+type PanelQuery = { collection: string; query: Query };
+
 export interface PanelConfig {
 	id: string;
 	name: string;
 	icon: string;
 	description?: string;
-	query?: (options: Record<string, any>) => Query | undefined;
+	query?: (options: Record<string, any>) => PanelQuery | PanelQuery[] | undefined;
 	component: Component;
 	options:
 		| DeepPartial<Field>[]

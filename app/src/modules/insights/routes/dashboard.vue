@@ -343,38 +343,22 @@ const queryObject = computed<Record<string, any>>(() => {
 	const systemCollectionQueries: Record<string, any> = {};
 	const userCollectionQueries: Record<string, any> = {};
 
-	if (!isEmpty(stagedPanels.value)) {
-		for (const panel of stagedPanels.value) {
-			const type = panelsInfo.value.find((panelsInfo) => panelsInfo.id === panel.type);
-			if (type?.query && panel?.id && panel.options?.collection) {
-				if (panel.options?.collection.startsWith('directus')) {
-					const collection = panel.options.collection.substring(7);
-					const query = type.query(panel.options);
+	const allPanels = [...(stagedPanels.value ?? []), ...(panels.value ?? [])];
 
-					systemCollectionQueries[panel.id] = { collection, query };
-				} else {
-					const query = type.query(panel.options);
-					userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
-				}
+	for (const panel of allPanels) {
+		const type = panelsInfo.value.find((panelType) => panelType.id === panel.type);
+
+		if (type?.query && panel?.id) {
+			const { collection, query } = type.query(panel.options ?? {});
+
+			if (collection.startsWith('directus_')) {
+				systemCollectionQueries[panel.id] = { collection: collection.substring(9), query };
+			} else {
+				userCollectionQueries[panel.id] = { collection, query };
 			}
 		}
 	}
-	if (!isEmpty(panels.value)) {
-		for (const panel of panels.value) {
-			const type = panelsInfo.value.find((panelType) => panelType.id === panel.type);
-			if (type?.query && panel?.id && panel.options?.collection) {
-				if (panel.options?.collection.startsWith('directus')) {
-					const collection = panel.options.collection.substring(9);
-					const query = type.query(panel.options);
 
-					systemCollectionQueries[panel.id] = { collection, query };
-				} else {
-					const query = type.query(panel.options);
-					userCollectionQueries[panel.id] = { collection: panel.options.collection, query };
-				}
-			}
-		}
-	}
 	return { systemCollectionQueries, userCollectionQueries };
 });
 

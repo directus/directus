@@ -10,7 +10,7 @@ export default definePanel({
 	description: '$t:panels.metric.description',
 	icon: 'functions',
 	component: PanelMetric,
-	query: (options): Query | undefined => {
+	query(options) {
 		if (!options || !options.function) return;
 		const isRawValue = ['first', 'last'].includes(options.function);
 
@@ -23,17 +23,23 @@ export default definePanel({
 			  };
 		if (aggregate) {
 			return {
-				aggregate,
-				filter: options.filter ?? {},
-				sort: sort,
-				limit: 1,
+				collection: options.collection,
+				query: {
+					aggregate,
+					filter: options.filter ?? {},
+					sort: sort,
+					limit: 1,
+				},
 			};
 		}
 		return {
-			filter: options.filter ?? {},
-			sort: sort,
-			limit: 1,
-			fields: [options.field],
+			collection: options.collection,
+			query: {
+				filter: options.filter ?? {},
+				sort: sort,
+				limit: 1,
+				fields: [options.field],
+			},
 		};
 	},
 	options: ({ options }) => {

@@ -7,32 +7,35 @@ export default definePanel({
 	name: '$t:panels.time_series.name',
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
-	query: (options: Record<string, any>) => {
+	query(options) {
 		if (!options?.function || !options.valueField || !options.dateField) {
 			return;
 		}
 
 		return {
-			groupBy: getGroups(options.precision, options.dateField),
-			aggregate: {
-				[options.function]: [options.valueField],
-			},
-			filter: {
-				_and: [
-					{
-						[options.dateField]: {
-							_gte: `$NOW(-${options.range || '1 week'})`,
+			collection: options.collection,
+			query: {
+				groupBy: getGroups(options.precision, options.dateField),
+				aggregate: {
+					[options.function]: [options.valueField],
+				},
+				filter: {
+					_and: [
+						{
+							[options.dateField]: {
+								_gte: `$NOW(-${options.range || '1 week'})`,
+							},
 						},
-					},
-					{
-						[options.dateField]: {
-							_lte: `$NOW`,
+						{
+							[options.dateField]: {
+								_lte: `$NOW`,
+							},
 						},
-					},
-					options.filter || {},
-				],
+						options.filter || {},
+					],
+				},
+				limit: -1,
 			},
-			limit: -1,
 		};
 	},
 	component: PanelTimeSeries,

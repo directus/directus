@@ -9,7 +9,7 @@ export default definePanel({
 	description: '$t:panels.list.description',
 	icon: 'list',
 	component: PanelList,
-	query: (options) => {
+	query(options) {
 		if (!options?.collection) return;
 
 		const fieldsStore = useFieldsStore();
@@ -25,10 +25,13 @@ export default definePanel({
 		}
 
 		return {
-			filter: options.filter ?? {},
-			fields: displayFields,
-			sort: options.sortDirection === 'desc' ? `-${sort}` : sort,
-			limit: options.limit === undefined ? 5 : options.limit,
+			collection: options.collection,
+			query: {
+				filter: options.filter ?? {},
+				fields: displayFields,
+				sort: options.sortDirection === 'desc' ? `-${sort}` : sort,
+				limit: options.limit === undefined ? 5 : options.limit,
+			},
 		};
 	},
 	options: [
