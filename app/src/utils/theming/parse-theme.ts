@@ -1,6 +1,9 @@
 import { Theme } from '@directus/shared/types';
+import Color from 'color';
 import { flatten } from 'flat';
-import { get, isArray } from 'lodash';
+import { get, isArray, mergeWith } from 'lodash';
+
+const hexRegex = /^#[0-9a-f]{1,6}/i;
 
 // Convert object to keys of flattened object paths, and values of valid CSS strings
 function resolveCSSValues(object: Record<any, any> = {}, prefix = '', suffix = '', join = '-') {
@@ -18,8 +21,15 @@ function resolveCSSValues(object: Record<any, any> = {}, prefix = '', suffix = '
 			value = value.join(', ');
 		}
 		// Convert numbers to pixel values
-		else if (!isNaN(Number(value))) {
+		else if (!isNaN(parseFloat(value))) {
 			value = `${value}px`;
+		} else {
+			try {
+				const valAsColor = Color(value);
+				value = valAsColor.hex().toUpperCase();
+			} catch {
+				// Color errored out, don't change value to hex
+			}
 		}
 		return `${prefix}${key}: ${value}${suffix}`;
 	});
@@ -129,4 +139,56 @@ export function extractFontsFromTheme(theme: Partial<Theme['theme']> = {}, exclu
 		}
 	}
 	return externalFonts;
+}
+
+export function applyThemeOverrides(base: Record<string, any>, overrides: Record<string, any>) {
+	/**
+	 * When merging values, we'll treat the base theme values as the source of typings.
+	 * If possible, we'll make the override value conform to that type.
+	 */
+	return mergeWith({}, base, overrides, (sourceVal, overrideVal) => {
+		/**
+		 * If we run into an array, we'll add the incoming value to the
+		 * beginning of the existing array, instead of overwriting it.
+		 */
+		if (isArray(sourceVal)) {
+			if (typeof overrideVal === 'string') {
+				sourceVal.unshift(overrideVal);
+				return sourceVal;
+			}
+			return overrideVal.concat(sourceVal);
+		}
+
+		if (!isNaN(parseFloat(sourceVal))) {
+			/**
+			 * If an override for a numeric field happened to be passed as a string,
+			 * possibly with a unit, we need to only parse the numeric value.
+			 */
+			return parseFloat(sourceVal);
+		}
+
+		// If override value is valid color, return hex representation
+		if (typeof sourceVal === 'string') {
+			if (overrideVal[0] === '#') {
+				overrideVal = overrideVal.substring(0, 7);
+			}
+			try {
+				// If the source is a valid color, we'll ensure the override is as well.
+				Color(sourceVal);
+				try {
+					return Color(overrideVal).hex().toUpperCase();
+				} catch {
+					// If value is partial (but invalid) hex string, return source value
+					if (hexRegex.test(overrideVal.trim())) {
+						return sourceVal;
+					}
+				}
+			} catch {
+				// Our source isn't a color, move on
+			}
+		}
+
+		// If we got here, just defer merging to default method
+		return undefined;
+	});
 }

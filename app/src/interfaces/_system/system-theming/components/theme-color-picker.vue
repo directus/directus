@@ -32,12 +32,10 @@ interface Props {
 	fieldData?: Field;
 	disabled?: boolean;
 	validationErrors?: ValidationError[];
-	defaultValue?: string;
 }
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	validationErrors: () => [],
-	defaultValue: '',
 	fieldData: undefined,
 });
 
@@ -47,10 +45,9 @@ const hiddenSourceInput: Ref<HTMLInputElement | null> = ref(null);
 
 const inputValue: ComputedRef<string> = computed(() => {
 	try {
-		const receivedColor = Color(props.modelValue);
-		return receivedColor.hex().toUpperCase();
+		return Color(props.modelValue).hex().toUpperCase();
 	} catch {
-		return inputValue.value || '#cccccc';
+		return inputValue.value || props.fieldData.schema?.default_value || '#CCCCCC';
 	}
 });
 

@@ -6,10 +6,16 @@ import { notify } from '@/utils/notify';
 import { i18n } from '@/lang';
 import { RawField, Theme, User } from '@directus/shared/types';
 import { baseLight, baseDark, themeEditorFields } from '@/themes';
-import { resolveThemeVariables, resolveFieldValues, resolveFontLink, extractFontsFromTheme } from '@/utils/theming';
+import {
+	resolveThemeVariables,
+	resolveFieldValues,
+	resolveFontLink,
+	extractFontsFromTheme,
+	applyThemeOverrides,
+} from '@/utils/theming';
 import { useUserStore } from '@/stores';
 import { unflatten } from 'flat';
-import { isArray, merge, mergeWith } from 'lodash';
+import { merge } from 'lodash';
 import { deepDiff } from '@/utils/deep-diff-object';
 
 type ThemeVariants = 'dark' | 'light' | string;
@@ -75,19 +81,7 @@ export const useThemeStore = defineStore({
 				 * Base themes store entire theme/metadata (title, desc., etc.). When
 				 * targeting `themeBase` we have to get the `theme` sub-property
 				 */
-				const mergedTheme = mergeWith({}, state.themeBase[mode].theme, state.themeOverrides[mode], (obj, src) => {
-					/**
-					 * If we run into an array, we'll add the incoming value to the
-					 * beginning of the existing array, instead of overwriting it.
-					 */
-					if (isArray(obj)) {
-						if (typeof src === 'string') {
-							obj.unshift(src);
-							return obj;
-						}
-						return src.concat(obj);
-					}
-				});
+				const mergedTheme = applyThemeOverrides(state.themeBase[mode].theme, state.themeOverrides[mode]);
 				return mergedTheme;
 			};
 		},
@@ -105,19 +99,9 @@ export const useThemeStore = defineStore({
 			 * `getInitialValues`. As a result, we would take a performance hit if we instead
 			 * used `getMergedTheme`, ignoring any cache.
 			 */
-			const mergedTheme = mergeWith(
-				{},
+			const mergedTheme = applyThemeOverrides(
 				this.themeBase[this.editingTheme].theme,
-				this.themeOverrides[this.editingTheme],
-				(obj, src) => {
-					if (isArray(obj)) {
-						if (typeof src === 'string') {
-							obj.unshift(src);
-							return obj;
-						}
-						return src.concat(obj);
-					}
-				}
+				this.themeOverrides[this.editingTheme]
 			);
 			return mergedTheme;
 		},
