@@ -2,19 +2,7 @@
 
 > Translation strings allow translations of information that describes your Collection Fields. When creating a Field,
 > you may want to add a note or other description along with it. Translation strings let you standardize this
-> description across multiple languages.
-
-<!-- :::tip Before You Begin
-
-::: -->
-
-<!--
-:::tip Additional Resources
-
-You can also translate [Collection Content]() and [Field Names]().
-
-:::
--->
+> description across languages.
 
 ## How It Works
 
@@ -23,13 +11,13 @@ You can also translate [Collection Content]() and [Field Names]().
 </video>
 
 When configuring Fields as well as Presets and Bookmarks, you may wish to add additional notes or descriptions to
-clarify their purpose or context.
+clarify their purpose or context. To create and assign a Translation String, follow these steps.
 
-**Create and Manage Translation Strings**\
+**Create and Manage Translation Strings**
 
 1. Navigate to **Settings > Translation Strings**.
 2. Click <span mi btn>add</span> in the page header and a side menu will appear.
-3. Add a key and click **"Create New"**. Another side menu will appear.
+3. Add a key and click **"Create New"** and another side menu will appear.
 4. Select the language and add the corresponding translation.
 5. Click <span mi btn>check</span> to confirm and add the translation.
 6. Repeat steps 3-5 as desired.
@@ -37,15 +25,12 @@ clarify their purpose or context.
    - Click and drag <span mi icon>drag_handle</span> to reposition a translation.
    - Click <span mi icon>close</span> to delete a translation.
 8. Click <span mi btn>check</span> to save the translation(s).
-9. Optional: Delete Translation String\
-   Click the translation string to open the side menu, click <span mi btn dngr>delete</span>, then click **Delete**.
 
-Now you can add it to Translation String Inputs in the **Settings Module**, noted with <span mi icon>translate</span> on
-them.
+In the Settings Module, you can assign the Translation String to any inputs with a <span mi icon>translate</span> icon.
 
-**Assign a Translation String**\
+**Assign a Translation String**
 
-1. Navigate to the desired Translation String Input within Settings.\
+1. Navigate to the desired Translation String Input within Settings.
 2. Click <span mi icon>translate</span> and a dropdown menu with all Translation Strings will appear.
 3. Select the Translation String as desired and click <span mi btn>check</span> to confirm.
 
