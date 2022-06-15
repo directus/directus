@@ -44,7 +44,7 @@ Items.
 
 ![Delete Data](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/delete-data-20220603A.webp)
 
-This operation deletes Item(s) from a Collection by ID or query.
+This Operation deletes Item(s) from a Collection by ID or query.
 
 - **Permissions** — Set the scope of permissions used for this Operation.
 - **Collection** — Use the dropdown menu to select the Collection you'd like to delete Items from.
@@ -62,7 +62,7 @@ Items.
 
 ![Read Data](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/read-data-20220603A.webp)
 
-This Operation reads Item(s) form a Collection and adds them onto the Flow Object. You may select Items by their ID or
+This Operation reads Item(s) from a Collection and adds them onto the Flow Object. You may select Items by their ID or
 run a query to select the Items you wish to update.
 
 - **Permissions** — Set the scope of permissions used for this Operation.
@@ -154,7 +154,7 @@ Operation.
 Transform Payload simply creates a new key on the Flow Object with nested JSON data to provide a clean space where you
 can combine data from multiple Flow keys into a single object. For example, if you need to use the same data multiple
 times _(e.g. send it in a web request and also use it to create an Item in a Collection)_, you can combine the data with
-Transform Payload once, then use its Operation key repeatedly.
+Transform Payload once, then access its Operation key repeatedly.
 
 - **JSON** — Define JSON to insert into the Flow Object.
 

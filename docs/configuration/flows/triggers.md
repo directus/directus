@@ -53,9 +53,9 @@ you to connect Flows together in a chain.
 
 ![Manual](https://cdn.directus.io/docs/v9/configuration/flows/triggers/triggers-20220603A/manual-20220602A.webp)
 
-Triggers can be a manual click of a button. When you manually initiate a Trigger, based on your **Location**
-configuration, a **Flows** menu will appear in the Sidebar of the Collection Page and/or Item Page containing a button
-that starts the Flow when you click it.
+This Trigger starts your Flow on a manual click of a button within the Directus App. When you use this Trigger, a
+**Flows** menu containing a button will appear in the Sidebar of the specified Collection Page(s) and/or Item Pages,
+based on your **Location** configuration.
 
 - **Collections** — Choose the Collection(s) to add the Button to.
 - **Location** — Choose to add the button into the Item Page, Collection Page, or both.

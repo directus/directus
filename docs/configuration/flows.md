@@ -65,7 +65,7 @@ To create a Flow, follow these steps:
 ## The Flow Object
 
 When a Flow is triggered, Directus creates a JSON object to store all data generated within the Flow. When you create an
-Operation, this generates a key that appends the Flow Object when the Operation executes. The key is used to add the
+Operation, this generates a key that appends to the Flow Object when the Operation executes. The key is used to add the
 associated Operation's data onto the Flows Object. As each Operation in the Flow executes, it has access to the Flow
 Object and therefore the data generated from preceding Operations.
 
@@ -109,5 +109,5 @@ the following double-moustache syntax. You can even use dot-notation to extract 
 	<source src="https://cdn.directus.io/docs/v9/configuration/flows/flows/flows-20220603A/logs-20220603A.mp4" type="video/mp4" />
 </video>
 
-Accessible from the Sidebar, Logs store a log of information for each Flow execution. Each log will display information
-from Triggers as well as each Operation.
+Accessible from the Sidebar, Logs store information for each Flow execution. Each log will display information from
+Triggers as well as each Operation in the Flow.
