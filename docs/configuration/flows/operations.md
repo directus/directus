@@ -1,8 +1,8 @@
 # Operations
 
-> When a Flow is triggered, it performs an Operation. Whether you need to access and create Data within
-> Directus, send information off to outside services, create time-oriented Flows, set conditional logic or even trigger
-> other Flows, these simple but powerful Operations can make it happen.
+> When a Flow is triggered, it performs an Operation. Whether you need to manage data within Directus, send information
+> off to outside services, set conditional logic or even trigger other Flows, these simple but powerful Operations can
+> make it happen.
 
 [[toc]]
 
@@ -16,9 +16,9 @@ Please be sure to read the documentation on [Flows](/configuration/flows/flows) 
 
 ![Condition](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/condition-20220603A.webp)
 
-A Condition routes to the next success or failure Operation based on some conditional `if` / `else` logic defined by a Filter query.
-That means if the query condition is met, the Flow will move forward with the success Operation. Otherwise, the failure
-Operation will initiate.
+A Condition routes to the next success or failure Operation based on some conditional `if` / `else` logic defined by a
+Filter query. That means if the query condition is met, the Flow will move forward with the success Operation.
+Otherwise, the failure Operation will initiate.
 
 - **Condition Rules** — Create conditions with [Filter Rules](/configuration/filter-rules).
 
@@ -28,7 +28,7 @@ Operation will initiate.
 
 This Operation creates Item(s) in a Collection.
 
-- **Collection** — Use the dropdown menu to select a Collection for which you'd like to create Items.
+- **Collection** — Use the dropdown menu to select the Collection you'd like to create Items in.
 - **Permissions** — Select the scope of permissions used for this Operation.
 - **Emit Events** — Toggle whether the event is emitted.
 - **Payload** — Create Item(s) in a Collection. To learn more, see [API > Items](reference/items/).
@@ -47,7 +47,7 @@ Items.
 This operation deletes Item(s) from a Collection by ID or query.
 
 - **Permissions** — Set the scope of permissions used for this Operation.
-- **Collection** — Use the dropdown menu to select the Collection from which you'd like to delete Items.
+- **Collection** — Use the dropdown menu to select the Collection you'd like to delete Items from.
 - **IDs** — Set Item IDs and press enter to confirm. Click the ID to remove.
 - **Query** — Select Items to delete with a query. To learn more, see [Filter Rules](/configuration/filter-rules).
 
@@ -62,8 +62,8 @@ Items.
 
 ![Read Data](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/read-data-20220603A.webp)
 
-This Operation reads Item(s) form a Collection and adds them onto the Flow Object. You may select Items by their ID or run a query to
-select the Items you wish to update.
+This Operation reads Item(s) form a Collection and adds them onto the Flow Object. You may select Items by their ID or
+run a query to select the Items you wish to update.
 
 - **Permissions** — Set the scope of permissions used for this Operation.
 - **Collections** — Select the Collection from which you'd like to read Items.
@@ -74,7 +74,8 @@ select the Items you wish to update.
 
 ![Update Data](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/update-data-20220603A.webp)
 
-This Operation updates Item(s) in a Collection. Similar to Read Data, you may select Items by their ID or run a query to select the Items you wish to update.
+This Operation updates Item(s) in a Collection. Similar to Read Data, you may select Items by their ID or run a query to
+select the Items you wish to update.
 
 - **Permissions** — Set the Role that this Operation will inherit permissions from.
 - **Collections** — Select the Collection from which you'd like to read Items.
@@ -86,8 +87,7 @@ This Operation updates Item(s) in a Collection. Similar to Read Data, you may se
 
 ![Log to Console](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/log-to-console-20220603A.webp)
 
-This Operation outputs something to the console. This Operation is a key
-tool for troubleshooting Flow configuration.
+This Operation outputs something to the console. This Operation is a key tool for troubleshooting Flow configuration.
 
 - **Message** — Sets a [log message](#configuration/flows/flows/logs).
 
@@ -101,9 +101,10 @@ This Operation will be delivered to your in-app Log Panel and also logged to the
 
 ![Send Email](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/send-email-20220603A.webp)
 
-This Operation sends an email. Flow Object keys can be used as variables, which means you can use an array of emails from a previous step in Flows.
+This Operation sends an email. Flow Object keys can be used as variables, which means you can use an array of emails
+from a previous step in Flows.
 
-- **To** — Set the email addresses. Hit `↵` to save the email, and click an email to remove it.
+- **To** — Set the email addresses. Hit `↵` to save the email. Click an email to remove it.
 - **Subject** — Set the subject line.
 - **Body** — Use a WYSIWYG editor to create the email body.
 
@@ -141,7 +142,8 @@ This Operation makes a request to another URL.
 
 ![Sleep](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/sleep-20220603A.webp)
 
-This Operation pauses Operation Execution on the Flow for a given amount of milliseconds, then continues to the next Operation.
+This Operation pauses Operation Execution on the Flow for a given amount of milliseconds, then continues to the next
+Operation.
 
 - **Milliseconds** — Define the number of milliseconds the Operation will pause.
 
@@ -149,10 +151,10 @@ This Operation pauses Operation Execution on the Flow for a given amount of mill
 
 ![Transform Payload](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/transform-payload-20220603A.webp)
 
-Transform Payload simply creates a new key on the Flow Object with nested JSON data to provide a clean space where
-you can combine data from multiple Flow keys into a single object. For example, if you need to use the same data
-multiple times _(e.g. send it in a web request and also use it to create an Item in a Collection)_, you can combine the
-data with Transform Payload once, then use its Operation key repeatedly.
+Transform Payload simply creates a new key on the Flow Object with nested JSON data to provide a clean space where you
+can combine data from multiple Flow keys into a single object. For example, if you need to use the same data multiple
+times _(e.g. send it in a web request and also use it to create an Item in a Collection)_, you can combine the data with
+Transform Payload once, then use its Operation key repeatedly.
 
 - **JSON** — Define JSON to insert into the Flow Object.
 

@@ -21,15 +21,16 @@ Each Flow begins with one Trigger, which defines the actions that start the Flow
 within the app, an incoming webhook, a cron job, or a manual click of a button. Please see the documentation on
 [Triggers](/configuration/flows/triggers) for more details.
 
-Operations are the actions performed after the Trigger. An operation can be creating new Items in a Collection,
-sending off emails, pushing _in-app_ notifications, or sending webhooks, just to name a few. You can even set up
-divergent chains of Flow Operations, which execute conditionally, based on whether one Operation passed or failed. A [console log](configuration/flows/operations/#log-to-console) is also included
-to help design and troubleshoot your Flows and ensure data is passed on as intended. Check out the documentation on
+Operations are the actions performed after the Trigger. An operation can be creating new Items in a Collection, sending
+off emails, pushing _in-app_ notifications, or sending webhooks, just to name a few. You can even set up divergent
+chains of Flow Operations, which execute conditionally, based on whether one Operation passed or failed. A
+[console log](configuration/flows/operations/#log-to-console) is also included to help design and troubleshoot your
+Flows and ensure data is passed on as intended. Check out the documentation on
 [Operations](/configuration/flows/operations) for more details.
 
-Once a Flow is triggered, Directus creates a [Flow JSON Object](#the-flow-object), which stores data from the Trigger event.
-As each Operation in the flow executes, the data generated is added onto this Flow Object, and every Operation in a
-Flow has access to it.
+Once a Flow is triggered, Directus creates a [Flow Object](#the-flow-object), which stores data from the Trigger event.
+As each Operation in the flow executes, the data generated is added onto this Flow Object, and every Operation in a Flow
+has access to it.
 
 ## Create a Flow
 
@@ -64,8 +65,8 @@ To create a Flow, follow these steps:
 ## The Flow Object
 
 When a Flow is triggered, Directus creates a JSON object to store all data generated within the Flow. When you create an
-Operation, this generates a key that appends the Flow Object when the Operation executes. The key is used to add
-the associated Operation's data onto the Flows Object. As each Operation in the Flow executes, it has access to the Flow
+Operation, this generates a key that appends the Flow Object when the Operation executes. The key is used to add the
+associated Operation's data onto the Flows Object. As each Operation in the Flow executes, it has access to the Flow
 Object and therefore the data generated from preceding Operations.
 
 The following JSON object is a simple example of a Flow with two Operations. The `$trigger`, `$last`, and
