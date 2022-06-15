@@ -16,54 +16,48 @@ import { isNil } from 'lodash';
 import { abbreviateNumber } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
 
-const props = withDefaults(
-	defineProps<{
-		showHeader?: boolean;
-		abbreviate?: boolean;
-		sortField?: string;
-		collection: string;
-		field: string;
-		function: string;
-		filter?: Filter;
-		data?: object;
-		decimals?: number;
-		conditionalFormatting?: object[];
-		prefix?: string | null;
-		suffix?: string | null;
-	}>(),
-	{
-		showHeader: false,
-		abbreviate: false,
-		sortField: undefined,
-		data: () => ({}),
-		filter: () => ({}),
-		decimals: 0,
-		conditionalFormatting: () => [],
-		prefix: null,
-		suffix: null,
-	}
-);
+interface Props {
+	showHeader?: boolean;
+	abbreviate?: boolean;
+	sortField?: string;
+	collection: string;
+	field: string;
+	function: string;
+	filter?: Filter;
+	data?: Record<string, any>;
+	decimals?: number;
+	conditionalFormatting?: Record<string, any>[];
+	prefix?: string | null;
+	suffix?: string | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	showHeader: false,
+	abbreviate: false,
+	sortField: undefined,
+	data: () => ({}),
+	filter: () => ({}),
+	decimals: 0,
+	conditionalFormatting: () => [],
+	prefix: null,
+	suffix: null,
+});
+
 const { n } = useI18n();
 
-const metric = ref<number | string>();
-
-watchEffect(async () => {
-	try {
-		if (props.field) {
-			if (props.function === 'first' || props.function === 'last') {
-				if (typeof props.data[0][props.field] === 'string') {
-					metric.value = props.data[0][props.field];
-				} else {
-					metric.value = Number(props.data[0][props.field]);
-				}
+const metric = computed(() => {
+	if (props.field) {
+		if (props.function === 'first' || props.function === 'last') {
+			if (typeof props.data[0][props.field] === 'string') {
+				return props.data[0][props.field];
 			} else {
-				metric.value = Number(props.data[0][props.function][props.field]);
+				return Number(props.data[0][props.field]);
 			}
 		} else {
-			metric.value = Number(props.data[0][props.function]);
+			return Number(props.data[0][props.function][props.field]);
 		}
-	} catch (err) {
-		// oh no
+	} else {
+		return Number(props.data[0][props.function]);
 	}
 });
 
@@ -87,7 +81,7 @@ const displayValue = computed(() => {
 const color = computed(() => {
 	if (isNil(metric.value)) return null;
 
-	let matchingFormat: MetricOptions['conditionalFormatting'][number | string] | null = null;
+	let matchingFormat = null;
 
 	for (const format of props.conditionalFormatting || []) {
 		if (matchesOperator(format)) {
@@ -97,7 +91,7 @@ const color = computed(() => {
 
 	return matchingFormat ? matchingFormat.color || cssVar('--primary') : null;
 
-	function matchesOperator(format: MetricOptions['conditionalFormatting'][number | string]) {
+	function matchesOperator(format: Record<string, any>) {
 		if (typeof metric.value === 'string') {
 			const value = metric.value;
 			const compareValue = format.value ?? '';
