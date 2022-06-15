@@ -2024,6 +2024,7 @@ operations:
   item-delete:
     name: Delete Data
     description: Delete items in the database
+    emit_events: Emit Events
     key: IDs
     query: Query
   item-read:
@@ -2034,6 +2035,7 @@ operations:
   item-update:
     name: Update Data
     description: Update items in the database
+    emit_events: Emit Events
     key: IDs
     payload: Payload
     query: Query
