@@ -95,9 +95,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 	}
 
 	if (Object.keys(value)[0]?.startsWith('_') === false) {
-		schema[key] = Joi.object({
-			[key]: generateJoi(value as FieldFilter, options),
-		});
+		schema[key] = generateJoi(value as FieldFilter, options);
 	} else {
 		const operator = Object.keys(value)[0];
 		const compareValue = Object.values(value)[0];
