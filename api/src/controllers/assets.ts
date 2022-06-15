@@ -19,7 +19,7 @@ const router = Router();
 router.use(useCollection('directus_files'));
 
 router.get(
-	'/:pk',
+	'/:pk/:filename?',
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
@@ -155,7 +155,7 @@ router.get(
 
 		const access = req.accountability?.role ? 'private' : 'public';
 
-		res.attachment(file.filename_download);
+		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);

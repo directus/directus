@@ -6,12 +6,19 @@
 [[toc]]
 
 <!--
-::: Before You Begin
+:::tip Before You Begin
 
-[Learn Directus](/getting-started/learn-directus)
+Please be sure to read [Learn Directus](/getting-started/learn-directus).
 
 :::
 -->
+
+:::tip Learn More
+
+There is also dedicated API documentation on [Flows](/reference/system/flows) and
+[Operations](/reference/system/operations).
+
+:::
 
 ## What's a Flow?
 
@@ -32,9 +39,10 @@ Once a Flow is triggered, Directus creates a [Flow Object](#the-flow-object), wh
 As each Operation in the flow executes, the data generated is added onto this Flow Object, and every Operation in a Flow
 has access to it.
 
+
 ## Create a Flow
 
-<video autoplay muted loop controls title="">
+<video autoplay muted loop controls title="Create a Flow">
 	<source src="https://cdn.directus.io/docs/v9/configuration/flows/flows/flows-20220603A/create-a-flow-20220603A.mp4" type="video/mp4" />
 </video>
 

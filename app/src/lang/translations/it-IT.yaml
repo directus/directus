@@ -195,7 +195,7 @@ fields_and_layout: Campi & Layout
 field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
-language: Lingua
+language: Linguaggio
 language_placeholder: Seleziona una lingua...
 aggregate_function: Funzione di aggregazione
 aggregate_precision: Precisione dell'aggregazione

@@ -8,7 +8,7 @@
 
 :::tip Before You Begin
 
-Please be sure to read the documentation on [Flows](/configuration/flows/flows) and [Triggers](flows/triggers).
+Please be sure to read the documentation on [Flows](/configuration/flows) and [Triggers](/configuration/flows/triggers).
 
 :::
 
@@ -31,11 +31,11 @@ This Operation creates Item(s) in a Collection.
 - **Collection** — Use the dropdown menu to select the Collection you'd like to create Items in.
 - **Permissions** — Select the scope of permissions used for this Operation.
 - **Emit Events** — Toggle whether the event is emitted.
-- **Payload** — Create Item(s) in a Collection. To learn more, see [API > Items](reference/items/).
+- **Payload** — Create Item(s) in a Collection. To learn more, see [API > Items](/reference/items/).
 
 :::tip
 
-Make sure the Operation is scoped with the [permissions](configuration/users-roles-permissions) necessary to create
+Make sure the Operation is scoped with the [permissions](/configuration/users-roles-permissions) necessary to create
 Items.
 
 :::
@@ -53,7 +53,7 @@ This Operation deletes Item(s) from a Collection by ID or query.
 
 :::tip
 
-Make sure the Operation is scoped with the [permissions](configuration/users-roles-permissions) necessary to delete
+Make sure the Operation is scoped with the [permissions](/configuration/users-roles-permissions) necessary to delete
 Items.
 
 :::
@@ -90,7 +90,7 @@ select the Items you wish to update.
 This Operation outputs something to the server-side console as well as the [Log Panel](/configuration/flows/#logs). This
 is a key tool for troubleshooting Flow configuration.
 
-- **Message** — Sets a [log message](#configuration/flows/flows/logs).
+- **Message** — Sets a [log message](/configuration/flows/#logs).
 
 ## Send Email
 
@@ -115,6 +115,7 @@ provider may send it there automatically.
 ![Send Notification](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/send-notification-20220603A.webp)
 
 This Operation sends a notification to an app user.
+
 
 - **Users** — Define a User by their primary key UUID. Use [Flow keys](/configuration/flows/flows/#the-flow-object) to
   set this dynamically.

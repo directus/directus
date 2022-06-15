@@ -1,6 +1,6 @@
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/shared/utils';
-import Busboy, { BusboyHeaders } from 'busboy';
+import Busboy from 'busboy';
 import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
@@ -20,10 +20,10 @@ router.use(useCollection('directus_files'));
 export const multipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();
 
-	let headers: BusboyHeaders;
+	let headers;
 
 	if (req.headers['content-type']) {
-		headers = req.headers as BusboyHeaders;
+		headers = req.headers;
 	} else {
 		headers = {
 			...req.headers,
@@ -31,7 +31,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		};
 	}
 
-	const busboy = new Busboy({ headers });
+	const busboy = Busboy({ headers });
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
@@ -61,7 +61,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		payload[fieldname] = fieldValue;
 	});
 
-	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+	busboy.on('file', async (_fieldname, fileStream, { filename, mimeType }) => {
 		if (!filename) {
 			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
 		}
@@ -79,7 +79,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		} = {
 			...payload,
 			filename_download: filename,
-			type: mimetype,
+			type: mimeType,
 			storage: payload.storage || disk,
 		};
 
@@ -99,7 +99,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		next(error);
 	});
 
-	busboy.on('finish', () => {
+	busboy.on('close', () => {
 		tryDone();
 	});
 

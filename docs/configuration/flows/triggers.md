@@ -1,9 +1,16 @@
 # Triggers
 
-> A Trigger is the event that starts off a Flow. They let you start Flows on any internal app activity, incoming
-> webhooks, at a set schedule, Operations in other Flows, or even the manual click of a button within the app.
+> Triggers allow you to activate Flows on just about any conceivable internal or external event, including any in-app
+> activities, incoming webhooks, cron jobs, Operations in other Flows, or the manual click of a button in the Directus
+> App.
 
 [[toc]]
+
+:::tip Before You Begin
+
+Please be sure to read the documentation on [Flows](/configuration/flows).
+
+:::
 
 ## Event Hook
 

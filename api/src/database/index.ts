@@ -71,6 +71,7 @@ export default function getDatabase(): Knex {
 			warn: (msg) => {
 				// Ignore warnings about returning not being supported in some DBs
 				if (msg.startsWith('.returning()')) return;
+				if (msg.endsWith('does not currently support RETURNING clause')) return;
 
 				// Ignore warning about MySQL not supporting TRX for DDL
 				if (msg.startsWith('Transaction was implicitly committed, do not mix transactions and DDL with MySQL')) return;
