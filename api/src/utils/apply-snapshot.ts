@@ -104,12 +104,25 @@ export async function applySnapshot(
 			}
 		};
 
+		// Finds all collections that need to be created
+		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
+			const isNewCollection = diff[0].kind === 'N';
+			const groupName = (diff[0] as DiffNew<Collection>).rhs.meta?.group;
+			// Is new, has no group
+			if (isNewCollection && groupName === null) {
+				return true;
+			}
+			const parentExists =
+				typeof groupName === 'string' && current.collections.find((c) => c.collection === groupName) !== undefined;
+			// Is new, has group, but parent is not new
+			if (isNewCollection && parentExists) {
+				return true;
+			}
+			return false;
+		};
+
 		// create top level collections (no group) first, then continue with nested collections recursively
-		await createCollections(
-			snapshotDiff.collections.filter(
-				({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
-			)
-		);
+		await createCollections(snapshotDiff.collections.filter(filterCollectionsForCreation));
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
