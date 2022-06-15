@@ -14,16 +14,16 @@ export default definePanel({
 
 		const fieldsStore = useFieldsStore();
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(options.collection);
-		let displayFields = [primaryKeyField?.field];
+		const displayFields = [primaryKeyField!.field];
 
 		const sort = options.sortField ?? primaryKeyField?.field;
 
 		if (options.displayTemplate) {
-			displayFields = [
-				primaryKeyField?.field,
-				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection),
-			];
+			displayFields.push(
+				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection)
+			);
 		}
+
 		return {
 			filter: options.filter ?? {},
 			fields: displayFields,
