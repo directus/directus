@@ -33,7 +33,6 @@ import {
 	specifiedRules,
 	StringValueNode,
 	validate,
-	Kind,
 } from 'graphql';
 import {
 	GraphQLJSON,
@@ -83,10 +82,10 @@ import { UsersService } from '../users';
 import { UtilsService } from '../utils';
 import { WebhooksService } from '../webhooks';
 
-import { GraphQLVoid } from './types/void';
-import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLDate } from './types/date';
+import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
+import { GraphQLVoid } from './types/void';
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
