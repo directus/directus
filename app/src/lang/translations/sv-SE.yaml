@@ -1400,6 +1400,7 @@ interfaces:
     description: Skapa flera poster av samma struktur
     edit_fields: Redigera fält
     add_label: 'Etikett för "Skapa nytt"'
+    sort: Sortera
     field_name_placeholder: Ange fältnamn...
     field_note_placeholder: Ange fältanteckning...
   slider:

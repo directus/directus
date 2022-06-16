@@ -94,17 +94,18 @@
 		<template #actions>
 			<v-button
 				v-if="currentTab[0] === 'flow_setup'"
-				v-tooltip.bottom="t('next')"
+				v-tooltip.bottom="isNew ? t('next') : t('save')"
 				:disabled="!values.name || values.name.length === 0"
+				:loading="saving"
 				icon
 				rounded
-				@click="currentTab = ['trigger_setup']"
+				@click="isNew ? (currentTab = ['trigger_setup']) : save()"
 			>
-				<v-icon name="arrow_forward" />
+				<v-icon :name="isNew ? 'arrow_forward' : 'check'" />
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'trigger_setup'"
-				v-tooltip.bottom="t('finish_setup')"
+				v-tooltip.bottom="isNew ? t('finish_setup') : t('save')"
 				:disabled="!values.trigger"
 				:loading="saving"
 				icon

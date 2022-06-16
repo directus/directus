@@ -1009,6 +1009,7 @@ interfaces:
     description: Napravi više upisa od postojeće strukture
     edit_fields: Izmijeni Polja
     add_label: '"Napravi Novi" Labela'
+    sort: Sortiranje
     field_name_placeholder: Unesi ime polja...
     field_note_placeholder: Unesi napomenu polja...
   slider:

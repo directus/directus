@@ -709,21 +709,21 @@ Directus users "External Identifier".
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                                 | Description                                                                  | Default Value |
-| ---------------------------------------- | ---------------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`             | LDAP connection URL.                                                         | --            |
-| `AUTH_<PROVIDER>_BIND_DN`                | Bind user <sup>[1]</sup> distinguished name.                                 | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`          | Bind user password.                                                          | --            |
-| `AUTH_<PROVIDER>_USER_DN`                | Directory path containing users.                                             | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`         | Attribute to identify the user.                                              | `cn`          |
-| `AUTH_<PROVIDER>_USER_SCOPE`             | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.        | `one`         |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`         | User email attribute.                                                        | `mail`        |
-| `AUTH_<PROVIDER>_FIRST_NAME_ATTRIBUTE`   | User first name attribute.                                                   | `givenName`   |
-| `AUTH_<PROVIDER>_LAST_NAME_ATTRIBUTE`    | User last name attribute.                                                    | `sn`          |
-| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup> | Directory path containing groups.                                            | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`        | Attribute to identify user as a member of a group.                           | `member`      |
-| `AUTH_<PROVIDER>_GROUP_SCOPE`            | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>.       | `one`         |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A fallback Directus role ID to assign created users.                         | --            |
+| Variable                                 | Description                                                            | Default Value |
+| ---------------------------------------- | ---------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`             | LDAP connection URL.                                                   | --            |
+| `AUTH_<PROVIDER>_BIND_DN`                | Bind user <sup>[1]</sup> distinguished name.                           | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`          | Bind user password.                                                    | --            |
+| `AUTH_<PROVIDER>_USER_DN`                | Directory path containing users.                                       | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`         | Attribute to identify the user.                                        | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`             | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`         | User email attribute.                                                  | `mail`        |
+| `AUTH_<PROVIDER>_FIRST_NAME_ATTRIBUTE`   | User first name attribute.                                             | `givenName`   |
+| `AUTH_<PROVIDER>_LAST_NAME_ATTRIBUTE`    | User last name attribute.                                              | `sn`          |
+| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup> | Directory path containing groups.                                      | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`        | Attribute to identify user as a member of a group.                     | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`            | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A fallback Directus role ID to assign created users.                   | --            |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. Anonymous binding
 can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
@@ -734,8 +734,8 @@ can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
 - `one`: Searches all objects within the associated DN.
 - `sub`: Searches all objects and sub-objects within the associated DN.
 
-<sup>[3]</sup> If `GROUP_DN` is specified, the user's role will always be updated on authentication to a matching 
-group configured in AD, or fallback to the `DEFAULT_ROLE_ID`.
+<sup>[3]</sup> If `GROUP_DN` is specified, the user's role will always be updated on authentication to a matching group
+configured in AD, or fallback to the `DEFAULT_ROLE_ID`.
 
 ### Example: LDAP
 
@@ -793,10 +793,11 @@ AUTH_FACEBOOK_ICON="facebook"
 
 ## Email
 
-| Variable          | Description                                                              | Default Value          |
-| ----------------- | ------------------------------------------------------------------------ | ---------------------- |
-| `EMAIL_FROM`      | Email address from which emails are sent.                                | `no-reply@directus.io` |
-| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `ses`. | `sendmail`             |
+| Variable             | Description                                                              | Default Value          |
+| -------------------- | ------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_VERIFY_SETUP` | Check if email setup is properly configured.                             | `true`                 |
+| `EMAIL_FROM`         | Email address from which emails are sent.                                | `no-reply@directus.io` |
+| `EMAIL_TRANSPORT`    | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `ses`. | `sendmail`             |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 

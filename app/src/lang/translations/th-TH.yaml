@@ -1185,6 +1185,7 @@ interfaces:
     description: สร้างหลายรายการโดยใช้โครงสร้างเดียวกัน
     edit_fields: แก้ไขฟิลด์
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
+    sort: เรียง
     field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:

@@ -1492,6 +1492,7 @@ interfaces:
     description: Creează mai multe intrări ale aceleiași structuri
     edit_fields: Editare câmpuri
     add_label: 'Eticheta „Creează nou”'
+    sort: Sortează
     field_name_placeholder: Introduceți numele câmpului...
     field_note_placeholder: Introduceți nota câmpului...
     incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator

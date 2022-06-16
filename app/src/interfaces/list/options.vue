@@ -14,6 +14,16 @@
 				@input="addLabel = $event"
 			/>
 		</div>
+		<div class="grid-element half-left">
+			<p class="type-label">{{ t('interfaces.list.sort') }}</p>
+			<v-select
+				v-model="sort"
+				class="input"
+				:items="sortFields"
+				show-deselect
+				:placeholder="t('interfaces.list.sort_placeholder')"
+			/>
+		</div>
 
 		<div class="grid-element full">
 			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
@@ -188,7 +198,27 @@ export default defineComponent({
 			},
 		});
 
-		return { t, repeaterValue, repeaterFields, template, addLabel };
+		const sort = computed({
+			get() {
+				return props.value?.sort;
+			},
+			set(newSort: string) {
+				emit('input', {
+					...(props.value || {}),
+					sort: newSort,
+				});
+			},
+		});
+
+		const sortFields = computed(() => {
+			if (!repeaterValue.value) return [];
+
+			return repeaterValue.value.map((val) => {
+				return { text: val.field, value: val.field };
+			});
+		});
+
+		return { t, repeaterValue, repeaterFields, template, addLabel, sort, sortFields };
 	},
 });
 </script>

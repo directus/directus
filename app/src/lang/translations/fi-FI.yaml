@@ -1351,6 +1351,7 @@ interfaces:
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
     add_label: '"Luo uusi"-tunniste'
+    sort: Järjestä
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
