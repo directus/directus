@@ -747,6 +747,8 @@ interfaces:
     zoom: 縮放
   system-folder:
     folder: 資料夾
+  list:
+    sort: 排序
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
