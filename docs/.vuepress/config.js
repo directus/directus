@@ -267,11 +267,6 @@ module.exports = {
 					// 	path: '/configuration/faq',
 					// 	title: 'Frequently Asked Questions*',
 					// },
-					{
-						type: 'page',
-						path: '/configuration/filter-rules',
-						title: 'Filter Rules',
-					},
 				],
 			},
 			{
@@ -291,6 +286,11 @@ module.exports = {
 						type: 'page',
 						title: 'Global Parameters',
 						path: '/reference/query',
+					},
+					{
+						type: 'page',
+						path: '/reference/filter-rules',
+						title: 'Filter Rules',
 					},
 					{
 						type: 'page',
