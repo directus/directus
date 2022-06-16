@@ -3,7 +3,7 @@ export type Role = {
 	name: string;
 	description: string;
 	icon: string;
-	enforce_2fa: null | boolean;
+	enforce_tfa: null | boolean;
 	external_id: null | string;
 	ip_whitelist: string[];
 	app_access: boolean;
@@ -27,7 +27,7 @@ export type User = {
 	last_login: string;
 	last_page: string;
 	external_id: string;
-	'2fa_secret': string;
+	tfa_secret: string;
 	theme: 'auto' | 'dark' | 'light';
 	role: Role;
 	password_reset_token: string | null;

@@ -29,7 +29,7 @@ export class Emitter {
 		context: EventContext
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
-		const listeners: FilterHandler[] = events.flatMap((event) => this.filterEmitter.listeners(event));
+		const listeners = events.flatMap((event) => this.filterEmitter.listeners(event) as FilterHandler<T>[]);
 
 		let updatedPayload = payload;
 		for (const listener of listeners) {

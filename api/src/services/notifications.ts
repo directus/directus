@@ -1,8 +1,9 @@
-import { UsersService, MailService } from '.';
 import { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types';
 import { ItemsService } from './items';
 import { Notification } from '@directus/shared/types';
 import { md } from '../utils/md';
+import { UsersService } from './users';
+import { MailService } from './mail';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;

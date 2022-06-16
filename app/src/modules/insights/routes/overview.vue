@@ -41,7 +41,7 @@
 			@click:row="navigateToDashboard"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon" />
+				<v-icon class="icon" :name="item.icon" :color="item.color" />
 			</template>
 
 			<template #item-append="{ item }">
@@ -214,12 +214,6 @@ export default defineComponent({
 	--v-list-item-color: var(--danger);
 	--v-list-item-color-hover: var(--danger);
 	--v-list-item-icon-color: var(--danger);
-}
-
-.v-list-item.warning {
-	--v-list-item-color: var(--warning);
-	--v-list-item-color-hover: var(--warning);
-	--v-list-item-icon-color: var(--warning);
 }
 
 .header-icon {

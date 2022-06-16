@@ -121,6 +121,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 			'avatar',
 			'language',
 			'theme',
+			'tfa_secret',
 		],
 	},
 	{
@@ -173,6 +174,16 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 			},
 		},
 		fields: ['*'],
+	},
+	{
+		collection: 'directus_flows',
+		action: 'read',
+		permissions: {
+			trigger: {
+				_eq: 'manual',
+			},
+		},
+		fields: ['id', 'name', 'icon', 'color', 'options', 'trigger'],
 	},
 ];
 

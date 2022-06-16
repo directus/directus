@@ -8,7 +8,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		type RawColumn = {
 			table_name: string;
 			column_name: string;
-			default_value: string;
+			default_value: string | null;
 			data_type: string;
 			max_length: number | null;
 			is_identity: boolean;

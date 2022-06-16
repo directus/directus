@@ -1,4 +1,4 @@
-import { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
 import { Knex } from 'knex';
 import { assign, clone, cloneDeep, pick, without } from 'lodash';
@@ -9,14 +9,7 @@ import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import {
-	AbstractService,
-	AbstractServiceOptions,
-	Action,
-	Item as AnyItem,
-	MutationOptions,
-	PrimaryKey,
-} from '../types';
+import { AbstractService, AbstractServiceOptions, Item as AnyItem, MutationOptions, PrimaryKey } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { AuthorizationService } from './authorization';
 import { ActivityService, RevisionsService } from './index';
