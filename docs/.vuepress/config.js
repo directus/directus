@@ -250,11 +250,6 @@ module.exports = {
 						title: 'Activity Log',
 					},
 					{
-						type: 'page',
-						path: '/configuration/sso',
-						title: 'Single Sign-On (SSO)',
-					},
-					{
 						type: 'divider',
 					},
 					// {
@@ -560,6 +555,16 @@ module.exports = {
 						path: '/self-hosted/config-options',
 						title: 'Config Options',
 					},
+					{
+						type: 'page',
+						path: '/self-hosted/sso',
+						title: 'Single Sign-On (SSO)',
+					},
+					// {
+					// 	type: 'page',
+					// 	path: '/self-hosted/sso-examples',
+					// 	title: 'SSO Examples',
+					// },
 					{
 						type: 'page',
 						path: '/self-hosted/installation',
