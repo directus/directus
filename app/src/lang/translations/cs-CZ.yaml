@@ -1530,6 +1530,7 @@ interfaces:
     description: Vytvořit více záznamů ve stejné struktuře
     edit_fields: Upravit pole
     add_label: 'Štítek "Vytvořit nový"'
+    sort: Seřadit
     field_name_placeholder: Zadejte název pole...
     field_note_placeholder: Zadejte poznámku k poli...
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
