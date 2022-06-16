@@ -81,7 +81,7 @@ const { info } = storeToRefs(serverStore);
 const colors = computed(() => {
 	const primary = info.value?.project?.project_color || 'var(--primary)';
 	const primaryHex = primary.startsWith('var(--') ? cssVar(primary.substring(4, primary.length - 1)) : primary;
-
+	const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 	const primaryColor = Color(primaryHex);
 
 	const primaryColorHSL = primaryColor.hsl() as unknown as {
@@ -96,10 +96,11 @@ const colors = computed(() => {
 	 * secondary = 320, 100, 80
 	 * diff = +69.1, 0, +16.7
 	 */
+
 	const secondaryColor = Color({
-		h: primaryColorHSL.color[0] + 69.1,
+		h: primaryColorHSL.color[0] + (isDark ? 69.1 : 69.1),
 		s: primaryColorHSL.color[1] + 0,
-		l: primaryColorHSL.color[2] + 16.7,
+		l: primaryColorHSL.color[2] + (isDark ? -50 : 16.7),
 	});
 
 	const shades = [];
