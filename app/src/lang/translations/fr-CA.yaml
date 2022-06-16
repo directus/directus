@@ -1996,6 +1996,7 @@ operations:
   item-delete:
     name: Suppression des données
     description: Supprimer des éléments dans la base de données
+    emit_events: Émettre des événements
     key: IDs
     query: Requête
   item-read:
@@ -2006,6 +2007,7 @@ operations:
   item-update:
     name: Mettre à jour les données
     description: Mettre à jour les éléments de la base de données
+    emit_events: Émettre des événements
     key: IDs
     payload: Données utiles
     query: Requête
