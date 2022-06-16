@@ -1522,6 +1522,7 @@ interfaces:
     description: Mehrere Einträge derselben Struktur erstellen
     edit_fields: Felder bearbeiten
     add_label: 'Label für "Neu erstellen"'
+    sort: Sortieren
     field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben

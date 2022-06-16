@@ -1450,6 +1450,7 @@ interfaces:
     description: Aynı yapıda birden çok girdi oluştur
     edit_fields: Alanları Düzenle
     add_label: '"Yeni Oluştur" Başlığı'
+    sort: Sırala
     field_name_placeholder: Alan adı girin...
     field_note_placeholder: Alan notu girin...
   slider:

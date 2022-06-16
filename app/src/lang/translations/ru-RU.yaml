@@ -1481,6 +1481,7 @@ interfaces:
     description: Создать несколько записей одной структуры
     edit_fields: Редактировать поля
     add_label: 'Ярлык «Создать новый»'
+    sort: Сортировать
     field_name_placeholder: Введите название поля...
     field_note_placeholder: Примечание к полю...
   slider:

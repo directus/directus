@@ -1591,6 +1591,8 @@ interfaces:
     description: Utwórz wiele wpisów o tej samej strukturze
     edit_fields: Edytuj pola
     add_label: 'Etykieta "Utwórz nowy"'
+    sort: Sortuj
+    sort_placeholder: Ręcznie
     field_name_placeholder: Wprowadź nazwę pola...
     field_note_placeholder: Wprowadź opis pola...
     incompatible_data: Bieżące dane nie są kompatybilne z interfejsem iteratora i zostaną nadpisane podczas dodawania elementów do iteratora

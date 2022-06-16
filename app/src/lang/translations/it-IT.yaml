@@ -1592,6 +1592,8 @@ interfaces:
     description: Crea più elementi della stessa struttura
     edit_fields: Modifica Campi
     add_label: 'Etichetta "Crea nuovo"'
+    sort: Ordinamento
+    sort_placeholder: Manuale
     field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore

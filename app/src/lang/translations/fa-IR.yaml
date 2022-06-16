@@ -966,6 +966,7 @@ interfaces:
     root_name: پوشه اصلی مجموعه فایلها
   list:
     add_label: 'برچسب "ساخت مورد جدید"'
+    sort: مرتب سازی
   tags:
     tags: برچسب ها
     description: انتخاب یا افزودن برچسب ها

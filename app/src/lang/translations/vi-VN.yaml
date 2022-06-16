@@ -840,6 +840,8 @@ interfaces:
     zoom: Thu phóng
   system-folder:
     folder: Thư mục
+  list:
+    sort: Sắp xếp
   slider:
     slider: Thanh trượt
   tags:

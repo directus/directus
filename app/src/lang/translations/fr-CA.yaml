@@ -1589,6 +1589,8 @@ interfaces:
     description: Créer plusieurs entrées de la même structure
     edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
+    sort: Trier
+    sort_placeholder: Manuelle
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur

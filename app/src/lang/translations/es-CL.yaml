@@ -1524,6 +1524,7 @@ interfaces:
     description: Crear múltiples entradas con la misma estructura
     edit_fields: Editar campos
     add_label: 'Etiqueta "Crear nuevo"'
+    sort: Ordenar
     field_name_placeholder: Ingrese el nombre del campo...
     field_note_placeholder: Introducir nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
