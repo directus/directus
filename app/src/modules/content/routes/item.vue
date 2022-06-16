@@ -201,6 +201,12 @@
 				:primary-key="internalPrimaryKey"
 				:allowed="shareAllowed"
 			/>
+			<flow-sidebar-detail
+				v-if="isNew === false && internalPrimaryKey"
+				location="item"
+				:collection="collection"
+				:primary-key="internalPrimaryKey"
+			/>
 		</template>
 	</private-view>
 </template>
@@ -215,6 +221,7 @@ import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import useShortcut from '@/composables/use-shortcut';
@@ -233,6 +240,7 @@ export default defineComponent({
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
 		SharesSidebarDetail,
+		FlowSidebarDetail,
 		SaveOptions,
 	},
 	props: {

@@ -29,15 +29,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		dashboard: {
-			type: String,
-			required: true,
-		},
 		now: {
 			type: Date,
 			required: true,
 		},
-
 		collection: {
 			type: String,
 			required: true,
@@ -112,6 +107,22 @@ export default defineComponent({
 		const chartEl = ref();
 		const chart = ref<ApexCharts>();
 
+		const yAxisRange = computed(() => {
+			let min = isNil(props.min) ? undefined : Number(props.min);
+			let max = isNil(props.max) ? undefined : Number(props.max);
+
+			if (max !== undefined && !min) {
+				min = 0;
+			}
+
+			if (max !== undefined && min !== undefined && max < min) {
+				max = min;
+				min = Number(props.max);
+			}
+
+			return { max, min };
+		});
+
 		const valueLabel = computed(() => {
 			const field = fieldsStore.getField(props.collection, props.valueField)!;
 			const operation = t(props.function);
@@ -185,11 +196,14 @@ export default defineComponent({
 
 				metrics.value = results.data.data;
 
+				const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
+
 				chart.value?.updateSeries([
 					{
 						name: props.collection,
 						data: metrics.value.map((metric) => ({
-							x: toISO(metric),
+							x:
+								new Date(toISO(metric)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0),
 							y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 						})),
 					},
@@ -357,6 +371,7 @@ export default defineComponent({
 							fontWeight: 600,
 							fontSize: '10px',
 						},
+						datetimeUTC: false,
 					},
 					crosshairs: {
 						stroke: {
@@ -367,8 +382,8 @@ export default defineComponent({
 				yaxis: {
 					show: props.showYAxis ?? true,
 					forceNiceScale: true,
-					min: isNil(props.min) ? undefined : Number(props.min),
-					max: isNil(props.max) ? undefined : Number(props.max),
+					min: yAxisRange.value.min,
+					max: yAxisRange.value.max,
 					tickAmount: props.height - 4,
 					labels: {
 						offsetY: 1,
