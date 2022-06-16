@@ -1981,6 +1981,7 @@ operations:
   item-delete:
     name: Изтриване на данни
     description: Изтриване в базата от данни
+    emit_events: Излъчване на събития
     query: Заявка
   item-read:
     name: Четене на данни
@@ -1989,6 +1990,7 @@ operations:
   item-update:
     name: Обновяване на данните
     description: Обновяване на записите в базата от данни
+    emit_events: Излъчване на събития
     payload: Съдържание
     query: Заявка
   log:
