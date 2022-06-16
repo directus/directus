@@ -1476,6 +1476,7 @@ interfaces:
     description: Opret flere indgange af samme struktur
     edit_fields: Rediger Felter
     add_label: '"Opret Ny" Etiket'
+    sort: Sortér
     field_name_placeholder: Indtast feltnavn...
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med repeater-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til repeateren
