@@ -123,6 +123,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 				options: {
 					placeholder: '$t:translation_string_translations_placeholder',
 					template: '{{ language }} {{ translation }}',
+					sort: 'language',
 					fields: [
 						{
 							field: 'language',
