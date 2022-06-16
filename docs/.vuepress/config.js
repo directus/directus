@@ -272,11 +272,6 @@ module.exports = {
 						path: '/configuration/filter-rules',
 						title: 'Filter Rules',
 					},
-					{
-						type: 'page',
-						path: '/configuration/upgrades-migrations',
-						title: 'Upgrades & Migrations',
-					},
 				],
 			},
 			{
@@ -621,6 +616,11 @@ module.exports = {
 								title: 'Ubuntu',
 							},
 						],
+					},
+					{
+						type: 'page',
+						path: '/self-hosted/upgrades-migrations',
+						title: 'Upgrades & Migrations',
 					},
 				],
 			},
