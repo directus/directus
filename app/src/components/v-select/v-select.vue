@@ -48,7 +48,7 @@
 				<v-divider />
 			</template>
 
-			<v-list-item v-if="internalItemsCount > 20">
+			<v-list-item v-if="internalItemsCount > 20 || search">
 				<v-list-item-content>
 					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
 						<template #append>
@@ -313,7 +313,7 @@ export default defineComponent({
 					return count;
 				};
 
-				return countItems(internalItems.value);
+				return countItems(props.items);
 			});
 
 			return { internalItems, internalItemsCount, internalSearch };
