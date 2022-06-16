@@ -239,26 +239,11 @@ const internalItems = computed({
 			return props.items;
 		}
 
-		const sortKey = internalSort.value.by;
-		if (sortKey === null) return props.items;
-		// workaround for BigInt values received as string
-		if (internalSort.value?.cast === 'numeric') {
-			// const itemsSorted = [...props.items].sort((a, b) => a[sortKey] - b[sortKey]);
-			const collator = new Intl.Collator(undefined, {
-				numeric: true,
-				sensitivity: 'base',
-			});
-			const itemsSorted = [...props.items].sort((a, b) => {
-				if (('' + a[sortKey]).startsWith('-') && ('' + b[sortKey]).startsWith('-')) {
-					return -1 * collator.compare(a[sortKey], b[sortKey]);
-				}
-				return collator.compare(a[sortKey], b[sortKey]);
-			});
-			return internalSort.value.desc === true ? itemsSorted.reverse() : itemsSorted;
-		} else {
-			const itemsSorted = sortBy(props.items, [sortKey]);
-			return internalSort.value.desc === true ? itemsSorted.reverse() : itemsSorted;
-		}
+		if (internalSort.value.by === null) return props.items;
+
+		const itemsSorted = sortBy(props.items, [internalSort.value.by]);
+		if (internalSort.value.desc === true) return itemsSorted.reverse();
+		return itemsSorted;
 	},
 	set: (value: Item[]) => {
 		emit('update:items', value);

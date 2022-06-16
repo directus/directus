@@ -24,5 +24,4 @@ export type ItemSelectEvent = {
 export type Sort = {
 	by: string | null;
 	desc: boolean;
-	cast?: 'numeric';
 };
