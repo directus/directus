@@ -1999,6 +1999,7 @@ operations:
   item-delete:
     name: Elimina dati
     description: Elimina elementi nel database
+    emit_events: Scatena un evento
     key: ID
     query: Interrogazione
   item-read:
@@ -2009,6 +2010,7 @@ operations:
   item-update:
     name: Aggiorna dati
     description: Aggiorna elementi nel database
+    emit_events: Scatena un evento
     key: ID
     payload: Payload
     query: Interrogazione
