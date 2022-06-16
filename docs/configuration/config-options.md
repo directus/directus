@@ -197,6 +197,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 | `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`        |
 | `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`        |
+| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`          |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -618,7 +619,7 @@ For each auth provider you list, you must also provide the following configurati
 
 You may also be required to specify additional variables depending on the auth driver. See configuration details below.
 
-::: warning Multiple Providers
+::: tip Multiple Providers
 
 Directus users can only authenticate using the auth provider they are created with. It is not possible to authenticate
 with multiple providers for the same user.
@@ -722,7 +723,7 @@ information and roles will be assigned from Active Directory.
 | `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup> | Directory path containing groups.                                            | --            |
 | `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`        | Attribute to identify user as a member of a group.                           | `member`      |
 | `AUTH_<PROVIDER>_GROUP_SCOPE`            | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>.       | `one`         |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A Directus role ID to assign created users when `GROUP_DN` isn't configured. | --            |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A fallback Directus role ID to assign created users.                         | --            |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. Anonymous binding
 can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
@@ -733,8 +734,8 @@ can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
 - `one`: Searches all objects within the associated DN.
 - `sub`: Searches all objects and sub-objects within the associated DN.
 
-<sup>[3]</sup> If a `GROUP_DN` is specified, the user's role will always be updated on authentication to what's
-configured in AD.
+<sup>[3]</sup> If `GROUP_DN` is specified, the user's role will always be updated on authentication to a matching 
+group configured in AD, or fallback to the `DEFAULT_ROLE_ID`.
 
 ### Example: LDAP
 

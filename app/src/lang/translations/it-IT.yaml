@@ -195,7 +195,7 @@ fields_and_layout: Campi & Layout
 field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
-language: Lingua
+language: Linguaggio
 language_placeholder: Seleziona una lingua...
 aggregate_function: Funzione di aggregazione
 aggregate_precision: Precisione dell'aggregazione
@@ -927,7 +927,7 @@ select: Seleziona...
 layout: Layout
 tree_view: Struttura ad albero
 changes_are_permanent: Modifiche sono permanenti
-preset_name_placeholder: Serve come predefinito quando vuoto...
+preset_name_placeholder: Se il nome è vuoto è il preset predefinito...
 preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout

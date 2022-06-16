@@ -14,3 +14,4 @@ fields:
   - field: user_created
     special: user-created
   - field: note
+  - field: color
