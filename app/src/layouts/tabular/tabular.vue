@@ -14,7 +14,7 @@
 			:items="items"
 			:loading="loading"
 			:row-height="tableRowHeight"
-			:server-sort="true"
+			server-sort
 			:item-key="primaryKeyField?.field"
 			:show-manual-sort="sortField !== null"
 			:manual-sort-key="sortField"
