@@ -33,6 +33,7 @@ import {
 	specifiedRules,
 	StringValueNode,
 	validate,
+	NoSchemaIntrospectionCustomRule,
 } from 'graphql';
 import {
 	GraphQLJSON,
@@ -87,6 +88,14 @@ import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
 
+import { addPathToValidationError } from './utils/add-path-to-validation-error';
+
+const validationRules = Array.from(specifiedRules);
+
+if (env.GRAPHQL_INTROSPECTION === false) {
+	validationRules.push(NoSchemaIntrospectionCustomRule);
+}
+
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
  */
@@ -97,6 +106,7 @@ const SYSTEM_DENY_LIST = [
 	'directus_migrations',
 	'directus_sessions',
 ];
+
 const READ_ONLY = ['directus_activity', 'directus_revisions'];
 
 export class GraphQLService {
@@ -123,18 +133,9 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
-		const validationErrors = validate(schema, document, [
-			...specifiedRules,
-			(context) => ({
-				Field(node) {
-					if (env.GRAPHQL_INTROSPECTION === false && (node.name.value === '__schema' || node.name.value === '__type')) {
-						context.reportError(
-							new GraphQLError('GraphQL introspection is not allowed. The query contained __schema or __type.', [node])
-						);
-					}
-				},
-			}),
-		]);
+		const validationErrors = validate(schema, document, validationRules).map((validationError) =>
+			addPathToValidationError(validationError)
+		);
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
