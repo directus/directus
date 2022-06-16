@@ -1511,6 +1511,7 @@ interfaces:
     description: Napravite više unosa iste strukture
     edit_fields: Uredi polja
     add_label: '"Stvori novo" oznaka'
+    sort: Sortiraj
     field_name_placeholder: Unesite naziv polja...
     field_note_placeholder: Unesite napomenu o polju...
   slider:
