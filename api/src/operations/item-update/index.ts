@@ -2,8 +2,9 @@ import { Accountability, PrimaryKey } from '@directus/shared/types';
 import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { Item } from '../../types';
-import { optionToObject } from '../../utils/operation-options';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
+import { optionToObject } from '../../utils/operation-options';
+import { sanitizeQuery } from '../../utils/sanitize-query';
 
 type Options = {
 	collection: string;
@@ -40,6 +41,7 @@ export default defineOperationApi<Options>({
 		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload) ?? null;
 
 		const queryObject = query ? optionToObject(query) : {};
+		const sanitizedQueryObject = sanitizeQuery(queryObject, customAccountability);
 
 		if (!payloadObject) {
 			return null;
@@ -48,7 +50,7 @@ export default defineOperationApi<Options>({
 		let result: PrimaryKey | PrimaryKey[] | null;
 
 		if (!key) {
-			result = await itemsService.updateByQuery(queryObject, payloadObject);
+			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject);
 		} else {
 			const keys = toArray(key);
 

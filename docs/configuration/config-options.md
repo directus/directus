@@ -197,6 +197,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 | `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`        |
 | `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`        |
+| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`          |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -426,18 +427,19 @@ than you would cache database content. To learn more, see [Assets](#assets).
 
 :::
 
-| Variable                          | Description                                                                               | Default Value    |
-| --------------------------------- | ----------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                   | Whether or not data caching is enabled.                                                   | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the data cache is persisted.                                                     | `5m`             |
-| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value. | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the data cache on `create`, `update`, and `delete` actions.           | `false`          |
-| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                            | `10m`            |
-| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                      | `true`           |
-| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                    | `true`           |
-| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                              | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                   | `memory`         |
-| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.          | --               |
+| Variable                          | Description                                                                                                             | Default Value    |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`                   | Whether or not data caching is enabled.                                                                                 | `false`          |
+| `CACHE_TTL`<sup>[1]</sup>         | How long the data cache is persisted.                                                                                   | `5m`             |
+| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`          |
+| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | `10m`            |
+| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`           |
+| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`           |
+| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                                                            | `directus-cache` |
+| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                                                 | `memory`         |
+| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --               |
+| `CACHE_VALUE_MAX_SIZE`            | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false            |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -617,7 +619,7 @@ For each auth provider you list, you must also provide the following configurati
 
 You may also be required to specify additional variables depending on the auth driver. See configuration details below.
 
-::: warning Multiple Providers
+::: tip Multiple Providers
 
 Directus users can only authenticate using the auth provider they are created with. It is not possible to authenticate
 with multiple providers for the same user.
@@ -721,7 +723,7 @@ information and roles will be assigned from Active Directory.
 | `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup> | Directory path containing groups.                                            | --            |
 | `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`        | Attribute to identify user as a member of a group.                           | `member`      |
 | `AUTH_<PROVIDER>_GROUP_SCOPE`            | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>.       | `one`         |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A Directus role ID to assign created users when `GROUP_DN` isn't configured. | --            |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A fallback Directus role ID to assign created users.                         | --            |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. Anonymous binding
 can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
@@ -732,8 +734,8 @@ can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
 - `one`: Searches all objects within the associated DN.
 - `sub`: Searches all objects and sub-objects within the associated DN.
 
-<sup>[3]</sup> If a `GROUP_DN` is specified, the user's role will always be updated on authentication to what's
-configured in AD.
+<sup>[3]</sup> If `GROUP_DN` is specified, the user's role will always be updated on authentication to a matching 
+group configured in AD, or fallback to the `DEFAULT_ROLE_ID`.
 
 ### Example: LDAP
 

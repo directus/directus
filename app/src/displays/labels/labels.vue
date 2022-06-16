@@ -24,7 +24,6 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
-import { translate } from '@/utils/translate-object-values';
 import { isEmpty } from 'lodash';
 
 type Choice = {
@@ -89,12 +88,12 @@ export default defineComponent({
 						background: 'var(--background-normal)',
 					};
 				} else {
-					return translate({
+					return {
 						value: item,
 						text: choice.text || itemStringValue,
 						foreground: choice.foreground || 'var(--foreground-normal)',
 						background: choice.background || 'var(--background-normal)',
-					});
+					};
 				}
 			});
 		});
