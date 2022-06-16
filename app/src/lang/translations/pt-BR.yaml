@@ -23,6 +23,7 @@ identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
 default_provider: Padrão
+method: Método 
 published: Publicado
 draft: Rascunho
 archived: Arquivado
@@ -31,6 +32,8 @@ module_bar: Barra de Módulos
 tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
+location: Local
+input: Entrada
 maps: Mapas
 switch_user: Alternar Usuário
 item_creation: Criação do Item
@@ -688,6 +691,7 @@ on_create: Ao Criar
 on_update: Pós-alteração
 read: Ler
 update: Alteração
+delete: Excluir
 select_fields: Selecionar campos
 format_text: Formatar texto
 abbreviate_value: Abreviar Valor
@@ -697,6 +701,10 @@ toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+trigger: Acionar
+flow_name: Nome
+flow_tracking_activity: Acompanhar apenas Atividade
+flow_tracking_null: Não rastreie nada
 insights: Estatísticas
 dashboard: Painel
 panel: Painel
@@ -714,9 +722,10 @@ suffix_placeholder: Texto depois do valor...
 decimals_placeholder: Número de casas decimais...
 no_dashboards: Sem painéis
 no_dashboards_copy: Você ainda não tem nenhum painel.
-no_data: Sem dados
 create_dashboard: Criar painel
 dashboard_name: Nome do painel
+no_data: Sem dados
+accountability: Responsabilidade
 full_screen: Tela cheia
 edit_panels: Editar painéis
 left_align: Alinhar à Esquerda
@@ -815,6 +824,7 @@ settings_webhooks: Webhooks
 settings_presets: Predefinições & Marcadores
 one_or_more_options_are_missing: Uma ou mais opções estão faltando
 scope: Escopo
+actions: Ações
 select: Selecionar...
 layout: Layout
 tree_view: Exibição em Árvore
@@ -824,6 +834,7 @@ preset_search_placeholder: Termos da pesquisa...
 editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
 layout_setup: Configuração de Layout
+data: Dados
 unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
@@ -887,9 +898,9 @@ directus_collection:
   directus_files: Metadados de todos os arquivos gerenciados
   directus_folders: Fornece diretórios virtuais para arquivos
   directus_migrations: Qual versão do banco de dados você está utilizando
+  directus_notifications: Notificações enviadas aos usuários
   directus_panels: Painéis individuais nos dashboards de Visões
   directus_permissions: Permissões de acesso para cada papel
-  directus_notifications: Notificações enviadas aos usuários
   directus_presets: Predefinições para padrões de coleção e favoritos
   directus_relations: Configurações e metadados do relacionamento
   directus_revisions: Cópia de dados de todas as atividades
@@ -1651,3 +1662,16 @@ panels:
   list:
     name: Lista
     description: Filtrar e listar campos de uma coleção
+triggers:
+  webhook:
+    method: Método 
+operations:
+  notification:
+    recipient: Usuário
+  request:
+    url: URL
+    method: Método 
+    data: Dados
+    header: Cabeçalho
+  trigger:
+    data: Dados

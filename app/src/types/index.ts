@@ -4,3 +4,4 @@ export * from './insights';
 export * from './notifications';
 export * from './login';
 export * from './shares';
+export * from './insights';

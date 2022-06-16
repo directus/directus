@@ -22,12 +22,15 @@
 identifier: ตัวบ่งชี้
 avatar: ภาพประจำตัว
 default_provider: ค่าเริ่มต้น
+method: เมธอด
 published: เผยแพร่แล้ว
 draft: ฉบับร่าง
 archived: เก็บถาวร
 modules: โมดูล
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
+location: ตำแหน่งที่ตั้ง
+input: Input
 maps: แผนที่
 item_revision: ประวัติรายการ
 enter_a_name: กรอกชื่อ...
@@ -611,6 +614,7 @@ on_create: เมื่อสร้าง
 on_update: เมื่อแก้ไข
 read: อ่าน
 update: แก้ไข
+delete: ลบ
 select_fields: เลือกฟิลด์
 format_text: รูปแบบข้อความ
 bold: ตัวหนา
@@ -618,6 +622,10 @@ toggle: สลับ
 icon_on: แสดงไอคอน
 icon_off: ไม่แสดงไอคอน
 label: ป้าย
+trigger: Trigger
+flow_name: ชื่อ
+flow_tracking_activity: ติดตามกิจกรรมเท่านั้น
+flow_tracking_null: อย่าติดตามอะไรเลย
 dashboard: แดชบอร์ด
 panel: แพแนล
 panel_options: ตัวเลือกแพแนล
@@ -732,6 +740,7 @@ preset_search_placeholder: ค้นหาด้วย...
 editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
 layout_preview: ตัวอย่างเค้าโครง
 layout_setup: ตั้งค่าเค้าโครง
+data: ข้อมูล
 unsaved_changes: ไม่ได้บันทึกการเปลี่ยนแปลง
 unsaved_changes_copy: คุณแน่ใจว่าต้องการออกจากหน้านี้?
 discard_changes: ยกเลิกการเปลี่ยนแปลง
@@ -1380,3 +1389,16 @@ panels:
     name: ป้าย
   list:
     name: รายการ
+triggers:
+  webhook:
+    method: เมธอด
+operations:
+  notification:
+    recipient: ผู้ใช้
+  request:
+    url: URL
+    method: เมธอด
+    data: ข้อมูล
+    header: เฮดเดอร์
+  trigger:
+    data: ข้อมูล
