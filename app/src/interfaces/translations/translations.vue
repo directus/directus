@@ -67,7 +67,6 @@ import { useFieldsStore } from '@/stores/';
 import { notEmpty } from '@/utils/is-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';
-import { i18n } from '@/lang';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
@@ -105,7 +104,7 @@ const value = computed({
 
 const { collection, field, primaryKey, defaultLanguage, userLanguage } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
 
@@ -254,8 +253,8 @@ function useLanguages() {
 			languages.value = response.data.data ? toArray(response.data.data) : [];
 
 			if (!firstLang.value) {
-				const locale = userLanguage.value ? i18n.global.locale.value : defaultLanguage.value;
-				const lang = languages.value.find((lang) => lang[pkField] === locale) || languages.value[0];
+				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
+				const lang = languages.value.find((lang) => lang[pkField] === userLocale) || languages.value[0];
 				firstLang.value = lang?.[pkField];
 			}
 
