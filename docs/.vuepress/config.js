@@ -195,11 +195,6 @@ module.exports = {
 					// },
 					{
 						type: 'page',
-						path: '/configuration/config-options',
-						title: 'Config Options',
-					},
-					{
-						type: 'page',
 						path: '/configuration/project-settings',
 						title: 'Project Settings',
 					},
@@ -559,6 +554,11 @@ module.exports = {
 						type: 'page',
 						path: '/self-hosted/quickstart',
 						title: 'Quickstart',
+					},
+					{
+						type: 'page',
+						path: '/self-hosted/config-options',
+						title: 'Config Options',
 					},
 					{
 						type: 'page',

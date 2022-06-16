@@ -278,7 +278,7 @@ A Project is a complete instance of the platform. Each project represents a **Da
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
 - [Creating a Project](/self-hosted/installation/)
-- [Configuring a Project](/configuration/config-options/)
+- [Configuring a Project](/self-hosted/config-options/)
 - [Adjusting Project Settings](/configuration/project-settings/)
 - [Upgrading a Project](/configuration/upgrades-migrations/)
 - [Backing-up a Project](/configuration/upgrades-migrations/#backing-up-a-project)

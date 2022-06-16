@@ -73,7 +73,7 @@ The default port used by Directus is 8055. To view your project locally, go to
 
 ::: tip Changing Port
 
-If you want to use a different port, use [the `PORT` environment variable](/configuration/config-options/#general).
+If you want to use a different port, use [the `PORT` environment variable](/self-hosted/config-options/#general).
 
 :::
 
