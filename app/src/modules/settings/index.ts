@@ -1,6 +1,6 @@
 import api from '@/api';
 import { defineModule } from '@directus/shared/utils';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore, useFieldsStore, useFlowsStore } from '@/stores';
 import RouterPass from '@/utils/router-passthrough';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
@@ -193,6 +193,16 @@ export default defineModule({
 					path: ':primaryKey',
 					component: FlowsDetail,
 					props: true,
+					async beforeEnter(to) {
+						const { flows } = useFlowsStore();
+						const existingFlow = flows.find((flow) => flow.id === to.params.primaryKey);
+						if (!existingFlow) {
+							return {
+								name: 'settings-not-found',
+								params: { _: to.path.split('/').slice(1) },
+							};
+						}
+					},
 					children: [
 						{
 							name: 'settings-flows-operation',
