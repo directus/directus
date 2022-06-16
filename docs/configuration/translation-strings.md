@@ -11,19 +11,15 @@
 <source src="https://cdn.directus.io/docs/v9/configuration/translation-strings/translation-strings-20220615A/translation-strings-20220615A.mp4" type="video/mp4" />
 </video>
 
-When creating a Field, you may want to add a note or other description along with it to clarify its context or purpose.
-While you always have the option to type in a static value, Translation Strings let you group together translations
-which display dynamically, whenever the app language is changed. There are two locations where the language could be
-set. First, administrators can set the Project's default language under **Settings > Project Settings**. Second, Users
-can choose their own personal [language preference](/app/user-directory/#user-preferences) from the user details page.
+Translation Strings let you group together translations which display dynamically, whenever the app language is changed.
 
-## Create and Manage a Translation String
+## Create a Translation String
 
 <video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/configuration/translation-strings/translation-strings-20220616A/create-and-manage-a-trasnlation-string-20220616A.mp4" type="video/mp4" />
 </video>
 
-To create and manage a Translation String, follow these steps.
+To create a Translation String, follow these steps.
 
 1. Navigate to **Settings > Translation Strings**.
 2. Click <span mi btn>add</span> in the page header and a drawer will open.
@@ -34,16 +30,15 @@ To create and manage a Translation String, follow these steps.
 7. Optional: Click <span mi icon>close</span> to delete a translation.
 8. Click <span mi btn>check</span> to confirm and save the Translation Strings.
 
-## Assign and Remove a Translation String
+## Use a Translation String
 
 <video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/configuration/translation-strings/translation-strings-20220616A/assign-and-remove-translation-string-20220616A.mp4" type="video/mp4" />
 </video>
 
-Throughout the **Data Model** as well as **Presets and Bookmarks** sections in the Settings Module, you will notice
-certain input fields have a <span mi icon>translate</span> icon on them. While can always type static text into these
-input fields, this <span mi icon>translate</span> icon indicates that you have the option assign a Translation String.
-To assign a Translation String, follow these steps.
+Throughout the Settings Module, you will notice certain input fields have a <span mi icon>translate</span> icon on them.
+While can always type static text into these input fields, this <span mi icon>translate</span> icon indicates that you
+have the option assign a Translation String. To assign a Translation String, follow these steps.
 
 1. Navigate to the input that you'd like to add a Translation String to.
 2. There are two ways to assign a Translation String:
@@ -53,9 +48,11 @@ To assign a Translation String, follow these steps.
 4. Optional: Click to remove the Translation String.
 5. Click <span mi btn>check</span> to confirm.
 
-Now your Translation String is set! Whenever the app's language is set, the corresponding translation string will be
-displayed. Also note that if a language is chosen for which there is no Translation String, the translation key _(from
-step three)_ will be displayed instead.
+Your Translation String is set! Now the language-appropriate text will be shown based on the current language of the
+app. There are two ways to change the app language. First, administrators can set the Project's
+[default language](/configuration/project-settings/#general). Second, Users can choose their own personal
+[language preference](/app/user-directory/#user-preferences). Also note that if a language is chosen for which there is
+no Translation String, the translation key _(from step three)_ will be displayed instead.
 
 :::tip <span mi icon prmry>add</span> New Translation String
 
