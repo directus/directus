@@ -1503,6 +1503,7 @@ interfaces:
     description: Create multiple entries of the same structure
     edit_fields: Edit Fields
     add_label: '"Create New" Label'
+    sort: Sort
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
   slider:

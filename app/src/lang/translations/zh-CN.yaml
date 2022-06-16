@@ -1520,6 +1520,7 @@ interfaces:
     description: 创建同一结构的多个条目
     edit_fields: 编辑字段
     add_label: '"创建新"标签'
+    sort: 排序
     field_name_placeholder: 输入字段名称...
     field_note_placeholder: 输入字段备注...
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖

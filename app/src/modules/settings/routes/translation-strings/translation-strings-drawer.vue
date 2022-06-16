@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { Field, DeepPartial } from '@directus/shared/types';
@@ -64,6 +64,8 @@ const emit = defineEmits(['update:modelValue', 'savedKey']);
 
 const { t } = useI18n();
 
+const { translationString } = toRefs(props);
+
 const confirmDelete = ref<boolean>(false);
 
 const values = ref<TranslationString>({
@@ -79,7 +81,7 @@ const formValues = computed<TranslationString>({
 		values.value.key = val.key;
 
 		if (!val.translations) {
-			values.value.translations = null;
+			values.value.translations = val.translations;
 			return;
 		}
 
@@ -121,6 +123,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 				options: {
 					placeholder: '$t:translation_string_translations_placeholder',
 					template: '{{ language }} {{ translation }}',
+					sort: 'language',
 					fields: [
 						{
 							field: 'language',
@@ -159,8 +162,8 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 const { translationStrings, updating, update } = useTranslationStrings();
 
 watch(
-	() => props.translationString,
-	(newVal: TranslationString) => {
+	translationString,
+	(newVal: TranslationString | null) => {
 		values.value.key = newVal?.key ?? null;
 		values.value.translations = newVal?.translations ?? null;
 		initialValues.value.key = newVal?.key ?? null;
