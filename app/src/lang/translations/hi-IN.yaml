@@ -364,6 +364,8 @@ interfaces:
     zoom: छोटा-बड़ा करें
   system-folder:
     folder: फ़ोल्डर
+  list:
+    sort: सॉर्ट
   boolean:
     toggle: टॉगल करें
   user:
