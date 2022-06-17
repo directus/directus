@@ -126,7 +126,7 @@ export async function applySnapshot(
 			const parentWillBeCreatedInThisApply =
 				snapshotDiff.collections.filter(({ collection, diff }) => diff[0].kind === 'N' && collection === groupName)
 					.length > 0;
-			// Is new, has group, but parent is not new
+			// Is new, has group, but parent is not new, has no parent also being created in this snapshot apply
 			if (isNewCollection && parentExists && !parentWillBeCreatedInThisApply) {
 				return true;
 			}

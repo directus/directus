@@ -30,8 +30,8 @@ describe('applySnapshot', () => {
 		jest.clearAllMocks();
 	});
 
-	describe('When creating a new collection nested under an existing collection', () => {
-		it('Creates a new top-level collection', async () => {
+	describe('Creating new collection(s)', () => {
+		it('Creates a new top-level collection(s)', async () => {
 			const expected = {
 				collection: 'test_table_2',
 				meta: {
@@ -117,7 +117,7 @@ describe('applySnapshot', () => {
 			expect(createFieldSpy).toHaveBeenCalledTimes(0);
 		});
 
-		it('Creates the nested collection and any children of it', async () => {
+		it('Creates the highest-level nested collection(s) with existing parents and any children', async () => {
 			const expected = {
 				collection: 'test_table_2',
 				meta: {
