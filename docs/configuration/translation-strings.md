@@ -3,15 +3,11 @@
 > Translation Strings are multilingual key-value pairs that you can use throughout the app. They enable you to translate
 > things like dropdown options, placeholder text, field notes, and more.
 
-[[toc]]
-
-## How It Works
-
 <video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/configuration/translation-strings/translation-strings-20220615A/translation-strings-20220615A.mp4" type="video/mp4" />
 </video>
 
-Translation Strings let you group together translations which display dynamically, whenever the app language is changed.
+[[toc]]
 
 ## Create a Translation String
 
