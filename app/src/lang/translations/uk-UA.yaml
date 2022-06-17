@@ -1522,6 +1522,7 @@ interfaces:
     description: Створити кілька записів однієї структури
     edit_fields: Редагувати поля
     add_label: 'Ярлик «Створити новий»'
+    sort: Сортування
     field_name_placeholder: Введіть назву поля...
     field_note_placeholder: Примітка до поля...
     incompatible_data: Поточні дані не сумісні з інтерфейсом ретранслятора і будуть замінені під час додавання елементів до ретранслятора
@@ -1576,6 +1577,9 @@ interfaces:
     display_template: Шаблон відображення
     no_collection: Немає колекцій
     toggle_split_view: Перемикання розділеного перегляду
+    enable: Увімкнути
+    user_language: Використовувати поточну мову користувача
+    default_language: Мова за замовчуванням
     language_field: Поле визначення мови
   list-o2m-tree-view:
     description: У вигляді дерева рекурсивно вкладених елементів

@@ -3,7 +3,7 @@ import { Query } from '@directus/shared/types';
 import { computed, ComputedRef, Ref } from 'vue';
 import { merge } from 'lodash';
 
-type AliasField = {
+export type AliasField = {
 	fieldName: string;
 	fieldAlias: string;
 	fullAlias: string;

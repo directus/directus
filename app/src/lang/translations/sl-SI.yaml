@@ -1165,6 +1165,7 @@ interfaces:
     description: Ustvarite več zapisov enake strukture
     edit_fields: Uredi polja
     add_label: 'Oznaka za "Ustvari novo"'
+    sort: Razvrsti
     field_name_placeholder: Vnesite ime polja ...
     field_note_placeholder: Vnesite opis polja ...
   slider:

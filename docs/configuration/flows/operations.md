@@ -46,8 +46,9 @@ Items.
 
 Deletes some Item(s) from a Collection by ID or query.
 
-- **Permissions** — Set the scope of permissions used for this Operation.
 - **Collection** — Use the dropdown to set the Collection to delete Items from.
+- **Permissions** — Set the scope of permissions used for this Operation.
+- **Emit Events** — Toggle whether the event is emitted.
 - **IDs** — Set Item IDs and press enter to confirm. Click the ID to remove.
 - **Query** — Select Items to delete with a query. To learn more, see [Filter Rules](/configuration/filter-rules).
 
@@ -76,9 +77,10 @@ select the Items you wish to update.
 
 Updates Item(s) in a Collection. You may select Items by their ID or run a query to select the Items you wish to update.
 
+- **Collections** — Select the Collection to update Items from.
 - **Permissions** — Defines Role that this Operation will inherit permissions from.
-- **Collections** — Select the Collection to read Items from.
-- **IDs** — Input ID for Item(s) you wish to read and press enter. Click the ID to remove.
+- **Emit Events** — Toggle whether the event is emitted.
+- **IDs** — Input ID for Item(s) you wish to update and press enter. Click the ID to remove.
 - **Payload** — Updates Item(s) in a Collection. To learn more, see [API > Items](/reference/items/).
 - **Query** — Select Items to update with a query. To learn more, see [Filter Rules](/configuration/filter-rules).
 

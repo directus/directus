@@ -137,6 +137,7 @@ const allowedEnvironmentVars = [
 	// emails
 	'EMAIL_FROM',
 	'EMAIL_TRANSPORT',
+	'EMAIL_VERIFY_SETUP',
 	'EMAIL_SENDMAIL_NEW_LINE',
 	'EMAIL_SENDMAIL_PATH',
 	'EMAIL_SMTP_HOST',
@@ -171,6 +172,7 @@ const defaults: Record<string, any> = {
 	PORT: 8055,
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
+	MAX_RELATIONAL_DEPTH: 10,
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
@@ -216,6 +218,7 @@ const defaults: Record<string, any> = {
 	EXTENSIONS_AUTO_RELOAD: false,
 
 	EMAIL_FROM: 'no-reply@directus.io',
+	EMAIL_VERIFY_SETUP: true,
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',

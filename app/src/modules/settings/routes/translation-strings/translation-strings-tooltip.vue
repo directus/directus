@@ -1,11 +1,11 @@
 <template>
 	<ValueNull v-if="!displayedTranslation && !hideDisplayText" />
 	<div v-else class="translation-strings-display">
-		<span v-if="!hideDisplayText" class="translation-display-text">{{ displayedTranslation.translation }}</span>
-		<v-menu class="menu" show-arrow :disabled="!translations || translations.length === 0">
+		<span v-if="!hideDisplayText" class="translation-display-text">{{ displayedTranslation!.translation }}</span>
+		<v-menu class="menu" show-arrow :disabled="!sortedTranslations || sortedTranslations.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
 				<v-icon
-					v-tooltip.bottom="translations && translations.length === 0 && t('no_translations')"
+					v-tooltip.bottom="sortedTranslations && sortedTranslations.length === 0 && t('no_translations')"
 					:small="!hideDisplayText"
 					class="icon"
 					:class="{ active }"
@@ -17,7 +17,7 @@
 			</template>
 
 			<v-list class="translations">
-				<v-list-item v-for="item in translations" :key="item.language">
+				<v-list-item v-for="item in sortedTranslations" :key="item.language">
 					<v-list-item-content>
 						<div class="header">
 							<div class="lang">
@@ -40,6 +40,7 @@ import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores';
 import ValueNull from '@/views/private/components/value-null';
 import { TranslationString } from '@/composables/use-translation-strings';
+import { sortBy } from 'lodash';
 
 interface Props {
 	translations?: TranslationString['translations'];
@@ -48,18 +49,23 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), { translations: () => null, hideDisplayText: false });
 
+const sortedTranslations = computed(() => {
+	if (!props.translations) return [];
+	return sortBy(props.translations, ['language']);
+});
+
 const { t } = useI18n();
 
 const { currentUser } = useUserStore();
 
 const displayedTranslation = computed(() => {
-	if (!props.translations || props.translations.length === 0) return null;
+	if (!sortedTranslations.value || sortedTranslations.value.length === 0) return null;
 
 	if (currentUser && 'id' in currentUser) {
-		return props.translations.find((val) => val.language === currentUser.language) ?? props.translations[0];
+		return sortedTranslations.value.find((val) => val.language === currentUser.language) ?? sortedTranslations.value[0];
 	}
 
-	return props.translations[0];
+	return sortedTranslations.value[0];
 });
 </script>
 
