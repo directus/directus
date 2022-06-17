@@ -10,16 +10,18 @@ This approach has successfully been tested with a webhosting offer from netcup.
 
 :::
 
-## Setup database
+## Installation
 
-First, make sure that you've already created a database and a user for it. We will use MySQL in this guide. When you
-plan to use SQLite you can ignore this.
+### 1. Setup database
 
-## Setup a project folder
+First, make sure that you've already created a database and a user for it. We will use MySQL in this guide. If you
+plan to use SQLite you can ignore this step.
 
-On the server, create a project folder with 4 files in it.
+### 2. Setup a project folder
 
-### 1. Add .env file
+Next you will need to create a project folder, we will be adding 4 files to this folder. 
+
+### 3. Add .env file
 
 This file is used to configure Directus. Normally, the `init` script would create it for us. So now we have to do it
 manually. You can just copy it from another Directus installation or add the relevant variables using this help page:
@@ -43,7 +45,7 @@ do not need to worry about choosing a specific port. Just use an arbitrary numbe
 
 :::
 
-### 2. Add package.json
+### 4. Add package.json
 
 Add Directus and your database connector as a dependency. To execute Directus' `bootstrap` command you also have to add
 a script entry for it.
@@ -60,7 +62,7 @@ a script entry for it.
 }
 ```
 
-### 3. Add application startup file index.js
+### 5. Add application startup file index.js
 
 Instead of a start command, Plesk wants a startup file. So create a `index.js` with the following content:
 
@@ -70,7 +72,7 @@ var { startServer } = require('directus/server');
 startServer();
 ```
 
-### 4. Add .npmrc
+### 6. Add .npmrc
 
 We need to make a small configuration for npm by creating a `.npmrc` file with the following content:
 
@@ -78,7 +80,7 @@ We need to make a small configuration for npm by creating a `.npmrc` file with t
 scripts-prepend-node-path=true
 ```
 
-### 5. Add document_root folder
+### 7. Add document_root folder
 
 Lastly, we need to add a `document_root` folder inside our project-directory.
 
@@ -91,7 +93,7 @@ If you want to keep the folder in in a version control like git, create a empty 
 
 :::
 
-## Activate and configure node.js
+### 8. Activate and configure node.js
 
 In Plesk, choose your website and click "Node.js". You should then see a button "Enable Node.js" and click on it.
 
@@ -102,7 +104,7 @@ file" must point to the `index.js` file from the former step. The screen should 
 
 You can now install the dependencies by clicking on the button "NPM install".
 
-## Bootstrap Directus
+### 9. Bootstrap Directus
 
 To set up the database tables (and the first user) for Directus, click on the button "Run script" and input `bootstrap`.
 You get the console output after the script has run through.
@@ -124,7 +126,16 @@ Afterwards try `bootstrap` again.
 
 :::
 
-## Use snapshots
+### 10. Clean up .env file
+
+It is good security practice not to leave emails and passwords stored in plain text, so if you had to create login details through the .env file you should now remove those details from the file.
+
+### 11. Test Directus Access
+
+The Directus app should now work under your configured url. If not, try changing the application mode and wait a couple
+of seconds.
+
+## Using snapshots
 
 On Plesk you can't directly run an npx command. To use the Directus snapshot feature, you'd need to add a script to your
 `package.json`. For snapshot creation you can find an example in the
@@ -145,8 +156,3 @@ After that you can apply a snapshot by entering the following command to plesk:
 ```sh
 apply-snapshot--noninteractive --filename=[file.yaml]
 ```
-
-## Test Directus Access
-
-The Directus app should now work under your configured url. If not, try changing the development mode and wait a couple
-of seconds.
