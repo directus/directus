@@ -249,8 +249,10 @@
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
 					:layout-query="layoutQuery"
+					@download="download"
 					@refresh="refresh"
 				/>
+				<flow-sidebar-detail location="collection" :collection="collection" :selection="selection" @refresh="refresh" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -280,9 +282,9 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
-import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import { useRouter } from 'vue-router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
@@ -303,11 +305,11 @@ export default defineComponent({
 		LayoutSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
-		BookmarkEdit,
 		DrawerBatch,
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
 		ExportSidebarDetail,
+		FlowSidebarDetail,
 	},
 	props: {
 		collection: {
@@ -372,7 +374,7 @@ export default defineComponent({
 			batchEditActive,
 		} = useBatch();
 
-		const { bookmarkDialogActive, creatingBookmark, createBookmark, editingBookmark, editBookmark } = useBookmarks();
+		const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
 		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
 
@@ -447,8 +449,6 @@ export default defineComponent({
 			creatingBookmark,
 			createBookmark,
 			bookmarkTitle,
-			editingBookmark,
-			editBookmark,
 			breadcrumb,
 			clearFilters,
 			confirmArchive,
@@ -471,10 +471,15 @@ export default defineComponent({
 			hasArchive,
 			archiveFilter,
 			mergeFilters,
+			download,
 		};
 
 		async function refresh() {
 			await layoutRef.value?.state?.refresh?.();
+		}
+
+		async function download() {
+			await layoutRef.value?.state?.download?.();
 		}
 
 		async function drawerBatchRefresh() {
@@ -583,21 +588,22 @@ export default defineComponent({
 		function useBookmarks() {
 			const bookmarkDialogActive = ref(false);
 			const creatingBookmark = ref(false);
-			const editingBookmark = ref(false);
 
 			return {
 				bookmarkDialogActive,
 				creatingBookmark,
 				createBookmark,
-				editingBookmark,
-				editBookmark,
 			};
 
-			async function createBookmark(name: string) {
+			async function createBookmark(bookmark: any) {
 				creatingBookmark.value = true;
 
 				try {
-					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
+					const newBookmark = await saveCurrentAsBookmark({
+						bookmark: bookmark.name,
+						icon: bookmark.icon,
+						color: bookmark.color,
+					});
 					router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
@@ -606,11 +612,6 @@ export default defineComponent({
 				} finally {
 					creatingBookmark.value = false;
 				}
-			}
-
-			async function editBookmark(name: string) {
-				bookmarkTitle.value = name;
-				bookmarkDialogActive.value = false;
 			}
 		}
 

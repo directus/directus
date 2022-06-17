@@ -16,29 +16,28 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-select
-							inline
-							class="name"
-							item-text="name"
-							item-value="key"
-							placement="bottom-start"
-							:full-width="false"
-							:model-value="filterInfo[index].field"
-							:items="fieldOptions"
-							:mandatory="false"
-							:groups-clickable="true"
-							@group-toggle="loadFieldRelations($event.value)"
-							@update:modelValue="updateField(index, $event)"
-						>
-							<template #preview>{{ getFieldPreview(element) }}</template>
-						</v-select>
+						<span v-if="!isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
+						<v-menu v-else placement="bottom-start" show-arrow>
+							<template #activator="{ toggle }">
+								<button class="name" @click="toggle">
+									<span>{{ getFieldPreview(element) }}</span>
+								</button>
+							</template>
+
+							<v-field-list
+								:collection="collection"
+								:field="field"
+								include-functions
+								@select-field="updateField(index, $event)"
+							/>
+						</v-menu>
 						<v-select
 							inline
 							class="comparator"
 							placement="bottom-start"
 							:model-value="filterInfo[index].comparator"
 							:items="getCompareOptions(filterInfo[index].field)"
-							@update:modelValue="updateComparator(index, $event)"
+							@update:model-value="updateComparator(index, $event)"
 						/>
 						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
 						<span class="delete">
@@ -97,19 +96,25 @@
 	</draggable>
 </template>
 
-<script lang="ts">
-import { useFieldTree } from '@/composables/use-field-tree';
-import { computed, defineComponent, PropType, toRefs } from 'vue';
-import InputGroup from './input-group.vue';
-import Draggable from 'vuedraggable';
+<script lang="ts" setup>
 import { useFieldsStore } from '@/stores';
-import { useI18n } from 'vue-i18n';
-import { getFilterOperatorsForType } from '@directus/shared/utils';
-import { get } from 'lodash';
-import { FieldFilter, Filter, FieldFilterOperator, LogicalFilterAND, LogicalFilterOR } from '@directus/shared/types';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/shared/composables';
-import { fieldToFilter, getField, getNodeName, getComparator } from './utils';
-import { toArray } from '@directus/shared/utils';
+import {
+	FieldFilter,
+	FieldFilterOperator,
+	Filter,
+	LogicalFilterAND,
+	LogicalFilterOR,
+	Type,
+} from '@directus/shared/types';
+import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/shared/utils';
+import { get } from 'lodash';
+import { computed, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import InputGroup from './input-group.vue';
+import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
 
 type FilterInfo =
 	| {
@@ -127,211 +132,219 @@ type FilterInfo =
 			node: Filter;
 	  };
 
-export default defineComponent({
-	name: 'Nodes',
-	components: {
-		Draggable,
-		InputGroup,
-	},
-	props: {
-		filter: {
-			type: Object as PropType<Filter[]>,
-			required: true,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-		depth: {
-			type: Number,
-			default: 1,
-		},
-		inline: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['remove-node', 'update:filter', 'change'],
-	setup(props, { emit }) {
-		const { collection } = toRefs(props);
-		const filterSync = useSync(props, 'filter', emit);
-		const { treeList: fieldOptions, loadFieldRelations } = useFieldTree(collection);
-		const fieldsStore = useFieldsStore();
-		const { t } = useI18n();
+interface Props {
+	filter: Filter[];
+	collection: string;
+	field?: string;
+	depth?: number;
+	inline?: boolean;
+	includeValidation?: boolean;
+}
 
-		const filterInfo = computed<FilterInfo[]>({
-			get() {
-				return props.filter.map((node, id) => {
-					const name = getNodeName(node);
-					const isField = name.startsWith('_') === false;
+const props = withDefaults(defineProps<Props>(), {
+	field: undefined,
+	depth: 1,
+	inline: false,
+	includeValidation: false,
+});
 
-					return isField
-						? {
-								id,
-								isField,
-								name,
-								field: getField(node),
-								comparator: getComparator(node),
-								node,
-						  }
-						: { id, name, isField, node };
-				});
-			},
-			set(newVal) {
-				emit(
-					'update:filter',
-					newVal.map((val) => val.node)
-				);
-			},
+const emit = defineEmits(['remove-node', 'update:filter', 'change']);
+
+const { collection } = toRefs(props);
+const filterSync = useSync(props, 'filter', emit);
+const fieldsStore = useFieldsStore();
+const { t } = useI18n();
+
+const filterInfo = computed<FilterInfo[]>({
+	get() {
+		return props.filter.map((node, id) => {
+			const name = getNodeName(node);
+			const isField = name.startsWith('_') === false;
+
+			return isField
+				? {
+						id,
+						isField,
+						name,
+						field: getField(node),
+						comparator: getComparator(node),
+						node,
+				  }
+				: { id, name, isField, node };
 		});
-
-		return {
-			fieldOptions,
-			getCompareOptions,
-			updateField,
-			updateComparator,
-			t,
-			replaceNode,
-			toggleLogic,
-			loadFieldRelations,
-			getNodeName,
-			getField,
-			getComparator,
-			filterInfo,
-			getIndex,
-			getFieldPreview,
-			filterSync,
-		};
-
-		function getFieldPreview(node: Record<string, any>) {
-			const fieldKey = getField(node);
-
-			const fieldParts = fieldKey.split('.');
-
-			const fieldNames = fieldParts.map((fieldKey, index) => {
-				const pathPrefix = fieldParts.slice(0, index);
-				const field = fieldsStore.getField(props.collection, [...pathPrefix, fieldKey].join('.'));
-				return field?.name ?? fieldKey;
-			});
-
-			return fieldNames.join(' -> ');
-		}
-
-		function getIndex(item: Filter) {
-			return props.filter.findIndex((filter) => filter === item);
-		}
-
-		function toggleLogic(index: number) {
-			const nodeInfo = filterInfo.value[index];
-
-			if (filterInfo.value[index].isField) return;
-
-			if ('_and' in nodeInfo.node) {
-				filterSync.value = filterSync.value.map((filter, filterIndex) => {
-					if (filterIndex === index) {
-						return { _or: (nodeInfo.node as LogicalFilterAND)._and as FieldFilter[] };
-					}
-
-					return filter;
-				});
-			} else {
-				filterSync.value = filterSync.value.map((filter, filterIndex) => {
-					if (filterIndex === index) {
-						return { _and: (nodeInfo.node as LogicalFilterOR)._or as FieldFilter[] };
-					}
-
-					return filter;
-				});
-			}
-		}
-
-		function updateComparator(index: number, operator: keyof FieldFilterOperator) {
-			const nodeInfo = filterInfo.value[index];
-			if (nodeInfo.isField === false) return;
-
-			const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-			let value = get(nodeInfo.node, valuePath);
-
-			switch (operator) {
-				case '_in':
-				case '_nin':
-					update(toArray(value) || []);
-					break;
-				case '_between':
-				case '_nbetween':
-					update((toArray(value) || []).slice(0, 2));
-					break;
-				case '_null':
-				case '_nnull':
-				case '_empty':
-				case '_nempty':
-					update(true);
-					break;
-				case '_intersects':
-				case '_nintersects':
-				case '_intersects_bbox':
-				case '_nintersects_bbox':
-					if (['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'].includes(nodeInfo.comparator)) {
-						update(value);
-					} else {
-						update(null);
-					}
-					break;
-				default:
-					update(Array.isArray(value) ? value[0] : value);
-					break;
-			}
-
-			function update(value: any) {
-				if (nodeInfo.isField === false) return;
-
-				filterSync.value = filterSync.value.map((filter, filterIndex) => {
-					if (filterIndex === index) return fieldToFilter(nodeInfo.field, operator, value);
-					return filter;
-				});
-			}
-		}
-
-		function updateField(index: number, newField: string) {
-			const nodeInfo = filterInfo.value[index];
-			const oldFieldInfo = fieldsStore.getField(props.collection, nodeInfo.name);
-			const newFieldInfo = fieldsStore.getField(props.collection, newField);
-
-			if (nodeInfo.isField === false) return;
-
-			const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-			let value = get(nodeInfo.node, valuePath);
-			let comparator = nodeInfo.comparator;
-
-			if (oldFieldInfo?.type !== newFieldInfo?.type) {
-				value = null;
-				comparator = getCompareOptions(newField)[0].value;
-			}
-
-			filterSync.value = filterSync.value.map((filter, filterIndex) => {
-				if (filterIndex === index) return fieldToFilter(newField, comparator, value);
-				return filter;
-			});
-		}
-
-		function replaceNode(index: number, newFilter: Filter) {
-			filterSync.value = filterSync.value.map((val, filterIndex) => {
-				if (filterIndex === index) return newFilter;
-				return val;
-			});
-		}
-
-		function getCompareOptions(name: string) {
-			const fieldInfo = fieldsStore.getField(props.collection, name);
-			if (fieldInfo === null) return [];
-
-			return getFilterOperatorsForType(fieldInfo.type).map((type) => ({
-				text: t(`operators.${type}`),
-				value: `_${type}`,
-			}));
-		}
+	},
+	set(newVal) {
+		emit(
+			'update:filter',
+			newVal.map((val) => val.node)
+		);
 	},
 });
+
+function getFieldPreview(node: Record<string, any>) {
+	const fieldKey = getField(node);
+
+	const fieldParts = fieldKey.split('.');
+
+	const fieldNames = fieldParts.map((fieldKey, index) => {
+		const hasFunction = fieldKey.includes('(') && fieldKey.includes(')');
+
+		let key = fieldKey;
+		let functionName;
+
+		if (hasFunction) {
+			const { field, fn } = extractFieldFromFunction(fieldKey);
+			functionName = fn;
+			key = field;
+		}
+
+		const pathPrefix = fieldParts.slice(0, index);
+		const field = fieldsStore.getField(props.collection, [...pathPrefix, key].join('.'));
+
+		const name = field?.name ?? key;
+
+		if (hasFunction) {
+			return t(`functions.${functionName}`) + ` (${name})`;
+		}
+
+		return name;
+	});
+
+	return fieldNames.join(' -> ');
+}
+
+function getIndex(item: Filter) {
+	return props.filter.findIndex((filter) => filter === item);
+}
+
+function toggleLogic(index: number) {
+	const nodeInfo = filterInfo.value[index];
+
+	if (filterInfo.value[index].isField) return;
+
+	if ('_and' in nodeInfo.node) {
+		filterSync.value = filterSync.value.map((filter, filterIndex) => {
+			if (filterIndex === index) {
+				return { _or: (nodeInfo.node as LogicalFilterAND)._and as FieldFilter[] };
+			}
+
+			return filter;
+		});
+	} else {
+		filterSync.value = filterSync.value.map((filter, filterIndex) => {
+			if (filterIndex === index) {
+				return { _and: (nodeInfo.node as LogicalFilterOR)._or as FieldFilter[] };
+			}
+
+			return filter;
+		});
+	}
+}
+
+function updateComparator(index: number, operator: keyof FieldFilterOperator) {
+	const nodeInfo = filterInfo.value[index];
+	if (nodeInfo.isField === false) return;
+
+	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
+	let value = get(nodeInfo.node, valuePath);
+
+	switch (operator) {
+		case '_in':
+		case '_nin':
+			update(toArray(value) || []);
+			break;
+		case '_between':
+		case '_nbetween':
+			update((toArray(value) || []).slice(0, 2));
+			break;
+		case '_null':
+		case '_nnull':
+		case '_empty':
+		case '_nempty':
+			update(true);
+			break;
+		case '_intersects':
+		case '_nintersects':
+		case '_intersects_bbox':
+		case '_nintersects_bbox':
+			if (['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'].includes(nodeInfo.comparator)) {
+				update(value);
+			} else {
+				update(null);
+			}
+			break;
+		default:
+			// avoid setting value as string 'true'/'false' when switching from null/empty operators
+			if (['_null', '_nnull', '_empty', '_nempty'].includes(nodeInfo.comparator)) {
+				update(null);
+			} else {
+				update(Array.isArray(value) ? value[0] : value);
+			}
+			break;
+	}
+
+	function update(value: any) {
+		if (nodeInfo.isField === false) return;
+
+		filterSync.value = filterSync.value.map((filter, filterIndex) => {
+			if (filterIndex === index) return fieldToFilter(nodeInfo.field, operator, value);
+			return filter;
+		});
+	}
+}
+
+function updateField(index: number, newField: string) {
+	const nodeInfo = filterInfo.value[index];
+	const oldFieldInfo = fieldsStore.getField(props.collection, nodeInfo.name);
+	const newFieldInfo = fieldsStore.getField(props.collection, newField);
+
+	if (nodeInfo.isField === false) return;
+
+	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
+	let value = get(nodeInfo.node, valuePath);
+	let comparator = nodeInfo.comparator;
+
+	if (oldFieldInfo?.type !== newFieldInfo?.type) {
+		value = null;
+		comparator = getCompareOptions(newField)[0].value;
+	}
+
+	filterSync.value = filterSync.value.map((filter, filterIndex) => {
+		if (filterIndex === index) return fieldToFilter(newField, comparator, value);
+		return filter;
+	});
+}
+
+function replaceNode(index: number, newFilter: Filter) {
+	filterSync.value = filterSync.value.map((val, filterIndex) => {
+		if (filterIndex === index) return newFilter;
+		return val;
+	});
+}
+
+function getCompareOptions(name: string) {
+	let type: Type;
+
+	if (name.includes('(') && name.includes(')')) {
+		const functionName = name.split('(')[0];
+		type = getOutputTypeForFunction(functionName);
+	} else {
+		const fieldInfo = fieldsStore.getField(props.collection, name);
+		type = fieldInfo?.type || 'unknown';
+	}
+
+	return getFilterOperatorsForType(type, { includeValidation: props.includeValidation }).map((type) => ({
+		text: t(`operators.${type}`),
+		value: `_${type}`,
+	}));
+}
+
+function isExistingField(node: Record<string, any>): boolean {
+	if (!props.collection) return false;
+	const fieldKey = getField(node);
+	const field = fieldsStore.getField(props.collection, fieldKey);
+	return !!field;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -385,6 +398,15 @@ export default defineComponent({
 		}
 	}
 
+	.plain-name {
+		display: inline-block;
+		margin-right: 8px;
+	}
+
+	.name {
+		white-space: nowrap;
+	}
+
 	.name,
 	.comparator {
 		position: relative;
@@ -407,7 +429,7 @@ export default defineComponent({
 			pointer-events: none;
 		}
 
-		&:hover::before {
+		&:not(.disabled):hover::before {
 			opacity: 1;
 		}
 	}

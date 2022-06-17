@@ -80,8 +80,8 @@ import { defineComponent, ref, computed } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { notify } from '@/utils/notify';
 import { Share } from '@directus/shared/types';
+import useClipboard from '@/composables/use-clipboard';
 
 import api from '@/api';
 import ShareItem from './share-item.vue';
@@ -104,6 +104,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
+
+		const { copyToClipboard } = useClipboard();
 
 		const shares = ref<Share[] | null>(null);
 		const count = ref(0);
@@ -168,17 +170,7 @@ export default defineComponent({
 
 		async function copy(id: string) {
 			const url = window.location.origin + getRootPath() + 'admin/shared/' + id;
-			try {
-				await navigator?.clipboard?.writeText(url);
-				notify({
-					title: t('share_copy_link_success'),
-				});
-			} catch (err: any) {
-				notify({
-					type: 'error',
-					title: t('share_copy_link_error'),
-				});
-			}
+			await copyToClipboard(url, { success: t('share_copy_link_success'), fail: t('share_copy_link_error') });
 		}
 
 		function select(id: string) {

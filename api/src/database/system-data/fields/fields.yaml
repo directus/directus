@@ -84,3 +84,12 @@ fields:
     field: conditions
     hidden: true
     special: cast-json
+
+  - collection: directus_fields
+    field: validation
+    hidden: true
+    special: cast-json
+
+  - collection: directus_fields
+    field: validation_message
+    hidden: true

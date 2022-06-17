@@ -106,6 +106,8 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	}
 
 	function saveLink() {
+		editor.value.fire('focus');
+
 		const link = linkSelection.value;
 		if (link.url === null) return;
 		const linkHtml = `<a href="${link.url}" title="${link.title || ''}" target="${link.newTab ? '_blank' : '_self'}" >${

@@ -64,7 +64,9 @@ export function mergePermissionsForShare(
 	}
 
 	// Explicitly filter out permissions to collections unrelated to the root parent item.
-	const limitedPermissions = currentPermissions.filter(({ collection }) => allowedCollections.includes(collection));
+	const limitedPermissions = currentPermissions.filter(
+		({ action, collection }) => allowedCollections.includes(collection) && action === 'read'
+	);
 
 	return mergePermissions('and', limitedPermissions, generatedPermissions);
 }

@@ -1,6 +1,17 @@
 <template>
 	<div class="theme-container homepage" :class="pageClasses" @touchstart="onTouchStart" @touchend="onTouchEnd">
-		<Navbar v-if="shouldShowNavbar" />
+		<Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
+
+		<div class="sidebar-mask" @click="toggleSidebar(false)" />
+
+		<Sidebar class="homepage-sidebar" :items="sidebarItems" @toggle-sidebar="toggleSidebar">
+			<template #top>
+				<slot name="sidebar-top" />
+			</template>
+			<template #bottom>
+				<slot name="sidebar-bottom" />
+			</template>
+		</Sidebar>
 
 		<div class="header">
 			<div class="text">
@@ -24,7 +35,6 @@
 				</svg>
 				<h2>Getting Started</h2>
 				<span>Installation, an overview of basic concepts, and understanding the Directus ecosystem.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/app/overview/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +46,6 @@
 				</svg>
 				<h2>The App Guide</h2>
 				<span>A non-technical overview of the Directus no-code App and its various features.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/configuration/config-options/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +57,6 @@
 				</svg>
 				<h2>Configuration</h2>
 				<span>Administrator guides for tailoring the Directus platform to fit your exact project needs.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/reference/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,9 +66,8 @@
 						fill="#fff"
 					/>
 				</svg>
-				<h2>Connecting Data</h2>
+				<h2>API Reference</h2>
 				<span>A toolkit for connecting your data, including the REST API, GraphQL, CLI, SDK, and more.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/extensions/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,9 +77,8 @@
 						fill="#fff"
 					/>
 				</svg>
-				<h2>Extending the Platform</h2>
+				<h2>Extensions</h2>
 				<span>Tutorials for creating your own custom extensions within the Directus ecosystem.</span>
-				<u>Learn More</u>
 			</a>
 			<a href="/contributing/introduction/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,7 +90,6 @@
 				</svg>
 				<h2>Contributing</h2>
 				<span>Ready to start working on Directus Core? These Wikis will provide the tools needed to contribute.</span>
-				<u>Learn More</u>
 			</a>
 		</div>
 
@@ -96,7 +101,7 @@
 					<li><a href="/configuration/config-options/">Environment Variables</a></li>
 					<li><a href="/configuration/relationships/">Data Relationships</a></li>
 					<li><a href="/configuration/config-options/#authentication">Single Sign-On (SSO)</a></li>
-					<li><a href="/getting-started/installation/docker/">Installing with Docker</a></li>
+					<li><a href="/self-hosted/installation/docker/">Installing with Docker</a></li>
 				</ul>
 			</div>
 
@@ -119,6 +124,7 @@
 
 <script>
 import Navbar from '@theme/components/Navbar.vue';
+import Sidebar from "@theme/components/Sidebar.vue";
 import HeaderBackgroundLight from '@theme/components/header-background/Light.vue';
 import HeaderBackgroundDark from '@theme/components/header-background/Dark.vue';
 
@@ -127,8 +133,15 @@ export default {
 
 	components: {
 		Navbar,
+		Sidebar,
 		HeaderBackgroundLight,
 		HeaderBackgroundDark,
+	},
+
+	data() {
+		return {
+			isSidebarOpen: false,
+		};
 	},
 
 	computed: {
@@ -139,6 +152,58 @@ export default {
 				return false;
 			}
 			return this.$title || themeConfig.logo || themeConfig.repo || themeConfig.nav || this.$themeLocaleConfig.nav;
+		},
+
+		shouldShowSidebar() {
+			const { frontmatter } = this.$page;
+			return (
+				!frontmatter.home &&
+				frontmatter.sidebar !== false &&
+				this.sidebarItems.length
+			);
+		},
+
+		sidebarItems() {
+			return [];
+		},
+
+		pageClasses() {
+			const userPageClass = this.$page.frontmatter.pageClass;
+			return [
+				{
+					"no-navbar": !this.shouldShowNavbar,
+					"sidebar-open": this.isSidebarOpen,
+					"no-sidebar": !this.shouldShowSidebar,
+				},
+				userPageClass,
+			];
+		},
+	},
+
+	methods: {
+		toggleSidebar(to) {
+			this.isSidebarOpen = typeof to === "boolean" ? to : !this.isSidebarOpen;
+			this.$emit("toggle-sidebar", this.isSidebarOpen);
+		},
+
+		// side swipe
+		onTouchStart(e) {
+			this.touchStart = {
+				x: e.changedTouches[0].clientX,
+				y: e.changedTouches[0].clientY,
+			};
+		},
+
+		onTouchEnd(e) {
+			const dx = e.changedTouches[0].clientX - this.touchStart.x;
+			const dy = e.changedTouches[0].clientY - this.touchStart.y;
+			if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+				if (dx > 0 && this.touchStart.x <= 80) {
+					this.toggleSidebar(true);
+				} else {
+					this.toggleSidebar(false);
+				}
+			}
 		},
 	},
 };
@@ -203,7 +268,7 @@ export default {
 .panel {
 	width: calc((100% - 60px - (40px * 6) - (2px * 6)) / 3);
 	margin-bottom: 30px;
-	padding: 40px;
+	padding: 30px 40px 40px;
 	overflow: hidden;
 	border: 2px solid var(--border-subdued);
 	border-radius: 4px;
@@ -229,7 +294,7 @@ export default {
 }
 
 .panel h2 {
-	margin: 24px 0 16px !important;
+	margin: 24px 0 4px !important;
 	color: var(--foreground-normal-alt);
 	font-weight: 800;
 	line-height: 1.3;
@@ -310,5 +375,11 @@ export default {
 	.header-background-dark {
 		display: block;
 	}
+}
+
+@media (min-width: $MQMobile) {
+  .homepage-sidebar {
+	  display: none;
+  }
 }
 </style>

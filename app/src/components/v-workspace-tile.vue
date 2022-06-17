@@ -1,0 +1,530 @@
+<template>
+	<div
+		class="v-workspace-tile"
+		:style="positionStyling"
+		:class="{
+			editing: editMode,
+			draggable,
+			dragging,
+			'br-tl': dragging || borderRadius[0],
+			'br-tr': dragging || borderRadius[1],
+			'br-br': dragging || borderRadius[2],
+			'br-bl': dragging || borderRadius[3],
+		}"
+		data-move
+		@pointerdown="onPointerDown('move', $event)"
+	>
+		<div v-if="showHeader" class="header">
+			<v-icon class="icon" :style="iconColor" :name="icon" small />
+			<v-text-overflow class="name" :text="name || ''" />
+			<div class="spacer" />
+			<v-icon v-if="note" v-tooltip="note" class="note" name="info" />
+		</div>
+
+		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
+			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click.stop="$emit('edit')" />
+
+			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
+				<template #activator="{ toggle }">
+					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
+				</template>
+
+				<v-list>
+					<v-list-item clickable :disabled="id.startsWith('_')" @click="$emit('move')">
+						<v-list-item-icon>
+							<v-icon class="move-icon" name="input" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('copy_to') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item clickable @click="$emit('duplicate')">
+						<v-list-item-icon>
+							<v-icon name="control_point_duplicate" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ t('duplicate') }}</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item class="delete-action" clickable @click="$emit('delete')">
+						<v-list-item-icon>
+							<v-icon name="delete" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		</div>
+
+		<div class="resize-details">
+			({{ positioning.x - 1 }}:{{ positioning.y - 1 }})
+			<template v-if="resizable">{{ positioning.width }}×{{ positioning.height }}</template>
+		</div>
+
+		<div v-if="editMode && resizable" class="resize-handlers">
+			<div class="top" @pointerdown.stop="onPointerDown('resize-top', $event)" />
+			<div class="right" @pointerdown.stop="onPointerDown('resize-right', $event)" />
+			<div class="bottom" @pointerdown.stop="onPointerDown('resize-bottom', $event)" />
+			<div class="left" @pointerdown.stop="onPointerDown('resize-left', $event)" />
+			<div class="top-left" @pointerdown.stop="onPointerDown('resize-top-left', $event)" />
+			<div class="top-right" @pointerdown.stop="onPointerDown('resize-top-right', $event)" />
+			<div class="bottom-right" @pointerdown.stop="onPointerDown('resize-bottom-right', $event)" />
+			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
+		</div>
+
+		<div class="tile-content" :class="{ 'has-header': showHeader }">
+			<slot></slot>
+			<div v-if="$slots.footer" class="footer">
+				<slot name="footer"></slot>
+			</div>
+		</div>
+		<slot name="body"></slot>
+	</div>
+</template>
+
+<script setup lang="ts">
+import { Panel } from '@directus/shared/types';
+import { computed, ref, reactive, StyleValue } from 'vue';
+import { throttle } from 'lodash';
+import { useI18n } from 'vue-i18n';
+
+export type AppTile = {
+	id: string;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	name?: string;
+	icon?: string;
+	color?: string;
+	note?: string;
+	showHeader?: boolean;
+	minWidth?: number;
+	minHeight?: number;
+	draggable?: boolean;
+	borderRadius?: [boolean, boolean, boolean, boolean];
+};
+
+// Right now, it is not possible to do type Props = AppTile & {resizable?: boolean; editMode?: boolean}
+type Props = {
+	id: string;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	name?: string;
+	icon?: string;
+	color?: string;
+	note?: string;
+	showHeader?: boolean;
+	minWidth?: number;
+	minHeight?: number;
+	draggable?: boolean;
+	borderRadius?: [boolean, boolean, boolean, boolean];
+	resizable?: boolean;
+	editMode?: boolean;
+	showOptions?: boolean;
+	alwaysUpdatePosition?: boolean;
+};
+
+const props = withDefaults(defineProps<Props>(), {
+	name: undefined,
+	icon: 'space_dashboard',
+	color: 'var(--primary)',
+	note: undefined,
+	showHeader: true,
+	minWidth: 8,
+	minHeight: 6,
+	resizable: true,
+	editMode: false,
+	draggable: true,
+	borderRadius: () => [true, true, true, true],
+	showOptions: true,
+	alwaysUpdatePosition: false,
+});
+
+const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
+
+const { t } = useI18n();
+
+/**
+ * When drag-n-dropping for positioning/resizing, we're
+ */
+const editedPosition = reactive<Partial<Panel>>({
+	position_x: undefined,
+	position_y: undefined,
+	width: undefined,
+	height: undefined,
+});
+
+const { onPointerDown, dragging } = useDragDrop();
+
+const positioning = computed(() => {
+	if (dragging.value) {
+		return {
+			x: editedPosition.position_x ?? props.x,
+			y: editedPosition.position_y ?? props.y,
+			width: editedPosition.width ?? props.width,
+			height: editedPosition.height ?? props.height,
+		};
+	}
+
+	return {
+		x: props.x,
+		y: props.y,
+		width: props.width,
+		height: props.height,
+	};
+});
+
+const positionStyling = computed(() => {
+	if (dragging.value) {
+		return {
+			'--pos-x': editedPosition.position_x ?? props.x,
+			'--pos-y': editedPosition.position_y ?? props.y,
+			'--width': editedPosition.width ?? props.width,
+			'--height': editedPosition.height ?? props.height,
+		} as StyleValue;
+	}
+
+	return {
+		'--pos-x': props.x,
+		'--pos-y': props.y,
+		'--width': props.width,
+		'--height': props.height,
+	} as StyleValue;
+});
+
+const iconColor = computed(() => ({
+	'--v-icon-color': props.color,
+}));
+
+function useDragDrop() {
+	const dragging = ref(false);
+
+	let pointerStartPosX = 0;
+	let pointerStartPosY = 0;
+
+	let panelStartPosX = 0;
+	let panelStartPosY = 0;
+	let panelStartWidth = 0;
+	let panelStartHeight = 0;
+
+	type Operation =
+		| 'move'
+		| 'resize-top'
+		| 'resize-right'
+		| 'resize-bottom'
+		| 'resize-left'
+		| 'resize-top-left'
+		| 'resize-top-right'
+		| 'resize-bottom-right'
+		| 'resize-bottom-left';
+
+	let operation: Operation = 'move';
+
+	const onPointerMove = throttle((event: PointerEvent) => {
+		if (props.editMode === false || dragging.value === false || props.draggable === false) return;
+
+		const pointerDeltaX = event.pageX - pointerStartPosX;
+		const pointerDeltaY = event.pageY - pointerStartPosY;
+
+		const gridDeltaX = Math.round(pointerDeltaX / 20);
+		const gridDeltaY = Math.round(pointerDeltaY / 20);
+
+		if (operation === 'move') {
+			editedPosition.position_x = panelStartPosX + gridDeltaX;
+			editedPosition.position_y = panelStartPosY + gridDeltaY;
+
+			if (editedPosition.position_x < 1) editedPosition.position_x = 1;
+			if (editedPosition.position_y < 1) editedPosition.position_y = 1;
+		} else {
+			if (operation.includes('top')) {
+				editedPosition.height = panelStartHeight - gridDeltaY;
+				editedPosition.position_y = panelStartPosY + gridDeltaY;
+			}
+
+			if (operation.includes('right')) {
+				editedPosition.width = panelStartWidth + gridDeltaX;
+			}
+
+			if (operation.includes('bottom')) {
+				editedPosition.height = panelStartHeight + gridDeltaY;
+			}
+
+			if (operation.includes('left')) {
+				editedPosition.width = panelStartWidth - gridDeltaX;
+				editedPosition.position_x = panelStartPosX + gridDeltaX;
+			}
+
+			const minWidth = props.minWidth;
+			const minHeight = props.minHeight;
+
+			if (editedPosition.position_x && editedPosition.position_x < 1) editedPosition.position_x = 1;
+			if (editedPosition.position_y && editedPosition.position_y < 1) editedPosition.position_y = 1;
+			if (editedPosition.width && editedPosition.width < minWidth) editedPosition.width = minWidth;
+			if (editedPosition.height && editedPosition.height < minHeight) editedPosition.height = minHeight;
+		}
+
+		if (props.alwaysUpdatePosition) emit('update', editedPosition);
+	}, 20);
+
+	return { dragging, onPointerDown, onPointerUp, onPointerMove };
+
+	function onPointerDown(op: Operation, event: PointerEvent) {
+		if (props.editMode === false || props.draggable === false) return;
+
+		operation = op;
+
+		dragging.value = true;
+
+		pointerStartPosX = event.pageX;
+		pointerStartPosY = event.pageY;
+
+		panelStartPosX = props.x;
+		panelStartPosY = props.y;
+
+		panelStartWidth = props.width;
+		panelStartHeight = props.height;
+
+		window.addEventListener('pointerup', onPointerUp);
+		window.addEventListener('pointermove', onPointerMove);
+	}
+
+	function onPointerUp() {
+		dragging.value = false;
+		if (props.editMode === false || props.draggable === false) return;
+		emit('update', editedPosition);
+		window.removeEventListener('pointerup', onPointerUp);
+		window.removeEventListener('pointermove', onPointerMove);
+
+		editedPosition.position_x = undefined;
+		editedPosition.position_y = undefined;
+		editedPosition.width = undefined;
+		editedPosition.height = undefined;
+	}
+}
+</script>
+
+<style scoped lang="scss">
+.v-workspace-tile {
+	--pos-x: 1;
+	--pos-y: 1;
+	--width: 6;
+	--height: 6;
+
+	position: relative;
+	display: block;
+	grid-row: var(--pos-y) / span var(--height);
+	grid-column: var(--pos-x) / span var(--width);
+	background-color: var(--background-page);
+	border: 1px solid var(--border-subdued);
+	box-shadow: 0 0 0 1px var(--border-subdued);
+	z-index: 1;
+	transition: border var(--fast) var(--transition);
+
+	&:hover {
+		z-index: 3;
+	}
+
+	&.editing {
+		&.draggable {
+			border-color: var(--border-normal);
+			box-shadow: 0 0 0 1px var(--border-normal);
+			cursor: move;
+		}
+
+		&.draggable:hover {
+			border-color: var(--border-normal-alt);
+			box-shadow: 0 0 0 1px var(--border-normal-alt);
+		}
+
+		&.dragging {
+			z-index: 3 !important;
+			border-color: var(--primary);
+			box-shadow: 0 0 0 1px var(--primary);
+		}
+
+		&.dragging .resize-details {
+			opacity: 1;
+		}
+
+		& .tile-content {
+			pointer-events: none;
+		}
+	}
+}
+
+.resize-details {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 2;
+	padding: 17px 14px;
+	color: var(--foreground-subdued);
+	font-weight: 500;
+	font-size: 15px;
+	font-family: var(--family-monospace);
+	font-style: normal;
+	line-height: 1;
+	text-align: right;
+	background-color: var(--background-page);
+	border-top-right-radius: var(--border-radius-outline);
+	opacity: 0;
+	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+	pointer-events: none;
+}
+.tile-content {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.tile-content.has-header {
+	height: calc(100% - 48px);
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	height: 42px;
+	padding: 12px;
+}
+
+.footer {
+	padding: 0 12px;
+	border-top: 2px solid var(--border-subdued);
+	margin-top: auto;
+	padding-top: 8px;
+}
+
+.icon {
+	--v-icon-color: var(--foreground-subdued);
+
+	margin-right: 4px;
+}
+
+.name {
+	color: var(--foreground-normal-alt);
+	font-weight: 600;
+	font-size: 16px;
+	font-family: var(--family-sans-serif);
+	font-style: normal;
+}
+
+.spacer {
+	flex-grow: 1;
+}
+
+.more-icon,
+.edit-icon,
+.note {
+	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color-hover: var(--foreground-normal);
+}
+
+.delete-action {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
+}
+
+.edit-actions {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 2;
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	padding: 12px 12px 8px;
+	background-color: var(--background-page);
+	border-top-right-radius: var(--border-radius-outline);
+}
+
+.resize-handlers div {
+	position: absolute;
+	z-index: 2;
+}
+
+.resize-handlers .top {
+	top: -3px;
+	width: 100%;
+	height: 10px;
+	cursor: ns-resize;
+}
+
+.resize-handlers .right {
+	top: 0;
+	right: -3px;
+	width: 10px;
+	height: 100%;
+	cursor: ew-resize;
+}
+
+.resize-handlers .bottom {
+	bottom: -3px;
+	width: 100%;
+	height: 10px;
+	cursor: ns-resize;
+}
+
+.resize-handlers .left {
+	top: 0;
+	left: -3px;
+	width: 10px;
+	height: 100%;
+	cursor: ew-resize;
+}
+
+.resize-handlers .top-left {
+	top: -3px;
+	left: -3px;
+	width: 14px;
+	height: 14px;
+	cursor: nwse-resize;
+}
+
+.resize-handlers .top-right {
+	top: -3px;
+	right: -3px;
+	width: 14px;
+	height: 14px;
+	cursor: nesw-resize;
+}
+
+.resize-handlers .bottom-right {
+	right: -3px;
+	bottom: -3px;
+	width: 14px;
+	height: 14px;
+	cursor: nwse-resize;
+}
+
+.resize-handlers .bottom-left {
+	bottom: -3px;
+	left: -3px;
+	width: 14px;
+	height: 14px;
+	cursor: nesw-resize;
+}
+
+.br-tl {
+	border-top-left-radius: var(--border-radius-outline);
+}
+
+.br-tr {
+	border-top-right-radius: var(--border-radius-outline);
+}
+
+.br-br {
+	border-bottom-right-radius: var(--border-radius-outline);
+}
+
+.br-bl {
+	border-bottom-left-radius: var(--border-radius-outline);
+}
+</style>

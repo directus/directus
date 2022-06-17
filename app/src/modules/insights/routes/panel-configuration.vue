@@ -110,7 +110,7 @@ export default defineComponent({
 			type: props.panel?.type || undefined,
 			name: props.panel?.name,
 			note: props.panel?.note,
-			icon: props.panel?.icon ?? 'insert_chart',
+			icon: props.panel?.icon ?? undefined,
 			color: props.panel?.color,
 			width: props.panel?.width ?? undefined,
 			height: props.panel?.height ?? undefined,

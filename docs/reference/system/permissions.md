@@ -349,7 +349,7 @@ POST /graphql/system
 
 ```graphql
 type Mutation {
-	create_permissions_itemss(data: [create_directus_permissions_input!]!): [directus_permissions]
+	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
 }
 ```
 

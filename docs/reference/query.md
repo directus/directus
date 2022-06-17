@@ -474,6 +474,7 @@ The following aggregation functions are available in Directus:
 | `avgDistinct`   | Get the average value of the unique values in the given field |
 | `min`           | Return the lowest value in the field                          |
 | `max`           | Return the highest value in the field                         |
+| `countAll`      | Equivalent to `?aggregate[count]=*` (GraphQL only)            |
 
 ### Grouping
 
@@ -688,7 +689,7 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 
 `timestamp` -> `year(timestamp)`
 
-### DateTime Filters
+### DateTime Functions
 
 | Filter    | Description                                              |
 | --------- | -------------------------------------------------------- |
@@ -700,6 +701,12 @@ Functions can be used by wrapping the field key in a JavaScript like syntax, for
 | `hour`    | Extract the hour from a datetime/date/timestamp field    |
 | `minute`  | Extract the minute from a datetime/date/timestamp field  |
 | `second`  | Extract the second from a datetime/date/timestamp field  |
+
+### Array Functions
+
+| Filter  | Description                                                       |
+| ------- | ----------------------------------------------------------------- |
+| `count` | Extract the number of items from a JSON array or relational field |
 
 ::: warning GraphQL
 

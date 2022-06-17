@@ -59,9 +59,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Activity } from './types';
 import format from 'date-fns/format';
 import { getRootPath } from '@/utils/get-root-path';
@@ -70,62 +70,52 @@ import { userName } from '@/utils/user-name';
 import api, { addTokenToURL } from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export default defineComponent({
-	props: {
-		activity: {
-			type: Object as PropType<Activity>,
-			required: true,
-		},
-		refresh: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-	},
-	emits: ['edit'],
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	activity: Activity;
+	refresh: () => void;
+}>();
 
-		const formattedTime = computed(() => {
-			if (props.activity.timestamp) {
-				// timestamp is in iso-8601
-				return format(new Date(props.activity.timestamp), String(t('date-fns_time_no_seconds')));
-			}
+defineEmits(['edit']);
 
-			return null;
-		});
+const { t } = useI18n();
 
-		const avatarSource = computed(() => {
-			if (!props.activity.user?.avatar) return null;
+const formattedTime = computed(() => {
+	if (props.activity.timestamp) {
+		// timestamp is in iso-8601
+		return format(new Date(props.activity.timestamp), String(t('date-fns_time_no_seconds')));
+	}
 
-			return addTokenToURL(getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`);
-		});
-
-		const { confirmDelete, deleting, remove } = useDelete();
-
-		return { t, formattedTime, avatarSource, confirmDelete, deleting, remove, userName };
-
-		function useDelete() {
-			const confirmDelete = ref(false);
-			const deleting = ref(false);
-
-			return { confirmDelete, deleting, remove };
-
-			async function remove() {
-				deleting.value = true;
-
-				try {
-					await api.delete(`/activity/comment/${props.activity.id}`);
-					await props.refresh();
-					confirmDelete.value = false;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					deleting.value = false;
-				}
-			}
-		}
-	},
+	return null;
 });
+
+const avatarSource = computed(() => {
+	if (!props.activity.user?.avatar) return null;
+
+	return addTokenToURL(getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`);
+});
+
+const { confirmDelete, deleting, remove } = useDelete();
+
+function useDelete() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	return { confirmDelete, deleting, remove };
+
+	async function remove() {
+		deleting.value = true;
+
+		try {
+			await api.delete(`/activity/comment/${props.activity.id}`);
+			await props.refresh();
+			confirmDelete.value = false;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			deleting.value = false;
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>

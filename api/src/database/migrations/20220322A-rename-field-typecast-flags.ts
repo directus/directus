@@ -34,7 +34,9 @@ export async function up(knex: Knex): Promise<void> {
 			});
 
 			if (updateRequired) {
-				await knex('directus_fields').update({ special: parsedSpecial }).where({ id });
+				await knex('directus_fields')
+					.update({ special: parsedSpecial.join(',') })
+					.where({ id });
 			}
 		}
 	}
@@ -71,7 +73,9 @@ export async function down(knex: Knex): Promise<void> {
 			});
 
 			if (updateRequired) {
-				await knex('directus_fields').update({ special: parsedSpecial }).where({ id });
+				await knex('directus_fields')
+					.update({ special: parsedSpecial.join(',') })
+					.where({ id });
 			}
 		}
 	}

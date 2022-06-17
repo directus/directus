@@ -1,5 +1,6 @@
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
+import TFASetup from '@/routes/tfa-setup';
 import AcceptInviteRoute from '@/routes/accept-invite';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
@@ -44,6 +45,14 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		},
 	},
 	{
+		name: 'tfa-setup',
+		path: '/tfa-setup',
+		component: TFASetup,
+		meta: {
+			track: false,
+		},
+	},
+	{
 		name: 'logout',
 		path: '/logout',
 		component: LogoutRoute,
@@ -76,6 +85,7 @@ let firstLoad = true;
 export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
+	const userStore = useUserStore();
 
 	// First load
 	if (firstLoad) {
@@ -92,16 +102,40 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		await serverStore.hydrate();
 	}
 
-	if (to.meta?.public !== true && appStore.hydrated === false) {
-		appStore.hydrating = false;
-		if (appStore.authenticated === true && appStore.hydrating === false) {
-			await hydrate();
-			return to.fullPath;
-		} else {
-			if (to.fullPath) {
-				return '/login?redirect=' + encodeURIComponent(to.fullPath);
+	if (to.meta?.public !== true) {
+		if (appStore.hydrated === false) {
+			appStore.hydrating = false;
+			if (appStore.authenticated === true) {
+				await hydrate();
+				if (
+					userStore.currentUser &&
+					to.fullPath === '/tfa-setup' &&
+					!('share' in userStore.currentUser) &&
+					userStore.currentUser.tfa_secret !== null
+				) {
+					return userStore.currentUser.last_page || '/login';
+				}
+				return to.fullPath;
 			} else {
-				return '/login';
+				if (to.fullPath) {
+					return '/login?redirect=' + encodeURIComponent(to.fullPath);
+				} else {
+					return '/login';
+				}
+			}
+		}
+
+		if (userStore.currentUser && !('share' in userStore.currentUser) && userStore.currentUser.role) {
+			if (to.path !== '/tfa-setup') {
+				if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+					if (userStore.currentUser.last_page === to.fullPath) {
+						return '/tfa-setup';
+					} else {
+						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+					}
+				}
+			} else if (userStore.currentUser.tfa_secret !== null) {
+				return userStore.currentUser.last_page || '/login';
 			}
 		}
 	}
@@ -112,7 +146,7 @@ let trackTimeout: number | null = null;
 export const onAfterEach: NavigationHookAfter = (to) => {
 	const userStore = useUserStore();
 
-	if (to.meta.public !== true) {
+	if (to.meta.public !== true && to.meta.track !== false) {
 		// The timeout gives the page some breathing room to load. No need to clog up the thread with
 		// this call while more important things are loading
 

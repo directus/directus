@@ -1,6 +1,6 @@
 import { verifyAccessJWT } from '../../src/utils/jwt';
 import jwt from 'jsonwebtoken';
-import { InvalidTokenException, ServiceUnavailableException } from '../../src/exceptions';
+import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../../src/exceptions';
 import { DirectusTokenPayload } from '../../src/types';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
@@ -13,10 +13,14 @@ test('Returns the payload of a correctly signed token', () => {
 	expect(result).toEqual(payload);
 });
 
+test('Throws TokenExpiredException when token used has expired', () => {
+	const token = jwt.sign({ ...payload, exp: new Date().getTime() / 1000 - 500 }, secret, options);
+	expect(() => verifyAccessJWT(token, secret)).toThrow(TokenExpiredException);
+});
+
 const InvalidTokenCases = {
 	'wrong issuer': jwt.sign(payload, secret, { issuer: 'wrong' }),
 	'wrong secret': jwt.sign(payload, 'wrong-secret', options),
-	expired: jwt.sign({ ...payload, exp: new Date().getTime() / 1000 - 500 }, secret, options),
 	'string payload': jwt.sign('illegal payload', secret),
 	'missing properties in token payload': jwt.sign({ role: null }, secret, options),
 };

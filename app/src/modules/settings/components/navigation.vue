@@ -59,9 +59,19 @@ export default defineComponent({
 				to: `/settings/presets`,
 			},
 			{
+				icon: 'translate',
+				name: t('settings_translation_strings'),
+				to: `/settings/translation-strings`,
+			},
+			{
 				icon: 'anchor',
 				name: t('settings_webhooks'),
 				to: `/settings/webhooks`,
+			},
+			{
+				icon: 'bolt',
+				name: t('settings_flows'),
+				to: `/settings/flows`,
 			},
 		];
 

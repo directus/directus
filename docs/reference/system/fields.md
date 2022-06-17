@@ -53,7 +53,7 @@ The name of the collection this field resides in.
 Identifier of the field. Matches the column name in the database.
 
 `special` **string**\
-Any special transform flags that apply to this field. See [Field Transforms](/reference/field-transforms/) for more information.
+Any special transform flags that apply to this field.
 
 `interface` **string**\
 The interface used for this field.

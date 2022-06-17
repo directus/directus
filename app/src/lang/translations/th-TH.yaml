@@ -22,12 +22,15 @@
 identifier: ตัวบ่งชี้
 avatar: ภาพประจำตัว
 default_provider: ค่าเริ่มต้น
+method: เมธอด
 published: เผยแพร่แล้ว
 draft: ฉบับร่าง
 archived: เก็บถาวร
 modules: โมดูล
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
+location: ตำแหน่งที่ตั้ง
+input: Input
 maps: แผนที่
 item_revision: ประวัติรายการ
 enter_a_name: กรอกชื่อ...
@@ -73,7 +76,6 @@ delete_folder: ลบโฟลเดอร์
 prefix: คำนำหน้า
 suffix: คำต่อท้าย
 reset_bookmark: รีเซ็ตบุ๊คมาร์ค
-rename_bookmark: เปลี่ยนชื่อบุ๊คมาร์ค
 update_bookmark: ปรับปรุงบุ๊คมาร์ค
 delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
 delete_bookmark_copy: >-
@@ -246,6 +248,7 @@ dismiss: ปิด
 raw_value: ข้อมูลดิบ
 edit_raw_value: แก้ไขข้อมูลดิบ
 enter_raw_value: กรุณาใส่ข้อมูลดิบ
+reset_to_default: รีเซ็ตเป็นค่าเริ่มต้น
 notifications: การแจ้งเตือน
 show_all_activity: แสดงทุกกิจกรรม
 page_not_found: ไม่พบหน้านี้
@@ -275,6 +278,7 @@ related_collection: คอลเลกชันที่เกี่ยวข้
 related_collections: คอลเลกชันที่เกี่ยวข้อง
 translations_collection: การแปลตาราง
 languages_collection: คอลเลกชันภาษา
+import_data_input_placeholder: CSV หรือ JSON
 label_import: นำ​เข้า
 format: รูปแบบ
 last_page: หน้าสุดท้าย
@@ -292,9 +296,14 @@ interface_label: อินเทอร์เฟซ
 today: วันนี้
 yesterday: เมื่อวาน
 delete_comment: ลบความคิดเห็น
+functions:
+  year: ปี
+  month: เดือน
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -482,7 +491,6 @@ unexpected_error_copy: เกิดข้อผิดพลาดที่ไม
 copy_details: คัดลอกรายละเอียด
 no_app_access: ไม่สามารถเข้าถึงแอป
 no_app_access_copy: ผู้ใช้นี้ไม่ได้รับอนุญาตให้เข้าถึงส่วนแอดมิน
-password_reset_sent: เราได้ส่งขั้นตอนการกำหนดรหัสผ่านใหม่ให้คุณแล้วทางอีเมล
 password_reset_successful: รหัสผ่านถูกรีเซ็ตแล้ว
 back: ย้อนกลับ
 filter: ตัวกรอง
@@ -503,8 +511,6 @@ start_end_of_count_items: '{start}-{end} ของ {count} ไอเท็ม'
 start_end_of_count_filtered_items: '{start}-{end} ของ {count} ไอเท็มที่ถูกกรอง'
 one_item: '1 รายการ'
 one_filtered_item: 'มี 1 ไอเท็มที่ถูกกรอง'
-delete_collection_are_you_sure: >-
-  แน่ใจหรือว่าต้องการลบคอลเลกชันนี้? นี่คือการลบคอลเลกชันและรายการทั้งหมดที่มีอยู่ในคอลเลกชัน ไม่สามารถกู้คืนได้
 collections_shown: แสดงคอลเลกชัน
 visible_collections: คอลเลกชันที่มองเห็นได้
 hidden_collections: คอลเลกชันที่ซ่อนอยู่
@@ -608,6 +614,7 @@ on_create: เมื่อสร้าง
 on_update: เมื่อแก้ไข
 read: อ่าน
 update: แก้ไข
+delete: ลบ
 select_fields: เลือกฟิลด์
 format_text: รูปแบบข้อความ
 bold: ตัวหนา
@@ -615,6 +622,10 @@ toggle: สลับ
 icon_on: แสดงไอคอน
 icon_off: ไม่แสดงไอคอน
 label: ป้าย
+trigger: Trigger
+flow_name: ชื่อ
+flow_tracking_activity: ติดตามกิจกรรมเท่านั้น
+flow_tracking_null: อย่าติดตามอะไรเลย
 dashboard: แดชบอร์ด
 panel: แพแนล
 panel_options: ตัวเลือกแพแนล
@@ -729,6 +740,7 @@ preset_search_placeholder: ค้นหาด้วย...
 editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
 layout_preview: ตัวอย่างเค้าโครง
 layout_setup: ตั้งค่าเค้าโครง
+data: ข้อมูล
 unsaved_changes: ไม่ได้บันทึกการเปลี่ยนแปลง
 unsaved_changes_copy: คุณแน่ใจว่าต้องการออกจากหน้านี้?
 discard_changes: ยกเลิกการเปลี่ยนแปลง
@@ -848,17 +860,18 @@ fields:
     status_archived: เก็บถาวร
     role: บทบาท
     token: โทเค็น
-    token_placeholder: ระบุโทเค็นความปลอดภัย
     provider: ผู้ให้บริการ
     last_page: หน้าสุดท้าย
     last_access: การเข้าถึงล่าสุด
   directus_settings:
     jpg: JPEG
     png: PNG
+    webP: WebP
     project_name: ชื่อโครงการ
     project_url: URL ของโครงการ
     project_color: สีของโปรเจ็ค
     project_logo: โลโก้ของโปรเจ็ค
+    default_language: ภาษาเริ่มต้น
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
@@ -1021,7 +1034,6 @@ sort_direction: รูปแบบการเรียง
 sort_asc: เรียงจากน้อยไปมาก
 sort_desc: เรียงจากมากไปน้อย
 template: แม่แบบ
-require_value_to_be_set: ต้องระบุ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
@@ -1173,6 +1185,7 @@ interfaces:
     description: สร้างหลายรายการโดยใช้โครงสร้างเดียวกัน
     edit_fields: แก้ไขฟิลด์
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
+    sort: เรียง
     field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
@@ -1243,6 +1256,8 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
+  system-token:
+    system-token: โทเค็น
 displays:
   translations:
     translations: การแปลภาษา
@@ -1375,3 +1390,16 @@ panels:
     name: ป้าย
   list:
     name: รายการ
+triggers:
+  webhook:
+    method: เมธอด
+operations:
+  notification:
+    recipient: ผู้ใช้
+  request:
+    url: URL
+    method: เมธอด
+    data: ข้อมูล
+    header: เฮดเดอร์
+  trigger:
+    data: ข้อมูล

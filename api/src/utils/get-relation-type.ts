@@ -1,7 +1,7 @@
 import { Relation } from '@directus/shared/types';
 
 export function getRelationType(getRelationOptions: {
-	relation: Relation;
+	relation?: Relation | null;
 	collection: string | null;
 	field: string;
 }): 'm2o' | 'o2m' | 'a2o' | null {

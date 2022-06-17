@@ -1,5 +1,5 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Relation, Type } from '@directus/shared/types';
 import { getRelationType } from '@directus/shared/utils';
 import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
@@ -11,6 +11,7 @@ export type FieldNode = {
 	relatedCollection?: string;
 	key: string;
 	path: string;
+	type: Type;
 	children?: FieldNode[];
 	group?: boolean;
 };
@@ -84,6 +85,7 @@ export function useFieldTree(
 				key: parent ? parent.key : '',
 				path: pathContext + field.field,
 				group: true,
+				type: field.type,
 			};
 
 			return {
@@ -100,6 +102,7 @@ export function useFieldTree(
 				relatedCollection: relatedCollections[0],
 				key: keyContext + field.field,
 				path: pathContext + field.field,
+				type: field.type,
 			};
 		}
 
@@ -111,6 +114,7 @@ export function useFieldTree(
 				relatedCollection: collection,
 				key: keyContext + `${field.field}:${collection}`,
 				path: pathContext + `${field.field}:${collection}`,
+				type: field.type,
 			};
 		});
 	}

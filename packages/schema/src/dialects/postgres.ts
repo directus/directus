@@ -8,7 +8,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		type RawColumn = {
 			table_name: string;
 			column_name: string;
-			default_value: string;
+			default_value: string | null;
 			data_type: string;
 			max_length: number | null;
 			is_identity: boolean;
@@ -21,6 +21,8 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			column_name: string;
 			data_type: string;
 		};
+
+		const bindings = this.explodedSchema.map(() => '?').join(',');
 
 		const [columnsResult, primaryKeysResult] = await Promise.all([
 			// Only select columns from BASE TABLEs to exclude views (Postgres views
@@ -41,9 +43,9 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           ON c.table_name = t.table_name
         WHERE
           t.table_type = 'BASE TABLE'
-          AND c.table_schema IN (?);
+          AND c.table_schema IN (${bindings});
       `,
-				[this.explodedSchema.join(',')]
+				this.explodedSchema
 			),
 
 			this.knex.raw(
@@ -56,7 +58,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           , pg_namespace
         WHERE
           indrelid = pg_class.oid
-          AND nspname IN (?)
+          AND nspname IN (${bindings})
           AND pg_class.relnamespace = pg_namespace.oid
           AND pg_attribute.attrelid = pg_class.oid
           AND pg_attribute.attnum = ANY (pg_index.indkey)
@@ -64,7 +66,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           AND indnatts = 1
 			 AND relkind != 'S'
       `,
-				[this.explodedSchema.join(',')]
+				this.explodedSchema
 			),
 		]);
 
@@ -92,9 +94,9 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 				JOIN information_schema.tables t
 					ON g.f_table_name = t.table_name
 					AND t.table_type = 'BASE TABLE'
-				WHERE f_table_schema in (?)
+				WHERE f_table_schema in (${bindings})
 				`,
-				[this.explodedSchema.join(',')]
+				this.explodedSchema
 			);
 
 			geometryColumns = result.rows;

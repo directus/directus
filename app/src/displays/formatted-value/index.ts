@@ -1,6 +1,7 @@
 import { defineDisplay } from '@directus/shared/utils';
 import { DisplayConfig } from '@directus/shared/types';
 import DisplayFormattedValue from './formatted-value.vue';
+import formatTitle from '@directus/format-title';
 
 export default defineDisplay({
 	id: 'formatted-value',
@@ -9,6 +10,13 @@ export default defineDisplay({
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	component: DisplayFormattedValue,
+	handler: (value, options) => {
+		const prefix = options.prefix ?? '';
+		const suffix = options.suffix ?? '';
+		const formattedValue = options.format ? formatTitle(value) : value;
+
+		return `${prefix}${formattedValue}${suffix}`;
+	},
 	options: ({ field }) => {
 		const isString = ['string', 'text'].includes(field.type ?? 'unknown');
 		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];
@@ -84,7 +92,7 @@ export default defineDisplay({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						label: '$t:displays.formatted-value.prefix_label',
 						trim: false,
@@ -97,7 +105,7 @@ export default defineDisplay({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						label: '$t:displays.formatted-value.suffix_label',
 						trim: false,
@@ -209,7 +217,7 @@ export default defineDisplay({
 								name: '$t:displays.formatted-value.text',
 								type: 'string',
 								meta: {
-									interface: 'input',
+									interface: 'system-input-translated-string',
 									width: 'half',
 									options: {
 										placeholder: '$t:displays.formatted-value.text_placeholder',

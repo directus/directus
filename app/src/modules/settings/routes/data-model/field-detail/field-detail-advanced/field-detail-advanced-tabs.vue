@@ -74,6 +74,11 @@ export default defineComponent({
 			}
 
 			tabs.push({
+				text: t('validation'),
+				value: 'validation',
+			});
+
+			tabs.push({
 				text: t('conditions'),
 				value: 'conditions',
 			});

@@ -17,7 +17,9 @@ fields:
   - field: options
     special: cast-json
   - field: date_created
-    special: date-created
+    special:
+      - date-created
+      - cast-timestamp
   - field: user_created
     special: user-created
   - field: dashboard
