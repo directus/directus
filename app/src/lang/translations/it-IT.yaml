@@ -2000,11 +2000,11 @@ operations:
     name: Crea dati
     description: Crea elementi nel database
     payload: Payload
-    emit_events: Scatena un evento
+    emit_events: Genera gli eventi
   item-delete:
     name: Elimina dati
     description: Elimina elementi nel database
-    emit_events: Scatena un evento
+    emit_events: Genera gli eventi
     key: ID
     query: Interrogazione
   item-read:
@@ -2015,7 +2015,7 @@ operations:
   item-update:
     name: Aggiorna dati
     description: Aggiorna elementi nel database
-    emit_events: Scatena un evento
+    emit_events: Genera gli eventi
     key: ID
     payload: Payload
     query: Interrogazione
