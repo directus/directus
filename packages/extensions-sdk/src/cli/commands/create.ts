@@ -64,7 +64,7 @@ export default async function create(type: string, name: string, options: Create
 		process.exit(1);
 	}
 
-	const spinner = ora(`Scaffolding Directus extension...`).start();
+	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
 
