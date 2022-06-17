@@ -9,13 +9,14 @@ type Options = {
 	collection: string;
 	key?: PrimaryKey | PrimaryKey[] | null;
 	query?: Record<string, any> | string | null;
+	emitEvents: boolean;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
 };
 
 export default defineOperationApi<Options>({
 	id: 'item-delete',
 
-	handler: async ({ collection, key, query, permissions }, { accountability, database, getSchema }) => {
+	handler: async ({ collection, key, query, emitEvents, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
 
 		let customAccountability: Accountability | null;
@@ -47,9 +48,9 @@ export default defineOperationApi<Options>({
 			const keys = toArray(key);
 
 			if (keys.length === 1) {
-				result = await itemsService.deleteOne(keys[0]);
+				result = await itemsService.deleteOne(keys[0], { emitEvents });
 			} else {
-				result = await itemsService.deleteMany(keys);
+				result = await itemsService.deleteMany(keys, { emitEvents });
 			}
 		}
 

@@ -1589,6 +1589,8 @@ interfaces:
     description: Създаване на множество записи с еднаква структура
     edit_fields: Редактиране на полетата
     add_label: 'Текст за „Създаване“'
+    sort: Сортиране
+    sort_placeholder: Ръчно
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
@@ -1981,6 +1983,7 @@ operations:
   item-delete:
     name: Изтриване на данни
     description: Изтриване в базата от данни
+    emit_events: Излъчване на събития
     query: Заявка
   item-read:
     name: Четене на данни
@@ -1989,6 +1992,7 @@ operations:
   item-update:
     name: Обновяване на данните
     description: Обновяване на записите в базата от данни
+    emit_events: Излъчване на събития
     payload: Съдържание
     query: Заявка
   log:

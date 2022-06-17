@@ -1438,6 +1438,7 @@ interfaces:
     description: Crie múltiplas entradas com a mesma estrutura
     edit_fields: Editar campos
     add_label: 'Texto de "Criar Novo"'
+    sort: Ordenar
     field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira a nota de campo...
   slider:
