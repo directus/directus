@@ -226,7 +226,7 @@ prefix.
   and memory, often even resulting in those processes not completing. You have two options:
   [CPU allocation](https://cloud.google.com/run/docs/configuring/cpu-allocation) that is always allocated (which will
   increase cost) or handle everything in your extensions synchronously.
-- You could setup [caching](/configuration/config-options/#cache) using
+- You could setup [caching](/self-hosted/config-options/#cache) using
   [Memorystore for Redis](https://cloud.google.com/memorystore/docs/redis)
 - Since, by default, Google Cloud Run will scale back to zero instances of the container, it's impossible to use the
   [Schedule hooks](/extensions/hooks/#schedule) since there is no container to handle those schedules / cron jobs. Again

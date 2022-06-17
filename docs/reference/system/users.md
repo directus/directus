@@ -782,7 +782,7 @@ Role of the new user.
 `invite_url`\
 Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter.\
 **Note**: You need to configure the
-[`USER_INVITE_URL_ALLOW_LIST` environment variable](/configuration/config-options/#security) to enable this feature.
+[`USER_INVITE_URL_ALLOW_LIST` environment variable](/self-hosted/config-options/#security) to enable this feature.
 
 </div>
 
