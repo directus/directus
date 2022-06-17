@@ -1448,6 +1448,9 @@ interfaces:
     display_template: Visningsmall
     no_collection: Ingen kollektion
     toggle_split_view: Visa/dölj delad vy
+    enable: Aktivera
+    user_language: Använd nuvarande användarspråk
+    default_language: Förvalt språk
   user:
     user: Användare
     description: Välj en befintlig Directus användare

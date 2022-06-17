@@ -1648,6 +1648,9 @@ interfaces:
     display_template: Display Template
     no_collection: Nessuna Raccolta
     toggle_split_view: Attiva/disattiva la Split View
+    enable: Attivato
+    user_language: Usa la lingua dell'utente corrente
+    default_language: Lingua predefinita
     language_field: Campo indicatore della lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many

@@ -1559,6 +1559,9 @@ interfaces:
     display_template: Predložak prikaza
     no_collection: Nema zbirke
     toggle_split_view: Uključi/isključi podijeljeni prikaz
+    enable: Omogući
+    user_language: Koristi jezik trenutnog korisnika
+    default_language: Zadani jezik
     language_field: Polje indikatora jezika
   list-o2m-tree-view:
     description: Prikaz stabla za ugniježđene rekurzivne one-to-many stavke

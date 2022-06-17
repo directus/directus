@@ -1585,6 +1585,9 @@ interfaces:
     display_template: Šablona zobrazení
     no_collection: Žádná kolekce
     toggle_split_view: Přepnout rozdělené zobrazení
+    enable: Povolit
+    user_language: Použít aktuální jazyk uživatele
+    default_language: Výchozí jazyk
     language_field: Pole indikátoru jazyka
   list-o2m-tree-view:
     description: Zobrazení stromu pro vnořené rekurentní položky 1:N
