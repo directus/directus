@@ -26,7 +26,7 @@ See
 for more information.
 
 Directus' configuration is all set through environment variables. For a full overview of all available environment
-variables, see [Environment Variables](/configuration/config-options)
+variables, see [Environment Variables](/self-hosted/config-options)
 
 ## CodeDeploy
 

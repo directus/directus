@@ -1577,6 +1577,9 @@ interfaces:
     display_template: Шаблон відображення
     no_collection: Немає колекцій
     toggle_split_view: Перемикання розділеного перегляду
+    enable: Увімкнути
+    user_language: Використовувати поточну мову користувача
+    default_language: Мова за замовчуванням
     language_field: Поле визначення мови
   list-o2m-tree-view:
     description: У вигляді дерева рекурсивно вкладених елементів

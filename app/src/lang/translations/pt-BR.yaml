@@ -1486,6 +1486,9 @@ interfaces:
     display_template: Modelo de exibição
     no_collection: Nenhuma coleção
     toggle_split_view: Alternar Visualização Dividida
+    enable: Habilitar
+    user_language: Usar o Idioma do Usuário Atual
+    default_language: Idioma padrão
     language_field: Campo Indicador de Idioma
   list-o2m-tree-view:
     description: Visualização de árvore para itens recursivos aninhados um-para-muitos

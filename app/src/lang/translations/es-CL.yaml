@@ -1579,6 +1579,9 @@ interfaces:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
     toggle_split_view: Cambiar vista dividida
+    enable: Habilitado
+    user_language: Usar el idioma actual del usuario
+    default_language: Idioma predeterminado
     language_field: Campo indicador de idioma
   list-o2m-tree-view:
     description: Vista del árbol para elementos anidados recursivos uno a muchos

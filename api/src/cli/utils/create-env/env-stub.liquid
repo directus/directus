@@ -1,12 +1,12 @@
 ####################################################################################################
-# 
+#
 # These values set environment variables which modify core settings of Directus.
 #
 # Values in square brackets are the default values.
 #
-# The following options are not all possible options. For more, see 
-# https://docs.directus.io/configuration/config-options/
-# 
+# The following options are not all possible options. For more, see
+# https://docs.directus.io/self-hosted/config-options/
+#
 ####################################################################################################
 ####################################################################################################
 
@@ -18,7 +18,7 @@ HOST="0.0.0.0"
 # The port Directus will run on [8055]
 PORT=8055
 
-# The URL where your API can be reached on the web. It is also used for things like OAuth redirects, 
+# The URL where your API can be reached on the web. It is also used for things like OAuth redirects,
 # forgot-password emails, and logos that needs to be publicly available on the internet. ["/"]
 PUBLIC_URL="/"
 # PUBLIC_URL="http://localhost:8055"
@@ -46,8 +46,8 @@ PUBLIC_URL="/"
 ####################################################################################################
 ### Database
 
-# All DB_* environment variables are passed to the connection configuration of a Knex instance. 
-# Based on your project's needs, you can extend the DB_* environment variables with any config 
+# All DB_* environment variables are passed to the connection configuration of a Knex instance.
+# Based on your project's needs, you can extend the DB_* environment variables with any config
 # you need to pass to the database instance.
 
 {{ database }}
@@ -177,7 +177,7 @@ STORAGE_LOCAL_ROOT="./uploads"
 # STORAGE_GOOGLE_BUCKET="my-files"
 
 
-## A comma-separated list of metadata keys to collect during file upload. Use * for all 
+## A comma-separated list of metadata keys to collect during file upload. Use * for all
 # Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
 # [ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO]
 # FILE_METADATA_ALLOW_LIST=
@@ -190,7 +190,7 @@ STORAGE_LOCAL_ROOT="./uploads"
 # Unique identifier for the project
 # KEY="xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx"
 
-# Secret string for the project 
+# Secret string for the project
 # SECRET="abcdef"
 
 # The duration that the access token is valid ["15m"]
@@ -287,7 +287,7 @@ EXTENSIONS_AUTO_RELOAD=false
 # Email address from which emails are sent ["no-reply@directus.io"]
 EMAIL_FROM="no-reply@directus.io"
 
-# What to use to send emails. One of 
+# What to use to send emails. One of
 # sendmail, smtp, mailgun, ses.
 EMAIL_TRANSPORT="sendmail"
 EMAIL_SENDMAIL_NEW_LINE="unix"

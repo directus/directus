@@ -1529,6 +1529,9 @@ interfaces:
     display_template: Vis Skabelon
     no_collection: Ingen Samling
     toggle_split_view: Slå Opdelt Visning Til/Fra
+    enable: Aktiver
+    user_language: Brug Nuværende Brugersprog
+    default_language: Standard Sprog
     language_field: Sprog Indikator Felt
   list-o2m-tree-view:
     description: Trævisning for indlejrede rekursive en-til-mange elementer
