@@ -1232,6 +1232,8 @@ interfaces:
   translations:
     display_template: แม่แบบการแสดงผล
     no_collection: ไม่มีคอลเลกชัน
+    user_language: ใช้ภาษาของบัญชีผู้ใช้
+    default_language: ภาษาเริ่มต้น
   list-o2m-tree-view:
     description: มุมมองแผนภูมิสำหรับรายการข้อมูลหนึ่งต่อหลายรายการแบบซ้ำซ้อน
     recursive_only: อินเทอร์เฟซมุมมองแผนภูมิใช้งานได้กับความสัมพันธ์แบบซ้ำซ้อนเท่านั้น

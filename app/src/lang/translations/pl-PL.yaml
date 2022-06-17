@@ -1647,6 +1647,9 @@ interfaces:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
     toggle_split_view: Przełącz widok dzielony
+    enable: Włącz
+    user_language: Użyj bieżącego języka użytkownika
+    default_language: Domyślny język
     language_field: Pole identyfikacji języka
   list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu

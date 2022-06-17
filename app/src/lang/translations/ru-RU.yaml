@@ -1535,6 +1535,9 @@ interfaces:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
     toggle_split_view: Переключить Раздельный Вид
+    enable: Включить
+    user_language: Использовать текущий язык пользователя
+    default_language: Язык по умолчанию
     language_field: Языковое поле
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов

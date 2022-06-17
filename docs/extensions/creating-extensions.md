@@ -123,7 +123,7 @@ To learn more about developing extensions of a specific type, you can refer to o
 ::: tip Live Reloading
 
 When working on extensions, try setting the
-[`EXTENSIONS_AUTO_RELOAD` environment variable](/configuration/config-options). This will make the API reload extensions
+[`EXTENSIONS_AUTO_RELOAD` environment variable](/self-hosted/config-options). This will make the API reload extensions
 on changes automatically.
 
 :::
