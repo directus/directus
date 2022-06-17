@@ -19,7 +19,7 @@ plan to use SQLite you can ignore this step.
 
 ### 2. Setup a project folder
 
-Next you will need to create a project folder, we will be adding 4 files to this folder.
+Next you will need to create a project folder, we will be adding 4 files to this folder. 
 
 ### 3. Add .env file
 
