@@ -1498,6 +1498,9 @@ interfaces:
     display_template: Görüntüleme Şablonu
     no_collection: Koleksiyon Yok
     toggle_split_view: Parçalı Görünümü Aç/Kapat
+    enable: Etkinleştir
+    user_language: Mevcut Kullanıcı Dilini Kullan
+    default_language: Varsayılan Dil
     language_field: Dil Göstergesi Alanı
   list-o2m-tree-view:
     description: İç içe özyinelemeli birden çoka öğeler için ağaç görünümü

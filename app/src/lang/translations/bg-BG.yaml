@@ -1645,6 +1645,9 @@ interfaces:
     display_template: Шаблон при показване
     no_collection: Няма колекция
     toggle_split_view: Превключване на разделен режим
+    enable: Включване
+    user_language: Използване на езика на потребителя
+    default_language: Език по подразбиране
     language_field: Поле за език
   list-o2m-tree-view:
     description: Дървовиден изглед за вложени рекурсивни записи от вид - един-към-много
