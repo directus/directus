@@ -31,7 +31,7 @@ describe('applySnapshot', () => {
 	});
 
 	describe('Creating new collection(s)', () => {
-		it('Creates a new top-level collection(s)', async () => {
+		it('Creates new top-level collection(s)', async () => {
 			const expected = {
 				collection: 'test_table_2',
 				meta: {
