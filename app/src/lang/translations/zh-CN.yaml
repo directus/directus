@@ -1575,6 +1575,9 @@ interfaces:
     display_template: 显示模板
     no_collection: 暂无模型
     toggle_split_view: 切换视图
+    enable: 启用
+    user_language: 使用当前用户语言
+    default_language: 默认语言
     language_field: 语言指示字段
   list-o2m-tree-view:
     description: 递归显示树状图

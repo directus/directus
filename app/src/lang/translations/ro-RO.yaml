@@ -1547,6 +1547,9 @@ interfaces:
     display_template: Afişare şablon
     no_collection: Nicio colecție
     toggle_split_view: Comutare vizualizare împărțită
+    enable: Activare
+    user_language: Folosește limba curentă a utilizatorului
+    default_language: Limba implicită
     language_field: Câmp indicator limbă
   list-o2m-tree-view:
     description: Vizualizare ramificată pentru elemente imbricate recursive unu-la-mai multe

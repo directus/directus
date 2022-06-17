@@ -1399,6 +1399,9 @@ interfaces:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
     toggle_split_view: Vaihda jaettu näkymän välillä
+    enable: Ota käyttöön
+    user_language: Käytä käyttäjän nykyistä kieltä
+    default_language: Oletuskieli
     language_field: Kielen indikaattorin kenttä
   list-o2m-tree-view:
     description: Puunäkymä sisäkkäisille ja rekursiivisille yksi monille (O2M) -kohteille
