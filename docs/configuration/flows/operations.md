@@ -20,7 +20,7 @@ Routes to the next success or failure Operation based on some conditional `if` /
 That means if the query condition is met, the Flow will move forward with the success Operation. Otherwise, the failure
 Operation will be initiated.
 
-- **Condition Rules** — Create conditions with [Filter Rules](/configuration/filter-rules).
+- **Condition Rules** — Create conditions with [Filter Rules](/reference/filter-rules).
 
 ## Create Data
 
@@ -50,7 +50,7 @@ Deletes some Item(s) from a Collection by ID or query.
 - **Permissions** — Set the scope of permissions used for this Operation.
 - **Emit Events** — Toggle whether the event is emitted.
 - **IDs** — Set Item IDs and press enter to confirm. Click the ID to remove.
-- **Query** — Select Items to delete with a query. To learn more, see [Filter Rules](/configuration/filter-rules).
+- **Query** — Select Items to delete with a query. To learn more, see [Filter Rules](/reference/filter-rules).
 
 :::tip
 
@@ -69,7 +69,7 @@ select the Items you wish to update.
 - **Permissions** — Set the scope of permissions used for this Operation.
 - **Collections** — Select the Collection to read Items from.
 - **IDs** — Input ID for Item(s) you wish to read and press enter. Click the ID to remove.
-- **Query** — Select Items with a query. To learn more, see [Filter Rules](/configuration/filter-rules).
+- **Query** — Select Items with a query. To learn more, see [Filter Rules](/reference/filter-rules).
 
 ## Update Data
 
@@ -82,7 +82,7 @@ Updates Item(s) in a Collection. You may select Items by their ID or run a query
 - **Emit Events** — Toggle whether the event is emitted.
 - **IDs** — Input ID for Item(s) you wish to update and press enter. Click the ID to remove.
 - **Payload** — Updates Item(s) in a Collection. To learn more, see [API > Items](/reference/items/).
-- **Query** — Select Items to update with a query. To learn more, see [Filter Rules](/configuration/filter-rules).
+- **Query** — Select Items to update with a query. To learn more, see [Filter Rules](/reference/filter-rules).
 
 ## Log to Console
 
