@@ -47,7 +47,7 @@
 				<h2>The App Guide</h2>
 				<span>A non-technical overview of the Directus no-code App and its various features.</span>
 			</a>
-			<a href="/configuration/config-options/" class="panel">
+			<a href="/self-hosted/config-options/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
@@ -97,10 +97,10 @@
 			<div class="listing">
 				<h2>Popular Configuration Topics</h2>
 				<ul>
-					<li><a href="/configuration/filter-rules/">Filter Rules</a></li>
-					<li><a href="/configuration/config-options/">Environment Variables</a></li>
+					<li><a href="/reference/filter-rules/">Filter Rules</a></li>
+					<li><a href="/self-hosted/config-options/">Environment Variables</a></li>
 					<li><a href="/configuration/relationships/">Data Relationships</a></li>
-					<li><a href="/configuration/config-options/#authentication">Single Sign-On (SSO)</a></li>
+					<li><a href="/self-hosted/config-options/#authentication">Single Sign-On (SSO)</a></li>
 					<li><a href="/self-hosted/installation/docker/">Installing with Docker</a></li>
 				</ul>
 			</div>

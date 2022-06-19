@@ -1492,6 +1492,7 @@ interfaces:
     description: Creează mai multe intrări ale aceleiași structuri
     edit_fields: Editare câmpuri
     add_label: 'Eticheta „Creează nou”'
+    sort: Sortează
     field_name_placeholder: Introduceți numele câmpului...
     field_note_placeholder: Introduceți nota câmpului...
     incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
@@ -1546,6 +1547,9 @@ interfaces:
     display_template: Afişare şablon
     no_collection: Nicio colecție
     toggle_split_view: Comutare vizualizare împărțită
+    enable: Activare
+    user_language: Folosește limba curentă a utilizatorului
+    default_language: Limba implicită
     language_field: Câmp indicator limbă
   list-o2m-tree-view:
     description: Vizualizare ramificată pentru elemente imbricate recursive unu-la-mai multe

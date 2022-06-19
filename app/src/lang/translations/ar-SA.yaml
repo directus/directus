@@ -1031,6 +1031,7 @@ interfaces:
     description: حدد اختيار واحد من خيارات متعددة
   list:
     edit_fields: تعديل الحقول
+    sort: رتب
     field_name_placeholder: أدخل اسم الحقل...
   slider:
     slider: شريط

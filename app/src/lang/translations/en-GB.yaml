@@ -1503,6 +1503,7 @@ interfaces:
     description: Create multiple entries of the same structure
     edit_fields: Edit Fields
     add_label: '"Create New" Label'
+    sort: Sort
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
   slider:
@@ -1556,6 +1557,9 @@ interfaces:
     display_template: Display Template
     no_collection: No Collection
     toggle_split_view: Toggle Split View
+    enable: Enable
+    user_language: Use Current User Language
+    default_language: Default Language
     language_field: Language Indicator Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items

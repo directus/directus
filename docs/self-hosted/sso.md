@@ -12,8 +12,7 @@ Directus supports three standard types of SSO mechanisms:
 - [OAuth 2.0](https://www.ietf.org/rfc/rfc6750.txt)
 - [LDAP](https://datatracker.ietf.org/doc/html/rfc4511)
 
-Here are the configuration allowed for each one:
-[SSO configuration](/configuration/config-options/#sso-oauth2-and-openid)
+Here are the configuration allowed for each one: [SSO configuration](/self-hosted/config-options/#sso-oauth2-and-openid)
 
 In order to use these mechanisms you need to:
 

@@ -1632,6 +1632,8 @@ interfaces:
     description: Create multiple entries of the same structure
     edit_fields: Edit Fields
     add_label: '"Create New" Label'
+    sort: Sort
+    sort_placeholder: Manual
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
     incompatible_data:
@@ -1688,6 +1690,9 @@ interfaces:
     display_template: Display Template
     no_collection: No Collection
     toggle_split_view: Toggle Split View
+    enable: Enable
+    user_language: Use Current User Language
+    default_language: Default Language
     language_field: Language Indicator Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
@@ -2043,6 +2048,7 @@ operations:
   item-delete:
     name: Delete Data
     description: Delete items in the database
+    emit_events: Emit Events
     key: IDs
     query: Query
   item-read:
@@ -2053,6 +2059,7 @@ operations:
   item-update:
     name: Update Data
     description: Update items in the database
+    emit_events: Emit Events
     key: IDs
     payload: Payload
     query: Query

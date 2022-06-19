@@ -1590,6 +1590,8 @@ interfaces:
     description: Créer plusieurs entrées de la même structure
     edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
+    sort: Trier
+    sort_placeholder: Manuelle
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
@@ -1644,6 +1646,9 @@ interfaces:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue partagée
+    enable: Activer
+    user_language: Utiliser la langue actuelle de l'utilisateur
+    default_language: Langue par défaut
     language_field: Champ d'indicateur de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
@@ -1997,6 +2002,7 @@ operations:
   item-delete:
     name: Suppression des données
     description: Supprimer des éléments dans la base de données
+    emit_events: Émettre des événements
     key: IDs
     query: Requête
   item-read:
@@ -2007,6 +2013,7 @@ operations:
   item-update:
     name: Mettre à jour les données
     description: Mettre à jour les éléments de la base de données
+    emit_events: Émettre des événements
     key: IDs
     payload: Données utiles
     query: Requête

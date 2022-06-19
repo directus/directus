@@ -1342,6 +1342,7 @@ interfaces:
     description: Ugyanazon struktúra több bejegyzésének létrehozása
     edit_fields: Mezők szerkesztése
     add_label: '"Új létrehozása" címke'
+    sort: Rendezés
     field_name_placeholder: Mezőnév megadása...
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
   slider:

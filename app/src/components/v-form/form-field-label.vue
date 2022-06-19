@@ -1,12 +1,12 @@
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<v-checkbox
-			v-if="batchMode"
-			:model-value="batchActive"
-			:value="field.field"
-			@update:model-value="$emit('toggle-batch', field)"
-		/>
 		<span class="field-name" @click="toggle">
+			<v-checkbox
+				v-if="batchMode"
+				:model-value="batchActive"
+				:value="field.field"
+				@update:model-value="$emit('toggle-batch', field)"
+			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />
 			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
