@@ -63,7 +63,7 @@ export default defineOperationApp({
 				interface: 'boolean',
 			},
 			schema: {
-				default_value: true,
+				default_value: false,
 			},
 		},
 		{

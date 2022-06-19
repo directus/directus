@@ -36,12 +36,14 @@ export class MailService {
 		this.knex = opts?.knex || getDatabase();
 		this.mailer = getMailer();
 
-		this.mailer.verify((error) => {
-			if (error) {
-				logger.warn(`Email connection failed:`);
-				logger.warn(error);
-			}
-		});
+		if (env.EMAIL_VERIFY_SETUP) {
+			this.mailer.verify((error) => {
+				if (error) {
+					logger.warn(`Email connection failed:`);
+					logger.warn(error);
+				}
+			});
+		}
 	}
 
 	async send(options: EmailOptions): Promise<void> {

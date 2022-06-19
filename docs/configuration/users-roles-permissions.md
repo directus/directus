@@ -146,16 +146,16 @@ App's soft-delete and manual sorting features.
 
 ### Update (Custom Access)
 
-5. **Item Permissions** control which items can be updated, as defined by [Filter Rules](/configuration/filter-rules/).
+5. **Item Permissions** control which items can be updated, as defined by [Filter Rules](/reference/filter-rules/).
 6. **Field Permissions** control which fields can be updated. Fields are individually toggled.
 7. **Field Validation** define the rules for field values on update, as defined by
-   [Filter Rules](/configuration/filter-rules/).
+   [Filter Rules](/reference/filter-rules/).
 8. **Field Presets** control the field defaults when updating an item
 
 ### Delete (Custom Access)
 
-5. **Item Permissions** control which items can be deleted, as defined by the
-   [Filter Rules](/configuration/filter-rules/) entered.
+5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules/)
+   entered.
 
 ---
 

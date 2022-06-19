@@ -1219,6 +1219,8 @@ interfaces:
     zoom: Perbesar
   system-folder:
     folder: Direktori
+  list:
+    sort: Sortir
   tags:
     tags: Tagar
   boolean:

@@ -122,6 +122,6 @@ This would also be a good time to reconfigure your permissions, to ensure they a
 
 ## Breaking changes
 
-- [Filter operators](/configuration/filter-rules/) have changed, now they are preceded with an underscore eg:
+- [Filter operators](/reference/filter-rules/) have changed, now they are preceded with an underscore eg:
   `/items/users?filter[comments.thread.title][like]=Directus` is now
   `/items/users?filter[comments][thread][title][_like]=Directus`
