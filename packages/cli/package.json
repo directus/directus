@@ -58,7 +58,7 @@
 		"eventemitter2": "^6.4.4",
 		"figlet": "^1.5.0",
 		"fs-extra": "^10.0.0",
-		"gluegun": "^4.6.1",
+		"gluegun": "^5.1.2",
 		"jaro-winkler": "^0.2.8",
 		"joi": "^17.4.0",
 		"js-yaml": "^4.1.0",

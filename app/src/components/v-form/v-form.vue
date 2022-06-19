@@ -52,7 +52,11 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-error="
-					validationErrors.find((err) => err.field === field.field || err.field.endsWith(`(${field.field})`))
+					validationErrors.find(
+						(err) =>
+							err.collection === field.collection &&
+							(err.field === field.field || err.field.endsWith(`(${field.field})`))
+					)
 				"
 				:badge="badge"
 				@update:model-value="setValue(field.field, $event)"

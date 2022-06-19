@@ -93,6 +93,7 @@ export default defineComponent({
 			fakeValue
 		);
 
+		let showAllSelection: (string | number)[] = [];
 		const openSelection = ref<(string | number)[]>([]);
 
 		watch(
@@ -106,6 +107,17 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
+
+		watch(showSelectionOnly, (isSelectionOnly) => {
+			if (isSelectionOnly) {
+				const selection = new Set([...openSelection.value, ...findSelectedChoices(props.choices, value.value)]);
+
+				showAllSelection = openSelection.value;
+				openSelection.value = [...selection];
+			} else {
+				openSelection.value = [...showAllSelection];
+			}
+		});
 
 		function searchChoices(text: string, target: Record<string, any>[]) {
 			const selection: string[] = [];
@@ -121,6 +133,29 @@ export default defineComponent({
 			}
 
 			return selection;
+		}
+
+		function findSelectedChoices(choices: Record<string, any>[], checked: (string | number)[]) {
+			function selectedChoices(item: Record<string, any>): (string | number)[] {
+				if (!item[props.itemValue]) return [];
+				let result = [];
+
+				const itemValue: string | number = item[props.itemValue];
+				if (checked.includes(itemValue)) result.push(itemValue);
+
+				if (item[props.itemChildren]) {
+					const children = item[props.itemChildren];
+					if (Array.isArray(children) && children.length > 0) {
+						const nestedResult = children.flatMap((child) => selectedChoices(child));
+						if (nestedResult.length > 0) {
+							result.push(...nestedResult, itemValue);
+						}
+					}
+				}
+				return result;
+			}
+
+			return choices.flatMap((item) => selectedChoices(item));
 		}
 
 		return { value, openSelection, visibleChildrenValues };

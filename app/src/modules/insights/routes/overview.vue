@@ -106,6 +106,7 @@ import { useInsightsStore, usePermissionsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { Dashboard } from '@/types';
 import { router } from '@/router';
+import { Header } from '@/components/v-table/types';
 import InsightsNavigation from '../components/navigation.vue';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import api from '@/api';
@@ -139,24 +140,32 @@ export default defineComponent({
 			return permissionsStore.hasPermission('directus_dashboards', 'delete');
 		});
 
-		const tableHeaders = [
+		const tableHeaders = ref<Header[]>([
 			{
 				text: '',
 				value: 'icon',
 				width: 42,
 				sortable: false,
+				align: 'left',
+				description: null,
 			},
 			{
 				text: t('name'),
 				value: 'name',
 				width: 240,
+				sortable: true,
+				align: 'left',
+				description: null,
 			},
 			{
 				text: t('note'),
 				value: 'note',
 				width: 360,
+				sortable: false,
+				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		const dashboards = computed(() => insightsStore.dashboards);
 

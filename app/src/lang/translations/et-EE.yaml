@@ -1045,6 +1045,7 @@ interfaces:
     description: Loo mitu kirjet sama struktuuriga
     edit_fields: Muuda välju
     add_label: '"Lisa uus" nimetus'
+    sort: Sorteeri
     field_name_placeholder: Sisesta välja nimi...
     field_note_placeholder: Sisesta välja märkus...
   slider:

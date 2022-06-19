@@ -4,9 +4,10 @@ import { InvalidCredentialsException, ForbiddenException, InvalidPayloadExceptio
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService, TFAService } from '../services';
+import { AuthenticationService, MetaService, UsersService, RolesService, TFAService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { Role } from '@directus/shared/types';
 
 const router = express.Router();
 
@@ -354,6 +355,37 @@ router.post(
 			throw new InvalidPayloadException(`"otp" is required`);
 		}
 
+		// Override permissions only when enforce TFA is enabled in role
+		if (req.accountability.role) {
+			const rolesService = new RolesService({
+				schema: req.schema,
+			});
+			const role = (await rolesService.readOne(req.accountability.role)) as Role;
+
+			if (role && role.enforce_tfa) {
+				const existingPermission = await req.accountability.permissions?.find(
+					(p) => p.collection === 'directus_users' && p.action === 'update'
+				);
+
+				if (existingPermission) {
+					existingPermission.fields = ['tfa_secret'];
+					existingPermission.permissions = { id: { _eq: req.accountability.user } };
+					existingPermission.presets = null;
+					existingPermission.validation = null;
+				} else {
+					(req.accountability.permissions || (req.accountability.permissions = [])).push({
+						action: 'update',
+						collection: 'directus_users',
+						fields: ['tfa_secret'],
+						permissions: { id: { _eq: req.accountability.user } },
+						presets: null,
+						role: req.accountability.role,
+						validation: null,
+					});
+				}
+			}
+		}
+
 		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -377,6 +409,37 @@ router.post(
 			throw new InvalidPayloadException(`"otp" is required`);
 		}
 
+		// Override permissions only when enforce TFA is enabled in role
+		if (req.accountability.role) {
+			const rolesService = new RolesService({
+				schema: req.schema,
+			});
+			const role = (await rolesService.readOne(req.accountability.role)) as Role;
+
+			if (role && role.enforce_tfa) {
+				const existingPermission = await req.accountability.permissions?.find(
+					(p) => p.collection === 'directus_users' && p.action === 'update'
+				);
+
+				if (existingPermission) {
+					existingPermission.fields = ['tfa_secret'];
+					existingPermission.permissions = { id: { _eq: req.accountability.user } };
+					existingPermission.presets = null;
+					existingPermission.validation = null;
+				} else {
+					(req.accountability.permissions || (req.accountability.permissions = [])).push({
+						action: 'update',
+						collection: 'directus_users',
+						fields: ['tfa_secret'],
+						permissions: { id: { _eq: req.accountability.user } },
+						presets: null,
+						role: req.accountability.role,
+						validation: null,
+					});
+				}
+			}
+		}
+
 		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -389,6 +452,28 @@ router.post(
 		}
 
 		await service.disableTFA(req.accountability.user);
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/:pk/tfa/disable',
+	asyncHandler(async (req, _res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		if (!req.accountability.admin || !req.params.pk) {
+			throw new ForbiddenException();
+		}
+
+		const service = new TFAService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.disableTFA(req.params.pk);
 		return next();
 	}),
 	respond

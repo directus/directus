@@ -1,6 +1,6 @@
 /**
  * @NOTE
- * For all possible keys, see: https://docs.directus.io/configuration/config-options/
+ * For all possible keys, see: https://docs.directus.io/self-hosted/config-options/
  */
 
 import dotenv from 'dotenv';
@@ -74,6 +74,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PORT',
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
+	'CACHE_VALUE_MAX_SIZE',
 	// storage
 	'STORAGE_LOCATIONS',
 	'STORAGE_.+_DRIVER',
@@ -136,6 +137,7 @@ const allowedEnvironmentVars = [
 	// emails
 	'EMAIL_FROM',
 	'EMAIL_TRANSPORT',
+	'EMAIL_VERIFY_SETUP',
 	'EMAIL_SENDMAIL_NEW_LINE',
 	'EMAIL_SENDMAIL_PATH',
 	'EMAIL_SMTP_HOST',
@@ -170,6 +172,7 @@ const defaults: Record<string, any> = {
 	PORT: 8055,
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
+	MAX_RELATIONAL_DEPTH: 10,
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
@@ -206,6 +209,7 @@ const defaults: Record<string, any> = {
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
 	CACHE_PERMISSIONS: true,
+	CACHE_VALUE_MAX_SIZE: false,
 
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
@@ -214,6 +218,7 @@ const defaults: Record<string, any> = {
 	EXTENSIONS_AUTO_RELOAD: false,
 
 	EMAIL_FROM: 'no-reply@directus.io',
+	EMAIL_VERIFY_SETUP: true,
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',

@@ -689,6 +689,8 @@ interfaces:
     interface: Grensesnitt
   input-rich-text-md:
     edit: Rediger
+  list:
+    sort: Sorter
   tags:
     tags: Etiketter
   boolean:
