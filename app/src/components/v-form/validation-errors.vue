@@ -50,6 +50,7 @@ import { computed } from 'vue';
 import { ValidationError, Field } from '@directus/shared/types';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { translate } from '@/utils/translate-literal';
 
 interface Props {
 	validationErrors: ValidationError[];
@@ -80,7 +81,7 @@ const validationErrorsWithNames = computed<
 			...validationError,
 			fieldName,
 			groupName: group?.name ?? validationError.group,
-			customValidationMessage: field?.meta?.validation_message,
+			customValidationMessage: translate(field?.meta?.validation_message),
 		};
 	}) as (ValidationError & { fieldName: string; groupName: string; customValidationMessage: string | null })[];
 });

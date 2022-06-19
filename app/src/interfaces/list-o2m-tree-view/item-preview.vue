@@ -1,69 +1,64 @@
 <template>
-	<div class="preview">
+	<div class="preview" :class="{ open, deleted }">
+		<v-icon
+			v-if="relationInfo.relatedPrimaryKeyField.field in item"
+			:name="props.open ? 'expand_less' : 'expand_more'"
+			clickable
+			@click="emit('update:open', !props.open)"
+		/>
 		<render-template :collection="collection" :template="template" :item="item" />
 		<div class="spacer" />
 		<div v-if="!disabled" class="actions">
 			<v-icon v-tooltip="t('edit')" name="launch" clickable @click="editActive = true" />
-			<v-icon v-tooltip="t('deselect')" name="clear" clickable @click="$emit('deselect')" />
+			<v-icon v-tooltip="t('deselect')" :name="deleteIcon" class="deselect" clickable @click="$emit('deselect')" />
 		</div>
 
 		<drawer-item
 			v-model:active="editActive"
 			:collection="collection"
-			:primary-key="item[primaryKeyField] || '+'"
+			:primary-key="item[props.relationInfo.relatedPrimaryKeyField.field] || '+'"
 			:edits="item"
-			:circular-field="parentField"
+			:circular-field="props.relationInfo.reverseJunctionField.field"
 			@input="$emit('input', $event)"
 		/>
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
+import { RelationO2M } from '@/composables/use-relation';
+import { ref } from 'vue';
 
-export default defineComponent({
-	components: { DrawerItem },
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		template: {
-			type: String,
-			required: true,
-		},
-		item: {
-			type: Object,
-			required: true,
-		},
-		primaryKeyField: {
-			type: String,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		parentField: {
-			type: String,
-			required: true,
-		},
-	},
-	emits: ['deselect', 'input'],
-	setup() {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		template: string;
+		item: Record<string, any>;
+		relationInfo: RelationO2M;
+		disabled?: boolean;
+		open?: boolean;
+		deleted: boolean;
+		deleteIcon: string;
+	}>(),
+	{
+		disabled: false,
+		open: false,
+	}
+);
 
-		const editActive = ref(false);
-		return { t, editActive };
-	},
-});
+const { t } = useI18n();
+const emit = defineEmits(['update:open', 'deselect', 'input']);
+const editActive = ref(false);
 </script>
 
 <style lang="scss" scoped>
-.preview {
+div.preview {
 	display: flex;
+
+	&:not(.open) {
+		margin-bottom: 12px;
+	}
 
 	.spacer {
 		flex-grow: 1;
@@ -75,6 +70,20 @@ export default defineComponent({
 
 		.v-icon + .v-icon {
 			margin-left: 4px;
+		}
+
+		.deselect {
+			--v-icon-color-hover: var(--danger);
+		}
+	}
+
+	&.deleted {
+		color: var(--danger);
+		background-color: var(--danger-10);
+
+		.actions {
+			--v-icon-color: var(--danger-50);
+			--v-icon-color-hover: var(--danger);
 		}
 	}
 }

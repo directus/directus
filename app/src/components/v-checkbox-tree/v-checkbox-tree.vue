@@ -10,6 +10,7 @@
 			:item-value="itemValue"
 			:item-children="itemChildren"
 			:text="choice[itemText]"
+			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled"
@@ -19,7 +20,8 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, defineComponent, PropType } from 'vue';
+import { computed, ref, defineComponent, PropType, watch, toRefs } from 'vue';
+import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
@@ -74,9 +76,89 @@ export default defineComponent({
 			},
 		});
 
+		const fakeValue = ref('');
+		const fakeParentValue = ref('');
+
+		const { search, modelValue, showSelectionOnly, itemText, itemValue, itemChildren, choices } = toRefs(props);
+
+		const { visibleChildrenValues } = useVisibleChildren(
+			search,
+			modelValue,
+			choices,
+			showSelectionOnly,
+			itemText,
+			itemValue,
+			itemChildren,
+			fakeParentValue,
+			fakeValue
+		);
+
+		let showAllSelection: (string | number)[] = [];
 		const openSelection = ref<(string | number)[]>([]);
 
-		return { value, openSelection };
+		watch(
+			() => props.search,
+			(newValue) => {
+				if (!newValue) return;
+
+				const selection = new Set([...openSelection.value, ...searchChoices(newValue, props.choices)]);
+
+				openSelection.value = [...selection];
+			},
+			{ immediate: true }
+		);
+
+		watch(showSelectionOnly, (isSelectionOnly) => {
+			if (isSelectionOnly) {
+				const selection = new Set([...openSelection.value, ...findSelectedChoices(props.choices, value.value)]);
+
+				showAllSelection = openSelection.value;
+				openSelection.value = [...selection];
+			} else {
+				openSelection.value = [...showAllSelection];
+			}
+		});
+
+		function searchChoices(text: string, target: Record<string, any>[]) {
+			const selection: string[] = [];
+
+			for (const item of target) {
+				if (item[props.itemText].toLowerCase().includes(text.toLowerCase())) {
+					selection.push(item[props.itemValue]);
+				}
+
+				if (item[props.itemChildren]) {
+					selection.push(...searchChoices(text, item[props.itemChildren]));
+				}
+			}
+
+			return selection;
+		}
+
+		function findSelectedChoices(choices: Record<string, any>[], checked: (string | number)[]) {
+			function selectedChoices(item: Record<string, any>): (string | number)[] {
+				if (!item[props.itemValue]) return [];
+				let result = [];
+
+				const itemValue: string | number = item[props.itemValue];
+				if (checked.includes(itemValue)) result.push(itemValue);
+
+				if (item[props.itemChildren]) {
+					const children = item[props.itemChildren];
+					if (Array.isArray(children) && children.length > 0) {
+						const nestedResult = children.flatMap((child) => selectedChoices(child));
+						if (nestedResult.length > 0) {
+							result.push(...nestedResult, itemValue);
+						}
+					}
+				}
+				return result;
+			}
+
+			return choices.flatMap((item) => selectedChoices(item));
+		}
+
+		return { value, openSelection, visibleChildrenValues };
 	},
 });
 </script>

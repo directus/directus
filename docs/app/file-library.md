@@ -113,7 +113,7 @@ The file sidebar also includes the following details, which are not editable and
 Rotate, crop, flip, or adjust aspect ratios of an image.
 
 <video alt="Edit an Image" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/edit-an-image-20220305A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220516A/edit-an-image-20220516A.mp4" type="video/mp4">
 </video>
 
 1. From the **File Library**, click a file to open its detail page.
@@ -135,10 +135,10 @@ be [uploaded programmatically via the API](/reference/files/).
 
 ## Replace a File
 
-When a file is replaced, its existing info and and all relationships are kept.
+When a file is replaced, its existing info and all relationships are kept.
 
 <video alt="Replace a File" loop muted controls autoplay>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/replace-a-file-20220305A.mp4" type="video/mp4">
+  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220608A/replace-a-file-20220608A.mp4" type="video/mp4">
 </video>
 
 1. Click the Image Preview on the File Detail page. A popup will appear.

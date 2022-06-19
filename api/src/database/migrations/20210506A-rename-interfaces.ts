@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { parseJSON } from '../../utils/parse-json';
 
 // [before, after, after-option additions]
 const changes: [string, string, Record<string, any>?][] = [
@@ -57,7 +58,7 @@ export async function up(knex: Knex): Promise<void> {
 
 			for (const { id, options: existingOptionsRaw } of fields) {
 				const existingOptions =
-					typeof existingOptionsRaw === 'string' ? JSON.parse(existingOptionsRaw) : existingOptionsRaw;
+					typeof existingOptionsRaw === 'string' ? parseJSON(existingOptionsRaw) : existingOptionsRaw;
 
 				const newOptions = {
 					...(existingOptions || {}),

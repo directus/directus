@@ -24,7 +24,7 @@
 						:class="{ invalid: passwordWrong }"
 						type="password"
 						:placeholder="t('shared_enter_passcode')"
-						@update:modelValue="password = $event"
+						@update:model-value="password = $event"
 					/>
 					<v-button :busy="authenticating" @click="authenticate">
 						{{ t('share_access_page') }}

@@ -1,5 +1,6 @@
 import { defineDisplay } from '@directus/shared/utils';
 import DisplayLabels from './labels.vue';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineDisplay({
 	id: 'labels',
@@ -8,6 +9,18 @@ export default defineDisplay({
 	types: ['string', 'json', 'csv'],
 	icon: 'flag',
 	component: DisplayLabels,
+	handler: (value, options, { interfaceOptions }) => {
+		const configuredChoice =
+			options?.choices?.find((choice: { value: string }) => choice.value === value) ??
+			interfaceOptions?.choices?.find((choice: { value: string }) => choice.value === value);
+
+		if (configuredChoice) {
+			const { text } = translate(configuredChoice);
+			return text;
+		}
+
+		return value;
+	},
 	options: [
 		{
 			field: 'format',

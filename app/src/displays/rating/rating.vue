@@ -48,7 +48,7 @@ const ratingPercentage = computed(() => ({
 <style lang="scss" scoped>
 .rating {
 	&.simple {
-		display: flex;
+		display: inline-flex;
 		align-items: center;
 		padding: 2px 6px 2px 4px;
 		color: #ffc107;
@@ -68,7 +68,7 @@ const ratingPercentage = computed(() => ({
 		.active {
 			position: relative;
 			z-index: 2;
-			display: flex;
+			display: inline-flex;
 			width: 0%;
 			overflow: hidden;
 			color: #ffc107;
@@ -79,7 +79,7 @@ const ratingPercentage = computed(() => ({
 			top: 0;
 			left: 0;
 			z-index: 1;
-			display: flex;
+			display: inline-flex;
 			color: var(--background-normal);
 		}
 	}

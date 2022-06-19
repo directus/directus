@@ -23,15 +23,20 @@ identifier: Identifiant
 avatar: Avatar
 application: Application
 default_provider: Défaut
+method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
 modules: Modules
 module_bar: Barre de modules
+logs: Journaux
 reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
+location: Localisation
+condition_rules: Règles de conditions
+input: Texte simple
 maps: Cartes
 switch_user: Changer d'utilisateur
 item_creation: Création d'article
@@ -44,6 +49,11 @@ group: Groupe
 export_items: Exporter
 and: Et
 or: Ou
+init: Initialiser
+dataset_too_large_currently_showing_n_items: L'ensemble de données est trop grand. Il affiche actuellement les {n} premiers éléments.
+modifier: Modificateur
+custom: Personnalisé
+hook: Crochet
 fill_width: Remplir l'espace
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
@@ -67,9 +77,12 @@ create_preset: Créer un préréglage
 create_panel: Créer un panneau
 create_role: Créer un rôle
 create_user: Créer un utilisateur
+message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
 create_translation_string: Créer une chaîne de traduction
+no_translation_string: Aucune chaîne de traduction
+no_translation_string_copy: Il n'y a pas encore de chaîne de traduction.
 translation_string_key_placeholder: Traduction de la clé...
 translation_string_translations_placeholder: Ajouter une nouvelle traduction
 edit_translation_string: Modifier la chaîne de traduction
@@ -326,12 +339,15 @@ revision_delta_deleted: Supprimé
 revision_delta_reverted: Restauré
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
+presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
+download_page_as_csv: 'Télécharger la page au format CSV'
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
 revision_preview: Aperçu de la révision
 updates_made: Mises à jour réalisées
 leave_comment: Laisser un commentaire…
 post_comment_success: Commentaire publié
+post_comment_updated: Commentaire mis à jour
 item_create_success: Élément créé | Éléments créés
 item_update_success: Élément mis à jour | Éléments mis à jour
 item_delete_success: Élément supprimé | Éléments supprimés
@@ -449,6 +465,7 @@ created_on: Créé le
 creating_collection_info: Nommez la collection et configurez son champ unique « clé »...
 creating_collection_system: Activer et renommer l'un de ces champs optionnels.
 auto_increment_integer: Entier auto-incrémenté
+auto_increment_big_integer: Big interger auto-incrémenté
 generated_uuid: UUID généré
 manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
@@ -469,7 +486,9 @@ disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
 request_feature: Demander une fonctionnalité
+request_body: Corps de la requête
 interface_not_found: 'L''interface "{interface}" est introuvable.'
+operation_not_found: 'Opération "{operation}" non trouvée.'
 reset_interface: Réinitialiser l'interface
 display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
@@ -555,7 +574,9 @@ errors:
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
   INVALID_OTP: Mauvais mot de passe unique
   INVALID_PAYLOAD: Payload invalide
+  INVALID_PROVIDER: L'utilisateur appartient à un autre fournisseur d'authentification
   INVALID_QUERY: Requête invalide
+  INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
   ROUTE_NOT_FOUND: Introuvable
@@ -587,7 +608,7 @@ unexpected_error_copy: Une erreur inconnue s'est produite. Veuillez réessayer p
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
-password_reset_sent: Nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
+password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
@@ -612,8 +633,8 @@ start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtré
 one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
-  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
-delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer ce dossier ? Les dossiers imbriqués et les collections seront déplacés au niveau le plus haut.
+  Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
+delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -640,6 +661,7 @@ advanced_settings: Paramètres Avancés
 advanced_filter: Filtre avancé
 delete_advanced_filter: Supprimer le filtre
 change_advanced_filter_operator: Changer d'opérateur
+advanced: Avancé
 operators:
   eq: Égal à
   neq: Différent de
@@ -653,6 +675,7 @@ operators:
   nnull: N'est pas null
   contains: Contient
   ncontains: Ne contient pas
+  icontains: Contient (insensible)
   starts_with: Commence par
   nstarts_with: Ne commence pas par
   ends_with: Termine par
@@ -721,6 +744,7 @@ on_create: À la Création
 on_update: À la mise à jour
 read: Lecture
 update: Mettre à jour
+delete: Supprimer
 select_fields: Sélectionner des champs
 format_text: Format du texte
 format_value: Valeur de formatage
@@ -731,6 +755,45 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
+flows: Les Flux
+flow: Flux
+select_a_flow: Sélectionner un flux
+run_flow_on_current: Exécuter le flux sur l'élément actuel
+run_flow_on_selected: Aucun élément sélectionné | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
+run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
+trigger: Déclencheur
+trigger_options: Options de Déclenchement
+view_trigger: Voir le déclencheur
+create_trigger: Créer un Déclencheur
+trigger_setup: Configuration du Déclencheur
+change_trigger: Changer le Déclencheur
+flow_delete_confirm: Êtes-vous sûr de vouloir supprimer le Flux "{flow}" ? Cette action ne peut pas être annulée.
+set_flow_active: Activer le Flux
+set_flow_inactive: Désactiver le Flux
+edit_flow: Modifier le Flux
+delete_flow: Supprimer le Flux
+no_other_flows_copy: Vous n'avez pas encore d'autres Flux.
+no_flows: Aucun Flux
+no_flows_copy: Vous n'avez pas encore de Flux.
+create_flow: Créer un Flux
+creating_new_flow: Création d'un nouveau Flux
+updating_flow: Mise à jour du Flux
+flow_setup: Configuration du Flux
+flow_name: Nom
+flow_tracking: Suivi des Activités et des Journaux
+flow_tracking_all: Suivre les Activités et les Journaux
+flow_tracking_activity: Enregistrer seulement l'activité
+flow_tracking_null: Ne rien enregistrer
+start_flow: Démarrer le Flux
+stop_flow: Arrêt du Flux
+create_operation: Créer une Opération
+edit_operation: Modifier l'Opération
+operation_options: Les Options d'Opération
+operation_name: Nom de l'Opération...
+operation_key: Identifiant pour référence...
+operation_key_unique_error: Les clés d'Opération doivent être uniques dans un Flux
+operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
+operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 insights: Analyses
 dashboard: Tableau de bord
 panel: Panneau
@@ -748,9 +811,13 @@ suffix_placeholder: Texte avant la valeur...
 decimals_placeholder: Nombre de décimales
 no_dashboards: Aucun Tableau de bord
 no_dashboards_copy: Vous n'avez pas encore de Tableau de bord.
-no_data: Pas de donnée
 create_dashboard: Créer un tableau de bord
 dashboard_name: Nom du Tableau de bord
+no_data: Pas de donnée
+no_data_in_flow: Aucune donnée n'a été produite ou accédée dans ce flux
+accountability: Traçabilité
+payload: Données utiles
+details: Détails
 full_screen: Plein écran
 full_text_search: Recherche dans l'intégralité du texte
 edit_panels: Modifier le panneau
@@ -848,10 +915,12 @@ settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
+settings_flows: Les Flux
 settings_presets: Préréglages et favoris
 settings_translation_strings: Chaînes de traduction
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
+actions: Actions
 select: Sélectionner...
 layout: Mise en page
 tree_view: Arborescence
@@ -861,6 +930,7 @@ preset_search_placeholder: Recherche...
 editing_preset: Modifier le préréglage
 layout_preview: Aperçu de la mise en page
 layout_setup: Configuration de la mise en page
+data: Données
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
@@ -895,6 +965,8 @@ page_help_settings_presets_item: >-
   **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
+page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
+page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
 page_help_settings_translation_strings_collection: '**Parcourir les chaînes de traduction** — Liste toutes les chaînes de traduction du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
@@ -923,11 +995,13 @@ directus_collection:
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
+  directus_flows: Flux d'automatisation
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
+  directus_notifications: Notifications envoyées aux utilisateurs
+  directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
   directus_permissions: Sélectionner les permissions pour chaque groupe
-  directus_notifications: Notifications envoyées aux utilisateurs
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -1014,7 +1088,6 @@ fields:
     status_archived: Archivé
     role: Rôle
     token: Token
-    token_placeholder: Entrez un jeton d'accès sécurisé...
     provider: Fournisseur
     external_identifier: Identifiant externe
     last_page: Dernière page
@@ -1297,6 +1370,7 @@ reset: Réinitialiser
 reset_password: Réinitialiser le mot de passe
 revisions: Historique
 no_revisions: Aucune révision pour l'instant
+no_logs: Pas Encore de Logs
 revert: Restaurer
 save: Enregistrer
 schema: Schéma
@@ -1316,7 +1390,7 @@ export_started_copy: Votre exportation a commencé. Vous serez notifié quand el
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
-require_value_to_be_set: La valeur est requise
+require_value_to_be_set: Nécessite que la valeur soit définie lors de la création
 translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
@@ -1340,6 +1414,7 @@ interfaces:
     no_rules: Configurer les règles
     change_value: Cliquez pour modifier le nom
     placeholder: Glisser les fichiers ici
+    add_key_placeholder: Ajouter une clé et appuyer sur Entrée...
   fields:
     name: Champs
   group-accordion:
@@ -1515,8 +1590,11 @@ interfaces:
     description: Créer plusieurs entrées de la même structure
     edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
+    sort: Trier
+    sort_placeholder: Manuelle
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
+    incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
@@ -1568,6 +1646,9 @@ interfaces:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue partagée
+    enable: Activer
+    user_language: Utiliser la langue actuelle de l'utilisateur
+    default_language: Langue par défaut
     language_field: Champ d'indicateur de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
@@ -1608,6 +1689,15 @@ interfaces:
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut
+  system-token:
+    system-token: Token
+    description: Gérer un jeton d'accès statique
+    placeholder: Cliquez sur "Générer un jeton" pour créer un nouveau jeton d'accès statique
+    value_securely_saved: Valeur enregistrée en toute sécurité
+    generate: Générer un jeton
+    regenerate: Régénérer le jeton
+    generate_success_copy: Assurez-vous de sauvegarder et de copier le jeton ci-dessus. Pour des raisons de sécurité, vous ne pourrez plus voir le jeton après avoir enregistré et quitté cette page.
+    remove_token: Supprimer le jeton
 displays:
   translations:
     translations: Traductions
@@ -1739,6 +1829,8 @@ layouts:
     calendar: Calendrier
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
+    optional: Facultatif
+    first_day: Premier Jour de la Semaine
   map:
     map: Carte
     basemap: Carte de base
@@ -1753,6 +1845,35 @@ layouts:
     find_location: Trouver l'emplacement ...
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
+  kanban:
+    name: Kanban,
+    group_field: Regrouper par,
+    group_field_placeholder: Champ à regrouper par...,
+    group_title: Nom du groupe,
+    group_title_placeholder: Champ pour les titres du groupe...,
+    title: Titre de tuile,
+    title_placeholder: Champ titre optionnel...,
+    text: Texte de tuile,
+    text_placeholder: Champ de texte optionnel...,
+    date: Date de tuile,
+    date_placeholder: Champ de date optionnel...,
+    tags: Étiquettes de tuile,
+    tags_placeholder: Champ de balises optionnelles...,
+    user: Utilisateurs de tuile,
+    user_placeholder: Champ utilisateur optionnel...,
+    image: Image de tuile,
+    image_placeholder: Champ d'image optionnel...,
+    image_fit: Image ajustée en tuile
+    crop: Rogner,
+    advanced: Avancé,
+    edit_group: Éditer le Groupe,
+    delete_group: Supprimer le Groupe,
+    add_group: Ajouter un Groupe,
+    add_group_placeholder: Entrez le nom du nouveau groupe...,
+    show_ungrouped: Afficher non-groupé,
+    show: Afficher,
+    no_group: Aucun Groupe,
+    not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
     name: Indicateurs
@@ -1771,3 +1892,168 @@ panels:
   list:
     name: Liste
     description: Filtrer et lister les champs d'une collection
+  barchart:
+    name: Graphique en barres
+    description: Graphique en barre ou en colonne pour la comparaison de groupes de valeurs
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    select_x_axis: Vous devez sélectionner un axe X.
+    function: Fonction
+    horizontal: Horizontal
+    x_axis_grouping: Agrégation du groupe d'axe X
+    x_axis: Axe X
+    y_axis_function: Fonction Axe-Y
+    y_axis: Axe Y
+    show_x_axis: Afficher l'axe X
+    show_y_axis: Afficher l'axe Y
+    show_data_label: Afficher l'étiquette des données
+    group_by: 'Groupés par:'
+    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    y_axis_NaN: L'ordonnée doit être un nombre.
+    y_axis_conditional_one: La valeur de la condition
+    y_axis_conditional_two: doit être un nombre.
+  linechart:
+    name: Graphique linéaire
+    description: Graphique linéaire pour comparer le changement d'un champ.
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    select_x_axis: Vous devez sélectionner un axe X.
+    function: Fonction
+    x_axis: Axe X
+    x_axis_decimals: Décimales de l'axe X
+    disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
+    y_axis: Axe Y
+    datasets: Jeux de données
+    show_legend: Afficher la légende
+    show_marker: Afficher l'info-bulle
+    include_dataset: Vous devez sélectionner au moins un élément.
+    include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
+    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    smooth: 'Lisse'
+    straight: 'Droit'
+    step_line: 'Pas'
+  meter:
+    description: Compteur pour les valeurs de suivi
+    name: Compteur
+    arc: Arc
+    stroke_width: Largeur du trait
+    select_max_value: Vous devez sélectionner une valeur maximale.
+    max_greater_than_zero: La valeur doit être supérieure à 0.
+    select_field: Vous devez choisir un champ.
+    select_collection: Vous devez sélectionner une collection.
+    function: Fonction
+    thin: Fin
+    medium: Moyen
+    broad: Large
+  piechart:
+    name: Graphique anneau ou circulaire
+    description: Graphique circulaire montrant les ratios de groupes sur une colonne.
+    function: 'Fonction'
+    donut: Anneau
+    labels: Afficher les libellés
+    legend: Afficher la légende
+    right: Droite
+    bottom: Bas
+    monochrome: Monochrome
+    monochrome_color: Couleur Monochrome
+triggers:
+  common:
+    response_body: Corps de la Réponse
+    response_body_all: Toutes les Données
+    response_body_last: Données de la Dernière Opération
+  event:
+    name: Crochet d'Événement
+    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    action: 'Action (Non Bloquante)'
+    filter: 'Filtre (Bloquant)'
+  webhook:
+    name: Webhook
+    description: Déclencheurs sur une requête HTTP entrante
+    method: Méthode
+    async: Asynchrone
+  operation:
+    name: Un autre Flux
+    description: Déclenché par un autre Flux, pour le chaînage
+    preview: Déclenché par une opération dans un Flux différent
+  schedule:
+    name: Planification (CRON)
+    description: Déclencheurs à des moments réguliers dans le temps
+    cron: Intervalle
+  manual:
+    name: Manuelle
+    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
+    collection_and_item: Pages des Collections et des Articles
+    collection_only: Page de la Collection Uniquement
+    item_only: Page de l'Article Uniquement
+a_users_uuid: La Clé Primaire UUID d'un utilisateur...
+a_flow_uuid: La Clé primaire UUID d'un Flux...
+any_string_or_json: Toute chaîne de caractères ou JSON...
+item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
+operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operations:
+  condition:
+    name: Condition
+    description: Acheminer un flux en fonction de la logique If / Else
+  item-create:
+    name: Créer de la donnée
+    description: Créer des éléments dans la base de données
+    payload: Données utiles
+    emit_events: Émettre des événements
+  item-delete:
+    name: Suppression des données
+    description: Supprimer des éléments dans la base de données
+    emit_events: Émettre des événements
+    key: IDs
+    query: Requête
+  item-read:
+    name: Lire les données
+    description: Lire les éléments de la base de données
+    key: IDs
+    query: Requête
+  item-update:
+    name: Mettre à jour les données
+    description: Mettre à jour les éléments de la base de données
+    emit_events: Émettre des événements
+    key: IDs
+    payload: Données utiles
+    query: Requête
+  log:
+    name: Log dans la console
+    description: Afficher quelque chose sur la console
+    message: Message
+    message_placeholder: Entrez un message à afficher dans la console...
+  mail:
+    name: Envoyer l'e-mail
+    description: Envoyer un email à une ou plusieurs personnes
+    to: À
+    to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
+    body: Corps du mail
+  notification:
+    name: Envoyer la Notification
+    description: Envoyer une notification in-app à un utilisateur
+    recipient: Utilisateur
+    message: Message
+  request:
+    name: Webhook / URL de requête
+    description: "Faire une requête à un URL"
+    url: URL
+    url_placeholder: https://example.com/example
+    method: Méthode
+    data: Données
+    headers: En-têtes
+    header: En-tête
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Pause
+    description: Attendre un nombre donné de millisecondes
+    milliseconds: Millisecondes
+  transform:
+    name: Transformer la Charge utile
+    description: Modifier la charge utile JSON du Flux
+  trigger:
+    name: Déclencher le Flux
+    description: Transmettre ces données à un autre Flux
+    flows: Les Flux
+    flow: Flux
+    data: Données

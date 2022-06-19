@@ -57,7 +57,7 @@ body {
 .x-small {
 	--v-avatar-size: 24px;
 
-	border-radius: 2px;
+	border-radius: 4px;
 }
 
 .small {

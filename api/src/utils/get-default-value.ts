@@ -1,28 +1,17 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import getLocalType from './get-local-type';
-import logger from '../logger';
 import env from '../env';
+import logger from '../logger';
+import getLocalType from './get-local-type';
+import { parseJSON } from './parse-json';
 
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column
 ): string | boolean | number | Record<string, any> | any[] | null {
 	const type = getLocalType(column);
 
-	let defaultValue = column.default_value ?? null;
+	const defaultValue = column.default_value ?? null;
 	if (defaultValue === null) return null;
-	if (defaultValue === 'null') return null;
-	if (defaultValue === 'NULL') return null;
-
-	// Check if the default is wrapped in an extra pair of quotes, this happens in SQLite / MariaDB
-	if (
-		typeof defaultValue === 'string' &&
-		((defaultValue.startsWith(`'`) && defaultValue.endsWith(`'`)) ||
-			(defaultValue.startsWith(`"`) && defaultValue.endsWith(`"`)))
-	) {
-		defaultValue = defaultValue.slice(1, -1);
-	}
-
 	if (defaultValue === '0000-00-00 00:00:00') return null;
 
 	switch (type) {
@@ -59,7 +48,7 @@ function castToObject(value: any): any | any[] {
 
 	if (typeof value === 'string') {
 		try {
-			return JSON.parse(value);
+			return parseJSON(value);
 		} catch (err: any) {
 			if (env.NODE_ENV === 'development') {
 				logger.error(err);

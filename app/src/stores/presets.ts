@@ -15,6 +15,8 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 	refresh_interval: null,
+	icon: 'bookmark_outline',
+	color: null,
 };
 
 const systemDefaults: Record<string, Partial<Preset>> = {
@@ -222,7 +224,7 @@ export const usePresetsStore = defineStore({
 		/**
 		 * Retrieves the most specific preset that applies to the given collection for the current
 		 * user. If the user doesn't have a preset for this collection, it will fallback to the
-		 * role and collection presets respectivly.
+		 * role and collection presets respectively.
 		 */
 		getPresetForCollection(collection: string) {
 			const userStore = useUserStore();

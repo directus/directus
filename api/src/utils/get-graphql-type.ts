@@ -16,6 +16,7 @@ export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLSc
 		case 'boolean':
 			return GraphQLBoolean;
 		case 'bigInteger':
+			return GraphQLString;
 		case 'integer':
 			return GraphQLInt;
 		case 'decimal':

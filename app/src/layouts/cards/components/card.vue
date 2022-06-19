@@ -9,7 +9,7 @@
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
-				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
+				<v-icon-file v-if="type || imgError" :ext="type" />
 				<template v-else>
 					<img
 						v-if="imageSource"
@@ -177,7 +177,7 @@ export default defineComponent({
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal-alt);
+		background-color: var(--background-normal);
 		border-color: var(--primary-50);
 		border-style: solid;
 		border-width: 0px;

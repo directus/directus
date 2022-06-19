@@ -23,6 +23,7 @@ export type AuthMode = 'json' | 'cookie';
 export type AuthOptions = {
 	mode?: AuthMode;
 	autoRefresh?: boolean;
+	msRefreshBeforeExpires?: number;
 	staticToken?: string;
 	transport: ITransport;
 	storage: IStorage;

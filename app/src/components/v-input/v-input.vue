@@ -156,7 +156,7 @@ function processValue(event: KeyboardEvent) {
 	const value = (event.target as HTMLInputElement).value;
 
 	if (props.slug === true) {
-		const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
+		const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789-_~ '.split('');
 
 		const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
@@ -170,7 +170,7 @@ function processValue(event: KeyboardEvent) {
 	}
 
 	if (props.dbSafe === true) {
-		const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890_ '.split('');
+		const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789_ '.split('');
 
 		const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
@@ -217,6 +217,8 @@ function emitValue(event: InputEvent) {
 
 		if (props.dbSafe === true) {
 			value = value.replace(/\s/g, '_');
+			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
+			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 			// Replace é -> e etc
 			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 		}
@@ -250,20 +252,19 @@ function stepDown() {
 }
 </script>
 
-<style>
-body {
+<style lang="scss" scoped>
+:global(body) {
 	--v-input-font-family: var(--family-sans-serif);
 	--v-input-placeholder-color: var(--foreground-subdued);
-}
-</style>
-
-<style lang="scss" scoped>
-.v-input {
-	--arrow-color: var(--border-normal);
-	--v-icon-color: var(--foreground-subdued);
+	--v-input-box-shadow-color-focus: var(--primary);
 	--v-input-color: var(--foreground-normal);
 	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
+}
+
+.v-input {
+	--arrow-color: var(--border-normal);
+	--v-icon-color: var(--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -338,7 +339,7 @@ body {
 			color: var(--v-input-color);
 			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
-			box-shadow: 0 0 16px -8px var(--primary);
+			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
 		}
 
 		&.disabled {

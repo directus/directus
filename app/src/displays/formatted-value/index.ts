@@ -1,6 +1,7 @@
 import { defineDisplay } from '@directus/shared/utils';
 import { DisplayConfig } from '@directus/shared/types';
 import DisplayFormattedValue from './formatted-value.vue';
+import formatTitle from '@directus/format-title';
 
 export default defineDisplay({
 	id: 'formatted-value',
@@ -9,6 +10,13 @@ export default defineDisplay({
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	component: DisplayFormattedValue,
+	handler: (value, options) => {
+		const prefix = options.prefix ?? '';
+		const suffix = options.suffix ?? '';
+		const formattedValue = options.format ? formatTitle(value) : value;
+
+		return `${prefix}${formattedValue}${suffix}`;
+	},
 	options: ({ field }) => {
 		const isString = ['string', 'text'].includes(field.type ?? 'unknown');
 		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];

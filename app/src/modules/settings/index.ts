@@ -1,6 +1,6 @@
 import api from '@/api';
 import { defineModule } from '@directus/shared/utils';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore, useFieldsStore, useFlowsStore } from '@/stores';
 import RouterPass from '@/utils/router-passthrough';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
@@ -17,6 +17,9 @@ import RolesPermissionsDetail from './routes/roles/permissions-detail/permission
 import RolesPublicItem from './routes/roles/public-item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
+import FlowsOverview from './routes/flows/overview.vue';
+import FlowsDetail from './routes/flows/flow.vue';
+import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import TranslationStringsCollection from './routes/translation-strings/collection.vue';
 
 export default defineModule({
@@ -173,6 +176,41 @@ export default defineModule({
 					path: ':primaryKey',
 					component: WebhooksItem,
 					props: true,
+				},
+			],
+		},
+		{
+			path: 'flows',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-flows-collection',
+					path: '',
+					component: FlowsOverview,
+				},
+				{
+					name: 'settings-flows-item',
+					path: ':primaryKey',
+					component: FlowsDetail,
+					props: true,
+					async beforeEnter(to) {
+						const { flows } = useFlowsStore();
+						const existingFlow = flows.find((flow) => flow.id === to.params.primaryKey);
+						if (!existingFlow) {
+							return {
+								name: 'settings-not-found',
+								params: { _: to.path.split('/').slice(1) },
+							};
+						}
+					},
+					children: [
+						{
+							name: 'settings-flows-operation',
+							path: ':operationId',
+							component: FlowOperationDetail,
+							props: true,
+						},
+					],
 				},
 			],
 		},

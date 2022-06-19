@@ -96,6 +96,10 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 				schema[key] = Joi.string().ncontains(Object.values(value)[0]);
 			}
 
+			if (operator === '_icontains') {
+				schema[key] = Joi.string().contains(Object.values(value)[0]);
+			}
+
 			if (operator === '_starts_with') {
 				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
 					name: 'starts_with',

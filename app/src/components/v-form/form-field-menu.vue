@@ -51,6 +51,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@directus/shared/types';
+import useClipboard from '@/composables/use-clipboard';
 
 export default defineComponent({
 	props: {
@@ -75,6 +76,8 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
+		const { isCopySupported, isPasteSupported } = useClipboard();
+
 		const defaultValue = computed(() => {
 			const savedValue = props.field?.schema?.default_value;
 			return savedValue !== undefined ? savedValue : null;
@@ -82,14 +85,6 @@ export default defineComponent({
 
 		const isRequired = computed(() => {
 			return props.field?.schema?.is_nullable === false;
-		});
-
-		const isCopySupported = computed(() => {
-			return !!navigator?.clipboard?.writeText;
-		});
-
-		const isPasteSupported = computed(() => {
-			return !!navigator?.clipboard?.readText;
 		});
 
 		return { t, defaultValue, isRequired, isCopySupported, isPasteSupported };

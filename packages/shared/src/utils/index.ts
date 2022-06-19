@@ -19,3 +19,5 @@ export * from './to-array';
 export * from './validate-extension-manifest';
 export * from './validate-payload';
 export * from './add-field-flag';
+export * from './abbreviate-number';
+export * from './get-endpoint';

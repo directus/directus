@@ -34,6 +34,19 @@ example.com/assets/<file-id>
 example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4
 ```
 
+::: tip SEO
+
+You can provide an optional filename after the UUID to optimize for SEO, for example:
+
+```
+example.com/assets/<file-id>/<filename>
+example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4/directus-logo.png
+```
+
+This optional filename is also used in the Content-Disposition header when the `?download` query parameter is used.
+
+:::
+
 ::: warning Direct File Access
 
 While you may _technically_ be able to expose your storage adapters root filesystem and access your raw files through

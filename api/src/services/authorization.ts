@@ -17,6 +17,7 @@ import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, Pri
 import { stripFunction } from '../utils/strip-function';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
+import { getRelationInfo } from '../utils/get-relation-info';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -228,6 +229,50 @@ export class AuthorizationService {
 							}
 							// Filter value is not a filter, so we should skip it
 							return result;
+						}
+						// virtual o2m/o2a filter in the form of `$FOLLOW(...)`
+						else if (collection && filterKey.startsWith('$FOLLOW')) {
+							(result[collection] || (result[collection] = new Set())).add(filterKey);
+							// add virtual relation to the required permissions
+							const { relation } = getRelationInfo([], collection, filterKey);
+							if (relation?.collection && relation?.field) {
+								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
+							}
+						}
+						// m2a filter in the form of `item:collection`
+						else if (filterKey.includes(':')) {
+							const [field, collectionScope] = filterKey.split(':');
+
+							if (collection) {
+								// Add the `item` field to the required permissions
+								(result[collection] || (result[collection] = new Set())).add(field);
+
+								// Add the `collection` field to the required permissions
+								result[collection].add('collection');
+							} else {
+								const relation = schema.relations.find((relation) => {
+									return (
+										(relation.collection === parentCollection && relation.field === parentField) ||
+										(relation.related_collection === parentCollection && relation.meta?.one_field === parentField)
+									);
+								});
+
+								// Filter key not found in parent collection
+								if (!relation) throw new ForbiddenException();
+
+								const relatedCollectionName =
+									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
+								// Add the `item` field to the required permissions
+								(result[relatedCollectionName] || (result[relatedCollectionName] = new Set())).add(field);
+
+								// Add the `collection` field to the required permissions
+								result[relatedCollectionName].add('collection');
+							}
+
+							// Continue to parse the filter for nested `collection` afresh
+							const requiredPermissions = extractRequiredFieldPermissions(collectionScope, filterValue);
+							result = mergeRequiredFieldPermissions(result, requiredPermissions);
 						} else {
 							if (collection) {
 								(result[collection] || (result[collection] = new Set())).add(filterKey);
@@ -239,20 +284,12 @@ export class AuthorizationService {
 									);
 								});
 
-								if (relation) {
-									if (relation.related_collection === parentCollection) {
-										(result[relation.collection] || (result[relation.collection] = new Set())).add(filterKey);
-										parentCollection = relation.collection;
-									} else {
-										(result[relation.related_collection!] || (result[relation.related_collection!] = new Set())).add(
-											filterKey
-										);
-										parentCollection = relation.related_collection!;
-									}
-								} else {
-									// Filter key not found in parent collection
-									throw new ForbiddenException();
-								}
+								// Filter key not found in parent collection
+								if (!relation) throw new ForbiddenException();
+
+								parentCollection =
+									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
 							if (typeof filterValue === 'object') {
@@ -343,6 +380,7 @@ export class AuthorizationService {
 					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
+						if (field.startsWith('$FOLLOW')) continue;
 						if (!allowedFields.includes(field)) throw new ForbiddenException();
 					}
 				}

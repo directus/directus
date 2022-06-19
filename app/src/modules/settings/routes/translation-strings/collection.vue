@@ -3,7 +3,7 @@
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="translate" />
 			</v-button>
 		</template>
@@ -25,7 +25,15 @@
 		</template>
 
 		<div class="translation-strings">
+			<v-info v-if="!loading && tableItems.length === 0" icon="translate" :title="t('no_translation_string')" center>
+				{{ t('no_translation_string_copy') }}
+
+				<template #append>
+					<v-button @click="openTranslationStringDialog">{{ t('create_translation_string') }}</v-button>
+				</template>
+			</v-info>
 			<v-table
+				v-else
 				:headers="tableHeaders"
 				fixed-header
 				item-key="key"
@@ -103,10 +111,11 @@ function updateTranslationStringsDialog(val: boolean) {
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
-
 .translation-strings {
 	padding: var(--content-padding);
 	padding-top: 0;

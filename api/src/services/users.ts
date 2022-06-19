@@ -121,6 +121,26 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Make sure there's at least one active admin user when updating user status
+	 */
+	private async checkRemainingActiveAdmin(excludeKeys: PrimaryKey[]): Promise<void> {
+		const otherAdminUsers = await this.knex
+			.count('*', { as: 'count' })
+			.from('directus_users')
+			.whereNotIn('directus_users.id', excludeKeys)
+			.andWhere({ 'directus_roles.admin_access': true })
+			.andWhere({ 'directus_users.status': 'active' })
+			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+			.first();
+
+		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+
+		if (otherAdminUsersCount === 0) {
+			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
+		}
+	}
+
+	/**
 	 * Create a new user
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -167,11 +187,18 @@ export class UsersService extends ItemsService {
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (data.role) {
-			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', data.role).first();
+			// data.role will be an object with id with GraphQL mutations
+			const roleId = data.role?.id ?? data.role;
+
+			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
 
 			if (!newRole?.admin_access) {
 				await this.checkRemainingAdminExistence(keys);
 			}
+		}
+
+		if (data.status !== undefined && data.status !== 'active') {
+			await this.checkRemainingActiveAdmin(keys);
 		}
 
 		if (data.email) {
@@ -365,6 +392,10 @@ export class UsersService extends ItemsService {
 		const service = new UsersService({
 			knex: this.knex,
 			schema: this.schema,
+			accountability: {
+				...(this.accountability ?? { role: null }),
+				admin: true, // We need to skip permissions checks for the update call below
+			},
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' });
