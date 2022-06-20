@@ -60,8 +60,6 @@ export function getFilterOperatorsForType(
 			return [
 				'eq',
 				'neq',
-				'null',
-				'nnull',
 				'lt',
 				'lte',
 				'gt',
