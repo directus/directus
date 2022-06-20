@@ -23,7 +23,7 @@ export default defineConfig({
 			include: [/\.vue$/, /\.md$/],
 		}),
 		md({
-			wrapperComponent: 'DocsWrapper',
+			wrapperComponent: 'docs-wrapper',
 			markdownItOptions: {
 				highlight(str, lang) {
 					if (lang && hljs.getLanguage(lang)) {

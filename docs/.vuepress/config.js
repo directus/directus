@@ -195,11 +195,6 @@ module.exports = {
 					// },
 					{
 						type: 'page',
-						path: '/configuration/config-options',
-						title: 'Config Options',
-					},
-					{
-						type: 'page',
 						path: '/configuration/project-settings',
 						title: 'Project Settings',
 					},
@@ -225,6 +220,11 @@ module.exports = {
 						type: 'page',
 						path: '/configuration/presets-bookmarks',
 						title: 'Presets & Bookmarks',
+					},
+					{
+						type: 'page',
+						path: '/configuration/translation-strings',
+						title: 'Translation Strings',
 					},
 					{
 						type: 'page',
@@ -255,11 +255,6 @@ module.exports = {
 						title: 'Activity Log',
 					},
 					{
-						type: 'page',
-						path: '/configuration/sso',
-						title: 'Single Sign-On (SSO)',
-					},
-					{
 						type: 'divider',
 					},
 					// {
@@ -277,16 +272,6 @@ module.exports = {
 					// 	path: '/configuration/faq',
 					// 	title: 'Frequently Asked Questions*',
 					// },
-					{
-						type: 'page',
-						path: '/configuration/filter-rules',
-						title: 'Filter Rules',
-					},
-					{
-						type: 'page',
-						path: '/configuration/upgrades-migrations',
-						title: 'Upgrades & Migrations',
-					},
 				],
 			},
 			{
@@ -306,6 +291,11 @@ module.exports = {
 						type: 'page',
 						title: 'Global Parameters',
 						path: '/reference/query',
+					},
+					{
+						type: 'page',
+						path: '/reference/filter-rules',
+						title: 'Filter Rules',
 					},
 					{
 						type: 'page',
@@ -562,6 +552,21 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/self-hosted/config-options',
+						title: 'Config Options',
+					},
+					{
+						type: 'page',
+						path: '/self-hosted/sso',
+						title: 'Single Sign-On (SSO)',
+					},
+					// {
+					// 	type: 'page',
+					// 	path: '/self-hosted/sso-examples',
+					// 	title: 'SSO Examples',
+					// },
+					{
+						type: 'page',
 						path: '/self-hosted/installation',
 						title: 'Installation',
 						children: [
@@ -616,6 +621,11 @@ module.exports = {
 								title: 'Ubuntu',
 							},
 						],
+					},
+					{
+						type: 'page',
+						path: '/self-hosted/upgrades-migrations',
+						title: 'Upgrades & Migrations',
 					},
 				],
 			},

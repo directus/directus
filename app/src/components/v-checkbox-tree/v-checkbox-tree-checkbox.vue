@@ -1,11 +1,5 @@
 <template>
-	<v-list-group
-		v-if="visibleChildrenValues.length > 0"
-		v-show="groupShown"
-		:value="value"
-		:open="groupOpen"
-		arrow-placement="before"
-	>
+	<v-list-group v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
 		<template #activator>
 			<v-checkbox
 				v-model="treeValue"
@@ -141,14 +135,6 @@ export default defineComponent({
 			return !props.hidden;
 		});
 
-		const groupOpen = computed(() => {
-			if (props.showSelectionOnly === true) {
-				return visibleChildrenValues.value.length > 0;
-			}
-
-			return false;
-		});
-
 		const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);
 
 		const treeValue = computed({
@@ -242,7 +228,6 @@ export default defineComponent({
 			groupIndeterminateState,
 			visibleChildrenValues,
 			groupShown,
-			groupOpen,
 		};
 
 		function emitAll(rawValue: (string | number)[], { added, removed }: Delta) {

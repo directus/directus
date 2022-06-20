@@ -1102,6 +1102,7 @@ interfaces:
   list:
     repeater: Herhaler
     edit_fields: Velden bewerken
+    sort: Sorteren
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider

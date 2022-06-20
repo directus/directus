@@ -516,6 +516,8 @@ interfaces:
     icon: アイコン
   system-folder:
     folder: フォルダ
+  list:
+    sort: 並べ替え
   tags:
     tags: タグ
   translations:
