@@ -5,20 +5,17 @@ export default defineOperationApp({
 	icon: 'edit',
 	name: '$t:operations.item-update.name',
 	description: '$t:operations.item-update.description',
-	overview: ({ mode, collection, key }) => {
+	overview: ({ collection, key }) => {
 		const overviewItems = [
 			{
 				label: '$t:collection',
 				text: collection,
 			},
-		];
-
-		if (mode !== 'query') {
-			overviewItems.push({
+			{
 				label: '$t:operations.item-update.key',
 				text: key ? toArray(key).join(', ') : '--',
-			});
-		}
+			},
+		];
 
 		return overviewItems;
 	},
@@ -83,16 +80,6 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'vpn_key',
 				},
-				conditions: [
-					{
-						rule: {
-							mode: {
-								_eq: 'query',
-							},
-						},
-						hidden: true,
-					},
-				],
 			},
 		},
 		{
@@ -140,16 +127,6 @@ export default defineOperationApp({
 						2
 					),
 				},
-				conditions: [
-					{
-						rule: {
-							mode: {
-								_neq: 'query',
-							},
-						},
-						hidden: true,
-					},
-				],
 			},
 		},
 	],
