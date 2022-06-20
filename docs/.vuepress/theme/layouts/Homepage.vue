@@ -47,7 +47,7 @@
 				<h2>The App Guide</h2>
 				<span>A non-technical overview of the Directus no-code App and its various features.</span>
 			</a>
-			<a href="/self-hosted/config-options/" class="panel">
+			<a href="/configuration/project-settings/" class="panel">
 				<svg width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<circle cx="30" cy="30" r="30" fill="#6644ff" />
 					<path
