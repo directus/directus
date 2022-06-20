@@ -206,7 +206,60 @@ module.exports = {
 						children: [
 							{
 								type: 'page',
-								path: '/configuration/relationships',
+								path: '/configuration/data-model/collections',
+								title: 'Collections',
+							},
+							{
+								type: 'page',
+								path: '/configuration/data-model/fields',
+								title: 'Fields',
+								collapsable: true,
+								children: [
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/schema',
+										title: 'Schema',
+									},
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/relationship',
+										title: 'Relationship',
+									},
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/translations',
+										title: 'Translations',
+									},
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/field',
+										title: 'Field',
+									},
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/interface',
+										title: 'Interface',
+									},
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/display',
+										title: 'Display',
+									},
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/validation',
+										title: 'Validation',
+									},
+									{
+										type: 'page',
+										path: '/configuration/data-model/fields/conditions',
+										title: 'Conditions',
+									},
+								],
+							},
+							{
+								type: 'page',
+								path: '/configuration/data-model/relationships',
 								title: 'Relationships',
 							},
 						],
