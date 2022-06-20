@@ -303,7 +303,7 @@ Each field can have one or more _rules_. Each rule has the following configurati
 
 - **Name**: The name of the rule. This is only used internally for convenience purposes
 - **Rule**: The rule that controls whether or not these conditions are applied. Rule follows the
-  [Filter Rules](/configuration/filter-rules) spec
+  [Filter Rules](/reference/filter-rules) spec
 - **Readonly**: Whether or not the field is readonly when the condition is matched
 - **Hidden**: Whether or not the field is hidden when the condition is matched
 - **Required**: Whether or not the field is required when the condition is matched
