@@ -3,7 +3,7 @@ import { DeepPartial } from './misc';
 import { Field } from './fields';
 import { Query } from './query';
 
-type PanelQuery = { collection: string; query: Query };
+export type PanelQuery = { collection: string; query: Query; key?: string };
 
 export interface PanelConfig {
 	id: string;

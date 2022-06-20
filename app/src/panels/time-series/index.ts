@@ -15,7 +15,7 @@ export default definePanel({
 		return {
 			collection: options.collection,
 			query: {
-				groupBy: getGroups(options.precision, options.dateField),
+				group: getGroups(options.precision, options.dateField),
 				aggregate: {
 					[options.function]: [options.valueField],
 				},

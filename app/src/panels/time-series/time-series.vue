@@ -145,6 +145,9 @@ function setupChart() {
 			},
 			fontFamily: 'var(--family-sans-serif)',
 			foreColor: 'var(--foreground-subdued)',
+			animations: {
+				enabled: false,
+			},
 		},
 		series: [
 			{

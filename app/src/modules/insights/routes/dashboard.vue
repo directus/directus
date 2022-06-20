@@ -82,11 +82,9 @@
 			<insights-navigation />
 		</template>
 
-		<span v-if="errors">{errors}</span>
-
 		<v-workspace
 			:edit-mode="editMode"
-			:panels="panelsWithData"
+			:panels="panels"
 			:zoom-to-fit="zoomToFit"
 			:now="now"
 			@edit="editPanel"
@@ -96,7 +94,7 @@
 			@duplicate="duplicatePanel"
 		>
 			<template #default="{ panel }">
-				<v-progress-circular v-if="loadingPanels.includes(panel.id)" indeterminate />
+				<v-progress-circular v-if="panel.loading" indeterminate />
 				<component
 					:is="`panel-${panel.type}`"
 					v-else
@@ -176,20 +174,17 @@ import useShortcut from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
 import { router } from '@/router';
 import { useAppStore, useInsightsStore, usePermissionsStore } from '@/stores';
-import { objDiff } from '@/utils/object-diff';
 import { pointOnLine } from '@/utils/point-on-line';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Panel } from '@directus/shared/types';
+import { Panel, PanelQuery } from '@directus/shared/types';
+import { getSimpleHash, toArray } from '@directus/shared/utils';
 import camelCase from 'camelcase';
-import { mapKeys, merge, omit, isEmpty } from 'lodash';
+import { mapKeys, merge, omit } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { processQuery } from '../dashboard-utils/process-query';
-import { queryCaller } from '../dashboard-utils/query-caller';
-import { applyDataToPanels } from '../dashboard-utils/apply-data-to-panels';
-import { v4 as uuid } from 'uuid';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
+import { nanoid } from 'nanoid';
 
 interface Props {
 	primaryKey: string;
@@ -197,7 +192,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), { panelKey: null });
-const response = ref<Record<string, Panel | Panel[]>>({});
 
 const { t } = useI18n();
 
@@ -218,11 +212,6 @@ const movePanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.i
 const movePanelID = ref<string | null>();
 
 const zoomToFit = ref(false);
-
-const loadingPanels = ref();
-const errors = ref();
-
-const panelsWithData = ref<Panel[]>([]);
 
 const updateAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_panels', 'update');
@@ -275,7 +264,8 @@ const rawPanels = computed(() => {
 	return raw;
 });
 
-const panels = computed<Partial<Panel>[]>(() => {
+const panels = computed(() => {
+	// We apply the coordinates first, as they're used in the next map
 	const withCoords = rawPanels.value.map((panel) => ({
 		...panel,
 		_coordinates: [
@@ -286,7 +276,7 @@ const panels = computed<Partial<Panel>[]>(() => {
 		] as [number, number][],
 	}));
 
-	const withBorderRadii = withCoords.map((panel) => {
+	return withCoords.map((panel) => {
 		let topLeftIntersects = false;
 		let topRightIntersects = false;
 		let bottomRightIntersects = false;
@@ -312,110 +302,75 @@ const panels = computed<Partial<Panel>[]>(() => {
 				bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[3], p1, p2));
 		}
 
-		return {
-			...panel,
-			x: panel.position_x,
-			y: panel.position_y,
-			borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
-		};
-	});
+		const panelType = panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type);
+		let query: PanelQuery | PanelQuery[] = panelType?.query?.(panel.options ?? {});
 
-	const withIcons = withBorderRadii.map((panel) => {
-		if (panel.icon) return panel;
+		let data;
+		let loading;
+		let error;
 
-		return {
-			...panel,
-			icon: panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type)?.icon,
-		};
-	});
-
-	// The workspace-tile relies on camelCased props, and these keys are passed as props with a v-bind
-	const camelCased = withIcons.map((panel) => mapKeys(panel, (_value, key) => camelCase(key)));
-
-	return camelCased;
-});
-
-const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-const queryObject = computed<Record<string, any>>(() => {
-	const systemCollectionQueries: Record<string, any> = {};
-	const userCollectionQueries: Record<string, any> = {};
-
-	const allPanels = [...(stagedPanels.value ?? []), ...(panels.value ?? [])];
-
-	for (const panel of allPanels) {
-		const type = panelsInfo.value.find((panelType) => panelType.id === panel.type);
-
-		if (type?.query && panel?.id) {
-			const { collection, query } = type.query(panel.options ?? {});
-
-			if (collection.startsWith('directus_')) {
-				systemCollectionQueries[panel.id] = { collection: collection.substring(9), query };
+		if (query) {
+			if (Array.isArray(query)) {
+				query = query.map((q) => addQueryKey(q));
+				data = query.map(({ key }) => insightsStore.queries[props.primaryKey]?.data[key]) ?? null;
+				loading = query.some(({ key }) => insightsStore.queries[props.primaryKey]?.loading.includes(key)) ?? false;
+				error =
+					insightsStore.queries[props.primaryKey]?.errors.find((err) =>
+						query.map(({ key }) => key).includes(err.key)
+					) ?? null;
 			} else {
-				userCollectionQueries[panel.id] = { collection, query };
+				query = addQueryKey(query);
+				data = insightsStore.queries[props.primaryKey]?.data[query.key] ?? null;
+				loading = insightsStore.queries[props.primaryKey]?.loading.includes(query.key) ?? false;
+				error = insightsStore.queries[props.primaryKey]?.errors.find(({ key }) => key === query.key) ?? null;
 			}
 		}
-	}
 
-	return { systemCollectionQueries, userCollectionQueries };
-});
+		return mapKeys(
+			{
+				...panel,
+				x: panel.position_x,
+				y: panel.position_y,
+				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
+				icon: panel.icon ?? panelType?.icon,
+				loading,
+				query,
+				data,
+				error,
+			},
+			(_value, key) => camelCase(key)
+		);
 
-let newQueries: Record<string, any> = queryObject.value;
-
-watch(
-	queryObject,
-	async (newObj, obj) => {
-		const systemDiff = objDiff(newObj.systemCollectionQueries, obj?.systemCollectionQueries);
-		const userDiff = objDiff(newObj.userCollectionQueries, obj?.userCollectionQueries);
-
-		newQueries = {
-			systemCollectionQueries: systemDiff,
-			userCollectionQueries: userDiff,
-		};
-
-		if (!isEmpty(systemDiff) || !isEmpty(userDiff)) {
-			loadingPanels.value = Object.keys(systemDiff).concat(Object.keys(userDiff));
-			const systemGQLQueries = processQuery(systemDiff);
-			const userGQLQueries = processQuery(userDiff);
-
-			let system = await queryCaller(systemGQLQueries, 0, newQueries, true);
-			let user = await queryCaller(userGQLQueries, 0, newQueries, false);
-
-			response.value = {
-				...response.value,
-				...system,
-				...user,
+		function addQueryKey(query: Record<string, any>) {
+			return {
+				key: getSimpleHash(panel.id + JSON.stringify(query)),
+				...query,
 			};
-
-			panelsWithData.value = applyDataToPanels(panels.value, response.value);
 		}
-		loadingPanels.value = [];
-	},
-	{ immediate: true, deep: true }
-);
+	});
+});
 
 watch(
 	panels,
 	() => {
-		const newPanelsWithData: Panel[] = [];
+		const queries: PanelQuery[] = [];
+
 		for (const panel of panels.value) {
-			const panelId = 'id_' + panel.id.replaceAll('-', '_');
-			if (response.value[panelId]) {
-				const editablePanel = panel;
-				editablePanel.data = response.value[panelId];
-				newPanelsWithData.push(editablePanel);
-			} else {
-				newPanelsWithData.push(panel);
-			}
+			if (!panel.query) continue;
+			queries.push(...toArray(panel.query));
 		}
-		panelsWithData.value = newPanelsWithData;
+
+		insightsStore.updateQueries(props.primaryKey, queries);
 	},
 	{ immediate: true }
 );
 
+const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { ignorePrefix: '/insights' });
+
 const confirmCancel = ref(false);
+
 function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
 	const key = event.id ?? props.panelKey;
 
@@ -423,7 +378,7 @@ function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
 		stagedPanels.value = [
 			...stagedPanels.value,
 			{
-				id: uuid(),
+				id: `_${nanoid()}`,
 				dashboard: props.primaryKey,
 				...event.edits,
 			},
@@ -442,6 +397,7 @@ function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
 		}
 	}
 }
+
 function stageConfiguration(edits: Partial<Panel>) {
 	stagePanelEdits({ edits });
 	router.replace(`/insights/${props.primaryKey}`);
