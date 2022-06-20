@@ -116,7 +116,6 @@ provider may send it there automatically.
 
 This Operation sends a notification to an app user.
 
-
 - **Users** — Define a User by their primary key UUID. Use [Flow keys](/configuration/flows/flows/#the-flow-object) to
   set this dynamically.
 - **Permissions** — Define the Role that this Operation will inherit permissions from.
