@@ -30,8 +30,6 @@ describe('', () => {
 		expect(getFilterOperatorsForType('dateTime')).toStrictEqual([
 			'eq',
 			'neq',
-			'null',
-			'nnull',
 			'lt',
 			'lte',
 			'gt',
