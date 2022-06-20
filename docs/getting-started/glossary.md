@@ -15,8 +15,8 @@ with the admin option enabled can manage Settings within the app.
 
 [Fields](#fields) that do not map directly to an actual database column are called "alias" fields. For example,
 presentation fields (such as dividers and groups) and certain relational types that display data stored elsewhere (such
-as [One-to-Many (O2M)](/configuration/relationships/#one-to-many-o2m) and
-[Many-to-Many (M2M)](/configuration/relationships/#many-to-many-m2m)).
+as [One-to-Many (O2M)](/configuration/data-model/relationships/#one-to-many-o2m) and
+[Many-to-Many (M2M)](/configuration/data-model/relationships/#many-to-many-m2m)).
 
 ## API
 
@@ -290,7 +290,7 @@ file, asset storage, and any custom extensions. Projects are the highest level o
 The platform allows you to group Items within different Collections. But often times it is important to "link" items
 across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship, a crucial
 concept within any _relational_ database. There are several different types of relationships, each serving a specific
-purpose. [Learn more about Relationships](/configuration/relationships/).
+purpose. [Learn more about Relationships](/configuration/data-model/relationships/).
 
 ## Revisions
 

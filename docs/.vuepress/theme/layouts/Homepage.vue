@@ -99,7 +99,7 @@
 				<ul>
 					<li><a href="/reference/filter-rules/">Filter Rules</a></li>
 					<li><a href="/self-hosted/config-options/">Environment Variables</a></li>
-					<li><a href="/configuration/relationships/">Data Relationships</a></li>
+					<li><a href="/configuration/data-model/relationships/">Data Relationships</a></li>
 					<li><a href="/self-hosted/config-options/#authentication">Single Sign-On (SSO)</a></li>
 					<li><a href="/self-hosted/installation/docker/">Installing with Docker</a></li>
 				</ul>

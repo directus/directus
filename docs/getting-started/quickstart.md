@@ -92,7 +92,7 @@ Once logged in, you're greeted with the option to create your first
 
 - [The Content Module](/app/content)
 - [Create and Manage a Collection](/configuration/data-model/)
-- [Build Relationships Between Collections](/configuration/relationships/)
+- [Build Relationships Between Collections](/configuration/data-model/relationships/)
 
 :::
 
