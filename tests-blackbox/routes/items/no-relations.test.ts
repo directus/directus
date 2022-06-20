@@ -114,7 +114,7 @@ describe('/items', () => {
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
-					expect(response.statusCode).toBe(500);
+					expect(response.statusCode).toBe(403);
 				});
 			});
 			describe('returns an error when an invalid table is used', () => {

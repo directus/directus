@@ -5,7 +5,8 @@ import { ClientFilterOperator } from '@directus/shared/types';
 import { get, set } from 'lodash';
 import { PrimaryKeyType } from '@common/types';
 
-export type FilterValidator = (inputValue: any, compareValue: any) => boolean;
+export type FilterValidator = (inputValue: any, possibleValues: any) => boolean;
+export type FilterEmptyValidator = (inputValue: any, possibleValues: any) => boolean;
 
 export type CachedTestsSchema = {
 	[pkType in PrimaryKeyType]: TestsSchema;
@@ -29,17 +30,38 @@ export type TestsCollectionSchema = {
 	relatedCollection?: string;
 };
 
-export const CheckQueryFilters = (requestOptions: RequestOptions, fields: TestsFieldSchema) => {
+export type TestsSchemaVendorValues = {
+	[record: string]: TestsSchemaVendorValues | any[];
+};
+
+export const CheckQueryFilters = (
+	requestOptions: RequestOptions,
+	collection: string,
+	testsFieldSchema: TestsFieldSchema,
+	vendorSchemaValues: TestsSchemaVendorValues
+) => {
 	return describe(`Global Query Filters (${requestOptions.method.toUpperCase()} ${requestOptions.path})`, () => {
-		for (const schemaField in fields) {
-			processSchemaFields(requestOptions, fields[schemaField]);
+		for (const field in testsFieldSchema) {
+			processSchemaFields(requestOptions, collection, testsFieldSchema[field], vendorSchemaValues);
 		}
 	});
 };
 
-const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollectionSchema, parentField?: string) => {
+const processSchemaFields = (
+	requestOptions: RequestOptions,
+	collection: string,
+	schema: TestsCollectionSchema,
+	vendorSchemaValues: TestsSchemaVendorValues,
+	parentField?: string
+) => {
 	let filterOperatorList: ClientFilterOperator[] = [];
-	let targetSchema = null;
+	let targetSchema: {
+		filterOperatorList: any;
+		generateFilterForDataType: any;
+		type?: 'integer' | 'uuid' | 'string' | 'alias' | 'bigInteger' | 'dateTime' | 'boolean' | 'json';
+		getValidatorFunction?: (filter: ClientFilterOperator) => FilterValidator;
+		getEmptyAllowedFunction?: (filter: ClientFilterOperator) => FilterEmptyValidator;
+	};
 
 	switch (schema.type) {
 		case 'alias':
@@ -102,24 +124,21 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 		}
 	}
 
-	const filters: Record<string, testsSchema.GeneratedFilter[]> = {};
-
-	for (const filterOperator of filterOperatorList) {
-		const generatedFilters = targetSchema.generateFilterForDataType(filterOperator, schema.possibleValues);
-		if (generatedFilters.length > 0) {
-			filters[filterOperator] = generatedFilters;
-		}
-	}
-
 	// Process filters
-	for (const field of Object.keys(filters)) {
-		const operatorFilters = filters[field];
+	for (const filterOperator of filterOperatorList) {
 		const filterKey = parentField ? `${parentField}.${schema.field}` : schema.field;
 
 		describe(`Field: ${filterKey} (${schema.type})`, () => {
-			describe(`_${field}`, () => {
+			describe(`_${filterOperator}`, () => {
 				it.each(vendors)('%s', async (vendor) => {
-					for (const filter of operatorFilters) {
+					const schemaValues = get(vendorSchemaValues, `${vendor}.${collection}.${filterKey}`);
+					const possibleValues = Array.isArray(schemaValues) ? schemaValues : schema.possibleValues;
+					const generatedFilters = targetSchema.generateFilterForDataType(
+						filterOperator,
+						possibleValues
+					) as testsSchema.GeneratedFilter[];
+
+					for (const filter of generatedFilters) {
 						// Setup
 						const parsedFilter = {};
 						set(parsedFilter, filterKey, filter.filter);
@@ -132,25 +151,8 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 
 						// Assert
 						expect(response.status).toBe(200);
-						for (const item of response.body.data) {
-							const value = get(item, filterKey.slice(0, filterKey.lastIndexOf('.')));
-							if (Array.isArray(value)) {
-								let found = false;
-								for (const itemValue of value) {
-									try {
-										if (filter.validatorFunction(get(itemValue, schema.field), filter.value)) {
-											found = true;
-											break;
-										}
-									} catch (_err) {
-										continue;
-									}
-								}
-								expect(found).toBe(true);
-							} else {
-								expect(filter.validatorFunction(get(item, filterKey), filter.value)).toBe(true);
-							}
-						}
+
+						processValidation(response.body.data, filterKey, filter, possibleValues, true);
 					}
 				});
 			});
@@ -161,7 +163,85 @@ const processSchemaFields = (requestOptions: RequestOptions, schema: TestsCollec
 	if (schema.children) {
 		for (const child of Object.keys(schema.children)) {
 			const newParentField = parentField ? `${parentField}.${schema.field}` : schema.field;
-			processSchemaFields(requestOptions, schema.children[child], newParentField);
+			processSchemaFields(requestOptions, collection, schema.children[child], vendorSchemaValues, newParentField);
 		}
 	}
 };
+
+function processValidation(
+	data: any,
+	key: string,
+	filter: testsSchema.GeneratedFilter,
+	possibleValues: any[],
+	assert = true
+): boolean {
+	const keys = key.split('.');
+
+	if (keys.length === 1) {
+		if (Array.isArray(data)) {
+			let found = false;
+			for (const item of data) {
+				try {
+					if (filter.validatorFunction(get(item, keys[0]), filter.value)) {
+						found = true;
+						break;
+					}
+				} catch (_err) {
+					continue;
+				}
+			}
+			if (assert) {
+				if (data.length === 0) {
+					if (filter.emptyAllowedFunction(filter.value, possibleValues)) {
+						expect(true).toBe(true);
+						return false;
+					}
+					expect(found).toBe(true);
+					return false;
+				} else {
+					expect(found).toBe(true);
+					return true;
+				}
+			} else {
+				return found;
+			}
+		} else {
+			if (assert) {
+				expect(filter.validatorFunction(get(data, keys[0]), filter.value)).toBe(true);
+				return true;
+			} else {
+				return filter.validatorFunction(get(data, keys[0]), filter.value);
+			}
+		}
+	} else {
+		const currentKey = keys[0];
+		keys.shift();
+
+		if (Array.isArray(data)) {
+			let found = false;
+			for (const item of data) {
+				if (processValidation(get(item, currentKey), keys.join('.'), filter, possibleValues, false)) {
+					found = true;
+					break;
+				}
+			}
+			if (assert) {
+				if (filter.emptyAllowedFunction(filter.value, possibleValues)) {
+					expect(true).toBe(true);
+					return true;
+				}
+				expect(found).toBe(true);
+				return true;
+			} else {
+				return found;
+			}
+		} else {
+			if (assert) {
+				expect(processValidation(get(data, currentKey), keys.join('.'), filter, possibleValues, assert)).toBe(true);
+				return true;
+			} else {
+				return processValidation(get(data, currentKey), keys.join('.'), filter, possibleValues, assert);
+			}
+		}
+	}
+}

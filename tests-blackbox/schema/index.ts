@@ -53,4 +53,5 @@ export type GeneratedFilter = {
 	value: any;
 	filter: any;
 	validatorFunction: (inputValue: any, possibleValues: any) => boolean;
+	emptyAllowedFunction: (inputValue: any, possibleValues: any) => boolean;
 };

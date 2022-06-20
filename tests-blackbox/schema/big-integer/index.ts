@@ -1,6 +1,6 @@
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { ClientFilterOperator } from '@directus/shared/types';
-import { FilterValidator } from '@query/filter';
+import { FilterValidator, FilterEmptyValidator } from '@query/filter';
 import { GeneratedFilter } from '..';
 
 export const type = 'bigInteger';
@@ -27,6 +27,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 							[`_${filter}`]: value,
 						},
 						validatorFunction: getValidatorFunction(filter),
+						emptyAllowedFunction: getEmptyAllowedFunction(filter),
 					};
 				});
 			}
@@ -39,6 +40,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 						[`_${filter}`]: possibleValues,
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		case 'between':
@@ -56,6 +58,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 							[`_${filter}`]: [sortedPossibleValues[0], sortedPossibleValues[middleIndex]],
 						},
 						validatorFunction: getValidatorFunction(filter),
+						emptyAllowedFunction: getEmptyAllowedFunction(filter),
 					},
 				];
 			}
@@ -68,6 +71,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 						[`_${filter}`]: [possibleValues, possibleValues],
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		case 'null':
@@ -80,6 +84,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 						[`_${filter}`]: true,
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		case 'in':
@@ -97,6 +102,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 							[`_${filter}`]: partialPossibleValues,
 						},
 						validatorFunction: getValidatorFunction(filter),
+						emptyAllowedFunction: getEmptyAllowedFunction(filter),
 					},
 				];
 			}
@@ -109,6 +115,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 						[`_${filter}`]: [possibleValues],
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		default:
@@ -233,4 +240,64 @@ const _nin = (inputValue: any, possibleValues: any): boolean => {
 		return true;
 	}
 	return false;
+};
+
+export const getEmptyAllowedFunction = (filter: ClientFilterOperator): FilterEmptyValidator => {
+	if (!filterOperatorList.includes(filter)) {
+		throw new Error(`Invalid filter operator for ${type}: ${filter}`);
+	}
+
+	switch (filter) {
+		case 'lt':
+			return empty_lt;
+		case 'gt':
+			return empty_gt;
+		case 'nbetween':
+			return empty_nbetween;
+		default:
+			return empty_invalid;
+	}
+};
+
+const empty_invalid = (_inputValue: any, _possibleValues: any): boolean => {
+	return false;
+};
+
+const empty_lt = (inputValue: any, possibleValues: any): boolean => {
+	if (Array.isArray(possibleValues)) {
+		for (const value of possibleValues) {
+			if (value < BigInt(inputValue)) {
+				return false;
+			}
+		}
+		return true;
+	} else {
+		return BigInt(inputValue) >= possibleValues;
+	}
+};
+
+const empty_gt = (inputValue: any, possibleValues: any): boolean => {
+	if (Array.isArray(possibleValues)) {
+		for (const value of possibleValues) {
+			if (value > BigInt(inputValue)) {
+				return false;
+			}
+		}
+		return true;
+	} else {
+		return BigInt(inputValue) <= possibleValues;
+	}
+};
+
+const empty_nbetween = (inputValue: any, possibleValues: any): boolean => {
+	if (Array.isArray(possibleValues)) {
+		for (const value of possibleValues) {
+			if (value < BigInt(inputValue[0]) || value > BigInt(inputValue[1])) {
+				return false;
+			}
+		}
+		return true;
+	} else {
+		return BigInt(inputValue[0]) >= possibleValues && BigInt(inputValue[1]) <= possibleValues;
+	}
 };

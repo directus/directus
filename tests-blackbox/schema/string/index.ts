@@ -1,6 +1,6 @@
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { ClientFilterOperator } from '@directus/shared/types';
-import { FilterValidator } from '@query/filter';
+import { FilterValidator, FilterEmptyValidator } from '@query/filter';
 import { GeneratedFilter } from '..';
 
 export const type = 'string';
@@ -30,6 +30,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 							[`_${filter}`]: value,
 						},
 						validatorFunction: getValidatorFunction(filter),
+						emptyAllowedFunction: getEmptyAllowedFunction(filter),
 					};
 				});
 			}
@@ -42,6 +43,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 						[`_${filter}`]: possibleValues,
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		case 'empty':
@@ -56,6 +58,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 						[`_${filter}`]: true,
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		case 'in':
@@ -73,6 +76,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 							[`_${filter}`]: partialPossibleValues,
 						},
 						validatorFunction: getValidatorFunction(filter),
+						emptyAllowedFunction: getEmptyAllowedFunction(filter),
 					},
 				];
 			}
@@ -85,6 +89,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 						[`_${filter}`]: [possibleValues],
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		default:
@@ -245,4 +250,34 @@ const _nin = (inputValue: any, possibleValues: any): boolean => {
 		return true;
 	}
 	return false;
+};
+
+export const getEmptyAllowedFunction = (filter: ClientFilterOperator): FilterEmptyValidator => {
+	if (!filterOperatorList.includes(filter)) {
+		throw new Error(`Invalid filter operator for ${type}: ${filter}`);
+	}
+
+	switch (filter) {
+		case 'empty':
+			return empty_empty;
+		default:
+			return empty_invalid;
+	}
+};
+
+const empty_invalid = (_inputValue: any, _possibleValues: any): boolean => {
+	return false;
+};
+
+const empty_empty = (_inputValue: any, possibleValues: any): boolean => {
+	if (Array.isArray(possibleValues)) {
+		for (const value of possibleValues) {
+			if (value === '') {
+				return false;
+			}
+		}
+		return true;
+	} else {
+		return possibleValues !== '';
+	}
 };

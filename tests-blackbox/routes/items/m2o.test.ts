@@ -3,7 +3,7 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem } from '@common/functions';
-import { CachedTestsSchema } from '@query/filter';
+import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
 import * as common from '@common/index';
 import {
 	collectionCountries,
@@ -58,8 +58,17 @@ const cachedSchema = common.PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
 	return acc;
 }, {} as CachedTestsSchema);
 
+const vendorSchemaValues: TestsSchemaVendorValues = {};
+
+beforeAll(async () => {
+	await seedDBValues(cachedSchema, vendorSchemaValues);
+}, 300000);
+
 describe('Seed Database Values', () => {
-	seedDBValues(cachedSchema);
+	it.each(vendors)('%s', async (vendor) => {
+		// Assert
+		expect(vendorSchemaValues[vendor]).toBeDefined();
+	});
 });
 
 describe.each(common.PRIMARY_KEY_TYPES.filter((e) => e === 'integer'))('/items', (pkType) => {
@@ -151,7 +160,7 @@ describe.each(common.PRIMARY_KEY_TYPES.filter((e) => e === 'integer'))('/items',
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						// Assert
-						expect(response.statusCode).toBe(500);
+						expect(response.statusCode).toBe(403);
 					});
 				});
 				describe('returns an error when an invalid table is used', () => {
@@ -253,7 +262,9 @@ describe.each(common.PRIMARY_KEY_TYPES.filter((e) => e === 'integer'))('/items',
 					path: `/items/${localCollectionCountries}`,
 					token: common.USER.ADMIN.TOKEN,
 				},
-				getTestsSchema(pkType)[localCollectionCountries]
+				localCollectionCountries,
+				getTestsSchema(pkType)[localCollectionCountries],
+				vendorSchemaValues
 			);
 
 			CheckQueryFilters(
@@ -262,7 +273,9 @@ describe.each(common.PRIMARY_KEY_TYPES.filter((e) => e === 'integer'))('/items',
 					path: `/items/${localCollectionStates}`,
 					token: common.USER.ADMIN.TOKEN,
 				},
-				getTestsSchema(pkType)[localCollectionStates]
+				localCollectionStates,
+				getTestsSchema(pkType)[localCollectionStates],
+				vendorSchemaValues
 			);
 
 			CheckQueryFilters(
@@ -271,7 +284,9 @@ describe.each(common.PRIMARY_KEY_TYPES.filter((e) => e === 'integer'))('/items',
 					path: `/items/${localCollectionCities}`,
 					token: common.USER.ADMIN.TOKEN,
 				},
-				getTestsSchema(pkType)[localCollectionCities]
+				localCollectionCities,
+				getTestsSchema(pkType)[localCollectionCities],
+				vendorSchemaValues
 			);
 		});
 

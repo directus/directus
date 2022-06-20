@@ -1,6 +1,6 @@
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { ClientFilterOperator } from '@directus/shared/types';
-import { FilterValidator } from '@query/filter';
+import { FilterValidator, FilterEmptyValidator } from '@query/filter';
 import { GeneratedFilter } from '..';
 
 export const type = 'json';
@@ -22,6 +22,7 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, _possibl
 						[`_${filter}`]: true,
 					},
 					validatorFunction: getValidatorFunction(filter),
+					emptyAllowedFunction: getEmptyAllowedFunction(filter),
 				},
 			];
 		default:
@@ -55,5 +56,20 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== undefined && inputValue !== null) {
 		return true;
 	}
+	return false;
+};
+
+export const getEmptyAllowedFunction = (filter: ClientFilterOperator): FilterEmptyValidator => {
+	if (!filterOperatorList.includes(filter)) {
+		throw new Error(`Invalid filter operator for ${type}: ${filter}`);
+	}
+
+	switch (filter) {
+		default:
+			return empty_invalid;
+	}
+};
+
+const empty_invalid = (_inputValue: any, _possibleValues: any): boolean => {
 	return false;
 };
