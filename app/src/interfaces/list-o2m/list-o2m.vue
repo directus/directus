@@ -210,6 +210,11 @@ function editItem(item: DisplayItem) {
 	const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 
 	newItem = false;
+	for (const entry in item) {
+		if (entry !== pkField) {
+			delete item[entry];
+		}
+	}
 	editsAtStart.value = item;
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
