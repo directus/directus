@@ -32,7 +32,6 @@ export type Panel = {
 	icon: string;
 	color: string;
 	note: string;
-	data?: Record<string, any>;
 	type: string;
 	position_x: number;
 	position_y: number;

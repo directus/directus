@@ -11,7 +11,7 @@
 			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
 		</template>
 
-		<template #actions>
+		<!-- <template #actions>
 			<template v-if="editMode">
 				<v-button
 					v-tooltip.bottom="t('clear_changes')"
@@ -70,7 +70,7 @@
 					<v-icon name="edit" />
 				</v-button>
 			</template>
-		</template>
+		</template> -->
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
@@ -82,18 +82,14 @@
 			<insights-navigation />
 		</template>
 
-		<v-workspace
-			:edit-mode="editMode"
-			:panels="panels"
-			:zoom-to-fit="zoomToFit"
-			:now="now"
-			@edit="editPanel"
+		<!-- @edit="editPanel"
 			@update="stagePanelEdits"
 			@move="movePanelID = $event"
 			@delete="deletePanel"
-			@duplicate="duplicatePanel"
-		>
-			<template #default="{ panel }">
+			@duplicate="duplicatePanel" -->
+
+		<v-workspace :edit-mode="editMode" :tiles="tiles" :zoom-to-fit="zoomToFit">
+			<!-- <template #default="{ panel }">
 				<v-progress-circular v-if="panel.loading" indeterminate />
 				<component
 					:is="`panel-${panel.type}`"
@@ -106,10 +102,10 @@
 					:now="now"
 					:data="panel.data"
 				/>
-			</template>
+			</template> -->
 		</v-workspace>
 
-		<router-view
+		<!-- <router-view
 			name="detail"
 			:dashboard-key="primaryKey"
 			:panel="panelKey ? rawPanels.find((panel) => panel.id === panelKey) : null"
@@ -163,7 +159,7 @@
 					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
-		</v-dialog>
+		</v-dialog> -->
 	</private-view>
 </template>
 
@@ -180,11 +176,12 @@ import { Panel, PanelQuery } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import camelCase from 'camelcase';
 import { mapKeys, merge, omit } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
 import { nanoid } from 'nanoid';
+import { AppTile } from '@/components/v-workspace-tile.vue';
 
 interface Props {
 	primaryKey: string;
@@ -203,72 +200,20 @@ const permissionsStore = usePermissionsStore();
 
 const { fullScreen } = toRefs(appStore);
 
-const editMode = ref(false);
-const saving = ref(false);
-const movePanelLoading = ref(false);
-
-const movePanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
-
-const movePanelID = ref<string | null>();
-
 const zoomToFit = ref(false);
 
 const updateAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_panels', 'update');
 });
 
-useShortcut('meta+s', () => {
-	saveChanges();
-});
+const editMode = ref(false);
 
-watch(editMode, (editModeEnabled) => {
-	if (editModeEnabled) {
-		zoomToFit.value = false;
-		window.onbeforeunload = () => '';
-	} else {
-		window.onbeforeunload = null;
-	}
-});
+const tiles = computed<AppTile[]>(() => {
+	const panels = insightsStore.getPanels(props.primaryKey);
 
-const currentDashboard = computed(() =>
-	insightsStore.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
-);
-
-const movePanelChoices = computed(() => {
-	return insightsStore.dashboards.filter((dashboard) => dashboard.id !== props.primaryKey);
-});
-
-const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
-const panelsToBeDeleted = ref<string[]>([]);
-
-const now = new Date();
-
-const rawPanels = computed(() => {
-	const savedPanels = (currentDashboard.value?.panels || []).filter(
-		(panel) => panelsToBeDeleted.value.includes(panel.id) === false
-	);
-
-	const raw = [
-		...savedPanels.map((panel) => {
-			const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
-
-			if (updates) {
-				return merge({}, panel, updates);
-			}
-
-			return panel;
-		}),
-		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')),
-	];
-
-	return raw;
-});
-
-const panels = computed(() => {
-	// We apply the coordinates first, as they're used in the next map
-	const withCoords = rawPanels.value.map((panel) => ({
+	const panelsWithCoordinates = panels.map((panel) => ({
 		...panel,
-		_coordinates: [
+		coordinates: [
 			[panel.position_x!, panel.position_y!],
 			[panel.position_x! + panel.width!, panel.position_y!],
 			[panel.position_x! + panel.width!, panel.position_y! + panel.height!],
@@ -276,243 +221,366 @@ const panels = computed(() => {
 		] as [number, number][],
 	}));
 
-	return withCoords.map((panel) => {
-		let topLeftIntersects = false;
-		let topRightIntersects = false;
-		let bottomRightIntersects = false;
-		let bottomLeftIntersects = false;
+	const tiles: AppTile[] = panelsWithCoordinates
+		.map((panel) => {
+			let topLeftIntersects = false;
+			let topRightIntersects = false;
+			let bottomRightIntersects = false;
+			let bottomLeftIntersects = false;
 
-		for (const otherPanel of withCoords) {
-			if (otherPanel.id === panel.id) continue;
+			for (const otherPanel of panelsWithCoordinates) {
+				if (otherPanel.id === panel.id) continue;
 
-			const borders = [
-				[otherPanel._coordinates[0], otherPanel._coordinates[1]],
-				[otherPanel._coordinates[1], otherPanel._coordinates[2]],
-				[otherPanel._coordinates[2], otherPanel._coordinates[3]],
-				[otherPanel._coordinates[3], otherPanel._coordinates[0]],
-			];
+				const borders = [
+					[otherPanel.coordinates[0], otherPanel.coordinates[1]],
+					[otherPanel.coordinates[1], otherPanel.coordinates[2]],
+					[otherPanel.coordinates[2], otherPanel.coordinates[3]],
+					[otherPanel.coordinates[3], otherPanel.coordinates[0]],
+				];
 
-			if (topLeftIntersects === false)
-				topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[0], p1, p2));
-			if (topRightIntersects === false)
-				topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[1], p1, p2));
-			if (bottomRightIntersects === false)
-				bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[2], p1, p2));
-			if (bottomLeftIntersects === false)
-				bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[3], p1, p2));
-		}
-
-		const panelType = panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type);
-		let query: PanelQuery | PanelQuery[] = panelType?.query?.(panel.options ?? {});
-
-		let data;
-		let loading;
-		let error;
-
-		if (query) {
-			if (Array.isArray(query)) {
-				query = query.map((q) => addQueryKey(q));
-				data = query.map(({ key }) => insightsStore.queries[props.primaryKey]?.data[key]) ?? null;
-				loading = query.some(({ key }) => insightsStore.queries[props.primaryKey]?.loading.includes(key)) ?? false;
-				error =
-					insightsStore.queries[props.primaryKey]?.errors.find((err) =>
-						query.map(({ key }) => key).includes(err.key)
-					) ?? null;
-			} else {
-				query = addQueryKey(query);
-				data = insightsStore.queries[props.primaryKey]?.data[query.key] ?? null;
-				loading = insightsStore.queries[props.primaryKey]?.loading.includes(query.key) ?? false;
-				error = insightsStore.queries[props.primaryKey]?.errors.find(({ key }) => key === query.key) ?? null;
+				if (topLeftIntersects === false)
+					topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[0], p1, p2));
+				if (topRightIntersects === false)
+					topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[1], p1, p2));
+				if (bottomRightIntersects === false)
+					bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[2], p1, p2));
+				if (bottomLeftIntersects === false)
+					bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[3], p1, p2));
 			}
-		}
 
-		return mapKeys(
-			{
-				...panel,
+			const panelType = unref(panelsInfo).find((panelType) => panelType.id === panel.type);
+
+			const tile: AppTile = {
+				id: panel.id,
 				x: panel.position_x,
 				y: panel.position_y,
-				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
+				width: panel.width,
+				height: panel.height,
+				name: panel.name,
 				icon: panel.icon ?? panelType?.icon,
-				loading,
-				query,
-				data,
-				error,
-			},
-			(_value, key) => camelCase(key)
-		);
-
-		function addQueryKey(query: Record<string, any>) {
-			return {
-				key: getSimpleHash(panel.id + JSON.stringify(query)),
-				...query,
+				color: panel.color,
+				note: panel.note,
+				showHeader: panel.show_header,
+				minWidth: panelType?.minWidth,
+				minHeight: panelType?.minHeight,
+				draggable: true,
+				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
 			};
-		}
-	});
+
+			return tile;
+		})
+		.filter((t) => t);
+
+	return tiles;
 });
 
 watch(
-	panels,
+	() => props.primaryKey,
 	() => {
-		const queries: PanelQuery[] = [];
-
-		for (const panel of panels.value) {
-			if (!panel.query) continue;
-			queries.push(...toArray(panel.query));
-		}
-
-		insightsStore.updateQueries(props.primaryKey, queries);
-	},
-	{ immediate: true }
+		insightsStore.refresh(props.primaryKey);
+	}
 );
 
-const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
+// const saving = ref(false);
 
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { ignorePrefix: '/insights' });
+// const movePanelLoading = ref(false);
+// const movePanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
+// const movePanelID = ref<string | null>();
 
-const confirmCancel = ref(false);
+// useShortcut('meta+s', () => {
+// 	saveChanges();
+// });
 
-function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
-	const key = event.id ?? props.panelKey;
-
-	if (key === '+') {
-		stagedPanels.value = [
-			...stagedPanels.value,
-			{
-				id: `_${nanoid()}`,
-				dashboard: props.primaryKey,
-				...event.edits,
-			},
-		];
+watch(editMode, (editModeEnabled) => {
+	if (editModeEnabled) {
+		zoomToFit.value = false;
+		// window.onbeforeunload = () => '';
 	} else {
-		if (stagedPanels.value.some((panel) => panel.id === key)) {
-			stagedPanels.value = stagedPanels.value.map((panel) => {
-				if (panel.id === key) {
-					return merge({ id: key, dashboard: props.primaryKey }, panel, event.edits);
-				}
-
-				return panel;
-			});
-		} else {
-			stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...event.edits }];
-		}
+		// window.onbeforeunload = null;
 	}
-}
+});
 
-function stageConfiguration(edits: Partial<Panel>) {
-	stagePanelEdits({ edits });
-	router.replace(`/insights/${props.primaryKey}`);
-}
+const currentDashboard = computed(() => insightsStore.getDashboard(props.primaryKey));
 
-async function saveChanges() {
-	if (!currentDashboard.value) return;
+const movePanelChoices = computed(() => {
+	return insightsStore.dashboards.filter((dashboard) => dashboard.id !== props.primaryKey);
+});
 
-	if (stagedPanels.value.length === 0 && panelsToBeDeleted.value.length === 0) {
-		editMode.value = false;
-		return;
-	}
+// const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
+// const panelsToBeDeleted = ref<string[]>([]);
 
-	saving.value = true;
+// // const now = new Date();
 
-	const currentIDs = currentDashboard.value.panels.map((panel) => panel.id);
+// const rawPanels = computed(() => {
+// 	const savedPanels = (currentDashboard.value?.panels || []).filter(
+// 		(panel) => panelsToBeDeleted.value.includes(panel.id) === false
+// 	);
 
-	const updatedPanels = [
-		...currentIDs.map((id) => {
-			return stagedPanels.value.find((panel) => panel.id === id) || id;
-		}),
-		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
-	];
+// 	const raw = [
+// 		...savedPanels.map((panel) => {
+// 			const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
 
-	try {
-		if (stagedPanels.value.length > 0) {
-			await api.patch(`/dashboards/${props.primaryKey}`, {
-				panels: updatedPanels,
-			});
-		}
+// 			if (updates) {
+// 				return merge({}, panel, updates);
+// 			}
 
-		if (panelsToBeDeleted.value.length > 0) {
-			await api.delete(`/panels`, { data: panelsToBeDeleted.value });
-		}
+// 			return panel;
+// 		}),
+// 		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')),
+// 	];
 
-		await insightsStore.hydrate();
+// 	return raw;
+// });
 
-		stagedPanels.value = [];
-		panelsToBeDeleted.value = [];
-		editMode.value = false;
-	} catch (err) {
-		unexpectedError(err);
-	} finally {
-		saving.value = false;
-	}
-}
+// const panels = computed(() => {
+// 	// We apply the coordinates first, as they're used in the next map
+// 	const withCoords = rawPanels.value.map((panel) => ({
+// 		...panel,
+// 		_coordinates: [
+// 			[panel.position_x!, panel.position_y!],
+// 			[panel.position_x! + panel.width!, panel.position_y!],
+// 			[panel.position_x! + panel.width!, panel.position_y! + panel.height!],
+// 			[panel.position_x!, panel.position_y! + panel.height!],
+// 		] as [number, number][],
+// 	}));
 
-async function deletePanel(id: string) {
-	if (!currentDashboard.value) return;
+// 	return withCoords.map((panel) => {
+// 		let topLeftIntersects = false;
+// 		let topRightIntersects = false;
+// 		let bottomRightIntersects = false;
+// 		let bottomLeftIntersects = false;
 
-	stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
-	if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
-}
+// 		for (const otherPanel of withCoords) {
+// 			if (otherPanel.id === panel.id) continue;
 
-function attemptCancelChanges(): void {
-	if (hasEdits.value) {
-		confirmCancel.value = true;
-	} else {
-		cancelChanges();
-	}
-}
+// 			const borders = [
+// 				[otherPanel._coordinates[0], otherPanel._coordinates[1]],
+// 				[otherPanel._coordinates[1], otherPanel._coordinates[2]],
+// 				[otherPanel._coordinates[2], otherPanel._coordinates[3]],
+// 				[otherPanel._coordinates[3], otherPanel._coordinates[0]],
+// 			];
 
-function cancelChanges() {
-	confirmCancel.value = false;
-	stagedPanels.value = [];
-	panelsToBeDeleted.value = [];
-	editMode.value = false;
-}
+// 			if (topLeftIntersects === false)
+// 				topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[0], p1, p2));
+// 			if (topRightIntersects === false)
+// 				topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[1], p1, p2));
+// 			if (bottomRightIntersects === false)
+// 				bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[2], p1, p2));
+// 			if (bottomLeftIntersects === false)
+// 				bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[3], p1, p2));
+// 		}
 
-function discardAndLeave() {
-	if (!leaveTo.value) return;
-	cancelChanges();
-	confirmLeave.value = false;
-	router.push(leaveTo.value);
-}
+// 		const panelType = panelsInfo.value.find((panelConfig) => panelConfig.id === panel.type);
+// 		let query: PanelQuery | PanelQuery[] = panelType?.query?.(panel.options ?? {});
 
-function duplicatePanel(panel: Panel) {
-	const newPanel = omit(merge({}, panel), 'id');
-	newPanel.position_x = newPanel.position_x + 2;
-	newPanel.position_y = newPanel.position_y + 2;
-	stagePanelEdits({ edits: newPanel, id: '+' });
-}
+// 		let data;
+// 		let loading;
+// 		let error;
 
-function editPanel(panel: Panel) {
-	router.push(`/insights/${panel.dashboard}/${panel.id}`);
-}
+// 		if (query) {
+// 			if (Array.isArray(query)) {
+// 				query = query.map((q) => addQueryKey(q));
+// 				data = query.map(({ key }) => insightsStore.queries[props.primaryKey]?.data[key]) ?? null;
+// 				loading = query.some(({ key }) => insightsStore.queries[props.primaryKey]?.loading.includes(key)) ?? false;
+// 				error =
+// 					insightsStore.queries[props.primaryKey]?.errors.find((err) =>
+// 						query.map(({ key }) => key).includes(err.key)
+// 					) ?? null;
+// 			} else {
+// 				query = addQueryKey(query);
+// 				data = insightsStore.queries[props.primaryKey]?.data[query.key] ?? null;
+// 				loading = insightsStore.queries[props.primaryKey]?.loading.includes(query.key) ?? false;
+// 				error = insightsStore.queries[props.primaryKey]?.errors.find(({ key }) => key === query.key) ?? null;
+// 			}
+// 		}
 
-function toggleFullScreen() {
-	fullScreen.value = !fullScreen.value;
-}
+// 		return mapKeys(
+// 			{
+// 				...panel,
+// 				x: panel.position_x,
+// 				y: panel.position_y,
+// 				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
+// 				icon: panel.icon ?? panelType?.icon,
+// 				loading,
+// 				query,
+// 				data,
+// 				error,
+// 			},
+// 			(_value, key) => camelCase(key)
+// 		);
 
-function toggleZoomToFit() {
-	zoomToFit.value = !zoomToFit.value;
-}
+// 		function addQueryKey(query: Record<string, any>) {
+// 			return {
+// 				key: getSimpleHash(panel.id + JSON.stringify(query)),
+// 				...query,
+// 			};
+// 		}
+// 	});
+// });
 
-async function movePanel() {
-	movePanelLoading.value = true;
+// watch(
+// 	panels,
+// 	() => {
+// 		const queries: PanelQuery[] = [];
 
-	const currentPanel = panels.value.find((panel) => panel.id === movePanelID.value);
+// 		for (const panel of panels.value) {
+// 			if (!panel.query) continue;
+// 			queries.push(...toArray(panel.query));
+// 		}
 
-	try {
-		await api.post(`/panels`, {
-			...omit(currentPanel, ['id']),
-			dashboard: movePanelTo.value,
-		});
+// 		insightsStore.updateQueries(props.primaryKey, queries);
+// 	},
+// 	{ immediate: true }
+// );
 
-		await insightsStore.hydrate();
+// const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
 
-		movePanelID.value = null;
-	} catch (err) {
-		unexpectedError(err);
-	} finally {
-		movePanelLoading.value = false;
-	}
-}
+// const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { ignorePrefix: '/insights' });
+
+// const confirmCancel = ref(false);
+
+// function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
+// 	const key = event.id ?? props.panelKey;
+
+// 	if (key === '+') {
+// 		stagedPanels.value = [
+// 			...stagedPanels.value,
+// 			{
+// 				id: `_${nanoid()}`,
+// 				dashboard: props.primaryKey,
+// 				...event.edits,
+// 			},
+// 		];
+// 	} else {
+// 		if (stagedPanels.value.some((panel) => panel.id === key)) {
+// 			stagedPanels.value = stagedPanels.value.map((panel) => {
+// 				if (panel.id === key) {
+// 					return merge({ id: key, dashboard: props.primaryKey }, panel, event.edits);
+// 				}
+
+// 				return panel;
+// 			});
+// 		} else {
+// 			stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...event.edits }];
+// 		}
+// 	}
+// }
+
+// function stageConfiguration(edits: Partial<Panel>) {
+// 	stagePanelEdits({ edits });
+// 	router.replace(`/insights/${props.primaryKey}`);
+// }
+
+// async function saveChanges() {
+// 	if (!currentDashboard.value) return;
+
+// 	if (stagedPanels.value.length === 0 && panelsToBeDeleted.value.length === 0) {
+// 		editMode.value = false;
+// 		return;
+// 	}
+
+// 	saving.value = true;
+
+// 	const currentIDs = currentDashboard.value.panels.map((panel) => panel.id);
+
+// 	const updatedPanels = [
+// 		...currentIDs.map((id) => {
+// 			return stagedPanels.value.find((panel) => panel.id === id) || id;
+// 		}),
+// 		...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
+// 	];
+
+// 	try {
+// 		if (stagedPanels.value.length > 0) {
+// 			await api.patch(`/dashboards/${props.primaryKey}`, {
+// 				panels: updatedPanels,
+// 			});
+// 		}
+
+// 		if (panelsToBeDeleted.value.length > 0) {
+// 			await api.delete(`/panels`, { data: panelsToBeDeleted.value });
+// 		}
+
+// 		await insightsStore.hydrate();
+
+// 		stagedPanels.value = [];
+// 		panelsToBeDeleted.value = [];
+// 		editMode.value = false;
+// 	} catch (err) {
+// 		unexpectedError(err);
+// 	} finally {
+// 		saving.value = false;
+// 	}
+// }
+
+// async function deletePanel(id: string) {
+// 	if (!currentDashboard.value) return;
+
+// 	stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
+// 	if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
+// }
+
+// function attemptCancelChanges(): void {
+// 	if (hasEdits.value) {
+// 		confirmCancel.value = true;
+// 	} else {
+// 		cancelChanges();
+// 	}
+// }
+
+// function cancelChanges() {
+// 	confirmCancel.value = false;
+// 	stagedPanels.value = [];
+// 	panelsToBeDeleted.value = [];
+// 	editMode.value = false;
+// }
+
+// function discardAndLeave() {
+// 	if (!leaveTo.value) return;
+// 	cancelChanges();
+// 	confirmLeave.value = false;
+// 	router.push(leaveTo.value);
+// }
+
+// function duplicatePanel(panel: Panel) {
+// 	const newPanel = omit(merge({}, panel), 'id');
+// 	newPanel.position_x = newPanel.position_x + 2;
+// 	newPanel.position_y = newPanel.position_y + 2;
+// 	stagePanelEdits({ edits: newPanel, id: '+' });
+// }
+
+// function editPanel(panel: Panel) {
+// 	router.push(`/insights/${panel.dashboard}/${panel.id}`);
+// }
+
+// function toggleFullScreen() {
+// 	fullScreen.value = !fullScreen.value;
+// }
+
+// function toggleZoomToFit() {
+// 	zoomToFit.value = !zoomToFit.value;
+// }
+
+// async function movePanel() {
+// 	movePanelLoading.value = true;
+
+// 	const currentPanel = panels.value.find((panel) => panel.id === movePanelID.value);
+
+// 	try {
+// 		await api.post(`/panels`, {
+// 			...omit(currentPanel, ['id']),
+// 			dashboard: movePanelTo.value,
+// 		});
+
+// 		await insightsStore.hydrate();
+
+// 		movePanelID.value = null;
+// 	} catch (err) {
+// 		unexpectedError(err);
+// 	} finally {
+// 		movePanelLoading.value = false;
+// 	}
+// }
 </script>
 
 <style scoped>
