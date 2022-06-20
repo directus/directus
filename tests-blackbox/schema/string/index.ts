@@ -260,6 +260,8 @@ export const getEmptyAllowedFunction = (filter: ClientFilterOperator): FilterEmp
 	switch (filter) {
 		case 'empty':
 			return empty_empty;
+		case 'null':
+			return empty_null;
 		default:
 			return empty_invalid;
 	}
@@ -279,5 +281,18 @@ const empty_empty = (_inputValue: any, possibleValues: any): boolean => {
 		return true;
 	} else {
 		return possibleValues !== '';
+	}
+};
+
+const empty_null = (_inputValue: any, possibleValues: any): boolean => {
+	if (Array.isArray(possibleValues)) {
+		for (const value of possibleValues) {
+			if (value === null) {
+				return false;
+			}
+		}
+		return true;
+	} else {
+		return possibleValues !== null;
 	}
 };
