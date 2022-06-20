@@ -57,20 +57,7 @@ export function getFilterOperatorsForType(
 		case 'dateTime':
 		case 'date':
 		case 'time':
-			return [
-				'eq',
-				'neq',
-				'lt',
-				'lte',
-				'gt',
-				'gte',
-				'between',
-				'nbetween',
-				'null',
-				'nnull',
-				'in',
-				'nin',
-			];
+			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
 
 		case 'geometry':
 			return ['null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
