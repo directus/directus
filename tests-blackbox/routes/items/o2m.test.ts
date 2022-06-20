@@ -71,7 +71,7 @@ describe('Seed Database Values', () => {
 	});
 });
 
-describe.each(common.PRIMARY_KEY_TYPES.filter((e) => e === 'integer'))('/items', (pkType) => {
+describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 	const localCollectionCountries = `${collectionCountries}_${pkType}`;
 	const localCollectionStates = `${collectionStates}_${pkType}`;
 	const localCollectionCities = `${collectionCities}_${pkType}`;
