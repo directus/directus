@@ -1,7 +1,5 @@
 # Relationships
 
-# Relationships
-
 > As you might have guessed, relationships are a crucial part of any relational database. Directus supports all standard
 > relationship types, as well as a few more _compound_ types that offer greater flexibility.
 
