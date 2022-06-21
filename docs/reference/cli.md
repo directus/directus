@@ -35,8 +35,8 @@ Kubernetes configuration, or a similar approach on
 ::: tip First User
 
 You can use the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables to automatically provision the first user on
-first creation using the `bootstrap` command. See [Environment Variables](/configuration/config-options/#general) for
-more information.
+first creation using the `bootstrap` command. See [Environment Variables](/self-hosted/config-options/#general) for more
+information.
 
 :::
 

@@ -1,13 +1,13 @@
-## More Resources
+# Resources
 
-### Cloud
+## Cloud
 
 - **[Directus Cloud](https://directus.cloud)** — The best way to get your Project up and running.
 - **[Enterprise Cloud](https://directus.io/contact)** — Custom-tailored solutions for industrial scale projects.
 - **[Cloud Documentation](/cloud/overview/)** — Docs for Directus cloud.
 - **[System Status](https://status.directus.cloud)** — Up-to-date information on our various cloud systems.
 
-### Developer Resources
+## Developer Resources
 
 - **[GitHub](https://github.com/directus/directus)** — The open-source repository and version control.
 - **[NPM Package](https://www.npmjs.com/package/directus)** — The official Directus node package.
@@ -15,7 +15,7 @@
 - **[Documentation](https://docs.directus.io)** — Docs for the most recent version of Directus.
 - **[Crowdin](https://locales.directus.io/)** — Service for managing the App's many language translations.
 
-### Community
+## Community
 
 - **[YouTube](https://www.youtube.com/c/DirectusVideos)** — Checkout our channel with video tutorials and feature
   overviews.

@@ -269,7 +269,7 @@ await directus.auth.refresh();
 If you're developing locally, you might not be able to refresh your auth token automatically in all browsers. This is
 because the default auth configuration requires secure cookies to be set, and not all browsers allow this for localhost.
 You can use a browser which does support this such as Firefox, or
-[disable secure cookies](/configuration/config-options/#security).
+[disable secure cookies](/self-hosted/config-options/#security).
 
 :::
 
