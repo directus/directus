@@ -1725,6 +1725,9 @@ interfaces:
     regenerate: Regenerate Token
     generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
     remove_token: Remove Token
+  system-raw-editor:
+    system-raw-editor: Raw Editor
+    description: Allow entering of raw or mustache templating values
 displays:
   translations:
     translations: Translations

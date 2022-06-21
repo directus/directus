@@ -30,10 +30,9 @@
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
-		<interface-input
+		<interface-system-raw-editor
 			v-else-if="rawEditorEnabled && rawEditorActive"
 			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
-			:placeholder="t('raw_editor_placeholder')"
 			@input="$emit('update:modelValue', $event)"
 		/>
 
