@@ -21,13 +21,28 @@ export default defineOperationApp({
 				interface: 'input-code',
 				options: {
 					language: 'json',
-					placeholder: `{
-	"$trigger": {
-		"category": {
-			"_eq": "Example"
-		}
-	}
-}`,
+					placeholder: JSON.stringify(
+						{
+							$trigger: {
+								category: {
+									_eq: 'Example',
+								},
+							},
+						},
+						null,
+						2
+					),
+					template: JSON.stringify(
+						{
+							$trigger: {
+								category: {
+									_eq: 'Example',
+								},
+							},
+						},
+						null,
+						2
+					),
 				},
 			},
 		},

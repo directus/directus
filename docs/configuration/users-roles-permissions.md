@@ -132,7 +132,7 @@ _action_.
 
 ### Read (Custom Access)
 
-5. **Item Permissions** control which items can be read, as defined by the [Filter Rules](/configuration/filter-rules)
+5. **Item Permissions** control which items can be read, as defined by the [Filter Rules](/reference/filter-rules)
    entered.
 6. **Field Permissions** control which fields can be read. Fields are individually toggled.
 
