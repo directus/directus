@@ -315,6 +315,8 @@ primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
+toggle_raw_editor: Toggle Raw Editor
+raw_editor_placeholder: Enter a value (or variables in brackets)...
 raw_value: Raw value
 copy_raw_value: Copy Raw Value
 copy_raw_value_success: Copied
