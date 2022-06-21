@@ -102,7 +102,7 @@ function generateInteger(options: OptionsSeedGenerateInteger) {
 	const values = [];
 
 	if (options.incremental) {
-		const randomStartValue = Math.floor((random() * Number.MAX_SAFE_INTEGER) / 2);
+		const randomStartValue = random.int32();
 
 		for (let i = 0; i < options.quantity; i++) {
 			if (options.startsAt) {
@@ -114,9 +114,9 @@ function generateInteger(options: OptionsSeedGenerateInteger) {
 	} else {
 		for (let i = 0; i < options.quantity; i++) {
 			if (options.startsAt) {
-				values.push(Math.floor((random() * Number.MAX_SAFE_INTEGER) / 2) + options.startsAt + i);
+				values.push(random.int32() + options.startsAt + i);
 			} else {
-				values.push(Math.floor((random() * Number.MAX_SAFE_INTEGER) / 2) + i);
+				values.push(random.int32() + i);
 			}
 		}
 	}
