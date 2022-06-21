@@ -1,17 +1,18 @@
 import api from '@/api';
-import { unref } from 'vue';
+import { getPanels } from '@/panels';
 import { usePermissionsStore } from '@/stores';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { Panel, PanelQuery, Item } from '@directus/shared/types';
+import { Item, Panel } from '@directus/shared/types';
+import { getSimpleHash, toArray } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { assign, difference, mapKeys, uniq, groupBy, omit, pull } from 'lodash';
-import { defineStore, acceptHMRUpdate } from 'pinia';
+import { assign, mapKeys, pull, uniq, omit } from 'lodash';
+import { acceptHMRUpdate, defineStore } from 'pinia';
+import { unref } from 'vue';
 import { Dashboard } from '../types';
-import { getPanels } from '@/panels';
-import { toArray, getSimpleHash } from '@directus/shared/utils';
 
 type CreatePanel = Partial<Panel> & Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y'>;
+
+const MAX_CACHE_SIZE = 3; // Max number of dashboards to keep in cache at a time
 
 export const useInsightsStore = defineStore({
 	id: 'insightsStore',
@@ -28,6 +29,8 @@ export const useInsightsStore = defineStore({
 			update: [],
 			delete: [],
 		} as { create: CreatePanel[]; update: Partial<Panel>[]; delete: string[] },
+
+		lastLoaded: [] as string[], // Last n dashboards that were loaded into data cache
 	}),
 	actions: {
 		async hydrate() {
@@ -90,11 +93,25 @@ export const useInsightsStore = defineStore({
 		async refresh(dashboard: string) {
 			const panels = this.panels.filter((panel) => panel.dashboard === dashboard);
 			this.loadPanelData(panels);
+
+			if (this.lastLoaded.includes(dashboard) === false) {
+				this.lastLoaded.push(dashboard);
+
+				if (this.lastLoaded.length > MAX_CACHE_SIZE) {
+					const removed = this.lastLoaded.shift();
+					const removedPanels = this.panels.filter((panel) => panel.dashboard === removed).map(({ id }) => id);
+					this.data = omit(this.data, ...removedPanels);
+				}
+			}
+
+			/*
+			 * Clear all caches on moving outside of insights
+			 * Debug slow render of dashboard
+			 * Async/defer render time-series
+			 */
 		},
 		async loadPanelData(panels: Panel | Panel[]) {
 			panels = toArray(panels);
-
-			this.loading = uniq([...this.loading, ...panels.map(({ id }) => id)]);
 
 			const queries = new Map();
 
@@ -108,6 +125,8 @@ export const useInsightsStore = defineStore({
 					queries.set(key, { panel: panel.id, collection, query, key, index, length: toArray(req).length });
 				});
 			}
+
+			this.loading = uniq([...this.loading, ...Array.from(queries.values()).map(({ panel }) => panel)]);
 
 			const gqlString = queryToGqlString(
 				Array.from(queries.values())
@@ -154,7 +173,7 @@ export const useInsightsStore = defineStore({
 			} catch (err) {
 				// Retry the broken query panels
 			} finally {
-				this.loading = pull(this.loading, ...panels.map(({ id }) => id));
+				this.loading = pull(this.loading, ...Array.from(queries.values()).map(({ panel }) => panel));
 			}
 		},
 		prepareQuery(panel: Panel) {

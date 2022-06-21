@@ -101,8 +101,8 @@ watch(
 		() => props.showYAxis,
 	],
 	() => {
-		setupChart();
 		chart.value?.destroy();
+		setupChart();
 	},
 	{ deep: true }
 );

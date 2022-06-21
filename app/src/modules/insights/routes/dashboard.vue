@@ -89,20 +89,20 @@
 			@duplicate="duplicatePanel" -->
 
 		<v-workspace :edit-mode="editMode" :tiles="tiles" :zoom-to-fit="zoomToFit">
-			<!-- <template #default="{ panel }">
-				<v-progress-circular v-if="panel.loading" indeterminate />
+			<template #default="{ tile }">
+				<v-progress-circular v-if="loading.includes(tile.id) && !data[tile.id]" indeterminate />
 				<component
-					:is="`panel-${panel.type}`"
+					:is="`panel-${tile.data.type}`"
 					v-else
-					v-bind="panel.options"
-					:id="panel.id"
-					:show-header="panel.showHeader"
-					:height="panel.height"
-					:width="panel.width"
+					v-bind="tile.data.options"
+					:id="tile.id"
+					:show-header="tile.showHeader"
+					:height="tile.height"
+					:width="tile.width"
 					:now="now"
-					:data="panel.data"
+					:data="data[tile.id]"
 				/>
-			</template> -->
+			</template>
 		</v-workspace>
 
 		<!-- <router-view
@@ -199,12 +199,15 @@ const appStore = useAppStore();
 const permissionsStore = usePermissionsStore();
 
 const { fullScreen } = toRefs(appStore);
+const { loading, errors, data } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
 
 const updateAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_panels', 'update');
 });
+
+const now = new Date();
 
 const editMode = ref(false);
 
@@ -265,6 +268,10 @@ const tiles = computed<AppTile[]>(() => {
 				minHeight: panelType?.minHeight,
 				draggable: true,
 				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
+				data: {
+					options: panel.options,
+					type: panel.type,
+				},
 			};
 
 			return tile;
