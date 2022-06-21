@@ -2,7 +2,7 @@ import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
 import knex, { Knex } from 'knex';
-import { find, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { spawn, ChildProcess } from 'child_process';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { validateDateDifference } from '@utils/validate-date-difference';
@@ -11,7 +11,6 @@ import * as common from '@common/index';
 const collectionName = 'schema_timezone_tests';
 
 type SchemaTimezoneTypesObject = {
-	id: number;
 	date: string;
 	time?: string;
 	datetime: string;
@@ -40,37 +39,24 @@ describe('schema', () => {
 		const hour = i < 10 ? '0' + i : String(i);
 		sampleDates.push(
 			{
-				id: 1 + i * 3,
 				date: `2022-01-05`,
 				time: `${hour}:11:11`,
 				datetime: `2022-01-05T${hour}:11:11`,
 				timestamp: `2022-01-05T${hour}:11:11-01:00`,
 			},
 			{
-				id: 2 + i * 3,
 				date: `2022-01-10`,
 				time: `${hour}:22:22`,
 				datetime: `2022-01-10T${hour}:22:22`,
 				timestamp: `2022-01-10T${hour}:22:22Z`,
 			},
 			{
-				id: 3 + i * 3,
 				date: `2022-01-15`,
 				time: `${hour}:33:33`,
 				datetime: `2022-01-15T${hour}:33:33`,
 				timestamp: `2022-01-15T${hour}:33:33+02:00`,
 			}
 		);
-	}
-
-	const sampleDatesAmerica = cloneDeep(sampleDates);
-	for (const date of sampleDatesAmerica) {
-		date.id += sampleDatesAmerica.length;
-	}
-
-	const sampleDatesAsia = cloneDeep(sampleDatesAmerica);
-	for (const date of sampleDatesAsia) {
-		date.id += sampleDatesAsia.length;
 	}
 
 	beforeAll(async () => {
@@ -123,9 +109,7 @@ describe('schema', () => {
 				expect(response.body.data.length).toBe(sampleDates.length);
 
 				for (let index = 0; index < sampleDates.length; index++) {
-					const responseObj = find(response.body.data, (o) => {
-						return o.id === sampleDates[index]!.id;
-					}) as SchemaTimezoneTypesResponse;
+					const responseObj = response.body.data[index] as SchemaTimezoneTypesResponse;
 
 					if (vendor === 'sqlite3') {
 						// Dates are saved in milliseconds at 00:00:00
@@ -176,17 +160,15 @@ describe('schema', () => {
 				const americanTzOffset = currentTzOffset !== 180 ? 180 : 360;
 
 				const response2 = await request(getUrl(vendor))
-					.get(`/items/${collectionName}?fields=*&offset=${sampleDatesAmerica.length}`)
+					.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length}`)
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
-				expect(response2.body.data.length).toBe(sampleDatesAmerica.length);
+				expect(response2.body.data.length).toBe(sampleDates.length);
 
-				for (let index = 0; index < sampleDatesAmerica.length; index++) {
-					const responseObj = find(response2.body.data, (o) => {
-						return o.id === sampleDatesAmerica[index]!.id;
-					}) as SchemaTimezoneTypesResponse;
+				for (let index = 0; index < sampleDates.length; index++) {
+					const responseObj = response.body.data[index] as SchemaTimezoneTypesResponse;
 
 					if (vendor === 'sqlite3') {
 						// Dates are saved in milliseconds at 00:00:00
@@ -203,7 +185,7 @@ describe('schema', () => {
 						expect(responseObj.time).toBe(sampleDates[index]!.time);
 						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
 						const dateCreated = new Date(responseObj.date_created);
 						expect(dateCreated.toISOString()).toBe(
@@ -211,10 +193,10 @@ describe('schema', () => {
 						);
 						continue;
 					} else if (vendor === 'oracle') {
-						expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
-						expect(responseObj.datetime).toBe(sampleDatesAmerica[index]!.datetime);
+						expect(responseObj.date).toBe(sampleDates[index]!.date);
+						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
 						const dateCreated = new Date(responseObj.date_created);
 						expect(dateCreated.toISOString()).toBe(
@@ -223,11 +205,11 @@ describe('schema', () => {
 						continue;
 					}
 
-					expect(responseObj.date).toBe(sampleDatesAmerica[index]!.date);
-					expect(responseObj.time).toBe(sampleDatesAmerica[index]!.time);
-					expect(responseObj.datetime).toBe(sampleDatesAmerica[index]!.datetime);
+					expect(responseObj.date).toBe(sampleDates[index]!.date);
+					expect(responseObj.time).toBe(sampleDates[index]!.time);
+					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
-						new Date(sampleDatesAmerica[index]!.timestamp).toISOString().substring(0, 19)
+						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 					);
 					const dateCreated = new Date(responseObj.date_created);
 					expect(dateCreated.toISOString()).toBe(
@@ -241,7 +223,7 @@ describe('schema', () => {
 			it.each(vendors)(
 				'%s',
 				async (vendor) => {
-					const dates = cloneDeep(sampleDatesAsia);
+					const dates = cloneDeep(sampleDates);
 
 					if (vendor === 'oracle') {
 						for (const date of dates) {
@@ -261,23 +243,21 @@ describe('schema', () => {
 					const insertionEndTimestamp = new Date();
 
 					const response = await request(getUrl(vendor))
-						.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length + sampleDatesAmerica.length}`)
+						.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length * 2}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
-					expect(response.body.data.length).toBe(sampleDatesAsia.length);
+					expect(response.body.data.length).toBe(sampleDates.length);
 
-					for (let index = 0; index < sampleDatesAsia.length; index++) {
-						const responseObj = find(response.body.data, (o) => {
-							return o.id === sampleDatesAsia[index]!.id;
-						}) as SchemaTimezoneTypesResponse;
+					for (let index = 0; index < sampleDates.length; index++) {
+						const responseObj = response.body.data[index] as SchemaTimezoneTypesResponse;
 
 						if (vendor === 'oracle') {
-							expect(responseObj.date).toBe(sampleDatesAsia[index]!.date);
-							expect(responseObj.datetime).toBe(sampleDatesAsia[index]!.datetime);
+							expect(responseObj.date).toBe(sampleDates[index]!.date);
+							expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 							expect(responseObj.timestamp.substring(0, 19)).toBe(
-								new Date(sampleDatesAsia[index]!.timestamp).toISOString().substring(0, 19)
+								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 							);
 							const dateCreated = new Date(responseObj.date_created);
 							expect(dateCreated.toISOString()).toBe(
@@ -291,11 +271,11 @@ describe('schema', () => {
 							continue;
 						}
 
-						expect(responseObj.date).toBe(sampleDatesAsia[index]!.date);
-						expect(responseObj.time).toBe(sampleDatesAsia[index]!.time);
-						expect(responseObj.datetime).toBe(sampleDatesAsia[index]!.datetime);
+						expect(responseObj.date).toBe(sampleDates[index]!.date);
+						expect(responseObj.time).toBe(sampleDates[index]!.time);
+						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDatesAsia[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
 						const dateCreated = new Date(responseObj.date_created);
 						expect(dateCreated.toISOString()).toBe(
@@ -315,13 +295,19 @@ describe('schema', () => {
 		describe('stores the correct timezone data when updated', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				const payload = {
-					date: sampleDatesAsia[0]!.date,
+					date: sampleDates[0]!.date,
 				};
+
+				const existingDataResponse = await request(getUrl(vendor))
+					.get(`/items/${collectionName}?fields=*&limit=1&offset=${sampleDates.length * 2}`)
+					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
 
 				const updateStartTimestamp = new Date();
 
 				await request(getUrl(vendor))
-					.patch(`/items/${collectionName}/${sampleDatesAsia[0]!.id}`)
+					.patch(`/items/${collectionName}/${existingDataResponse.body.data[0].id}`)
 					.send(payload)
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
@@ -330,14 +316,14 @@ describe('schema', () => {
 				const updateEndTimestamp = new Date();
 
 				const response = await request(getUrl(vendor))
-					.get(`/items/${collectionName}/${sampleDatesAsia[0]!.id}?fields=*`)
+					.get(`/items/${collectionName}/${existingDataResponse.body.data[0].id}?fields=*`)
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
 				const responseObj = response.body.data as SchemaTimezoneTypesResponse;
 
-				expect(responseObj.date).toBe(sampleDatesAsia[0]!.date);
+				expect(responseObj.date).toBe(sampleDates[0]!.date);
 				expect(responseObj.date_created).not.toBeNull();
 				expect(responseObj.date_updated).not.toBeNull();
 				const dateCreated = new Date(responseObj.date_created);
