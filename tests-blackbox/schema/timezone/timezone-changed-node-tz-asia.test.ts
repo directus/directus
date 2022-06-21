@@ -168,7 +168,7 @@ describe('schema', () => {
 				expect(response2.body.data.length).toBe(sampleDates.length);
 
 				for (let index = 0; index < sampleDates.length; index++) {
-					const responseObj = response.body.data[index] as SchemaTimezoneTypesResponse;
+					const responseObj = response2.body.data[index] as SchemaTimezoneTypesResponse;
 
 					if (vendor === 'sqlite3') {
 						// Dates are saved in milliseconds at 00:00:00
