@@ -200,6 +200,9 @@ export default defineComponent({
 		watch(
 			fields,
 			() => {
+				// make sure to toggle existing values with mustache tags as rawActiveFields
+				// to prevent the initial incompatible values from breaking the original interfaces
+				// on first load
 				for (const formField of formFields.value) {
 					const fieldValue = values.value?.[formField.field] ?? props.initialValues?.[formField.field];
 					if (fieldValue?.includes('{{') && fieldValue?.includes('}}')) {
