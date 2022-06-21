@@ -11,9 +11,9 @@
 			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
 		</template>
 
-		<!-- <template #actions>
+		<template #actions>
 			<template v-if="editMode">
-				<v-button
+				<!-- <v-button
 					v-tooltip.bottom="t('clear_changes')"
 					class="clear-changes"
 					rounded
@@ -22,15 +22,15 @@
 					@click="attemptCancelChanges"
 				>
 					<v-icon name="clear" />
-				</v-button>
+				</v-button> -->
 
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+				<!-- <v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
-				</v-button>
+				</v-button> -->
 
-				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
+				<!-- <v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
 					<v-icon name="check" />
-				</v-button>
+				</v-button> -->
 			</template>
 
 			<template v-else>
@@ -70,7 +70,7 @@
 					<v-icon name="edit" />
 				</v-button>
 			</template>
-		</template> -->
+		</template>
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
@@ -88,7 +88,7 @@
 			@delete="deletePanel"
 			@duplicate="duplicatePanel" -->
 
-		<v-workspace :edit-mode="editMode" :tiles="tiles" :zoom-to-fit="zoomToFit">
+		<v-workspace :edit-mode="editMode" :tiles="tiles" :zoom-to-fit="zoomToFit" @update="stagePanelEdit">
 			<template #default="{ tile }">
 				<v-progress-circular v-if="loading.includes(tile.id) && !data[tile.id]" indeterminate />
 				<component
@@ -199,7 +199,7 @@ const appStore = useAppStore();
 const permissionsStore = usePermissionsStore();
 
 const { fullScreen } = toRefs(appStore);
-const { loading, errors, data } = toRefs(insightsStore);
+const { loading, errors, data, stagePanelEdit } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
 
@@ -212,7 +212,7 @@ const now = new Date();
 const editMode = ref(false);
 
 const tiles = computed<AppTile[]>(() => {
-	const panels = insightsStore.getPanels(props.primaryKey);
+	const panels = insightsStore.getPanelsForDashboard(props.primaryKey);
 
 	const panelsWithCoordinates = panels.map((panel) => ({
 		...panel,
@@ -560,13 +560,13 @@ const movePanelChoices = computed(() => {
 // 	router.push(`/insights/${panel.dashboard}/${panel.id}`);
 // }
 
-// function toggleFullScreen() {
-// 	fullScreen.value = !fullScreen.value;
-// }
+function toggleFullScreen() {
+	fullScreen.value = !fullScreen.value;
+}
 
-// function toggleZoomToFit() {
-// 	zoomToFit.value = !zoomToFit.value;
-// }
+function toggleZoomToFit() {
+	zoomToFit.value = !zoomToFit.value;
+}
 
 // async function movePanel() {
 // 	movePanelLoading.value = true;

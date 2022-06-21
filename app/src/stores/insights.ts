@@ -5,244 +5,301 @@ import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { Item, Panel } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { assign, mapKeys, pull, uniq, omit } from 'lodash';
+import { assign, mapKeys, pull, uniq, omit, omitBy, isUndefined } from 'lodash';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { unref } from 'vue';
+import { ref, unref, reactive, computed } from 'vue';
 import { Dashboard } from '../types';
 
 type CreatePanel = Partial<Panel> & Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y'>;
 
 const MAX_CACHE_SIZE = 3; // Max number of dashboards to keep in cache at a time
 
-export const useInsightsStore = defineStore({
-	id: 'insightsStore',
-	state: () => ({
-		dashboards: [] as Dashboard[],
-		panels: [] as Panel[],
+export const useInsightsStore = defineStore('insightsStore', () => {
+	/** All available dashboards in the platform */
+	const dashboards = ref<Dashboard[]>([]);
 
-		loading: [] as string[], // Panels that are currently loading
-		errors: [] as { id: string; error: Error }[], // Panels that error while fetching data
-		data: {} as { [panel: string]: Item | Item[] }, // Data cache for the panel data
+	/** All available panels */
+	const panels = ref<Panel[]>([]);
 
-		edits: {
-			create: [],
-			update: [],
-			delete: [],
-		} as { create: CreatePanel[]; update: Partial<Panel>[]; delete: string[] },
+	/** Panels that are currently loading */
+	const loading = ref<string[]>([]);
 
-		lastLoaded: [] as string[], // Last n dashboards that were loaded into data cache
-	}),
-	actions: {
-		async hydrate() {
-			const permissionsStore = usePermissionsStore();
+	/** Panels that errored while fetching data */
+	const errors = ref<{ id: string; error: Error }[]>([]);
 
-			if (
-				permissionsStore.hasPermission('directus_dashboards', 'read') &&
-				permissionsStore.hasPermission('directus_panels', 'read')
-			) {
-				try {
-					const [dashboardsResponse, panelsResponse] = await Promise.all([
-						api.get<any>('/dashboards', {
-							params: { limit: -1, fields: ['*'], sort: ['name'] },
-						}),
-						api.get('/panels', { params: { limit: -1, fields: ['*'], sort: ['dashboard'] } }),
-					]);
+	/** Cache/store for the panel data */
+	const data = ref<{ [panel: string]: Item | Item[] }>({});
 
-					this.dashboards = dashboardsResponse.data.data;
-					this.panels = panelsResponse.data.data;
-				} catch {
-					this.dashboards = [];
-					this.panels = [];
-				}
-			}
-		},
-		async dehydrate() {
-			this.$reset();
-		},
-		getDashboard(id: string) {
-			return this.dashboards.find((dashboard) => dashboard.id === id);
-		},
-		getPanels(dashboard: string) {
-			return [
-				...this.panels
-					.filter((panel) => panel.dashboard === dashboard && this.edits.delete.includes(panel.id) === false)
-					.map((panel) => {
-						const updates = this.edits.update.find((updated) => updated.id === panel.id);
+	/** Staged edits  */
+	const edits = reactive<{ create: CreatePanel[]; update: Partial<Panel>[]; delete: string[] }>({
+		create: [],
+		update: [],
+		delete: [],
+	});
 
-						if (updates) {
-							return assign({}, panel, updates);
-						}
+	/** Last MAX_CACHE_SIZE dashboards that we've loaded into data. Used to purge caches once too much data is loaded */
+	const lastLoaded: string[] = [];
 
-						return panel;
-					}),
-				...this.edits.create,
-			];
-		},
-		clearCache() {
-			this.data = {};
-			this.loading = [];
-			this.errors = [];
-		},
-		clearEdits() {
-			this.edits = {
-				create: [],
-				update: [],
-				delete: [],
-			};
-		},
-		async refresh(dashboard: string) {
-			const panels = this.panels.filter((panel) => panel.dashboard === dashboard);
-			this.loadPanelData(panels);
+	/** If there's any unsaved staged changes */
+	const hasEdits = computed(() => edits.create.length > 0 || edits.update.length > 0 || edits.delete.length > 0);
 
-			if (this.lastLoaded.includes(dashboard) === false) {
-				this.lastLoaded.push(dashboard);
+	/** Raw panels modified to assign the edits */
+	const panelsWithEdits = computed(() => {
+		return [
+			...unref(panels)
+				.filter((panel) => edits.delete.includes(panel.id) === false)
+				.map((panel) => {
+					const updates = edits.update.find((updated) => updated.id === panel.id);
 
-				if (this.lastLoaded.length > MAX_CACHE_SIZE) {
-					const removed = this.lastLoaded.shift();
-					const removedPanels = this.panels.filter((panel) => panel.dashboard === removed).map(({ id }) => id);
-					this.data = omit(this.data, ...removedPanels);
-				}
-			}
-
-			/*
-			 * Clear all caches on moving outside of insights
-			 * Debug slow render of dashboard
-			 * Async/defer render time-series
-			 */
-		},
-		async loadPanelData(panels: Panel | Panel[]) {
-			panels = toArray(panels);
-
-			const queries = new Map();
-
-			for (const panel of panels) {
-				const req = this.prepareQuery(panel);
-
-				if (!req) continue;
-
-				toArray(req).forEach(({ collection, query }, index) => {
-					const key = getSimpleHash(panel.id + collection + JSON.stringify(query));
-					queries.set(key, { panel: panel.id, collection, query, key, index, length: toArray(req).length });
-				});
-			}
-
-			this.loading = uniq([...this.loading, ...Array.from(queries.values()).map(({ panel }) => panel)]);
-
-			const gqlString = queryToGqlString(
-				Array.from(queries.values())
-					.filter(({ collection }) => {
-						return collection.startsWith('directus_') === false;
-					})
-					.map(({ key, ...rest }) => ({ key: `query_${key}`, ...rest }))
-			);
-
-			const systemGqlString = queryToGqlString(
-				Array.from(queries.values())
-					.filter(({ collection }) => {
-						return collection.startsWith('directus_') === true;
-					})
-					.map(({ key, collection, ...rest }) => ({
-						key: `query_${key}`,
-						collection: collection.substring(9),
-						...rest,
-					}))
-			);
-
-			try {
-				const requests: Promise<AxiosResponse<any, any>>[] = [];
-
-				if (gqlString) requests.push(api.post(`/graphql`, { query: gqlString }));
-				if (systemGqlString) requests.push(api.post(`/graphql/system`, { query: systemGqlString }));
-
-				const responses = await Promise.all(requests);
-
-				const results: { [panel: string]: Item | Item[] } = {};
-
-				for (const { data } of responses) {
-					const result = mapKeys(data.data, (_, key) => key.substring('query_'.length));
-
-					for (const [key, data] of Object.entries(result)) {
-						const { panel, length } = queries.get(key);
-						if (length === 1) results[panel] = data;
-						else if (!results[panel]) results[panel] = [data];
-						else results[panel].push(data);
+					if (updates) {
+						return assign({}, panel, updates);
 					}
+
+					return panel;
+				}),
+			...edits.create,
+		];
+	});
+
+	return {
+		dashboards,
+		panels: panelsWithEdits,
+		loading,
+		errors,
+		data,
+		hydrate,
+		dehydrate,
+		clearCache,
+		clearEdits,
+		getDashboard,
+		getPanelsForDashboard,
+		refresh,
+		stagePanelEdit,
+	};
+
+	async function hydrate() {
+		const permissionsStore = usePermissionsStore();
+		if (
+			permissionsStore.hasPermission('directus_dashboards', 'read') &&
+			permissionsStore.hasPermission('directus_panels', 'read')
+		) {
+			try {
+				const [dashboardsResponse, panelsResponse] = await Promise.all([
+					api.get<any>('/dashboards', {
+						params: { limit: -1, fields: ['*'], sort: ['name'] },
+					}),
+					api.get('/panels', { params: { limit: -1, fields: ['*'], sort: ['dashboard'] } }),
+				]);
+				dashboards.value = dashboardsResponse.data.data;
+				panels.value = panelsResponse.data.data;
+			} catch {
+				dashboards.value = [];
+				panels.value = [];
+			}
+		}
+	}
+
+	function dehydrate() {
+		dashboards.value = [];
+		panels.value = [];
+
+		clearCache();
+		clearEdits();
+	}
+
+	function clearCache() {
+		loading.value = [];
+		errors.value = [];
+		data.value = {};
+	}
+
+	function clearEdits() {
+		edits.create = [];
+		edits.update = [];
+		edits.delete = [];
+	}
+
+	function getDashboard(id: string) {
+		return unref(dashboards).find((dashboard) => dashboard.id === id);
+	}
+
+	function getPanelsForDashboard(dashboard: string) {
+		return unref(panelsWithEdits).filter((panel) => panel.dashboard === dashboard);
+	}
+
+	async function refresh(dashboard: string) {
+		const panelsForDashboard = unref(panels).filter((panel) => panel.dashboard === dashboard);
+
+		await loadPanelData(panelsForDashboard);
+
+		if (lastLoaded.includes(dashboard) === false) {
+			lastLoaded.push(dashboard);
+
+			if (lastLoaded.length > MAX_CACHE_SIZE) {
+				const removed = lastLoaded.shift();
+				const removedPanels = unref(panels)
+					.filter((panel) => panel.dashboard === removed)
+					.map(({ id }) => id);
+				data.value = omit(data.value, ...removedPanels);
+			}
+		}
+	}
+
+	async function loadPanelData(panels: Panel | Panel[]) {
+		panels = toArray(panels);
+
+		const queries = new Map();
+
+		for (const panel of panels) {
+			const req = prepareQuery(panel);
+
+			if (!req) continue;
+
+			toArray(req).forEach(({ collection, query }, index) => {
+				const key = getSimpleHash(panel.id + collection + JSON.stringify(query));
+				queries.set(key, { panel: panel.id, collection, query, key, index, length: toArray(req).length });
+			});
+		}
+
+		loading.value = uniq([...loading.value, ...Array.from(queries.values()).map(({ panel }) => panel)]);
+
+		const gqlString = queryToGqlString(
+			Array.from(queries.values())
+				.filter(({ collection }) => {
+					return collection.startsWith('directus_') === false;
+				})
+				.map(({ key, ...rest }) => ({ key: `query_${key}`, ...rest }))
+		);
+
+		const systemGqlString = queryToGqlString(
+			Array.from(queries.values())
+				.filter(({ collection }) => {
+					return collection.startsWith('directus_') === true;
+				})
+				.map(({ key, collection, ...rest }) => ({
+					key: `query_${key}`,
+					collection: collection.substring(9),
+					...rest,
+				}))
+		);
+
+		try {
+			const requests: Promise<AxiosResponse<any, any>>[] = [];
+
+			if (gqlString) requests.push(api.post(`/graphql`, { query: gqlString }));
+			if (systemGqlString) requests.push(api.post(`/graphql/system`, { query: systemGqlString }));
+
+			const responses = await Promise.all(requests);
+
+			const results: { [panel: string]: Item | Item[] } = {};
+
+			for (const { data } of responses) {
+				const result = mapKeys(data.data, (_, key) => key.substring('query_'.length));
+
+				for (const [key, data] of Object.entries(result)) {
+					const { panel, length } = queries.get(key);
+					if (length === 1) results[panel] = data;
+					else if (!results[panel]) results[panel] = [data];
+					else results[panel].push(data);
+				}
+			}
+
+			data.value = assign({}, data.value, results);
+		} catch (err) {
+			// Retry the broken query panels
+		} finally {
+			loading.value = pull(unref(loading), ...Array.from(queries.values()).map(({ panel }) => panel));
+		}
+	}
+
+	function prepareQuery(panel: Panel) {
+		const { panels: panelTypes } = getPanels();
+		const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
+		return panelType?.query?.(panel.options) ?? null;
+	}
+
+	function stagePanelEdit({ id, edits: panelEdits }: { id: string; edits: Partial<Panel> }) {
+		panelEdits = omitBy(panelEdits, isUndefined);
+
+		const isNew = id.startsWith('_');
+		const arr = isNew ? edits.create : edits.update;
+
+		if (arr.map(({ id }) => id).includes(id)) {
+			const updatedArr = arr.map((currentEdit) => {
+				if (currentEdit.id === id) {
+					return assign({}, currentEdit, panelEdits);
 				}
 
-				this.data = assign({}, this.data, results);
-			} catch (err) {
-				// Retry the broken query panels
-			} finally {
-				this.loading = pull(this.loading, ...Array.from(queries.values()).map(({ panel }) => panel));
-			}
-		},
-		prepareQuery(panel: Panel) {
-			const { panels: panelTypes } = getPanels();
-			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
-			return panelType?.query?.(panel.options) ?? null;
-		},
+				return currentEdit;
+			});
 
-		// async executeQueries(dashboard: string, queries: PanelQuery[]) {
-		// 	if (!(dashboard in this.queries)) {
-		// 		this.queries[dashboard] = {
-		// 			loading: [],
-		// 			errors: [],
-		// 			data: {},
-		// 		};
-		// 	}
+			if (isNew) edits.create = updatedArr as CreatePanel[];
+			else edits.update = updatedArr;
+		} else {
+			arr.push({ id, ...panelEdits });
+		}
 
-		// 	const queryKeys = queries.map(({ key }) => key) as string[];
+		if ('options' in panelEdits) {
+			/** @TODO Load panel data for updated panel */
+		}
+	}
 
-		// 	this.queries[dashboard].loading = uniq([...this.queries[dashboard].loading, ...queryKeys]);
+	// 	// async executeQueries(dashboard: string, queries: PanelQuery[]) {
+	// 	// 	if (!(dashboard in this.queries)) {
+	// 	// 		this.queries[dashboard] = {
+	// 	// 			loading: [],
+	// 	// 			errors: [],
+	// 	// 			data: {},
+	// 	// 		};
+	// 	// 	}
 
-		// 	const queriesPrefixed = queries.map((query) => ({ ...query, key: `query_${query.key}` }));
+	// 	// 	const queryKeys = queries.map(({ key }) => key) as string[];
 
-		// 	const gqlString = queryToGqlString(
-		// 		queriesPrefixed.filter(({ collection }) => collection.startsWith('directus_') === false)
-		// 	);
+	// 	// 	this.queries[dashboard].loading = uniq([...this.queries[dashboard].loading, ...queryKeys]);
 
-		// 	const systemGqlString = queryToGqlString(
-		// 		queriesPrefixed
-		// 			.filter(({ collection }) => collection.startsWith('directus_') === true)
-		// 			.map((query) => ({ ...query, collection: query.collection.substring(9) }))
-		// 	);
+	// 	// 	const queriesPrefixed = queries.map((query) => ({ ...query, key: `query_${query.key}` }));
 
-		// 	try {
-		// 		const requests: Promise<AxiosResponse<any, any>>[] = [];
+	// 	// 	const gqlString = queryToGqlString(
+	// 	// 		queriesPrefixed.filter(({ collection }) => collection.startsWith('directus_') === false)
+	// 	// 	);
 
-		// 		if (gqlString) requests.push(api.post(`/graphql`, { query: gqlString }));
-		// 		if (systemGqlString) requests.push(api.post(`/graphql/system`, { query: systemGqlString }));
+	// 	// 	const systemGqlString = queryToGqlString(
+	// 	// 		queriesPrefixed
+	// 	// 			.filter(({ collection }) => collection.startsWith('directus_') === true)
+	// 	// 			.map((query) => ({ ...query, collection: query.collection.substring(9) }))
+	// 	// 	);
 
-		// 		const responses = await Promise.all(requests);
+	// 	// 	try {
+	// 	// 		const requests: Promise<AxiosResponse<any, any>>[] = [];
 
-		// 		responses.forEach(({ data }) => {
-		// 			const result = mapKeys(data.data, (_, key) => key.substring('query_'.length));
-		// 			const successfulKeys = Object.keys(result);
+	// 	// 		if (gqlString) requests.push(api.post(`/graphql`, { query: gqlString }));
+	// 	// 		if (systemGqlString) requests.push(api.post(`/graphql/system`, { query: systemGqlString }));
 
-		// 			this.queries[dashboard].data = assign(this.queries[dashboard].data, result);
+	// 	// 		const responses = await Promise.all(requests);
 
-		// 			const updatedErrors = this.queries[dashboard].errors.filter(
-		// 				({ key }) => successfulKeys.includes(key) === false
-		// 			);
+	// 	// 		responses.forEach(({ data }) => {
+	// 	// 			const result = mapKeys(data.data, (_, key) => key.substring('query_'.length));
+	// 	// 			const successfulKeys = Object.keys(result);
 
-		// 			updatedErrors.push(
-		// 				...(data.errors?.filter((err: any) => !!err.path).map((err: any) => ({ key: err.path[0], err })) ?? [])
-		// 			);
+	// 	// 			this.queries[dashboard].data = assign(this.queries[dashboard].data, result);
 
-		// 			this.queries[dashboard].errors = updatedErrors;
-		// 		});
-		// 	} catch (err) {
-		// 		unexpectedError(err);
-		// 	} finally {
-		// 		this.queries[dashboard].loading = difference(this.queries[dashboard].loading, queryKeys);
-		// 	}
-		// },
-	},
-	getters: {
-		hasEdits(state) {
-			return state.edits.create.length > 0 || state.edits.update.length > 0 || state.edits.delete.length > 0;
-		},
-	},
+	// 	// 			const updatedErrors = this.queries[dashboard].errors.filter(
+	// 	// 				({ key }) => successfulKeys.includes(key) === false
+	// 	// 			);
+
+	// 	// 			updatedErrors.push(
+	// 	// 				...(data.errors?.filter((err: any) => !!err.path).map((err: any) => ({ key: err.path[0], err })) ?? [])
+	// 	// 			);
+
+	// 	// 			this.queries[dashboard].errors = updatedErrors;
+	// 	// 		});
+	// 	// 	} catch (err) {
+	// 	// 		unexpectedError(err);
+	// 	// 	} finally {
+	// 	// 		this.queries[dashboard].loading = difference(this.queries[dashboard].loading, queryKeys);
+	// 	// 	}
+	// 	// },
+	// },
 });
 
 if (import.meta.hot) {
