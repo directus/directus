@@ -67,6 +67,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		loading,
 		errors,
 		data,
+		hasEdits,
 		hydrate,
 		dehydrate,
 		clearCache,
