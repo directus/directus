@@ -243,63 +243,6 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			/** @TODO Load panel data for updated panel */
 		}
 	}
-
-	// 	// async executeQueries(dashboard: string, queries: PanelQuery[]) {
-	// 	// 	if (!(dashboard in this.queries)) {
-	// 	// 		this.queries[dashboard] = {
-	// 	// 			loading: [],
-	// 	// 			errors: [],
-	// 	// 			data: {},
-	// 	// 		};
-	// 	// 	}
-
-	// 	// 	const queryKeys = queries.map(({ key }) => key) as string[];
-
-	// 	// 	this.queries[dashboard].loading = uniq([...this.queries[dashboard].loading, ...queryKeys]);
-
-	// 	// 	const queriesPrefixed = queries.map((query) => ({ ...query, key: `query_${query.key}` }));
-
-	// 	// 	const gqlString = queryToGqlString(
-	// 	// 		queriesPrefixed.filter(({ collection }) => collection.startsWith('directus_') === false)
-	// 	// 	);
-
-	// 	// 	const systemGqlString = queryToGqlString(
-	// 	// 		queriesPrefixed
-	// 	// 			.filter(({ collection }) => collection.startsWith('directus_') === true)
-	// 	// 			.map((query) => ({ ...query, collection: query.collection.substring(9) }))
-	// 	// 	);
-
-	// 	// 	try {
-	// 	// 		const requests: Promise<AxiosResponse<any, any>>[] = [];
-
-	// 	// 		if (gqlString) requests.push(api.post(`/graphql`, { query: gqlString }));
-	// 	// 		if (systemGqlString) requests.push(api.post(`/graphql/system`, { query: systemGqlString }));
-
-	// 	// 		const responses = await Promise.all(requests);
-
-	// 	// 		responses.forEach(({ data }) => {
-	// 	// 			const result = mapKeys(data.data, (_, key) => key.substring('query_'.length));
-	// 	// 			const successfulKeys = Object.keys(result);
-
-	// 	// 			this.queries[dashboard].data = assign(this.queries[dashboard].data, result);
-
-	// 	// 			const updatedErrors = this.queries[dashboard].errors.filter(
-	// 	// 				({ key }) => successfulKeys.includes(key) === false
-	// 	// 			);
-
-	// 	// 			updatedErrors.push(
-	// 	// 				...(data.errors?.filter((err: any) => !!err.path).map((err: any) => ({ key: err.path[0], err })) ?? [])
-	// 	// 			);
-
-	// 	// 			this.queries[dashboard].errors = updatedErrors;
-	// 	// 		});
-	// 	// 	} catch (err) {
-	// 	// 		unexpectedError(err);
-	// 	// 	} finally {
-	// 	// 		this.queries[dashboard].loading = difference(this.queries[dashboard].loading, queryKeys);
-	// 	// 	}
-	// 	// },
-	// },
 });
 
 if (import.meta.hot) {
