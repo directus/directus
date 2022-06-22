@@ -80,6 +80,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		getPanelsForDashboard,
 		refresh,
 		stagePanelEdit,
+		stagePanelDeletion,
 		saveChanges,
 	};
 
@@ -277,6 +278,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		} finally {
 			saving.value = false;
 		}
+	}
+
+	function stagePanelDeletion(panel: string) {
+		edits.delete.push(panel);
 	}
 });
 

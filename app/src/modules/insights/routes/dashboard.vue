@@ -95,7 +95,13 @@
 			@delete="deletePanel"
 			@duplicate="duplicatePanel" -->
 
-		<v-workspace :edit-mode="editMode" :tiles="tiles" :zoom-to-fit="zoomToFit" @update="insightsStore.stagePanelEdit">
+		<v-workspace
+			:edit-mode="editMode"
+			:tiles="tiles"
+			:zoom-to-fit="zoomToFit"
+			@update="insightsStore.stagePanelEdit"
+			@delete="insightsStore.stagePanelDeletion"
+		>
 			<template #default="{ tile }">
 				<v-progress-circular v-if="loading.includes(tile.id) && !data[tile.id]" indeterminate />
 				<component
