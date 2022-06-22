@@ -205,7 +205,8 @@ export default defineComponent({
 				// on first load
 				for (const formField of formFields.value) {
 					const fieldValue = values.value?.[formField.field] ?? props.initialValues?.[formField.field];
-					if (fieldValue?.includes('{{') && fieldValue?.includes('}}')) {
+					if (!fieldValue || typeof fieldValue !== 'string') continue;
+					if (fieldValue.includes('{{') && fieldValue.includes('}}')) {
 						rawActiveFields.value.add(formField.field);
 					}
 				}
