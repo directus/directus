@@ -159,6 +159,9 @@ export const getValidatorFunction = (filter: ClientFilterOperator): FilterValida
 };
 
 const _eq = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = parseDatetimeString(possibleValues);
+
 	if (inputValue === possibleValues) {
 		return true;
 	}
@@ -166,6 +169,9 @@ const _eq = (inputValue: any, possibleValues: any): boolean => {
 };
 
 const _neq = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = parseDatetimeString(possibleValues);
+
 	if (inputValue !== possibleValues) {
 		return true;
 	}
@@ -173,6 +179,9 @@ const _neq = (inputValue: any, possibleValues: any): boolean => {
 };
 
 const _lt = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = parseDatetimeString(possibleValues);
+
 	if (inputValue < possibleValues) {
 		return true;
 	}
@@ -180,6 +189,9 @@ const _lt = (inputValue: any, possibleValues: any): boolean => {
 };
 
 const _lte = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = parseDatetimeString(possibleValues);
+
 	if (inputValue <= possibleValues) {
 		return true;
 	}
@@ -187,6 +199,9 @@ const _lte = (inputValue: any, possibleValues: any): boolean => {
 };
 
 const _gt = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = parseDatetimeString(possibleValues);
+
 	if (inputValue > possibleValues) {
 		return true;
 	}
@@ -194,6 +209,9 @@ const _gt = (inputValue: any, possibleValues: any): boolean => {
 };
 
 const _gte = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = parseDatetimeString(possibleValues);
+
 	if (inputValue >= possibleValues) {
 		return true;
 	}
@@ -201,6 +219,9 @@ const _gte = (inputValue: any, possibleValues: any): boolean => {
 };
 
 const _between = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = [parseDatetimeString(possibleValues[0]), parseDatetimeString(possibleValues[1])];
+
 	if (inputValue >= possibleValues[0] && inputValue <= possibleValues[1]) {
 		return true;
 	}
@@ -208,6 +229,9 @@ const _between = (inputValue: any, possibleValues: any): boolean => {
 };
 
 const _nbetween = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = [parseDatetimeString(possibleValues[0]), parseDatetimeString(possibleValues[1])];
+
 	if (inputValue < possibleValues[0] || inputValue > possibleValues[1]) {
 		return true;
 	}
@@ -229,17 +253,29 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 };
 
 const _in = (inputValue: any, possibleValues: any): boolean => {
-	if (possibleValues.includes(inputValue)) {
-		return true;
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = possibleValues.map((v: any) => parseDatetimeString(v));
+
+	for (const value of possibleValues) {
+		if (inputValue === value) {
+			return true;
+		}
 	}
+
 	return false;
 };
 
 const _nin = (inputValue: any, possibleValues: any): boolean => {
-	if (!possibleValues.includes(inputValue)) {
-		return true;
+	inputValue = parseDatetimeString(inputValue);
+	possibleValues = possibleValues.map((v: any) => parseDatetimeString(v));
+
+	for (const value of possibleValues) {
+		if (inputValue === value) {
+			return false;
+		}
 	}
-	return false;
+
+	return true;
 };
 
 export const getEmptyAllowedFunction = (filter: ClientFilterOperator): FilterEmptyValidator => {
@@ -264,40 +300,62 @@ const empty_invalid = (_inputValue: any, _possibleValues: any): boolean => {
 };
 
 const empty_lt = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+
 	if (Array.isArray(possibleValues)) {
 		for (const value of possibleValues) {
-			if (value < inputValue) {
+			if (parseDatetimeString(value) < inputValue) {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
+		possibleValues = parseDatetimeString(possibleValues);
 		return inputValue >= possibleValues;
 	}
 };
 
 const empty_gt = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = parseDatetimeString(inputValue);
+
 	if (Array.isArray(possibleValues)) {
 		for (const value of possibleValues) {
-			if (value > inputValue) {
+			if (parseDatetimeString(value) > inputValue) {
 				return false;
 			}
 		}
 		return true;
 	} else {
+		possibleValues = parseDatetimeString(possibleValues);
 		return inputValue <= possibleValues;
 	}
 };
 
 const empty_nbetween = (inputValue: any, possibleValues: any): boolean => {
+	inputValue = [parseDatetimeString(inputValue[0]), parseDatetimeString(inputValue[1])];
+
 	if (Array.isArray(possibleValues)) {
-		for (const value of possibleValues) {
+		for (let value of possibleValues) {
+			value = parseDatetimeString(value);
+
 			if (value < inputValue[0] || value > inputValue[1]) {
 				return false;
 			}
 		}
 		return true;
 	} else {
+		possibleValues = [parseDatetimeString(possibleValues[0]), parseDatetimeString(possibleValues[1])];
 		return inputValue[0] >= possibleValues && inputValue[1] <= possibleValues;
 	}
 };
+
+function parseDatetimeString(value: string) {
+	if (value.length === 8) {
+		return new Date(`1970-01-01T${value}Z`).getTime();
+	} else if (value.length === 10) {
+		return new Date(`${value}T00:00:00Z`).getTime();
+	} else {
+		return new Date(value).getTime();
+	}
+}
