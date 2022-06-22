@@ -29,11 +29,13 @@ draft: 草稿
 archived: 已存档
 modules: 模块
 module_bar: 模块栏
+logs: 日志
 reset_width: 重置宽度
 tile_size: 瓦块大小
 edit_field: 编辑
 conditions: 条件
 location: 地理位置
+condition_rules: 条件规则
 input: Input
 maps: 地图
 switch_user: 切换用户
@@ -47,6 +49,7 @@ group: 群组
 export_items: 导出
 and: 与
 or: 或
+dataset_too_large_currently_showing_n_items: 数据集太大，目前显示前 {n} 项。
 fill_width: 适应页面宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
