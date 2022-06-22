@@ -16,7 +16,8 @@
 				v-tooltip="t('toggle_raw_editor')"
 				class="raw-editor-toggle"
 				:class="{ active: rawEditorActive }"
-				:name="rawEditorActive ? 'data_object' : 'code'"
+				:name="rawEditorActive ? 'data_object' : 'input'"
+				:filled="!rawEditorActive"
 				@click.stop="$emit('toggle-raw', !rawEditorActive)"
 			/>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
