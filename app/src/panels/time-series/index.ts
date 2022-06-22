@@ -1,6 +1,6 @@
 import { getGroups } from '@/utils/get-groups';
 import { definePanel } from '@directus/shared/utils';
-import PanelTimeSeries from './time-series.vue';
+import PanelTimeSeries from './panel-time-series.vue';
 
 export default definePanel({
 	id: 'time-series',

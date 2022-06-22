@@ -1,8 +1,7 @@
-import { computed } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { definePanel } from '@directus/shared/utils';
-import PanelMetric from './metric.vue';
-import { Query } from '@directus/shared/types';
+import { computed } from 'vue';
+import PanelMetric from './panel-metric.vue';
 
 export default definePanel({
 	id: 'metric',
