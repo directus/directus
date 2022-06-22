@@ -28,7 +28,7 @@ export default defineOperationApp({
 		{
 			field: 'payload',
 			name: '$t:payload',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',

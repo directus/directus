@@ -74,7 +74,7 @@ export default defineOperationApp({
 		{
 			field: 'query',
 			name: '$t:operations.item-read.query',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',

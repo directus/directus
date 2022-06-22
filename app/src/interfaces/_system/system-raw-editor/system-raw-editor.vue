@@ -1,5 +1,5 @@
 <template>
-	<div class="system-raw-editor" :class="{ disabled }">
+	<div class="system-raw-editor" :class="{ disabled, 'multi-line': multiLine }">
 		<div ref="codemirrorEl"></div>
 	</div>
 </template>
@@ -17,11 +17,13 @@ const props = withDefaults(
 		value?: string;
 		autofocus?: boolean;
 		disabled?: boolean;
+		multiLine?: boolean;
 	}>(),
 	{
 		value: undefined,
 		autofocus: false,
 		disabled: false,
+		multiLine: false,
 	}
 );
 
@@ -50,26 +52,28 @@ onMounted(async () => {
 			showCursorWhenSelecting: true,
 			lineWiseCopyCut: false,
 			theme: 'default',
-			scrollbarStyle: 'null',
+			scrollbarStyle: props.multiLine ? 'native' : 'null',
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: t('raw_editor_placeholder'),
 		});
 
-		// prevent new lines
-		codemirror.on('beforeChange', function (_doc, { origin, text, cancel, update }) {
-			const typedNewLine = origin == '+input' && typeof text == 'object' && text.join('') == '';
-			if (typedNewLine) return cancel();
+		// prevent new lines for single lines
+		if (!props.multiLine) {
+			codemirror.on('beforeChange', function (_doc, { origin, text, cancel, update }) {
+				const typedNewLine = origin === '+input' && typeof text === 'object' && text.join('') === '';
+				if (typedNewLine) return cancel();
 
-			const pastedNewLine = origin == 'paste' && typeof text == 'object' && text.length > 1;
-			if (pastedNewLine) {
-				const newText = text.join(' ');
-				if (!update) return;
-				return update(undefined, undefined, [newText]);
-			}
+				const pastedNewLine = origin === 'paste' && typeof text === 'object' && text.length > 1;
+				if (pastedNewLine) {
+					const newText = text.join(' ');
+					if (!update) return;
+					return update(undefined, undefined, [newText]);
+				}
 
-			return null;
-		});
+				return null;
+			});
+		}
 
 		codemirror.on('change', (doc, { origin }) => {
 			if (origin === 'setValue') return;
@@ -122,8 +126,20 @@ watch(
 
 	:deep(.CodeMirror),
 	:deep(.CodeMirror-scroll) {
-		height: auto;
 		max-height: var(--input-height);
+	}
+
+	&.multi-line {
+		height: auto;
+
+		:deep(.CodeMirror),
+		:deep(.CodeMirror-scroll) {
+			max-height: 480px;
+		}
+
+		:deep(.CodeMirror-scroll) {
+			padding-bottom: 0;
+		}
 	}
 }
 </style>

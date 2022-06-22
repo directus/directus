@@ -15,7 +15,7 @@ export default defineOperationApp({
 		{
 			field: 'json',
 			name: '$t:json',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',

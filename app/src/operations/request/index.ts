@@ -89,7 +89,7 @@ export default defineOperationApp({
 		{
 			field: 'body',
 			name: '$t:request_body',
-			type: 'string',
+			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'input-multiline',

@@ -12,7 +12,7 @@
 			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
 			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 			<v-icon
-				v-if="!disabled && rawEditorEnabled"
+				v-if="!disabled && rawEditorEnabled && field.type !== 'json'"
 				v-tooltip="t('toggle_raw_editor')"
 				class="raw-editor-toggle"
 				:class="{ active: rawEditorActive }"

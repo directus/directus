@@ -33,6 +33,7 @@
 		<interface-system-raw-editor
 			v-else-if="rawEditorEnabled && rawEditorActive"
 			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+			:multi-line="field.type === 'text'"
 			@input="$emit('update:modelValue', $event)"
 		/>
 

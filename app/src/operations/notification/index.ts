@@ -73,7 +73,7 @@ export default defineOperationApp({
 		{
 			field: 'message',
 			name: '$t:operations.notification.message',
-			type: 'string',
+			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-md',

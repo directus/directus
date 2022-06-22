@@ -85,7 +85,7 @@ export default defineOperationApp({
 		{
 			field: 'payload',
 			name: '$t:operations.item-update.payload',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',
@@ -98,7 +98,7 @@ export default defineOperationApp({
 		{
 			field: 'query',
 			name: '$t:operations.item-update.query',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',
