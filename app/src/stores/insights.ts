@@ -40,6 +40,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		delete: [],
 	});
 
+	const refreshIntervals = {} as { [dashboard: string]: number };
+
 	const saving = ref(false);
 
 	/** Last MAX_CACHE_SIZE dashboards that we've loaded into data. Used to purge caches once too much data is loaded */
@@ -87,6 +89,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		stagePanelDuplicate,
 		stagePanelDelete,
 		saveChanges,
+		refreshIntervals,
 	};
 
 	async function hydrate() {

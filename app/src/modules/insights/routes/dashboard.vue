@@ -83,6 +83,8 @@
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
+
+			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
 		</template>
 
 		<template #navigation>
@@ -182,6 +184,8 @@ import { getPanels } from '@/panels';
 import { router } from '@/router';
 import { useAppStore, useInsightsStore, usePermissionsStore } from '@/stores';
 import { pointOnLine } from '@/utils/point-on-line';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail/refresh-sidebar-detail.vue';
+import { assign } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
@@ -203,7 +207,7 @@ const appStore = useAppStore();
 const permissionsStore = usePermissionsStore();
 
 const { fullScreen } = toRefs(appStore);
-const { loading, errors, data, saving, hasEdits } = toRefs(insightsStore);
+const { loading, errors, data, saving, hasEdits, refreshIntervals } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
 
@@ -345,6 +349,15 @@ const discardAndLeave = () => {
 
 const toggleFullScreen = () => (fullScreen.value = !fullScreen.value);
 const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
+
+const refreshInterval = computed({
+	get() {
+		return unref(refreshIntervals)[props.primaryKey];
+	},
+	set(val) {
+		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });
+	},
+});
 </script>
 
 <style scoped lang="scss">
