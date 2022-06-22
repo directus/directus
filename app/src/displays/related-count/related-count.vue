@@ -23,8 +23,14 @@ import { get } from 'lodash';
 
 export default defineComponent({
 	props: {
-		field: String,
-		rootItem: Object as PropType<Record<string, any>>,
+		field: {
+			type: String,
+			required: true,
+		},
+		rootItem: {
+			type: Object as PropType<Record<string, any>>,
+			default: () => {}
+		},
 		format: {
 			type: Boolean,
 			default: false,
@@ -125,7 +131,7 @@ export default defineComponent({
 			if (computedFormat.value.text) {
 				const { text } = computedFormat.value;
 				return text.startsWith('$t:') ? t(text.slice(3)) : text;
-			}npm
+			}
 
 			let value = String(count.value);
 
