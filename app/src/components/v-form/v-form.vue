@@ -8,19 +8,16 @@
 		/>
 		<template v-for="(fieldName, index) in fieldNames">
 			<component
-				:is="`interface-${formFields[index].meta?.interface || 'group-standard'}`"
-				v-if="formFields[index]?.meta?.special?.includes('group')"
-				v-show="!formFields[index]?.meta?.hidden"
+				:is="`interface-${fieldsMeta[index]?.interface || 'group-standard'}`"
+				v-if="fieldsMeta[index]?.special?.includes('group')"
+				v-show="!fieldsMeta[index]?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName"
-				:class="[
-					formFields[index]?.meta?.width || 'full',
-					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
-				]"
+				:key="fieldName + '_group'"
+				:class="[fieldsMeta[index]?.width || 'full', index === firstVisibleFieldIndex ? 'first-visible-field' : '']"
 				:field="formFields[index]"
 				:fields="fieldsForGroup[index]"
 				:values="modelValue || {}"
@@ -32,18 +29,18 @@
 				:loading="loading"
 				:validation-errors="validationErrors"
 				:badge="badge"
-				v-bind="formFields[index]?.meta?.options || {}"
+				v-bind="fieldsMeta[index]?.options || {}"
 				@apply="apply"
 			/>
 
 			<form-field
-				v-else-if="!formFields[index]?.meta?.hidden"
+				v-else-if="!fieldsMeta[index]?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName + '_'"
+				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="formFields[index]"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
@@ -79,7 +76,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -190,7 +187,7 @@ export default defineComponent({
 			formFieldEls.value = {};
 		});
 
-		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
+		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, fieldsMeta } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
 		const firstEditableFieldIndex = computed(() => {
@@ -243,6 +240,7 @@ export default defineComponent({
 			scrollToField,
 			formFieldEls,
 			fieldNames,
+			fieldsMeta,
 		};
 
 		function useForm() {
@@ -263,10 +261,17 @@ export default defineComponent({
 				}, {} as Record<string, any>);
 			});
 
-			const fieldsParsed = computed(() => {
-				if (props.group !== null) return fields.value;
+			const fieldsMeta = computed(() => {
+				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-				const setPrimaryKeyReadonly = (field: Field) => {
+				const metaOverrides = fields.value.map((field: Field) => {
+					const { meta } = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+					return meta;
+				});
+
+				return metaOverrides;
+
+				function setPrimaryKeyReadonly(field: Field) {
 					if (
 						field.schema?.has_auto_increment === true ||
 						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
@@ -278,26 +283,22 @@ export default defineComponent({
 					}
 
 					return field;
-				};
-
-				// why are we merging values in here? ah the conditions trigger a re-render of all fields for each value change
-				// const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
-				// console.log(valuesWithDefaults);
-
-				return fields.value; //.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
+				}
 			});
 
 			const fieldsInGroup = computed(() =>
-				fieldsParsed.value.filter(
-					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
+				fields.value.filter(
+					(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 				)
 			);
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta?.field)));
+			const fieldsForGroup = computed(() =>
+				formFields.value.map((field: Field) => getFieldsForGroup(field.meta?.field || null))
+			);
 
-			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
+			return { formFields, fieldsMeta, isDisabled, getFieldsForGroup, fieldsForGroup };
 
 			function isDisabled(field: Field) {
 				return (
@@ -310,7 +311,7 @@ export default defineComponent({
 			}
 
 			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
-				const fieldsInGroup: Field[] = fieldsParsed.value.filter(
+				const fieldsInGroup: Field[] = fields.value.filter(
 					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
 				);
 
