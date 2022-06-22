@@ -27,13 +27,13 @@ import {
 	GraphQLUnionType,
 	InlineFragmentNode,
 	IntValueNode,
+	NoSchemaIntrospectionCustomRule,
 	ObjectFieldNode,
 	ObjectValueNode,
 	SelectionNode,
 	specifiedRules,
 	StringValueNode,
 	validate,
-	NoSchemaIntrospectionCustomRule,
 } from 'graphql';
 import {
 	GraphQLJSON,
@@ -87,6 +87,8 @@ import { GraphQLDate } from './types/date';
 import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
+
+import { PrimaryKey } from '@directus/shared/types';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
 
@@ -286,6 +288,10 @@ export class GraphQLService {
 						} else {
 							acc[`update_${collectionName}_items`] = UpdateCollectionTypes[collection.collection].getResolver(
 								`update_${collection.collection}_items`
+							);
+
+							acc[`update_${collectionName}_batch`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}_batch`
 							);
 
 							acc[`update_${collectionName}_item`] = UpdateCollectionTypes[collection.collection].getResolver(
@@ -1113,6 +1119,23 @@ export class GraphQLService {
 						});
 					} else {
 						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}_batch`,
+							type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+							args: {
+								...(collectionIsReadable
+									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+									: {}),
+								data: [
+									toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+										`update_${collection.collection}_input`
+									).NonNull,
+								],
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+
+						UpdateCollectionTypes[collection.collection].addResolver({
 							name: `update_${collection.collection}_items`,
 							type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
 							args: {
@@ -1255,12 +1278,15 @@ export class GraphQLService {
 		const query = this.getQuery(args, selections || [], info.variableValues);
 
 		const singleton =
+			collection.endsWith('_batch') === false &&
 			collection.endsWith('_items') === false &&
 			collection.endsWith('_item') === false &&
 			collection in this.schema.collections;
 
-		const single = collection.endsWith('_items') === false;
+		const single = collection.endsWith('_items') === false && collection.endsWith('_batch') === false;
+		const batchUpdate = action === 'update' && collection.endsWith('_batch');
 
+		if (collection.endsWith('_batch')) collection = collection.slice(0, -6);
 		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
@@ -1294,7 +1320,14 @@ export class GraphQLService {
 				}
 
 				if (action === 'update') {
-					const keys = await service.updateMany(args.ids, args.data);
+					const keys: PrimaryKey[] = [];
+
+					if (batchUpdate) {
+						keys.push(...(await service.updateBatch(args.data)));
+					} else {
+						keys.push(...(await service.updateMany(args.ids, args.data)));
+					}
+
 					return hasQuery ? await service.readMany(keys, query) : true;
 				}
 
