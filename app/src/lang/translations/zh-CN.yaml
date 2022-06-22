@@ -50,6 +50,7 @@ export_items: 导出
 and: 与
 or: 或
 dataset_too_large_currently_showing_n_items: 数据集太大，目前显示前 {n} 项。
+custom: 自定义
 fill_width: 适应页面宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
@@ -73,9 +74,12 @@ create_preset: 创建预设
 create_panel: 新建
 create_role: 创建角色
 create_user: 创建用户
+message: 消息
 delete_panel: 删除
 create_webhook: 创建Web钩子
 create_translation_string: 创建翻译字符串
+no_translation_string: 空
+no_translation_string_copy: 目前没有翻译字符串。
 translation_string_key_placeholder: 翻译字符串键..
 translation_string_translations_placeholder: 添加新翻译
 edit_translation_string: 编辑翻译字符串
@@ -330,14 +334,18 @@ revision_delta_created_externally: 外部创建
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
 revision_delta_reverted: Reverted
+revision_delta_update_message: 此字段已更新，但由于安全原因，其值被隐藏。
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
+presentation_text_values_cannot_be_reimported: "仅包含当前页面中展示的字段和数据，且无法被重新导入"
+download_page_as_csv: '导出当前页面数据为CSV格式'
 private_user: 私人用户
 creation_preview: 创建预览
 revision_preview: 修订预览
 updates_made: 更新完成
 leave_comment: 发表评论...
-post_comment_success: 评论已发布
+post_comment_success: 注释已发布
+post_comment_updated: 注释已更新
 item_create_success: 条目已创建 | 条目已创建
 item_update_success: 条目已更新 | 条目已更新
 item_delete_success: 条目已删除 | 条目已删除
@@ -369,7 +377,7 @@ add_field_related: 将字段添加到关联的模型
 interface_label: 接口
 today: 今天
 yesterday: 昨天
-delete_comment: 删除评论
+delete_comment: 删除注释
 delete_share: 删除分享
 functions:
   year: 年
@@ -455,6 +463,7 @@ created_on: 创建于
 creating_collection_info: 命名集合并设置唯一键字段...
 creating_collection_system: 启用并重命名这些可选字段。
 auto_increment_integer: 自动递增整数
+auto_increment_big_integer: 自动递增长整数（Big Integer）
 generated_uuid: 生成的 UUID
 manual_string: 手动输入字符串
 save_and_create_new: 保存并创建新的
@@ -466,7 +475,7 @@ enable_create_button: 启用创建按钮
 selecting_items: 选择条目
 enable_select_button: 启用选择按钮
 comments: 注释
-no_comments: 暂无评论
+no_comments: 暂无注释
 click_to_expand: 单击展开
 select_item: 选择条目
 no_items: 无条目
@@ -475,7 +484,9 @@ disabled: 禁用
 information: 信息
 report_bug: 反馈Bug
 request_feature: 功能建议
+request_body: 请求体
 interface_not_found: '未找到接口 "{interface}"。'
+operation_not_found: '操作 "{operation}" 未找到。'
 reset_interface: 重置接口
 display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
@@ -562,6 +573,7 @@ errors:
   INVALID_OTP: 错误的一次性密码
   INVALID_PAYLOAD: 无效的内容
   INVALID_QUERY: 无效的查询
+  INVALID_USER: 用户身份验证失败
   ITEM_LIMIT_REACHED: 条目已达到限制
   ITEM_NOT_FOUND: 找不到条目
   ROUTE_NOT_FOUND: 未找到
@@ -593,6 +605,7 @@ unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
 no_app_access_copy: 此用户不允许使用管理员应用程序。
+password_reset_sent: 如果您有一个账户，我们已经向您发送了一个安全链接来重置您的密码
 password_reset_successful: 密码重置成功。
 back: 后退
 filter: 筛选
@@ -616,6 +629,9 @@ start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤条目'
+delete_collection_are_you_sure: >-
+  您确定要删除 "{collection}" 数据模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
+delete_folder_are_you_sure: 您确定要删除 "{folder}" 文件夹吗？嵌套文件夹和数据模型将被移动到最上层。
 collections_shown: 展开模型
 visible_collections: 显示模型
 hidden_collections: 隐藏模型
@@ -656,6 +672,7 @@ operators:
   nnull: 不是空的
   contains: 包含
   ncontains: 不包含
+  icontains: 包含 (大小写不敏感)
   starts_with: 开始于
   nstarts_with: 不是以xx开始
   ends_with: 结束于
@@ -735,10 +752,44 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+flows: 流程
+flow: 流程
+select_a_flow: 选择一个流程
+run_flow_on_selected: 没有选定项 | 在已选定的 1 项上运行流流程 | 在选定的 {n} 个项目上运行流程
+run_flow_success: 流程 "{flow}" 运行成功
 trigger: 触发器
+trigger_options: 触发器选项
+view_trigger: 查看触发器
+create_trigger: 创建触发器
+trigger_setup: 触发器设置
+change_trigger: 更改触发器
+flow_delete_confirm: 您确定要删除流程 "{flow}" 吗? 此操作无法撤消。
+set_flow_active: 设置流程为激活
+set_flow_inactive: 设置流程为未激活
+edit_flow: 编辑流程
+delete_flow: 删除流程
+no_other_flows_copy: 您尚未创建任何其他流程
+no_flows: 没有流程
+no_flows_copy: 您尚未创建任何流程
+create_flow: 新建流程
+creating_new_flow: 新建流程
+updating_flow: 更新流程
+flow_setup: 流程设置
 flow_name: 名称
+flow_tracking: 活动和日志跟踪
+flow_tracking_all: 跟踪活动和日志
 flow_tracking_activity: 仅跟踪活动
 flow_tracking_null: 不跟踪任何内容
+start_flow: 启动流程
+stop_flow: 中止流程
+create_operation: 新建操作
+edit_operation: 编辑操作
+operation_options: 操作选项
+operation_name: 操作名称...
+operation_key: 用于引用的标识...
+operation_key_unique_error: 操作的键值(keys)在同一流程中必须是唯一的
+operation_handle_resolve: '成功：点击添加或拖动布局'
+operation_handle_reject: '失败：点击添加或拖动布局'
 insights: 洞察分析
 dashboard: 控制面板
 panel: 面板
@@ -760,6 +811,8 @@ create_dashboard: 创建Dashboard
 dashboard_name: Dashboard名称
 no_data: 没有数据
 accountability: 访问控制
+payload: 有效载荷 (Payload)
+details: 详细信息
 full_screen: 全屏显示
 full_text_search: 全文搜索
 edit_panels: 编辑面板
@@ -857,6 +910,7 @@ settings_data_model: 数据模型
 settings_permissions: 角色与权限
 settings_project: 项目设置
 settings_webhooks: Webhook
+settings_flows: 流程
 settings_presets: 预设&书签
 settings_translation_strings: 翻译字符串
 one_or_more_options_are_missing: 缺少一个或多个选项
@@ -1792,12 +1846,21 @@ triggers:
   webhook:
     method: 方法
 operations:
+  item-create:
+    payload: 有效载荷 (Payload)
+  item-update:
+    payload: 有效载荷 (Payload)
+  log:
+    message: 消息
   notification:
     recipient: 用户
+    message: 消息
   request:
     url: URl
     method: 方法
     data: 数据
     header: 报头
   trigger:
+    flows: 流程
+    flow: 流程
     data: 数据
