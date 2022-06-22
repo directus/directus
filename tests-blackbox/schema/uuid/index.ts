@@ -112,16 +112,26 @@ export const getValidatorFunction = (filter: ClientFilterOperator): FilterValida
 };
 
 const _eq = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue === possibleValues) {
-		return true;
+	if (typeof inputValue === 'string') {
+		const value = inputValue.toLowerCase();
+
+		if (value === possibleValues.toLowerCase()) {
+			return true;
+		}
 	}
+
 	return false;
 };
 
 const _neq = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue !== possibleValues) {
-		return true;
+	if (typeof inputValue === 'string') {
+		const value = inputValue.toLowerCase();
+
+		if (value !== possibleValues.toLowerCase()) {
+			return true;
+		}
 	}
+
 	return false;
 };
 
@@ -140,17 +150,29 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 };
 
 const _in = (inputValue: any, possibleValues: any): boolean => {
-	if (possibleValues.includes(inputValue)) {
-		return true;
+	if (typeof inputValue === 'string') {
+		const compareValue = inputValue.toLowerCase();
+
+		for (const value of possibleValues) {
+			if (value.toLowerCase() === compareValue) {
+				return true;
+			}
+		}
 	}
 	return false;
 };
 
 const _nin = (inputValue: any, possibleValues: any): boolean => {
-	if (!possibleValues.includes(inputValue)) {
-		return true;
+	if (typeof inputValue === 'string') {
+		const compareValue = inputValue.toLowerCase();
+
+		for (const value of possibleValues) {
+			if (value.toLowerCase() === compareValue) {
+				return false;
+			}
+		}
 	}
-	return false;
+	return true;
 };
 
 export const getEmptyAllowedFunction = (filter: ClientFilterOperator): FilterEmptyValidator => {
