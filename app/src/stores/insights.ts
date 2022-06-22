@@ -265,7 +265,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		}
 	}
 
-	function stagePanelDuplicate(panelKey: string) {
+	function stagePanelDuplicate(panelKey: string, overrides?: Partial<Panel>) {
 		const panel = unref(panelsWithEdits).find((panel) => panel.id === panelKey);
 		if (!panel) return;
 
@@ -278,6 +278,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		// In case width/height is totally unknown (which it shouldn't be) fallback to 4x4 as a last-resort
 		newPanel.width ??= 4;
 		newPanel.height ??= 4;
+
+		if (overrides) {
+			assign(newPanel, overrides);
+		}
 
 		stagePanelCreate(newPanel as CreatePanel);
 	}
