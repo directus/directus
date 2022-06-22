@@ -153,7 +153,9 @@ const selectedOperation = computed(() => getOperation(operationType.value));
 const generatedName = computed(() => (selectedOperation.value ? selectedOperation.value?.name : t('operation_name')));
 
 const generatedKey = computed(() =>
-	selectedOperation.value ? selectedOperation.value?.id + '_' + generateSuffix() : t('operation_key')
+	selectedOperation.value
+		? slugify(selectedOperation.value?.id + '_' + generateSuffix(), { separator: '_' })
+		: t('operation_key')
 );
 
 const { operations } = getOperations();
