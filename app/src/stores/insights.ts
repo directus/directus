@@ -12,7 +12,8 @@ import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
 import { nanoid } from 'nanoid';
 
-export type CreatePanel = Partial<Panel> & Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y'>;
+export type CreatePanel = Partial<Panel> &
+	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
 
 const MAX_CACHE_SIZE = 3; // Max number of dashboards to keep in cache at a time
 
@@ -156,7 +157,9 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		}
 	}
 
-	async function loadPanelData(panels: Panel | Panel[]) {
+	async function loadPanelData(
+		panels: Pick<Panel, 'id' | 'options' | 'type'> | Pick<Panel, 'id' | 'options' | 'type'>[]
+	) {
 		panels = toArray(panels);
 
 		const queries = new Map();
@@ -224,7 +227,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		}
 	}
 
-	function prepareQuery(panel: Panel) {
+	function prepareQuery(panel: Pick<Panel, 'options' | 'type'>) {
 		const { panels: panelTypes } = getPanels();
 		const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
 		return panelType?.query?.(panel.options) ?? null;
@@ -232,6 +235,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 	function stagePanelCreate(panel: CreatePanel) {
 		edits.create.push(panel);
+		loadPanelData(panel);
 	}
 
 	function stagePanelUpdate({ id, edits: panelEdits }: { id: string; edits: Partial<Panel> }) {
@@ -256,7 +260,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		}
 
 		if ('options' in panelEdits) {
-			/** @TODO Load panel data for updated panel */
+			const panel = unref(panelsWithEdits).find((panel) => panel.id === id)!;
+			loadPanelData(panel);
 		}
 	}
 
@@ -285,6 +290,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		edits.update = edits.update.filter((updated) => updated.id !== panelKey);
 		edits.delete.push(panelKey);
+		data.value = omit(data.value, panelKey);
 	}
 
 	async function saveChanges() {

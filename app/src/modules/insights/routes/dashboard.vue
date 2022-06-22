@@ -97,7 +97,8 @@
 			:edit-mode="editMode"
 			:tiles="tiles"
 			:zoom-to-fit="zoomToFit"
-			@duplicate="(panel) => insightsStore.stagePanelDuplicate(panel.id)"
+			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
+			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
 			@update="insightsStore.stagePanelUpdate"
 			@delete="insightsStore.stagePanelDelete"
 		>

@@ -16,14 +16,20 @@
 		<div class="content">
 			<p class="type-label panel-type-label">{{ t('type') }}</p>
 
-			<v-fancy-select v-model="panel.type" class="select" :items="selectItems" />
+			<v-fancy-select
+				:model-value="panel.type"
+				class="select"
+				:items="selectItems"
+				@update:model-value="edits.type = $event"
+			/>
 
 			<extension-options
 				v-if="panel.type"
-				v-model="panel.options"
+				:model-value="panel.options"
 				:options="customOptionsFields"
 				type="panel"
 				:extension="panel.type"
+				@update:model-value="edits.options = $event"
 			/>
 
 			<v-divider :inline-title="false" large>
@@ -34,16 +40,22 @@
 			<div class="form-grid">
 				<div class="field half-left">
 					<p class="type-label">{{ t('visible') }}</p>
-					<v-checkbox v-model="panel.show_header" block :label="t('show_header')" />
+					<v-checkbox
+						:model-value="panel.show_header"
+						block
+						:label="t('show_header')"
+						@update:model-value="edits.show_header = $event"
+					/>
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('name') }}</p>
 					<v-input
-						v-model="panel.name"
+						:model-value="panel.name"
 						:nullable="false"
 						:disabled="panel.show_header !== true"
 						:placeholder="t('panel_name_placeholder')"
+						@update:model-value="edits.name = $event"
 					/>
 				</div>
 
@@ -52,7 +64,7 @@
 					<interface-select-icon
 						:value="panel.icon"
 						:disabled="panel.show_header !== true"
-						@input="panel.icon = $event"
+						@input="edits.icon = $event"
 					/>
 				</div>
 
@@ -62,16 +74,17 @@
 						:value="panel.color"
 						:disabled="panel.show_header !== true"
 						width="half"
-						@input="panel.color = $event"
+						@input="edits.color = $event"
 					/>
 				</div>
 
 				<div class="field full">
 					<p class="type-label">{{ t('note') }}</p>
 					<v-input
-						v-model="panel.note"
+						:model-value="panel.note"
 						:disabled="panel.show_header !== true"
 						:placeholder="t('panel_note_placeholder')"
+						@update:model-value="edits.note = $event"
 					/>
 				</div>
 			</div>
@@ -86,10 +99,10 @@ import { getPanel, getPanels } from '@/panels';
 import { useInsightsStore } from '@/stores';
 import { CreatePanel } from '@/stores/insights';
 import { Panel } from '@directus/shared/types';
-import { assign, clone } from 'lodash';
+import { assign, clone, omitBy, isUndefined } from 'lodash';
 import { nanoid } from 'nanoid';
 import { storeToRefs } from 'pinia';
-import { computed, ref, unref } from 'vue';
+import { computed, reactive, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
@@ -105,7 +118,19 @@ const { t } = useI18n();
 
 const isOpen = useDialogRoute();
 
-const edits = ref<Partial<Panel>>({});
+const edits = reactive<Partial<Panel>>({
+	show_header: undefined,
+	type: undefined,
+	name: undefined,
+	note: undefined,
+	icon: undefined,
+	color: undefined,
+	width: undefined,
+	height: undefined,
+	position_x: undefined,
+	position_y: undefined,
+	options: undefined,
+});
 
 const insightsStore = useInsightsStore();
 
@@ -114,15 +139,10 @@ const { panels: panelTypes } = getPanels();
 
 const router = useRouter();
 
-const panel = computed<Partial<Panel>>({
-	get() {
-		if (props.panelKey === '+') return unref(edits);
-		const existing: Partial<Panel> = unref(panels).find((panel) => panel.id === props.panelKey) ?? {};
-		return assign({}, existing, unref(edits));
-	},
-	set(updatedEdits) {
-		edits.value = updatedEdits;
-	},
+const panel = computed<Partial<Panel>>(() => {
+	if (props.panelKey === '+') return edits;
+	const existing: Partial<Panel> = unref(panels).find((panel) => panel.id === props.panelKey) ?? {};
+	return assign({}, existing, omitBy(edits, isUndefined));
 });
 
 const selectItems = computed<FancySelectItem[]>(() => {
@@ -160,6 +180,7 @@ const stageChanges = () => {
 		createPanel.height ??= unref(currentTypeInfo)?.minHeight ?? 4;
 		createPanel.position_x ??= 1;
 		createPanel.position_y ??= 1;
+		createPanel.options ??= {};
 
 		insightsStore.stagePanelCreate(unref(createPanel as CreatePanel));
 		router.push(`/insights/${props.dashboardKey}`);
