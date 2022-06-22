@@ -22,7 +22,7 @@
 
 ::: tip Database Columns
 
-Keep in mind that a Directus Field is just a database columns. Therefore you can create a columns directly in the
+Keep in mind that a Directus Field is just a database column. Therefore you can create a columns directly in the
 database, and it will automatically appear within Directus using intelligent defaults. You can then enhance the
 experience further using the following steps.
 
@@ -38,6 +38,30 @@ experience further using the following steps.
 
 While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the
 system collections. To get started, expand System Collections from the bottom of **Settings > Data Model**.
+
+:::
+
+### Sort Fields
+
+The sort feature enables manual drag-and-drop Item reordering within the Directus App. This is typically shown on the
+[Collection Page](/app/content-collections/), but can also be used for sorting items within
+[Junction Tables](/getting-started/glossary/#junction-collections). Configuration is as easy as selecting the
+appropriate sort field:
+
+- **Sort Field** — Choose a field with the `integer` type. You may want to set this field to be "hidden" so it doesn't
+  show up within the Item Page form.
+
+::: tip Automatic Setup
+
+When creating a new Collection, you have the option of creating an optional "Sort" field. If you choose to include this
+field, the collection's sort settings will automatically be configured for you.
+
+:::
+
+::: tip Interface Sorting
+
+To configure manual sorting within an Interface (eg: M2M, O2M, or M2A), configure as above, but also set the **Sort
+Field** on the field's Relationship pane.
 
 :::
 
