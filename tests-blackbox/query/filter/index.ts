@@ -131,11 +131,17 @@ const processSchemaFields = (
 		describe(`Field: ${filterKey} (${schema.type})`, () => {
 			describe(`_${filterOperator}`, () => {
 				it.each(vendors)('%s', async (vendor) => {
-					// Oracle does not have a time datatype
-					if (vendor === 'oracle' && schema.type === 'time') {
+					// TODO: Enable query filter testing for Oracle
+					if (vendor === 'oracle') {
 						expect(true).toBe(true);
 						return;
 					}
+
+					// Oracle does not have a time datatype
+					// if (vendor === 'oracle' && schema.type === 'time') {
+					// 	expect(true).toBe(true);
+					// 	return;
+					// }
 
 					const schemaValues = get(vendorSchemaValues, `${vendor}.${collection}.${filterKey}`);
 					const possibleValues = Array.isArray(schemaValues) ? schemaValues : schema.possibleValues;
