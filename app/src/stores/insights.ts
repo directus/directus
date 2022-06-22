@@ -12,7 +12,7 @@ import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
 import { nanoid } from 'nanoid';
 
-type CreatePanel = Partial<Panel> & Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y'>;
+export type CreatePanel = Partial<Panel> & Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y'>;
 
 const MAX_CACHE_SIZE = 3; // Max number of dashboards to keep in cache at a time
 
@@ -294,7 +294,13 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			const requests: Promise<AxiosResponse<any, any>>[] = [];
 
 			if (edits.create) {
-				requests.push(api.post(`/panels`, edits.create));
+				// Created edits might come with a temporary ID for editing. Make sure to submit to API without temp ID
+				requests.push(
+					api.post(
+						`/panels`,
+						edits.create.map((create) => omit(create, 'id'))
+					)
+				);
 			}
 
 			if (edits.update) {

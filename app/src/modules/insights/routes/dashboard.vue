@@ -24,9 +24,9 @@
 					<v-icon name="clear" />
 				</v-button>
 
-				<!-- <v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
-				</v-button> -->
+				</v-button>
 
 				<v-button
 					v-tooltip.bottom="t('save')"
@@ -117,14 +117,9 @@
 			</template>
 		</v-workspace>
 
-		<!-- <router-view
-			name="detail"
-			:dashboard-key="primaryKey"
-			:panel="panelKey ? rawPanels.find((panel) => panel.id === panelKey) : null"
-			@save="stageConfiguration"
-			@cancel="$router.replace(`/insights/${primaryKey}`)"
-		/>
+		<router-view name="detail" :dashboard-key="primaryKey" :panel-key="panelKey" />
 
+		<!--
 		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = null" @esc="movePanelID = null">
 			<v-card>
 				<v-card-title>{{ t('copy_to') }}</v-card-title>
