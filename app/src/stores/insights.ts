@@ -2,12 +2,13 @@ import api from '@/api';
 import { getPanels } from '@/panels';
 import { usePermissionsStore } from '@/stores';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { Item, Panel } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { assign, mapKeys, pull, uniq, omit, omitBy, isUndefined } from 'lodash';
+import { assign, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { ref, unref, reactive, computed } from 'vue';
+import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
 
 type CreatePanel = Partial<Panel> & Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y'>;
@@ -36,6 +37,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		update: [],
 		delete: [],
 	});
+
+	const saving = ref(false);
 
 	/** Last MAX_CACHE_SIZE dashboards that we've loaded into data. Used to purge caches once too much data is loaded */
 	const lastLoaded: string[] = [];
@@ -68,6 +71,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		errors,
 		data,
 		hasEdits,
+		saving,
 		hydrate,
 		dehydrate,
 		clearCache,
@@ -76,6 +80,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		getPanelsForDashboard,
 		refresh,
 		stagePanelEdit,
+		saveChanges,
 	};
 
 	async function hydrate() {
@@ -206,8 +211,9 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			}
 
 			data.value = assign({}, data.value, results);
+			/** @TODO Set errors based on failed paths */
 		} catch (err) {
-			// Retry the broken query panels
+			/** @TODO Retry the broken query panels */
 		} finally {
 			loading.value = pull(unref(loading), ...Array.from(queries.values()).map(({ panel }) => panel));
 		}
@@ -242,6 +248,34 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		if ('options' in panelEdits) {
 			/** @TODO Load panel data for updated panel */
+		}
+	}
+
+	async function saveChanges() {
+		saving.value = true;
+
+		try {
+			const requests: Promise<AxiosResponse<any, any>>[] = [];
+
+			if (edits.create) {
+				requests.push(api.post(`/panels`, edits.create));
+			}
+
+			if (edits.update) {
+				requests.push(api.patch(`/panels`, edits.update));
+			}
+
+			if (edits.delete) {
+				requests.push(api.delete(`/panels`, { data: edits.delete }));
+			}
+
+			await Promise.all(requests);
+			await hydrate();
+			clearEdits();
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			saving.value = false;
 		}
 	}
 });

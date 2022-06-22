@@ -28,9 +28,16 @@
 					<v-icon name="add" />
 				</v-button> -->
 
-				<!-- <v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
+				<v-button
+					v-tooltip.bottom="t('save')"
+					:disabled="!hasEdits"
+					rounded
+					icon
+					:loading="saving"
+					@click="saveChanges"
+				>
 					<v-icon name="check" />
-				</v-button> -->
+				</v-button>
 			</template>
 
 			<template v-else>
@@ -88,7 +95,7 @@
 			@delete="deletePanel"
 			@duplicate="duplicatePanel" -->
 
-		<v-workspace :edit-mode="editMode" :tiles="tiles" :zoom-to-fit="zoomToFit" @update="stagePanelEdit">
+		<v-workspace :edit-mode="editMode" :tiles="tiles" :zoom-to-fit="zoomToFit" @update="insightsStore.stagePanelEdit">
 			<template #default="{ tile }">
 				<v-progress-circular v-if="loading.includes(tile.id) && !data[tile.id]" indeterminate />
 				<component
@@ -199,7 +206,7 @@ const appStore = useAppStore();
 const permissionsStore = usePermissionsStore();
 
 const { fullScreen } = toRefs(appStore);
-const { loading, errors, data, stagePanelEdit } = toRefs(insightsStore);
+const { loading, errors, data, saving, hasEdits } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
 
@@ -294,9 +301,14 @@ watch(
 // const movePanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
 // const movePanelID = ref<string | null>();
 
-// useShortcut('meta+s', () => {
-// 	saveChanges();
-// });
+useShortcut('meta+s', () => {
+	saveChanges();
+});
+
+async function saveChanges() {
+	await insightsStore.saveChanges();
+	editMode.value = false;
+}
 
 watch(editMode, (editModeEnabled) => {
 	if (editModeEnabled) {
