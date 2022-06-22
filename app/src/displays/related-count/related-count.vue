@@ -29,7 +29,7 @@ export default defineComponent({
 		},
 		rootItem: {
 			type: Object as PropType<Record<string, any>>,
-			default: () => {}
+			required: true,
 		},
 		format: {
 			type: Boolean,
@@ -73,16 +73,14 @@ export default defineComponent({
 			default: false,
 		},
 		conditionalFormatting: {
-			type: Array as PropType<
-				{
-					operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte';
-					value: string;
-					color: string;
-					background: string;
-					text: string;
-					icon: string;
-				}[]
-				>,
+			type: Array as PropType<{
+				operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte';
+				value: string;
+				color: string;
+				background: string;
+				text: string;
+				icon: string;
+			}[]>,
 			default: () => [],
 		},
 	},
