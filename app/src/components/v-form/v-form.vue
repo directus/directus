@@ -414,8 +414,9 @@ export default defineComponent({
 			function toggleRawField(field: Field) {
 				if (rawActiveFields.value.has(field.field)) {
 					// unset field before toggling off to prevent interfaces from breaking
-					// when receiving incompatible values with mustache tags
-					unsetValue(field);
+					// when receiving incompatible values with mustache tags,
+					// except for text field.
+					if (field.type !== 'text') unsetValue(field);
 
 					rawActiveFields.value.delete(field.field);
 				} else {
