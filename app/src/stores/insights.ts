@@ -6,10 +6,11 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Item, Panel } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { assign, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';
+import { assign, isUndefined, mapKeys, omit, omitBy, pull, uniq, clone } from 'lodash';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
+import { nanoid } from 'nanoid';
 
 type CreatePanel = Partial<Panel> & Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y'>;
 
@@ -72,6 +73,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		data,
 		hasEdits,
 		saving,
+		edits,
 		hydrate,
 		dehydrate,
 		clearCache,
@@ -79,8 +81,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		getDashboard,
 		getPanelsForDashboard,
 		refresh,
-		stagePanelEdit,
-		stagePanelDeletion,
+		stagePanelCreate,
+		stagePanelUpdate,
+		stagePanelDuplicate,
+		stagePanelDelete,
 		saveChanges,
 	};
 
@@ -226,7 +230,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		return panelType?.query?.(panel.options) ?? null;
 	}
 
-	function stagePanelEdit({ id, edits: panelEdits }: { id: string; edits: Partial<Panel> }) {
+	function stagePanelCreate(panel: CreatePanel) {
+		edits.create.push(panel);
+	}
+
+	function stagePanelUpdate({ id, edits: panelEdits }: { id: string; edits: Partial<Panel> }) {
 		panelEdits = omitBy(panelEdits, isUndefined);
 
 		const isNew = id.startsWith('_');
@@ -250,6 +258,33 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		if ('options' in panelEdits) {
 			/** @TODO Load panel data for updated panel */
 		}
+	}
+
+	function stagePanelDuplicate(panelKey: string) {
+		const panel = unref(panelsWithEdits).find((panel) => panel.id === panelKey);
+		if (!panel) return;
+
+		const newPanel = clone(panel);
+
+		newPanel.id = `_${nanoid()}`;
+		newPanel.position_x = (newPanel.position_x ?? 0) + 2;
+		newPanel.position_y = (newPanel.position_y ?? 0) + 2;
+
+		// In case width/height is totally unknown (which it shouldn't be) fallback to 4x4 as a last-resort
+		newPanel.width ??= 4;
+		newPanel.height ??= 4;
+
+		stagePanelCreate(newPanel as CreatePanel);
+	}
+
+	function stagePanelDelete(panelKey: string) {
+		if (edits.create.some((created) => created.id === panelKey)) {
+			edits.create = edits.create.filter((created) => created.id !== panelKey);
+			return;
+		}
+
+		edits.update = edits.update.filter((updated) => updated.id !== panelKey);
+		edits.delete.push(panelKey);
 	}
 
 	async function saveChanges() {
@@ -278,10 +313,6 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		} finally {
 			saving.value = false;
 		}
-	}
-
-	function stagePanelDeletion(panel: string) {
-		edits.delete.push(panel);
 	}
 });
 

@@ -90,17 +90,16 @@
 		</template>
 
 		<!-- @edit="editPanel"
-			@update="stagePanelEdits"
 			@move="movePanelID = $event"
-			@delete="deletePanel"
 			@duplicate="duplicatePanel" -->
 
 		<v-workspace
 			:edit-mode="editMode"
 			:tiles="tiles"
 			:zoom-to-fit="zoomToFit"
-			@update="insightsStore.stagePanelEdit"
-			@delete="insightsStore.stagePanelDeletion"
+			@duplicate="(panel) => insightsStore.stagePanelDuplicate(panel.id)"
+			@update="insightsStore.stagePanelUpdate"
+			@delete="insightsStore.stagePanelDelete"
 		>
 			<template #default="{ tile }">
 				<v-progress-circular v-if="loading.includes(tile.id) && !data[tile.id]" indeterminate />
