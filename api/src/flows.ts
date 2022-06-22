@@ -182,7 +182,7 @@ class FlowManager {
 					const handler: ActionHandler = (meta, context) =>
 						this.executeFlow(flow, meta, {
 							accountability: context.accountability,
-							database: context.database,
+							database: getDatabase(),
 							getSchema: context.schema ? () => context.schema : getSchema,
 						});
 
