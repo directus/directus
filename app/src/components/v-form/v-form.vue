@@ -280,9 +280,11 @@ export default defineComponent({
 					return field;
 				};
 
-				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
+				// why are we merging values in here? ah the conditions trigger a re-render of all fields for each value change
+				// const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
+				// console.log(valuesWithDefaults);
 
-				return fields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
+				return fields.value; //.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
 			});
 
 			const fieldsInGroup = computed(() =>
