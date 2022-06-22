@@ -13,16 +13,16 @@
 
 		<template #actions>
 			<template v-if="editMode">
-				<!-- <v-button
+				<v-button
 					v-tooltip.bottom="t('clear_changes')"
 					class="clear-changes"
 					rounded
 					icon
 					outlined
-					@click="attemptCancelChanges"
+					@click="cancelChanges"
 				>
 					<v-icon name="clear" />
-				</v-button> -->
+				</v-button>
 
 				<!-- <v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
@@ -294,6 +294,11 @@ watch(
 		insightsStore.refresh(props.primaryKey);
 	}
 );
+
+function cancelChanges() {
+	insightsStore.clearEdits();
+	editMode.value = false;
+}
 
 // const saving = ref(false);
 
