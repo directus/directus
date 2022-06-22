@@ -58,7 +58,7 @@ const processSchemaFields = (
 	let targetSchema: {
 		filterOperatorList: any;
 		generateFilterForDataType: any;
-		type?: 'integer' | 'uuid' | 'string' | 'alias' | 'bigInteger' | 'dateTime' | 'boolean' | 'json';
+		type?: 'integer' | 'uuid' | 'string' | 'alias' | 'bigInteger' | 'float' | 'dateTime' | 'boolean' | 'json';
 		getValidatorFunction?: (filter: ClientFilterOperator) => FilterValidator;
 		getEmptyAllowedFunction?: (filter: ClientFilterOperator) => FilterEmptyValidator;
 	};
