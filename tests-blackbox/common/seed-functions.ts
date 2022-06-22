@@ -348,5 +348,10 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 		}
 	}
 
+	// Overcome MSSQL specific accuracy up to 1/300th of a second
+	for (let index = 0; index < values.length; index++) {
+		values[index] = values[index].slice(0, 22) + '0Z';
+	}
+
 	return values;
 }
