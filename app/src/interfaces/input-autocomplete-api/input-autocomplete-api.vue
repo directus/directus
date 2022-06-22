@@ -4,7 +4,7 @@
 	</v-notice>
 	<div v-else>
 		<v-menu attached :disabled="disabled">
-			<template #activator="{ activate, deactivate }">
+			<template #activator="{ activate }">
 				<v-input
 					:placeholder="placeholder"
 					:disabled="disabled"
@@ -12,7 +12,6 @@
 					:model-value="value"
 					@update:model-value="onInput"
 					@focus="activate"
-					@blur="deactivate"
 				>
 					<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 					<template v-if="iconRight" #append><v-icon :name="iconRight" /></template>
