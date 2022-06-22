@@ -8,17 +8,20 @@
 		/>
 		<template v-for="(fieldName, index) in fieldNames">
 			<component
-				:is="`interface-${field.meta?.interface || 'group-standard'}`"
-				v-if="fields?.[index]?.meta?.special?.includes('group')"
-				v-show="!fields?.[index]?.meta?.hidden"
+				:is="`interface-${formFields[index].meta?.interface || 'group-standard'}`"
+				v-if="formFields[index]?.meta?.special?.includes('group')"
+				v-show="!formFields[index]?.meta?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
 					}
 				"
 				:key="fieldName"
-				:class="[fields?.[index]?.meta?.width || 'full', index === firstVisibleFieldIndex ? 'first-visible-field' : '']"
-				:field="fields?.[index]"
+				:class="[
+					formFields[index]?.meta?.width || 'full',
+					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+				]"
+				:field="formFields[index]"
 				:fields="fieldsForGroup[index]"
 				:values="modelValue || {}"
 				:initial-values="initialValues || {}"
@@ -29,12 +32,12 @@
 				:loading="loading"
 				:validation-errors="validationErrors"
 				:badge="badge"
-				v-bind="fields?.[index]?.meta?.options || {}"
+				v-bind="formFields[index]?.meta?.options || {}"
 				@apply="apply"
 			/>
 
 			<form-field
-				v-else-if="!fields?.[index]?.meta?.hidden"
+				v-else-if="!formFields[index]?.meta?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
@@ -42,11 +45,11 @@
 				"
 				:key="fieldName + '_'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
-				:field="fields?.[index]"
+				:field="formFields[index]"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[fieldName]"
 				:initial-value="(initialValues || {})[fieldName]"
-				:disabled="isDisabled(fields?.[index])"
+				:disabled="isDisabled(formFields[index])"
 				:batch-mode="batchMode"
 				:batch-active="batchActiveFields.includes(fieldName)"
 				:primary-key="primaryKey"
@@ -54,15 +57,15 @@
 				:validation-error="
 					validationErrors.find(
 						(err) =>
-							err.collection === fields?.[index]?.collection &&
+							err.collection === formFields[index]?.collection &&
 							(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
 					)
 				"
 				:badge="badge"
 				@update:model-value="setValue(fieldName, $event)"
 				@set-field-value="setValue($event.field, $event.value)"
-				@unset="unsetValue(fields?.[index]!)"
-				@toggle-batch="toggleBatchField(fields?.[index]!)"
+				@unset="unsetValue(formFields[index])"
+				@toggle-batch="toggleBatchField(formFields[index])"
 			/>
 		</template>
 	</div>
