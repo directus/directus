@@ -348,9 +348,10 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 		}
 	}
 
+	// Overcome MySQL / Maria created without decimal accuracy
 	// Overcome MSSQL specific accuracy up to 1/300th of a second
 	for (let index = 0; index < values.length; index++) {
-		values[index] = values[index].slice(0, 22) + '0Z';
+		values[index] = values[index].slice(0, 20) + '000Z';
 	}
 
 	return values;
