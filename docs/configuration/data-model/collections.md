@@ -1,46 +1,82 @@
 # Collections
 
-> Collections are cool!
+> Each Collection represents a table in your database. They are containers for specific types of Items which may contain
+> any number of Fields. Collections can be organized in any way that is appropriate for your Project.
 
 [[toc]]
 
+<!--
+:::tip Before You Begin
+
+Learn Directus
+
+:::
+:::tip Learn more
+
+API docs
+
+:::
+-->
+
 ## Create a Collection
 
-1. Click <span mi btn>add</span> in the <span mi icon dark>list_alt</span> Data Model header
-2. Enter a unique **Collection Name** to be used as the database table name, API collection key, and App collection name
-   default.
-3. Configure the name and type of the **Primary Key**.
-   - Auto-Incremented Integer
-   - Auto-Incremented Big Integer (MySQL and PostgreSQL only)
-   - Generated UUID
-   - Manually Entered String
-4. Click on <span mi btn>arrow_forward</span>
-5. Optional: Enable and rename any desired **System Fields**.
-   - Status
-   - Sort
-   - Created On
-   - Created By
-   - Updated On
-   - Updated By
-6. Click the <span mi btn>check</span> **Finish Setup** button
+<video title="Create a Collection" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
+
+To create a Collection, follow these steps.
+
+1. Navigate to **Settings > Data Model** and click <span mi btn>add</span> in the page header and a drawer will open.
+2. Enter a unique **Collection Name**.\
+   This is used as the datatable name, API Collection key, and default Collection name in the App.
+3. There are three more _optional_ configurations on this page:
+   - **Singleton** — Toggles whether the Collection holds one single Item or multiple Items.
+   - **Primary Key Field** — Sets the name of the primary key field. Defaults to `id`.
+   - **Type** — Sets the type of ID to use for this Collection. You have four options:
+     - **Auto-Incremented Integer**
+     - **Auto-Incremented Big Integer** _(MySQL and PostgreSQL only)_
+     - **Generated UUID**
+     - **Manually Entered String**
+4. Click <span mi btn>arrow_forward</span> to confirm and move to the next page.
+5. Optional: Enable and rename **Optional System Fields** as desired.
+   - **Status** — A Field to store Item status.
+   - **Sort** — A Field to allow drag-and-drop sorting.
+   - **Created On** — A Field to log the date that the Item was created.
+   - **Created By** — A Field to log the User that created this Item.
+   - **Updated On** — A Field to log the last date updated.
+   - **Updated By** — A Field to log the last User to edit the file.
+6. Click <span mi btn>check</span> to confirm and create the Collection.
 
 ::: danger Immutable Keys
 
-As of now, the key can not be modified after the collections has been created.
+The key can not be modified after Collection creation.
+
+:::
+
+:::warning Composite Primary Keys
+
+Directus does not currently support composite primary keys.
 
 :::
 
 ::: tip Database Tables
 
-Keep in mind that a Directus Collection is just a database table. Therefore you can import or create a table directly in
-the database, and it will automatically appear within Directus. The first time you manage that table, a
+Remember, a Directus Collection is simply a database table. Therefore, you can import or create a table directly in the
+database, and it will automatically appear within Directus. The first time you manage that table, a
 `directus_collections` record will be created with default values.
 
 :::
 
 ## Configure a Collection
 
-You can configure a collection by clicking on it within **Settings > Data Model**. The following options are available:
+<video title="Configure a Collection" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
+
+1. Navigate to **Settings > Data Model**
+2. Click the desired Collection and the Collection Configuration Page will open.
+
+The following options are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
@@ -49,12 +85,12 @@ You can configure a collection by clicking on it within **Settings > Data Model*
   - [Deleting a Field](#deleting-a-field)
   - [Duplicating a Field](#duplicating-a-field)
   - [Changing Field Order & Layout](#adjusting-the-collection-form)
-- **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
+- **Collection Name** — This is the key for the Collection. It can not be modified, but you can override it with
   Translations (see field below).
-- **Note** — A helpful note that explains the collection's purpose
-- **Icon** — The icon used throughout the App when referencing this collection
-- **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A Field Template that creates dynamic titles for the collection's items
+- **Note** — A helpful note that explains the collection's purpose.
+- **Icon** — The icon used throughout the App when referencing this collection.
+- **Color** — A color for the icon, shown in the navigation and its header.
+- **Display Template** — A Field Template that creates dynamic titles for the collection's items.
 - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
   collections.
 - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
@@ -77,8 +113,8 @@ default, but are still returned normally via the API unless they are filtered ou
 
 ::: tip Automatic Setup
 
-When creating a new Collection, you have the option of creating an optional "Status" field. If you choose to include
-this field, the collection's archive settings will automatically be configured for you.
+When creating a new Collection, you have the option to create an optional "Status" field. If you choose to include this
+Field, the Collection's archive settings will be automatically configured for you.
 
 :::
 
@@ -124,29 +160,51 @@ allows for configuring which parent/relational field values will be copied.
 
 ## Adjust a Collection
 
-Collections can be organized in several ways, including sorting, custom translations, showing/hiding, and even grouping.
-This organization is reflected in the sidebar navigation, allowing you to control how the users of the app will interact
-with the various collections in your project. Configuring the organization of your collections is done on the
-**Settings > Data Model** page.
+<video title="Adjust a Collection" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
+
+Collections are displayed in the [Content Module](/app/content). They can be sorted into a custom order, grouped and
+nested, grouped by custom translation, and and even hidden from the Content Module. This organization is reflected in
+the sidebar navigation, allowing you to control how the users of the app will interact with the various Collections in
+your project. Configuring the organization of your collections is done on the **Settings > Data Model** page.
 
 ## Sort & Group Collections
 
-By using the <span mi icon>drag_indicator</span> drag handles on the left of the collection, you can manually put the
-collections in an order that makes the most sense for your project. By dragging a collection underneath another
-collection, you can turn any collection into a group-parent. Groups can even be nested within other groups.
+<video title="Adjust a Collection" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
 
-Additionally, you can add special "folder" collections that are exclusively used for organizational purposes, and don't
+To Sort and Group Collections, follow these steps: Use the <span mi icon>drag_indicator</span> drag handles on the left
+of the Collection, you can manually put the Collections in an order that makes the most sense for your project. By
+dragging a Collection underneath another Collection, you can turn any Collection into a group-parent. Groups can even be
+nested within other groups.
+
+Additionally, you can add special "folder" Collections that are exclusively used for organizational purposes, and don't
 hold any data themselves. This can be done by clicking <span mi btn sec>create_new_folder</span> in the top right of the
 page.
 
 ## Rename a Collection
 
+<video title="Rename a Collection" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
+
 The key of a collection (eg. what's used in the API / database) can't be changed. However, you can alter how a
-collection is displayed in your app by adding custom translations. This can be done by opening the detail page of a
-collection, and modifying the "Collection Naming Translations" option. Make sure to add translations for all the
+Collection is displayed in your app by adding custom translations. This can be done by opening the detail page of a
+Collection, and modifying the "Collection Naming Translations" option. Make sure to add translations for all the
 languages your app's users might use for the best results!
 
+<!--
+TODO: TRANSLATIONS??
+
+ -->
+
 ## Hide a Collection
+
+<video title="Hide a Collection" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
 
 1. Navigate to **Settings > Data Model**
 2. Click on the <span mi icon>more_vert</span> icon
@@ -165,6 +223,10 @@ navigation either.
 
 ## Adjust a Collection Form
 
+<video title="Adjust a Collection Form" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
+
 The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
 is highly configurable, with the following field options:
 
@@ -180,6 +242,10 @@ is highly configurable, with the following field options:
   Field flow. Different style groupings are available for different use-cases.
 
 ## Delete a Collection
+
+<video title="Delete a Collection" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Click <span mi btn dngr>delete</span> in the header
