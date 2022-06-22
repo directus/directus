@@ -14,6 +14,11 @@ export const seedRelationalFields = async (
 		// Create items
 		let generatedStringIdCounter = 0;
 		for (const key of Object.keys(testsSchema)) {
+			// Oracle does not have a time datatype
+			if (vendor === 'oracle' && testsSchema[key].type === 'time') {
+				continue;
+			}
+
 			const items = [];
 
 			if (testsSchema[key].children) {
@@ -44,10 +49,12 @@ export const seedRelationalFields = async (
 				}
 			}
 
-			await CreateItem(vendor, {
-				collection: collection,
-				item: items,
-			});
+			if (items.length > 0) {
+				await CreateItem(vendor, {
+					collection: collection,
+					item: items,
+				});
+			}
 		}
 
 		expect(true).toBeTruthy();

@@ -47,6 +47,11 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 		// Create items
 		let generatedStringIdCounter = 0;
 		for (const key of Object.keys(fieldSchema)) {
+			// Oracle does not have a time datatype
+			if (vendor === 'oracle' && fieldSchema[key].type === 'time') {
+				continue;
+			}
+
 			const items = [];
 			const castValueToString = ['bigInteger'].includes(fieldSchema[key].type);
 
@@ -71,10 +76,12 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 				}
 			}
 
-			await CreateItem(vendor, {
-				collection: collection,
-				item: items,
-			});
+			if (items.length > 0) {
+				await CreateItem(vendor, {
+					collection: collection,
+					item: items,
+				});
+			}
 		}
 
 		expect(true).toBeTruthy();
@@ -111,6 +118,11 @@ export const seedAliasAllFieldTypesValues = async (
 				item[aliasField] = aliasKey;
 
 				for (const key of Object.keys(fieldSchema)) {
+					// Oracle does not have a time datatype
+					if (vendor === 'oracle' && fieldSchema[key].type === 'time') {
+						continue;
+					}
+
 					const castValueToString = ['bigInteger'].includes(fieldSchema[key].type);
 
 					item[fieldSchema[key].field] = castValueToString
@@ -122,10 +134,12 @@ export const seedAliasAllFieldTypesValues = async (
 			}
 		}
 
-		await CreateItem(vendor, {
-			collection: collection,
-			item: items,
-		});
+		if (items.length > 0) {
+			await CreateItem(vendor, {
+				collection: collection,
+				item: items,
+			});
+		}
 
 		expect(true).toBeTruthy();
 	} catch (error) {
