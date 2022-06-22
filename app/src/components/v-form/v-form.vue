@@ -6,17 +6,17 @@
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
-		<template v-for="(fieldName, index) in fieldNames">
+		<template v-for="(field, index) in fields">
 			<component
 				:is="`interface-${fieldsMeta[index]?.interface || 'group-standard'}`"
 				v-if="fieldsMeta[index]?.special?.includes('group')"
 				v-show="!fieldsMeta[index]?.hidden"
 				:ref="
 					(el: Element) => {
-						formFieldEls[fieldName] = el;
+						formFieldEls[field.field] = el;
 					}
 				"
-				:key="fieldName + '_group'"
+				:key="field.field + '_group'"
 				:class="[fieldsMeta[index]?.width || 'full', index === firstVisibleFieldIndex ? 'first-visible-field' : '']"
 				:field="formFields[index]"
 				:fields="fieldsForGroup[index]"
@@ -37,29 +37,29 @@
 				v-else-if="!fieldsMeta[index]?.hidden"
 				:ref="
 					(el: Element) => {
-						formFieldEls[fieldName] = el;
+						formFieldEls[field.field] = el;
 					}
 				"
-				:key="fieldName + '_field'"
+				:key="field.field + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="formFields[index]"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
-				:model-value="(values || {})[fieldName]"
-				:initial-value="(initialValues || {})[fieldName]"
+				:model-value="(values || {})[field.field]"
+				:initial-value="(initialValues || {})[field.field]"
 				:disabled="isDisabled(formFields[index])"
 				:batch-mode="batchMode"
-				:batch-active="batchActiveFields.includes(fieldName)"
+				:batch-active="batchActiveFields.includes(field.field)"
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-error="
 					validationErrors.find(
 						(err) =>
 							err.collection === formFields[index]?.collection &&
-							(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
+							(err.field === field.field || err.field.endsWith(`(${field.field})`))
 					)
 				"
 				:badge="badge"
-				@update:model-value="setValue(fieldName, $event)"
+				@update:model-value="setValue(field.field, $event)"
 				@set-field-value="setValue($event.field, $event.value)"
 				@unset="unsetValue(formFields[index])"
 				@toggle-batch="toggleBatchField(formFields[index])"
@@ -160,8 +160,6 @@ export default defineComponent({
 
 			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
 		});
-		// might still need to be updated?
-		const fieldNames = Object.freeze(fields.value.map((f) => f.field));
 
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
@@ -239,7 +237,6 @@ export default defineComponent({
 			isDisabled,
 			scrollToField,
 			formFieldEls,
-			fieldNames,
 			fieldsMeta,
 		};
 
