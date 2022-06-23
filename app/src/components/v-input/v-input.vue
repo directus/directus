@@ -262,6 +262,10 @@ function stepDown() {
 	--v-input-border-color-focus: var(--primary);
 }
 
+::placeholder {
+	opacity: 1;
+}
+
 .v-input {
 	--arrow-color: var(--border-normal);
 	--v-icon-color: var(--foreground-subdued);
