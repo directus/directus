@@ -154,6 +154,7 @@
 					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, roleFilter)"
 					:search="search"
+					@refresh="refresh"
 				/>
 			</template>
 		</private-view>
