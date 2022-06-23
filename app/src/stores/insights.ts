@@ -219,10 +219,16 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 					else if (!results[panel]) results[panel] = [data];
 					else results[panel].push(data);
 				}
+
+				if (Array.isArray(data.errors)) {
+					setErrorsFromResponseData(data.errors);
+				}
 			}
 
 			data.value = assign({}, data.value, results);
-			/** @TODO Set errors based on failed paths */
+
+			const succeededPanels = Object.keys(results);
+			errors.value = omit(errors.value, ...succeededPanels);
 		} catch (err: any) {
 			/**
 			 * A thrown error means the request failed completely. This can happen for a wide variety
@@ -231,16 +237,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			 * retry the request without the failed panels */
 
 			if (err.response.status === 400 && Array.isArray(err.response.data?.errors)) {
-				const failedIDs: string[] = [];
-
-				for (const gqlError of err.response.data.errors) {
-					const queryKey = gqlError?.extensions?.graphqlErrors?.[0]?.path?.[0];
-					if (!queryKey) continue;
-					const panelID = queries.get(queryKey.substring('query_'.length))?.panel;
-					if (!panelID) continue;
-					failedIDs.push(panelID);
-					errors.value = assign({}, errors.value, { [panelID]: gqlError });
-				}
+				const failedIDs = setErrorsFromResponseData(err.response.data.errors);
 
 				const panelsToTryAgain = panels.filter(({ id }) => failedIDs.includes(id) === false);
 
@@ -255,6 +252,24 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			}
 		} finally {
 			loading.value = pull(unref(loading), ...Array.from(queries.values()).map(({ panel }) => panel));
+		}
+
+		/**
+		 * Set the error objects based on the gqlError paths, returns the panel IDs of the panels that failed
+		 */
+		function setErrorsFromResponseData(responseErrors: any[]): string[] {
+			const failedIDs: string[] = [];
+
+			for (const gqlError of responseErrors) {
+				const queryKey = gqlError?.extensions?.graphqlErrors?.[0]?.path?.[0];
+				if (!queryKey) continue;
+				const panelID = queries.get(queryKey.substring('query_'.length))?.panel;
+				if (!panelID) continue;
+				failedIDs.push(panelID);
+				errors.value = assign({}, errors.value, { [panelID]: gqlError });
+			}
+
+			return failedIDs;
 		}
 	}
 
