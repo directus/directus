@@ -39,6 +39,8 @@ export class ImportService {
 	}
 
 	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream): Promise<void> {
+		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
+
 		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create'
 		);
