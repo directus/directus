@@ -92,16 +92,16 @@ jobs:
     uses: licitdev/directus/.github/workflows/e2e-blackbox-tests.yml@feat/black-box-tests
     with:
       should_skip:
-        (${{ github.event_name == 'pull_request' }} && !contains(github.event.pull_request.labels.*.name, 'Full%20Tests')) ||
-        ${{ needs.pre_check.outputs.should_skip == 'true' ||
+        ${{ (github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'Full%20Tests')) ||
+        needs.pre_check.outputs.should_skip == 'true' ||
         fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests.should_skip }}
 
   e2e_blackbox_tests_sqlite:
     name: End-to-End Black Box Tests (SQLite)
     needs: pre_check
-    uses: licitdev/directus/.github/workflows/e2e-blackbox-tests.yml@feat/black-box-tests
+    uses: licitdev/directus/.github/workflows/e2e-blackbox-tests-sqlite.yml@feat/black-box-tests
     with:
       should_skip:
-        (${{ github.event_name != 'pull_request' }} || contains(github.event.pull_request.labels.*.name, 'Full%20Tests')) ||
-        (${{ needs.pre_check.outputs.should_skip == 'true' ||
-        fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests.should_skip }})
+        ${{ (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'Full%20Tests')) ||
+        needs.pre_check.outputs.should_skip == 'true' ||
+        fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests.should_skip }}
