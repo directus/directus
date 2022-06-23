@@ -3,7 +3,7 @@
 import knex from 'knex';
 import Listr from 'listr';
 import vendors from '../common/get-dbs-to-test';
-import config from '../common/config';
+import config, { getUrl } from '../common/config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
 import axios from 'axios';
@@ -82,7 +82,7 @@ export default async (): Promise<void> => {
 
 							for (const vendor of vendors) {
 								try {
-									const serverUrl = `http://localhost:${config.envs[vendor]!.PORT}`;
+									const serverUrl = getUrl(vendor);
 									let response = await axios.get(
 										`${serverUrl}/items/tests_flow_data?access_token=${common.USER.TESTS_FLOW.TOKEN}`
 									);
