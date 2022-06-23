@@ -5,17 +5,15 @@ export function addPathToValidationError(validationError: GraphQLError): GraphQL
 
 	if (!token) return validationError;
 
-	const path: string[] = [];
-
 	let prev: Token | null = token;
 
+	const queryRegex = /query_[A-Za-z0-9]{8}/;
+
 	while (prev) {
-		if (prev.kind === 'Name' && prev.value) path.unshift(prev.value);
+		if (prev.kind === 'Name' && prev.value && queryRegex.test(prev.value)) {
+			return locatedError(validationError, validationError.nodes, [prev.value]);
+		}
+
 		prev = prev.prev;
 	}
-
-	// First item is the root "query" / "mutation"
-	path.shift();
-
-	return locatedError(validationError, validationError.nodes, path);
 }

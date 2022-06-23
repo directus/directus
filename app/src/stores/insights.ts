@@ -28,7 +28,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	const loading = ref<string[]>([]);
 
 	/** Panels that errored while fetching data */
-	const errors = ref<{ id: string; error: Error }[]>([]);
+	const errors = ref<{ [id: string]: Error }>({});
 
 	/** Cache/store for the panel data */
 	const data = ref<{ [panel: string]: Item | Item[] }>({});
@@ -124,7 +124,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 	function clearCache() {
 		loading.value = [];
-		errors.value = [];
+		errors.value = {};
 		data.value = {};
 	}
 
@@ -223,8 +223,36 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			data.value = assign({}, data.value, results);
 			/** @TODO Set errors based on failed paths */
-		} catch (err) {
-			/** @TODO Retry the broken query panels */
+		} catch (err: any) {
+			/**
+			 * A thrown error means the request failed completely. This can happen for a wide variety
+			 * of reasons, but there's one common one we need to account for: misconfigured panels. A
+			 * GraphQL validation error will throw a 400 rather than a 200+partial data, so we need to
+			 * retry the request without the failed panels */
+
+			if (err.response.status === 400 && Array.isArray(err.response.data?.errors)) {
+				const failedIDs: string[] = [];
+
+				for (const gqlError of err.response.data.errors) {
+					const queryKey = gqlError?.extensions?.graphqlErrors?.[0]?.path?.[0];
+					if (!queryKey) continue;
+					const panelID = queries.get(queryKey.substring('query_'.length))?.panel;
+					if (!panelID) continue;
+					failedIDs.push(panelID);
+					errors.value = assign({}, errors.value, { [panelID]: gqlError });
+				}
+
+				const panelsToTryAgain = panels.filter(({ id }) => failedIDs.includes(id) === false);
+
+				// Make sure we don't end in an infinite loop of retries
+				if (panels.length !== panelsToTryAgain.length) {
+					await loadPanelData(panelsToTryAgain);
+				} else {
+					unexpectedError(err);
+				}
+			} else {
+				unexpectedError(err);
+			}
 		} finally {
 			loading.value = pull(unref(loading), ...Array.from(queries.values()).map(({ panel }) => panel));
 		}

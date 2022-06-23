@@ -109,6 +109,11 @@
 					indeterminate
 				/>
 				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
+					<div v-if="errors[tile.id]" class="panel-error">
+						<v-icon name="warning" />
+						{{ t('unexpected_error') }}
+						<v-error :error="errors[tile.id]" />
+					</div>
 					<component
 						:is="`panel-${tile.data.type}`"
 						v-bind="tile.data.options"
@@ -395,6 +400,23 @@ const refreshInterval = computed({
 
 	&.header-offset {
 		top: calc(50% - 12px);
+	}
+}
+
+.panel-error {
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+
+	--v-icon-color: var(--danger);
+
+	.v-error {
+		margin-top: 8px;
+		max-width: 100%;
 	}
 }
 </style>
