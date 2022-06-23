@@ -67,10 +67,10 @@ describe('auth (browser)', function () {
 			password: 'password',
 		});
 
-		expect(sdk.auth.token).toBe('some_access_token');
+		expect(await sdk.auth.token).toBe('some_access_token');
 
 		await sdk.auth.logout();
 
-		expect(sdk.auth.token).toBeNull();
+		expect(await sdk.auth.token).toBeNull();
 	});
 });

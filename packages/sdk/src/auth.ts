@@ -32,7 +32,7 @@ export type AuthOptions = {
 export abstract class IAuth {
 	mode = (typeof window === 'undefined' ? 'json' : 'cookie') as AuthMode;
 
-	abstract readonly token: string | null;
+	abstract readonly token: Promise<string | null>;
 	abstract readonly password: PasswordsHandler;
 
 	abstract login(credentials: AuthCredentials): Promise<AuthResult>;

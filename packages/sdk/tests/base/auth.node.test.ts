@@ -67,12 +67,12 @@ describe('auth (node)', function () {
 
 		await loginPromise;
 
-		expect(sdk.auth.token).toBe('auth_token');
+		expect(await sdk.auth.token).toBe('auth_token');
 
 		const logoutPromise = sdk.auth.logout();
 
 		await logoutPromise;
 
-		expect(sdk.auth.token).toBeNull();
+		expect(await sdk.auth.token).toBeNull();
 	});
 });

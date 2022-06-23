@@ -44,8 +44,17 @@ export class Auth extends IAuth {
 		return this._transport;
 	}
 
-	get token(): string | null {
-		return this._storage.auth_token;
+	get token(): Promise<string | null> {
+		return (async () => {
+			if (this._refreshPromise) {
+				try {
+					await this._refreshPromise;
+				} finally {
+					this._refreshPromise = undefined;
+				}
+			}
+			return this._storage.auth_token;
+		})();
 	}
 
 	get password(): PasswordsHandler {
@@ -82,7 +91,7 @@ export class Auth extends IAuth {
 		}
 
 		if (this._storage.auth_expires_at < new Date().getTime() + this.msRefreshBeforeExpires) {
-			this._refreshPromise = this.refresh();
+			this.refresh();
 		}
 
 		try {
@@ -92,21 +101,25 @@ export class Auth extends IAuth {
 		}
 	}
 
-	async refresh(): Promise<AuthResult | false> {
-		const refresh_token = this._storage.auth_refresh_token;
-		this.resetStorage();
+	refresh(): Promise<AuthResult | false> {
+		const refreshPromise = async () => {
+			const refresh_token = this._storage.auth_refresh_token;
+			this.resetStorage();
 
-		const response = await this._transport.post<AuthResult>('/auth/refresh', {
-			refresh_token: this.mode === 'json' ? refresh_token : undefined,
-		});
+			const response = await this._transport.post<AuthResult>('/auth/refresh', {
+				refresh_token: this.mode === 'json' ? refresh_token : undefined,
+			});
 
-		this.updateStorage<'DynamicToken'>(response.data!);
+			this.updateStorage<'DynamicToken'>(response.data!);
 
-		return {
-			access_token: response.data!.access_token,
-			...(response.data?.refresh_token && { refresh_token: response.data.refresh_token }),
-			expires: response.data!.expires,
+			return {
+				access_token: response.data!.access_token,
+				...(response.data?.refresh_token && { refresh_token: response.data.refresh_token }),
+				expires: response.data!.expires,
+			};
 		};
+
+		return (this._refreshPromise = refreshPromise());
 	}
 
 	async login(credentials: AuthCredentials): Promise<AuthResult> {
