@@ -1,4 +1,4 @@
-name: End-to-End Black Box Tests (SQLite)
+name: End-to-End Black Box Tests (Quick)
 
 on:
   workflow_dispatch:
@@ -35,7 +35,7 @@ jobs:
         run: npm run build:api
 
       - name: Run tests
-        run: TEST_DB=sqlite3 npm run test:blackbox
+        run: TEST_DB=sqlite3,postgres npm run test:blackbox
 
   result:
     name: Result
