@@ -267,23 +267,27 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				vendorSchemaValues
 			);
 
-			// CheckQueryFilters(
-			// 	{
-			// 		method: 'get',
-			// 		path: `/items/${localCollectionStates}`,
-			// 		token: common.USER.ADMIN.TOKEN,
-			// 	},
-			// 	cachedSchema[pkType][localCollectionStates]
-			// );
+			CheckQueryFilters(
+				{
+					method: 'get',
+					path: `/items/${localCollectionStates}`,
+					token: common.USER.ADMIN.TOKEN,
+				},
+				localCollectionStates,
+				cachedSchema[pkType][localCollectionStates],
+				vendorSchemaValues
+			);
 
-			// CheckQueryFilters(
-			// 	{
-			// 		method: 'get',
-			// 		path: `/items/${localCollectionCities}`,
-			// 		token: common.USER.ADMIN.TOKEN,
-			// 	},
-			// 	cachedSchema[pkType][localCollectionCities]
-			// );
+			CheckQueryFilters(
+				{
+					method: 'get',
+					path: `/items/${localCollectionCities}`,
+					token: common.USER.ADMIN.TOKEN,
+				},
+				localCollectionCities,
+				cachedSchema[pkType][localCollectionCities],
+				vendorSchemaValues
+			);
 		});
 
 		describe('POST /:collection', () => {
