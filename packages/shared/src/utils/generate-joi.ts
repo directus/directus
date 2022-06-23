@@ -58,12 +58,10 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 });
 
 export type JoiOptions = {
-	allowUnknown?: boolean;
 	requireAll?: boolean;
 };
 
 const defaults: JoiOptions = {
-	allowUnknown: true,
 	requireAll: false,
 };
 
@@ -282,9 +280,5 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 		schema[key] = schema[key]!.required();
 	}
 
-	if (options.allowUnknown) {
-		return Joi.object(schema).unknown();
-	}
-
-	return Joi.object(schema);
+	return Joi.object(schema).unknown();
 }

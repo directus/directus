@@ -46,17 +46,6 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter, mockOptions).describe()).toStrictEqual(mockSchema);
 	});
 
-	it(`returns the correct schema with an option of "allowUnknown" true`, () => {
-		const mockFieldFilter = { field: { _eq: 'field' }, unknownField: { _eq: 'unknownField' } } as FieldFilter;
-		const mockOptions = { allowUnknown: true } as JoiOptions;
-		const mockSchema = Joi.object({
-			field: Joi.any().equal('field'),
-		})
-			.unknown()
-			.describe();
-		expect(generateJoi(mockFieldFilter, mockOptions).describe()).toStrictEqual(mockSchema);
-	});
-
 	it(`returns the correct schema for an _eq match`, () => {
 		const mockFieldFilter = { field: { _eq: 'field' } } as FieldFilter;
 		const mockSchema = Joi.object({
