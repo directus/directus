@@ -20,10 +20,15 @@ Add Text Here.
 ## Overview
 
 <!--
+Data Model
+Collection Configuration Page
+Field Configuration page
 Collections -> Data Tables
 System Collections -> Highlight key characteristics. Link to System Collections page.
 Fields -> Table Columns
 Items -> Table Rows
+Types -> Bool, Int, String, JSON, etc.
+File Storage -> Basic intro, refer to system collections.
 -->
 
 ## Collections
