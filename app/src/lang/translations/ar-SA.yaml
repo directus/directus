@@ -28,6 +28,7 @@ draft: مسوّدة
 archived: مؤرشف
 modules: الوحدات
 module_bar: شريط الوحدة
+logs: السجلات
 reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
@@ -47,6 +48,7 @@ group: المجموعة
 export_items: تصدير عنصر
 and: و
 or: أو
+dataset_too_large_currently_showing_n_items: مجموعة البيانات كبيرة جداً. حالياً تظهر العناصر {n} الأولى.
 hook: ربط
 fill_width: العرض الكامل
 field_name_translations: ترجمة اسم الحقل

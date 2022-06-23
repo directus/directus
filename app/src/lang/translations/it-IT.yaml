@@ -1681,7 +1681,7 @@ interfaces:
     trigger: Trigger
     rate: Intervallo
   group-raw:
-    name: Gruppo grezzo
+    name: Gruppo logico
     description: Mostra i campi così come sono
   group-detail:
     name: Gruppo di dettaglio
