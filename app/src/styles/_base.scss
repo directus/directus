@@ -63,6 +63,10 @@ textarea,
 	}
 }
 
+::placeholder {
+	opacity: 1;
+}
+
 :invalid {
 	outline: 0;
 	box-shadow: none;
