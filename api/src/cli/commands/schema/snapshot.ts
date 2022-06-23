@@ -11,30 +11,33 @@ export async function snapshot(
 	snapshotPath: string,
 	options?: { yes: boolean; format: 'json' | 'yaml' }
 ): Promise<void> {
-	const filename = path.resolve(process.cwd(), snapshotPath);
+	let filename: any;
+	if (snapshotPath) {
+		filename = path.resolve(process.cwd(), snapshotPath);
 
-	let snapshotExists: boolean;
+		let snapshotExists: boolean;
 
-	try {
-		await fs.access(filename, fsConstants.F_OK);
-		snapshotExists = true;
-	} catch {
-		snapshotExists = false;
-	}
-
-	if (snapshotExists && options?.yes === false) {
-		const { overwrite } = await inquirer.prompt([
-			{
-				type: 'confirm',
-				name: 'overwrite',
-				message: 'Snapshot already exists. Do you want to overwrite the file?',
-			},
-		]);
-
-		if (overwrite === false) {
-			process.exit(0);
+		try {
+			await fs.access(filename, fsConstants.F_OK);
+			snapshotExists = true;
+		} catch {
+			snapshotExists = false;
 		}
-	}
+
+		if (snapshotExists && options?.yes === false) {
+			const { overwrite } = await inquirer.prompt([
+				{
+					type: 'confirm',
+					name: 'overwrite',
+					message: 'Snapshot already exists. Do you want to overwrite the file?',
+				},
+			]);
+
+			if (overwrite === false) {
+				process.exit(0);
+			}
+		}
+	} else filename = process.stdout;
 
 	await flushCaches();
 
@@ -44,12 +47,14 @@ export async function snapshot(
 
 	try {
 		if (options?.format === 'yaml') {
-			await fs.writeFile(filename, toYaml(snapshot));
+			if (snapshotPath) await fs.writeFile(filename, toYaml(snapshot));
+			else process.stdout.write(toYaml(snapshot));
 		} else {
-			await fs.writeFile(filename, JSON.stringify(snapshot));
+			if (snapshotPath) await fs.writeFile(filename, JSON.stringify(snapshot));
+			else process.stdout.write(JSON.stringify(snapshot));
 		}
 
-		logger.info(`Snapshot saved to ${filename}`);
+		if (snapshotPath) logger.info(`Snapshot saved to ${filename}`);
 
 		database.destroy();
 		process.exit(0);
