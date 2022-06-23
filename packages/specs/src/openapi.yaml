@@ -233,10 +233,21 @@ paths:
   /users/me/tfa/disable:
     $ref: './paths/users/me-tfa-disable.yaml'
 
-  /utils/random/string:
-    $ref: './paths/utils/random.yaml'
+  # Utils
+  /utils/hash/generate:
+    $ref: './paths/utils/hash-generate.yaml'
+  /utils/hash/verify:
+    $ref: './paths/utils/hash-verify.yaml'
   /utils/sort/{collection}:
     $ref: './paths/utils/sort.yaml'
+  /utils/import/{collection}:
+    $ref: './paths/utils/import.yaml'
+  /utils/export/{collection}:
+    $ref: './paths/utils/export.yaml'
+  /utils/cache/clear:
+    $ref: './paths/utils/cache-clear.yaml'
+  /utils/random/string:
+    $ref: './paths/utils/random.yaml'
 
   # Webhooks
   /webhooks:
@@ -306,6 +317,9 @@ components:
       $ref: './parameters/fields.yaml'
     Mode:
       $ref: './parameters/mode.yaml'
+  definitions:
+    Query:
+      $ref: './definitions/query.yaml'
   responses:
     NotFoundError:
       $ref: './responses/notFoundError.yaml'
