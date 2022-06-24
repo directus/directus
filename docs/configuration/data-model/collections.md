@@ -1,23 +1,11 @@
-<!--
-## Field Context Menu Options
-- <span mi icon>edit</span> **Edit Field** — Opens the Field Configuration Drawer to edit the Field.
-- **Visibility** — Set the Field to "visible" or "hidden" on the form. This is adjusted via the
-  <span mi icon>more_vert</span> field's context menu or edit drawer.
-- **Width** — Fields have three different width options relative to the form/page. This is adjusted via the Field's
-  context menu or edit drawer.
-  - <span mi icon>border_vertical</span> Half Width — The field is shown at half the form width.
-  - <span mi icon>border_right</span> Full Width — (Default) The field is shown at the full form width.
-  - <span mi icon>aspect_ratio</span> Fill Width — The field is shown filling the page width.
-- **Sort** — Fields can be rearranged via <span mi icon>drag_indicator</span>.
-- **Grouping** — Fields can be organized within different nested groups that are created using the normal Creating a
-  Field flow. Different style groupings are available for different use-cases.
-
- -->
-
 # Collections
 
-> Each Collection represents a table in your database and can be organized in any way that is appropriate for your
-> Project.
+> Collections are data tables and come with all the same power and functionality, despite the less technical name.
+
+<!--
+@TODO finish Collections headline.
+Throughout the app, data is represented as Collections of Items, instead of rows of data.
+-->
 
 [[toc]]
 
@@ -25,11 +13,12 @@
 :::tip Before You Begin
 
 Learn Directus
+Read Data Model Introduction
 
 :::
 :::tip Learn more
 
-API docs
+API documentation
 
 :::
 -->
@@ -47,10 +36,16 @@ To create a Collection, follow these steps.
    This is used as the data table key, API Collection key, and default Collection name in the App.
 3. Optional: Make any other configurations as desired.
    - **Singleton** — Toggles whether the Collection is a [Singleton](#configure-a-collection-collection-setup).
-   - **Primary Key Field** — Sets the name of the primary key field. Defaults to `id`.
+   - **Primary Key Field** — Sets the name of the primary key field, defaults to `id`.
    - **Type** — Sets the [type of ID](/configuration/data-model/fields/#keys-and-ids) to use for this Collection.
 4. Click <span mi btn>arrow_forward</span> to confirm.
-5. Enable and rename the other [Optional System Fields](#optional-system-fields) as desired.
+5. Enable and rename the other Optional System Fields as desired:
+   - **Status** — Stores Item status.
+   - **Sort** — Enables drag-and-drop sorting of Items.
+   - **Created On** — Stores the date that the Item was created.
+   - **Created By** — Stores the User that created this Item.
+   - **Updated On** — Stores the last date updated.
+   - **Updated By** — Stores the last User to edit the file.
 6. Click <span mi btn>check</span> to confirm and create the Collection.
 
 ::: danger Immutable Keys
@@ -69,25 +64,13 @@ Directus does not currently support composite primary keys.
 ::: tip Database Tables
 
 Remember, a Directus Collection is simply a database table. Therefore, you can import or create a table directly in the
-database, and it will automatically appear within Directus. The first time you manage that table, a
-`directus_collections` record will be created with default values.
+database and it will automatically appear within Directus. The first time you manage that table, a
+`directus_collections` record will be created with default values. To learn more, see the docs on
+[Directus Collections](/configuration/data-model/system-collections/#collections).
 
 :::
 
 <!-- Potentially move this to Fields??? -->
-
-### Optional System Fields
-
-<video title="Adjust a Collection" autoplay muted loop controls>
-	<source src="" type="video/mp4" />
-</video>
-
-- **Status** — A Field to store Item status.
-- **Sort** — A Field to allow drag-and-drop sorting.
-- **Created On** — A Field to log the date that the Item was created.
-- **Created By** — A Field to log the User that created this Item.
-- **Updated On** — A Field to log the last date updated.
-- **Updated By** — A Field to log the last User to edit the file.
 
 ## Toggle Collection Visibility
 
@@ -143,12 +126,11 @@ Folder, follow these steps.
 	<source src="" type="video/mp4" />
 </video>
 
-To reposition how Collections display within **Settings > Data Model** as well as **Content Module**, follow these
-steps.
+To sort and nest Collections in **Settings > Data Model** and **Content Module**, follow these steps.
 
 1. Navigate to **Settings > Data Model**.
-2. Click <span mi icon>drag_handle</span> to drag and drop Collections as desired.\
-   Nest a Collection: Drag below and to the right of an intended parent Folder or Collection.
+2. Click and drag <span mi icon>drag_handle</span> to position Collections as desired.\
+   To nest a Collection, drag below and to the right of an intended parent Folder or Collection.
 
 ## Configure a Collection
 
@@ -165,12 +147,12 @@ To configure a Collection, follow these steps.
 
 The configuration options available on this page are broken into the following six categories.
 
-- [Fields and Layout](#fields--layout)
-- [Collection Setup](#collection-setup)
-- [Archive](#archive)
-- [Sort](#sort)
-- [Accountability](#accountability)
-- [Duplication](#duplication)
+- [Fields and Layout](/configuration/data-model/collections/#configure-a-collection-fields-layout)
+- [Collection Setup](/configuration/data-model/collections/#configure-a-collection-collection-setup)
+- [Archive](/configuration/data-model/collections/#configure-a-collection-archive)
+- [Sort](/configuration/data-model/collections/#configure-a-collection-sorts)
+- [Accountability](/configuration/data-model/collections/#configure-a-collection-accountability)
+- [Duplication](/configuration/data-model/collections/#configure-a-collection-duplication)
 
 :::tip
 
@@ -180,33 +162,11 @@ A Collection's configuration details are also accessible via the [Collections AP
 
 ## Configure a Collection: Fields & Layout
 
-<!--
-I think I need to move all this into the Fields Section.... Not sure yet.
--->
-<video title="Fields and Layout" autoplay muted loop controls>
-	<source src="" type="video/mp4" />
-</video>
+![Fields and Layout](image.webp)
 
-The **Fields & Layout** section allows you to create and manage Fields as well as how they are displayed on the
-[Item Page](/app/content/items).
-
-### Field Context Menu
-
-- <span mi icon>edit</span> **Edit Field** — Opens the Field Configuration Drawer to edit the Field's configuration.
-- **Duplicate Field** — Duplicates the Field along with all of its configuration options.
-- **Visibility** — Toggle Field whether the Field is visible on Item Detail Page for Admin Users.
-- **Width** — Fields have three different width options:
-  - <span mi icon>border_vertical</span> Half Width — The field is shown at half the form width.
-  - <span mi icon>border_right</span> Full Width — (Default) The field is shown at the full form width.
-  - <span mi icon>aspect_ratio</span> Fill Width — The field is shown filling the page width.
-
-### Group Fields
-
-<!-- Fields can be organized within different nested groups that are created using the normal Create a Field flow. Different style groupings are available for different use-cases. -->
-
-### Sort Fields
-
-<!-- To sort a Collection's Fields, click <span mi icon>drag_indicator</span> and drag the Field as desired. -->
+This section allows you to create and manage Fields as well as configure how they are displayed on the
+[Item Page](/app/content/items). To learn more, please see the documentation on
+[Fields](/configuration/data-model/fields).
 
 ## Configure a Collection: Collection Setup
 
@@ -216,12 +176,12 @@ The **Fields & Layout** section allows you to create and manage Fields as well a
 
 Modify how the Collection is displayed in the Content Module.
 
-- **Collection Name** — This is the Collection Name, which cannot be modified.\
+- **Collection Name** — Displays the Collection Name, which cannot be modified.\
   However, you can override how it is displayed with Collection Naming Translations, below.
-- **Note** — Write a helpful note that explains the Collection's purpose.
+- **Note** — Set a helpful note that explains the Collection's purpose.
 - **Icon** — Set an icon used throughout the App when referencing this Collection.
 - **Color** — Set a color for the icon, shown in the Navigation Bar and its Header.
-- **Display Template** — Creates a [Display Template](/app/display-templates) for the Collection.
+- **Display Template** — Create a [Display Template](/app/display-templates) for the Collection.
 - **Hidden** — Toggle whether the Collection should be globally hidden in the other App modules.\
   Keep in mind that Admin roles can always see all Collections.
 - **Singleton** — Toggle to bypass the [Collection Page](/app/content/collections/) and take users to the
@@ -250,16 +210,16 @@ A Singleton is a Collection that will only contain one single Item, such as data
 	<source src="" type="video/mp4" />
 </video>
 
-Select a Field to handle archiving Items. An Archive Field provides a _soft-delete_ functionality within a Collection.
-Archived Items will still exist in the Collection and database, but can be hidden away in the App. To configure an
-Archive Field, follow these steps.
+Select a Field to handle archiving Items. This provides a _soft-delete_ functionality for Items in a Collection.
+Archived Items will still exist in the Collection and database, but can be filtered for.\
+To configure an Archive Field, follow these steps.
 
-- **Archive Field** — Defines the Archive Field.
+- **Archive Field** — Selects the Archive Field from a dropdown menu.
 - **Archive App Filter** — Toggles whether app users can
   [filter for archived items](/app/content/collections/#view-archived-items).
-- **Archive Value** — A value, usually a string, that is assigned when an Item as
+- **Archive Value** — A value that is assigned to the Field when an Item as
   [archived](/app/content/items/#archive-an-item).
-- **Unarchive Value** — A value, usually a string, that is assigned when an Item is
+- **Unarchive Value** — A value that is assigned to the Field when an Item is
   [unarchived](/app/content/items/#archive-an-item).
 
 :::tip Automatic Setup
@@ -294,8 +254,8 @@ Use the video from /app/content/collection/#manually-sort-items
 
 When you configure a Sort Field, you have the option to manually
 [sort Items](/app/content/collection/#manually-sort-items) in any position you desire. As shown in the video, Fields
-which cannot serve as Sort Fields will be grayed out and un-selectable in the **Sort Field** dropdown. You will need to
-use a Standard Field that stores Integer Type data.
+which cannot serve as Sort Fields will be grayed out and un-selectable in the **Sort Field** dropdown. A Standard Field
+that stores Integer Type data is required.
 
 **Sort Field** — Select a Field to custom sort and order Items. Click **Deselect** to disable.
 
@@ -314,9 +274,9 @@ tracked.
   - **Only Track Activity**
   - **Do Not Track Anything**
 
-:::tip
+:::tip Accountability vs. Telemetry
 
-Accountability provides a log of _who does what_ in the Project and is for your team's own use. This is different from
+This is a log of _who does what_ in the Project and is for your team's own use. This is different from
 [telemetry](/self-hosted/config-options/#telemetry), which is configured in environment variables.
 
 :::
@@ -327,9 +287,9 @@ Accountability provides a log of _who does what_ in the Project and is for your 
 	<source src="" type="video/mp4" />
 </video>
 
-The **Save as Copy** option on the Item Page offers a way to effectively duplicate the current Item. However, since
-there may be unique or relational data within the Item, it's important to control exactly what will be copied. This
-option allows for configuring which parent/relational Field Values will be copied.
+The **Save as Copy** option on the Item Page offers a way to effectively duplicate the current Item. This option lets
+you configure which parent/relational Field Values will be copied. However, since there may be unique or relational data
+within the Item, it's important to control exactly what will be copied.
 
 - **Item Duplication Fields** — Check the Field(s) to copy values for when duplicating an Item.
 
@@ -341,9 +301,9 @@ option allows for configuring which parent/relational Field Values will be copie
 
 To delete a Collection, follow these steps.
 
-1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click <span mi btn dngr>delete</span> in the header
-3. Confirm this decision by clicking **Delete** in the dialog
+1. Navigate to **Settings > Data Model > [Collection Name]**.
+2. Click <span mi btn dngr>delete</span> in the page header.
+3. Confirm this decision by clicking **Delete** in the dialog.
 
 ::: danger
 

@@ -6,6 +6,30 @@
 
 ## Overview
 
+<!-- ### Fields and Layout
+
+<video title="Fields and Layout" autoplay muted loop controls>
+	<source src="" type="video/mp4" />
+</video>
+
+### Field Context Menu
+
+- <span mi icon>edit</span> **Edit Field** — Opens the Field Configuration Drawer to edit the Field's configuration.
+- **Duplicate Field** — Duplicates the Field along with all of its configuration options.
+- **Visibility** — Toggle Field whether the Field is visible on Item Detail Page for Admin Users.
+- **Width** — Fields have three different width options:
+  - <span mi icon>border_vertical</span> Half Width — The field is shown at half the form width.
+  - <span mi icon>border_right</span> Full Width — (Default) The field is shown at the full form width.
+  - <span mi icon>aspect_ratio</span> Fill Width — The field is shown filling the page width.
+
+### Group Fields
+
+Fields can be organized within different nested groups that are created using the normal Create a Field flow. Different style groupings are available for different use-cases.
+
+### Sort Fields
+
+To sort a Collection's Fields, click <span mi icon>drag_indicator</span> and drag the Field as desired. -->
+
 ## Create a Field (Standard)
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
