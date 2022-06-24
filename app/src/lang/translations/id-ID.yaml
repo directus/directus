@@ -23,15 +23,19 @@ identifier: Pengenal
 avatar: Avatar
 application: Aplikasi
 default_provider: Bawaan
+method: Metode
 published: Dipublikasikan
 draft: Konsep
 archived: Diarsipkan
 modules: Modul
 module_bar: Papan Modul
+logs: Catatan
+reset_width: Atur Ulang Lebar
 tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
 location: Lokasi
+input: Input
 maps: Peta
 switch_user: Beralih/ganti pengguna
 item_creation: Pembuatan Item
@@ -43,6 +47,9 @@ full_width: Lebar Penuh
 group: Grup
 and: Dan
 or: Atau
+modifier: Pengubah
+custom: Kustomisasi
+hook: Hook
 fill_width: Lebar Penuh
 field_name_translations: Terjemahan Nama Kolom
 enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentication
@@ -66,8 +73,14 @@ create_preset: Buat Preset
 create_panel: Buat Panel
 create_role: Buat Peran
 create_user: Buat User
+message: Pesan
 delete_panel: Hapus Panel
 create_webhook: Buat Webhook
+no_translation_string_copy: Belum ada terjemahan tersedia.
+translation_string_translations_placeholder: Tambahkan terjemahan baru
+edit_translation_string: Sunting Terjemahan
+delete_translation_string_copy: >-
+  Apakah Anda yakin ingin menghapus bidang terjemahan "{key}" ini? Tindakan ini tidak dapat dikembalikan.
 invite_users: Undang Pengguna Lain
 invite: Undang
 email_already_invited: Email "{email}" sudah diundang
@@ -163,6 +176,7 @@ revision_post_create: Ini adalah bagaimana item ini terlihat ketika dibuat.
 revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan.
 changes_made: Dibawah adalah perubahan spesifik yang dibuat dalam revisi ini.
 no_relational_data: Ingat bahwa data yang berhubungan tidak termasuk disini.
+hide_field: Sembunyikan bidang
 hide_field_on_detail: Sembunyikan Baris pada Rincian
 show_field_on_detail: Tampilkan Baris pada Rincian
 delete_field: Hapus Baris
@@ -171,6 +185,7 @@ field_create_success: 'Buat Baris: "{field}"'
 field_update_success: 'Perbarui Baris: "{field}"'
 duplicate_where_to: Dimana Anda ingin menggandakan baris ini?
 language: Bahasa
+language_placeholder: Pilih sebuah bahasa...
 aggregate_function: Fungsi Agregat
 aggregate_precision: Presisi Agregat
 group_aggregation: Grup Agregat
@@ -181,6 +196,7 @@ camera: Kamera
 show_zero: Tampilkan Kosong
 create_in_advanced_field_creation_mode: Buat Bidang dalam Mode Lanjutan
 continue_in_advanced_field_creation_mode: Lanjutkan di Mode Pembuatan Bidang Lanjutan
+validation: Validasi
 sum: Jumlah
 sum_distinct: Perbedaan Jumlah
 avg: Rata-rata
@@ -311,12 +327,14 @@ revision_delta_deleted: Terhapus
 revision_delta_reverted: Dikembalikan
 revision_delta_other: Revisi
 revision_delta_by: '{date} oleh {user}'
+download_page_as_csv: 'Unduh Halaman sebagai CSV'
 private_user: Pengguna Pribadi
 creation_preview: Pratinjau Kreasi
 revision_preview: Pratinjau Revisi
 updates_made: Pembaruan Dibuat
 leave_comment: Tinggalkan komentar...
 post_comment_success: Komentar telah diposting
+post_comment_updated: Komentar diperbarui
 item_create_success: Item telah Dibuat | Item telah Dibuat
 item_update_success: Item telah Diperbarui | Item telah Diperbarui
 item_delete_success: Item telah Dihapus | Item telah Dihapus
@@ -351,10 +369,18 @@ delete_comment: Hapus Komentar
 functions:
   year: Tahun
   month: Bulan
+  week: Pekan
+  day: Hari
+  weekday: Hari Kerja
+  hour: Jam
+  minute: Menit
+  second: Detik
   count: Hitung
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -405,6 +431,9 @@ replace_from_library: Menggantikan Berkas dari Pustaka
 replace_from_url: Menggantikan Berkas dari URL
 no_file_selected: Tidak Ada Berkas Yang Dipilih
 download_file: Unduh Berkas
+open_file_in_tab: Buka file di tab baru
+start_export: Mulai Ekspor
+not_available_for_local_downloads: Tidak tersedia untuk unduhan lokal
 collection_key: Kunci Koleksi
 name: Nama
 primary_key_field: Kolom Primary Key
@@ -522,6 +551,7 @@ errors:
   INVALID_OTP: Kata sandi satu-kali salah
   INVALID_PAYLOAD: Payload tidak valid
   INVALID_QUERY: Kueri tidak valid
+  INVALID_USER: Gagal untuk mengautentikasi pengguna
   ITEM_LIMIT_REACHED: Batas item tercapai
   ITEM_NOT_FOUND: Item tidak ditemukan
   ROUTE_NOT_FOUND: Tidak ditemukan
@@ -566,10 +596,14 @@ make_collection_visible: Buat Koleksi Terlihat
 make_collection_hidden: Buat Koleksi Tersembunyi
 make_folder_visible: Buat Folder Terlihat
 make_folder_hidden: Buat Folder Tersembunyi
+goto_collection_content: Tampilkan konten
 start_end_of_count_items: '{start}-{end} dari {count} item'
 start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
 one_item: '1 item'
 one_filtered_item: '1 item yang di filter'
+delete_collection_are_you_sure: >-
+  Apakah anda yakin ingin menghapus koleksi "{collection}"? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
+delete_folder_are_you_sure: Anda yakin ingin menghapus folder "{folder}"? Susunan folder dan koleksi akan dipindahkan ke level paling atas.
 collections_shown: Koleksi yang ditampilkan
 visible_collections: Koleksi yang terlihat
 hidden_collections: Koleksi yang tersembunyi
@@ -596,6 +630,7 @@ advanced_settings: Pengaturan Lanjutan
 advanced_filter: Filter Lanjutan
 delete_advanced_filter: Hapus Filter
 change_advanced_filter_operator: Ganti Operator
+advanced: Tingkat lanjut
 operators:
   eq: Sama dengan
   neq: Tidak sama dengan
@@ -663,6 +698,7 @@ no_results_copy: Sesuaikan atau bersihkan filter pencarian untuk melihat hasil.
 clear_filters: Bersihkan Filter
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
+edit_role: Sunting Peran
 rule: Aturan
 user: Pengguna
 no_presets: Tidak ada preset
@@ -1291,7 +1327,10 @@ panels:
   label:
     name: Label
 operations:
+  log:
+    message: Pesan
   notification:
     recipient: Pengguna
+    message: Pesan
   request:
     url: URL
