@@ -43,17 +43,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 		const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
 
-		const locationFilter = ref<Filter>();
-
-		const filterWithLocation = computed<Filter | null>(() => {
-			if (!locationFilter.value) return filter.value;
-			if (!filter.value) return locationFilter.value;
-
-			return {
-				_and: [filter.value, locationFilter.value],
-			};
-		});
-
 		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
 		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
 		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
@@ -75,15 +64,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (!geometryField.value && fields.length > 0) {
 					geometryField.value = fields[0].field;
 				}
-
-				// clear the location filter when it is no longer using a valid geometryField
-				if (
-					geometryField.value &&
-					locationFilter.value &&
-					!Object.keys(locationFilter.value).includes(geometryField.value)
-				) {
-					locationFilter.value = undefined;
-				}
 			},
 			{ immediate: true }
 		);
@@ -99,7 +79,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (!geometryFormat) {
 				return;
 			}
-			return { geometryField, geometryFormat, geometryType };
+			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
 
 		const isGeometryFieldNative = computed(() => geometryOptions.value?.geometryFormat === 'native');
@@ -114,9 +94,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		function getLocationFilter(): Filter | undefined {
+		const locationFilter = computed<Filter | null>(() => {
 			if (!isGeometryFieldNative.value || !cameraOptions.value || !geometryField.value) {
-				return;
+				return null;
 			}
 
 			const bbox = cameraOptions.value.bbox;
@@ -137,14 +117,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					},
 				},
 			} as Filter;
-		}
+		});
+
+		const filterWithLocation = computed<Filter | null>(() => {
+			if (!locationFilter.value) return filter.value;
+			if (!filter.value) return locationFilter.value;
+
+			return {
+				_and: [filter.value, locationFilter.value],
+			};
+		});
 
 		const shouldUpdateCamera = ref(false);
 
 		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
 			if (isGeometryFieldNative.value) {
-				locationFilter.value = undefined;
 				return;
 			}
 			if (geojson.value?.features.length) {
@@ -154,7 +142,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		watch(cameraOptions, () => {
 			shouldUpdateCamera.value = false;
-			locationFilter.value = getLocationFilter();
 		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {

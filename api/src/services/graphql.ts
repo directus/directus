@@ -1,5 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -52,7 +52,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
-import { AbstractServiceOptions, Action, GraphQLParams, Item } from '../types';
+import { AbstractServiceOptions, GraphQLParams, Item } from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
@@ -63,9 +63,11 @@ import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
+import { FlowsService } from './flows';
 import { FoldersService } from './folders';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
+import { OperationsService } from './operations';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
 import { RelationsService } from './relations';
@@ -1397,7 +1399,11 @@ export class GraphQLService {
 					if (valueNode.kind === 'ObjectValue') {
 						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
-						values.push((valueNode as any).value);
+						if (valueNode.kind === 'Variable') {
+							values.push(variableValues[valueNode.name.value]);
+						} else {
+							values.push((valueNode as any).value);
+						}
 					}
 				}
 
@@ -1476,7 +1482,7 @@ export class GraphQLService {
 								set(
 									query.deep,
 									parent,
-									merge(get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } })
+									merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } })
 								);
 							}
 						}
@@ -1514,6 +1520,7 @@ export class GraphQLService {
 							query.deep,
 							currentAlias ?? current,
 							merge(
+								{},
 								get(query.deep, currentAlias ?? current),
 								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
 							)
@@ -1635,6 +1642,10 @@ export class GraphQLService {
 				return new WebhooksService(opts);
 			case 'directus_shares':
 				return new SharesService(opts);
+			case 'directus_flows':
+				return new FlowsService(opts);
+			case 'directus_operations':
+				return new OperationsService(opts);
 			default:
 				return new ItemsService(collection, opts);
 		}

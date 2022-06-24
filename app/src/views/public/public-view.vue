@@ -64,6 +64,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { useI18n } from 'vue-i18n';
 import { cssVar } from '@directus/shared/utils/browser';
 import Color from 'color';
+import { getTheme } from '@/utils/get-theme';
 
 interface Props {
 	wide?: boolean;
@@ -81,7 +82,7 @@ const { info } = storeToRefs(serverStore);
 const colors = computed(() => {
 	const primary = info.value?.project?.project_color || 'var(--primary)';
 	const primaryHex = primary.startsWith('var(--') ? cssVar(primary.substring(4, primary.length - 1)) : primary;
-
+	const isDark = getTheme() === 'dark';
 	const primaryColor = Color(primaryHex);
 
 	const primaryColorHSL = primaryColor.hsl() as unknown as {
@@ -91,15 +92,18 @@ const colors = computed(() => {
 	};
 
 	/**
-	 * The default secondary color is based on the standard difference between Directus purple and pink, which is:
+	 * The default light mode secondary color is based on the standard difference between Directus purple and pink, which is:
 	 * primary = 250.9, 100, 63.3
 	 * secondary = 320, 100, 80
 	 * diff = +69.1, 0, +16.7
+	 *
+	 * For dark mode, we greatly reduce the lightness value to -50
 	 */
+
 	const secondaryColor = Color({
-		h: primaryColorHSL.color[0] + 69.1,
+		h: primaryColorHSL.color[0] + (isDark ? -69.1 : 69.1),
 		s: primaryColorHSL.color[1] + 0,
-		l: primaryColorHSL.color[2] + 16.7,
+		l: primaryColorHSL.color[2] + (isDark ? -50 : 16.7),
 	});
 
 	const shades = [];
@@ -314,6 +318,7 @@ const logoURL = computed<string | null>(() => {
 
 	&.branded :deep(.v-input) {
 		--v-input-border-color-focus: var(--foreground-normal);
+		--v-input-box-shadow-color-focus: var(--foreground-normal);
 	}
 
 	&.branded :deep(.v-input.solid) {

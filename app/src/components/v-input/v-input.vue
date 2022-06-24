@@ -252,20 +252,19 @@ function stepDown() {
 }
 </script>
 
-<style>
-body {
+<style lang="scss" scoped>
+:global(body) {
 	--v-input-font-family: var(--family-sans-serif);
 	--v-input-placeholder-color: var(--foreground-subdued);
-}
-</style>
-
-<style lang="scss" scoped>
-.v-input {
-	--arrow-color: var(--border-normal);
-	--v-icon-color: var(--foreground-subdued);
+	--v-input-box-shadow-color-focus: var(--primary);
 	--v-input-color: var(--foreground-normal);
 	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
+}
+
+.v-input {
+	--arrow-color: var(--border-normal);
+	--v-icon-color: var(--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -340,7 +339,7 @@ body {
 			color: var(--v-input-color);
 			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
-			box-shadow: 0 0 16px -8px var(--primary);
+			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
 		}
 
 		&.disabled {

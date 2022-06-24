@@ -126,8 +126,8 @@ _Natively supported in GraphQL_
 <div class="left">
 
 Used to search items in a collection that matches the filter's conditions. The filter param follows
-[the Filter Rules spec](/configuration/filter-rules), which includes additional information on logical operators
-(AND/OR), nested relational filtering, and dynamic variables.
+[the Filter Rules spec](/reference/filter-rules), which includes additional information on logical operators (AND/OR),
+nested relational filtering, and dynamic variables.
 
 </div>
 </div>

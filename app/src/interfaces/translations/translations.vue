@@ -25,7 +25,7 @@
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				:autofocus="autofocus"
-				@update:modelValue="updateValue($event, firstLang)"
+				@update:model-value="updateValue($event, firstLang)"
 			/>
 			<v-divider />
 		</div>
@@ -52,7 +52,7 @@
 				:fields="fields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:model-value="secondItem"
-				@update:modelValue="updateValue($event, secondLang)"
+				@update:model-value="updateValue($event, secondLang)"
 			/>
 			<v-divider />
 		</div>
@@ -63,7 +63,7 @@
 import api from '@/api';
 import { DisplayItem, RelationQueryMultiple, useRelationM2M, useRelationMultiple } from '@/composables/use-relation';
 import { useWindowSize } from '@/composables/use-window-size';
-import { useFieldsStore, useUserStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/';
 import { notEmpty } from '@/utils/is-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';
@@ -77,6 +77,8 @@ const props = withDefaults(
 		field: string;
 		primaryKey: string | number;
 		languageField?: string | null;
+		defaultLanguage?: string | null;
+		userLanguage?: boolean;
 		value: (number | string | Record<string, any>)[] | Record<string, any>;
 		autofocus?: boolean;
 		disabled?: boolean;
@@ -86,6 +88,8 @@ const props = withDefaults(
 		value: () => [],
 		autofocus: false,
 		disabled: false,
+		defaultLanguage: () => null,
+		userLanguage: false,
 	}
 );
 
@@ -98,12 +102,11 @@ const value = computed({
 	},
 });
 
-const { collection, field, primaryKey } = toRefs(props);
+const { collection, field, primaryKey, defaultLanguage, userLanguage } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
-const userStore = useUserStore();
 
 const { width } = useWindowSize();
 
@@ -250,14 +253,9 @@ function useLanguages() {
 			languages.value = response.data.data ? toArray(response.data.data) : [];
 
 			if (!firstLang.value) {
-				const userLang = languages.value.find(
-					(lang) =>
-						userStore.currentUser &&
-						'language' in userStore.currentUser &&
-						lang[pkField] === userStore.currentUser.language
-				)?.[pkField];
-
-				firstLang.value = userLang || languages.value[0]?.[pkField];
+				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
+				const lang = languages.value.find((lang) => lang[pkField] === userLocale) || languages.value[0];
+				firstLang.value = lang?.[pkField];
 			}
 
 			if (!secondLang.value) {
@@ -287,16 +285,20 @@ function useLanguages() {
 	}
 
 	.primary {
-		--v-divider-color: var(--primary-50);
+		.v-divider {
+			--v-divider-color: var(--primary-50);
+		}
 	}
 
 	.secondary {
-		--v-divider-color: var(--secondary-50);
-
 		.v-form {
 			--primary: var(--secondary);
 			--v-chip-color: var(--secondary);
 			--v-chip-background-color: var(--secondary-alt);
+		}
+
+		.v-divider {
+			--v-divider-color: var(--secondary-50);
 		}
 	}
 

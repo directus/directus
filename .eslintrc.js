@@ -52,6 +52,7 @@ module.exports = {
 			],
 			rules: {
 				...defaultRules,
+				'vue/multi-word-component-names': 'off',
 				// It's recommended to turn off this rule on TypeScript projects
 				'no-undef': 'off',
 				// Allow ts-directive comments (used to suppress TypeScript compiler errors)

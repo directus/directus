@@ -39,7 +39,7 @@ export class ImportService {
 	}
 
 	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream): Promise<void> {
-		if (collection.startsWith('directus_')) throw new ForbiddenException();
+		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
 
 		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create'
@@ -213,7 +213,7 @@ export class ExportService {
 
 				let readCount = 0;
 
-				for (let batch = 0; batch <= batchesRequired; batch++) {
+				for (let batch = 0; batch < batchesRequired; batch++) {
 					let limit = env.EXPORT_BATCH_SIZE;
 
 					if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
@@ -223,7 +223,7 @@ export class ExportService {
 					const result = await service.readByQuery({
 						...query,
 						limit,
-						page: batch,
+						offset: batch * env.EXPORT_BATCH_SIZE,
 					});
 
 					readCount += result.length;
@@ -340,7 +340,13 @@ export class ExportService {
 				header: options?.includeHeader !== false,
 			});
 
-			return parser.parse(input);
+			let string = parser.parse(input);
+
+			if (options?.includeHeader === false) {
+				string = '\n' + string;
+			}
+
+			return string;
 		}
 
 		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });

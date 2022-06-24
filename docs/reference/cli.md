@@ -29,14 +29,14 @@ migrate it to the latest version (if it already exists and has missing migration
 
 This is very useful to use in environments where you're doing standalone automatic deployments, like a multi-container
 Kubernetes configuration, or a similar approach on
-[DigitalOcean App Platform](/getting-started/installation/digitalocean-app-platform/),
-[Google Cloud Platform](/getting-started/installation/gcp) or [AWS Elastic Beanstalk](/getting-started/installation/aws)
+[DigitalOcean App Platform](/self-hosted/installation/digitalocean-app-platform/),
+[Google Cloud Platform](/self-hosted/installation/gcp) or [AWS Elastic Beanstalk](/self-hosted/installation/aws)
 
 ::: tip First User
 
 You can use the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables to automatically provision the first user on
-first creation using the `bootstrap` command. See [Environment Variables](/configuration/config-options/#general) for
-more information.
+first creation using the `bootstrap` command. See [Environment Variables](/self-hosted/config-options/#general) for more
+information.
 
 :::
 

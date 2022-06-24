@@ -23,15 +23,19 @@ identifier: Identifikátor
 avatar: Avatar
 application: Aplikace
 default_provider: Výchozí
+method: Metoda
 published: Zveřejněno
 draft: Návrh
 archived: Archivováno
 modules: Moduly
 module_bar: Panel modulů
+logs: Logy
 reset_width: Obnovit šířku
 tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
+location: Poloha
+input: Vstup
 maps: Mapy
 switch_user: Přepnout uživatele
 item_creation: Vytvoření položky
@@ -595,7 +599,6 @@ unexpected_error_copy: Došlo k neočekávané chybě. Opakujte akci později.
 copy_details: Kopírovat podrobnosti
 no_app_access: Žádný přístup k aplikaci
 no_app_access_copy: Tento uživatel nemá oprávnění používat aplikaci pro správu.
-password_reset_sent: Poslali jsme vám bezpečný odkaz pro obnovení hesla
 password_reset_successful: Heslo bylo úspěšně obnoveno
 back: Zpět
 filter: Filtr
@@ -619,9 +622,6 @@ start_end_of_count_items: '{start}-{end} z {count} položek'
 start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položek'
 one_item: '1 položka'
 one_filtered_item: '1 filtrovaná položka'
-delete_collection_are_you_sure: >-
-  Jste si jisti, že chcete odstranit tuto kolekci? Tato akce odstraní kolekci a všechny její položky. Tato akce je trvalá.
-delete_folder_are_you_sure: Jste si jisti, že chcete odstranit tuto složku? Vnořené složky a kolekce budou přesunuty na nejvyšší úroveň.
 collections_shown: Zobrazené kolekce
 visible_collections: Viditelné kolekce
 hidden_collections: Skryté kolekce
@@ -731,6 +731,7 @@ on_create: Při vytvoření
 on_update: Při úpravě
 read: Číst
 update: Úpravy
+delete: Odstranit
 select_fields: Vybrat pole
 format_text: Formátovat text
 format_value: Formátovat hodnotu
@@ -741,6 +742,10 @@ toggle: Přepínač
 icon_on: Ikona zapnuto
 icon_off: Ikona vypnuto
 label: Popisek
+trigger: Spouštěč
+flow_name: Jméno
+flow_tracking_activity: Pouze sledovat aktivitu
+flow_tracking_null: Nesledovat nic
 insights: Přehledy
 dashboard: Nástěnka
 panel: Panel
@@ -758,9 +763,10 @@ suffix_placeholder: Text za hodnotou...
 decimals_placeholder: Počet desetinných míst...
 no_dashboards: Žádné nástěnky
 no_dashboards_copy: Zatím nemáte žádné nástěnky.
-no_data: Žádná data
 create_dashboard: Vytvořit nástěnku
 dashboard_name: Název nástěnky
+no_data: Žádná data
+accountability: Odpovědnost
 full_screen: Celá obrazovka
 full_text_search: Full-Text vyhledávání
 edit_panels: Upravit panely
@@ -862,6 +868,7 @@ settings_presets: Předvolby a záložky
 settings_translation_strings: Překlady
 one_or_more_options_are_missing: Chybí jedna nebo více možností
 scope: Rozsah
+actions: Akce
 select: Vybrat...
 layout: Rozvržení
 tree_view: Stromové zobrazení
@@ -871,6 +878,7 @@ preset_search_placeholder: Hledat dotaz...
 editing_preset: Úprava předvolby
 layout_preview: Náhled rozvržení
 layout_setup: Nastavení rozvržení
+data: Údaje
 unsaved_changes: Neuložené změny
 unsaved_changes_copy: Jste si jisti, že chcete opustit tuto stránku?
 discard_changes: Ano, odejít bez uložení
@@ -935,9 +943,9 @@ directus_collection:
   directus_files: Metadata pro všechny spravované soubory
   directus_folders: Poskytuje virtuální adresáře souborů
   directus_migrations: Jakou verzi databáze používáte
+  directus_notifications: Oznámení zaslaná uživatelům
   directus_panels: Jednotlivé panely uvnitř nástěnek
   directus_permissions: Přístupová práva pro každou roli
-  directus_notifications: Oznámení zaslaná uživatelům
   directus_presets: Předvolby pro výchozí nastavení kolekce a záložky
   directus_relations: Konfigurace vztahů a metadata
   directus_revisions: Snímky dat pro všechny aktivity
@@ -1523,6 +1531,7 @@ interfaces:
     description: Vytvořit více záznamů ve stejné struktuře
     edit_fields: Upravit pole
     add_label: 'Štítek "Vytvořit nový"'
+    sort: Seřadit
     field_name_placeholder: Zadejte název pole...
     field_note_placeholder: Zadejte poznámku k poli...
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
@@ -1577,6 +1586,9 @@ interfaces:
     display_template: Šablona zobrazení
     no_collection: Žádná kolekce
     toggle_split_view: Přepnout rozdělené zobrazení
+    enable: Povolit
+    user_language: Použít aktuální jazyk uživatele
+    default_language: Výchozí jazyk
     language_field: Pole indikátoru jazyka
   list-o2m-tree-view:
     description: Zobrazení stromu pro vnořené rekurentní položky 1:N
@@ -1619,6 +1631,13 @@ interfaces:
     start_closed: Začít zavřený
   system-token:
     system-token: Token
+    description: Správa statického přístupového tokenu
+    placeholder: Klikněte na "Generovat token" pro vytvoření nového statického přístupového tokenu
+    value_securely_saved: Hodnota bezpečně uložena
+    generate: Generovat token
+    regenerate: Obnovit token
+    generate_success_copy: Ujistěte se, že si zálohujete a zkopírujete token uvedený výše. Z bezpečnostních důvodů nebudete moci znovu zobrazit token po uložení a opuštění této stránky.
+    remove_token: Odstranit token
 displays:
   translations:
     translations: Překlady
@@ -1877,3 +1896,16 @@ panels:
     bottom: Dole
     monochrome: Monochromatický
     monochrome_color: Monochromatická barva
+triggers:
+  webhook:
+    method: Metoda
+operations:
+  notification:
+    recipient: Uživatel
+  request:
+    url: URL
+    method: Metoda
+    data: Údaje
+    header: Hlavička
+  trigger:
+    data: Údaje

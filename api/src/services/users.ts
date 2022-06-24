@@ -392,6 +392,10 @@ export class UsersService extends ItemsService {
 		const service = new UsersService({
 			knex: this.knex,
 			schema: this.schema,
+			accountability: {
+				...(this.accountability ?? { role: null }),
+				admin: true, // We need to skip permissions checks for the update call below
+			},
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' });

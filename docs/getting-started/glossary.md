@@ -277,13 +277,13 @@ often called `id`.
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](/getting-started/installation/)
-- [Configuring a Project](/configuration/config-options/)
+- [Creating a Project](/self-hosted/installation/)
+- [Configuring a Project](/self-hosted/config-options/)
 - [Adjusting Project Settings](/configuration/project-settings/)
-- [Upgrading a Project](/configuration/upgrades-migrations/)
-- [Backing-up a Project](/configuration/upgrades-migrations/#backing-up-a-project)
-- [Migrating a Project](/configuration/upgrades-migrations/#migrating-a-project)
-- [Deleting a Project](/configuration/upgrades-migrations/#deleting-a-project)
+- [Upgrading a Project](/self-hosted/upgrades-migrations/)
+- [Backing-up a Project](/self-hosted/upgrades-migrations/#backing-up-a-project)
+- [Migrating a Project](/self-hosted/upgrades-migrations/#migrating-a-project)
+- [Deleting a Project](/self-hosted/upgrades-migrations/#deleting-a-project)
 
 ## Relationships
 

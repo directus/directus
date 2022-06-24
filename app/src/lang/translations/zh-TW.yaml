@@ -1,5 +1,6 @@
 ---
 avatar: 頭像
+application: 應用程式
 default_provider: 預設
 published: 已發佈
 draft: 草稿
@@ -7,6 +8,7 @@ archived: 已封存
 modules: 模組
 edit_field: 編輯欄位
 conditions: 條件
+location: 位置
 item_revision: 項目修改
 enter_a_name: 輸入名稱...
 duplicate_field: 複製欄位
@@ -402,7 +404,6 @@ bookmarks: 書籤
 unexpected_error: 未預期的錯誤
 unexpected_error_copy: 發生意外的錯誤，請稍後再試。
 copy_details: 複製詳細資訊
-password_reset_sent: 我們已經把重設密碼連結寄到您的電子信箱
 password_reset_successful: 密碼重設成功
 back: 返回
 editing_image: 編輯圖像
@@ -416,8 +417,6 @@ delete_collection: 刪除集合
 update_collection_success: 已更新集合
 delete_collection_success: 已刪除集合
 start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
-delete_collection_are_you_sure: >-
-  是否確認要刪除此集合？這將刪除集合及其中的所有項目。此操作是永久性的。
 visible_collections: 可見集合
 hidden_collections: 隱藏集合
 unmanaged_collections: 未配置集合
@@ -469,6 +468,7 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
+flow_name: 名稱
 width: 寬度
 height: 高度
 wysiwyg_options:
@@ -748,6 +748,8 @@ interfaces:
     zoom: 縮放
   system-folder:
     folder: 資料夾
+  list:
+    sort: 排序
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -846,3 +848,8 @@ layouts:
     comfortable: 舒適
     compact: 精簡
     cozy: 自在
+operations:
+  notification:
+    recipient: 用戶
+  request:
+    url: URL
