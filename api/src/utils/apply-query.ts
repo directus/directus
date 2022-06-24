@@ -436,6 +436,18 @@ export function applyFilter(
 				});
 			}
 
+			// The following fields however, require a value to be run. If no value is passed, we
+			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
+			// conditionally build out your filter structure (#4471)
+			if (compareValue === undefined) return;
+
+			if (Array.isArray(compareValue)) {
+				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined].
+				// We need to remove any undefined values, as they are useless
+				compareValue = compareValue.filter((val) => val !== undefined);
+			}
+
 			// Cast filter value (compareValue) based on function used
 			if (column.includes('(') && column.includes(')')) {
 				const functionName = column.split('(')[0] as FieldFunction;
@@ -468,18 +480,6 @@ export function applyFilter(
 						compareValue = Number(compareValue);
 					}
 				}
-			}
-
-			// The following fields however, require a value to be run. If no value is passed, we
-			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
-			// conditionally build out your filter structure (#4471)
-			if (compareValue === undefined) return;
-
-			if (Array.isArray(compareValue)) {
-				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
-				// reported as [undefined].
-				// We need to remove any undefined values, as they are useless
-				compareValue = compareValue.filter((val) => val !== undefined);
 			}
 
 			if (operator === '_eq') {

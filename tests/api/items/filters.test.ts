@@ -679,4 +679,37 @@ describe('/items', () => {
 			});
 		});
 	});
+
+	describe('/:collection GraphQL Query', () => {
+		describe('ignore undefined values when not passing variables used in query', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const guests: any[] = createMany(createGuest, 10);
+
+				await seedTable(databases.get(vendor)!, 1, 'guests', guests);
+
+				// we're intentionally not passing value for the variable $ids
+				const query = `
+				query getGuests($ids: [String]) {
+					guests(filter: {
+						id: { _nin: $ids }
+					}) {
+						id
+						name
+					}
+				}`;
+
+				const response = await request(getUrl(vendor))
+					.post('/graphql')
+					.set('Authorization', 'Bearer AdminToken')
+					.set('Content-Type', 'application/json')
+					.send({ query })
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const { data } = response.body;
+
+				expect(data.guests.length).toBe(guests.length);
+			});
+		});
+	});
 });
