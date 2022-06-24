@@ -1,3 +1,4 @@
+import { BaseException } from '@directus/shared/exceptions';
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import flatten from 'flat';
@@ -9,7 +10,6 @@ import env from '../../env';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
-	InvalidProviderException,
 	InvalidTokenException,
 	ServiceUnavailableException,
 } from '../../exceptions';
@@ -317,14 +317,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof ServiceUnavailableException) {
-						reason = 'SERVICE_UNAVAILABLE';
-					} else if (error instanceof InvalidCredentialsException) {
-						reason = 'INVALID_USER';
-					} else if (error instanceof InvalidTokenException) {
-						reason = 'INVALID_TOKEN';
-					} else if (error instanceof InvalidProviderException) {
-						reason = 'INVALID_PROVIDER';
+					if (error instanceof BaseException) {
+						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}

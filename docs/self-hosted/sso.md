@@ -101,7 +101,7 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      ```js
      await fetch('https://directus.myserver.com/auth/refresh', {
      	method: 'POST',
-     	withCredentials: true, // this is required in order to send the refresh token cookie
+     	credentials: 'include', // this is required in order to send the refresh token cookie
      });
      ```
 

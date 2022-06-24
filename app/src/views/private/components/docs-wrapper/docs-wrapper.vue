@@ -458,6 +458,77 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 }
 
+.md :deep(span[mi]) {
+	font-family: 'Material Icons Outline';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 18px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	font-feature-settings: 'liga';
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.md :deep(span[mi][btn]) {
+	color: var(--foreground-inverted);
+	background-color: var(--primary);
+	border-radius: 50%;
+	width: 28px;
+	height: 28px;
+	vertical-align: middle;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 4px;
+}
+.md :deep(span[mi][btn][dngr]) {
+	background-color: var(--danger-10);
+	color: var(--danger);
+}
+.md :deep(span[mi][btn][sec]) {
+	background-color: var(--primary-10);
+	color: var(--primary);
+}
+.md :deep(span[mi][btn][warn]) {
+	background-color: var(--warning-10);
+	color: var(--warning);
+}
+.md :deep(span[mi][btn][outline]) {
+	background-color: transparent;
+	border: 2px solid var(--primary);
+	color: var(--primary);
+}
+.md :deep(span[mi][btn][action]) {
+	background-color: var(--success-10);
+	color: var(--success);
+}
+.md :deep(span[mi][btn][muted]) {
+	background-color: var(--background-normal);
+	color: var(--foreground-normal);
+}
+.md :deep(span[mi][icon]) {
+	vertical-align: middle;
+	margin-bottom: 4px;
+	color: var(--foreground-subdued);
+}
+.md :deep(span[mi][icon][prmry]) {
+	color: var(--primary);
+}
+.md :deep(span[mi][icon][dark]) {
+	color: var(--foreground-normal-alt);
+}
+.md :deep(span[mi][icon][dngr]) {
+	color: var(--danger);
+}
+.md :deep(span[mi][icon][warn]) {
+	color: var(--warning);
+}
+
 .md.page-reference :deep(.definitions) {
 	font-size: 0.9rem;
 	line-height: 1.5rem;

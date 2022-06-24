@@ -1,6 +1,6 @@
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import md from 'vite-plugin-md';
+import md from 'vite-plugin-vue-markdown';
 import yaml from '@rollup/plugin-yaml';
 import path from 'path';
 import {
