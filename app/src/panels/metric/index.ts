@@ -1,4 +1,5 @@
 import { useFieldsStore } from '@/stores';
+import { PanelQuery } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
 import { computed } from 'vue';
 import PanelMetric from './panel-metric.vue';
@@ -20,26 +21,26 @@ export default definePanel({
 			: {
 					[options.function]: [options.field || '*'],
 			  };
-		if (aggregate) {
-			return {
-				collection: options.collection,
-				query: {
-					aggregate,
-					filter: options.filter ?? {},
-					sort: sort,
-					limit: 1,
-				},
-			};
-		}
-		return {
+
+		const panelQuery: PanelQuery = {
 			collection: options.collection,
 			query: {
-				filter: options.filter ?? {},
-				sort: sort,
+				sort,
 				limit: 1,
 				fields: [options.field],
 			},
 		};
+
+		if (options.filter && Object.keys(options.filter).length > 0) {
+			panelQuery.query.filter = options.filter;
+		}
+
+		if (aggregate) {
+			panelQuery.query.aggregate = aggregate;
+			delete panelQuery.query.fields;
+		}
+
+		return panelQuery;
 	},
 	options: ({ options }) => {
 		const fieldsStore = useFieldsStore();
