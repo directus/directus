@@ -11,6 +11,7 @@ export interface PanelConfig {
 	icon: string;
 	description?: string;
 	query?: (options: Record<string, any>) => PanelQuery | PanelQuery[] | undefined;
+	variable?: true; // Mark the panel as a global variable
 	component: Component;
 	options:
 		| DeepPartial<Field>[]

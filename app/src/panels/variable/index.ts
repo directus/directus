@@ -3,6 +3,7 @@ import PanelVariable from './panel-variable.vue';
 import { useI18n } from 'vue-i18n';
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
+import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default definePanel({
 	id: 'variable',
@@ -10,7 +11,8 @@ export default definePanel({
 	description: '$t:panels.variable.description',
 	icon: 'science',
 	component: PanelVariable,
-	options: () => {
+	variable: true,
+	options: (panel) => {
 		const { t } = useI18n();
 
 		return [
@@ -41,6 +43,17 @@ export default definePanel({
 					},
 				},
 				schema: null,
+			},
+			{
+				name: t('default_value'),
+				field: 'defaultValue',
+				type: panel.options?.type,
+				meta: {
+					interface: panel.options?.type ? getDefaultInterfaceForType(panel.options.type) : 'input',
+					readonly: !panel.options?.type,
+					width: 'half',
+				},
+				schema: {},
 			},
 			{
 				name: t('interface_label'),

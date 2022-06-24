@@ -103,6 +103,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 	async function hydrate() {
 		const permissionsStore = usePermissionsStore();
+
 		if (
 			permissionsStore.hasPermission('directus_dashboards', 'read') &&
 			permissionsStore.hasPermission('directus_panels', 'read')
@@ -121,6 +122,18 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				panels.value = [];
 			}
 		}
+
+		const variableDefaults: Record<string, any> = {};
+
+		panels.value.forEach((panel) => {
+			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
+
+			if (panelType?.variable === true && panel.options?.field) {
+				variableDefaults[panel.options.field] = panel.options?.defaultValue;
+			}
+		});
+
+		variables.value = variableDefaults;
 	}
 
 	function dehydrate() {
