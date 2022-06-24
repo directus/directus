@@ -1,21 +1,20 @@
 <template>
 	<div class="time-series">
-		<span v-if="!hasData" class="type-note">{{ t('no_data') }}</span>
-		<div v-show="hasData" ref="chartEl" />
+		<div ref="chartEl" />
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
-import ApexCharts from 'apexcharts';
-import { adjustDate } from '@/utils/adjust-date';
-import { useI18n } from 'vue-i18n';
-import { isEmpty, isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
+import { adjustDate } from '@/utils/adjust-date';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
+import ApexCharts from 'apexcharts';
 import { addWeeks } from 'date-fns';
+import { isNil } from 'lodash';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -62,7 +61,6 @@ const { d, t, n } = useI18n();
 const fieldsStore = useFieldsStore();
 
 const metrics = ref<Record<string, any>[]>([]);
-const hasData = ref(true);
 const chartEl = ref();
 const chart = ref<ApexCharts>();
 
@@ -114,11 +112,6 @@ onUnmounted(() => {
 });
 
 function setupChart() {
-	if (isEmpty(props.data)) {
-		hasData.value = false;
-		return;
-	}
-
 	metrics.value = [];
 
 	const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';

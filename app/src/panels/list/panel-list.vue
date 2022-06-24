@@ -1,7 +1,6 @@
 <template>
-	<div class="list" :class="{ 'has-header': showHeader, 'no-data': !hasData }">
-		<span v-if="!hasData" class="type-note">{{ t('no_data') }}</span>
-		<div v-else>
+	<div class="list" :class="{ 'has-header': showHeader }">
+		<div>
 			<v-list>
 				<v-list-item v-for="row in data" :key="row[primaryKeyField.field]" class="selectable">
 					<render-template :item="row" :collection="collection" :template="displayTemplate" />
@@ -13,10 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
-import { useI18n } from 'vue-i18n';
+import { Filter } from '@directus/shared/types';
+import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -38,13 +36,8 @@ const props = withDefaults(
 		data: () => ({}),
 	}
 );
-const { t } = useI18n();
 
 const fieldsStore = useFieldsStore();
-
-const hasData = computed(() => {
-	return props.data && props.data.length > 0;
-});
 
 const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 </script>

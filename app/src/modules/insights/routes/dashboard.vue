@@ -114,8 +114,16 @@
 						{{ t('unexpected_error') }}
 						<v-error :error="errors[tile.id]" />
 					</div>
+					<div
+						v-else-if="tile.id in data && isEmpty(data[tile.id])"
+						class="panel-no-data type-note"
+						:class="{ 'header-offset': tile.showHeader }"
+					>
+						{{ t('no_data') }}
+					</div>
 					<component
 						:is="`panel-${tile.data.type}`"
+						v-else
 						v-bind="tile.data.options"
 						:id="tile.id"
 						:dashboard="primaryKey"
@@ -191,12 +199,12 @@ import { router } from '@/router';
 import { useAppStore, useInsightsStore, usePermissionsStore } from '@/stores';
 import { pointOnLine } from '@/utils/point-on-line';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail/refresh-sidebar-detail.vue';
-import { assign } from 'lodash';
+import { applyOptionsData } from '@directus/shared/utils';
+import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
-import { applyOptionsData } from '@directus/shared/utils';
 
 interface Props {
 	primaryKey: string;
@@ -419,6 +427,18 @@ const refreshInterval = computed({
 	.v-error {
 		margin-top: 8px;
 		max-width: 100%;
+	}
+}
+
+.panel-no-data {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+
+	&.header-offset {
+		height: calc(100% - 24px);
 	}
 }
 </style>
