@@ -430,15 +430,25 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	}
 
 	function setVariable(field: string, value: unknown) {
-		variables.value = assign({}, variables.value, { [field]: value });
+		const newVariables = assign({}, variables.value, { [field]: value });
 
 		// Find all panels that are using this variable in their options
 		const regex = new RegExp(`{{\\s*?${escapeStringRegexp(field)}\\s*?}}`);
 		const needReload = unref(panelsWithEdits).filter((panel) => {
 			if (panel.id in unref(data) === false) return false;
+
 			const optionsString = JSON.stringify(panel.options ?? {});
-			return regex.test(optionsString);
+			const containsVariable = regex.test(optionsString);
+			if (!containsVariable) return false;
+
+			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
+			if (!panelType) return false;
+			const oldQuery = panelType.query?.(applyOptionsData(panel.options ?? {}, unref(variables)));
+			const newQuery = panelType.query?.(applyOptionsData(panel.options ?? {}, unref(newVariables)));
+			return JSON.stringify(oldQuery) !== JSON.stringify(newQuery);
 		});
+
+		variables.value = newVariables;
 
 		if (needReload.length > 0) {
 			loadPanelData(needReload);

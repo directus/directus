@@ -45,8 +45,9 @@ const value = computed({
 <style lang="scss" scope>
 .variable {
 	padding: 12px;
-	padding-top: 0px;
+	padding-top: 2px;
 	display: grid;
+	align-content: center;
 	width: 100%;
 	height: 100%;
 
