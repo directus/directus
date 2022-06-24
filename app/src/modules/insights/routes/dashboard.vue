@@ -196,6 +196,7 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
+import { applyOptionsData } from '@directus/shared/utils';
 
 interface Props {
 	primaryKey: string;
@@ -213,7 +214,7 @@ const appStore = useAppStore();
 const permissionsStore = usePermissionsStore();
 
 const { fullScreen } = toRefs(appStore);
-const { loading, errors, data, saving, hasEdits, refreshIntervals } = toRefs(insightsStore);
+const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
 
@@ -283,7 +284,7 @@ const tiles = computed<AppTile[]>(() => {
 				draggable: true,
 				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
 				data: {
-					options: panel.options,
+					options: applyOptionsData(panel.options ?? {}, unref(variables)),
 					type: panel.type,
 				},
 			};

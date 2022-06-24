@@ -23,10 +23,10 @@ interface Props {
 	inter: string;
 	dashboard: string;
 	width: number;
-	options: Record<string, any>;
+	options?: Record<string, any>;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { options: () => ({}) });
 
 const insightsStore = useInsightsStore();
 
@@ -34,10 +34,10 @@ const fieldWidth = computed(() => (props.width < 20 ? 'half' : 'full'));
 
 const value = computed({
 	get() {
-		return insightsStore.getVariable(props.dashboard, props.field);
+		return insightsStore.getVariable(props.field);
 	},
 	set(val: any) {
-		insightsStore.setVariable(props.dashboard, props.field, val);
+		insightsStore.setVariable(props.field, val);
 	},
 });
 </script>

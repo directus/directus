@@ -4,13 +4,14 @@ import { usePermissionsStore } from '@/stores';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Item, Panel } from '@directus/shared/types';
-import { applyOptionsData, getSimpleHash, toArray } from '@directus/shared/utils';
+import { getSimpleHash, toArray, applyOptionsData } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
 import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
+import escapeStringRegexp from 'escape-string-regexp';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -68,7 +69,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 					return panel;
 				}),
 			...edits.create,
-		].map((panel) => assign(panel, { options: applyOptionsData(panel.options ?? {}, unref(variables)) }));
+		];
 	});
 
 	return {
@@ -282,7 +283,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	function prepareQuery(panel: Pick<Panel, 'options' | 'type'>) {
 		const { panels: panelTypes } = getPanels();
 		const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
-		return panelType?.query?.(panel.options) ?? null;
+		return panelType?.query?.(applyOptionsData(panel.options ?? {}, unref(variables))) ?? null;
 	}
 
 	function stagePanelCreate(panel: CreatePanel) {
@@ -389,6 +390,18 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 	function setVariable(field: string, value: unknown) {
 		variables.value = assign({}, variables.value, { [field]: value });
+
+		// Find all panels that are using this variable in their options
+		const regex = new RegExp(`{{\\s*?${escapeStringRegexp(field)}\\s*?}}`);
+		const needReload = unref(panelsWithEdits).filter((panel) => {
+			if (panel.id in unref(data) === false) return false;
+			const optionsString = JSON.stringify(panel.options ?? {});
+			return regex.test(optionsString);
+		});
+
+		if (needReload.length > 0) {
+			loadPanelData(needReload);
+		}
 	}
 });
 
