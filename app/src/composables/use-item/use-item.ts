@@ -316,7 +316,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
 				existsJunctionRelated.related_collection
 			);
-			delete item[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
+
+			if (relation.meta.junction_field in item && junctionRelatedPrimaryKeyField.schema!.is_generated) {
+				delete item[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
+			}
 		}
 	}
 
