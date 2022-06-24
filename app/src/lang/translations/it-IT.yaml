@@ -195,7 +195,7 @@ fields_and_layout: Campi & Layout
 field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
-language: Lingua
+language: Linguaggio
 language_placeholder: Seleziona una lingua...
 aggregate_function: Funzione di aggregazione
 aggregate_precision: Precisione dell'aggregazione
@@ -927,7 +927,7 @@ select: Seleziona...
 layout: Layout
 tree_view: Struttura ad albero
 changes_are_permanent: Modifiche sono permanenti
-preset_name_placeholder: Serve come predefinito quando vuoto...
+preset_name_placeholder: Se il nome è vuoto è il preset predefinito...
 preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
@@ -1592,6 +1592,8 @@ interfaces:
     description: Crea più elementi della stessa struttura
     edit_fields: Modifica Campi
     add_label: 'Etichetta "Crea nuovo"'
+    sort: Ordinamento
+    sort_placeholder: Manuale
     field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
@@ -1646,6 +1648,9 @@ interfaces:
     display_template: Display Template
     no_collection: Nessuna Raccolta
     toggle_split_view: Attiva/disattiva la Split View
+    enable: Attivato
+    user_language: Usa la lingua dell'utente corrente
+    default_language: Lingua predefinita
     language_field: Campo indicatore della lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
@@ -1676,7 +1681,7 @@ interfaces:
     trigger: Trigger
     rate: Intervallo
   group-raw:
-    name: Gruppo grezzo
+    name: Gruppo logico
     description: Mostra i campi così come sono
   group-detail:
     name: Gruppo di dettaglio
@@ -1995,10 +2000,11 @@ operations:
     name: Crea dati
     description: Crea elementi nel database
     payload: Payload
-    emit_events: Scatena un evento
+    emit_events: Genera gli eventi
   item-delete:
     name: Elimina dati
     description: Elimina elementi nel database
+    emit_events: Genera gli eventi
     key: ID
     query: Interrogazione
   item-read:
@@ -2009,6 +2015,7 @@ operations:
   item-update:
     name: Aggiorna dati
     description: Aggiorna elementi nel database
+    emit_events: Genera gli eventi
     key: ID
     payload: Payload
     query: Interrogazione

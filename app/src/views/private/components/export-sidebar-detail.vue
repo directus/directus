@@ -28,7 +28,7 @@
 									hidden
 									@change="onChange"
 								/>
-								<label for="import-file" class="import-file-label"></label>
+								<label v-tooltip="file && file.name" for="import-file" class="import-file-label"></label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
 									{{ file ? file.name : t('import_data_input_placeholder') }}
 								</span>
@@ -629,6 +629,10 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 
 .import-file-text {
 	flex-grow: 1;
+	overflow: hidden;
+	line-height: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 
 	&.no-file {
 		color: var(--foreground-subdued);

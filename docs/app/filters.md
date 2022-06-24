@@ -11,7 +11,7 @@
 ::: warning There Are Two Filters Documents
 
 This page is a non-technical guide to using Filters. For more technical info, see
-[Filter-Rules](/configuration/filter-rules/).
+[Filter-Rules](/reference/filter-rules/).
 
 :::
 
@@ -26,7 +26,7 @@ relevant [Users, Roles and Permissions](/configuration/users-roles-permissions.m
 :::
 
 A basic filter is composed of 3 parts: A **Field** from the Collection being Filtered, a logical
-[Operator](/configuration/filter-rules/#filter-operators), and some specified **Value** to filter for within each Item's
+[Operator](/reference/filter-rules/#filter-operators), and some specified **Value** to filter for within each Item's
 Field.
 
 <video autoplay muted loop controls title="How Filters Work">
@@ -47,7 +47,7 @@ From here, you can set multiple Filters at once, filter by
 The Field type will determine the kinds of Operators that can be used on it. In fact, some Fields cannot be filtered at
 all (read more in [Unfilterable Fields](#unfilterable-fields)). Once a Field is selected, the permitted operators will
 automatically display. An exhaustive list of Operators and what they do can be found in the more technical
-[Filter Rules](/configuration/filter-rules/#filter-operators) document.
+[Filter Rules](/reference/filter-rules/#filter-operators) document.
 
 :::
 
@@ -85,7 +85,7 @@ The following video shows how to filter for Blog posts written within the past 6
 
 The following Dynamic Variables are built into Directus to make Filtering easier: `$CURRENT_USER`, `$CURRENT_ROLE`,
 `$NOW` and `$NOW(<adjustment>)`. For more information, please see the Dynamic Variables section in
-[Filter Rules](/configuration/filter-rules/).
+[Filter Rules](/reference/filter-rules/).
 
 ## Filtering by Related Collections
 

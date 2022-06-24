@@ -1371,6 +1371,7 @@ interfaces:
     description: Crea múltiples entrades de la mateixa estructura
     edit_fields: Edita els camps
     add_label: 'Etiqueta "Crea nou"'
+    sort: Ordre
     field_name_placeholder: Introdueix nou camp...
     field_note_placeholder: Introdueix una nota sobre el camp...
   slider:

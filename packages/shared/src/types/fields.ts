@@ -60,6 +60,7 @@ export type RawField = DeepPartial<Field> & { field: string; type: Type };
 
 export type ValidationError = {
 	code: string;
+	collection: string;
 	field: string;
 	type: FilterOperator;
 	hidden?: boolean;

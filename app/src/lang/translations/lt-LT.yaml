@@ -857,6 +857,8 @@ interfaces:
     zoom: Padidinti
   system-folder:
     folder: Aplankas
+  list:
+    sort: Rūšiuoti
   tags:
     tags: Žymos
     whitespace: Matomi tarpai

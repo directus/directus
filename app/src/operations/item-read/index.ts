@@ -6,20 +6,17 @@ export default defineOperationApp({
 	icon: 'visibility',
 	name: '$t:operations.item-read.name',
 	description: '$t:operations.item-read.description',
-	overview: ({ mode, collection, key }) => {
+	overview: ({ collection, key }) => {
 		const overviewItems = [
 			{
 				label: '$t:collection',
 				text: collection,
 			},
-		];
-
-		if (mode !== 'query') {
-			overviewItems.push({
+			{
 				label: '$t:operations.item-read.key',
 				text: key ? toArray(key).join(', ') : '--',
-			});
-		}
+			},
+		];
 
 		return overviewItems;
 	},
@@ -72,16 +69,6 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'vpn_key',
 				},
-				conditions: [
-					{
-						rule: {
-							mode: {
-								_eq: 'query',
-							},
-						},
-						hidden: true,
-					},
-				],
 			},
 		},
 		{

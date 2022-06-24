@@ -1450,6 +1450,7 @@ interfaces:
     description: Aynı yapıda birden çok girdi oluştur
     edit_fields: Alanları Düzenle
     add_label: '"Yeni Oluştur" Başlığı'
+    sort: Sırala
     field_name_placeholder: Alan adı girin...
     field_note_placeholder: Alan notu girin...
   slider:
@@ -1497,6 +1498,9 @@ interfaces:
     display_template: Görüntüleme Şablonu
     no_collection: Koleksiyon Yok
     toggle_split_view: Parçalı Görünümü Aç/Kapat
+    enable: Etkinleştir
+    user_language: Mevcut Kullanıcı Dilini Kullan
+    default_language: Varsayılan Dil
     language_field: Dil Göstergesi Alanı
   list-o2m-tree-view:
     description: İç içe özyinelemeli birden çoka öğeler için ağaç görünümü

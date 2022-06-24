@@ -1006,6 +1006,7 @@ interfaces:
     description: Krouiñ meur a ebarzh evit ar memes framm
     edit_fields: Aozañ ar maeziennoù
     add_label: 'Skridennad "Krouiñ unan Nevez"'
+    sort: Rummañ
     field_name_placeholder: Bizskrivit anv ar vaezienn...
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
   slider:
