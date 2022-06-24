@@ -376,6 +376,14 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			await Promise.all(requests);
 			await hydrate();
+
+			// Remove cached data for the newly created panels
+			data.value = omit(data.value, ...edits.create.map(({ id }) => id));
+
+			// Fetch data for panels that now exist in the dashboard (from create) but haven't been fetched yet
+			const panelsToLoad = unref(panelsWithEdits).filter(({ id }) => id in unref(data) === false);
+			loadPanelData(panelsToLoad);
+
 			clearEdits();
 		} catch (err: any) {
 			unexpectedError(err);
