@@ -53,6 +53,7 @@ init: 初始化
 dataset_too_large_currently_showing_n_items: 数据集太大，目前显示前 {n} 项。
 modifier: 修改者
 custom: 自定义
+hook: Hook
 fill_width: 适应页面宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
@@ -574,6 +575,7 @@ errors:
   INVALID_CREDENTIALS: 错误的用户名或密码
   INVALID_OTP: 错误的一次性密码
   INVALID_PAYLOAD: 无效的内容
+  INVALID_PROVIDER: 用户属于另一个认证提供商
   INVALID_QUERY: 无效的查询
   INVALID_USER: 用户身份验证失败
   ITEM_LIMIT_REACHED: 条目已达到限制
@@ -757,6 +759,7 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
+run_flow_on_current: 在当前条目上运行Flow
 run_flow_on_selected: 没有选定项 | 在已选定的 1 项上运行流流程 | 在选定的 {n} 个项目上运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 trigger: 触发器
@@ -812,6 +815,7 @@ no_dashboards_copy: 您还没有任何工作台。
 create_dashboard: 创建Dashboard
 dashboard_name: Dashboard名称
 no_data: 没有数据
+no_data_in_flow: 此Flow没有产生或获取任何数据
 accountability: 访问控制
 payload: 有效载荷 (Payload)
 details: 详细信息
@@ -828,6 +832,7 @@ media: Media
 quality: 质量
 width: 宽
 height: 高度
+transformation_preset_key: 转换预设密钥
 source: 来源
 url_placeholder: 输入网址...
 display_text: 显示文本
@@ -962,6 +967,7 @@ page_help_settings_presets_item: >-
   **预设详细信息** - 管理书签和默认模型预设的表单。
 page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
 page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
+page_help_settings_flows_collection: '**Browse Webhooks** - 列出项目内的所有流。'
 page_help_settings_translation_strings_collection: '**浏览翻译字符串** - 列出项目中的所有翻译字符串。'
 page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
 page_help_users_item: >-
@@ -990,9 +996,11 @@ directus_collection:
   directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
+  directus_flows: 自动化流程
   directus_folders: 虚拟文件目录
   directus_migrations: 您的数据库版本是
   directus_notifications: 发送给用户的通知
+  directus_operations: 在Flow中运行的操作
   directus_panels: Insights仪表板中的个别面板
   directus_permissions: 每个角色的访问权限
   directus_presets: 书签/预设默认值
@@ -1363,6 +1371,7 @@ reset: 重置
 reset_password: 重置密码
 revisions: 修订版本
 no_revisions: 尚未更新
+no_logs: 暂无记录
 revert: 还原
 save: 保存
 schema: Schema
@@ -1382,6 +1391,7 @@ export_started_copy: 您的导出已经开始。当准备下载时，您会收�
 sort_asc: 升序
 sort_desc: 降序
 template: 模板
+require_value_to_be_set: 创建时需要设置值
 translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
@@ -1404,6 +1414,7 @@ interfaces:
     no_rules: 无已配置的规则
     change_value: 点击修改名称
     placeholder: 拖拽规则到此处
+    add_key_placeholder: 添加键并按回车键...
   fields:
     name: 字段
   group-accordion:
@@ -1580,6 +1591,7 @@ interfaces:
     edit_fields: 编辑字段
     add_label: '"创建新"标签'
     sort: 排序
+    sort_placeholder: 手动
     field_name_placeholder: 输入字段名称...
     field_note_placeholder: 输入字段备注...
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
@@ -1679,6 +1691,13 @@ interfaces:
     start_closed: 默认收起
   system-token:
     system-token: Token
+    description: 管理静态访问令牌
+    placeholder: 点击“生成令牌”创建一个新的静态访问令牌
+    value_securely_saved: 值已安全保存
+    generate: 生成令牌
+    regenerate: 重新生成令牌
+    generate_success_copy: 确保备份并复制上述令牌。 出于安全原因，保存并导航此页面后，您将无法再次查看令牌。
+    remove_token: 删除令牌
 displays:
   translations:
     translations: 翻译
