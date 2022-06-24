@@ -1,7 +1,7 @@
 import { Filter, LogicalFilterAND } from '@directus/shared/types';
+import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { nanoid } from 'nanoid';
-import { parseJSON } from '../../utils/parse-json';
 
 type OldFilter = {
 	key: string;

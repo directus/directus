@@ -6,7 +6,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Item, Panel } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { assign, isUndefined, mapKeys, omit, omitBy, pull, uniq, clone } from 'lodash';
+import { assign, isUndefined, mapKeys, omit, omitBy, pull, get, uniq, clone } from 'lodash';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
@@ -32,6 +32,9 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 	/** Cache/store for the panel data */
 	const data = ref<{ [panel: string]: Item | Item[] }>({});
+
+	/** Runtime filter values */
+	const variables = ref<{ [field: string]: any }>({});
 
 	/** Staged edits  */
 	const edits = reactive<{ create: CreatePanel[]; update: Partial<Panel>[]; delete: string[] }>({
@@ -77,6 +80,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		hasEdits,
 		saving,
 		edits,
+		variables,
 		hydrate,
 		dehydrate,
 		clearCache,
@@ -90,6 +94,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		stagePanelDelete,
 		saveChanges,
 		refreshIntervals,
+		getVariable,
+		setVariable,
 	};
 
 	async function hydrate() {
@@ -375,6 +381,14 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		} finally {
 			saving.value = false;
 		}
+	}
+
+	function getVariable(field: string) {
+		return get(unref(variables), field);
+	}
+
+	function setVariable(field: string, value: unknown) {
+		variables.value = assign({}, variables.value, { [field]: value });
 	}
 });
 

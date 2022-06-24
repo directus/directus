@@ -1,5 +1,5 @@
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { format } from 'date-fns';
 import { unflatten } from 'flat';
 import Joi from 'joi';
@@ -12,7 +12,6 @@ import { getHelpers, Helpers } from '../database/helpers';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Alterations, Item, PrimaryKey } from '../types';
 import { generateHash } from '../utils/generate-hash';
-import { parseJSON } from '../utils/parse-json';
 import { ItemsService } from './items';
 
 type Action = 'create' | 'read' | 'update';

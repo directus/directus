@@ -118,6 +118,7 @@
 						:is="`panel-${tile.data.type}`"
 						v-bind="tile.data.options"
 						:id="tile.id"
+						:dashboard="primaryKey"
 						:show-header="tile.showHeader"
 						:height="tile.height"
 						:width="tile.width"
@@ -276,7 +277,7 @@ const tiles = computed<AppTile[]>(() => {
 				icon: panel.icon ?? panelType?.icon,
 				color: panel.color,
 				note: panel.note,
-				showHeader: panel.show_header,
+				showHeader: panel.show_header === true,
 				minWidth: panelType?.minWidth,
 				minHeight: panelType?.minHeight,
 				draggable: true,

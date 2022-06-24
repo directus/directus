@@ -4,6 +4,22 @@ import { parseJSON } from './parse-json';
 type Mustacheable = string | number | boolean | null | Mustacheable[] | { [key: string]: Mustacheable };
 type GenericString<T> = T extends string ? string : T;
 
+export function applyOptionsData(options: Record<string, any>, data: Record<string, any>): Record<string, any> {
+	return Object.fromEntries(
+		Object.entries(options).map(([key, value]) => {
+			if (typeof value === 'string') {
+				const single = value.match(/^\{\{\s*([^}\s]+)\s*\}\}$/);
+
+				if (single !== null && single.length > 0) {
+					return [key, get(data, single[1]!)];
+				}
+			}
+
+			return [key, renderMustache(value, data)];
+		})
+	);
+}
+
 function resolveFn(path: string, scope?: Scope): unknown {
 	if (!scope) return undefined;
 
@@ -24,22 +40,6 @@ function renderMustache<T extends Mustacheable>(item: T, scope: Scope): GenericS
 	} else {
 		return item as GenericString<T>;
 	}
-}
-
-export function applyOperationOptions(options: Record<string, any>, data: Record<string, any>): Record<string, any> {
-	return Object.fromEntries(
-		Object.entries(options).map(([key, value]) => {
-			if (typeof value === 'string') {
-				const single = value.match(/^\{\{\s*([^}\s]+)\s*\}\}$/);
-
-				if (single !== null) {
-					return [key, get(data, single[1])];
-				}
-			}
-
-			return [key, renderMustache(value, data)];
-		})
-	);
 }
 
 export function optionToObject<T>(option: T): Exclude<T, string> {

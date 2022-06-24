@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
@@ -8,8 +9,8 @@ import env from '../../env';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
-	InvalidTokenException,
 	InvalidProviderException,
+	InvalidTokenException,
 	ServiceUnavailableException,
 } from '../../exceptions';
 import logger from '../../logger';
@@ -19,7 +20,6 @@ import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { parseJSON } from '../../utils/parse-json';
 import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 
