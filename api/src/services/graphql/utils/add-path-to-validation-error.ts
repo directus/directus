@@ -16,4 +16,6 @@ export function addPathToValidationError(validationError: GraphQLError): GraphQL
 
 		prev = prev.prev;
 	}
+
+	return locatedError(validationError, validationError.nodes);
 }
