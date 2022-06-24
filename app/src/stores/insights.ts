@@ -4,13 +4,13 @@ import { usePermissionsStore } from '@/stores';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Item, Panel } from '@directus/shared/types';
-import { getSimpleHash, toArray } from '@directus/shared/utils';
+import { applyOptionsData, getSimpleHash, toArray } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { assign, isUndefined, mapKeys, omit, omitBy, pull, get, uniq, clone } from 'lodash';
+import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';
+import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
-import { nanoid } from 'nanoid';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -68,7 +68,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 					return panel;
 				}),
 			...edits.create,
-		];
+		].map((panel) => assign(panel, { options: applyOptionsData(panel.options ?? {}, unref(variables)) }));
 	});
 
 	return {
