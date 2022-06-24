@@ -15,6 +15,7 @@ import { addWeeks } from 'date-fns';
 import { isNil } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { orderBy } from 'lodash';
 
 const props = withDefaults(
 	defineProps<{
@@ -116,11 +117,14 @@ function setupChart() {
 
 	const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
 
-	metrics.value = props.data.map((metric) => ({
-		x: new Date(toISO(metric.group)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0),
+	metrics.value = orderBy(
+		props.data.map((metric) => ({
+			x: new Date(toISO(metric.group)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0),
 
-		y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
-	}));
+			y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
+		})),
+		'x'
+	);
 
 	chart.value = new ApexCharts(chartEl.value, {
 		colors: [props.color ? props.color : cssVar('--primary')],
