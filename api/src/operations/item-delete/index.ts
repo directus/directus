@@ -42,7 +42,7 @@ export default defineOperationApi<Options>({
 
 		let result: PrimaryKey | PrimaryKey[] | null;
 
-		if (!key) {
+		if (!key || (Array.isArray(key) && key.length === 0)) {
 			result = await itemsService.deleteByQuery(sanitizedQueryObject);
 		} else {
 			const keys = toArray(key);
