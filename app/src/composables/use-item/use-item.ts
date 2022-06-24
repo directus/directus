@@ -211,7 +211,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					);
 
 					existingItems = existingItems.filter((i) => {
-						if (deletedRelatedItems.indexOf(i[relatedPrimaryKeyField!.field]) === -1) {
+						return deletedRelatedItems.indexOf(i[relatedPrimaryKeyField!.field]) === -1;
 							return i;
 						}
 					});
