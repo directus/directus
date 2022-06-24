@@ -174,10 +174,10 @@ field_o2m: Relación O2M
 field_m2m: Relación M2M
 field_translations: Traducciones
 field_group: Grupo de Campos
-item_permissions: Permisos de Elemento
+item_permissions: Permisos de items
 field_permissions: Permisos de Campo
-field_validation: Validación de Campo
-field_presets: Predefinidos para Campo
+field_validation: Validación de campo
+field_presets: Preajustes de campo
 permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
 fields_for_role: 'Campos que el Rol {role} puede {action}.'
 validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
