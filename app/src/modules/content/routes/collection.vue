@@ -426,6 +426,42 @@ export default defineComponent({
 			}
 		});
 
+		const route = router.currentRoute.value;
+		if (!props.bookmark && (route.query.filter || route.query.search)) {
+			filter.value = {};
+			search.value = '';
+
+			if (route.query.filter) {
+				try {
+					filter.value = JSON.parse(route.query.filter as string);
+				} catch (err) {
+					// eslint-disable-next-line no-console
+					console.warn(err);
+				}
+			}
+			if (route.query.search) {
+				search.value = route.query.search as string;
+			}
+		}
+
+		watch([filter, search], () => {
+			if (!props.bookmark) {
+				const query: Record<string, any> = {};
+				if (filter.value) {
+					try {
+						query.filter = JSON.stringify(filter.value);
+					} catch (err) {
+						// eslint-disable-next-line no-console
+						console.warn(err);
+					}
+				}
+				if (search.value) {
+					query.search = search.value;
+				}
+				router.replace({ query });
+			}
+		});
+
 		return {
 			t,
 			addNewLink,
