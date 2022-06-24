@@ -23,6 +23,7 @@
 				v-model="edits.options"
 				:options="customOptionsFields"
 				type="panel"
+				raw-editor-enabled
 				:extension="edits.type"
 			/>
 
