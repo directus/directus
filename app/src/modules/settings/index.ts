@@ -2,13 +2,13 @@ import api from '@/api';
 import { defineModule } from '@directus/shared/utils';
 import { useCollectionsStore, useFieldsStore, useFlowsStore } from '@/stores';
 import RouterPass from '@/utils/router-passthrough';
-import Collections from './routes/data-model/collections/collections.vue';
-import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
+//import Collections from './routes/data-model/collections/collections.vue';
+//import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
 import NewCollection from './routes/data-model/new-collection.vue';
 import NotFound from './routes/not-found.vue';
-import PresetsCollection from './routes/presets/collection/collection.vue';
-import PresetsItem from './routes/presets/item.vue';
+//import PresetsCollection from './routes/presets/collection/collection.vue';
+//import PresetsItem from './routes/presets/item.vue';
 import Project from './routes/project/project.vue';
 import NewRole from './routes/roles/add-new.vue';
 import RolesCollection from './routes/roles/collection.vue';
@@ -37,7 +37,7 @@ export default defineModule({
 			path: 'project',
 			component: Project,
 		},
-		{
+		/*{
 			path: 'data-model',
 			component: RouterPass,
 			children: [
@@ -97,7 +97,7 @@ export default defineModule({
 					],
 				},
 			],
-		},
+		},*/
 		{
 			path: 'roles',
 			component: RouterPass,
@@ -145,7 +145,7 @@ export default defineModule({
 				},
 			],
 		},
-		{
+		/*{
 			path: 'presets',
 			component: RouterPass,
 			children: [
@@ -161,7 +161,7 @@ export default defineModule({
 					props: true,
 				},
 			],
-		},
+		},*/
 		{
 			path: 'webhooks',
 			component: RouterPass,

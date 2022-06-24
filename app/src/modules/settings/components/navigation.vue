@@ -19,7 +19,7 @@
 		<v-list-item href="https://github.com/directus/directus/releases" class="version">
 			<v-list-item-icon><v-icon name="directus" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow class="version" :text="`Directus ${version}`" />
+				<v-text-overflow class="version" :text="`NerdSolve ${version}`" />
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>
@@ -42,22 +42,22 @@ export default defineComponent({
 				icon: 'public',
 				name: t('settings_project'),
 				to: `/settings/project`,
-			},
+			} /*
 			{
 				icon: 'list_alt',
 				name: t('settings_data_model'),
 				to: `/settings/data-model`,
-			},
+			},*/,
 			{
 				icon: 'admin_panel_settings',
 				name: t('settings_permissions'),
 				to: `/settings/roles`,
-			},
+			} /*
 			{
 				icon: 'bookmark_border',
 				name: t('settings_presets'),
 				to: `/settings/presets`,
-			},
+			},*/,
 			{
 				icon: 'translate',
 				name: t('settings_translation_strings'),
@@ -87,13 +87,13 @@ export default defineComponent({
 				{
 					icon: 'bug_report',
 					name: t('report_bug'),
-					href: `https://github.com/directus/directus/issues/new?${bugReportParams.toString()}`,
-				},
+					href: `mailto:support@nerdsolve.com?subject=Bug Report`,
+				} /*
 				{
 					icon: 'new_releases',
 					name: t('request_feature'),
 					href: 'https://github.com/directus/directus/discussions/new',
-				},
+				},*/,
 			];
 		});
 
