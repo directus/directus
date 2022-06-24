@@ -72,6 +72,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		];
 	});
 
+	const { panels: panelTypes } = getPanels();
+
 	return {
 		dashboards,
 		panels: panelsWithEdits,
@@ -281,7 +283,6 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	}
 
 	function prepareQuery(panel: Pick<Panel, 'options' | 'type'>) {
-		const { panels: panelTypes } = getPanels();
 		const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
 		return panelType?.query?.(applyOptionsData(panel.options ?? {}, unref(variables))) ?? null;
 	}
@@ -296,6 +297,21 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		const isNew = id.startsWith('_');
 		const arr = isNew ? edits.create : edits.update;
+
+		/**
+		 * Check what the currently used data query is, so we can compare it to the new query later to
+		 * decide whether or not to reload the data
+		 */
+		let oldQuery;
+		if ('options' in panelEdits) {
+			// Edits not yet applied
+			const panel = unref(panelsWithEdits).find((panel) => panel.id === id);
+
+			if (panel) {
+				const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
+				oldQuery = panelType.query?.(applyOptionsData(panel.options ?? {}, unref(variables)));
+			}
+		}
 
 		if (arr.map(({ id }) => id).includes(id)) {
 			const updatedArr = arr.map((currentEdit) => {
@@ -312,9 +328,13 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			arr.push({ id, ...panelEdits });
 		}
 
+		// Reload data for panel if the query has changed
 		if ('options' in panelEdits) {
+			// This panel has the edits applied
 			const panel = unref(panelsWithEdits).find((panel) => panel.id === id)!;
-			loadPanelData(panel);
+			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
+			const newQuery = panelType.query?.(applyOptionsData(panelEdits.options ?? {}, unref(variables)));
+			if (JSON.stringify(oldQuery) !== JSON.stringify(newQuery)) loadPanelData(panel);
 		}
 	}
 
