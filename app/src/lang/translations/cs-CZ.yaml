@@ -1555,7 +1555,7 @@ interfaces:
     add_tags: Přidat značku a stiskněte Enter...
   input:
     input: Vstup
-    description: Ručně zadejte hodnotu
+    description: Ruční zadat hodnotu
     trim: Oříznout
     trim_label: Oříznout začátek a konec
     mask: Maskovaná
