@@ -717,7 +717,7 @@ replace_file: Nahradit soubor
 no_results: Bez výsledků
 no_results_copy: Upravte nebo vymažte vyhledávací filtry pro zobrazení výsledků.
 clear_filters: Vymazat filtry
-saves_automatically: Automaticky uložit
+saves_automatically: Ukládá se automaticky
 role: Role
 edit_role: Upravit roli
 rule: Pravidlo
