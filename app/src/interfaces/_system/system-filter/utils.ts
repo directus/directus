@@ -8,6 +8,7 @@ export function getNodeName(node: Filter): string {
 
 export function getField(node: Record<string, any>): string {
 	const name = getNodeName(node);
+	if (!name) return '';
 	if (name.startsWith('_')) return '';
 	if (!isPlainObject(node[name])) return '';
 

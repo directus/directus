@@ -69,7 +69,15 @@
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
+			<component
+				:is="is"
+				class="input-component"
+				v-bind="options"
+				small
+				:type="type"
+				:value="value"
+				@input="emitValue($event)"
+			/>
 		</div>
 	</v-menu>
 </template>
@@ -89,6 +97,10 @@ export default defineComponent({
 		is: {
 			type: String,
 			required: true,
+		},
+		options: {
+			type: Object,
+			default: () => ({}),
 		},
 		type: {
 			type: String,
@@ -190,6 +202,7 @@ export default defineComponent({
 
 .input {
 	padding: 8px 4px;
+	min-width: 150px;
 
 	&.date,
 	&.timestamp,

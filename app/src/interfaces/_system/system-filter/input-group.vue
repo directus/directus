@@ -2,6 +2,7 @@
 	<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(getComparator(field))">
 		<input-component
 			:is="interfaceType"
+			:options="fieldInfo?.meta?.options ?? {}"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value"
@@ -39,6 +40,7 @@
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
+				:options="fieldInfo?.meta?.options ?? {}"
 				:type="fieldInfo?.type ?? 'unknown'"
 				:value="val"
 				:focus="false"
@@ -51,6 +53,7 @@
 	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))">
 		<input-component
 			:is="interfaceType"
+			:options="fieldInfo?.meta?.options ?? {}"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[0]"
@@ -59,6 +62,7 @@
 		<div class="and">{{ t('interfaces.filter.and') }}</div>
 		<input-component
 			:is="interfaceType"
+			:options="fieldInfo?.meta?.options ?? {}"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[1]"
@@ -100,6 +104,7 @@ export default defineComponent({
 
 		const interfaceType = computed(() => {
 			if (fieldInfo.value?.meta?.options?.choices) return 'select';
+			if (fieldInfo.value?.meta?.interface === 'autocomplete') return `interface-${fieldInfo.value?.meta?.interface}`;
 
 			const types: Record<string, string> = {
 				bigInteger: 'input',

@@ -10,6 +10,7 @@
 					:disabled="disabled"
 					:class="font"
 					:model-value="value"
+					:small="small"
 					@update:model-value="onInput"
 					@focus="activate"
 				>
@@ -81,6 +82,10 @@ export default defineComponent({
 			default: 'sans-serif',
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		small: {
 			type: Boolean,
 			default: false,
 		},
