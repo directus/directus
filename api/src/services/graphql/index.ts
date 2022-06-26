@@ -1128,7 +1128,11 @@ export class GraphQLService {
 					} else {
 						UpdateCollectionTypes[collection.collection].addResolver({
 							name: `update_${collection.collection}_batch`,
-							type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+							type: collectionIsReadable
+								? new GraphQLNonNull(
+										new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection].getType()))
+								  )
+								: GraphQLBoolean,
 							args: {
 								...(collectionIsReadable
 									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
