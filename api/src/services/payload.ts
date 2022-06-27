@@ -28,6 +28,9 @@ type Transformers = {
 	}) => Promise<any>;
 };
 
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}T/;
+const DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
+
 /**
  * Process a given payload for a collection to ensure the special fields (hash, uuid, date etc) are
  * handled correctly.
@@ -319,6 +322,9 @@ export class PayloadService {
 				} else {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
+							if (!DATE_REGEX.test(value)) {
+								throw new InvalidPayloadException('Invalid date format');
+							}
 							const [date] = value.split('T');
 							const [year, month, day] = date.split('-');
 
@@ -326,6 +332,9 @@ export class PayloadService {
 						}
 
 						if (dateColumn.type === 'dateTime') {
+							if (!DATETIME_REGEX.test(value)) {
+								throw new InvalidPayloadException('Invalid dateTime format');
+							}
 							const [date, time] = value.split('T');
 							const [year, month, day] = date.split('-');
 							const [hours, minutes, seconds] = time.substring(0, 8).split(':');
