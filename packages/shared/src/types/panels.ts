@@ -23,6 +23,7 @@ export interface PanelConfig {
 		| null;
 	minWidth: number;
 	minHeight: number;
+	skipUndefinedKeys?: string[];
 }
 
 export type Panel = {

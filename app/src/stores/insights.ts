@@ -297,7 +297,9 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 	function prepareQuery(panel: Pick<Panel, 'options' | 'type'>) {
 		const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
-		return panelType?.query?.(applyOptionsData(panel.options ?? {}, unref(variables))) ?? null;
+		return (
+			panelType?.query?.(applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)) ?? null
+		);
 	}
 
 	function stagePanelCreate(panel: CreatePanel) {
@@ -322,7 +324,9 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			if (panel) {
 				const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
-				oldQuery = panelType.query?.(applyOptionsData(panel.options ?? {}, unref(variables)));
+				oldQuery = panelType.query?.(
+					applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
+				);
 			}
 		}
 
@@ -346,7 +350,9 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			// This panel has the edits applied
 			const panel = unref(panelsWithEdits).find((panel) => panel.id === id)!;
 			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
-			const newQuery = panelType.query?.(applyOptionsData(panelEdits.options ?? {}, unref(variables)));
+			const newQuery = panelType.query?.(
+				applyOptionsData(panelEdits.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
+			);
 			if (JSON.stringify(oldQuery) !== JSON.stringify(newQuery)) loadPanelData(panel);
 		}
 	}
@@ -443,8 +449,12 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
 			if (!panelType) return false;
-			const oldQuery = panelType.query?.(applyOptionsData(panel.options ?? {}, unref(variables)));
-			const newQuery = panelType.query?.(applyOptionsData(panel.options ?? {}, unref(newVariables)));
+			const oldQuery = panelType.query?.(
+				applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
+			);
+			const newQuery = panelType.query?.(
+				applyOptionsData(panel.options ?? {}, unref(newVariables), panelType.skipUndefinedKeys)
+			);
 			return JSON.stringify(oldQuery) !== JSON.stringify(newQuery);
 		});
 
