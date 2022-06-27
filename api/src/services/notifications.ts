@@ -4,6 +4,7 @@ import { Notification } from '@directus/shared/types';
 import { md } from '../utils/md';
 import { UsersService } from './users';
 import { MailService } from './mail';
+import logger from '../logger';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;
@@ -16,13 +17,22 @@ export class NotificationsService extends ItemsService {
 	}
 
 	async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.sendEmail(data);
+		try {
+			await this.sendEmail(data);
+		} catch (error: any) {
+			logger.error(error.message);
+		}
+
 		return super.createOne(data, opts);
 	}
 
 	async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		for (const notification of data) {
-			await this.sendEmail(notification);
+			try {
+				await this.sendEmail(notification);
+			} catch (error: any) {
+				logger.error(error.message);
+			}
 		}
 
 		return super.createMany(data, opts);
