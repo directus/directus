@@ -948,7 +948,9 @@ export class GraphQLService {
 						  },
 					type: collection.singleton
 						? ReadCollectionTypes[collection.collection]
-						: [ReadCollectionTypes[collection.collection]],
+						: new GraphQLNonNull(
+								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection].getType()))
+						  ),
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
 						context.data = result;
@@ -958,7 +960,9 @@ export class GraphQLService {
 
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: `${collection.collection}_aggregated`,
-					type: [AggregatedFunctions[collection.collection]],
+					type: new GraphQLNonNull(
+						new GraphQLList(new GraphQLNonNull(AggregatedFunctions[collection.collection].getType()))
+					),
 					args: {
 						groupBy: new GraphQLList(GraphQLString),
 						filter: ReadableCollectionFilterTypes[collection.collection],
@@ -1075,7 +1079,11 @@ export class GraphQLService {
 				if (Object.keys(creatableFields).length > 0) {
 					CreateCollectionTypes[collection.collection].addResolver({
 						name: `create_${collection.collection}_items`,
-						type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+						type: collectionIsReadable
+							? new GraphQLNonNull(
+									new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection].getType()))
+							  )
+							: GraphQLBoolean,
 						args: collectionIsReadable
 							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
 							: undefined,
@@ -1137,7 +1145,11 @@ export class GraphQLService {
 					} else {
 						UpdateCollectionTypes[collection.collection].addResolver({
 							name: `update_${collection.collection}_items`,
-							type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+							type: collectionIsReadable
+								? new GraphQLNonNull(
+										new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection].getType()))
+								  )
+								: GraphQLBoolean,
 							args: {
 								...(collectionIsReadable
 									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
@@ -2178,7 +2190,7 @@ export class GraphQLService {
 
 			schemaComposer.Query.addFields({
 				collections: {
-					type: [Collection],
+					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Collection.getType()))),
 					resolve: async () => {
 						const collectionsService = new CollectionsService({
 							accountability: this.accountability,
@@ -2245,7 +2257,7 @@ export class GraphQLService {
 
 			schemaComposer.Query.addFields({
 				fields: {
-					type: [Field],
+					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Field.getType()))),
 					resolve: async () => {
 						const service = new FieldsService({
 							accountability: this.accountability,
@@ -2255,7 +2267,7 @@ export class GraphQLService {
 					},
 				},
 				fields_in_collection: {
-					type: [Field],
+					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Field.getType()))),
 					args: {
 						collection: GraphQLNonNull(GraphQLString),
 					},
@@ -2317,7 +2329,7 @@ export class GraphQLService {
 
 			schemaComposer.Query.addFields({
 				relations: {
-					type: [Relation],
+					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Relation.getType()))),
 					resolve: async () => {
 						const service = new RelationsService({
 							accountability: this.accountability,
@@ -2328,7 +2340,7 @@ export class GraphQLService {
 					},
 				},
 				relations_in_collection: {
-					type: [Relation],
+					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Relation.getType()))),
 					args: {
 						collection: GraphQLNonNull(GraphQLString),
 					},

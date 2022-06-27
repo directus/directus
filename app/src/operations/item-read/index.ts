@@ -14,7 +14,7 @@ export default defineOperationApp({
 			},
 			{
 				label: '$t:operations.item-read.key',
-				text: key ? toArray(key).join(', ') : '--',
+				text: toArray(key).length > 0 ? toArray(key).join(', ') : '--',
 			},
 		];
 
