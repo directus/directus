@@ -1,7 +1,7 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
 import { Knex } from 'knex';
-import { assign, clone, cloneDeep, pick, without } from 'lodash';
+import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
@@ -11,10 +11,10 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { AbstractService, AbstractServiceOptions, Item as AnyItem, MutationOptions, PrimaryKey } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
+import { validateKeys } from '../utils/validate-keys';
 import { AuthorizationService } from './authorization';
 import { ActivityService, RevisionsService } from './index';
 import { PayloadService } from './payload';
-import { validateKeys } from '../utils/validate-keys';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -387,7 +387,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			for (const item of data) {
 				if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
-				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
+				keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), opts));
 			}
 		});
 
