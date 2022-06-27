@@ -577,6 +577,17 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Illegal type passed: "${field.type}"`);
 		}
 
+		// Knex MySQL dialect's increments() uses unsigned integer,
+		// so we need to chain unsigned() for updates to such field(s) to work
+		if (
+			field.schema?.data_type &&
+			['int unsigned', 'tinyint unsigned', 'smallint unsigned', 'mediumint unsigned', 'bigint unsigned'].includes(
+				field.schema.data_type
+			)
+		) {
+			column.unsigned();
+		}
+
 		if (field.schema?.default_value !== undefined) {
 			if (
 				typeof field.schema.default_value === 'string' &&
