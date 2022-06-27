@@ -1,9 +1,9 @@
+import { parseJSON } from '@directus/shared/utils';
 import { RequestHandler } from 'express';
 import { DocumentNode, getOperationAST, parse, Source } from 'graphql';
 import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions';
 import { GraphQLParams } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { parseJSON } from '../utils/parse-json';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (req.method !== 'GET' && req.method !== 'POST') {

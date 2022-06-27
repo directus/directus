@@ -47,6 +47,7 @@ group: Gruppe
 export_items: Elemente exportieren
 and: Und
 or: Oder
+dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit werden die ersten {n} Elemente angezeigt.
 fill_width: Breite füllen
 field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
@@ -1523,6 +1524,7 @@ interfaces:
     edit_fields: Felder bearbeiten
     add_label: 'Label für "Neu erstellen"'
     sort: Sortieren
+    sort_placeholder: Manuell
     field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
@@ -1622,6 +1624,9 @@ interfaces:
     start_closed: Geschlossen starten
   system-token:
     system-token: Token
+    generate: Token generieren
+    regenerate: Token neu generieren
+    remove_token: Token löschen
 displays:
   translations:
     translations: Übersetzungen
@@ -1833,23 +1838,45 @@ panels:
     show_data_label: Datenbezeichnung anzeigen
     group_by: Gruppieren nach
     group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    y_axis_NaN: Die y-Achse muss eine Zahl sein.
+    y_axis_conditional_two: muss eine Zahl sein.
   linechart:
+    name: Liniendiagramm
     select_field: Sie müssen ein Feld auswählen.
     select_collection: Sie müssen eine Sammlung auswählen.
     select_x_axis: Sie müssen eine X-Achse auswählen.
     function: Funktion
     x_axis: X-Achse
     y_axis: Y-Achse
+    datasets: Datensätze
+    show_legend: Legende anzeigen
+    include_dataset: Mindestens ein Datensatz muss angegeben werden.
     group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    smooth: 'Weich'
+    straight: 'Gerade'
   meter:
+    arc: Bogen
+    stroke_width: Strichbreite
+    select_max_value: Es muss einen Maximalwert ausgewählt werden.
     select_field: Sie müssen ein Feld auswählen.
     select_collection: Sie müssen eine Sammlung auswählen.
     function: Funktion
+    thin: Dünn
+    medium: Mittel
+    broad: Breit
   piechart:
+    name: Kuchen oder Donut Diagramm
     function: 'Funktion'
+    legend: Legende anzeigen
 triggers:
   webhook:
     method: Methode
+  schedule:
+    name: Zeitplan (CRON)
+    cron: Intervall
+  manual:
+    name: Manuell
+    collection_and_item: Sammlungen & Element Seiten
 operations:
   log:
     message: Nachricht

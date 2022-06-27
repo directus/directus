@@ -1,5 +1,5 @@
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
 import destroyStream from 'destroy';
@@ -22,7 +22,6 @@ import {
 import logger from '../logger';
 import { AbstractServiceOptions, File } from '../types';
 import { getDateFormatted } from '../utils/get-date-formatted';
-import { parseJSON } from '../utils/parse-json';
 import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';

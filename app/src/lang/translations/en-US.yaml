@@ -601,6 +601,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -1983,6 +1984,10 @@ panels:
     bottom: Bottom
     monochrome: Monochrome
     monochrome_color: Monochrome Color
+  variable:
+    name: Global Variable
+    description: Set a global value for use in other Panels' filters
+    variable_key: Variable Key
 triggers:
   common:
     response_body: Response Body
