@@ -28,7 +28,7 @@ type Transformers = {
 	}) => Promise<any>;
 };
 
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}T/;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}/;
 const DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
 
 /**
