@@ -210,7 +210,7 @@ To create and assign a Global Variable, follow the steps from [How it Works](#ho
 Variable panel. Wrap the variable key in double-moustache syntax to access and assign it throughout other Insights
 Panels:
 
-```json
+```
 {{ your_variable_key }}
 ```
 
