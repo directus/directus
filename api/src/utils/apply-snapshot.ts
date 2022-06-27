@@ -104,12 +104,38 @@ export async function applySnapshot(
 			}
 		};
 
-		// create top level collections (no group) first, then continue with nested collections recursively
-		await createCollections(
-			snapshotDiff.collections.filter(
-				({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
-			)
-		);
+		// Finds all collections that need to be created
+		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
+			const isNewCollection = diff[0].kind === 'N';
+			const groupName = (diff[0] as DiffNew<Collection>).rhs.meta?.group;
+			// Is new, has no group
+			if (isNewCollection && groupName === null) {
+				return true;
+			}
+			// Check if parent collection already exists in schema
+			const parentExists =
+				typeof groupName === 'string' && current.collections.find((c) => c.collection === groupName) !== undefined;
+			// If this is a new collection and the parent collection doesn't exist in current schema ->
+			// Check if the parent collection will be created as part of applying this snapshot ->
+			// If so -> this collection will be created recursively
+			// If not -> create now
+			// (ex.)
+			// TopLevelCollection - I exist in current schema
+			// 		NestedCollection - I exist in snapshotDiff as a new collection
+			//			TheCurrentCollectionInIteration - I exist in snapshotDiff as a new collection but will be created as part of NestedCollection
+			const parentWillBeCreatedInThisApply =
+				snapshotDiff.collections.filter(({ collection, diff }) => diff[0].kind === 'N' && collection === groupName)
+					.length > 0;
+			// Is new, has group, but parent is not new, has no parent also being created in this snapshot apply
+			if (isNewCollection && parentExists && !parentWillBeCreatedInThisApply) {
+				return true;
+			}
+			return false;
+		};
+
+		// Create top level collections (no group, or highest level in existing group) first,
+		// then continue with nested collections recursively
+		await createCollections(snapshotDiff.collections.filter(filterCollectionsForCreation));
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
@@ -136,7 +162,6 @@ export async function applySnapshot(
 		}
 
 		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
-
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0].kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
 				try {
