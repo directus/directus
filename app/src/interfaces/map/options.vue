@@ -46,11 +46,11 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const nativeGeometryType = computed(() => props.field.type.split('.')[1] as GeometryType);
+		const nativeGeometryType = computed(() => (props.field?.type.split('.')[1] as GeometryType) ?? 'Point');
 		const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
-		watch(() => props.field.type, watchType);
+		watch(() => props.field?.type, watchType);
 		watch(nativeGeometryType, watchNativeType);
 		watch([geometryType, defaultView], input, { immediate: true });
 

@@ -89,6 +89,7 @@
 		"front-matter": "4.0.2",
 		"html-entities": "2.3.2",
 		"jest": "27.4.7",
+		"json-to-graphql-query": "^2.2.4",
 		"json2csv": "^5.0.7",
 		"jsonlint-mod": "1.7.6",
 		"maplibre-gl": "1.15.2",

@@ -9,7 +9,7 @@ import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
-import { parseJSON } from './utils/parse-json';
+import { parseJSON } from '@directus/shared/utils';
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [

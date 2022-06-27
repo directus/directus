@@ -1,5 +1,5 @@
+import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { parseJSON } from '../../utils/parse-json';
 
 // Change image metadata structure to match the output from 'exifr'
 export async function up(knex: Knex): Promise<void> {
