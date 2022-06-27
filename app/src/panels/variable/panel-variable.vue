@@ -1,5 +1,5 @@
 <template>
-	<div class="variable">
+	<div class="variable" :class="{ 'show-header': showHeader }">
 		<component
 			:is="`interface-${inter}`"
 			v-bind="options"
@@ -24,6 +24,7 @@ interface Props {
 	dashboard: string;
 	width: number;
 	options?: Record<string, any>;
+	showHeader?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), { options: () => ({}) });
@@ -45,7 +46,11 @@ const value = computed({
 <style lang="scss" scope>
 .variable {
 	padding: 12px;
-	padding-top: 2px;
+
+	&.show-header {
+		padding-top: 6px;
+	}
+
 	display: grid;
 	align-content: center;
 	width: 100%;
