@@ -1,11 +1,43 @@
+import { getGroups } from '@/utils/get-groups';
 import { definePanel } from '@directus/shared/utils';
-import PanelTimeSeries from './time-series.vue';
+import PanelTimeSeries from './panel-time-series.vue';
 
 export default definePanel({
 	id: 'time-series',
 	name: '$t:panels.time_series.name',
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
+	query(options) {
+		if (!options?.function || !options.valueField || !options.dateField) {
+			return;
+		}
+
+		return {
+			collection: options.collection,
+			query: {
+				group: getGroups(options.precision, options.dateField),
+				aggregate: {
+					[options.function]: [options.valueField],
+				},
+				filter: {
+					_and: [
+						{
+							[options.dateField]: {
+								_gte: `$NOW(-${options.range || '1 week'})`,
+							},
+						},
+						{
+							[options.dateField]: {
+								_lte: `$NOW`,
+							},
+						},
+						options.filter || {},
+					],
+				},
+				limit: -1,
+			},
+		};
+	},
 	component: PanelTimeSeries,
 	options: [
 		{
