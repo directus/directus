@@ -323,7 +323,7 @@ export class PayloadService {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
 							if (!DATE_REGEX.test(value)) {
-								throw new InvalidPayloadException('Invalid date format');
+								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
 							}
 							const [date] = value.split('T');
 							const [year, month, day] = date.split('-');
@@ -333,7 +333,7 @@ export class PayloadService {
 
 						if (dateColumn.type === 'dateTime') {
 							if (!DATETIME_REGEX.test(value)) {
-								throw new InvalidPayloadException('Invalid dateTime format');
+								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
 							}
 							const [date, time] = value.split('T');
 							const [year, month, day] = date.split('-');
