@@ -320,6 +320,7 @@ const cancelChanges = (force = false) => {
 		insightsStore.clearEdits();
 		editMode.value = false;
 		confirmCancel.value = false;
+		insightsStore.refresh(props.primaryKey);
 	}
 };
 
