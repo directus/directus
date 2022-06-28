@@ -29,7 +29,7 @@
 				:model-value="modelValue"
 				:multiple="multiple"
 				:allow-other="allowOther"
-				:group-clickable="groupSelectable"
+				:group-selectable="groupSelectable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 			<select-list-item
