@@ -127,7 +127,11 @@ export class ImportService {
 							} else {
 								try {
 									const parsedJson = parseJSON(value);
-									set(result, key, parsedJson);
+									if (typeof parsedJson === 'number') {
+										set(result, key, value);
+									} else {
+										set(result, key, parsedJson);
+									}
 								} catch {
 									set(result, key, value);
 								}
