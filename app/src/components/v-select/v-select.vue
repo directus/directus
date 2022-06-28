@@ -292,8 +292,13 @@ export default defineComponent({
 					const searchValue = internalSearch.value.toLowerCase();
 
 					return item?.children
-						? item.children.some((item: Record<string, any>) => filterItem(item))
-						: item.text?.toLowerCase().includes(searchValue) || item.value?.toLowerCase().includes(searchValue);
+						? isMatchingCurrentItem(item, searchValue) ||
+								item.children.some((item: Record<string, any>) => filterItem(item))
+						: isMatchingCurrentItem(item, searchValue);
+
+					function isMatchingCurrentItem(item: Record<string, any>, searchValue: string): boolean {
+						return item.text?.toLowerCase().includes(searchValue) || item.value?.toLowerCase().includes(searchValue);
+					}
 				};
 
 				const items = internalSearch.value ? props.items.filter(filterItem).map(parseItem) : props.items.map(parseItem);
