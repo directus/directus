@@ -3,6 +3,7 @@ import { DisplayConfig } from '@directus/shared/types';
 import DisplayFormattedValue from './formatted-value.vue';
 import formatTitle from '@directus/format-title';
 import { decode } from 'html-entities';
+import dompurify from 'dompurify';
 
 export default defineDisplay({
 	id: 'formatted-value',
@@ -18,7 +19,7 @@ export default defineDisplay({
 		let sanitizedValue = String(value);
 
 		// Strip out all HTML tags
-		sanitizedValue = value.replace(/(<([^>]+)>)/gi, '');
+		sanitizedValue = dompurify.sanitize(value, { ALLOWED_TAGS: [] });
 
 		// Decode any HTML encoded characters (like &copy;)
 		sanitizedValue = decode(sanitizedValue);
