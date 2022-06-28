@@ -17,25 +17,20 @@ export class NotificationsService extends ItemsService {
 	}
 
 	async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
-		try {
-			await this.sendEmail(data);
-		} catch (error: any) {
-			logger.error(error.message);
-		}
+		const response = super.createOne(data, opts);
 
-		return super.createOne(data, opts);
+		await this.sendEmail(data);
+
+		return response;
 	}
 
 	async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const response = super.createMany(data, opts);
 		for (const notification of data) {
-			try {
-				await this.sendEmail(notification);
-			} catch (error: any) {
-				logger.error(error.message);
-			}
+			await this.sendEmail(notification);
 		}
 
-		return super.createMany(data, opts);
+		return response;
 	}
 
 	async sendEmail(data: Partial<Notification>) {
@@ -43,16 +38,20 @@ export class NotificationsService extends ItemsService {
 			const user = await this.usersService.readOne(data.recipient, { fields: ['email', 'email_notifications'] });
 
 			if (user.email && user.email_notifications === true) {
-				await this.mailService.send({
-					template: {
-						name: 'base',
-						data: {
-							html: data.message ? md(data.message) : '',
+				try {
+					await this.mailService.send({
+						template: {
+							name: 'base',
+							data: {
+								html: data.message ? md(data.message) : '',
+							},
 						},
-					},
-					to: user.email,
-					subject: data.subject,
-				});
+						to: user.email,
+						subject: data.subject,
+					});
+				} catch (error: any) {
+					logger.error(error.message);
+				}
 			}
 		}
 	}
