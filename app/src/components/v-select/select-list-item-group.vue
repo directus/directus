@@ -1,6 +1,6 @@
 <template>
 	<v-list-group
-		:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
+		:active="isActive"
 		:clickable="groupSelectable || item.selectable"
 		:open="item.children?.length === 1"
 		:value="item.value"
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { Option } from './types';
 import SelectListItem from './select-list-item.vue';
 
@@ -77,7 +77,18 @@ export default defineComponent({
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		return { onGroupClick };
+		const isActive = computed(() => {
+			if (props.multiple) {
+				if (!Array.isArray(props.modelValue) || !props.item.value) {
+					return false;
+				}
+				return props.modelValue.includes(props.item.value);
+			} else {
+				return props.modelValue === props.item.value;
+			}
+		});
+
+		return { isActive, onGroupClick };
 
 		function onGroupClick(item: Option) {
 			if (!props.groupSelectable) return;
