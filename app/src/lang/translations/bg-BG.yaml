@@ -1996,6 +1996,7 @@ operations:
     name: Четене на данни
     description: Четене на записи в базата от данни
     query: Заявка
+    emit_events: Излъчване на събития
   item-update:
     name: Обновяване на данните
     description: Обновяване на записите в базата от данни
