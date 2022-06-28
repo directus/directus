@@ -1,5 +1,6 @@
 <template>
 	<v-list-group
+		:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
 		:clickable="groupSelectable || item.selectable"
 		:open="item.children?.length === 1"
 		:value="item.value"
