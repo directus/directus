@@ -1,5 +1,5 @@
 <template>
-	<v-list-group :clickable="item.selectable" :value="item.value">
+	<v-list-group :clickable="item.selectable" :open="item.children?.length === 1" :value="item.value">
 		<template #activator>
 			<v-list-item-icon v-if="multiple === false && allowOther === false && item.icon">
 				<v-icon :name="item.icon" />

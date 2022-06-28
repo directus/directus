@@ -4,25 +4,26 @@
 	</div>
 </template>
 
+<script setup lang="ts">
+withDefaults(
+	defineProps<{
+		showHeader?: boolean;
+		text?: string;
+		color?: string | undefined;
+	}>(),
+	{
+		showHeader: false,
+		text: '',
+		color: undefined,
+	}
+);
+</script>
+
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	props: {
-		showHeader: {
-			type: Boolean,
-			default: false,
-		},
-
-		text: {
-			type: String,
-			default: '',
-		},
-		color: {
-			type: String,
-			default: undefined,
-		},
-	},
+	inheritAttrs: false,
 });
 </script>
 

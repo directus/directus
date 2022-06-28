@@ -1,5 +1,5 @@
 import { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
-import { deepMap, parseFilter, parsePreset } from '@directus/shared/utils';
+import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import hash from 'object-hash';
 import { getCache, setSystemCache } from '../cache';
@@ -10,7 +10,6 @@ import { RolesService } from '../services/roles';
 import { UsersService } from '../services/users';
 import { mergePermissions } from '../utils/merge-permissions';
 import { mergePermissionsForShare } from './merge-permissions-for-share';
-import { parseJSON } from './parse-json';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();

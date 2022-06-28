@@ -1,20 +1,20 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
 import { Knex } from 'knex';
-import { assign, clone, cloneDeep, pick, without } from 'lodash';
+import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter from '../emitter';
 import env from '../env';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { AbstractService, AbstractServiceOptions, Item as AnyItem, MutationOptions, PrimaryKey } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
+import { validateKeys } from '../utils/validate-keys';
 import { AuthorizationService } from './authorization';
 import { ActivityService, RevisionsService } from './index';
 import { PayloadService } from './payload';
-import { validateKeys } from '../utils/validate-keys';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -371,7 +371,31 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Update many items by primary key
+	 * Update multiple items in a single transaction
+	 */
+	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		const keys: PrimaryKey[] = [];
+
+		await this.knex.transaction(async (trx) => {
+			const service = new ItemsService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+			});
+
+			for (const item of data) {
+				if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
+				keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), opts));
+			}
+		});
+
+		return keys;
+	}
+
+	/**
+	 * Update many items by primary key, setting all items to the same change
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;

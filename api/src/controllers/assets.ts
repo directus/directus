@@ -1,4 +1,5 @@
 import { Range } from '@directus/drive';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import helmet from 'helmet';
 import { merge, pick } from 'lodash';
@@ -12,7 +13,6 @@ import { AssetsService, PayloadService } from '../services';
 import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
-import { parseJSON } from '../utils/parse-json';
 
 const router = Router();
 
