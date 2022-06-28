@@ -1,5 +1,10 @@
 <template>
-	<v-list-group :clickable="item.selectable" :open="item.children?.length === 1" :value="item.value">
+	<v-list-group
+		:clickable="groupSelectable || item.selectable"
+		:open="item.children?.length === 1"
+		:value="item.value"
+		@click="onGroupClick(item)"
+	>
 		<template #activator>
 			<v-list-item-icon v-if="multiple === false && allowOther === false && item.icon">
 				<v-icon :name="item.icon" />
@@ -24,6 +29,7 @@
 				:model-value="modelValue"
 				:multiple="multiple"
 				:allow-other="allowOther"
+				:group-clickable="groupSelectable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 			<select-list-item
@@ -63,7 +69,20 @@ export default defineComponent({
 			type: Boolean,
 			required: true,
 		},
+		groupSelectable: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['update:modelValue'],
+	setup(props, { emit }) {
+		return { onGroupClick };
+
+		function onGroupClick(item: Option) {
+			if (!props.groupSelectable) return;
+
+			emit('update:modelValue', item.value);
+		}
+	},
 });
 </script>

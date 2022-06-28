@@ -65,6 +65,7 @@
 					:model-value="modelValue"
 					:multiple="multiple"
 					:allow-other="allowOther"
+					:group-selectable="groupSelectable"
 					@update:model-value="$emit('update:modelValue', $event)"
 				/>
 				<select-list-item
@@ -175,6 +176,10 @@ export default defineComponent({
 			default: null,
 		},
 		multiple: {
+			type: Boolean,
+			default: false,
+		},
+		groupSelectable: {
 			type: Boolean,
 			default: false,
 		},
