@@ -2017,6 +2017,7 @@ operations:
     description: Leggi elementi dal database
     key: ID
     query: Interrogazione
+    emit_events: Genera gli eventi
   item-update:
     name: Aggiorna dati
     description: Aggiorna elementi nel database
