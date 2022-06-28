@@ -23,7 +23,7 @@ export default defineDisplay({
 
 			if (configuredChoice) {
 				const { text } = translate(configuredChoice);
-				return text;
+				return text && text !== '' ? text : val;
 			}
 
 			return val;
