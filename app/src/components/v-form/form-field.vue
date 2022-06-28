@@ -71,7 +71,7 @@
 import { getJSType } from '@/utils/get-js-type';
 import { Field, ValidationError } from '@directus/shared/types';
 import { isEqual } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
@@ -117,22 +117,41 @@ const isDisabled = computed(() => {
 	return false;
 });
 
-const defaultValue = computed(() => {
+function getDefaultValue() {
 	const value = props.field?.schema?.default_value;
 
 	if (value !== undefined) return value;
 	return undefined;
-});
-
-const internalValue = computed(() => {
+}
+function getInternalValue() {
 	if (props.modelValue !== undefined) return props.modelValue;
 	if (props.initialValue !== undefined) return props.initialValue;
 	return defaultValue.value;
-});
-
-const isEdited = computed<boolean>(() => {
+}
+function getIsEdited() {
 	return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
-});
+}
+
+const defaultValue = ref(getDefaultValue());
+const internalValue = ref(getInternalValue());
+const isEdited = ref(getIsEdited());
+
+watch(
+	() => props.field,
+	() => {
+		defaultValue.value = getDefaultValue();
+	}
+);
+watch(
+	() => props.modelValue,
+	() => {
+		const newVal = getInternalValue();
+		if (!isEqual(internalValue.value, newVal)) {
+			internalValue.value = newVal;
+		}
+		isEdited.value = getIsEdited();
+	}
+);
 
 const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
 
