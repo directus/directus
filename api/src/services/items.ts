@@ -19,6 +19,7 @@ import { PayloadService } from './payload';
 export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
+	emitEvents?: boolean;
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -275,36 +276,44 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
+
 		if (records === null) {
 			throw new ForbiddenException();
 		}
-		const filteredRecords = await emitter.emitFilter(
-			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
-			records,
-			{
-				query,
-				collection: this.collection,
-			},
-			{
-				database: this.knex,
-				schema: this.schema,
-				accountability: this.accountability,
-			}
-		);
 
-		emitter.emitAction(
-			this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
-			{
-				payload: filteredRecords,
-				query,
-				collection: this.collection,
-			},
-			{
-				database: this.knex || getDatabase(),
-				schema: this.schema,
-				accountability: this.accountability,
-			}
-		);
+		const filteredRecords =
+			opts?.emitEvents !== false
+				? await emitter.emitFilter(
+						this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+						records,
+						{
+							query,
+							collection: this.collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						}
+				  )
+				: records;
+
+		if (opts?.emitEvents !== false) {
+			emitter.emitAction(
+				this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+				{
+					payload: filteredRecords,
+					query,
+					collection: this.collection,
+				},
+				{
+					database: this.knex || getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
+		}
+
 		return filteredRecords as Item[];
 	}
 

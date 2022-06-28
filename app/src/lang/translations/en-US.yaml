@@ -2042,6 +2042,7 @@ operations:
     description: Read items from the database
     key: IDs
     query: Query
+    emit_events: Emit Events
   item-update:
     name: Update Data
     description: Update items in the database
