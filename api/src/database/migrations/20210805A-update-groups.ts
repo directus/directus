@@ -1,5 +1,5 @@
+import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { parseJSON } from '../../utils/parse-json';
 
 export async function up(knex: Knex): Promise<void> {
 	const groups = await knex.select('*').from('directus_fields').where({ interface: 'group-standard' });

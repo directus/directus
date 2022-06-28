@@ -1,8 +1,7 @@
 import { Accountability, PrimaryKey } from '@directus/shared/types';
-import { defineOperationApi, toArray } from '@directus/shared/utils';
+import { defineOperationApi, optionToObject, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
-import { optionToObject } from '../../utils/operation-options';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 
 type Options = {

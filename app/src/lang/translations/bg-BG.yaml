@@ -1940,6 +1940,10 @@ panels:
     bottom: Отдолу
     monochrome: Монохром
     monochrome_color: Монохромен цвят
+  variable:
+    name: Глобални променливи
+    description: Задаване на глобални променливи за използване във филтрите на другите панели
+    variable_key: Ключ на променливата
 triggers:
   common:
     response_body: Изходни данни

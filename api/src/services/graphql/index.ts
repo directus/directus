@@ -27,6 +27,7 @@ import {
 	GraphQLUnionType,
 	InlineFragmentNode,
 	IntValueNode,
+	NoSchemaIntrospectionCustomRule,
 	ObjectFieldNode,
 	ObjectValueNode,
 	SelectionNode,
@@ -46,71 +47,56 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, isObject, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
-import { clearSystemCache, getCache } from '../cache';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
-import { getExtensionManager } from '../extensions';
-import { AbstractServiceOptions, GraphQLParams, Item } from '../types';
-import { generateHash } from '../utils/generate-hash';
-import { getGraphQLType } from '../utils/get-graphql-type';
-import { reduceSchema } from '../utils/reduce-schema';
-import { sanitizeQuery } from '../utils/sanitize-query';
-import { validateQuery } from '../utils/validate-query';
-import { ActivityService } from './activity';
-import { AuthenticationService } from './authentication';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
-import { FilesService } from './files';
-import { FlowsService } from './flows';
-import { FoldersService } from './folders';
-import { ItemsService } from './items';
-import { NotificationsService } from './notifications';
-import { OperationsService } from './operations';
-import { PermissionsService } from './permissions';
-import { PresetsService } from './presets';
-import { RelationsService } from './relations';
-import { RevisionsService } from './revisions';
-import { RolesService } from './roles';
-import { ServerService } from './server';
-import { SettingsService } from './settings';
-import { SharesService } from './shares';
-import { SpecificationService } from './specifications';
-import { TFAService } from './tfa';
-import { UsersService } from './users';
-import { UtilsService } from './utils';
-import { WebhooksService } from './webhooks';
+import { clearSystemCache, getCache } from '../../cache';
+import { DEFAULT_AUTH_PROVIDER } from '../../constants';
+import getDatabase from '../../database';
+import env from '../../env';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
+import { getExtensionManager } from '../../extensions';
+import { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
+import { generateHash } from '../../utils/generate-hash';
+import { getGraphQLType } from '../../utils/get-graphql-type';
+import { reduceSchema } from '../../utils/reduce-schema';
+import { sanitizeQuery } from '../../utils/sanitize-query';
+import { validateQuery } from '../../utils/validate-query';
+import { ActivityService } from '../activity';
+import { AuthenticationService } from '../authentication';
+import { CollectionsService } from '../collections';
+import { FieldsService } from '../fields';
+import { FilesService } from '../files';
+import { FlowsService } from '../flows';
+import { FoldersService } from '../folders';
+import { ItemsService } from '../items';
+import { NotificationsService } from '../notifications';
+import { OperationsService } from '../operations';
+import { PermissionsService } from '../permissions';
+import { PresetsService } from '../presets';
+import { RelationsService } from '../relations';
+import { RevisionsService } from '../revisions';
+import { RolesService } from '../roles';
+import { ServerService } from '../server';
+import { SettingsService } from '../settings';
+import { SharesService } from '../shares';
+import { SpecificationService } from '../specifications';
+import { TFAService } from '../tfa';
+import { UsersService } from '../users';
+import { UtilsService } from '../utils';
+import { WebhooksService } from '../webhooks';
 
-const GraphQLVoid = new GraphQLScalarType({
-	name: 'Void',
+import { GraphQLDate } from './types/date';
+import { GraphQLGeoJSON } from './types/geojson';
+import { GraphQLStringOrFloat } from './types/string-or-float';
+import { GraphQLVoid } from './types/void';
 
-	description: 'Represents NULL values',
+import { PrimaryKey } from '@directus/shared/types';
 
-	serialize() {
-		return null;
-	},
+import { addPathToValidationError } from './utils/add-path-to-validation-error';
 
-	parseValue() {
-		return null;
-	},
+const validationRules = Array.from(specifiedRules);
 
-	parseLiteral() {
-		return null;
-	},
-});
-
-export const GraphQLGeoJSON = new GraphQLScalarType({
-	...GraphQLJSON,
-	name: 'GraphQLGeoJSON',
-	description: 'GeoJSON value',
-});
-
-export const GraphQLDate = new GraphQLScalarType({
-	...GraphQLString,
-	name: 'Date',
-	description: 'ISO8601 Date values',
-});
+if (env.GRAPHQL_INTROSPECTION === false) {
+	validationRules.push(NoSchemaIntrospectionCustomRule);
+}
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
@@ -122,6 +108,7 @@ const SYSTEM_DENY_LIST = [
 	'directus_migrations',
 	'directus_sessions',
 ];
+
 const READ_ONLY = ['directus_activity', 'directus_revisions'];
 
 export class GraphQLService {
@@ -148,18 +135,9 @@ export class GraphQLService {
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
-		const validationErrors = validate(schema, document, [
-			...specifiedRules,
-			(context) => ({
-				Field(node) {
-					if (env.GRAPHQL_INTROSPECTION === false && (node.name.value === '__schema' || node.name.value === '__type')) {
-						context.reportError(
-							new GraphQLError('GraphQL introspection is not allowed. The query contained __schema or __type.', [node])
-						);
-					}
-				},
-			}),
-		]);
+		const validationErrors = validate(schema, document, validationRules).map((validationError) =>
+			addPathToValidationError(validationError)
+		);
 
 		if (validationErrors.length > 0) {
 			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
@@ -310,6 +288,10 @@ export class GraphQLService {
 						} else {
 							acc[`update_${collectionName}_items`] = UpdateCollectionTypes[collection.collection].getResolver(
 								`update_${collection.collection}_items`
+							);
+
+							acc[`update_${collectionName}_batch`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}_batch`
 							);
 
 							acc[`update_${collectionName}_item`] = UpdateCollectionTypes[collection.collection].getResolver(
@@ -653,32 +635,33 @@ export class GraphQLService {
 				},
 			});
 
+			// Uses StringOrFloat rather than Float to support api dynamic variables (like `$NOW`)
 			const NumberFilterOperators = schemaComposer.createInputTC({
 				name: 'number_filter_operators',
 				fields: {
 					_eq: {
-						type: GraphQLFloat,
+						type: GraphQLStringOrFloat,
 					},
 					_neq: {
-						type: GraphQLFloat,
+						type: GraphQLStringOrFloat,
 					},
 					_in: {
-						type: new GraphQLList(GraphQLFloat),
+						type: new GraphQLList(GraphQLStringOrFloat),
 					},
 					_nin: {
-						type: new GraphQLList(GraphQLFloat),
+						type: new GraphQLList(GraphQLStringOrFloat),
 					},
 					_gt: {
-						type: GraphQLFloat,
+						type: GraphQLStringOrFloat,
 					},
 					_gte: {
-						type: GraphQLFloat,
+						type: GraphQLStringOrFloat,
 					},
 					_lt: {
-						type: GraphQLFloat,
+						type: GraphQLStringOrFloat,
 					},
 					_lte: {
-						type: GraphQLFloat,
+						type: GraphQLStringOrFloat,
 					},
 					_null: {
 						type: GraphQLBoolean,
@@ -1144,6 +1127,27 @@ export class GraphQLService {
 						});
 					} else {
 						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}_batch`,
+							type: collectionIsReadable
+								? new GraphQLNonNull(
+										new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection].getType()))
+								  )
+								: GraphQLBoolean,
+							args: {
+								...(collectionIsReadable
+									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+									: {}),
+								data: [
+									toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+										`update_${collection.collection}_input`
+									).NonNull,
+								],
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+
+						UpdateCollectionTypes[collection.collection].addResolver({
 							name: `update_${collection.collection}_items`,
 							type: collectionIsReadable
 								? new GraphQLNonNull(
@@ -1290,12 +1294,15 @@ export class GraphQLService {
 		const query = this.getQuery(args, selections || [], info.variableValues);
 
 		const singleton =
+			collection.endsWith('_batch') === false &&
 			collection.endsWith('_items') === false &&
 			collection.endsWith('_item') === false &&
 			collection in this.schema.collections;
 
-		const single = collection.endsWith('_items') === false;
+		const single = collection.endsWith('_items') === false && collection.endsWith('_batch') === false;
+		const batchUpdate = action === 'update' && collection.endsWith('_batch');
 
+		if (collection.endsWith('_batch')) collection = collection.slice(0, -6);
 		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
@@ -1329,7 +1336,14 @@ export class GraphQLService {
 				}
 
 				if (action === 'update') {
-					const keys = await service.updateMany(args.ids, args.data);
+					const keys: PrimaryKey[] = [];
+
+					if (batchUpdate) {
+						keys.push(...(await service.updateBatch(args.data)));
+					} else {
+						keys.push(...(await service.updateMany(args.ids, args.data)));
+					}
+
 					return hasQuery ? await service.readMany(keys, query) : true;
 				}
 
