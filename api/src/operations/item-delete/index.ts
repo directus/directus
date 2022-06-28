@@ -1,8 +1,7 @@
 import { Accountability, PrimaryKey } from '@directus/shared/types';
-import { defineOperationApi, toArray } from '@directus/shared/utils';
+import { defineOperationApi, optionToObject, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
-import { optionToObject } from '../../utils/operation-options';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 
 type Options = {
@@ -42,7 +41,7 @@ export default defineOperationApi<Options>({
 
 		let result: PrimaryKey | PrimaryKey[] | null;
 
-		if (!key) {
+		if (!key || (Array.isArray(key) && key.length === 0)) {
 			result = await itemsService.deleteByQuery(sanitizedQueryObject);
 		} else {
 			const keys = toArray(key);

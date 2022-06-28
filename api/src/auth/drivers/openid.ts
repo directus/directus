@@ -1,3 +1,5 @@
+import { BaseException } from '@directus/shared/exceptions';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
@@ -9,7 +11,6 @@ import {
 	InvalidConfigException,
 	InvalidCredentialsException,
 	InvalidTokenException,
-	InvalidProviderException,
 	ServiceUnavailableException,
 } from '../../exceptions';
 import logger from '../../logger';
@@ -19,7 +20,6 @@ import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { parseJSON } from '../../utils/parse-json';
 import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 
@@ -317,14 +317,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof ServiceUnavailableException) {
-						reason = 'SERVICE_UNAVAILABLE';
-					} else if (error instanceof InvalidCredentialsException) {
-						reason = 'INVALID_USER';
-					} else if (error instanceof InvalidTokenException) {
-						reason = 'INVALID_TOKEN';
-					} else if (error instanceof InvalidProviderException) {
-						reason = 'INVALID_PROVIDER';
+					if (error instanceof BaseException) {
+						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}

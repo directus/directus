@@ -1,14 +1,18 @@
 import * as sharedExceptions from '@directus/shared/exceptions';
 import {
+	Accountability,
+	Action,
 	ActionHandler,
 	FilterHandler,
 	Flow,
 	Operation,
 	OperationHandler,
 	SchemaOverview,
-	Accountability,
-	Action,
 } from '@directus/shared/types';
+import { applyOptionsData } from '@directus/shared/utils';
+import fastRedact from 'fast-redact';
+import { Knex } from 'knex';
+import { omit } from 'lodash';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
 import getDatabase from './database';
@@ -16,18 +20,14 @@ import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
 import logger from './logger';
+import { getMessenger } from './messenger';
 import * as services from './services';
 import { FlowsService } from './services';
+import { ActivityService } from './services/activity';
+import { RevisionsService } from './services/revisions';
 import { EventHandler } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
-import { ActivityService } from './services/activity';
-import { RevisionsService } from './services/revisions';
-import { Knex } from 'knex';
-import { omit } from 'lodash';
-import { getMessenger } from './messenger';
-import fastRedact from 'fast-redact';
-import { applyOperationOptions } from './utils/operation-options';
 import { JobQueue } from './utils/job-queue';
 
 let flowManager: FlowManager | undefined;
@@ -376,7 +376,7 @@ class FlowManager {
 
 		const handler = this.operations[operation.type];
 
-		const options = applyOperationOptions(operation.options, keyedData);
+		const options = applyOptionsData(operation.options, keyedData);
 
 		try {
 			const result = await handler(options, {
