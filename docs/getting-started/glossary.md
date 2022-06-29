@@ -173,10 +173,10 @@ Items are referenced (both individually and relationally) by their unique [prima
 
 #### Relevant Guides
 
-- [Creating an Item](/app/content-collections/#creating-an-item)
-- [Archiving an Item](/app/content-items/#archiving-an-item)
-- [Manually Sorting Items](/app/content-collections/#manually-sorting-items)
-- [Deleting an Item](/app/content-items/#deleting-an-item)
+- [Creating an Item](/app/content/items/#create-an-item)
+- [Archiving an Item](/app/content/items/#archive-an-item)
+- [Manually Sorting Items](/app/content/collections/#manually-sort-items)
+- [Deleting an Item](/app/content/items/#delete-an-item)
 
 ## Junction Collections
 
@@ -213,7 +213,7 @@ The [Module Bar](/app/overview/#_1-module-bar) lists all available Modules and a
 module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality within the
 App can be bucketed into one of the following modules:
 
-- [Content](/app/content-collections/) — The primary way to view and interact with database content
+- [Content](/app/content/collections/) — The primary way to view and interact with database content
 - [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
 - [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
 - [Insights](/app/insights) — Access to infinitely customizable data dashboards

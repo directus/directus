@@ -592,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
   INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
+  GRAPHQL_VALIDATION_EXCEPTION: Eccezione di validazione GraphQL
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -1958,6 +1959,10 @@ panels:
     bottom: In basso
     monochrome: Monocromatico
     monochrome_color: Colore monocromatico
+  variable:
+    name: Variabile globale
+    description: Imposta un valore globale da usare nei filtri di altri pannelli
+    variable_key: Chiave della variabile
 triggers:
   common:
     response_body: Corpo della risposta
@@ -2012,6 +2017,7 @@ operations:
     description: Leggi elementi dal database
     key: ID
     query: Interrogazione
+    emit_events: Genera gli eventi
   item-update:
     name: Aggiorna dati
     description: Aggiorna elementi nel database
