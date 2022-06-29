@@ -1762,6 +1762,12 @@ displays:
     short: Short
     relative: Relative
     relative_label: 'Show relative time, eg: 5 minutes ago'
+    suffix: Suffix
+    suffix_label: Show relative indicator
+    suffix_note: Uses words like 'in' and 'ago'
+    strict: Strict
+    strict_label: Use strict units
+    strict_note: Removes words like 'almost', 'over', 'less than'
   file:
     file: File
     description: Display files
