@@ -1570,6 +1570,7 @@ displays:
     short: Curto
     relative: Relativo
     relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
+    suffix: Sufixo
   file:
     file: Arquivo
     description: Exibir arquivos
