@@ -162,34 +162,50 @@ class FlowManager {
 						?.flat() ?? [];
 
 				if (flow.options.type === 'filter') {
-					const handler: FilterHandler = (payload, meta, context) =>
-						this.executeFlow(
-							flow,
-							{ payload, ...meta },
-							{
-								accountability: context.accountability,
-								database: context.database,
-								getSchema: context.schema ? () => context.schema : getSchema,
-							}
-						);
+					const handler =
+						(event: string): FilterHandler =>
+						(payload, meta, context) =>
+							this.executeFlow(
+								flow,
+								{ event, payload, ...meta },
+								{
+									accountability: context.accountability,
+									database: context.database,
+									getSchema: context.schema ? () => context.schema : getSchema,
+								}
+							);
 
-					events.forEach((event) => emitter.onFilter(event, handler));
+					events.forEach((event) => emitter.onFilter(event, handler(event.split('.').slice(1).join('.'))));
 					this.triggerHandlers.push({
 						id: flow.id,
-						events: events.map((event) => ({ type: 'filter', name: event, handler })),
+						events: events.map((event) => ({
+							type: 'filter',
+							name: event,
+							handler: handler(event.split('.').slice(1).join('.')),
+						})),
 					});
 				} else if (flow.options.type === 'action') {
-					const handler: ActionHandler = (meta, context) =>
-						this.executeFlow(flow, meta, {
-							accountability: context.accountability,
-							database: getDatabase(),
-							getSchema: context.schema ? () => context.schema : getSchema,
-						});
+					const handler =
+						(event: string): ActionHandler =>
+						(meta, context) =>
+							this.executeFlow(
+								flow,
+								{ event, ...meta },
+								{
+									accountability: context.accountability,
+									database: getDatabase(),
+									getSchema: context.schema ? () => context.schema : getSchema,
+								}
+							);
 
-					events.forEach((event) => emitter.onAction(event, handler));
+					events.forEach((event) => emitter.onAction(event, handler(event.split('.').slice(1).join('.'))));
 					this.triggerHandlers.push({
 						id: flow.id,
-						events: events.map((event) => ({ type: 'action', name: event, handler })),
+						events: events.map((event) => ({
+							type: 'action',
+							name: event,
+							handler: handler(event.split('.').slice(1).join('.')),
+						})),
 					});
 				}
 			} else if (flow.trigger === 'schedule') {
