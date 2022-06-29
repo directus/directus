@@ -1734,6 +1734,7 @@ displays:
     short: Къс
     relative: Относително
     relative_label: 'Показване на относително време, пр. преди 5 минути'
+    suffix: Наставка
   file:
     file: Файл
     description: Показване на файлове

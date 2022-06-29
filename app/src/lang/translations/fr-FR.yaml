@@ -1734,6 +1734,7 @@ displays:
     short: Court
     relative: Relatif
     relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
+    suffix: Suffixe
   file:
     file: Fichier
     description: Afficher les fichiers

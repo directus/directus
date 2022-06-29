@@ -1735,6 +1735,7 @@ displays:
     short: Short
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
+    suffix: 后缀
   file:
     file: 文件
     description: 显示文件

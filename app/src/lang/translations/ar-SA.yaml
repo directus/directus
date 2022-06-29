@@ -1113,6 +1113,7 @@ displays:
     short: قصير
     relative: نسبي
     relative_label: 'أظهر الوقت النسبي، مثال: قبل 5 دقائق'
+    suffix: لاحقة
   file:
     file: ملف
     description: اعرض الملفات

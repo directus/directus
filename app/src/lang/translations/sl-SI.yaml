@@ -1281,6 +1281,7 @@ displays:
     short: Kratko
     relative: Relativno
     relative_label: 'Pokaži relativni čas, recimo pred 5 minutami'
+    suffix: Pripona
   file:
     file: Datoteka
     description: Prikaži datoteke
