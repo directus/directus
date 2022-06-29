@@ -83,7 +83,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, FieldMeta, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, unref } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
