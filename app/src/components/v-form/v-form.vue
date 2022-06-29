@@ -175,10 +175,8 @@ export default defineComponent({
 			}
 		);
 
-		const initialVals = Object.freeze(props.initialValues || {});
-
 		const values = computed(() => {
-			return Object.assign({}, initialVals, props.modelValue);
+			return Object.assign({}, props.initialValues, props.modelValue);
 		});
 
 		const el = ref<Element>();
