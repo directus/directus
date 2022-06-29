@@ -2009,6 +2009,7 @@ operations:
     description: Lire les éléments de la base de données
     key: IDs
     query: Requête
+    emit_events: Émettre des événements
   item-update:
     name: Mettre à jour les données
     description: Mettre à jour les éléments de la base de données

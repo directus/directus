@@ -1,6 +1,6 @@
 import SchemaInspector from '@directus/schema';
 import { Accountability, Filter, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
 import { getCache, setSystemCache } from '../cache';
@@ -13,7 +13,6 @@ import logger from '../logger';
 import { RelationsService } from '../services';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
-import { parseJSON } from './parse-json';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
