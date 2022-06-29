@@ -79,7 +79,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, FieldMeta, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, unref } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -152,20 +152,33 @@ export default defineComponent({
 
 		const fieldsStore = useFieldsStore();
 
-		const fields = computed(() => {
+		function getFields(): Field[] {
 			if (props.collection) {
 				return fieldsStore.getFieldsForCollection(props.collection);
 			}
-
 			if (props.fields) {
 				return props.fields;
 			}
 
 			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-		});
+		}
+
+		const fields = ref<Field[]>(getFields());
+
+		watch(
+			() => props.fields,
+			() => {
+				const newVal = getFields();
+				if (!isEqual(fields.value, newVal)) {
+					fields.value = newVal;
+				}
+			}
+		);
+
+		const initialVals = Object.freeze(props.initialValues || {});
 
 		const values = computed(() => {
-			return Object.assign({}, props.initialValues, props.modelValue);
+			return Object.assign({}, initialVals, props.modelValue);
 		});
 
 		const el = ref<Element>();
@@ -218,7 +231,9 @@ export default defineComponent({
 			}
 		);
 
-		provide('values', values);
+		if (!props.nested) {
+			provide('values', values);
+		}
 
 		return {
 			t,
