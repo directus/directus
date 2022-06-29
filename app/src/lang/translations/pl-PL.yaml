@@ -1736,6 +1736,7 @@ displays:
     short: Krótki
     relative: Względny
     relative_label: 'Pokaż czas względny, np. 5 minut temu'
+    suffix: Przyrostek
   file:
     file: Plik
     description: Wyświetl pliki
