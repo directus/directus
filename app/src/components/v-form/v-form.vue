@@ -24,7 +24,7 @@
 				:field="field"
 				:fields="fieldsForGroup[index] || []"
 				:values="modelValue || {}"
-				:initial-values="initialVals"
+				:initial-values="initialValues || {}"
 				:disabled="disabled"
 				:batch-mode="batchMode"
 				:batch-active-fields="batchActiveFields"
@@ -48,7 +48,7 @@
 				:field="field"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[field.field]"
-				:initial-value="initialVals[field.field]"
+				:initial-value="(initialValues || {})[field.field]"
 				:disabled="isDisabled(field)"
 				:batch-mode="batchMode"
 				:batch-active="batchActiveFields.includes(field.field)"
@@ -79,7 +79,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, FieldMeta, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, inject } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -164,13 +164,8 @@ export default defineComponent({
 			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
 		});
 
-		const initialVals = Object.freeze(props.initialValues || {});
-
 		const values = computed(() => {
-			if (props.nested) {
-				return inject('values', ref<Record<string, any>>({}));
-			}
-			return Object.assign({}, initialVals, props.modelValue);
+			return Object.assign({}, props.initialValues, props.modelValue);
 		});
 
 		const el = ref<Element>();
@@ -223,9 +218,7 @@ export default defineComponent({
 			}
 		);
 
-		if (!props.nested) {
-			provide('values', values);
-		}
+		provide('values', values);
 
 		return {
 			t,
@@ -248,7 +241,6 @@ export default defineComponent({
 			scrollToField,
 			formFieldEls,
 			fieldsMeta,
-			initialVals,
 		};
 
 		function useForm() {
@@ -301,7 +293,7 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = Object.freeze(
+			const fieldsForGroup = computed(() =>
 				formFields.value.map((field: Field) => getFieldsForGroup(field.meta?.field || null))
 			);
 

@@ -5,7 +5,7 @@
 			:key="accordionField.field"
 			:field="accordionField"
 			:fields="fields"
-			:values="internalValues"
+			:values="values"
 			:initial-values="initialValues"
 			:disabled="disabled"
 			:batch-mode="batchMode"
@@ -27,7 +27,7 @@ import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, computed, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
-import { isEqual, pick } from 'lodash';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupAccordion',
@@ -95,7 +95,6 @@ export default defineComponent({
 		});
 
 		const selection = ref<string[]>([]);
-		const internalValues = ref<Record<string, unknown>>({});
 
 		watch(
 			() => props.start,
@@ -123,21 +122,7 @@ export default defineComponent({
 			}
 		);
 
-		watch(
-			() => props.values,
-			() => {
-				const newValue = pick(
-					props.values,
-					rootFields.value.map((f) => f.field)
-				);
-				if (!isEqual(newValue, internalValues.value)) {
-					internalValues.value = newValue;
-				}
-			},
-			{ immediate: true }
-		);
-
-		return { rootFields, selection, toggleAll, internalValues };
+		return { rootFields, selection, toggleAll };
 
 		function toggleAll() {
 			if (props.accordionMode === true) return;
