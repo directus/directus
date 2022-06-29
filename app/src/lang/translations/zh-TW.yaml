@@ -1,5 +1,6 @@
 ---
 avatar: 頭像
+application: 應用程式
 default_provider: 預設
 published: 已發佈
 draft: 草稿
@@ -747,6 +748,8 @@ interfaces:
     zoom: 縮放
   system-folder:
     folder: 資料夾
+  list:
+    sort: 排序
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -786,6 +789,7 @@ displays:
     format: 格式
     long: 長
     short: 短
+    suffix: 後綴
   file:
     file: 檔案
     description: 顯示檔案

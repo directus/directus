@@ -1,7 +1,8 @@
-import { computed } from 'vue';
 import { useFieldsStore } from '@/stores';
+import { PanelQuery } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
-import PanelMetric from './metric.vue';
+import { computed } from 'vue';
+import PanelMetric from './panel-metric.vue';
 
 export default definePanel({
 	id: 'metric',
@@ -9,6 +10,38 @@ export default definePanel({
 	description: '$t:panels.metric.description',
 	icon: 'functions',
 	component: PanelMetric,
+	query(options) {
+		if (!options || !options.function) return;
+		const isRawValue = ['first', 'last'].includes(options.function);
+
+		const sort = options.sortField && `${options.function === 'last' ? '-' : ''}${options.sortField}`;
+
+		const aggregate = isRawValue
+			? undefined
+			: {
+					[options.function]: [options.field || '*'],
+			  };
+
+		const panelQuery: PanelQuery = {
+			collection: options.collection,
+			query: {
+				sort,
+				limit: 1,
+				fields: [options.field],
+			},
+		};
+
+		if (options.filter && Object.keys(options.filter).length > 0) {
+			panelQuery.query.filter = options.filter;
+		}
+
+		if (aggregate) {
+			panelQuery.query.aggregate = aggregate;
+			delete panelQuery.query.fields;
+		}
+
+		return panelQuery;
+	},
 	options: ({ options }) => {
 		const fieldsStore = useFieldsStore();
 
@@ -18,7 +51,7 @@ export default definePanel({
 				: null;
 		});
 
-		const supportsAggregate = computed(() =>
+		const fieldIsNumber = computed(() =>
 			fieldType.value ? ['integer', 'bigInteger', 'float', 'decimal'].includes(fieldType.value) : false
 		);
 
@@ -82,37 +115,37 @@ export default definePanel({
 							{
 								text: 'Count (Distinct)',
 								value: 'countDistinct',
-								disabled: !supportsAggregate.value,
+								disabled: !fieldIsNumber.value,
 							},
 							{
 								text: 'Average',
 								value: 'avg',
-								disabled: !supportsAggregate.value,
+								disabled: !fieldIsNumber.value,
 							},
 							{
 								text: 'Average (Distinct)',
 								value: 'avgDistinct',
-								disabled: !supportsAggregate.value,
+								disabled: !fieldIsNumber.value,
 							},
 							{
 								text: 'Sum',
 								value: 'sum',
-								disabled: !supportsAggregate.value,
+								disabled: !fieldIsNumber.value,
 							},
 							{
 								text: 'Sum (Distinct)',
 								value: 'sumDistinct',
-								disabled: !supportsAggregate.value,
+								disabled: !fieldIsNumber.value,
 							},
 							{
 								text: 'Minimum',
 								value: 'min',
-								disabled: !supportsAggregate.value,
+								disabled: !fieldIsNumber.value,
 							},
 							{
 								text: 'Maximum',
 								value: 'max',
-								disabled: !supportsAggregate.value,
+								disabled: !fieldIsNumber.value,
 							},
 						],
 					},
@@ -240,18 +273,22 @@ export default definePanel({
 											{
 												text: '$t:operators.gt',
 												value: '>',
+												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.gte',
 												value: '>=',
+												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.lt',
 												value: '<',
+												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.lte',
 												value: '<=',
+												disabled: !fieldIsNumber.value,
 											},
 										],
 									},
@@ -261,7 +298,7 @@ export default definePanel({
 							{
 								field: 'value',
 								name: '$t:value',
-								type: 'integer',
+								type: 'string',
 								schema: {
 									default_value: 0,
 								},

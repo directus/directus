@@ -12,12 +12,11 @@
 
 ## How it Works
 
-First, create a Dashboard, then fill the Dashboard with Panels. Each Panel provides some unique type of analytics
-insight.
-
 <video autoplay muted loop controls>
 <source src="https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/insights-how-it-works-20220216A_1.mp4" type="video/mp4" />
 </video>
+
+First, create a Dashboard, then fill the Dashboard with Panels.
 
 1. Click the "Create Dashboard" action button <span mi btn >add</span> in the page header.
 2. Fill in the dashboard name, icon and note.
@@ -26,8 +25,12 @@ insight.
 5. Hit the "Create Panel" <span mi btn >add</span> in the page header.
 6. Select a Panel type. [Learn More about panel types.](#panels-overview)
 7. Adjust the Panel Options to customize the analytics metric.
+8. Click <span mi btn>check</span> in the drawer header to create the panel.
+9. Click <span mi btn>check</span> in the page header to confirm all edits.
 
 ## Dashboards Overview
+
+![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/dashboards-overview-20220216A.webp)
 
 Each Directus Dashboard provides a drag-and-drop canvas where you can create and arrange different Panels to easily
 build out customized analytics. The Dashboard area automatically expands as you add more and more Panels. In theory, a
@@ -36,7 +39,11 @@ large as the screen they will be viewing on. You are able to create as many Dash
 Dashboard view, edit, and create permissions are [fully configurable](/configuration/users-roles-permissions/) by User
 Role.
 
-![Dashboard Grid Area](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/dashboards-overview-20220216A.webp)
+:::tip Auto Refresh
+
+The Auto Refresh menu in the [Sidebar](/app/overview/#_4-sidebar) lets you select an interval to refresh dashboard data.
+
+:::
 
 ## Create, Edit, and Delete Dashboards
 
@@ -47,23 +54,24 @@ Role.
 
 ## Panels Overview
 
-Panels are the building-blocks we add onto Insights dashboards to create, save and display data analytics. There are 4
-types of Panels.
-
 ![Directus Dashboard Panels](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/panels-overview-20220216A.webp)
+
+Panels are the building-blocks we add onto Insights dashboards to create, save and display data analytics. There are
+five types of Panels, and each one provides some unique analytics tool.
 
 1. **Label** – Displays simple header text to describe other groups of panels. Doesn't actually provide data analysis.
 2. **List** – Sortable, filterable list of items within a collection.
 3. **Metric** – Sortable, filterable single-number metrics like sum, average, minimum and maximum, or first and last.
 4. **Time Series** – Graph to display how metrics change over time. Provides same sorting, filtering and aggregation
    features seen in the list and metric panels.
+5. **Global Variables** — Sets a variable which is globally accessible across other panels.
 
 ## Panel Header Options
 
+![Panel Header Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/panel-header-options-20220216A.webp)
+
 All 4 panel types let you set custom text to provide quick and clear context about what a Panel represents. Panel Header
 options are exactly the same for all four Panel types. Headers are also totally optional and can be hidden.
-
-![Panel Header Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/panel-header-options-20220216A.webp)
 
 - **Visible** – Determines if the header is visible or not.
 - **Name** – Sets a name in the header area.
@@ -73,26 +81,22 @@ options are exactly the same for all four Panel types. Headers are also totally 
 
 ## Labels
 
+![Label Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/label-panel-options-20220216A.webp)
+
 As the name implies, this panel simply allows you to _label_ a group of other panels. Labels do not provide analytics.
 Labels simply help visually group the other panels (_which do provide analytics_) and give context to your dashboard.
-
-### Label Panel Options
-
-![Label Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/label-panel-options-20220216A.webp)
 
 - **Label** – Sets the label text.
 - **Color** – Sets the label text color.
 
 ## Lists
 
+![List Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/list-panel-options-20220216A.webp)
+
 List panels display some number of Items from a Collection, _as a list!_ These Items displayed can be filtered by other
 criteria as well. So for example, you could show your top 5 selling products, 3 worst performing sales regions, 10
 students with the highest GPA _that are also_ in intramural sports, or create any other kind of ranked and/or filtered
 list that could be generated from your dataset.
-
-### List Panel Options
-
-![List Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/list-panel-options-20220216A.webp)
 
 - **Collection** – Selects the Collection to rank.
 - **Limit** – Limits the number of Items that will appear in the Dashboard.
@@ -104,11 +108,9 @@ list that could be generated from your dataset.
 
 ## Metrics
 
-Metrics Panels allow you to aggregate all Items in a Field down to a single value.
-
-### Metrics Panel Options
-
 ![Metrics Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/metric-panel-options-20220216A.webp)
+
+Metrics Panels allow you to aggregate all Items in a Field down to a single value.
 
 - **Collection** – Selects the Collection.
 - **Field** – Selects the Field to run aggregate function on.
@@ -157,15 +159,9 @@ grayed out and unselectable in the `field dropdown list`.
 
 ## Time Series
 
-The Time Series Panel allows you to build graphs and see how data changes over time.
-
-::: warning Time-oriented metrics only
-
-In order to use this Panel, your Collection will need a datetime Field.
-
-:::
-
 ![Time Series Panel Options](https://cdn.directus.io/docs/v9/app-guide/insights/insights-20220216A/time-series-panel-options-20220216A.webp)
+
+The Time Series Panel allows you to build graphs and see how data changes over time.
 
 - **Collection** – Selects the Collection you want to analyze.
 - **Color** – Sets color of your graph curve.
@@ -183,6 +179,12 @@ In order to use this Panel, your Collection will need a datetime Field.
 - **Show X-axis** – Toggles display of time along X-axis.
 - **Show Y-axis** – Toggles display of numeric values along Y-axis.
 
+::: warning Time-oriented metrics only
+
+In order to use this Panel, your Collection will need a datetime Field.
+
+:::
+
 :::tip Custom Date Range
 
 Note that `Past` is not prefixed to a custom range as it is on the default ranges. When selecting **"Other"**, simply
@@ -190,10 +192,34 @@ type in `3 years`, `1 month`, `2 weeks`, `5 days`, etc.
 
 :::
 
-## Extensibility Options
+## Global Variable
 
-Teams that need highly advanced or specialized analytics options are able to extend, customize and modify this module as
-needed. Here are some great resources to get started down that track.
+![Global Variables](https://cdn.directus.io/docs/v9/app-guide/insights/insights-220624A/global-variable-220624A.webp)
 
-- [Extensions > Modules](/extensions/modules)
-- [Extentions > Panels](/extensions/panels)
+- **Variable Key** — Sets your variable. Use this key to access the variable in other Insights panels.
+- **Type** — Sets the data type of your variable.
+- **Default Value** — Sets a default value for the global variable.
+- **Interface** — Selects the Interface to be used.
+- **Options** — Sets the Interface Options.
+
+This panel allows you to create a variable which is globally accessible across other panels. You can use this to do
+things like create a string or number to prefix other Insights Panel titles or pass it as a value into a Filter to query
+results.
+
+To create and assign a Global Variable, follow the steps from [How it Works](#how-it-works), selecting the Global
+Variable panel. Wrap the variable key in double-moustache syntax to access and assign it throughout other Insights
+Panels:
+
+```
+{{ your_variable_key }}
+```
+
+You will notice that the Global Variable Panel is an interface in the Dashboard, allowing you to modify the value of
+this variable. If you change its value, all panels referencing the variable will update automatically.
+
+:::warning Must be Valid Data Type
+
+Your variable's data type will need to be a valid match to wherever you are using it. For example, do not apply a string
+or JSON variable in a place that requires Datetime data.
+
+:::

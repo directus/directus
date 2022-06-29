@@ -364,6 +364,8 @@ interfaces:
     zoom: छोटा-बड़ा करें
   system-folder:
     folder: फ़ोल्डर
+  list:
+    sort: सॉर्ट
   boolean:
     toggle: टॉगल करें
   user:
@@ -375,6 +377,7 @@ displays:
     color: Color
   datetime:
     format: प्रारूप
+    suffix: सफिक्स
   formatted-value:
     format: प्रारूप
     font: फ़ॉन्ट

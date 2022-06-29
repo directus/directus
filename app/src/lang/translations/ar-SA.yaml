@@ -28,6 +28,7 @@ draft: مسوّدة
 archived: مؤرشف
 modules: الوحدات
 module_bar: شريط الوحدة
+logs: السجلات
 reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
@@ -47,6 +48,7 @@ group: المجموعة
 export_items: تصدير عنصر
 and: و
 or: أو
+dataset_too_large_currently_showing_n_items: مجموعة البيانات كبيرة جداً. حالياً تظهر العناصر {n} الأولى.
 hook: ربط
 fill_width: العرض الكامل
 field_name_translations: ترجمة اسم الحقل
@@ -342,11 +344,14 @@ functions:
   minute: دقيقة
   second: ثانية
   count: عدد
-date-fns_date: التوقيت المحلي
-date-fns_time: 'ساعات: دقائق: ثواني'
-date-fns_time_no_seconds: 'س:دد ص'
-date-fns_time_24hour: 'ساعة:دقيقة:ثانية'
-date-fns_time_no_seconds_24hour: 'ساعة:دقيقة'
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
 minutes: دقائق
 hours: ساعات
 month: شهر
@@ -671,6 +676,12 @@ wysiwyg_options:
   copy: نسخ
   cut: قص
   paste: لصق
+  h1: العنوان 1
+  h2: العنوان 2
+  h3: العنوان 3
+  h4: العنوان 4
+  h5: العنوان 5
+  h6: العنوان 6
   fontselect: تحديد الخط
   fontsizeselect: حدد حجم الخط
   remove: احذف
@@ -739,6 +750,7 @@ page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإن
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
+page_help_insights_dashboard: '**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر'
 add_new: إضافة جديدة
 create_new: أنشئ جديد
 all: الجميع
@@ -748,6 +760,7 @@ batch_delete_confirm: >-
 cancel: إلغاء
 collection: المجموعة
 collections: مجموعات
+content: المحتوى
 singleton_label: معاملته ككائن واحد
 system_fields_locked: حقول النظام مقفلة ولا يمكن تعديلها
 fields:
@@ -1031,6 +1044,7 @@ interfaces:
     description: حدد اختيار واحد من خيارات متعددة
   list:
     edit_fields: تعديل الحقول
+    sort: رتب
     field_name_placeholder: أدخل اسم الحقل...
   slider:
     slider: شريط
@@ -1099,6 +1113,7 @@ displays:
     short: قصير
     relative: نسبي
     relative_label: 'أظهر الوقت النسبي، مثال: قبل 5 دقائق'
+    suffix: لاحقة
   file:
     file: ملف
     description: اعرض الملفات

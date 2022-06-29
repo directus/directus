@@ -29,6 +29,7 @@ draft: Návrh
 archived: Archivováno
 modules: Moduly
 module_bar: Panel modulů
+logs: Logy
 reset_width: Obnovit šířku
 tile_size: Velikost dlaždice
 edit_field: Upravit pole
@@ -716,7 +717,7 @@ replace_file: Nahradit soubor
 no_results: Bez výsledků
 no_results_copy: Upravte nebo vymažte vyhledávací filtry pro zobrazení výsledků.
 clear_filters: Vymazat filtry
-saves_automatically: Automaticky uložit
+saves_automatically: Ukládá se automaticky
 role: Role
 edit_role: Upravit roli
 rule: Pravidlo
@@ -1530,6 +1531,7 @@ interfaces:
     description: Vytvořit více záznamů ve stejné struktuře
     edit_fields: Upravit pole
     add_label: 'Štítek "Vytvořit nový"'
+    sort: Seřadit
     field_name_placeholder: Zadejte název pole...
     field_note_placeholder: Zadejte poznámku k poli...
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
@@ -1553,7 +1555,7 @@ interfaces:
     add_tags: Přidat značku a stiskněte Enter...
   input:
     input: Vstup
-    description: Ručně zadejte hodnotu
+    description: Ruční zadat hodnotu
     trim: Oříznout
     trim_label: Oříznout začátek a konec
     mask: Maskovaná
@@ -1584,6 +1586,9 @@ interfaces:
     display_template: Šablona zobrazení
     no_collection: Žádná kolekce
     toggle_split_view: Přepnout rozdělené zobrazení
+    enable: Povolit
+    user_language: Použít aktuální jazyk uživatele
+    default_language: Výchozí jazyk
     language_field: Pole indikátoru jazyka
   list-o2m-tree-view:
     description: Zobrazení stromu pro vnořené rekurentní položky 1:N
@@ -1670,6 +1675,7 @@ displays:
     short: Krátký
     relative: Relativní
     relative_label: 'Zobrazit relativní čas, např.: před 5 minutami'
+    suffix: Přípona
   file:
     file: Soubor
     description: Zobrazit soubory

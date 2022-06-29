@@ -1589,6 +1589,8 @@ interfaces:
     description: Създаване на множество записи с еднаква структура
     edit_fields: Редактиране на полетата
     add_label: 'Текст за „Създаване“'
+    sort: Сортиране
+    sort_placeholder: Ръчно
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
@@ -1643,6 +1645,9 @@ interfaces:
     display_template: Шаблон при показване
     no_collection: Няма колекция
     toggle_split_view: Превключване на разделен режим
+    enable: Включване
+    user_language: Използване на езика на потребителя
+    default_language: Език по подразбиране
     language_field: Поле за език
   list-o2m-tree-view:
     description: Дървовиден изглед за вложени рекурсивни записи от вид - един-към-много
@@ -1729,6 +1734,7 @@ displays:
     short: Къс
     relative: Относително
     relative_label: 'Показване на относително време, пр. преди 5 минути'
+    suffix: Наставка
   file:
     file: Файл
     description: Показване на файлове
@@ -1935,6 +1941,10 @@ panels:
     bottom: Отдолу
     monochrome: Монохром
     monochrome_color: Монохромен цвят
+  variable:
+    name: Глобални променливи
+    description: Задаване на глобални променливи за използване във филтрите на другите панели
+    variable_key: Ключ на променливата
 triggers:
   common:
     response_body: Изходни данни
@@ -1981,14 +1991,17 @@ operations:
   item-delete:
     name: Изтриване на данни
     description: Изтриване в базата от данни
+    emit_events: Излъчване на събития
     query: Заявка
   item-read:
     name: Четене на данни
     description: Четене на записи в базата от данни
     query: Заявка
+    emit_events: Излъчване на събития
   item-update:
     name: Обновяване на данните
     description: Обновяване на записите в базата от данни
+    emit_events: Излъчване на събития
     payload: Съдържание
     query: Заявка
   log:

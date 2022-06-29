@@ -27,7 +27,7 @@ empty, and migrate it to the latest version in case of upgrades. See
 
 ## 6. Configure the environment variables
 
-See [Environment Variables](/configuration/config-options/#general) for all available environment variables.
+See [Environment Variables](/self-hosted/config-options/#general) for all available environment variables.
 
 DigitalOcean requires you to use SSL connections to managed databases. DigitalOcean provides a bunch of aliases to often
 used database properties that can be injected when the database is a component of your app. To enable SSL connections,
