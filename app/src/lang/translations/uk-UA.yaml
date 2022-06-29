@@ -383,13 +383,13 @@ functions:
   second: Секунда
   count: Кількість
 date-fns_date: PPP
-date-fns_time: 'г:хх:сс'
-date-fns_time_no_seconds: 'г:хх'
-date-fns_time_24hour: 'ГГ:хх:сс'
-date-fns_time_no_seconds_24hour: 'ГГ:хх'
-date-fns_date_short: 'МММ д'
-date-fns_time_short: 'г:ххх'
-date-fns_date_short_no_year: МММ д
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: d MMM
 minutes: Хвилини
 hours: Години
 month: Місяць
