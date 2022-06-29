@@ -30,7 +30,7 @@
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
-		"@directus/docs": "9.13.0",
+		"@directus/docs": "^9.13.2",
 		"@directus/extensions-sdk": "9.13.0",
 		"@directus/format-title": "9.13.0",
 		"@directus/shared": "9.13.0",
@@ -93,6 +93,7 @@
 		"json2csv": "^5.0.7",
 		"jsonlint-mod": "1.7.6",
 		"maplibre-gl": "1.15.2",
+		"markdown-it-table-of-contents": "^0.6.0",
 		"marked": "4.0.10",
 		"micromustache": "8.0.3",
 		"mime": "3.0.0",
