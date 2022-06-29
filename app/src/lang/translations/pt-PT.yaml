@@ -696,6 +696,7 @@ displays:
     collection: Coleção
   datetime:
     format: Formatar
+    suffix: Sufixo
   formatted-value:
     format: Formatar
     prefix: Prefixo
