@@ -23,7 +23,7 @@ We recommend aliasing the `start` script to Directus' start for easier deploymen
 {
 	...
 	"scripts": {
-		"start": "directus start",
+		"start": "directus start"
 	}
 	...
 }
