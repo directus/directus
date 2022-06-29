@@ -29,7 +29,7 @@
 			<v-list v-if="showAddCustom || suggestedItems.length">
 				<v-list-item v-if="showAddCustom" @click="addItemFromInput">
 					<v-list-item-content class="add-custom">
-						{{ t('interfaces.tags-m2m.new-item-with', { argument: localInput }) }}
+						{{ t('interfaces.tags-m2m.new_item_with', { argument: localInput }) }}
 					</v-list-item-content>
 				</v-list-item>
 

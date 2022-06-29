@@ -18,7 +18,7 @@ export default defineInterface({
 		return [
 			{
 				field: 'referencingField',
-				name: '$t:interfaces.tags-m2m.reference-field',
+				name: '$t:interfaces.tags-m2m.reference_field',
 				type: 'string',
 				required: true,
 				collection: relations.m2o?.related_collection,

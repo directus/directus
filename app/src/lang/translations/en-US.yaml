@@ -1642,9 +1642,8 @@ interfaces:
   tags-m2m:
     tags-m2m: Tags (M2M)
     description: Select multiple related junction items like tags with autocomplete
-    reference-field: Referencing Field
-    close-on-select: Close on select
-    new-item-with: Add new item "{argument}"...
+    reference_field: Referencing Field
+    new_item_with: Add new item "{argument}"...
     add_placeholder: Add {collection}...
   input:
     input: Input
