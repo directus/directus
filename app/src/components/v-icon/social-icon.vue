@@ -11,7 +11,18 @@ export default defineComponent({
 	},
 	render() {
 		const socialIcon = icon(findIconDefinition({ prefix: 'fab', iconName: this.name }));
-		return h({ template: socialIcon?.html[0] });
+
+		if (socialIcon && socialIcon.abstract[0] && socialIcon.abstract[0].children && socialIcon.abstract[0].children[0]) {
+			return h(
+				'svg',
+				{
+					...socialIcon.abstract[0].attributes,
+				},
+				h('path', { ...socialIcon.abstract![0].children![0].attributes })
+			);
+		}
+
+		return null;
 	},
 });
 </script>
