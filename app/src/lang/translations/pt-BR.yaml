@@ -68,6 +68,7 @@ create_preset: Criar Predefinição
 create_panel: Criar Painel
 create_role: Criar Cargo
 create_user: Criar Usuário
+message: Mensagem
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
 create_translation_string: String chave para a tradução
@@ -1439,6 +1440,7 @@ interfaces:
     edit_fields: Editar campos
     add_label: 'Texto de "Criar Novo"'
     sort: Ordenar
+    sort_placeholder: Manual
     field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira a nota de campo...
   slider:
@@ -1475,6 +1477,8 @@ interfaces:
   input-multiline:
     textarea: Área de texto
     description: Insira texto puro de múltiplas linhas
+  input-translated-string:
+    input-translated-string: Textos traduzidos
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
@@ -1670,12 +1674,19 @@ triggers:
   webhook:
     method: Método 
 operations:
+  log:
+    message: Mensagem
   notification:
     recipient: Usuário
+    message: Mensagem
   request:
     url: URL
     method: Método 
     data: Dados
     header: Cabeçalho
   trigger:
+    name: Ativar Fluxo
+    description: Passar estes dados para outro fluxo
+    flows: Fluxos
+    flow: Fluxo
     data: Dados
