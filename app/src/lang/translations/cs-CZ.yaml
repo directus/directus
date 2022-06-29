@@ -1675,6 +1675,7 @@ displays:
     short: Krátký
     relative: Relativní
     relative_label: 'Zobrazit relativní čas, např.: před 5 minutami'
+    suffix: Přípona
   file:
     file: Soubor
     description: Zobrazit soubory
