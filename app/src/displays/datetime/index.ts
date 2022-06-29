@@ -113,7 +113,7 @@ export default defineDisplay({
 					name: '$t:displays.datetime.strict',
 					type: 'boolean',
 					meta: {
-						width: 'full',
+						width: 'half',
 						interface: 'boolean',
 						options: {
 							label: '$t:displays.datetime.strict_label',
