@@ -2011,6 +2011,7 @@ operations:
     description: Czytaj elementy z bazy danych
     key: ID
     query: Zapytanie
+    emit_events: Wydaj wydarzenia
   item-update:
     name: Aktualizuj dane
     description: Aktualizuj elementy w bazie danych

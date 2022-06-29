@@ -24,6 +24,7 @@
 		:model-value="value"
 		:placeholder="t('select')"
 		allow-other
+		group-selectable
 		@update:model-value="emitValue($event)"
 	/>
 	<template v-else-if="is === 'interface-datetime'">
