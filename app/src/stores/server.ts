@@ -1,3 +1,4 @@
+import { setLanguage } from '@/lang/set-language';
 import api from '@/api';
 import { defineStore } from 'pinia';
 
@@ -7,6 +8,7 @@ type Info = {
 		project_descriptor: string | null;
 		project_logo: string | null;
 		project_color: string | null;
+		default_language: string | null;
 		public_foreground: string | null;
 		public_background: string | null;
 		public_note: string | null;
@@ -36,6 +38,7 @@ export const useServerStore = defineStore({
 		async hydrate() {
 			const response = await api.get(`/server/info`, { params: { limit: -1 } });
 			this.info = response.data.data;
+			await setLanguage(this.info?.project?.default_language ?? 'en-US');
 		},
 		dehydrate() {
 			this.$reset();

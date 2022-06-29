@@ -2,6 +2,8 @@
 avatar: Avatar
 published: Objavljeno
 edit_field: Izmijeni
+location: Lokacija
+input: Unos
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
 half_width: Pola širine
@@ -34,7 +36,6 @@ delete_folder: Obriši Fasciklu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi postavljanje oznake
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
@@ -63,7 +64,6 @@ recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
 unarchive_confirm: Da li ste sigurni da želite da vratite iz arhive ovu stavku?
 nested_files_folders_will_be_moved: Ugnježđeni fajlovi i fascikle će biti pomjereni na jedan nivo iznad.
-unknown_validation_errors: 'Došlo je do greške u validaciji kod sljedećih sakrivenih polja:'
 validationError:
   eq: Vrijednost treba biti {valid}
   neq: Vrijednost ne može biti {invalid}
@@ -227,7 +227,6 @@ related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
 format: Format
-use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
@@ -243,6 +242,9 @@ interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
+functions:
+  year: Godina
+  month: Mjesec
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -412,7 +414,6 @@ unexpected_error_copy: Desila se neočekivana greška. Molimo pokušajte kasnije
 copy_details: Kopiraj Detalje
 no_app_access: Bez pristupa Aplikaciji
 no_app_access_copy: Ovom korisniku nije dozvoljeno da koristi administratorsku aplikaciju.
-password_reset_sent: Poslali smo Vam sigurnosni link za resetovanje lozinke
 password_reset_successful: Lozinka je uspješno resetovana
 back: Nazad
 editing_image: Uređivanje Fotografije
@@ -430,8 +431,6 @@ start_end_of_count_items: '{start}-{end} od {count} stavki'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
 one_item: '1 Stavka'
 one_filtered_item: '1 Filtrirana Stavka'
-delete_collection_are_you_sure: >-
-  Da li ste sigurni da želite da obrišete ovu kolekciju? Ova operacija će obrisati kolekciju i sve stavke unutar iste. Ova operacija je trajna.
 collections_shown: Prikazano Kolekcija
 visible_collections: Vidljive Kolekcije
 hidden_collections: Sakrivene Kolekcije
@@ -528,6 +527,10 @@ toggle: Isključi / Uključi
 icon_on: Ikonica Na
 icon_off: Bez Ikonice
 label: Oznaka
+trigger: Okidač
+flow_name: Ime
+flow_tracking_activity: Samo Prati Aktivnost
+flow_tracking_null: Bez praćenja
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
@@ -1006,6 +1009,7 @@ interfaces:
     description: Napravi više upisa od postojeće strukture
     edit_fields: Izmijeni Polja
     add_label: '"Napravi Novi" Labela'
+    sort: Sortiranje
     field_name_placeholder: Unesi ime polja...
     field_note_placeholder: Unesi napomenu polja...
   slider:
@@ -1025,7 +1029,6 @@ interfaces:
     auto_formatter: Koristi automatski format naslova
     alphabetize: Po abecedi
     alphabetize_label: Abecedni red
-    add_tags: Dodaj tagove...
   input:
     input: Unos
     description: Ručno unesite vrijednost
@@ -1077,6 +1080,8 @@ interfaces:
     value_path: Putanja Vrijednosti
     trigger: Okidač
     rate: Ocjena
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Prevodi
@@ -1185,7 +1190,6 @@ layouts:
     subtitle: Pod naslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno
@@ -1197,3 +1201,8 @@ layouts:
 panels:
   label:
     name: Oznaka
+operations:
+  notification:
+    recipient: Korisnik
+  request:
+    url: URL adresa

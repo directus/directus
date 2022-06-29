@@ -17,7 +17,7 @@
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<span ref="collectionName" class="collection-name">{{ collection.name }}</span>
+				<span ref="collectionName" class="collection-name">{{ collection.collection }}</span>
 				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
 			</div>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
@@ -48,8 +48,8 @@
 				<collection-item
 					:collection="element"
 					:collections="collections"
-					@editCollection="$emit('editCollection', $event)"
-					@setNestedSort="$emit('setNestedSort', $event)"
+					@edit-collection="$emit('editCollection', $event)"
+					@set-nested-sort="$emit('setNestedSort', $event)"
 				/>
 			</template>
 		</draggable>

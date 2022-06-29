@@ -76,7 +76,7 @@ The context object has the following properties:
 ::: warning Performance
 
 Filters can impact performance when not carefully implemented, as they are executed in a blocking manner. This applies
-in particular to filters firing on `read` events.
+in particular to filters firing on `read` events, where a single request can result in a large amount of database reads.
 
 :::
 
@@ -100,13 +100,6 @@ The context object has the following properties:
 - `database` — The current database transaction
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
-
-::: warning Performance
-
-Actions firing on `read` events can impact performance when not carefully implemented, as a single request can result in
-a large amount of database reads.
-
-:::
 
 ### Init
 
@@ -154,7 +147,7 @@ export default ({ schedule }) => {
 | `auth.login`                  | The login payload               | `status`, `user`, `provider`         |
 | `auth.jwt`                    | The auth token                  | `status`, `user`, `provider`, `type` |
 | `authenticate`                | The empty accountability object | `req`                                |
-| `(<collection>.)items.read`   | The read item                   | `collection`                         |
+| `(<collection>.)items.read`   | The read item                   | `query`, `collection`                |
 | `(<collection>.)items.create` | The new item                    | `collection`                         |
 | `(<collection>.)items.update` | The updated item                | `keys`, `collection`                 |
 | `(<collection>.)items.delete` | The keys of the item            | `collection`                         |
@@ -165,7 +158,8 @@ export default ({ schedule }) => {
 ::: tip System Collections
 
 `<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+`files` (except create/update), `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`,
+`users` or `webhooks`.
 
 :::
 
@@ -181,16 +175,17 @@ export default ({ schedule }) => {
 | `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
 | `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
 | `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
-| `(<collection>.)items.delete` | `payload`, `collection`                             |
+| `(<collection>.)items.delete` | `keys`, `collection`                                |
 | `(<collection>.)items.sort`   | `collection`, `item`, `to`                          |
 | `<system-collection>.create`  | `payload`, `key`, `collection`                      |
 | `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
-| `<system-collection>.delete`  | `payload`, `collection`                             |
+| `<system-collection>.delete`  | `keys`, `collection`                                |
 
 ::: tip System Collections
 
 `<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+`files` (except create/update), `folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`,
+`users` or `webhooks`.
 
 :::
 

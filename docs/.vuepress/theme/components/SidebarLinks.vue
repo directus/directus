@@ -1,6 +1,6 @@
 <template>
 	<ul v-if="items.length" class="sidebar-links">
-		<li v-for="(item, i) in items" :key="i">
+		<li v-for="(item, i) in items" :key="i" :class="{ divider: item.type === 'divider' }">
 			<SidebarDivider v-if="item.type === 'divider'" />
 
 			<SidebarGroup
@@ -91,3 +91,9 @@ function descendantIsActive(route, item) {
 	return false;
 }
 </script>
+
+<style scoped>
+.divider {
+	line-height: 0;
+}
+</style>

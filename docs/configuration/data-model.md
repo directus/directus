@@ -12,6 +12,7 @@
    default.
 3. Configure the name and type of the **Primary Key**.
    - Auto-Incremented Integer
+   - Auto-Incremented Big Integer (MySQL and PostgreSQL only)
    - Generated UUID
    - Manually Entered String
 4. Click on <span mi btn>arrow_forward</span>
@@ -40,8 +41,7 @@ the database, and it will automatically appear within Directus. The first time y
 
 ## Configuring a Collection
 
-You can configure a collection by clicking on it within **Settings > Data Model**. On this page the following options
-are available:
+You can configure a collection by clicking on it within **Settings > Data Model**. The following options are available:
 
 - **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
   configuration, refer to the sections below on Field Management.
@@ -245,6 +245,12 @@ As of now, the key can not be modified after the field has been created.
 
 :::
 
+::: warning Composite Keys
+
+At this time, Directus does not support composite keys.
+
+:::
+
 ### Relationship
 
 This pane is only shown when configuring relational fields (including images and translations). Depending on the type of
@@ -297,7 +303,7 @@ Each field can have one or more _rules_. Each rule has the following configurati
 
 - **Name**: The name of the rule. This is only used internally for convenience purposes
 - **Rule**: The rule that controls whether or not these conditions are applied. Rule follows the
-  [Filter Rules](/configuration/filter-rules) spec
+  [Filter Rules](/reference/filter-rules) spec
 - **Readonly**: Whether or not the field is readonly when the condition is matched
 - **Hidden**: Whether or not the field is hidden when the condition is matched
 - **Required**: Whether or not the field is required when the condition is matched

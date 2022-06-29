@@ -137,9 +137,8 @@ is an excellent Digital Asset Management system.
 
 ### Material Icons
 
-Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
-outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
-`account_circle_outline`.
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus supports both filled & outlined
+variants of Material icons.
 
 ### Social Icons
 
@@ -174,10 +173,10 @@ Items are referenced (both individually and relationally) by their unique [prima
 
 #### Relevant Guides
 
-- [Creating an Item](/app/content-collections/#creating-an-item)
-- [Archiving an Item](/app/content-items/#archiving-an-item)
-- [Manually Sorting Items](/app/content-collections/#manually-sorting-items)
-- [Deleting an Item](/app/content-items/#deleting-an-item)
+- [Creating an Item](/app/content/items/#create-an-item)
+- [Archiving an Item](/app/content/items/#archive-an-item)
+- [Manually Sorting Items](/app/content/collections/#manually-sort-items)
+- [Deleting an Item](/app/content/items/#delete-an-item)
 
 ## Junction Collections
 
@@ -214,7 +213,7 @@ The [Module Bar](/app/overview/#_1-module-bar) lists all available Modules and a
 module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality within the
 App can be bucketed into one of the following modules:
 
-- [Content](/app/content-collections/) — The primary way to view and interact with database content
+- [Content](/app/content/collections/) — The primary way to view and interact with database content
 - [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
 - [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
 - [Insights](/app/insights) — Access to infinitely customizable data dashboards
@@ -278,13 +277,13 @@ often called `id`.
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](/getting-started/installation/)
-- [Configuring a Project](/configuration/config-options/)
+- [Creating a Project](/self-hosted/installation/)
+- [Configuring a Project](/self-hosted/config-options/)
 - [Adjusting Project Settings](/configuration/project-settings/)
-- [Upgrading a Project](/configuration/upgrades-migrations/)
-- [Backing-up a Project](/configuration/upgrades-migrations/#backing-up-a-project)
-- [Migrating a Project](/configuration/upgrades-migrations/#migrating-a-project)
-- [Deleting a Project](/configuration/upgrades-migrations/#deleting-a-project)
+- [Upgrading a Project](/self-hosted/upgrades-migrations/)
+- [Backing-up a Project](/self-hosted/upgrades-migrations/#backing-up-a-project)
+- [Migrating a Project](/self-hosted/upgrades-migrations/#migrating-a-project)
+- [Deleting a Project](/self-hosted/upgrades-migrations/#deleting-a-project)
 
 ## Relationships
 
@@ -314,9 +313,9 @@ There is also a "Public" role that determines access for unauthenticated access.
 ### Relevant Guides
 
 - [Creating a Role](/configuration/users-roles-permissions/#creating-a-role)
-- [Configuring a Role](/configuration/users-roles-permissions/#configuring-a-role)
-- [Configuring Role Permissions](/configuration/users-roles-permissions/#configuring-permissions)
-- [Configuring System Permissions](/configuration/users-roles-permissions/#configuring-system-permissions)
+- [Configuring a Role](/configuration/users-roles-permissions/#configure-a-role)
+- [Configuring Role Permissions](/configuration/users-roles-permissions/#configure-permissions)
+- [Configuring System Permissions](/configuration/users-roles-permissions/#configure-system-permissions)
 - [Deleting a Role](/configuration/users-roles-permissions/#deleting-a-role)
 
 ## Storage Adapters
@@ -379,6 +378,12 @@ all of these differences, Directus has a single _superset_ of types that map to 
 - **UUID** — A universally unique identifier saved in UUIDv4 format
 - **Hash** — A string hashed using argon2 cryptographic hash algorithm
 - **Alias** — For fields that do not have a database column [Learn More](#)
+
+::: warning
+
+For **SQLite**, the **Timestamp** type is stored as a **DateTime**.
+
+:::
 
 ## Users
 

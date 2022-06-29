@@ -28,7 +28,7 @@ export type TransportRequestOptions = {
 
 export type TransportOptions = TransportRequestOptions & {
 	url: string;
-	beforeRequest?: (config: AxiosRequestConfig) => AxiosRequestConfig;
+	beforeRequest?: (config: AxiosRequestConfig) => Promise<AxiosRequestConfig>;
 };
 
 export abstract class ITransport {

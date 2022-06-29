@@ -20,7 +20,7 @@
 						: null
 				"
 			>
-				<v-icon :name="modulePart.icon" outline />
+				<v-icon :name="modulePart.icon" />
 			</v-button>
 		</div>
 

@@ -26,6 +26,8 @@ published: Avaldatud
 draft: Mustand
 archived: Arhiveeritud
 edit_field: Muuda välja
+location: Asukoht
+input: Sisend
 item_revision: Kirje parandamine
 duplicate_field: Korduv väli
 half_width: Pool laiust
@@ -58,7 +60,6 @@ delete_folder: Kustuta kaust
 prefix: Eesliide
 suffix: Järelliide
 reset_bookmark: Kustuta järjehoidja
-rename_bookmark: Järjehoidja ümbernimetamine
 update_bookmark: Järjehoidja uuendamine
 delete_bookmark: Kustuta järjehoidja
 delete_bookmark_copy: >-
@@ -87,7 +88,6 @@ recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
-unknown_validation_errors: 'Olid valideerimise vead nende peidetud väljadele:'
 validationError:
   eq: Väärtus peab olema {valid}
   neq: Väärtus ei saa olla {invalid}
@@ -251,7 +251,6 @@ related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
 format: Vorming
-use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
 last_page: Viimane leht
 last_access: Viimati vaadatud
 fill_template: Täida mallist
@@ -267,6 +266,9 @@ interface_label: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
+functions:
+  year: Aasta
+  month: Kuu
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -436,7 +438,6 @@ unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
 copy_details: Kopeeri detailid
 no_app_access: Rakenduse ligipääs puudub
 no_app_access_copy: See kasutaja ei tohi adminni rakendust kasutada.
-password_reset_sent: Saadame teile lingi salasõna muutmiseks
 password_reset_successful: Salasõna on edukalt lähtestatud
 back: Tagasi
 editing_image: Pildi muutmine
@@ -454,8 +455,6 @@ start_end_of_count_items: '{start}-{end} / {count}'
 start_end_of_count_filtered_items: '{start}-{end} / {count}'
 one_item: '1 kirje'
 one_filtered_item: '1 filtreeritud kirje'
-delete_collection_are_you_sure: >-
-  Kas sa kindlasti soovid selle andmekogu täielikult kustutada? Seda ei saa hiljem enam taastada!
 collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
@@ -552,6 +551,10 @@ toggle: Lülita
 icon_on: Ikoon sees
 icon_off: Ikoon väljas
 label: Silt
+trigger: Päästik
+flow_name: Nimi
+flow_tracking_activity: Jälgi ainult aktiivsust
+flow_tracking_null: Ära jälgi midagi
 full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
@@ -1042,6 +1045,7 @@ interfaces:
     description: Loo mitu kirjet sama struktuuriga
     edit_fields: Muuda välju
     add_label: '"Lisa uus" nimetus'
+    sort: Sorteeri
     field_name_placeholder: Sisesta välja nimi...
     field_note_placeholder: Sisesta välja märkus...
   slider:
@@ -1061,7 +1065,6 @@ interfaces:
     auto_formatter: Kasuta pealkirja stiili
     alphabetize: Järjesta tähestikuliselt
     alphabetize_label: Sorteeri tähestikuliselt ümber
-    add_tags: Lisa märksõnu...
   input:
     input: Sisend
     description: Sisesta väärtus käsitsi
@@ -1114,6 +1117,8 @@ interfaces:
     value_path: Väärtuse väli
     trigger: Päästik
     rate: Hinnang
+  system-token:
+    system-token: Kontrollkood
 displays:
   translations:
     translations: Tõlked
@@ -1222,7 +1227,6 @@ layouts:
     subtitle: Alampealkiri
   tabular:
     tabular: Tabel
-    fields: Väljad
     spacing: Vahed
     comfortable: Mugav
     compact: Kompaktne
@@ -1236,3 +1240,8 @@ layouts:
 panels:
   label:
     name: Silt
+operations:
+  notification:
+    recipient: Kasutaja
+  request:
+    url: URL

@@ -25,6 +25,7 @@ type UsableItems = {
 
 type ComputedQuery = {
 	fields: Ref<Query['fields']> | ComputedRef<Query['fields']> | WritableComputedRef<Query['fields']>;
+	alias?: Ref<Query['alias']> | ComputedRef<Query['alias']> | WritableComputedRef<Query['alias']>;
 	limit: Ref<Query['limit']> | ComputedRef<Query['limit']> | WritableComputedRef<Query['limit']>;
 	sort: Ref<Query['sort']> | ComputedRef<Query['sort']> | WritableComputedRef<Query['sort']>;
 	search: Ref<Query['search']> | ComputedRef<Query['search']> | WritableComputedRef<Query['search']>;
@@ -36,7 +37,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
-	const { fields, limit, sort, search, filter, page } = query;
+	const { fields, alias, limit, sort, search, filter, page } = query;
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
@@ -137,6 +138,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				params: {
 					limit: unref(limit),
 					fields: fieldsToFetch,
+					...(alias ? { alias: unref(alias) } : {}),
 					sort: unref(sort),
 					page: unref(page),
 					search: unref(search),

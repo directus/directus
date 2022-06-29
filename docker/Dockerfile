@@ -47,6 +47,9 @@ RUN \
 USER node
 WORKDIR /directus
 
+# disable npm update warnings
+RUN echo "update-notifier=false" >> ~/.npmrc
+
 COPY --from=builder --chown=node:node /directus .
 
 RUN \

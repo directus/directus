@@ -1,5 +1,5 @@
-import { music, internet, name, datatype, lorem } from 'faker';
 import { v4 as uuid } from 'uuid';
+import { random } from 'lodash';
 import { Knex } from 'knex';
 
 type Guest = {
@@ -130,22 +130,39 @@ export const seedTable = async function (
 	}
 };
 
+const artists = [
+	'The Vines',
+	'Queens of the Stone Age',
+	'The Vaccines',
+	'Black Pistol Fire',
+	'The White Stripes',
+	'White Lies',
+	'Sonic Youth',
+	'Razorlight',
+	'Ron Gallo',
+	'Black Rebel Motorcycle Club',
+];
+
+const guitarBrands = ['gibson', 'fender', 'prs', 'rickenbacker', 'ibanez', 'jackson'];
+
 export const createArtist = (): Artist => ({
 	id: uuid(),
-	name: internet.userName(),
-	members: JSON.stringify({ guitar: internet.userName() }),
+	name: artists[random(0, artists.length - 1)],
+	members: JSON.stringify({ guitar: guitarBrands[random(0, guitarBrands.length - 1)] }),
 });
+
+const genres = ['rock', 'folk', 'electronic', 'musical', 'pop', 'jazz', 'metal', 'dance', 'blues', 'country'];
 
 export const createEvent = (): Event => ({
 	id: uuid(),
 	cost: 1504.04,
-	description: lorem.paragraphs(2),
+	description: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
 	created_at: randomDateTime(),
 	time: randomDateTime(),
 	tags: `tags
-${music.genre()}
-${music.genre()}
-${music.genre()}
+${genres[random(0, genres.length - 1)]}
+${genres[random(0, genres.length - 1)]}
+${genres[random(0, genres.length - 1)]}
 `,
 });
 
@@ -157,16 +174,16 @@ export const createTour = (): Tour => ({
 export const createGuest = (): Guest => ({
 	id: uuid(),
 	birthday: randomDateTime(),
-	name: `${name.firstName()} ${name.lastName()}`,
+	name: randomName(),
 	earliest_events_to_show: randomDateTime(),
 	latest_events_to_show: randomDateTime(),
 	password: getRandomString(32),
-	shows_attended: datatype.number(),
+	shows_attended: random(1, 35),
 });
 
 export const createOrganizer = (): Organizer => ({
 	id: uuid(),
-	company_name: `${name.firstName()} ${name.lastName()}`,
+	company_name: randomName(),
 });
 
 export const createMany = (factory: (() => Item) | Record<string, any>, count: number, options?: CreateManyOptions) => {
@@ -209,6 +226,39 @@ function getRandomInt(max: number) {
 		int = Math.floor(Math.random() * max);
 	}
 	return int;
+}
+
+function randomName() {
+	const firstNames = [
+		'James',
+		'Mary',
+		'Robert',
+		'Patricia',
+		'John',
+		'Jennifer',
+		'Michael',
+		'Linda',
+		'William',
+		'Elizabeth',
+		'David',
+		'Barbara',
+	];
+
+	const lastNames = [
+		'Smith',
+		'Johnson',
+		'Williams',
+		'Brown',
+		'Jones',
+		'Garcia',
+		'Miller',
+		'Davis',
+		'Rodriguez',
+		'Martinez',
+		'Hernandez',
+	];
+
+	return `${firstNames[random(0, firstNames.length - 1)]} ${lastNames[random(0, lastNames.length - 1)]}`;
 }
 
 function randomDateTime(start = new Date(1030436120350), end = new Date(1633466120350)) {

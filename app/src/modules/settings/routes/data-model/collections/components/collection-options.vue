@@ -5,12 +5,12 @@
 				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<v-list>
-				<v-list-item clickable class="danger" @click="deleteActive = true">
+				<v-list-item v-if="collection.schema" clickable :to="`/content/${collection.collection}`">
 					<v-list-item-icon>
-						<v-icon name="delete" outline />
+						<v-icon name="box" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+						{{ t('goto_collection_content') }}
 					</v-list-item-content>
 				</v-list-item>
 
@@ -28,13 +28,26 @@
 						</v-list-item-content>
 					</template>
 				</v-list-item>
+
+				<v-list-item clickable class="danger" @click="deleteActive = true">
+					<v-list-item-icon>
+						<v-icon name="delete" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+					</v-list-item-content>
+				</v-list-item>
 			</v-list>
 		</v-menu>
 
 		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
 				<v-card-title>
-					{{ collection.schema ? t('delete_collection_are_you_sure') : t('delete_folder_are_you_sure') }}
+					{{
+						collection.schema
+							? t('delete_collection_are_you_sure', { collection: collection.collection })
+							: t('delete_folder_are_you_sure', { folder: collection.collection })
+					}}
 				</v-card-title>
 				<v-card-actions>
 					<v-button :disabled="deleting" secondary @click="deleteActive = null">

@@ -1,6 +1,6 @@
 # This compose file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
 # For production use see the docker compose file example in the docs:
-#     https://docs.directus.io/getting-started/installation/docker/#docker-compose
+#     https://docs.directus.io/self-hosted/installation/docker/#docker-compose
 #
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
@@ -111,7 +111,7 @@ services:
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
-    shm_size: '1gb' # more like smh-size ammirite 🥁
+    shm_size: '1gb' # more like smh-size amirite 🥁
 
   redis:
     image: redis:6-alpine

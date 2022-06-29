@@ -14,7 +14,7 @@
 			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
+				<v-button class="header-icon" rounded icon exact disabled>
 					<v-icon name="anchor" />
 				</v-button>
 			</template>
@@ -29,7 +29,7 @@
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
 						<v-button rounded icon class="action-delete" secondary @click="on">
-							<v-icon name="delete" outline />
+							<v-icon name="delete" />
 						</v-button>
 					</template>
 
@@ -48,7 +48,7 @@
 				</v-dialog>
 
 				<v-button v-if="selection.length > 0" v-tooltip.bottom="t('edit')" rounded icon secondary :to="batchLink">
-					<v-icon name="edit" outline />
+					<v-icon name="edit" />
 				</v-button>
 
 				<v-button v-tooltip.bottom="t('create_webhook')" rounded icon :to="addNewLink">
@@ -188,8 +188,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 
 .action-delete {

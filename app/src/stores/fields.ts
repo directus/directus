@@ -76,14 +76,16 @@ export const useFieldsStore = defineStore({
 					const { language, translation } = field.meta.translations[i];
 
 					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
-					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : '';
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
 
 					i18n.global.mergeLocaleMessage(language, {
-						fields: {
-							[field.collection]: {
-								[field.field]: literalInterpolatedTranslation,
+						...(literalInterpolatedTranslation && {
+							fields: {
+								[field.collection]: {
+									[field.field]: literalInterpolatedTranslation,
+								},
 							},
-						},
+						}),
 					});
 				}
 			}
@@ -267,19 +269,18 @@ export const useFieldsStore = defineStore({
 		 * fields inside groups starts their sort number from 1 to N again.
 		 */
 		getFieldsForCollectionSorted(collection: string): Field[] {
-			const fields = this.fields.filter((field) => field.collection === collection);
+			const fields = orderBy(
+				this.fields.filter((field) => field.collection === collection),
+				'meta.sort'
+			);
 
 			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
 
-			const sortGroupFields = (a: Field, b: Field) => {
-				if (!a.meta?.sort || !b.meta?.sort) return 0;
-				return a.meta.sort - b.meta.sort;
-			};
-
 			for (const [index, field] of nonGroupFields.entries()) {
 				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+
 				if (groupFields.length) {
-					nonGroupFields.splice(index + 1, 0, ...groupFields.sort(sortGroupFields));
+					nonGroupFields.splice(index + 1, 0, ...orderBy(groupFields, 'meta.sort'));
 				}
 			}
 
@@ -294,6 +295,12 @@ export const useFieldsStore = defineStore({
 			} else {
 				return this.fields.find((field) => field.collection === collection && field.field === fieldKey) || null;
 			}
+		},
+		/**
+		 * Retrieve nested fields for a given group field
+		 */
+		getFieldGroupChildren(collection: string, fieldKey: string): Field[] | null {
+			return this.fields.filter((field) => field.collection === collection && field.meta?.group === fieldKey) || null;
 		},
 		/**
 		 * Retrieve field info for a (deeply) nested field

@@ -118,6 +118,7 @@ useEventListener(window, 'pointermove', onPointerMove);
 useEventListener(window, 'pointerup', onPointerUp);
 
 const { data } = useLocalStorage('module-nav-width');
+
 onMounted(() => {
 	if (!data.value) return;
 	if (Number.isNaN(data.value)) return;
@@ -202,6 +203,7 @@ function useModuleNavResize() {
 	}
 
 	function resetModuleNavWidth() {
+		currentWidth.value = 220;
 		moduleNavEl.value!.style.width = `220px`;
 	}
 
@@ -275,6 +277,12 @@ function openSidebar(event: PointerEvent) {
 			transform: translateX(0);
 		}
 
+		&:not(.is-open) {
+			.module-nav-resize-handle {
+				display: none;
+			}
+		}
+
 		.module-nav {
 			position: relative;
 			display: inline-block;
@@ -320,6 +328,12 @@ function openSidebar(event: PointerEvent) {
 		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
+
+			&:not(.is-open) {
+				.module-nav-resize-handle {
+					display: block;
+				}
+			}
 		}
 	}
 

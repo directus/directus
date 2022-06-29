@@ -265,6 +265,8 @@ Below are the global error codes used within Directus, and what they mean.
 | ------------------------ | ----------- | --------------------------------------------------------------- |
 | `FAILED_VALIDATION`      | 400         | Validation for this particular item failed                      |
 | `FORBIDDEN`              | 403         | You are not allowed to do the current action                    |
+| `INVALID_TOKEN`          | 403         | Provided token is invalid                                       |
+| `TOKEN_EXPIRED`          | 401         | Provided token is valid but has expired                         |
 | `INVALID_CREDENTIALS`    | 401         | Username / password or access token is wrong                    |
 | `INVALID_IP`             | 401         | Your IP address isn't allow-listed to be used with this user    |
 | `INVALID_OTP`            | 401         | Wrong OTP was provided                                          |

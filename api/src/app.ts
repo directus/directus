@@ -13,12 +13,14 @@ import dashboardsRouter from './controllers/dashboards';
 import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
 import filesRouter from './controllers/files';
+import flowsRouter from './controllers/flows';
 import foldersRouter from './controllers/folders';
 import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
 import panelsRouter from './controllers/panels';
 import notificationsRouter from './controllers/notifications';
+import operationsRouter from './controllers/operations';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -35,6 +37,7 @@ import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
+import { getFlowManager } from './flows';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import getPermissions from './middleware/get-permissions';
@@ -46,11 +49,12 @@ import extractToken from './middleware/extract-token';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
+import { ROBOTSTXT } from './constants';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
-import { register as registerWebhooks } from './webhooks';
+import { init as initWebhooks } from './webhooks';
 import { flushCaches } from './cache';
 import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
@@ -83,8 +87,10 @@ export default async function createApp(): Promise<express.Application> {
 	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
+	const flowManager = getFlowManager();
 
 	await extensionManager.initialize();
+	await flowManager.initialize();
 
 	const app = express();
 
@@ -107,9 +113,11 @@ export default async function createApp(): Promise<express.Application> {
 						upgradeInsecureRequests: null,
 
 						// These are required for MapLibre
+						// https://cdn.directus.io is required for images/videos in the official docs
 						workerSrc: ["'self'", 'blob:'],
 						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:'],
+						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
+						mediaSrc: ["'self'", 'https://cdn.directus.io'],
 						connectSrc: ["'self'", 'https://*'],
 					},
 				},
@@ -117,6 +125,10 @@ export default async function createApp(): Promise<express.Application> {
 			)
 		)
 	);
+
+	if (env.HSTS_ENABLED) {
+		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
+	}
 
 	await emitter.emitInit('app.before', { app });
 
@@ -157,6 +169,12 @@ export default async function createApp(): Promise<express.Application> {
 		} else {
 			next();
 		}
+	});
+
+	app.get('/robots.txt', (_, res) => {
+		res.set('Content-Type', 'text/plain');
+		res.status(200);
+		res.send(ROBOTSTXT);
 	});
 
 	if (env.SERVE_APP) {
@@ -209,9 +227,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
+	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 	app.use('/notifications', notificationsRouter);
+	app.use('/operations', operationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
@@ -236,7 +256,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	// Register all webhooks
-	await registerWebhooks();
+	await initWebhooks();
 
 	track('serverStarted');
 

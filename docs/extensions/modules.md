@@ -38,7 +38,7 @@ export default {
   serving as the base path.
 - `hidden` — A boolean that indicates if the module should be hidden from the module bar.
 - `preRegisterCheck` — A function that receives the current user as the first parameter and the permissions of this user
-  as the second parameter. It should return a boolean that indicates if the check succeded.
+  as the second parameter. It should return a boolean that indicates if the check succeeded.
 
 ## Routes Array
 

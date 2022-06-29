@@ -21,7 +21,7 @@
 						:disabled="item === null"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 

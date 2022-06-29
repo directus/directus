@@ -21,7 +21,7 @@ export const useCollectionsStore = defineStore({
 		visibleCollections(): Collection[] {
 			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter((collection) => collection.meta?.hidden !== true);
+				.filter((collection) => collection.meta && collection.meta?.hidden !== true);
 		},
 		allCollections(): Collection[] {
 			return this.collections.filter(({ collection }) => collection.startsWith('directus_') === false);
@@ -54,18 +54,24 @@ export const useCollectionsStore = defineStore({
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 
-					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : '';
+					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
 
 					i18n.global.mergeLocaleMessage(language, {
-						collection_names: {
-							[collection.collection]: literalInterpolatedTranslation,
-						},
-						collection_names_singular: {
-							[collection.collection]: singular,
-						},
-						collection_names_plural: {
-							[collection.collection]: plural,
-						},
+						...(literalInterpolatedTranslation && {
+							collection_names: {
+								[collection.collection]: literalInterpolatedTranslation,
+							},
+						}),
+						...(singular && {
+							collection_names_singular: {
+								[collection.collection]: singular,
+							},
+						}),
+						...(plural && {
+							collection_names_plural: {
+								[collection.collection]: plural,
+							},
+						}),
 					});
 				}
 			}

@@ -3,8 +3,8 @@
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="admin_panel_settings" outline />
+			<v-button class="header-icon" rounded icon exact disabled>
+				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
 
@@ -26,8 +26,9 @@
 
 		<div class="roles">
 			<v-table
+				v-model:headers="tableHeaders"
+				show-resize
 				:items="roles"
-				:headers="tableHeaders"
 				fixed-header
 				item-key="id"
 				:loading="loading"
@@ -38,9 +39,7 @@
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<span class="name" :class="{ public: item.public }">
-						{{ item.name }}
-					</span>
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
@@ -48,7 +47,7 @@
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<span class="description">{{ item.description }}</span>
+					<v-text-overflow :text="item.description" class="description" />
 				</template>
 			</v-table>
 		</div>
@@ -67,14 +66,10 @@ import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
+import { Role } from '@directus/shared/types';
 
-type Role = {
-	id: string;
-	name: string;
-	description: string;
-	icon: string;
-	admin_access: boolean;
-	count: number;
+type RoleItem = Partial<Role> & {
+	count?: number;
 };
 
 export default defineComponent({
@@ -86,7 +81,7 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const roles = ref<Role[]>([]);
+		const roles = ref<RoleItem[]>([]);
 		const loading = ref(false);
 
 		const lastAdminRoleId = computed(() => {
@@ -94,20 +89,22 @@ export default defineComponent({
 			return adminRoles.length === 1 ? adminRoles[0].id : null;
 		});
 
-		const tableHeaders: TableHeader[] = [
+		const tableHeaders = ref<TableHeader[]>([
 			{
 				text: '',
 				value: 'icon',
 				sortable: false,
 				width: 42,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('name'),
 				value: 'name',
 				sortable: false,
-				width: 140,
+				width: 200,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('users'),
@@ -115,6 +112,7 @@ export default defineComponent({
 				sortable: false,
 				width: 140,
 				align: 'left',
+				description: null,
 			},
 			{
 				text: t('description'),
@@ -122,8 +120,9 @@ export default defineComponent({
 				sortable: false,
 				width: 470,
 				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		fetchRoles();
 
@@ -193,6 +192,8 @@ export default defineComponent({
 .header-icon {
 	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 
 .roles {

@@ -2,7 +2,7 @@
  * Collections handler
  */
 
-import { ManyItems, OneItem, PartialItem, QueryOne } from '../items';
+import { ManyItems, OneItem, PartialItem, QueryOne, EmptyParamError } from '../items';
 import { ITransport } from '../transport';
 import { CollectionType, DefaultType } from '../types';
 
@@ -15,6 +15,7 @@ export class CollectionsHandler<T = CollectionItem> {
 	}
 
 	async readOne(collection: string): Promise<OneItem<T>> {
+		if (`${collection}` === '') throw new EmptyParamError('collection');
 		const response = await this.transport.get(`/collections/${collection}`);
 		return response.data as T;
 	}
@@ -42,6 +43,7 @@ export class CollectionsHandler<T = CollectionItem> {
 	}
 
 	async updateOne(collection: string, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
+		if (`${collection}` === '') throw new EmptyParamError('collection');
 		return (
 			await this.transport.patch<PartialItem<T>>(`/collections/${collection}`, item, {
 				params: query,
@@ -50,6 +52,7 @@ export class CollectionsHandler<T = CollectionItem> {
 	}
 
 	async deleteOne(collection: string): Promise<void> {
+		if (`${collection}` === '') throw new EmptyParamError('collection');
 		await this.transport.delete(`/collections/${collection}`);
 	}
 }

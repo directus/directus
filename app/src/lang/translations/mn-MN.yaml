@@ -83,7 +83,6 @@ delete_folder: Хавтас устгах
 prefix: Угтвар
 suffix: Дагавар
 reset_bookmark: Тэмдэглэгээг хуучин хэвэнд оруулах
-rename_bookmark: Тэмдэглэгээний нэрийг өөрчлөх
 update_bookmark: Тэмдэглээг шинэлэх
 delete_bookmark: Тэмдэглэгээг устгах
 delete_bookmark_copy: >-

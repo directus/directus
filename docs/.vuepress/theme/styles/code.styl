@@ -31,7 +31,7 @@
 
 div[class*="language-"]
   position relative
-  background-color var(--background-normal)
+  background-color var(--background-subdued)
   border-radius 6px
   .highlight-lines
     user-select none
@@ -264,4 +264,4 @@ pre[class*="language-"] {
 @media (prefers-color-scheme: dark)
   {$contentClass}
     pre[class*="language-"]
-      border 2px solid #2e3f47 !important
+      border 2px solid var(--border-normal) !important

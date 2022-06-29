@@ -39,10 +39,10 @@ Collection this permission rule applies to.
 What CRUD operation this permission rule applies to. One of `create`, `read`, `update`, `delete`.
 
 `permissions` **object**\
-What rules the item must pass before the role is allowed to alter it. Follows [the Filter Rules spec](/configuration/filter-rules).
+What rules the item must pass before the role is allowed to alter it. Follows [the Filter Rules spec](/reference/filter-rules).
 
 `validation` **object**\
-What rules the provided values must pass before the role is allowed to submit them for insertion/update. Follows [the Filter Rules spec](/configuration/filter-rules).
+What rules the provided values must pass before the role is allowed to submit them for insertion/update. Follows [the Filter Rules spec](/reference/filter-rules).
 
 `preset` **object**\
 Additional default values for the role.
@@ -349,7 +349,7 @@ POST /graphql/system
 
 ```graphql
 type Mutation {
-	create_permissions_itemss(data: [create_directus_permissions_input!]!): [directus_permissions]
+	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
 }
 ```
 

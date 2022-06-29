@@ -1,17 +1,17 @@
-import { AbstractServiceOptions, PrimaryKey, Item, Action } from '../types';
-import { ItemsService } from './items';
-import { MutationOptions } from '../types';
-import { NotificationsService } from './notifications';
-import { UsersService } from './users';
-import { AuthorizationService } from './authorization';
-import { Accountability } from '@directus/shared/types';
-import { getPermissions } from '../utils/get-permissions';
+import { Accountability, Action } from '@directus/shared/types';
+import { uniq } from 'lodash';
+import validateUUID from 'uuid-validate';
+import env from '../env';
 import { ForbiddenException } from '../exceptions/forbidden';
 import logger from '../logger';
+import { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
+import { getPermissions } from '../utils/get-permissions';
+import { Url } from '../utils/url';
 import { userName } from '../utils/user-name';
-import { uniq } from 'lodash';
-import env from '../env';
-import validateUUID from 'uuid-validate';
+import { AuthorizationService } from './authorization';
+import { ItemsService } from './items';
+import { NotificationsService } from './notifications';
+import { UsersService } from './users';
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
@@ -83,7 +83,9 @@ ${userName(sender)} has mentioned you in a comment:
 
 ${comment}
 
-<a href="${env.PUBLIC_URL}/admin/content/${data.collection}/${data.item}">Click here to view.</a>
+<a href="${new Url(env.PUBLIC_URL)
+						.addPath('admin', 'content', data.collection, data.item)
+						.toString()}">Click here to view.</a>
 `;
 
 					await this.notificationsService.createOne({

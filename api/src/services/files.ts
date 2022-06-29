@@ -1,19 +1,25 @@
 import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
-import { clone } from 'lodash';
+import { clone, pick } from 'lodash';
 import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
-import url from 'url';
+import url, { URL } from 'url';
+import { promisify } from 'util';
+import { lookup } from 'dns';
 import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
-import { AbstractServiceOptions, File, PrimaryKey, MutationOptions } from '../types';
+import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
+import net from 'net';
+import os from 'os';
+
+const lookupDNS = promisify(lookup);
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -75,46 +81,14 @@ export class FilesService extends ItemsService {
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			try {
-				const meta = await sharp(buffer.content, {}).metadata();
+			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
 
-				if (meta.orientation && meta.orientation >= 5) {
-					payload.height = meta.width;
-					payload.width = meta.height;
-				} else {
-					payload.width = meta.width;
-					payload.height = meta.height;
-				}
-			} catch (err: any) {
-				logger.warn(`Couldn't extract sharp metadata from file`);
-				logger.warn(err);
-			}
-
-			payload.metadata = {};
-
-			try {
-				payload.metadata = await exifr.parse(buffer.content, {
-					icc: false,
-					iptc: true,
-					ifd1: true,
-					interop: true,
-					translateValues: true,
-					reviveValues: true,
-					mergeOutput: false,
-				});
-				if (payload.metadata?.iptc?.Headline) {
-					payload.title = payload.metadata.iptc.Headline;
-				}
-				if (!payload.description && payload.metadata?.iptc?.Caption) {
-					payload.description = payload.metadata.iptc.Caption;
-				}
-				if (payload.metadata?.iptc?.Keywords) {
-					payload.tags = payload.metadata.iptc.Keywords;
-				}
-			} catch (err: any) {
-				logger.warn(`Couldn't extract EXIF metadata from file`);
-				logger.warn(err);
-			}
+			payload.height ??= height;
+			payload.width ??= width;
+			payload.description ??= description;
+			payload.title ??= title;
+			payload.tags ??= tags;
+			payload.metadata ??= metadata;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -150,6 +124,63 @@ export class FilesService extends ItemsService {
 	}
 
 	/**
+	 * Extract metadata from a buffer's content
+	 */
+	async getMetadata(bufferContent: any, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
+		const metadata: Metadata = {};
+
+		try {
+			const sharpMetadata = await sharp(bufferContent, {}).metadata();
+
+			if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
+				metadata.height = sharpMetadata.width;
+				metadata.width = sharpMetadata.height;
+			} else {
+				metadata.width = sharpMetadata.width;
+				metadata.height = sharpMetadata.height;
+			}
+		} catch (err: any) {
+			logger.warn(`Couldn't extract sharp metadata from file`);
+			logger.warn(err);
+		}
+
+		try {
+			const exifrMetadata = await exifr.parse(bufferContent, {
+				icc: false,
+				iptc: true,
+				ifd1: true,
+				interop: true,
+				translateValues: true,
+				reviveValues: true,
+				mergeOutput: false,
+			});
+
+			if (allowList === '*' || allowList?.[0] === '*') {
+				metadata.metadata = exifrMetadata;
+			} else {
+				metadata.metadata = pick(exifrMetadata, allowList);
+			}
+
+			if (!metadata.description && exifrMetadata?.Caption) {
+				metadata.description = exifrMetadata.Caption;
+			}
+
+			if (exifrMetadata?.Headline) {
+				metadata.title = exifrMetadata.Headline;
+			}
+
+			if (exifrMetadata?.Keywords) {
+				metadata.tags = exifrMetadata.Keywords;
+			}
+		} catch (err: any) {
+			logger.warn(`Couldn't extract EXIF metadata from file`);
+			logger.warn(err);
+		}
+
+		return metadata;
+	}
+
+	/**
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
@@ -161,6 +192,54 @@ export class FilesService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
+		let resolvedUrl;
+
+		try {
+			resolvedUrl = new URL(importURL);
+		} catch (err: any) {
+			logger.warn(err, `Requested URL ${importURL} isn't a valid URL`);
+			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+				service: 'external-file',
+			});
+		}
+
+		let ip = resolvedUrl.hostname;
+
+		if (net.isIP(ip) === 0) {
+			try {
+				ip = (await lookupDNS(ip)).address;
+			} catch (err: any) {
+				logger.warn(err, `Couldn't lookup the DNS for url ${importURL}`);
+				throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+					service: 'external-file',
+				});
+			}
+		}
+
+		if (env.IMPORT_IP_DENY_LIST.includes('0.0.0.0')) {
+			const networkInterfaces = os.networkInterfaces();
+
+			for (const networkInfo of Object.values(networkInterfaces)) {
+				if (!networkInfo) continue;
+
+				for (const info of networkInfo) {
+					if (info.address === ip) {
+						logger.warn(`Requested URL ${importURL} resolves to localhost.`);
+						throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+							service: 'external-file',
+						});
+					}
+				}
+			}
+		}
+
+		if (env.IMPORT_IP_DENY_LIST.includes(ip)) {
+			logger.warn(`Requested URL ${importURL} resolves to a denied IP address.`);
+			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+				service: 'external-file',
+			});
+		}
+
 		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
 
 		try {
@@ -168,8 +247,7 @@ export class FilesService extends ItemsService {
 				responseType: 'stream',
 			});
 		} catch (err: any) {
-			logger.warn(`Couldn't fetch file from url "${importURL}"`);
-			logger.warn(err);
+			logger.warn(err, `Couldn't fetch file from url "${importURL}"`);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
 				service: 'external-file',
 			});

@@ -66,6 +66,30 @@ One of `auto`, `light`, `dark`.
 `tfa_secret` **string**\
 When TFA is enabled, this holds the secret key for it.
 
+`status` **string**\
+Status of the user. One of `draft`, `invited`, `active`, `suspended`, `archived`.
+
+`role` **uuid**\
+Role of the user. Many-to-one to [roles](/reference/roles).
+
+`token` **string**\
+Static access token for the user.
+
+`last_access` **date**\
+Last time the user accessed the API.
+
+`last_page` **string**\
+Last page in the app the user used.
+
+`provider` **string**\
+What auth provider was used to register this user.
+
+`external_identifier` **string**\
+Primary key of the user in the third party authentication provider, if used.
+
+`auth_data` **json**\
+Required data about the user as provided by the third party auth provider, if used.
+
 `email_notifications` **boolean**\
 When this is enabled, the user will receive emails for notifications.
 
@@ -758,7 +782,7 @@ Role of the new user.
 `invite_url`\
 Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter.\
 **Note**: You need to configure the
-[`USER_INVITE_URL_ALLOW_LIST` environment variable](/configuration/config-options/#security) to enable this feature.
+[`USER_INVITE_URL_ALLOW_LIST` environment variable](/self-hosted/config-options/#security) to enable this feature.
 
 </div>
 

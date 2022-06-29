@@ -23,6 +23,7 @@ identifier: Identifikator
 avatar: Avatar
 application: Anwendung
 default_provider: Standard
+method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
@@ -32,6 +33,8 @@ reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
+location: Ort
+input: Eingabe
 maps: Karten
 switch_user: Benutzer wechseln
 item_creation: Element erstellt
@@ -41,8 +44,10 @@ duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
 group: Gruppe
+export_items: Elemente exportieren
 and: Und
 or: Oder
+dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit werden die ersten {n} Elemente angezeigt.
 fill_width: Breite füllen
 field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
@@ -66,8 +71,15 @@ create_preset: Vorlage erstellen
 create_panel: Panel erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
+message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
+create_translation_string: Übersetzungselement erstellen
+translation_string_key_placeholder: Schlüssel für Übersetzungselement...
+translation_string_translations_placeholder: Neue Übersetzung hinzufügen
+edit_translation_string: Übersetzungselement editieren
+delete_translation_string_copy: >-
+  Soll das Übersetzungselement "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -84,11 +96,13 @@ delete_folder: Ordner löschen
 prefix: Präfix
 suffix: Suffix
 reset_bookmark: Lesezeichen zurücksetzen
-rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
 delete_bookmark_copy: >-
   Möchten Sie das Lesezeichen "{bookmark}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+delete_personal_bookmark: Persönliches Lesezeichen löschen
+delete_role_bookmark: Rollen-Lesezeichen löschen
+delete_global_bookmark: Globales Lesezeichen löschen
 logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
@@ -115,7 +129,7 @@ recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene nach oben verschoben.
-unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
+validation_errors_notice: 'Die folgenden Felder sind ungültig:'
 validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein
@@ -165,6 +179,7 @@ revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
+hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
@@ -173,6 +188,7 @@ field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
+language_placeholder: Sprache auswählen...
 aggregate_function: Aggregations-Funktion
 aggregate_precision: Aggregations-Präzision
 group_aggregation: Gruppen-Aggregation
@@ -183,6 +199,7 @@ camera: Kamera
 show_zero: Null anzeigen
 create_in_advanced_field_creation_mode: Feld im erweiterten Modus erstellen
 continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
+validation: Validierung
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
 avg: Mittelwert
@@ -314,6 +331,7 @@ revision_delta_deleted: Gelöscht
 revision_delta_reverted: Zurückgesetzt
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+download_page_as_csv: 'Als CSV herunterladen'
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
 revision_preview: Überarbeitungs-Vorschau
@@ -337,8 +355,6 @@ label_import: Import
 label_export: Export
 import_export: Import / Export
 format: Format
-use_current_filters_settings: Aktuelle Filter & Einstellungen verwenden
-export_data_button: Export starten
 last_page: Letzte Seite
 last_access: Letzter Zugriff
 fill_template: Mit Vorlagenwert füllen
@@ -355,6 +371,16 @@ today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
 delete_share: Freigabe löschen
+functions:
+  year: Jahr
+  month: Monat
+  week: Woche
+  day: Tag
+  weekday: Wochentag
+  hour: Stunde
+  minute: Minute
+  second: Sekunde
+  count: Anzahl
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -410,6 +436,15 @@ replace_from_library: Mit Datei aus der Bibliothek ersetzen
 replace_from_url: Mit Datei von URL ersetzen
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
+open_file_in_tab: Datei in neuem Tab öffnen
+start_export: Export starten
+not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
+exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
+exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
+exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Konfiguration unten an.
+exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
+exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
+exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -546,6 +581,11 @@ value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
+edit_personal_bookmark: Persönliches Lesezeichen bearbeiten
+edit_role_bookmark: Rollen-Lesezeichen bearbeiten
+edit_global_bookmark: Globales Lesezeichen bearbeiten
+cannot_edit_role_bookmarks: Rollen-Lesezeichen kann nicht bearbeitet werden
+cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
 presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
@@ -553,7 +593,6 @@ unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche e
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
-password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 filter: Filter
@@ -572,13 +611,11 @@ make_collection_visible: Sammlung sichtbar machen
 make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
+goto_collection_content: Inhalt anzeigen
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
-delete_collection_are_you_sure: >-
-  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
-delete_folder_are_you_sure: Sind Sie sicher, dass Sie diesen Ordner löschen möchten? Verschachtelte Ordner und Sammlungen werden in die oberste Ebene verschoben.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -605,6 +642,7 @@ advanced_settings: Erweiterte Einstellungen
 advanced_filter: Erweiterter Filter
 delete_advanced_filter: Filter zurücksetzen
 change_advanced_filter_operator: Operator ändern
+advanced: Erweitert
 operators:
   eq: Gleich
   neq: Ungleich
@@ -632,6 +670,8 @@ operators:
   nintersects: Schneidet nicht
   intersects_bbox: Schneidet Begrenzung
   nintersects_bbox: Schneidet nicht Begrenzung
+  regex: Entspricht RegExp
+custom_validation_message: Benutzerdefinierte Validierungsnachricht
 loading: Wird geladen...
 drop_to_upload: Zum Hochladen ablegen
 item: Element
@@ -672,6 +712,7 @@ no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
 clear_filters: Filter löschen
 saves_automatically: Wird automatisch gespeichert
 role: Rolle
+edit_role: Rolle bearbeiten
 rule: Regel
 user: Benutzer
 no_presets: Keine Vorlagen
@@ -683,6 +724,7 @@ on_create: Beim Erstellen
 on_update: Beim Aktualisieren
 read: Lesen
 update: Aktualisieren
+delete: Löschen
 select_fields: Fielder auswählen
 format_text: Text formatieren
 format_value: Wert formatieren
@@ -693,6 +735,10 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+trigger: Trigger
+flow_name: Name
+flow_tracking_activity: Nur Aktivitäten verfolgen
+flow_tracking_null: Nichts verfolgen
 insights: Einblicke
 dashboard: Dashboard
 panel: Panel
@@ -710,11 +756,16 @@ suffix_placeholder: Text nach Wert...
 decimals_placeholder: Anzahl der Nachkommastellen...
 no_dashboards: Keine Dashboards
 no_dashboards_copy: Sie haben noch keine Dashboards.
-no_data: Keine Daten
 create_dashboard: Dashboard erstellen
 dashboard_name: Name des Dashboards
+no_data: Keine Daten
+accountability: Verantwortlichkeit
 full_screen: Vollbild
+full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
+center_align: Zentriert
+left_align: Linksbündig
+right_align: Rechtsbündig
 fit_to_screen: An Bildschirmgröße anpassen
 image_url: Bild-Url
 alt_text: Alternativ-Text
@@ -807,8 +858,10 @@ settings_permissions: Rollen & Berechtigungen
 settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
+settings_translation_strings: Übersetzungselemente
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
+actions: Aktionen
 select: Auswählen...
 layout: Ansicht
 tree_view: Baumansicht
@@ -818,6 +871,7 @@ preset_search_placeholder: Suchabfrage...
 editing_preset: Vorlage bearbeiten
 layout_preview: Vorschau der Ansicht
 layout_setup: Einrichtung Ansicht
+data: Daten
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
@@ -852,6 +906,7 @@ page_help_settings_presets_item: >-
   **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
 page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
+page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -881,9 +936,9 @@ directus_collection:
   directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
+  directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
-  directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -970,7 +1025,6 @@ fields:
     status_archived: Archiviert
     role: Rolle
     token: Token
-    token_placeholder: Einen sicheren Zugangs-Token eingeben...
     provider: Anbieter
     external_identifier: Externer Identifikator
     last_page: Letzte Seite
@@ -997,6 +1051,7 @@ fields:
     project_url: Projekt-URL
     project_color: Projektfarbe
     project_logo: Projektlogo
+    default_language: Standardsprache
     branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
@@ -1220,12 +1275,23 @@ file: Datei
 file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
+hidden_in_group: Versteckt in {group}
 icon: Symbol
 info: Information
 normal: Normal
 success: Erfolgreich
 warning: Warnung
 danger: Achtung
+colors:
+  purple: Lila
+  blue: Blau
+  green: Grün
+  yellow: Gelb
+  orange: Orange
+  red: Rot
+  black: Schwarz
+  gray: Grau
+  white: Weiß
 junction_collection: Verbindungssammlung
 latency: Latenz
 login: Login
@@ -1254,15 +1320,16 @@ sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
 something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
+export_location: Speicherort des Exports
+export_started: Export gestartet
+export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die Datei zum Download bereit ist.
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
-require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1281,6 +1348,8 @@ interfaces:
     no_rules: Keine konfigurierten Regeln
     change_value: Klicken um Wert zu ändern
     placeholder: Regeln hierher ziehen
+  fields:
+    name: Felder
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
@@ -1340,6 +1409,7 @@ interfaces:
     include_seconds: Sekunden einbeziehen
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
+    placeholder: Datum wählen...
   system-display-template:
     display-template: Anzeigevorlage
     description: Statischen Text und dynamische Feldwerte mischen
@@ -1453,8 +1523,11 @@ interfaces:
     description: Mehrere Einträge derselben Struktur erstellen
     edit_fields: Felder bearbeiten
     add_label: 'Label für "Neu erstellen"'
+    sort: Sortieren
+    sort_placeholder: Manuell
     field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
+    incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -1472,7 +1545,7 @@ interfaces:
     auto_formatter: Auto-Formatierung für Titel verwenden
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
-    add_tags: Tags hinzufügen...
+    add_tags: Tag hinzufügen und Enter drücken...
   input:
     input: Eingabe
     description: Wert manuell eingeben
@@ -1490,6 +1563,11 @@ interfaces:
   input-multiline:
     textarea: Textfeld (mehrzeilig)
     description: Mehrzeiligen Klartext eingeben
+  input-translated-string:
+    input-translated-string: Übersetzte Elemente
+    description: Übersetzungselement auswählen oder hinzufügen
+    search_placeholder: Suchen...
+    new_translation_string: Neues Übersetzungelement
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
@@ -1501,6 +1579,9 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
+    enable: Aktivieren
+    user_language: Aktuelle Benutzersprache verwenden
+    default_language: Standardsprache
     language_field: Sprachindikatorfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
@@ -1541,6 +1622,11 @@ interfaces:
     header_color: Farbe Kopfzeile
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
+  system-token:
+    system-token: Token
+    generate: Token generieren
+    regenerate: Token neu generieren
+    remove_token: Token löschen
 displays:
   translations:
     translations: Übersetzungen
@@ -1664,7 +1750,6 @@ layouts:
     subtitle: Untertitel
   tabular:
     tabular: Tabelle
-    fields: Felder
     spacing: Abstand
     comfortable: Groß
     compact: Kompakt
@@ -1673,6 +1758,8 @@ layouts:
     calendar: Kalender
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
+    optional: Optional
+    first_day: Erster Tag der Woche
   map:
     map: Karte
     basemap: Basiskarte
@@ -1687,6 +1774,35 @@ layouts:
     find_location: Standort suchen...
     default_template: Verwenden des Sammlungs-Standards...
     no_compatible_fields: Keine kompatiblen Felder
+  kanban:
+    name: Kanban,
+    group_field: Gruppieren nach,
+    group_field_placeholder: Feld zum Gruppieren...,
+    group_title: Gruppentitel,
+    group_title_placeholder: Feld für Gruppentitel...,
+    title: Karten-Titel,
+    title_placeholder: Optionales Titelfeld...,
+    text: Karten-Text,
+    text_placeholder: Optionales Textfeld...,
+    date: Karten-Datum,
+    date_placeholder: Optionales Datumsfeld...,
+    tags: Karten-Tags,
+    tags_placeholder: Optionales Tag-Feld...,
+    user: Karten-Benutzer,
+    user_placeholder: Optionales Benutzerfeld...,
+    image: Karten-Bild,
+    image_placeholder: Optionales Bildfeld...,
+    image_fit: Karten-Bildfüllmodus,
+    crop: Beschneiden,
+    advanced: Erweitert,
+    edit_group: Gruppe bearbeiten,
+    delete_group: Gruppe löschen,
+    add_group: Gruppe hinzufügen,
+    add_group_placeholder: Neuen Gruppentitel eingeben...,
+    show_ungrouped: Nicht gruppierte Elemente zeigen,
+    show: Anzeigen,
+    no_group: Keine Gruppe,
+    not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 panels:
   metric:
     name: Metrik
@@ -1705,3 +1821,72 @@ panels:
   list:
     name: Liste
     description: Filtern und Auflisten von Feldern von einer Sammlung
+  barchart:
+    name: Balkendiagramm
+    description: Balken- oder Spaltendiagramme zum Vergleich von Wertegruppen
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    select_x_axis: Sie müssen eine X-Achse auswählen.
+    function: Funktion
+    horizontal: Horizontal
+    x_axis_grouping: Gruppierung X-Achse
+    x_axis: X-Achse
+    y_axis_function: Funktion Y-Achse
+    y_axis: Y-Achse
+    show_x_axis: X-Achse anzeigen
+    show_y_axis: Y-Achse anzeigen
+    show_data_label: Datenbezeichnung anzeigen
+    group_by: Gruppieren nach
+    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    y_axis_NaN: Die y-Achse muss eine Zahl sein.
+    y_axis_conditional_two: muss eine Zahl sein.
+  linechart:
+    name: Liniendiagramm
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    select_x_axis: Sie müssen eine X-Achse auswählen.
+    function: Funktion
+    x_axis: X-Achse
+    y_axis: Y-Achse
+    datasets: Datensätze
+    show_legend: Legende anzeigen
+    include_dataset: Mindestens ein Datensatz muss angegeben werden.
+    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    smooth: 'Weich'
+    straight: 'Gerade'
+  meter:
+    arc: Bogen
+    stroke_width: Strichbreite
+    select_max_value: Es muss einen Maximalwert ausgewählt werden.
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    function: Funktion
+    thin: Dünn
+    medium: Mittel
+    broad: Breit
+  piechart:
+    name: Kuchen oder Donut Diagramm
+    function: 'Funktion'
+    legend: Legende anzeigen
+triggers:
+  webhook:
+    method: Methode
+  schedule:
+    name: Zeitplan (CRON)
+    cron: Intervall
+  manual:
+    name: Manuell
+    collection_and_item: Sammlungen & Element Seiten
+operations:
+  log:
+    message: Nachricht
+  notification:
+    recipient: Benutzer
+    message: Nachricht
+  request:
+    url: URL
+    method: Methode
+    data: Daten
+    header: Header
+  trigger:
+    data: Daten

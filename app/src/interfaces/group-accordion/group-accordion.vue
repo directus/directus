@@ -13,10 +13,11 @@
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-errors="validationErrors"
+			:badge="badge"
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
-			@toggleAll="toggleAll"
+			@toggle-all="toggleAll"
 		/>
 	</v-item-group>
 </template>
@@ -26,6 +27,7 @@ import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, computed, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupAccordion',
@@ -71,6 +73,10 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
 
 		accordionMode: {
 			type: Boolean,
@@ -102,6 +108,18 @@ export default defineComponent({
 				}
 			},
 			{ immediate: true }
+		);
+
+		watch(
+			() => props.validationErrors,
+			(newVal, oldVal) => {
+				if (!props.validationErrors) return;
+				if (isEqual(newVal, oldVal)) return;
+				const includedFieldsWithErrors = props.validationErrors.filter((validationError) =>
+					rootFields.value.find((rootField) => rootField.field === validationError.field)
+				);
+				if (includedFieldsWithErrors.length > 0) selection.value = [includedFieldsWithErrors[0].field];
+			}
 		);
 
 		return { rootFields, selection, toggleAll };

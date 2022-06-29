@@ -1,3 +1,5 @@
+import { PrimaryKey } from './items';
+
 export type Notification = {
 	id: string;
 	status: string;
@@ -7,5 +9,5 @@ export type Notification = {
 	subject: string;
 	message: string | null;
 	collection: string | null;
-	item: string | null;
+	item: PrimaryKey | null;
 };
