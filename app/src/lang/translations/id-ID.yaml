@@ -1284,6 +1284,7 @@ displays:
   datetime:
     datetime: Datetime
     format: Format
+    suffix: Akhiran
   file:
     file: Berkas
   filesize:

@@ -105,5 +105,17 @@ export default defineOperationApp({
 				},
 			},
 		},
+		{
+			field: 'emitEvents',
+			name: '$t:operations.item-create.emit_events',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
 	],
 });

@@ -1580,6 +1580,7 @@ displays:
     short: Kısa
     relative: Göreceli Zaman
     relative_label: 'Göreceli zamanı göster, örn: 5 dakika önce'
+    suffix: Suffiks
   file:
     file: Dosya
     description: Dosyaları görüntüle
