@@ -117,41 +117,7 @@ const isDisabled = computed(() => {
 	return false;
 });
 
-function getDefaultValue() {
-	const value = props.field?.schema?.default_value;
-
-	if (value !== undefined) return value;
-	return undefined;
-}
-function getInternalValue() {
-	if (props.modelValue !== undefined) return props.modelValue;
-	if (props.initialValue !== undefined) return props.initialValue;
-	return defaultValue.value;
-}
-function getIsEdited() {
-	return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
-}
-
-const defaultValue = ref(getDefaultValue());
-const internalValue = ref(getInternalValue());
-const isEdited = ref(getIsEdited());
-
-watch(
-	() => props.field,
-	() => {
-		defaultValue.value = getDefaultValue();
-	}
-);
-watch(
-	() => props.modelValue,
-	() => {
-		const newVal = getInternalValue();
-		if (!isEqual(internalValue.value, newVal)) {
-			internalValue.value = newVal;
-		}
-		isEdited.value = getIsEdited();
-	}
-);
+const { internalValue, isEdited, defaultValue } = useComputedValues();
 
 const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
 
@@ -239,6 +205,34 @@ function useRaw() {
 	}
 
 	return { showRaw, rawValue, copyRaw, pasteRaw };
+}
+
+function useComputedValues() {
+	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
+	const internalValue = ref<any>(getInternalValue());
+	const isEdited = ref<boolean>(getIsEdited());
+
+	watch(
+		() => props.modelValue,
+		() => {
+			const newVal = getInternalValue();
+			if (!isEqual(internalValue.value, newVal)) {
+				internalValue.value = newVal;
+			}
+			isEdited.value = getIsEdited();
+		}
+	);
+
+	return { internalValue, isEdited, defaultValue };
+
+	function getInternalValue(): any {
+		if (props.modelValue !== undefined) return props.modelValue;
+		if (props.initialValue !== undefined) return props.initialValue;
+		return defaultValue.value;
+	}
+	function getIsEdited(): boolean {
+		return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
+	}
 }
 </script>
 
