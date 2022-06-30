@@ -789,6 +789,7 @@ displays:
     format: 格式
     long: 長
     short: 短
+    suffix: 後綴
   file:
     file: 檔案
     description: 顯示檔案

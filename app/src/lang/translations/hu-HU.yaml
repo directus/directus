@@ -1458,6 +1458,7 @@ displays:
     short: Rövid
     relative: Relatív
     relative_label: 'Relatív idő megjelenítése, pl.: 5 perccel ezelőtt'
+    suffix: Utótag
   file:
     file: File
     description: Fájlok megjelenítése

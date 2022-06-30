@@ -1,9 +1,11 @@
-import { Item, Field, DisplayConfig } from '@directus/shared/types';
-import { saveAs } from 'file-saver';
-import { parse } from 'json2csv';
+import useAliasFields from '@/composables/use-alias-fields';
 import { getDisplay } from '@/displays';
 import { useFieldsStore } from '@/stores';
-import { get } from 'lodash';
+import { get } from '@/utils/get-with-arrays';
+import { DisplayConfig, Field, Item } from '@directus/shared/types';
+import { saveAs } from 'file-saver';
+import { parse } from 'json2csv';
+import { ref } from 'vue';
 
 /**
  * Saves the given collection + items combination as a CSV file
@@ -17,14 +19,34 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		fieldsUsed[key] = fieldsStore.getField(collection, key);
 	}
 
+	const { aliasFields } = useAliasFields(ref(fields));
+
 	const parsedItems = [];
 
 	for (const item of items) {
 		const parsedItem: Record<string, any> = {};
 
 		for (const key of fields) {
-			const name = fieldsUsed[key]?.name ?? key;
-			const value = get(item, key);
+			let name: string;
+
+			const keyParts = key.split('.');
+
+			if (keyParts.length > 1) {
+				const names = keyParts.map((fieldKey, index) => {
+					const pathPrefix = keyParts.slice(0, index);
+					const field = fieldsStore.getField(collection, [...pathPrefix, fieldKey].join('.'));
+					return field?.name ?? fieldKey;
+				});
+
+				name = names.join(' -> ');
+			} else {
+				name = fieldsUsed[key]?.name ?? key;
+			}
+
+			const value =
+				!aliasFields.value?.[key] || item[key] !== undefined
+					? get(item, key)
+					: get(item, aliasFields.value[key].fullAlias);
 
 			let display: DisplayConfig | undefined;
 

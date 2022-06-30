@@ -984,6 +984,7 @@ displays:
     color: رنگ
   datetime:
     format: فرمت
+    suffix: پسوند
   filesize:
     filesize: اندازه فایل
     description: نمایش سایز فایل

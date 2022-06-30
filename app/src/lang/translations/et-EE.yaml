@@ -1151,6 +1151,7 @@ displays:
     short: Lühike
     relative: Suhteline
     relative_label: 'Näita suhtelist aega, nt 5 minutit tagasi'
+    suffix: Järelliide
   file:
     file: Fail
     description: Näita faile

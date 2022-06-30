@@ -1516,6 +1516,7 @@ displays:
     short: Kort
     relative: Relativ
     relative_label: 'Visa relativ tid, t. ex.: 5 minuter sedan'
+    suffix: Suffix
   file:
     file: Fil
     description: Visa filer

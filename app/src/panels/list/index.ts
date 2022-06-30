@@ -1,5 +1,7 @@
-import { definePanel } from '@directus/shared/utils';
-import PanelList from './list.vue';
+import { useFieldsStore } from '@/stores';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { definePanel, getFieldsFromTemplate } from '@directus/shared/utils';
+import PanelList from './panel-list.vue';
 
 export default definePanel({
 	id: 'list',
@@ -7,6 +9,31 @@ export default definePanel({
 	description: '$t:panels.list.description',
 	icon: 'list',
 	component: PanelList,
+	query(options) {
+		if (!options?.collection) return;
+
+		const fieldsStore = useFieldsStore();
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(options.collection);
+		const displayFields = [primaryKeyField!.field];
+
+		const sort = options.sortField ?? primaryKeyField?.field;
+
+		if (options.displayTemplate) {
+			displayFields.push(
+				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection)
+			);
+		}
+
+		return {
+			collection: options.collection,
+			query: {
+				filter: options.filter ?? {},
+				fields: displayFields,
+				sort: options.sortDirection === 'desc' ? `-${sort}` : sort,
+				limit: options.limit === undefined ? 5 : options.limit,
+			},
+		};
+	},
 	options: [
 		{
 			field: 'collection',
@@ -97,4 +124,5 @@ export default definePanel({
 	],
 	minWidth: 12,
 	minHeight: 6,
+	skipUndefinedKeys: ['displayTemplate'],
 });

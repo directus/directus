@@ -35,6 +35,15 @@ export class FlowsService extends ItemsService<FlowRaw> {
 		return result;
 	}
 
+	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const flowManager = getFlowManager();
+
+		const result = await super.updateBatch(data, opts);
+		await flowManager.reload();
+
+		return result;
+	}
+
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const flowManager = getFlowManager();
 

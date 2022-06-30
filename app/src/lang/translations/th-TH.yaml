@@ -1295,6 +1295,7 @@ displays:
     short: สั้น
     relative: อิงเวลา
     relative_label: 'แสดงเป็นเวลาที่อิงกัน เช่น 5 นาทีที่แล้ว'
+    suffix: คำต่อท้าย
   file:
     file: ไฟล์
     description: แสดงไฟล์
