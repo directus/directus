@@ -1734,6 +1734,7 @@ displays:
     short: Къс
     relative: Относително
     relative_label: 'Показване на относително време, пр. преди 5 минути'
+    suffix: Наставка
   file:
     file: Файл
     description: Показване на файлове
@@ -1940,6 +1941,10 @@ panels:
     bottom: Отдолу
     monochrome: Монохром
     monochrome_color: Монохромен цвят
+  variable:
+    name: Глобални променливи
+    description: Задаване на глобални променливи за използване във филтрите на другите панели
+    variable_key: Ключ на променливата
 triggers:
   common:
     response_body: Изходни данни
@@ -1992,6 +1997,7 @@ operations:
     name: Четене на данни
     description: Четене на записи в базата от данни
     query: Заявка
+    emit_events: Излъчване на събития
   item-update:
     name: Обновяване на данните
     description: Обновяване на записите в базата от данни

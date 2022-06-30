@@ -377,7 +377,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	newItem = false;
-	editsAtStart.value = item;
+	editsAtStart.value = { [pkField]: item[pkField] };
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = '+';

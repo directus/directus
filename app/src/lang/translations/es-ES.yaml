@@ -1661,6 +1661,7 @@ displays:
     short: Corta
     relative: Relativa
     relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
+    suffix: Sufijo
   file:
     file: Archivo
     description: Presentar archivos

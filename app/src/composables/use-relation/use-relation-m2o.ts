@@ -26,7 +26,7 @@ export function useRelationM2O(collection: Ref<string>, field: Ref<string>) {
 	const relationInfo = computed<RelationM2O | undefined>(() => {
 		const relations = relationsStore.getRelationsForField(collection.value, field.value);
 
-		if (relations.length !== 1) return undefined;
+		if (relations.length === 0) return undefined;
 
 		const relation = relations[0];
 

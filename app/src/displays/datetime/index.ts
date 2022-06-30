@@ -94,15 +94,15 @@ export default defineDisplay({
 			fields.push(
 				{
 					field: 'suffix',
-					name: 'Suffix',
+					name: '$t:displays.datetime.suffix',
 					type: 'boolean',
 					meta: {
 						width: 'half',
 						interface: 'boolean',
 						options: {
-							label: 'Show relative indicator',
+							label: '$t:displays.datetime.suffix_label',
 						},
-						note: "Uses words like 'in' and 'ago'",
+						note: '$t:displays.datetime.suffix_note',
 					},
 					schema: {
 						default_value: true,
@@ -110,15 +110,15 @@ export default defineDisplay({
 				},
 				{
 					field: 'strict',
-					name: 'Strict',
+					name: '$t:displays.datetime.strict',
 					type: 'boolean',
 					meta: {
-						width: 'full',
+						width: 'half',
 						interface: 'boolean',
 						options: {
-							label: 'Use strict units',
+							label: '$t:displays.datetime.strict_label',
 						},
-						note: "Removes words like 'almost', 'over', 'less than'",
+						note: '$t:displays.datetime.strict_note',
 					},
 					schema: {
 						default_value: false,
