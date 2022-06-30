@@ -1738,6 +1738,10 @@ displays:
     relative: Relativo
     relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
     suffix: Suffisso
+    suffix_label: Mostra indicatore relativo
+    strict: Esatto
+    strict_label: Usa unià esatte
+    strict_note: Rimuove espressioni come 'quasi...', 'più di...', 'meno di...'
   file:
     file: File
     description: Visualizza file
