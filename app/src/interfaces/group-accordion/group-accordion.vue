@@ -27,7 +27,7 @@ import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
-import { isEqual, pick } from 'lodash';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupAccordion',
@@ -134,10 +134,6 @@ export default defineComponent({
 			const groupFields = ref<Field[]>(limitFields());
 			const groupValues = ref<Record<string, any>>({});
 
-			function limitFields(): Field[] {
-				return props.fields.filter((field) => field.meta?.group === props.field.meta?.field);
-			}
-
 			watch(
 				() => props.fields,
 				() => {
@@ -149,9 +145,7 @@ export default defineComponent({
 			);
 			watch(
 				() => props.values,
-				() => {
-					const keys = groupFields.value.map((f) => f.field);
-					const newVal = pick(props.values, keys);
+				(newVal) => {
 					if (!isEqual(groupValues.value, newVal)) {
 						groupValues.value = newVal;
 					}
@@ -159,6 +153,10 @@ export default defineComponent({
 			);
 
 			return { groupFields, groupValues };
+
+			function limitFields(): Field[] {
+				return props.fields.filter((field) => field.meta?.group === props.field.meta?.field);
+			}
 		}
 	},
 });

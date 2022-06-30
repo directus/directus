@@ -105,7 +105,9 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const fieldsInSection = computed(() => {
-			return props.fields.map((field) => merge({}, field, { hideLabel: true }));
+			return props.fields
+				.filter((field) => field.meta?.group === props.group && field.meta?.id === props.field.meta?.id)
+				.map((field) => merge({}, field, { hideLabel: true }));
 		});
 
 		const edited = computed(() => {

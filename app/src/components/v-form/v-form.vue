@@ -321,17 +321,6 @@ export default defineComponent({
 		function useComputedFields(): Ref<Field[]> {
 			const fieldsStore = useFieldsStore();
 
-			function getFields(): Field[] {
-				if (props.collection) {
-					return fieldsStore.getFieldsForCollection(props.collection);
-				}
-				if (props.fields) {
-					return props.fields;
-				}
-
-				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-			}
-
 			const fields = ref<Field[]>(getFields());
 
 			watch(
@@ -345,6 +334,17 @@ export default defineComponent({
 			);
 
 			return fields;
+
+			function getFields(): Field[] {
+				if (props.collection) {
+					return fieldsStore.getFieldsForCollection(props.collection);
+				}
+				if (props.fields) {
+					return props.fields;
+				}
+
+				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
+			}
 		}
 
 		function setValue(fieldKey: string, value: any) {
