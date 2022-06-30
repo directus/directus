@@ -1398,6 +1398,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1739,6 +1740,7 @@ displays:
     relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
     suffix: Suffisso
     suffix_label: Mostra indicatore relativo
+    suffix_note: Usa espressioni come 'fra...' e '...fa'
     strict: Esatto
     strict_label: Usa unià esatte
     strict_note: Rimuove espressioni come 'quasi...', 'più di...', 'meno di...'
