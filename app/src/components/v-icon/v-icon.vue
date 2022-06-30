@@ -9,7 +9,7 @@
 	>
 		<component :is="customIconName" v-if="customIconName" />
 		<socialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else :class="{ filled }">{{ name }}</i>
+		<i v-else :class="{ filled }" :data-icon="name"></i>
 	</span>
 </template>
 
@@ -635,7 +635,6 @@ body {
 		display: block;
 		font-weight: normal;
 		font-size: var(--v-icon-size);
-		/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
 		font-family: 'Material Icons Outline';
 		font-style: normal;
 		line-height: 1;
@@ -645,8 +644,11 @@ body {
 		word-wrap: normal;
 		font-feature-settings: 'liga';
 
+		&::after {
+			content: attr(data-icon);
+		}
+
 		&.filled {
-			/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
 			font-family: 'Material Icons';
 		}
 	}

@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/shared/utils';
 import { RequestHandler } from 'express';
 import { DocumentNode, getOperationAST, parse, Source } from 'graphql';
 import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions';
@@ -19,7 +20,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 
 		if (req.query.variables) {
 			try {
-				variables = JSON.parse(req.query.variables as string);
+				variables = parseJSON(req.query.variables as string);
 			} catch {
 				throw new InvalidQueryException(`Variables are invalid JSON.`);
 			}

@@ -3,27 +3,25 @@
 		<span class="name">{{ t('collection') }}</span>
 		<v-icon v-tooltip="t('create')" name="add" />
 		<v-icon v-tooltip="t('read')" name="visibility" />
-		<v-icon v-tooltip="t('update')" name="edit" outline />
-		<v-icon v-tooltip="t('delete_label')" name="delete" outline />
+		<v-icon v-tooltip="t('update')" name="edit" />
+		<v-icon v-tooltip="t('delete_label')" name="delete" />
+		<v-icon v-tooltip="t('share')" name="share" />
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>
 .permissions-overview-header {
 	--v-icon-color: var(--foreground-subdued);
 
+	position: sticky;
+	top: calc(var(--header-bar-height) - 1px); // minus 1px to avoid gaps
+	z-index: 4;
 	display: flex;
 	padding: 12px;
 	background-color: var(--background-input);

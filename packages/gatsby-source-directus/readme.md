@@ -8,145 +8,126 @@ Source plugin for pulling data into Gatsby from a Directus API.
 npm install --save @directus/gatsby-source-directus
 ```
 
-## Configure
+## Usage
 
-### Public data
-
-For pulling public data, you don't need to authenticate.
-
-```js
-// In your gatsby-config.js
-plugins: [
-	{
-		resolve: '@directus/gatsby-source-directus',
-		options: {
-			url: `https://my-project.directus.app`,
-		},
-	},
-];
-```
-
-### Authentication
-
-If you need data that is protected by permission rules, you need to authenticate.
-
-#### With tokens
-
-You can authenticate via user token.
+1. Go to `gatsby-config.js` on your Gatsby project
+2. Add new entry to plugins properly configured with your settings
 
 ```js
-// In your gatsby-config.js
-plugins: [
-	{
-		resolve: '@directus/gatsby-source-directus',
-		options: {
-			url: `https://my-project.directus.app`,
-			auth: {
-				token: 'my-user-token',
+module.exports = {
+	// ... some gatsby configuration
+	plugins: [
+		// ... some gatsby plugins
+
+		// You can take advantage of the following plugins with gatsby-source-directus
+
+		// `gatsby-plugin-image`,
+		// `gatsby-transformer-sharp`,
+		// `gatsby-plugin-sharp`,
+
+		// Finally our plugin
+		{
+			resolve: '@directus/gatsby-source-directus',
+			options: {
+				url: `https://myproject.directus.cloud`, // Fill with your Directus instance address
+				auth: {
+					token: 'my_secret_token', // You can use a static token from an user
+
+					// Or you can use the credentials of an user
+					// email: "johndoe@directus.cloud",
+					// password: "mysecretpassword",
+				},
 			},
 		},
-	},
-];
+	],
+};
 ```
 
-#### With email and password
+3. Request your data
 
-You can authenticate via email and password.
+```graphql
+query {
+	# if you change `type.name`, remember to also rename following field
+	directus {
+		# the collection you want to query
+		articles {
+			# the fields you want to query from above collection
+			title
+			files {
+				# since this is a M2M relationship, we need to reference the junction field
+				directus_files_id {
+					# `id` is required to be fetched in order to be used with `gatsby-transformer-sharp`
+					id
+					imageFile {
+						# when using the plugin 'gatsby-transformer-sharp', you can query images with transformations
+						childImageSharp {
+							gatsbyImageData(width: 200)
+						}
+					}
+				}
+			}
+		}
+	}
 
-```js
-// In your gatsby-config.js
-plugins: [
-	{
-		resolve: '@directus/gatsby-source-directus',
-		options: {
-			url: `https://my-project.directus.app`,
-			auth: {
-				email: 'admin@example.com',
-				password: 'password',
-			},
-		},
-	},
-];
+	# it's also possible to query system collections
+	directus_system {
+		users {
+			email
+		}
+		files {
+			id
+			imageFile {
+				childImageSharp {
+					gatsbyImageData(width: 200)
+				}
+			}
+		}
+	}
+}
 ```
 
-### Multiple projects
+**Note**: When using with `gatsby-transformer-sharp` you will need to query `id` of the asset (specified on
+`DirectusData_directus_files` type).
 
-You can se which type/field Directus should pull it's data into. This allows for usage with multiple projects and better
-data organization.
+## Options
 
-```js
-// In your gatsby-config.js
-plugins: [
-	{
-		resolve: '@directus/gatsby-source-directus',
-		options: {
-			url: `https://my-portal.directus.app`,
-			type: {
-				name: 'Portal',
-				field: 'portal',
-			},
-		},
-	},
-	{
-		resolve: '@directus/gatsby-source-directus',
-		options: {
-			url: `https://my-blog.directus.app`,
-			type: {
-				name: 'Blog',
-				field: 'blog',
-			},
-		},
-	},
-];
-```
+- `url` [*Required*] - should be a valid URL to your Directus instance
 
-### Development mode
+- `auth` [*Optional*] - defines if requests will have authentication or not. You should define this if you want access
+  to non-public content.
+  [View more about permissions](https://docs.directus.io/configuration/users-roles-permissions/#users-roles-permissions)
 
-When in development, you can set `dev.refresh` to the amount of seconds it needs to refresh the Directus schema.
+  - `auth.token` [*Optional*] - should be the static token of the user which will make the requests. You can define one
+    on user detail page.
 
-The accepted options are:
+  - `auth.email` [*Optional, but required with password and ignored if `auth.token` defined*] - should be the email of
+    the user which will make the requests.
 
-- a number (in seconds)
-- a `ms` string like "5s", "1m", etc.
+  - `auth.password` [*Optional, but required with email and ignored if `auth.token` defined\*] - should be the password
+    of the user which will make the requests.
 
-Defaults to "15s"
+- `type` [*Optional*] - defines the type and field name to be used on GraphQL. If you are using multiple instances of
+  Directus, please ensure you have unique type and field names per instance.
 
-```js
-// In your gatsby-config.js
-plugins: [
-	{
-		resolve: '@directus/gatsby-source-directus',
-		options: {
-			//...
-			dev: {
-				refresh: '5s',
-			},
-		},
-	},
-];
-```
+  - `type.name` [*Optional, defaults to `DirectusData`*] - defines the GraphQL type name to be used for user defined
+    collections
 
-### Advanced GraphQL options
+  - `type.field` [*Optional*, defaults to `directus`] - defines the GraphQL field name to query user defined
+    collections. If you change this property, remember to query the proper field inside `query`.
 
-You can pass more specific options to the `gatsby-source-graphql` plugin using `graphql` option.
+  - `type.system_name` [*Optional, defaults to `DirectusSystemData`*] - defines the GraphQL type name to be used for
+    Directus defined collections, i.e., `directus_users`, `directus_files`, etc.
 
-```js
-// In your gatsby-config.js
-plugins: [
-	{
-		resolve: '@directus/gatsby-source-directus',
-		options: {
-			//...
-			graphql: {
-				// options here are going to be forwarded to `gatsby-source-graphql`
-				// note that some are calculated values, so the follow are not going to
-				// be forwarded:
-				//   `url`, `typeName`, `fieldName` and `refreshInterval`
-			},
-		},
-	},
-];
-```
+  - `type.system_field` [*Optional*, defaults to `directus_system`] - defines the GraphQL field name to query Directus
+    defined collections.
+
+- `dev` [*Optional*] - defines options for development environments
+
+  - `dev.refresh` [*Optional, defaults to 15s*] - tells the refresh rate in seconds of the schema. Should be a number in
+    seconds or a string supported by [ms](https://github.com/vercel/ms)
+
+- `graphql` [*Optional*] - defines extra options to be passed into `gatsby-source-graphql`. Useful for advanced use
+  cases.
 
 ## How to query
 
@@ -165,10 +146,11 @@ query {
 }
 ```
 
-If you specify the field name, you must query from that field instead.
+If you specify the `type.field`, you must query from that field instead.
 
 ```graphql
 query {
+	# In this case `type.field` is "blog"
 	blog {
 		items {
 			posts {
@@ -179,6 +161,7 @@ query {
 			}
 		}
 	}
+	# While in this case `type.field` is "portal"
 	portal {
 		items {
 			pages {
@@ -194,4 +177,4 @@ query {
 
 ## Docs
 
-See [the docs](https://docs.directus.io/)
+[View more about Directus](https://docs.directus.io/)

@@ -20,7 +20,7 @@ export async function createCli(): Promise<Command> {
 
 	const extensionManager = getExtensionManager();
 
-	await extensionManager.initialize({ schedule: false });
+	await extensionManager.initialize({ schedule: false, watch: false });
 
 	await emitter.emitInit('cli.before', { program });
 
@@ -85,13 +85,14 @@ export async function createCli(): Promise<Command> {
 		.description('Create a new Schema Snapshot')
 		.option('-y, --yes', `Assume "yes" as answer to all prompts and run non-interactively`, false)
 		.addOption(new Option('--format <format>', 'JSON or YAML format').choices(['json', 'yaml']).default('yaml'))
-		.argument('<path>', 'Path to snapshot file')
+		.argument('[path]', 'Path to snapshot file')
 		.action(snapshot);
 
 	schemaCommands
 		.command('apply')
 		.description('Apply a snapshot file to the current database')
 		.option('-y, --yes', `Assume "yes" as answer to all prompts and run non-interactively`)
+		.option('-d, --dry-run', 'Plan and log changes to be applied', false)
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
 

@@ -1,7 +1,7 @@
 import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
-import { AbstractServiceOptions, PrimaryKey, Alterations, Item } from '../types';
+import { AbstractServiceOptions, MutationOptions, PrimaryKey, Alterations, Item } from '../types';
 import { Query } from '@directus/shared/types';
-import { ItemsService, MutationOptions } from './items';
+import { ItemsService } from './items';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
 import { UsersService } from './users';
@@ -77,6 +77,19 @@ export class RolesService extends ItemsService {
 		}
 
 		return super.updateOne(key, data, opts);
+	}
+
+	async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		const keys = data.map((item) => item[primaryKeyField]);
+		const setsToNoAdmin = data.some((item) => item.admin_access === false);
+
+		if (setsToNoAdmin) {
+			await this.checkForOtherAdminRoles(keys);
+		}
+
+		return super.updateBatch(data, opts);
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey[]> {

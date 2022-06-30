@@ -2,7 +2,6 @@
 	<component
 		:is="component"
 		class="v-list-item"
-		:to="to !== '' ? to : undefined"
 		:class="{
 			active: isActiveRoute,
 			dense,
@@ -13,9 +12,8 @@
 			nav,
 			clickable,
 		}"
-		:href="href"
 		:download="download"
-		:target="component === 'a' ? '_blank' : undefined"
+		v-bind="additionalProps"
 		@click="onClick"
 	>
 		<slot />
@@ -99,6 +97,24 @@ export default defineComponent({
 			return 'li';
 		});
 
+		const additionalProps = computed(() => {
+			if (props.to) {
+				return {
+					to: props.to,
+				};
+			}
+
+			if (component.value === 'a') {
+				return {
+					href: props.href,
+					target: '_blank',
+					rel: 'noopener noreferrer',
+				};
+			}
+
+			return {};
+		});
+
 		useGroupable({
 			value: props.value,
 			group: props.scope,
@@ -122,7 +138,7 @@ export default defineComponent({
 			return false;
 		});
 
-		return { component, isLink, isActiveRoute, onClick };
+		return { component, additionalProps, isLink, isActiveRoute, onClick };
 
 		function onClick(event: PointerEvent) {
 			if (props.disabled === true) return;
@@ -134,8 +150,8 @@ export default defineComponent({
 
 <style>
 body {
-	--v-list-item-padding-nav: 0 8px;
-	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
+	--v-list-item-padding-nav: 0 var(--input-padding);
+	--v-list-item-padding: 0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px));
 	--v-list-item-margin-nav: 2px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
@@ -177,7 +193,7 @@ body {
 
 	&.dashed {
 		&::after {
-			// Borders normally render outside the element, this is a way of showing it as inner
+			/* Borders normally render outside the element, this is a way of showing it as inner */
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -240,7 +256,7 @@ body {
 		display: flex;
 		height: var(--input-height);
 		margin: 0;
-		padding: 8px;
+		padding: 8px var(--input-padding);
 		background-color: var(--v-list-item-background-color);
 		border: var(--border-width) solid var(--v-list-item-border-color);
 		border-radius: var(--border-radius);

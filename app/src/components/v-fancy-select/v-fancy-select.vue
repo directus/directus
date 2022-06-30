@@ -6,7 +6,7 @@
 				<div
 					v-else
 					class="v-fancy-select-option"
-					:class="{ active: item.value === modelValue, disabled }"
+					:class="{ active: item[itemValue] === modelValue, disabled }"
 					:style="{
 						'--index': index,
 					}"
@@ -17,11 +17,15 @@
 					</div>
 
 					<div class="content">
-						<div class="text">{{ item.text }}</div>
-						<div class="description">{{ item.description }}</div>
+						<div class="text">{{ item[itemText] }}</div>
+						<div class="description">{{ item[itemDescription] }}</div>
 					</div>
 
-					<v-icon v-if="modelValue === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
+					<v-icon
+						v-if="modelValue === item[itemValue] && disabled === false"
+						name="cancel"
+						@click.stop="toggle(item)"
+					/>
 					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
 				</div>
 			</template>
@@ -29,44 +33,41 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
-import { FancySelectItem } from './types';
+<script lang="ts" setup>
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		items: {
-			type: Array as PropType<FancySelectItem[]>,
-			required: true,
-		},
-		modelValue: {
-			type: [String, Number],
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const visibleItems = computed(() => {
-			if (props.modelValue === null) return props.items;
+interface Props {
+	items: Record<string, any>[];
+	modelValue?: string | number | null;
+	disabled?: boolean;
+	itemText?: string;
+	itemValue?: string;
+	itemDescription?: string;
+}
 
-			return props.items.filter((item) => {
-				return item.value === props.modelValue;
-			});
-		});
-
-		return { toggle, visibleItems };
-
-		function toggle(item: FancySelectItem) {
-			if (props.disabled === true) return;
-			if (props.modelValue === item.value) emit('update:modelValue', null);
-			else emit('update:modelValue', item.value);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: () => null,
+	disabled: false,
+	itemText: 'text',
+	itemValue: 'value',
+	itemDescription: 'description',
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const visibleItems = computed(() => {
+	if (props.modelValue === null) return props.items;
+
+	return props.items.filter((item) => {
+		return item[props.itemValue] === props.modelValue;
+	});
+});
+
+function toggle(item: Record<string, any>) {
+	if (props.disabled === true) return;
+	if (props.modelValue === item[props.itemValue]) emit('update:modelValue', null);
+	else emit('update:modelValue', item[props.itemValue]);
+}
 </script>
 
 <style lang="scss" scoped>

@@ -14,11 +14,13 @@ export function applyChanges(updates: StateUpdates, _state: State, helperFn: Hel
 function setSpecialForType(updates: StateUpdates) {
 	const type = updates.field?.type;
 	switch (type) {
-		case 'uuid':
-		case 'hash':
 		case 'json':
 		case 'csv':
 		case 'boolean':
+			set(updates, 'field.meta.special', ['cast-' + type]);
+			break;
+		case 'uuid':
+		case 'hash':
 		case 'geometry':
 			set(updates, 'field.meta.special', [type]);
 			break;

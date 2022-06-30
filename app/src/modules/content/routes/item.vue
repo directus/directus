@@ -65,6 +65,7 @@
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
@@ -98,7 +99,7 @@
 						v-tooltip.bottom="archiveTooltip"
 						rounded
 						icon
-						class="action-archive"
+						secondary
 						:disabled="item === null || archiveAllowed !== true"
 						@click="on"
 					>
@@ -125,7 +126,7 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="isSavable === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -133,6 +134,7 @@
 				<template #append-outer>
 					<save-options
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
+						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -189,6 +191,18 @@
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 			/>
+			<shares-sidebar-detail
+				v-if="isNew === false && internalPrimaryKey"
+				:collection="collection"
+				:primary-key="internalPrimaryKey"
+				:allowed="shareAllowed"
+			/>
+			<flow-sidebar-detail
+				v-if="isNew === false && internalPrimaryKey"
+				location="item"
+				:collection="collection"
+				:primary-key="internalPrimaryKey"
+			/>
 		</template>
 	</private-view>
 </template>
@@ -202,12 +216,14 @@ import ContentNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import useShortcut from '@/composables/use-shortcut';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import useTemplateData from '@/composables/use-template-data';
@@ -219,6 +235,8 @@ export default defineComponent({
 		ContentNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
+		SharesSidebarDetail,
+		FlowSidebarDetail,
 		SaveOptions,
 	},
 	props: {
@@ -258,6 +276,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -274,8 +293,6 @@ export default defineComponent({
 		} = useItem(collection, primaryKey);
 
 		const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
-
-		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 		const isSavable = computed(() => {
 			if (saveAllowed.value === false) return false;
@@ -295,13 +312,9 @@ export default defineComponent({
 			return hasEdits.value;
 		});
 
-		unsavedChanges(isSavable);
-
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
 
 		const title = computed(() => {
 			if (te(`collection_names_singular.${props.collection}`)) {
@@ -342,28 +355,29 @@ export default defineComponent({
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
-
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
-			collection,
-			item,
-			isNew
-		);
+		const {
+			createAllowed,
+			deleteAllowed,
+			archiveAllowed,
+			saveAllowed,
+			updateAllowed,
+			shareAllowed,
+			fields,
+			revisionsAllowed,
+		} = usePermissions(collection, item, isNew);
 
 		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
 
-			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field];
+			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field] ?? '+';
 
 			return props.primaryKey;
+		});
+
+		const disabledOptions = computed(() => {
+			if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
+			if (isNew.value) return ['save-as-copy'];
+			return [];
 		});
 
 		return {
@@ -384,6 +398,7 @@ export default defineComponent({
 			confirmArchive,
 			deleting,
 			archiving,
+			disabledOptions,
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
@@ -398,11 +413,13 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			createAllowed,
 			deleteAllowed,
 			saveAllowed,
 			archiveAllowed,
 			isArchived,
 			updateAllowed,
+			shareAllowed,
 			toggleArchive,
 			validationErrors,
 			form,
@@ -472,7 +489,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.push(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+				if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -526,17 +543,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-archive {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {

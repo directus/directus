@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceBoolean from './boolean.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'boolean',
@@ -40,11 +41,8 @@ export default defineInterface({
 			name: '$t:interfaces.boolean.color_on',
 			type: 'string',
 			meta: {
-				width: 'half',
 				interface: 'select-color',
-			},
-			schema: {
-				default_value: '#00C897',
+				width: 'half',
 			},
 		},
 		{
@@ -52,11 +50,8 @@ export default defineInterface({
 			name: '$t:interfaces.boolean.color_off',
 			type: 'string',
 			meta: {
-				width: 'half',
 				interface: 'select-color',
-			},
-			schema: {
-				default_value: '#B0BEC5',
+				width: 'half',
 			},
 		},
 		{
@@ -65,7 +60,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:interfaces.boolean.label_placeholder',
 				},
@@ -75,4 +70,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

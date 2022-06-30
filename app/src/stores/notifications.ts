@@ -3,8 +3,8 @@ import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { Notification } from '@directus/shared/types';
-import { useUserStore } from '.';
 import api from '@/api';
+import { useUserStore } from './user';
 
 export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',
@@ -17,10 +17,16 @@ export const useNotificationsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
-			await this.getUnreadCount();
+			const userStore = useUserStore();
+
+			if (userStore.currentUser && !('share' in userStore.currentUser)) {
+				await this.getUnreadCount();
+			}
 		},
 		async getUnreadCount() {
 			const userStore = useUserStore();
+
+			if (!userStore.currentUser || !('id' in userStore.currentUser)) return;
 
 			const countResponse = await api.get('/notifications', {
 				params: {
@@ -28,7 +34,7 @@ export const useNotificationsStore = defineStore({
 						_and: [
 							{
 								recipient: {
-									_eq: userStore.currentUser!.id,
+									_eq: userStore.currentUser.id,
 								},
 							},
 							{

@@ -35,7 +35,7 @@ export default command(
 		},
 	},
 	async function ({ output, query, sdk }, params) {
-		const item = await sdk.items(params.collection).readMany(query.many);
+		const item = await sdk.items(params.collection).readByQuery(query.many);
 		if (item.data && !Array.isArray(item.data)) {
 			item.data = [item.data];
 		}

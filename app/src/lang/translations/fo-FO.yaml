@@ -1,0 +1,175 @@
+---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Eyðkenni
+avatar: Vangamynd
+application: Nýtsluskipan
+default_provider: Standard
+published: Út Givið
+draft: Kladda
+archived: Skjalasavna
+modules: Modulir
+module_bar: Modul Bjálki
+tile_size: Flísa Stødd
+edit_field: Rætta Teig
+conditions: Treytir
+maps: Kort
+switch_user: Skift Brúkara
+item_creation: Stovna Lut
+item_revision: Endurskoða Lut
+enter_a_name: Áset eitt Navn...
+duplicate_field: Tvífalda Teig
+half_width: Hálv Breidd
+full_width: Full Breidd
+group: Bólkur
+and: Og
+or: Ella
+fill_width: Fyll Breiddina
+field_name_translations: Navna Teiga Umsetingar
+enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (2FA)
+add_field: Legg afturat Teig
+role_name: Leikluts Heiti
+branch: Grein
+leaf: Blað
+indeterminate: Óvist
+edit_collection: Rætta Savn
+exclusive: Serúrval
+children: Børn
+db_only_click_to_configure: 'Einans Dátugrunnur: Klikkja fyri at Stilla'
+show_active_items: Vís Virknar Lutir
+show_archived_items: Vís Skjalasavnaðir Lutir
+show_all_items: Vís Allar Lutir
+edited: Virði er broytt
+required: Neyðugt
+required_for_app_access: Neyðugt til App Atgongd
+requires_value: Neyðugt virði
+create_preset: Stovna Undanstilling
+create_panel: Stovna Talvu
+create_role: Stovna Leiklut
+create_user: Stovna Brúkara
+delete_panel: Strika Talvu
+create_webhook: Stovna Webhook
+invite_users: Bjóða Brúkarum
+invite: Bjóða
+email_already_invited: Telduposturin "{email}" hevur longu fingið eina innbjóðing
+subject: Evni
+inbox: Innbakki
+emails: Teldupostar
+connection_excellent: Frálíkt Samband
+connection_good: Gott Samband
+connection_fair: Hampiligt Samband
+connection_poor: Ringt Samband
+primary: Primer
+rename_folder: Umdoyp Faldara
+delete_folder: Strika Faldara
+prefix: Forskoyti
+suffix: Eftirskoyti
+reset_bookmark: Nullstilla Bókamerki
+update_bookmark: Rætta Bókamerki
+delete_bookmark: Strika Bókamerki
+delete_bookmark_copy: >-
+  Ert tú vissur í at tú vilt strika "{bookmark}" bókamerki? Hendan gerð kann ikki angrast.
+logoutReason:
+  SIGN_OUT: Ritaður Út
+  SESSION_EXPIRED: Sambandi er Útgingið
+public_label: Alment
+public_description: Stýrir hvat API dáta til taks uttan samgildi.
+not_allowed: Ikki loyvt
+directus_version: Directus Útgáva
+node_version: Node Útgáva
+node_uptime: Node Nýtslutíð
+os_type: OS Slag
+os_version: OS Útgáva
+os_uptime: OS Nýtslutíð
+os_totalmem: OS Minni
+archive: Skjalasavna
+archive_confirm: Ert tú vísur í at tú vilt skjalasavna hendan lutin?
+archive_confirm_count: >-
+  Eingir lutir eru valdir | Ert tú vísur í at tú vilt skjalasavna hendan lutin? | Ert tú vísur í at tú vilt skjalasavna hesar {count} lutir?
+reset_system_permissions_to: 'Nullstilla kervis rættindini til:'
+reset_system_permissions_copy: Hendan gerð fer at yvirskriva øll brúkara sett loyvi sum tú kanst hava nýtt á kervissøvnini. Ert tú vísur?
+system: Kervi
+interface_label: Takførisflati
+creating_collection_system: Virkjan og nýnevnan av øllum hesum valfríðu Teigum.
+no_collections_copy: Tú hevur eingi Søvn enn. Set teg vinarliga í samband við kervisfyrisitarin.
+system_collections: Kervissøvnini
+interface_options: Takførisflatastillingar
+optional_system_fields: Valfrí Kervisteigar
+page_help_activity_collection: >-
+  **Kaga Virksemi** — Ein drúvur listi av øllum tínum kervisbrúkarum innan kervisvirksemi og innihaldsvirksemi.
+page_help_settings_datamodel_collections: >-
+  **Dátamynd: Søvn** — Vísir øll tøk søvn. Hettar fevnir um sjónlig, goymd, og kervissøvn, harumframt óviðgjørd dátugrunnstalvur, sum kunnu leggjast afturat.
+page_help_users_collection: '**Brúkara Directory** — Vísir ein lista yvir øllum kervisbrúkarum innan hesari verkætlan.'
+system_fields_locked: Kervisteigar eru læstir og kunnu ikki broytast
+directus_collection:
+  directus_roles: Bólkar av loyvum fyri kervisbrúkarum
+  directus_users: Kervisbrúkarir til verkætlanina
+fields:
+  directus_users:
+    theme_auto: Sjálvvirkin (Grunda á Kervi)
+  directus_settings:
+    module_bar: Modul Bjálki
+  directus_fields:
+    translation: Navna Teiga Umsetingar
+  directus_roles:
+    name: Leikluts Heiti
+field_options:
+  directus_collections:
+    archive_divider: Skjalasavna
+  directus_users:
+    dropdown_auto: Sjálvvirkin (Grunda á Kervi)
+interfaces:
+  presentation-links:
+    primary: Primer
+  system-collection:
+    collection: Savn
+    description: Vel millum galdandi Søvn
+    include_system_collections: Tel við Kervissøvnini
+  system-collections:
+    collections: Søvn
+    description: Vel millum galdandi Søvn
+    include_system_collections: Tel við Kervissøvnini
+  system-display-template:
+    display-template: Sýna fram skapilón
+    description: Blanda óbroytandi tekst og dynamiskar teigvirðir
+    collection_field: Savnteigur
+    collection_field_not_setup: Stillingin til savnteigin skeivt stilla
+    select_a_collection: Vel eitt savn
+  system-interface:
+    interface: Takførisflati
+    description: Vel ein galdandi takførisflata
+    placeholder: Vel ein takførisflata...
+  system-interface-options:
+    interface-options: Takførisflatastillingar
+  system-folder:
+    folder: Faldari
+    description: Vel ein faldara
+    field_hint: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
+    root_name: Fílasavns Rót
+    system_default: Grundkervi
+  input-rich-text-html:
+    folder_note: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
+displays:
+  datetime:
+    suffix: Eftirskoyti
+  formatted-value:
+    prefix: Forskoyti
+    suffix: Eftirskoyti

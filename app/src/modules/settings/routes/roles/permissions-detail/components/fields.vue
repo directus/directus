@@ -57,7 +57,7 @@ export default defineComponent({
 		const internalPermission = useSync(props, 'permission', emit);
 
 		const fieldsInCollection = computed(() => {
-			const fields = fieldsStore.getFieldsForCollection(props.permission.collection);
+			const fields = fieldsStore.getFieldsForCollectionSorted(props.permission.collection);
 
 			return fields.map((field: Field) => {
 				return {

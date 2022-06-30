@@ -1,14 +1,16 @@
-import { addTokenToURL } from '@/api';
+import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
+import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 type ImageSelection = {
 	imageUrl: string;
 	alt: string;
 	width?: number;
 	height?: number;
+	transformationKey?: string | null;
 	previewUrl?: string;
 };
 
@@ -30,11 +32,29 @@ type UsableImage = {
 
 export default function useImage(
 	editor: Ref<any>,
-	isEditorDirty: Ref<boolean>,
-	imageToken: Ref<string | undefined>
+	imageToken: Ref<string | undefined>,
+	options: {
+		storageAssetTransform: Ref<string>;
+		storageAssetPresets: Ref<SettingsStorageAssetPreset[]>;
+	}
 ): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
+	const selectedPreset = ref<SettingsStorageAssetPreset | undefined>();
+
+	watch(
+		() => imageSelection.value?.transformationKey,
+		(newKey) => {
+			selectedPreset.value = options.storageAssetPresets.value.find(
+				(preset: SettingsStorageAssetPreset) => preset.key === newKey
+			);
+
+			if (selectedPreset.value) {
+				imageSelection.value!.width = selectedPreset.value.width ?? undefined;
+				imageSelection.value!.height = selectedPreset.value.height ?? undefined;
+			}
+		}
+	);
 
 	const imageButton = {
 		icon: 'image',
@@ -49,17 +69,25 @@ export default function useImage(
 				const alt = node.getAttribute('alt');
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
+				const transformationKey = imageUrlParams?.get('key') || undefined;
 
 				if (imageUrl === null || alt === null) {
 					return;
 				}
 
+				if (transformationKey) {
+					selectedPreset.value = options.storageAssetPresets.value.find(
+						(preset: SettingsStorageAssetPreset) => preset.key === transformationKey
+					);
+				}
+
 				imageSelection.value = {
 					imageUrl,
 					alt,
-					width,
-					height,
-					previewUrl: imageUrl,
+					width: selectedPreset.value ? selectedPreset.value.width ?? undefined : width,
+					height: selectedPreset.value ? selectedPreset.value.height ?? undefined : height,
+					transformationKey,
+					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value ?? getToken()),
 				};
 			} else {
 				imageSelection.value = null;
@@ -86,27 +114,70 @@ export default function useImage(
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		const imageUrl = addTokenToURL(getPublicURL() + 'assets/' + image.id, imageToken.value);
+		const assetUrl = getPublicURL() + 'assets/' + image.id;
 
 		imageSelection.value = {
-			imageUrl,
+			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 			alt: image.title,
 			width: image.width,
 			height: image.height,
-			previewUrl: imageUrl,
+			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value ?? getToken()),
 		};
 	}
 
 	function saveImage() {
+		editor.value.fire('focus');
+
 		const img = imageSelection.value;
 		if (img === null) return;
-		const resizedImageUrl = addQueryToPath(img.imageUrl, {
-			...(img.width ? { width: img.width.toString() } : {}),
-			...(img.height ? { height: img.height.toString() } : {}),
-		});
+
+		const queries: Record<string, any> = {};
+		const newURL = new URL(img.imageUrl);
+
+		newURL.searchParams.delete('width');
+		newURL.searchParams.delete('height');
+		newURL.searchParams.delete('key');
+
+		if (options.storageAssetTransform.value === 'all') {
+			if (img.transformationKey) {
+				queries['key'] = img.transformationKey;
+			} else {
+				queries['width'] = img.width;
+				queries['height'] = img.height;
+			}
+		} else if (options.storageAssetTransform.value === 'presets') {
+			if (img.transformationKey) {
+				queries['key'] = img.transformationKey;
+			}
+		}
+
+		const resizedImageUrl = addQueryToPath(newURL.toString(), queries);
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
-		isEditorDirty.value = true;
 		editor.value.selection.setContent(imageHtml);
+		editor.value.undoManager.add();
 		closeImageDrawer();
+	}
+
+	function replaceUrlAccessToken(url: string, token: string | null | undefined): string {
+		// Only process assets URL
+		if (!url.includes(getPublicURL() + 'assets/')) {
+			return url;
+		}
+		try {
+			const parsedUrl = new URL(url);
+			const params = new URLSearchParams(parsedUrl.search);
+
+			if (!token) {
+				params.delete('access_token');
+			} else {
+				params.set('access_token', token);
+			}
+
+			return Array.from(params).length > 0
+				? `${parsedUrl.origin}${parsedUrl.pathname}?${params.toString()}`
+				: `${parsedUrl.origin}${parsedUrl.pathname}`;
+		} catch {
+			return url;
+		}
 	}
 }

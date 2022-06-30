@@ -11,4 +11,4 @@ fields:
     width: half
   - field: user_agent
     width: half
-  - field: data
+  - field: share

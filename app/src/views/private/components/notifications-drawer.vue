@@ -11,7 +11,7 @@
 				icon
 				rounded
 				:disabled="selection.length === 0"
-				warning
+				secondary
 				@click="toggleArchive"
 			>
 				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />

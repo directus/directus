@@ -22,6 +22,7 @@
 identifier: Tunniste
 avatar: Avatari
 default_provider: Oletus
+method: Metodi
 published: Julkaistu
 draft: Luonnos
 archived: Arkistoitu
@@ -30,6 +31,8 @@ module_bar: Moduulipalkki
 tile_size: Neliön koko
 edit_field: Muokkaa kenttää
 conditions: Ehdot
+location: Sijainti
+input: Syöte
 maps: Kartat
 item_creation: Kohteen luonti
 item_revision: Kohteen versio
@@ -79,7 +82,6 @@ delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
 reset_bookmark: Nollaa kirjanmerkki
-rename_bookmark: Uudelleennimeä kirjanmerkki
 update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
 delete_bookmark_copy: >-
@@ -109,7 +111,6 @@ recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirretään yksi taso ylöspäin.
-unknown_validation_errors: 'Validointivirheitä seuraavissa piilotetuissa kentissä:'
 validationError:
   eq: Arvon on oltava {valid}
   neq: Arvo ei voi olla {invalid}
@@ -280,10 +281,7 @@ dismiss: Hylkää
 raw_value: Raaka-arvo
 edit_raw_value: Muokkaa raaka-arvoa
 enter_raw_value: Syötä raakaarvo...
-clear_value: Tyhjennä
 clear_changes: Tyhjennä muutokset
-reset_to_default: Palauta oletukseksi
-undo_changes: Peru muutokset
 notifications: Ilmoitukset
 show_all_activity: Näytä kaikki toiminta
 page_not_found: Sivua ei löydy
@@ -314,10 +312,8 @@ related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
 translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
-export_data: Vie tiedot
+label_import: Tuo
 format: Muoto
-use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
-export_collection: 'Vie {collection}'
 last_page: Viimeinen sivu
 last_access: Viimeksi käytetty
 fill_template: Täytä mallin arvolla
@@ -333,6 +329,10 @@ interface_label: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
+functions:
+  year: Vuosi
+  month: Kuukausi
+  count: Määrä
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
@@ -526,7 +526,6 @@ unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
-password_reset_sent: Olemme lähettäneet sinulle turvallisen linkin nollataksesi salasanasi
 password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
 filter: Suodatin
@@ -547,8 +546,6 @@ start_end_of_count_items: '{start}-{end} / {count} kohdetta'
 start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
 one_item: '1 kohde'
 one_filtered_item: '1 suodatettu kohde'
-delete_collection_are_you_sure: >-
-  Oletko varma, että haluat poistaa tämän kokoelman? Tämä poistaa kokoelman ja kaikki sen kohteet. Tämä toiminto on lopullinen.
 collections_shown: Näytettävät kokoelmat
 visible_collections: Näkyvät kokoelmat
 hidden_collections: Piilotetut kokoelmat
@@ -653,6 +650,7 @@ on_create: Luonnissa
 on_update: Päivityksessä
 read: Lue
 update: Päivitä
+delete: Poista
 select_fields: Valitse kentät
 format_text: Muotoile teksti
 format_value: Muotoiltu arvo
@@ -663,6 +661,10 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+trigger: Laukaisija
+flow_name: Nimi
+flow_tracking_activity: Seuraa vain tapahtumia
+flow_tracking_null: Älä seuraa mitään
 insights: Yleiskatsaus
 dashboard: Kojelauta
 panel: Paneeli
@@ -680,9 +682,10 @@ suffix_placeholder: Teksti arvon jälkeen...
 decimals_placeholder: Desimaalien lukumäärä...
 no_dashboards: Ei kojelautoja
 no_dashboards_copy: Sinulla ei ole vielä yhtään kojelautaa.
-no_data: Ei tietoja
 create_dashboard: Luo kojelauta
 dashboard_name: Kojelaudan nimi
+no_data: Ei tietoja
+accountability: Vastuuvelvollisuus
 full_screen: Koko näyttö
 edit_panels: Muokkaa paneeleja
 fit_to_screen: Sovita ruudulle
@@ -776,6 +779,7 @@ settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
 one_or_more_options_are_missing: Yksi tai useampi vaihtoehto puuttuu
 scope: Laajuus
+actions: Toiminnot
 select: Valitse...
 layout: Asettelu
 tree_view: Puunäkymä
@@ -785,6 +789,7 @@ preset_search_placeholder: Hakulauseke...
 editing_preset: Muokataan esiasetusta
 layout_preview: Asettelun esikatselu
 layout_setup: Asettelun asetukset
+data: Tiedot
 unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
@@ -929,7 +934,6 @@ fields:
     status_archived: Arkistoitu
     role: Rooli
     token: Token
-    token_placeholder: Syötä suojatun pääsyn tunniste...
     provider: Tarjoaja
     external_identifier: Ulkopuoliset tunnistautumiset
     last_page: Viimeinen sivu
@@ -948,6 +952,7 @@ fields:
     project_url: Projektin osoite
     project_color: Projektin väri
     project_logo: Projektin logo
+    default_language: Oletuskieli
     branding: Brändäys & tyyli
     public_foreground: Julkinen etuala
     public_background: Julkinen tausta
@@ -962,6 +967,10 @@ fields:
     transformations_all: Salli kaikki muutokset
     transformations_none: Poista muunnokset käytöstä
     transformations_presets: Rajoita muunnoksia allaoleviin esiasetuksiin
+  directus_shares:
+    name: Nimi
+    role: Rooli
+    password: Salasana
   directus_fields:
     collection: Kokoelman nimi
     icon: Kokoelman kuvake
@@ -1160,7 +1169,6 @@ sort_direction: Järjestyssuunta
 sort_asc: Järjestä nousevasti
 sort_desc: Lajittele laskeva
 template: Pohja
-require_value_to_be_set: Vaadi arvoa asetettavaksi
 translation: Käännös
 translation_placeholder: Syötä käännös...
 value: Arvo
@@ -1304,8 +1312,6 @@ interfaces:
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
     box: Lohko / rivillä
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   map:
     map: Kartta
     description: Valitse sijainti kartalla
@@ -1345,6 +1351,7 @@ interfaces:
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
     add_label: '"Luo uusi"-tunniste'
+    sort: Järjestä
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
@@ -1364,7 +1371,6 @@ interfaces:
     auto_formatter: Käytä otsikon automaattimuotoilua
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
-    add_tags: Lisää tunnisteita...
   input:
     input: Syöte
     description: Manuaalisesti syötetty arvo
@@ -1393,6 +1399,9 @@ interfaces:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
     toggle_split_view: Vaihda jaettu näkymän välillä
+    enable: Ota käyttöön
+    user_language: Käytä käyttäjän nykyistä kieltä
+    default_language: Oletuskieli
     language_field: Kielen indikaattorin kenttä
   list-o2m-tree-view:
     description: Puunäkymä sisäkkäisille ja rekursiivisille yksi monille (O2M) -kohteille
@@ -1411,6 +1420,7 @@ interfaces:
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
     options_override: Valintojen ohitus
+    folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
@@ -1428,6 +1438,8 @@ interfaces:
     header_color: Otsikon väri
     start_open: Aloita avattuna
     start_closed: Aloita suljettuna
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Käännökset
@@ -1465,6 +1477,7 @@ displays:
     short: Lyhyt
     relative: Suhteellinen
     relative_label: 'Näytä suhteellinen aika, esim: 5 minuuttia sitten'
+    suffix: Jälkiliite
   file:
     file: Tiedosto
     description: Näytä tiedostot
@@ -1474,9 +1487,18 @@ displays:
   formatted-value:
     formatted-value: Muotoiltu arvo
     description: Näytä tekstin muotoiltu versio
-    format_title: Muoto otsikko
-    format_title_label: Automaattisesti muotoiltu kirjainkoko
+    format: Muoto
+    font: Kirjasin
+    font_serif: Serif
+    font_monospace: Tasavälinen
+    bold: Lihavoitu
     bold_label: Käytä lihavoitua tyyliä
+    italic: Kursiivi
+    prefix: Etuliite
+    suffix: Jälkiliite
+    color: Väri
+    icon: Kuvake
+    text: Teksti
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio
@@ -1532,7 +1554,6 @@ layouts:
     subtitle: Alaotsikko
   tabular:
     tabular: Taulukko
-    fields: Kentät
     spacing: Väli
     comfortable: Mukava
     compact: Kompakti
@@ -1571,3 +1592,16 @@ panels:
   list:
     name: Lista
     description: Suodata ja luetteloi kentät kokoelmasta
+triggers:
+  webhook:
+    method: Metodi
+operations:
+  notification:
+    recipient: Käyttäjänimi
+  request:
+    url: URL
+    method: Metodi
+    data: Tiedot
+    header: Ylätunniste
+  trigger:
+    data: Tiedot

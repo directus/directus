@@ -1,4 +1,4 @@
-import stripIndent from 'strip-indent';
+import redent from 'redent';
 
 export type CLIError = Error & {
 	isAxiosError?: true;
@@ -11,7 +11,7 @@ export type CLIError = Error & {
 export class CLIRuntimeError extends Error {
 	public readonly code?: string;
 	constructor(message: string, code?: string) {
-		super(stripIndent(message).trim());
+		super(redent(message).trim());
 		this.code = code;
 	}
 }

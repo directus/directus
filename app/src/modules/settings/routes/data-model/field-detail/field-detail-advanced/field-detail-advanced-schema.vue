@@ -41,6 +41,7 @@
 					<v-input
 						v-model="maxLength"
 						type="number"
+						:min="1"
 						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
 						:disabled="isExisting || type !== 'string'"
 					/>
@@ -109,7 +110,7 @@
 				/>
 				<interface-input-code
 					v-else-if="type === 'json'"
-					:value="defaultValue || ''"
+					:value="defaultValue"
 					language="JSON"
 					placeholder="NULL"
 					type="json"
@@ -376,12 +377,22 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onCreateSpecials.includes(special) === false
 					);
 
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
+					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
 					}
 				},
 			});
@@ -447,12 +458,22 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onUpdateSpecials.includes(special) === false
 					);
 
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
+					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
 					}
 				},
 			});

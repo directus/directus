@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import logger from '../../logger';
 
@@ -10,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
 		if (dividerGroup.options) {
 			try {
 				const options =
-					typeof dividerGroup.options === 'string' ? JSON.parse(dividerGroup.options) : dividerGroup.options;
+					typeof dividerGroup.options === 'string' ? parseJSON(dividerGroup.options) : dividerGroup.options;
 
 				if (options.icon) newOptions.headerIcon = options.icon;
 				if (options.color) newOptions.headerColor = options.color;

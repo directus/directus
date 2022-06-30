@@ -55,6 +55,39 @@ export default defineInterface({
 					width: 'half',
 				},
 			},
+			{
+				field: 'limit',
+				name: '$t:per_page',
+				type: 'integer',
+				meta: {
+					interface: 'input',
+					width: 'half',
+				},
+				schema: {
+					default_value: 15,
+				},
+			},
+			{
+				field: 'filter',
+				name: '$t:filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: collection,
+					},
+					conditions: [
+						{
+							rule: {
+								enableSelect: {
+									_eq: false,
+								},
+							},
+							hidden: true,
+						},
+					],
+				},
+			},
 		];
 	},
 	recommendedDisplays: ['related-values'],

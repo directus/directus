@@ -8,6 +8,9 @@
 			:group="field.meta.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
+			:disabled="disabled"
+			:badge="badge"
+			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</div>
@@ -58,6 +61,10 @@ export default defineComponent({
 		validationErrors: {
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
+		},
+		badge: {
+			type: String,
+			default: null,
 		},
 	},
 	emits: ['apply'],

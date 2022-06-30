@@ -131,7 +131,7 @@ export default async function <T>(argv: string[]): Promise<CommandResult<T>> {
 
 				if (file.endsWith('.js')) {
 					// only allow .js if there's no matching .ts
-					return result.indexOf(`${file.substr(0, file.length - 3)}.ts`) < 0;
+					return result.indexOf(`${file.slice(0, -3)}.ts`) < 0;
 				}
 
 				return false;

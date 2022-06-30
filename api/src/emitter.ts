@@ -1,8 +1,8 @@
+import { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
 import { EventEmitter2 } from 'eventemitter2';
 import logger from './logger';
-import { ActionHandler, FilterHandler, HookContext, InitHandler } from './types';
 
-class Emitter {
+export class Emitter {
 	private filterEmitter;
 	private actionEmitter;
 	private initEmitter;
@@ -22,33 +22,37 @@ class Emitter {
 		this.initEmitter = new EventEmitter2(emitterOptions);
 	}
 
-	public eventsToEmit(event: string, meta: Record<string, any>) {
-		if (event.startsWith('items')) {
-			return [event, `${meta.collection}.${event}`];
-		}
-		return [event];
-	}
-
-	public async emitFilter<T>(event: string, payload: T, meta: Record<string, any>, context: HookContext): Promise<T> {
-		const events = this.eventsToEmit(event, meta);
-		const listeners = events.flatMap((event) => this.filterEmitter.listeners(event)) as FilterHandler[];
+	public async emitFilter<T>(
+		event: string | string[],
+		payload: T,
+		meta: Record<string, any>,
+		context: EventContext
+	): Promise<T> {
+		const events = Array.isArray(event) ? event : [event];
+		const eventListeners = events.map((event) => ({
+			event,
+			listeners: this.filterEmitter.listeners(event) as FilterHandler<T>[],
+		}));
 
 		let updatedPayload = payload;
-		for (const listener of listeners) {
-			const result = await listener(updatedPayload, meta, context);
+		for (const { event, listeners } of eventListeners) {
+			for (const listener of listeners) {
+				const result = await listener(updatedPayload, { event, ...meta }, context);
 
-			if (result !== undefined) {
-				updatedPayload = result;
+				if (result !== undefined) {
+					updatedPayload = result;
+				}
 			}
 		}
 
 		return updatedPayload;
 	}
 
-	public emitAction(event: string, meta: Record<string, any>, context: HookContext): void {
-		const events = this.eventsToEmit(event, meta);
+	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext): void {
+		const events = Array.isArray(event) ? event : [event];
+
 		for (const event of events) {
-			this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
+			this.actionEmitter.emitAsync(event, { event, ...meta }, context).catch((err) => {
 				logger.warn(`An error was thrown while executing action "${event}"`);
 				logger.warn(err);
 			});
@@ -57,7 +61,7 @@ class Emitter {
 
 	public async emitInit(event: string, meta: Record<string, any>): Promise<void> {
 		try {
-			await this.initEmitter.emitAsync(event, meta);
+			await this.initEmitter.emitAsync(event, { event, ...meta });
 		} catch (err: any) {
 			logger.warn(`An error was thrown while executing init "${event}"`);
 			logger.warn(err);
@@ -86,6 +90,12 @@ class Emitter {
 
 	public offInit(event: string, handler: InitHandler): void {
 		this.initEmitter.off(event, handler);
+	}
+
+	public offAll(): void {
+		this.filterEmitter.removeAllListeners();
+		this.actionEmitter.removeAllListeners();
+		this.initEmitter.removeAllListeners();
 	}
 }
 

@@ -12,7 +12,7 @@
 		:placeholder="placeholder"
 		:allow-other="allowOther"
 		:close-on-content-click="false"
-		@update:model-value="$emit('input', $event)"
+		@update:model-value="updateValue($event)"
 	>
 		<template v-if="icon" #prepend>
 			<v-icon :name="icon" />
@@ -23,6 +23,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
+import { sortBy } from 'lodash';
 
 type Option = {
 	text: string;
@@ -61,9 +62,19 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup() {
+	setup(props, { emit }) {
 		const { t } = useI18n();
-		return { t };
+
+		return { t, updateValue };
+
+		function updateValue(value: PropType<string[]>) {
+			const sortedValue = sortBy(value, (val) => {
+				const sortIndex = props.choices.findIndex((choice) => val === choice.value);
+				return sortIndex !== -1 ? sortIndex : value.length;
+			});
+
+			emit('input', sortedValue);
+		}
 	},
 });
 </script>

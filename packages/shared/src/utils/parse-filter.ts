@@ -4,6 +4,7 @@ import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { isDynamicVariable } from './is-dynamic-variable';
 import { isObjectLike } from 'lodash';
+import { deepMap } from './deep-map';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
@@ -33,6 +34,15 @@ export function parseFilter(
 	} else {
 		return { _and: filters };
 	}
+}
+
+export function parsePreset(
+	preset: Record<string, any> | null,
+	accountability: Accountability | null,
+	context: ParseFilterContext
+) {
+	if (!preset) return preset;
+	return deepMap(preset, (value) => parseFilterValue(value, accountability, context));
 }
 
 function parseFilterEntry(

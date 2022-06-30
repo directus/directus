@@ -8,48 +8,56 @@ import { dump as toYaml } from 'js-yaml';
 import { flushCaches } from '../../../cache';
 
 export async function snapshot(
-	snapshotPath: string,
+	snapshotPath?: string,
 	options?: { yes: boolean; format: 'json' | 'yaml' }
 ): Promise<void> {
-	const filename = path.resolve(process.cwd(), snapshotPath);
-
-	let snapshotExists: boolean;
-
-	try {
-		await fs.access(filename, fsConstants.F_OK);
-		snapshotExists = true;
-	} catch {
-		snapshotExists = false;
-	}
-
-	if (snapshotExists && options?.yes === false) {
-		const { overwrite } = await inquirer.prompt([
-			{
-				type: 'confirm',
-				name: 'overwrite',
-				message: 'Snapshot already exists. Do you want to overwrite the file?',
-			},
-		]);
-
-		if (overwrite === false) {
-			process.exit(0);
-		}
-	}
-
 	await flushCaches();
 
 	const database = getDatabase();
 
-	const snapshot = await getSnapshot({ database });
-
 	try {
+		const snapshot = await getSnapshot({ database });
+
+		let snapshotString: string;
+
 		if (options?.format === 'yaml') {
-			await fs.writeFile(filename, toYaml(snapshot));
+			snapshotString = toYaml(snapshot);
 		} else {
-			await fs.writeFile(filename, JSON.stringify(snapshot));
+			snapshotString = JSON.stringify(snapshot);
 		}
 
-		logger.info(`Snapshot saved to ${filename}`);
+		if (snapshotPath) {
+			const filename = path.resolve(process.cwd(), snapshotPath);
+
+			let snapshotExists: boolean;
+
+			try {
+				await fs.access(filename, fsConstants.F_OK);
+				snapshotExists = true;
+			} catch {
+				snapshotExists = false;
+			}
+
+			if (snapshotExists && options?.yes === false) {
+				const { overwrite } = await inquirer.prompt([
+					{
+						type: 'confirm',
+						name: 'overwrite',
+						message: 'Snapshot already exists. Do you want to overwrite the file?',
+					},
+				]);
+
+				if (overwrite === false) {
+					database.destroy();
+					process.exit(0);
+				}
+			}
+
+			await fs.writeFile(filename, snapshotString);
+			logger.info(`Snapshot saved to ${filename}`);
+		} else {
+			process.stdout.write(snapshotString);
+		}
 
 		database.destroy();
 		process.exit(0);
