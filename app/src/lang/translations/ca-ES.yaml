@@ -1487,6 +1487,7 @@ displays:
     short: Curt
     relative: Relatiu
     relative_label: 'Mostra el temps relatiu, ex: fa 5 minuts'
+    suffix: Sufix
   file:
     file: Fitxer
     description: Mostra fitxers

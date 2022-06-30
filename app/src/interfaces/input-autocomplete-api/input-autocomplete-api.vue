@@ -33,6 +33,7 @@ import { defineComponent, ref, PropType } from 'vue';
 import axios from 'axios';
 import { throttle, get, debounce } from 'lodash';
 import { render } from 'micromustache';
+import api from '@/api';
 
 export default defineComponent({
 	props: {
@@ -100,7 +101,7 @@ export default defineComponent({
 			const url = render(props.url, { value });
 
 			try {
-				const result = await axios.get(url);
+				const result = await (url.startsWith('/') ? api.get(url) : axios.get(url));
 				const resultsArray = props.resultsPath ? get(result.data, props.resultsPath) : result.data;
 
 				if (Array.isArray(resultsArray) === false) {

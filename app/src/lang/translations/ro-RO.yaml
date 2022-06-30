@@ -1629,6 +1629,7 @@ displays:
     short: Scurt
     relative: Relativ
     relative_label: 'Arată timpul relativ, de exemplu: acum 5 minute'
+    suffix: Sufix
   file:
     file: Fişier
     description: Afişare fişiere

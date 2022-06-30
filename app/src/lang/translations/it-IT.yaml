@@ -1398,7 +1398,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1738,6 +1737,7 @@ displays:
     short: Breve
     relative: Relativo
     relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
+    suffix: Suffisso
   file:
     file: File
     description: Visualizza file

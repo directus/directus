@@ -919,6 +919,7 @@ displays:
     short: Trumpas
     relative: Santykinis
     relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
+    suffix: Priesaga
   file:
     file: Failas
     description: Rodyti failus

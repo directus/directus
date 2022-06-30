@@ -704,6 +704,7 @@ displays:
     collection: Kolleksjon
   datetime:
     format: Format
+    suffix: Suffiks
   file:
     file: Fil
   formatted-value:
