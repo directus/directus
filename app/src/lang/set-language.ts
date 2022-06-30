@@ -15,6 +15,7 @@ const { interfaces, interfacesRaw } = getInterfaces();
 const { panels, panelsRaw } = getPanels();
 const { displays, displaysRaw } = getDisplays();
 const { operations, operationsRaw } = getOperations();
+import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
@@ -51,6 +52,8 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
 	mergeTranslationStringsForLanguage(lang);
+
+	await loadDateFNSLocale(lang);
 
 	return true;
 }
