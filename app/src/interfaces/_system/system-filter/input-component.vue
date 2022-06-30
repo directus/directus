@@ -165,6 +165,7 @@ export default defineComponent({
 			if (['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix))) {
 				return emit('input', val);
 			}
+
 			if (new RegExp(inputPattern.value).test(val)) {
 				return emit('input', val);
 			}
