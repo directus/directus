@@ -137,6 +137,9 @@ export default defineConfig({
 			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
 		},
 	},
+	optimizeDeps: {
+		exclude: ['@directus/docs'],
+	},
 });
 
 function directusExtensions() {
