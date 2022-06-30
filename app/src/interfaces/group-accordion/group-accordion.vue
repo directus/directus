@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { defineComponent, PropType, computed, ref, watch } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
 import { isEqual, pick } from 'lodash';
@@ -90,8 +90,7 @@ export default defineComponent({
 	emits: ['apply'],
 	setup(props) {
 		const selection = ref<string[]>([]);
-		const groupFields = ref<Field[]>(limitFields(props.fields));
-		const groupValues = ref<Record<string, any>>({});
+		const { groupFields, groupValues } = useComputedGroup();
 
 		watch(
 			() => props.start,
@@ -119,26 +118,6 @@ export default defineComponent({
 			}
 		);
 
-		watch(
-			() => props.fields,
-			(newFields) => {
-				const newVal = limitFields(newFields);
-				if (!isEqual(groupFields.value, newVal)) {
-					groupFields.value = newVal;
-				}
-			}
-		);
-		watch(
-			() => props.values,
-			() => {
-				const keys = groupFields.value.map((f) => f.field);
-				const newVal = pick(props.values, keys);
-				if (!isEqual(groupValues.value, newVal)) {
-					groupValues.value = newVal;
-				}
-			}
-		);
-
 		return { groupFields, groupValues, selection, toggleAll };
 
 		function toggleAll() {
@@ -151,8 +130,35 @@ export default defineComponent({
 			}
 		}
 
-		function limitFields(fields: Field[]): Field[] {
-			return fields.filter((field) => field.meta?.group === props.field.meta?.field);
+		function useComputedGroup() {
+			const groupFields = ref<Field[]>(limitFields());
+			const groupValues = ref<Record<string, any>>({});
+
+			function limitFields(): Field[] {
+				return props.fields.filter((field) => field.meta?.group === props.field.meta?.field);
+			}
+
+			watch(
+				() => props.fields,
+				() => {
+					const newVal = limitFields();
+					if (!isEqual(groupFields.value, newVal)) {
+						groupFields.value = newVal;
+					}
+				}
+			);
+			watch(
+				() => props.values,
+				() => {
+					const keys = groupFields.value.map((f) => f.field);
+					const newVal = pick(props.values, keys);
+					if (!isEqual(groupValues.value, newVal)) {
+						groupValues.value = newVal;
+					}
+				}
+			);
+
+			return { groupFields, groupValues };
 		}
 	},
 });
