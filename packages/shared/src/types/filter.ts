@@ -11,6 +11,7 @@ export type FilterOperator =
 	| 'nnull'
 	| 'contains'
 	| 'ncontains'
+	| 'icontains'
 	| 'between'
 	| 'nbetween'
 	| 'empty'
@@ -20,7 +21,13 @@ export type FilterOperator =
 	| 'intersects_bbox'
 	| 'nintersects_bbox';
 
-export type ClientFilterOperator = FilterOperator | 'starts_with' | 'nstarts_with' | 'ends_with' | 'nends_with';
+export type ClientFilterOperator =
+	| FilterOperator
+	| 'starts_with'
+	| 'nstarts_with'
+	| 'ends_with'
+	| 'nends_with'
+	| 'regex';
 
 export type Filter = LogicalFilter | FieldFilter;
 
@@ -45,6 +52,7 @@ export type FieldFilterOperator = {
 	_nnull?: boolean;
 	_contains?: string;
 	_ncontains?: string;
+	_icontains?: string;
 	_starts_with?: string;
 	_nstarts_with?: string;
 	_ends_with?: string;

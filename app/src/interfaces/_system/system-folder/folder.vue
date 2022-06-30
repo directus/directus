@@ -32,7 +32,7 @@
 			<folder-list-item
 				v-for="folder in nestedFolders"
 				:key="folder.id"
-				clickbable
+				clickable
 				:folder="folder"
 				:current-folder="value"
 				:disabled="disabledFolders.includes(folder.id)"

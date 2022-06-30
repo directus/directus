@@ -7,4 +7,5 @@ module.exports = {
 	testURL: process.env.TEST_URL || 'http://localhost',
 	collectCoverageFrom: ['src/**/*.ts'],
 	testPathIgnorePatterns: ['dist'],
+	testMatch: ['<rootDir>/tests/**/*.test.ts'],
 };

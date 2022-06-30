@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
@@ -7,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 	const detail = [];
 
 	for (const group of groups) {
-		const options = typeof group.options === 'string' ? JSON.parse(group.options) : group.options || {};
+		const options = typeof group.options === 'string' ? parseJSON(group.options) : group.options || {};
 
 		if (options.showHeader === true) {
 			detail.push(group);

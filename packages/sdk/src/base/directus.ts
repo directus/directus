@@ -89,7 +89,8 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		else {
 			this._transport = new Transport({
 				url: this.url,
-				beforeRequest: (config) => {
+				beforeRequest: async (config) => {
+					await this._auth.refreshIfExpired();
 					const token = this.storage.auth_token;
 					const bearer = token
 						? token.startsWith(`Bearer `)

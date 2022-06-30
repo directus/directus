@@ -3,7 +3,7 @@ import { set } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
-	const { hasChanged } = helperFn;
+	const { hasChanged, getCurrent } = helperFn;
 
 	if (hasChanged('localType')) {
 		prepareRelation(updates, state);
@@ -21,6 +21,12 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 
 	if (hasChanged('fields.corresponding')) {
 		setRelatedOneFieldForCorrespondingField(updates);
+	}
+
+	if (hasChanged('field.schema.is_nullable')) {
+		if (updates.field?.schema?.is_nullable === false && getCurrent('relations.m2o.schema.on_delete') === 'SET NULL') {
+			set(updates, 'relations.m2o.schema.on_delete', 'NO ACTION');
+		}
 	}
 }
 

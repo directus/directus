@@ -2,7 +2,6 @@
 	<component
 		:is="component"
 		class="v-list-item"
-		:to="to !== '' ? to : undefined"
 		:class="{
 			active: isActiveRoute,
 			dense,
@@ -13,9 +12,8 @@
 			nav,
 			clickable,
 		}"
-		:href="href"
 		:download="download"
-		:target="component === 'a' ? '_blank' : undefined"
+		v-bind="additionalProps"
 		@click="onClick"
 	>
 		<slot />
@@ -99,6 +97,24 @@ export default defineComponent({
 			return 'li';
 		});
 
+		const additionalProps = computed(() => {
+			if (props.to) {
+				return {
+					to: props.to,
+				};
+			}
+
+			if (component.value === 'a') {
+				return {
+					href: props.href,
+					target: '_blank',
+					rel: 'noopener noreferrer',
+				};
+			}
+
+			return {};
+		});
+
 		useGroupable({
 			value: props.value,
 			group: props.scope,
@@ -122,7 +138,7 @@ export default defineComponent({
 			return false;
 		});
 
-		return { component, isLink, isActiveRoute, onClick };
+		return { component, additionalProps, isLink, isActiveRoute, onClick };
 
 		function onClick(event: PointerEvent) {
 			if (props.disabled === true) return;
@@ -177,7 +193,7 @@ body {
 
 	&.dashed {
 		&::after {
-			// Borders normally render outside the element, this is a way of showing it as inner
+			/* Borders normally render outside the element, this is a way of showing it as inner */
 			position: absolute;
 			top: 0;
 			left: 0;

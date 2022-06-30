@@ -23,7 +23,7 @@ fields:
     interface: tags
     options:
       iconRight: local_offer
-    special: json
+    special: cast-json
     width: full
     display: labels
     display_options:
@@ -71,7 +71,7 @@ fields:
 
   - field: metadata
     hidden: true
-    special: json
+    special: cast-json
 
   - field: type
     display: mime-type

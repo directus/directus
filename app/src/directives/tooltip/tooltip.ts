@@ -84,8 +84,6 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 	if ('right' in binding.modifiers) placement = 'right';
 	if ('bottom' in binding.modifiers) placement = 'bottom';
 	if ('left' in binding.modifiers) placement = 'left';
-	if ('start' in binding.modifiers) placement = 'start';
-	if ('end' in binding.modifiers) placement = 'end';
 
 	if (binding.modifiers.inverted) {
 		tooltip.classList.add('inverted');

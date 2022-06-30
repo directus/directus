@@ -1,15 +1,32 @@
 ---
 avatar: プロフィール画像
+application: アプリケーション
+default_provider: デフォルト
+draft: 下書き
 archived: アーカイブ済み
+modules: モジュール
 edit_field: フィールドの編集
+conditions: 条件
+location: 場所
 maps: 地図
+switch_user: ユーザーを切り替える
 item_creation: アイテム作成
 item_revision: 履歴
 enter_a_name: 名前を入力...
+duplicate_field: フィールドを重複
+half_width: 半値幅
 full_width: 最大幅
+group: グループ
+export_items: アイテムをエクスポート
+and: そして
+or: または
+fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
+enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
 add_field: フィールドの追加
 role_name: 権限名
+branch: 分岐
+leaf: リーフ
 indeterminate: 不確定
 edit_collection: コレクションを編集
 db_only_click_to_configure: 'データベースのみ: クリックして設定する'
@@ -21,12 +38,12 @@ create_user: ユーザーの作成
 create_webhook: Webhookの作成
 invite_users: ユーザーを招待
 invite: 招待する
+email_already_invited: このメールアドレス ({email}) は招待済みです
 inbox: 受信トレイ
 emails: メールアドレス
 rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
 reset_bookmark: ブックマークをリセット
-rename_bookmark: ブックマークの名前を変更
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
 delete_bookmark_copy: >-
@@ -34,10 +51,12 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: ログアウト
   SESSION_EXPIRED: セッションが期限切れです
+public_description: 認証せずに利用できる API データを制御します。
 not_allowed: 許可されていない
 directus_version: Directus Version
 os_version: OSバージョン
 archive: アーカイブ
+archive_confirm: この項目をアーカイブしてよろしいですか？
 recommended_defaults: 推奨されるデフォルト値
 validationError:
   eq: 値は {valid} でなければなりません
@@ -83,6 +102,10 @@ hash: ハッシュ値
 auto_generate: 自動生成
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
+click_to_manage_translated_fields: >-
+  翻訳されたフィールドはまだありません。ここをクリックして作成してください。| 翻訳されたフィールドが1つあります。 ここをクリックして管理します。| {count} 項が翻訳されています。ここをクリックして管理します。
+fields_group: フィールドグループ
+no_collections_found: コレクションが見つかりません
 new_field: '新規フィールド'
 new_collection: '新しいコレクション'
 add_note: ユーザーに有益な注釈を追加...
@@ -92,6 +115,7 @@ multiple_files: 複数のファイル
 next: 次
 field_name: 項目名
 translations: 翻訳
+no_translations: 翻訳なし
 note: 備考
 enter_a_value: 値を入力...
 length: 長さ
@@ -116,6 +140,8 @@ this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
 languages_collection: 言語コレクション
+label_import: インポート
+import_export: インポート / エクスポート
 format: 書式
 last_access: 最後にアクセスした日時
 a_unique_table_name: 重複しない名前をつけてください
@@ -126,6 +152,9 @@ move: 移動
 today: 今日
 yesterday: 昨日
 delete_comment: コメントの削除
+functions:
+  year: 年
+  month: 月
 minutes: 分
 hours: 時間
 month: 月
@@ -146,6 +175,7 @@ months:
   december: 12月
 cancel_crop: トリミングをキャンセル
 url: URL
+import_label: インポート
 file_details: ファイルの詳細
 size: サイズ
 modified: 修正されました
@@ -233,6 +263,7 @@ unexpected_error: 予期しないエラーが発生しました
 back: 戻る
 rotate: 回転
 all_users: すべてのユーザー
+goto_collection_content: コンテンツを表示
 one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
@@ -275,6 +306,7 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+flow_name: 名前
 dashboard: ダッシュボード
 dashboard_delete_confirm: このダッシュボードを削除してよろしいですか？この操作を取り消すことはできません。
 edit_dashboard: ダッシュボードを編集
@@ -330,6 +362,7 @@ batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
 collections: コレクション
+content: コンテンツ
 singleton: シングルトン
 singleton_label: シングルオブジェクトに設定する
 fields:
@@ -488,12 +521,16 @@ interfaces:
     icon: アイコン
   system-folder:
     folder: フォルダ
+  list:
+    sort: 並べ替え
   tags:
     tags: タグ
   translations:
     no_collection: コレクションがありません
   user:
     user: ユーザー
+  system-token:
+    system-token: トークン
 displays:
   translations:
     translations: 翻訳
@@ -530,8 +567,12 @@ layouts:
     subtitle: サブタイトル
   tabular:
     tabular: テーブル
-    fields: 入力欄
     spacing: 間隔
     comfortable: 広め
     compact: コンパクト
     cozy: 普通
+operations:
+  notification:
+    recipient: ユーザー
+  request:
+    url: URL

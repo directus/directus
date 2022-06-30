@@ -24,6 +24,8 @@ get:
                 type: array
                 items:
                   $ref: '../../openapi.yaml#/components/schemas/Roles'
+              meta:
+                $ref: '../../openapi.yaml#/components/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
@@ -46,7 +48,7 @@ post:
             description:
               description: Description of the role.
               type: string
-            enforce_2fa:
+            enforce_tfa:
               description: Whether or not this role enforces the use of 2FA.
               type: boolean
             external_id:

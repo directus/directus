@@ -1,6 +1,7 @@
 ---
 avatar: Nuotrauka
 edit_field: Redaguoti lauką
+location: Vietovė
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
@@ -39,7 +40,6 @@ delete_folder: Trinti aplanką
 prefix: Priešdėlis
 suffix: Priesaga
 reset_bookmark: Atstatyti skirtuką
-rename_bookmark: Pervadinti žymę
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
 delete_bookmark_copy: >-
@@ -68,7 +68,6 @@ recommended_defaults: Rekomenduojami "Pagal nutylėjimą"
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
-unknown_validation_errors: 'Šie paslėpti laukai turi validavimo klaidų:'
 validationError:
   eq: Reikšmė turi būti {valid}
   neq: Reikšmė negali būti {invalid}
@@ -231,7 +230,6 @@ related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 languages_collection: Kalbų kolekcija
 format: Formatas
-use_current_filters_settings: Naudoti dabartinius filtrus ir nustatymus
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
 fill_template: Užpildyti reikšme iš ruošinio
@@ -247,6 +245,9 @@ interface_label: Sąsaja
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
+functions:
+  year: Metai
+  month: Mėnuo
 month: Mėnuo
 year: Metai
 select_all: Pažymėti visus
@@ -401,7 +402,6 @@ unexpected_error_copy: Nutiko nenumatyta klaida. Prašome pabandyti vėliau.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
 no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
-password_reset_sent: Išsiuntėme saugiai sugeneruotą nuorodą slaptažodžio atstatymui
 password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
 editing_image: Paveikslėlio redagavimas
@@ -416,8 +416,6 @@ delete_collection: Trinti kolekciją
 update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
 start_end_of_count_items: '{start}-{end} iš {count} elementų'
-delete_collection_are_you_sure: >-
-  Ar tikrai norite ištrinti tią kolekciją? Bus ištrinta visa kolekcija su jai priklausančiais elementais. Šio veiksmo atstatyti negalima.
 collections_shown: Rodomos kolekcijos
 visible_collections: Matomos kolekcijos
 hidden_collections: Paslėptos kolekcijos
@@ -506,6 +504,7 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+flow_name: Pavadinimas
 full_screen: Per visą ekraną
 width: Plotis
 height: Aukštis
@@ -858,6 +857,8 @@ interfaces:
     zoom: Padidinti
   system-folder:
     folder: Aplankas
+  list:
+    sort: Rūšiuoti
   tags:
     tags: Žymos
     whitespace: Matomi tarpai
@@ -870,7 +871,6 @@ interfaces:
     auto_formatter: Naudoti automatinį antraštės formatavimą
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
-    add_tags: Pridėti žymes...
   boolean:
     toggle: Perjungti
     color_on: Spalva, kai įjungta
@@ -919,6 +919,7 @@ displays:
     short: Trumpas
     relative: Santykinis
     relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
+    suffix: Priesaga
   file:
     file: Failas
     description: Rodyti failus
@@ -977,3 +978,8 @@ layouts:
 panels:
   label:
     name: Žyma
+operations:
+  notification:
+    recipient: Vartotojas
+  request:
+    url: URL

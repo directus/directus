@@ -93,7 +93,7 @@ import {
 } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual, debounce } from 'lodash';
-import drawLayers from './style';
+import { getMapStyle } from './style';
 const activeLayers = [
 	'directus-point',
 	'directus-line',
@@ -350,7 +350,7 @@ export default defineComponent({
 
 		function getDrawOptions(type: GeometryType): any {
 			const options = {
-				styles: drawLayers,
+				styles: getMapStyle(),
 				controls: {},
 				userProperties: true,
 				displayControlsDefault: false,

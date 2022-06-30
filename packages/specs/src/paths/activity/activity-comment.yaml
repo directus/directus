@@ -38,7 +38,7 @@ delete:
     - $ref: '../../openapi.yaml#/components/parameters/Id'
   responses:
     '203':
-      description: Deleted succsessfully
+      description: Deleted successfully
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':

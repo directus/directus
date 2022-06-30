@@ -25,7 +25,7 @@ $ npm install @directus/format-title
 
 ## Usage
 
-The package by default converts camelCase, PascalCase, underscore, and "regular" scentences to
+The package by default converts camelCase, PascalCase, underscore, and "regular" sentences to
 [Title Case](http://www.grammar-monster.com/lessons/capital_letters_title_case.htm)
 
 ```js

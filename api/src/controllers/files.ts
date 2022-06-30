@@ -1,6 +1,7 @@
 import formatTitle from '@directus/format-title';
-import Busboy, { BusboyHeaders } from 'busboy';
-import express from 'express';
+import { toArray } from '@directus/shared/utils';
+import Busboy from 'busboy';
+import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env';
@@ -11,20 +12,18 @@ import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { toArray } from '@directus/shared/utils';
 
 const router = express.Router();
 
 router.use(useCollection('directus_files'));
 
-const multipartHandler = asyncHandler(async (req, res, next) => {
-	if (req.is('multipart/form-data') === false)
-		throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+export const multipartHandler: RequestHandler = (req, res, next) => {
+	if (req.is('multipart/form-data') === false) return next();
 
-	let headers: BusboyHeaders;
+	let headers;
 
 	if (req.headers['content-type']) {
-		headers = req.headers as BusboyHeaders;
+		headers = req.headers;
 	} else {
 		headers = {
 			...req.headers,
@@ -32,7 +31,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		};
 	}
 
-	const busboy = new Busboy({ headers });
+	const busboy = Busboy({ headers });
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
@@ -62,7 +61,11 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		payload[fieldname] = fieldValue;
 	});
 
-	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+	busboy.on('file', async (_fieldname, fileStream, { filename, mimeType }) => {
+		if (!filename) {
+			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
+		}
+
 		fileCount++;
 
 		if (!payload.title) {
@@ -76,7 +79,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		} = {
 			...payload,
 			filename_download: filename,
-			type: mimetype,
+			type: mimeType,
 			storage: payload.storage || disk,
 		};
 
@@ -96,7 +99,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		next(error);
 	});
 
-	busboy.on('finish', () => {
+	busboy.on('close', () => {
 		tryDone();
 	});
 
@@ -104,16 +107,24 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 
 	function tryDone() {
 		if (savedFiles.length === fileCount) {
+			if (fileCount === 0) {
+				return next(new InvalidPayloadException(`No files where included in the body`));
+			}
+
 			res.locals.savedFiles = savedFiles;
 			return next();
 		}
 	}
-});
+};
 
 router.post(
 	'/',
-	multipartHandler,
+	asyncHandler(multipartHandler),
 	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false) {
+			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+		}
+
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -247,7 +258,9 @@ router.patch(
 
 		let keys: PrimaryKey[] = [];
 
-		if (req.body.keys) {
+		if (Array.isArray(req.body)) {
+			keys = await service.updateBatch(req.body);
+		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
 			keys = await service.updateByQuery(req.body.query, req.body.data);
@@ -271,7 +284,7 @@ router.patch(
 
 router.patch(
 	'/:pk',
-	multipartHandler,
+	asyncHandler(multipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability,

@@ -14,7 +14,7 @@
 				outlined
 				@click="$emit('toggle:sidebar')"
 			>
-				<v-icon name="info" outline />
+				<v-icon name="info" />
 			</v-button>
 
 			<slot />

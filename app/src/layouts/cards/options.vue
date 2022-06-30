@@ -15,7 +15,7 @@
 	</div>
 
 	<v-detail class="field">
-		<template #title>{{ t('layout_setup') }}</template>
+		<template #title>{{ t('advanced') }}</template>
 
 		<div class="nested-options">
 			<div class="field">

@@ -162,6 +162,7 @@ body {
 	.chip-content {
 		display: inline-flex;
 		align-items: center;
+		white-space: nowrap;
 
 		.close-outline {
 			position: relative;

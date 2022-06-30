@@ -14,7 +14,8 @@
 		"baseUrl": ".",
 		"types": ["vite/client", "jest"],
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["src/*"],
+			"preact/*": ["stub/empty.d.ts"]
 		},
 		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
 	},

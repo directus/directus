@@ -1,5 +1,6 @@
 ---
 avatar: 頭像
+application: 應用程式
 default_provider: 預設
 published: 已發佈
 draft: 草稿
@@ -7,6 +8,7 @@ archived: 已封存
 modules: 模組
 edit_field: 編輯欄位
 conditions: 條件
+location: 位置
 item_revision: 項目修改
 enter_a_name: 輸入名稱...
 duplicate_field: 複製欄位
@@ -35,6 +37,7 @@ create_webhook: 建立 Webhook
 invite_users: 邀請用戶
 invite: 邀请
 email_already_invited: 此電郵 "{email}" 已被邀請
+inbox: 收件匣
 emails: 信件
 connection_excellent: 優秀的連接
 connection_good: 好的連接
@@ -46,7 +49,6 @@ delete_folder: 刪除資料夾
 prefix: 前綴
 suffix: 後綴
 reset_bookmark: 重設書籤
-rename_bookmark: 重新命名書籤
 update_bookmark: 更新書籤
 delete_bookmark: 刪除書籤
 delete_bookmark_copy: >-
@@ -71,7 +73,6 @@ reset_system_permissions_copy: 此動作會取代你先前自設的系統權限�
 unarchive: 取消封存
 unarchive_confirm: 您確定要解除封存這個項目嗎？
 nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
-unknown_validation_errors: '下列的隱藏欄位驗證錯誤：'
 validationError:
   eq: 值必須為 {valid}
   neq: 值不能為 {invalid}
@@ -126,8 +127,10 @@ field_create_success: '建立欄位: "{field}"'
 field_update_success: '更新欄位: "{field}"'
 duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
+language_placeholder: 選擇語言...
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
+camera: 相機
 show_zero: 顯示零值
 sum: 總和
 avg: 平均
@@ -222,9 +225,11 @@ this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
 languages_collection: 語系集合
+import_data_input_placeholder: CSV 或 JSON...
+import_data_button: 開始匯入
+import_data_indeterminate: 正在匯入資料...
 label_import: 匯入
 format: 格式
-use_current_filters_settings: 使用當前篩選器及設置
 last_page: 最後一頁
 last_access: 最後存取
 fill_template: 使用範本填充
@@ -240,6 +245,10 @@ interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
+functions:
+  year: 年
+  month: 月
+  count: 數量
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 minutes: 分
@@ -395,7 +404,6 @@ bookmarks: 書籤
 unexpected_error: 未預期的錯誤
 unexpected_error_copy: 發生意外的錯誤，請稍後再試。
 copy_details: 複製詳細資訊
-password_reset_sent: 我們已經把重設密碼連結寄到您的電子信箱
 password_reset_successful: 密碼重設成功
 back: 返回
 editing_image: 編輯圖像
@@ -409,8 +417,6 @@ delete_collection: 刪除集合
 update_collection_success: 已更新集合
 delete_collection_success: 已刪除集合
 start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
-delete_collection_are_you_sure: >-
-  是否確認要刪除此集合？這將刪除集合及其中的所有項目。此操作是永久性的。
 visible_collections: 可見集合
 hidden_collections: 隱藏集合
 unmanaged_collections: 未配置集合
@@ -462,6 +468,7 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
+flow_name: 名稱
 width: 寬度
 height: 高度
 wysiwyg_options:
@@ -741,6 +748,8 @@ interfaces:
     zoom: 縮放
   system-folder:
     folder: 資料夾
+  list:
+    sort: 排序
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -753,7 +762,6 @@ interfaces:
     auto_formatter: 使用標題自動格式化
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
-    add_tags: 新增標籤...
   boolean:
     toggle: 切換
     label_default: 已啟用
@@ -781,6 +789,7 @@ displays:
     format: 格式
     long: 長
     short: 短
+    suffix: 後綴
   file:
     file: 檔案
     description: 顯示檔案
@@ -836,8 +845,12 @@ layouts:
     subtitle: 副標題
   tabular:
     tabular: 表格
-    fields: 欄位
     spacing: 間距
     comfortable: 舒適
     compact: 精簡
     cozy: 自在
+operations:
+  notification:
+    recipient: 用戶
+  request:
+    url: URL

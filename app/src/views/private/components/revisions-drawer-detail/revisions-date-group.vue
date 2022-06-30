@@ -12,29 +12,17 @@
 	</v-detail>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 
 import RevisionItem from './revision-item.vue';
 
-export default defineComponent({
-	components: { RevisionItem },
-	props: {
-		group: {
-			type: Object,
-			required: true,
-		},
-	},
-	emits: ['click'],
-	setup() {
-		const expand = ref(true);
-		return { expand };
-	},
-});
-</script>
-
-<style scoped>
-.revisions-date-group .scroll-container {
-	padding-bottom: 24px;
+interface Props {
+	group: Record<string, any>;
 }
-</style>
+
+defineProps<Props>();
+defineEmits(['click']);
+
+const expand = ref(true);
+</script>

@@ -28,7 +28,7 @@ export default defineInterface({
 							name: '$t:label',
 							meta: {
 								width: 'full',
-								interface: 'input',
+								interface: 'system-input-translated-string',
 								options: {
 									placeholder: '$t:label',
 								},

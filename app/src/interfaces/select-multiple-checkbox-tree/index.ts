@@ -10,7 +10,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 		name: '$t:text',
 		meta: {
 			width: 'half',
-			interface: 'input',
+			interface: 'system-input-translated-string',
 			options: {
 				placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
 			},

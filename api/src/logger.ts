@@ -4,6 +4,7 @@ import pinoHTTP, { stdSerializers } from 'pino-http';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { URL } from 'url';
 import env from './env';
+import { toArray } from '@directus/shared/utils';
 
 const pinoOptions: LoggerOptions = {
 	level: env.LOG_LEVEL || 'info',
@@ -24,7 +25,7 @@ const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
 if (loggerEnvConfig.levels) {
 	const customLogLevels: { [key: string]: string } = {};
 
-	for (const el of loggerEnvConfig.levels.split(',')) {
+	for (const el of toArray(loggerEnvConfig.levels)) {
 		const key_val = el.split(':');
 		customLogLevels[key_val[0].trim()] = key_val[1].trim();
 	}
