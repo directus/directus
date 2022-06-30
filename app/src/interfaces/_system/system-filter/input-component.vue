@@ -134,12 +134,12 @@ export default defineComponent({
 			switch (props.type) {
 				case 'integer':
 				case 'bigInteger':
-					return '[+-]?[0-9]+';
+					return '^[+-]?[0-9]+$';
 				case 'decimal':
 				case 'float':
-					return '[+-]?[0-9]+\\.?[0-9]*';
+					return '^[+-]?[0-9]+\\.?[0-9]*$';
 				case 'uuid':
-					return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+					return '^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$';
 				default:
 					return '';
 			}
@@ -152,7 +152,7 @@ export default defineComponent({
 		return { displayValue, width, t, emitValue, inputEl, inputPattern, dateTimeMenu };
 
 		function emitValue(val: unknown) {
-			const mustache = new RegExp(/({{.*?}})/g);
+			const mustache = new RegExp(/^({{.*?}})$/);
 
 			if (val === '') {
 				return emit('input', null);
@@ -161,7 +161,7 @@ export default defineComponent({
 			if (
 				typeof val === 'string' &&
 				['bigInteger', 'integer', 'float', 'decimal'].includes(props.type) &&
-				val.match(mustache)
+				mustache.test(val)
 			) {
 				return emit('input', val);
 			}
