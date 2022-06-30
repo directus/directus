@@ -432,7 +432,8 @@ export default defineComponent({
 
 			if (newValue === emittedValue) return;
 
-			emit('input', (emittedValue = newValue));
+			emittedValue = newValue;
+			emit('input', newValue);
 		}
 
 		function setupContentWatcher() {
