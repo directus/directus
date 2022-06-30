@@ -151,28 +151,21 @@ export default defineComponent({
 
 		return { displayValue, width, t, emitValue, inputEl, inputPattern, dateTimeMenu };
 
-		function emitValue(val: unknown) {
+		function emitValue(val: string) {
 			const mustache = new RegExp(/({{.*?}})/g);
 
 			if (val === '') {
 				return emit('input', null);
 			}
 
-			if (
-				['bigInteger', 'integer', 'float', 'decimal'].includes(props.type) &&
-				typeof val === 'string' &&
-				val.match(mustache)
-			) {
+			if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type) && val.match(mustache)) {
 				return emit('input', val);
 			}
 
-			if (
-				typeof val === 'string' &&
-				['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix))
-			) {
+			if (['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix))) {
 				return emit('input', val);
 			}
-			if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
+			if (new RegExp(inputPattern.value).test(val)) {
 				return emit('input', val);
 			}
 		}
