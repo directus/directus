@@ -1422,6 +1422,12 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 start: Start
+table: Table
+list: List
+search_filter: Search & Filter
+enable_search_filter: Enable searching & filtering
+item_link: Item link
+show_link_to_item: Show a link to the item
 interfaces:
   filter:
     name: Filter

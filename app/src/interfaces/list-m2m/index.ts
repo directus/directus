@@ -83,7 +83,7 @@ export default defineInterface({
 		return [
 			{
 				field: 'layout',
-				name: 'Layout',
+				name: '$t:layout',
 				schema: {
 					default_value: 'list',
 				},
@@ -92,11 +92,11 @@ export default defineInterface({
 					options: {
 						choices: [
 							{
-								text: 'List',
+								text: '$t:list',
 								value: 'list',
 							},
 							{
-								text: 'Table',
+								text: '$t:table',
 								value: 'table',
 							},
 						],
@@ -168,28 +168,28 @@ export default defineInterface({
 			},
 			{
 				field: 'enableSearchFilter',
-				name: 'Search & Filter',
+				name: '$t:search_filter',
 				schema: {
 					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',
 					options: {
-						label: 'Enable searching & filtering',
+						label: '$t:enable_search_filter',
 					},
 					width: 'half',
 				},
 			},
 			{
 				field: 'enableLink',
-				name: 'Item Link',
+				name: '$t:item_link',
 				schema: {
 					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',
 					options: {
-						label: 'Show a link to the item',
+						label: '$t:show_link_to_item',
 					},
 					width: 'half',
 				},
