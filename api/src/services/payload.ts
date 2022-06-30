@@ -1,6 +1,6 @@
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
-import { format } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 import { unflatten } from 'flat';
 import Joi from 'joi';
 import { Knex } from 'knex';
@@ -27,9 +27,6 @@ type Transformers = {
 		helpers: Helpers;
 	}) => Promise<any>;
 };
-
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}/;
-const DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
 
 /**
  * Process a given payload for a collection to ensure the special fields (hash, uuid, date etc) are
@@ -322,31 +319,19 @@ export class PayloadService {
 				} else {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
-							if (!DATE_REGEX.test(value)) {
+							const parsedDate = parseISO(value);
+							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
 							}
-							const [date] = value.split('T');
-							const [year, month, day] = date.split('-');
-
-							payload[name] = new Date(Number(year), Number(month) - 1, Number(day));
+							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'dateTime') {
-							if (!DATETIME_REGEX.test(value)) {
+							const parsedDate = parseISO(value);
+							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
 							}
-							const [date, time] = value.split('T');
-							const [year, month, day] = date.split('-');
-							const [hours, minutes, seconds] = time.substring(0, 8).split(':');
-
-							payload[name] = new Date(
-								Number(year),
-								Number(month) - 1,
-								Number(day),
-								Number(hours),
-								Number(minutes),
-								Number(seconds)
-							);
+							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'timestamp') {
