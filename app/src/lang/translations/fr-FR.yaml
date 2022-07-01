@@ -1735,6 +1735,7 @@ displays:
     short: Court
     relative: Relatif
     relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
+    suffix: Suffixe
   file:
     file: Fichier
     description: Afficher les fichiers
@@ -2010,6 +2011,7 @@ operations:
     description: Lire les éléments de la base de données
     key: IDs
     query: Requête
+    emit_events: Émettre des événements
   item-update:
     name: Mettre à jour les données
     description: Mettre à jour les éléments de la base de données

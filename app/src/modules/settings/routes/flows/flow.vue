@@ -76,17 +76,17 @@
 				:hovered-panel="hoveredPanelID"
 				:subdued="flow.status === 'inactive'"
 			/>
-			<v-workspace :panels="panels" :edit-mode="editMode">
-				<template #panel="{ panel }">
+			<v-workspace :tiles="panels" :edit-mode="editMode">
+				<template #tile="{ tile }">
 					<operation
 						v-if="flow"
 						:edit-mode="editMode"
-						:panel="panel"
-						:type="panel.id === '$trigger' ? 'trigger' : 'operation'"
-						:parent="parentPanels[panel.id]"
+						:panel="tile"
+						:type="tile.id === '$trigger' ? 'trigger' : 'operation'"
+						:parent="parentPanels[tile.id]"
 						:flow="flow"
 						:panels-to-be-deleted="panelsToBeDeleted"
-						:is-hovered="hoveredPanelID === panel.id"
+						:is-hovered="hoveredPanelID === tile.id"
 						:subdued="flow.status === 'inactive'"
 						@create="createPanel"
 						@edit="editPanel"

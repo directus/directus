@@ -1,5 +1,4 @@
-import { defineOperationApi } from '@directus/shared/utils';
-import { parseJSON } from '../../utils/parse-json';
+import { defineOperationApi, parseJSON } from '@directus/shared/utils';
 
 type Options = {
 	json: string;

@@ -29,6 +29,7 @@ draft: Návrh
 archived: Archivováno
 modules: Moduly
 module_bar: Panel modulů
+logs: Logy
 reset_width: Obnovit šířku
 tile_size: Velikost dlaždice
 edit_field: Upravit pole
@@ -716,7 +717,7 @@ replace_file: Nahradit soubor
 no_results: Bez výsledků
 no_results_copy: Upravte nebo vymažte vyhledávací filtry pro zobrazení výsledků.
 clear_filters: Vymazat filtry
-saves_automatically: Automaticky uložit
+saves_automatically: Ukládá se automaticky
 role: Role
 edit_role: Upravit roli
 rule: Pravidlo
@@ -1554,7 +1555,7 @@ interfaces:
     add_tags: Přidat značku a stiskněte Enter...
   input:
     input: Vstup
-    description: Ručně zadejte hodnotu
+    description: Ruční zadat hodnotu
     trim: Oříznout
     trim_label: Oříznout začátek a konec
     mask: Maskovaná
@@ -1674,6 +1675,7 @@ displays:
     short: Krátký
     relative: Relativní
     relative_label: 'Zobrazit relativní čas, např.: před 5 minutami'
+    suffix: Přípona
   file:
     file: Soubor
     description: Zobrazit soubory

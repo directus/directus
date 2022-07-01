@@ -10,16 +10,24 @@ export default defineDisplay({
 	icon: 'flag',
 	component: DisplayLabels,
 	handler: (value, options, { interfaceOptions }) => {
-		const configuredChoice =
-			options?.choices?.find((choice: { value: string }) => choice.value === value) ??
-			interfaceOptions?.choices?.find((choice: { value: string }) => choice.value === value);
-
-		if (configuredChoice) {
-			const { text } = translate(configuredChoice);
-			return text;
+		if (Array.isArray(value)) {
+			return value.map((val) => getConfiguredChoice(val)).join(', ');
+		} else {
+			return getConfiguredChoice(value);
 		}
 
-		return value;
+		function getConfiguredChoice(val: string) {
+			const configuredChoice =
+				options?.choices?.find((choice: { value: string }) => choice.value === val) ??
+				interfaceOptions?.choices?.find((choice: { value: string }) => choice.value === val);
+
+			if (configuredChoice) {
+				const { text } = translate(configuredChoice);
+				return text ? text : val;
+			}
+
+			return val;
+		}
 	},
 	options: [
 		{

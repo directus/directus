@@ -8,18 +8,21 @@
 		/>
 		<template v-for="(field, index) in formFields">
 			<component
-				:is="`interface-${field.meta?.interface || 'group-standard'}`"
-				v-if="field.meta?.special?.includes('group')"
-				v-show="!field.meta?.hidden"
+				:is="`interface-${fieldsMeta[field.field]?.interface || 'group-standard'}`"
+				v-if="fieldsMeta[field.field]?.special?.includes('group')"
+				v-show="!fieldsMeta[field.field]?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[field.field] = el;
 					}
 				"
-				:key="field.field"
-				:class="[field.meta?.width || 'full', index === firstVisibleFieldIndex ? 'first-visible-field' : '']"
+				:key="field.field + '_group'"
+				:class="[
+					fieldsMeta[field.field]?.width || 'full',
+					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+				]"
 				:field="field"
-				:fields="fieldsForGroup[index]"
+				:fields="fieldsForGroup[index] || []"
 				:values="modelValue || {}"
 				:initial-values="initialValues || {}"
 				:disabled="disabled"
@@ -29,18 +32,18 @@
 				:loading="loading"
 				:validation-errors="validationErrors"
 				:badge="badge"
-				v-bind="field.meta?.options || {}"
+				v-bind="fieldsMeta[field.field]?.options || {}"
 				@apply="apply"
 			/>
 
 			<form-field
-				v-else-if="!field.meta?.hidden"
+				v-else-if="!fieldsMeta[field.field]?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[field.field] = el;
 					}
 				"
-				:key="field.field"
+				:key="field.field + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="field"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
@@ -54,7 +57,7 @@
 				:validation-error="
 					validationErrors.find(
 						(err) =>
-							err.collection === field.collection &&
+							err.collection === field?.collection &&
 							(err.field === field.field || err.field.endsWith(`(${field.field})`))
 					)
 				"
@@ -74,9 +77,9 @@ import useFormFields from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { Field, ValidationError } from '@directus/shared/types';
+import { Field, FieldMeta, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -185,7 +188,7 @@ export default defineComponent({
 			formFieldEls.value = {};
 		});
 
-		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
+		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, fieldsMeta } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
 		const firstEditableFieldIndex = computed(() => {
@@ -237,6 +240,7 @@ export default defineComponent({
 			isDisabled,
 			scrollToField,
 			formFieldEls,
+			fieldsMeta,
 		};
 
 		function useForm() {
@@ -257,10 +261,16 @@ export default defineComponent({
 				}, {} as Record<string, any>);
 			});
 
-			const fieldsParsed = computed(() => {
-				if (props.group !== null) return fields.value;
+			const fieldsMeta = computed(() => {
+				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-				const setPrimaryKeyReadonly = (field: Field) => {
+				return fields.value.reduce((result: Record<string, FieldMeta>, field: Field) => {
+					const { meta } = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+					if (meta) result[meta.field] = meta;
+					return result;
+				}, {} as Record<string, FieldMeta>);
+
+				function setPrimaryKeyReadonly(field: Field) {
 					if (
 						field.schema?.has_auto_increment === true ||
 						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
@@ -272,44 +282,45 @@ export default defineComponent({
 					}
 
 					return field;
-				};
-
-				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
-
-				return fields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
+				}
 			});
 
 			const fieldsInGroup = computed(() =>
-				fieldsParsed.value.filter(
-					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
+				fields.value.filter(
+					(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 				)
 			);
 
 			const { formFields } = useFormFields(fieldsInGroup);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta?.field)));
+			const fieldsForGroup = computed(() =>
+				formFields.value.map((field: Field) => getFieldsForGroup(field.meta?.field || null))
+			);
 
-			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
+			return { formFields, fieldsMeta, isDisabled, getFieldsForGroup, fieldsForGroup };
 
 			function isDisabled(field: Field) {
+				const meta = fieldsMeta.value?.[field.field];
 				return (
 					props.loading ||
 					props.disabled === true ||
-					field.meta?.readonly === true ||
+					meta?.readonly === true ||
 					field.schema?.is_generated === true ||
 					(props.batchMode && batchActiveFields.value.includes(field.field) === false)
 				);
 			}
 
 			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
-				const fieldsInGroup: Field[] = fieldsParsed.value.filter(
-					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
-				);
+				const fieldsInGroup: Field[] = fields.value.filter((field) => {
+					const meta = fieldsMeta.value?.[field.field];
+					return meta?.group === group || (group === null && isNil(meta));
+				});
 
 				for (const field of fieldsInGroup) {
-					if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
-						passed.push(field.meta!.field);
-						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
+					const meta = fieldsMeta.value?.[field.field];
+					if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
+						passed.push(meta!.field);
+						fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
 					}
 				}
 
