@@ -357,7 +357,13 @@ export function applyFilter(
 
 					if (!columnName) continue;
 
-					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+					if (relation?.related_collection) {
+						applyFilterToQuery(columnName, filterOperator, filterValue, logical, relation.related_collection); // m2o
+					} else if (filterPath[0].includes(':')) {
+						applyFilterToQuery(columnName, filterOperator, filterValue, logical, filterPath[0].split(':')[1]); // a2o
+					} else {
+						applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+					}
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
@@ -394,7 +400,13 @@ export function applyFilter(
 				}
 			}
 		}
-		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
+		function applyFilterToQuery(
+			key: string,
+			operator: string,
+			compareValue: any,
+			logical: 'and' | 'or' = 'and',
+			originalCollectionName?: string
+		) {
 			const [table, column] = key.split('.');
 
 			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
@@ -424,6 +436,18 @@ export function applyFilter(
 				});
 			}
 
+			// The following fields however, require a value to be run. If no value is passed, we
+			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
+			// conditionally build out your filter structure (#4471)
+			if (compareValue === undefined) return;
+
+			if (Array.isArray(compareValue)) {
+				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined].
+				// We need to remove any undefined values, as they are useless
+				compareValue = compareValue.filter((val) => val !== undefined);
+			}
+
 			// Cast filter value (compareValue) based on function used
 			if (column.includes('(') && column.includes(')')) {
 				const functionName = column.split('(')[0] as FieldFunction;
@@ -436,9 +460,10 @@ export function applyFilter(
 
 			// Cast filter value (compareValue) based on type of field being filtered against
 			const [collection, field] = key.split('.');
+			const mappedCollection = originalCollectionName || collection;
 
-			if (collection in schema.collections && field in schema.collections[collection].fields) {
-				const type = schema.collections[collection].fields[field].type;
+			if (mappedCollection in schema.collections && field in schema.collections[mappedCollection].fields) {
+				const type = schema.collections[mappedCollection].fields[field].type;
 
 				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
 					if (Array.isArray(compareValue)) {
@@ -455,18 +480,6 @@ export function applyFilter(
 						compareValue = Number(compareValue);
 					}
 				}
-			}
-
-			// The following fields however, require a value to be run. If no value is passed, we
-			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
-			// conditionally build out your filter structure (#4471)
-			if (compareValue === undefined) return;
-
-			if (Array.isArray(compareValue)) {
-				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
-				// reported as [undefined].
-				// We need to remove any undefined values, as they are useless
-				compareValue = compareValue.filter((val) => val !== undefined);
 			}
 
 			if (operator === '_eq') {

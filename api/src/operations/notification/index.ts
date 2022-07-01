@@ -1,7 +1,6 @@
 import { Accountability } from '@directus/shared/types';
-import { defineOperationApi } from '@directus/shared/utils';
+import { defineOperationApi, optionToString } from '@directus/shared/utils';
 import { NotificationsService } from '../../services';
-import { optionToString } from '../../utils/operation-options';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
 
 type Options = {

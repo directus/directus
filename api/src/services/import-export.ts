@@ -1,5 +1,5 @@
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
 import destroyStream from 'destroy';
@@ -22,7 +22,6 @@ import {
 import logger from '../logger';
 import { AbstractServiceOptions, File } from '../types';
 import { getDateFormatted } from '../utils/get-date-formatted';
-import { parseJSON } from '../utils/parse-json';
 import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
@@ -39,7 +38,7 @@ export class ImportService {
 	}
 
 	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream): Promise<void> {
-		if (collection.startsWith('directus_')) throw new ForbiddenException();
+		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
 
 		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create'
@@ -128,7 +127,11 @@ export class ImportService {
 							} else {
 								try {
 									const parsedJson = parseJSON(value);
-									set(result, key, parsedJson);
+									if (typeof parsedJson === 'number') {
+										set(result, key, value);
+									} else {
+										set(result, key, parsedJson);
+									}
 								} catch {
 									set(result, key, value);
 								}

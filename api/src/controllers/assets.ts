@@ -1,4 +1,5 @@
 import { Range } from '@directus/drive';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import helmet from 'helmet';
 import { merge, pick } from 'lodash';
@@ -12,14 +13,13 @@ import { AssetsService, PayloadService } from '../services';
 import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
-import { parseJSON } from '../utils/parse-json';
 
 const router = Router();
 
 router.use(useCollection('directus_files'));
 
 router.get(
-	'/:pk',
+	'/:pk/:filename?',
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
@@ -155,7 +155,7 @@ router.get(
 
 		const access = req.accountability?.role ? 'private' : 'public';
 
-		res.attachment(file.filename_download);
+		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);

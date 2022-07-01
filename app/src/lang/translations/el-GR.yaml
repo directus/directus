@@ -325,6 +325,8 @@ interfaces:
 displays:
   collection:
     collection: Συλλογή
+  datetime:
+    suffix: Επίθεμα
   file:
     file: Αρχείο
   formatted-value:

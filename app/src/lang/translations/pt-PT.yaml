@@ -675,6 +675,8 @@ interfaces:
     zoom: Zoom
   system-folder:
     folder: Pasta
+  list:
+    sort: Ordenar
   tags:
     tags: Etiquetas
   boolean:
@@ -694,6 +696,7 @@ displays:
     collection: Coleção
   datetime:
     format: Formatar
+    suffix: Sufixo
   formatted-value:
     format: Formatar
     prefix: Prefixo

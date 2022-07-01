@@ -168,6 +168,8 @@ interfaces:
   input-rich-text-html:
     folder_note: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
 displays:
+  datetime:
+    suffix: Eftirskoyti
   formatted-value:
     prefix: Forskoyti
     suffix: Eftirskoyti

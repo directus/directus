@@ -29,14 +29,19 @@ export class Emitter {
 		context: EventContext
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
-		const listeners = events.flatMap((event) => this.filterEmitter.listeners(event) as FilterHandler<T>[]);
+		const eventListeners = events.map((event) => ({
+			event,
+			listeners: this.filterEmitter.listeners(event) as FilterHandler<T>[],
+		}));
 
 		let updatedPayload = payload;
-		for (const listener of listeners) {
-			const result = await listener(updatedPayload, meta, context);
+		for (const { event, listeners } of eventListeners) {
+			for (const listener of listeners) {
+				const result = await listener(updatedPayload, { event, ...meta }, context);
 
-			if (result !== undefined) {
-				updatedPayload = result;
+				if (result !== undefined) {
+					updatedPayload = result;
+				}
 			}
 		}
 
@@ -47,7 +52,7 @@ export class Emitter {
 		const events = Array.isArray(event) ? event : [event];
 
 		for (const event of events) {
-			this.actionEmitter.emitAsync(event, meta, context).catch((err) => {
+			this.actionEmitter.emitAsync(event, { event, ...meta }, context).catch((err) => {
 				logger.warn(`An error was thrown while executing action "${event}"`);
 				logger.warn(err);
 			});
@@ -56,7 +61,7 @@ export class Emitter {
 
 	public async emitInit(event: string, meta: Record<string, any>): Promise<void> {
 		try {
-			await this.initEmitter.emitAsync(event, meta);
+			await this.initEmitter.emitAsync(event, { event, ...meta });
 		} catch (err: any) {
 			logger.warn(`An error was thrown while executing init "${event}"`);
 			logger.warn(err);

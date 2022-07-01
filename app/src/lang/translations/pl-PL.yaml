@@ -1591,6 +1591,8 @@ interfaces:
     description: Utwórz wiele wpisów o tej samej strukturze
     edit_fields: Edytuj pola
     add_label: 'Etykieta "Utwórz nowy"'
+    sort: Sortuj
+    sort_placeholder: Ręcznie
     field_name_placeholder: Wprowadź nazwę pola...
     field_note_placeholder: Wprowadź opis pola...
     incompatible_data: Bieżące dane nie są kompatybilne z interfejsem iteratora i zostaną nadpisane podczas dodawania elementów do iteratora
@@ -1645,6 +1647,9 @@ interfaces:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
     toggle_split_view: Przełącz widok dzielony
+    enable: Włącz
+    user_language: Użyj bieżącego języka użytkownika
+    default_language: Domyślny język
     language_field: Pole identyfikacji języka
   list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
@@ -1731,6 +1736,7 @@ displays:
     short: Krótki
     relative: Względny
     relative_label: 'Pokaż czas względny, np. 5 minut temu'
+    suffix: Przyrostek
   file:
     file: Plik
     description: Wyświetl pliki
@@ -1998,6 +2004,7 @@ operations:
   item-delete:
     name: Usuń dane
     description: Usuń elementy w bazie danych
+    emit_events: Wydaj wydarzenia
     key: ID
     query: Zapytanie
   item-read:
@@ -2005,9 +2012,11 @@ operations:
     description: Czytaj elementy z bazy danych
     key: ID
     query: Zapytanie
+    emit_events: Wydaj wydarzenia
   item-update:
     name: Aktualizuj dane
     description: Aktualizuj elementy w bazie danych
+    emit_events: Wydaj wydarzenia
     key: ID
     payload: Ładunek
     query: Zapytanie

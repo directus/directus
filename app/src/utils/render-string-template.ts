@@ -1,6 +1,11 @@
-import { render, renderFn, get } from 'micromustache';
-import { computed, ComputedRef, Ref, unref } from 'vue';
+import useAliasFields from '@/composables/use-alias-fields';
+import { getDisplay } from '@/displays';
+import { useFieldsStore } from '@/stores';
+import { DisplayConfig, Field } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { render, renderFn } from 'micromustache';
+import { computed, ComputedRef, Ref, ref, unref } from 'vue';
+import { get, set } from 'lodash';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
@@ -45,4 +50,55 @@ export function renderPlainStringTemplate(template: string, item?: Record<string
 	} catch {
 		return null;
 	}
+}
+
+export function renderDisplayStringTemplate(
+	collection: string,
+	template: string,
+	item: Record<string, any>
+): string | null {
+	const fieldsStore = useFieldsStore();
+
+	const fields = getFieldsFromTemplate(template);
+
+	const fieldsUsed: Record<string, Field | null> = {};
+
+	for (const key of fields) {
+		set(fieldsUsed, key, fieldsStore.getField(collection, key));
+	}
+
+	const { aliasFields } = useAliasFields(ref(fields));
+
+	const parsedItem: Record<string, any> = {};
+
+	for (const key of fields) {
+		const value =
+			!aliasFields.value?.[key] || get(item, key) !== undefined
+				? get(item, key)
+				: get(item, aliasFields.value[key].fullAlias);
+
+		let display: DisplayConfig | undefined;
+
+		if (fieldsUsed[key]?.meta?.display) {
+			display = getDisplay(fieldsUsed[key]!.meta!.display);
+		}
+
+		if (value !== undefined && value !== null) {
+			set(
+				parsedItem,
+				key,
+				display?.handler
+					? display.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
+							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
+							field: fieldsUsed[key] ?? undefined,
+							collection: collection,
+					  })
+					: value
+			);
+		} else {
+			set(parsedItem, key, value);
+		}
+	}
+
+	return renderPlainStringTemplate(template, parsedItem);
 }

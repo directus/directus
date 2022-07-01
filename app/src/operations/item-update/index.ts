@@ -5,24 +5,30 @@ export default defineOperationApp({
 	icon: 'edit',
 	name: '$t:operations.item-update.name',
 	description: '$t:operations.item-update.description',
-	overview: ({ mode, collection, key }) => {
+	overview: ({ collection, key }) => {
 		const overviewItems = [
 			{
 				label: '$t:collection',
 				text: collection,
 			},
-		];
-
-		if (mode !== 'query') {
-			overviewItems.push({
+			{
 				label: '$t:operations.item-update.key',
-				text: key ? toArray(key).join(', ') : '--',
-			});
-		}
+				text: toArray(key).length > 0 ? toArray(key).join(', ') : '--',
+			},
+		];
 
 		return overviewItems;
 	},
 	options: [
+		{
+			field: 'collection',
+			name: '$t:collection',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'system-collection',
+			},
+		},
 		{
 			field: 'permissions',
 			name: '$t:permissions',
@@ -31,7 +37,7 @@ export default defineOperationApp({
 				default_value: '$trigger',
 			},
 			meta: {
-				width: 'full',
+				width: 'half',
 				interface: 'select-dropdown',
 				options: {
 					choices: [
@@ -53,12 +59,15 @@ export default defineOperationApp({
 			},
 		},
 		{
-			field: 'collection',
-			name: '$t:collection',
-			type: 'string',
+			field: 'emitEvents',
+			name: '$t:operations.item-update.emit_events',
+			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'system-collection',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{
@@ -71,16 +80,6 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'vpn_key',
 				},
-				conditions: [
-					{
-						rule: {
-							mode: {
-								_eq: 'query',
-							},
-						},
-						hidden: true,
-					},
-				],
 			},
 		},
 		{
@@ -128,16 +127,6 @@ export default defineOperationApp({
 						2
 					),
 				},
-				conditions: [
-					{
-						rule: {
-							mode: {
-								_neq: 'query',
-							},
-						},
-						hidden: true,
-					},
-				],
 			},
 		},
 	],

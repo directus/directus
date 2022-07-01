@@ -123,6 +123,8 @@ interfaces:
   presentation-links:
     primary: Үндсэн
 displays:
+  datetime:
+    suffix: Дагавар
   formatted-value:
     prefix: Угтвар
     suffix: Дагавар

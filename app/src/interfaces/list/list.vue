@@ -1,24 +1,24 @@
 <template>
 	<div class="repeater">
-		<v-notice v-if="(Array.isArray(value) && value.length === 0) || value == null">
+		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
 			{{ placeholder }}
 		</v-notice>
-		<v-notice v-else-if="!Array.isArray(value)" type="warning">
+		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
 			<p>{{ t('interfaces.list.incompatible_data') }}</p>
 		</v-notice>
 
-		<v-list v-if="Array.isArray(value) && value.length > 0">
+		<v-list v-if="Array.isArray(internalValue) && internalValue.length > 0">
 			<draggable
 				:disabled="disabled"
 				:force-fallback="true"
-				:model-value="value"
+				:model-value="internalValue"
 				item-key="id"
 				handle=".drag-handle"
 				@update:model-value="$emit('input', $event)"
 			>
 				<template #item="{ element, index }">
-					<v-list-item :dense="value.length > 4" block @click="openItem(index)">
-						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<v-list-item :dense="internalValue.length > 4" block @click="openItem(index)">
+						<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template :fields="fields" :item="{ ...defaults, ...element }" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
@@ -44,7 +44,7 @@
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="saveItem(active)">
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="saveItem(active!)">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -85,7 +85,7 @@ import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';
 import formatTitle from '@directus/format-title';
-import { isEqual } from 'lodash';
+import { isEqual, sortBy } from 'lodash';
 
 export default defineComponent({
 	components: { Draggable },
@@ -105,6 +105,10 @@ export default defineComponent({
 		addLabel: {
 			type: String,
 			default: () => i18n.global.t('create_new'),
+		},
+		sort: {
+			type: String,
+			default: null,
 		},
 		limit: {
 			type: Number,
@@ -172,12 +176,23 @@ export default defineComponent({
 			})
 		);
 
+		const internalValue = computed({
+			get: () => {
+				if (props.fields && props.sort) return sortBy(value.value, props.sort);
+				return value.value;
+			},
+			set: (newVal) => {
+				value.value = props.fields && props.sort ? sortBy(value.value, props.sort) : newVal;
+			},
+		});
+
 		const isNewItem = ref(false);
 		const edits = ref({});
 		const confirmDiscard = ref(false);
 
 		return {
 			t,
+			internalValue,
 			updateValues,
 			removeItem,
 			addNew,
@@ -205,7 +220,7 @@ export default defineComponent({
 		function openItem(index: number) {
 			isNewItem.value = false;
 
-			edits.value = { ...props.value[index] };
+			edits.value = { ...internalValue.value[index] };
 			active.value = index;
 		}
 
@@ -222,7 +237,7 @@ export default defineComponent({
 		}
 
 		function checkDiscard() {
-			if (active.value !== null && !isEqual(edits.value, props.value[active.value])) {
+			if (active.value !== null && !isEqual(edits.value, internalValue.value[active.value])) {
 				confirmDiscard.value = true;
 			} else {
 				closeDrawer();
@@ -235,20 +250,24 @@ export default defineComponent({
 		}
 
 		function updateValues(index: number, updatedValues: any) {
-			emitValue(
-				props.value.map((item: any, i: number) => {
-					if (i === index) {
-						return updatedValues;
-					}
+			const newValue = internalValue.value.map((item: any, i: number) => {
+				if (i === index) {
+					return updatedValues;
+				}
 
-					return item;
-				})
-			);
+				return item;
+			});
+
+			if (props.fields && props.sort) {
+				emitValue(sortBy(newValue, props.sort));
+			} else {
+				emitValue(newValue);
+			}
 		}
 
 		function removeItem(item: Record<string, any>) {
 			if (value.value) {
-				emitValue(props.value.filter((i) => i !== item));
+				emitValue(internalValue.value.filter((i) => i !== item));
 			} else {
 				emitValue(null);
 			}
@@ -263,10 +282,10 @@ export default defineComponent({
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
 
-			if (Array.isArray(props.value)) {
-				emitValue([...props.value, newDefaults]);
+			if (Array.isArray(internalValue.value)) {
+				emitValue([...internalValue.value, newDefaults]);
 			} else {
-				if (props.value != null) {
+				if (internalValue.value != null) {
 					// eslint-disable-next-line no-console
 					console.warn(
 						'The repeater interface expects an array as value, but the given value is no array. Overriding given value.'
@@ -277,7 +296,7 @@ export default defineComponent({
 			}
 
 			edits.value = { ...newDefaults };
-			active.value = (props.value || []).length;
+			active.value = (internalValue.value || []).length;
 		}
 
 		function emitValue(value: null | any[]) {
@@ -298,7 +317,7 @@ export default defineComponent({
 
 		function closeDrawer() {
 			if (isNewItem.value) {
-				emitValue(props.value.slice(0, -1));
+				emitValue(internalValue.value.slice(0, -1));
 			}
 
 			edits.value = {};

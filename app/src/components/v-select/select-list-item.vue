@@ -3,7 +3,7 @@
 
 	<v-list-item
 		v-else
-		:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
+		:active="isActive"
 		:disabled="item.disabled"
 		clickable
 		:value="item.value"
@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { Option } from './types';
 
 export default defineComponent({
@@ -51,5 +51,20 @@ export default defineComponent({
 		},
 	},
 	emits: ['update:modelValue'],
+	setup(props) {
+		const isActive = computed(() => {
+			if (props.multiple) {
+				if (!Array.isArray(props.modelValue) || !props.item.value) {
+					return false;
+				}
+				return props.modelValue.includes(props.item.value);
+			} else {
+				return props.modelValue === props.item.value;
+			}
+		});
+		return {
+			isActive,
+		};
+	},
 });
 </script>
