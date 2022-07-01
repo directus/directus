@@ -123,7 +123,7 @@
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail :collection="collection" :filter="filter" :search="search" />
+				<export-sidebar-detail :collection="collection" :filter="filter" :search="search" @refresh="refresh" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">

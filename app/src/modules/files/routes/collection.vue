@@ -170,6 +170,7 @@
 					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, folderTypeFilter)"
 					:search="search"
+					@refresh="refresh"
 				/>
 			</template>
 

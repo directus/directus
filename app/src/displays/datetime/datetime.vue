@@ -77,7 +77,7 @@ watch(
 				format = props.format;
 			}
 
-			displayValue.value = await localizedFormat(newValue, format);
+			displayValue.value = localizedFormat(newValue, format);
 		}
 	},
 	{ immediate: true }

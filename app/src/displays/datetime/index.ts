@@ -11,7 +11,7 @@ export default defineDisplay({
 	description: '$t:displays.datetime.description',
 	icon: 'query_builder',
 	component: DisplayDateTime,
-	handler: async (value, options, { field }) => {
+	handler: (value, options, { field }) => {
 		if (!value) return value;
 
 		const relativeFormat = (value: Date) =>
@@ -30,7 +30,7 @@ export default defineDisplay({
 		}
 
 		if (options.relative) {
-			return await relativeFormat(value);
+			return relativeFormat(value);
 		} else {
 			let format;
 
@@ -46,7 +46,7 @@ export default defineDisplay({
 				format = options?.format;
 			}
 
-			return await localizedFormat(value, format);
+			return localizedFormat(value, format);
 		}
 	},
 	options: ({ field }) => {
@@ -94,15 +94,15 @@ export default defineDisplay({
 			fields.push(
 				{
 					field: 'suffix',
-					name: 'Suffix',
+					name: '$t:displays.datetime.suffix',
 					type: 'boolean',
 					meta: {
 						width: 'half',
 						interface: 'boolean',
 						options: {
-							label: 'Show relative indicator',
+							label: '$t:displays.datetime.suffix_label',
 						},
-						note: "Uses words like 'in' and 'ago'",
+						note: '$t:displays.datetime.suffix_note',
 					},
 					schema: {
 						default_value: true,
@@ -110,15 +110,15 @@ export default defineDisplay({
 				},
 				{
 					field: 'strict',
-					name: 'Strict',
+					name: '$t:displays.datetime.strict',
 					type: 'boolean',
 					meta: {
-						width: 'full',
+						width: 'half',
 						interface: 'boolean',
 						options: {
-							label: 'Use strict units',
+							label: '$t:displays.datetime.strict_label',
 						},
-						note: "Removes words like 'almost', 'over', 'less than'",
+						note: '$t:displays.datetime.strict_note',
 					},
 					schema: {
 						default_value: false,

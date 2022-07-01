@@ -602,6 +602,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -1780,6 +1781,12 @@ displays:
     short: Short
     relative: Relative
     relative_label: 'Show relative time, eg: 5 minutes ago'
+    suffix: Suffix
+    suffix_label: Show relative indicator
+    suffix_note: Uses words like 'in' and 'ago'
+    strict: Strict
+    strict_label: Use strict units
+    strict_note: Removes words like 'almost', 'over', 'less than'
   file:
     file: File
     description: Display files
@@ -2002,6 +2009,10 @@ panels:
     bottom: Bottom
     monochrome: Monochrome
     monochrome_color: Monochrome Color
+  variable:
+    name: Global Variable
+    description: Set a global value for use in other Panels' filters
+    variable_key: Variable Key
 triggers:
   common:
     response_body: Response Body
@@ -2056,6 +2067,7 @@ operations:
     description: Read items from the database
     key: IDs
     query: Query
+    emit_events: Emit Events
   item-update:
     name: Update Data
     description: Update items in the database

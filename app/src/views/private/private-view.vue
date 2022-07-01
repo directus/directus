@@ -145,7 +145,10 @@ const theme = computed(() => {
 
 provide('main-element', contentEl);
 
-router.afterEach(async () => {
+router.afterEach(async (to, from) => {
+	// Hash changes in docs, #12752
+	if (to.path === from.path) return;
+
 	contentEl.value?.scrollTo({ top: 0 });
 	fullScreen.value = false;
 });
