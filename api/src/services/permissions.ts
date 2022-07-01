@@ -102,6 +102,12 @@ export class PermissionsService extends ItemsService {
 		return res;
 	}
 
+	async updateBatch(data: Partial<Item>[], opts?: MutationOptions) {
+		const res = await super.updateBatch(data, opts);
+		await clearSystemCache();
+		return res;
+	}
+
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
 		const res = await super.updateMany(keys, data, opts);
 		await clearSystemCache();

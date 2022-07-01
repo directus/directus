@@ -1477,6 +1477,7 @@ displays:
     short: Lyhyt
     relative: Suhteellinen
     relative_label: 'Näytä suhteellinen aika, esim: 5 minuuttia sitten'
+    suffix: Jälkiliite
   file:
     file: Tiedosto
     description: Näytä tiedostot

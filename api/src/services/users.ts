@@ -182,6 +182,27 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
+	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		const keys: PrimaryKey[] = [];
+
+		await this.knex.transaction(async (trx) => {
+			const service = new UsersService({
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+			});
+
+			for (const item of data) {
+				if (!item[primaryKeyField]) throw new InvalidPayloadException(`User in update misses primary key.`);
+				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
+			}
+		});
+
+		return keys;
+	}
+
 	/**
 	 * Update many users by primary key
 	 */

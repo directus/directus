@@ -11,9 +11,9 @@
 
 		<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
 
-		<login-form v-else-if="!disableDefault" :provider="provider" />
+		<login-form v-else-if="!auth.disableDefault" :provider="provider" />
 
-		<sso-links v-if="!authenticated" :providers="providers" />
+		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
 		<template v-if="authenticated" #notice>
 			<v-icon name="lock_open" left />
@@ -28,76 +28,44 @@
 	</public-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, ref, onMounted } from 'vue';
-import { LoginForm, LdapForm } from './components/login-form/';
-import ContinueAs from './components/continue-as.vue';
-import SsoLinks from './components/sso-links.vue';
-import api from '@/api';
-import { useAppStore } from '@/stores';
-import { LogoutReason } from '@/auth';
-import { AUTH_SSO_DRIVERS } from '@/constants';
-import { unexpectedError } from '@/utils/unexpected-error';
-import formatTitle from '@directus/format-title';
+<script lang="ts" setup>
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { useAppStore, useServerStore } from '@/stores';
+import { storeToRefs } from 'pinia';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import ContinueAs from './components/continue-as.vue';
+import { LdapForm, LoginForm } from './components/login-form/';
+import SsoLinks from './components/sso-links.vue';
 
-export default defineComponent({
-	components: { LoginForm, LdapForm, ContinueAs, SsoLinks },
-	props: {
-		logoutReason: {
-			type: String as PropType<LogoutReason>,
-			default: null,
-		},
+interface Props {
+	logoutReason?: string | null;
+}
+
+withDefaults(defineProps<Props>(), {
+	logoutReason: null,
+});
+
+const { t } = useI18n();
+
+const appStore = useAppStore();
+const driver = ref('local');
+const provider = ref(DEFAULT_AUTH_PROVIDER);
+const serverStore = useServerStore();
+
+const { auth, providerOptions } = storeToRefs(serverStore);
+
+const providerSelect = computed({
+	get() {
+		return provider.value;
 	},
-	setup() {
-		const { t, te } = useI18n();
-
-		const appStore = useAppStore();
-
-		const providers = ref<{ driver: string; name: string }[]>([]);
-		const disableDefault = ref<boolean>(false);
-		const provider = ref(DEFAULT_AUTH_PROVIDER);
-		const providerOptions = ref<{ text: string; value: string }[]>([]);
-		const driver = ref('local');
-
-		const providerSelect = computed({
-			get() {
-				return provider.value;
-			},
-			set(value: string) {
-				provider.value = value;
-				driver.value = providers.value.find((provider) => provider.name === value)?.driver ?? 'local';
-			},
-		});
-
-		const authenticated = computed(() => appStore.authenticated);
-
-		onMounted(() => fetchProviders());
-
-		return { t, te, authenticated, providers, providerSelect, providerOptions, provider, driver, disableDefault };
-
-		async function fetchProviders() {
-			try {
-				const response = await api.get('/auth');
-				providers.value = response.data.data;
-				disableDefault.value = response.data.disableDefault;
-
-				providerOptions.value = providers.value
-					.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
-					.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
-
-				if (!disableDefault.value) {
-					providerOptions.value.unshift({ text: t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
-				} else {
-					providerSelect.value = providerOptions.value[0]?.value;
-				}
-			} catch (err: any) {
-				unexpectedError(err);
-			}
-		}
+	set(value: string) {
+		provider.value = value;
+		driver.value = unref(auth).providers.find((provider) => provider.name === value)?.driver ?? 'local';
 	},
 });
+
+const authenticated = computed(() => appStore.authenticated);
 </script>
 
 <style lang="scss" scoped>
