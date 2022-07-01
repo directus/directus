@@ -152,7 +152,7 @@ export default defineComponent({
 		return { displayValue, width, t, emitValue, inputEl, inputPattern, dateTimeMenu };
 
 		function emitValue(val: unknown) {
-			const mustache = new RegExp(/^({{.*?}})$/);
+			const mustache = new RegExp(/({{[\w\d_]+?}})/);
 
 			if (val === '') {
 				return emit('input', null);
