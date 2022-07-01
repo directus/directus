@@ -1607,6 +1607,7 @@ displays:
     short: Kort
     relative: Relativ
     relative_label: 'Vis relativ tid, fx: 5 minutter siden'
+    suffix: Suffiks
   file:
     file: Fil
     description: Vis filer

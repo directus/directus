@@ -1,15 +1,22 @@
 ---
 avatar: অবতার
+application: অ্যাপ্লিকেশন
 default_provider: ডিফল্ট
+method: পদ্ধতি
 published: প্রকাশিত
 draft: খসড়া
 archived: সংরক্ষণাগারভুক্ত
 modules: মডিউল
 module_bar: মডিউল বার
+reset_width: প্রস্থ পুনঃস্থাপন করুন
 tile_size: টাইল সাইজ
 edit_field: সম্পাদনা ক্ষেত্র
 conditions: শর্তাবলী
+location: অবস্থান
+condition_rules: শর্ত বিধি
+input: ইনপুট
 maps: মানচিত্র
+switch_user: ইউজার বদলান
 item_creation: আইটেম সৃষ্টি
 item_revision: আইটেম সংশোধন
 enter_a_name: নাম লিখুন...
@@ -17,8 +24,11 @@ duplicate_field: ডুপ্লিকেট ফিল্ড
 half_width: অর্ধ - প্রস্থ
 full_width: অর্ধ - প্রস্থ
 group: গ্রুপ
+export_items: আইটেম রপ্তানি করুন
 and: এবং
 or: অথবা
+dataset_too_large_currently_showing_n_items: ডেটাসেটটি অনেক বড়ো। বর্তমানে শুধু মাত্র প্রথম {n} আইটেমটি দেখানো হচ্ছে।
+modifier: বাছাইকারী
 fill_width: প্রস্থ পূরণ করুন
 field_name_translations: ক্ষেত্রের নাম অনুবাদ
 enter_password_to_enable_tfa: টু-ফ্যাক্টর প্রমাণীকরণ সক্ষম করতে আপনার পাসওয়ার্ড লিখুন
@@ -30,6 +40,8 @@ indeterminate: অনির্দিষ্ট
 edit_collection: সংগ্রহ সম্পাদনা করুন
 exclusive: একচেটিয়া
 children: শিশু
+db_only_click_to_configure: 'শুধুমাত্র তথ্যশাল: সজ্জিত করতে ক্লিক করুন'
+show_active_items: সক্রিয় আইটেমগুলি দেখুন
 fields:
   directus_settings:
     module_bar: মডিউল বার

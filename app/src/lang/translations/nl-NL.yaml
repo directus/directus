@@ -1182,6 +1182,7 @@ displays:
     short: Kort
     relative: Relatief
     relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
+    suffix: Achtervoegsel
   file:
     file: Bestand
     description: Bestanden weergeven

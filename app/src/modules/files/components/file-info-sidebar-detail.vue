@@ -189,13 +189,10 @@ export default defineComponent({
 				async () => {
 					if (!props.file) return null;
 
-					creationDate.value = await localizedFormat(
-						new Date(props.file.uploaded_on),
-						String(t('date-fns_date_short'))
-					);
+					creationDate.value = localizedFormat(new Date(props.file.uploaded_on), String(t('date-fns_date_short')));
 
 					if (props.file.modified_on) {
-						modificationDate.value = await localizedFormat(
+						modificationDate.value = localizedFormat(
 							new Date(props.file.modified_on),
 							String(t('date-fns_date_short'))
 						);
