@@ -11,7 +11,7 @@ export default defineDisplay({
 	description: '$t:displays.datetime.description',
 	icon: 'query_builder',
 	component: DisplayDateTime,
-	handler: async (value, options, { field }) => {
+	handler: (value, options, { field }) => {
 		if (!value) return value;
 
 		const relativeFormat = (value: Date) =>
@@ -30,7 +30,7 @@ export default defineDisplay({
 		}
 
 		if (options.relative) {
-			return await relativeFormat(value);
+			return relativeFormat(value);
 		} else {
 			let format;
 
@@ -46,7 +46,7 @@ export default defineDisplay({
 				format = options?.format;
 			}
 
-			return await localizedFormat(value, format);
+			return localizedFormat(value, format);
 		}
 	},
 	options: ({ field }) => {
