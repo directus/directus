@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	overview: ({ subject, to, body }) => [
+	overview: ({ subject, template, to, body }) => [
 		{
 			label: '$t:subject',
 			text: subject,
@@ -20,6 +20,15 @@ export default defineOperationApp({
 		},
 	],
 	options: [
+		{
+			field: 'template',
+			name: '$t:operations.mail.template',
+			type: 'boolean',
+			meta: {
+				width: 'full',
+				interface: 'checkbox',
+			},
+		},
 		{
 			field: 'to',
 			name: '$t:operations.mail.to',

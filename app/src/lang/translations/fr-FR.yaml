@@ -2027,6 +2027,7 @@ operations:
     name: Envoyer l'e-mail
     description: Envoyer un email à une ou plusieurs personnes
     to: À
+    template: Utiliser le modèle d'e-mail par défaut
     to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
   notification:

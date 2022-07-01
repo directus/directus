@@ -4,6 +4,7 @@ import { md } from '../../utils/md';
 
 type Options = {
 	body: string;
+	template: boolean;
 	to: string;
 	subject: string;
 };
@@ -11,11 +12,20 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'mail',
 
-	handler: async ({ body, to, subject }, { accountability, database, getSchema }) => {
+	handler: async ({ body, template, to, subject }, { accountability, database, getSchema }) => {
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
-
+		const formated_body = template
+			? {
+					template: {
+						name: 'base',
+						data: {
+							html: body ? md(body) : '',
+						},
+					},
+			  }
+			: { html: md(body) };
 		await mailService.send({
-			html: md(body),
+			...formated_body,
 			to,
 			subject,
 		});
