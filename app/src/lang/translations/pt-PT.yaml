@@ -537,6 +537,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Visão geral de documentação** — Documentação feita especificamente para versão e esquema deste projeto.
 add_new: Adicionar novo
+create_new: Criar Novo
 all: Todos
 batch_delete_confirm: >-
   Nenhum item foi selecionado. Tem certeza de que deseja remover este item? Esta ação não pode ser desfeita. Tem certeza que deseja remover estes {count} itens? Esta ação não pode ser desfeita.

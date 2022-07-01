@@ -73,10 +73,7 @@ export default defineComponent({
 				if (!props.user) return;
 
 				if (props.user.last_access) {
-					lastAccessDate.value = await localizedFormat(
-						new Date(props.user.last_access),
-						String(t('date-fns_date_short'))
-					);
+					lastAccessDate.value = localizedFormat(new Date(props.user.last_access), String(t('date-fns_date_short')));
 				}
 			},
 			{ immediate: true }

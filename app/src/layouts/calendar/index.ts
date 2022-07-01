@@ -2,7 +2,7 @@ import api from '@/api';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
 import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
-import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -310,7 +310,12 @@ export default defineLayout<LayoutOptions>({
 
 			return {
 				id: primaryKey,
-				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
+				title:
+					renderDisplayStringTemplate(
+						collection.value,
+						template.value || `{{ ${primaryKeyField.value.field} }}`,
+						item
+					) || item[primaryKeyField.value.field],
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
