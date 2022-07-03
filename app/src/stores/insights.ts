@@ -133,7 +133,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			}
 		});
 
-		variables.value = variableDefaults;
+		variables.value = assign({}, variableDefaults, variables.value);
 	}
 
 	function dehydrate() {

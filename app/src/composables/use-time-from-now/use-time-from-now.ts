@@ -8,12 +8,12 @@ export async function useTimeFromNow(date: Date | number, autoUpdate = 60000): P
 		addSuffix: true,
 	};
 
-	const formattedDate = ref(await localizedFormatDistance(date, new Date(), formatOptions));
+	const formattedDate = ref(localizedFormatDistance(date, new Date(), formatOptions));
 
 	if (autoUpdate !== 0) {
 		onMounted(() => {
 			interval = window.setInterval(async () => {
-				formattedDate.value = await localizedFormatDistance(date, new Date(), formatOptions);
+				formattedDate.value = localizedFormatDistance(date, new Date(), formatOptions);
 			}, autoUpdate);
 		});
 

@@ -122,6 +122,8 @@ interfaces:
   presentation-links:
     primary: سەرەکی
 displays:
+  datetime:
+    suffix: پاشگر
   formatted-value:
     prefix: پێشگر
     suffix: پاشگر
