@@ -40,7 +40,7 @@ input: Eingabe
 maps: Karten
 switch_user: Benutzer wechseln
 item_creation: Element erstellt
-item_revision: Artikelversion
+item_revision: Element überarbeitet
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -51,6 +51,8 @@ and: Und
 or: Oder
 init: Initialisierung
 dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit werden die ersten {n} Elemente angezeigt.
+custom: Eigene
+hook: Hook
 fill_width: Breite füllen
 field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
@@ -66,10 +68,10 @@ db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
 show_active_items: Aktive Elemente anzeigen
 show_archived_items: Zeige archivierte Elemente
 show_all_items: Alle Elemente anzeigen
-edited: Bearbeiteter Wert
+edited: Wert bearbeitet
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
-requires_value: Benötigt Wert
+requires_value: Erfordert Wert
 create_preset: Vorlage erstellen
 create_panel: Panel erstellen
 create_role: Rolle erstellen
@@ -78,6 +80,8 @@ message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
 create_translation_string: Übersetzungselement erstellen
+no_translation_string: Keine Übersetzung
+no_translation_string_copy: Es existiert noch keine Übersetzung.
 translation_string_key_placeholder: Schlüssel für Übersetzungselement...
 translation_string_translations_placeholder: Neue Übersetzung hinzufügen
 edit_translation_string: Übersetzungselement editieren
@@ -114,8 +118,8 @@ public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglic
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
 directus_version: Directus-Version
-node_version: Node-Version
-node_uptime: Node-Betriebszeit
+node_version: NodeJS-Version
+node_uptime: Server-Betriebszeit
 os_type: Betriebssystem
 os_version: Betriebssystem-Version
 os_uptime: System-Betriebszeit
@@ -332,8 +336,10 @@ revision_delta_created_externally: Extern erstellt
 revision_delta_updated: '1 Feld aktualisiert | {count} Felder aktualisiert'
 revision_delta_deleted: Gelöscht
 revision_delta_reverted: Zurückgesetzt
+revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+presentation_text_values_cannot_be_reimported: "Verwendet Präsentationstext, Werte können nicht neu importiert werden."
 download_page_as_csv: 'Als CSV herunterladen'
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
@@ -341,6 +347,7 @@ revision_preview: Überarbeitungs-Vorschau
 updates_made: Erfolgte Aktualisierungen
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
+post_comment_updated: Kommentar aktualisiert
 item_create_success: Element erstellt | Elemente erstellt
 item_update_success: Element aktualisiert | Elemente aktualisiert
 item_delete_success: Element gelöscht | Elemente gelöscht
@@ -458,6 +465,7 @@ created_on: Erstellt am
 creating_collection_info: Benennen Sie die Sammlung und richten Sie ein eindeutiges „Schlüsselfeld“ ein...
 creating_collection_system: Aktivieren und benennen Sie eines dieser optionalen Felder.
 auto_increment_integer: Automatisch erhöhter Integer-Wert
+auto_increment_big_integer: Automatisch erhöhter großer Integer
 generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
 save_and_create_new: Speichern und neues Element anlegen
@@ -478,7 +486,9 @@ disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
 request_feature: Feature anfragen
+request_body: Rohdaten der Anfrage
 interface_not_found: 'Schnittstelle "{interface}" nicht gefunden.'
+operation_not_found: 'Operation "{operation}" nicht gefunden.'
 reset_interface: Schnittstelle zurücksetzen
 display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
@@ -564,7 +574,9 @@ errors:
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
   INVALID_OTP: Falsches Einmalpasswort
   INVALID_PAYLOAD: Ungültige Nutzdaten
+  INVALID_PROVIDER: Benutzer gehört zu einem anderen Authentifizierungsanbieter
   INVALID_QUERY: Ungültige anfrage
+  INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
@@ -579,6 +591,7 @@ errors:
   VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
   INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
   UNKNOWN: Unerwarteter Fehler
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
@@ -596,6 +609,7 @@ unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche e
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
+password_reset_sent: Wenn Sie ein Konto haben, haben wir Ihnen einen sicheren Link zum Zurücksetzen Ihres Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 filter: Filter
@@ -619,6 +633,9 @@ start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
+delete_collection_are_you_sure: >-
+  Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
+delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -659,6 +676,7 @@ operators:
   nnull: Ist nicht null
   contains: Enthält
   ncontains: Enthält nicht
+  icontains: Enthält (Groß-, Kleinschreibung wird ignoriert)
   starts_with: Beginnt mit
   nstarts_with: Beginnt nicht mit
   ends_with: Endet mit
@@ -738,10 +756,39 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+flows: Flows
+flow: Flow
+select_a_flow: Flow auswählen
+run_flow_on_current: Flow für aktuelles Element ausführen
+run_flow_on_selected: Keine Items ausgewählt | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
+run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 trigger: Trigger
+trigger_options: Auslöse-Optionen
+view_trigger: Auslöser anzeigen
+create_trigger: Einen Auslöser hinzufügen
+trigger_setup: Auslöser Einstellungen
+change_trigger: Auslöser wechseln
+flow_delete_confirm: Sind Sie sicher, dass sie den Flow "{flow}" löschen möchten? Diese Aktion ist permanent.
+set_flow_active: Setze Flow auf aktiv
+set_flow_inactive: Setze Flow auf Inaktiv
+edit_flow: Flow bearbeiten
+delete_flow: Flow löschen
+no_other_flows_copy: Sie haben noch keine anderen Flows.
+no_flows: Keine Flows
+no_flows_copy: Sie haben noch keine Flows.
+create_flow: Flow erstellen
+creating_new_flow: Neuen Flow erstellen
+updating_flow: Flow aktualisieren
+flow_setup: Flow Einstellungen
 flow_name: Name
+flow_tracking: Aktivitäts- und Änderungsverfolgung
+flow_tracking_all: Verfolge Aktivitäten und Änderungen
 flow_tracking_activity: Nur Aktivitäten verfolgen
 flow_tracking_null: Nichts verfolgen
+start_flow: Flow starten
+stop_flow: Flow stoppen
+create_operation: Operation erstellen
+edit_operation: Operation bearbeiten
 insights: Einblicke
 dashboard: Dashboard
 panel: Panel
@@ -860,6 +907,7 @@ settings_data_model: Datenmodell
 settings_permissions: Rollen & Berechtigungen
 settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
+settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
 settings_translation_strings: Übersetzungselemente
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
@@ -1893,4 +1941,6 @@ operations:
     data: Daten
     header: Header
   trigger:
+    flows: Flows
+    flow: Flow
     data: Daten
