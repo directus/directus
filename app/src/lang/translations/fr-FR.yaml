@@ -337,6 +337,7 @@ revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
 revision_delta_reverted: Restauré
+revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
@@ -1735,6 +1736,10 @@ displays:
     relative: Relatif
     relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
     suffix: Suffixe
+    suffix_label: Afficher l'indicateur relatif
+    suffix_note: Utilise des mots comme 'dans' et 'il y a'
+    strict: Stricte
+    strict_label: Utilisez des unités strictes
   file:
     file: Fichier
     description: Afficher les fichiers
@@ -1956,6 +1961,9 @@ panels:
     bottom: Bas
     monochrome: Monochrome
     monochrome_color: Couleur Monochrome
+  variable:
+    description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
+    variable_key: Clé variable
 triggers:
   common:
     response_body: Corps de la Réponse
