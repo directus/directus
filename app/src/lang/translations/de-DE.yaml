@@ -29,11 +29,13 @@ draft: Entwurf
 archived: Archiviert
 modules: Module
 module_bar: Modulleiste
+logs: Logs
 reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 location: Ort
+condition_rules: Bedingte Stile
 input: Eingabe
 maps: Karten
 switch_user: Benutzer wechseln
@@ -47,6 +49,7 @@ group: Gruppe
 export_items: Elemente exportieren
 and: Und
 or: Oder
+init: Initialisierung
 dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit werden die ersten {n} Elemente angezeigt.
 fill_width: Breite füllen
 field_name_translations: Feldnamen-Übersetzungen
