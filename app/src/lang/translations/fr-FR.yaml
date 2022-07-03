@@ -592,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
   INVALID_FOREIGN_KEY: Clé étrangère invalide
   UNKNOWN: Erreur inconnue
+  GRAPHQL_VALIDATION_EXCEPTION: Exception de validation de GraphQL
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
@@ -1740,6 +1741,7 @@ displays:
     suffix_note: Utilise des mots comme 'dans' et 'il y a'
     strict: Stricte
     strict_label: Utilisez des unités strictes
+    strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
   file:
     file: Fichier
     description: Afficher les fichiers
@@ -1962,6 +1964,7 @@ panels:
     monochrome: Monochrome
     monochrome_color: Couleur Monochrome
   variable:
+    name: Variable globale
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
     variable_key: Clé variable
 triggers:
