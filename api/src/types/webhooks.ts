@@ -8,6 +8,7 @@ export type Webhook = {
 	actions: string[];
 	collections: string[];
 	headers: WebhookHeader[];
+	strict: boolean;
 };
 
 export type WebhookHeader = { header: string; value: string };

@@ -65,15 +65,25 @@ function createHandler(webhook: Webhook, event: string): ActionHandler {
 		};
 
 		try {
-			await axios({
+			const resp = await axios({
 				url: webhook.url,
 				method: webhook.method,
 				data: webhook.data ? webhookPayload : null,
 				headers: mergeHeaders(webhook.headers),
 			});
+			if (webhook.strict) {
+				if (resp.status != 200) {
+					let message = 'Webhook fail with HTTP Status:' + resp.status + ' Reason: Unknow';
+					if (resp.data && resp.data['message']) {
+						message = resp.data['message'];
+					}
+					throw message;
+				}
+			}
 		} catch (error: any) {
 			logger.warn(`Webhook "${webhook.name}" (id: ${webhook.id}) failed`);
 			logger.warn(error);
+			throw error;
 		}
 	};
 }
