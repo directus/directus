@@ -34,6 +34,7 @@ edit_field: Editar campo
 conditions: Condições
 location: Localização
 condition_rules: Regras de Condição
+input: Input
 maps: Mapas
 switch_user: Mudar de utilizador
 item_revision: Revisão do documento
@@ -45,6 +46,7 @@ group: Grupo
 export_items: Exportar itens
 and: E
 or: Ou
+init: Init
 dataset_too_large_currently_showing_n_items: O conjunto de dados é muito grande. A mostrar os primeiros {n} itens.
 fill_width: Ocupar a largura
 field_name_translations: Nome do campo para as traduções
@@ -54,9 +56,12 @@ role_name: Nome do cargo
 branch: Filial
 leaf: Folha
 indeterminate: Indeterminado
+edit_collection: Editar coleção
 exclusive: Exclusivo
 children: Crianças
+show_active_items: Mostrar Itens Ativos
 show_archived_items: Mostrar documentos arquivados
+show_all_items: Mostrar todos os itens
 edited: Valor alterado
 required: Obrigatório
 required_for_app_access: Necessário para o acesso da App
@@ -73,6 +78,7 @@ no_translation_string: Sem traduções
 no_translation_string_copy: Ainda não existem traduções.
 translation_string_key_placeholder: Chave da tradução...
 translation_string_translations_placeholder: Adicionar nova tradução
+edit_translation_string: Editar String de Tradução
 invite_users: Convidar utlizadores
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
@@ -119,6 +125,7 @@ recommended_defaults: Predefinições recomendadas
 unarchive: Desarquivar
 unarchive_confirm: Tem a certeza que pretende desarquivar este item?
 nested_files_folders_will_be_moved: Ficheiros e pastas neste grupo vão ser movidos um nível acima.
+validation_errors_notice: 'Os seguintes campos são inválidos:'
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -162,6 +169,7 @@ fields_for_role: 'Campos que o estatuto {role} pode {action}.'
 validation_for_role: 'As regras {action} do campo que a função {role} deve obedecer.'
 presets_for_role: 'Valor do Campo definido por padrão para a função {role}.'
 presentation_and_aliases: Apresentação & Pseudônimos
+hide_field: Ocultar campo
 hide_field_on_detail: Ocultar campo dentro de Detalhe
 show_field_on_detail: Mostrar campo dentro de Detalhe
 delete_field: Remover campo
@@ -170,6 +178,7 @@ field_create_success: 'Campo criado: "{field}"'
 field_update_success: 'Campo atualizado: "{field}"'
 duplicate_where_to: Para onde gostaria de duplicar este campo?
 language: Idioma
+language_placeholder: Seleciona um idioma...
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmara
@@ -254,6 +263,8 @@ foreign_key: Chave estrangeira
 finish_setup: Concluir a Configuração
 dismiss: Dispensar
 raw_value: Valor bruto
+copy_raw_value_success: Copiado
+copy_raw_value_fail: Falha ao copiar
 paste_raw_value_success: Colado
 paste_raw_value_fail: Falha ao colar
 edit_raw_value: Editar Valor Bruto
@@ -279,6 +290,7 @@ revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi atualizado, mas o seu valor foi oculto por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
+download_page_as_csv: 'Transferir Página como CSV'
 private_user: Utilizador privado
 revision_preview: Pré-visualização da revisão
 updates_made: Atualizações feitas
@@ -292,9 +304,11 @@ related_collection: Coleção relacionada
 related_collections: Coleções relacionadas
 translations_collection: Coleção de tradução
 languages_collection: Coleção de idiomas
+import_data_input_placeholder: CSV ou JSON...
 import_data_button: Iniciar importação
 import_data_indeterminate: A importar dados...
 import_data_success: Dados importados com sucesso de {filename}
+import_data_error: A estrutura de dados não coincide com a coleção.
 label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
@@ -380,6 +394,10 @@ no_file_selected: Nenhum ficheiro selecionado
 download_file: Descarregar Ficheiro
 open_file_in_tab: Abrir ficheiro num novo separador
 start_export: Iniciar exportação
+exporting_all_items_in_collection: A exportar todos os {total} itens dentro de {collection}.
+exporting_limited_items_in_collection: A exportar {limit} de {total} itens em {collection}.
+exporting_no_items_to_export: Sem itens para exportar. Verifique a configuração abaixo.
+exporting_download_hint: Uma vez concluído, este arquivo {format} será transferido automaticamente para o dispositivo.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -422,6 +440,8 @@ no_files_copy: Não existem ficheiros aqui.
 user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
 no_users_copy: Ainda não existem utilizadores neste estatuto.
 webhooks_count: 'Nenhum webhook | Um webhook | {count} webhooks'
+no_notifications: Sem notificações
+activity_log: Registo de Atividade
 all_items: Todos os documentos
 csv: CSV
 no_collections: Nenhuma coleção
@@ -432,13 +452,23 @@ relationship_not_setup: A relação não foi configurada corretamente
 display_template_not_setup: A opção do modelo de visualização não está configurada corretamente
 collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
 select_a_collection: Selecione uma coleção
+select_a_field: Selecione um campo
 active: Ativar
+move_to: Mover Para...
+copy: Copiar
+copy_to: Copiar para...
+inactive: Inativo
 users: Utilizadores
 activity: Atividade
 action: Ação
 ip_address: Endereço IP
 user_agent: User Agent
 webhooks: Webhooks
+decimals: Decimais
+value_decimals: Valores decimais
+min_value: Valor mínimo
+max_value: Valor máximo
+automatic: Automático
 field_width: Largura do campo
 add_filter: Adicionar filtro
 upper_limit: Limite superior...
@@ -448,6 +478,7 @@ documentation: Documentação
 sidebar: Barra lateral
 duration: Duração
 charset: Codificação
+second: segundo
 file_moved: Ficheiro movido
 collection_created: Coleção criada
 modified_on: Modificado em
@@ -478,19 +509,33 @@ errors:
   INVALID_CREDENTIALS: Nome do utilizador ou palavra-passe inválidos
   INVALID_OTP: Senha de uso único errada
   INVALID_PAYLOAD: Payload inválido
+  INVALID_PROVIDER: O utilizador pertence a um provedor de autenticação diferente
   INVALID_QUERY: Consulta inválida
+  INVALID_USER: Falha ao autenticar utilizador
   ITEM_LIMIT_REACHED: Limite de itens atingido
   ITEM_NOT_FOUND: Item não encontrado
   ROUTE_NOT_FOUND: Não encontrado
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Utilizador suspenso
   CONTAINS_NULL_VALUES: Campo contém valores nulos
+  UNPROCESSABLE_ENTITY: Entidade não processável
+  INTERNAL_SERVER_ERROR: Erro Inesperado
   NOT_NULL_VIOLATION: O valor não pode ser nulo
+  ILLEGAL_ASSET_TRANSFORMATION: A imagem é muito grande para visualizar
+  VALUE_TOO_LONG: O valor é muito longo
+  VALUE_OUT_OF_RANGE: Valor fora da gama
+  INVALID_FOREIGN_KEY: Chave estrangeira inválida
+  UNKNOWN: Erro Inesperado
+security: Segurança
 bookmarks: Favoritos
+unexpected_error: Erro Inesperado
+unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.
 back: Voltar
+all_users: Todos os utilizadores
 delete_collection: Remover coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção removida
+make_collection_visible: Tornar Coleção Visível
 start_end_of_count_items: '{start}-{end} de {count} documentos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} documentos filtrados'
 one_item: '1 documento'
@@ -502,7 +547,37 @@ show_hidden_collections: Mostrar coleções ocultas
 hide_hidden_collections: Esconder coleções ocultas
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
+icon_left: Ícone à esquerda
+icon_right: Ícone à Direita
+font: Fonte
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Divisor
+color: Cor
+circle: Círculo
+empty_item: Item vazio
+log_in_with: 'Iniciar sessão com {provider}'
+advanced_settings: Definições avançadas
+advanced_filter: Filtro avançado
+delete_advanced_filter: Eliminar filtro
+change_advanced_filter_operator: Modificar operador
+advanced: Avançado
 operators:
+  eq: Igual a
+  neq: Não é igual
+  lt: Menor que
+  gt: Maior que
+  lte: Menor que ou igual a
+  gte: Maior que ou igual a
+  in: É um dos
+  nin: Não é um dos
+  null: É nulo
+  nnull: Não é nulo
+  contains: Contém
+  ncontains: Não contém
+  icontains: Contém (sem "case sensitive")
+  starts_with: Começa por
   nstarts_with: Não começa com
   ends_with: Termina com
   nends_with: Não termina com
@@ -524,6 +599,7 @@ upload_files_success: '{count} Ficheiros Enviados'
 upload_pending: Envio pendente
 drag_file_here: Arraste e solte um ficheiro aqui
 click_to_browse: Clique para navegar
+interface_options: Opções de Interface
 layout_options: Opções de layout
 rows: Linhas
 columns: Colunas
@@ -541,7 +617,9 @@ all_files: Todos os ficheiros
 my_files: Meus ficheiros
 recent_files: Ficheiros recentes
 create_folder: Criar pasta
+edit_folder: Editar pasta
 folder_name: Nome da pasta...
+folder_key: Chave da pasta...
 add_file: Adicionar ficheiro
 replace_file: Substituir ficheiro
 no_results: Nenhum resultado
@@ -549,14 +627,24 @@ no_results_copy: Ajustar ou limpar filtros de pesquisa para ver resultados.
 clear_filters: Limpar filtros
 saves_automatically: Guardar automaticamente
 role: Perfil
+edit_role: Editar permissão
 rule: Regra
 user: Utilizador
 no_presets: Sem predefinições
 no_presets_copy: Nenhuma predefinição ou marcador foi guardado ainda.
 no_presets_cta: Adicionar predefinição
+presets_only: Apenas predefinições
+create: Criar
+on_create: Ao Criar
+on_update: Ao Atualizar
+read: Ler
+update: Atualizar
+delete: Eliminar
+select_fields: Selecione os campos
 flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
+operation_key_unique_error: Chaves de operação devem ser únicas em um fluxo
 full_screen: Ecrã completo
 save_image: Guardar imagem
 wysiwyg_options:
@@ -635,6 +723,7 @@ fields:
   directus_collections:
     collection: Coleção
     note: Nota
+    color: Cor
     display_template: Templates de Exibição
     sort_field: Campo de ordenação
   directus_files:
@@ -691,6 +780,11 @@ fields:
     name: Nome
     status: Estado
 field_options:
+  directus_settings:
+    security_divider_title: Segurança
+  directus_activity:
+    create: Criar
+    update: Atualizar
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Apenas rastrear Atividade
@@ -707,6 +801,9 @@ field_options:
     status_dropdown_active: Ativar
   directus_webhooks:
     status_options_active: Ativar
+    status_options_inactive: Inativo
+    actions_create: Criar
+    actions_update: Atualizar
 no_fields_in_collection: 'Ainda não há nenhum campo em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e guardar UUID
@@ -716,6 +813,7 @@ save_current_datetime: Guardar data/hora atual
 block: Bloquear
 inline: Em linha
 comment: Comentário
+share_copy_link_error: Não foi possível copiar a hiperligação
 relational_triggers: Gatilhos Relacionais
 referential_action_field_label_m2o: Ao Eliminar de {collection}...
 referential_action_field_label_o2m: Ao desseleccionar de {collection}...
@@ -728,18 +826,24 @@ continue_as: >-
 creating_webhook: Criando Webhook
 description: Descrição
 save: Guardar
+report_error: Reportar erro
 interfaces:
   filter:
     add_filter: Adicionar filtro
     all: Todos
   presentation-links:
     primary: Primário
+    error: Não é possível executar a ação
   system-collection:
     collection: Coleção
+  select-color:
+    color: Cor
   system-display-template:
     display-template: Templates de Exibição
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
     select_a_collection: Selecione uma coleção
+  presentation-divider:
+    divider: Divisor
   select-dropdown:
     choices_value_placeholder: Insira um valor...
   files:
@@ -775,14 +879,22 @@ displays:
     boolean: Boleano
   collection:
     collection: Coleção
+  color:
+    color: Cor
   datetime:
     format: Formatar
     suffix: Sufixo
   formatted-value:
     format: Formatar
+    font: Fonte
+    font_serif: Serif
+    font_monospace: Monospace
     prefix: Prefixo
     suffix: Sufixo
+    color: Cor
     text: Texto
+  image:
+    circle: Círculo
   labels:
     choices_value_placeholder: Insira um valor...
   user:
