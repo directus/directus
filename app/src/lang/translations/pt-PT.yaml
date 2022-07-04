@@ -225,6 +225,8 @@ new_collection: 'Nova coleção'
 choose_a_type: Escolha um Tipo...
 determined_by_relationship: Determinado pela Relação
 add_note: Adicionar uma nota para os utilizadores...
+add_link: Adicionar hiperligação
+custom_link: Ligação personalizada
 default_value: Valor padrão
 standard_field: Campo Padrão
 single_file: Ficheiro Único
@@ -237,6 +239,7 @@ invalid_item: Item inválido
 next: Seguinte
 field_name: Nome do campo
 translations: Traduções
+no_translations: Sem traduções
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Insira um placeholder...
@@ -251,8 +254,14 @@ foreign_key: Chave estrangeira
 finish_setup: Concluir a Configuração
 dismiss: Dispensar
 raw_value: Valor bruto
+paste_raw_value_success: Colado
+paste_raw_value_fail: Falha ao colar
 edit_raw_value: Editar Valor Bruto
 enter_raw_value: Insira valor bruto...
+clear_value: Limpar valor
+clear_changes: Limpar alterações
+reset_to_default: Restaurar para padrão
+undo_changes: Anular alterações
 notifications: Notificações
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página Não Encontrada
@@ -267,6 +276,7 @@ revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo foi atualizado | {count} campos foram atualizados'
 revision_delta_deleted: Removido
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo foi atualizado, mas o seu valor foi oculto por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
 private_user: Utilizador privado
@@ -282,6 +292,12 @@ related_collection: Coleção relacionada
 related_collections: Coleções relacionadas
 translations_collection: Coleção de tradução
 languages_collection: Coleção de idiomas
+import_data_button: Iniciar importação
+import_data_indeterminate: A importar dados...
+import_data_success: Dados importados com sucesso de {filename}
+label_import: Importar
+label_export: Exportar
+import_export: Importar / Exportar
 format: Formatar
 last_page: Última página
 last_access: Último Acesso
@@ -301,12 +317,22 @@ delete_comment: Remover comentário
 functions:
   year: Ano
   month: Mês
+  week: Semana
+  day: Dia
+  weekday: Dia da semana
+  hour: Hora
+  minute: Minuto
+  second: Segundo
 date-fns_date: dd MMM u
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'dd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: dd MMM
+minutes: Minutos
+hours: Horas
 month: Mês
 year: Ano
 select_all: Selecionar Tudo
@@ -327,6 +353,7 @@ drag_mode: Modo de Arrasto
 cancel_crop: Cancelar Recorte
 original: Original
 url: URL
+import_label: Importar
 file_details: Detalhes do ficheiro
 dimensions: Dimensões
 size: Tamanho
@@ -340,6 +367,7 @@ zoom: Zoom
 download: Transferir
 open: Abrir
 open_in_new_window: Abrir numa Nova Janela
+open_folder: Abrir pasta "{folder}"
 foreground_color: Cor principal
 background_color: Cor de Fundo
 upload_from_device: Carregar ficheiro a partir do dispositivo
@@ -350,6 +378,8 @@ replace_from_library: Substituir Ficheiro da Biblioteca
 replace_from_url: Substituir Ficheiro de URL
 no_file_selected: Nenhum ficheiro selecionado
 download_file: Descarregar Ficheiro
+open_file_in_tab: Abrir ficheiro num novo separador
+start_export: Iniciar exportação
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -770,8 +800,15 @@ layouts:
 operations:
   log:
     message: Mensagem
+  mail:
+    name: Enviar email
+    to: Para
+    body: Conteúdo
   notification:
     recipient: Utilizador
     message: Mensagem
   request:
     url: URL
+    url_placeholder: https://exemplo.com/exemplo
+  sleep:
+    milliseconds: Milisegundos
