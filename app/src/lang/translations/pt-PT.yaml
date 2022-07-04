@@ -1,14 +1,51 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identificador
+avatar: Imagem de Perfil
+application: Aplicação
+default_provider: Predefinição
+method: Método
+published: Publicado
+draft: Rascunho
+archived: Arquivado
+modules: Módulos
+logs: Registo de Eventos
+tile_size: Tamanho do ícone
 edit_field: Editar campo
 conditions: Condições
 location: Localização
+condition_rules: Regras de Condição
+maps: Mapas
+switch_user: Mudar de utilizador
 item_revision: Revisão do documento
+enter_a_name: Introduza um nome...
 duplicate_field: Duplicar este campo
 half_width: Metade da largura
 full_width: Largura total
 group: Grupo
+export_items: Exportar itens
 and: E
 or: Ou
+dataset_too_large_currently_showing_n_items: O conjunto de dados é muito grande. A mostrar os primeiros {n} itens.
 fill_width: Ocupar a largura
 field_name_translations: Nome do campo para as traduções
 enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
@@ -25,12 +62,22 @@ required: Obrigatório
 required_for_app_access: Necessário para o acesso da App
 requires_value: Valor obrigatório
 create_preset: Criar uma predefinação
+create_panel: Criar painel
 create_role: Criar estatuto
 create_user: Criar utilizador
+message: Mensagem
+delete_panel: Apagar painel
 create_webhook: Criar webhook
+create_translation_string: Criar tradução
+no_translation_string: Sem traduções
+no_translation_string_copy: Ainda não existem traduções.
+translation_string_key_placeholder: Chave da tradução...
+translation_string_translations_placeholder: Adicionar nova tradução
 invite_users: Convidar utlizadores
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
+subject: Assunto
+inbox: Caixa de entrada
 emails: Emails
 connection_excellent: Excelente Conexão
 connection_good: Boa conexão
@@ -50,6 +97,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Sessão terminada
   SESSION_EXPIRED: Sessão expirada
+public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 not_allowed: Não permitido
 directus_version: Versão do Directus
@@ -718,7 +766,10 @@ layouts:
   tabular:
     tabular: Tabela
 operations:
+  log:
+    message: Mensagem
   notification:
     recipient: Utilizador
+    message: Mensagem
   request:
     url: URL
