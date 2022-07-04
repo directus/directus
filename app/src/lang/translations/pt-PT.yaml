@@ -528,6 +528,7 @@ flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
 full_screen: Ecrã completo
+save_image: Guardar imagem
 wysiwyg_options:
   forecolor: Cor principal
   backcolor: Cor de Fundo
@@ -696,6 +697,7 @@ continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
 creating_webhook: Criando Webhook
 description: Descrição
+save: Guardar
 interfaces:
   filter:
     add_filter: Adicionar filtro
