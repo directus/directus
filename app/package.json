@@ -31,9 +31,9 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@directus/docs": "^9.13.2",
-		"@directus/extensions-sdk": "9.13.0",
-		"@directus/format-title": "9.13.0",
-		"@directus/shared": "9.13.0",
+		"@directus/extensions-sdk": "workspace:*",
+		"@directus/format-title": "workspace:*",
+		"@directus/shared": "workspace:*",
 		"@fortawesome/fontawesome-svg-core": "1.2.36",
 		"@fortawesome/free-brands-svg-icons": "5.15.4",
 		"@fullcalendar/core": "5.11.0",

@@ -38,7 +38,7 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"@directus/drive": "9.13.0",
+		"@directus/drive": "workspace:*",
 		"aws-sdk": "^2.928.0",
 		"normalize-path": "^3.0.0"
 	},

@@ -37,7 +37,7 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"@directus/drive": "9.13.0",
+		"@directus/drive": "workspace:*",
 		"@google-cloud/storage": "^5.8.5",
 		"lodash": "4.17.21",
 		"normalize-path": "^3.0.0"

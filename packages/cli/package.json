@@ -42,8 +42,8 @@
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@directus/format-title": "9.13.0",
-		"@directus/sdk": "9.13.0",
+		"@directus/format-title": "workspace:*",
+		"@directus/sdk": "workspace:*",
 		"@types/yargs": "^17.0.0",
 		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
