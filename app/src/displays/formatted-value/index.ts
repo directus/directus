@@ -1,6 +1,9 @@
 import { defineDisplay } from '@directus/shared/utils';
 import { DisplayConfig } from '@directus/shared/types';
 import DisplayFormattedValue from './formatted-value.vue';
+import formatTitle from '@directus/format-title';
+import { decode } from 'html-entities';
+import dompurify from 'dompurify';
 
 export default defineDisplay({
 	id: 'formatted-value',
@@ -9,6 +12,22 @@ export default defineDisplay({
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	component: DisplayFormattedValue,
+	handler: (value, options) => {
+		const prefix = options.prefix ?? '';
+		const suffix = options.suffix ?? '';
+
+		let sanitizedValue = String(value);
+
+		// Strip out all HTML tags
+		sanitizedValue = dompurify.sanitize(value, { ALLOWED_TAGS: [] });
+
+		// Decode any HTML encoded characters (like &copy;)
+		sanitizedValue = decode(sanitizedValue);
+
+		const formattedValue = options.format ? formatTitle(sanitizedValue) : sanitizedValue;
+
+		return `${prefix}${formattedValue}${suffix}`;
+	},
 	options: ({ field }) => {
 		const isString = ['string', 'text'].includes(field.type ?? 'unknown');
 		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];

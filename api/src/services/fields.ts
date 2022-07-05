@@ -1,9 +1,15 @@
 import SchemaInspector from '@directus/schema';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
+import { addFieldFlag, toArray } from '@directus/shared/utils';
+import Keyv from 'keyv';
 import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { getCache, clearSystemCache } from '../cache';
+import { isEqual, isNil } from 'lodash';
+import { clearSystemCache, getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
+import { getHelpers, Helpers } from '../database/helpers';
 import { systemFieldRows } from '../database/system-data/fields/';
 import emitter from '../emitter';
 import env from '../env';
@@ -12,15 +18,10 @@ import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
 import { AbstractServiceOptions } from '../types';
-import { Field, FieldMeta, RawField, Type, Accountability, SchemaOverview } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { toArray, addFieldFlag } from '@directus/shared/utils';
-import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
-import { getHelpers, Helpers } from '../database/helpers';
-import Keyv from 'keyv';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { KNEX_TYPES } from '@directus/shared/constants';
 
 export class FieldsService {
 	knex: Knex;
@@ -211,19 +212,27 @@ export class FieldsService {
 
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
-			column.default_value = getDefaultValue(column);
 		} catch {
 			// Do nothing
 		}
 
+		if (!column && !fieldInfo) throw new ForbiddenException();
+
 		const type = getLocalType(column, fieldInfo);
+
+		const columnWithCastDefaultValue = column
+			? {
+					...column,
+					default_value: getDefaultValue(column),
+			  }
+			: null;
 
 		const data = {
 			collection,
 			field,
 			type,
 			meta: fieldInfo || null,
-			schema: type === 'alias' ? null : column,
+			schema: type === 'alias' ? null : columnWithCastDefaultValue,
 		};
 
 		return data;
@@ -426,16 +435,6 @@ export class FieldsService {
 			);
 
 			await this.knex.transaction(async (trx) => {
-				if (
-					this.schema.collections[collection] &&
-					field in this.schema.collections[collection].fields &&
-					this.schema.collections[collection].fields[field].alias === false
-				) {
-					await trx.schema.table(collection, (table) => {
-						table.dropColumn(field);
-					});
-				}
-
 				const relations = this.schema.relations.filter((relation) => {
 					return (
 						(relation.collection === collection && relation.field === field) ||
@@ -473,6 +472,17 @@ export class FieldsService {
 							.update({ one_field: null })
 							.where({ many_collection: relation.collection, many_field: relation.field });
 					}
+				}
+
+				// Delete field only after foreign key constraints are removed
+				if (
+					this.schema.collections[collection] &&
+					field in this.schema.collections[collection].fields &&
+					this.schema.collections[collection].fields[field].alias === false
+				) {
+					await trx.schema.table(collection, (table) => {
+						table.dropColumn(field);
+					});
 				}
 
 				const collectionMeta = await trx
@@ -540,7 +550,12 @@ export class FieldsService {
 		if (field.type === 'alias' || field.type === 'unknown') return;
 
 		if (field.schema?.has_auto_increment) {
-			column = table.increments(field.field);
+			if (field.type === 'bigInteger') {
+				// Create an auto-incremented big integer (MySQL, PostgreSQL) or an auto-incremented integer (other DBs)
+				column = table.bigIncrements(field.field);
+			} else {
+				column = table.increments(field.field);
+			}
 		} else if (field.type === 'string') {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
@@ -556,9 +571,10 @@ export class FieldsService {
 			column = table.timestamp(field.field, { useTz: true });
 		} else if (field.type.startsWith('geometry')) {
 			column = this.helpers.st.createColumn(table, field);
+		} else if (KNEX_TYPES.includes(field.type as typeof KNEX_TYPES[number])) {
+			column = table[field.type as typeof KNEX_TYPES[number]](field.field);
 		} else {
-			// @ts-ignore
-			column = table[field.type](field.field);
+			throw new InvalidPayloadException(`Illegal type passed: "${field.type}"`);
 		}
 
 		if (field.schema?.default_value !== undefined) {
@@ -574,11 +590,6 @@ export class FieldsService {
 			) {
 				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
 				column.defaultTo(this.knex.fn.now(Number(precision)));
-			} else if (
-				typeof field.schema.default_value === 'string' &&
-				['"null"', 'null'].includes(field.schema.default_value.toLowerCase())
-			) {
-				column.defaultTo(null);
 			} else {
 				column.defaultTo(field.schema.default_value);
 			}

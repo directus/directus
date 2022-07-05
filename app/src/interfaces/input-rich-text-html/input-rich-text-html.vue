@@ -8,6 +8,8 @@
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
+			@focus="setupContentWatcher"
+			@set-content="contentUpdated"
 		/>
 		<template v-if="softLength">
 			<span
@@ -84,13 +86,23 @@
 							<div class="type-label">{{ t('alt_text') }}</div>
 							<v-input v-model="imageSelection.alt" />
 						</div>
-						<div class="field half">
-							<div class="type-label">{{ t('width') }}</div>
-							<v-input v-model="imageSelection.width" />
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ t('height') }}</div>
-							<v-input v-model="imageSelection.height" />
+						<template v-if="storageAssetTransform === 'all'">
+							<div class="field half">
+								<div class="type-label">{{ t('width') }}</div>
+								<v-input v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
+							</div>
+							<div class="field half-right">
+								<div class="type-label">{{ t('height') }}</div>
+								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
+							</div>
+						</template>
+						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
+							<div class="type-label">{{ t('transformation_preset_key') }}</div>
+							<v-select
+								v-model="imageSelection.transformationKey"
+								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
+								:show-deselect="true"
+							/>
 						</div>
 					</div>
 				</template>
@@ -116,7 +128,7 @@
 				<v-tabs-items v-model="openMediaTab">
 					<v-tab-item value="video">
 						<template v-if="mediaSelection">
-							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="controls">
+							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
 								<source :src="mediaSelection.previewUrl" />
 							</video>
 							<iframe
@@ -162,35 +174,36 @@
 </template>
 
 <script lang="ts">
+import Editor from '@tinymce/tinymce-vue';
+import { percentage } from '@/utils/percentage';
+import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance, onMounted } from 'vue';
+import getEditorStyles from './get-editor-styles';
+import useImage from './useImage';
+import useLink from './useLink';
+import useMedia from './useMedia';
+import useSourceCode from './useSourceCode';
+import { useSettingsStore } from '@/stores';
+import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
-import 'tinymce/plugins/media/plugin';
-import 'tinymce/plugins/table/plugin';
+import 'tinymce/plugins/autoresize/plugin';
+import 'tinymce/plugins/code/plugin';
+import 'tinymce/plugins/directionality/plugin';
+import 'tinymce/plugins/fullscreen/plugin';
 import 'tinymce/plugins/hr/plugin';
-import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/image/plugin';
 import 'tinymce/plugins/imagetools/plugin';
-import 'tinymce/plugins/link/plugin';
-import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/code/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
-import 'tinymce/plugins/autoresize/plugin';
+import 'tinymce/plugins/link/plugin';
+import 'tinymce/plugins/lists/plugin';
+import 'tinymce/plugins/media/plugin';
+import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/paste/plugin';
 import 'tinymce/plugins/preview/plugin';
-import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/directionality/plugin';
+import 'tinymce/plugins/table/plugin';
 import 'tinymce/icons/default';
-
-import Editor from '@tinymce/tinymce-vue';
-import getEditorStyles from './get-editor-styles';
-import useImage from './useImage';
-import useMedia from './useMedia';
-import useLink from './useLink';
-import useSourceCode from './useSourceCode';
-import { percentage } from '@/utils/percentage';
 
 type CustomFormat = {
 	title: string;
@@ -267,25 +280,25 @@ export default defineComponent({
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
+		const settingsStore = useSettingsStore();
+
+		let storageAssetTransform = ref('all');
+		let storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+
+		if (settingsStore.settings?.storage_asset_transform) {
+			storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
+			storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
+		}
 
 		let count = ref(0);
 
-		onMounted(() => {
-			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
-
-			const observer = new MutationObserver((_mutations) => {
-				count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
-
-				emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
-			});
-
-			const config = { characterData: true, childList: true, subtree: true };
-			observer.observe(iframeContents, config);
-		});
-
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
-			imageToken
+			imageToken,
+			{
+				storageAssetTransform,
+				storageAssetPresets,
+			}
 		);
 
 		const {
@@ -360,7 +373,10 @@ export default defineComponent({
 			};
 		});
 
-		const percRemaining = computed(() => percentage(count.value, props.softLength));
+		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
+
+		let observer: MutationObserver;
+		let emittedValue: any;
 
 		return {
 			t,
@@ -395,7 +411,43 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
+			setupContentWatcher,
+			setCount,
+			contentUpdated,
+			storageAssetTransform,
+			storageAssetPresets,
 		};
+
+		function setCount() {
+			const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
+			count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
+		}
+
+		function contentUpdated() {
+			setCount();
+
+			if (!observer) return;
+
+			const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
+
+			if (newValue === emittedValue) return;
+
+			emittedValue = newValue;
+			emit('input', newValue);
+		}
+
+		function setupContentWatcher() {
+			if (observer) return;
+
+			const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
+
+			observer = new MutationObserver((_mutations) => {
+				contentUpdated();
+			});
+
+			const config = { characterData: true, childList: true, subtree: true };
+			observer.observe(iframeContents, config);
+		}
 
 		function setup(editor: any) {
 			editorRef.value = editor;
@@ -410,6 +462,7 @@ export default defineComponent({
 				editor.addShortcut('meta+k', 'Insert Link', () => {
 					editor.ui.registry.getAll().buttons.customlink.onAction();
 				});
+				setCount();
 			});
 		}
 

@@ -1,28 +1,26 @@
 import api from '@/api';
-import { useCollection } from '@directus/shared/composables';
-import { formatISO, parse, format } from 'date-fns';
-import { useItems } from '@directus/shared/composables';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
-import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { renderDisplayStringTemplate } from '@/utils/render-string-template';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field, Item } from '@directus/shared/types';
-import { defineLayout } from '@directus/shared/utils';
+import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import { format, formatISO, isValid, parse } from 'date-fns';
 import { computed, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
-import { useSync } from '@directus/shared/composables';
 import { LayoutOptions } from './types';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',
@@ -94,21 +92,23 @@ export default defineLayout<LayoutOptions>({
 		});
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
+		const queryFields = computed(() => {
+			if (!primaryKeyField.value) return [];
+
+			const fields = [primaryKeyField.value.field];
+			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
+			if (startDateField.value) fields.push(startDateField.value);
+			if (endDateField.value) fields.push(endDateField.value);
+			return fields;
+		});
+
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
 				sort: computed(() => [primaryKeyField.value?.field || '']),
 				page: ref(1),
-				limit: ref(-1),
-				fields: computed(() => {
-					if (!primaryKeyField.value) return [];
-
-					const fields = [primaryKeyField.value.field];
-					if (template.value) fields.push(...getFieldsFromTemplate(template.value));
-					if (startDateField.value) fields.push(startDateField.value);
-					if (endDateField.value) fields.push(endDateField.value);
-					return fields;
-				}),
+				limit: ref(10000),
+				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,
 			},
@@ -135,6 +135,15 @@ export default defineLayout<LayoutOptions>({
 					left: 'prevYear,prev,next,nextYear today',
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
+				},
+				views: {
+					dayGridMonth: {
+						eventTimeFormat: {
+							hour: 'numeric',
+							minute: '2-digit',
+							meridiem: 'narrow',
+						},
+					},
 				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
@@ -242,7 +251,13 @@ export default defineLayout<LayoutOptions>({
 			showingCount,
 			createCalendar,
 			destroyCalendar,
+			download,
 		};
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, queryFields.value, items.value);
+		}
 
 		function updateCalendar() {
 			if (calendar.value) {
@@ -280,7 +295,7 @@ export default defineLayout<LayoutOptions>({
 			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
 
 			if (endDateField.value) {
-				if (allDay) {
+				if (allDay && isValid(item[endDateField.value])) {
 					const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
 					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
 					// expected result in the calendar
@@ -295,7 +310,12 @@ export default defineLayout<LayoutOptions>({
 
 			return {
 				id: primaryKey,
-				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
+				title:
+					renderDisplayStringTemplate(
+						collection.value,
+						template.value || `{{ ${primaryKeyField.value.field} }}`,
+						item
+					) || item[primaryKeyField.value.field],
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,

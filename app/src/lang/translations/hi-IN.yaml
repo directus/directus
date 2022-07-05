@@ -311,6 +311,7 @@ create: Create
 read: Read
 update: Update
 toggle: टॉगल करें
+flow_name: नाम
 wysiwyg_options:
   forecolor: अग्रभूमि रंग
   backcolor: पृष्ठभूमि रंग
@@ -363,6 +364,8 @@ interfaces:
     zoom: छोटा-बड़ा करें
   system-folder:
     folder: फ़ोल्डर
+  list:
+    sort: सॉर्ट
   boolean:
     toggle: टॉगल करें
   user:
@@ -374,6 +377,7 @@ displays:
     color: Color
   datetime:
     format: प्रारूप
+    suffix: सफिक्स
   formatted-value:
     format: प्रारूप
     font: फ़ॉन्ट
@@ -388,3 +392,8 @@ displays:
   user:
     user: यूज़र
     name: नाम
+operations:
+  notification:
+    recipient: यूज़र
+  request:
+    url: URL

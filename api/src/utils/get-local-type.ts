@@ -1,5 +1,3 @@
-import { SchemaOverview } from '@directus/schema/dist/types/overview';
-import { Column } from 'knex-schema-inspector/dist/types/column';
 import { FieldMeta, Type } from '@directus/shared/types';
 
 const localTypeMap: Record<string, Type | 'unknown'> = {
@@ -105,7 +103,12 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 };
 
 export default function getLocalType(
-	column?: SchemaOverview[string]['columns'][string] | Column,
+	column?: {
+		data_type: string;
+		numeric_precision?: null | number;
+		numeric_scale?: null | number;
+		max_length?: null | number;
+	},
 	field?: { special?: FieldMeta['special'] }
 ): Type | 'unknown' {
 	if (!column) return 'alias';

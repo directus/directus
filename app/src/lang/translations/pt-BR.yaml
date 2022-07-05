@@ -23,6 +23,7 @@ identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
 default_provider: Padrão
+method: Método 
 published: Publicado
 draft: Rascunho
 archived: Arquivado
@@ -31,6 +32,8 @@ module_bar: Barra de Módulos
 tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
+location: Local
+input: Entrada
 maps: Mapas
 switch_user: Alternar Usuário
 item_creation: Criação do Item
@@ -65,8 +68,10 @@ create_preset: Criar Predefinição
 create_panel: Criar Painel
 create_role: Criar Cargo
 create_user: Criar Usuário
+message: Mensagem
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
+create_translation_string: String chave para a tradução
 translation_string_translations_placeholder: Adicionar uma nova tradução
 delete_translation_string_copy: >-
   Tem certeza de que deseja excluir a string de tradução "{key}"? Essa ação não pode ser desfeita.
@@ -165,6 +170,7 @@ revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
 no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
+hide_field: Ocultar campo
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
 delete_field: Excluir Campo
@@ -560,7 +566,6 @@ unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
-password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
 filter: Filtro
@@ -583,8 +588,6 @@ start_end_of_count_items: '{start}-{end} de {count} itens'
 start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
 one_item: '1 item'
 one_filtered_item: '1 item filtrado'
-delete_collection_are_you_sure: >-
-  Tem certeza que deseja excluir esta coleção? Isto irá apagar a coleção e todos os itens nela. Esta ação é permanente.
 collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
@@ -689,6 +692,7 @@ on_create: Ao Criar
 on_update: Pós-alteração
 read: Ler
 update: Alteração
+delete: Excluir
 select_fields: Selecionar campos
 format_text: Formatar texto
 abbreviate_value: Abreviar Valor
@@ -698,6 +702,10 @@ toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+trigger: Acionar
+flow_name: Nome
+flow_tracking_activity: Acompanhar apenas Atividade
+flow_tracking_null: Não rastreie nada
 insights: Estatísticas
 dashboard: Painel
 panel: Painel
@@ -715,9 +723,10 @@ suffix_placeholder: Texto depois do valor...
 decimals_placeholder: Número de casas decimais...
 no_dashboards: Sem painéis
 no_dashboards_copy: Você ainda não tem nenhum painel.
-no_data: Sem dados
 create_dashboard: Criar painel
 dashboard_name: Nome do painel
+no_data: Sem dados
+accountability: Responsabilidade
 full_screen: Tela cheia
 edit_panels: Editar painéis
 left_align: Alinhar à Esquerda
@@ -746,6 +755,7 @@ open_link_in: Abrir link em
 new_tab: Nova aba
 current_tab: Aba atual
 save_image: Salvar Imagem
+save_media: Salvar Arquivo
 wysiwyg_options:
   aligncenter: Alinhar ao centro
   alignjustify: Justificar
@@ -815,6 +825,7 @@ settings_webhooks: Webhooks
 settings_presets: Predefinições & Marcadores
 one_or_more_options_are_missing: Uma ou mais opções estão faltando
 scope: Escopo
+actions: Ações
 select: Selecionar...
 layout: Layout
 tree_view: Exibição em Árvore
@@ -824,6 +835,7 @@ preset_search_placeholder: Termos da pesquisa...
 editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
 layout_setup: Configuração de Layout
+data: Dados
 unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
@@ -887,9 +899,9 @@ directus_collection:
   directus_files: Metadados de todos os arquivos gerenciados
   directus_folders: Fornece diretórios virtuais para arquivos
   directus_migrations: Qual versão do banco de dados você está utilizando
+  directus_notifications: Notificações enviadas aos usuários
   directus_panels: Painéis individuais nos dashboards de Visões
   directus_permissions: Permissões de acesso para cada papel
-  directus_notifications: Notificações enviadas aos usuários
   directus_presets: Predefinições para padrões de coleção e favoritos
   directus_relations: Configurações e metadados do relacionamento
   directus_revisions: Cópia de dados de todas as atividades
@@ -975,7 +987,6 @@ fields:
     status_archived: Arquivado
     role: Função
     token: Token
-    token_placeholder: Digite um token de acesso seguro...
     provider: Provedor
     external_identifier: Identificador externo
     last_page: Última página
@@ -1160,7 +1171,9 @@ generate_and_save_uuid: Gerar e salvar UUID
 save_current_user_id: Salvar ID de usuário atual
 save_current_user_role: Salvar a Função de Usuário Atual
 save_current_datetime: Salvar data/hora atual
+always_open: Sempre Aberto
 start_open: Iniciar Aberto
+start_collapsed: Início Recolhido
 block: Bloco
 inline: Em linha
 comment: Comentário
@@ -1244,7 +1257,6 @@ sort_direction: Direção da ordenação
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
 template: Template
-require_value_to_be_set: Valor a ser definido é requerido
 translation: Tradução
 translation_placeholder: Insira uma tradução...
 value: Valor
@@ -1427,6 +1439,8 @@ interfaces:
     description: Crie múltiplas entradas com a mesma estrutura
     edit_fields: Editar campos
     add_label: 'Texto de "Criar Novo"'
+    sort: Ordenar
+    sort_placeholder: Manual
     field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira a nota de campo...
   slider:
@@ -1463,6 +1477,8 @@ interfaces:
   input-multiline:
     textarea: Área de texto
     description: Insira texto puro de múltiplas linhas
+  input-translated-string:
+    input-translated-string: Textos traduzidos
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
@@ -1474,6 +1490,9 @@ interfaces:
     display_template: Modelo de exibição
     no_collection: Nenhuma coleção
     toggle_split_view: Alternar Visualização Dividida
+    enable: Habilitar
+    user_language: Usar o Idioma do Usuário Atual
+    default_language: Idioma padrão
     language_field: Campo Indicador de Idioma
   list-o2m-tree-view:
     description: Visualização de árvore para itens recursivos aninhados um-para-muitos
@@ -1512,6 +1531,8 @@ interfaces:
     header_color: Cor do Cabeçalho
     start_open: Iniciar Aberto
     start_closed: Iniciar Fechado
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traduções
@@ -1549,6 +1570,7 @@ displays:
     short: Curto
     relative: Relativo
     relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
+    suffix: Sufixo
   file:
     file: Arquivo
     description: Exibir arquivos
@@ -1649,3 +1671,23 @@ panels:
   list:
     name: Lista
     description: Filtrar e listar campos de uma coleção
+triggers:
+  webhook:
+    method: Método 
+operations:
+  log:
+    message: Mensagem
+  notification:
+    recipient: Usuário
+    message: Mensagem
+  request:
+    url: URL
+    method: Método 
+    data: Dados
+    header: Cabeçalho
+  trigger:
+    name: Ativar Fluxo
+    description: Passar estes dados para outro fluxo
+    flows: Fluxos
+    flow: Fluxo
+    data: Dados

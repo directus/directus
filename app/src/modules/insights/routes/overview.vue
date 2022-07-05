@@ -41,7 +41,7 @@
 			@click:row="navigateToDashboard"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon" />
+				<v-icon class="icon" :name="item.icon" :color="item.color" />
 			</template>
 
 			<template #item-append="{ item }">
@@ -106,6 +106,7 @@ import { useInsightsStore, usePermissionsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { Dashboard } from '@/types';
 import { router } from '@/router';
+import { Header } from '@/components/v-table/types';
 import InsightsNavigation from '../components/navigation.vue';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import api from '@/api';
@@ -139,24 +140,32 @@ export default defineComponent({
 			return permissionsStore.hasPermission('directus_dashboards', 'delete');
 		});
 
-		const tableHeaders = [
+		const tableHeaders = ref<Header[]>([
 			{
 				text: '',
 				value: 'icon',
 				width: 42,
 				sortable: false,
+				align: 'left',
+				description: null,
 			},
 			{
 				text: t('name'),
 				value: 'name',
 				width: 240,
+				sortable: true,
+				align: 'left',
+				description: null,
 			},
 			{
 				text: t('note'),
 				value: 'note',
 				width: 360,
+				sortable: false,
+				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		const dashboards = computed(() => insightsStore.dashboards);
 
@@ -214,12 +223,6 @@ export default defineComponent({
 	--v-list-item-color: var(--danger);
 	--v-list-item-color-hover: var(--danger);
 	--v-list-item-icon-color: var(--danger);
-}
-
-.v-list-item.warning {
-	--v-list-item-color: var(--warning);
-	--v-list-item-color-hover: var(--warning);
-	--v-list-item-icon-color: var(--warning);
 }
 
 .header-icon {

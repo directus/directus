@@ -1,37 +1,44 @@
-import { FnHelper } from '../types';
+import { FnHelper, FnHelperOptions } from '../types';
 import { Knex } from 'knex';
 
+const parseLocaltime = (columnType?: string) => {
+	if (columnType === 'timestamp') {
+		return ` AT TIME ZONE 'UTC'`;
+	}
+	return '';
+};
+
 export class FnHelperOracle extends FnHelper {
-	year(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'IYYY')", [table, column]);
+	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IYYY')`, [table, column]);
 	}
 
-	month(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'MM')", [table, column]);
+	month(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MM')`, [table, column]);
 	}
 
-	week(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'IW')", [table, column]);
+	week(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'IW')`, [table, column]);
 	}
 
-	day(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'DD')", [table, column]);
+	day(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'DD')`, [table, column]);
 	}
 
-	weekday(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'D')", [table, column]);
+	weekday(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'D')`, [table, column]);
 	}
 
-	hour(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'HH24')", [table, column]);
+	hour(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'HH24')`, [table, column]);
 	}
 
-	minute(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'MI')", [table, column]);
+	minute(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'MI')`, [table, column]);
 	}
 
-	second(table: string, column: string): Knex.Raw {
-		return this.knex.raw("TO_CHAR(??.??, 'SS')", [table, column]);
+	second(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'SS')`, [table, column]);
 	}
 
 	count(table: string, column: string): Knex.Raw<any> {

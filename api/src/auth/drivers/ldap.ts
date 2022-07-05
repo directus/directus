@@ -221,7 +221,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		await this.validateBindClient();
 
-		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute } = this.config;
+		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId } = this.config;
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
@@ -263,7 +263,10 @@ export class LDAPAuthDriver extends AuthDriver {
 		const userId = await this.fetchUserId(userInfo.dn);
 
 		if (userId) {
-			await this.usersService.updateOne(userId, { role: userRole?.id ?? null });
+			// Only sync roles if the AD groups are configured
+			if (groupDn) {
+				await this.usersService.updateOne(userId, { role: userRole?.id ?? defaultRoleId ?? null });
+			}
 			return userId;
 		}
 
@@ -277,7 +280,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			last_name: userInfo.lastName,
 			email: userInfo.email,
 			external_identifier: userInfo.dn,
-			role: userRole?.id,
+			role: userRole?.id ?? defaultRoleId,
 		});
 
 		return (await this.fetchUserId(userInfo.dn)) as string;

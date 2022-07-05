@@ -23,15 +23,20 @@ identifier: Identificador
 avatar: Avatar
 application: Aplicación
 default_provider: Por defecto
+method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
+logs: Registros
 reset_width: Restablecer ancho
 tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
+location: Ubicación
+condition_rules: Regla de condición
+input: Entrada
 maps: Mapas
 switch_user: Cambiar de usuario
 item_creation: Creación de artículos
@@ -44,6 +49,11 @@ group: Grupo
 export_items: Exportar elementos
 and: "Y"
 or: O
+init: Inicializador
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente muestra los primeros {n} elementos.
+modifier: Modificador
+custom: Personalizado
+hook: Hook
 fill_width: Llenar Ancho
 field_name_translations: 'Nombre de Campo: Traducciones'
 enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
@@ -67,9 +77,12 @@ create_preset: Crear Predefinido
 create_panel: Crear Panel
 create_role: Crear Rol
 create_user: Crear Usuario
+message: Mensaje
 delete_panel: Eliminar Panel
 create_webhook: Crear Webhook
 create_translation_string: Crear Traducciones
+no_translation_string: No hay cadenas de traducción
+no_translation_string_copy: Todavía no hay cadenas de traducción.
 translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
 edit_translation_string: Editar traducción
@@ -324,14 +337,18 @@ revision_delta_created_externally: Creado Externamente
 revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
+download_page_as_csv: 'Descargar página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista previa de creación
 revision_preview: Vista Previa de Revisión
 updates_made: Actualizaciones Realizadas
 leave_comment: Deja un comentario...
 post_comment_success: Comentario publicado
+post_comment_updated: Comentario actualizado
 item_create_success: Elemento Creado | Elementos Creados
 item_update_success: Elemento Actualizado | Elementos Actualizados
 item_delete_success: Elemento Eliminado | Elementos Eliminados
@@ -449,6 +466,7 @@ created_on: Creado El
 creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
 creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
 auto_increment_integer: Número Entero Auto-Incrementado
+auto_increment_big_integer: Número Entero Auto-Incrementado
 generated_uuid: UUID Generado
 manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
@@ -469,7 +487,9 @@ disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
 request_feature: Solicitar Características
+request_body: Cuerpo de la Solicitud
 interface_not_found: 'Interfaz "{interface}" no encontrada.'
+operation_not_found: 'Operación "{operation}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
@@ -555,7 +575,9 @@ errors:
   INVALID_CREDENTIALS: Usuario o contraseña incorrecta
   INVALID_OTP: Contraseña Temporal Incorrecta
   INVALID_PAYLOAD: Payload Inválido
+  INVALID_PROVIDER: El usuario pertenece a un proveedor de autenticación diferente
   INVALID_QUERY: Consulta Inválida
+  INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Límite de elementos alcanzado
   ITEM_NOT_FOUND: Elemento no encontrado
   ROUTE_NOT_FOUND: No encontrado
@@ -570,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
+  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
 security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
@@ -587,7 +610,7 @@ unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo má
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
-password_reset_sent: Le hemos enviado un enlace seguro para restablecer su contraseña
+password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
@@ -611,9 +634,6 @@ start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
-delete_collection_are_you_sure: >-
-  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
-delete_folder_are_you_sure: '¿Está seguro que desea eliminar esta carpeta? Las carpetas anidadas y las colecciones se moverán al nivel más alto.'
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -722,6 +742,7 @@ on_create: Al Crear
 on_update: Al Actualizar
 read: Leer
 update: Actualización
+delete: Eliminar
 select_fields: Seleccionar Campos
 format_text: Formatear Texto
 format_value: Formatear Valor
@@ -732,6 +753,10 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+trigger: Disparador
+flow_name: Nombre
+flow_tracking_activity: Sólo seguimiento de actividad
+flow_tracking_null: No realizar seguimiento
 insights: Informes
 dashboard: Panel de control
 panel: Panel
@@ -749,9 +774,10 @@ suffix_placeholder: Texto después del valor...
 decimals_placeholder: Número de decimales...
 no_dashboards: No hay paneles
 no_dashboards_copy: Aún no tienes un Panel.
-no_data: Sin datos
 create_dashboard: Crear un Panel
 dashboard_name: Nombre del Panel
+no_data: Sin datos
+accountability: Responsabilidad
 full_screen: Pantalla Completa
 full_text_search: Búsqueda de texto completo
 edit_panels: Editar Panel
@@ -853,6 +879,7 @@ settings_presets: Predefinidos y Marcadores
 settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
+actions: Acciones
 select: Seleccionar...
 layout: Diseño
 tree_view: Vista en árbol
@@ -862,6 +889,7 @@ preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
 layout_setup: Configuración del Diseño
+data: Datos
 unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Realmente desea salir de esta página?'
 discard_changes: Descartar Cambios
@@ -926,9 +954,9 @@ directus_collection:
   directus_files: Metadatos para todos los archivos gestionados
   directus_folders: Proporciona directorios virtuales para archivos
   directus_migrations: Qué versión de la base de datos estás usando
+  directus_notifications: Notificaciones enviadas a usuarios
   directus_panels: Paneles individuales dentro de los paneles de Individual
   directus_permissions: Permisos de acceso para cada rol
-  directus_notifications: Notificaciones enviadas a usuarios
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1015,7 +1043,6 @@ fields:
     status_archived: Archivado
     role: Rol
     token: Token
-    token_placeholder: Introduzca un token de acceso seguro...
     provider: Proveedor
     external_identifier: Identificador externo
     last_page: Última Página
@@ -1317,12 +1344,10 @@ export_started_copy: Tu exportación ha comenzado. Serás notificado cuando est�
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
-require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
-weeks: { }
 report_error: Reportar Error
 start: Iniciar
 interfaces:
@@ -1516,6 +1541,7 @@ interfaces:
     description: Crear múltiples entradas con la misma estructura
     edit_fields: Editar campos
     add_label: 'Etiqueta "Crear nuevo"'
+    sort: Ordenar
     field_name_placeholder: Ingrese el nombre del campo...
     field_note_placeholder: Introducir nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
@@ -1570,6 +1596,9 @@ interfaces:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
     toggle_split_view: Cambiar vista dividida
+    enable: Habilitado
+    user_language: Usar el idioma actual del usuario
+    default_language: Idioma predeterminado
     language_field: Campo indicador de idioma
   list-o2m-tree-view:
     description: Vista del árbol para elementos anidados recursivos uno a muchos
@@ -1610,6 +1639,8 @@ interfaces:
     header_color: Color del encabezado
     start_open: Iniciar apertura
     start_closed: Iniciar colapsado
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Traducciones
@@ -1647,6 +1678,7 @@ displays:
     short: Corta
     relative: Relativa
     relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
+    suffix: Sufijo
   file:
     file: Archivo
     description: Presentar archivos
@@ -1757,6 +1789,35 @@ layouts:
     find_location: Buscar ubicación...
     default_template: Usando la colección por defecto...
     no_compatible_fields: No hay campos compatibles
+  kanban:
+    name: Kanban,
+    group_field: Agrupar,
+    group_field_placeholder: Campo para agrupar,
+    group_title: Título del Grupo,
+    group_title_placeholder: Campo para títulos de grupo...,
+    title: Título de la Tarjeta
+    title_placeholder: Campo de título opcional...,
+    text: Texto de la Tarjeta,
+    text_placeholder: Campo de texto opcional...,
+    date: Fecha de la Tarjeta,
+    date_placeholder: Campo de fecha opcional...,
+    tags: Etiquetas de la Tarjeta,
+    tags_placeholder: Campo de etiquetas opcional...,
+    user: Usuario de la Tarjeta,
+    user_placeholder: Campo de usuario opcional...,
+    image: Imagen de la Tarjeta,
+    image_placeholder: Campo de imagen opcional...,
+    image_fit: Ajuste de Imagen de la Tarjeta,
+    crop: Recortar,
+    advanced: Avanzado,
+    edit_group: Editar Grupo,
+    delete_group: Eliminar Grupo,
+    add_group: Añadir Grupo,
+    add_group_placeholder: Introduzca un nuevo título para el grupo...,
+    show_ungrouped: Mostrar Desagrupado,
+    show: Mostrar,
+    no_group: Sin Agrupar,
+    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 panels:
   metric:
     name: Métrico
@@ -1775,3 +1836,53 @@ panels:
   list:
     name: Lista
     description: Filtrar y listar campos de una colección
+  barchart:
+    name: Gráfico de Barras
+    description: Gráficos de barra o columna para comparar grupos de valores
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    horizontal: Horizontal
+    x_axis_grouping: Agregación de Grupo del Eje X
+    x_axis: Eje X
+    y_axis_function: Función del Eje Y
+    y_axis: Eje Y
+    show_x_axis: Mostrar Eje X
+    show_y_axis: Mostrar Eje Y
+    show_data_label: Mostrar Etiqueta de Datos
+    group_by: Agrupado Por
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+    y_axis_NaN: El eje Y debe ser un número.
+    y_axis_conditional_one: Valor para la condición
+    y_axis_conditional_two: debe ser un número.
+  linechart:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    select_x_axis: Debe seleccionar un eje X.
+    function: Función
+    x_axis: Eje X
+    y_axis: Eje Y
+    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+  meter:
+    select_field: Debe seleccionar un campo.
+    select_collection: Debe seleccionar una colección.
+    function: Función
+  piechart:
+    function: 'Función'
+triggers:
+  webhook:
+    method: Método
+operations:
+  log:
+    message: Mensaje
+  notification:
+    recipient: Usuario
+    message: Mensaje
+  request:
+    url: URL
+    method: Método
+    data: Datos
+    header: Encabezado
+  trigger:
+    data: Datos

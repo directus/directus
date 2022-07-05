@@ -7,7 +7,7 @@
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
-			<div v-if="imageError" class="image-error">
+			<div v-if="imageError || !src" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
 
 				<span class="message">
@@ -57,57 +57,64 @@
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
-				@input="stageEdits"
+				@input="update"
 			/>
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url :folder="folder" @input="setImage" />
+		<v-upload v-else from-library from-url :folder="folder" @input="update($event.id)" />
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { ref, computed, toRefs } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import formatFilesize from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
-import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item';
+import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import { nanoid } from 'nanoid';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { readableMimeType } from '@/utils/readable-mime-type';
 
-type Image = {
-	id: string; // uuid
-	type: string;
-	filesize: number;
-	width: number;
-	height: number;
-	filename_download: string;
-};
-
-interface Props {
-	width: string;
-	value?: string | Record<string, any>;
-	disabled?: boolean;
-	folder?: string;
-	crop?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	value: undefined,
-	disabled: false,
-	folder: undefined,
-	crop: false,
-});
+const props = withDefaults(
+	defineProps<{
+		value?: string | Record<string, any> | null;
+		disabled?: boolean;
+		folder?: string;
+		collection: string;
+		field: string;
+		width: string;
+		crop?: boolean;
+	}>(),
+	{
+		value: () => null,
+		disabled: false,
+		crop: true,
+		folder: undefined,
+	}
+);
 
 const emit = defineEmits(['input']);
 
+const value = computed({
+	get: () => props.value ?? null,
+	set: (value) => {
+		emit('input', value);
+	},
+});
+
+const query = ref<RelationQuerySingle>({
+	fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
+});
+
+const { collection, field } = toRefs(props);
+const { relationInfo } = useRelationM2O(collection, field);
+const { displayItem: image, loading, update, remove } = useRelationSingle(value, query, relationInfo);
+
 const { t, n, te } = useI18n();
 
-const loading = ref(false);
-const image = ref<Image | null>(null);
 const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
@@ -147,52 +154,6 @@ const meta = computed(() => {
 	return `${formatFilesize(filesize)} • ${type}`;
 });
 
-watch(
-	() => props.value,
-	(newValue, oldValue) => {
-		if (newValue === oldValue) return;
-
-		if (newValue) {
-			fetchImage();
-		}
-
-		if (oldValue && newValue === null) {
-			deselect();
-		}
-	},
-	{ immediate: true }
-);
-
-const { edits, stageEdits } = useEdits();
-
-async function fetchImage() {
-	loading.value = true;
-	imageError.value = null;
-
-	try {
-		const id = typeof props.value === 'string' ? props.value : props.value?.id;
-
-		const response = await api.get(`/files/${id}`, {
-			params: {
-				fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
-			},
-		});
-
-		if (props.value !== null && typeof props.value === 'object') {
-			image.value = {
-				...response.data.data,
-				...props.value,
-			};
-		} else {
-			image.value = response.data.data;
-		}
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
-}
-
 async function imageErrorHandler() {
 	if (!src.value) return;
 	try {
@@ -206,42 +167,19 @@ async function imageErrorHandler() {
 	}
 }
 
-function setImage(data: Image) {
-	image.value = data;
-	emit('input', data.id);
-}
-
 function deselect() {
-	emit('input', null);
+	remove();
 
 	loading.value = false;
-	image.value = null;
 	lightboxActive.value = false;
 	editDrawerActive.value = false;
 }
 
-function useEdits() {
-	const edits = computed(() => {
-		// If the current value isn't a primitive, it means we've already staged some changes
-		// This ensures we continue on those changes instead of starting over
-		if (props.value && typeof props.value === 'object') {
-			return props.value;
-		}
+const edits = computed(() => {
+	if (!props.value || typeof props.value !== 'object') return {};
 
-		return {};
-	});
-
-	return { edits, stageEdits };
-
-	function stageEdits(newEdits: Record<string, any>) {
-		if (!image.value) return;
-
-		emit('input', {
-			id: image.value.id,
-			...newEdits,
-		});
-	}
-}
+	return props.value;
+});
 </script>
 
 <style lang="scss" scoped>

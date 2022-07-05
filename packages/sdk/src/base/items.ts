@@ -52,7 +52,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 
 		return {
 			data,
-			meta,
+			...(meta && { meta }),
 		};
 	}
 
@@ -64,7 +64,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 
 		return {
 			data,
-			meta,
+			...(meta && { meta }),
 		};
 	}
 

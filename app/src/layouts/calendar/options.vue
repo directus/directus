@@ -78,7 +78,7 @@ export default defineComponent({
 			const firstDayOfWeekForDate = startOfWeek(new Date());
 			firstDayOptions.value = await Promise.all(
 				[...Array(7).keys()].map(async (_, i) => ({
-					text: await localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
+					text: localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
 					value: i,
 				}))
 			);
