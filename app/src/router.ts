@@ -98,7 +98,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 	}
 
-	if (serverStore.info === null) {
+	if (serverStore.info.project === null) {
 		await serverStore.hydrate();
 	}
 

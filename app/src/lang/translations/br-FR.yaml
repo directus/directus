@@ -1111,6 +1111,7 @@ displays:
     short: Berr
     relative: Relativel
     relative_label: 'Diskwel an eur relativel, da skouer: 5 munutenn zo'
+    suffix: Lostger
   file:
     file: Restr
     description: Diskwel ar restroù

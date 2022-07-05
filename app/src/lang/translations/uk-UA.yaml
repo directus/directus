@@ -1660,6 +1660,7 @@ displays:
     short: Короткий
     relative: Відносний
     relative_label: 'Показати відносний час, наприклад: 5 хвилин тому'
+    suffix: Суфікс
   file:
     file: Файл
     description: Показати файли

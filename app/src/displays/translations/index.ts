@@ -19,7 +19,7 @@ export default defineDisplay({
 	description: '$t:displays.translations.description',
 	icon: 'translate',
 	component: DisplayTranslations,
-	handler: async (values, options, { collection, field }) => {
+	handler: (values, options, { collection, field }) => {
 		if (!field || !collection || !Array.isArray(values)) return values;
 
 		const relatedCollections = getRelatedCollection(collection, field.field);
@@ -85,7 +85,7 @@ export default defineDisplay({
 			const display = getDisplay(field.meta.display);
 
 			const stringValue = display?.handler
-				? await display.handler(fieldValue, field?.meta?.display_options ?? {}, {
+				? display.handler(fieldValue, field?.meta?.display_options ?? {}, {
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,

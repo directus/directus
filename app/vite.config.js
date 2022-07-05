@@ -118,6 +118,9 @@ export default defineConfig({
 			},
 		}),
 	],
+	optimizeDeps: {
+		exclude: ['@directus/docs'],
+	},
 	resolve: {
 		alias: [
 			{ find: '@', replacement: path.resolve(__dirname, 'src') },
