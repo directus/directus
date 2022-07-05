@@ -140,6 +140,8 @@ this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
 languages_collection: 言語コレクション
+label_import: インポート
+import_export: インポート / エクスポート
 format: 書式
 last_access: 最後にアクセスした日時
 a_unique_table_name: 重複しない名前をつけてください
@@ -173,6 +175,7 @@ months:
   december: 12月
 cancel_crop: トリミングをキャンセル
 url: URL
+import_label: インポート
 file_details: ファイルの詳細
 size: サイズ
 modified: 修正されました

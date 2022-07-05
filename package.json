@@ -27,6 +27,7 @@
 		"npm": ">=8.5.0"
 	},
 	"devDependencies": {
+		"@directus/app": "^9.13.0",
 		"@types/dockerode": "3.3.0",
 		"@types/jest": "27.4.1",
 		"@types/listr": "0.14.4",
@@ -46,6 +47,8 @@
 		"lerna": "4.0.0",
 		"lint-staged": "11.2.6",
 		"listr": "0.14.3",
+		"markdown-it-anchor": "^8.6.4",
+		"markdown-it-container": "^3.0.0",
 		"mysql": "2.18.1",
 		"nanoid": "3.1.30",
 		"npm-run-all": "4.1.5",
