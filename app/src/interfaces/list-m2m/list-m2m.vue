@@ -65,6 +65,7 @@
 					<v-icon
 						v-if="!disabled && selectAllowed"
 						class="deselect"
+						:class="{ deleted: item.$type === 'deleted' }"
 						:name="getDeselectIcon(item)"
 						@click.stop="deleteItem(item)"
 					/>
@@ -580,6 +581,12 @@ const selectAllowed = computed(() => {
 		::v-deep(.v-icon) {
 			color: var(--danger-75);
 		}
+	}
+}
+
+.v-table {
+	.deselect.deleted {
+		color: var(--danger-75);
 	}
 }
 
