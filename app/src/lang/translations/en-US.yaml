@@ -1507,6 +1507,9 @@ interfaces:
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
     placeholder: Choose a datetime...
+  system-fields:
+    select_a_collection: Select a Collection
+    no_fields: No fields
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
