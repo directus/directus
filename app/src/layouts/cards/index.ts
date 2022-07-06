@@ -7,7 +7,6 @@ import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
 import { clone } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import CardsActions from './actions.vue';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
@@ -24,8 +23,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const relationsStore = useRelationsStore();
 
 		const selection = useSync(props, 'selection', emit);

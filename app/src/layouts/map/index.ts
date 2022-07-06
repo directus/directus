@@ -5,7 +5,6 @@ import { Field, Filter, GeometryOptions, Item } from '@directus/shared/types';
 import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
 import { cloneDeep, merge } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import MapActions from './actions.vue';
 import MapLayout from './map.vue';
@@ -27,8 +26,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const router = useRouter();
 
 		const selection = useSync(props, 'selection', emit);
