@@ -125,7 +125,6 @@ export default defineComponent({
 .render-template {
 	position: relative;
 	max-width: 100%;
-	height: 100%;
 	padding-right: 8px;
 
 	.vertical-aligner {

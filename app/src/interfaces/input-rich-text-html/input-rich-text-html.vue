@@ -376,6 +376,7 @@ export default defineComponent({
 		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 		let observer: MutationObserver;
+		let emittedValue: any;
 
 		return {
 			t,
@@ -427,7 +428,12 @@ export default defineComponent({
 
 			if (!observer) return;
 
-			emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+			const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
+
+			if (newValue === emittedValue) return;
+
+			emittedValue = newValue;
+			emit('input', newValue);
 		}
 
 		function setupContentWatcher() {
