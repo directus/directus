@@ -128,6 +128,7 @@ function removeField(fieldKey: string) {
 }
 
 .v-notice.no-fields {
+	background-color: var(--background-page);
 	border: var(--border-width) solid var(--v-list-item-border-color);
 
 	&::after {
