@@ -1566,6 +1566,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    columns_configure_notice: You can configure the columns after creating this field.
     display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One

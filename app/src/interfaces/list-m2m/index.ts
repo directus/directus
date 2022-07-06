@@ -16,21 +16,6 @@ export default defineInterface({
 		const { collection, related_collection } = relations.o2m ?? {};
 		const options = meta?.options ?? {};
 
-		const displayTemplateMeta =
-			editing === '+'
-				? {
-						interface: 'presentation-notice',
-						options: {
-							text: '$t:interfaces.list-m2m.display_template_configure_notice',
-						},
-				  }
-				: {
-						interface: 'system-display-template',
-						options: {
-							collectionName: collection,
-						},
-				  };
-
 		const tableOptions = [
 			{
 				field: 'tableSpacing',
@@ -62,13 +47,21 @@ export default defineInterface({
 			{
 				field: 'fields',
 				name: '$t:columns',
-				meta: {
-					interface: 'system-fields',
-					options: {
-						collectionName: collection,
-					},
-					width: 'full',
-				},
+				meta:
+					editing === '+'
+						? {
+								interface: 'presentation-notice',
+								options: {
+									text: '$t:interfaces.list-m2m.columns_configure_notice',
+								},
+						  }
+						: {
+								interface: 'system-fields',
+								options: {
+									collectionName: collection,
+								},
+								width: 'full',
+						  },
 			},
 		];
 
@@ -76,7 +69,20 @@ export default defineInterface({
 			{
 				field: 'template',
 				name: '$t:display_template',
-				meta: displayTemplateMeta,
+				meta:
+					editing === '+'
+						? {
+								interface: 'presentation-notice',
+								options: {
+									text: '$t:interfaces.list-m2m.display_template_configure_notice',
+								},
+						  }
+						: {
+								interface: 'system-display-template',
+								options: {
+									collectionName: collection,
+								},
+						  },
 			},
 		];
 
