@@ -120,7 +120,7 @@
 								:class="{ disabled: element.$type === 'created' }"
 								@click.stop
 							>
-								<v-icon name="link" />
+								<v-icon name="launch" />
 							</router-link>
 							<v-icon
 								v-if="!disabled && updateAllowed"
