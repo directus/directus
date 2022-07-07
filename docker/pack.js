@@ -2,7 +2,7 @@ const { execSync } = require('child_process');
 const { writeFileSync, mkdirSync, existsSync } = require('fs');
 const path = require('path');
 
-const lernaListResult = execSync('npx lerna list --json'); //The "proper" way to do this with --include-dependencies and --scope won't work here because it includes devDependencies!
+const lernaListResult = execSync('npx lerna list --json'); // The "proper" way to do this with --include-dependencies and --scope won't work here because it includes devDependencies!
 
 const list = JSON.parse(String(lernaListResult));
 const apiPackageJson = require(path.resolve(__dirname, '../api/package.json'));

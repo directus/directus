@@ -35,5 +35,16 @@
 	"volta": {
 		"node": "16.15.0",
 		"npm": "8.10.0"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^5.30.5",
+		"@typescript-eslint/parser": "^5.30.5",
+		"eslint": "^8.19.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-vue": "^9.2.0",
+		"npm-run-all": "4.1.5",
+		"prettier": "2.4.1",
+		"typescript": "^4.7.4"
 	}
 }
