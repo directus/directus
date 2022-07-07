@@ -57,6 +57,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		disabledFields: {
+			type: Array as PropType<string[]>,
+			default: () => [],
+		},
 		typeDenyList: {
 			type: Array as PropType<string[]>,
 			default: () => [],
@@ -81,7 +85,11 @@ export default defineComponent({
 			return fieldsStore.getFieldsForCollectionAlphabetical(props.collection).map((field) => ({
 				text: field.field,
 				value: field.field,
-				disabled: !field.schema || !!field.schema?.is_primary_key || !!props.typeDenyList.includes(field.type),
+				disabled:
+					!field.schema ||
+					!!field.schema?.is_primary_key ||
+					props.disabledFields.includes(field.field) ||
+					props.typeDenyList.includes(field.type),
 			}));
 		});
 
