@@ -58,12 +58,13 @@
 				</template>
 
 				<template #item-append="{ item }">
-					<router-link v-if="enableLink" :to="getLinkForItem(item)" class="item-link">
-						<v-icon name="link" />
+					<router-link v-if="enableLink" v-tooltip="t('navigate_to_item')" :to="getLinkForItem(item)" class="item-link">
+						<v-icon name="launch" />
 					</router-link>
 
 					<v-icon
 						v-if="!disabled && updateAllowed"
+						v-tooltip="t(getDeselectTooltip(item))"
 						class="deselect"
 						:name="getDeselectIcon(item)"
 						@click.stop="deleteItem(item)"
@@ -105,11 +106,17 @@
 							<render-template :collection="relatedCollection" :item="element" :template="templateWithDefaults" />
 							<div class="spacer" />
 
-							<router-link v-if="enableLink" :to="getLinkForItem(element)" class="item-link">
+							<router-link
+								v-if="enableLink"
+								v-tooltip="t('navigate_to_item')"
+								:to="getLinkForItem(element)"
+								class="item-link"
+							>
 								<v-icon name="link" />
 							</router-link>
 							<v-icon
 								v-if="!disabled && updateAllowed"
+								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
 								@click.stop="deleteItem(element)"
@@ -343,6 +350,12 @@ function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
 	if (localDelete(item)) return 'delete';
 	return 'close';
+}
+
+function getDeselectTooltip(item: DisplayItem) {
+	if (item.$type === 'deleted') return 'undo_removed_item';
+	if (localDelete(item)) return 'delete_item';
+	return 'remove_item';
 }
 
 function sortItems(items: DisplayItem[]) {
