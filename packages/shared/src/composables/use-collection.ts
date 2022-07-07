@@ -5,7 +5,7 @@ import { computed, ref, Ref, ComputedRef } from 'vue';
 type UsableCollection = {
 	info: ComputedRef<AppCollection | null>;
 	fields: ComputedRef<Field[]>;
-	defaults: Record<string, any>;
+	defaults: ComputedRef<Record<string, any>>;
 	primaryKeyField: ComputedRef<Field | null>;
 	userCreatedField: ComputedRef<Field | null>;
 	sortField: ComputedRef<string | null>;
