@@ -35,7 +35,7 @@
 	},
 	"sideEffects": false,
 	"scripts": {
-		"build": "run-p \"build:* -- {@}\" --",
+		"build": "run-p \"build:* {@}\"",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
