@@ -386,9 +386,9 @@ class FlowManager {
 				database: getDatabase(),
 				logger,
 				getSchema,
-				data: keyedData,
 				accountability: null,
 				...context,
+				data: keyedData,
 			});
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
