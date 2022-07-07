@@ -17,4 +17,14 @@ describe('validatePayload', () => {
 		const mockPayload = { field: 'test' };
 		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(1);
 	});
+	it('returns an empty array when nested filter', () => {
+		const mockFilter = { payload: { id: { _nnull: true } } };
+		const mockPayload = { payload: { id: 'abcd' } };
+		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(0);
+	});
+	it('returns an array of 1 when there errors with nested filter', () => {
+		const mockFilter = { payload: { id: { _null: true } } };
+		const mockPayload = { payload: { id: 'abcd' } };
+		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(1);
+	});
 });
