@@ -13,6 +13,7 @@ import { AxiosResponse } from 'axios';
 import { merge } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from '../use-permissions';
+import { Field, Relation } from '@directus/shared/types';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -170,45 +171,63 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		const relations = relationsStore.getRelationsForCollection(collection.value);
 		for (const relation of relations) {
 			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
-			const existsJunctionRelated = relationsStore.relations.find(
-				(r) => r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field
-			);
+			const existsJunctionRelated = relationsStore.relations.find((r) => {
+				return r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field;
+			});
 
 			if (relation.meta?.one_field && relation.meta.one_field in newItem) {
 				const fieldsToFetch = fields
 					.filter((field) => field.startsWith(relation.meta!.one_field!))
 					.map((field) => field.split('.').slice(1).join('.'));
 
-				const existingIds = newItem[relation.meta.one_field].filter((item: any) => typeof item !== 'object');
+				if (Array.isArray(newItem[relation.meta.one_field])) {
+					const existingItems = await findExistingRelatedItems(
+						newItem,
+						relation,
+						relatedPrimaryKeyField,
+						fieldsToFetch
+					);
 
-				let existingItems: any[] = [];
+					newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
+						if (typeof relatedItem !== 'object' && existingItems.length > 0) {
+							relatedItem = existingItems.find((existingItem: any) => existingItem.id === relatedItem);
+						}
 
-				if (existingIds.length > 0) {
-					const response = await api.get(getEndpoint(relation.collection), {
-						params: {
-							fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
-							[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
-						},
+						delete relatedItem[relatedPrimaryKeyField!.field];
+
+						updateJunctionRelatedKey(relation, existsJunctionRelated, fieldsStore, relatedItem);
+						return relatedItem;
+					});
+				} else {
+					const createdRelatedItems = newItem[relation.meta.one_field]?.create;
+					const updatedRelatedItems = newItem[relation.meta.one_field]?.update;
+					const deletedRelatedItems = newItem[relation.meta.one_field]?.delete;
+
+					let existingItems: any[] = await findExistingRelatedItems(
+						item.value,
+						relation,
+						relatedPrimaryKeyField,
+						fieldsToFetch
+					);
+
+					existingItems = existingItems.filter((i) => {
+						return deletedRelatedItems.indexOf(i[relatedPrimaryKeyField!.field]) === -1;
 					});
 
-					existingItems = response.data.data;
+					for (const item of updatedRelatedItems) {
+						updateJunctionRelatedKey(relation, existsJunctionRelated, fieldsStore, item);
+					}
+
+					for (const item of existingItems) {
+						updateExistingRelatedItems(updatedRelatedItems, item, relatedPrimaryKeyField, relation);
+					}
+					updatedRelatedItems.length = 0;
+
+					for (const item of existingItems) {
+						delete item[relatedPrimaryKeyField!.field];
+						createdRelatedItems.push(item);
+					}
 				}
-
-				newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
-					if (typeof relatedItem !== 'object' && existingItems.length > 0) {
-						relatedItem = existingItems.find((existingItem: any) => existingItem.id === relatedItem);
-					}
-
-					delete relatedItem[relatedPrimaryKeyField!.field];
-
-					if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
-						const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
-							existsJunctionRelated.related_collection
-						);
-						delete relatedItem[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
-					}
-					return relatedItem;
-				});
 			}
 		}
 
@@ -235,6 +254,70 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			saveErrorHandler(err);
 		} finally {
 			saving.value = false;
+		}
+
+		async function findExistingRelatedItems(
+			item: any,
+			relation: Relation,
+			relatedPrimaryKeyField: Field | null,
+			fieldsToFetch: string[]
+		) {
+			const existingIds = item?.[relation.meta!.one_field!].filter((item: any) => typeof item !== 'object');
+			let existingItems: any[] = [];
+
+			if (existingIds.length > 0) {
+				const response = await api.get(getEndpoint(relation.collection), {
+					params: {
+						fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
+						[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
+					},
+				});
+				existingItems = response.data.data;
+			}
+			return existingItems;
+		}
+
+		function updateExistingRelatedItems(
+			updatedRelatedItems: any,
+			item: any,
+			relatedPrimaryKeyField: Field | null,
+			relation: Relation
+		) {
+			for (const updatedItem of updatedRelatedItems) {
+				copyUserEditValuesToExistingItem(item, relatedPrimaryKeyField, updatedItem, relation);
+			}
+		}
+
+		function copyUserEditValuesToExistingItem(
+			item: any,
+			relatedPrimaryKeyField: Field | null,
+			updatedItem: any,
+			relation: Relation
+		) {
+			if (item[relatedPrimaryKeyField!.field] === updatedItem[relatedPrimaryKeyField!.field]) {
+				const columns = fields.filter((s) => s.startsWith(relation.meta!.one_field!));
+				for (const col of columns) {
+					const colName = col.split('.')[1];
+					item[colName] = updatedItem[colName];
+				}
+			}
+		}
+	}
+
+	function updateJunctionRelatedKey(
+		relation: Relation,
+		existsJunctionRelated: Relation | undefined,
+		fieldsStore: any,
+		item: any
+	) {
+		if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
+			const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
+				existsJunctionRelated.related_collection
+			);
+
+			if (relation.meta.junction_field in item && junctionRelatedPrimaryKeyField.schema!.is_generated) {
+				delete item[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
+			}
 		}
 	}
 
