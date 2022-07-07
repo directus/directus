@@ -206,9 +206,7 @@ export default defineComponent({
 			}
 		);
 
-		if (!props.nested) {
-			provide('values', values);
-		}
+		provide('values', values);
 
 		return {
 			t,
