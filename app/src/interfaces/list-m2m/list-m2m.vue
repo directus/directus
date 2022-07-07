@@ -685,6 +685,7 @@ const selectAllowed = computed(() => {
 	align-items: center;
 	justify-content: flex-end;
 	width: 120px;
+	padding: 10px 0;
 	color: var(--foreground-subdued);
 
 	span {
