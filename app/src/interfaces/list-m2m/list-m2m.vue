@@ -58,7 +58,13 @@
 				</template>
 
 				<template #item-append="{ item }">
-					<router-link v-if="enableLink" v-tooltip="t('navigate_to_item')" :to="getLinkForItem(item)" class="item-link">
+					<router-link
+						v-if="enableLink"
+						v-tooltip="t('navigate_to_item')"
+						:to="getLinkForItem(item)"
+						class="item-link"
+						:class="{ disabled: item.$type === 'created' }"
+					>
 						<v-icon name="launch" />
 					</router-link>
 
@@ -112,6 +118,7 @@
 								v-tooltip="t('navigate_to_item')"
 								:to="getLinkForItem(element)"
 								class="item-link"
+								:class="{ disabled: element.$type === 'created' }"
 								@click.stop
 							>
 								<v-icon name="link" />
@@ -655,6 +662,11 @@ const selectAllowed = computed(() => {
 
 	&:hover {
 		--v-icon-color: var(--primary);
+	}
+
+	&.disabled {
+		opacity: 0;
+		pointer-events: none;
 	}
 }
 
