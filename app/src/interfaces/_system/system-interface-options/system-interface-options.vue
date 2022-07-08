@@ -77,7 +77,6 @@ export default defineComponent({
 
 		const usesCustomComponent = computed(() => {
 			if (!selectedInterface.value) return false;
-
 			return selectedInterface.value.options && 'render' in selectedInterface.value.options;
 		});
 

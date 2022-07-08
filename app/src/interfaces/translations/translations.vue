@@ -1,7 +1,7 @@
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
 		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-model="firstLang" :items="languageOptions">
+			<language-select v-if="showLanguageSelect" v-model="firstLang" :items="languageOptions">
 				<template #append>
 					<v-icon
 						v-if="splitViewAvailable && !splitViewEnabled"
@@ -183,6 +183,10 @@ const splitViewAvailable = computed(() => {
 
 const splitViewEnabled = computed(() => {
 	return splitViewAvailable.value && splitView.value;
+});
+
+const showLanguageSelect = computed(() => {
+	return languageOptions.value.length > 1;
 });
 
 function useLanguages() {

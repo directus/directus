@@ -71,6 +71,7 @@
 			<related-field-select
 				v-model="sortField"
 				:collection="junctionCollection"
+				:disabled-fields="unsortableJunctionFields"
 				:placeholder="t('add_sort_field') + '...'"
 				:nullable="true"
 			/>
@@ -203,7 +204,7 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore, useRelationsStore } from '@/stores';
 
 export default defineComponent({
 	components: { RelatedCollectionSelect, RelatedFieldSelect },
@@ -211,6 +212,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const fieldDetailStore = useFieldDetailStore();
+		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 
 		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
@@ -265,6 +267,15 @@ export default defineComponent({
 			return t('add_field_related');
 		});
 
+		const unsortableJunctionFields = computed(() => {
+			let fields = [];
+			if (junctionCollection.value) {
+				const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
+				fields.push(...relations.map((field) => field.field));
+			}
+			return fields;
+		});
+
 		return {
 			t,
 			autoGenerateJunctionRelation,
@@ -285,6 +296,7 @@ export default defineComponent({
 			correspondingLabel,
 			correspondingFieldKey,
 			generationInfo,
+			unsortableJunctionFields,
 		};
 	},
 });
