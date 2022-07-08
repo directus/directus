@@ -55,7 +55,7 @@
 
 				<template #input>
 					<div
-						v-tooltip="interfaceName ? `${field.name} (${formatTitle(field.type)}) - ${interfaceName}` : field.name"
+						v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 						class="label"
 						@click="openFieldDetail"
 					>
