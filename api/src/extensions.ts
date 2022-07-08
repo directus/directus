@@ -54,6 +54,8 @@ import { getFlowManager } from './flows';
 import globby from 'globby';
 import { EventHandler } from './types';
 import { JobQueue } from './utils/job-queue';
+import resolve from '@rollup/plugin-node-resolve';
+import css from 'rollup-plugin-import-css';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -292,7 +294,7 @@ class ExtensionManager {
 					input: 'entry',
 					external: Object.values(sharedDepsMapping),
 					makeAbsoluteExternalsRelative: false,
-					plugins: [virtual({ entry }), alias({ entries: internalImports })],
+					plugins: [virtual({ entry }), alias({ entries: internalImports }), resolve(), css()],
 				});
 				const { output } = await bundle.generate({ format: 'es', compact: true });
 
