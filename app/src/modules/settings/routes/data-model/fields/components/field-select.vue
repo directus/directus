@@ -6,8 +6,14 @@
 			</template>
 
 			<template #input>
-				<div class="label">
-					<span class="name">{{ field.field }}</span>
+				<div
+					v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					class="label"
+				>
+					<div class="label-inner">
+						<span class="name">{{ field.field }}</span>
+						<span v-if="interfaceName" class="interface">{{ interfaceName }}</span>
+					</div>
 				</div>
 			</template>
 		</v-input>
