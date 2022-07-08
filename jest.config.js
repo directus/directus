@@ -2,7 +2,6 @@ module.exports = {
 	preset: 'ts-jest',
 	testEnvironment: 'node',
 	moduleNameMapper: {
-		'@directus/cli(.*)$': `${__dirname}/packages/cli/src/$1`,
 		'@directus/create-directus-project(.*)$': `${__dirname}/packages/create-directus-project/src/$1`,
 		'@directus/drive-s3(.*)$': `${__dirname}/packages/drive-s3/src/$1`,
 		'@directus/drive-gcs(.*)$': `${__dirname}/packages/drive-gcs/src/$1`,
