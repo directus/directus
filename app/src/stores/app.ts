@@ -3,7 +3,8 @@ import { defineStore } from 'pinia';
 export const useAppStore = defineStore({
 	id: 'appStore',
 	state: () => ({
-		sidebarOpen: false,
+		sidebarOpen: window.innerWidth >= 1430,
+		notificationsDrawerOpen: false,
 		fullScreen: false,
 		hydrated: false,
 		hydrating: false,

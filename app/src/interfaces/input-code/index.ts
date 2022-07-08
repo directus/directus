@@ -1,4 +1,4 @@
-import { ExtensionsOptionsContext } from '@directus/shared/types';
+import { DeepPartial, Field } from '@directus/shared/types';
 import { defineInterface } from '@directus/shared/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
@@ -38,11 +38,23 @@ export default defineInterface({
 	types: ['string', 'json', 'text', 'geometry'],
 	group: 'standard',
 	preview: PreviewSVG,
-	options: ({ field }: ExtensionsOptionsContext) => {
-		const sharedOptions = [
+	options: ({ field }) => {
+		const sharedOptions: DeepPartial<Field>[] = [
 			{
 				field: 'lineNumber',
 				name: '$t:interfaces.input-code.line_number',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
+					default_value: true,
+				},
+			},
+			{
+				field: 'lineWrapping',
+				name: '$t:interfaces.input-code.line_wrapping',
 				type: 'boolean',
 				meta: {
 					width: 'half',
@@ -69,13 +81,13 @@ export default defineInterface({
 			},
 		];
 
-		const defaultOptions = [
+		const defaultOptions: DeepPartial<Field>[] = [
 			{
 				field: 'language',
 				name: '$t:language',
 				type: 'string',
 				meta: {
-					width: 'half',
+					width: 'full',
 					interface: 'select-dropdown',
 					options: { choices },
 				},
@@ -83,7 +95,7 @@ export default defineInterface({
 			...sharedOptions,
 		];
 
-		const jsonOptions = [...sharedOptions];
+		const jsonOptions: DeepPartial<Field>[] = [...sharedOptions];
 
 		if (field?.type === 'json') {
 			return jsonOptions;

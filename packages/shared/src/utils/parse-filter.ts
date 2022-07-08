@@ -2,79 +2,100 @@ import { REGEX_BETWEEN_PARENS } from '../constants';
 import { Accountability, Filter, User, Role } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
-import { deepMap } from './deep-map';
 import { isDynamicVariable } from './is-dynamic-variable';
+import { isObjectLike } from 'lodash';
+import { deepMap } from './deep-map';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
-	$CURRENT_USER?: User & { [field: string]: any };
-	$CURRENT_ROLE?: Role & { [field: string]: any };
+	$CURRENT_USER?: User & Record<string, any>;
+	$CURRENT_ROLE?: Role & Record<string, any>;
 };
 
 export function parseFilter(
 	filter: Filter | null,
 	accountability: Accountability | null,
 	context: ParseFilterContext = {}
-): any {
-	if (!filter) return filter;
+): Filter | null {
+	if (filter === null || filter === undefined) {
+		return null;
+	}
 
-	return deepMap(filter, applyFilter);
+	if (!isObjectLike(filter)) {
+		return { _eq: parseFilterValue(filter, accountability, context) };
+	}
 
-	function applyFilter(val: any, key: string | number) {
-		if (val === 'true') return true;
-		if (val === 'false') return false;
-		if (val === 'null' || val === 'NULL') return null;
+	const filters = Object.entries(filter).map((entry) => parseFilterEntry(entry, accountability, context));
 
-		if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
-			if (typeof val === 'string' && val.includes(',')) return deepMap(val.split(','), applyFilter);
-			else return deepMap(toArray(val), applyFilter);
-		}
-
-		if (isDynamicVariable(val)) {
-			if (val.startsWith('$NOW')) {
-				if (val.includes('(') && val.includes(')')) {
-					const adjustment = val.match(REGEX_BETWEEN_PARENS)?.[1];
-					if (!adjustment) return new Date();
-					return adjustDate(new Date(), adjustment);
-				}
-
-				return new Date();
-			}
-
-			if (val.startsWith('$CURRENT_USER')) {
-				if (val === '$CURRENT_USER') return accountability?.user ?? null;
-				return get(context, val, null);
-			}
-
-			if (val.startsWith('$CURRENT_ROLE')) {
-				if (val === '$CURRENT_ROLE') return accountability?.role ?? null;
-				return get(context, val, null);
-			}
-		}
-
-		return val;
+	if (filters.length === 0) {
+		return {};
+	} else if (filters.length === 1) {
+		return filters[0] ?? null;
+	} else {
+		return { _and: filters };
 	}
 }
 
-function get(obj: Record<string, any> | any[], path: string, defaultValue: any) {
-	const pathParts = path.split('.');
-	let val = obj;
+export function parsePreset(
+	preset: Record<string, any> | null,
+	accountability: Accountability | null,
+	context: ParseFilterContext
+) {
+	if (!preset) return preset;
+	return deepMap(preset, (value) => parseFilterValue(value, accountability, context));
+}
 
-	while (pathParts.length) {
-		const key = pathParts.shift();
+function parseFilterEntry(
+	[key, value]: [string, any],
+	accountability: Accountability | null,
+	context: ParseFilterContext
+): Filter {
+	if (['_or', '_and'].includes(String(key))) {
+		return { [key]: value.map((filter: Filter) => parseFilter(filter, accountability, context)) };
+	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
+		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
+	} else if (String(key).startsWith('_')) {
+		return { [key]: parseFilterValue(value, accountability, context) };
+	} else {
+		return { [key]: parseFilter(value, accountability, context) } as Filter;
+	}
+}
 
-		if (key) {
-			val = processLevel(val, key);
+function parseFilterValue(value: any, accountability: Accountability | null, context: ParseFilterContext) {
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	if (value === 'null' || value === 'NULL') return null;
+	if (isDynamicVariable(value)) return parseDynamicVariable(value, accountability, context);
+	return value;
+}
+
+function parseDynamicVariable(value: any, accountability: Accountability | null, context: ParseFilterContext) {
+	if (value.startsWith('$NOW')) {
+		if (value.includes('(') && value.includes(')')) {
+			const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
+			if (!adjustment) return new Date();
+			return adjustDate(new Date(), adjustment);
 		}
+
+		return new Date();
 	}
 
-	return val || defaultValue;
-
-	function processLevel(value: Record<string, any> | any[], key: string) {
-		if (Array.isArray(value)) {
-			return value.map((subVal) => subVal[key]);
-		} else if (value && typeof value === 'object') {
-			return value[key];
-		}
+	if (value.startsWith('$CURRENT_USER')) {
+		if (value === '$CURRENT_USER') return accountability?.user ?? null;
+		return get(context, value, null);
 	}
+
+	if (value.startsWith('$CURRENT_ROLE')) {
+		if (value === '$CURRENT_ROLE') return accountability?.role ?? null;
+		return get(context, value, null);
+	}
+}
+
+function get(object: Record<string, any> | any[], path: string, defaultValue: any): any {
+	const [key, ...follow] = path.split('.');
+	const result = Array.isArray(object) ? object.map((entry) => entry[key!]) : object?.[key!];
+	if (follow.length > 0) {
+		return get(result, follow.join('.'), defaultValue);
+	}
+	return result ?? defaultValue;
 }

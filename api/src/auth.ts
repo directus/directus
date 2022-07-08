@@ -24,10 +24,12 @@ export function getAuthProvider(provider: string): AuthDriver {
 
 export async function registerAuthProviders(): Promise<void> {
 	const options = { knex: getDatabase(), schema: await getSchema() };
-	const defaultProvider = getProviderInstance('local', options)!;
 
-	// Register default provider
-	providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
+	// Register default provider if not disabled
+	if (!env.AUTH_DISABLE_DEFAULT) {
+		const defaultProvider = getProviderInstance('local', options)!;
+		providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
+	}
 
 	if (!env.AUTH_PROVIDERS) {
 		return;

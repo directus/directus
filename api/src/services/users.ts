@@ -6,17 +6,17 @@ import env from '../env';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import { AbstractServiceOptions, Item, PrimaryKey, SchemaOverview } from '../types';
-import { Query } from '@directus/shared/types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
+import { Query, SchemaOverview, Accountability } from '@directus/shared/types';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
 import { Url } from '../utils/url';
-import { ItemsService, MutationOptions } from './items';
+import { ItemsService } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
 import { stall } from '../utils/stall';
 import { performance } from 'perf_hooks';
+import { getSimpleHash } from '@directus/shared/utils';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -121,6 +121,26 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Make sure there's at least one active admin user when updating user status
+	 */
+	private async checkRemainingActiveAdmin(excludeKeys: PrimaryKey[]): Promise<void> {
+		const otherAdminUsers = await this.knex
+			.count('*', { as: 'count' })
+			.from('directus_users')
+			.whereNotIn('directus_users.id', excludeKeys)
+			.andWhere({ 'directus_roles.admin_access': true })
+			.andWhere({ 'directus_users.status': 'active' })
+			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+			.first();
+
+		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+
+		if (otherAdminUsersCount === 0) {
+			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
+		}
+	}
+
+	/**
 	 * Create a new user
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -162,16 +182,44 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
+	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		const keys: PrimaryKey[] = [];
+
+		await this.knex.transaction(async (trx) => {
+			const service = new UsersService({
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+			});
+
+			for (const item of data) {
+				if (!item[primaryKeyField]) throw new InvalidPayloadException(`User in update misses primary key.`);
+				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
+			}
+		});
+
+		return keys;
+	}
+
 	/**
 	 * Update many users by primary key
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (data.role) {
-			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', data.role).first();
+			// data.role will be an object with id with GraphQL mutations
+			const roleId = data.role?.id ?? data.role;
+
+			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
 
 			if (!newRole?.admin_access) {
 				await this.checkRemainingAdminExistence(keys);
 			}
+		}
+
+		if (data.status !== undefined && data.status !== 'active') {
+			await this.checkRemainingActiveAdmin(keys);
 		}
 
 		if (data.email) {
@@ -217,8 +265,10 @@ export class UsersService extends ItemsService {
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		await this.checkRemainingAdminExistence(keys);
-		await super.deleteMany(keys, opts);
 
+		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+
+		await super.deleteMany(keys, opts);
 		return keys;
 	}
 
@@ -307,7 +357,7 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex.select('status').from('directus_users').where({ email }).first();
+		const user = await this.knex.select('status', 'password').from('directus_users').where({ email }).first();
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
@@ -320,9 +370,11 @@ export class UsersService extends ItemsService {
 			accountability: this.accountability,
 		});
 
-		const payload = { email, scope: 'password-reset' };
+		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
-		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
+		const acceptURL = url
+			? new Url(url).setQuery('token', token).toString()
+			: new Url(env.PUBLIC_URL).addPath('admin', 'reset-password').setQuery('token', token);
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({
@@ -341,16 +393,19 @@ export class UsersService extends ItemsService {
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
+		const { email, scope, hash } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
+			hash: string;
 		};
 
-		if (scope !== 'password-reset') throw new ForbiddenException();
+		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
 
-		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
+		await this.checkPasswordPolicy([password]);
 
-		if (user?.status !== 'active') {
+		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
+
+		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
 			throw new ForbiddenException();
 		}
 
@@ -358,6 +413,10 @@ export class UsersService extends ItemsService {
 		const service = new UsersService({
 			knex: this.knex,
 			schema: this.schema,
+			accountability: {
+				...(this.accountability ?? { role: null }),
+				admin: true, // We need to skip permissions checks for the update call below
+			},
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' });

@@ -18,10 +18,11 @@
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
@@ -51,11 +52,11 @@
 						v-tooltip.bottom="archiveTooltip"
 						rounded
 						icon
-						class="action-archive"
+						secondary
 						:disabled="item === null || archiveAllowed !== true"
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
 					</v-button>
 				</template>
 
@@ -78,17 +79,19 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false || saveAllowed === false"
+				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						v-if="hasEdits === true"
+						v-if="isSavable"
+						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -102,8 +105,13 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="t('avatar')" />
-					<v-icon v-else name="account_circle" outline x-large />
+					<img
+						v-else-if="avatarSrc && !avatarError"
+						:src="avatarSrc"
+						:alt="t('avatar')"
+						@error="avatarError = $event"
+					/>
+					<v-icon v-else name="account_circle" x-large />
 				</div>
 				<div class="user-box-content">
 					<template v-if="loading">
@@ -117,11 +125,11 @@
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
 						<div v-if="item.email" class="email">
-							<v-icon name="alternate_email" small outline />
+							<v-icon name="alternate_email" small />
 							{{ item.email }}
 						</div>
 						<div v-if="item.location" class="location">
-							<v-icon name="place" small outline />
+							<v-icon name="place" small />
 							{{ item.location }}
 						</div>
 						<v-chip v-if="roleName" :class="item.status" small>{{ roleName }}</v-chip>
@@ -179,13 +187,13 @@ import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance 
 
 import UsersNavigation from '../components/navigation.vue';
 import { setLanguage } from '@/lang/set-language';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore, useServerStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -197,7 +205,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import { useUserStore } from '@/stores';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'UsersItem',
@@ -221,6 +229,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
+		const serverStore = useServerStore();
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -232,6 +241,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -253,12 +263,14 @@ export default defineComponent({
 			};
 		}
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
-		unsavedChanges(hasEdits);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
+
+		const avatarError = ref(null);
 
 		const title = computed(() => {
 			if (loading.value === true) return t('loading');
@@ -273,24 +285,8 @@ export default defineComponent({
 
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
 
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
-
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
-			ref('directus_users'),
-			item,
-			isNew
-		);
+		const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
+			usePermissions(ref('directus_users'), item, isNew);
 
 		// These fields will be shown in the sidebar instead
 		const fieldsDenyList = [
@@ -343,6 +339,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			revisionsDrawerDetail,
 			previewLoading,
@@ -352,6 +349,7 @@ export default defineComponent({
 			leaveTo,
 			discardAndLeave,
 			formFields,
+			createAllowed,
 			deleteAllowed,
 			saveAllowed,
 			archiveAllowed,
@@ -367,6 +365,8 @@ export default defineComponent({
 			revisionsAllowed,
 			validationErrors,
 			revert,
+			avatarError,
+			isSavable,
 		};
 
 		function useBreadcrumb() {
@@ -430,7 +430,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/users`);
+				router.replace(`/users`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -439,7 +439,7 @@ export default defineComponent({
 		async function setLang(user: Record<string, any>) {
 			if (userStore.currentUser!.id !== item.value?.id) return;
 
-			const newLang = user?.language;
+			const newLang = user?.language ?? serverStore.info?.project?.default_language;
 
 			if (newLang && newLang !== locale.value) {
 				await setLanguage(newLang);
@@ -492,7 +492,13 @@ export default defineComponent({
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 
 		async function toggleArchive() {
@@ -517,17 +523,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-archive {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {

@@ -31,4 +31,11 @@ export default defineDisplay({
 
 		return readableMimeType(value);
 	},
+	handler: (value, options) => {
+		if (options.showAsExtension) {
+			return mime.getExtension(value);
+		}
+
+		return readableMimeType(value);
+	},
 });

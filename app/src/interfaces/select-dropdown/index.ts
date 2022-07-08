@@ -8,10 +8,10 @@ export default defineInterface({
 	description: '$t:interfaces.select-dropdown.description',
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceSelectDropdown,
-	types: ['string'],
+	types: ['string', 'integer', 'float', 'bigInteger'],
 	group: 'selection',
 	preview: PreviewSVG,
-	options: [
+	options: ({ field }) => [
 		{
 			field: 'choices',
 			type: 'json',
@@ -28,7 +28,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:text',
 							meta: {
-								interface: 'input',
+								interface: 'system-input-translated-string',
 								width: 'half',
 								options: {
 									placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
@@ -37,7 +37,7 @@ export default defineInterface({
 						},
 						{
 							field: 'value',
-							type: 'string',
+							type: field.type,
 							name: '$t:value',
 							meta: {
 								interface: 'input',
@@ -97,7 +97,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},

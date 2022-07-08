@@ -1,7 +1,7 @@
 <template>
 	<div class="permissions-overview-row">
 		<span class="name">
-			{{ collection.name }}
+			<span v-tooltip.left="collection.collection">{{ collection.name }}</span>
 			<span class="actions">
 				<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
 				<span class="divider">/</span>
@@ -40,6 +40,14 @@
 			:permissions="permissions"
 			:loading="isLoading('delete')"
 			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'delete')"
+		/>
+		<permissions-overview-toggle
+			action="share"
+			:collection="collection"
+			:role="role"
+			:permissions="permissions"
+			:loading="isLoading('share')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'share')"
 		/>
 	</div>
 </template>

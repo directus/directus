@@ -40,19 +40,19 @@ fields:
     display_options:
       showAsDot: true
       choices:
-        - text: $t:active
+        - text: $t:field_options.directus_webhooks.status_options_active
           value: active
           foreground: 'var(--primary-10)'
           background: 'var(--primary)'
-        - text: $t:inactive
+        - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
           foreground: 'var(--foreground-normal)'
           background: 'var(--background-normal-alt)'
     options:
       choices:
-        - text: $t:active
+        - text: $t:field_options.directus_webhooks.status_options_active
           value: active
-        - text: $t:inactive
+        - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
     width: half
 
@@ -60,12 +60,12 @@ fields:
     interface: boolean
     options:
       label: $t:fields.directus_webhooks.data_label
-    special: boolean
+    special: cast-boolean
     width: half
     display: boolean
 
   - field: headers
-    special: json
+    special: cast-json
     interface: list
     options:
       template: '{{ header }}: {{ value }}'
@@ -105,7 +105,7 @@ fields:
           value: update
         - text: $t:delete_label
           value: delete
-    special: csv
+    special: cast-csv
     width: full
     display: labels
     display_options:
@@ -129,7 +129,7 @@ fields:
 
   - field: collections
     interface: system-collections
-    special: csv
+    special: cast-csv
     width: full
     display: labels
     display_options:

@@ -1,7 +1,7 @@
-import { FilterOperator } from './filter';
+import { Filter, FilterOperator } from './filter';
 import { DeepPartial } from './misc';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS } from '../constants';
+import { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS, FUNCTIONS } from '../constants';
 
 type Translations = {
 	language: string;
@@ -11,6 +11,8 @@ type Translations = {
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
 export type Type = typeof TYPES[number];
+
+export type FieldFunction = typeof FUNCTIONS[number];
 
 export type LocalType = typeof LOCAL_TYPES[number];
 
@@ -36,6 +38,8 @@ export type FieldMeta = {
 	width: Width | null;
 	note: string | null;
 	conditions: Condition[] | null;
+	validation: Filter | null;
+	validation_message: string | null;
 	system?: true;
 };
 
@@ -43,7 +47,7 @@ export interface FieldRaw {
 	collection: string;
 	field: string;
 	type: Type;
-	schema: (Column & { geometry_type?: string }) | null;
+	schema: Column | null;
 	meta: FieldMeta | null;
 }
 
@@ -56,8 +60,11 @@ export type RawField = DeepPartial<Field> & { field: string; type: Type };
 
 export type ValidationError = {
 	code: string;
+	collection: string;
 	field: string;
 	type: FilterOperator;
+	hidden?: boolean;
+	group: string | null;
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;

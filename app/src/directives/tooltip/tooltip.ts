@@ -78,6 +78,13 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 	tooltip.innerText = binding.value;
 	tooltip.classList.remove('top', 'bottom', 'left', 'right', 'start', 'end');
 
+	let placement = binding.arg ?? 'top';
+
+	if ('top' in binding.modifiers) placement = 'top';
+	if ('right' in binding.modifiers) placement = 'right';
+	if ('bottom' in binding.modifiers) placement = 'bottom';
+	if ('left' in binding.modifiers) placement = 'left';
+
 	if (binding.modifiers.inverted) {
 		tooltip.classList.add('inverted');
 	} else {
@@ -88,7 +95,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		tooltip.classList.add('monospace');
 	}
 
-	if (binding.modifiers.bottom) {
+	if (placement === 'bottom') {
 		if (binding.modifiers.start) {
 			left += arrowAlign;
 			transformPos = 100;
@@ -105,7 +112,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		top += bounds.height + offset;
 		tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), ${top}px)`;
 		tooltip.classList.add('bottom');
-	} else if (binding.modifiers.left) {
+	} else if (placement === 'left') {
 		if (binding.modifiers.start) {
 			top += arrowAlign;
 			transformPos = 100;
@@ -122,7 +129,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		left -= offset;
 		tooltip.style.transform = `translate(calc(${left}px - 100%), calc(${top}px - ${transformPos}%))`;
 		tooltip.classList.add('left');
-	} else if (binding.modifiers.right) {
+	} else if (placement === 'right') {
 		if (binding.modifiers.start) {
 			top += arrowAlign;
 			transformPos = 100;

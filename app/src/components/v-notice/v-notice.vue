@@ -51,12 +51,14 @@ export default defineComponent({
 body {
 	--v-notice-color: var(--foreground-subdued);
 	--v-notice-background-color: var(--background-subdued);
+	--v-notice-border-color: var(--background-subdued);
 	--v-notice-icon-color: var(--foreground-subdued);
 }
 </style>
 
 <style scoped>
 .v-notice {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -67,6 +69,18 @@ body {
 	line-height: 22px;
 	background-color: var(--v-notice-background-color);
 	border-radius: var(--border-radius);
+	overflow: hidden;
+}
+
+.v-notice::after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 4px;
+	height: 100%;
+	background-color: var(--v-notice-border-color);
 }
 
 .v-icon {
@@ -79,26 +93,30 @@ body {
 
 .info {
 	--v-notice-icon-color: var(--primary);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-border-color: var(--primary);
 	--v-notice-color: var(--foreground-normal);
+	--v-notice-background-color: var(--background-normal);
 }
 
 .success {
 	--v-notice-icon-color: var(--success);
-	--v-notice-background-color: var(--success-alt);
+	--v-notice-border-color: var(--success);
 	--v-notice-color: var(--success);
+	--v-notice-background-color: var(--background-normal);
 }
 
 .warning {
 	--v-notice-icon-color: var(--warning);
-	--v-notice-background-color: var(--warning-alt);
-	--v-notice-color: var(--warning);
+	--v-notice-border-color: var(--warning);
+	--v-notice-color: var(--foreground-normal);
+	--v-notice-background-color: var(--background-normal);
 }
 
 .danger {
 	--v-notice-icon-color: var(--danger);
-	--v-notice-background-color: var(--danger-alt);
+	--v-notice-border-color: var(--danger);
 	--v-notice-color: var(--danger);
+	--v-notice-background-color: var(--background-normal);
 }
 
 .center {

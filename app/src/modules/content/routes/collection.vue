@@ -101,6 +101,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
 							<v-icon name="delete" outline />
@@ -122,7 +123,12 @@
 				</v-dialog>
 
 				<v-dialog
-					v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
+					v-if="
+						selection.length > 0 &&
+						currentCollection.meta &&
+						currentCollection.meta.archive_field &&
+						archive !== 'archived'
+					"
 					v-model="confirmArchive"
 					@esc="confirmArchive = false"
 				>
@@ -132,7 +138,7 @@
 							:disabled="batchArchiveAllowed !== true"
 							rounded
 							icon
-							class="action-archive"
+							secondary
 							@click="on"
 						>
 							<v-icon name="archive" outline />
@@ -154,11 +160,11 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -222,7 +228,7 @@
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
-				@refresh="refresh"
+				@refresh="drawerBatchRefresh"
 			/>
 
 			<template #sidebar>
@@ -236,12 +242,17 @@
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
+				<archive-sidebar-detail v-if="hasArchive" :collection="collection" :archive="archive" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 				<export-sidebar-detail
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
+					:layout-query="layoutQuery"
+					@download="download"
+					@refresh="refresh"
 				/>
+				<flow-sidebar-detail location="collection" :collection="collection" :selection="selection" @refresh="refresh" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -265,20 +276,22 @@ import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
 import ContentNotFound from './not-found.vue';
-import { useCollection } from '@directus/shared/composables';
-import { useLayout } from '@/composables/use-layout';
+import { useCollection, useLayout } from '@directus/shared/composables';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
-import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import { useRouter } from 'vue-router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
 import { mergeFilters } from '@directus/shared/utils';
+import { Filter } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;
@@ -292,9 +305,11 @@ export default defineComponent({
 		LayoutSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
-		BookmarkEdit,
 		DrawerBatch,
+		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
+		ExportSidebarDetail,
+		FlowSidebarDetail,
 	},
 	props: {
 		collection: {
@@ -306,8 +321,8 @@ export default defineComponent({
 			default: null,
 		},
 		archive: {
-			type: Boolean,
-			default: false,
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {
@@ -353,13 +368,13 @@ export default defineComponent({
 			deleting,
 			batchDelete,
 			confirmArchive,
-			archive: archiveItems,
+			archiveItems,
 			archiving,
 			error: deleteError,
 			batchEditActive,
 		} = useBatch();
 
-		const { bookmarkDialogActive, creatingBookmark, createBookmark, editingBookmark, editBookmark } = useBookmarks();
+		const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
 		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
 
@@ -375,7 +390,14 @@ export default defineComponent({
 
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
-		const archiveFilter = computed(() => {
+		const hasArchive = computed(
+			() =>
+				currentCollection.value &&
+				currentCollection.value.meta?.archive_field &&
+				currentCollection.value.meta?.archive_app_filter
+		);
+
+		const archiveFilter = computed<Filter | null>(() => {
 			if (!currentCollection.value?.meta) return null;
 			if (!currentCollection.value?.meta?.archive_app_filter) return null;
 
@@ -387,7 +409,9 @@ export default defineComponent({
 			if (archiveValue === 'true') archiveValue = true;
 			if (archiveValue === 'false') archiveValue = false;
 
-			if (props.archive) {
+			if (props.archive === 'all') {
+				return null;
+			} else if (props.archive === 'archived') {
 				return {
 					[field]: {
 						_eq: archiveValue,
@@ -425,8 +449,6 @@ export default defineComponent({
 			creatingBookmark,
 			createBookmark,
 			bookmarkTitle,
-			editingBookmark,
-			editBookmark,
 			breadcrumb,
 			clearFilters,
 			confirmArchive,
@@ -442,15 +464,27 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
+			drawerBatchRefresh,
 			refresh,
 			refreshInterval,
 			currentLayout,
+			hasArchive,
 			archiveFilter,
 			mergeFilters,
+			download,
 		};
 
 		async function refresh() {
 			await layoutRef.value?.state?.refresh?.();
+		}
+
+		async function download() {
+			await layoutRef.value?.state?.download?.();
+		}
+
+		async function drawerBatchRefresh() {
+			selection.value = [];
+			await refresh();
 		}
 
 		function useBreadcrumb() {
@@ -499,9 +533,9 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
+					selection.value = [];
 					await refresh();
 
-					selection.value = [];
 					confirmDelete.value = false;
 				} catch (err: any) {
 					error.value = err;
@@ -527,10 +561,10 @@ export default defineComponent({
 						},
 					});
 
-					confirmArchive.value = false;
 					selection.value = [];
-
 					await refresh();
+
+					confirmArchive.value = false;
 				} catch (err: any) {
 					error.value = err;
 				} finally {
@@ -554,21 +588,22 @@ export default defineComponent({
 		function useBookmarks() {
 			const bookmarkDialogActive = ref(false);
 			const creatingBookmark = ref(false);
-			const editingBookmark = ref(false);
 
 			return {
 				bookmarkDialogActive,
 				creatingBookmark,
 				createBookmark,
-				editingBookmark,
-				editBookmark,
 			};
 
-			async function createBookmark(name: string) {
+			async function createBookmark(bookmark: any) {
 				creatingBookmark.value = true;
 
 				try {
-					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
+					const newBookmark = await saveCurrentAsBookmark({
+						bookmark: bookmark.name,
+						icon: bookmark.icon,
+						color: bookmark.color,
+					});
 					router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
@@ -577,11 +612,6 @@ export default defineComponent({
 				} finally {
 					creatingBookmark.value = false;
 				}
-			}
-
-			async function editBookmark(name: string) {
-				bookmarkTitle.value = name;
-				bookmarkDialogActive.value = false;
 			}
 		}
 
@@ -643,39 +673,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-archive {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-active: var(--background-normal);
-	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
-}
-
-.header-icon.archive {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .layout {

@@ -25,12 +25,15 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 					PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END,
 					TABLE_NAME,
 					CONSTRAINT_CATALOG,
-					COLUMN_NAME
+					COLUMN_NAME,
+					COUNT(*) OVER (PARTITION BY CONSTRAINT_NAME) as PK_COUNT
 				FROM [${this.knex.client.database()}].INFORMATION_SCHEMA.KEY_COLUMN_USAGE
 			) as pk
 			ON [c].[TABLE_NAME] = [pk].[TABLE_NAME]
 			AND [c].[TABLE_CATALOG] = [pk].[CONSTRAINT_CATALOG]
 			AND [c].[COLUMN_NAME] = [pk].[COLUMN_NAME]
+			AND [pk].[PK_SET] = 'PRIMARY'
+			AND [pk].[PK_COUNT] = 1
 			INNER JOIN
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.TABLES as t
 			ON [c].[TABLE_NAME] = [t].[TABLE_NAME]

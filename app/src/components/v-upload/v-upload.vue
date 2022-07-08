@@ -55,6 +55,7 @@
 				<drawer-collection
 					collection="directus_files"
 					:active="activeDialog === 'choose'"
+					:multiple="multiple"
 					:filter="filterByFolder"
 					@update:active="activeDialog = null"
 					@input="setSelection"

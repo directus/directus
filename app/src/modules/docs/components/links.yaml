@@ -2,12 +2,12 @@
   to: '/app/overview'
   icon: school
 
-- name: Content Collections
-  to: '/app/content-collections'
+- name: Collection Page
+  to: '/app/content/collections'
   icon: list_alt
 
-- name: Content Items
-  to: '/app/content-items'
+- name: Item Page
+  to: '/app/content/items'
   icon: edit_note
 
 - name: User Directory
@@ -29,10 +29,6 @@
 - name: Settings
   to: '/app/settings'
   icon: settings
-
-- name: Help & Support
-  to: '/getting-started/support'
-  icon: support_agent
 
 - name: Backing Directus
   to: '/getting-started/backing-directus'

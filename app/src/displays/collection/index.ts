@@ -1,5 +1,6 @@
 import { defineDisplay } from '@directus/shared/utils';
 import DisplayCollection from './collection.vue';
+import { useCollectionsStore } from '@/stores';
 
 export default defineDisplay({
 	id: 'collection',
@@ -8,6 +9,10 @@ export default defineDisplay({
 	types: ['string'],
 	icon: 'label',
 	component: DisplayCollection,
+	handler: (value) => {
+		const collectionsStore = useCollectionsStore();
+		return collectionsStore.getCollection(value)?.name ?? value;
+	},
 	options: [
 		{
 			field: 'icon',

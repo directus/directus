@@ -31,10 +31,11 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							:disabled="preset === null || id === '+'"
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" />
 						</v-button>
 					</template>
 
@@ -94,10 +95,6 @@
 				</sidebar-detail>
 
 				<div class="layout-sidebar">
-					<sidebar-detail icon="search" :title="t('search')">
-						<v-input v-model="search" :placeholder="t('preset_search_placeholder')"></v-input>
-					</sidebar-detail>
-
 					<component
 						:is="`layout-sidebar-${values.layout}`"
 						v-if="values.layout && values.collection"
@@ -141,11 +138,12 @@ import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useLayout } from '@/composables/use-layout';
+import { useLayout } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
+import { isEqual } from 'lodash';
 
 type FormattedPreset = {
 	id: number;
@@ -204,25 +202,7 @@ export default defineComponent({
 			if (hasEdits.value) save();
 		});
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -245,7 +225,6 @@ export default defineComponent({
 			confirmDelete,
 			updateFilters,
 			search,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
@@ -263,6 +242,8 @@ export default defineComponent({
 
 				if (edits.value.name) editsParsed.bookmark = edits.value.name;
 				if (edits.value.name?.length === 0) editsParsed.bookmark = null;
+				if (edits.value.icon) editsParsed.icon = edits.value.icon;
+				if (edits.value.color) editsParsed.color = edits.value.color;
 				if (edits.value.collection) editsParsed.collection = edits.value.collection;
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
@@ -312,8 +293,8 @@ export default defineComponent({
 				deleting.value = true;
 
 				try {
-					await api.delete(`/presets/${props.id}`);
-					router.push(`/settings/presets`);
+					await presetsStore.delete([Number(props.id)]);
+					router.replace(`/settings/presets`);
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
@@ -353,6 +334,8 @@ export default defineComponent({
 					collection: preset.value.collection,
 					layout: preset.value.layout,
 					name: preset.value.bookmark,
+					icon: preset.value.icon,
+					color: preset.value.color,
 					search: preset.value.search,
 					scope: scope,
 					layout_query: preset.value.layout_query,
@@ -378,6 +361,14 @@ export default defineComponent({
 					return values.value.layout_query[values.value.layout];
 				},
 				set(newQuery) {
+					if (
+						values.value.layout_query &&
+						values.value.layout &&
+						isEqual(newQuery, values.value.layout_query[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_query: {
@@ -396,6 +387,14 @@ export default defineComponent({
 					return values.value.layout_options[values.value.layout];
 				},
 				set(newOptions) {
+					if (
+						values.value.layout_options &&
+						values.value.layout &&
+						isEqual(newOptions, values.value.layout_options[values.value.layout])
+					) {
+						return;
+					}
+
 					edits.value = {
 						...edits.value,
 						layout_options: {
@@ -515,10 +514,55 @@ export default defineComponent({
 					name: t('name'),
 					type: 'string',
 					meta: {
-						interface: 'input',
+						interface: 'system-input-translated-string',
 						width: 'half',
 						options: {
 							placeholder: t('preset_name_placeholder'),
+						},
+					},
+				},
+				{
+					field: 'icon',
+					name: '$t:icon',
+					type: 'string',
+					meta: {
+						interface: 'select-icon',
+						width: 'half',
+					},
+					schema: {
+						default_value: 'bookmark_outline',
+					},
+				},
+				{
+					field: 'color',
+					name: '$t:color',
+					type: 'string',
+					meta: {
+						interface: 'select-color',
+						width: 'half',
+					},
+				},
+				{
+					field: 'search',
+					name: t('search'),
+					type: 'string',
+					meta: {
+						interface: 'input',
+						width: 'half',
+						options: {
+							placeholder: t('search_items'),
+						},
+					},
+				},
+				{
+					field: 'filter',
+					name: t('filter'),
+					type: 'string',
+					meta: {
+						interface: 'system-filter',
+						width: 'half',
+						options: {
+							collectionField: 'collection',
 						},
 					},
 				},
@@ -554,17 +598,15 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .preset-item {
@@ -583,9 +625,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--warning);
-	--sidebar-detail-color: var(--warning);
-	--sidebar-detail-color-active: var(--warning);
+	--sidebar-detail-icon-color: var(--primary);
+	--sidebar-detail-color: var(--primary);
+	--sidebar-detail-color-active: var(--primary);
 	--form-vertical-gap: 24px;
 
 	display: contents;

@@ -100,6 +100,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		collection: 'directus_users',
 		action: 'read',
 		permissions: {},
+		fields: ['*'],
 	},
 	{
 		collection: 'directus_users',
@@ -120,6 +121,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 			'avatar',
 			'language',
 			'theme',
+			'tfa_secret',
 		],
 	},
 	{
@@ -127,6 +129,61 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		action: 'read',
 		permissions: {},
 		fields: ['*'],
+	},
+	{
+		collection: 'directus_shares',
+		action: 'read',
+		permissions: {
+			_or: [
+				{
+					role: {
+						_eq: '$CURRENT_ROLE',
+					},
+				},
+				{
+					role: {
+						_null: true,
+					},
+				},
+			],
+		},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_shares',
+		action: 'create',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_shares',
+		action: 'update',
+		permissions: {
+			user_created: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_shares',
+		action: 'delete',
+		permissions: {
+			user_created: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_flows',
+		action: 'read',
+		permissions: {
+			trigger: {
+				_eq: 'manual',
+			},
+		},
+		fields: ['id', 'name', 'icon', 'color', 'options', 'trigger'],
 	},
 ];
 
@@ -210,12 +267,11 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_presets',
 		action: 'create',
-		validation: [
-			{
-				user: null,
+		validation: {
+			user: {
 				_eq: '$CURRENT_USER',
 			},
-		],
+		},
 	},
 	{
 		collection: 'directus_presets',
@@ -253,6 +309,15 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 		action: 'read',
 	},
 	{
+		collection: 'directus_shares',
+		action: 'read',
+		permissions: {
+			user_created: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+	},
+	{
 		collection: 'directus_users',
 		action: 'read',
 		permissions: {
@@ -264,6 +329,7 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 			'id',
 			'first_name',
 			'last_name',
+			'last_page',
 			'email',
 			'password',
 			'location',

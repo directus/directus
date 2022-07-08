@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.label_on',
 			type: 'string',
 			meta: {
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_on_placeholder',
@@ -26,7 +26,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.label_off',
 			type: 'string',
 			meta: {
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_off_placeholder',
@@ -65,9 +65,6 @@ export default defineDisplay({
 				interface: 'select-color',
 				width: 'half',
 			},
-			schema: {
-				default_value: '#00C897',
-			},
 		},
 		{
 			field: 'colorOff',
@@ -76,9 +73,6 @@ export default defineDisplay({
 			meta: {
 				interface: 'select-color',
 				width: 'half',
-			},
-			schema: {
-				default_value: '#B0BEC5',
 			},
 		},
 	],

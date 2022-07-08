@@ -1,4 +1,4 @@
-import { ExtensionsOptionsContext } from '@directus/shared/types';
+import { DeepPartial, Field } from '@directus/shared/types';
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceInput from './input.vue';
 import PreviewSVG from './preview.svg?raw';
@@ -11,15 +11,15 @@ export default defineInterface({
 	component: InterfaceInput,
 	types: ['string', 'uuid', 'bigInteger', 'integer', 'float', 'decimal', 'text'],
 	group: 'standard',
-	options: ({ field }: ExtensionsOptionsContext) => {
-		const textOptions = {
+	options: ({ field }) => {
+		const textOptions: { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] } = {
 			standard: [
 				{
 					field: 'placeholder',
 					name: '$t:placeholder',
 					meta: {
 						width: 'full',
-						interface: 'input',
+						interface: 'system-input-translated-string',
 						options: {
 							placeholder: '$t:enter_a_placeholder',
 						},
@@ -45,6 +45,20 @@ export default defineInterface({
 				},
 			],
 			advanced: [
+				{
+					field: 'softLength',
+					name: '$t:soft_length',
+					type: 'integer',
+					meta: {
+						width: 'half',
+						interface: 'input',
+						options: {
+							placeholder: '255',
+							min: 1,
+							max: field.schema?.max_length,
+						},
+					},
+				},
 				{
 					field: 'font',
 					name: '$t:font',
@@ -127,7 +141,7 @@ export default defineInterface({
 			],
 		};
 
-		const numberOptions = [
+		const numberOptions: DeepPartial<Field>[] = [
 			{
 				field: 'min',
 				name: '$t:interfaces.input.minimum_value',
@@ -164,7 +178,7 @@ export default defineInterface({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						placeholder: '$t:enter_a_placeholder',
 					},

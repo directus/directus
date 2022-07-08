@@ -73,6 +73,7 @@ import maplibre, {
 	Map,
 	NavigationControl,
 	GeolocateControl,
+	AttributionControl,
 } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 // @ts-ignore
@@ -85,7 +86,6 @@ import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } 
 import {
 	Field,
 	GeometryType,
-	GeometryFormat,
 	GeoJSONParser,
 	GeoJSONSerializer,
 	SimpleGeometry,
@@ -93,7 +93,7 @@ import {
 } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual, debounce } from 'lodash';
-import drawLayers from './style';
+import { getMapStyle } from './style';
 const activeLayers = [
 	'directus-point',
 	'directus-line',
@@ -131,10 +131,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		geometryFormat: {
-			type: String as PropType<GeometryFormat>,
-			default: undefined,
-		},
 		geometryType: {
 			type: String as PropType<GeometryType>,
 			default: undefined,
@@ -155,8 +151,8 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
 
-		const geometryType = (props.fieldData?.schema?.geometry_type ?? props.geometryType) as GeometryType;
-		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
+		const geometryType = props.geometryType || (props.fieldData?.type.split('.')[1] as GeometryType);
+		const geometryFormat = getGeometryFormatForType(props.type)!;
 
 		const mapboxKey = getSetting('mapbox_key');
 		const basemaps = getBasemapSources();
@@ -186,6 +182,7 @@ export default defineComponent({
 		watch(location, updateProjection);
 
 		const controls = {
+			attribution: new AttributionControl(),
 			draw: new MapboxDraw(getDrawOptions(geometryType)),
 			fitData: new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds),
 			navigation: new NavigationControl({
@@ -194,17 +191,18 @@ export default defineComponent({
 			geolocate: new GeolocateControl({
 				showUserLocation: false,
 			}),
-			geocoder: !mapboxKey
-				? null
-				: (new MapboxGeocoder({
-						accessToken: mapboxKey,
-						collapsed: true,
-						flyTo: { speed: 1.4 },
-						marker: false,
-						mapboxgl: maplibre as any,
-						placeholder: t('layouts.map.find_location'),
-				  }) as any),
+			geocoder: undefined as MapboxGeocoder | undefined,
 		};
+		if (mapboxKey) {
+			controls.geocoder = new MapboxGeocoder({
+				accessToken: mapboxKey,
+				collapsed: true,
+				flyTo: { speed: 1.4 },
+				marker: false,
+				mapboxgl: maplibre as any,
+				placeholder: t('layouts.map.find_location'),
+			});
+		}
 
 		const tooltipVisible = ref(false);
 		const tooltipMessage = ref('');
@@ -254,14 +252,14 @@ export default defineComponent({
 			map = new Map({
 				container: container.value!,
 				style: style.value,
-				attributionControl: false,
 				dragRotate: false,
-				logoPosition: 'bottom-right',
+				logoPosition: 'bottom-left',
+				attributionControl: false,
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 			if (controls.geocoder) {
-				map.addControl(controls.geocoder, 'top-right');
+				map.addControl(controls.geocoder as any, 'top-right');
 				controls.geocoder.on('result', (event: any) => {
 					location.value = event.result.center;
 				});
@@ -273,6 +271,7 @@ export default defineComponent({
 				const { longitude, latitude } = event.coords;
 				location.value = [longitude, latitude];
 			});
+			map.addControl(controls.attribution, 'bottom-left');
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
 			map.addControl(controls.fitData, 'top-left');
@@ -340,7 +339,8 @@ export default defineComponent({
 
 		function fitDataBounds(options: CameraOptions & AnimationOptions) {
 			if (map && currentGeometry) {
-				map.fitBounds(currentGeometry.bbox! as LngLatBoundsLike, {
+				const bbox = getBBox(currentGeometry);
+				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 80,
 					maxZoom: 8,
 					...options,
@@ -350,7 +350,7 @@ export default defineComponent({
 
 		function getDrawOptions(type: GeometryType): any {
 			const options = {
-				styles: drawLayers,
+				styles: getMapStyle(),
 				controls: {},
 				userProperties: true,
 				displayControlsDefault: false,
@@ -436,7 +436,6 @@ export default defineComponent({
 			} else {
 				result = geometries[geometries.length - 1];
 			}
-			result!.bbox = getBBox(result!);
 			return result;
 		}
 
@@ -507,8 +506,8 @@ export default defineComponent({
 
 	.basemap-select {
 		position: absolute;
+		right: 10px;
 		bottom: 10px;
-		left: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

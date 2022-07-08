@@ -11,7 +11,7 @@ npm install @directus/sdk
 ```js
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+const directus = new Directus('http://directus.example.com');
 
 const items = await directus.items('articles').readOne(15);
 console.log(items);
@@ -20,7 +20,7 @@ console.log(items);
 ```js
 import { Directus } from '@directus/sdk';
 
-const directus = new Directus('https://api.example.com/');
+const directus = new Directus('http://directus.example.com');
 
 directus
 	.items('articles')

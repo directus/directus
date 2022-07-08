@@ -1,26 +1,31 @@
 <template>
+	<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(getComparator(field))">
+		<input-component
+			:is="interfaceType"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
+			:value="value"
+			@input="value = $event"
+		/>
+	</template>
 	<template
-		v-if="
+		v-else-if="
 			[
-				'_eq',
-				'_neq',
-				'_lt',
-				'_gt',
-				'_lte',
-				'_gte',
 				'_contains',
 				'_ncontains',
+				'_icontains',
 				'_starts_with',
 				'_nstarts_with',
 				'_ends_with',
 				'_nends_with',
+				'_regex',
 			].includes(getComparator(field))
 		"
 	>
 		<input-component
-			:is="interfaceType"
+			is="interface-input"
 			:choices="choices"
-			:type="fieldInfo.type"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value"
 			@input="value = $event"
 		/>
@@ -34,7 +39,7 @@
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
-				:type="fieldInfo.type"
+				:type="fieldInfo?.type ?? 'unknown'"
 				:value="val"
 				:focus="false"
 				:choices="choices"
@@ -43,11 +48,11 @@
 		</div>
 	</div>
 
-	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))" class="between">
+	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))">
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
-			:type="fieldInfo.type"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[0]"
 			@input="setValueAt(0, $event)"
 		/>
@@ -55,7 +60,7 @@
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
-			:type="fieldInfo.type"
+			:type="fieldInfo?.type ?? 'unknown'"
 			:value="value[1]"
 			@input="setValueAt(1, $event)"
 		/>
@@ -146,7 +151,7 @@ export default defineComponent({
 			},
 		});
 
-		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? {}));
+		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? []));
 
 		return { t, choices, fieldInfo, interfaceType, value, setValueAt, getComparator };
 

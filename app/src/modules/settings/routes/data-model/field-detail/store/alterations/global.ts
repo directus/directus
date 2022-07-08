@@ -1,6 +1,6 @@
 import { set } from 'lodash';
 import { State, StateUpdates } from '../types';
-import { getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 
 /**
  * In case a relational field removed the schema object, we'll have to make sure it's re-added
@@ -20,7 +20,7 @@ export function resetSchema(updates: StateUpdates, state: State) {
 export function setLocalTypeForInterface(updates: StateUpdates) {
 	if (!updates.field?.meta?.interface) return;
 
-	const chosenInterface = getInterfaces().interfaces.value.find((inter) => inter.id === updates.field!.meta!.interface);
+	const chosenInterface = getInterface(updates.field.meta.interface);
 
 	if (!chosenInterface) return;
 
@@ -36,7 +36,7 @@ export function setLocalTypeForInterface(updates: StateUpdates) {
 export function setTypeForInterface(updates: StateUpdates, state: State) {
 	if (!updates.field?.meta?.interface) return;
 
-	const chosenInterface = getInterfaces().interfaces.value.find((inter) => inter.id === updates.field!.meta!.interface);
+	const chosenInterface = getInterface(updates.field.meta.interface);
 
 	if (!chosenInterface) return updates;
 
@@ -51,46 +51,28 @@ export function setTypeForInterface(updates: StateUpdates, state: State) {
  * the local type is standard
  */
 export function setSpecialForLocalType(updates: StateUpdates) {
-	if (updates?.localType === 'o2m') {
-		set(updates, 'field.meta.special', ['o2m']);
-	}
-
-	if (updates?.localType === 'm2m') {
-		set(updates, 'field.meta.special', ['m2m']);
-	}
-
-	if (updates?.localType === 'm2a') {
-		set(updates, 'field.meta.special', ['m2a']);
-	}
-
-	if (updates?.localType === 'm2o') {
-		set(updates, 'field.meta.special', ['m2o']);
-	}
-
-	if (updates?.localType === 'translations') {
-		set(updates, 'field.meta.special', ['translations']);
-	}
-
-	if (updates?.localType === 'file') {
-		set(updates, 'field.meta.special', ['file']);
-	}
-
-	if (updates?.localType === 'files') {
-		set(updates, 'field.meta.special', ['files']);
-	}
-
-	if (updates?.localType === 'presentation') {
-		set(updates, 'field.meta.special', ['alias', 'no-data']);
-	}
-
-	if (updates?.localType === 'group') {
-		set(updates, 'field.meta.special', ['alias', 'no-data', 'group']);
+	const localType = updates?.localType;
+	switch (localType) {
+		case 'o2m':
+		case 'm2m':
+		case 'm2a':
+		case 'm2o':
+		case 'translations':
+		case 'file':
+		case 'files':
+			set(updates, 'field.meta.special', [localType]);
+			break;
+		case 'presentation':
+			set(updates, 'field.meta.special', ['alias', 'no-data']);
+			break;
+		case 'group':
+			set(updates, 'field.meta.special', ['alias', 'no-data', 'group']);
+			break;
 	}
 }
 
 export function resetRelations(updates: StateUpdates) {
 	if (!updates.relations) updates.relations = {};
-	updates.relations.m2a = undefined;
 	updates.relations.m2o = undefined;
 	updates.relations.o2m = undefined;
 }

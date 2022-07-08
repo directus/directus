@@ -35,28 +35,13 @@
 				/>
 			</div>
 
-			<template v-if="type == 'geometry'">
-				<template v-if="!isAlias">
-					<div class="field half-right">
-						<div class="label type-label">{{ t('interfaces.map.geometry_type') }}</div>
-
-						<v-select
-							v-model="geometryType"
-							:show-deselect="true"
-							:placeholder="t('any')"
-							:disabled="isExisting"
-							:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
-						/>
-					</div>
-				</template>
-			</template>
-
-			<template v-else-if="['decimal', 'float'].includes(type) === false">
+			<template v-if="['decimal', 'float'].includes(type) === false">
 				<div v-if="!isAlias" class="field half">
 					<div class="label type-label">{{ t('length') }}</div>
 					<v-input
 						v-model="maxLength"
 						type="number"
+						:min="1"
 						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
 						:disabled="isExisting || type !== 'string'"
 					/>
@@ -125,7 +110,7 @@
 				/>
 				<interface-input-code
 					v-else-if="type === 'json'"
-					:value="defaultValue || ''"
+					:value="defaultValue"
 					language="JSON"
 					placeholder="NULL"
 					type="json"
@@ -157,7 +142,8 @@ import { TranslateResult } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 
-export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } | { divider: true }> = [
+type FieldTypeOption = { value: Type; text: TranslateResult | string; children?: FieldTypeOption[] };
+export const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	{
 		text: '$t:string',
 		value: 'string',
@@ -187,11 +173,6 @@ export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } |
 	{
 		text: '$t:decimal',
 		value: 'decimal',
-	},
-	{ divider: true },
-	{
-		text: '$t:geometry',
-		value: 'geometry',
 	},
 	{ divider: true },
 	{
@@ -227,6 +208,35 @@ export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } |
 		text: '$t:hash',
 		value: 'hash',
 	},
+	{ divider: true },
+	{
+		text: '$t:geometry',
+		value: 'geometry',
+	},
+	{
+		text: '$t:geometry.Point',
+		value: 'geometry.Point',
+	},
+	{
+		text: '$t:geometry.LineString',
+		value: 'geometry.LineString',
+	},
+	{
+		text: '$t:geometry.Polygon',
+		value: 'geometry.Polygon',
+	},
+	{
+		text: '$t:geometry.MultiPoint',
+		value: 'geometry.MultiPoint',
+	},
+	{
+		text: '$t:geometry.MultiLineString',
+		value: 'geometry.MultiLineString',
+	},
+	{
+		text: '$t:geometry.MultiPolygon',
+		value: 'geometry.MultiPolygon',
+	},
 ];
 
 export default defineComponent({
@@ -241,20 +251,17 @@ export default defineComponent({
 		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
 		const field = syncFieldDetailStoreProperty('field.field');
 		const special = syncFieldDetailStoreProperty('field.meta.special');
-		const geometryType = syncFieldDetailStoreProperty('field.schema.geometry_type');
 		const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
 		const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
-		const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable');
-		const unique = syncFieldDetailStoreProperty('field.schema.unique');
+		const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
+		const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
 		const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
 
 		const { t } = useI18n();
 
 		const typesWithLabels = computed(() => translate(fieldTypes));
 
-		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(localType.value);
-		});
+		const typeDisabled = computed(() => localType.value !== 'standard');
 
 		const typePlaceholder = computed(() => {
 			if (localType.value === 'm2o') {
@@ -298,7 +305,6 @@ export default defineComponent({
 			field,
 			isAlias,
 			type,
-			geometryType,
 			maxLength,
 			numericPrecision,
 			numericScale,
@@ -371,12 +377,22 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onCreateSpecials.includes(special) === false
 					);
 
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
+					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
 					}
 				},
 			});
@@ -442,12 +458,22 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
+					// In case of previously persisted empty string
+					if (typeof special.value === 'string') {
+						special.value = [];
+					}
+
 					special.value = (special.value ?? []).filter(
 						(special: string) => onUpdateSpecials.includes(special) === false
 					);
 
 					if (newOption) {
 						special.value = [...(special.value ?? []), newOption];
+					}
+
+					// Prevent empty array saved as empty string
+					if (special.value && special.value.length === 0) {
+						special.value = null;
 					}
 				},
 			});

@@ -1,11 +1,11 @@
 import { useStores } from './use-system';
-import { Collection, Field } from '../types';
+import { AppCollection, Field } from '../types';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
 type UsableCollection = {
-	info: ComputedRef<Collection | null>;
+	info: ComputedRef<AppCollection | null>;
 	fields: ComputedRef<Field[]>;
-	defaults: Record<string, any>;
+	defaults: ComputedRef<Record<string, any>>;
 	primaryKeyField: ComputedRef<Field | null>;
 	userCreatedField: ComputedRef<Field | null>;
 	sortField: ComputedRef<string | null>;
@@ -22,13 +22,13 @@ export function useCollection(collectionKey: string | Ref<string | null>): Usabl
 
 	const info = computed(() => {
 		return (
-			(collectionsStore.collections as Collection[]).find(({ collection: key }) => key === collection.value) || null
+			(collectionsStore.collections as AppCollection[]).find(({ collection: key }) => key === collection.value) || null
 		);
 	});
 
 	const fields = computed(() => {
 		if (!collection.value) return [];
-		return fieldsStore.getFieldsForCollection(collection.value) as Field[];
+		return fieldsStore.getFieldsForCollectionSorted(collection.value) as Field[];
 	});
 
 	const defaults = computed(() => {

@@ -1,9 +1,12 @@
 <template>
 	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<div class="label type-title" :class="{ active }" @click="handleModifier($event, toggle)">
+			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
+				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				{{ field.name }}
+				<span class="field-name">{{ field.name }}</span>
+				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
+				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 				<v-icon
 					v-if="!active && validationMessage"
 					v-tooltip="validationMessage"
@@ -24,6 +27,8 @@
 						:validation-errors="validationErrors"
 						:loading="loading"
 						:batch-mode="batchMode"
+						:disabled="disabled"
+						nested
 						@update:model-value="$emit('apply', $event)"
 					/>
 				</div>
@@ -82,11 +87,14 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
 		group: {
 			type: String,
 			required: true,
 		},
-
 		multiple: {
 			type: Boolean,
 			default: false,
@@ -98,19 +106,15 @@ export default defineComponent({
 
 		const fieldsInSection = computed(() => {
 			return props.fields
-				.filter((field) => {
-					if (field.meta?.group === props.group && field.meta?.id !== props.field.meta?.id) return false;
-					return true;
-				})
-				.map((field) => {
-					if (field.meta?.id === props.field.meta?.id) {
-						return merge({}, field, {
-							hideLabel: true,
-						});
-					}
+				.filter((field) => field.meta?.group === props.group && field.meta?.id === props.field.meta?.id)
+				.map((field) => merge({}, field, { hideLabel: true }));
+		});
 
-					return field;
-				});
+		const edited = computed(() => {
+			if (!props.values) return false;
+
+			const editedFields = Object.keys(props.values);
+			return fieldsInSection.value.some((field) => editedFields.includes(field.field));
 		});
 
 		const validationMessage = computed(() => {
@@ -124,7 +128,7 @@ export default defineComponent({
 			}
 		});
 
-		return { fieldsInSection, handleModifier, validationMessage };
+		return { t, fieldsInSection, edited, handleModifier, validationMessage };
 
 		function handleModifier(event: MouseEvent, toggle: () => void) {
 			if (props.multiple === false) {
@@ -142,37 +146,70 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .accordion-section {
 	border-top: var(--border-width) solid var(--border-normal);
-}
 
-.accordion-section:last-child {
-	border-bottom: var(--border-width) solid var(--border-normal);
+	&:last-child {
+		border-bottom: var(--border-width) solid var(--border-normal);
+	}
 }
 
 .label {
+	position: relative;
 	display: flex;
 	align-items: center;
 	margin: 8px 0;
-	color: var(--foreground-subdued);
-	cursor: pointer;
-	transition: color var(--fast) var(--transition);
-}
 
-.label:hover,
-.label.active {
-	color: var(--foreground-normal);
+	cursor: pointer;
+
+	&:hover,
+	&.active {
+		.field-name,
+		.icon {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.field-name,
+	.icon {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+
+	.required {
+		--v-icon-color: var(--primary);
+
+		margin-top: -12px;
+		margin-left: 2px;
+	}
+
+	.v-chip {
+		margin: 0;
+		margin-left: 8px;
+	}
+
+	.edit-dot {
+		position: absolute;
+		top: 14px;
+		left: -7px;
+		display: block;
+		width: 4px;
+		height: 4px;
+		background-color: var(--foreground-subdued);
+		border-radius: 4px;
+		content: '';
+	}
 }
 
 .icon {
 	margin-right: 12px;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
-}
 
-.icon.active {
-	transform: rotate(0);
+	&.active {
+		transform: rotate(0);
+	}
 }
 
 .warning {

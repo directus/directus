@@ -24,6 +24,7 @@ export async function translateDatabaseError(error: SQLError): Promise<any> {
 		case 'mysql':
 			defaultError = mysql(error);
 			break;
+		case 'cockroachdb':
 		case 'postgres':
 			defaultError = postgres(error);
 			break;

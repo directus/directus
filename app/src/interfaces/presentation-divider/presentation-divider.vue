@@ -1,6 +1,6 @@
 <template>
 	<v-divider
-		:class="{ 'add-margin-top': marginTop }"
+		:class="{ 'add-margin-top': icon || title }"
 		:style="{
 			'--v-divider-label-color': color,
 			'--v-divider-color': 'var(--border-subdued)',
@@ -34,20 +34,11 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		marginTop: {
-			type: Boolean,
-			default: true,
-		},
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.v-divider {
-	margin-top: 10px;
-	margin-bottom: -10px;
-}
-
 .add-margin-top {
 	margin-top: 40px;
 }

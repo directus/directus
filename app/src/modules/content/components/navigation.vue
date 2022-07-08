@@ -6,14 +6,13 @@
 
 		<v-list
 			v-model="activeGroups"
+			v-context-menu="'contextMenu'"
 			scope="content-navigation"
 			class="content-navigation"
 			tabindex="-1"
 			nav
 			:mandatory="false"
 			:dense="dense"
-			@contextmenu.prevent.stop="activateContextMenu"
-			@focusout="deactivateContextMenu"
 		>
 			<navigation-item
 				v-for="collection in rootItems"
@@ -23,7 +22,7 @@
 				:search="search"
 			/>
 
-			<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+			<v-menu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
 				<v-list-item clickable @click="showHidden = !showHidden">
 					<v-list-item-icon>
 						<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
@@ -62,8 +61,6 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 
-		const contextMenu = ref();
-
 		const rootItems = computed(() => {
 			const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
 			return orderBy(
@@ -76,6 +73,9 @@ export default defineComponent({
 
 		const dense = computed(() => collectionsStore.visibleCollections.length > 5);
 		const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
+		const hasHiddenCollections = computed(
+			() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length
+		);
 
 		return {
 			t,
@@ -83,20 +83,10 @@ export default defineComponent({
 			showHidden,
 			rootItems,
 			dense,
-			activateContextMenu,
-			deactivateContextMenu,
-			contextMenu,
 			search,
 			showSearch,
+			hasHiddenCollections,
 		};
-
-		function activateContextMenu(event: PointerEvent) {
-			contextMenu.value.activate(event);
-		}
-
-		function deactivateContextMenu() {
-			contextMenu.value.deactivate();
-		}
 	},
 });
 </script>

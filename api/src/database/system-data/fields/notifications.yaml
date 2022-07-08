@@ -1,0 +1,15 @@
+table: directus_notifications
+
+fields:
+  - field: id
+  - field: timestamp
+    special:
+      - date-created
+      - cast-timestamp
+  - field: status
+  - field: recipient
+  - field: sender
+  - field: subject
+  - field: message
+  - field: collection
+  - field: item

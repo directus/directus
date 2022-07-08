@@ -1,4 +1,6 @@
-# This composer file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
+# This compose file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
+# For production use see the docker compose file example in the docs:
+#     https://docs.directus.io/self-hosted/installation/docker/#docker-compose
 #
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
@@ -14,6 +16,9 @@
 #   MySQL (5.7):     5108
 #   Memcached:       5109
 #   Keycloak:        5110
+#   Postgres (10):   5111
+#   Minio Admin:     5112
+#   CockroachDB:     5113
 #
 # Credentials:
 #   Postgres:
@@ -57,6 +62,10 @@
 #   Keycloak
 #     User:          admin
 #     Password:      secret
+#
+#   CockroachDB
+#     User:          admin
+#     Password:      --
 
 version: '3.1'
 services:
@@ -76,9 +85,11 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5101:3306
+    cap_add:
+      - SYS_NICE
 
   maria:
-    image: mariadb:10.6
+    image: mariadb:10.7
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -100,7 +111,7 @@ services:
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
-    shm_size: '1gb' # more like smh-size ammirite 🥁
+    shm_size: '1gb' # more like smh-size amirite 🥁
 
   redis:
     image: redis:6-alpine
@@ -109,9 +120,10 @@ services:
 
   minio:
     image: minio/minio:latest
-    command: server /data/minio/
+    command: server /data/minio/ --console-address :9001
     ports:
       - 5106:9000
+      - 5112:9001
 
   azure:
     image: mcr.microsoft.com/azure-storage/azurite
@@ -138,6 +150,19 @@ services:
       KEYCLOAK_PASSWORD: secret
       DB_ADDR: ''
       DB_VENDOR: h2
-
     ports:
       - 5110:8080
+
+  postgres10:
+    image: postgis/postgis:10-3.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 5111:5432
+
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v21.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 5113:26257

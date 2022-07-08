@@ -1,24 +1,17 @@
-/** @TODO once Oracle is officially supported, enable it here */
-export const allVendors = ['mssql', 'mysql', 'postgres', /* 'oracle', */ 'maria' /*, 'sqlite3'*/];
+export const allVendors = ['mssql', 'mysql', 'postgres', 'maria', 'oracle', 'sqlite3', 'postgres10', 'cockroachdb'];
 
-export function getDBsToTest(): string[] {
-	const testVendors = process.env.TEST_DB || '*';
+const vendors = process.env.TEST_DB?.split(',').map((v) => v.trim()) ?? allVendors;
 
-	let vendors = [];
-
-	if (testVendors === '*') {
-		vendors = allVendors;
-	} else if (testVendors.includes(',')) {
-		vendors = testVendors.split(',').map((v) => v.trim());
-	} else {
-		vendors = [testVendors];
-	}
-
-	for (const vendor of vendors) {
-		if (allVendors.includes(vendor) === false) {
-			throw new Error(`No e2e testing capabilities for vendor "${vendor}".`);
-		}
-	}
-
-	return vendors;
+if (vendors.length > 1 && process.env.TEST_LOCAL) {
+	throw new Error(
+		`You can't test multiple databases simultaneously when using the locally running instance of Directus.`
+	);
 }
+
+for (const vendor of vendors) {
+	if (allVendors.includes(vendor) === false) {
+		throw new Error(`No e2e testing capabilities for vendor "${vendor}".`);
+	}
+}
+
+export default vendors;

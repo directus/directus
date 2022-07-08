@@ -1,9 +1,31 @@
+import firaMono2 from '../../assets/fonts/FiraMono-Medium.woff2';
+import firaMono from '../../assets/fonts/FiraMono-Medium.woff';
+import merriweatherRegular2 from '../../assets/fonts/merriweather-regular.woff2';
+import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff';
+
 function cssVar(name: string) {
 	return getComputedStyle(document.body).getPropertyValue(name);
 }
 
 export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace'): string {
 	return `
+@font-face {
+	font-family: 'Fira Mono';
+	font-style: normal;
+	src: url(${firaMono2}) format('woff2'),
+	url(${firaMono}) format('woff');
+}
+
+@font-face {
+	font-family: 'Merriweather';
+	font-style: normal;
+	src: url(${merriweatherRegular2}) format('woff2'),
+	url(${merriweatherRegular}) format('woff');
+}
+
+::selection {
+	background: ${cssVar('--background-normal-alt')};
+}
 body {
 	color: ${cssVar('--foreground-normal')};
 	background-color: ${cssVar('--background-input')};
@@ -16,6 +38,9 @@ body {
 body.mce-content-readonly {
 	color: ${cssVar('--foreground-subdued')};
 	background-color: ${cssVar('--background-subdued')};
+}
+.mce-offscreen-selection {
+	display: none;
 }
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${cssVar(`--family-${font}`)}, serif;
@@ -113,11 +138,14 @@ blockquote {
 	margin-left: 0px;
 }
 video,
-iframe,
 img {
 	max-width: 100%;
 	border-radius: ${cssVar('--border-radius')};
 	height: auto;
+}
+iframe {
+	max-width: 100%;
+	border-radius: ${cssVar('--border-radius')};
 }
 hr {
 	background-color: ${cssVar('--border-normal')};

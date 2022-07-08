@@ -1,7 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceTranslations from './translations.vue';
-import { ExtensionsOptionsContext } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'translations',
@@ -12,7 +12,7 @@ export default defineInterface({
 	group: 'relational',
 	relational: true,
 	component: InterfaceTranslations,
-	options: ({ relations }: ExtensionsOptionsContext) => {
+	options: ({ relations }) => {
 		const fieldsStore = useFieldsStore();
 
 		const languagesCollection = relations.m2o?.related_collection;
@@ -38,6 +38,33 @@ export default defineInterface({
 					},
 				},
 			},
+			{
+				field: 'defaultLanguage',
+				name: '$t:interfaces.translations.default_language',
+				meta: {
+					interface: 'input',
+					width: 'half',
+					options: {
+						placeholder: '$t:primary_key',
+					},
+				},
+			},
+			{
+				field: 'userLanguage',
+				name: '$t:interfaces.translations.user_language',
+				type: 'string',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.translations.enable',
+					},
+					width: 'half',
+				},
+			},
 		];
 	},
+	preview: PreviewSVG,
 });

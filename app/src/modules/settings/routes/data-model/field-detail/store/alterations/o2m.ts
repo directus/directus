@@ -184,7 +184,7 @@ export function generateSortField(updates: StateUpdates, state: State, { getCurr
 			type: 'integer',
 			schema: {},
 			meta: {
-				hidden: true,
+				hidden: false,
 			},
 		});
 	}

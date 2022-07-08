@@ -3,7 +3,7 @@
  * Had to rewrite due to last approach throwing randomly on linux machines.
  */
 
-import stripIndent from 'strip-indent';
+import redent from 'redent';
 import { Readable } from 'stream';
 import { Toolbox } from '../../toolbox';
 import { CLIRuntimeError } from '../exceptions';
@@ -60,7 +60,7 @@ export function normalizeFeatures(requested?: StdinFeatures): StdinFeatures {
 					\`\`\`
 				`;
 
-			feature.description = stripIndent(feature.description);
+			feature.description = redent(feature.description);
 			feature.exclusive = feature.exclusive || [];
 			if (!Array.isArray(feature.exclusive)) {
 				feature.exclusive = [feature.exclusive];

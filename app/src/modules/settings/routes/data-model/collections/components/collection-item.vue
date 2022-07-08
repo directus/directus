@@ -1,16 +1,24 @@
 <template>
 	<div class="collection-item">
-		<v-list-item block clickable :class="{ hidden: collection.meta?.hidden }">
+		<v-list-item
+			block
+			dense
+			clickable
+			:class="{ hidden: collection.meta?.hidden }"
+			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
+			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
+		>
 			<v-list-item-icon>
 				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</v-list-item-icon>
-			<div class="collection-name" @click="openCollection(collection)">
+			<div class="collection-item-detail">
 				<v-icon
-					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color"
+					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color ?? 'var(--primary)'"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<span>{{ collection.name }}</span>
+				<span ref="collectionName" class="collection-name">{{ collection.collection }}</span>
+				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
 			</div>
 			<template v-if="collection.type === 'alias' || nestedCollections.length">
 				<v-progress-circular v-if="collapseLoading" small indeterminate />
@@ -19,7 +27,7 @@
 					v-tooltip="collapseTooltip"
 					:name="collapseIcon"
 					:clickable="nestedCollections.length > 0"
-					@click="toggleCollapse"
+					@click.stop.prevent="toggleCollapse"
 				/>
 				<v-icon v-else :name="collapseIcon" />
 			</template>
@@ -40,8 +48,8 @@
 				<collection-item
 					:collection="element"
 					:collections="collections"
-					@editCollection="$emit('editCollection', $event)"
-					@setNestedSort="$emit('setNestedSort', $event)"
+					@edit-collection="$emit('editCollection', $event)"
+					@set-nested-sort="$emit('setNestedSort', $event)"
 				/>
 			</template>
 		</draggable>
@@ -52,7 +60,6 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import CollectionOptions from './collection-options.vue';
 import { Collection } from '@/types';
-import { useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import { useCollectionsStore } from '@/stores';
 import { DeepPartial } from '@directus/shared/types';
@@ -79,7 +86,6 @@ export default defineComponent({
 	emits: ['setNestedSort', 'editCollection'],
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
-		const router = useRouter();
 		const { t } = useI18n();
 
 		const nestedCollections = computed(() =>
@@ -116,7 +122,6 @@ export default defineComponent({
 
 		return {
 			collapseIcon,
-			openCollection,
 			onGroupSortChange,
 			nestedCollections,
 			update,
@@ -140,7 +145,7 @@ export default defineComponent({
 
 			try {
 				await update({ meta: { collapse: newCollapse } });
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				collapseLoading.value = false;
@@ -149,14 +154,6 @@ export default defineComponent({
 
 		async function update(updates: DeepPartial<Collection>) {
 			await collectionsStore.updateCollection(props.collection.collection, updates);
-		}
-
-		function openCollection(collection: Collection) {
-			if (collection.schema) {
-				router.push(`/settings/data-model/${collection.collection}`);
-			} else {
-				emit('editCollection', collection);
-			}
 		}
 
 		function onGroupSortChange(collections: Collection[]) {
@@ -183,12 +180,36 @@ export default defineComponent({
 	margin-bottom: 8px;
 }
 
-.collection-name {
+.collection-item-detail {
 	display: flex;
 	flex-grow: 1;
 	align-items: center;
 	height: 100%;
+	overflow: hidden;
 	font-family: var(--family-monospace);
+	pointer-events: none;
+}
+
+.collection-name {
+	flex-shrink: 0;
+}
+
+.hidden .collection-name {
+	color: var(--foreground-subdued);
+}
+
+.collection-note {
+	margin-left: 16px;
+	overflow: hidden;
+	color: var(--foreground-subdued);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	opacity: 0;
+	transition: opacity var(--fast) var(--transition);
+}
+
+.v-list-item:hover .collection-note {
+	opacity: 1;
 }
 
 .collection-icon {
@@ -197,10 +218,5 @@ export default defineComponent({
 
 .drag-handle {
 	cursor: grab;
-}
-
-.hidden {
-	--v-list-item-color: var(--foreground-subdued);
-	--v-icon-color: var(--foreground-subdued);
 }
 </style>

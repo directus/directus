@@ -1,4 +1,9 @@
-import { Permission } from '.';
+import { Permission } from './permissions';
+
+export type ShareScope = {
+	collection: string;
+	item: string;
+};
 
 export type Accountability = {
 	role: string | null;
@@ -6,6 +11,8 @@ export type Accountability = {
 	admin?: boolean;
 	app?: boolean;
 	permissions?: Permission[];
+	share?: string;
+	share_scope?: ShareScope;
 
 	ip?: string;
 	userAgent?: string;
