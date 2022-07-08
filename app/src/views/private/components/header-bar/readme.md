@@ -9,7 +9,7 @@ providing enough consistency between views.
 ```html
 <header-bar title="Global Settings">
 	<template #actions>
-		<v-button to="/collections/settings/+">
+		<v-button to="/content/settings/+">
 			<v-icon name="add" />
 		</v-button>
 	</template>

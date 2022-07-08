@@ -1,14 +1,13 @@
 import axios from 'axios';
-import { ListenerFn } from 'eventemitter2';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
-import { Webhook, WebhookHeader } from './types';
+import { ActionHandler, Webhook, WebhookHeader } from './types';
 import { pick } from 'lodash';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
 
-let registered: { event: string; handler: ListenerFn }[] = [];
+let registered: { event: string; handler: ActionHandler }[] = [];
 
 export async function register(): Promise<void> {
 	unregister();
@@ -20,13 +19,13 @@ export async function register(): Promise<void> {
 		if (webhook.actions.includes('*')) {
 			const event = 'items.*';
 			const handler = createHandler(webhook);
-			emitter.on(event, handler);
+			emitter.onAction(event, handler);
 			registered.push({ event, handler });
 		} else {
 			for (const action of webhook.actions) {
 				const event = `items.${action}`;
 				const handler = createHandler(webhook);
-				emitter.on(event, handler);
+				emitter.onAction(event, handler);
 				registered.push({ event, handler });
 			}
 		}
@@ -35,13 +34,13 @@ export async function register(): Promise<void> {
 
 export function unregister(): void {
 	for (const { event, handler } of registered) {
-		emitter.off(event, handler);
+		emitter.offAction(event, handler);
 	}
 
 	registered = [];
 }
 
-function createHandler(webhook: Webhook): ListenerFn {
+function createHandler(webhook: Webhook): ActionHandler {
 	return async (data) => {
 		if (webhook.collections.includes('*') === false && webhook.collections.includes(data.collection) === false) return;
 

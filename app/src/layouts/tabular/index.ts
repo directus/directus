@@ -271,7 +271,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						selection.value = selection.value.filter((item) => item !== primaryKey);
 					}
 				} else {
-					const next = router.resolve(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					const next = router.resolve(`/content/${collection.value}/${encodeURIComponent(primaryKey)}`);
 
 					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
 					else router.push(next);

@@ -788,8 +788,6 @@ fields:
     public_note: Public Note
     auth_password_policy: นโยบายในการตั้งรหัสผ่าน
     auth_login_attempts: ความพยายามในการเข้าสู่ระบบ
-    storage_asset_presets: การจัดเก็บที่ตั้งค่าไว้ล่วงหน้า
-    storage_asset_transform: การแปลงพื้นที่จัดเก็บข้อมูล
     custom_css: CSS ที่กำหนดเอง
   directus_fields:
     collection: ชื่อคอลเลกชัน

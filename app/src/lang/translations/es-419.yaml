@@ -857,15 +857,11 @@ fields:
     project_url: URL del Proyecto
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
-    public_pages: Páginas públicas
     public_foreground: Superficie Pública
     public_background: Fondo Público
     public_note: Notas Públicas
     auth_password_policy: Política de Contraseña para Autentificación
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
-    files_and_thumbnails: Archivos y miniaturas
-    storage_asset_presets: Predefinidos de Activos en Almacenamiento
-    storage_asset_transform: Transformación de Activos en Almacenamiento
     custom_css: CSS Personalizado
   directus_fields:
     collection: Nombre de la Colección

@@ -691,8 +691,6 @@ fields:
     public_note: Vieša pastaba
     auth_password_policy: Slaptažodžių politika
     auth_login_attempts: Max. bandymų prisijungti kiekis
-    storage_asset_presets: Saugyklos failų ruošiniai
-    storage_asset_transform: Saugyklos failų transformacija
   directus_fields:
     collection: Kolekcijos pavadinimas
     icon: Kolekcijos ikonėlė

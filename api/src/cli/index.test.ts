@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { Extension } from '@directus/shared/types';
-import { createCli } from '.';
+import { Extension, HookConfig } from '@directus/shared/types';
+import { createCli } from './index';
 
 jest.mock('../env', () => ({
 	...jest.requireActual('../env').default,
@@ -19,7 +19,7 @@ jest.mock('@directus/shared/utils/node/get-extensions', () => ({
 	getLocalExtensions: jest.fn(() => Promise.resolve([customCliExtension])),
 }));
 
-jest.mock(`/hooks/custom-cli/index.js`, () => () => customCliHook, { virtual: true });
+jest.mock(`/hooks/custom-cli/index.js`, () => customCliHook, { virtual: true });
 
 const customCliExtension: Extension = {
 	path: `/hooks/custom-cli`,
@@ -31,8 +31,14 @@ const customCliExtension: Extension = {
 
 const beforeHook = jest.fn();
 const afterAction = jest.fn();
-const afterHook = jest.fn(({ program }: { program: Command }) => program.command('custom').action(afterAction));
-const customCliHook = { 'cli.init.before': beforeHook, 'cli.init.after': afterHook };
+const afterHook = jest.fn(({ program }) => {
+	(program as Command).command('custom').action(afterAction);
+});
+
+const customCliHook: HookConfig = ({ init }) => {
+	init('cli.before', beforeHook);
+	init('cli.after', afterHook);
+};
 
 const writeOut = jest.fn();
 const writeErr = jest.fn();

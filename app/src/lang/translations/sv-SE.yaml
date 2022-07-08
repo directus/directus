@@ -726,8 +726,6 @@ fields:
     public_note: Publik anteckning
     auth_password_policy: Policy för lösenord vid inloggning
     auth_login_attempts: Inloggningsförsök
-    storage_asset_presets: Förval för lagringsobjekt
-    storage_asset_transform: Transformering av lagringsobjekt
     custom_css: Custom CSS
   directus_fields:
     collection: Namn kollektion

@@ -14,8 +14,6 @@ fields:
     interface: select-dropdown
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       choices:
         - value: POST
           foreground: 'var(--primary)'
@@ -40,8 +38,6 @@ fields:
     interface: select-dropdown
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       showAsDot: true
       choices:
         - text: $t:active
@@ -113,8 +109,6 @@ fields:
     width: full
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       choices:
         - text: $t:create
           value: create
@@ -139,7 +133,5 @@ fields:
     width: full
     display: labels
     display_options:
-      defaultForeground: 'var(--foreground-normal)'
-      defaultBackground: 'var(--background-normal-alt)'
       choices: null
       format: false

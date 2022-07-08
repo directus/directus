@@ -22,6 +22,7 @@
 						v-if="allowedCollections.includes(element[anyRelation.meta.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
+						clickable
 						@click="editExisting((value || [])[element.$index])"
 					>
 						<v-icon

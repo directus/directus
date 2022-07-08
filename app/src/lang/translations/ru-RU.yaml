@@ -926,16 +926,11 @@ fields:
     project_url: URL проекта
     project_color: Цвет Проекта
     project_logo: Логотип проекта
-    public_pages: Публичные страницы
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
     auth_password_policy: Минимальная сложность пароля
     auth_login_attempts: Попыток войти
-    files_and_thumbnails: Файлы и миниатюры
-    storage_default_folder: Основная папка
-    storage_asset_presets: Пресеты Элементов Хранилища
-    storage_asset_transform: Преобразование Элементов Хранилища
     overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
   directus_fields:
@@ -1313,7 +1308,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
-    field_hint: Папка для новых файлов. Ранее загруженные файлы останутся на месте.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:

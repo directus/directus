@@ -941,16 +941,11 @@ fields:
     project_url: Adres URL projektu
     project_color: Kolor projektu
     project_logo: Logo projektu
-    public_pages: Strony publiczne
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
-    files_and_thumbnails: Pliki i miniatury
-    storage_default_folder: Domyślny folder magazynu
-    storage_asset_presets: Ustawienia magazynu zasobów
-    storage_asset_transform: Przekształcanie zasobów magazynowych
     overrides: Nadpisywanie aplikacji
     custom_css: Niestandardowy CSS
   directus_fields:
@@ -1344,7 +1339,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
-    field_hint: Wstawia nowo przesłane pliki w wybranym folderze. Nie wpływa na istniejące pliki, które są zaznaczone.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:

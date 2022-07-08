@@ -26,7 +26,7 @@ export class CollectionsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	schemaCache: Keyv<any> | null;
+	systemCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -34,9 +34,9 @@ export class CollectionsService {
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 
-		const { cache, schemaCache } = getCache();
+		const { cache, systemCache } = getCache();
 		this.cache = cache;
-		this.schemaCache = schemaCache;
+		this.systemCache = systemCache;
 	}
 
 	/**
@@ -141,9 +141,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return payload.collection;
 	}
@@ -173,9 +171,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collections;
 	}
@@ -199,8 +195,8 @@ export class CollectionsService {
 		meta.push(...systemCollectionRows);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
-				.filter((permission) => {
+			const collectionsYouHavePermissionToRead: string[] = this.accountability
+				.permissions!.filter((permission) => {
 					return permission.action === 'read';
 				})
 				.map(({ collection }) => collection);
@@ -258,7 +254,7 @@ export class CollectionsService {
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.schema.permissions.filter((permission) => {
+			const permissions = this.accountability.permissions!.filter((permission) => {
 				return permission.action === 'read' && collectionKeys.includes(permission.collection);
 			});
 
@@ -313,9 +309,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKey;
 	}
@@ -344,9 +338,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKeys;
 	}
@@ -445,9 +437,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKey;
 	}
@@ -476,9 +466,7 @@ export class CollectionsService {
 			await this.cache.clear();
 		}
 
-		if (this.schemaCache) {
-			await this.schemaCache.clear();
-		}
+		await this.systemCache.clear();
 
 		return collectionKeys;
 	}

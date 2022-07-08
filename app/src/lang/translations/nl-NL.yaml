@@ -767,8 +767,6 @@ fields:
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
-    storage_asset_presets: Bestand Voorkeuren
-    storage_asset_transform: Storage Asset Transform
     custom_css: Aangepastte CSS
   directus_fields:
     collection: Collectie naam

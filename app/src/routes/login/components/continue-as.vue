@@ -66,7 +66,7 @@ export default defineComponent({
 
 		async function hydrateAndLogin() {
 			await hydrate();
-			router.push(lastPage.value || `/collections`);
+			router.push(lastPage.value || `/content`);
 		}
 	},
 });

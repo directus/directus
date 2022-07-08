@@ -819,16 +819,11 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
-    public_pages: Páginas Públicas
     public_foreground: Primeiro plano público
     public_background: Fundo público
     public_note: Nota pública
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
-    files_and_thumbnails: Arquivos e Miniaturas
-    storage_default_folder: Pasta de Armazenamento Padrão
-    storage_asset_presets: Predefinições de armazenamento
-    storage_asset_transform: Transformação de arquivos
     overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
   directus_fields:
@@ -1135,7 +1130,6 @@ interfaces:
   system-folder:
     folder: Pasta
     description: Selecionar uma pasta
-    field_hint: Coloca arquivos recém-enviados na pasta selecionada. Não afeta os arquivos existentes que estão selecionados.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:

@@ -2,7 +2,7 @@
 	<v-list-group
 		v-if="isGroup && matchesSearch"
 		:to="to"
-		scope="collections-navigation"
+		scope="content-navigation"
 		:value="collection.collection"
 		query
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
@@ -46,7 +46,7 @@
 
 	<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 		<v-list>
-			<v-list-item v-if="hasArchive" clickable :to="`/collections/${collection.collection}?archive`" exact query>
+			<v-list-item v-if="hasArchive" clickable :to="`/content/${collection.collection}?archive`" exact query>
 				<v-list-item-icon>
 					<v-icon name="archive" outline />
 				</v-list-item-icon>
@@ -112,7 +112,7 @@ export default defineComponent({
 
 		const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
 
-		const to = computed(() => (props.collection.schema ? `/collections/${props.collection.collection}` : ''));
+		const to = computed(() => (props.collection.schema ? `/content/${props.collection.collection}` : ''));
 
 		const matchesSearch = computed(() => {
 			if (!props.search || props.search.length < 3) return true;

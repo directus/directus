@@ -208,7 +208,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-			return `/collections/${props.collection}/${encodeURIComponent(item[primaryKeyField.value.field])}`;
+			return `/content/${props.collection}/${encodeURIComponent(item[primaryKeyField.value.field])}`;
 		}
 
 		function selectAll() {

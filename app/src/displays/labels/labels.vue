@@ -16,13 +16,7 @@
 			</v-chip>
 		</template>
 		<template v-else>
-			<display-color
-				v-for="item in items"
-				:key="item.value"
-				v-tooltip="item.text"
-				:value="item.background"
-				:default-color="defaultBackground"
-			/>
+			<display-color v-for="item in items" :key="item.value" v-tooltip="item.text" :value="item.background" />
 		</template>
 	</div>
 </template>

@@ -942,16 +942,11 @@ fields:
     project_url: Projekt-URL
     project_color: Projekt-Farbe
     project_logo: Projekt-Logo
-    public_pages: Öffentliche Seiten
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
-    files_and_thumbnails: Dateien & Vorschaubilder
-    storage_default_folder: Standardordner
-    storage_asset_presets: Vorlagen für Dateien
-    storage_asset_transform: Transformierung von Dateien
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
   directus_fields:
@@ -1346,7 +1341,6 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
-    field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:

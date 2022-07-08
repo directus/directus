@@ -14,7 +14,7 @@
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
+		<content-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
 		<private-view
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
@@ -28,7 +28,7 @@
 
 			<template #headline>
 				<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
-				<v-breadcrumb v-else :items="[{ name: t('collections'), to: '/collections' }]" />
+				<v-breadcrumb v-else :items="[{ name: t('content'), to: '/content' }]" />
 			</template>
 
 			<template #title-outer:append>
@@ -177,7 +177,7 @@
 			</template>
 
 			<template #navigation>
-				<collections-navigation :current-collection="collection" />
+				<content-navigation :current-collection="collection" />
 			</template>
 
 			<v-info
@@ -212,7 +212,7 @@
 						{{ t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<v-button :to="`/collections/${collection}/+`">{{ t('create_item') }}</v-button>
+							<v-button :to="`/content/${collection}/+`">{{ t('create_item') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -262,9 +262,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch, toRefs } from 'vue';
-import CollectionsNavigation from '../components/navigation.vue';
+import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
-import CollectionsNotFound from './not-found.vue';
+import ContentNotFound from './not-found.vue';
 import { useCollection } from '@directus/shared/composables';
 import { useLayout } from '@/composables/use-layout';
 import usePreset from '@/composables/use-preset';
@@ -285,10 +285,10 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'CollectionsCollection',
+	name: 'ContentCollection',
 	components: {
-		CollectionsNavigation,
-		CollectionsNotFound,
+		ContentNavigation,
+		ContentNotFound,
 		LayoutSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
@@ -457,7 +457,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: currentCollection.value?.name,
-					to: `/collections/${props.collection}`,
+					to: `/content/${props.collection}`,
 				},
 			]);
 
@@ -541,11 +541,11 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				return `/collections/${props.collection}/+`;
+				return `/content/${props.collection}/+`;
 			});
 
 			const currentCollectionLink = computed<string>(() => {
-				return `/collections/${props.collection}`;
+				return `/content/${props.collection}`;
 			});
 
 			return { addNewLink, currentCollectionLink };
@@ -569,7 +569,7 @@ export default defineComponent({
 
 				try {
 					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
-					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
+					router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
 				} catch (err: any) {

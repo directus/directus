@@ -6,6 +6,7 @@ export * from './get-collection-type';
 export * from './get-fields-from-template';
 export * from './get-filter-operators-for-type';
 export * from './get-relation-type';
+export * from './is-dynamic-variable';
 export * from './is-extension';
 export * from './merge-filters';
 export * from './move-in-array';

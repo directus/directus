@@ -1,18 +1,22 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.0-rc.100",
+	"version": "9.0.0-rc.101",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git"
 	},
 	"main": "./dist/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/sdk.esm.js",
+			"require": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
 	"module": "./dist/sdk.esm.js",
 	"unpkg": "./dist/sdk.esm.min.js",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		".": "./dist/index.js"
-	},
 	"files": [
 		"dist"
 	],

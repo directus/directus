@@ -39,7 +39,7 @@
 				<v-icon name="launch" />
 			</v-button>
 
-			<v-button v-tooltip.bottom="t('done')" to="/activity" icon rounded>
+			<v-button v-tooltip.bottom="t('done')" to="/notifications" icon rounded>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -90,7 +90,7 @@ export default defineComponent({
 
 		const openItemLink = computed(() => {
 			if (!item.value || item.value.collection.startsWith('directus_')) return;
-			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
+			return `/content/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });
@@ -132,7 +132,7 @@ export default defineComponent({
 		}
 
 		function close() {
-			router.push('/activity');
+			router.push('/notifications');
 		}
 	},
 });

@@ -1,5 +1,7 @@
-### Continuous Integration
-# Entrypoint for all CI related jobs
+# ### Continuous Integration
+#
+# Entrypoint for all CI related workflows
+#
 name: CI
 
 on:
@@ -17,12 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       # Returns 'true' if workflow is skippable for one of the following reasons:
-      # - Exact same files have been successfully checked in older run
-      # - Only files that do not require checks have been changed (paths_ignore) and older commits were successful
+      # - Exact same files have been successfully checked in older workflow run
+      # - Only files that do not require checks (paths_ignore) have been changed and
+      #   workflow run on previous commit has been successful (backtracking)
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
       skipped_by: ${{ steps.skip_check.outputs.skipped_by }}
     steps:
-      - name: Check if workflow is skippable
+      - name: Check whether workflow is skippable
         id: skip_check
         uses: fkirc/skip-duplicate-actions@master
         # Run all the jobs if the pre-check should fail for any reason
@@ -30,7 +33,7 @@ jobs:
         # better solution pending at https://github.com/actions/toolkit/issues/399)
         continue-on-error: true
         with:
-          # Cancel outdated workflow-runs
+          # Cancel outdated workflow runs
           cancel_others: 'true'
           # Ignore changes in the following files
           paths_ignore: '["app/src/lang/translations/*.yaml"]'
@@ -56,8 +59,8 @@ jobs:
     with:
       should_skip: ${{ needs.pre_check.outputs.should_skip }}
 
-  # Run end-to-end tests only on push events to 'main' branch for now
-  # (not skippable by successful workflow run which wasn't triggered by 'push' event)
+  # For now, run end-to-end tests only on push events on 'main' branch
+  # (therefore not skippable by successful workflow run which hasn't been triggered by a 'push' event)
   e2e_tests:
     name: End-to-End Tests
     needs: pre_check
