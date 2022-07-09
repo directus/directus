@@ -16,7 +16,6 @@ export function applyOptionsData(
 
 				if (single !== null && single.length > 0) {
 					const foundValue = get(data, single[1]!);
-
 					if (foundValue !== undefined || !skipUndefinedKeys.includes(key)) {
 						return [key, foundValue];
 					} else {
@@ -30,12 +29,29 @@ export function applyOptionsData(
 	);
 }
 
+function evalInContext(script: string, context: Scope) {
+	return function (str: string) {
+		//TODO: just unwrap context keys to this function root scope.
+		let prefix = '';
+		// @ts-ignore
+		for (const k in this) {
+			prefix += `let ${k}=this['${k}'];`;
+		}
+		return eval(prefix + str);
+	}.call(context, script);
+}
+
 function resolveFn(skipUndefined: boolean): ResolveFn {
 	return (path: string, scope?: Scope) => {
 		if (!scope) return skipUndefined ? `{{${path}}}` : undefined;
-
-		const value = get(scope, path);
-
+		//const value = get(scope, path);
+		const single = path.match(/^Eval\((\s*(.*?)\s*)\)$/);
+		let value;
+		if (single !== null && single.length > 0) {
+			value = evalInContext(single[1] || '', scope);
+		} else {
+			value = get(scope, path);
+		}
 		if (value !== undefined || !skipUndefined) {
 			return typeof value === 'object' ? JSON.stringify(value) : value;
 		} else {
