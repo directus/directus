@@ -170,16 +170,17 @@
 		"memcached": "^2.2.2",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.4",
+		"oracledb": "5.3.0",
 		"pg": "^8.7.3",
 		"sqlite3": "^5.0.8",
-		"tedious": "^13.0.0",
-		"oracledb": "5.3.0"
+		"tedious": "^13.0.0"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@types/async": "3.2.13",
 		"@types/body-parser": "1.19.2",
 		"@types/busboy": "1.5.0",
+		"@types/bytes": "3.1.1",
 		"@types/cookie-parser": "1.4.3",
 		"@types/cors": "2.8.12",
 		"@types/deep-diff": "1.0.1",
