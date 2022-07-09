@@ -1,1 +1,2 @@
 - [ ] docker/pack script
+- [ ] remove peerDependencies from shared
