@@ -91,7 +91,7 @@ describe('getPackageExtensions', () => {
 });
 
 describe('getLocalExtensions', () => {
-	let rootLocalPackage: SynchrounousResult;
+	let rootLocalPackage: DirResult;
 
 	beforeEach(() => {
 		rootLocalPackage = dirSync({ unsafeCleanup: true, tmpdir: './' } as any);
