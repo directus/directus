@@ -82,8 +82,8 @@
 		"@directus/drive-azure": "workspace:*",
 		"@directus/drive-gcs": "workspace:*",
 		"@directus/drive-s3": "workspace:*",
-		"@directus/extensions-sdk": "workspace:*",
-		"@directus/format-title": "workspace:*",
+		"@directus/extensions-sdk": "^9.14.1",
+		"@directus/format-title": "^9.15.0",
 		"@directus/schema": "workspace:*",
 		"@directus/shared": "workspace:*",
 		"@directus/specs": "workspace:*",
@@ -173,7 +173,7 @@
 		"pg": "^8.7.3",
 		"sqlite3": "^5.0.8",
 		"tedious": "^13.0.0",
-    "oracledb": "5.3.0"
+		"oracledb": "5.3.0"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {

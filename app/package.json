@@ -31,8 +31,8 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@directus/docs": "^9.13.2",
-		"@directus/extensions-sdk": "workspace:*",
-		"@directus/format-title": "workspace:*",
+		"@directus/extensions-sdk": "^9.14.1",
+		"@directus/format-title": "^9.15.0",
 		"@directus/shared": "workspace:*",
 		"@fortawesome/fontawesome-svg-core": "1.2.36",
 		"@fortawesome/free-brands-svg-icons": "5.15.4",
