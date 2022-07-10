@@ -10,7 +10,7 @@ on:
     - cron: '42 23 * * 5'
 
 env:
-  NODE_OPTIONS: --max-old-space-size=16384
+  NODE_OPTIONS: --max_old_space_size=16384
 
 jobs:
   analyze:
