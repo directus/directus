@@ -14,6 +14,7 @@ importers:
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-vue: ^9.2.0
       jest: 27.5.1
+      jest-environment-node: ^28.1.2
       knex: ^2.1.0
       listr: ^0.14.3
       lodash: ^4.17.21
@@ -34,6 +35,7 @@ importers:
       eslint-plugin-prettier: 4.2.1_w5u7id6tju6ajwzbl3jaybwdxe
       eslint-plugin-vue: 9.2.0_eslint@8.19.0
       jest: 27.5.1
+      jest-environment-node: 28.1.2
       knex: 2.1.0
       listr: 0.14.3
       lodash: 4.17.21
