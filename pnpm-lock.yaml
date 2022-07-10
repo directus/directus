@@ -39,6 +39,7 @@ importers:
       '@directus/specs': workspace:*
       '@godaddy/terminus': ^4.10.2
       '@keyv/redis': ^2.3.6
+      '@otplib/preset-default': ^12.0.1
       '@rollup/plugin-alias': ^3.1.9
       '@rollup/plugin-virtual': ^2.1.0
       '@types/async': 3.2.13
@@ -51,6 +52,7 @@ importers:
       '@types/destroy': 1.0.0
       '@types/express': 4.17.13
       '@types/express-pino-logger': 4.0.3
+      '@types/express-serve-static-core': ^4.17.29
       '@types/express-session': 1.17.4
       '@types/fast-redact': ^3.0.1
       '@types/flat': 5.0.2
@@ -269,6 +271,7 @@ importers:
       sqlite3: 5.0.8
       tedious: 13.2.0
     devDependencies:
+      '@otplib/preset-default': 12.0.1
       '@types/async': 3.2.13
       '@types/body-parser': 1.19.2
       '@types/busboy': 1.5.0
@@ -279,6 +282,7 @@ importers:
       '@types/destroy': 1.0.0
       '@types/express': 4.17.13
       '@types/express-pino-logger': 4.0.3
+      '@types/express-serve-static-core': 4.17.29
       '@types/express-session': 1.17.4
       '@types/fast-redact': 3.0.1
       '@types/flat': 5.0.2
@@ -2809,20 +2813,17 @@ packages:
 
   /@otplib/core/12.0.1:
     resolution: {integrity: sha512-4sGntwbA/AC+SbPhbsziRiD+jNDdIzsZ3JUyfZwjtKyc/wufl1pnSIaG4Uqx8ymPagujub0o92kgBnB89cuAMA==}
-    dev: false
 
   /@otplib/plugin-crypto/12.0.1:
     resolution: {integrity: sha512-qPuhN3QrT7ZZLcLCyKOSNhuijUi9G5guMRVrxq63r9YNOxxQjPm59gVxLM+7xGnHnM6cimY57tuKsjK7y9LM1g==}
     dependencies:
       '@otplib/core': 12.0.1
-    dev: false
 
   /@otplib/plugin-thirty-two/12.0.1:
     resolution: {integrity: sha512-MtT+uqRso909UkbrrYpJ6XFjj9D+x2Py7KjTO9JDPhL0bJUYVu5kFP4TFZW4NFAywrAtFRxOVY261u0qwb93gA==}
     dependencies:
       '@otplib/core': 12.0.1
       thirty-two: 1.0.2
-    dev: false
 
   /@otplib/preset-default/12.0.1:
     resolution: {integrity: sha512-xf1v9oOJRyXfluBhMdpOkr+bsE+Irt+0D5uHtvg6x1eosfmHCsCC6ej/m7FXiWqdo0+ZUI6xSKDhJwc8yfiOPQ==}
@@ -2830,7 +2831,6 @@ packages:
       '@otplib/core': 12.0.1
       '@otplib/plugin-crypto': 12.0.1
       '@otplib/plugin-thirty-two': 12.0.1
-    dev: false
 
   /@otplib/preset-v11/12.0.1:
     resolution: {integrity: sha512-9hSetMI7ECqbFiKICrNa4w70deTUfArtwXykPUvSHWOdzOlfa9ajglu7mNCntlvxycTiOAXkQGwjQCzzDEMRMg==}
@@ -11439,7 +11439,6 @@ packages:
   /thirty-two/1.0.2:
     resolution: {integrity: sha512-OEI0IWCe+Dw46019YLl6V10Us5bi574EvlJEOcAkB29IzQ/mYD1A6RyNHLjZPiHCmuodxvgF6U+vZO1L15lxVA==}
     engines: {node: '>=0.2.6'}
-    dev: false
 
   /throat/6.0.1:
     resolution: {integrity: sha512-8hmiGIJMDlwjg7dlJ4yKGLK8EsYqKgPWbG3b4wjJddKNwc7N7Dpn08Df4szr/sZdMVeOstrdYSsqzX6BYbcB+w==}
