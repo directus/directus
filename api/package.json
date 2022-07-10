@@ -195,7 +195,7 @@
 		"@types/fs-extra": "9.0.13",
 		"@types/inquirer": "8.2.1",
 		"@types/ioredis": "^4.28.10",
-		"@types/jest": "28.1.4",
+		"@types/jest": "27.5.2",
 		"@types/js-yaml": "4.0.5",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.8",
@@ -222,9 +222,9 @@
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
 		"form-data": "^4.0.0",
-		"jest": "28.1.2",
+		"jest": "27.5.1",
 		"knex-mock-client": "1.8.4",
-		"ts-jest": "28.0.5",
+		"ts-jest": "27.1.4",
 		"ts-node-dev": "1.1.8",
 		"typescript": "4.7.3"
 	}
