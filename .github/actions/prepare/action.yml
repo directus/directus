@@ -41,4 +41,4 @@ runs:
 
     - name: Build
       shell: bash
-      run: pnpm -r build
+      run: pnpm -r --workspace-concurrency=1 build
