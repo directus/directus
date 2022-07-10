@@ -897,9 +897,11 @@ directus_collection:
   directus_dashboards: Painéis dentro do módulo Insights
   directus_fields: Configurações e metadados adicionais do campo
   directus_files: Metadados de todos os arquivos gerenciados
+  directus_flows: Fluxos de automação
   directus_folders: Fornece diretórios virtuais para arquivos
   directus_migrations: Qual versão do banco de dados você está utilizando
   directus_notifications: Notificações enviadas aos usuários
+  directus_operations: Operações executadas em fluxos
   directus_panels: Painéis individuais nos dashboards de Visões
   directus_permissions: Permissões de acesso para cada papel
   directus_presets: Predefinições para padrões de coleção e favoritos
@@ -908,6 +910,7 @@ directus_collection:
   directus_roles: Grupos de permissão para usuários do sistema
   directus_sessions: Informações da sessão do usuário
   directus_settings: Opções de configuração do projeto
+  directus_shares: Rastreia itens compartilhados externamente
   directus_users: Usuários do sistema para a plataforma
   directus_webhooks: Configuração para solicitações HTTP baseadas em eventos
 fields:
@@ -998,6 +1001,7 @@ fields:
     webP: WebP
     tiff: Tiff
     mapping: Mapeamento
+    basemaps: Basemaps
     basemaps_raster: Rasterizar
     basemaps_tile: Rasterizado TileJSON
     basemaps_style: Estilo Mapbox
@@ -1090,6 +1094,7 @@ field_options:
     transforms_note: O nome do método da biblioteca Sharp e seus argumentos. Veja https://sharp.pixelplumbing.com/api-constructor para mais informações.
     mapbox_key: Token de Acesso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
     basemaps_name_placeholder: Digite o nome do basemap...
     basemaps_raster: Rasterizar
     basemaps_tile: Rasterizado TileJSON
@@ -1139,6 +1144,7 @@ field_options:
       icon_name: Ícone
       name_name: Nome
       name_placeholder: Insira um título...
+      link_name: Link
       link_placeholder: URL relativa ou absoluta...
     collections_name: Coleções
     collections_addLabel: Adicionar Coleção...
@@ -1162,10 +1168,13 @@ field_options:
     actions_create: Criar
     actions_update: Alteração
     actions_delete: Excluir
+    actions_login: Entrar
     headers:
       header: Cabeçalho
       value: Valor
+      add: Adicionar cabeçalho
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
+no_value: Nenhum valor
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e salvar UUID
 save_current_user_id: Salvar ID de usuário atual
@@ -1177,6 +1186,8 @@ start_collapsed: Início Recolhido
 block: Bloco
 inline: Em linha
 comment: Comentário
+shares: Compartilhar
+unlimited_usage: Uso Ilimitado
 shared_uses_left: Para maior segurança, esta página compartilhada foi configurada com um número limitado de visualizações. Atualmente há {n} visualizações restantes, depois das quais a página não estará mais acessível.
 share_access_not_found: Esta página compartilhada não existe ou já excedeu o número máximo de usuários permitidos.
 share_access_not_found_desc: Entre em contato com um usuário autorizado deste projeto para solicitar acesso.
