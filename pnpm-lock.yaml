@@ -5,6 +5,7 @@ importers:
   .:
     specifiers:
       '@types/jest': 27.5.2
+      '@types/listr': ^0.14.4
       '@typescript-eslint/eslint-plugin': ^5.30.5
       '@typescript-eslint/parser': ^5.30.5
       axios: ^0.27.2
@@ -24,6 +25,7 @@ importers:
       uuid: ^8.3.2
     devDependencies:
       '@types/jest': 27.5.2
+      '@types/listr': 0.14.4
       '@typescript-eslint/eslint-plugin': 5.30.5_6zdoc3rn4mpiddqwhppni2mnnm
       '@typescript-eslint/parser': 5.30.5_4x5o4skxv6sl53vpwefgt23khm
       axios: 0.27.2
@@ -3591,6 +3593,13 @@ packages:
 
   /@types/linkify-it/3.0.2:
     resolution: {integrity: sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==}
+    dev: true
+
+  /@types/listr/0.14.4:
+    resolution: {integrity: sha512-+MWvidNujBUgJsi4yMVwEQQwaHe6oHedPSy+dwk3akGEeuIbvhWkK+TGsXSwbFup7Y0cCBb+wzzdD+yGKp7sOg==}
+    dependencies:
+      '@types/node': 16.11.9
+      rxjs: 6.6.7
     dev: true
 
   /@types/lodash/4.14.177:
