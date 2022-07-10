@@ -592,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
   INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
+  GRAPHQL_VALIDATION_EXCEPTION: Wyjątek sprawdzania poprawności grafiki
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
@@ -1737,6 +1738,11 @@ displays:
     relative: Względny
     relative_label: 'Pokaż czas względny, np. 5 minut temu'
     suffix: Przyrostek
+    suffix_label: Pokaż wskaźnik względny
+    suffix_note: Używa słów takich jak 'w' i 'temu'
+    strict: Ścisły
+    strict_label: Użyj ścisłych jednostek
+    strict_note: Usuwa słowa takie jak 'prawie', 'ponad', 'mniej niż'
   file:
     file: Plik
     description: Wyświetl pliki
@@ -1958,6 +1964,10 @@ panels:
     bottom: Dolny
     monochrome: Monochromatyczne
     monochrome_color: Kolor monochromatyczny
+  variable:
+    name: Zmienna globalna
+    description: Ustaw wartość globalną dla filtrów innych paneli
+    variable_key: Klucz zmienny
 triggers:
   common:
     response_body: Treść odpowiedzi
