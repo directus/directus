@@ -24,16 +24,16 @@ jobs:
         language:
           - javascript
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           config-file: ./.github/codeql/codeql-config.yml
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2

@@ -28,7 +28,7 @@
 		"cleanup:coverage": "rimraf ./coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"author": "Robin Grundvåg <robgru52@gmail.com>",
 	"contributors": [

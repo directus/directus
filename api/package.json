@@ -58,7 +58,7 @@
 	},
 	"scripts": {
 		"start": "npx directus start",
-		"prebuild": "npm run cleanup",
+		"prebuild": "pnpm cleanup",
 		"build": "tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
 		"cleanup": "rimraf dist",
 		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
@@ -195,7 +195,7 @@
 		"@types/fs-extra": "9.0.13",
 		"@types/inquirer": "8.2.1",
 		"@types/ioredis": "^4.28.10",
-		"@types/jest": "27.4.1",
+		"@types/jest": "28.1.4",
 		"@types/js-yaml": "4.0.5",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.8",
@@ -222,9 +222,9 @@
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
 		"form-data": "^4.0.0",
-		"jest": "27.5.1",
+		"jest": "28.1.2",
 		"knex-mock-client": "1.8.4",
-		"ts-jest": "27.1.3",
+		"ts-jest": "28.0.5",
 		"ts-node-dev": "1.1.8",
 		"typescript": "4.7.3"
 	}
