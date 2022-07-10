@@ -12,6 +12,9 @@ on:
     branches:
       - main
 
+env:
+  NODE_OPTIONS: --max_old_space_size=8192
+
 jobs:
   pre_check:
     name: Pre-Check
