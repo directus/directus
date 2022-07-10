@@ -42,3 +42,5 @@ runs:
     - name: Build
       shell: bash
       run: pnpm -r --workspace-concurrency=1 build
+      env:
+        NODE_OPTIONS: --max_old_space_size=6144
