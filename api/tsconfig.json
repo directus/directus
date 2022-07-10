@@ -11,8 +11,7 @@
 		"lib": ["es2019"],
 		"skipLibCheck": true,
 		"declaration": true,
-		"resolveJsonModule": true,
-		"preserveSymlinks": true
+		"resolveJsonModule": true
 	},
 	"exclude": ["node_modules", "dist", "extensions", "tests"]
 }
