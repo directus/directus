@@ -4,24 +4,30 @@ importers:
 
   .:
     specifiers:
+      '@types/jest': ^28.1.4
       '@typescript-eslint/eslint-plugin': ^5.30.5
       '@typescript-eslint/parser': ^5.30.5
       eslint: ^8.19.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-vue: ^9.2.0
+      jest: ^28.1.2
       npm-run-all: 4.1.5
       prettier: 2.4.1
+      ts-jest: ^28.0.5
       typescript: ^4.7.4
     devDependencies:
+      '@types/jest': 28.1.4
       '@typescript-eslint/eslint-plugin': 5.30.5_6zdoc3rn4mpiddqwhppni2mnnm
       '@typescript-eslint/parser': 5.30.5_4x5o4skxv6sl53vpwefgt23khm
       eslint: 8.19.0
       eslint-config-prettier: 8.5.0_eslint@8.19.0
       eslint-plugin-prettier: 4.2.1_w5u7id6tju6ajwzbl3jaybwdxe
       eslint-plugin-vue: 9.2.0_eslint@8.19.0
+      jest: 28.1.2
       npm-run-all: 4.1.5
       prettier: 2.4.1
+      ts-jest: 28.0.5_lt5llx2ti6zt4eclhanfli5ynu
       typescript: 4.7.4
 
   api:
@@ -12475,6 +12481,36 @@ packages:
       make-error: 1.3.6
       semver: 7.3.7
       typescript: 4.5.2
+      yargs-parser: 21.0.1
+    dev: true
+
+  /ts-jest/28.0.5_lt5llx2ti6zt4eclhanfli5ynu:
+    resolution: {integrity: sha512-Sx9FyP9pCY7pUzQpy4FgRZf2bhHY3za576HMKJFs+OnQ9jS96Du5vNsDKkyedQkik+sEabbKAnCliv9BEsHZgQ==}
+    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      babel-jest: ^28.0.0
+      esbuild: '*'
+      jest: ^28.0.0
+      typescript: '>=4.3'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 28.1.2
+      jest-util: 28.1.1
+      json5: 2.2.1
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.3.7
+      typescript: 4.7.4
       yargs-parser: 21.0.1
     dev: true
 
