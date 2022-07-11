@@ -90,6 +90,7 @@
 		"file-saver": "^2.0.5",
 		"flatpickr": "4.6.9",
 		"front-matter": "4.0.2",
+		"geojson": "^0.5.0",
 		"highlight.js": "^11.5.1",
 		"html-entities": "2.3.2",
 		"jest": "28.1.2",
