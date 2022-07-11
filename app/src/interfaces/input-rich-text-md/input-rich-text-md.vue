@@ -1,5 +1,5 @@
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view[0], { disabled }]">
 		<div class="toolbar">
 			<template v-if="view[0] !== 'preview'">
 				<v-menu
@@ -439,6 +439,11 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 }
 
+.interface-input-rich-text-md:not(.disabled):focus-within {
+	border-color: var(--primary);
+	box-shadow: 0 0 16px -8px var(--primary);
+}
+
 textarea {
 	display: none;
 }
@@ -642,6 +647,7 @@ textarea {
 	font-family: v-bind(editFamily), sans-serif;
 	border: none;
 	border-radius: 0;
+	box-shadow: none;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {
