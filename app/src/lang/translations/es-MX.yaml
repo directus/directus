@@ -179,73 +179,73 @@ field_permissions: Permisos de campo
 field_validation: Validación de campo
 field_presets: Preajustes de campo
 permissions_for_role: 'Elementos que el rol {role} puede {action}.'
-fields_for_role: 'Campos que el Rol {role} puede {action}.'
-validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
-presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
-presentation_and_aliases: Presentación y Alias
+fields_for_role: 'Campos que el rol {role} puede {action}.'
+validation_for_role: 'Reglas de campo al {action} que el rol {role} tiene que obedecer.'
+presets_for_role: 'Valores por defecto del campo para el rol {role}.'
+presentation_and_aliases: Presentación y alias
 revision_post_create: Este es el aspecto de este elemento cuando fue creado.
 revision_post_update: Así se vería el elemento después de la actualización.
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
 hide_field: Ocultar campo
-hide_field_on_detail: Ocultar campo en el Detalle
-show_field_on_detail: Mostrar campo en el Detalle
-delete_field: Eliminar Campo
-fields_and_layout: Campos y Diseño
-field_create_success: 'Campo Creado: "{field}"'
-field_update_success: 'Campo Actualizado: "{field}"'
+hide_field_on_detail: Ocultar campo en el detalle
+show_field_on_detail: Mostrar campo en el detalle
+delete_field: Eliminar campo
+fields_and_layout: Campos y diseño
+field_create_success: 'Campo creado: "{field}"'
+field_update_success: 'Campo actualizado: "{field}"'
 duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
 language: Idioma
 language_placeholder: Seleccione un idioma...
 aggregate_function: Función de agregado
 aggregate_precision: Precisión agregada
 group_aggregation: Agregación de grupo
-group_precision: Precisión del grupo
+group_precision: Precisión de grupo
 global: Global
-admins_have_all_permissions: Los Administradores tienen todos los permisos
+admins_have_all_permissions: Los administradores tienen todos los permisos
 camera: Cámara
 show_zero: Mostrar cero
 create_in_advanced_field_creation_mode: Crear campo en modo avanzado
-continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
+continue_in_advanced_field_creation_mode: Continuar en modo de creación de campos avanzado
 validation: Validación
 sum: Suma
-sum_distinct: Sumar Diferentes
-avg: Media
-avg_distinct: Media de elementos distintos
+sum_distinct: Sumar diferentes
+avg: Promedio
+avg_distinct: Promedio distinto
 count: Contar
-count_distinct: Recuento de elementos distintos
-min: Min
-max: Máx
+count_distinct: Recuento distinto
+min: Mínimo
+max: Máximo
 exposure: Exposición
 shutter: Obturación
 iso: ISO
-focal_length: Distancia Focal
-schema_setup_key: Nombre de columna de este campo de la base de datos y clave API
-create_field: Crear Campo
-creating_new_field: 'Nuevo Campo ({collection})'
+focal_length: Distancia focal
+schema_setup_key: El nombre de la columna de la base de datos y la clave API de este campo
+create_field: Crear campo
+creating_new_field: 'Nuevo campo ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Restablecer Preferencias de Página
-hidden_field: Campo Oculto
-hidden_on_detail: Oculto en el Detalle
-disabled_editing_value: Desactivar edición de valor
+reset_page_preferences: Restablecer preferencias de la página
+hidden_field: Campo oculto
+hidden_on_detail: Oculto en el detalle
+disabled_editing_value: Desactivar edición del valor
 key: Llave
 alias: Alias
-bigInteger: Número Entero (Grande)
+bigInteger: Entero grande
 boolean: Booleano
 date: Fecha
 date_range: Rango de fechas
-datetime: Fecha y Hora
-dateTime: Fecha y Hora
+datetime: Fecha y hora
+dateTime: Fecha y hora
 precision: Precisión
 decimal: Decimal
-float: Número Flotante
-integer: Número Entero
+float: Número flotante
+integer: Número entero
 json: JSON
 xml: XML
-string: Cadena de Texto
+string: Cadena de texto
 text: Texto
 time: Hora
-timestamp: Marca de Tiempo
+timestamp: Marca de tiempo
 uuid: UUID
 hash: Hash
 geometry: Geometría (Todo)
@@ -253,27 +253,27 @@ geometry.Point: Punto
 geometry.LineString: Linea
 geometry.Polygon: Polígono
 geometry.MultiPoint: Multipunto
-geometry.MultiLineString: MultiLinea
-geometry.MultiPolygon: MultiPolígono
-not_available_for_type: No disponible para este Tipo
-create_translations: Crear Traducciones
+geometry.MultiLineString: Multilinea
+geometry.MultiPolygon: Multipolígono
+not_available_for_type: No disponible para este tipo
+create_translations: Crear traducciones
 auto_refresh: Actualización automática
 refresh_interval: Intervalo de actualización
 no_refresh: No actualizar
-refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
-refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
+refresh_interval_seconds: Refrescar instantáneamente | Cada segundo | Cada {seconds} segundos
+refresh_interval_minutes: Cada minuto | Cada {minutes} minutos
 auto_generate: Auto-generar
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
-to_manually_setup_translations: configurar manualmente las traducciones.
+to_manually_setup_translations: para configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
-fields_group: Grupo de Campos
+fields_group: Grupo de campos
 no_collections_found: No se encontraron colecciones.
-new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
+new_data_alert: 'Se creará lo siguiente dentro de su modelo de datos:'
 search_collection: Buscar colección...
-new_field: 'Nuevo Campo'
-new_collection: 'Colección Nueva'
+new_field: 'Nuevo campo'
+new_collection: 'Nueva colección'
 add_m2o_to_collection: 'Añadir M2O a "{collection}"'
 add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
 add_m2m_to_collection: 'Añadir M2M a "{collection}"'
