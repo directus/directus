@@ -207,6 +207,7 @@ import { getPublicURL } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
 import { percentage } from '@/utils/percentage';
+import { useWindowSize } from '@/composables/use-window-size';
 
 export default defineComponent({
 	props: {
@@ -269,6 +270,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const { width } = useWindowSize();
+
 		const markdownInterface = ref<HTMLElement>();
 		const codemirrorEl = ref<HTMLTextAreaElement>();
 		let codemirror: CodeMirror.Editor | null = null;
@@ -279,12 +282,24 @@ export default defineComponent({
 
 		let count = ref(0);
 
+		const readOnly = computed(() => {
+			if (width.value < 600) {
+				// mobile requires 'nocursor' to avoid bringing up the keyboard
+				return props.disabled ? 'nocursor' : false;
+			} else {
+				// desktop cannot use 'nocursor' as it prevents copy/paste
+				return props.disabled;
+			}
+		});
+
 		onMounted(async () => {
 			if (codemirrorEl.value) {
 				codemirror = CodeMirror(codemirrorEl.value, {
 					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
 					lineWrapping: true,
+					readOnly: readOnly.value,
+					cursorBlinkRate: props.disabled ? -1 : 530,
 					placeholder: props.placeholder,
 					value: props.value || '',
 				});
@@ -325,6 +340,15 @@ export default defineComponent({
 					codemirror.refresh();
 				}
 			}
+		);
+
+		watch(
+			() => props.disabled,
+			(disabled) => {
+				codemirror?.setOption('readOnly', readOnly.value);
+				codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
+			},
+			{ immediate: true }
 		);
 
 		const editFamily = computed(() => {
