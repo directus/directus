@@ -39,6 +39,9 @@
 	"devDependencies": {
 		"@types/jest": "27.5.2",
 		"@types/listr": "^0.14.4",
+		"@types/lodash": "^4.14.182",
+		"@types/supertest": "2.0.12",
+		"@types/uuid": "8.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.30.5",
 		"@typescript-eslint/parser": "^5.30.5",
 		"axios": "^0.27.2",
@@ -46,7 +49,7 @@
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-vue": "^9.2.0",
-		"jest": "27.5.1",
+		"jest": "28.1.2",
 		"jest-environment-node": "^28.1.2",
 		"knex": "^2.1.0",
 		"listr": "^0.14.3",
@@ -54,7 +57,7 @@
 		"npm-run-all": "4.1.5",
 		"prettier": "2.4.1",
 		"supertest": "^6.2.3",
-		"ts-jest": "27.1.4",
+		"ts-jest": "28.0.5",
 		"typescript": "^4.7.4",
 		"uuid": "^8.3.2"
 	}
