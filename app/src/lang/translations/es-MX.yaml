@@ -42,11 +42,11 @@ switch_user: Cambiar de usuario
 item_creation: Creación de elementos
 item_revision: Revisión de elementos
 enter_a_name: Escribe un nombre...
-duplicate_field: Duplicar Campo
+duplicate_field: Duplicar campo
 half_width: Anchura 50%
-full_width: Ancho Completo
+full_width: Ancho completo
 group: Grupo
-export_items: Exportar Elementos
+export_items: Exportar elementos
 and: "Y"
 or: O
 init: Inicializador
@@ -54,86 +54,86 @@ dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado g
 modifier: Modificador
 custom: Personalizado
 hook: Gancho
-fill_width: Ancho Completo
-field_name_translations: Traducciones del Campo de Nombre
-enter_password_to_enable_tfa: Introduzca su contraseña para activar la Autenticación de Dos Factores
-add_field: Agregar Campo
-role_name: Nombre del Rol
+fill_width: Ancho completo
+field_name_translations: Traducciones del campo de nombre
+enter_password_to_enable_tfa: Introduzca su contraseña para activar la autenticación de dos factores
+add_field: Agregar campo
+role_name: Nombre del rol
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
-edit_collection: Editar Colección
+edit_collection: Editar colección
 exclusive: Exclusivo
 children: Subsecciones
 db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
-show_active_items: Mostrar Elementos Activos
-show_archived_items: Mostrar Elementos Archivados
-show_all_items: Mostrar Todos los Elementos
-edited: Valor Editado
+show_active_items: Mostrar elementos activos
+show_archived_items: Mostrar alementos archivados
+show_all_items: Mostrar todos los elementos
+edited: Valor editado
 required: Requerido
-required_for_app_access: Necesario para el Acceso a la Aplicación
-requires_value: Requiere un Valor
-create_preset: Crear Predefinido
-create_panel: Crear Panel
-create_role: Crear Rol
-create_user: Crear Usuario
+required_for_app_access: Necesario para el acceso a la aplicación
+requires_value: Requiere un valor
+create_preset: Crear predefinido
+create_panel: Crear panel
+create_role: Crear rol
+create_user: Crear usuario
 message: Mensaje
-delete_panel: Eliminar Panel
-create_webhook: Crear Webhook
-create_translation_string: Crear Cadena de Traducción
-no_translation_string: Sin Cadenas de Traducción
+delete_panel: Eliminar panel
+create_webhook: Crear webhook
+create_translation_string: Crear cadena de traducción
+no_translation_string: Sin cadenas de traducción
 no_translation_string_copy: Todavía no hay cadenas de traducción.
 translation_string_key_placeholder: Clave de la cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar Cadena de Traducción
+edit_translation_string: Editar cadena de traducción
 delete_translation_string_copy: >-
   ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
-invite_users: Invitar Usuarios
+invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
 subject: Asunto
 inbox: Buzón
 emails: Correos
-connection_excellent: Excelente Conexión
-connection_good: Buena Conexión
-connection_fair: Conexión Justa
-connection_poor: Conexión Pobre
+connection_excellent: Conexión excelente
+connection_good: Conexión buena
+connection_fair: Conexión justa
+connection_poor: Conexión pobre
 primary: Principal
-rename_folder: Renombrar Carpeta
-delete_folder: Eliminar Carpeta
+rename_folder: Renombrar carpeta
+delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
-reset_bookmark: Restablecer Marcador
-update_bookmark: Actualizar Marcador
-delete_bookmark: Eliminar Marcador
+reset_bookmark: Restablecer marcador
+update_bookmark: Actualizar marcador
+delete_bookmark: Eliminar marcador
 delete_bookmark_copy: >-
   ¿Estás seguro de que quieres eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
-delete_personal_bookmark: Borrar el Marcador Personal
-delete_role_bookmark: Borrar el Marcador de Función
-delete_global_bookmark: Eliminar Marcador Global
+delete_personal_bookmark: Borrar el marcador personal
+delete_role_bookmark: Borrar el marcador de rol
+delete_global_bookmark: Eliminar marcador global
 logoutReason:
   SIGN_OUT: Sesión cerrada
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
 admin_description: Rol administrativo inicial con acceso ilimitado a la App/API.
-not_allowed: No Permitido
+not_allowed: No permitido
 directus_version: Versión de Directus
 node_version: Versión de Node
-node_uptime: Tiempo de Actividad de Node
+node_uptime: Tiempo de actividad de Node
 os_type: Tipo de SO
-os_version: Versión de SO
-os_uptime: Tiempo de Actividad del SO
+os_version: Versión del SO
+os_uptime: Tiempo de actividad del SO
 os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Está seguro que desea archivar este elemento?'
 archive_confirm_count: >-
-  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
-reset_system_permissions_to: 'Restablecer los Permisos del Sistema a:'
+  Sin elementos seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
+reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
 the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
-app_access_minimum: Acceso Mínimo a la Aplicación
-recommended_defaults: Valores Predeterminados Recomendados
+app_access_minimum: Acceso mínimo a la aplicación
+recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Está seguro de que quiere desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y carpetas anidados se moverán un nivel hacia arriba.
@@ -156,29 +156,29 @@ validationError:
   required: El valor es requerido
   unique: El Valor tiene que ser único
   regex: El valor no tiene el formato correcto
-all_access: Todos los Accesos
-no_access: Sin Acceso
+all_access: Todos los accesos
+no_access: Sin acceso
 use_custom: Personalizar
 nullable: Anulable
 allow_null_value: Permitir valor NULL
-allow_multiple: Permitir Múltiples
-allow_multiple_to_be_open: Permitir la Apertura de Múltiples
+allow_multiple: Permitir múltiple
+allow_multiple_to_be_open: Permitir la apertura múltiple
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
-field_presentation: Presentación y Alias
-field_file: Un Archivo
-field_files: Múltiples Archivos
+field_presentation: Presentación y alias
+field_file: Un archivo
+field_files: Múltiples archivos
 field_m2o: Relación M2O
 field_m2a: Relación M2A
 field_o2m: Relación O2M
 field_m2m: Relación M2M
 field_translations: Traducciones
-field_group: Grupo de Campos
-item_permissions: Permisos de Items
-field_permissions: Permisos de Campo
+field_group: Grupo de campos
+item_permissions: Permisos de elementos
+field_permissions: Permisos de campo
 field_validation: Validación de campo
 field_presets: Preajustes de campo
-permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
+permissions_for_role: 'Elementos que el rol {role} puede {action}.'
 fields_for_role: 'Campos que el Rol {role} puede {action}.'
 validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
 presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
@@ -1100,10 +1100,10 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: Traducciones del Campo de Nombre
+    translation: Traducciones del campo de nombre
     display_template: Plantilla
   directus_roles:
-    name: Nombre del Rol
+    name: Nombre del rol
     icon: Ícono del Rol
     description: Descripción
     app_access: Acceso a App
