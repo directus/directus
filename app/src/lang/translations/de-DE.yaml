@@ -1920,6 +1920,7 @@ panels:
     name: Kuchen oder Donut Diagramm
     function: 'Funktion'
     legend: Legende anzeigen
+    right: Rechts
 triggers:
   webhook:
     method: Methode
