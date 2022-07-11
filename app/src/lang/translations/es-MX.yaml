@@ -28,20 +28,20 @@ published: Publicado
 draft: Borrador
 archived: Archivado
 modules: Módulos
-module_bar: Barra de Módulos
+module_bar: Barra de módulos
 logs: Registros
-reset_width: Restablecer Ancho
-tile_size: Tamaño del Mosaico
-edit_field: Editar Campo
+reset_width: Restablecer ancho
+tile_size: Tamaño del mosaico
+edit_field: Editar campo
 conditions: Condiciones
 location: Ubicación
-condition_rules: Reglas Condicionales
+condition_rules: Reglas condicionales
 input: Entrada
 maps: Mapas
-switch_user: Cambiar de Usuario
-item_creation: Creación de Elementos
-item_revision: Revisión de Elementos
-enter_a_name: Escribe un Nombre...
+switch_user: Cambiar de usuario
+item_creation: Creación de elementos
+item_revision: Revisión de elementos
+enter_a_name: Escribe un nombre...
 duplicate_field: Duplicar Campo
 half_width: Anchura 50%
 full_width: Ancho Completo
@@ -174,7 +174,7 @@ field_o2m: Relación O2M
 field_m2m: Relación M2M
 field_translations: Traducciones
 field_group: Grupo de Campos
-item_permissions: Permisos de items
+item_permissions: Permisos de Items
 field_permissions: Permisos de Campo
 field_validation: Validación de campo
 field_presets: Preajustes de campo
@@ -337,6 +337,7 @@ revision_delta_created_externally: Creado Externamente
 revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
@@ -465,6 +466,7 @@ created_on: Creado El
 creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
 creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
 auto_increment_integer: Número Entero Auto-Incrementado
+auto_increment_big_integer: Número Entero Auto-Incrementado
 generated_uuid: UUID Generado
 manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
@@ -485,7 +487,9 @@ disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
 request_feature: Solicitar Características
+request_body: Cuerpo de la Solicitud
 interface_not_found: 'Interfaz "{interface}" no encontrada.'
+operation_not_found: 'Operación "{operation}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
@@ -571,7 +575,9 @@ errors:
   INVALID_CREDENTIALS: Usuario o contraseña incorrecta
   INVALID_OTP: Contraseña Temporal Incorrecta
   INVALID_PAYLOAD: Payload Inválido
+  INVALID_PROVIDER: El usuario pertenece a un proveedor de autenticación diferente
   INVALID_QUERY: Consulta Inválida
+  INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Límite de elementos alcanzado
   ITEM_NOT_FOUND: Elemento no encontrado
   ROUTE_NOT_FOUND: No encontrado
@@ -586,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
+  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
 security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
@@ -603,6 +610,7 @@ unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo má
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
+password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
@@ -1074,7 +1082,7 @@ fields:
     storage_asset_transform: Transformaciones permitidas
     overrides: Reemplazos de la aplicación
     custom_css: CSS Personalizado
-    module_bar: Barra de Módulos
+    module_bar: Barra de módulos
     transformations_all: Permitir todas las transformaciones
     transformations_none: Desactivar transformaciones
     transformations_presets: Limitar las transformaciones a los ajustes de abajo
