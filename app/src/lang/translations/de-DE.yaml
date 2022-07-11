@@ -809,7 +809,9 @@ no_dashboards_copy: Sie haben noch keine Dashboards.
 create_dashboard: Dashboard erstellen
 dashboard_name: Name des Dashboards
 no_data: Keine Daten
+no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
+payload: Auslastung
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -1919,28 +1921,72 @@ panels:
   piechart:
     name: Kuchen oder Donut Diagramm
     function: 'Funktion'
+    donut: Donut
     legend: Legende anzeigen
     right: Rechts
+    bottom: Unten
+    monochrome: Monochrom
 triggers:
   webhook:
+    name: Webhook
     method: Methode
+    async: Asynchron
   schedule:
     name: Zeitplan (CRON)
     cron: Intervall
   manual:
     name: Manuell
     collection_and_item: Sammlungen & Element Seiten
+any_string_or_json: Ein String oder JSON...
 operations:
+  condition:
+    name: Kondition
+  item-create:
+    name: Daten erstellen
+    description: Elemente in der Datenbank erstellen
+    payload: Auslastung
+  item-delete:
+    name: Daten löschen
+    description: Elemente aus der Datenbank löschen
+    key: IDs
+    query: Abfrage
+  item-read:
+    name: Daten lesen
+    description: Elemente aus der Datenbank lesen
+    key: IDs
+    query: Abfrage
+  item-update:
+    name: Daten aktualisieren
+    description: Elemente in der Datenbank aktualisieren
+    key: IDs
+    payload: Auslastung
+    query: Abfrage
   log:
+    description: Etwas in die Konsole ausgeben
     message: Nachricht
+    message_placeholder: Geben Sie eine Nachricht ein, die in der Konsole angezeigt werden soll...
+  mail:
+    name: Email senden
+    description: Sende eine E-Mail an eine oder mehrere Personen
+    to: An
+    to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
+    body: Inhalt
   notification:
+    name: Benachrichtigung senden
+    description: In-app Benachrichtigung an Benutzer senden
     recipient: Benutzer
     message: Nachricht
   request:
+    name: Webhook / Anfrage URL
+    description: "Eine Anfrage an eine URL senden"
     url: URL
+    url_placeholder: https://example.com/example
     method: Methode
     data: Daten
     header: Header
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    milliseconds: Millisekunden
   trigger:
     flows: Flows
     flow: Flow
