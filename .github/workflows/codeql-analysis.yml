@@ -37,6 +37,7 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           config-file: ./.github/codeql/codeql-config.yml
+          debug: true
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
