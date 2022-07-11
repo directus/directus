@@ -9,7 +9,7 @@
 					:class="[{ active: view[0] !== 'preview' }]"
 				>
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
+						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="format_size" />
 						</v-button>
 					</template>
@@ -24,6 +24,7 @@
 				<v-button
 					v-if="toolbar.includes('bold')"
 					v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('bold')"
@@ -33,6 +34,7 @@
 				<v-button
 					v-if="toolbar.includes('italic')"
 					v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('italic')"
@@ -42,6 +44,7 @@
 				<v-button
 					v-if="toolbar.includes('strikethrough')"
 					v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('strikethrough')"
@@ -51,6 +54,7 @@
 				<v-button
 					v-if="toolbar.includes('bullist')"
 					v-tooltip="t('wysiwyg_options.bullist')"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('listBulleted')"
@@ -60,6 +64,7 @@
 				<v-button
 					v-if="toolbar.includes('numlist')"
 					v-tooltip="t('wysiwyg_options.numlist')"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('listNumbered')"
@@ -69,6 +74,7 @@
 				<v-button
 					v-if="toolbar.includes('blockquote')"
 					v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('blockquote')"
@@ -78,6 +84,7 @@
 				<v-button
 					v-if="toolbar.includes('code')"
 					v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('code')"
@@ -87,6 +94,7 @@
 				<v-button
 					v-if="toolbar.includes('link')"
 					v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('link')"
@@ -96,7 +104,7 @@
 
 				<v-menu v-if="toolbar.includes('table')" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
+						<v-button v-tooltip="t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="table_chart" />
 						</v-button>
 					</template>
@@ -131,6 +139,7 @@
 				<v-button
 					v-if="toolbar.includes('image')"
 					v-tooltip="t('wysiwyg_options.image')"
+					:disabled="disabled"
 					small
 					icon
 					@click="imageDialogOpen = true"
@@ -142,6 +151,7 @@
 					v-for="custom in customSyntax"
 					:key="custom.name"
 					v-tooltip="custom.name"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('custom', custom)"
@@ -439,6 +449,10 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 }
 
+.interface-input-rich-text-md.disabled {
+	background-color: var(--background-subdued);
+}
+
 .interface-input-rich-text-md:not(.disabled):focus-within {
 	border-color: var(--primary);
 	box-shadow: 0 0 16px -8px var(--primary);
@@ -641,6 +655,10 @@ textarea {
 	margin-top: 0.25rem;
 	color: #999;
 	text-align: center;
+}
+
+.interface-input-rich-text-md.disabled .preview-box {
+	color: var(--foreground-subdued);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror) {
