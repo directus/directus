@@ -144,7 +144,7 @@ export const userSchema = {
 			primary: 'id',
 			singleton: false,
 			note: 'authors',
-			sortField: null,
+			sortField: 'id',
 			accountability: null,
 			fields: {
 				id: {
@@ -267,7 +267,7 @@ export const userSchema = {
 				one_collection_field: null,
 				one_allowed_collections: null,
 				junction_field: null,
-				sort_field: null,
+				sort_field: 'id',
 				one_deselect_action: 'nullify',
 			},
 		},
