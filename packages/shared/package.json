@@ -39,7 +39,7 @@
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "pnpm build -w --preserveWatchOutput --incremental",
+		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
 		"test": "jest",
 		"test:watch": "jest --watchAll",
 		"prepublishOnly": "pnpm cleanup && pnpm build"
