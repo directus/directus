@@ -1768,6 +1768,11 @@ displays:
     strict: Strict
     strict_label: Use strict units
     strict_note: Removes words like 'almost', 'over', 'less than'
+    round: Round
+    round_note: Choose a rounding function to use
+    down: Down
+    nearest: Nearest
+    up: Up
   file:
     file: File
     description: Display files
