@@ -38,7 +38,7 @@ export function getConfigFromEnv(
 
 	function transform(key: string): string {
 		if (type === 'camelcase') {
-			return camelcase(key);
+			return camelcase(key, { locale: false });
 		} else if (type === 'underscore') {
 			return key.toLowerCase();
 		}
