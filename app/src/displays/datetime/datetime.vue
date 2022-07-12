@@ -50,6 +50,7 @@ const relativeFormat = (value: Date) => {
 	const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance;
 	return fn(value, new Date(), {
 		addSuffix: props.suffix,
+		roundingMethod: props.strict ? 'floor' : 'round',
 	});
 };
 
