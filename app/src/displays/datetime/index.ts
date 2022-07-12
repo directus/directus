@@ -123,6 +123,26 @@ export default defineDisplay({
 					schema: {
 						default_value: false,
 					},
+				},
+				{
+					field: 'round',
+					name: '$t:displays.datetime.round',
+					type: 'string',
+					meta: {
+						width: 'half',
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{ text: '$t:displays.datetime.down', value: 'floor' },
+								{ text: '$t:displays.datetime.nearest', value: 'round' },
+								{ text: '$t:displays.datetime.up', value: 'ceil' },
+							],
+						},
+						note: '$t:displays.datetime.round_note',
+					},
+					schema: {
+						default_value: 'round',
+					},
 				}
 			);
 		}
