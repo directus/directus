@@ -4,7 +4,7 @@
 			v-for="accordionField in groupFields"
 			:key="accordionField.field"
 			:field="accordionField"
-			:fields="groupFields"
+			:fields="fields"
 			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
