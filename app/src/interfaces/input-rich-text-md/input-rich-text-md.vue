@@ -1,5 +1,5 @@
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view[0], { disabled }]">
 		<div class="toolbar">
 			<template v-if="view[0] !== 'preview'">
 				<v-menu
@@ -9,7 +9,7 @@
 					:class="[{ active: view[0] !== 'preview' }]"
 				>
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
+						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="format_size" />
 						</v-button>
 					</template>
@@ -24,6 +24,7 @@
 				<v-button
 					v-if="toolbar.includes('bold')"
 					v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('bold')"
@@ -33,6 +34,7 @@
 				<v-button
 					v-if="toolbar.includes('italic')"
 					v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('italic')"
@@ -42,6 +44,7 @@
 				<v-button
 					v-if="toolbar.includes('strikethrough')"
 					v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('strikethrough')"
@@ -51,6 +54,7 @@
 				<v-button
 					v-if="toolbar.includes('bullist')"
 					v-tooltip="t('wysiwyg_options.bullist')"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('listBulleted')"
@@ -60,6 +64,7 @@
 				<v-button
 					v-if="toolbar.includes('numlist')"
 					v-tooltip="t('wysiwyg_options.numlist')"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('listNumbered')"
@@ -69,6 +74,7 @@
 				<v-button
 					v-if="toolbar.includes('blockquote')"
 					v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('blockquote')"
@@ -78,6 +84,7 @@
 				<v-button
 					v-if="toolbar.includes('code')"
 					v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('code')"
@@ -87,6 +94,7 @@
 				<v-button
 					v-if="toolbar.includes('link')"
 					v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('link')"
@@ -96,7 +104,7 @@
 
 				<v-menu v-if="toolbar.includes('table')" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
+						<v-button v-tooltip="t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="table_chart" />
 						</v-button>
 					</template>
@@ -131,6 +139,7 @@
 				<v-button
 					v-if="toolbar.includes('image')"
 					v-tooltip="t('wysiwyg_options.image')"
+					:disabled="disabled"
 					small
 					icon
 					@click="imageDialogOpen = true"
@@ -142,6 +151,7 @@
 					v-for="custom in customSyntax"
 					:key="custom.name"
 					v-tooltip="custom.name"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('custom', custom)"
@@ -207,6 +217,7 @@ import { getPublicURL } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
 import { percentage } from '@/utils/percentage';
+import { useWindowSize } from '@/composables/use-window-size';
 
 export default defineComponent({
 	props: {
@@ -269,6 +280,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const { width } = useWindowSize();
+
 		const markdownInterface = ref<HTMLElement>();
 		const codemirrorEl = ref<HTMLTextAreaElement>();
 		let codemirror: CodeMirror.Editor | null = null;
@@ -279,12 +292,24 @@ export default defineComponent({
 
 		let count = ref(0);
 
+		const readOnly = computed(() => {
+			if (width.value < 600) {
+				// mobile requires 'nocursor' to avoid bringing up the keyboard
+				return props.disabled ? 'nocursor' : false;
+			} else {
+				// desktop cannot use 'nocursor' as it prevents copy/paste
+				return props.disabled;
+			}
+		});
+
 		onMounted(async () => {
 			if (codemirrorEl.value) {
 				codemirror = CodeMirror(codemirrorEl.value, {
 					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
 					lineWrapping: true,
+					readOnly: readOnly.value,
+					cursorBlinkRate: props.disabled ? -1 : 530,
 					placeholder: props.placeholder,
 					value: props.value || '',
 				});
@@ -325,6 +350,15 @@ export default defineComponent({
 					codemirror.refresh();
 				}
 			}
+		);
+
+		watch(
+			() => props.disabled,
+			(disabled) => {
+				codemirror?.setOption('readOnly', readOnly.value);
+				codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
+			},
+			{ immediate: true }
 		);
 
 		const editFamily = computed(() => {
@@ -413,6 +447,15 @@ export default defineComponent({
 	font-family: var(--family-sans-serif);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
+}
+
+.interface-input-rich-text-md.disabled {
+	background-color: var(--background-subdued);
+}
+
+.interface-input-rich-text-md:not(.disabled):focus-within {
+	border-color: var(--primary);
+	box-shadow: 0 0 16px -8px var(--primary);
 }
 
 textarea {
@@ -614,10 +657,15 @@ textarea {
 	text-align: center;
 }
 
+.interface-input-rich-text-md.disabled .preview-box {
+	color: var(--foreground-subdued);
+}
+
 .interface-input-rich-text-md :deep(.CodeMirror) {
 	font-family: v-bind(editFamily), sans-serif;
 	border: none;
 	border-radius: 0;
+	box-shadow: none;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {

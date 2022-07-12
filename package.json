@@ -4,7 +4,6 @@
 	"workspaces": [
 		"./app",
 		"./api",
-		"./docs",
 		"./packages/*"
 	],
 	"scripts": {
