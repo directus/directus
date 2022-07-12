@@ -35,6 +35,7 @@ tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
+condition_rules: Regla de condición
 input: Entrada
 maps: Mapas
 switch_user: Cambiar usuario
@@ -48,6 +49,11 @@ group: Grupo
 export_items: Exportar Elementos
 and: "Y"
 or: O
+init: Inicializador
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente muestra los primeros {n} elementos.
+modifier: Modificador
+custom: Personalizado
+hook: Hook
 fill_width: Llenar ancho
 field_name_translations: Traducciónes del nombre de campo
 enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar el doble factor de autenticación
@@ -71,9 +77,12 @@ create_preset: Crear ajuste
 create_panel: Crear Panel
 create_role: Crear rol
 create_user: Crear Usuario
+message: Mensaje
 delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
 create_translation_string: Crear Traducciones
+no_translation_string: No hay cadenas de traducción
+no_translation_string_copy: Todavía no hay cadenas de traducción.
 translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Agregar una nueva traducción
 edit_translation_string: Editar Texto de Traducción
@@ -328,6 +337,7 @@ revision_delta_created_externally: Creado externamente
 revision_delta_updated: '1 Campo Actualizado |{count} Campos Actualizados'
 revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
@@ -456,6 +466,7 @@ created_on: Creado el
 creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
 creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
 auto_increment_integer: Número Entero Auto-Incrementado
+auto_increment_big_integer: Número Entero Auto-Incrementado
 generated_uuid: UUID Generado
 manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
@@ -476,7 +487,9 @@ disabled: Deshabilitado
 information: Información
 report_bug: Reportar Error
 request_feature: Solicitar Características
+request_body: Cuerpo de la Solicitud
 interface_not_found: 'Interfaz "{interface}" no encontrada.'
+operation_not_found: 'Operación "{operation}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
@@ -562,7 +575,9 @@ errors:
   INVALID_CREDENTIALS: Usuario o clave incorrectos
   INVALID_OTP: Clave incorrecta
   INVALID_PAYLOAD: Carga inválida
+  INVALID_PROVIDER: El usuario pertenece a un proveedor de autenticación diferente
   INVALID_QUERY: Consulta inválida
+  INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Limite de items alcanzado
   ITEM_NOT_FOUND: Ítem no encontrado
   ROUTE_NOT_FOUND: No encontrado
@@ -577,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error inesperado
+  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
 security: Seguridad
 value_hashed: Valor codificado con seguridad
 bookmark_name: Nombre de marcador...
@@ -594,6 +610,7 @@ unexpected_error_copy: Ocurrió un error inesperado. Por favor, intente nuevamen
 copy_details: Copiar Detalles
 no_app_access: Sin acceso a la aplicación
 no_app_access_copy: Este usuario no tiene permiso para usar la aplicación de administración.
+password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Restablecimiento de contraseña con éxito
 back: Regresar
 filter: Filtro
@@ -1857,8 +1874,11 @@ triggers:
   webhook:
     method: Método
 operations:
+  log:
+    message: Mensaje
   notification:
     recipient: Usuario
+    message: Mensaje
   request:
     url: URL
     method: Método
