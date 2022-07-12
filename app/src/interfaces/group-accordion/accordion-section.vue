@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { merge } from 'lodash';
+import { merge, isNil } from 'lodash';
 import { Field } from '@directus/shared/types';
 import { ValidationError } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';

@@ -27,7 +27,7 @@ import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
-import { isEqual, isNil } from 'lodash';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupAccordion',
@@ -118,7 +118,6 @@ export default defineComponent({
 			}
 		);
 
-		// console.log(groupFields);
 		return { groupFields, groupValues, selection, toggleAll };
 
 		function toggleAll() {
@@ -138,7 +137,7 @@ export default defineComponent({
 			watch(
 				() => props.fields,
 				() => {
-					const newVal = limitFields(); //getFieldsForGroup(props.field.meta!.field);
+					const newVal = limitFields();
 					if (!isEqual(groupFields.value, newVal)) {
 						groupFields.value = newVal;
 					}
@@ -157,20 +156,6 @@ export default defineComponent({
 
 			function limitFields(): Field[] {
 				return props.fields.filter((field) => field.meta?.group === props.field.meta?.field);
-				// return recursiveFind(props.field.meta?.field);
-
-				// function recursiveFind(group: string | undefined) {
-				// 	if (typeof group === 'string') {
-				// 		let result = props.fields.filter((field) => field.meta?.group === group);
-				// 		for (const field of result) {
-				// 			if (field.meta?.special?.includes('group')) {
-				// 				result.push(...recursiveFind(field.meta?.field));
-				// 			}
-				// 		}
-				// 		return result;
-				// 	}
-				// 	return [];
-				// }
 			}
 		}
 	},
