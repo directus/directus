@@ -87,6 +87,7 @@
 		"file-saver": "^2.0.5",
 		"flatpickr": "4.6.9",
 		"front-matter": "4.0.2",
+		"highlight.js": "^11.5.1",
 		"html-entities": "2.3.2",
 		"jest": "27.4.7",
 		"json-to-graphql-query": "^2.2.4",
