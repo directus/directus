@@ -464,6 +464,24 @@ export default defineComponent({
 				});
 				setCount();
 			});
+
+			editor.on('OpenWindow', function (e: any) {
+				if (e.dialog?.getData) {
+					const data = e.dialog?.getData();
+
+					if (data) {
+						if (data.url) {
+							e.dialog.close();
+							editor.ui.registry.getAll().buttons.customlink.onAction();
+						}
+
+						if (data.src) {
+							e.dialog.close();
+							editor.ui.registry.getAll().buttons.customimage.onAction(true);
+						}
+					}
+				}
+			});
 		}
 
 		function setFocus(val: boolean) {
