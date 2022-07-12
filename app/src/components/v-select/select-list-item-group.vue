@@ -2,7 +2,6 @@
 	<v-list-group
 		:active="isActive"
 		:clickable="groupSelectable || item.selectable"
-		:open="item.children?.length === 1"
 		:value="item.value"
 		@click="onGroupClick(item)"
 	>

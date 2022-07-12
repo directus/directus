@@ -31,7 +31,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		};
 	}
 
-	const busboy = Busboy({ headers });
+	const busboy = Busboy({ headers, defParamCharset: 'utf8' });
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 

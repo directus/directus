@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
 	logoutReason: null,
 });
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 
 const appStore = useAppStore();
 const driver = ref('local');
