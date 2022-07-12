@@ -23,15 +23,17 @@ export function queryToGqlString(queries: QueryInfo | QueryInfo[]): string | nul
 export function formatQuery({ collection, query }: QueryInfo): Record<string, any> {
 	const queryKeysInArguments: (keyof Query)[] = ['limit', 'sort', 'filter', 'offset', 'page', 'search'];
 
+	const alias = collection.startsWith('directus_') ? collection.substring(9) : collection;
+
 	const formattedQuery: Record<string, any> = {
 		__args: omitBy(pick(query, ...queryKeysInArguments), isUndefined),
-		__aliasFor: collection,
+		__aliasFor: alias,
 	};
 
 	const fields = query.fields ?? [useFieldsStore().getPrimaryKeyFieldForCollection(collection)!.field];
 
 	if (query?.aggregate && !isEmpty(query.aggregate)) {
-		formattedQuery.__aliasFor = collection + '_aggregated';
+		formattedQuery.__aliasFor = alias + '_aggregated';
 
 		for (const [aggregateFunc, fields] of Object.entries(query.aggregate)) {
 			if (!formattedQuery[aggregateFunc]) {

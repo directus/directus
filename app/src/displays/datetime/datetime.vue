@@ -16,6 +16,7 @@ interface Props {
 	format?: string;
 	relative?: boolean;
 	strict?: boolean;
+	round?: string;
 	suffix?: boolean;
 }
 
@@ -23,6 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
 	format: 'long',
 	relative: false,
 	strict: false,
+	round: 'round',
 	suffix: true,
 });
 
@@ -50,6 +52,7 @@ const relativeFormat = (value: Date) => {
 	const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance;
 	return fn(value, new Date(), {
 		addSuffix: props.suffix,
+		roundingMethod: props.round,
 	});
 };
 
