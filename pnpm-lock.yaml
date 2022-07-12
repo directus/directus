@@ -446,6 +446,7 @@ importers:
       sass: 1.43.4
       tinymce: 5.10.2
       ts-jest: 28.0.5
+      tslib: ^2.4.0
       typescript: 4.7.3
       vite: 2.9.9
       vite-plugin-vue-markdown: 0.1.1
@@ -546,6 +547,7 @@ importers:
       sass: 1.43.4
       tinymce: 5.10.2
       ts-jest: 28.0.5_burdcpru4gmol7mmtlcoahzthu
+      tslib: 2.4.0
       typescript: 4.7.3
       vite: 2.9.9_sass@1.43.4
       vite-plugin-vue-markdown: 0.1.1_vite@2.9.9
