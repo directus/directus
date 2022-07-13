@@ -29,6 +29,8 @@ export function filterItems(items: Record<string, any>[], filter: Query['filter'
 				return passesFilter(item, subFilter);
 			});
 		} else {
+			if (Object.keys(filter).length === 0) return true;
+
 			const schema = generateJoi(filter as FieldFilter);
 
 			const { error } = schema.validate(item);
