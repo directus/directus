@@ -71,7 +71,7 @@
 import { getJSType } from '@/utils/get-js-type';
 import { Field, ValidationError } from '@directus/shared/types';
 import { isEqual } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
@@ -117,22 +117,7 @@ const isDisabled = computed(() => {
 	return false;
 });
 
-const defaultValue = computed(() => {
-	const value = props.field?.schema?.default_value;
-
-	if (value !== undefined) return value;
-	return undefined;
-});
-
-const internalValue = computed(() => {
-	if (props.modelValue !== undefined) return props.modelValue;
-	if (props.initialValue !== undefined) return props.initialValue;
-	return defaultValue.value;
-});
-
-const isEdited = computed<boolean>(() => {
-	return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
-});
+const { internalValue, isEdited, defaultValue } = useComputedValues();
 
 const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
 
@@ -220,6 +205,34 @@ function useRaw() {
 	}
 
 	return { showRaw, rawValue, copyRaw, pasteRaw };
+}
+
+function useComputedValues() {
+	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
+	const internalValue = ref<any>(getInternalValue());
+	const isEdited = ref<boolean>(getIsEdited());
+
+	watch(
+		() => props.modelValue,
+		() => {
+			const newVal = getInternalValue();
+			if (!isEqual(internalValue.value, newVal)) {
+				internalValue.value = newVal;
+			}
+			isEdited.value = getIsEdited();
+		}
+	);
+
+	return { internalValue, isEdited, defaultValue };
+
+	function getInternalValue(): any {
+		if (props.modelValue !== undefined) return props.modelValue;
+		if (props.initialValue !== undefined) return props.initialValue;
+		return defaultValue.value;
+	}
+	function getIsEdited(): boolean {
+		return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
+	}
 }
 </script>
 
