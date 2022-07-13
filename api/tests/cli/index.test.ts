@@ -57,10 +57,10 @@ describe('cli hooks', () => {
 		const program = await setup();
 
 		expect(beforeHook).toHaveBeenCalledTimes(1);
-		expect(beforeHook).toHaveBeenCalledWith({ program });
+		expect(beforeHook).toHaveBeenCalledWith({ event: 'cli.before', program });
 
 		expect(afterHook).toHaveBeenCalledTimes(1);
-		expect(afterHook).toHaveBeenCalledWith({ program });
+		expect(afterHook).toHaveBeenCalledWith({ event: 'cli.after', program });
 	});
 
 	test('should be able to add a custom cli command', async () => {

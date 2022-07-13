@@ -133,7 +133,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			}
 		});
 
-		variables.value = variableDefaults;
+		variables.value = assign({}, variableDefaults, variables.value);
 	}
 
 	function dehydrate() {
@@ -215,9 +215,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				.filter(({ collection }) => {
 					return collection.startsWith('directus_') === true;
 				})
-				.map(({ key, collection, ...rest }) => ({
+				.map(({ key, ...rest }) => ({
 					key: `query_${key}`,
-					collection: collection.substring(9),
 					...rest,
 				}))
 		);

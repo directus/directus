@@ -62,7 +62,7 @@ export default function useImage(
 		onAction: (buttonApi: any) => {
 			imageDrawerOpen.value = true;
 
-			if (buttonApi.isActive()) {
+			if (buttonApi === true || buttonApi.isActive()) {
 				const node = editor.value.selection.getNode() as HTMLImageElement;
 				const imageUrl = node.getAttribute('src');
 				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
