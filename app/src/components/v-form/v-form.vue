@@ -54,6 +54,7 @@
 				:batch-active="batchActiveFields.includes(field.field)"
 				:primary-key="primaryKey"
 				:loading="loading"
+				:values="values"
 				:validation-error="
 					validationErrors.find(
 						(err) =>
