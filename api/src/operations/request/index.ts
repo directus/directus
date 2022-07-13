@@ -16,8 +16,8 @@ export default defineOperationApi<Options>({
 			acc[header] = value;
 			return acc;
 		}, {} as Record<string, string>);
-
-		const result = await axios({ url, method, data: body, headers: customHeaders });
+		
+		const result = await axios({ encodeURIComponent(url), method, data: body, headers: customHeaders });
 
 		return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
 	},
