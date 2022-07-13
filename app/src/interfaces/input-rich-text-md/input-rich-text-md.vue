@@ -312,6 +312,8 @@ export default defineComponent({
 					cursorBlinkRate: props.disabled ? -1 : 530,
 					placeholder: props.placeholder,
 					value: props.value || '',
+					spellcheck: true,
+					inputStyle: 'contenteditable',
 				});
 
 				codemirror.on('change', (cm, { origin }) => {
