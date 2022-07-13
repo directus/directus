@@ -19,6 +19,7 @@ import {
 	generateExtensionsEntry,
 	getLocalExtensions,
 	getPackageExtensions,
+	getExternalExtensions,
 	resolvePackage,
 } from '@directus/shared/utils/node';
 import {
@@ -89,6 +90,7 @@ class ExtensionManager {
 	private options: Options;
 
 	private extensions: Extension[] = [];
+	private externalExtensions = '';
 
 	private appExtensions: AppExtensions = {};
 	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [], operations: [] };
@@ -182,6 +184,8 @@ class ExtensionManager {
 			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
+			this.externalExtensions = await getExternalExtensions(env.EXTENSIONS_PATH);
+			this.appExtensions['app'] = this.externalExtensions;
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
 			logger.warn(err);

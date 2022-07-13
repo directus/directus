@@ -1,5 +1,6 @@
 import path from 'path';
 import fse from 'fs-extra';
+//import fs from 'fs';
 import {
 	ExtensionLocal,
 	ExtensionManifestRaw,
@@ -136,4 +137,10 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 	}
 
 	return extensions;
+}
+
+export async function getExternalExtensions(root: string): Promise<string> {
+	const extensionPath = path.resolve(root, 'app', 'index.js');
+	const extensionSource: string = fse.readFileSync(extensionPath, 'utf8');
+	return extensionSource;
 }

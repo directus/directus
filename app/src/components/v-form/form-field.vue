@@ -38,6 +38,7 @@
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
+			:values="values"
 			:primary-key="primaryKey"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
@@ -91,6 +92,7 @@ interface Props {
 	validationError?: ValidationError;
 	autofocus?: boolean;
 	badge?: string;
+	values: any;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -104,6 +106,7 @@ const props = withDefaults(defineProps<Props>(), {
 	validationError: undefined,
 	autofocus: false,
 	badge: undefined,
+	values: {},
 });
 
 const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'setFieldValue']);

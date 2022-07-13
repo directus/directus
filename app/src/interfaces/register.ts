@@ -2,6 +2,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getInterfaces } from './index';
 import { InterfaceConfig } from '@directus/shared/types';
+import { getExternalInterfaces } from '@/utils/external-extensions';
 
 const { interfacesRaw } = getInterfaces();
 
@@ -15,7 +16,10 @@ export async function registerInterfaces(app: App): Promise<void> {
 			? await import('@directus-extensions-interface')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/interfaces/index.js`);
 
-		interfaces.push(...customInterfaces.default);
+		const externalInterfaces = await getExternalInterfaces();
+		const allInterfaces = [...customInterfaces.default, ...externalInterfaces];
+
+		interfaces.push(...allInterfaces);
 	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom interfaces`);
@@ -26,10 +30,12 @@ export async function registerInterfaces(app: App): Promise<void> {
 	interfacesRaw.value = interfaces;
 
 	interfacesRaw.value.forEach((inter: InterfaceConfig) => {
-		app.component(`interface-${inter.id}`, inter.component);
+		if (!Object.prototype.isPrototypeOf.call(HTMLElement, inter.component))
+			app.component(`interface-${inter.id}`, inter.component);
 
 		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false && inter.options !== null) {
-			app.component(`interface-options-${inter.id}`, inter.options);
+			if (!Object.prototype.isPrototypeOf.call(HTMLElement, inter.options))
+				app.component(`interface-options-${inter.id}`, inter.options);
 		}
 	});
 }

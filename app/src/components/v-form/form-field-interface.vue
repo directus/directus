@@ -24,6 +24,8 @@
 			:collection="field.collection"
 			:field="field.field"
 			:field-data="field"
+			:values="values"
+			:context="context"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"
@@ -42,6 +44,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@directus/shared/types';
 import { getInterface } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { useApi, useStores } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -77,14 +80,30 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		values: {
+			type: Object,
+			default: null,
+		},
 	},
 	emits: ['update:modelValue', 'setFieldValue'],
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const interfaceExists = computed(() => !!getInterface(props.field?.meta?.interface || 'input'));
 
-		return { t, interfaceExists, getDefaultInterfaceForType };
+		const api = useApi();
+		const { useCollectionsStore, useFieldsStore } = useStores();
+		const collectionsStore = useCollectionsStore();
+		const fieldsStore = useFieldsStore();
+
+		let context = {
+			api,
+			collectionsStore,
+			fieldsStore,
+			emit,
+		};
+
+		return { t, interfaceExists, getDefaultInterfaceForType, context };
 	},
 });
 </script>

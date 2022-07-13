@@ -31,7 +31,8 @@ export async function registerOperations(app: App): Promise<void> {
 			Array.isArray(operation.overview) === false &&
 			operation.overview !== null
 		) {
-			app.component(`operation-overview-${operation.id}`, operation.overview);
+			if (!Object.prototype.isPrototypeOf.call(HTMLElement, operation.overview))
+				app.component(`operation-overview-${operation.id}`, operation.overview);
 		}
 
 		if (
@@ -39,7 +40,8 @@ export async function registerOperations(app: App): Promise<void> {
 			Array.isArray(operation.options) === false &&
 			operation.options !== null
 		) {
-			app.component(`operation-options-${operation.id}`, operation.options);
+			if (!Object.prototype.isPrototypeOf.call(HTMLElement, operation.options))
+				app.component(`operation-options-${operation.id}`, operation.options);
 		}
 	});
 }
