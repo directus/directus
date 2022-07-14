@@ -309,10 +309,7 @@ export default defineComponent({
 		onMounted(async () => {
 			if (codemirrorEl.value) {
 				codemirror = CodeMirror(codemirrorEl.value, {
-					mode: {
-						name: 'markdown',
-						fencedCodeBlockHighlighting: false,
-					},
+					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
 					lineWrapping: true,
 					readOnly: readOnly.value,
