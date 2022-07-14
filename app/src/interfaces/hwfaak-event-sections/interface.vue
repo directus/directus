@@ -134,7 +134,7 @@ export default defineComponent({
 
 		const fields = computed(() => getDefaultFields());
 
-		const { items, loading } = usePreview();
+		const { items, loading } = usePreview(props.primaryKey);
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { selectModalActive, selectedPrimaryKeys } = useSelection();
 		const { sortedItems } = useSort();
@@ -318,7 +318,7 @@ export default defineComponent({
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
 
-		function usePreview() {
+		function usePreview(eventId) {
 			const loading = ref(false);
 			const items = ref<Record<string, any>[]>([]);
 
@@ -344,7 +344,7 @@ export default defineComponent({
 							const response = await api.get(endpoint, {
 								params: {
 									fields: fieldsToFetch,
-									[`filter[${pkField}][_in]`]: primaryKeys.join(','),
+									[`filter[event_id][_eq]`]: eventId,
 								},
 							});
 
