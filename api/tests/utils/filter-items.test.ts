@@ -33,9 +33,23 @@ describe('filter items', () => {
 		expect(result).toStrictEqual(items);
 	});
 
-	test('return items when empty object used as filter', () => {
+	test('return items when empty filter used', () => {
 		const result = filterItems(items, {});
 		expect(result).toStrictEqual(items);
+	});
+
+	test('return filtered items when nested empty filter used', () => {
+		const result = filterItems(items, {
+			_or: [
+				{
+					action: {
+						_eq: 'read',
+					},
+				},
+				{},
+			],
+		});
+		expect(result).toStrictEqual(items.filter((item) => item.action === 'read'));
 	});
 
 	test('return filtered items', () => {
