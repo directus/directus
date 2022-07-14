@@ -40,7 +40,7 @@ describe('filter items', () => {
 
 	test('return filtered items when nested empty filter used', () => {
 		const result = filterItems(items, {
-			_or: [
+			_and: [
 				{
 					action: {
 						_eq: 'read',
