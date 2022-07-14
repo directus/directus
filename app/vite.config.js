@@ -1,6 +1,6 @@
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import md from 'vite-plugin-md';
+import md from 'vite-plugin-vue-markdown';
 import yaml from '@rollup/plugin-yaml';
 import path from 'path';
 import {
@@ -23,7 +23,7 @@ export default defineConfig({
 			include: [/\.vue$/, /\.md$/],
 		}),
 		md({
-			wrapperComponent: 'DocsWrapper',
+			wrapperComponent: 'docs-wrapper',
 			markdownItOptions: {
 				highlight(str, lang) {
 					if (lang && hljs.getLanguage(lang)) {
@@ -118,8 +118,14 @@ export default defineConfig({
 			},
 		}),
 	],
+	optimizeDeps: {
+		exclude: ['@directus/docs'],
+	},
 	resolve: {
-		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
+		alias: [
+			{ find: '@', replacement: path.resolve(__dirname, 'src') },
+			{ find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
+		],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
 	server: {
@@ -140,7 +146,7 @@ function directusExtensions() {
 	const prefix = '@directus-extensions-';
 	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
-	let extensionEntrys = {};
+	let extensionEntrypoints = {};
 
 	return [
 		{
@@ -163,7 +169,7 @@ function directusExtensions() {
 				if (virtualIds.includes(id)) {
 					const extensionType = id.substring(prefix.length);
 
-					return extensionEntrys[extensionType];
+					return extensionEntrypoints[extensionType];
 				}
 			},
 		},
@@ -178,7 +184,7 @@ function directusExtensions() {
 							...APP_SHARED_DEPS.reduce((acc, dep) => ({ ...acc, [dep.replace(/\//g, '_')]: dep }), {}),
 						},
 						output: {
-							entryFileNames: '[name].[hash].js',
+							entryFileNames: 'assets/[name].[hash].entry.js',
 						},
 						external: virtualIds,
 						preserveEntrySignatures: 'exports-only',
@@ -199,7 +205,7 @@ function directusExtensions() {
 		const extensions = [...packageExtensions, ...localExtensions];
 
 		for (const extensionType of APP_EXTENSION_TYPES) {
-			extensionEntrys[extensionType] = generateExtensionsEntry(extensionType, extensions);
+			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
 		}
 	}
 }

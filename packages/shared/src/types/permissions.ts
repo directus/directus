@@ -1,6 +1,6 @@
 import { Filter } from './filter';
 
-export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comment' | 'explain';
+export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comment' | 'explain' | 'share';
 
 export type Permission = {
 	id?: number;

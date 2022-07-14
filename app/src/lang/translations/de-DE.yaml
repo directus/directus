@@ -21,16 +21,24 @@
 #'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Avatar
+application: Anwendung
 default_provider: Standard
+method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
 modules: Module
 module_bar: Modulleiste
+logs: Logs
+reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
+location: Ort
+condition_rules: Bedingte Stile
+input: Eingabe
 maps: Karten
+switch_user: Benutzer wechseln
 item_creation: Element erstellt
 item_revision: Element überarbeitet
 enter_a_name: Namen eingeben...
@@ -38,8 +46,13 @@ duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
 group: Gruppe
+export_items: Elemente exportieren
 and: Und
 or: Oder
+init: Initialisierung
+dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit werden die ersten {n} Elemente angezeigt.
+custom: Eigene
+hook: Hook
 fill_width: Breite füllen
 field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
@@ -52,17 +65,28 @@ edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken'
+show_active_items: Aktive Elemente anzeigen
 show_archived_items: Zeige archivierte Elemente
-edited: Bearbeiteter Wert
+show_all_items: Alle Elemente anzeigen
+edited: Wert bearbeitet
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
-requires_value: Benötigt Wert
+requires_value: Erfordert Wert
 create_preset: Vorlage erstellen
 create_panel: Panel erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
+message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
+create_translation_string: Übersetzungselement erstellen
+no_translation_string: Keine Übersetzung
+no_translation_string_copy: Es existiert noch keine Übersetzung.
+translation_string_key_placeholder: Schlüssel für Übersetzungselement...
+translation_string_translations_placeholder: Neue Übersetzung hinzufügen
+edit_translation_string: Übersetzungselement editieren
+delete_translation_string_copy: >-
+  Soll das Übersetzungselement "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -79,20 +103,23 @@ delete_folder: Ordner löschen
 prefix: Präfix
 suffix: Suffix
 reset_bookmark: Lesezeichen zurücksetzen
-rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
 delete_bookmark_copy: >-
   Möchten Sie das Lesezeichen "{bookmark}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+delete_personal_bookmark: Persönliches Lesezeichen löschen
+delete_role_bookmark: Rollen-Lesezeichen löschen
+delete_global_bookmark: Globales Lesezeichen löschen
 logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
 directus_version: Directus-Version
-node_version: Node-Version
-node_uptime: Node-Betriebszeit
+node_version: NodeJS-Version
+node_uptime: Server-Betriebszeit
 os_type: Betriebssystem
 os_version: Betriebssystem-Version
 os_uptime: System-Betriebszeit
@@ -108,8 +135,8 @@ app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
-nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
-unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
+nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene nach oben verschoben.
+validation_errors_notice: 'Die folgenden Felder sind ungültig:'
 validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein
@@ -159,6 +186,7 @@ revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
+hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
@@ -167,6 +195,7 @@ field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
+language_placeholder: Sprache auswählen...
 aggregate_function: Aggregations-Funktion
 aggregate_precision: Aggregations-Präzision
 group_aggregation: Gruppen-Aggregation
@@ -177,6 +206,7 @@ camera: Kamera
 show_zero: Null anzeigen
 create_in_advanced_field_creation_mode: Feld im erweiterten Modus erstellen
 continue_in_advanced_field_creation_mode: Im erweiterten Felderstellungsmodus fortfahren
+validation: Validierung
 sum: Summe
 sum_distinct: Summe, unterschiedliche Werte
 avg: Mittelwert
@@ -240,7 +270,7 @@ click_to_manage_translated_fields: >-
 fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
-search_collection: Sammlung durchsuchen...
+search_collection: Sammlung suchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
 add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
@@ -268,6 +298,7 @@ note: Notiz
 enter_a_value: Gib einen Wert ein...
 enter_a_placeholder: Platzhalter eingeben...
 length: Länge
+soft_length: Soft Limit
 precision_scale: Präzision & Skalierung
 readonly: Lesezugriff
 unique: Eindeutig
@@ -278,12 +309,19 @@ foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 raw_value: Rohwert
+copy_raw_value: Unverarbeiteten Wert kopieren
+copy_raw_value_success: Kopiert
+copy_raw_value_fail: Kopieren fehlgeschlagen
+paste_raw_value: Unverarbeiteten Wert einfügen
+paste_raw_value_success: Eingefügt
+paste_raw_value_fail: Einfügen fehlgeschlagen
+view_raw_value: Unverarbeiteten Wert anzeigen
 edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
 clear_changes: Änderungen löschen
-reset_to_default: Auf Standard zurücksetzen
-undo_changes: Änderungen verwerfen
+reset_to_default: Auf Standardwert zurücksetzen
+undo_changes: Änderungen rückgängig machen
 notifications: Benachrichtigungen
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
@@ -298,14 +336,18 @@ revision_delta_created_externally: Extern erstellt
 revision_delta_updated: '1 Feld aktualisiert | {count} Felder aktualisiert'
 revision_delta_deleted: Gelöscht
 revision_delta_reverted: Zurückgesetzt
+revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+presentation_text_values_cannot_be_reimported: "Verwendet Präsentationstext, Werte können nicht neu importiert werden."
+download_page_as_csv: 'Als CSV herunterladen'
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
 revision_preview: Überarbeitungs-Vorschau
 updates_made: Erfolgte Aktualisierungen
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
+post_comment_updated: Kommentar aktualisiert
 item_create_success: Element erstellt | Elemente erstellt
 item_update_success: Element aktualisiert | Elemente aktualisiert
 item_delete_success: Element gelöscht | Elemente gelöscht
@@ -314,10 +356,15 @@ related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
 translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
-export_data: Daten exportieren
+import_data_input_placeholder: CSV oder JSON...
+import_data_button: Import starten
+import_data_indeterminate: Importiere Daten...
+import_data_success: Daten erfolgreich aus {filename} importiert
+import_data_error: Die Datenstruktur der Datei stimmt nicht mit der Sammlung überein.
+label_import: Import
+label_export: Export
+import_export: Import / Export
 format: Format
-use_current_filters_settings: Aktuelle Filter & Einstellungen verwenden
-export_collection: '{collection} exportieren'
 last_page: Letzte Seite
 last_access: Letzter Zugriff
 fill_template: Mit Vorlagenwert füllen
@@ -333,9 +380,22 @@ interface_label: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
+delete_share: Freigabe löschen
+functions:
+  year: Jahr
+  month: Monat
+  week: Woche
+  day: Tag
+  weekday: Wochentag
+  hour: Stunde
+  minute: Minute
+  second: Sekunde
+  count: Anzahl
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
@@ -361,7 +421,7 @@ drag_mode: Drag-Modus
 cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
-import_label: Importieren
+import_label: Import
 file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
@@ -386,6 +446,15 @@ replace_from_library: Mit Datei aus der Bibliothek ersetzen
 replace_from_url: Mit Datei von URL ersetzen
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
+open_file_in_tab: Datei in neuem Tab öffnen
+start_export: Export starten
+not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
+exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
+exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
+exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Konfiguration unten an.
+exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
+exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
+exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -396,6 +465,7 @@ created_on: Erstellt am
 creating_collection_info: Benennen Sie die Sammlung und richten Sie ein eindeutiges „Schlüsselfeld“ ein...
 creating_collection_system: Aktivieren und benennen Sie eines dieser optionalen Felder.
 auto_increment_integer: Automatisch erhöhter Integer-Wert
+auto_increment_big_integer: Automatisch erhöhter großer Integer
 generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
 save_and_create_new: Speichern und neues Element anlegen
@@ -416,7 +486,9 @@ disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
 request_feature: Feature anfragen
+request_body: Rohdaten der Anfrage
 interface_not_found: 'Schnittstelle "{interface}" nicht gefunden.'
+operation_not_found: 'Operation "{operation}" nicht gefunden.'
 reset_interface: Schnittstelle zurücksetzen
 display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
@@ -502,7 +574,9 @@ errors:
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
   INVALID_OTP: Falsches Einmalpasswort
   INVALID_PAYLOAD: Ungültige Nutzdaten
+  INVALID_PROVIDER: Benutzer gehört zu einem anderen Authentifizierungsanbieter
   INVALID_QUERY: Ungültige anfrage
+  INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
@@ -513,12 +587,21 @@ errors:
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
+  VALUE_TOO_LONG: Wert ist zu lang
+  VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
+  INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
   UNKNOWN: Unerwarteter Fehler
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
+edit_personal_bookmark: Persönliches Lesezeichen bearbeiten
+edit_role_bookmark: Rollen-Lesezeichen bearbeiten
+edit_global_bookmark: Globales Lesezeichen bearbeiten
+cannot_edit_role_bookmarks: Rollen-Lesezeichen kann nicht bearbeitet werden
+cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
 presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
@@ -526,7 +609,7 @@ unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche e
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
-password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
+password_reset_sent: Wenn Sie ein Konto haben, haben wir Ihnen einen sicheren Link zum Zurücksetzen Ihres Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 filter: Filter
@@ -543,12 +626,16 @@ update_collection_success: Sammlung aktualisiert
 delete_collection_success: Sammlung gelöscht
 make_collection_visible: Sammlung sichtbar machen
 make_collection_hidden: Sammlung verstecken
+make_folder_visible: Ordner sichtbar machen
+make_folder_hidden: Ordner verstecken
+goto_collection_content: Inhalt anzeigen
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
 start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
-  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
+  Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
+delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -575,6 +662,7 @@ advanced_settings: Erweiterte Einstellungen
 advanced_filter: Erweiterter Filter
 delete_advanced_filter: Filter zurücksetzen
 change_advanced_filter_operator: Operator ändern
+advanced: Erweitert
 operators:
   eq: Gleich
   neq: Ungleich
@@ -588,6 +676,7 @@ operators:
   nnull: Ist nicht null
   contains: Enthält
   ncontains: Enthält nicht
+  icontains: Enthält (Groß-, Kleinschreibung wird ignoriert)
   starts_with: Beginnt mit
   nstarts_with: Beginnt nicht mit
   ends_with: Endet mit
@@ -602,6 +691,8 @@ operators:
   nintersects: Schneidet nicht
   intersects_bbox: Schneidet Begrenzung
   nintersects_bbox: Schneidet nicht Begrenzung
+  regex: Entspricht RegExp
+custom_validation_message: Benutzerdefinierte Validierungsnachricht
 loading: Wird geladen...
 drop_to_upload: Zum Hochladen ablegen
 item: Element
@@ -615,7 +706,7 @@ upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
 interface_options: Schnittstellenoptionen
-layout_options: Optionen für Ansicht
+layout_options: Ansichtsoptionen
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
@@ -642,6 +733,7 @@ no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
 clear_filters: Filter löschen
 saves_automatically: Wird automatisch gespeichert
 role: Rolle
+edit_role: Rolle bearbeiten
 rule: Regel
 user: Benutzer
 no_presets: Keine Vorlagen
@@ -653,6 +745,7 @@ on_create: Beim Erstellen
 on_update: Beim Aktualisieren
 read: Lesen
 update: Aktualisieren
+delete: Löschen
 select_fields: Fielder auswählen
 format_text: Text formatieren
 format_value: Wert formatieren
@@ -663,6 +756,39 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+flows: Flows
+flow: Flow
+select_a_flow: Flow auswählen
+run_flow_on_current: Flow für aktuelles Element ausführen
+run_flow_on_selected: Keine Items ausgewählt | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
+run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
+trigger: Trigger
+trigger_options: Auslöse-Optionen
+view_trigger: Auslöser anzeigen
+create_trigger: Einen Auslöser hinzufügen
+trigger_setup: Auslöser Einstellungen
+change_trigger: Auslöser wechseln
+flow_delete_confirm: Sind Sie sicher, dass sie den Flow "{flow}" löschen möchten? Diese Aktion ist permanent.
+set_flow_active: Setze Flow auf aktiv
+set_flow_inactive: Setze Flow auf Inaktiv
+edit_flow: Flow bearbeiten
+delete_flow: Flow löschen
+no_other_flows_copy: Sie haben noch keine anderen Flows.
+no_flows: Keine Flows
+no_flows_copy: Sie haben noch keine Flows.
+create_flow: Flow erstellen
+creating_new_flow: Neuen Flow erstellen
+updating_flow: Flow aktualisieren
+flow_setup: Flow Einstellungen
+flow_name: Name
+flow_tracking: Aktivitäts- und Änderungsverfolgung
+flow_tracking_all: Verfolge Aktivitäten und Änderungen
+flow_tracking_activity: Nur Aktivitäten verfolgen
+flow_tracking_null: Nichts verfolgen
+start_flow: Flow starten
+stop_flow: Flow stoppen
+create_operation: Operation erstellen
+edit_operation: Operation bearbeiten
 insights: Einblicke
 dashboard: Dashboard
 panel: Panel
@@ -680,11 +806,18 @@ suffix_placeholder: Text nach Wert...
 decimals_placeholder: Anzahl der Nachkommastellen...
 no_dashboards: Keine Dashboards
 no_dashboards_copy: Sie haben noch keine Dashboards.
-no_data: Keine Daten
 create_dashboard: Dashboard erstellen
 dashboard_name: Name des Dashboards
+no_data: Keine Daten
+no_data_in_flow: Es wurden keine Daten verarbeitet
+accountability: Verantwortlichkeit
+payload: Auslastung
 full_screen: Vollbild
+full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
+center_align: Zentriert
+left_align: Linksbündig
+right_align: Rechtsbündig
 fit_to_screen: An Bildschirmgröße anpassen
 image_url: Bild-Url
 alt_text: Alternativ-Text
@@ -708,6 +841,8 @@ unlimited: Unlimitiert
 open_link_in: Link öffnen in
 new_tab: Neuer Tab
 current_tab: Aktueller Tab
+save_image: Bild speichern
+save_media: Medien speichern
 wysiwyg_options:
   aligncenter: Zentriert
   alignjustify: Blocksatz
@@ -765,17 +900,21 @@ adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
 creating_in: 'Element in {collection} erstellen'
 editing_in: 'Bearbeite Element in {collection}'
+viewing_in: 'Element aus {collection} wird angezeigt'
 creating_unit: 'Erstelle {unit}'
 editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
 settings_permissions: Rollen & Berechtigungen
-settings_project: Projekt-Einstellungen
+settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
+settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
+settings_translation_strings: Übersetzungselemente
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
+actions: Aktionen
 select: Auswählen...
 layout: Ansicht
 tree_view: Baumansicht
@@ -785,6 +924,7 @@ preset_search_placeholder: Suchabfrage...
 editing_preset: Vorlage bearbeiten
 layout_preview: Vorschau der Ansicht
 layout_setup: Einrichtung Ansicht
+data: Daten
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
@@ -819,6 +959,7 @@ page_help_settings_presets_item: >-
   **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
 page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
+page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -848,15 +989,16 @@ directus_collection:
   directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
+  directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
-  directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
   directus_roles: Berechtigungsgruppen für Systembenutzer
   directus_sessions: Sitzungsinformation
   directus_settings: Projekt-Konfiguration
+  directus_shares: Verfolgen von extern freigegebenen Elementen
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
 fields:
@@ -885,6 +1027,7 @@ fields:
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
     archive_field: Archivfeld
+    item_duplication_fields: Vervielfältigungsfelder
   directus_files:
     $thumbnail: Miniaturansicht
     title: Titel
@@ -935,11 +1078,11 @@ fields:
     status_archived: Archiviert
     role: Rolle
     token: Token
-    token_placeholder: Einen sicheren Zugangs-Token eingeben...
     provider: Anbieter
     external_identifier: Externer Identifikator
     last_page: Letzte Seite
     last_access: Letzter Zugriff
+    email_notifications: E-Mail Benachrichtigungen
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -952,12 +1095,16 @@ fields:
     basemaps_style: Mapbox-Stil
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribuierung
+    attribution_placeholder: '© OpenStreetMap Mitwirkende'
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
     project_name: Projekt-Name
+    project_descriptor: Projektuntertitel
     project_url: Projekt-URL
-    project_color: Projekt-Farbe
-    project_logo: Projekt-Logo
+    project_color: Projektfarbe
+    project_logo: Projektlogo
+    default_language: Standardsprache
     branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
@@ -966,7 +1113,7 @@ fields:
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Speicher
     storage_default_folder: Standardordner
-    storage_asset_presets: Transformations-Voreinstellungen
+    storage_asset_presets: Assets-Transformationsvorgaben
     storage_asset_transform: Erlaubte Transformationen
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
@@ -974,6 +1121,14 @@ fields:
     transformations_all: Alle Transformationen erlauben
     transformations_none: Transformationen deaktivieren
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
+  directus_shares:
+    name: Name
+    role: Rolle
+    password: Passwort
+    date_start: Anfangsdatum
+    date_end: Enddatum
+    max_uses: Max. Verwendungen
+    times_used: Anzahl der Nutzungen
   directus_fields:
     collection: Sammlungsname
     icon: Sammlungsicon
@@ -1016,6 +1171,7 @@ field_options:
       weak_text: Schwach - Minimum 8 Zeichen
       strong_text: Stark - Groß / Klein / Zahlen / Spezialzeichen
     storage_asset_presets:
+      fit_label: Passform
       upscaling: Hochskalierung
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
@@ -1027,6 +1183,7 @@ field_options:
     mapbox_key: Mapbox Zugangs-Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basiskarte
+    basemaps_name_placeholder: Geben Sie den Basemap-Namen ein...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-Stil
@@ -1117,13 +1274,36 @@ start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
+shares: Freigaben
+unlimited_usage: Unbegrenzte Nutzung
+uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
+no_shares: Keine Freigaben zum Anzeigen
+new_share: Neue Freigabe
+expired: Abgelaufen
+upcoming: Bevorstehend
+share: Teilen
+share_item: Element teilen
+shared_with_you: Ein Element wurde mit dir geteilt
+shared_enter_passcode: Kennwort eingeben um fortzufahren...
+shared_leave_blank_for_unlimited: Leer lassen für kein Limit
+shared_times_remaining: Dieser Link kann nur {n} mal verwendet werden
+shared_last_remaining: Dieser Link kann nur einmal verwendet werden
+shared_uses_left: Für zusätzliche Sicherheit wurde diese freigegebene Seite mit einer begrenzten Anzahl von Aufrufen konfiguriert. Derzeit sind noch {n} Aufrufe verbleiben, danach wird die Seite nicht mehr zugänglich sein.
+share_access_page: Auf gemeinsame Seite zugreifen
+share_access_not_found: Diese freigegebene Seite existiert entweder nicht oder hat bereits die maximale Anzahl an erlaubten Verwendungen überschritten.
+share_access_not_found_desc: Bitte kontaktieren Sie einen autorisierten Benutzer dieses Projekts, um Zugriff anzufordern.
+share_access_not_found_title: Unbekannte geteilte Seite
+share_copy_link: Link kopieren
+share_copy_link_success: Link kopiert
+share_copy_link_error: Der Link konnte nicht kopiert werden
+share_send_link: Link senden
 relational_triggers: Relationale Trigger
 referential_action_field_label_m2o: Beim Löschen von {collection}...
 referential_action_field_label_o2m: Beim Abwählen von {collection}...
 referential_action_no_action: Löschen verhindern
 referential_action_cascade: Lösche das Element in {collection} (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
-referential_action_set_default: '{field} au Standardwert setzen'
+referential_action_set_default: '{field} auf Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
@@ -1148,12 +1328,23 @@ file: Datei
 file_library: Dateien
 forgot_password: Passwort vergessen
 hidden: Ausgeblendet
+hidden_in_group: Versteckt in {group}
 icon: Symbol
 info: Information
 normal: Normal
 success: Erfolgreich
 warning: Warnung
 danger: Achtung
+colors:
+  purple: Lila
+  blue: Blau
+  green: Grün
+  yellow: Gelb
+  orange: Orange
+  red: Rot
+  black: Schwarz
+  gray: Grau
+  white: Weiß
 junction_collection: Verbindungssammlung
 latency: Latenz
 login: Login
@@ -1168,6 +1359,7 @@ relationship: Beziehung
 reset: Zurücksetzen
 reset_password: Passwort zurücksetzen
 revisions: Revisionen
+no_revisions: Noch keine Revision
 revert: Zurücksetzen
 save: Speichern
 schema: Schema
@@ -1181,10 +1373,12 @@ sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
 something_went_wrong: Irgendwas ist schief gelaufen.
 sort_direction: Sortierreihenfolge
+export_location: Speicherort des Exports
+export_started: Export gestartet
+export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die Datei zum Download bereit ist.
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
-require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
@@ -1198,6 +1392,8 @@ interfaces:
     add_filter: Filter hinzufügen
     add_group: Und / Oder Gruppe
     add_value: Wert hinzufügen
+    logic_type_and: Und
+    logic_type_or: Oder
     all: Alle
     any: Irgendeiner
     and: und
@@ -1205,6 +1401,8 @@ interfaces:
     no_rules: Keine konfigurierten Regeln
     change_value: Klicken um Wert zu ändern
     placeholder: Regeln hierher ziehen
+  fields:
+    name: Felder
   group-accordion:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
@@ -1255,6 +1453,7 @@ interfaces:
     description: Farbwert eingeben oder auswählen
     placeholder: Farbe wählen...
     preset_colors: Farben für Vorlage
+    opacity: Deckkraft
     preset_colors_add_label: Farbe hinzufügen...
     name_placeholder: Farbnamen eingeben...
   datetime:
@@ -1263,6 +1462,7 @@ interfaces:
     include_seconds: Sekunden einbeziehen
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
+    placeholder: Datum wählen...
   system-display-template:
     display-template: Anzeigevorlage
     description: Statischen Text und dynamische Feldwerte mischen
@@ -1307,6 +1507,7 @@ interfaces:
   file-image:
     image: Bild
     description: Bild auswählen oder hochladen
+    crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
   system-interface:
     interface: Benutzeroberfläche
@@ -1318,6 +1519,7 @@ interfaces:
   list-m2m:
     many-to-many: n:n
     description: Mehrere verwandte Elemente auswählen
+    display_template_configure_notice: Sie können die Anzeige-Vorlage nach dem Erstellen dieses Feldes konfigurieren.
   select-dropdown-m2o:
     many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
@@ -1333,8 +1535,8 @@ interfaces:
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
     box: Block / Inline
-    imageToken: Bild-Token
-    imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
+    imageToken: Statisches Zugriffstoken
+    imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
   map:
     map: Karte
     description: Ort auf der Karte wählen
@@ -1374,8 +1576,11 @@ interfaces:
     description: Mehrere Einträge derselben Struktur erstellen
     edit_fields: Felder bearbeiten
     add_label: 'Label für "Neu erstellen"'
+    sort: Sortieren
+    sort_placeholder: Manuell
     field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
+    incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -1393,7 +1598,7 @@ interfaces:
     auto_formatter: Auto-Formatierung für Titel verwenden
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
-    add_tags: Tags hinzufügen...
+    add_tags: Tag hinzufügen und Enter drücken...
   input:
     input: Eingabe
     description: Wert manuell eingeben
@@ -1411,6 +1616,11 @@ interfaces:
   input-multiline:
     textarea: Textfeld (mehrzeilig)
     description: Mehrzeiligen Klartext eingeben
+  input-translated-string:
+    input-translated-string: Übersetzte Elemente
+    description: Übersetzungselement auswählen oder hinzufügen
+    search_placeholder: Suchen...
+    new_translation_string: Neues Übersetzungelement
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
@@ -1422,6 +1632,9 @@ interfaces:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
+    enable: Aktivieren
+    user_language: Aktuelle Benutzersprache verwenden
+    default_language: Standardsprache
     language_field: Sprachindikatorfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
@@ -1440,6 +1653,9 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Benutzerdefinierte Formate
     options_override: Optionen überschreiben
+    folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
+    imageToken: Statisches Zugriffstoken
+    imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.
@@ -1459,6 +1675,11 @@ interfaces:
     header_color: Farbe Kopfzeile
     start_open: Geöffnet starten
     start_closed: Geschlossen starten
+  system-token:
+    system-token: Token
+    generate: Token generieren
+    regenerate: Token neu generieren
+    remove_token: Token löschen
 displays:
   translations:
     translations: Übersetzungen
@@ -1496,6 +1717,7 @@ displays:
     short: Short
     relative: Relativ
     relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
+    suffix: Suffix
   file:
     file: Datei
     description: Dateien anzeigen
@@ -1505,9 +1727,27 @@ displays:
   formatted-value:
     formatted-value: Formatierter Wert
     description: Eine formatierte Version des Textes anzeigen
-    format_title: Titel formatieren
-    format_title_label: Automatische Groß-/Kleinschreibung
+    format: Format
+    format_label: Automatisches Formatieren
+    font: Schriftart
+    font_sans_serif: Sans Serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Fett
     bold_label: Fett-Schnitt verwenden
+    italic: Kursiv
+    italic_label: Kursivschrift verwenden
+    prefix: Präfix
+    prefix_label: Text vorangestellt
+    suffix: Suffix
+    suffix_label: Angehängten Text
+    color: Farbe
+    background: Hintergrund
+    icon: Symbol
+    border: Umrandung
+    border_label: Rahmen anzeigen
+    text: Text
+    text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
@@ -1545,6 +1785,7 @@ displays:
   related-values:
     related-values: Verwandte Werte
     description: Relative Werte anzeigen
+    display_template_configure_notice: Sie können die Anzeige-Vorlage nach dem Erstellen dieses Feldes konfigurieren.
   user:
     user: Benutzer
     description: Benutzer anzeigen
@@ -1563,7 +1804,6 @@ layouts:
     subtitle: Untertitel
   tabular:
     tabular: Tabelle
-    fields: Felder
     spacing: Abstand
     comfortable: Groß
     compact: Kompakt
@@ -1572,6 +1812,8 @@ layouts:
     calendar: Kalender
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
+    optional: Optional
+    first_day: Erster Tag der Woche
   map:
     map: Karte
     basemap: Basiskarte
@@ -1586,6 +1828,35 @@ layouts:
     find_location: Standort suchen...
     default_template: Verwenden des Sammlungs-Standards...
     no_compatible_fields: Keine kompatiblen Felder
+  kanban:
+    name: Kanban,
+    group_field: Gruppieren nach,
+    group_field_placeholder: Feld zum Gruppieren...,
+    group_title: Gruppentitel,
+    group_title_placeholder: Feld für Gruppentitel...,
+    title: Karten-Titel,
+    title_placeholder: Optionales Titelfeld...,
+    text: Karten-Text,
+    text_placeholder: Optionales Textfeld...,
+    date: Karten-Datum,
+    date_placeholder: Optionales Datumsfeld...,
+    tags: Karten-Tags,
+    tags_placeholder: Optionales Tag-Feld...,
+    user: Karten-Benutzer,
+    user_placeholder: Optionales Benutzerfeld...,
+    image: Karten-Bild,
+    image_placeholder: Optionales Bildfeld...,
+    image_fit: Karten-Bildfüllmodus,
+    crop: Beschneiden,
+    advanced: Erweitert,
+    edit_group: Gruppe bearbeiten,
+    delete_group: Gruppe löschen,
+    add_group: Gruppe hinzufügen,
+    add_group_placeholder: Neuen Gruppentitel eingeben...,
+    show_ungrouped: Nicht gruppierte Elemente zeigen,
+    show: Anzeigen,
+    no_group: Keine Gruppe,
+    not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 panels:
   metric:
     name: Metrik
@@ -1604,3 +1875,119 @@ panels:
   list:
     name: Liste
     description: Filtern und Auflisten von Feldern von einer Sammlung
+  barchart:
+    name: Balkendiagramm
+    description: Balken- oder Spaltendiagramme zum Vergleich von Wertegruppen
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    select_x_axis: Sie müssen eine X-Achse auswählen.
+    function: Funktion
+    horizontal: Horizontal
+    x_axis_grouping: Gruppierung X-Achse
+    x_axis: X-Achse
+    y_axis_function: Funktion Y-Achse
+    y_axis: Y-Achse
+    show_x_axis: X-Achse anzeigen
+    show_y_axis: Y-Achse anzeigen
+    show_data_label: Datenbezeichnung anzeigen
+    group_by: Gruppieren nach
+    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    y_axis_NaN: Die y-Achse muss eine Zahl sein.
+    y_axis_conditional_two: muss eine Zahl sein.
+  linechart:
+    name: Liniendiagramm
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    select_x_axis: Sie müssen eine X-Achse auswählen.
+    function: Funktion
+    x_axis: X-Achse
+    y_axis: Y-Achse
+    datasets: Datensätze
+    show_legend: Legende anzeigen
+    include_dataset: Mindestens ein Datensatz muss angegeben werden.
+    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    smooth: 'Weich'
+    straight: 'Gerade'
+  meter:
+    arc: Bogen
+    stroke_width: Strichbreite
+    select_max_value: Es muss einen Maximalwert ausgewählt werden.
+    select_field: Sie müssen ein Feld auswählen.
+    select_collection: Sie müssen eine Sammlung auswählen.
+    function: Funktion
+    thin: Dünn
+    medium: Mittel
+    broad: Breit
+  piechart:
+    name: Kuchen oder Donut Diagramm
+    function: 'Funktion'
+    donut: Donut
+    legend: Legende anzeigen
+    right: Rechts
+    bottom: Unten
+    monochrome: Monochrom
+triggers:
+  webhook:
+    name: Webhook
+    method: Methode
+    async: Asynchron
+  schedule:
+    name: Zeitplan (CRON)
+    cron: Intervall
+  manual:
+    name: Manuell
+    collection_and_item: Sammlungen & Element Seiten
+any_string_or_json: Ein String oder JSON...
+operations:
+  condition:
+    name: Kondition
+  item-create:
+    name: Daten erstellen
+    description: Elemente in der Datenbank erstellen
+    payload: Auslastung
+  item-delete:
+    name: Daten löschen
+    description: Elemente aus der Datenbank löschen
+    key: IDs
+    query: Abfrage
+  item-read:
+    name: Daten lesen
+    description: Elemente aus der Datenbank lesen
+    key: IDs
+    query: Abfrage
+  item-update:
+    name: Daten aktualisieren
+    description: Elemente in der Datenbank aktualisieren
+    key: IDs
+    payload: Auslastung
+    query: Abfrage
+  log:
+    description: Etwas in die Konsole ausgeben
+    message: Nachricht
+    message_placeholder: Geben Sie eine Nachricht ein, die in der Konsole angezeigt werden soll...
+  mail:
+    name: Email senden
+    description: Sende eine E-Mail an eine oder mehrere Personen
+    to: An
+    to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
+    body: Inhalt
+  notification:
+    name: Benachrichtigung senden
+    description: In-app Benachrichtigung an Benutzer senden
+    recipient: Benutzer
+    message: Nachricht
+  request:
+    name: Webhook / Anfrage URL
+    description: "Eine Anfrage an eine URL senden"
+    url: URL
+    url_placeholder: https://example.com/example
+    method: Methode
+    data: Daten
+    header: Header
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    milliseconds: Millisekunden
+  trigger:
+    flows: Flows
+    flow: Flow
+    data: Daten

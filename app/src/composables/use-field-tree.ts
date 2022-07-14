@@ -1,6 +1,7 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Relation, Type } from '@directus/shared/types';
 import { getRelationType } from '@directus/shared/utils';
+import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 
 export type FieldNode = {
@@ -9,12 +10,16 @@ export type FieldNode = {
 	collection: string;
 	relatedCollection?: string;
 	key: string;
+	path: string;
+	type: Type;
 	children?: FieldNode[];
+	group?: boolean;
 };
 
 export type FieldTreeContext = {
 	treeList: Ref<FieldNode[]>;
 	loadFieldRelations: (fieldPath: string, root?: FieldNode) => void;
+	refresh: (collection?: string) => void;
 };
 
 export function useFieldTree(
@@ -30,52 +35,64 @@ export function useFieldTree(
 
 	watch(() => collection.value, refresh, { immediate: true });
 
-	return { treeList, loadFieldRelations };
+	return { treeList, loadFieldRelations, refresh };
 
-	function refresh(collection?: string | null) {
+	function refresh() {
 		visitedPaths.value = new Set();
-		treeList.value = getTree(collection) ?? [];
+		treeList.value = getTree(collection.value) ?? [];
+
 		for (const node of treeList.value) {
-			node.children = getTree(node.relatedCollection, node);
+			if (node.relatedCollection) {
+				node.children = getTree(node.relatedCollection, node);
+			}
 		}
 	}
 
 	function getTree(collection?: string | null, parent?: FieldNode) {
 		const injectedFields = inject?.value?.fields.filter((field) => field.collection === collection);
-		const fields = fieldsStore
-			.getFieldsForCollection(collection!)
+
+		const allFields = fieldsStore
+			.getFieldsForCollectionSorted(collection!)
 			.concat(injectedFields || [])
 			.filter(
-				(field: Field) =>
+				(field) =>
 					field.meta?.special?.includes('group') ||
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
-			);
+			)
+			.filter((field) => filter(field));
 
-		const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
+		const topLevelFields = allFields.filter((field) => {
+			if (parent?.group === true) return field.meta?.group === parent?.field;
+			return isNil(field.meta?.group);
+		});
 
-		const sortGroupFields = (a: Field, b: Field) => {
-			if (!a.meta?.sort || !b.meta?.sort) return 0;
-			return a.meta.sort - b.meta.sort;
-		};
+		const fieldNodes = topLevelFields.flatMap((field) => makeNode(field, parent));
 
-		for (const [index, field] of nonGroupFields.entries()) {
-			const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
-			if (groupFields.length) {
-				nonGroupFields.splice(index + 1, 0, ...groupFields.sort(sortGroupFields));
-			}
-		}
-
-		const sortedFields = nonGroupFields
-			.filter((field) => !field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
-			.filter(filter)
-			.flatMap((field) => makeNode(field, parent));
-
-		return sortedFields.length ? sortedFields : undefined;
+		return fieldNodes.length ? fieldNodes : undefined;
 	}
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
 		const relatedCollections = getRelatedCollections(field);
-		const context = parent ? parent.key + '.' : '';
+		const pathContext = parent?.path ? parent.path + '.' : '';
+		const keyContext = parent?.key ? parent.key + '.' : '';
+
+		if (field?.meta?.special?.includes('group')) {
+			const node: FieldNode = {
+				name: field.name,
+				field: field.field,
+				collection: field.collection,
+				relatedCollection: undefined,
+				key: parent ? parent.key : '',
+				path: pathContext + field.field,
+				group: true,
+				type: field.type,
+			};
+
+			return {
+				...node,
+				children: getTree(field.collection, node),
+			};
+		}
 
 		if (relatedCollections.length <= 1) {
 			return {
@@ -83,16 +100,21 @@ export function useFieldTree(
 				field: field.field,
 				collection: field.collection,
 				relatedCollection: relatedCollections[0],
-				key: context + field.field,
+				key: keyContext + field.field,
+				path: pathContext + field.field,
+				type: field.type,
 			};
 		}
+
 		return relatedCollections.map((collection) => {
 			return {
 				name: `${field.name} (${collection})`,
 				field: `${field.field}:${collection}`,
 				collection: field.collection,
 				relatedCollection: collection,
-				key: context + `${field.field}:${collection}`,
+				key: keyContext + `${field.field}:${collection}`,
+				path: pathContext + `${field.field}:${collection}`,
+				type: field.type,
 			};
 		});
 	}
@@ -101,11 +123,12 @@ export function useFieldTree(
 		const relation = getRelationForField(field);
 		if (!relation?.meta) return [];
 		const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
+
 		switch (relationType) {
 			case 'o2m':
 				return [relation!.meta!.many_collection];
 			case 'm2o':
-				return [relation!.meta!.one_collection];
+				return [relation!.meta!.one_collection!];
 			case 'm2a':
 				return relation!.meta!.one_allowed_collections!;
 			default:
@@ -118,6 +141,7 @@ export function useFieldTree(
 			...relationsStore.getRelationsForField(field.collection, field.field),
 			...(inject?.value?.relations || []),
 		];
+
 		return relations.find(
 			(relation: Relation) =>
 				(relation.collection === field.collection && relation.field === field.field) ||
@@ -140,9 +164,13 @@ export function useFieldTree(
 	function loadFieldRelations(path: string) {
 		if (!visitedPaths.value.has(path)) {
 			visitedPaths.value.add(path);
+
 			const node = getNodeAtPath(path.split('.'), treeList.value);
+
 			for (const child of node?.children || []) {
-				child.children = getTree(child.relatedCollection, child);
+				if (child?.relatedCollection) {
+					child.children = getTree(child.relatedCollection, child);
+				}
 			}
 		}
 	}

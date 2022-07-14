@@ -29,11 +29,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType, computed } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
 import { useFieldTree } from '@/composables/use-field-tree';
+import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -77,6 +78,10 @@ export default defineComponent({
 		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
 		watch(() => props.modelValue, setContent, { immediate: true });
+
+		const grouplessTree = computed(() => {
+			return flattenFieldGroups(treeList.value);
+		});
 
 		onMounted(() => {
 			if (contentEl.value) {
@@ -164,15 +169,11 @@ export default defineComponent({
 			}
 		}
 
-		function addField(fieldKey: string) {
+		function addField(field: FieldTree) {
 			if (!contentEl.value) return;
 
-			const field = findTree(treeList.value, fieldKey.split('.'));
-
-			if (!field) return;
-
 			const button = document.createElement('button');
-			button.dataset.field = fieldKey;
+			button.dataset.field = field.key;
 			button.setAttribute('contenteditable', 'false');
 			button.innerText = String(field.name);
 
@@ -227,8 +228,8 @@ export default defineComponent({
 
 			const startOffset = range.startOffset;
 
-			const left = start.textContent?.substr(0, startOffset) || '';
-			const right = start.textContent?.substr(startOffset) || '';
+			const left = start.textContent?.slice(0, startOffset) || '';
+			const right = start.textContent?.slice(startOffset) || '';
 
 			start.innerText = left;
 
@@ -283,7 +284,7 @@ export default defineComponent({
 							loadFieldRelations(fieldPath.slice(0, i).join('.'));
 						}
 
-						const field = findTree(treeList.value, fieldPath);
+						const field = findTree(grouplessTree.value, fieldPath);
 
 						if (!field) return '';
 

@@ -1,6 +1,15 @@
 import { ClientFilterOperator, Type } from '../types';
 
-export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
+type GetFilterOperationsForTypeOptions = {
+	includeValidation?: boolean;
+};
+
+export function getFilterOperatorsForType(
+	type: Type,
+	opts?: GetFilterOperationsForTypeOptions
+): ClientFilterOperator[] {
+	const validationOnlyStringFilterOperators: ClientFilterOperator[] = opts?.includeValidation ? ['regex'] : [];
+
 	switch (type) {
 		// Text
 		case 'binary':
@@ -10,6 +19,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 			return [
 				'contains',
 				'ncontains',
+				'icontains',
 				'starts_with',
 				'nstarts_with',
 				'ends_with',
@@ -22,6 +32,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'nnull',
 				'in',
 				'nin',
+				...validationOnlyStringFilterOperators,
 			];
 
 		// JSON
@@ -46,22 +57,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		case 'dateTime':
 		case 'date':
 		case 'time':
-			return [
-				'eq',
-				'neq',
-				'null',
-				'nnull',
-				'lt',
-				'lte',
-				'gt',
-				'gte',
-				'between',
-				'nbetween',
-				'null',
-				'nnull',
-				'in',
-				'nin',
-			];
+			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
 
 		case 'geometry':
 			return ['null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
@@ -84,6 +80,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'nnull',
 				'in',
 				'nin',
+				...validationOnlyStringFilterOperators,
 			];
 	}
 }

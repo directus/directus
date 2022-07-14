@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Check for skippable jobs
         id: skip_check
-        # Switch back to fkirc/skip-duplicate-actions@master once https://github.com/fkirc/skip-duplicate-actions/pull/159 has been merged
+        # Switch back to fkirc/skip-duplicate-actions@master once https://github.com/fkirc/skip-duplicate-actions/pull/159 has been merged
         uses: paescuj/skip-duplicate-actions@path-filters
         # Don't skip any jobs if the pre-check should fail for any reason
         # (setting this on step-level makes sure the pre-check will still be marked as 'passed',
@@ -45,7 +45,10 @@ jobs:
                 - 'api/**/*'
                 - 'tests/**/*'
                 - 'docker-compose.yml'
-                - '.github/workflows/e2e-tests.yml'
+                - '.github/workflows/{ci,e2e-tests}.yml'
+
+  # Workflows are called in every case and need to handle the value of should_skip themselves.
+  # This is needed to pass required checks on pull requests.
 
   lint:
     name: Lint
@@ -73,4 +76,6 @@ jobs:
     needs: pre_check
     uses: directus/directus/.github/workflows/e2e-tests.yml@main
     with:
-      should_skip: ${{ needs.pre_check.outputs.should_skip == 'true' || fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}
+      should_skip:
+        ${{ needs.pre_check.outputs.should_skip == 'true' ||
+        fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}

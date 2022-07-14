@@ -16,17 +16,11 @@
 		<v-hover v-slot="{ hover }">
 			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
-					<v-button
-						v-tooltip.right="t('sign_out')"
-						tile
-						icon
-						x-large
-						:class="{ show: hover }"
-						class="sign-out"
-						@click="on"
-					>
-						<v-icon name="logout" />
-					</v-button>
+					<transition name="sign-out">
+						<v-button v-if="hover" v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
+							<v-icon name="logout" />
+						</v-button>
+					</transition>
 				</template>
 
 				<v-card>
@@ -42,8 +36,14 @@
 
 			<router-link :to="userProfileLink">
 				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
-					<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
-					<v-icon v-else name="account_circle" outline />
+					<img
+						v-if="avatarURL && !avatarError"
+						:src="avatarURL"
+						:alt="userFullName"
+						class="avatar-image"
+						@error="avatarError = $event"
+					/>
+					<v-icon v-else name="account_circle" />
 				</v-avatar>
 			</router-link>
 		</v-hover>
@@ -73,11 +73,11 @@ export default defineComponent({
 		const signOutActive = ref(false);
 
 		const avatarURL = computed<string | null>(() => {
-			if (userStore.currentUser === null) return null;
-			if (userStore.currentUser.avatar === null) return null;
-
+			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
 			return addTokenToURL(getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
+
+		const avatarError = ref(null);
 
 		const userProfileLink = computed<string>(() => {
 			const id = userStore.currentUser?.id;
@@ -90,7 +90,17 @@ export default defineComponent({
 
 		const userFullName = userStore.fullName;
 
-		return { t, userFullName, avatarURL, userProfileLink, signOutActive, signOutLink, notificationsDrawerOpen, unread };
+		return {
+			t,
+			userFullName,
+			avatarURL,
+			userProfileLink,
+			signOutActive,
+			signOutLink,
+			notificationsDrawerOpen,
+			unread,
+			avatarError,
+		};
 	},
 });
 </script>
@@ -162,21 +172,26 @@ export default defineComponent({
 		top: 0;
 		left: 0;
 		z-index: 2;
-		transform: translateY(-100%);
 		transition: transform var(--fast) var(--transition);
-
-		@media (min-width: 960px) {
-			transform: translateY(100%);
-		}
-
-		&.show {
-			transform: translateY(0%);
-		}
 
 		&:hover {
 			.v-icon {
-				--v-icon-color: var(--warning);
+				--v-icon-color: var(--primary);
 			}
+		}
+	}
+
+	.sign-out-enter-active,
+	.sign-out-leave-active {
+		transform: translateY(0%);
+	}
+
+	.sign-out-enter-from,
+	.sign-out-leave-to {
+		transform: translateY(-100%);
+
+		@media (min-width: 960px) {
+			transform: translateY(100%);
 		}
 	}
 }

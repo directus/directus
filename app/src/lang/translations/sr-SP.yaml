@@ -7,6 +7,7 @@ archived: Архивирано
 modules: Модули
 edit_field: Уреди поља
 conditions: Услови
+location: Локација
 maps: Мапе
 item_revision: Ревизија итема
 enter_a_name: Унесите име...
@@ -36,7 +37,6 @@ text: Текст
 auto_generate: Аутоматски генериши
 add_note: Додај помоћну напомену за кориснике...
 default_value: Подразумевана вредност
-clear_value: Обриши вредност
 title: Наслов
 leave_comment: Оставите коментар...
 months:
@@ -71,6 +71,7 @@ operators:
   contains: Садржи
 role: Рола
 create: Креирај
+flow_name: Име
 width: Ширина
 height: Висина
 wysiwyg_options:
@@ -126,6 +127,10 @@ fields:
     tfa_secret: Дво-факторска аутентификација
     status: Стање
     role: Рола
+  directus_shares:
+    name: Име
+    role: Рола
+    password: Лозинка
   directus_fields:
     display_template: Шаблон
   directus_roles:
@@ -166,6 +171,8 @@ interfaces:
 displays:
   collection:
     collection: Колекција
+  formatted-value:
+    text: Текст
   user:
     avatar: Аватар
     name: Име

@@ -24,6 +24,7 @@ import { hydrate } from '@/hydrate';
 import { useRouter } from 'vue-router';
 import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { logout } from '@/auth';
 
 export default defineComponent({
 	setup() {
@@ -54,6 +55,10 @@ export default defineComponent({
 						fields: ['email', 'first_name', 'last_name', 'last_page'],
 					},
 				});
+
+				if (response.data.data.share) {
+					await logout();
+				}
 
 				name.value = userName(response.data.data);
 				lastPage.value = response.data.data.last_page;

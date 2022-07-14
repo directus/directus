@@ -1,22 +1,27 @@
+import { BaseException } from '@directus/shared/exceptions';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
-import { Issuer, Client, generators, errors } from 'openid-client';
+import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import { LocalAuthDriver } from './local';
+import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
-import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, AuthData, SessionData } from '../../types';
 import {
-	InvalidCredentialsException,
-	ServiceUnavailableException,
 	InvalidConfigException,
+	InvalidCredentialsException,
 	InvalidTokenException,
+	ServiceUnavailableException,
 } from '../../exceptions';
-import { respond } from '../../middleware/respond';
-import asyncHandler from '../../utils/async-handler';
-import { Url } from '../../utils/url';
 import logger from '../../logger';
+import { respond } from '../../middleware/respond';
+import { AuthenticationService, UsersService } from '../../services';
+import { AuthData, AuthDriverOptions, User } from '../../types';
+import asyncHandler from '../../utils/async-handler';
+import { getConfigFromEnv } from '../../utils/get-config-from-env';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { Url } from '../../utils/url';
+import { LocalAuthDriver } from './local';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -34,6 +39,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		}
 
 		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', additionalConfig.provider, 'callback');
+
+		const clientOptionsOverrides = getConfigFromEnv(
+			`AUTH_${config.provider.toUpperCase()}_CLIENT_`,
+			[`AUTH_${config.provider.toUpperCase()}_CLIENT_ID`, `AUTH_${config.provider.toUpperCase()}_CLIENT_SECRET`],
+			'underscore'
+		);
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
@@ -56,10 +67,14 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 							client_secret: clientSecret,
 							redirect_uris: [this.redirectUrl],
 							response_types: ['code'],
+							...clientOptionsOverrides,
 						})
 					);
 				})
-				.catch(reject);
+				.catch((e) => {
+					logger.error(e, '[OpenID] Failed to fetch provider config');
+					process.exit(1);
+				});
 		});
 	}
 
@@ -100,6 +115,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier) {
+			logger.trace('[OpenID] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -113,25 +129,29 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				{ code: payload.code, state: payload.state },
 				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
 			);
+			userInfo = tokenSet.claims();
 
-			const issuer = client.issuer;
-			if (issuer.metadata.userinfo_endpoint) {
-				userInfo = await client.userinfo(tokenSet.access_token!);
-			} else {
-				userInfo = tokenSet.claims();
+			if (client.issuer.metadata.userinfo_endpoint) {
+				userInfo = {
+					...userInfo,
+					...(await client.userinfo(tokenSet.access_token!)),
+				};
 			}
 		} catch (e) {
 			throw handleError(e);
 		}
 
-		const { identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
+		// Flatten response to support dot indexes
+		userInfo = flatten(userInfo) as Record<string, unknown>;
 
-		const email = userInfo.email as string | null | undefined;
+		const { provider, identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
+
+		const email = userInfo.email ? String(userInfo.email) : undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey ?? 'sub'] as string | null | undefined) ?? email;
+		const identifier = userInfo[identifierKey ?? 'sub'] ? String(userInfo[identifierKey ?? 'sub']) : email;
 
 		if (!identifier) {
-			logger.warn(`Failed to find user identifier for provider "${this.config.provider}"`);
+			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -151,11 +171,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
+			logger.trace(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
 		await this.usersService.createOne({
-			provider: this.config.provider,
+			provider,
 			first_name: userInfo.given_name,
 			last_name: userInfo.family_name,
 			email: email,
@@ -167,18 +188,18 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User): Promise<SessionData> {
-		return this.refresh(user, null);
+	async login(user: User): Promise<void> {
+		return this.refresh(user);
 	}
 
-	async refresh(user: User, sessionData: SessionData): Promise<SessionData> {
+	async refresh(user: User): Promise<void> {
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
 			try {
-				authData = JSON.parse(authData);
+				authData = parseJSON(authData);
 			} catch {
-				logger.warn(`Session data isn't valid JSON: ${authData}`);
+				logger.warn(`[OpenID] Session data isn't valid JSON: ${authData}`);
 			}
 		}
 
@@ -196,8 +217,6 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				throw handleError(e);
 			}
 		}
-
-		return sessionData;
 	}
 }
 
@@ -205,17 +224,23 @@ const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
+			logger.trace(e, `[OpenID] Invalid grant`);
 			return new InvalidTokenException();
 		}
+
 		// Server response error
+		logger.trace(e, `[OpenID] Unknown OP error`);
 		return new ServiceUnavailableException('Service returned unexpected response', {
 			service: 'openid',
 			message: e.error_description,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
+		logger.trace(e, `[OpenID] Unknown RP error`);
 		return new InvalidCredentialsException();
 	}
+
+	logger.trace(e, `[OpenID] Unknown error`);
 	return e;
 };
 
@@ -263,7 +288,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			const authenticationService = new AuthenticationService({
 				accountability: {
-					ip: req.ip,
+					ip: getIPFromReq(req),
 					userAgent: req.get('user-agent'),
 					role: null,
 				},
@@ -295,17 +320,16 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof ServiceUnavailableException) {
-						reason = 'SERVICE_UNAVAILABLE';
-					} else if (error instanceof InvalidCredentialsException) {
-						reason = 'INVALID_USER';
-					} else if (error instanceof InvalidTokenException) {
-						reason = 'INVALID_TOKEN';
+					if (error instanceof BaseException) {
+						reason = error.code;
+					} else {
+						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}
 
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
 
+				logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 				throw error;
 			}
 

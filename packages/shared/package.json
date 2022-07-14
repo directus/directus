@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.2.2",
+	"version": "9.14.1",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -33,14 +33,15 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"sideEffects": false,
 	"scripts": {
 		"build": "run-p \"build:* -- {@}\" --",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
-		"test": "jest --coverage",
-		"test:watch": "jest --coverage --watchAll",
+		"test": "jest",
+		"test:watch": "jest --watchAll",
 		"prepublishOnly": "npm run cleanup && npm run build"
 	},
 	"author": "Nicola Krumschmidt",
@@ -49,21 +50,28 @@
 	],
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"axios": "*",
 		"date-fns": "2.24.0",
-		"express": "*",
 		"fs-extra": "10.0.0",
-		"geojson": "*",
 		"joi": "17.4.2",
-		"knex": "*",
-		"knex-schema-inspector": "^1.6.6",
 		"lodash": "4.17.21",
+		"micromustache": "^8.0.3"
+	},
+	"peerDependencies": {
+		"@types/express": "*",
+		"@types/geojson": "*",
+		"@types/pino": "*",
+		"axios": "*",
+		"express": "*",
+		"geojson": "*",
+		"knex": "*",
+		"knex-schema-inspector": "*",
 		"pino": "*",
 		"vue": "3",
 		"vue-i18n": "9",
 		"vue-router": "4"
 	},
 	"devDependencies": {
+		"@types/tmp": "^0.2.3",
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
 		"tmp": "0.2.1",

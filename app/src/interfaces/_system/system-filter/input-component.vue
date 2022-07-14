@@ -24,14 +24,47 @@
 		:model-value="value"
 		:placeholder="t('select')"
 		allow-other
+		group-selectable
 		@update:model-value="emitValue($event)"
 	/>
+	<template v-else-if="is === 'interface-datetime'">
+		<input
+			ref="inputEl"
+			type="text"
+			:pattern="inputPattern"
+			:value="value"
+			:style="{ width }"
+			placeholder="--"
+			@input="emitValue($event.target.value)"
+		/>
+		<v-menu
+			ref="dateTimeMenu"
+			:close-on-content-click="false"
+			:show-arrow="true"
+			placement="bottom-start"
+			seamless
+			full-height
+		>
+			<template #activator="{ toggle }">
+				<v-icon class="preview" name="event" small @click="toggle" />
+			</template>
+			<div class="date-input">
+				<v-date-picker
+					:type="type"
+					:model-value="value"
+					@update:model-value="emitValue"
+					@close="dateTimeMenu?.deactivate"
+				/>
+			</div>
+		</v-menu>
+	</template>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
 		<template #activator="{ toggle }">
 			<v-icon
 				v-if="type.startsWith('geometry') || type === 'json'"
 				class="preview"
 				:name="type === 'json' ? 'integration_instructions' : 'map'"
+				small
 				@click="toggle"
 			/>
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
@@ -80,6 +113,8 @@ export default defineComponent({
 		const inputEl = ref<HTMLElement>();
 		const { t } = useI18n();
 
+		const dateTimeMenu = ref();
+
 		const displayValue = computed(() => {
 			if (props.value === null) return null;
 			if (props.value === undefined) return null;
@@ -114,7 +149,7 @@ export default defineComponent({
 			if (props.focus) inputEl.value?.focus();
 		});
 
-		return { displayValue, width, t, emitValue, inputEl, inputPattern };
+		return { displayValue, width, t, emitValue, inputEl, inputPattern, dateTimeMenu };
 
 		function emitValue(val: unknown) {
 			if (val === '') {
@@ -187,5 +222,9 @@ input {
 .dialog {
 	position: relative;
 	min-width: 800px;
+}
+
+.date-input {
+	min-width: 400px;
 }
 </style>

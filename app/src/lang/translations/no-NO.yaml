@@ -21,15 +21,20 @@
 #'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Profilbilde
+application: Applikasjon
 default_provider: Standard
 published: Publisert
 draft: Utkast
 archived: Arkivert
 modules: Moduler
 module_bar: Modul Bar
+reset_width: Reset Width
+tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
+location: Lokasjon
 maps: Kart
+switch_user: Bytt bruker
 item_creation: Objekt opprettelse
 item_revision: Element revisjoner
 enter_a_name: Angi et navn...
@@ -37,6 +42,7 @@ duplicate_field: Dupliser felt
 half_width: Halv vidde
 full_width: Fullbredde
 group: Gruppe
+export_items: Eksporter produkter
 and: Og
 or: Eller
 fill_width: Fyll vidde
@@ -51,7 +57,9 @@ edit_collection: Rediger samling
 exclusive: Eksklusiv
 children: Barn
 db_only_click_to_configure: 'Kun database: Klikk for å konfigurere'
+show_active_items: Show Active Items
 show_archived_items: Vis arkiverte elementer
+show_all_items: Show Active Items
 edited: Verdi endret
 required: Påkrevd
 required_for_app_access: Påkrevd for app-tilgang
@@ -78,7 +86,6 @@ delete_folder: Slett mappe
 prefix: Prefiks
 suffix: Suffiks
 reset_bookmark: Tilbakestill bokmerke
-rename_bookmark: Endre navn på bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
 delete_bookmark_copy: >-
@@ -108,7 +115,6 @@ recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
-unknown_validation_errors: 'Det oppstod valideringsfeil for følgende skjulte felter:'
 validationError:
   eq: Verdien må være {valid}
   neq: Verdien kan ikke være {invalid}
@@ -256,9 +262,6 @@ dismiss: Lukk
 raw_value: Rå verdi
 edit_raw_value: Rediger råverdi
 enter_raw_value: Legg inn råverdi...
-clear_value: Tøm innhold
-reset_to_default: Tilbakestill til standard
-undo_changes: Angre endringer
 notifications: Varsler
 show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet
@@ -287,10 +290,8 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
-export_data: Eksporter data
+label_import: Importer
 format: Format
-use_current_filters_settings: Bruk gjeldende filtre og innstillinger
-export_collection: 'Eksporter {collection}'
 last_page: Siste side
 last_access: Siste tilgang
 fill_template: Fyll med malverdi
@@ -306,6 +307,10 @@ interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
+functions:
+  year: År
+  month: Måned
+  count: Antall
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -361,8 +366,11 @@ save_and_stay: Lagre og fortsett
 save_as_copy: Lagre som kopi
 add_existing: Legge til eksisterende
 creating_items: Oppretter elementer
+selecting_items: Velg elementer
 comments: Kommentarer
+select_item: Velg element
 no_items: Ingen elementer
+search_items: Søk etter elementer...
 disabled: Deaktivert
 information: Informasjon
 request_feature: Foreslå ny funksjon
@@ -476,7 +484,6 @@ unexpected_error_copy: En uventet feil oppstod, vennligst forsøk igjen.
 copy_details: Kopier detaljer
 no_app_access: Ingen app-tilgang
 no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
-password_reset_sent: Vi har sendt deg en sikker lenke for å tilbakestille passordet ditt
 password_reset_successful: Passord tilbakestilt
 back: Tilbake
 filter: Filter
@@ -497,10 +504,9 @@ start_end_of_count_items: '{start}–{end} av {count} artikler'
 start_end_of_count_filtered_items: '{start}–{end} av {count} filtrerte artikler'
 one_item: '1 element'
 one_filtered_item: '1 filtrert element'
-delete_collection_are_you_sure: >-
-  Er du sikker på at du vil slette denne samlingen? Dette vil slette samlingen og alle elementene i den. Denne handlingen er permanent.
 collections_shown: Samlinger vises
 visible_collections: Synlige samlinger
+empty_item: Tomt element
 operators:
   lt: Mindre enn
   gt: Større enn
@@ -510,13 +516,17 @@ operators:
   ncontains: Inneholder ikke
   empty: Er tom
 loading: Laster...
+item: Element
+items: Elementer
 value_unique: Verdien må være unik
+create_item: Opprette element
 no_results: Ingen treff
 create: Opprett
 on_update: Ved oppdatering
 read: Les
 update: Oppdater
 select_fields: Velg felter
+flow_name: Navn
 wysiwyg_options:
   backcolor: Bakgrunnsfarge
   remove: Fjern
@@ -575,6 +585,9 @@ fields:
   directus_settings:
     project_name: Prosjektnavn
     module_bar: Modul Bar
+  directus_shares:
+    name: Navn
+    password: Passord
   directus_fields:
     note: Notat
     hidden: Skjult
@@ -676,6 +689,8 @@ interfaces:
     interface: Grensesnitt
   input-rich-text-md:
     edit: Rediger
+  list:
+    sort: Sorter
   tags:
     tags: Etiketter
   boolean:
@@ -689,8 +704,15 @@ displays:
     collection: Kolleksjon
   datetime:
     format: Format
+    suffix: Suffiks
   file:
     file: Fil
+  formatted-value:
+    format: Format
+    prefix: Prefiks
+    suffix: Suffiks
+    icon: Ikon
+    text: Tekst
   icon:
     icon: Ikon
   labels:
@@ -706,8 +728,10 @@ layouts:
     subtitle: Undertittel
   tabular:
     tabular: Tabell
-    fields: Felter
     spacing: Mellomrom
     comfortable: Komfortabel
     compact: Kompakt
     cozy: Cozy
+operations:
+  request:
+    url: URL

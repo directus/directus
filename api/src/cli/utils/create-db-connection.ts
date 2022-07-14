@@ -1,5 +1,6 @@
 import { knex, Knex } from 'knex';
 import path from 'path';
+import { promisify } from 'util';
 
 export type Credentials = {
 	filename?: string;
@@ -12,7 +13,7 @@ export type Credentials = {
 	options__encrypt?: boolean;
 };
 export default function createDBConnection(
-	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
+	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql' | 'cockroachdb',
 	credentials: Credentials
 ): Knex<any, unknown[]> {
 	let connection: Knex.Config['connection'] = {};
@@ -34,7 +35,7 @@ export default function createDBConnection(
 			password: password,
 		};
 
-		if (client === 'pg') {
+		if (client === 'pg' || client === 'cockroachdb') {
 			const { ssl } = credentials as Credentials;
 			connection['ssl'] = ssl;
 		}
@@ -55,10 +56,22 @@ export default function createDBConnection(
 			extension: 'js',
 			directory: path.resolve(__dirname, '../../database/seeds/'),
 		},
+		pool: {},
 	};
 
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
+	}
+
+	if (client === 'cockroachdb') {
+		knexConfig.pool!.afterCreate = async (conn: any, callback: any) => {
+			const run = promisify(conn.query.bind(conn));
+
+			await run('SET serial_normalization = "sql_sequence"');
+			await run('SET default_int_size = 4');
+
+			callback(null, conn);
+		};
 	}
 
 	const db = knex(knexConfig);

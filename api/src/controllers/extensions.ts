@@ -19,7 +19,7 @@ router.get(
 
 		const extensionManager = getExtensionManager();
 
-		const extensions = extensionManager.listExtensions(type);
+		const extensions = extensionManager.getExtensionsList(type);
 
 		res.locals.payload = {
 			data: extensions,

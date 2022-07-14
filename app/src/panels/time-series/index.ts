@@ -1,11 +1,43 @@
+import { getGroups } from '@/utils/get-groups';
 import { definePanel } from '@directus/shared/utils';
-import PanelTimeSeries from './time-series.vue';
+import PanelTimeSeries from './panel-time-series.vue';
 
 export default definePanel({
 	id: 'time-series',
 	name: '$t:panels.time_series.name',
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
+	query(options) {
+		if (!options?.function || !options.valueField || !options.dateField) {
+			return;
+		}
+
+		return {
+			collection: options.collection,
+			query: {
+				group: getGroups(options.precision, options.dateField),
+				aggregate: {
+					[options.function]: [options.valueField],
+				},
+				filter: {
+					_and: [
+						{
+							[options.dateField]: {
+								_gte: `$NOW(-${options.range || '1 week'})`,
+							},
+						},
+						{
+							[options.dateField]: {
+								_lte: `$NOW`,
+							},
+						},
+						options.filter || {},
+					],
+				},
+				limit: -1,
+			},
+		};
+	},
 	component: PanelTimeSeries,
 	options: [
 		{
@@ -24,9 +56,6 @@ export default definePanel({
 			field: 'color',
 			name: '$t:color',
 			type: 'string',
-			schema: {
-				default_value: '#00C897',
-			},
 			meta: {
 				interface: 'select-color',
 				width: 'half',
@@ -47,7 +76,7 @@ export default definePanel({
 						},
 						{
 							text: 'Count (Distinct)',
-							value: 'count_distinct',
+							value: 'countDistinct',
 						},
 						{
 							text: 'Average',
@@ -55,7 +84,7 @@ export default definePanel({
 						},
 						{
 							text: 'Average (Distinct)',
-							value: 'avg_distinct',
+							value: 'avgDistinct',
 						},
 						{
 							text: 'Sum',
@@ -63,7 +92,7 @@ export default definePanel({
 						},
 						{
 							text: 'Sum (Distinct)',
-							value: 'sum_distinct',
+							value: 'sumDistinct',
 						},
 						{
 							text: 'Minimum',
@@ -197,11 +226,24 @@ export default definePanel({
 			name: '$t:panels.time_series.value_field',
 			meta: {
 				interface: 'system-field',
+				width: 'half',
 				options: {
 					collectionField: 'collection',
 					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 				},
-				width: 'half',
+				conditions: [
+					{
+						rule: {
+							function: {
+								_in: ['count', 'countDistinct'],
+							},
+						},
+						options: {
+							allowPrimaryKey: true,
+							typeAllowList: ['integer', 'bigInteger', 'uuid', 'string'],
+						},
+					},
+				],
 			},
 		},
 		{
@@ -335,6 +377,6 @@ export default definePanel({
 			},
 		},
 	],
-	minWidth: 16,
-	minHeight: 8,
+	minWidth: 12,
+	minHeight: 6,
 });

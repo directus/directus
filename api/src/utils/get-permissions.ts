@@ -1,15 +1,15 @@
-import { Permission, Accountability } from '@directus/shared/types';
-import { deepMap, parseFilter } from '@directus/shared/utils';
+import { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
+import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
+import hash from 'object-hash';
+import { getCache, setSystemCache } from '../cache';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { mergePermissions } from '../utils/merge-permissions';
-import { UsersService } from '../services/users';
-import { RolesService } from '../services/roles';
-import { getCache } from '../cache';
-import hash from 'object-hash';
 import env from '../env';
-import { SchemaOverview } from '../types';
+import { RolesService } from '../services/roles';
+import { UsersService } from '../services/users';
+import { mergePermissions } from '../utils/merge-permissions';
+import { mergePermissionsForShare } from './merge-permissions-for-share';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
@@ -17,8 +17,8 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 
 	let permissions: Permission[] = [];
 
-	const { user, role, app, admin } = accountability;
-	const cacheKey = `permissions-${hash({ user, role, app, admin })}`;
+	const { user, role, app, admin, share_scope } = accountability;
+	const cacheKey = `permissions-${hash({ user, role, app, admin, share_scope })}`;
 
 	if (env.CACHE_PERMISSIONS !== false) {
 		const cachedPermissions = await systemCache.get(cacheKey);
@@ -57,10 +57,15 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	}
 
 	if (accountability.admin !== true) {
-		const permissionsForRole = await database
-			.select('*')
-			.from('directus_permissions')
-			.where({ role: accountability.role });
+		const query = database.select('*').from('directus_permissions');
+
+		if (accountability.role) {
+			query.where({ role: accountability.role });
+		} else {
+			query.whereNull('role');
+		}
+
+		const permissionsForRole = await query;
 
 		const {
 			permissions: parsedPermissions,
@@ -72,9 +77,14 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 
 		if (accountability.app === true) {
 			permissions = mergePermissions(
+				'or',
 				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability!.role }))
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
 			);
+		}
+
+		if (accountability.share_scope) {
+			permissions = mergePermissionsForShare(permissions, accountability, schema);
 		}
 
 		const filterContext = containDynamicData
@@ -82,7 +92,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			: {};
 
 		if (env.CACHE_PERMISSIONS !== false) {
-			await systemCache.set(cacheKey, { permissions, containDynamicData });
+			await setSystemCache(cacheKey, { permissions, containDynamicData });
 
 			if (containDynamicData && env.CACHE_ENABLED !== false) {
 				await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
@@ -107,19 +117,19 @@ function parsePermissions(permissions: any[]) {
 		const permission = cloneDeep(permissionRaw);
 
 		if (permission.permissions && typeof permission.permissions === 'string') {
-			permission.permissions = JSON.parse(permission.permissions);
+			permission.permissions = parseJSON(permission.permissions);
 		} else if (permission.permissions === null) {
 			permission.permissions = {};
 		}
 
 		if (permission.validation && typeof permission.validation === 'string') {
-			permission.validation = JSON.parse(permission.validation);
+			permission.validation = parseJSON(permission.validation);
 		} else if (permission.validation === null) {
 			permission.validation = {};
 		}
 
 		if (permission.presets && typeof permission.presets === 'string') {
-			permission.presets = JSON.parse(permission.presets);
+			permission.presets = parseJSON(permission.presets);
 		} else if (permission.presets === null) {
 			permission.presets = {};
 		}
@@ -183,7 +193,7 @@ function processPermissions(
 	return permissions.map((permission) => {
 		permission.permissions = parseFilter(permission.permissions, accountability!, filterContext);
 		permission.validation = parseFilter(permission.validation, accountability!, filterContext);
-		permission.presets = parseFilter(permission.presets, accountability!, filterContext);
+		permission.presets = parsePreset(permission.presets, accountability!, filterContext);
 
 		return permission;
 	});

@@ -41,6 +41,7 @@
 					<v-input
 						v-model="maxLength"
 						type="number"
+						:min="1"
 						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
 						:disabled="isExisting || type !== 'string'"
 					/>
@@ -109,7 +110,7 @@
 				/>
 				<interface-input-code
 					v-else-if="type === 'json'"
-					:value="defaultValue || ''"
+					:value="defaultValue"
 					language="JSON"
 					placeholder="NULL"
 					type="json"

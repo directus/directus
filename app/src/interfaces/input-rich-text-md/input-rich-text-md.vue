@@ -1,15 +1,15 @@
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view[0], { disabled }]">
 		<div class="toolbar">
 			<template v-if="view[0] !== 'preview'">
 				<v-menu
-					v-if="toolbar.includes('heading')"
+					v-if="toolbar?.includes('heading')"
 					show-arrow
 					placement="bottom-start"
 					:class="[{ active: view[0] !== 'preview' }]"
 				>
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
+						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="format_size" />
 						</v-button>
 					</template>
@@ -22,8 +22,9 @@
 				</v-menu>
 
 				<v-button
-					v-if="toolbar.includes('bold')"
+					v-if="toolbar?.includes('bold')"
 					v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('bold')"
@@ -31,8 +32,9 @@
 					<v-icon name="format_bold" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('italic')"
+					v-if="toolbar?.includes('italic')"
 					v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('italic')"
@@ -40,8 +42,9 @@
 					<v-icon name="format_italic" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('strikethrough')"
+					v-if="toolbar?.includes('strikethrough')"
 					v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('strikethrough')"
@@ -49,8 +52,9 @@
 					<v-icon name="format_strikethrough" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('bullist')"
+					v-if="toolbar?.includes('bullist')"
 					v-tooltip="t('wysiwyg_options.bullist')"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('listBulleted')"
@@ -58,8 +62,9 @@
 					<v-icon name="format_list_bulleted" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('numlist')"
+					v-if="toolbar?.includes('numlist')"
 					v-tooltip="t('wysiwyg_options.numlist')"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('listNumbered')"
@@ -67,8 +72,9 @@
 					<v-icon name="format_list_numbered" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('blockquote')"
+					v-if="toolbar?.includes('blockquote')"
 					v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('blockquote')"
@@ -76,8 +82,9 @@
 					<v-icon name="format_quote" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('code')"
+					v-if="toolbar?.includes('code')"
 					v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('code')"
@@ -85,8 +92,9 @@
 					<v-icon name="code" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('link')"
+					v-if="toolbar?.includes('link')"
 					v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('link')"
@@ -94,9 +102,9 @@
 					<v-icon name="insert_link" />
 				</v-button>
 
-				<v-menu v-if="toolbar.includes('table')" show-arrow :close-on-content-click="false">
+				<v-menu v-if="toolbar?.includes('table')" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
+						<v-button v-tooltip="t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="table_chart" />
 						</v-button>
 					</template>
@@ -129,8 +137,9 @@
 				</v-menu>
 
 				<v-button
-					v-if="toolbar.includes('image')"
+					v-if="toolbar?.includes('image')"
 					v-tooltip="t('wysiwyg_options.image')"
+					:disabled="disabled"
 					small
 					icon
 					@click="imageDialogOpen = true"
@@ -142,6 +151,7 @@
 					v-for="custom in customSyntax"
 					:key="custom.name"
 					v-tooltip="custom.name"
+					:disabled="disabled"
 					small
 					icon
 					@click="edit('custom', custom)"
@@ -163,17 +173,35 @@
 		</div>
 
 		<div ref="codemirrorEl"></div>
+		<template v-if="softLength">
+			<span
+				class="remaining"
+				:class="{
+					warning: percRemaining < 10,
+					danger: percRemaining < 5,
+				}"
+			>
+				{{ softLength - count }}
+			</span>
+		</template>
+		<div
+			v-md="markdownString"
+			class="preview-box"
+			:style="view[0] === 'preview' ? 'display:block' : 'display:none'"
+		></div>
 
-		<div v-if="view[0] === 'preview'" v-md="markdownString" class="preview-box"></div>
-
-		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
+		<v-dialog
+			:model-value="imageDialogOpen"
+			@esc="imageDialogOpen = false"
+			@update:model-value="imageDialogOpen = false"
+		>
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload from-url from-library @input="onImageUpload" />
+					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="imageDialogOpen = null">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = false">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -190,10 +218,10 @@ import 'codemirror/addon/display/placeholder.js';
 
 import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
-import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
+import { percentage } from '@/utils/percentage';
+import { useWindowSize } from '@/composables/use-window-size';
 
 export default defineComponent({
 	props: {
@@ -243,10 +271,20 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		softLength: {
+			type: Number,
+			default: undefined,
+		},
+		folder: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const { width } = useWindowSize();
 
 		const markdownInterface = ref<HTMLElement>();
 		const codemirrorEl = ref<HTMLTextAreaElement>();
@@ -256,14 +294,30 @@ export default defineComponent({
 
 		const imageDialogOpen = ref(false);
 
+		let count = ref(0);
+
+		const readOnly = computed(() => {
+			if (width.value < 600) {
+				// mobile requires 'nocursor' to avoid bringing up the keyboard
+				return props.disabled ? 'nocursor' : false;
+			} else {
+				// desktop cannot use 'nocursor' as it prevents copy/paste
+				return props.disabled;
+			}
+		});
+
 		onMounted(async () => {
 			if (codemirrorEl.value) {
 				codemirror = CodeMirror(codemirrorEl.value, {
 					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
 					lineWrapping: true,
+					readOnly: readOnly.value,
+					cursorBlinkRate: props.disabled ? -1 : 530,
 					placeholder: props.placeholder,
 					value: props.value || '',
+					spellcheck: true,
+					inputStyle: 'contenteditable',
 				});
 
 				codemirror.on('change', (cm, { origin }) => {
@@ -273,6 +327,18 @@ export default defineComponent({
 
 					emit('input', content);
 				});
+			}
+
+			if (markdownInterface.value) {
+				const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+
+				const observer = new MutationObserver(() => {
+					count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
+				});
+
+				const config = { characterData: true, childList: true, subtree: true };
+
+				observer.observe(previewBox, config);
 			}
 		});
 
@@ -292,6 +358,15 @@ export default defineComponent({
 			}
 		);
 
+		watch(
+			() => props.disabled,
+			(disabled) => {
+				codemirror?.setOption('readOnly', readOnly.value);
+				codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
+			},
+			{ immediate: true }
+		);
+
 		const editFamily = computed(() => {
 			return `var(--family-${props.editorFont})`;
 		});
@@ -301,20 +376,7 @@ export default defineComponent({
 		});
 
 		const markdownString = computed(() => {
-			let mdString = props.value || '';
-
-			if (!props.imageToken) {
-				const baseUrl = getPublicURL() + 'assets/';
-				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
-
-				const images = Array.from(mdString.matchAll(regex));
-
-				for (const image of images) {
-					mdString = mdString.replace(image[1], addTokenToURL(image[1]));
-				}
-			}
-
-			return mdString;
+			return props.value || '';
 		});
 
 		const table = reactive({
@@ -322,6 +384,7 @@ export default defineComponent({
 			columns: 4,
 		});
 
+		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 		useShortcut('meta+b', () => edit('bold'), markdownInterface);
 		useShortcut('meta+i', () => edit('italic'), markdownInterface);
 		useShortcut('meta+k', () => edit('link'), markdownInterface);
@@ -337,6 +400,8 @@ export default defineComponent({
 
 		return {
 			t,
+			percRemaining,
+			count,
 			codemirrorEl,
 			edit,
 			view,
@@ -360,7 +425,7 @@ export default defineComponent({
 				url += '?access_token=' + props.imageToken;
 			}
 
-			codemirror.replaceSelection(`![](${url})`);
+			codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
 
 			imageDialogOpen.value = false;
 		}
@@ -390,11 +455,21 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 }
 
+.interface-input-rich-text-md.disabled {
+	background-color: var(--background-subdued);
+}
+
+.interface-input-rich-text-md:not(.disabled):focus-within {
+	border-color: var(--primary);
+	box-shadow: 0 0 16px -8px var(--primary);
+}
+
 textarea {
 	display: none;
 }
 
 .preview-box {
+	display: none;
 	padding: 20px;
 }
 
@@ -478,6 +553,25 @@ textarea {
 	font-size: 15px;
 	font-family: v-bind(previewFamily), serif;
 	line-height: 24px;
+}
+
+.remaining {
+	position: absolute;
+	right: 10px;
+	bottom: 5px;
+	color: var(--foreground-subdued);
+	font-weight: 600;
+	text-align: right;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.warning {
+	color: var(--warning);
+}
+
+.danger {
+	color: var(--danger);
 }
 
 .preview-box :deep(ul ul),
@@ -569,10 +663,15 @@ textarea {
 	text-align: center;
 }
 
+.interface-input-rich-text-md.disabled .preview-box {
+	color: var(--foreground-subdued);
+}
+
 .interface-input-rich-text-md :deep(.CodeMirror) {
 	font-family: v-bind(editFamily), sans-serif;
 	border: none;
 	border-radius: 0;
+	box-shadow: none;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {

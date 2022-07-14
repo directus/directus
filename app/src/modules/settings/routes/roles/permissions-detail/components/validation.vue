@@ -45,6 +45,7 @@ export default defineComponent({
 					interface: 'system-filter',
 					options: {
 						collectionName: permissionSync.value.collection,
+						includeValidation: true,
 					},
 				},
 			},

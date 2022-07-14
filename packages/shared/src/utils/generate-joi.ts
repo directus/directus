@@ -72,7 +72,8 @@ const defaults: JoiOptions = {
  * @param {JoiOptions} [options] - Options for the schema generation.
  * @returns {AnySchema} Joi schema.
  */
-export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchema {
+
+export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): AnySchema {
 	filter = filter || {};
 
 	options = merge({}, defaults, options);
@@ -92,9 +93,7 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 	}
 
 	if (Object.keys(value)[0]?.startsWith('_') === false) {
-		schema[key] = Joi.object({
-			[key]: generateJoi(value as FieldFilter, options),
-		});
+		schema[key] = generateJoi(value as FieldFilter, options);
 	} else {
 		const operator = Object.keys(value)[0];
 		const compareValue = Object.values(value)[0];
@@ -113,37 +112,69 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_contains') {
-			schema[key] = getStringSchema().contains(compareValue);
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().contains(compareValue);
+			}
+		}
+
+		if (operator === '_icontains') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().contains(compareValue);
+			}
 		}
 
 		if (operator === '_ncontains') {
-			schema[key] = getStringSchema().ncontains(compareValue);
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().ncontains(compareValue);
+			}
 		}
 
 		if (operator === '_starts_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
-				name: 'starts_with',
-			});
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`), {
+					name: 'starts_with',
+				});
+			}
 		}
 
 		if (operator === '_nstarts_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
-				name: 'starts_with',
-				invert: true,
-			});
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`), {
+					name: 'starts_with',
+					invert: true,
+				});
+			}
 		}
 
 		if (operator === '_ends_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
-				name: 'ends_with',
-			});
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`), {
+					name: 'ends_with',
+				});
+			}
 		}
 
 		if (operator === '_nends_with') {
-			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
-				name: 'ends_with',
-				invert: true,
-			});
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`), {
+					name: 'ends_with',
+					invert: true,
+				});
+			}
 		}
 
 		if (operator === '_in') {
@@ -155,27 +186,31 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_gt') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().greater(compareValue)
-				: getDateSchema().greater(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate
+				? getDateSchema().greater(compareValue as string | Date)
+				: getNumberSchema().greater(Number(compareValue));
 		}
 
 		if (operator === '_gte') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().min(compareValue)
-				: getDateSchema().min(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate
+				? getDateSchema().min(compareValue as string | Date)
+				: getNumberSchema().min(Number(compareValue));
 		}
 
 		if (operator === '_lt') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().less(compareValue)
-				: getDateSchema().less(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate
+				? getDateSchema().less(compareValue as string | Date)
+				: getNumberSchema().less(Number(compareValue));
 		}
 
 		if (operator === '_lte') {
-			schema[key] = Number.isSafeInteger(compareValue)
-				? getNumberSchema().max(compareValue)
-				: getDateSchema().max(compareValue);
+			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+			schema[key] = isDate
+				? getDateSchema().max(compareValue as string | Date)
+				: getNumberSchema().max(Number(compareValue));
 		}
 
 		if (operator === '_null') {
@@ -195,19 +230,29 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_between') {
-			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+			if (
+				(compareValue as any).every((value: any) => {
+					const val = Number(value instanceof Date ? NaN : value);
+					return !Number.isNaN(val) && Math.abs(val) <= Number.MAX_SAFE_INTEGER;
+				})
+			) {
 				const values = compareValue as [number, number];
-				schema[key] = getNumberSchema().greater(values[0]).less(values[1]);
+				schema[key] = getNumberSchema().min(Number(values[0])).max(Number(values[1]));
 			} else {
 				const values = compareValue as [string, string];
-				schema[key] = getDateSchema().greater(values[0]).less(values[1]);
+				schema[key] = getDateSchema().min(values[0]).max(values[1]);
 			}
 		}
 
 		if (operator === '_nbetween') {
-			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+			if (
+				(compareValue as any).every((value: any) => {
+					const val = Number(value instanceof Date ? NaN : value);
+					return !Number.isNaN(val) && Math.abs(val) <= Number.MAX_SAFE_INTEGER;
+				})
+			) {
 				const values = compareValue as [number, number];
-				schema[key] = getNumberSchema().less(values[0]).greater(values[1]);
+				schema[key] = getNumberSchema().less(Number(values[0])).greater(Number(values[1]));
 			} else {
 				const values = compareValue as [string, string];
 				schema[key] = getDateSchema().less(values[0]).greater(values[1]);
@@ -219,8 +264,13 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_regex') {
-			const wrapped = compareValue.startsWith('/') && compareValue.endsWith('/');
-			schema[key] = getStringSchema().regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
+			if (compareValue === null || compareValue === undefined) {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				const wrapped =
+					typeof compareValue === 'string' ? compareValue.startsWith('/') && compareValue.endsWith('/') : false;
+				schema[key] = getStringSchema().regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue));
+			}
 		}
 	}
 

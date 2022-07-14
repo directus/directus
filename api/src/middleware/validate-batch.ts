@@ -27,8 +27,10 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete'): RequestHandl
 			batchSchema = batchSchema.xor('query', 'keys');
 		}
 
-		// In updates, we add a required `data` that holds the update payload
+		// In updates, we add a required `data` that holds the update payload if an array isn't used
 		if (scope === 'update') {
+			if (Array.isArray(req.body)) return next();
+
 			batchSchema = batchSchema.keys({
 				data: Joi.object().unknown().required(),
 			});

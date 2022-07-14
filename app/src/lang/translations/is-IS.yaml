@@ -1,4 +1,17 @@
 ---
+edit_translation_string: Breyta þýðingastreng
+invite_users: Bjóða notendum
+invite: Bjóða
+update_bookmark: Uppfæra bókamerki
+delete_bookmark: Eyða bókamerki
+delete_global_bookmark: Eyða altæku bókamerki
+logoutReason:
+  SIGN_OUT: Skráð út
+  SESSION_EXPIRED: Lota útrunnin
+public_label: Almennt
+os_type: Gerð stýrikerfis
+os_version: Útgáfa stýrikerfis
+os_uptime: Uppitími stýrikerfis
 activity: Virkni
 choices: Val
 add_new: Bæta við nýjum
