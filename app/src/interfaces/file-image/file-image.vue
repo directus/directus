@@ -41,7 +41,7 @@
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />
 				</v-button>
-				<v-button v-tooltip="t('edit')" icon rounded @click="editImageEditor = true">
+				<v-button v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
 					<v-icon name="tune" />
 				</v-button>
 				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
