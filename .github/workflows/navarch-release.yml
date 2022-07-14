@@ -1,0 +1,189 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: "asia-southeast1"
+  GAR_ROOT: "${{ env.GCP_REGION }}-docker.pkg.dev"
+  # Matches artifactregistry.tf
+  NPM_REPO: "${{ github.repository }}-npm"
+  # Matches artifactregistry.tf
+  DOCKER_REPO: "${{ github.repository }}-docker"
+  GAR_PATH: "${{ env.GAR_ROOT }}/${{ env.GCP_PROJECT }}/${{ env.DOCKER_REPO }}"
+  GAR_IMAGE: ${{ env.GAR_PATH }}/${{ github.repository }}
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            Directus ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  build:
+    name: Build Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: npm
+
+      # See https://github.com/npm/cli/issues/3637
+      - name: Downgrade NPM
+        run: npm i -g npm@7.20.2
+
+      - name: Setup NPM cache
+        uses: c-hive/gha-npm-cache@v1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: |
+          npm run build
+          node docker/pack
+
+      - name: Cache build artifacts
+        uses: actions/cache@v2
+        with:
+          path: '**/dist'
+          key: build-artifacts-${{ github.sha }}
+
+  publish-npm:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: build
+    # Skip this step in forks
+    if: ${{ github.repository_owner == 'directus' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Restore build artifacts
+        uses: actions/cache@v2
+        with:
+          path: '**/dist'
+          key: build-artifacts-${{ github.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      # See https://github.com/npm/cli/issues/3637
+      - name: Downgrade NPM
+        run: npm i -g npm@7.20.2
+
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_ARTIFACTORY_SERVICE_ACCOUNT}}
+          export_default_credentials: true
+
+      - name: Create .npmrc
+        run: |
+          cat << EOF > .npmrc
+            @SCOPE:registry=https://${{ env.GCP_REGION }}-npm.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.NPM_REPO }}/
+            //${{ env.GCP_REGION }}-npm.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.NPM_REPO }}/:always-auth=true
+          EOF
+
+      - name: Publish packages to NPM
+        run: npx lerna publish from-git --no-verify-access --yes
+
+  build-images:
+    name: Build Images
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Restore build artifacts
+        uses: actions/cache@v2
+        with:
+          path: '**/dist'
+          key: build-artifacts-${{ github.sha }}
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Extract metadata for Docker image
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ${{ env.GAR_IMAGE }}
+          tags: |
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_ARTIFACTORY_SERVICE_ACCOUNT}}
+          export_default_credentials: true
+
+      - name: GAR - Docker login (using gcloud)
+        shell: bash
+        run: |
+          gcloud auth configure-docker asia-southeast1-docker.pkg.dev
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # Temp fix:
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
