@@ -273,33 +273,3 @@ export const userSchema = {
 		},
 	] as Relation[],
 };
-
-export const snapshotApplyTestSchema = {
-	collections: {
-		test_table: {
-			collection: 'test_table',
-			primary: 'id',
-			singleton: false,
-			note: 'test_table',
-			sortField: null,
-			accountability: 'all',
-			fields: {
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'uuid',
-					dbType: 'uuid',
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					alias: false,
-					validation: null,
-				},
-			},
-		},
-	} as CollectionsOverview,
-	relations: [] as Relation[],
-};
