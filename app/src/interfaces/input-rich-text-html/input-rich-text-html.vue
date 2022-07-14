@@ -368,6 +368,7 @@ export default defineComponent({
 				style_formats: styleFormats,
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
+				browser_spellcheck: true,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};
