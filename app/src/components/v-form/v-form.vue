@@ -79,7 +79,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, FieldMeta, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, unref } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -150,19 +150,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const fieldsStore = useFieldsStore();
-
-		const fields = computed(() => {
-			if (props.collection) {
-				return fieldsStore.getFieldsForCollection(props.collection);
-			}
-
-			if (props.fields) {
-				return props.fields;
-			}
-
-			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-		});
+		const fields = useComputedFields();
 
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
@@ -325,6 +313,35 @@ export default defineComponent({
 				}
 
 				return fieldsInGroup;
+			}
+		}
+
+		function useComputedFields(): Ref<Field[]> {
+			const fieldsStore = useFieldsStore();
+
+			const fields = ref<Field[]>(getFields());
+
+			watch(
+				() => props.fields,
+				() => {
+					const newVal = getFields();
+					if (!isEqual(fields.value, newVal)) {
+						fields.value = newVal;
+					}
+				}
+			);
+
+			return fields;
+
+			function getFields(): Field[] {
+				if (props.collection) {
+					return fieldsStore.getFieldsForCollection(props.collection);
+				}
+				if (props.fields) {
+					return props.fields;
+				}
+
+				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
 			}
 		}
 

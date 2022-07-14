@@ -29,6 +29,7 @@ draft: Taslak
 archived: Arşivlendi
 modules: Modüller
 module_bar: Kenar Çubuğu
+logs: Kayıtlar
 reset_width: Genişliği Sıfırla
 tile_size: Blok boyutu
 edit_field: Alanı Düzenle
@@ -46,6 +47,7 @@ full_width: Tam Genişlik
 group: Grup
 and: Ve
 or: Veya
+custom: Özel
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
@@ -69,8 +71,17 @@ create_preset: Ön Ayar Oluştur
 create_panel: Panel Oluştur
 create_role: Rol Oluştur
 create_user: Kullanıcı Oluştur
+message: Mesaj
 delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
+create_translation_string: Çeviri Dizesi Oluştur
+no_translation_string: Çeviri Dizesi Yok
+no_translation_string_copy: Henüz çeviri dizesi yok.
+translation_string_key_placeholder: Çeviri dizesi anahtarı...
+translation_string_translations_placeholder: Yeni çeviri ekle
+edit_translation_string: Çeviri Dizesini Düzenle
+delete_translation_string_copy: >-
+  "{key}" çeviri dizesini silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.
 invite_users: Kullanıcıları Davet Et
 invite: Davet Et
 email_already_invited: E-posta "{email}" zaten davet edildi
@@ -91,6 +102,7 @@ update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer İşaretini Kaldır
 delete_bookmark_copy: >-
   {bookmark} yer işaretini kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
+delete_personal_bookmark: Kişisel Yer İşaretini Sil
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
@@ -166,6 +178,7 @@ revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
 changes_made: Aşağıda bu revizyonda yapılan belirli değişiklikler bulunmaktadır.
 no_relational_data: Unutmayın, ilişkisel veriler buraya dahil değildir.
+hide_field: Alanı Gizle
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -174,6 +187,7 @@ field_create_success: 'Oluşturulan alan: "{field}"'
 field_update_success: 'Güncellenen alan: "{field}"'
 duplicate_where_to: Bu alanı nereye çoğaltmak istersiniz?
 language: Dil
+language_placeholder: Bir dil seçin...
 aggregate_function: Toplayıcı Fonksiyon
 aggregate_precision: Toplayıcı Hassasiyet
 group_aggregation: Grup Toplayıcı
@@ -184,6 +198,7 @@ camera: Kamera
 show_zero: Sıfırı Göster
 create_in_advanced_field_creation_mode: Alanı Gelişmiş Mod ile Oluştur
 continue_in_advanced_field_creation_mode: Alan Oluşturmaya Gelişmiş Mod ile Devam Et
+validation: Doğrulama
 sum: Toplam
 sum_distinct: Tekrarsız Toplam
 avg: Ortalama
@@ -313,14 +328,17 @@ revision_delta_created_externally: Harici Olarak Oluşturuldu
 revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
 revision_delta_deleted: Silindi
 revision_delta_reverted: Geri Alındı
+revision_delta_update_message: Bu alan güncellenmiştir ancak değeri güvenlik nedeniyle gizlenmektedir.
 revision_delta_other: Revizyon
 revision_delta_by: '{user} tarafından {date} tarihinde'
+download_page_as_csv: 'Sayfayı CSV olarak indir'
 private_user: Gizli Kullanıcı
 creation_preview: Oluşturma Önizlemesi
 revision_preview: Revizyon Önizlemesi
 updates_made: Güncellemeler Uygulandı
 leave_comment: Bir yorum bırakın...
 post_comment_success: Yorum gönderildi
+post_comment_updated: Yorum Güncellendi
 item_create_success: Öğe Oluşturuldu | Öğe Oluşturuldu
 item_update_success: Öğe Güncellendi | Öğe Güncellendi
 item_delete_success: Öğe Silindi | Öğe Silindi
@@ -357,6 +375,12 @@ delete_share: Paylaşımı Sil
 functions:
   year: Yıl
   month: Ay
+  week: Hafta
+  day: Gün
+  weekday: Hafta içi
+  hour: Saat
+  minute: Dakika
+  second: Saniye
   count: Say
 date-fns_date: PPP
 date-fns_time: 's:dd:ss a'
@@ -411,6 +435,11 @@ replace_from_library: Kütüphanedeki Dosya ile Değiştir
 replace_from_url: URL'deki Dosya ile Değiştir
 no_file_selected: Hiç Dosya Seçilmedi
 download_file: Dosyayı İndir
+open_file_in_tab: Dosyayı yeni sekmede aç
+start_export: Dışa Aktarmayı Başlat
+not_available_for_local_downloads: Yerel indirmeler için mevcut değil
+exporting_all_items_in_collection: '{collection} içindeki tüm {total} öğe dışa aktarılıyor.'
+exporting_limited_items_in_collection: '{collection} içindeki {total} öğeden {limit} dışa aktarılıyor.'
 collection_key: Koleksiyon Anahtarı
 name: İsim
 primary_key_field: Birincil Anahtar Alanı
@@ -1711,8 +1740,11 @@ triggers:
   webhook:
     method: Metod
 operations:
+  log:
+    message: Mesaj
   notification:
     recipient: Kullanıcı
+    message: Mesaj
   request:
     url: URL
     method: Metod

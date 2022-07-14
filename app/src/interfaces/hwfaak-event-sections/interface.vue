@@ -335,10 +335,7 @@ export default defineComponent({
 					const fieldsToFetch = addRelatedPrimaryKeyToFields(relatedCollection.value.collection, fieldsList);
 
 					try {
-						const endpoint = relatedCollection.value.collection.startsWith('directus_')
-							? `/${relatedCollection.value.collection.substring(9)}`
-							: `/items/${relatedCollection.value.collection}`;
-
+						const endpoint = `/items/${relatedCollection.value.collection}?limit=3000`;
 						const primaryKeys = getPrimaryKeys();
 
 						let existingItems: any[] = [];
