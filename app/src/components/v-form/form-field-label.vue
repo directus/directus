@@ -16,8 +16,9 @@
 				v-tooltip="t('toggle_raw_editor')"
 				class="raw-editor-toggle"
 				:class="{ active: rawEditorActive }"
-				:name="rawEditorActive ? 'data_object' : 'input'"
+				name="data_object"
 				:filled="!rawEditorActive"
+				small
 				@click.stop="$emit('toggle-raw', !rawEditorActive)"
 			/>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
@@ -145,7 +146,6 @@ export default defineComponent({
 	}
 
 	.raw-editor-toggle {
-		margin-top: -2px;
 		margin-left: 5px;
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
