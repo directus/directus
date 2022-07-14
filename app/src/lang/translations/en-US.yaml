@@ -623,6 +623,7 @@ password_reset_sent: If you have an account, we've sent you a secure link to res
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
+edit_image: Edit Image
 editing_image: Editing Image
 square: Square
 free: Free
