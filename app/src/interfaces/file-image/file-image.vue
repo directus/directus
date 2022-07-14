@@ -38,8 +38,11 @@
 				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
 					<v-icon name="get_app" />
 				</v-button>
-				<v-button v-tooltip="t('edit')" icon rounded @click="editDrawerActive = true">
+				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />
+				</v-button>
+				<v-button v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
+					<v-icon name="tune" />
 				</v-button>
 				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
 					<v-icon name="close" />
@@ -53,12 +56,14 @@
 
 			<drawer-item
 				v-if="!disabled && image"
-				v-model:active="editDrawerActive"
+				v-model:active="editImageDetails"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
 				@input="update"
 			/>
+
+			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" />
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
@@ -67,16 +72,17 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, toRefs } from 'vue';
 import api, { addTokenToURL } from '@/api';
+import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
 import formatFilesize from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
-import DrawerItem from '@/views/private/components/drawer-item';
-import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
-import FileLightbox from '@/views/private/components/file-lightbox';
-import { nanoid } from 'nanoid';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import DrawerItem from '@/views/private/components/drawer-item';
+import FileLightbox from '@/views/private/components/file-lightbox';
+import ImageEditor from '@/views/private/components/image-editor';
+import { nanoid } from 'nanoid';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -154,6 +160,9 @@ const meta = computed(() => {
 	return `${formatFilesize(filesize)} • ${type}`;
 });
 
+const editImageDetails = ref(false);
+const editImageEditor = ref(false);
+
 async function imageErrorHandler() {
 	if (!src.value) return;
 	try {
@@ -173,6 +182,8 @@ function deselect() {
 	loading.value = false;
 	lightboxActive.value = false;
 	editDrawerActive.value = false;
+	editImageDetails.value = false;
+	editImageEditor.value = false;
 }
 
 const edits = computed(() => {
