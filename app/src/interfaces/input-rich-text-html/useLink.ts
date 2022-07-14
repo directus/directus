@@ -110,9 +110,9 @@ export default function useLink(editor: Ref<any>): UsableLink {
 
 		const link = linkSelection.value;
 		if (link.url === null) return;
-		const linkHtml = `<a href="${link.url}" title="${link.title || ''}" target="${link.newTab ? '_blank' : '_self'}" >${
-			link.displayText || link.url
-		}</a>`;
+		const linkHtml = `<a href="${link.url}" ${link.title ? `title="${link.title}"` : ''} target="${
+			link.newTab ? '_blank' : '_self'
+		}" >${link.displayText || link.url}</a>`;
 
 		// New anchor tag or current selection node is an anchor tag
 		if (!linkNode.value || currentSelectionNode.value === linkNode.value) {
@@ -123,7 +123,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			currentSelectionNode.value.innerHTML = link.displayText || link.url;
 			linkNode.value.setAttribute('data-mce-href', link.url); // Required for tinymce to update changes
 			linkNode.value.setAttribute('href', link.url);
-			linkNode.value.setAttribute('title', link.title || '');
+			if (link.title) linkNode.value.setAttribute('title', link.title);
 			linkNode.value.setAttribute('target', link.newTab ? '_blank' : '_self');
 			editor.value.selection.select(linkNode.value);
 			editor.value.selection.setNode(linkNode.value);

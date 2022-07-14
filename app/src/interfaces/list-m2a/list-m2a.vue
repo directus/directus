@@ -147,6 +147,7 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { get, clamp } from 'lodash';
 import { hideDragImage } from '@/utils/hide-drag-image';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -197,12 +198,12 @@ const fields = computed(() => {
 	const fields: string[] = [];
 
 	for (const collection of relationInfo.value.allowedCollections) {
-		fields.push(
-			...adjustFieldsForDisplays(
-				getFieldsFromTemplate(templates.value[collection.collection]),
-				relationInfo.value?.junctionCollection.collection ?? ''
-			).map((field) => `${relationInfo.value?.junctionField.field}:${collection.collection}.${field}`)
-		);
+		const displayFields: string[] = adjustFieldsForDisplays(
+			getFieldsFromTemplate(templates.value[collection.collection]),
+			relationInfo.value?.junctionCollection.collection ?? ''
+		).map((field) => `${relationInfo.value?.junctionField.field}:${collection.collection}.${field}`);
+
+		fields.push(...addRelatedPrimaryKeyToFields(collection.collection, displayFields));
 	}
 
 	return fields;

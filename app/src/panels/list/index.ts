@@ -29,7 +29,7 @@ export default definePanel({
 			query: {
 				filter: options.filter ?? {},
 				fields: displayFields,
-				sort: options.sortDirection === 'desc' ? `-${sort}` : sort,
+				sort: !options.sortDirection || options.sortDirection === 'desc' ? `-${sort}` : sort,
 				limit: options.limit === undefined ? 5 : options.limit,
 			},
 		};

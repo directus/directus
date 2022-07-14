@@ -188,7 +188,7 @@ import { useI18n } from 'vue-i18n';
 import { get } from '@/utils/get-with-arrays';
 import useAliasFields, { AliasField } from '@/composables/use-alias-fields';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { merge } from 'lodash';
+import { isEmpty, merge } from 'lodash';
 
 interface Props {
 	collection: string;
@@ -282,8 +282,10 @@ function getAliasedValue(item: Record<string, any>, field: string) {
 			return result;
 		}, []);
 	}
+
 	// merge into a single record
-	return matchingValues.reduce((result, data) => merge(result, data), {});
+	const result = matchingValues.reduce((result, data) => merge(result, data), {});
+	return !isEmpty(result) ? result : null;
 }
 
 function addField(fieldKey: string) {

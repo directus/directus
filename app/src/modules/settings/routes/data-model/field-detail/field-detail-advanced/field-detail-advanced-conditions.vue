@@ -100,6 +100,9 @@ export default defineComponent({
 			const selectedInterface = getInterface(interfaceID.value);
 			if (!selectedInterface || !selectedInterface.options) return [];
 
+			// Indicates a custom vue component is used for the interface options
+			if ('render' in selectedInterface.options) return [];
+
 			let optionsObjectOrArray;
 
 			if (typeof selectedInterface.options === 'function') {
@@ -132,6 +135,7 @@ export default defineComponent({
 			} else {
 				optionsObjectOrArray = selectedInterface.options;
 			}
+
 			const optionsArray = Array.isArray(optionsObjectOrArray)
 				? optionsObjectOrArray
 				: [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
