@@ -1743,6 +1743,11 @@ displays:
     strict: Ścisły
     strict_label: Użyj ścisłych jednostek
     strict_note: Usuwa słowa takie jak 'prawie', 'ponad', 'mniej niż'
+    round: Zaokrąglenie
+    round_note: Wybierz sposób zaokrąglenia
+    down: Dół
+    nearest: Najbliższe
+    up: Góra
   file:
     file: Plik
     description: Wyświetl pliki
