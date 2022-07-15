@@ -33,7 +33,7 @@ router.get(
 router.get(
 	'/:type/index.js',
 	asyncHandler(async (req, res) => {
-		const type = depluralize(req.params.type as Plural<string>);
+		const type = req.params.type === 'app' ? 'app' : depluralize(req.params.type as Plural<string>);
 
 		if (!isAppExtension(type)) {
 			throw new RouteNotFoundException(req.path);

@@ -137,3 +137,9 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 
 	return extensions;
 }
+
+export async function getExternalExtensions(root: string): Promise<string> {
+	const extensionPath = path.resolve(root, 'app', 'index.js');
+	const extensionSource: string = fse.readFileSync(extensionPath, 'utf8');
+	return extensionSource;
+}
