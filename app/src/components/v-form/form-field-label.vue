@@ -11,6 +11,16 @@
 			<v-text-overflow :text="field.name" />
 			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
 			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+			<v-icon
+				v-if="!disabled && rawEditorEnabled"
+				v-tooltip="t('toggle_raw_editor')"
+				class="raw-editor-toggle"
+				:class="{ active: rawEditorActive }"
+				name="data_object"
+				:filled="!rawEditorActive"
+				small
+				@click.stop="$emit('toggle-raw', !rawEditorActive)"
+			/>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
 	</div>
@@ -63,8 +73,16 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorActive: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	emits: ['toggle-batch'],
+	emits: ['toggle-batch', 'toggle-raw'],
 	setup() {
 		const { t } = useI18n();
 
@@ -124,6 +142,28 @@ export default defineComponent({
 	&:hover {
 		.ctx-arrow {
 			opacity: 1;
+		}
+	}
+
+	.raw-editor-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 24px;
+		width: 24px;
+		margin-top: -2px;
+		margin-left: 5px;
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+
+		&.active {
+			color: var(--primary);
+			background-color: var(--primary-alt);
+			border-radius: 50%;
 		}
 	}
 

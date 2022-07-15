@@ -13,7 +13,7 @@
 					? `interface-${field.meta.interface}`
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
-			v-if="interfaceExists"
+			v-if="interfaceExists && !rawEditorActive"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
@@ -28,6 +28,13 @@
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+		/>
+
+		<interface-system-raw-editor
+			v-else-if="rawEditorEnabled && rawEditorActive"
+			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+			:type="field.type"
+			@input="$emit('update:modelValue', $event)"
 		/>
 
 		<v-notice v-else type="warning">
@@ -74,6 +81,14 @@ export default defineComponent({
 			default: false,
 		},
 		autofocus: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorActive: {
 			type: Boolean,
 			default: false,
 		},
