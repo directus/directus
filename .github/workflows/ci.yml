@@ -54,7 +54,7 @@ jobs:
                 - '.github/workflows/{ci,e2e-blackbox-tests}.yml'
             e2e_blackbox_tests_updated:
               paths:
-                - 'tests-blackbox/**/*'            
+                - 'tests-blackbox/**/*'
 
   # Workflows are called in every case and need to handle the value of should_skip themselves.
   # This is needed to pass required checks on pull requests.
@@ -90,7 +90,7 @@ jobs:
         fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}
 
   e2e_blackbox_tests:
-    name: End-to-End Black Box Tests
+    name: End-to-End Blackbox Tests
     needs: pre_check
     uses: licitdev/directus/.github/workflows/e2e-blackbox-tests.yml@feat/black-box-tests
     with:
@@ -100,7 +100,7 @@ jobs:
         fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests.should_skip }}
 
   e2e_blackbox_tests_quick:
-    name: End-to-End Black Box Tests (Quick)
+    name: End-to-End Blackbox Tests (Quick)
     needs: pre_check
     uses: licitdev/directus/.github/workflows/e2e-blackbox-tests-quick.yml@feat/black-box-tests
     with:

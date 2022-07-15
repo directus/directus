@@ -1,4 +1,4 @@
-name: End-to-End Black Box Tests (Quick)
+name: End-to-End Blackbox Tests (Quick)
 
 on:
   workflow_dispatch:

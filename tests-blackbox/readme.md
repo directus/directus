@@ -1,4 +1,4 @@
-# Black box tests
+# Blackbox tests
 
 ## Setup
 
@@ -6,7 +6,7 @@ Make sure the containers for the databases are running by running `docker compos
 
 ## Running tests locally
 
-Run `npm run test:blackbox` to run the black box tests for every supported database vendor.
+Run `npm run test:blackbox` to run the blackbox tests for every supported database vendor.
 
 ### Testing a specific database
 
