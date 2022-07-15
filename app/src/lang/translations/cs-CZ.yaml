@@ -35,6 +35,7 @@ tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 location: Poloha
+condition_rules: Pravidla
 input: Vstup
 maps: Mapy
 switch_user: Přepnout uživatele
@@ -48,7 +49,9 @@ group: Skupina
 export_items: Exportovat položky
 and: A
 or: Nebo
+init: Init
 dataset_too_large_currently_showing_n_items: Datový soubor je příliš velký. V současné době se zobrazuje prvních {n} položek.
+modifier: Modifikátor
 custom: Vlastní
 hook: Hook
 fill_width: Celá šířka
@@ -759,10 +762,41 @@ flows: Toky
 flow: Tok
 select_a_flow: Vybrat tok
 run_flow_on_current: Spustit tok na aktuální položku
+run_flow_on_selected: Žádné vybrané položky | Spustit tok na 1 vybrané položce | Spustit tok na {n} vybraných položkách
+run_flow_success: Tok "{flow}" proběhl úspěšně
 trigger: Spouštěč
+trigger_options: Možnosti spouštěče
+view_trigger: Zobrazit spouštěč
+create_trigger: Vytvořit spouštěč
+trigger_setup: Nastavení spouštěče
+change_trigger: Změnit spouštěč
+flow_delete_confirm: Opravdu chcete smazat tok "{flow}"? Tuto akci nelze vrátit zpět.
+set_flow_active: Nastavit tok jako aktivní
+set_flow_inactive: Nastavit tok jako neaktivní
+edit_flow: Upravit tok
+delete_flow: Smazat tok
+no_other_flows_copy: Zatím nemáte žádné další toky.
+no_flows: Žádné toky
+no_flows_copy: Zatím nemáte žádné toky.
+create_flow: Vytvořit tok
+creating_new_flow: Vytváření nového toku
+updating_flow: Aktualizace toku
+flow_setup: Nastavení toku
 flow_name: Jméno
+flow_tracking: Sledování aktivity logů
+flow_tracking_all: Sledovat aktivity logy
 flow_tracking_activity: Pouze sledovat aktivitu
 flow_tracking_null: Nesledovat nic
+start_flow: Začít tok
+stop_flow: Zastavit tok
+create_operation: Vytvořit operaci
+edit_operation: Upravit operaci
+operation_options: Možnosti operace
+operation_name: Název operace...
+operation_key: Identifikátor pro odkaz...
+operation_key_unique_error: Klíče operace musí být v toku unikátní
+operation_handle_resolve: 'Vyřešit: Klepnutím přidat nebo táhnutím přesměrovat'
+operation_handle_reject: 'Odmítnout: Klepnutím přidat nebo táhnutím přesměrovat'
 insights: Přehledy
 dashboard: Nástěnka
 panel: Panel
@@ -783,7 +817,9 @@ no_dashboards_copy: Zatím nemáte žádné nástěnky.
 create_dashboard: Vytvořit nástěnku
 dashboard_name: Název nástěnky
 no_data: Žádná data
+no_data_in_flow: V rámci tohoto toku nebyla vytvořena ani zpřístupněna žádná data
 accountability: Odpovědnost
+details: Podrobnosti
 full_screen: Celá obrazovka
 full_text_search: Full-Text vyhledávání
 edit_panels: Upravit panely
@@ -931,6 +967,8 @@ page_help_settings_presets_item: >-
   **Detail předvoleb** – Formulář pro správu záložek a předvoleb pro výchozí kolekci.
 page_help_settings_webhooks_collection: '**Procházet webhooky** — Zobrazuje všechny webhooky v rámci projektu.'
 page_help_settings_webhooks_item: '**Detail webhooku** — Formulář pro tvorbu a správu webhooků projektu.'
+page_help_settings_flows_collection: '**Procházet toky** — Zobrazuje všechny toky v rámci projektu.'
+page_help_settings_flows_item: '**Detail toku** – Pracovní prostor pro správu jedné nebo více operací.'
 page_help_settings_translation_strings_collection: '**Procházet překlady** — Seznam všech překladů v rámci projektu.'
 page_help_users_collection: '**Uživatelé** — Zobrazuje všechny systémové uživatele v rámci tohoto projektu.'
 page_help_users_item: >-
@@ -959,9 +997,11 @@ directus_collection:
   directus_dashboards: Nástěnky v modulu přehledů
   directus_fields: Další konfigurace polí a metadata
   directus_files: Metadata pro všechny spravované soubory
+  directus_flows: Automatické toky
   directus_folders: Poskytuje virtuální adresáře souborů
   directus_migrations: Jakou verzi databáze používáte
   directus_notifications: Oznámení zaslaná uživatelům
+  directus_operations: Operace, které probíhají v tocích
   directus_panels: Jednotlivé panely uvnitř nástěnek
   directus_permissions: Přístupová práva pro každou roli
   directus_presets: Předvolby pro výchozí nastavení kolekce a záložky
@@ -1332,6 +1372,7 @@ reset: Resetovat
 reset_password: Obnovit heslo
 revisions: Revize
 no_revisions: Zatím žádné revize
+no_logs: Zatím žádné záznamy
 revert: Vrátit
 save: Uložit
 schema: Schéma
@@ -1374,6 +1415,7 @@ interfaces:
     no_rules: Žádná konfigurovaná pravidla
     change_value: Kliknutím změníte hodnotu
     placeholder: Sem přetáhněte pravidla
+    add_key_placeholder: Přidat klávesu a stiskněte Enter...
   fields:
     name: Pole
   group-accordion:
@@ -1550,6 +1592,7 @@ interfaces:
     edit_fields: Upravit pole
     add_label: 'Štítek "Vytvořit nový"'
     sort: Seřadit
+    sort_placeholder: Manuálně
     field_name_placeholder: Zadejte název pole...
     field_note_placeholder: Zadejte poznámku k poli...
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
@@ -1694,6 +1737,13 @@ displays:
     relative: Relativní
     relative_label: 'Zobrazit relativní čas, např.: před 5 minutami'
     suffix: Přípona
+    suffix_label: Zobrazit indikátor vztahu
+    strict_note: Odstraní slova jako 'téměř', 'přes', 'méně než'
+    round: Zaokrouhlený
+    round_note: Vyberte funkci zaokrouhlování
+    down: Dolů
+    nearest: Nejbližší
+    up: Nahoru
   file:
     file: Soubor
     description: Zobrazit soubory
@@ -1915,6 +1965,8 @@ panels:
     bottom: Dole
     monochrome: Monochromatický
     monochrome_color: Monochromatická barva
+  variable:
+    name: Globální proměnná
 triggers:
   webhook:
     method: Metoda
