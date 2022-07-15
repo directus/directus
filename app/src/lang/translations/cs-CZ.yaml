@@ -1968,8 +1968,12 @@ panels:
   variable:
     name: Globální proměnná
 triggers:
+  common:
+    response_body_all: Všechna data
   webhook:
+    name: Webhook
     method: Metoda
+    async: Asynchronní
 operations:
   log:
     message: Zpráva
