@@ -95,7 +95,7 @@ jobs:
   e2e_blackbox_tests:
     name: End-to-End Blackbox Tests
     needs: pre_check
-    uses: directus/directus/.github/workflows/e2e-blackbox-tests.yml@main
+    uses: ./.github/workflows/e2e-blackbox-tests.yml@main
     with:
       should_skip: |
         ${{ (github.event_name == 'pull_request' &&
@@ -106,7 +106,7 @@ jobs:
   e2e_blackbox_tests_quick:
     name: End-to-End Blackbox Tests (Quick)
     needs: pre_check
-    uses: directus/directus/.github/workflows/e2e-blackbox-tests-quick.yml@main
+    uses: ./.github/workflows/e2e-blackbox-tests-quick.yml@main
     with:
       should_skip: |
         ${{ (github.event_name == 'pull_request' &&
