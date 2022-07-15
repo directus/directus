@@ -48,6 +48,9 @@ group: Skupina
 export_items: Exportovat položky
 and: A
 or: Nebo
+dataset_too_large_currently_showing_n_items: Datový soubor je příliš velký. V současné době se zobrazuje prvních {n} položek.
+custom: Vlastní
+hook: Hook
 fill_width: Celá šířka
 field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
@@ -71,6 +74,7 @@ create_preset: Vytvořit šablonu
 create_panel: Vytvořit panel
 create_role: Vytvořit roli
 create_user: Vytvořit uživatele
+message: Zpráva
 delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
 create_translation_string: Vytvořit překlad
@@ -330,6 +334,7 @@ revision_delta_created_externally: Vytvořena externě
 revision_delta_updated: 'Aktualizováno 1 pole | Aktualizováno {count} polí'
 revision_delta_deleted: Odstraněna
 revision_delta_reverted: Vrácena
+revision_delta_update_message: Toto pole bylo aktualizováno, ale jeho hodnota je skryta z bezpečnostních důvodů.
 revision_delta_other: Revize
 revision_delta_by: '{date} od {user}'
 presentation_text_values_cannot_be_reimported: "Používá text prezentace, hodnoty nelze znovu importovat."
@@ -479,7 +484,9 @@ disabled: Zakázáno
 information: Informace
 report_bug: Nahlásit chybu
 request_feature: Požadavek na funkci
+request_body: Tělo požadavku
 interface_not_found: 'Rozhraní "{interface}" nenalezeno.'
+operation_not_found: 'Operace "{operation}" nenalezena.'
 reset_interface: Resetovat rozhraní
 display_not_found: 'Zobrazení "{display}" nenalezeno.'
 reset_display: Obnovit zobrazení
@@ -582,6 +589,7 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota je mimo rozsah
   INVALID_FOREIGN_KEY: Neplatný cizí klíč
   UNKNOWN: Neočekávaná chyba
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
 security: Zabezpečení
 value_hashed: Hodnota bezpečně hashována
 bookmark_name: Název záložky...
@@ -599,9 +607,11 @@ unexpected_error_copy: Došlo k neočekávané chybě. Opakujte akci později.
 copy_details: Kopírovat podrobnosti
 no_app_access: Žádný přístup k aplikaci
 no_app_access_copy: Tento uživatel nemá oprávnění používat aplikaci pro správu.
+password_reset_sent: Pokud máte účet, zaslali jsme Vám bezpečný odkaz pro obnovení hesla
 password_reset_successful: Heslo bylo úspěšně obnoveno
 back: Zpět
 filter: Filtr
+edit_image: Upravit obrázek
 editing_image: Úprava obrázku
 square: Čtverec
 free: Volný
@@ -622,6 +632,9 @@ start_end_of_count_items: '{start}-{end} z {count} položek'
 start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položek'
 one_item: '1 položka'
 one_filtered_item: '1 filtrovaná položka'
+delete_collection_are_you_sure: >-
+  Jste si jisti, že chcete odstranit kolekci "{collection}"? Tato akce odstraní kolekci a všechny její položky. Tato akce je trvalá.
+delete_folder_are_you_sure: Jste si jisti, že chcete odstranit složku "{folder}"? Vnořené složky a kolekce budou přesunuty na nejvyšší úroveň.
 collections_shown: Zobrazené kolekce
 visible_collections: Viditelné kolekce
 hidden_collections: Skryté kolekce
@@ -742,6 +755,10 @@ toggle: Přepínač
 icon_on: Ikona zapnuto
 icon_off: Ikona vypnuto
 label: Popisek
+flows: Toky
+flow: Tok
+select_a_flow: Vybrat tok
+run_flow_on_current: Spustit tok na aktuální položku
 trigger: Spouštěč
 flow_name: Jméno
 flow_tracking_activity: Pouze sledovat aktivitu
@@ -864,6 +881,7 @@ settings_data_model: Datový model
 settings_permissions: Role a oprávnění
 settings_project: Nastavení projektu
 settings_webhooks: Webhooky
+settings_flows: Toky
 settings_presets: Předvolby a záložky
 settings_translation_strings: Překlady
 one_or_more_options_are_missing: Chybí jedna nebo více možností
@@ -1901,12 +1919,17 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  log:
+    message: Zpráva
   notification:
     recipient: Uživatel
+    message: Zpráva
   request:
     url: URL
     method: Metoda
     data: Údaje
     header: Hlavička
   trigger:
+    flows: Toky
+    flow: Tok
     data: Údaje
