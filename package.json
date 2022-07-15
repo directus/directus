@@ -49,6 +49,7 @@
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-vue": "^9.2.0",
+		"globby": "^11.0.4",
 		"jest": "28.1.2",
 		"jest-environment-node": "^28.1.2",
 		"knex": "^2.1.0",
