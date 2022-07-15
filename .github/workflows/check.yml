@@ -33,7 +33,7 @@ jobs:
 
       - name: Run Linter
         shell: bash
-        run: pnpm -r lint
+        run: pnpm lint
 
   unit:
     name: Unit Tests
