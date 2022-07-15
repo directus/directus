@@ -80,7 +80,7 @@ onMounted(async () => {
 		codemirror.on('change', (doc, { origin }) => {
 			if (origin === 'setValue') return;
 			const content = doc.getValue();
-			emit('input', content === '' ? content : null);
+			emit('input', content !== '' ? content : null);
 		});
 	}
 });
