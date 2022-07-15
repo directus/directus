@@ -315,6 +315,8 @@ primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
+toggle_raw_editor: Toggle Raw Editor
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raw value
 copy_raw_value: Copy Raw Value
 copy_raw_value_success: Copied
@@ -1725,6 +1727,9 @@ interfaces:
     regenerate: Regenerate Token
     generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
     remove_token: Remove Token
+  system-raw-editor:
+    system-raw-editor: Raw Editor
+    description: Allow entering of raw or mustache templating values
 displays:
   translations:
     translations: Translations

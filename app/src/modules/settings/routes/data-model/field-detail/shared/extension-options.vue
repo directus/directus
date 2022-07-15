@@ -10,6 +10,7 @@
 		:fields="optionsFields"
 		:initial-values="disabled ? optionsValues : null"
 		:disabled="disabled"
+		:raw-editor-enabled="rawEditorEnabled"
 		primary-key="+"
 	/>
 
@@ -56,6 +57,10 @@ export default defineComponent({
 			default: () => ({}),
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorEnabled: {
 			type: Boolean,
 			default: false,
 		},

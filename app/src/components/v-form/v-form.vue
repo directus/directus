@@ -32,6 +32,7 @@
 				:loading="loading"
 				:validation-errors="validationErrors"
 				:badge="badge"
+				:raw-editor-enabled="rawEditorEnabled"
 				v-bind="fieldsMeta[field.field]?.options || {}"
 				@apply="apply"
 			/>
@@ -62,10 +63,13 @@
 					)
 				"
 				:badge="badge"
+				:raw-editor-enabled="rawEditorEnabled"
+				:raw-editor-active="rawActiveFields.has(field.field)"
 				@update:model-value="setValue(field.field, $event)"
 				@set-field-value="setValue($event.field, $event.value)"
 				@unset="unsetValue(field)"
 				@toggle-batch="toggleBatchField(field)"
+				@toggle-raw="toggleRawField(field)"
 			/>
 		</template>
 	</div>
@@ -145,6 +149,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -178,6 +186,7 @@ export default defineComponent({
 
 		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, fieldsMeta } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
+		const { toggleRawField, rawActiveFields } = useRawEditor();
 
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < formFields.value.length; i++) {
@@ -215,6 +224,8 @@ export default defineComponent({
 			setValue,
 			batchActiveFields,
 			toggleBatchField,
+			rawActiveFields,
+			toggleRawField,
 			unsetValue,
 			firstEditableFieldIndex,
 			firstVisibleFieldIndex,
@@ -405,6 +416,20 @@ export default defineComponent({
 			const { field } = extractFieldFromFunction(fieldKey);
 			if (!formFieldEls.value[field]) return;
 			formFieldEls.value[field].$el.scrollIntoView({ behavior: 'smooth' });
+		}
+
+		function useRawEditor() {
+			const rawActiveFields = ref(new Set<string>());
+
+			return { rawActiveFields, toggleRawField };
+
+			function toggleRawField(field: Field) {
+				if (rawActiveFields.value.has(field.field)) {
+					rawActiveFields.value.delete(field.field);
+				} else {
+					rawActiveFields.value.add(field.field);
+				}
+			}
 		}
 	},
 });

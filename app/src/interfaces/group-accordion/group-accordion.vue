@@ -14,6 +14,7 @@
 			:loading="loading"
 			:validation-errors="validationErrors"
 			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
@@ -76,6 +77,10 @@ export default defineComponent({
 		badge: {
 			type: String,
 			default: null,
+		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
 		},
 		accordionMode: {
 			type: Boolean,
