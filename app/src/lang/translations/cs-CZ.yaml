@@ -1970,8 +1970,14 @@ panels:
 triggers:
   common:
     response_body_all: Všechna data
+    response_body_last: Data poslední operace
+  event:
+    name: Hook událost
+    action: 'Akce (neblokující)'
+    filter: 'Filtr (blokující)'
   webhook:
     name: Webhook
+    description: Spouští se při příchozím HTTP požadavku
     method: Metoda
     async: Asynchronní
   operation:
@@ -1982,9 +1988,13 @@ triggers:
     cron: Interval
   manual:
     name: Manuálně
+    collection_and_item: Stránka kolekce a položek
     collection_only: Pouze stránka kolekce
+    item_only: Pouze stránka položek
 a_users_uuid: Primární UUID klíč uživatele...
 a_flow_uuid: Primární UUID klíč toku...
+any_string_or_json: Jakýkoliv řetězec nebo JSON...
+item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
 operations:
   condition:
     name: Podmínka
@@ -1997,12 +2007,17 @@ operations:
     description: Odstranit položky v databázi
     emit_events: Povolit události
   item-read:
+    key: ID
+    query: Dotaz
     emit_events: Povolit události
   item-update:
+    name: Aktualizovat data
+    description: Aktualizovat položky v databázi
     emit_events: Povolit události
     key: ID
     query: Dotaz
   log:
+    description: Vypsat něco do konzole
     message: Zpráva
     message_placeholder: Zadejte zprávu, která se zobrazí v konzoli...
   mail:
@@ -2020,8 +2035,10 @@ operations:
     name: Webhook / Request URL
     description: "Poslat žádost na adresu URL"
     url: URL
+    url_placeholder: https://example.com/example
     method: Metoda
     data: Údaje
+    headers: Headers
     header: Hlavička
   sleep:
     description: Počkat zadaný počet milisekund
