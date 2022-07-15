@@ -146,6 +146,12 @@ export default defineComponent({
 	}
 
 	.raw-editor-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 24px;
+		width: 24px;
+		margin-top: -2px;
 		margin-left: 5px;
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
@@ -156,6 +162,8 @@ export default defineComponent({
 
 		&.active {
 			color: var(--primary);
+			background-color: var(--primary-alt);
+			border-radius: 50%;
 		}
 	}
 
