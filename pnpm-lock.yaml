@@ -23,8 +23,8 @@ importers:
       lint-staged: ^13.0.3
       listr: ^0.14.3
       lodash: ^4.17.21
-      npm-run-all: 4.1.5
       prettier: 2.4.1
+      seedrandom: ^3.0.5
       simple-git-hooks: ^2.8.0
       supertest: ^6.2.3
       ts-jest: 28.0.5
@@ -51,8 +51,8 @@ importers:
       lint-staged: 13.0.3
       listr: 0.14.3
       lodash: 4.17.21
-      npm-run-all: 4.1.5
       prettier: 2.4.1
+      seedrandom: 3.0.5
       simple-git-hooks: 2.8.0
       supertest: 6.2.4
       ts-jest: 28.0.5_lt5llx2ti6zt4eclhanfli5ynu
@@ -13482,6 +13482,11 @@ packages:
     dependencies:
       extend-shallow: 2.0.1
       kind-of: 6.0.3
+    dev: true
+
+  /seedrandom/3.0.5:
+    resolution:
+      { integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg== }
     dev: true
 
   /semver/5.7.1:

@@ -37,7 +37,7 @@ jobs:
         run: docker compose -f tests/docker-compose.yml up -d --quiet-pull --wait
 
       - name: Run tests
-        run: pnpm test:e2e
+        run: pnpm run -w test:e2e
 
   result:
     name: Result

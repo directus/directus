@@ -47,6 +47,6 @@ runs:
     - name: Build
       if: inputs.should_skip_build != 'true'
       shell: bash
-      run: pnpm -r --workspace-concurrency=1 build
+      run: pnpm run -r --workspace-concurrency=1 build
       env:
         NODE_OPTIONS: --max_old_space_size=6144

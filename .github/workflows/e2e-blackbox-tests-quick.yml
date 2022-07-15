@@ -29,7 +29,7 @@ jobs:
         run: docker compose -f tests-blackbox/docker-compose.yml up -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=sqlite3,postgres pnpm test:blackbox
+        run: TEST_DB=sqlite3,postgres pnpm run -w test:blackbox
 
   result:
     name: Result
