@@ -1974,18 +1974,60 @@ triggers:
     name: Webhook
     method: Metoda
     async: Asynchronní
+  operation:
+    name: Další tok
+  schedule:
+    name: Plán (CRON)
+    description: Spouštět v pravidelných intervalech
+    cron: Interval
+  manual:
+    name: Manuálně
+    collection_only: Pouze stránka kolekce
+a_users_uuid: Primární UUID klíč uživatele...
+a_flow_uuid: Primární UUID klíč toku...
 operations:
+  condition:
+    name: Podmínka
+  item-create:
+    name: Vytvořit data
+    description: Vytvořit položky v databázi
+    emit_events: Povolit události
+  item-delete:
+    name: Smazat data
+    description: Odstranit položky v databázi
+    emit_events: Povolit události
+  item-read:
+    emit_events: Povolit události
+  item-update:
+    emit_events: Povolit události
+    key: ID
+    query: Dotaz
   log:
     message: Zpráva
+    message_placeholder: Zadejte zprávu, která se zobrazí v konzoli...
+  mail:
+    name: Odeslat e-mail
+    description: Poslat e-mail jednomu nebo více lidem
+    to: Komu
+    to_placeholder: Přidejte e-mailové adresy a stiskněte Enter...
+    body: Tělo
   notification:
+    name: Odeslat oznámení
+    description: Odeslat uživateli notifikaci v aplikaci
     recipient: Uživatel
     message: Zpráva
   request:
+    name: Webhook / Request URL
+    description: "Poslat žádost na adresu URL"
     url: URL
     method: Metoda
     data: Údaje
     header: Hlavička
+  sleep:
+    description: Počkat zadaný počet milisekund
+    milliseconds: Milisekundy
   trigger:
+    name: Spouštěč toku
     flows: Toky
     flow: Tok
     data: Údaje
