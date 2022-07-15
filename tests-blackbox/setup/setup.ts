@@ -2,13 +2,14 @@
 
 import knex from 'knex';
 import Listr from 'listr';
-import vendors from '../get-dbs-to-test';
-import config, { getUrl } from '../config';
+import vendors from '../common/get-dbs-to-test';
+import config, { getUrl } from '../common/config';
 import global from './global';
 import { spawn, spawnSync } from 'child_process';
 import axios from 'axios';
 import { writeFileSync } from 'fs';
-import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
+import { awaitDatabaseConnection, awaitDirectusConnection } from '../utils/await-connection';
+import * as common from '../common';
 
 let started = false;
 
@@ -46,8 +47,14 @@ export default async (): Promise<void> => {
 									const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
 									global.directus[vendor] = server;
 									let serverOutput = '';
-									server.stdout.on('data', (data) => (serverOutput += data.toString()));
+									server.stdout.setEncoding('utf8');
+									server.stdout.on('data', (data) => {
+										serverOutput += data.toString();
+									});
 									server.on('exit', (code) => {
+										if (process.env.TEST_SAVE_LOGS) {
+											writeFileSync(__dirname + `/../server-log-${vendor}.txt`, serverOutput);
+										}
 										if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 									});
 									// Give the server some time to start
@@ -70,13 +77,15 @@ export default async (): Promise<void> => {
 						task: async () => {
 							const totalTestsCount = Number(process.env.totalTestsCount);
 							if (isNaN(totalTestsCount)) {
-								throw 'Unable to read totalTestsCount';
+								throw new Error('Unable to read totalTestsCount');
 							}
 
 							for (const vendor of vendors) {
 								try {
 									const serverUrl = getUrl(vendor);
-									let response = await axios.get(`${serverUrl}/items/tests_flow_data?access_token=AdminToken`);
+									let response = await axios.get(
+										`${serverUrl}/items/tests_flow_data?access_token=${common.USER.TESTS_FLOW.TOKEN}`
+									);
 
 									if (response.status !== 200) {
 										continue;
@@ -87,7 +96,7 @@ export default async (): Promise<void> => {
 									};
 									response = await axios.post(`${serverUrl}/items/tests_flow_data`, body, {
 										headers: {
-											Authorization: 'Bearer AdminToken',
+											Authorization: 'Bearer ' + common.USER.TESTS_FLOW.TOKEN,
 											'Content-Type': 'application/json',
 										},
 									});
@@ -102,7 +111,7 @@ export default async (): Promise<void> => {
 							}
 
 							if (!process.env.serverUrl) {
-								throw 'Unable to connect to any directus server';
+								throw new Error('Unable to connect to any directus server');
 							}
 						},
 					},

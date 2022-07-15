@@ -1,0 +1,51 @@
+name: End-to-End Blackbox Tests (Quick)
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      should_skip:
+        required: false
+        type: string
+
+jobs:
+  test:
+    name: Test
+    if: inputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - '16'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Build packages
+        run: npm run build:api
+
+      - name: Start databases
+        run: docker compose -f tests-blackbox/docker-compose.yml up -d --quiet-pull --wait
+
+      - name: Run tests
+        run: TEST_DB=sqlite3,postgres npm run test:blackbox
+
+  result:
+    name: Result
+    if: inputs.should_skip != 'true' && always()
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Mark result as failed
+        if: needs.test.result != 'success'
+        run: exit 1

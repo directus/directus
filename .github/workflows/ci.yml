@@ -46,6 +46,15 @@ jobs:
                 - 'tests/**/*'
                 - 'docker-compose.yml'
                 - '.github/workflows/{ci,e2e-tests}.yml'
+            e2e_blackbox_tests:
+              paths:
+                - 'api/**/*'
+                - 'tests-blackbox/**/*'
+                - 'docker-compose.yml'
+                - '.github/workflows/{ci,e2e-blackbox-tests}.yml'
+            e2e_blackbox_tests_updated:
+              paths:
+                - 'tests-blackbox/**/*'
 
   # Workflows are called in every case and need to handle the value of should_skip themselves.
   # This is needed to pass required checks on pull requests.
@@ -79,3 +88,24 @@ jobs:
       should_skip:
         ${{ needs.pre_check.outputs.should_skip == 'true' ||
         fromJSON(needs.pre_check.outputs.paths_result).e2e_tests.should_skip }}
+
+  e2e_blackbox_tests:
+    name: End-to-End Blackbox Tests
+    needs: pre_check
+    uses: licitdev/directus/.github/workflows/e2e-blackbox-tests.yml@feat/black-box-tests
+    with:
+      should_skip:
+        ${{ (github.event_name == 'pull_request' && fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests_updated.should_skip) ||
+        needs.pre_check.outputs.should_skip == 'true' ||
+        fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests.should_skip }}
+
+  e2e_blackbox_tests_quick:
+    name: End-to-End Blackbox Tests (Quick)
+    needs: pre_check
+    uses: licitdev/directus/.github/workflows/e2e-blackbox-tests-quick.yml@feat/black-box-tests
+    with:
+      should_skip:
+        ${{ (github.event_name == 'pull_request' && !fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests_updated.should_skip) ||
+        github.event_name == 'push' ||
+        needs.pre_check.outputs.should_skip == 'true' ||
+        fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests.should_skip }}

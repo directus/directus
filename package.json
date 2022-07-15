@@ -19,6 +19,9 @@
 		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "npm run test:e2e -- --watch",
 		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
+		"test:blackbox": "jest tests -c tests-blackbox/jest.config.js",
+		"test:blackbox:watch": "npm run test:blackbox -- --watch",
+		"posttest:blackbox:watch": "ts-node --project ./-blackbox/tsconfig.json --transpile-only ./-blackbox/setup/teardown.ts",
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
 	},
 	"engines": {
@@ -31,6 +34,7 @@
 		"@types/jest": "27.4.1",
 		"@types/listr": "0.14.4",
 		"@types/node": "16.11.9",
+		"@types/seedrandom": "^3.0.2",
 		"@types/supertest": "2.0.11",
 		"@typescript-eslint/eslint-plugin": "5.27.0",
 		"@typescript-eslint/parser": "5.27.0",
@@ -53,7 +57,8 @@
 		"npm-run-all": "4.1.5",
 		"pg": "8.7.1",
 		"postcss": "^8.4.14",
-		"prettier": "^2.6.2",
+		"prettier": "2.6.2",
+		"seedrandom": "^3.0.5",
 		"simple-git-hooks": "2.8.0",
 		"sqlite3": "5.0.6",
 		"supertest": "6.1.6",
