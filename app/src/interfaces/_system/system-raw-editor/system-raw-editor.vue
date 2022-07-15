@@ -44,7 +44,7 @@ onMounted(async () => {
 
 		codemirror = CodeMirror(codemirrorEl.value, {
 			mode: 'mustache',
-			value: props.value ?? '',
+			value: typeof props.value === 'object' ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
 			tabSize: 0,
 			autoRefresh: true,
 			indentUnit: 4,
