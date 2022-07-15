@@ -2,10 +2,6 @@ name: CodeQL Analysis
 
 on:
   workflow_call:
-    inputs:
-      should_skip:
-        required: false
-        type: string
   schedule:
     - cron: '42 23 * * 5'
 
@@ -15,7 +11,6 @@ env:
 jobs:
   analyze:
     name: Analyze
-    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -33,7 +28,7 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
-          should_skip_build: 'true'
+          build: 'false'
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2

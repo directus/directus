@@ -1,18 +1,16 @@
 name: Prepare
 description: Install and build the app
 inputs:
-  should_skip_build:
-    description: 'Should skip the Build step.'
+  build:
+    description: 'Build the production bundle of the platform'
     required: false
-    default: 'false'
+    default: 'true'
 
 runs:
   using: 'composite'
   steps:
     - name: Checkout
       uses: actions/checkout@v3
-
-    - uses: hmarr/debug-action@v2
 
     - name: Install Node.js
       uses: actions/setup-node@v3
@@ -45,7 +43,7 @@ runs:
       run: pnpm install
 
     - name: Build
-      if: inputs.should_skip_build != 'true'
+      if: inputs.build == 'true'
       shell: bash
       run: pnpm run -r --workspace-concurrency=1 build
       env:

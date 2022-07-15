@@ -1,0 +1,16 @@
+name: Unit Tests
+
+description: Run the unit tests of all packages
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Prepare
+      uses: ./.github/actions/prepare
+
+    - name: Run Tests
+      shell: bash
+      run: pnpm -r test
