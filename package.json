@@ -1,6 +1,7 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
+	"version": "9.14.1",
 	"workspaces": [
 		"./app",
 		"./api",
@@ -10,17 +11,17 @@
 		"lint": "npm-run-all --parallel --continue-on-error lint:*",
 		"lint:eslint": "eslint .",
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
-		"dev": "pnpm -r --stream --parallel dev",
-		"build": "pnpm -r build",
-		"build:api": "pnpm -r build --ignore @directus/app",
+		"dev": "pnpm run -r --stream --parallel dev",
+		"build": "pnpm run -r build",
+		"build:api": "pnpm run -r build --ignore @directus/app",
 		"pack": "node docker/pack",
-		"test": "pnpm -r test",
+		"test": "pnpm run -r test",
 		"test:e2e": "jest tests -c tests/jest.config.js",
-		"test:e2e:watch": "pnpm -r test:e2e --watch",
+		"test:e2e:watch": "pnpm run -r test:e2e --watch",
 		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
 		"test:blackbox": "jest tests -c tests-blackbox/jest.config.js",
-		"test:blackbox:watch": "npm run test:blackbox -- --watch",
-		"posttest:blackbox:watch": "ts-node --project ./-blackbox/tsconfig.json --transpile-only ./-blackbox/setup/teardown.ts",
+		"test:blackbox:watch": "pnpm run -w test:blackbox -- --watch",
+		"posttest:blackbox:watch": "ts-node --project ./tests-blackbox/tsconfig.json --transpile-only ./tests-blackbox/setup/teardown.ts",
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
 	},
 	"engines": {

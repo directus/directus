@@ -41,8 +41,7 @@
 		"cleanup": "rimraf ./dist",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
 		"test": "jest",
-		"test:watch": "jest --watchAll",
-		"prepublishOnly": "pnpm cleanup && pnpm build"
+		"test:watch": "jest --watchAll"
 	},
 	"author": "Nicola Krumschmidt",
 	"maintainers": [
