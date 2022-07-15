@@ -12,6 +12,7 @@ env:
 
 jobs:
   test:
+    name: All Databases
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

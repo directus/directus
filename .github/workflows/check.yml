@@ -31,8 +31,9 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Lint
-        uses: ./.github/actions/lint
+      - name: Run Linter
+        shell: bash
+        run: pnpm -r lint
 
   unit:
     name: Unit Tests
@@ -44,8 +45,9 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Unit Tests
-        uses: ./.github/actions/unit
+      - name: Run Tests
+        shell: bash
+        run: pnpm -r test
 
   analyze:
     name: CodeQL Analysis

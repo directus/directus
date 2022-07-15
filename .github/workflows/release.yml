@@ -43,7 +43,6 @@ jobs:
 
       - name: Build
         run: |
-          pnpm -r build
           node docker/pack
 
       - name: Cache build artifacts

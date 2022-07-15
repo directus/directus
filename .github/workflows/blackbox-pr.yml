@@ -12,6 +12,7 @@ env:
 
 jobs:
   test:
+    name: SQLite Only
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
