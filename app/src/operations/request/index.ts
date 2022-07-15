@@ -52,7 +52,7 @@ export default defineOperationApp({
 		{
 			field: 'headers',
 			name: '$t:operations.request.headers',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'list',
