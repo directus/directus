@@ -1,5 +1,5 @@
 <template>
-	<div class="system-raw-editor" :class="{ disabled, 'multi-line': type === 'text' }">
+	<div class="system-raw-editor" :class="{ disabled, 'multi-line': isMultiLine }">
 		<div ref="codemirrorEl"></div>
 	</div>
 </template>
@@ -36,6 +36,8 @@ const { width } = useWindowSize();
 const codemirrorEl = ref<HTMLTextAreaElement | null>();
 let codemirror: CodeMirror.Editor | null;
 
+const isMultiLine = computed(() => ['text', 'json'].includes(props.type));
+
 onMounted(async () => {
 	if (codemirrorEl.value) {
 		CodeMirror.defineSimpleMode('mustache', mustacheMode);
@@ -52,14 +54,14 @@ onMounted(async () => {
 			showCursorWhenSelecting: true,
 			lineWiseCopyCut: false,
 			theme: 'default',
-			scrollbarStyle: props.type === 'text' ? 'native' : 'null',
+			scrollbarStyle: isMultiLine.value ? 'native' : 'null',
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: t('raw_editor_placeholder'),
 		});
 
 		// prevent new lines for single lines
-		if (props.type !== 'text') {
+		if (!isMultiLine.value) {
 			codemirror.on('beforeChange', function (_doc, { origin, text, cancel, update }) {
 				const typedNewLine = origin === '+input' && typeof text === 'object' && text.join('') === '';
 				if (typedNewLine) return cancel();
