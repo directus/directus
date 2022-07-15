@@ -1,5 +1,5 @@
 <template>
-	<div class="system-raw-editor" :class="{ disabled, 'multi-line': multiLine }">
+	<div class="system-raw-editor" :class="{ disabled, 'multi-line': type === 'text' }">
 		<div ref="codemirrorEl"></div>
 	</div>
 </template>
@@ -17,13 +17,13 @@ const props = withDefaults(
 		value?: string;
 		autofocus?: boolean;
 		disabled?: boolean;
-		multiLine?: boolean;
+		type?: string;
 	}>(),
 	{
 		value: undefined,
 		autofocus: false,
 		disabled: false,
-		multiLine: false,
+		type: undefined,
 	}
 );
 
@@ -52,14 +52,14 @@ onMounted(async () => {
 			showCursorWhenSelecting: true,
 			lineWiseCopyCut: false,
 			theme: 'default',
-			scrollbarStyle: props.multiLine ? 'native' : 'null',
+			scrollbarStyle: props.type === 'text' ? 'native' : 'null',
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: t('raw_editor_placeholder'),
 		});
 
 		// prevent new lines for single lines
-		if (!props.multiLine) {
+		if (props.type !== 'text') {
 			codemirror.on('beforeChange', function (_doc, { origin, text, cancel, update }) {
 				const typedNewLine = origin === '+input' && typeof text === 'object' && text.join('') === '';
 				if (typedNewLine) return cancel();
