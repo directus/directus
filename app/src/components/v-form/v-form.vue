@@ -188,23 +188,6 @@ export default defineComponent({
 		const { toggleBatchField, batchActiveFields } = useBatch();
 		const { toggleRawField, rawActiveFields } = useRawEditor();
 
-		watch(
-			fields,
-			() => {
-				// make sure to toggle existing values with mustache tags as rawActiveFields
-				// to prevent the initial incompatible values from breaking the original interfaces
-				// on first load
-				for (const formField of formFields.value) {
-					const fieldValue = values.value?.[formField.field] ?? props.initialValues?.[formField.field];
-					if (!fieldValue || typeof fieldValue !== 'string') continue;
-					if (fieldValue.includes('{{') && fieldValue.includes('}}')) {
-						rawActiveFields.value.add(formField.field);
-					}
-				}
-			},
-			{ immediate: true }
-		);
-
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < formFields.value.length; i++) {
 				if (formFields.value[i].meta && !formFields.value[i].meta?.readonly && !formFields.value[i].meta?.hidden) {
