@@ -92,7 +92,7 @@ jobs:
   e2e_blackbox_tests:
     name: End-to-End Blackbox Tests
     needs: pre_check
-    uses: licitdev/directus/.github/workflows/e2e-blackbox-tests.yml@feat/black-box-tests
+    uses: directus/directus/.github/workflows/e2e-blackbox-tests.yml@main
     with:
       should_skip:
         ${{ (github.event_name == 'pull_request' && fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests_updated.should_skip) ||
@@ -102,7 +102,7 @@ jobs:
   e2e_blackbox_tests_quick:
     name: End-to-End Blackbox Tests (Quick)
     needs: pre_check
-    uses: licitdev/directus/.github/workflows/e2e-blackbox-tests-quick.yml@feat/black-box-tests
+    uses: directus/directus/.github/workflows/e2e-blackbox-tests-quick.yml@main
     with:
       should_skip:
         ${{ (github.event_name == 'pull_request' && !fromJSON(needs.pre_check.outputs.paths_result).e2e_blackbox_tests_updated.should_skip) ||
