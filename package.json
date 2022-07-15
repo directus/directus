@@ -38,6 +38,7 @@
 		"@types/jest": "27.5.2",
 		"@types/listr": "^0.14.4",
 		"@types/lodash": "^4.14.182",
+		"@types/seedrandom": "^3.0.2",
 		"@types/supertest": "2.0.12",
 		"@types/uuid": "8.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.30.5",

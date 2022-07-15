@@ -7,6 +7,7 @@ importers:
       '@types/jest': 27.5.2
       '@types/listr': ^0.14.4
       '@types/lodash': ^4.14.182
+      '@types/seedrandom': ^3.0.2
       '@types/supertest': 2.0.12
       '@types/uuid': 8.3.4
       '@typescript-eslint/eslint-plugin': ^5.30.5
@@ -35,6 +36,7 @@ importers:
       '@types/jest': 27.5.2
       '@types/listr': 0.14.4
       '@types/lodash': 4.14.182
+      '@types/seedrandom': 3.0.2
       '@types/supertest': 2.0.12
       '@types/uuid': 8.3.4
       '@typescript-eslint/eslint-plugin': 5.30.6_2vt5mtrqleafs33qg2bhpmbaqm
@@ -4147,6 +4149,11 @@ packages:
       { integrity: sha512-7Lu2zMQnmHHQGKXVvCOhSziQMpa+R2hMHFefzbYoYMHeaXR0uXqNeOc3JeQQQ8/6Xa2Br/P1IQTLzV09xxAiUQ== }
     dependencies:
       htmlparser2: 6.1.0
+    dev: true
+
+  /@types/seedrandom/3.0.2:
+    resolution:
+      { integrity: sha512-YPLqEOo0/X8JU3rdiq+RgUKtQhQtrppE766y7vMTu8dGML7TVtZNiiiaC/hhU9Zqw9UYopXxhuWWENclMVBwKQ== }
     dev: true
 
   /@types/serve-static/1.13.10:
