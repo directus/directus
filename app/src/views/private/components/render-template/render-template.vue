@@ -83,8 +83,11 @@ export default defineComponent({
 							.join('.');
 					}
 
-					// Try getting the value from the item, return some question marks if it doesn't exist
-					const value = get(props.item, fieldKey);
+					// Try getting the value from the item, else try the first element if it is an array
+					let value = get(props.item, fieldKey);
+					if (value === undefined && fieldKey.includes('.')) {
+						value = get(props.item, fieldKey.replace('.', '.[0]'));
+					}
 
 					if (value === undefined) return null;
 

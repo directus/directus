@@ -28,8 +28,8 @@
 				<render-display
 					:value="
 						!aliasFields || item[header.value] !== undefined
-							? get(item, header.value)
-							: getAliasedValue(item, header.value)
+							? get(item, header.value) ?? get(item, header.value.replace('.', '.[0]'))
+							: getAliasedValue(item, header.value) ?? getAliasedValue(item, header.value.replace('.', '.[0]'))
 					"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
