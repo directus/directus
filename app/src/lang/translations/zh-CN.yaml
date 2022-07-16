@@ -625,7 +625,7 @@ delete_collection: 删除模型
 update_collection_success: 模型已更新
 delete_collection_success: 模型已删除
 make_collection_visible: 显示收藏
-make_collection_hidden: 隐藏收藏集
+make_collection_hidden: 隐藏模型
 make_folder_visible: 显示文件夹
 make_folder_hidden: 隐藏文件夹
 goto_collection_content: 查看内容
