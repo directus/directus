@@ -71,12 +71,13 @@ export default async function create(type: string, name: string, options: Create
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
 			type,
-			path: 'dist/index.js',
+			path: `dist/${type}s/${name}/index.js`,
 			source: `src/index.${languageToShort(options.language)}`,
 			host: `^${pkg.version}`,
 		},
 		scripts: {
 			build: 'directus-extension build',
+			dev: 'directus-extension build -w --no-minify',
 		},
 		devDependencies: await getPackageDeps(type, options.language),
 	};
@@ -90,9 +91,20 @@ export default async function create(type: string, name: string, options: Create
 	log(`
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
-Build your extension by running:
-  ${chalk.blue('cd')} ${name}
+To start developing, run:
+  ${chalk.blue('cd')} c
+  ${chalk.blue('npm run')} dev
+
+and then to build for production, run:
   ${chalk.blue('npm run')} build
+
+${chalk.yellow('Tip:')} In ${chalk.blue(`${name}/package.json`)} file on the ${chalk.blue(
+		'directus:extension.path'
+	)} property
+replace ${chalk.yellow('dist')} in the with the relative path to your extensions folder, eg. ${chalk.yellow(
+		'../extensions'
+	)}
+to automatically copy your extension to the correct location when developing or building your extension.
 	`);
 }
 
