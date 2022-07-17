@@ -185,7 +185,6 @@ class ExtensionManager {
 
 			this.extensions = await this.getExtensions();
 			this.externalExtensions = await getExternalExtensions(env.EXTENSIONS_PATH);
-			this.appExtensions['app'] = this.externalExtensions;
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
 			logger.warn(err);
@@ -197,6 +196,7 @@ class ExtensionManager {
 
 		if (env.SERVE_APP) {
 			this.appExtensions = await this.generateExtensionBundles();
+			this.appExtensions['app'] = this.externalExtensions;
 		}
 
 		this.isLoaded = true;

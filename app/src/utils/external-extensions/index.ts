@@ -1,1 +1,1 @@
-export * from './external-extensions';
+export * from './external-extensions.js';
