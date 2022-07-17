@@ -51,7 +51,7 @@ export default defineOperationApp({
 			type: 'text',
 			meta: {
 				width: 'full',
-				interface: 'input-rich-text-md',
+				interface: 'input-rich-text-html',
 			},
 		},
 	],
