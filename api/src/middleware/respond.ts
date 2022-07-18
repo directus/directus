@@ -41,6 +41,9 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.CACHE_TTL as string)));
 		res.setHeader('Vary', 'Origin, Cache-Control');
+	} else if (req.method.toLowerCase() === 'get' || req.path?.startsWith('/extensions')) {
+		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.ASSETS_CACHE_TTL as string)));
+		res.setHeader('Vary', 'Origin, Cache-Control');
 	} else {
 		// Don't cache anything by default
 		res.setHeader('Cache-Control', 'no-cache');
