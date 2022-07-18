@@ -87,6 +87,7 @@ import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watc
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
+import { translate } from '@/utils/translate-object-values';
 
 type FieldValues = {
 	[field: string]: any;
@@ -266,11 +267,13 @@ export default defineComponent({
 			const fieldConf = computed(() => {
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-				return fields.value.reduce((result: Record<string, Field>, field: Field) => {
-					const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-					if (f) result[f.field] = f;
-					return result;
-				}, {} as Record<string, Field>);
+				return translate(
+					fields.value.reduce((result: Record<string, Field>, field: Field) => {
+						const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+						if (f) result[f.field] = f;
+						return result;
+					}, {} as Record<string, Field>)
+				);
 
 				function setPrimaryKeyReadonly(field: Field) {
 					if (
