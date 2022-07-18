@@ -1,6 +1,7 @@
 import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
 import { Knex } from 'knex';
+import { KNEX_TYPES } from '@directus/shared/constants';
 
 type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 
@@ -16,6 +17,31 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			} else {
 				builder.dropNullable(column);
 			}
+		});
+	}
+
+	async updateType(
+		table: string,
+		column: string,
+		type: typeof KNEX_TYPES[number],
+		options: { nullable?: boolean; default?: any } = {}
+	): Promise<void> {
+		await this.knex.schema.alterTable(table, (builder) => {
+			const b = builder[type](column);
+
+			if (options.nullable === true) {
+				b.nullable();
+			}
+
+			if (options.nullable === false) {
+				b.notNullable();
+			}
+
+			if (options.default !== undefined) {
+				b.defaultTo(options.default);
+			}
+
+			b.alter();
 		});
 	}
 
