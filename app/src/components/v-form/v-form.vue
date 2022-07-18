@@ -264,16 +264,15 @@ export default defineComponent({
 				}, {} as Record<string, any>);
 			});
 
+			const translatedFields = computed(() => translate(fields.value));
+
 			const fieldConf = computed(() => {
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
-
-				return translate(
-					fields.value.reduce((result: Record<string, Field>, field: Field) => {
-						const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-						if (f) result[f.field] = f;
-						return result;
-					}, {} as Record<string, Field>)
-				);
+				return translatedFields.value.reduce((result: Record<string, Field>, field: Field) => {
+					const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+					if (f.field) result[f.field] = f;
+					return result;
+				}, {} as Record<string, Field>);
 
 				function setPrimaryKeyReadonly(field: Field) {
 					if (
@@ -305,13 +304,6 @@ export default defineComponent({
 			const fieldNames = computed(() => {
 				return formFields.value.map((f) => f.field);
 			});
-
-			// const fieldConf = computed(() => {
-			// 	return fields.value.reduce((a, c) => {
-			// 		a[c.field] = c;
-			// 		return a;
-			// 	}, {} as Record<string, Field>);
-			// });
 
 			return { formFields, fieldNames, /*fieldsMeta,*/ fieldConf, isDisabled, getFieldsForGroup, fieldsForGroup };
 
