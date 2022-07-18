@@ -4,7 +4,7 @@
 			v-for="accordionField in groupFields"
 			:key="accordionField.field"
 			:field="accordionField"
-			:fields="groupFields"
+			:fields="fields"
 			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
@@ -14,6 +14,7 @@
 			:loading="loading"
 			:validation-errors="validationErrors"
 			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
@@ -76,6 +77,10 @@ export default defineComponent({
 		badge: {
 			type: String,
 			default: null,
+		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
 		},
 		accordionMode: {
 			type: Boolean,
