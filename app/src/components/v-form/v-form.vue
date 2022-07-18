@@ -6,22 +6,22 @@
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
-		<template v-for="(field, index) in formFields">
+		<template v-for="(fieldName, index) in fieldNames">
 			<component
-				:is="`interface-${fieldsMeta[field.field]?.interface || 'group-standard'}`"
-				v-if="fieldsMeta[field.field]?.special?.includes('group')"
-				v-show="!fieldsMeta[field.field]?.hidden"
+				:is="`interface-${fieldConf[fieldName].meta?.interface || 'group-standard'}`"
+				v-if="fieldConf[fieldName].meta?.special?.includes('group')"
+				v-show="!fieldConf[fieldName].meta?.hidden"
 				:ref="
 					(el: Element) => {
-						formFieldEls[field.field] = el;
+						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="field.field + '_group'"
+				:key="fieldName + '_group'"
 				:class="[
-					fieldsMeta[field.field]?.width || 'full',
+					fieldConf[fieldName].meta?.width || 'full',
 					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
 				]"
-				:field="field"
+				:field="fieldConf[fieldName]"
 				:fields="fieldsForGroup[index] || []"
 				:values="modelValue || {}"
 				:initial-values="initialValues || {}"
@@ -33,43 +33,43 @@
 				:validation-errors="validationErrors"
 				:badge="badge"
 				:raw-editor-enabled="rawEditorEnabled"
-				v-bind="fieldsMeta[field.field]?.options || {}"
+				v-bind="fieldConf[fieldName].meta?.options || {}"
 				@apply="apply"
 			/>
 
 			<form-field
-				v-else-if="!fieldsMeta[field.field]?.hidden"
+				v-else-if="!fieldConf[fieldName].meta?.hidden"
 				:ref="
 					(el: Element) => {
-						formFieldEls[field.field] = el;
+						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="field.field + '_field'"
+				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
-				:field="field"
+				:field="fieldConf[fieldName]"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
-				:model-value="(values || {})[field.field]"
-				:initial-value="(initialValues || {})[field.field]"
-				:disabled="isDisabled(field)"
+				:model-value="(values || {})[fieldName]"
+				:initial-value="(initialValues || {})[fieldName]"
+				:disabled="isDisabled(fieldConf[fieldName])"
 				:batch-mode="batchMode"
-				:batch-active="batchActiveFields.includes(field.field)"
+				:batch-active="batchActiveFields.includes(fieldName)"
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-error="
 					validationErrors.find(
 						(err) =>
-							err.collection === field?.collection &&
-							(err.field === field.field || err.field.endsWith(`(${field.field})`))
+							err.collection === fieldConf[fieldName]?.collection &&
+							(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
 					)
 				"
 				:badge="badge"
 				:raw-editor-enabled="rawEditorEnabled"
-				:raw-editor-active="rawActiveFields.has(field.field)"
-				@update:model-value="setValue(field.field, $event)"
+				:raw-editor-active="rawActiveFields.has(fieldName)"
+				@update:model-value="setValue(fieldName, $event)"
 				@set-field-value="setValue($event.field, $event.value)"
-				@unset="unsetValue(field)"
-				@toggle-batch="toggleBatchField(field)"
-				@toggle-raw="toggleRawField(field)"
+				@unset="unsetValue(fieldConf[fieldName])"
+				@toggle-batch="toggleBatchField(fieldConf[fieldName])"
+				@toggle-raw="toggleRawField(fieldConf[fieldName])"
 			/>
 		</template>
 	</div>
@@ -83,7 +83,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, FieldMeta, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, Ref } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, Ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -184,7 +184,8 @@ export default defineComponent({
 			formFieldEls.value = {};
 		});
 
-		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, fieldsMeta } = useForm();
+		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, fieldNames, /*fieldsMeta,*/ fieldConf } =
+			useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 		const { toggleRawField, rawActiveFields } = useRawEditor();
 
@@ -239,7 +240,9 @@ export default defineComponent({
 			isDisabled,
 			scrollToField,
 			formFieldEls,
-			fieldsMeta,
+			// fieldsMeta,
+			fieldNames,
+			fieldConf,
 		};
 
 		function useForm() {
@@ -260,14 +263,14 @@ export default defineComponent({
 				}, {} as Record<string, any>);
 			});
 
-			const fieldsMeta = computed(() => {
+			const fieldConf = computed(() => {
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-				return fields.value.reduce((result: Record<string, FieldMeta>, field: Field) => {
-					const { meta } = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-					if (meta) result[meta.field] = meta;
+				return fields.value.reduce((result: Record<string, Field>, field: Field) => {
+					const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+					if (f) result[f.field] = f;
 					return result;
-				}, {} as Record<string, FieldMeta>);
+				}, {} as Record<string, Field>);
 
 				function setPrimaryKeyReadonly(field: Field) {
 					if (
@@ -296,10 +299,21 @@ export default defineComponent({
 				formFields.value.map((field: Field) => getFieldsForGroup(field.meta?.field || null))
 			);
 
-			return { formFields, fieldsMeta, isDisabled, getFieldsForGroup, fieldsForGroup };
+			const fieldNames = computed(() => {
+				return formFields.value.map((f) => f.field);
+			});
+
+			// const fieldConf = computed(() => {
+			// 	return fields.value.reduce((a, c) => {
+			// 		a[c.field] = c;
+			// 		return a;
+			// 	}, {} as Record<string, Field>);
+			// });
+
+			return { formFields, fieldNames, /*fieldsMeta,*/ fieldConf, isDisabled, getFieldsForGroup, fieldsForGroup };
 
 			function isDisabled(field: Field) {
-				const meta = fieldsMeta.value?.[field.field];
+				const meta = fieldConf.value?.[field.field].meta;
 				return (
 					props.loading ||
 					props.disabled === true ||
@@ -311,12 +325,12 @@ export default defineComponent({
 
 			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
 				const fieldsInGroup: Field[] = fields.value.filter((field) => {
-					const meta = fieldsMeta.value?.[field.field];
+					const meta = fieldConf.value?.[field.field].meta;
 					return meta?.group === group || (group === null && isNil(meta));
 				});
 
 				for (const field of fieldsInGroup) {
-					const meta = fieldsMeta.value?.[field.field];
+					const meta = fieldConf.value?.[field.field].meta;
 					if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
 						passed.push(meta!.field);
 						fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
@@ -325,11 +339,13 @@ export default defineComponent({
 
 				return fieldsInGroup;
 			}
+			// function getFieldNames(fields: Field[]): string[] {
+			// 	return fields.map((f) => f.field);
+			// }
 		}
 
-		function useComputedFields(): Ref<Field[]> {
+		function useComputedFields() {
 			const fieldsStore = useFieldsStore();
-
 			const fields = ref<Field[]>(getFields());
 
 			watch(
@@ -339,10 +355,14 @@ export default defineComponent({
 					if (!isEqual(fields.value, newVal)) {
 						fields.value = newVal;
 					}
+					// const names = getFieldNames(newVal);
+					// if (!isEqual(fieldNames.value, names)) {
+					// 	fieldNames.value = names;
+					// }
 				}
 			);
 
-			return fields;
+			return fields; //{ fields, fieldNames };
 
 			function getFields(): Field[] {
 				if (props.collection) {
