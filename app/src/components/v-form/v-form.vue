@@ -87,7 +87,6 @@ import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watc
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
-import { translate } from '@/utils/translate-object-values';
 
 type FieldValues = {
 	[field: string]: any;
@@ -274,13 +273,17 @@ export default defineComponent({
 				}, {} as Record<string, any>);
 			});
 
-			const translatedFields = computed(() => translate(fields.value));
+			const { formFields } = useFormFields(fields);
 
 			const fieldsMap = computed(() => {
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
-				return translatedFields.value.reduce((result: Record<string, Field>, field: Field) => {
-					const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-					if (f.field) result[f.field] = f;
+				return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
+					if (fieldNames.value.includes(field.field)) {
+						const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+						if (f.field) result[f.field] = f;
+					} else {
+						if (field.field) result[field.field] = field;
+					}
 					return result;
 				}, {} as Record<string, Field>);
 			});
@@ -290,16 +293,13 @@ export default defineComponent({
 					(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 				)
 			);
-
-			const { formFields } = useFormFields(fieldsInGroup);
+			const fieldNames = computed(() => {
+				return fieldsInGroup.value.map((f) => f.field);
+			});
 
 			const fieldsForGroup = computed(() =>
-				formFields.value.map((field: Field) => getFieldsForGroup(field.meta?.field || null))
+				fieldNames.value.map((name: string) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null))
 			);
-
-			const fieldNames = computed(() => {
-				return formFields.value.map((f) => f.field);
-			});
 
 			return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 
