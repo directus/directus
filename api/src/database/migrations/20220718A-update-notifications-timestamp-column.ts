@@ -4,7 +4,7 @@ import { getHelpers } from '../helpers';
 export async function up(knex: Knex): Promise<void> {
 	const helper = getHelpers(knex).schema;
 
-	await helper.updateType('directus_notifications', 'timestamp', 'timestamp', {
+	await helper.changeToType('directus_notifications', 'timestamp', 'timestamp', {
 		nullable: true,
 		default: knex.fn.now(),
 	});
@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	const helper = getHelpers(knex).schema;
 
-	await helper.updateType('directus_notifications', 'timestamp', 'timestamp', {
+	await helper.changeToType('directus_notifications', 'timestamp', 'timestamp', {
 		nullable: false,
 	});
 }
