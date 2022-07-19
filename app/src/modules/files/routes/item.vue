@@ -127,6 +127,7 @@
 				v-if="item && item.type.startsWith('image')"
 				:id="item.id"
 				v-model="editActive"
+				:custom-aspect-ratios="customAspectRatios"
 				@refresh="refresh"
 			/>
 
@@ -188,6 +189,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import FilePreview from '@/views/private/components/file-preview';
 import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor';
+import { CustomAspectRatio } from '@/views/private/components/image-editor/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import SaveOptions from '@/views/private/components/save-options';
 import { Field } from '@directus/shared/types';
@@ -201,9 +203,10 @@ import FilesNotFound from './not-found.vue';
 
 interface Props {
 	primaryKey: string;
+	customAspectRatios?: CustomAspectRatio[];
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { customAspectRatios: undefined });
 
 const { t } = useI18n();
 
