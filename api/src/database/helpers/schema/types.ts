@@ -20,7 +20,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		});
 	}
 
-	async updateType(
+	async changeToType(
 		table: string,
 		column: string,
 		type: typeof KNEX_TYPES[number],
@@ -28,54 +28,6 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
 			const b = builder[type](column);
-
-			if (options.nullable === true) {
-				b.nullable();
-			}
-
-			if (options.nullable === false) {
-				b.notNullable();
-			}
-
-			if (options.default !== undefined) {
-				b.defaultTo(options.default);
-			}
-
-			b.alter();
-		});
-	}
-
-	async changeToText(
-		table: string,
-		column: string,
-		options: { nullable?: boolean; default?: any } = {}
-	): Promise<void> {
-		await this.knex.schema.alterTable(table, (builder) => {
-			const b = builder.string(column);
-
-			if (options.nullable === true) {
-				b.nullable();
-			}
-
-			if (options.nullable === false) {
-				b.notNullable();
-			}
-
-			if (options.default !== undefined) {
-				b.defaultTo(options.default);
-			}
-
-			b.alter();
-		});
-	}
-
-	async changeToInteger(
-		table: string,
-		column: string,
-		options: { nullable?: boolean; default?: any } = {}
-	): Promise<void> {
-		await this.knex.schema.alterTable(table, (builder) => {
-			const b = builder.integer(column);
 
 			if (options.nullable === true) {
 				b.nullable();
