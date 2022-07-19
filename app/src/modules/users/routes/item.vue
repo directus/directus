@@ -141,7 +141,7 @@
 				ref="form"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
-				:fields="formFields"
+				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
@@ -194,7 +194,6 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
 import { useFieldsStore, useCollectionsStore, useServerStore } from '@/stores/';
-import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
@@ -310,8 +309,6 @@ export default defineComponent({
 			});
 		});
 
-		const { formFields } = useFormFields(fieldsFiltered);
-
 		const archiveTooltip = computed(() => {
 			if (archiveAllowed.value === false) return t('not_allowed');
 			if (isArchived.value === true) return t('unarchive');
@@ -348,7 +345,7 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
-			formFields,
+			fieldsFiltered,
 			createAllowed,
 			deleteAllowed,
 			saveAllowed,
