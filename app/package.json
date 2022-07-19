@@ -1,6 +1,6 @@
 {
-	"name": "@directus/app",
-	"version": "9.14.1",
+	"name": "daflow",
+	"version": "9.14.1-rc.3",
 	"private": false,
 	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
@@ -16,7 +16,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
+		"url": "git+https://github.com/j0hnfl0w/directus.git"
 	},
 	"publishConfig": {
 		"access": "public"
