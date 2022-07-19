@@ -62,7 +62,14 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const rootItems = computed(() => {
-			const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
+			const shownUserCollections = showHidden.value
+				? collectionsStore.allCollections
+				: collectionsStore.visibleCollections;
+			const shownSystemCollections = collectionsStore.crudSafeSystemCollections.filter(
+				(i) => i.collection === 'directus_users'
+			);
+			const shownCollections = [...shownUserCollections, ...shownSystemCollections];
+
 			return orderBy(
 				shownCollections.filter((collection) => {
 					return isNil(collection?.meta?.group);
