@@ -869,6 +869,7 @@ displays:
   datetime:
     datetime: Ngày giờ
     format: Định dạng
+    suffix: Hậu tố
   file:
     file: Tệp
   filesize:

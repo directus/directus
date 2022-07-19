@@ -368,6 +368,7 @@ export default defineComponent({
 				style_formats: styleFormats,
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
+				browser_spellcheck: true,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};
@@ -376,6 +377,7 @@ export default defineComponent({
 		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
 		let observer: MutationObserver;
+		let emittedValue: any;
 
 		return {
 			t,
@@ -427,7 +429,12 @@ export default defineComponent({
 
 			if (!observer) return;
 
-			emit('input', editorRef.value.getContent() ? editorRef.value.getContent() : null);
+			const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
+
+			if (newValue === emittedValue) return;
+
+			emittedValue = newValue;
+			emit('input', newValue);
 		}
 
 		function setupContentWatcher() {
@@ -457,6 +464,24 @@ export default defineComponent({
 					editor.ui.registry.getAll().buttons.customlink.onAction();
 				});
 				setCount();
+			});
+
+			editor.on('OpenWindow', function (e: any) {
+				if (e.dialog?.getData) {
+					const data = e.dialog?.getData();
+
+					if (data) {
+						if (data.url) {
+							e.dialog.close();
+							editor.ui.registry.getAll().buttons.customlink.onAction();
+						}
+
+						if (data.src) {
+							e.dialog.close();
+							editor.ui.registry.getAll().buttons.customimage.onAction(true);
+						}
+					}
+				}
 			});
 		}
 

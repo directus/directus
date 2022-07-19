@@ -15,7 +15,8 @@
 		"types": ["vite/client", "jest"],
 		"paths": {
 			"@/*": ["src/*"],
-			"preact/*": ["stub/empty.d.ts"]
+			"preact/*": ["stub/empty.d.ts"],
+			"tslib": ["node_modules/tslib/tslib.d.ts"]
 		},
 		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
 	},

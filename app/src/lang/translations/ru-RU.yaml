@@ -1614,6 +1614,7 @@ displays:
     short: Короткий
     relative: Относительный
     relative_label: 'Показывать относительное время, прим.: 5 минут назад'
+    suffix: Суффикс
   file:
     file: Файл
     description: Показать файлы

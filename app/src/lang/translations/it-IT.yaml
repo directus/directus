@@ -309,6 +309,8 @@ primary_key: Chiave primaria
 foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
+toggle_raw_editor: Attiva/Disattiva editor grezzo
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valore grezzo
 copy_raw_value: Copia il valore grezzo
 copy_raw_value_success: Copiato
@@ -614,6 +616,7 @@ password_reset_sent: Se hai un account riceverai via email un link sicuro per re
 password_reset_successful: Password reimpostata con successo
 back: Indietro
 filter: Filtro
+edit_image: Modifica immagine
 editing_image: Modifica Immagine
 square: Quadrato
 free: Libero
@@ -1701,6 +1704,9 @@ interfaces:
     regenerate: Rigenera Token
     generate_success_copy: Assicurati di copiare e salvare il token qui sopra. Per motivi di sicurezza, non sarà possibile visualizzare nuovamente il token dopo aver salvato e navigato fuori da questa pagina.
     remove_token: Cancellare il token
+  system-raw-editor:
+    system-raw-editor: Editor Grezzo
+    description: Permetti l'inserimento di valori di template grezzi o di mustache
 displays:
   translations:
     translations: Traduzioni
@@ -1738,6 +1744,17 @@ displays:
     short: Breve
     relative: Relativo
     relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
+    suffix: Suffisso
+    suffix_label: Mostra indicatore relativo
+    suffix_note: Usa espressioni come 'fra...' e '...fa'
+    strict: Esatto
+    strict_label: Usa unià esatte
+    strict_note: Rimuove espressioni come 'quasi...', 'più di...', 'meno di...'
+    round: Arrotonda
+    round_note: Scegli una funzione di arrotondamento
+    down: In basso
+    nearest: Il più vicino
+    up: In alto
   file:
     file: File
     description: Visualizza file

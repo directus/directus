@@ -834,6 +834,18 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
 
+				const countType = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated_count`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: GraphQLInt,
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				});
+
 				AggregateMethods[collection.collection] = {
 					group: {
 						name: 'group',
@@ -845,17 +857,11 @@ export class GraphQLService {
 					},
 					count: {
 						name: 'count',
-						type: schemaComposer.createObjectTC({
-							name: `${collection.collection}_aggregated_count`,
-							fields: Object.values(collection.fields).reduce((acc, field) => {
-								acc[field.field] = {
-									type: GraphQLInt,
-									description: field.note,
-								};
-
-								return acc;
-							}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
-						}),
+						type: countType,
+					},
+					countDistinct: {
+						name: 'countDistinct',
+						type: countType,
 					},
 				};
 
@@ -877,10 +883,6 @@ export class GraphQLService {
 						},
 						sum: {
 							name: 'sum',
-							type: AggregatedFields[collection.collection],
-						},
-						countDistinct: {
-							name: 'countDistinct',
 							type: AggregatedFields[collection.collection],
 						},
 						avgDistinct: {
