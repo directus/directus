@@ -420,6 +420,12 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
+		const foreignCheckEnabled = await this.helpers.schema.getForeignCheckStatus();
+
+		if (foreignCheckEnabled) {
+			await this.helpers.schema.disableForeignCheck();
+		}
+
 		try {
 			await emitter.emitFilter(
 				'fields.delete',
@@ -535,6 +541,10 @@ export class FieldsService {
 				}
 			);
 		} finally {
+			if (foreignCheckEnabled) {
+				await this.helpers.schema.enableForeignCheck();
+			}
+
 			if (this.cache && env.CACHE_AUTO_PURGE) {
 				await this.cache.clear();
 			}

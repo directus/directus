@@ -125,4 +125,16 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			await this.changeNullable(table, column, options.nullable);
 		}
 	}
+
+	async getForeignCheckStatus(): Promise<boolean> {
+		return false;
+	}
+
+	async disableForeignCheck(): Promise<void> {
+		return;
+	}
+
+	async enableForeignCheck(): Promise<void> {
+		return;
+	}
 }
