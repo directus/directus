@@ -32,6 +32,7 @@ import { User } from '@directus/shared/types';
 
 export default defineComponent({
 	setup() {
+		alert('app.vue modified!')
 		const { t } = useI18n();
 
 		const appStore = useAppStore();
