@@ -51,41 +51,57 @@
 						<v-icon v-tooltip.top.inverted="t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
 
-					<v-list>
-						<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
-							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
-							<v-list-item-content>16:9</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
-							<v-list-item-icon><v-icon name="crop_3_2" /></v-list-item-icon>
-							<v-list-item-content>3:2</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
-							<v-list-item-icon><v-icon name="crop_5_4" /></v-list-item-icon>
-							<v-list-item-content>5:4</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
-							<v-list-item-icon><v-icon name="crop_7_5" /></v-list-item-icon>
-							<v-list-item-content>7:5</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
-							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
-							<v-list-item-content>{{ t('square') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === NaN" @click="aspectRatio = NaN">
-							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
-							<v-list-item-content>{{ t('free') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item
-							v-if="imageData"
-							clickable
-							:active="aspectRatio === imageData.width / imageData.height"
-							@click="aspectRatio = imageData.width / imageData.height"
-						>
-							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
-							<v-list-item-content>{{ t('original') }}</v-list-item-content>
-						</v-list-item>
-					</v-list>
+					<div v-if="customAspectRatios">
+						<v-list>
+							<v-list-item
+								v-for="customAspectRatio in customAspectRatios"
+								:key="customAspectRatio.text"
+								clickable
+								:active="aspectRatio === customAspectRatio.value"
+								@click="aspectRatio = customAspectRatio.value"
+							>
+								<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
+								<v-list-item-content>{{ customAspectRatio.text }}</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</div>
+					<div v-else>
+						<v-list>
+							<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
+								<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
+								<v-list-item-content>16:9</v-list-item-content>
+							</v-list-item>
+							<v-list-item clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
+								<v-list-item-icon><v-icon name="crop_3_2" /></v-list-item-icon>
+								<v-list-item-content>3:2</v-list-item-content>
+							</v-list-item>
+							<v-list-item clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
+								<v-list-item-icon><v-icon name="crop_5_4" /></v-list-item-icon>
+								<v-list-item-content>5:4</v-list-item-content>
+							</v-list-item>
+							<v-list-item clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
+								<v-list-item-icon><v-icon name="crop_7_5" /></v-list-item-icon>
+								<v-list-item-content>7:5</v-list-item-content>
+							</v-list-item>
+							<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
+								<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
+								<v-list-item-content>{{ t('square') }}</v-list-item-content>
+							</v-list-item>
+							<v-list-item clickable :active="aspectRatio === NaN" @click="aspectRatio = NaN">
+								<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
+								<v-list-item-content>{{ t('free') }}</v-list-item-content>
+							</v-list-item>
+							<v-list-item
+								v-if="imageData"
+								clickable
+								:active="aspectRatio === imageData.width / imageData.height"
+								@click="aspectRatio = imageData.width / imageData.height"
+							>
+								<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
+								<v-list-item-content>{{ t('original') }}</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</div>
 				</v-menu>
 
 				<div class="spacer" />
@@ -116,7 +132,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed, reactive, nextTick } from 'vue';
+import { defineComponent, ref, watch, computed, reactive, nextTick, PropType } from 'vue';
 import api from '@/api';
 
 import Cropper from 'cropperjs';
@@ -134,6 +150,12 @@ type Image = {
 	height: number;
 };
 
+type CustomAspectRatio = {
+	text: string;
+	value: number;
+};
+export type { CustomAspectRatio };
+
 export default defineComponent({
 	props: {
 		id: {
@@ -142,6 +164,10 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: Boolean,
+			default: undefined,
+		},
+		customAspectRatios: {
+			type: Array as PropType<CustomAspectRatio[]> | undefined,
 			default: undefined,
 		},
 	},
@@ -318,6 +344,11 @@ export default defineComponent({
 
 			const aspectRatioIcon = computed(() => {
 				if (!imageData.value) return 'crop_original';
+
+				if (props.customAspectRatios) {
+					const customAspectRatio = props.customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
+					if (customAspectRatio) return 'crop_square';
+				}
 
 				switch (aspectRatio.value) {
 					case 16 / 9:

@@ -63,7 +63,12 @@
 				@input="update"
 			/>
 
-			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" />
+			<image-editor
+				v-if="!disabled && image"
+				:id="image.id"
+				v-model="editImageEditor"
+				:custom-aspect-ratios="customAspectRatios"
+			/>
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
@@ -80,6 +85,7 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
+import { CustomAspectRatio } from '@/views/private/components/image-editor/image-editor.vue';
 import { nanoid } from 'nanoid';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -89,6 +95,7 @@ const props = withDefaults(
 		value?: string | Record<string, any> | null;
 		disabled?: boolean;
 		folder?: string;
+		customAspectRatios?: CustomAspectRatio[];
 		collection: string;
 		field: string;
 		width: string;
@@ -99,6 +106,7 @@ const props = withDefaults(
 		disabled: false,
 		crop: true,
 		folder: undefined,
+		customAspectRatios: undefined,
 	}
 );
 

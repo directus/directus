@@ -41,6 +41,45 @@ export default defineInterface({
 				default_value: true,
 			},
 		},
+		{
+			field: 'customAspectRatios',
+			type: 'json',
+			name: '$t:interfaces.file-image.custom_aspect_ratios',
+			meta: {
+				width: 'full',
+				interface: 'list',
+				options: {
+					template: '{{ text }}',
+					fields: [
+						{
+							field: 'text',
+							type: 'string',
+							name: '$t:text',
+							meta: {
+								interface: 'system-input-translated-string',
+								width: 'half',
+								options: {
+									placeholder: '$t:text',
+								},
+							},
+						},
+						{
+							field: 'value',
+							type: 'float',
+							name: '$t:value',
+							meta: {
+								interface: 'input',
+								options: {
+									font: 'monospace',
+									placeholder: '$t:value',
+								},
+								width: 'half',
+							},
+						},
+					],
+				},
+			},
+		},
 	],
 	recommendedDisplays: ['image'],
 	preview: PreviewSVG,
