@@ -1,24 +1,18 @@
-import { defineLayout } from '@directus/shared/utils';
+import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
+import { syncRefProperty } from '@/utils/sync-ref-property';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { Field, Filter, GeometryOptions, Item } from '@directus/shared/types';
+import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
+import { cloneDeep, merge } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import MapActions from './actions.vue';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
-import MapActions from './actions.vue';
-
-import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref, watch } from 'vue';
-
-import { toGeoJSON } from '@/utils/geometry';
-import { layers as directusLayers } from './style';
-import { useRouter } from 'vue-router';
-import { useSync } from '@directus/shared/composables';
+import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
-import { Filter } from '@directus/shared/types';
-import { useCollection } from '@directus/shared/composables';
-import { useItems } from '@directus/shared/composables';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
-import { syncRefProperty } from '@/utils/sync-ref-property';
-
-import { cloneDeep, merge } from 'lodash';
+import { saveAsCSV } from '@/utils/save-as-csv';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'map',
@@ -46,41 +40,17 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const page = syncRefProperty(layoutQuery, 'page', 1);
 		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
-		const sort = syncRefProperty(layoutQuery, 'sort', () =>
-			primaryKeyField.value ? [primaryKeyField.value?.field] : []
-		);
-
-		const locationFilter = ref<Filter>();
-
-		const filterWithLocation = computed<Filter | null>(() => {
-			if (!locationFilter.value) return filter.value;
-			if (!filter.value) return locationFilter.value;
-
-			return {
-				_and: [filter.value, locationFilter.value],
-			};
-		});
+		const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
+		const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
 
 		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
 		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
 		const clusterData = syncRefProperty(layoutOptions, 'clusterData', false);
 		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
-		const geometryFormat = computed<GeometryFormat | undefined>({
-			get: () => layoutOptions.value?.geometryFormat,
-			set(newValue: GeometryFormat | undefined) {
-				layoutOptions.value = {
-					...(layoutOptions.value || {}),
-					geometryFormat: newValue,
-					geometryField: undefined,
-				};
-			},
-		});
 
 		const geometryFieldData = computed(() => {
 			return fieldsInCollection.value.find((f: Field) => f.field == geometryField.value);
 		});
-
-		const isGeometryFieldNative = computed(() => geometryFieldData.value?.type.startsWith('geometry'));
 
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
@@ -104,12 +74,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return;
 			}
 			const geometryField = field.field;
-			const geometryFormat = isGeometryFieldNative.value ? 'native' : field.meta?.options?.geometryFormat;
+			const geometryFormat = getGeometryFormatForType(field.type);
+			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
 			if (!geometryFormat) {
 				return;
 			}
-			return { geometryField, geometryFormat };
+			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
+
+		const isGeometryFieldNative = computed(() => geometryOptions.value?.geometryFormat === 'native');
 
 		const template = computed(() => {
 			return displayTemplate.value || info.value?.meta?.display_template || `{{ ${primaryKeyField.value?.field} }}`;
@@ -121,9 +94,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		function getLocationFilter(): Filter | undefined {
+		const locationFilter = computed<Filter | null>(() => {
 			if (!isGeometryFieldNative.value || !cameraOptions.value || !geometryField.value) {
-				return;
+				return null;
 			}
 
 			const bbox = cameraOptions.value.bbox;
@@ -144,14 +117,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					},
 				},
 			} as Filter;
-		}
+		});
+
+		const filterWithLocation = computed<Filter | null>(() => {
+			if (!locationFilter.value) return filter.value;
+			if (!filter.value) return locationFilter.value;
+
+			return {
+				_and: [filter.value, locationFilter.value],
+			};
+		});
 
 		const shouldUpdateCamera = ref(false);
 
 		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
 			if (isGeometryFieldNative.value) {
-				locationFilter.value = undefined;
 				return;
 			}
 			if (geojson.value?.features.length) {
@@ -161,7 +142,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		watch(cameraOptions, () => {
 			shouldUpdateCamera.value = false;
-			locationFilter.value = getLocationFilter();
 		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
@@ -225,20 +205,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		}
 
-		function setSelection(ids: Array<string | number>) {
-			selection.value = ids;
+		function setSelection(ids: Item[]) {
+			selection.value = Array.from(new Set(ids));
 		}
 
-		function pushSelection(ids: Array<string | number>) {
+		function pushSelection(ids: Item[]) {
 			selection.value = Array.from(new Set(selection.value.concat(ids)));
 		}
 
-		function handleSelect({ ids, replace }: { ids: Array<string | number>; replace: boolean }) {
+		function handleSelect({ ids, replace }: { ids: Item[]; replace: boolean }) {
 			if (replace) setSelection(ids);
 			else pushSelection(ids);
 		}
 
-		function handleClick({ id, replace }: { id: string | number; replace: boolean }) {
+		function handleClick({ id, replace }: { id: Item; replace: boolean }) {
 			if (props.selectMode) {
 				handleSelect({ ids: [id], replace });
 			} else {
@@ -285,7 +265,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			collection,
 			geojson,
 			directusSource,
-			directusLayers,
+			directusLayers: getMapStyle(),
 			featureId,
 			geojsonBounds,
 			geojsonLoading,
@@ -293,7 +273,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geometryOptions,
 			handleClick,
 			handleSelect,
-			geometryFormat,
 			geometryField,
 			displayTemplate,
 			isGeometryFieldNative,
@@ -320,6 +299,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			template,
 			itemPopup,
 			updateItemPopup,
+			download,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -329,6 +309,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+		}
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, queryFields.value, items.value);
 		}
 
 		function toPage(newPage: number) {

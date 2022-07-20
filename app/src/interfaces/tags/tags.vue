@@ -25,7 +25,7 @@
 				</v-chip>
 			</span>
 			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimeter" name="chevron_right" />
+				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
 				<v-chip
 					v-for="val in customVals"
 					:key="val"
@@ -55,7 +55,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: Array as PropType<string[]>,
+			type: [Array, String] as PropType<string[] | string>,
 			default: null,
 		},
 		placeholder: {
@@ -100,7 +100,7 @@ export default defineComponent({
 			return [];
 		});
 
-		const selectedValsLocal = ref<string[]>(processArray(props.value || []));
+		const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
 
 		watch(
 			() => props.value,
@@ -198,7 +198,7 @@ export default defineComponent({
 		display: contents;
 	}
 
-	.custom-tags-delimeter,
+	.custom-tags-delimiter,
 	.tag {
 		margin-top: 8px;
 		margin-right: 8px;

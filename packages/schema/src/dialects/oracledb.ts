@@ -1,8 +1,7 @@
-import KnexOracle from 'knex-schema-inspector/dist/dialects/oracledb';
+import KnexOracle, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/oracledb';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
-import { stripQuotes } from '../utils/strip-quotes';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	private static _mapColumnAutoIncrement(column: Column): Column {
@@ -44,17 +43,25 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			max_length: number | null;
 		};
 
+		/**
+		 * NOTICE: This query is optimized for speed. Please keep this in mind.
+		 */
 		const columns = await this.knex.raw<RawColumn[]>(`
 			WITH "uc" AS (
-				SELECT /*+ materialize */
+				SELECT /*+ MATERIALIZE */
 					"uc"."TABLE_NAME",
 					"ucc"."COLUMN_NAME",
-					"uc"."CONSTRAINT_TYPE"
+					"uc"."CONSTRAINT_TYPE",
+					COUNT(*) OVER(
+						PARTITION BY
+							"uc"."CONSTRAINT_NAME"
+					) "CONSTRAINT_COUNT"
 				FROM "USER_CONSTRAINTS" "uc"
-				INNER JOIN "USER_CONS_COLUMNS" "ucc" ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
-				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
+				INNER JOIN "USER_CONS_COLUMNS" "ucc"
+					ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
+					AND "uc"."CONSTRAINT_TYPE" = 'P'
 			)
-			SELECT
+			SELECT /*+ OPTIMIZER_FEATURES_ENABLE('11.2.0.4') */
 				"c"."TABLE_NAME" "table_name",
 				"c"."COLUMN_NAME" "column_name",
 				"c"."DATA_DEFAULT" "default_value",
@@ -66,8 +73,11 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				"c"."CHAR_LENGTH" "max_length",
 				"c"."VIRTUAL_COLUMN" "is_generated"
 			FROM "USER_TAB_COLS" "c"
-			LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
+			LEFT JOIN "uc" "ct"
+				ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
 				AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
+				AND "ct"."CONSTRAINT_COUNT" = 1
+			WHERE "c"."HIDDEN_COLUMN" = 'NO'
 		`);
 
 		const overview: SchemaOverview = {};
@@ -91,7 +101,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				...column,
 				is_nullable: column.is_nullable === 'Y',
 				is_generated: column.is_generated === 'YES',
-				default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : stripQuotes(column.default_value),
+				default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 			};
 		}
 

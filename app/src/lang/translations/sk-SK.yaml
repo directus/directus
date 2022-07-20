@@ -30,6 +30,9 @@ fields:
     theme: Téma
     tfa_secret: Dvojfaktorová autentifikácia
     role: Rola
+  directus_shares:
+    role: Rola
+    password: Heslo
 email: E-mail
 password: Heslo
 interfaces:

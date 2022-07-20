@@ -1,7 +1,7 @@
 <template>
 	<div class="comment-header">
 		<v-avatar x-small>
-			<img v-if="avatarSource" :src="avatarSource" :alt="userName(activity.user)" />
+			<v-image v-if="avatarSource" :src="avatarSource" :alt="userName(activity.user)" />
 			<v-icon v-else name="person_outline" />
 		</v-avatar>
 
@@ -30,11 +30,11 @@
 
 				<v-list>
 					<v-list-item clickable @click="$emit('edit')">
-						<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
+						<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 						<v-list-item-content>{{ t('edit') }}</v-list-item-content>
 					</v-list-item>
 					<v-list-item clickable @click="confirmDelete = true">
-						<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
+						<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 						<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
@@ -59,73 +59,63 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref } from 'vue';
-import { Activity } from './types';
-import format from 'date-fns/format';
+<script setup lang="ts">
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
+import format from 'date-fns/format';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Activity } from './types';
 
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export default defineComponent({
-	props: {
-		activity: {
-			type: Object as PropType<Activity>,
-			required: true,
-		},
-		refresh: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-	},
-	emits: ['edit'],
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	activity: Activity;
+	refresh: () => void;
+}>();
 
-		const formattedTime = computed(() => {
-			if (props.activity.timestamp) {
-				// timestamp is in iso-8601
-				return format(new Date(props.activity.timestamp), String(t('date-fns_time_no_seconds')));
-			}
+defineEmits(['edit']);
 
-			return null;
-		});
+const { t } = useI18n();
 
-		const avatarSource = computed(() => {
-			if (!props.activity.user?.avatar) return null;
+const formattedTime = computed(() => {
+	if (props.activity.timestamp) {
+		// timestamp is in iso-8601
+		return format(new Date(props.activity.timestamp), String(t('date-fns_time_no_seconds')));
+	}
 
-			return addTokenToURL(getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`);
-		});
-
-		const { confirmDelete, deleting, remove } = useDelete();
-
-		return { t, formattedTime, avatarSource, confirmDelete, deleting, remove, userName };
-
-		function useDelete() {
-			const confirmDelete = ref(false);
-			const deleting = ref(false);
-
-			return { confirmDelete, deleting, remove };
-
-			async function remove() {
-				deleting.value = true;
-
-				try {
-					await api.delete(`/activity/comment/${props.activity.id}`);
-					await props.refresh();
-					confirmDelete.value = false;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					deleting.value = false;
-				}
-			}
-		}
-	},
+	return null;
 });
+
+const avatarSource = computed(() => {
+	if (!props.activity.user?.avatar) return null;
+
+	return getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`;
+});
+
+const { confirmDelete, deleting, remove } = useDelete();
+
+function useDelete() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	return { confirmDelete, deleting, remove };
+
+	async function remove() {
+		deleting.value = true;
+
+		try {
+			await api.delete(`/activity/comment/${props.activity.id}`);
+			await props.refresh();
+			confirmDelete.value = false;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			deleting.value = false;
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>

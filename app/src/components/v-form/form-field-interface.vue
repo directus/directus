@@ -13,7 +13,7 @@
 					? `interface-${field.meta.interface}`
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
-			v-if="interfaceExists"
+			v-if="interfaceExists && !rawEditorActive"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
@@ -27,6 +27,14 @@
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"
+			@set-field-value="$emit('setFieldValue', $event)"
+		/>
+
+		<interface-system-raw-editor
+			v-else-if="rawEditorEnabled && rawEditorActive"
+			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+			:type="field.type"
+			@input="$emit('update:modelValue', $event)"
 		/>
 
 		<v-notice v-else type="warning">
@@ -38,8 +46,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field, InterfaceConfig } from '@directus/shared/types';
-import { getInterfaces } from '@/interfaces';
+import { Field } from '@directus/shared/types';
+import { getInterface } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({
@@ -76,16 +84,20 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorActive: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'setFieldValue'],
 	setup(props) {
 		const { t } = useI18n();
 
-		const { interfaces } = getInterfaces();
-
-		const interfaceExists = computed(() => {
-			return !!interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field?.meta?.interface || 'input');
-		});
+		const interfaceExists = computed(() => !!getInterface(props.field?.meta?.interface || 'input'));
 
 		return { t, interfaceExists, getDefaultInterfaceForType };
 	},

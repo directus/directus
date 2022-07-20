@@ -1,16 +1,16 @@
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button class="toggle" :class="{ open: active }" @click="toggle">
+		<button v-tooltip.left="title" class="toggle" :class="{ open: active }" @click="toggle">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
-					<v-icon :name="icon" outline />
+					<v-icon :name="icon" />
 				</v-badge>
 			</div>
 			<div v-show="sidebarOpen" class="title">
 				{{ title }}
 			</div>
 			<div v-if="!close" class="icon">
-				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" outline />
+				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" />
 			</div>
 		</button>
 		<div v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">
@@ -72,13 +72,18 @@ body {
 
 <style lang="scss" scoped>
 .sidebar-detail {
-	--v-badge-offset-x: 2px;
+	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
 	--v-badge-border-color: var(--background-normal-alt);
 	--v-badge-background-color: var(--primary);
 	--v-badge-color: var(--background-normal);
 
 	display: contents;
+
+	:deep(.type-label) {
+		margin-bottom: 4px;
+		font-size: 1rem;
+	}
 
 	.toggle {
 		position: relative;

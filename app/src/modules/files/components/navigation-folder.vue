@@ -2,10 +2,9 @@
 	<div>
 		<v-list-item
 			v-if="folder.children === undefined"
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
-			@contextmenu.prevent.stop="activateContextMenu"
-			@focusout="deactivateContextMenu"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -15,13 +14,12 @@
 
 		<v-list-group
 			v-else
+			v-context-menu="'contextMenu'"
 			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
 			:value="folder.id"
 			scope="files-navigation"
 			disable-groupable-parent
-			@contextmenu.prevent.stop="activateContextMenu"
-			@focusout="deactivateContextMenu"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -59,7 +57,7 @@
 						<v-text-overflow :text="t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item clickable @click="deleteActive = true">
+				<v-list-item class="danger" clickable @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
@@ -120,7 +118,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
 import useFolders, { Folder } from '@/composables/use-folders';
 import api from '@/api';
-import FolderPicker from './folder-picker.vue';
+import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -146,8 +144,6 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const contextMenu = ref();
-
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
@@ -167,9 +163,6 @@ export default defineComponent({
 			deleteActive,
 			deleteSave,
 			deleteSaving,
-			contextMenu,
-			activateContextMenu,
-			deactivateContextMenu,
 		};
 
 		function useRenameFolder() {
@@ -276,9 +269,9 @@ export default defineComponent({
 					await api.delete(`/folders/${props.folder.id}`);
 
 					if (newParent) {
-						router.push(`/files/folders/${newParent}`);
+						router.replace(`/files/folders/${newParent}`);
 					} else {
-						router.push('/files');
+						router.replace('/files');
 					}
 
 					deleteActive.value = false;
@@ -290,14 +283,14 @@ export default defineComponent({
 				}
 			}
 		}
-
-		function activateContextMenu(event: PointerEvent) {
-			contextMenu.value.activate(event);
-		}
-
-		function deactivateContextMenu() {
-			contextMenu.value.deactivate();
-		}
 	},
 });
 </script>
+
+<style scoped>
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
+}
+</style>

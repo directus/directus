@@ -1,7 +1,33 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikaator
 avatar: Avatar
+default_provider: Vaikimisi
+published: Avaldatud
+draft: Mustand
 archived: Arhiveeritud
 edit_field: Muuda välja
+location: Asukoht
+input: Sisend
 item_revision: Kirje parandamine
 duplicate_field: Korduv väli
 half_width: Pool laiust
@@ -34,7 +60,6 @@ delete_folder: Kustuta kaust
 prefix: Eesliide
 suffix: Järelliide
 reset_bookmark: Kustuta järjehoidja
-rename_bookmark: Järjehoidja ümbernimetamine
 update_bookmark: Järjehoidja uuendamine
 delete_bookmark: Kustuta järjehoidja
 delete_bookmark_copy: >-
@@ -63,7 +88,6 @@ recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
-unknown_validation_errors: 'Olid valideerimise vead nende peidetud väljadele:'
 validationError:
   eq: Väärtus peab olema {valid}
   neq: Väärtus ei saa olla {invalid}
@@ -197,9 +221,6 @@ dismiss: Loobu
 raw_value: Algne väärtus
 edit_raw_value: Muuda algväärtust
 enter_raw_value: Sisesta väärtus...
-clear_value: Tühjenda väärtus
-reset_to_default: Taasta vaikeväärtused
-undo_changes: Tühista muudatused
 notifications: Teavitused
 show_all_activity: Näita kogu aktiivsust
 page_not_found: Lehekülge ei leitud
@@ -229,10 +250,7 @@ related_collection: Seotud kogu
 related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
-export_data: Ekspordi andmed
 format: Vorming
-use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
-export_collection: 'Ekspordi {collection}'
 last_page: Viimane leht
 last_access: Viimati vaadatud
 fill_template: Täida mallist
@@ -248,6 +266,9 @@ interface_label: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
+functions:
+  year: Aasta
+  month: Kuu
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -417,7 +438,6 @@ unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
 copy_details: Kopeeri detailid
 no_app_access: Rakenduse ligipääs puudub
 no_app_access_copy: See kasutaja ei tohi adminni rakendust kasutada.
-password_reset_sent: Saadame teile lingi salasõna muutmiseks
 password_reset_successful: Salasõna on edukalt lähtestatud
 back: Tagasi
 editing_image: Pildi muutmine
@@ -435,8 +455,6 @@ start_end_of_count_items: '{start}-{end} / {count}'
 start_end_of_count_filtered_items: '{start}-{end} / {count}'
 one_item: '1 kirje'
 one_filtered_item: '1 filtreeritud kirje'
-delete_collection_are_you_sure: >-
-  Kas sa kindlasti soovid selle andmekogu täielikult kustutada? Seda ei saa hiljem enam taastada!
 collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
@@ -482,7 +500,7 @@ operators:
 loading: Laadimine...
 drop_to_upload: Lohista üleslaadimiseks
 item: Kirje
-items: Kirjed
+items: kirjet
 upload_file: Lae fail üles
 upload_file_indeterminate: Laen faili...
 upload_file_success: Fail on laetud
@@ -533,6 +551,10 @@ toggle: Lülita
 icon_on: Ikoon sees
 icon_off: Ikoon väljas
 label: Silt
+trigger: Päästik
+flow_name: Nimi
+flow_tracking_activity: Jälgi ainult aktiivsust
+flow_tracking_null: Ära jälgi midagi
 full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
@@ -669,6 +691,7 @@ batch_delete_confirm: >-
 cancel: Loobu
 collection: Kogud
 collections: Kogud
+content: Sisu
 singleton: Üksik
 singleton_label: Käsitle üksiku objektina
 system_fields_locked: Süsteemsed välja on lukus ja neid ei saa muuta
@@ -752,6 +775,10 @@ fields:
     auth_password_policy: Salasõna reeglid
     auth_login_attempts: Sisselogimise katseid
     custom_css: Kohandatud CSS
+  directus_shares:
+    name: Nimi
+    role: Roll
+    password: Parool
   directus_fields:
     collection: Andmekogu nimetus
     icon: Andmekogu pilt
@@ -774,6 +801,7 @@ fields:
     name: Nimi
     status: Staatus
     value: Väärtus
+    collections: Kogud
 field_options:
   directus_activity:
     create: Loo
@@ -932,7 +960,6 @@ interfaces:
   presentation-divider:
     divider: Eraldaja
     description: Nimeta ja eralda välju sektsioonideks
-    title_placeholder: Sisesta pealkiri...
     inline_title: Pealkiri joone sees
     inline_title_label: Näita pealkirja keset joont
     margin_top: Ülemine vahe
@@ -984,14 +1011,20 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Sisesta ja vaata markdown'i
+    edit: Muuda
+    preview: Eelvaade
     customSyntax: Kohandatud plokid
     customSyntax_label: Lisa kohandatud süntaksi tüüpe
     customSyntax_add: Lisa kohandatud süntaks
     box: Plokk / Tekstisisene
-    imageToken: Pildi kood
-    imageToken_label: Milline (staatiline) kood lisada piltide allikatele
   map:
+    map: Kaart
+    description: Vali asukoht kaardil
     zoom: Suurenda
+    default_view: Vaikimisi vaade
+    invalid_options: Vigased valikud
+    invalid_format: Vigane formaat ({format})
+    unexpected_geometry: Oodatud väärtuse '{expected}' asemel on '{got}'
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
@@ -1002,6 +1035,8 @@ interfaces:
     no_collection: Andmekogu ei leitud
   system-folder:
     folder: Kaust
+    description: Vali kaust
+    field_hint: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   select-radio:
     radio-buttons: Raadionupud
     description: Vali üks mitmest valikust
@@ -1010,6 +1045,7 @@ interfaces:
     description: Loo mitu kirjet sama struktuuriga
     edit_fields: Muuda välju
     add_label: '"Lisa uus" nimetus'
+    sort: Sorteeri
     field_name_placeholder: Sisesta välja nimi...
     field_note_placeholder: Sisesta välja märkus...
   slider:
@@ -1029,7 +1065,6 @@ interfaces:
     auto_formatter: Kasuta pealkirja stiili
     alphabetize: Järjesta tähestikuliselt
     alphabetize_label: Sorteeri tähestikuliselt ümber
-    add_tags: Lisa märksõnu...
   input:
     input: Sisend
     description: Sisesta väärtus käsitsi
@@ -1050,6 +1085,8 @@ interfaces:
   boolean:
     toggle: Lülita
     description: Lülita sisse ja välja
+    color_on: '"Sees" värv'
+    color_off: '"Väljas" värv'
     label_placeholder: Sisesta silt...
     label_default: lubatud
   translations:
@@ -1072,6 +1109,7 @@ interfaces:
     toolbar: Tööriistariba
     custom_formats: Kohandatud vormingud
     options_override: Valikute ülekirjutamine
+    folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   input-autocomplete-api:
     input-autocomplete-api: Automaatselt täidetav väli (API)
     description: Otsingutulemused välisest APIst
@@ -1079,6 +1117,8 @@ interfaces:
     value_path: Väärtuse väli
     trigger: Päästik
     rate: Hinnang
+  system-token:
+    system-token: Kontrollkood
 displays:
   translations:
     translations: Tõlked
@@ -1111,6 +1151,7 @@ displays:
     short: Lühike
     relative: Suhteline
     relative_label: 'Näita suhtelist aega, nt 5 minutit tagasi'
+    suffix: Järelliide
   file:
     file: Fail
     description: Näita faile
@@ -1120,9 +1161,18 @@ displays:
   formatted-value:
     formatted-value: Vormistatud väärtus
     description: Näita teksti vormistatud väärtust
-    format_title: Vorminda pealkiri
-    format_title_label: Paranda esitähed suureks
+    format: Vorming
+    font: Kirjatüüp
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Paks kiri
     bold_label: Paksus kirjas
+    italic: Kaldkiri
+    prefix: Eesliide
+    suffix: Järelliide
+    color: Värv
+    icon: Ikoon
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Vormista JSON väärtusena
     description: Näita objekti vormistatud versiooni
@@ -1178,7 +1228,6 @@ layouts:
     subtitle: Alampealkiri
   tabular:
     tabular: Tabel
-    fields: Väljad
     spacing: Vahed
     comfortable: Mugav
     compact: Kompaktne
@@ -1187,6 +1236,13 @@ layouts:
     calendar: Kalender
     start_date_field: Alguse kuupäev
     end_date_field: Lõpu kuupäev
+  map:
+    map: Kaart
 panels:
   label:
     name: Silt
+operations:
+  notification:
+    recipient: Kasutaja
+  request:
+    url: URL

@@ -77,6 +77,7 @@ export default async function create(type: string, name: string, options: Create
 		},
 		scripts: {
 			build: 'directus-extension build',
+			dev: 'directus-extension build -w --no-minify',
 		},
 		devDependencies: await getPackageDeps(type, options.language),
 	};
@@ -90,8 +91,11 @@ export default async function create(type: string, name: string, options: Create
 	log(`
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
-Build your extension by running:
-  ${chalk.blue('cd')} ${name}
+To start developing, run:
+  ${chalk.blue('cd')} c
+  ${chalk.blue('npm run')} dev
+
+and then to build for production, run:
   ${chalk.blue('npm run')} build
 	`);
 }
@@ -105,7 +109,7 @@ async function getPackageDeps(type: ExtensionType, language: Language) {
 						typescript: `^${await getPackageVersion('typescript')}`,
 				  }
 				: {}),
-			vue: `^${await getPackageVersion('vue', 'next')}`,
+			vue: `^${await getPackageVersion('vue')}`,
 		};
 	} else {
 		return {

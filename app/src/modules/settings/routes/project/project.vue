@@ -2,13 +2,13 @@
 	<private-view :title="t('settings_project')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="public" />
 			</v-button>
 		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="noEdits" :loading="saving" @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -49,8 +49,8 @@ import { useSettingsStore, useServerStore } from '@/stores';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import useEditsGuard from '@/composables/use-edits-guard';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoSidebarDetail },
@@ -68,42 +68,23 @@ export default defineComponent({
 
 		const edits = ref<{ [key: string]: any } | null>(null);
 
-		const noEdits = computed<boolean>(() => edits.value === null || Object.keys(edits.value).length === 0);
+		const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
 
 		const saving = ref(false);
 
 		useShortcut('meta+s', () => {
-			if (!noEdits.value) save();
+			if (hasEdits.value) save();
 		});
 
-		const isSavable = computed(() => {
-			if (noEdits.value === true) return false;
-			return noEdits.value;
-		});
-
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (!noEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
 			fields,
 			initialValues,
 			edits,
-			noEdits,
+			hasEdits,
 			saving,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			save,
@@ -137,7 +118,9 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 </style>

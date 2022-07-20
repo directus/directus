@@ -119,6 +119,7 @@ export default defineComponent({
 <style>
 body {
 	--v-checkbox-color: var(--primary);
+	--v-checkbox-unchecked-color: var(--foreground-subdued);
 }
 </style>
 
@@ -126,6 +127,7 @@ body {
 @import '@/styles/mixins/no-wrap';
 
 .v-checkbox {
+	--v-icon-color: var(--v-checkbox-unchecked-color);
 	--v-icon-color-hover: var(--primary);
 
 	position: relative;
@@ -155,7 +157,7 @@ body {
 	}
 
 	& .checkbox {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--v-checkbox-unchecked-color);
 
 		transition: color var(--fast) var(--transition);
 	}
@@ -213,22 +215,26 @@ body {
 		}
 	}
 
-	&:not(:disabled):not(.indeterminate).checked {
-		.checkbox {
-			--v-icon-color: var(--v-checkbox-color);
-		}
-
+	&:not(:disabled):not(.indeterminate) {
 		.label {
 			color: var(--foreground-normal);
 		}
 
 		&.block {
-			.label {
-				color: var(--v-checkbox-color);
-			}
-
 			&::before {
 				opacity: 0.1;
+			}
+		}
+	}
+
+	&:not(:disabled):not(.indeterminate).checked {
+		.checkbox {
+			--v-icon-color: var(--v-checkbox-color);
+		}
+
+		&.block {
+			.label {
+				color: var(--v-checkbox-color);
 			}
 		}
 	}

@@ -6,8 +6,14 @@
 			</template>
 
 			<template #input>
-				<div class="label">
-					<span class="name">{{ field.field }}</span>
+				<div
+					v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					class="label"
+				>
+					<div class="label-inner">
+						<span class="name">{{ field.field }}</span>
+						<span v-if="interfaceName" class="interface">{{ interfaceName }}</span>
+					</div>
 				</div>
 			</template>
 		</v-input>
@@ -35,8 +41,8 @@
 						<field-select-menu
 							:field="field"
 							:no-delete="nestedFields.length > 0"
-							@toggleVisibility="toggleVisibility"
-							@setWidth="setWidth($event)"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
 							@duplicate="duplicateActive = true"
 							@delete="deleteActive = true"
 						/>
@@ -44,7 +50,7 @@
 				</template>
 
 				<template #item="{ element }">
-					<field-select :field="element" :fields="fields" @setNestedSort="$emit('setNestedSort', $event)" />
+					<field-select :field="element" :fields="fields" @set-nested-sort="$emit('setNestedSort', $event)" />
 				</template>
 			</draggable>
 
@@ -55,7 +61,7 @@
 
 				<template #input>
 					<div
-						v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name"
+						v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 						class="label"
 						@click="openFieldDetail"
 					>
@@ -88,8 +94,8 @@
 						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"
-							@toggleVisibility="toggleVisibility"
-							@setWidth="setWidth($event)"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
 							@duplicate="duplicateActive = true"
 							@delete="deleteActive = true"
 						/>
@@ -141,16 +147,17 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field, InterfaceConfig } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 import FieldSelectMenu from './field-select-menu.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	name: 'FieldSelect',
@@ -177,16 +184,13 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
-		const { interfaces } = getInterfaces();
 
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
-		const interfaceName = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
-		});
+		const interfaceName = computed(() => getInterface(props.field.meta?.interface)?.name);
 
 		const hidden = computed(() => props.field.meta?.hidden === true);
 
@@ -197,6 +201,7 @@ export default defineComponent({
 		return {
 			t,
 			interfaceName,
+			formatTitle,
 			editActive,
 			setWidth,
 			deleteActive,
@@ -290,7 +295,6 @@ export default defineComponent({
 
 					notify({
 						title: t('field_create_success', { field: newField.field }),
-						type: 'success',
 					});
 
 					duplicateActive.value = false;
@@ -499,12 +503,6 @@ export default defineComponent({
 			}
 		}
 	}
-}
-
-.v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
 }
 
 .icons {

@@ -1,19 +1,18 @@
-import { getDisplays } from '@/displays';
+import { getDisplay } from '@/displays';
 import { useFieldsStore } from '@/stores/';
-import { DisplayConfig, Field } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
 	const fieldsStore = useFieldsStore();
-	const { displays } = getDisplays();
 
 	const adjustedFields: string[] = fields
 		.map((fieldKey) => {
-			const field: Field = fieldsStore.getField(parentCollection, fieldKey);
+			const field: Field | null = fieldsStore.getField(parentCollection, fieldKey);
 
 			if (!field) return fieldKey;
 			if (field.meta?.display === null) return fieldKey;
 
-			const display = displays.value.find((d: DisplayConfig) => d.id === field.meta?.display);
+			const display = getDisplay(field.meta?.display);
 
 			if (!display) return fieldKey;
 			if (!display?.fields) return fieldKey;

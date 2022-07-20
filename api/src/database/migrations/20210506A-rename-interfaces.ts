@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
 
 // [before, after, after-option additions]
@@ -31,7 +32,7 @@ const changes: [string, string, Record<string, any>?][] = [
 	['toggle', 'boolean'],
 	['translations', 'translations'],
 	['tree-view', 'list-o2m-tree-view'],
-	['user', 'select-dropdown-m2o', { template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}' }],
+	['user', 'select-dropdown-m2o', { template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}' }],
 	['wysiwyg', 'input-rich-text-html'],
 
 	// System:
@@ -57,7 +58,7 @@ export async function up(knex: Knex): Promise<void> {
 
 			for (const { id, options: existingOptionsRaw } of fields) {
 				const existingOptions =
-					typeof existingOptionsRaw === 'string' ? JSON.parse(existingOptionsRaw) : existingOptionsRaw;
+					typeof existingOptionsRaw === 'string' ? parseJSON(existingOptionsRaw) : existingOptionsRaw;
 
 				const newOptions = {
 					...(existingOptions || {}),

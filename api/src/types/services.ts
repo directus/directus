@@ -1,8 +1,6 @@
 import { Knex } from 'knex';
-import { SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { Item, PrimaryKey } from './items';
-import { Query } from '@directus/shared/types';
 
 export type AbstractServiceOptions = {
 	knex?: Knex;

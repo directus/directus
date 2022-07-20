@@ -12,6 +12,9 @@ defaults:
   sort_field: null
 
 data:
+  - many_collection: directus_collections
+    many_field: group
+    one_collection: directus_collections
   - many_collection: directus_users
     many_field: role
     one_collection: directus_roles
@@ -58,6 +61,20 @@ data:
     many_field: dashboard
     one_collection: directus_dashboards
     one_field: panels
+  - many_collection: directus_flows
+    many_field: operation
+    one_collection: directus_operations
+  - many_collection: directus_operations
+    many_field: flow
+    one_collection: directus_flows
+    one_field: operations
+    one_deselect_action: delete
+  - many_collection: directus_operations
+    many_field: resolve
+    one_collection: directus_operations
+  - many_collection: directus_operations
+    many_field: reject
+    one_collection: directus_operations
   - many_collection: directus_files
     many_field: modified_by
     one_collection: directus_users
@@ -73,6 +90,9 @@ data:
   - many_collection: directus_sessions
     many_field: user
     one_collection: directus_users
+  - many_collection: directus_sessions
+    many_field: share
+    one_collection: directus_shares
   - many_collection: directus_settings
     many_field: storage_default_folder
     one_collection: directus_folders
@@ -80,5 +100,26 @@ data:
     many_field: user_created
     one_collection: directus_users
   - many_collection: directus_panels
+    many_field: user_created
+    one_collection: directus_users
+  - many_collection: directus_flows
+    many_field: user_created
+    one_collection: directus_users
+  - many_collection: directus_operations
+    many_field: user_created
+    one_collection: directus_users
+  - many_collection: directus_notifications
+    many_field: recipient
+    one_collection: directus_users
+  - many_collection: directus_notifications
+    many_field: sender
+    one_collection: directus_users
+  - many_collection: directus_shares
+    many_field: role
+    one_collection: directus_roles
+  - many_collection: directus_shares
+    many_field: collection
+    one_collection: directus_collections
+  - many_collection: directus_shares
     many_field: user_created
     one_collection: directus_users

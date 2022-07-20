@@ -2,111 +2,85 @@
 	<div class="comment-item">
 		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
 
-		<v-textarea v-if="editing" ref="textarea" v-model="edits">
-			<template #append>
-				<div class="buttons">
-					<v-button class="cancel" secondary x-small @click="cancelEditing">
-						{{ t('cancel') }}
-					</v-button>
+		<comment-input
+			v-if="editing"
+			:existing-comment="activity"
+			:primary-key="primaryKey"
+			:collection="collection"
+			:refresh="refresh"
+			:previews="userPreviews"
+			@cancel="cancelEditing"
+		/>
 
-					<v-button
-						:loading="savingEdits"
-						class="post-comment"
-						x-small
-						:disabled="edits === activity.comment"
-						@click="saveEdits"
-					>
-						{{ t('save') }}
-					</v-button>
-				</div>
-			</template>
-		</v-textarea>
-
-		<div v-else class="content">
-			<span v-md="activity.comment" class="selectable" />
-
-			<!-- @TODO: Dynamically add element below if the comment overflows -->
-			<!-- <div v-if="activity.id == 204" class="expand-text">
-				<span>{{ t('click_to_expand') }}</span>
-			</div> -->
-		</div>
+		<div v-else v-md="{ value: activity.display, target: '_blank' }" class="content selectable" />
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, watch, ComponentPublicInstance } from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
-import useShortcut from '@/composables/use-shortcut';
+import CommentInput from './comment-input.vue';
 
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export default defineComponent({
-	components: { CommentItemHeader },
-	props: {
-		activity: {
-			type: Object as PropType<Activity>,
-			required: true,
-		},
-		refresh: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+interface Props {
+	activity: Activity & {
+		display: string;
+	};
+	refresh: () => void;
+	collection: string;
+	primaryKey: string | number;
+	userPreviews: Record<string, any>;
+}
 
-		const textarea = ref<ComponentPublicInstance>();
-
-		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
-
-		useShortcut('meta+enter', saveEdits, textarea);
-
-		return { t, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
-
-		function useEdits() {
-			const edits = ref(props.activity.comment);
-			const editing = ref(false);
-			const savingEdits = ref(false);
-
-			watch(
-				() => props.activity,
-				() => (edits.value = props.activity.comment)
-			);
-
-			return { edits, editing, savingEdits, saveEdits, cancelEditing };
-
-			async function saveEdits() {
-				savingEdits.value = true;
-
-				try {
-					await api.patch(`/activity/comment/${props.activity.id}`, {
-						comment: edits.value,
-					});
-					await props.refresh();
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					savingEdits.value = false;
-					editing.value = false;
-				}
-			}
-
-			function cancelEditing() {
-				edits.value = props.activity.comment;
-				editing.value = false;
-			}
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	userPreviews: () => ({}),
 });
+
+const { editing, cancelEditing } = useEdits();
+
+function useEdits() {
+	const edits = ref(props.activity.comment);
+	const editing = ref(false);
+	const savingEdits = ref(false);
+
+	watch(
+		() => props.activity,
+		() => (edits.value = props.activity.comment)
+	);
+
+	return { edits, editing, savingEdits, saveEdits, cancelEditing };
+
+	async function saveEdits() {
+		savingEdits.value = true;
+
+		try {
+			await api.patch(`/activity/comment/${props.activity.id}`, {
+				comment: edits.value,
+			});
+
+			props.refresh();
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			savingEdits.value = false;
+			editing.value = false;
+		}
+	}
+
+	function cancelEditing() {
+		edits.value = props.activity.comment;
+		editing.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
 .comment-item {
 	position: relative;
-	margin-bottom: 16px;
+	margin-bottom: 8px;
 	padding: 8px;
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
@@ -117,8 +91,23 @@ export default defineComponent({
 }
 
 .comment-item .content {
+	display: inline-block;
 	max-height: 300px;
 	overflow-y: auto;
+	min-width: 100%;
+	max-width: 100%;
+	margin-bottom: -6px;
+	line-height: 1.4;
+}
+
+.comment-item .content :deep(> *:first-child),
+.comment-item .content :deep(p > *:first-child) {
+	margin-top: 0;
+}
+
+.comment-item .content :deep(> *:last-child),
+.comment-item .content :deep(p > *:last-child) {
+	margin-bottom: 0;
 }
 
 .comment-item .content :deep(a) {
@@ -136,6 +125,8 @@ export default defineComponent({
 .comment-item .content :deep(img) {
 	max-width: 100%;
 	margin: 8px 0;
+	border-radius: var(--border-radius);
+	display: block;
 }
 
 .comment-item .content :deep(hr) {
@@ -145,10 +136,49 @@ export default defineComponent({
 	border-top: 2px solid var(--border-normal);
 }
 
+.comment-item .content :deep(mark) {
+	display: inline-block;
+	padding: 2px 4px;
+	color: var(--primary);
+	line-height: 1;
+	background: var(--primary-alt);
+	border-radius: var(--border-radius);
+	user-select: text;
+	pointer-events: none;
+}
+
+.comment-item .content :deep(pre) {
+	padding: 2px 4px;
+	color: var(--foreground-normal);
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
+	margin: 2px 0;
+	font-family: var(--family-monospace);
+	white-space: nowrap;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.comment-item .content :deep(code) {
+	padding: 2px 4px;
+	color: var(--foreground-normal);
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
+	margin: 2px 0;
+	font-family: var(--family-monospace);
+}
+
+.comment-item .content :deep(pre > code) {
+	padding: 0;
+	margin: 0;
+	white-space: pre;
+}
+
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
 	margin-top: 12px;
 	font-weight: 600;
 	font-size: 16px;
+	color: var(--foreground-normal-alt);
 }
 
 .comment-item.expand .content::after {
@@ -199,6 +229,10 @@ export default defineComponent({
 
 .comment-item:hover :deep(.comment-header .header-right .more) {
 	opacity: 1;
+}
+
+.user-name {
+	color: var(--primary);
 }
 
 .buttons {

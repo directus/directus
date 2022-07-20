@@ -90,15 +90,7 @@ export default defineComponent({
 			);
 		});
 
-		const systemCollections = computed(() => {
-			return orderBy(
-				collectionsStore.crudSafeSystemCollections.filter((collection) => {
-					return collection.collection.startsWith('directus_') === true;
-				}),
-				['collection'],
-				['asc']
-			);
-		});
+		const systemCollections = collectionsStore.crudSafeSystemCollections;
 
 		return { t, collectionExists, availableCollections, systemCollections };
 	},

@@ -1,8 +1,10 @@
 import Joi from 'joi';
-import { isPlainObject } from 'lodash';
+import { isPlainObject, uniq } from 'lodash';
 import { InvalidQueryException } from '../exceptions';
 import { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
+import { calculateFieldDepth } from './calculate-field-depth';
+import env from '../env';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -31,6 +33,8 @@ export function validateQuery(query: Query): Query {
 		validateAlias(query.alias);
 	}
 
+	validateRelationalDepth(query);
+
 	if (error) {
 		throw new InvalidQueryException(error.message);
 	}
@@ -48,21 +52,6 @@ function validateFilter(filter: Query['filter']) {
 			const value = nested;
 
 			switch (key) {
-				case '_eq':
-				case '_neq':
-				case '_contains':
-				case '_ncontains':
-				case '_starts_with':
-				case '_nstarts_with':
-				case '_ends_with':
-				case '_nends_with':
-				case '_gt':
-				case '_gte':
-				case '_lt':
-				case '_lte':
-				default:
-					validateFilterPrimitive(value, key);
-					break;
 				case '_in':
 				case '_nin':
 				case '_between':
@@ -81,6 +70,25 @@ function validateFilter(filter: Query['filter']) {
 				case '_intersects_bbox':
 				case '_nintersects_bbox':
 					validateGeometry(value, key);
+					break;
+				case '_none':
+				case '_some':
+					validateFilter(nested);
+					break;
+				case '_eq':
+				case '_neq':
+				case '_contains':
+				case '_ncontains':
+				case '_starts_with':
+				case '_nstarts_with':
+				case '_ends_with':
+				case '_nends_with':
+				case '_gt':
+				case '_gte':
+				case '_lt':
+				case '_lte':
+				default:
+					validateFilterPrimitive(value, key);
 					break;
 			}
 		} else if (isPlainObject(nested)) {
@@ -103,7 +111,7 @@ function validateFilterPrimitive(value: any, key: string) {
 		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
 	}
 
-	if (typeof value === 'number' && Number.isNaN(value)) {
+	if (typeof value === 'number' && (Number.isNaN(value) || value > Number.MAX_SAFE_INTEGER)) {
 		throw new InvalidQueryException(`The filter value for "${key}" is not a valid number`);
 	}
 
@@ -160,6 +168,65 @@ function validateAlias(alias: any) {
 
 		if (key.includes('.') || value.includes('.')) {
 			throw new InvalidQueryException(`"alias" key/value can't contain a period character \`.\``);
+		}
+	}
+}
+
+function validateRelationalDepth(query: Query) {
+	const maxRelationalDepth = Number(env.MAX_RELATIONAL_DEPTH) > 2 ? Number(env.MAX_RELATIONAL_DEPTH) : 2;
+
+	// Process the fields in the same way as api/src/utils/get-ast-from-query.ts
+	let fields = ['*'];
+
+	if (query.fields) {
+		fields = query.fields;
+	}
+
+	/**
+	 * When using aggregate functions, you can't have any other regular fields
+	 * selected. This makes sure you never end up in a non-aggregate fields selection error
+	 */
+	if (Object.keys(query.aggregate || {}).length > 0) {
+		fields = [];
+	}
+
+	/**
+	 * Similarly, when grouping on a specific field, you can't have other non-aggregated fields.
+	 * The group query will override the fields query
+	 */
+	if (query.group) {
+		fields = query.group;
+	}
+
+	fields = uniq(fields);
+
+	for (const field of fields) {
+		if (field.split('.').length > maxRelationalDepth) {
+			throw new InvalidQueryException('Max relational depth exceeded.');
+		}
+	}
+
+	if (query.filter) {
+		const filterRelationalDepth = calculateFieldDepth(query.filter);
+
+		if (filterRelationalDepth > maxRelationalDepth) {
+			throw new InvalidQueryException('Max relational depth exceeded.');
+		}
+	}
+
+	if (query.sort) {
+		for (const sort of query.sort) {
+			if (sort.split('.').length > maxRelationalDepth) {
+				throw new InvalidQueryException('Max relational depth exceeded.');
+			}
+		}
+	}
+
+	if (query.deep) {
+		const deepRelationalDepth = calculateFieldDepth(query.deep, ['_sort']);
+
+		if (deepRelationalDepth > maxRelationalDepth) {
+			throw new InvalidQueryException('Max relational depth exceeded.');
 		}
 	}
 }

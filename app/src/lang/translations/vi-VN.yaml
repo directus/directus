@@ -1,21 +1,48 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Định danh
 avatar: Ảnh đại diện
+application: Ứng dụng
 default_provider: Mặc định
 published: Đã xuất bản
 draft: Bản nháp
 archived: Đã lưu trữ
 modules: Mô đun
 module_bar: Thanh công cụ
+reset_width: Đặt lại Chiều rộng
 tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
+location: Vị trí
 maps: Bản đồ
+switch_user: Đổi tài khoản
+item_creation: Khởi tạo item
 item_revision: Xem Phiên bản
 enter_a_name: Nhập Tên...
 duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
 group: Chọn nhóm
+export_items: Xuất các mục
 and: Và
 or: Hoặc
 fill_width: Rộng toàn bộ
@@ -28,7 +55,10 @@ indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
 children: Trẻ em
+db_only_click_to_configure: 'Dành riêng cho dữ liệu: Chọn để cấu hình'
+show_active_items: Hiển thị các mục đang hoạt động
 show_archived_items: Hiển thị các mục đã Lưu Trữ
+show_all_items: Hiển thị tất cả các mục
 edited: Giá trị đã được chỉnh sửa
 required: Bắt buộc
 required_for_app_access: Yêu Cầu cho Kết Nối
@@ -39,9 +69,12 @@ create_role: Tạo vai trò (phân quyền)
 create_user: Tạo Người dùng
 delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
+translation_string_translations_placeholder: Thêm bản dịch mới
 invite_users: Mời Người dùng
 invite: Mời
 email_already_invited: Email "{email}" đã được mời
+subject: Chủ đề
+inbox: Hộp thư đến
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
 connection_good: Kết nối Tốt
@@ -53,11 +86,11 @@ delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
 reset_bookmark: Đặt lại Dấu trang
-rename_bookmark: Đổi tên Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-
   Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Dữ liệu đã xóa sẽ không thể khôi phục lại được.
+delete_personal_bookmark: Xóa đánh dấu trang cá nhân
 logoutReason:
   SIGN_OUT: Đăng Xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
@@ -83,7 +116,7 @@ recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
 unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
 nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
-unknown_validation_errors: 'Có một số lỗi xảy ra với những trường ẩn sau:'
+validation_errors_notice: 'Các trường sau đây có giá trị không hợp lệ:'
 validationError:
   eq: Dữ liệu phải là {valid}
   neq: Dữ liệu không thể là {invalid}
@@ -121,6 +154,7 @@ item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
 field_validation: Xác Thực Trường
 field_presets: Các Mẫu Trường Tạo Sẵn
+changes_made: Các thay đổi trong phiên bản này hiển thị bên dưới.
 hide_field_on_detail: Ẩn chi tiết
 show_field_on_detail: Hiển thị chi tiết
 delete_field: Xóa Trường
@@ -134,7 +168,11 @@ global: Toàn cục
 admins_have_all_permissions: Các quản trị viên có toàn quyền
 camera: Camera
 show_zero: Hiển số không
+create_in_advanced_field_creation_mode: Tạo trường trong chế độ nâng cao
+continue_in_advanced_field_creation_mode: Tiếp tục tạo trường trong chế độ nâng cao
 sum: Tổng
+min: Tối thiểu
+max: Tối đa
 exposure: Độ phơi sáng
 shutter: Màn trập
 iso: ISO
@@ -150,6 +188,7 @@ alias: Bí danh
 bigInteger: Big Integer
 boolean: Boolean
 date: Ngày tháng
+date_range: Khoảng thời gian
 datetime: Ngày Giờ
 dateTime: Ngày Giờ
 decimal: Dạng thập phân
@@ -162,12 +201,15 @@ text: Đoạn văn bản
 time: Thời gian
 timestamp: Mốc thời gian
 uuid: UUID
+hash: Hash
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
+auto_refresh: Tự động Làm mới
 auto_generate: Tự khởi tạo
 this_will_auto_setup_fields_relations: Các trường và mối quan hệ bắt buộc sẽ được tự động tạo ra.
 click_here: Nhấn vào đây
 to_manually_setup_translations: để tạo các bản dịch một cách thủ công.
+fields_group: Nhóm dữ liệu
 no_collections_found: Không có bảng dữ liệu.
 search_collection: Chọn Bảng...
 new_field: 'Trường mới'
@@ -205,10 +247,7 @@ dismiss: Bỏ qua
 raw_value: Dữ liệu thực tế
 edit_raw_value: Thay đổi dữ liệu thực tế
 enter_raw_value: Nhập vào giá trị thực tế...
-clear_value: Xoá giá trị
 clear_changes: Xoá thay đổi
-reset_to_default: Khôi phục về mặc định
-undo_changes: Phục hồi các thay đổi
 notifications: Thông báo
 show_all_activity: Hiển Thị Tất Cả Hoạt Động
 page_not_found: Không tìm thấy trang này
@@ -238,9 +277,8 @@ related_collection: Danh mục liên quan
 related_collections: Những Danh mục liên quan
 translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
-export_data: Kết Xuất Dữ Liệu
+label_import: Nhập
 format: Định dạng
-export_collection: 'Kết xuất {collection}'
 last_access: Truy cập lần cuối
 fill_template: Điền với Giá trị Mẫu
 submit: Gửi đi
@@ -252,6 +290,9 @@ interface_label: Giao diện
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
+functions:
+  year: Năm
+  month: Tháng
 minutes: Phút
 hours: Giờ
 month: Tháng
@@ -419,7 +460,6 @@ unexpected_error_copy: Đã có lỗi không xác định xảy ra. Vui lòng th
 copy_details: Sao chép Chi tiết
 no_app_access: Không Có Quyền Truy Cập Chương Trình
 no_app_access_copy: Người dùng này không có quyền truy cập chương trình quản trị.
-password_reset_sent: Chúng tôi đã gửi cho bạn email để đặt lại mật khẩu của bạn
 password_reset_successful: Mật khẩu được đặt lại thành công
 back: Trở lại
 filter: Bộ lọc
@@ -438,8 +478,6 @@ start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 one_item: '1 sản phẩm'
 one_filtered_item: 'Đã lọc được 1 mục'
-delete_collection_are_you_sure: >-
-  Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
 collections_shown: Những Danh Mục Đang Hiển Thị
 visible_collections: Ứng dụng có thể nhìn thấy
 hidden_collections: Bảng Ẩn
@@ -519,6 +557,7 @@ bold: In đậm
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
+flow_name: Tên
 dashboard: Bảng điều khiển
 panel: Bảng
 panel_options: Tùy chọn Bảng
@@ -666,6 +705,11 @@ fields:
   directus_settings:
     project_name: Tên Dự Án
     auth_password_policy: Quy định về mật khẩu
+    module_bar: Thanh công cụ
+  directus_shares:
+    name: Tên
+    role: Phân quyền
+    password: Mật khẩu
   directus_fields:
     icon: Biểu tượng của Danh mục
     note: Ghi chú
@@ -679,6 +723,7 @@ fields:
     name: Tên
     status: Trạng thái
     value: Giá trị
+    collections: Danh mục
 field_options:
   directus_settings:
     security_divider_title: Bảo mật
@@ -781,16 +826,22 @@ interfaces:
     file: Tệp
   files:
     files: Tệp
+  input-hash:
+    hash: Hash
   select-icon:
     icon: Biểu tượng
   system-interface:
     interface: Giao diện
   select-dropdown-m2o:
     display_template: Mẫu hiển thị
+  input-rich-text-md:
+    edit: Sửa
   map:
     zoom: Thu phóng
   system-folder:
     folder: Thư mục
+  list:
+    sort: Sắp xếp
   slider:
     slider: Thanh trượt
   tags:
@@ -818,10 +869,23 @@ displays:
   datetime:
     datetime: Ngày giờ
     format: Định dạng
+    suffix: Hậu tố
   file:
     file: Tệp
   filesize:
     filesize: Kích thước tệp
+  formatted-value:
+    format: Định dạng
+    font: Phông chữ
+    font_serif: Serif
+    font_monospace: Khoảng cách như nhau
+    bold: In đậm
+    italic: Nghiêng
+    prefix: Tiền tố
+    suffix: Hậu tố
+    color: Màu sắc
+    icon: Biểu tượng
+    text: Đoạn văn bản
   icon:
     icon: Biểu tượng
     description: Hiển thị một biểu tượng
@@ -844,7 +908,6 @@ layouts:
     subtitle: Tiêu đề phụ
   tabular:
     tabular: Bảng
-    fields: Các trường
     spacing: Khoảng cách
     comfortable: Thoải mái
     compact: Thu gọn
@@ -852,3 +915,8 @@ layouts:
 panels:
   label:
     name: Nhãn
+operations:
+  notification:
+    recipient: Người dùng
+  request:
+    url: Đường Dẫn

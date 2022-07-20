@@ -1,4 +1,4 @@
-export interface NotificationRaw {
+export interface SnackbarRaw {
 	id?: string;
 	persist?: boolean;
 	title: string;
@@ -12,7 +12,7 @@ export interface NotificationRaw {
 	error?: Error;
 }
 
-export interface Notification extends NotificationRaw {
+export interface Snackbar extends SnackbarRaw {
 	readonly id: string;
 	readonly timestamp: number;
 }

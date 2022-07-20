@@ -62,8 +62,6 @@ body {
 			}
 
 			&.nav #{$this} :slotted(.v-icon) {
-				--v-icon-color: none;
-
 				&.dense {
 					--v-icon-size: 18px;
 				}

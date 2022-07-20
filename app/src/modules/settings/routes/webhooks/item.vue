@@ -14,7 +14,7 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
@@ -37,10 +37,11 @@
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false"
+						v-if="hasEdits === true"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
 					/>
 				</template>
 			</v-button>
@@ -87,12 +88,12 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import useShortcut from '@/composables/use-shortcut';
-import unsavedChanges from '@/composables/unsaved-changes';
+import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'WebhooksItem',
@@ -113,6 +114,7 @@ export default defineComponent({
 		const {
 			isNew,
 			edits,
+			hasEdits,
 			item,
 			saving,
 			loading,
@@ -125,7 +127,6 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(ref('directus_webhooks'), primaryKey);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 		const confirmDelete = ref(false);
 
 		const title = computed(() => {
@@ -142,25 +143,7 @@ export default defineComponent({
 			if (hasEdits.value) saveAndAddNew();
 		});
 
-		const isSavable = computed(() => {
-			if (hasEdits.value === true) return true;
-			return hasEdits.value;
-		});
-
-		unsavedChanges(isSavable);
-
-		const confirmLeave = ref(false);
-		const leaveTo = ref<string | null>(null);
-
-		const editsGuard: NavigationGuard = (to) => {
-			if (hasEdits.value) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
-			}
-		};
-		onBeforeRouteUpdate(editsGuard);
-		onBeforeRouteLeave(editsGuard);
+		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 		return {
 			t,
@@ -178,10 +161,10 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			discardAndStay,
 			isBatch,
 			title,
 			validationErrors,
-			isSavable,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
@@ -208,7 +191,7 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/settings/webhooks`);
+			router.replace(`/settings/webhooks`);
 		}
 
 		function discardAndLeave() {
@@ -216,6 +199,11 @@ export default defineComponent({
 			edits.value = {};
 			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function discardAndStay() {
+			edits.value = {};
+			confirmLeave.value = false;
 		}
 	},
 });
@@ -235,9 +223,9 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 </style>

@@ -1,8 +1,4 @@
-import { SchemaOverview } from '@directus/schema/dist/types/overview';
-import { Column } from 'knex-schema-inspector/dist/types/column';
 import { FieldMeta, Type } from '@directus/shared/types';
-import { getDatabaseClient } from '../database';
-import getDatabase from '../database';
 
 const localTypeMap: Record<string, Type | 'unknown'> = {
 	// Shared
@@ -54,8 +50,10 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	blob: 'binary',
 	mediumblob: 'binary',
 	'int unsigned': 'integer',
-	'tinyint(0)': 'boolean',
-	'tinyint(1)': 'boolean',
+	'tinyint unsigned': 'integer',
+	'smallint unsigned': 'integer',
+	'mediumint unsigned': 'integer',
+	'bigint unsigned': 'integer',
 
 	// MS SQL
 	bit: 'boolean',
@@ -94,6 +92,7 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	'time without time zone': 'time',
 	float4: 'float',
 	float8: 'float',
+	citext: 'text',
 
 	// Oracle
 	number: 'integer',
@@ -104,39 +103,41 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 };
 
 export default function getLocalType(
-	column?: SchemaOverview[string]['columns'][string] | Column,
+	column?: {
+		data_type: string;
+		numeric_precision?: null | number;
+		numeric_scale?: null | number;
+		max_length?: null | number;
+	},
 	field?: { special?: FieldMeta['special'] }
 ): Type | 'unknown' {
-	const database = getDatabase();
-	const databaseClient = getDatabaseClient(database);
+	if (!column) return 'alias';
 
-	const type = column ? localTypeMap[column.data_type.toLowerCase().split('(')[0]] : 'alias';
+	const dataType = column.data_type.toLowerCase();
+	const type = localTypeMap[dataType.split('(')[0]];
 
 	const special = field?.special;
 
 	if (special) {
-		if (special.includes('json')) return 'json';
+		if (special.includes('cast-json')) return 'json';
 		if (special.includes('hash')) return 'hash';
-		if (special.includes('csv')) return 'csv';
-		if (special.includes('uuid')) return 'uuid';
-		if (type.startsWith('geometry')) {
+		if (special.includes('cast-csv')) return 'csv';
+		if (special.includes('uuid') || special.includes('file')) return 'uuid';
+		if (special.includes('cast-timestamp')) return 'timestamp';
+		if (special.includes('cast-datetime')) return 'dateTime';
+		if (type?.startsWith('geometry')) {
 			return (special[0] as Type) || 'geometry';
 		}
 	}
 
 	/** Handle Postgres numeric decimals */
-	if (column && column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
+	if (dataType === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
 	}
 
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
-	if (column && column.data_type === 'nvarchar' && column.max_length === -1) {
+	if (column.data_type === 'nvarchar' && column.max_length === -1) {
 		return 'text';
-	}
-
-	/** Handle Boolean as TINYINT and edgecase MySQL where it still is just tinyint */
-	if (column && databaseClient === 'mysql' && column.data_type.toLowerCase() === 'tinyint') {
-		return 'boolean';
 	}
 
 	return type ?? 'unknown';

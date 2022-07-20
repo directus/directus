@@ -1,7 +1,7 @@
 import { defineModule } from '@directus/shared/utils';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import RouterPass from '@/utils/router-passthrough';
-import { NavigationGuard } from 'vue-router';
+import { LocationQuery, NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
@@ -10,6 +10,7 @@ import { useCollectionsStore } from '@/stores';
 import { Collection } from '@directus/shared/types';
 import { orderBy, isNil } from 'lodash';
 import { useNavigation } from './composables/use-navigation';
+import useLocalStorage from '@/composables/use-local-storage';
 import { ref } from 'vue';
 
 const checkForSystem: NavigationGuard = (to, from) => {
@@ -33,9 +34,9 @@ const checkForSystem: NavigationGuard = (to, from) => {
 
 	if (to.params.collection === 'directus_activity') {
 		if (to.params.primaryKey) {
-			return `/notifications/${to.params.primaryKey}`;
+			return `/activity/${to.params.primaryKey}`;
 		} else {
-			return '/notifications';
+			return '/activity';
 		}
 	}
 
@@ -47,6 +48,14 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		}
 	}
 
+	if (to.params.collection === 'directus_presets') {
+		if (to.params.primaryKey) {
+			return `/settings/presets/${to.params.primaryKey}`;
+		} else {
+			return '/settings/presets';
+		}
+	}
+
 	if (
 		'bookmark' in from.query &&
 		typeof from.query.bookmark === 'string' &&
@@ -54,6 +63,16 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		to.params.collection === from.params.collection
 	) {
 		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
+	}
+};
+
+const getArchiveValue = (query: LocationQuery) => {
+	if ('all' in query) {
+		return 'all';
+	} else if ('archived' in query) {
+		return 'archived';
+	} else {
+		return null;
 	}
 };
 
@@ -78,6 +97,14 @@ export default defineModule({
 					}),
 					['meta.sort', 'collection']
 				);
+
+				const { data } = useLocalStorage('last-accessed-collection');
+				if (
+					data.value &&
+					collectionsStore.visibleCollections.find((visibleCollection) => visibleCollection.collection === data.value)
+				) {
+					return `/content/${data.value}`;
+				}
 
 				let firstCollection = findFirst(rootCollections);
 
@@ -119,11 +146,14 @@ export default defineModule({
 					name: 'content-collection',
 					path: '',
 					component: CollectionOrItem,
-					props: (route) => ({
-						collection: route.params.collection,
-						bookmark: route.query.bookmark,
-						archive: 'archive' in route.query,
-					}),
+					props: (route) => {
+						const archive = getArchiveValue(route.query);
+						return {
+							collection: route.params.collection,
+							bookmark: route.query.bookmark,
+							archive,
+						};
+					},
 					beforeEnter: checkForSystem,
 				},
 				{

@@ -5,67 +5,87 @@
 
 	<v-form
 		v-else-if="usesCustomComponent === false"
-		v-model="options"
+		v-model="optionsValues"
 		class="extension-options"
 		:fields="optionsFields"
+		:initial-values="disabled ? optionsValues : null"
+		:disabled="disabled"
+		:raw-editor-enabled="rawEditorEnabled"
 		primary-key="+"
 	/>
 
 	<component
-		:is="`${type}-options-${extensionInfo.id}`"
+		:is="`${type}-options-${extensionInfo!.id}`"
 		v-else
-		:value="options"
+		:value="optionsValues"
 		:collection="collection"
 		:field="field"
-		@input="options = $event"
+		@input="optionsValues = $event"
 	/>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
-import { useFieldDetailStore } from '../store/';
-import { get } from 'lodash';
-import { storeToRefs } from 'pinia';
+import { getOperation } from '@/operations';
+import { getInterface } from '@/interfaces';
+import { getDisplay } from '@/displays';
+import { getPanel } from '@/panels';
 import { useI18n } from 'vue-i18n';
-import { Field, DeepPartial } from '@directus/shared/types';
+import { useFieldDetailStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	props: {
 		type: {
-			type: String as PropType<'interface' | 'display'>,
+			type: String as PropType<'interface' | 'display' | 'panel' | 'operation'>,
 			required: true,
 		},
 		extension: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		showAdvanced: {
 			type: Boolean,
 			default: false,
 		},
+		options: {
+			type: Object,
+			default: null,
+		},
+		modelValue: {
+			type: Object,
+			default: () => ({}),
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup(props) {
-		const fieldDetail = useFieldDetailStore();
-
+	emits: ['update:modelValue'],
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { collection, field, relations, fields, collections } = storeToRefs(fieldDetail);
+		const fieldDetailStore = useFieldDetailStore();
 
-		const { interfaces } = getInterfaces();
-		const { displays } = getDisplays();
+		const { collection, field } = storeToRefs(fieldDetailStore);
 
 		const extensionInfo = computed(() => {
-			if (props.type === 'interface') {
-				return interfaces.value.find((inter) => inter.id === props.extension);
+			switch (props.type) {
+				case 'interface':
+					return getInterface(props.extension);
+				case 'display':
+					return getDisplay(props.extension);
+				case 'panel':
+					return getPanel(props.extension);
+				case 'operation':
+					return getOperation(props.extension);
+				default:
+					return null;
 			}
-
-			if (props.type === 'display') {
-				return displays.value.find((display) => display.id === props.extension);
-			}
-
-			return null;
 		});
 
 		const usesCustomComponent = computed(() => {
@@ -75,19 +95,19 @@ export default defineComponent({
 		});
 
 		const optionsFields = computed(() => {
-			if (!extensionInfo.value) return [];
-			if (!extensionInfo.value.options) return [];
 			if (usesCustomComponent.value === true) return [];
 
 			let optionsObjectOrArray;
 
-			if (typeof extensionInfo.value.options === 'function') {
-				optionsObjectOrArray = (extensionInfo.value.options as (x: typeof fieldDetail) => DeepPartial<Field>[])(
-					fieldDetail
-				);
+			if (props.options) {
+				optionsObjectOrArray = props.options;
 			} else {
+				if (!extensionInfo.value) return [];
+				if (!extensionInfo.value?.options) return [];
 				optionsObjectOrArray = extensionInfo.value.options;
 			}
+
+			if (!optionsObjectOrArray) return [];
 
 			if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
 
@@ -98,34 +118,23 @@ export default defineComponent({
 			return optionsObjectOrArray.standard;
 		});
 
-		const options = computed({
+		const optionsValues = computed({
 			get() {
-				const path = props.type === 'interface' ? 'field.meta.options' : 'field.meta.display_options';
-				return get(fieldDetail, path);
+				return props.modelValue;
 			},
-			set(val: any) {
-				const key = props.type === 'interface' ? 'options' : 'display_options';
-
-				fieldDetail.$patch((state) => {
-					state.field.meta = {
-						...state.field.meta,
-						[key]: val,
-					};
-				});
+			set(values: Record<string, any>) {
+				emit('update:modelValue', values);
 			},
 		});
 
 		return {
 			usesCustomComponent,
 			extensionInfo,
+			optionsValues,
 			optionsFields,
-			options,
+			t,
 			collection,
 			field,
-			relations,
-			fields,
-			collections,
-			t,
 		};
 	},
 });

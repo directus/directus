@@ -32,11 +32,13 @@
 				/>
 
 				<v-form
+					:disabled="disabled"
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
+					:validation-errors="junctionField ? validationErrors : undefined"
 					autofocus
 					@update:model-value="setJunctionEdits"
 				/>
@@ -46,28 +48,31 @@
 
 			<v-form
 				v-model="internalEdits"
+				:disabled="disabled"
 				:loading="loading"
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:validation-errors="!junctionField ? validationErrors : undefined"
 			/>
 		</div>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, PropType, watch, toRefs } from 'vue';
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview';
+import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import { useCollection } from '@directus/shared/composables';
-import { useFieldsStore, useRelationsStore } from '@/stores';
-import { Field, Relation } from '@directus/shared/types';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
+import { useFieldsStore, useRelationsStore } from '@/stores';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { validateItem } from '@/utils/validate-item';
+import { useCollection } from '@directus/shared/composables';
+import { Field, Relation } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { FilePreview },
@@ -82,7 +87,7 @@ export default defineComponent({
 		},
 		primaryKey: {
 			type: [String, Number],
-			required: true,
+			default: null,
 		},
 		edits: {
 			type: Object as PropType<Record<string, any>>,
@@ -91,6 +96,10 @@ export default defineComponent({
 		junctionField: {
 			type: String,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 		// There's an interesting case where the main form can be a newly created item ('+'), while
 		// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
@@ -111,6 +120,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t, te } = useI18n();
 
+		const validationErrors = ref<any[]>([]);
+
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
@@ -124,12 +135,13 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(collection);
 
+		const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
+
 		const title = computed(() => {
 			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
-			const isNew = props.primaryKey === '+';
 
 			if (te(`collection_names_singular.${collection.collection}`)) {
-				return isNew
+				return isNew.value
 					? t('creating_unit', {
 							unit: t(`collection_names_singular.${collection.collection}`),
 					  })
@@ -138,7 +150,7 @@ export default defineComponent({
 					  });
 			}
 
-			return isNew
+			return isNew.value
 				? t('creating_in', { collection: collection.name })
 				: t('editing_in', { collection: collection.name });
 		});
@@ -194,6 +206,7 @@ export default defineComponent({
 			internalEdits,
 			loading,
 			item,
+			validationErrors,
 			save,
 			cancel,
 			title,
@@ -223,7 +236,7 @@ export default defineComponent({
 				const fileData = item.value?.[props.junctionField];
 				if (!fileData) return null;
 
-				const src = addTokenToURL(getRootPath() + `assets/${fileData.id}?key=system-large-contain`);
+				const src = getRootPath() + `assets/${fileData.id}?key=system-large-contain`;
 				return { ...fileData, src };
 			});
 
@@ -377,12 +390,22 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
+				const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
+				const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fields.value;
+				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
+
+				if (errors.length > 0) {
+					validationErrors.value = errors;
+					return;
+				}
+
 				emit('input', internalEdits.value);
 				internalActive.value = false;
 				internalEdits.value = {};
 			}
 
 			function cancel() {
+				validationErrors.value = [];
 				internalActive.value = false;
 				internalEdits.value = {};
 			}

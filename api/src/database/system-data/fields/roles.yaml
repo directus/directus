@@ -25,24 +25,24 @@ fields:
 
   - field: app_access
     interface: boolean
-    special: boolean
+    special: cast-boolean
     width: half
 
   - field: admin_access
     interface: boolean
-    special: boolean
+    special: cast-boolean
     width: half
 
   - field: ip_access
     interface: tags
     options:
       placeholder: $t:field_options.directus_roles.ip_access
-    special: csv
+    special: cast-csv
     width: full
 
   - field: enforce_tfa
     interface: boolean
-    special: boolean
+    special: cast-boolean
     width: half
 
   - field: users

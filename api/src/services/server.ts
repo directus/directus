@@ -12,8 +12,8 @@ import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { AbstractServiceOptions, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions } from '../types';
+import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
@@ -37,8 +37,10 @@ export class ServerService {
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
+				'project_descriptor',
 				'project_logo',
 				'project_color',
+				'default_language',
 				'public_foreground',
 				'public_background',
 				'public_note',
@@ -48,6 +50,17 @@ export class ServerService {
 
 		info.project = projectInfo;
 
+		if (this.accountability?.user) {
+			if (env.RATE_LIMITER_ENABLED) {
+				info.rateLimit = {
+					points: env.RATE_LIMITER_POINTS,
+					duration: env.RATE_LIMITER_DURATION,
+				};
+			} else {
+				info.rateLimit = false;
+			}
+		}
+
 		if (this.accountability?.admin === true) {
 			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
 
@@ -56,10 +69,12 @@ export class ServerService {
 			info.directus = {
 				version,
 			};
+
 			info.node = {
 				version: process.versions.node,
 				uptime: Math.round(process.uptime()),
 			};
+
 			info.os = {
 				type: osType,
 				version: osVersion,

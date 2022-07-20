@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex('directus_fields')
-		.update({ special: knex.raw(`REPLACE(special, 'geometry,', 'geometry.')`) })
+		.update({ special: knex.raw(`REPLACE(??, 'geometry,', 'geometry.')`, ['special']) })
 		.where('special', 'like', '%geometry,Point%')
 		.orWhere('special', 'like', '%geometry,LineString%')
 		.orWhere('special', 'like', '%geometry,Polygon%')
@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	await knex('directus_fields')
-		.update({ special: knex.raw(`REPLACE(special, 'geometry.', 'geometry,')`) })
+		.update({ special: knex.raw(`REPLACE(??, 'geometry.', 'geometry,')`, ['special']) })
 		.where('special', 'like', '%geometry.Point%')
 		.orWhere('special', 'like', '%geometry.LineString%')
 		.orWhere('special', 'like', '%geometry.Polygon%')

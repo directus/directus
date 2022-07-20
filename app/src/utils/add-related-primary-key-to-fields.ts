@@ -28,9 +28,9 @@ export function addRelatedPrimaryKeyToFields(currentCollection: string, fields: 
 		const field = fieldsStore.getField(currentCollection, fieldName);
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(field?.collection ?? '');
 
-		const includeField = fieldParts.slice(0, -1).concat(primaryKeyField.field).join('.');
+		const includeField = primaryKeyField && fieldParts.slice(0, -1).concat(primaryKeyField.field).join('.');
 
-		if (!sanitizedFields.includes(includeField)) {
+		if (includeField && !sanitizedFields.includes(includeField)) {
 			sanitizedFields.push(includeField);
 		}
 	}

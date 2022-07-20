@@ -22,7 +22,7 @@
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
-				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+				<v-image ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
 
 			<div class="toolbar">
@@ -90,6 +90,8 @@
 
 				<div class="spacer" />
 
+				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
+
 				<div v-if="imageData" class="dimensions">
 					{{ n(imageData.width) }}x{{ n(imageData.height) }}
 					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
@@ -113,16 +115,15 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed, reactive, nextTick } from 'vue';
 import api from '@/api';
+import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import Cropper from 'cropperjs';
-import { nanoid } from 'nanoid';
-import throttle from 'lodash/throttle';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
+import Cropper from 'cropperjs';
+import throttle from 'lodash/throttle';
+import { nanoid } from 'nanoid';
 
 type Image = {
 	type: string;
@@ -166,6 +167,7 @@ export default defineComponent({
 			initCropper,
 			flip,
 			rotate,
+			reset,
 			aspectRatio,
 			aspectRatioIcon,
 			newDimensions,
@@ -188,7 +190,7 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
+			return `${getRootPath()}assets/${props.id}?${nanoid()}`;
 		});
 
 		return {
@@ -203,6 +205,7 @@ export default defineComponent({
 			onImageLoad,
 			flip,
 			rotate,
+			reset,
 			aspectRatio,
 			aspectRatioIcon,
 			saving,
@@ -307,6 +310,8 @@ export default defineComponent({
 				set(newAspectRatio) {
 					localAspectRatio.value = newAspectRatio;
 					cropperInstance.value?.setAspectRatio(newAspectRatio);
+					cropperInstance.value?.crop();
+					dragMode.value = 'crop';
 				},
 			});
 
@@ -340,6 +345,11 @@ export default defineComponent({
 				set(newMode: 'move' | 'crop') {
 					cropperInstance.value?.setDragMode(newMode);
 					localDragMode.value = newMode;
+
+					if (newMode === 'move') {
+						cropperInstance.value?.clear();
+						localCropping.value = false;
+					}
 				},
 			});
 
@@ -362,6 +372,7 @@ export default defineComponent({
 				initCropper,
 				flip,
 				rotate,
+				reset,
 				aspectRatio,
 				aspectRatioIcon,
 				newDimensions,
@@ -376,10 +387,14 @@ export default defineComponent({
 					cropperInstance.value.destroy();
 				}
 
+				localCropping.value = false;
+
 				cropperInstance.value = new Cropper(imageElement.value, {
 					autoCrop: false,
+					autoCropArea: 0.5,
 					toggleDragModeOnDblclick: false,
 					dragMode: 'move',
+					viewMode: 1,
 					crop: throttle((event) => {
 						if (!imageData.value) return;
 
@@ -422,6 +437,11 @@ export default defineComponent({
 			function rotate() {
 				cropperInstance.value?.rotate(-90);
 			}
+
+			function reset() {
+				cropperInstance.value?.reset();
+				dragMode.value = 'move';
+			}
 		}
 	},
 });
@@ -435,7 +455,7 @@ export default defineComponent({
 
 .editor-container {
 	width: 100%;
-	height: calc(100% - (65px + 24px + 24px)); // header height + 2x margin
+	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
 	background-color: var(--background-subdued);
 
@@ -446,7 +466,7 @@ export default defineComponent({
 	}
 
 	img {
-		// Cropper JS will handle this
+		/* Cropper JS will handle this */
 		opacity: 0;
 	}
 }

@@ -63,3 +63,12 @@ data:
     note: $t:directus_collection.directus_dashboards
   - collection: directus_panels
     note: $t:directus_collection.directus_panels
+  - collection: directus_notifications
+    note: $t:directus_collection.directus_notifications
+  - collection: directus_shares
+    icon: share
+    note: $t:directus_collection.directus_shares
+  - collection: directus_flows
+    note: $t:directus_collection.directus_flows
+  - collection: directus_operations
+    note: $t:directus_collection.directus_operations

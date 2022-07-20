@@ -6,7 +6,7 @@
 			<component
 				:is="`display-${part.component}`"
 				v-else-if="typeof part === 'object' && part.component"
-				v-bind="part.options"
+				v-bind="translate(part.options || {})"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
@@ -24,11 +24,11 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
-import { DisplayConfig, Field } from '@directus/shared/types';
-import { getDisplays } from '@/displays';
+import { Field } from '@directus/shared/types';
+import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { translate } from '@/utils/translate-literal';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -52,7 +52,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
-		const { displays } = getDisplays();
 
 		const templateEl = ref<HTMLElement>();
 
@@ -96,7 +95,7 @@ export default defineComponent({
 					// No need to render the empty display overhead in this case
 					if (display === 'raw') return value;
 
-					const displayInfo = displays.value.find((display: DisplayConfig) => display.id === field.meta?.display);
+					const displayInfo = getDisplay(field.meta?.display);
 
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;
@@ -126,7 +125,6 @@ export default defineComponent({
 .render-template {
 	position: relative;
 	max-width: 100%;
-	height: 100%;
 	padding-right: 8px;
 
 	.vertical-aligner {
@@ -140,6 +138,10 @@ export default defineComponent({
 
 	> * {
 		vertical-align: middle;
+	}
+
+	.render-template {
+		display: inline;
 	}
 }
 

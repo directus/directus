@@ -1,10 +1,13 @@
 ---
 avatar: Avatar
 default_provider: Privzeto
+method: Metoda
 draft: Osnutek
 archived: Arhivirano
 edit_field: Uredi polje
 conditions: Pogoji
+location: Lokacija
+input: Vnos
 maps: Zemljevidi
 item_revision: Revizija postavke
 duplicate_field: Podvajanje polja
@@ -47,7 +50,6 @@ delete_folder: Izbriši mapo
 prefix: Predpona
 suffix: Pripona
 reset_bookmark: Ponastavi zaznamek
-rename_bookmark: Preimenuj zaznamek
 update_bookmark: Posodobi zaznamek
 delete_bookmark: Izbriši zaznamek
 delete_bookmark_copy: >-
@@ -77,7 +79,6 @@ recommended_defaults: Priporočene privzete vrednosti
 unarchive: Dearhiviraj
 unarchive_confirm: Ste prepričani, da želite dearhivirati ta zapis?
 nested_files_folders_will_be_moved: Vsebovane datoteke in mape bodo prestavljene en nivo višje.
-unknown_validation_errors: 'Vsebinske napake na naslednjih skritih poljih:'
 validationError:
   eq: Vrednost mora biti {valid}
   neq: Vrednost ne more biti {invalid}
@@ -164,7 +165,6 @@ time: Ura
 timestamp: Časovni žig
 uuid: UUID
 hash: Hash
-geometry: Geometrija
 not_available_for_type: Ni na razpolago za ta tip
 create_translations: Ustvari nove prevode
 auto_refresh: Samodejno osveži
@@ -215,9 +215,6 @@ dismiss: Opusti
 raw_value: Vnešena vrednost
 edit_raw_value: Uredi vrednost
 enter_raw_value: Vnesite vrednost ...
-clear_value: Počisti vrednost
-reset_to_default: Ponastavi na privzeto
-undo_changes: Razveljavi spremembe
 notifications: Obvestila
 show_all_activity: Pokaži vse dejavnosti
 page_not_found: Strani ni mogoče najti
@@ -247,10 +244,8 @@ related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
-export_data: Izvozi podatke
+label_import: Uvoz
 format: Oblika
-use_current_filters_settings: Uporabi trenutne filtre in nastavitve
-export_collection: 'Izvozi "{collection}"'
 last_page: Zadnja stran
 last_access: Zadnji dostop
 fill_template: Izpolni z vrednostjo obrazca
@@ -266,6 +261,9 @@ interface_label: Vmesnik
 today: Danes
 yesterday: Včeraj
 delete_comment: Izbriši komentar
+functions:
+  year: Leto
+  month: Mesec
 date-fns_date: PPP
 date-fns_time: 'hh:mm:ss'
 date-fns_time_no_seconds: 'hh:mm'
@@ -441,7 +439,6 @@ unexpected_error_copy: Nepričakovana napaka. Prosimo, poskusite kasneje.
 copy_details: Kopiraj podrobnosti
 no_app_access: Nimate dostopa do aplikacije
 no_app_access_copy: Ta uporabnik nima dostopa do administracijske aplikacije.
-password_reset_sent: Poslali smo vam povezavo za ponastavitev gesla
 password_reset_successful: Geslo ponastavljeno
 back: Nazaj
 editing_image: Urejanje slike
@@ -459,8 +456,6 @@ start_end_of_count_items: '{start}-{end} od {count} zapisov'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih zapisov'
 one_item: '1 zapis'
 one_filtered_item: '1 filtriran zapis'
-delete_collection_are_you_sure: >-
-  Ste prepričani, da želit brisati to zbirko? Obrisana bo zbirka in vsi zapisni v njej. Vračanje podatkov ne bo mogoče.
 collections_shown: zbirk prikazanih
 visible_collections: Vidne zbirke
 hidden_collections: Skrite zbirke
@@ -561,6 +556,7 @@ on_create: Pri ustvarjanju
 on_update: Pri urejanju
 read: Beri
 update: Posodobi
+delete: Izbriši
 select_fields: Izberite polja
 format_text: Oblikuj tekst
 bold: Krepko
@@ -568,6 +564,11 @@ toggle: Preklopi
 icon_on: Prikaži ikono
 icon_off: Skrij ikono
 label: Oznaka
+trigger: Sprožilec
+flow_name: Ime
+flow_tracking_activity: Sledi samo aktivnosti
+flow_tracking_null: Ne sledi ničesar
+accountability: Odgovornost
 full_screen: Celozaslonski način
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
@@ -653,6 +654,7 @@ settings_webhooks: Prožilci
 settings_presets: Prednastavitve in zaznamki
 one_or_more_options_are_missing: Manjka ena ali več opcij
 scope: Obseg
+actions: Dejanja
 select: Izberite ...
 layout: Postavitev
 tree_view: Drevesni pogled
@@ -662,6 +664,7 @@ preset_search_placeholder: Iskalna poizvedba ...
 editing_preset: Urejanje prednastavitve
 layout_preview: Predogled postavitve
 layout_setup: Urejanje postavitve
+data: Podatki
 unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
@@ -784,7 +787,6 @@ fields:
     status_archived: Arhivirano
     role: Vloga
     token: Žeton
-    token_placeholder: Vnesite žeton ...
     last_page: Zadnja stran
     last_access: Zadnji dostop
   directus_settings:
@@ -801,6 +803,10 @@ fields:
     auth_login_attempts: Število poskusov prijave
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
+  directus_shares:
+    name: Ime
+    role: Vloga
+    password: Geslo
   directus_fields:
     collection: Ime zbirke
     icon: Ikona zbirke
@@ -828,10 +834,10 @@ fields:
     data_label: Pošlji podatke dogodka
     triggers: Sprožilci
     actions: Dejanja
+    collections: Zbirke
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
-    project_logo_note: Ozadje prijave in logotip
     public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
     security_divider_title: Varnost
     auth_password_policy:
@@ -993,7 +999,6 @@ sort_direction: Smer razvrščanja
 sort_asc: Razvrsti naraščajoče
 sort_desc: Razvrsti padajoče
 template: Predloga
-require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
@@ -1070,7 +1075,6 @@ interfaces:
   presentation-divider:
     divider: Ločilo
     description: Oznaka in delilnik polj v odseke
-    title_placeholder: Vnesite naslov ...
     inline_title: Naslov v vrstici
     inline_title_label: Pokaži naslov v vrsti
     margin_top: Zgornji rob
@@ -1122,12 +1126,11 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Vnos in predogled markdown-a
+    edit: Uredi
     customSyntax: Bloki po meri
     customSyntax_label: Dodaj posebno vrsto sintakse
     customSyntax_add: Dodaj prilagojeno sintakso
     box: Blok / v vrstici
-    imageToken: Žeton slike
-    imageToken_label: Kateri statični žeton se naj doda k sliki
   map:
     map: Zemljevid
     description: Izberite lokacijo
@@ -1162,6 +1165,7 @@ interfaces:
     description: Ustvarite več zapisov enake strukture
     edit_fields: Uredi polja
     add_label: 'Oznaka za "Ustvari novo"'
+    sort: Razvrsti
     field_name_placeholder: Vnesite ime polja ...
     field_note_placeholder: Vnesite opis polja ...
   slider:
@@ -1181,7 +1185,6 @@ interfaces:
     auto_formatter: Uporabi avtomatsko oblikovanje naslova
     alphabetize: Po abecedi
     alphabetize_label: Vedno uredi po abecedi
-    add_tags: Dodaj značke ...
   input:
     input: Vnos
     description: Ročno vnesite vrednost
@@ -1202,6 +1205,8 @@ interfaces:
   boolean:
     toggle: Preklopi
     description: Preklopi
+    color_on: Barva da
+    color_off: Barva ne
     label_placeholder: Vnesite oznako ...
     label_default: Omogočeno
   translations:
@@ -1242,6 +1247,8 @@ interfaces:
     header_color: Barva glave
     start_open: Začni odprto
     start_closed: Začni zaprto
+  system-token:
+    system-token: Žeton
 displays:
   translations:
     translations: Prevodi
@@ -1274,6 +1281,7 @@ displays:
     short: Kratko
     relative: Relativno
     relative_label: 'Pokaži relativni čas, recimo pred 5 minutami'
+    suffix: Pripona
   file:
     file: Datoteka
     description: Prikaži datoteke
@@ -1283,9 +1291,18 @@ displays:
   formatted-value:
     formatted-value: Oblikovana vrednost
     description: Prikaži oblikovano verzijo teksta
-    format_title: Oblikuj naslov
-    format_title_label: Avtomatska velikost črk
+    format: Oblika
+    font: Pisava
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Krepko
     bold_label: Uporabi krepke črke
+    italic: Ležeče
+    prefix: Predpona
+    suffix: Pripona
+    color: Barva
+    icon: Ikona
+    text: Tekst
   formatted-json-value:
     formatted-json-value: Oblikovana JSON vrednost
     description: Prikaži oblikovano verzijo objekta
@@ -1341,7 +1358,6 @@ layouts:
     subtitle: Podnaslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmik
     comfortable: Udobno
     compact: Zgoščeno
@@ -1362,3 +1378,15 @@ layouts:
 panels:
   label:
     name: Oznaka
+triggers:
+  webhook:
+    method: Metoda
+operations:
+  notification:
+    recipient: Uporabnik
+  request:
+    url: URL
+    method: Metoda
+    data: Podatki
+  trigger:
+    data: Podatki
