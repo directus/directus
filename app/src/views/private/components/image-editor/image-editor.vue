@@ -132,7 +132,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed, reactive, nextTick, PropType } from 'vue';
+import { defineComponent, ref, watch, computed, reactive, nextTick } from 'vue';
 import api from '@/api';
 
 import Cropper from 'cropperjs';

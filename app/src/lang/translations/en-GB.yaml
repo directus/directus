@@ -1438,7 +1438,6 @@ interfaces:
     description: Select or upload an image
     crop: Crop to Fit
     crop_label: Crop image as needed
-    custom_aspect_ratios: Custom Aspect Ratios
   system-interface:
     interface: Interface
     description: Select an existing interface
