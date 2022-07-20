@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await getHelpers(knex).schema.changeToString('directus_webhooks', 'url', {
+	await getHelpers(knex).schema.changeToType('directus_webhooks', 'url', 'string', {
 		nullable: false,
 		length: 255,
 	});
