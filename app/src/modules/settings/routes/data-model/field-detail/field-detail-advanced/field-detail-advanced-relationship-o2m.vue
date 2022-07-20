@@ -24,6 +24,7 @@
 			<related-field-select
 				v-model="sortField"
 				:collection="relatedCollection"
+				:disabled-fields="unsortableJunctionFields"
 				:placeholder="t('add_sort_field') + '...'"
 				:nullable="true"
 			/>
@@ -117,7 +118,7 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore, useRelationsStore } from '@/stores';
 
 export default defineComponent({
 	components: { RelatedCollectionSelect, RelatedFieldSelect },
@@ -125,6 +126,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const fieldDetailStore = useFieldDetailStore();
+		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 
 		const relatedCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
@@ -138,6 +140,15 @@ export default defineComponent({
 		const isExisting = computed(() => editing.value !== '+');
 		const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
+		const unsortableJunctionFields = computed(() => {
+			let fields = ['item', 'collection'];
+			if (relatedCollection.value) {
+				const relations = relationsStore.getRelationsForCollection(relatedCollection.value);
+				fields.push(...relations.map((field) => field.field));
+			}
+			return fields;
+		});
+
 		return {
 			t,
 			isExisting,
@@ -149,6 +160,7 @@ export default defineComponent({
 			sortField,
 			onDelete,
 			onDeselect,
+			unsortableJunctionFields,
 		};
 	},
 });

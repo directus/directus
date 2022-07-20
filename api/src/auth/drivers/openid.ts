@@ -71,7 +71,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 						})
 					);
 				})
-				.catch(reject);
+				.catch((e) => {
+					logger.error(e, '[OpenID] Failed to fetch provider config');
+					process.exit(1);
+				});
 		});
 	}
 
