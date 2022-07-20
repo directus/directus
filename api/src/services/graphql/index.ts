@@ -632,6 +632,12 @@ export class GraphQLService {
 					_nnull: {
 						type: GraphQLBoolean,
 					},
+					_between: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
 				},
 			});
 
@@ -668,6 +674,12 @@ export class GraphQLService {
 					},
 					_nnull: {
 						type: GraphQLBoolean,
+					},
+					_between: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLStringOrFloat),
 					},
 				},
 			});
