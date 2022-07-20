@@ -29,7 +29,7 @@ import VForm from './v-form';
 import VHover from './v-hover/';
 import VHighlight from './v-highlight.vue';
 import VIcon from './v-icon/';
-import VImage from './v-image/';
+import VImage from './v-image.vue';
 import VIconFile from './v-icon-file.vue';
 import VInfo from './v-info/';
 import VInput from './v-input/';
