@@ -4,7 +4,9 @@
 			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 		</div>
 
-		<v-media v-else-if="type === 'video' || type === 'audio'" controls :src="src" :mime="mime" />
+		<video v-else-if="type === 'video'" controls :src="authenticatedSrc" />
+
+		<audio v-else-if="type === 'audio'" controls :src="authenticatedSrc" />
 
 		<div v-else class="fallback">
 			<v-icon-file :ext="type" />
@@ -15,6 +17,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { addTokenToURL } from '@/api';
 
 interface Props {
 	mime: string;
@@ -53,6 +56,8 @@ const isSVG = computed(() => props.mime.includes('svg'));
 
 const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
 const isSmall = computed(() => props.height < 528);
+
+const authenticatedSrc = computed(() => addTokenToURL(props.src));
 </script>
 
 <style lang="scss" scoped>

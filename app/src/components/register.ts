@@ -53,7 +53,6 @@ import VTemplateInput from './v-template-input.vue';
 import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
-import VMedia from './v-media.vue';
 import VDatePicker from './v-date-picker';
 import VEmojiPicker from './v-emoji-picker.vue';
 import VWorkspace from './v-workspace.vue';
@@ -95,7 +94,6 @@ export function registerComponents(app: App): void {
 	app.component('VListItemIcon', VListItemIcon);
 	app.component('VListItem', VListItem);
 	app.component('VList', VList);
-	app.component('VMedia', VMedia);
 	app.component('VMenu', VMenu);
 	app.component('VDrawer', VDrawer);
 	app.component('VNotice', VNotice);
