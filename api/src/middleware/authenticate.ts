@@ -41,6 +41,11 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 
 	if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {
 		req.accountability = customAccountability;
+
+		if (rateLimiter) {
+			rateLimiter.delete(getIPFromReq(req));
+		}
+
 		return next();
 	}
 
