@@ -85,8 +85,8 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
 
-		if (!serverInfoResponse.data.data?.rateLimit) {
-			await replaceQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
+		if (serverInfoResponse.data.data?.rateLimit === false) {
+			await replaceQueue();
 		} else {
 			const { duration, points } = serverInfoResponse.data.data.rateLimit;
 			await replaceQueue({ intervalCap: points - 10, interval: duration * 1000, carryoverConcurrencyCount: true });

@@ -114,7 +114,7 @@ export function addTokenToURL(url: string, token?: string): string {
 	return addQueryToPath(url, { access_token: accessToken });
 }
 
-export async function replaceQueue(options: Options<any, DefaultAddOptions>) {
+export async function replaceQueue(options?: Options<any, DefaultAddOptions>) {
 	await queue.onIdle();
 	queue = new PQueue(options);
 }

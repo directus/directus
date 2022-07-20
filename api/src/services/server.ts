@@ -50,6 +50,17 @@ export class ServerService {
 
 		info.project = projectInfo;
 
+		if (this.accountability?.user) {
+			if (env.RATE_LIMITER_ENABLED) {
+				info.rateLimit = {
+					points: env.RATE_LIMITER_POINTS,
+					duration: env.RATE_LIMITER_DURATION,
+				};
+			} else {
+				info.rateLimit = false;
+			}
+		}
+
 		if (this.accountability?.admin === true) {
 			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
 
@@ -70,15 +81,6 @@ export class ServerService {
 				uptime: Math.round(os.uptime()),
 				totalmem: os.totalmem(),
 			};
-
-			if (env.RATE_LIMITER_ENABLED) {
-				info.rateLimit = {
-					points: env.RATE_LIMITER_POINTS,
-					duration: env.RATE_LIMITER_DURATION,
-				};
-			} else {
-				info.rateLimit = false;
-			}
 		}
 
 		return info;
