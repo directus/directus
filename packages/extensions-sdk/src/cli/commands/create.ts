@@ -97,14 +97,6 @@ To start developing, run:
 
 and then to build for production, run:
   ${chalk.blue('npm run')} build
-
-${chalk.yellow('Tip:')} In ${chalk.blue(`${name}/package.json`)} file on the ${chalk.blue(
-		'directus:extension.path'
-	)} property
-replace ${chalk.yellow('dist')} in the with the relative path to your extensions folder, eg. ${chalk.yellow(
-		'../extensions'
-	)}
-to automatically copy your extension to the correct location when developing or building your extension.
 	`);
 }
 
