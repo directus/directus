@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - api/**
+      - tests-blackbox/**
+      - package.json
+      - pnpm-lock.yaml
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144

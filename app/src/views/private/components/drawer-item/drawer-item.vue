@@ -60,19 +60,19 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, PropType, watch, toRefs } from 'vue';
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview';
+import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import { useCollection } from '@directus/shared/composables';
-import { useFieldsStore, useRelationsStore } from '@/stores';
-import { Field, Relation } from '@directus/shared/types';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
+import { useFieldsStore, useRelationsStore } from '@/stores';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+import { useCollection } from '@directus/shared/composables';
+import { Field, Relation } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { FilePreview },
@@ -236,7 +236,7 @@ export default defineComponent({
 				const fileData = item.value?.[props.junctionField];
 				if (!fileData) return null;
 
-				const src = addTokenToURL(getRootPath() + `assets/${fileData.id}?key=system-large-contain`);
+				const src = getRootPath() + `assets/${fileData.id}?key=system-large-contain`;
 				return { ...fileData, src };
 			});
 
