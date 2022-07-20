@@ -8,7 +8,7 @@ import asyncHandler from '../utils/async-handler';
 import { getIPFromReq } from '../utils/get-ip-from-req';
 import { validateEnv } from '../utils/validate-env';
 
-let checkRateLimit: RequestHandler = (req, res, next) => next();
+let checkRateLimit: (checkAccountability: boolean) => RequestHandler = () => (req, res, next) => next();
 export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
 
 if (env.RATE_LIMITER_ENABLED === true) {
@@ -16,21 +16,26 @@ if (env.RATE_LIMITER_ENABLED === true) {
 
 	rateLimiter = createRateLimiter();
 
-	checkRateLimit = asyncHandler(async (req, res, next) => {
-		try {
-			await rateLimiter.consume(`${req.accountability?.user}${getIPFromReq(req)}`, 1);
-		} catch (rateLimiterRes: any) {
-			if (rateLimiterRes instanceof Error) throw rateLimiterRes;
+	checkRateLimit = (checkAccountability) =>
+		asyncHandler(async (req, res, next) => {
+			try {
+				if (checkAccountability) {
+					await rateLimiter.consume(`${req.accountability?.user ?? ''}@${getIPFromReq(req)}`, 1);
+				} else {
+					await rateLimiter.consume(getIPFromReq(req), 1);
+				}
+			} catch (rateLimiterRes: any) {
+				if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 
-			res.set('Retry-After', String(rateLimiterRes.msBeforeNext / 1000));
-			throw new HitRateLimitException(`Too many requests, retry after ${ms(rateLimiterRes.msBeforeNext)}.`, {
-				limit: +env.RATE_LIMITER_POINTS,
-				reset: new Date(Date.now() + rateLimiterRes.msBeforeNext),
-			});
-		}
+				res.set('Retry-After', String(rateLimiterRes.msBeforeNext / 1000));
+				throw new HitRateLimitException(`Too many requests, retry after ${ms(rateLimiterRes.msBeforeNext)}.`, {
+					limit: +env.RATE_LIMITER_POINTS,
+					reset: new Date(Date.now() + rateLimiterRes.msBeforeNext),
+				});
+			}
 
-		next();
-	});
+			next();
+		});
 }
 
 export default checkRateLimit;

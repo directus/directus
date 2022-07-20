@@ -9,6 +9,7 @@ import asyncHandler from '../utils/async-handler';
 import { getIPFromReq } from '../utils/get-ip-from-req';
 import isDirectusJWT from '../utils/is-directus-jwt';
 import { verifyAccessJWT } from '../utils/jwt';
+import { rateLimiter } from './rate-limiter';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
@@ -76,6 +77,10 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 			req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 			req.accountability.app = user.app_access === true || user.app_access == 1;
 		}
+	}
+
+	if (rateLimiter) {
+		rateLimiter.delete(getIPFromReq(req));
 	}
 
 	return next();
