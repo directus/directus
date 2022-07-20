@@ -175,6 +175,7 @@ displays:
     translations: 번역
   datetime:
     format: 형식
+    suffix: 접미사
   formatted-value:
     format: 형식
     prefix: 접두사

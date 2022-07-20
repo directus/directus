@@ -14,7 +14,7 @@ export default defineOperationApp({
 			},
 			{
 				label: '$t:operations.item-delete.key',
-				text: key ? toArray(key).join(', ') : '--',
+				text: toArray(key).length > 0 ? toArray(key).join(', ') : '--',
 			},
 		];
 
@@ -86,7 +86,7 @@ export default defineOperationApp({
 		{
 			field: 'query',
 			name: '$t:operations.item-delete.query',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',

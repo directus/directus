@@ -22,7 +22,7 @@
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
-				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+				<v-image ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
 
 			<div class="toolbar">
@@ -115,16 +115,15 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed, reactive, nextTick } from 'vue';
 import api from '@/api';
+import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import Cropper from 'cropperjs';
-import { nanoid } from 'nanoid';
-import throttle from 'lodash/throttle';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
+import Cropper from 'cropperjs';
+import throttle from 'lodash/throttle';
+import { nanoid } from 'nanoid';
 
 type Image = {
 	type: string;
@@ -191,7 +190,7 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
+			return `${getRootPath()}assets/${props.id}?${nanoid()}`;
 		});
 
 		return {

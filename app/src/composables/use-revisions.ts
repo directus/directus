@@ -143,8 +143,8 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 
 				if (today) dateFormatted = t('today');
 				else if (yesterday) dateFormatted = t('yesterday');
-				else if (thisYear) dateFormatted = await localizedFormat(date, String(t('date-fns_date_short_no_year')));
-				else dateFormatted = await localizedFormat(date, String(t('date-fns_date_short')));
+				else if (thisYear) dateFormatted = localizedFormat(date, String(t('date-fns_date_short_no_year')));
+				else dateFormatted = localizedFormat(date, String(t('date-fns_date_short')));
 
 				const revisions = [];
 
@@ -152,7 +152,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 					revisions.push({
 						...revision,
 						timestampFormatted: await getFormattedDate(revision.activity?.timestamp),
-						timeRelative: `${getTime(revision.activity?.timestamp)} (${await localizedFormatDistance(
+						timeRelative: `${getTime(revision.activity?.timestamp)} (${localizedFormatDistance(
 							parseISO(revision.activity?.timestamp),
 							new Date(),
 							{
@@ -189,8 +189,8 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 	}
 
 	async function getFormattedDate(timestamp: string) {
-		const date = await localizedFormat(new Date(timestamp), String(t('date-fns_date_short')));
-		const time = await localizedFormat(new Date(timestamp), String(t('date-fns_time')));
+		const date = localizedFormat(new Date(timestamp), String(t('date-fns_date_short')));
+		const time = localizedFormat(new Date(timestamp), String(t('date-fns_time')));
 
 		return `${date} (${time})`;
 	}

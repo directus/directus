@@ -210,7 +210,7 @@ function editItem(item: DisplayItem) {
 	const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 
 	newItem = false;
-	editsAtStart.value = item;
+	editsAtStart.value = { [pkField]: item[pkField] };
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = '+';

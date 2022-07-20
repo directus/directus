@@ -320,9 +320,11 @@ function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
 
 	const key = junctionRow[junctionField]?.id ?? junctionRow[junctionField] ?? null;
 	if (!key) return null;
+
 	if (addDownload) {
 		return addTokenToURL(getRootPath() + `assets/${key}?download`);
 	}
+
 	return addTokenToURL(getRootPath() + `assets/${key}`);
 }
 
@@ -428,5 +430,9 @@ const selectAllowed = computed(() => {
 	&:hover {
 		--v-icon-color: var(--danger);
 	}
+}
+
+.render-template {
+	height: 100%;
 }
 </style>

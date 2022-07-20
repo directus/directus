@@ -3,6 +3,7 @@ import express, { Request, Response, RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
+import { ServerResponse } from 'http';
 import helmet from 'helmet';
 
 import activityRouter from './controllers/activity';
@@ -185,14 +186,20 @@ export default async function createApp(): Promise<express.Application> {
 		const html = await fse.readFile(adminPath, 'utf8');
 		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		const noCacheIndexHtmlHandler = (_req: Request, res: Response) => {
+		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
+			res.setHeader('Vary', 'Origin, Cache-Control');
 			res.send(htmlWithBase);
 		};
 
-		app.get('/admin', noCacheIndexHtmlHandler);
-		app.use('/admin', express.static(path.join(adminPath, '..')));
-		app.use('/admin/*', noCacheIndexHtmlHandler);
+		const setStaticHeaders = (res: ServerResponse) => {
+			res.setHeader('Cache-Control', 'max-age=31536000, immutable');
+			res.setHeader('Vary', 'Origin, Cache-Control');
+		};
+
+		app.get('/admin', sendHtml);
+		app.use('/admin', express.static(path.join(adminPath, '..'), { setHeaders: setStaticHeaders }));
+		app.use('/admin/*', sendHtml);
 	}
 
 	// use the rate limiter - all routes for now

@@ -7,6 +7,8 @@ module.exports = {
 	roots: ['<rootDir>/tests', '<rootDir>/src'],
 	verbose: true,
 	setupFiles: ['dotenv/config'],
-	testURL: process.env.TEST_URL || 'http://localhost',
 	collectCoverageFrom: ['src/**/*.ts'],
+	testEnvironmentOptions: {
+		url: process.env.TEST_URL || 'http://localhost',
+	},
 };

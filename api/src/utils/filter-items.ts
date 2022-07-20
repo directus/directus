@@ -1,5 +1,5 @@
-import { Query } from '@directus/shared/types';
-import generateJoi from './generate-joi';
+import { FieldFilter, Query } from '@directus/shared/types';
+import { generateJoi } from '@directus/shared/utils';
 
 /*
  Note: Filtering is normally done through SQL in run-ast. This function can be used in case an already
@@ -14,7 +14,7 @@ export function filterItems(items: Record<string, any>[], filter: Query['filter'
 	});
 
 	function passesFilter(item: Record<string, any>, filter: Query['filter']): boolean {
-		if (!filter) return true;
+		if (!filter || Object.keys(filter).length === 0) return true;
 
 		if (Object.keys(filter)[0] === '_and') {
 			const subfilter = Object.values(filter)[0] as Query['filter'][];
@@ -29,7 +29,7 @@ export function filterItems(items: Record<string, any>[], filter: Query['filter'
 				return passesFilter(item, subFilter);
 			});
 		} else {
-			const schema = generateJoi(filter);
+			const schema = generateJoi(filter as FieldFilter);
 
 			const { error } = schema.validate(item);
 			return error === undefined;

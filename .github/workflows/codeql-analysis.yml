@@ -2,17 +2,15 @@ name: CodeQL Analysis
 
 on:
   workflow_call:
-    inputs:
-      should_skip:
-        required: false
-        type: string
   schedule:
     - cron: '42 23 * * 5'
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
   analyze:
     name: Analyze
-    if: inputs.should_skip != 'true'
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -24,16 +22,18 @@ jobs:
         language:
           - javascript
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: 'false'
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           config-file: ./.github/codeql/codeql-config.yml
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2

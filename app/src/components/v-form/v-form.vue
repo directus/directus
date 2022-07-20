@@ -32,6 +32,7 @@
 				:loading="loading"
 				:validation-errors="validationErrors"
 				:badge="badge"
+				:raw-editor-enabled="rawEditorEnabled"
 				v-bind="fieldsMeta[field.field]?.options || {}"
 				@apply="apply"
 			/>
@@ -62,10 +63,13 @@
 					)
 				"
 				:badge="badge"
+				:raw-editor-enabled="rawEditorEnabled"
+				:raw-editor-active="rawActiveFields.has(field.field)"
 				@update:model-value="setValue(field.field, $event)"
-				@set-field-value="setValue($event.field, $event.value)"
+				@set-field-value="setValue($event.field, $event.value, { force: true })"
 				@unset="unsetValue(field)"
 				@toggle-batch="toggleBatchField(field)"
+				@toggle-raw="toggleRawField(field)"
 			/>
 		</template>
 	</div>
@@ -79,7 +83,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, FieldMeta, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, unref } from 'vue';
+import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -145,24 +149,16 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const fieldsStore = useFieldsStore();
-
-		const fields = computed(() => {
-			if (props.collection) {
-				return fieldsStore.getFieldsForCollection(props.collection);
-			}
-
-			if (props.fields) {
-				return props.fields;
-			}
-
-			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-		});
+		const fields = useComputedFields();
 
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
@@ -190,6 +186,7 @@ export default defineComponent({
 
 		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled, fieldsMeta } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
+		const { toggleRawField, rawActiveFields } = useRawEditor();
 
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < formFields.value.length; i++) {
@@ -227,6 +224,8 @@ export default defineComponent({
 			setValue,
 			batchActiveFields,
 			toggleBatchField,
+			rawActiveFields,
+			toggleRawField,
 			unsetValue,
 			firstEditableFieldIndex,
 			firstVisibleFieldIndex,
@@ -328,10 +327,39 @@ export default defineComponent({
 			}
 		}
 
-		function setValue(fieldKey: string, value: any) {
+		function useComputedFields(): Ref<Field[]> {
+			const fieldsStore = useFieldsStore();
+
+			const fields = ref<Field[]>(getFields());
+
+			watch(
+				() => props.fields,
+				() => {
+					const newVal = getFields();
+					if (!isEqual(fields.value, newVal)) {
+						fields.value = newVal;
+					}
+				}
+			);
+
+			return fields;
+
+			function getFields(): Field[] {
+				if (props.collection) {
+					return fieldsStore.getFieldsForCollection(props.collection);
+				}
+				if (props.fields) {
+					return props.fields;
+				}
+
+				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
+			}
+		}
+
+		function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 			const field = formFields.value?.find((field) => field.field === fieldKey);
 
-			if (!field || isDisabled(field)) return;
+			if (opts?.force !== true && (!field || isDisabled(field))) return;
 
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
 			edits[fieldKey] = value;
@@ -388,6 +416,20 @@ export default defineComponent({
 			const { field } = extractFieldFromFunction(fieldKey);
 			if (!formFieldEls.value[field]) return;
 			formFieldEls.value[field].$el.scrollIntoView({ behavior: 'smooth' });
+		}
+
+		function useRawEditor() {
+			const rawActiveFields = ref(new Set<string>());
+
+			return { rawActiveFields, toggleRawField };
+
+			function toggleRawField(field: Field) {
+				if (rawActiveFields.value.has(field.field)) {
+					rawActiveFields.value.delete(field.field);
+				} else {
+					rawActiveFields.value.add(field.field);
+				}
+			}
 		}
 	},
 });

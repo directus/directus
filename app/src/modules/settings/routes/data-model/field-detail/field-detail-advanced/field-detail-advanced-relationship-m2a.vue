@@ -64,6 +64,7 @@
 			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
 			<related-field-select
 				v-model="sortField"
+				:disabled-fields="unsortableJunctionFields"
 				:collection="junctionCollection"
 				:placeholder="t('add_sort_field')"
 				:nullable="true"
@@ -157,7 +158,7 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore, useCollectionsStore } from '@/stores';
+import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores';
 import { orderBy } from 'lodash';
 
 export default defineComponent({
@@ -167,6 +168,7 @@ export default defineComponent({
 
 		const fieldDetailStore = useFieldDetailStore();
 		const collectionsStore = useCollectionsStore();
+		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 
 		const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
@@ -202,6 +204,15 @@ export default defineComponent({
 			);
 		});
 
+		const unsortableJunctionFields = computed(() => {
+			let fields = ['item', 'collection'];
+			if (junctionCollection.value) {
+				const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
+				fields.push(...relations.map((field) => field.field));
+			}
+			return fields;
+		});
+
 		return {
 			t,
 			availableCollections,
@@ -218,6 +229,7 @@ export default defineComponent({
 			sortField,
 			onDelete,
 			onDeselect,
+			unsortableJunctionFields,
 		};
 	},
 });

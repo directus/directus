@@ -2,6 +2,7 @@ import InsightsOverview from './routes/overview.vue';
 import InsightsDashboard from './routes/dashboard.vue';
 import InsightsPanelConfiguration from './routes/panel-configuration.vue';
 import { defineModule } from '@directus/shared/utils';
+import { useInsightsStore } from '@/stores';
 
 export default defineModule({
 	id: 'insights',
@@ -18,6 +19,11 @@ export default defineModule({
 			path: ':primaryKey',
 			component: InsightsDashboard,
 			props: true,
+			beforeEnter(to) {
+				const store = useInsightsStore();
+				// Refresh is async, but we'll let the view load while the data is being fetched
+				store.refresh(to.params.primaryKey as string);
+			},
 			children: [
 				{
 					name: 'panel-detail',
