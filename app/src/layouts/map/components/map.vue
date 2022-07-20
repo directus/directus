@@ -159,10 +159,7 @@ export default defineComponent({
 					const ids = event.features?.map((f) => f.id);
 					emit('featureselect', { ids, replace: !event.alt });
 				});
-				map.on('moveend', (event) => {
-					if (!event.originalEvent) {
-						return;
-					}
+				map.on('moveend', () => {
 					emit('moveend', {
 						center: map.getCenter(),
 						zoom: map.getZoom(),
