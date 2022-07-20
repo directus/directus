@@ -29,6 +29,7 @@ import VForm from './v-form';
 import VHover from './v-hover/';
 import VHighlight from './v-highlight.vue';
 import VIcon from './v-icon/';
+import VImage from './v-image.vue';
 import VIconFile from './v-icon-file.vue';
 import VInfo from './v-info/';
 import VInput from './v-input/';
@@ -81,6 +82,7 @@ export function registerComponents(app: App): void {
 	app.component('VHover', VHover);
 	app.component('VHighlight', VHighlight);
 	app.component('VIcon', VIcon);
+	app.component('VImage', VImage);
 	app.component('VIconFile', VIconFile);
 	app.component('VInfo', VInfo);
 	app.component('VInput', VInput);

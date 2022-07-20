@@ -35,10 +35,10 @@
 		"cleanup:coverage": "rimraf ./coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"@directus/drive": "9.14.1",
+		"@directus/drive": "workspace:*",
 		"aws-sdk": "^2.928.0",
 		"normalize-path": "^3.0.0"
 	},

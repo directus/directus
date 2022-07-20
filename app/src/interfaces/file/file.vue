@@ -21,7 +21,7 @@
 									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
-								<img
+								<v-image
 									v-if="imageThumbnail && !imageThumbnailError"
 									:src="imageThumbnail"
 									:alt="file?.title"
@@ -144,7 +144,6 @@ import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { addTokenToURL } from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { useRelationM2O, useRelationSingle, RelationQuerySingle } from '@/composables/use-relation';
@@ -198,7 +197,7 @@ const fileExtension = computed(() => {
 
 const assetURL = computed(() => {
 	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return addTokenToURL(getRootPath() + `assets/${id}`);
+	return getRootPath() + `assets/${id}`;
 });
 
 const imageThumbnail = computed(() => {

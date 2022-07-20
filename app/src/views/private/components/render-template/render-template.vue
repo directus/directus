@@ -6,7 +6,7 @@
 			<component
 				:is="`display-${part.component}`"
 				v-else-if="typeof part === 'object' && part.component"
-				v-bind="part.options"
+				v-bind="translate(part.options || {})"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
@@ -28,7 +28,7 @@ import { Field } from '@directus/shared/types';
 import { getDisplay } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { translate } from '@/utils/translate-literal';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { ValueNull },

@@ -1,0 +1,31 @@
+{
+	"name": "create-directus-extension",
+	"version": "9.14.1",
+	"description": "A small util that will scaffold a Directus extension.",
+	"main": "lib/index.js",
+	"repository": "directus/directus",
+	"exports": {
+		".": "./lib/index.js",
+		"./package.json": "./package.json"
+	},
+	"bin": {
+		"create-directus-extension": "./lib/index.js",
+		"cde": "./lib/index.js"
+	},
+	"keywords": [
+		"directus",
+		"extensions"
+	],
+	"author": "Nicola Krumschmidt",
+	"contributors": [
+		"Joonas Palosuo <joonas.palosuo@gmail.com>",
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
+	"license": "GPL-3.0-only",
+	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
+	"dependencies": {
+		"@directus/extensions-sdk": "9.14.1",
+		"@directus/shared": "9.14.1",
+		"inquirer": "^8.1.2"
+	}
+}

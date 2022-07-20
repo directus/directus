@@ -614,6 +614,7 @@ password_reset_sent: Jeśli masz konto to wysłaliśmy Ci bezpieczny link do zre
 password_reset_successful: Hasło zostało pomyślnie zresetowane
 back: Wstecz
 filter: Filtr
+edit_image: Edytuj obraz
 editing_image: Edycja obrazu
 square: Kwadratowy
 free: Wolne
@@ -1743,6 +1744,11 @@ displays:
     strict: Ścisły
     strict_label: Użyj ścisłych jednostek
     strict_note: Usuwa słowa takie jak 'prawie', 'ponad', 'mniej niż'
+    round: Zaokrąglenie
+    round_note: Wybierz sposób zaokrąglenia
+    down: Dół
+    nearest: Najbliższe
+    up: Góra
   file:
     file: Plik
     description: Wyświetl pliki
