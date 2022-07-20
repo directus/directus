@@ -4,7 +4,7 @@
 			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 		</div>
 
-		<v-media v-else-if="type === 'video' || type === 'audio'" controls :src="src" :mime="mime" max-height="500px" />
+		<v-media v-else-if="type === 'video' || type === 'audio'" controls :src="src" :mime="mime" />
 
 		<div v-else class="fallback">
 			<v-icon-file :ext="type" />
@@ -55,7 +55,7 @@ const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
 const isSmall = computed(() => props.height < 528);
 
 const aspectRatio = computed(() => {
-	if (!props.height || !props.width) return 1;
+	if (!props.height || !props.width) return undefined;
 	return props.width / props.height;
 });
 </script>
