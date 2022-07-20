@@ -72,7 +72,6 @@ export function registerComponents(app: App): void {
 	app.component('VCheckbox', VCheckbox);
 	app.component('VCheckboxTree', VCheckboxTree);
 	app.component('VChip', VChip);
-	app.component('VDatePicker', VDatePicker);
 	app.component('VDetail', VDetail);
 	app.component('VDialog', VDialog);
 	app.component('VDivider', VDivider);
