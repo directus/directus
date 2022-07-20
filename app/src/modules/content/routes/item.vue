@@ -208,7 +208,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ComponentPublicInstance, computed, ref, toRefs } from 'vue';
+import { ComponentPublicInstance, computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useEditsGuard from '@/composables/use-edits-guard';
@@ -342,9 +342,10 @@ const {
 } = usePermissions(collection, item, isNew);
 
 const internalPrimaryKey = computed(() => {
-	if (isNew.value) return '+';
+	if (unref(loading)) return '+';
+	if (unref(isNew)) return '+';
 
-	if (isSingleton.value) return item.value?.[primaryKeyField.value?.field] ?? '+';
+	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
 
 	return props.primaryKey;
 });
