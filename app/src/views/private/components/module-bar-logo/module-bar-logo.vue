@@ -19,11 +19,10 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch, toRefs } from 'vue';
-import { useSettingsStore, useRequestsStore } from '@/stores/';
+import { useRequestsStore, useSettingsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
+import { computed, defineComponent, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	setup() {
@@ -35,7 +34,7 @@ export default defineComponent({
 		const customLogoPath = computed<string | null>(() => {
 			if (settingsStore.settings === null) return null;
 			if (!settingsStore.settings?.project_logo) return null;
-			return addTokenToURL(getRootPath() + `assets/${settingsStore.settings.project_logo}`);
+			return getRootPath() + `assets/${settingsStore.settings.project_logo}`;
 		});
 
 		const showLoader = ref(false);

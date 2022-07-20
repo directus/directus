@@ -31,11 +31,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { computed, defineComponent, PropType, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 type File = {
 	[key: string]: any;
@@ -98,6 +97,7 @@ export default defineComponent({
 			if (!imgError.value && props.file.type.startsWith('image')) return null;
 			return readableMimeType(props.file.type, true);
 		});
+
 		const imageInfo = computed(() => {
 			let fileType = undefined;
 			if (!props.file || !props.file.type) return null;
@@ -113,8 +113,7 @@ export default defineComponent({
 				key = 'system-medium-contain';
 			}
 
-			const url = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
-			const source = addTokenToURL(url);
+			const source = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
 
 			return { source, fileType };
 		});

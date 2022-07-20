@@ -20,7 +20,6 @@ import { defineComponent, PropType, computed, ref } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
 import useElementSize from '@/composables/use-element-size';
 import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
 
 type File = {
 	id: string;
@@ -46,9 +45,9 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (!props.value) return null;
-			if (props.value.type?.includes('svg')) return addTokenToURL(getRootPath() + `assets/${props.value.id}`);
+			if (props.value.type?.includes('svg')) return getRootPath() + `assets/${props.value.id}`;
 			if (props.value.type?.includes('image') === false) return null;
-			return addTokenToURL(getRootPath() + `assets/${props.value.id}?key=system-small-cover`);
+			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		const { height } = useElementSize(previewEl);
