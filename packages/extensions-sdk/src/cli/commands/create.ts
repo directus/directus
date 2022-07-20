@@ -71,7 +71,7 @@ export default async function create(type: string, name: string, options: Create
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
 			type,
-			path: `dist/${type}s/${name}/index.js`,
+			path: 'dist/index.js',
 			source: `src/index.${languageToShort(options.language)}`,
 			host: `^${pkg.version}`,
 		},
