@@ -60,10 +60,10 @@ export const useServerStore = defineStore('serverStore', () => {
 	const providerOptions = computed(() => {
 		const options = auth.providers
 			.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
-			.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
+			.map((provider) => ({ text: formatTitle(provider.name), value: provider.name, driver: provider.driver }));
 
 		if (!auth.disableDefault) {
-			options.unshift({ text: i18n.global.t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
+			options.unshift({ text: i18n.global.t('default_provider'), value: DEFAULT_AUTH_PROVIDER, driver: 'default' });
 		}
 
 		return options;
