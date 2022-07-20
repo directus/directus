@@ -63,7 +63,7 @@
 				@input="update"
 			/>
 
-			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" @refresh="refreshImage" />
+			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
@@ -173,16 +173,6 @@ async function imageErrorHandler() {
 			imageError.value = 'UNKNOWN';
 		}
 	}
-}
-
-function refreshImage() {
-	refresh();
-
-	loading.value = false;
-	lightboxActive.value = false;
-	editDrawerActive.value = false;
-	editImageDetails.value = false;
-	editImageEditor.value = false;
 }
 
 function deselect() {
