@@ -139,6 +139,7 @@ import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useSettingsStore } from '@/stores/';
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 
@@ -150,12 +151,6 @@ type Image = {
 	height: number;
 };
 
-type CustomAspectRatio = {
-	text: string;
-	value: number;
-};
-export type { CustomAspectRatio };
-
 export default defineComponent({
 	props: {
 		id: {
@@ -166,13 +161,10 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
-		customAspectRatios: {
-			type: Array as PropType<CustomAspectRatio[]> | undefined,
-			default: undefined,
-		},
 	},
 	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
+		const settingsStore = useSettingsStore();
 		const { t, n } = useI18n();
 
 		const localActive = ref(false);
@@ -220,6 +212,11 @@ export default defineComponent({
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
 		});
 
+		const customAspectRatios =
+			settingsStore.settings && settingsStore.settings.image_editor_custom_aspect_ratios
+				? settingsStore.settings.image_editor_custom_aspect_ratios
+				: null;
+
 		return {
 			t,
 			n,
@@ -240,6 +237,7 @@ export default defineComponent({
 			newDimensions,
 			dragMode,
 			cropping,
+			customAspectRatios,
 		};
 
 		function useImage() {
@@ -345,8 +343,8 @@ export default defineComponent({
 			const aspectRatioIcon = computed(() => {
 				if (!imageData.value) return 'crop_original';
 
-				if (props.customAspectRatios) {
-					const customAspectRatio = props.customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
+				if (customAspectRatios) {
+					const customAspectRatio = customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
 					if (customAspectRatio) return 'crop_square';
 				}
 

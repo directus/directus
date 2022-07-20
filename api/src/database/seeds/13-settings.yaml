@@ -45,5 +45,7 @@ columns:
     default: all
   storage_asset_presets:
     type: json
+  image_editor_custom_aspect_ratios:
+    type: json
   custom_css:
     type: text
