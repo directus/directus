@@ -1,9 +1,10 @@
 import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
-import { Knex } from 'knex';
 import { KNEX_TYPES } from '@directus/shared/constants';
 
 type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
+
+export type Options = { nullable?: boolean; default?: any; length?: number };
 
 export abstract class SchemaHelper extends DatabaseHelper {
 	isOneOfClients(clients: Clients[]): boolean {
@@ -24,10 +25,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		table: string,
 		column: string,
 		type: typeof KNEX_TYPES[number],
-		options: { nullable?: boolean; default?: any } = {}
+		options: Options = {}
 	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
-			const b = builder[type](column);
+			const b = type === 'string' ? builder.string(column, options.length) : builder[type](column);
 
 			if (options.nullable === true) {
 				b.nullable();
@@ -45,38 +46,16 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		});
 	}
 
-	async changeToString(
+	protected async changeToTypeByCopy(
 		table: string,
 		column: string,
-		options: { nullable?: boolean; default?: any; length?: number } = {}
+		type: typeof KNEX_TYPES[number],
+		options: Options
 	): Promise<void> {
+		const tempName = `${column}__temp`;
+
 		await this.knex.schema.alterTable(table, (builder) => {
-			const b = builder.string(column, options.length);
-
-			if (options.nullable === true) {
-				b.nullable();
-			}
-
-			if (options.nullable === false) {
-				b.notNullable();
-			}
-
-			if (options.default !== undefined) {
-				b.defaultTo(options.default);
-			}
-
-			b.alter();
-		});
-	}
-
-	protected async changeToTypeByCopy<Options extends { nullable?: boolean; default?: any }>(
-		table: string,
-		column: string,
-		options: Options,
-		cb: (builder: Knex.CreateTableBuilder, column: string, options: Options) => Knex.ColumnBuilder
-	): Promise<void> {
-		await this.knex.schema.alterTable(table, (builder) => {
-			const col = cb(builder, `${column}__temp`, options);
+			const col = type === 'string' ? builder.string(tempName, options.length) : builder[type](tempName);
 
 			if (options.default !== undefined) {
 				col.defaultTo(options.default);
@@ -87,14 +66,14 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			col.nullable();
 		});
 
-		await this.knex(table).update(`${column}__temp`, this.knex.ref(column));
+		await this.knex(table).update(tempName, this.knex.ref(column));
 
 		await this.knex.schema.alterTable(table, (builder) => {
 			builder.dropColumn(column);
 		});
 
 		await this.knex.schema.alterTable(table, (builder) => {
-			builder.renameColumn(`${column}__temp`, column);
+			builder.renameColumn(tempName, column);
 		});
 
 		// We're altering the temporary column here. That starts nullable, so we only want to set it
