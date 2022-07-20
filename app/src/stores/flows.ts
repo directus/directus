@@ -31,7 +31,7 @@ export const useFlowsStore = defineStore({
 			this.$reset();
 		},
 		getManualFlowsForCollection(collection: string): FlowRaw[] {
-			return this.flows.filter((flow) => flow.trigger === 'manual' && flow.options?.collections.includes(collection));
+			return this.flows.filter((flow) => flow.trigger === 'manual' && flow.options?.collections?.includes(collection));
 		},
 	},
 });

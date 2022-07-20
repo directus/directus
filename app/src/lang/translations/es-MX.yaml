@@ -28,25 +28,25 @@ published: Publicado
 draft: Borrador
 archived: Archivado
 modules: Módulos
-module_bar: Barra de Módulos
+module_bar: Barra de módulos
 logs: Registros
-reset_width: Restablecer Ancho
-tile_size: Tamaño del Mosaico
-edit_field: Editar Campo
+reset_width: Restablecer ancho
+tile_size: Tamaño del mosaico
+edit_field: Editar campo
 conditions: Condiciones
 location: Ubicación
-condition_rules: Reglas Condicionales
+condition_rules: Reglas condicionales
 input: Entrada
 maps: Mapas
-switch_user: Cambiar de Usuario
-item_creation: Creación de Elementos
-item_revision: Revisión de Elementos
-enter_a_name: Escribe un Nombre...
-duplicate_field: Duplicar Campo
+switch_user: Cambiar de usuario
+item_creation: Creación de elementos
+item_revision: Revisión de elementos
+enter_a_name: Escribe un nombre...
+duplicate_field: Duplicar campo
 half_width: Anchura 50%
-full_width: Ancho Completo
+full_width: Ancho completo
 group: Grupo
-export_items: Exportar Elementos
+export_items: Exportar elementos
 and: "Y"
 or: O
 init: Inicializador
@@ -54,86 +54,86 @@ dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado g
 modifier: Modificador
 custom: Personalizado
 hook: Gancho
-fill_width: Ancho Completo
-field_name_translations: Traducciones del Campo de Nombre
-enter_password_to_enable_tfa: Introduzca su contraseña para activar la Autenticación de Dos Factores
-add_field: Agregar Campo
-role_name: Nombre del Rol
+fill_width: Ancho completo
+field_name_translations: Traducciones del campo de nombre
+enter_password_to_enable_tfa: Introduzca su contraseña para activar la autenticación de dos factores
+add_field: Agregar campo
+role_name: Nombre del rol
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
-edit_collection: Editar Colección
+edit_collection: Editar colección
 exclusive: Exclusivo
 children: Subsecciones
 db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
-show_active_items: Mostrar Elementos Activos
-show_archived_items: Mostrar Elementos Archivados
-show_all_items: Mostrar Todos los Elementos
-edited: Valor Editado
+show_active_items: Mostrar elementos activos
+show_archived_items: Mostrar alementos archivados
+show_all_items: Mostrar todos los elementos
+edited: Valor editado
 required: Requerido
-required_for_app_access: Necesario para el Acceso a la Aplicación
-requires_value: Requiere un Valor
-create_preset: Crear Predefinido
-create_panel: Crear Panel
-create_role: Crear Rol
-create_user: Crear Usuario
+required_for_app_access: Necesario para el acceso a la aplicación
+requires_value: Requiere un valor
+create_preset: Crear predefinido
+create_panel: Crear panel
+create_role: Crear rol
+create_user: Crear usuario
 message: Mensaje
-delete_panel: Eliminar Panel
-create_webhook: Crear Webhook
-create_translation_string: Crear Cadena de Traducción
-no_translation_string: Sin Cadenas de Traducción
+delete_panel: Eliminar panel
+create_webhook: Crear webhook
+create_translation_string: Crear cadena de traducción
+no_translation_string: Sin cadenas de traducción
 no_translation_string_copy: Todavía no hay cadenas de traducción.
 translation_string_key_placeholder: Clave de la cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar Cadena de Traducción
+edit_translation_string: Editar cadena de traducción
 delete_translation_string_copy: >-
   ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
-invite_users: Invitar Usuarios
+invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
 subject: Asunto
 inbox: Buzón
 emails: Correos
-connection_excellent: Excelente Conexión
-connection_good: Buena Conexión
-connection_fair: Conexión Justa
-connection_poor: Conexión Pobre
+connection_excellent: Conexión excelente
+connection_good: Conexión buena
+connection_fair: Conexión justa
+connection_poor: Conexión pobre
 primary: Principal
-rename_folder: Renombrar Carpeta
-delete_folder: Eliminar Carpeta
+rename_folder: Renombrar carpeta
+delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
-reset_bookmark: Restablecer Marcador
-update_bookmark: Actualizar Marcador
-delete_bookmark: Eliminar Marcador
+reset_bookmark: Restablecer marcador
+update_bookmark: Actualizar marcador
+delete_bookmark: Eliminar marcador
 delete_bookmark_copy: >-
   ¿Estás seguro de que quieres eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
-delete_personal_bookmark: Borrar el Marcador Personal
-delete_role_bookmark: Borrar el Marcador de Función
-delete_global_bookmark: Eliminar Marcador Global
+delete_personal_bookmark: Borrar el marcador personal
+delete_role_bookmark: Borrar el marcador de rol
+delete_global_bookmark: Eliminar marcador global
 logoutReason:
   SIGN_OUT: Sesión cerrada
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
 admin_description: Rol administrativo inicial con acceso ilimitado a la App/API.
-not_allowed: No Permitido
+not_allowed: No permitido
 directus_version: Versión de Directus
 node_version: Versión de Node
-node_uptime: Tiempo de Actividad de Node
+node_uptime: Tiempo de actividad de Node
 os_type: Tipo de SO
-os_version: Versión de SO
-os_uptime: Tiempo de Actividad del SO
+os_version: Versión del SO
+os_uptime: Tiempo de actividad del SO
 os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Está seguro que desea archivar este elemento?'
 archive_confirm_count: >-
-  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
-reset_system_permissions_to: 'Restablecer los Permisos del Sistema a:'
+  Sin elementos seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
+reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
 the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
-app_access_minimum: Acceso Mínimo a la Aplicación
-recommended_defaults: Valores Predeterminados Recomendados
+app_access_minimum: Acceso mínimo a la aplicación
+recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Está seguro de que quiere desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y carpetas anidados se moverán un nivel hacia arriba.
@@ -156,96 +156,96 @@ validationError:
   required: El valor es requerido
   unique: El Valor tiene que ser único
   regex: El valor no tiene el formato correcto
-all_access: Todos los Accesos
-no_access: Sin Acceso
+all_access: Todos los accesos
+no_access: Sin acceso
 use_custom: Personalizar
 nullable: Anulable
 allow_null_value: Permitir valor NULL
-allow_multiple: Permitir Múltiples
-allow_multiple_to_be_open: Permitir la Apertura de Múltiples
+allow_multiple: Permitir múltiple
+allow_multiple_to_be_open: Permitir la apertura múltiple
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
-field_presentation: Presentación y Alias
-field_file: Un Archivo
-field_files: Múltiples Archivos
+field_presentation: Presentación y alias
+field_file: Un archivo
+field_files: Múltiples archivos
 field_m2o: Relación M2O
 field_m2a: Relación M2A
 field_o2m: Relación O2M
 field_m2m: Relación M2M
 field_translations: Traducciones
-field_group: Grupo de Campos
-item_permissions: Permisos de items
-field_permissions: Permisos de Campo
+field_group: Grupo de campos
+item_permissions: Permisos de elementos
+field_permissions: Permisos de campo
 field_validation: Validación de campo
 field_presets: Preajustes de campo
-permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
-fields_for_role: 'Campos que el Rol {role} puede {action}.'
-validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
-presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
-presentation_and_aliases: Presentación y Alias
+permissions_for_role: 'Elementos que el rol {role} puede {action}.'
+fields_for_role: 'Campos que el rol {role} puede {action}.'
+validation_for_role: 'Reglas de campo al {action} que el rol {role} tiene que obedecer.'
+presets_for_role: 'Valores por defecto del campo para el rol {role}.'
+presentation_and_aliases: Presentación y alias
 revision_post_create: Este es el aspecto de este elemento cuando fue creado.
 revision_post_update: Así se vería el elemento después de la actualización.
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
 hide_field: Ocultar campo
-hide_field_on_detail: Ocultar campo en el Detalle
-show_field_on_detail: Mostrar campo en el Detalle
-delete_field: Eliminar Campo
-fields_and_layout: Campos y Diseño
-field_create_success: 'Campo Creado: "{field}"'
-field_update_success: 'Campo Actualizado: "{field}"'
+hide_field_on_detail: Ocultar campo en el detalle
+show_field_on_detail: Mostrar campo en el detalle
+delete_field: Eliminar campo
+fields_and_layout: Campos y diseño
+field_create_success: 'Campo creado: "{field}"'
+field_update_success: 'Campo actualizado: "{field}"'
 duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
 language: Idioma
 language_placeholder: Seleccione un idioma...
 aggregate_function: Función de agregado
 aggregate_precision: Precisión agregada
 group_aggregation: Agregación de grupo
-group_precision: Precisión del grupo
+group_precision: Precisión de grupo
 global: Global
-admins_have_all_permissions: Los Administradores tienen todos los permisos
+admins_have_all_permissions: Los administradores tienen todos los permisos
 camera: Cámara
 show_zero: Mostrar cero
 create_in_advanced_field_creation_mode: Crear campo en modo avanzado
-continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
+continue_in_advanced_field_creation_mode: Continuar en modo de creación de campos avanzado
 validation: Validación
 sum: Suma
-sum_distinct: Sumar Diferentes
-avg: Media
-avg_distinct: Media de elementos distintos
+sum_distinct: Sumar diferentes
+avg: Promedio
+avg_distinct: Promedio distinto
 count: Contar
-count_distinct: Recuento de elementos distintos
-min: Min
-max: Máx
+count_distinct: Recuento distinto
+min: Mínimo
+max: Máximo
 exposure: Exposición
 shutter: Obturación
 iso: ISO
-focal_length: Distancia Focal
-schema_setup_key: Nombre de columna de este campo de la base de datos y clave API
-create_field: Crear Campo
-creating_new_field: 'Nuevo Campo ({collection})'
+focal_length: Distancia focal
+schema_setup_key: El nombre de la columna de la base de datos y la clave API de este campo
+create_field: Crear campo
+creating_new_field: 'Nuevo campo ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Restablecer Preferencias de Página
-hidden_field: Campo Oculto
-hidden_on_detail: Oculto en el Detalle
-disabled_editing_value: Desactivar edición de valor
+reset_page_preferences: Restablecer preferencias de la página
+hidden_field: Campo oculto
+hidden_on_detail: Oculto en el detalle
+disabled_editing_value: Desactivar edición del valor
 key: Llave
 alias: Alias
-bigInteger: Número Entero (Grande)
+bigInteger: Entero grande
 boolean: Booleano
 date: Fecha
 date_range: Rango de fechas
-datetime: Fecha y Hora
-dateTime: Fecha y Hora
+datetime: Fecha y hora
+dateTime: Fecha y hora
 precision: Precisión
 decimal: Decimal
-float: Número Flotante
-integer: Número Entero
+float: Número flotante
+integer: Número entero
 json: JSON
 xml: XML
-string: Cadena de Texto
+string: Cadena de texto
 text: Texto
 time: Hora
-timestamp: Marca de Tiempo
+timestamp: Marca de tiempo
 uuid: UUID
 hash: Hash
 geometry: Geometría (Todo)
@@ -253,27 +253,27 @@ geometry.Point: Punto
 geometry.LineString: Linea
 geometry.Polygon: Polígono
 geometry.MultiPoint: Multipunto
-geometry.MultiLineString: MultiLinea
-geometry.MultiPolygon: MultiPolígono
-not_available_for_type: No disponible para este Tipo
-create_translations: Crear Traducciones
+geometry.MultiLineString: Multilinea
+geometry.MultiPolygon: Multipolígono
+not_available_for_type: No disponible para este tipo
+create_translations: Crear traducciones
 auto_refresh: Actualización automática
 refresh_interval: Intervalo de actualización
 no_refresh: No actualizar
-refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
-refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
+refresh_interval_seconds: Refrescar instantáneamente | Cada segundo | Cada {seconds} segundos
+refresh_interval_minutes: Cada minuto | Cada {minutes} minutos
 auto_generate: Auto-generar
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
-to_manually_setup_translations: configurar manualmente las traducciones.
+to_manually_setup_translations: para configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
-fields_group: Grupo de Campos
+fields_group: Grupo de campos
 no_collections_found: No se encontraron colecciones.
-new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
+new_data_alert: 'Se creará lo siguiente dentro de su modelo de datos:'
 search_collection: Buscar colección...
-new_field: 'Nuevo Campo'
-new_collection: 'Colección Nueva'
+new_field: 'Nuevo campo'
+new_collection: 'Nueva colección'
 add_m2o_to_collection: 'Añadir M2O a "{collection}"'
 add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
 add_m2m_to_collection: 'Añadir M2M a "{collection}"'
@@ -337,6 +337,7 @@ revision_delta_created_externally: Creado Externamente
 revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
@@ -465,6 +466,7 @@ created_on: Creado El
 creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
 creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
 auto_increment_integer: Número Entero Auto-Incrementado
+auto_increment_big_integer: Número Entero Auto-Incrementado
 generated_uuid: UUID Generado
 manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
@@ -485,7 +487,9 @@ disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
 request_feature: Solicitar Características
+request_body: Cuerpo de la Solicitud
 interface_not_found: 'Interfaz "{interface}" no encontrada.'
+operation_not_found: 'Operación "{operation}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
@@ -571,7 +575,9 @@ errors:
   INVALID_CREDENTIALS: Usuario o contraseña incorrecta
   INVALID_OTP: Contraseña Temporal Incorrecta
   INVALID_PAYLOAD: Payload Inválido
+  INVALID_PROVIDER: El usuario pertenece a un proveedor de autenticación diferente
   INVALID_QUERY: Consulta Inválida
+  INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Límite de elementos alcanzado
   ITEM_NOT_FOUND: Elemento no encontrado
   ROUTE_NOT_FOUND: No encontrado
@@ -586,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
+  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
 security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
@@ -603,6 +610,7 @@ unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo má
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
+password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
@@ -1074,7 +1082,7 @@ fields:
     storage_asset_transform: Transformaciones permitidas
     overrides: Reemplazos de la aplicación
     custom_css: CSS Personalizado
-    module_bar: Barra de Módulos
+    module_bar: Barra de módulos
     transformations_all: Permitir todas las transformaciones
     transformations_none: Desactivar transformaciones
     transformations_presets: Limitar las transformaciones a los ajustes de abajo
@@ -1092,10 +1100,10 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: Traducciones del Campo de Nombre
+    translation: Traducciones del campo de nombre
     display_template: Plantilla
   directus_roles:
-    name: Nombre del Rol
+    name: Nombre del rol
     icon: Ícono del Rol
     description: Descripción
     app_access: Acceso a App

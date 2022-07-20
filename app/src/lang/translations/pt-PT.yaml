@@ -731,13 +731,18 @@ fields:
     description: Descrição
     tags: Etiquetas
     location: Localização
+    storage: Local
     modified_on: Modificado em
     created_on: Criada em
     created_by: Criado por
+    uploaded_by: Carregado por
     folder: Pasta
+    uploaded_on: Carregado a
     charset: Codificação
     duration: Duração
   directus_users:
+    first_name: Primeiro Nome
+    last_name: Apelido
     location: Localização
     title: Título
     description: Descrição
@@ -825,6 +830,7 @@ continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
 creating_webhook: Criando Webhook
 description: Descrição
+file_library: Biblioteca de Arquivos
 save: Guardar
 report_error: Reportar erro
 interfaces:

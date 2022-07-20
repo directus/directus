@@ -632,6 +632,12 @@ export class GraphQLService {
 					_nnull: {
 						type: GraphQLBoolean,
 					},
+					_between: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
 				},
 			});
 
@@ -668,6 +674,12 @@ export class GraphQLService {
 					},
 					_nnull: {
 						type: GraphQLBoolean,
+					},
+					_between: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLStringOrFloat),
 					},
 				},
 			});
@@ -834,6 +846,18 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
 
+				const countType = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated_count`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: GraphQLInt,
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				});
+
 				AggregateMethods[collection.collection] = {
 					group: {
 						name: 'group',
@@ -845,17 +869,11 @@ export class GraphQLService {
 					},
 					count: {
 						name: 'count',
-						type: schemaComposer.createObjectTC({
-							name: `${collection.collection}_aggregated_count`,
-							fields: Object.values(collection.fields).reduce((acc, field) => {
-								acc[field.field] = {
-									type: GraphQLInt,
-									description: field.note,
-								};
-
-								return acc;
-							}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
-						}),
+						type: countType,
+					},
+					countDistinct: {
+						name: 'countDistinct',
+						type: countType,
 					},
 				};
 
@@ -877,10 +895,6 @@ export class GraphQLService {
 						},
 						sum: {
 							name: 'sum',
-							type: AggregatedFields[collection.collection],
-						},
-						countDistinct: {
-							name: 'countDistinct',
 							type: AggregatedFields[collection.collection],
 						},
 						avgDistinct: {
@@ -1573,7 +1587,7 @@ export class GraphQLService {
 
 						result[currentKey] = Object.values(value)[0]!;
 					} else {
-						result[currentKey] = isObject(value) ? replaceFuncDeep(value) : value;
+						result[currentKey] = value?.constructor === Object ? replaceFuncDeep(value) : value;
 					}
 				});
 			}

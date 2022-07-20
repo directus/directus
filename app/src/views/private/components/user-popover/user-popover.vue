@@ -17,7 +17,7 @@
 
 		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
 			<v-avatar x-large class="avatar">
-				<img v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
+				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
 				<v-icon v-else name="person" />
 			</v-avatar>
 			<div class="data">
@@ -30,14 +30,13 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, onUnmounted, computed } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
-import { addTokenToURL } from '@/api';
-import { useRouter } from 'vue-router';
 import { User } from '@directus/shared/types';
+import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	props: {
@@ -59,7 +58,7 @@ export default defineComponent({
 			if (data.value === null) return null;
 
 			if (data.value.avatar?.id) {
-				return addTokenToURL(`${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`);
+				return `${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`;
 			}
 			return null;
 		});

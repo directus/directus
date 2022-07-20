@@ -29,6 +29,7 @@
 				:options="customOptionsFields"
 				type="panel"
 				:extension="panel.type"
+				raw-editor-enabled
 				@update:model-value="edits.options = $event"
 			/>
 

@@ -1,7 +1,7 @@
 <template>
 	<div class="comment-header">
 		<v-avatar x-small>
-			<img v-if="avatarSource" :src="avatarSource" :alt="userName(activity.user)" />
+			<v-image v-if="avatarSource" :src="avatarSource" :alt="userName(activity.user)" />
 			<v-icon v-else name="person_outline" />
 		</v-avatar>
 
@@ -60,14 +60,14 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
-import { Activity } from './types';
-import format from 'date-fns/format';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
+import format from 'date-fns/format';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Activity } from './types';
 
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
@@ -91,7 +91,7 @@ const formattedTime = computed(() => {
 const avatarSource = computed(() => {
 	if (!props.activity.user?.avatar) return null;
 
-	return addTokenToURL(getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`);
+	return getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`;
 });
 
 const { confirmDelete, deleting, remove } = useDelete();

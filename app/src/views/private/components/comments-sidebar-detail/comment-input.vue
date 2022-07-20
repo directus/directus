@@ -30,7 +30,7 @@
 				>
 					<v-list-item-icon>
 						<v-avatar x-small>
-							<img v-if="user.avatar" :src="avatarSource(user.avatar)" />
+							<v-image v-if="user.avatar" :src="avatarSource(user.avatar)" />
 							<v-icon v-else name="person_outline" />
 						</v-avatar>
 					</v-list-item-icon>
@@ -66,19 +66,18 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, watch, ComponentPublicInstance, computed } from 'vue';
-import api, { addTokenToURL } from '@/api';
-import useShortcut from '@/composables/use-shortcut';
-import { notify } from '@/utils/notify';
-import { userName } from '@/utils/user-name';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { throttle } from 'lodash';
-import axios, { CancelTokenSource } from 'axios';
-import { User } from '@directus/shared/types';
-import { getRootPath } from '@/utils/get-root-path';
+import api from '@/api';
 import vTemplateInput from '@/components/v-template-input.vue';
-import { cloneDeep } from 'lodash';
+import useShortcut from '@/composables/use-shortcut';
+import { getRootPath } from '@/utils/get-root-path';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { userName } from '@/utils/user-name';
+import { User } from '@directus/shared/types';
+import axios, { CancelTokenSource } from 'axios';
+import { cloneDeep, throttle } from 'lodash';
+import { ComponentPublicInstance, computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Activity } from './types';
 
 const props = withDefaults(
@@ -287,7 +286,7 @@ function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; ca
 
 function avatarSource(url: string) {
 	if (url === null) return '';
-	return addTokenToURL(getRootPath() + `assets/${url}?key=system-small-cover`);
+	return getRootPath() + `assets/${url}?key=system-small-cover`;
 }
 
 async function postComment() {
