@@ -53,12 +53,18 @@ const isSVG = computed(() => props.mime.includes('svg'));
 
 const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
 const isSmall = computed(() => props.height < 528);
+
+const aspectRatio = computed(() => {
+	if (!props.height || !props.width) return 1;
+	return props.width / props.height;
+});
 </script>
 
 <style lang="scss" scoped>
 .file-preview {
 	position: relative;
 	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
+	aspect-ratio: v-bind(aspectRatio);
 
 	img,
 	video,
