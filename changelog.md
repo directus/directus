@@ -2,6 +2,84 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.14.0 (July 7, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#14203](https://github.com/directus/directus/pull/14203) Emitter emits event in the meta (by @licitdev)
+
+### :rocket: Improvements
+
+- **API**
+  - :warning: [#14287](https://github.com/directus/directus/pull/14287) Terminate Directus if OpenID discovery fails (by
+    @aidenfoxx)
+  - [#14164](https://github.com/directus/directus/pull/14164) Add emitEvents flag to item reads in service (by
+    @rijkvanzanten)
+  - [#9191](https://github.com/directus/directus/pull/9191) Enable caching for App assets (by @nickrum)
+- **shared**
+  - [#14254](https://github.com/directus/directus/pull/14254) Fix type for defaults in useCollection composable (by
+    @addisonElliott)
+- **App**
+  - [#14244](https://github.com/directus/directus/pull/14244) Don't show language select when there is only one language
+    to choose from (by @janwillemvd)
+  - [#14232](https://github.com/directus/directus/pull/14232) Use string displays on the calendar layout (by
+    @rijkvanzanten)
+  - [#14229](https://github.com/directus/directus/pull/14229) Hide user invite flow when default auth provider is
+    disabled (by @rijkvanzanten)
+  - [#14193](https://github.com/directus/directus/pull/14193) Use native api with access_token when defineing url as
+    relative (by @u12206050)
+  - [#14186](https://github.com/directus/directus/pull/14186) Tweaks for datetime display options (by @azrikahar)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#14303](https://github.com/directus/directus/pull/14303) Prevents selecting relational fields as sort field (by
+    @br41nslug)
+  - [#14300](https://github.com/directus/directus/pull/14300) Fixes data missing after sort in m2a interface (by
+    @br41nslug)
+  - [#14252](https://github.com/directus/directus/pull/14252) Remove auto-open groups in v-select (by @azrikahar)
+  - [#14251](https://github.com/directus/directus/pull/14251) Fix crash on logout due to `te` missing (by
+    @addisonElliott)
+  - [#14241](https://github.com/directus/directus/pull/14241) broken image display for null assets (by @br41nslug)
+  - [#14234](https://github.com/directus/directus/pull/14234) Don't force reset scroll on hash changes (by
+    @rijkvanzanten)
+  - [#14233](https://github.com/directus/directus/pull/14233) Fix conditions crash when custom options component is used
+    (by @rijkvanzanten)
+  - [#14231](https://github.com/directus/directus/pull/14231) Fix vertical alignment of render-template in tabular (by
+    @rijkvanzanten)
+  - [#14227](https://github.com/directus/directus/pull/14227) Persist existing global variable values on save (by
+    @azrikahar)
+  - [#14216](https://github.com/directus/directus/pull/14216) Only emit value if updated for wysiwyg interface (by
+    @licitdev)
+  - [#14195](https://github.com/directus/directus/pull/14195) Fix rendering of social icons (by @licitdev)
+  - [#14188](https://github.com/directus/directus/pull/14188) Performance improvements for groups within v-form (by
+    @br41nslug)
+  - [#13970](https://github.com/directus/directus/pull/13970) Fix Save As Copy with edited relational fields (by
+    @younky-yang)
+- **API**
+  - [#14286](https://github.com/directus/directus/pull/14286) Fix filename charset for uploaded files (by @azrikahar)
+  - [#14131](https://github.com/directus/directus/pull/14131) Fixes: No notification being created when sendmail fails.
+    (by @jaycammarano)
+  - [#14127](https://github.com/directus/directus/pull/14127) Check if a date string is valid ISO8601 before parsing it
+    (by @br41nslug)
+  - [#14057](https://github.com/directus/directus/pull/14057) CSV import converts numeric strings to numbers (by
+    @br41nslug)
+
+### :sponge: Optimizations
+
+- **App**
+  - [#14299](https://github.com/directus/directus/pull/14299) Remove invalid exported type in app (by @azrikahar)
+  - [#14255](https://github.com/directus/directus/pull/14255) Fix duplicate logic for retrieving system collections in
+    related-collection-select (by @addisonElliott)
+- **Misc.**
+  - [#14214](https://github.com/directus/directus/pull/14214) Fix vite error when pre-bundling docs package (by
+    @azrikahar)
+
+### :memo: Documentation
+
+- [#14177](https://github.com/directus/directus/pull/14177) Add bootstrap step in manual installation (by @raflymln)
+
 ## v9.13.0 (June 28, 2022)
 
 ### :sparkles: New Features

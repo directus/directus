@@ -1,0 +1,29 @@
+name: Blackbox Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - api/**
+      - tests-blackbox/**
+      - package.json
+      - pnpm-lock.yaml
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
+
+jobs:
+  test:
+    name: SQLite Only
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Run Tests
+        shell: bash
+        run: TEST_DB=sqlite3 pnpm run -w test:blackbox

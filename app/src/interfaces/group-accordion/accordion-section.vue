@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { merge } from 'lodash';
+import { merge, isNil } from 'lodash';
 import { Field } from '@directus/shared/types';
 import { ValidationError } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
@@ -105,20 +105,11 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const fieldsInSection = computed(() => {
-			return props.fields
-				.filter((field) => {
-					if (field.meta?.group === props.group && field.meta?.id !== props.field.meta?.id) return false;
-					return true;
-				})
-				.map((field) => {
-					if (field.meta?.id === props.field.meta?.id) {
-						return merge({}, field, {
-							hideLabel: true,
-						});
-					}
-
-					return field;
-				});
+			let fields: Field[] = [merge({}, props.field, { hideLabel: true })];
+			if (props.field.meta?.special?.includes('group')) {
+				fields.push(...getFieldsForGroup(props.field.meta?.field));
+			}
+			return fields;
 		});
 
 		const edited = computed(() => {
@@ -152,6 +143,21 @@ export default defineComponent({
 			} else {
 				toggle();
 			}
+		}
+
+		function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
+			const fieldsInGroup: Field[] = props.fields.filter((field) => {
+				return field.meta?.group === group || (group === null && isNil(field.meta));
+			});
+
+			for (const field of fieldsInGroup) {
+				if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
+					passed.push(field.meta!.field);
+					fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
+				}
+			}
+
+			return fieldsInGroup;
 		}
 	},
 });
