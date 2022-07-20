@@ -77,10 +77,10 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 			req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 			req.accountability.app = user.app_access === true || user.app_access == 1;
 		}
-	}
 
-	if (rateLimiter) {
-		rateLimiter.delete(getIPFromReq(req));
+		if (rateLimiter) {
+			rateLimiter.delete(getIPFromReq(req));
+		}
 	}
 
 	return next();
