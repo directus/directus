@@ -278,12 +278,8 @@ export default defineComponent({
 			const fieldsMap = computed(() => {
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 				return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
-					if (fieldNames.value.includes(field.field)) {
-						const f = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-						if (f.field) result[f.field] = f;
-					} else {
-						if (field.field) result[field.field] = field;
-					}
+					const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+					if (newField.field) result[newField.field] = newField;
 					return result;
 				}, {} as Record<string, Field>);
 			});
