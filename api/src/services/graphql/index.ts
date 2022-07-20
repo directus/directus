@@ -1575,7 +1575,7 @@ export class GraphQLService {
 
 						result[currentKey] = Object.values(value)[0]!;
 					} else {
-						result[currentKey] = isObject(value) ? replaceFuncDeep(value) : value;
+						result[currentKey] = value?.constructor === Object ? replaceFuncDeep(value) : value;
 					}
 				});
 			}

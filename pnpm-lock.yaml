@@ -21,7 +21,7 @@ importers:
       globby: ^11.0.4
       jest: 28.1.2
       jest-environment-node: ^28.1.2
-      knex: ^2.1.0
+      knex: 2.2.0
       lint-staged: ^13.0.3
       listr: ^0.14.3
       lodash: ^4.17.21
@@ -51,7 +51,7 @@ importers:
       globby: 11.1.0
       jest: 28.1.2
       jest-environment-node: 28.1.3
-      knex: 2.1.0
+      knex: 2.2.0
       lint-staged: 13.0.3
       listr: 0.14.3
       lodash: 4.17.21
@@ -164,7 +164,7 @@ importers:
       jsonwebtoken: ^8.5.1
       keyv: ^4.3.0
       keyv-memcache: ^1.2.5
-      knex: ^2.1.0
+      knex: 2.2.0
       knex-mock-client: 1.8.4
       knex-schema-inspector: ^2.0.3
       ldapjs: ^2.3.3
@@ -265,7 +265,7 @@ importers:
       json2csv: 5.0.7
       jsonwebtoken: 8.5.1
       keyv: 4.3.2
-      knex: 2.1.0_2vpcbsnibo2fqjt4xpwdmbx3nu
+      knex: 2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu
       knex-schema-inspector: 2.0.3
       ldapjs: 2.3.3
       liquidjs: 9.39.1
@@ -358,7 +358,7 @@ importers:
       cross-env: 7.0.3
       form-data: 4.0.0
       jest: 28.1.2_dyhfsldgbafx4up6nvciefunqu
-      knex-mock-client: 1.8.4_knex@2.1.0
+      knex-mock-client: 1.8.4_knex@2.2.0
       rimraf: 3.0.2
       ts-jest: 28.0.5_burdcpru4gmol7mmtlcoahzthu
       ts-node: 10.9.1_267sziivmg24nk6cdwmqdtczye
@@ -750,13 +750,13 @@ importers:
 
   packages/schema:
     specifiers:
-      knex: ^2.1.0
+      knex: 2.2.0
       knex-schema-inspector: ^2.0.3
       lodash: ^4.17.21
       npm-watch: 0.11.0
       typescript: 4.5.2
     dependencies:
-      knex: 2.1.0
+      knex: 2.2.0
       knex-schema-inspector: 2.0.3
       lodash: 4.17.21
     devDependencies:
@@ -780,7 +780,7 @@ importers:
       geojson: ^0.5.0
       jest: ^28.1.2
       joi: 17.4.2
-      knex: ^2.1.0
+      knex: 2.2.0
       knex-schema-inspector: ^2.0.1
       lodash: 4.17.21
       micromustache: ^8.0.3
@@ -800,7 +800,7 @@ importers:
       fs-extra: 10.0.0
       geojson: 0.5.0
       joi: 17.4.2
-      knex: 2.1.0
+      knex: 2.2.0
       knex-schema-inspector: 2.0.3
       lodash: 4.17.21
       micromustache: 8.0.3
@@ -5738,14 +5738,9 @@ packages:
       { integrity: sha512-Uqbg+J445nc1TKn4FoDPS6ZZqAvEDnwrH42yo8B40JSOgSLxMZ/gt3h4nmCtPLQeXhjJJkqBx7SCY35WnIixaQ== }
     dev: false
 
-  /colorette/2.0.16:
-    resolution:
-      { integrity: sha512-hUewv7oMjCp+wkBv5Rm0v87eJhq4woh5rSR+42YSQJKecCqgIqNkZ6lAlQms/BwHPJA5NKMRlpxPRv0n8HQW6g== }
-
   /colorette/2.0.19:
     resolution:
       { integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ== }
-    dev: true
 
   /combined-stream/1.0.8:
     resolution:
@@ -10388,14 +10383,14 @@ packages:
     engines: { node: '>=6' }
     dev: true
 
-  /knex-mock-client/1.8.4_knex@2.1.0:
+  /knex-mock-client/1.8.4_knex@2.2.0:
     resolution:
       { integrity: sha512-GdbJt8Zq+m3nr4vuFvx59hX5fBr15nNHi4yNNAWpbX5FjmskBXe6EaWUu1YVD5cFLhKvvrA0BgpyNXiHdeJbyg== }
     engines: { node: '>=12' }
     peerDependencies:
       knex: ^2.0.0
     dependencies:
-      knex: 2.1.0_2vpcbsnibo2fqjt4xpwdmbx3nu
+      knex: 2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu
       lodash.clonedeep: 4.5.0
     dev: true
 
@@ -10407,9 +10402,9 @@ packages:
       lodash.isnil: 4.0.0
     dev: false
 
-  /knex/2.1.0:
+  /knex/2.2.0:
     resolution:
-      { integrity: sha512-vVsnD6UJdSJy55TvCXfFF9syfwyXNxfE9mvr2hJL/4Obciy2EPGoqjDpgRSlMruHuPWDOeYAG25nyrGvU+jJog== }
+      { integrity: sha512-yhm1Qe9Ok0TeXBq3nNHqZYJPrQ4Iw2tq9k/HxjrZ/EWec2ifOjJlkNHr26v8cQrWtk5iG3iwfUazTIWy+VKG5g== }
     engines: { node: '>=12' }
     hasBin: true
     peerDependencies:
@@ -10436,7 +10431,7 @@ packages:
       tedious:
         optional: true
     dependencies:
-      colorette: 2.0.16
+      colorette: 2.0.19
       commander: 9.4.0
       debug: 4.3.4
       escalade: 3.1.1
@@ -10453,9 +10448,9 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /knex/2.1.0_2vpcbsnibo2fqjt4xpwdmbx3nu:
+  /knex/2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu:
     resolution:
-      { integrity: sha512-vVsnD6UJdSJy55TvCXfFF9syfwyXNxfE9mvr2hJL/4Obciy2EPGoqjDpgRSlMruHuPWDOeYAG25nyrGvU+jJog== }
+      { integrity: sha512-yhm1Qe9Ok0TeXBq3nNHqZYJPrQ4Iw2tq9k/HxjrZ/EWec2ifOjJlkNHr26v8cQrWtk5iG3iwfUazTIWy+VKG5g== }
     engines: { node: '>=12' }
     hasBin: true
     peerDependencies:
@@ -10482,7 +10477,7 @@ packages:
       tedious:
         optional: true
     dependencies:
-      colorette: 2.0.16
+      colorette: 2.0.19
       commander: 9.4.0
       debug: 4.3.4
       escalade: 3.1.1
@@ -14775,7 +14770,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.2
+      jest: 28.1.2_dyhfsldgbafx4up6nvciefunqu
       jest-util: 28.1.3
       json5: 2.2.1
       lodash.memoize: 4.1.2
