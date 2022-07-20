@@ -126,15 +126,11 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		}
 	}
 
-	async getForeignCheckStatus(): Promise<boolean> {
+	async preColumnDelete(): Promise<boolean> {
 		return false;
 	}
 
-	async disableForeignCheck(): Promise<void> {
-		return;
-	}
-
-	async enableForeignCheck(): Promise<void> {
+	async postColumnDelete(): Promise<void> {
 		return;
 	}
 }

@@ -420,11 +420,7 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		const foreignCheckEnabled = await this.helpers.schema.getForeignCheckStatus();
-
-		if (foreignCheckEnabled) {
-			await this.helpers.schema.disableForeignCheck();
-		}
+		const runPostColumnDelete = await this.helpers.schema.preColumnDelete();
 
 		try {
 			await emitter.emitFilter(
@@ -541,8 +537,8 @@ export class FieldsService {
 				}
 			);
 		} finally {
-			if (foreignCheckEnabled) {
-				await this.helpers.schema.enableForeignCheck();
+			if (runPostColumnDelete) {
+				await this.helpers.schema.postColumnDelete();
 			}
 
 			if (this.cache && env.CACHE_AUTO_PURGE) {
