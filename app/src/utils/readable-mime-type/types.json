@@ -264,6 +264,7 @@
 	"application/java-serialized-object": "Java Serialized Object",
 	"text/x-java-source,java": "Java Source File",
 	"application/javascript": "JavaScript",
+	"text/javascript": "JavaScript",
 	"application/json": "JSON",
 	"application/vnd.joost.joda-archive": "Joda Archive",
 	"video/jpm": "JPG",

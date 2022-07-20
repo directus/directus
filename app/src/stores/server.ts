@@ -1,10 +1,10 @@
-import api from '@/api';
+import api, { replaceQueue } from '@/api';
 import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { computed, reactive, ref, unref } from 'vue';
-import { i18n } from '@/lang';
+import { computed, reactive, unref } from 'vue';
 
 type Info = {
 	project: null | {
@@ -31,6 +31,12 @@ type Info = {
 		uptime: number;
 		totalmem: number;
 	};
+	rateLimiter?:
+		| false
+		| {
+				points: number;
+				duration: number;
+		  };
 };
 
 type Auth = {
@@ -78,6 +84,13 @@ export const useServerStore = defineStore('serverStore', () => {
 		auth.disableDefault = authResponse.data.disableDefault;
 
 		await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
+
+		if (serverInfoResponse.data.data?.rateLimit === false) {
+			await replaceQueue();
+		} else {
+			const { duration, points } = serverInfoResponse.data.data.rateLimit;
+			await replaceQueue({ intervalCap: points - 10, interval: duration * 1000, carryoverConcurrencyCount: true });
+		}
 	};
 
 	const dehydrate = () => {

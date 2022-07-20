@@ -36,7 +36,7 @@
 
 			<router-link :to="userProfileLink">
 				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
-					<img
+					<v-image
 						v-if="avatarURL && !avatarError"
 						:src="avatarURL"
 						:alt="userFullName"
@@ -51,12 +51,11 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
-import { useUserStore, useAppStore, useNotificationsStore } from '@/stores/';
+import { useAppStore, useNotificationsStore, useUserStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
 import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	setup() {
@@ -74,7 +73,7 @@ export default defineComponent({
 
 		const avatarURL = computed<string | null>(() => {
 			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-			return addTokenToURL(getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
+			return getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
 		});
 
 		const avatarError = ref(null);
