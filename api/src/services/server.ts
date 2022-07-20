@@ -58,16 +58,27 @@ export class ServerService {
 			info.directus = {
 				version,
 			};
+
 			info.node = {
 				version: process.versions.node,
 				uptime: Math.round(process.uptime()),
 			};
+
 			info.os = {
 				type: osType,
 				version: osVersion,
 				uptime: Math.round(os.uptime()),
 				totalmem: os.totalmem(),
 			};
+
+			if (env.RATE_LIMITER_ENABLED) {
+				info.rateLimit = {
+					points: env.RATE_LIMITER_POINTS,
+					duration: env.RATE_LIMITER_DURATION,
+				};
+			} else {
+				info.rateLimit = false;
+			}
 		}
 
 		return info;
