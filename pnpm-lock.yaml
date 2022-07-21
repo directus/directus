@@ -186,7 +186,6 @@ importers:
       openapi3-ts: ^2.0.2
       openid-client: ^5.1.6
       ora: ^5.4.0
-      oracledb: 5.3.0
       otplib: ^12.0.1
       pg: ^8.7.3
       pino: 6.13.3
@@ -307,7 +306,6 @@ importers:
       memcached: 2.2.2
       mysql: 2.18.1
       nodemailer-mailgun-transport: 2.1.4_lodash@4.17.21
-      oracledb: 5.3.0
       pg: 8.7.3
       sqlite3: 5.0.9
       tedious: 13.2.0
@@ -11862,14 +11860,6 @@ packages:
       wcwidth: 1.0.1
     dev: false
 
-  /oracledb/5.3.0:
-    resolution:
-      { integrity: sha512-HMJzQ6lCf287ztvvehTEmjCWA21FQ3RMvM+mgoqd4i8pkREuqFWO+y3ovsGR9moJUg4T0xjcwS8rl4mggWPxmg== }
-    engines: { node: '>=10.16' }
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /os-tmpdir/1.0.2:
     resolution:
       { integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g== }
@@ -14770,7 +14760,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.2
+      jest: 28.1.2_dyhfsldgbafx4up6nvciefunqu
       jest-util: 28.1.3
       json5: 2.2.1
       lodash.memoize: 4.1.2
