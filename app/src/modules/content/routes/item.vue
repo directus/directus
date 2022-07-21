@@ -180,7 +180,7 @@
 			</sidebar-detail>
 			<revisions-drawer-detail
 				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
-				ref="revisionsDrawerDetail"
+				ref="revisionsDrawerDetailRef"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:scope="accountabilityScope"
@@ -231,11 +231,12 @@ import ContentNotFound from './not-found.vue';
 interface Props {
 	collection: string;
 	primaryKey?: string | null;
-	singleton: boolean;
+	singleton?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	primaryKey: null,
+	singleton: false,
 });
 
 const { t, te } = useI18n();
@@ -247,7 +248,7 @@ const form = ref<HTMLElement>();
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
+const revisionsDrawerDetailRef = ref<ComponentPublicInstance | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
@@ -384,7 +385,7 @@ async function saveAndStay() {
 	try {
 		const savedItem: Record<string, any> = await save();
 
-		revisionsDrawerDetail.value?.refresh?.();
+		revisionsDrawerDetailRef.value?.refresh?.();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];

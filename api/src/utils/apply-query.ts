@@ -243,8 +243,8 @@ export function applySort(
 					knex,
 				});
 
-				const colPath = getColumnPath({ path: column, collection, aliasMap, relations }) || '';
-				const [alias, field] = colPath.split('.');
+				const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations });
+				const [alias, field] = columnPath.split('.');
 
 				return {
 					order,
@@ -353,17 +353,11 @@ export function applyFilter(
 
 			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
 				if (filterPath.length > 1) {
-					const columnName = getColumnPath({ path: filterPath, collection, relations, aliasMap });
+					const { columnPath, targetCollection } = getColumnPath({ path: filterPath, collection, relations, aliasMap });
 
-					if (!columnName) continue;
+					if (!columnPath) continue;
 
-					if (relation?.related_collection) {
-						applyFilterToQuery(columnName, filterOperator, filterValue, logical, relation.related_collection); // m2o
-					} else if (filterPath[0].includes(':')) {
-						applyFilterToQuery(columnName, filterOperator, filterValue, logical, filterPath[0].split(':')[1]); // a2o
-					} else {
-						applyFilterToQuery(columnName, filterOperator, filterValue, logical);
-					}
+					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
