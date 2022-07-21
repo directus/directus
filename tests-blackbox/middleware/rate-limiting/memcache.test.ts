@@ -7,7 +7,7 @@ import { awaitDirectusConnection } from '@utils/await-connection';
 import * as common from '@common/index';
 import { sleep } from '@utils/sleep';
 
-describe('Rate Limiting (memcached)', () => {
+describe('Rate Limiting (memcache)', () => {
 	const databases = new Map<string, Knex>();
 	const rateLimitedDirectus = {} as { [vendor: string]: ChildProcess };
 	const rateLimiterPoints = 5;
@@ -21,12 +21,11 @@ describe('Rate Limiting (memcached)', () => {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
 			config.envs[vendor]!.RATE_LIMITER_ENABLED = 'true';
-			config.envs[vendor]!.RATE_LIMITER_STORE = 'memcached';
+			config.envs[vendor]!.RATE_LIMITER_STORE = 'memcache';
 			config.envs[vendor]!.RATE_LIMITER_POINTS = String(rateLimiterPoints);
 			config.envs[vendor]!.RATE_LIMITER_DURATION = String(rateLimiterDuration);
 			config.envs[vendor]!.PORT = String(newServerPort);
-			config.envs[vendor]!.RATE_LIMITER_MEMCACHED_HOST = 'localhost';
-			config.envs[vendor]!.RATE_LIMITER_MEMCACHED_PORT = '6108';
+			config.envs[vendor]!.RATE_LIMITER_MEMCACHE = 'localhost:6108';
 
 			const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
 			rateLimitedDirectus[vendor] = server;
@@ -52,8 +51,7 @@ describe('Rate Limiting (memcached)', () => {
 			delete config.envs[vendor]!.RATE_LIMITER_STORE;
 			delete config.envs[vendor]!.RATE_LIMITER_POINTS;
 			delete config.envs[vendor]!.RATE_LIMITER_DURATION;
-			delete config.envs[vendor]!.RATE_LIMITER_MEMCACHED_HOST;
-			delete config.envs[vendor]!.RATE_LIMITER_MEMCACHED_PORT;
+			delete config.envs[vendor]!.RATE_LIMITER_MEMCACHED;
 
 			await connection.destroy();
 		}

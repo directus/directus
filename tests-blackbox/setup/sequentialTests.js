@@ -11,7 +11,7 @@ exports.list = {
 		{ testFilePath: '/schema/timezone/timezone-changed-node-tz-asia.test.ts' },
 		{ testFilePath: '/middleware/rate-limiting/memory.test.ts' },
 		{ testFilePath: '/middleware/rate-limiting/redis.test.ts' },
-		{ testFilePath: '/middleware/rate-limiting/memcached.test.ts' },
+		{ testFilePath: '/middleware/rate-limiting/memcache.test.ts' },
 	],
 	// If specified, only run these tests sequentially
 	only: [
