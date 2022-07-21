@@ -263,6 +263,8 @@ interfaces:
 displays:
   collection:
     collection: Koleksi
+  datetime:
+    suffix: Akhiran
   file:
     file: Fail
   formatted-value:

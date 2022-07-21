@@ -4,6 +4,7 @@ import { Notification } from '@directus/shared/types';
 import { md } from '../utils/md';
 import { UsersService } from './users';
 import { MailService } from './mail';
+import logger from '../logger';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;
@@ -16,16 +17,21 @@ export class NotificationsService extends ItemsService {
 	}
 
 	async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const response = await super.createOne(data, opts);
+
 		await this.sendEmail(data);
-		return super.createOne(data, opts);
+
+		return response;
 	}
 
 	async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const response = await super.createMany(data, opts);
+
 		for (const notification of data) {
 			await this.sendEmail(notification);
 		}
 
-		return super.createMany(data, opts);
+		return response;
 	}
 
 	async sendEmail(data: Partial<Notification>) {
@@ -33,16 +39,20 @@ export class NotificationsService extends ItemsService {
 			const user = await this.usersService.readOne(data.recipient, { fields: ['email', 'email_notifications'] });
 
 			if (user.email && user.email_notifications === true) {
-				await this.mailService.send({
-					template: {
-						name: 'base',
-						data: {
-							html: data.message ? md(data.message) : '',
+				try {
+					await this.mailService.send({
+						template: {
+							name: 'base',
+							data: {
+								html: data.message ? md(data.message) : '',
+							},
 						},
-					},
-					to: user.email,
-					subject: data.subject,
-				});
+						to: user.email,
+						subject: data.subject,
+					});
+				} catch (error: any) {
+					logger.error(error.message);
+				}
 			}
 		}
 	}

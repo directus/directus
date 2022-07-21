@@ -6,20 +6,17 @@ export default defineOperationApp({
 	icon: 'visibility',
 	name: '$t:operations.item-read.name',
 	description: '$t:operations.item-read.description',
-	overview: ({ mode, collection, key }) => {
+	overview: ({ collection, key }) => {
 		const overviewItems = [
 			{
 				label: '$t:collection',
 				text: collection,
 			},
-		];
-
-		if (mode !== 'query') {
-			overviewItems.push({
+			{
 				label: '$t:operations.item-read.key',
-				text: key ? toArray(key).join(', ') : '--',
-			});
-		}
+				text: toArray(key).length > 0 ? toArray(key).join(', ') : '--',
+			},
+		];
 
 		return overviewItems;
 	},
@@ -72,22 +69,12 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'vpn_key',
 				},
-				conditions: [
-					{
-						rule: {
-							mode: {
-								_eq: 'query',
-							},
-						},
-						hidden: true,
-					},
-				],
 			},
 		},
 		{
 			field: 'query',
 			name: '$t:operations.item-read.query',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',
@@ -116,6 +103,18 @@ export default defineOperationApp({
 						2
 					),
 				},
+			},
+		},
+		{
+			field: 'emitEvents',
+			name: '$t:operations.item-create.emit_events',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 	],

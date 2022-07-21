@@ -1185,6 +1185,7 @@ interfaces:
     description: สร้างหลายรายการโดยใช้โครงสร้างเดียวกัน
     edit_fields: แก้ไขฟิลด์
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
+    sort: เรียง
     field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
@@ -1231,6 +1232,8 @@ interfaces:
   translations:
     display_template: แม่แบบการแสดงผล
     no_collection: ไม่มีคอลเลกชัน
+    user_language: ใช้ภาษาของบัญชีผู้ใช้
+    default_language: ภาษาเริ่มต้น
   list-o2m-tree-view:
     description: มุมมองแผนภูมิสำหรับรายการข้อมูลหนึ่งต่อหลายรายการแบบซ้ำซ้อน
     recursive_only: อินเทอร์เฟซมุมมองแผนภูมิใช้งานได้กับความสัมพันธ์แบบซ้ำซ้อนเท่านั้น
@@ -1292,6 +1295,7 @@ displays:
     short: สั้น
     relative: อิงเวลา
     relative_label: 'แสดงเป็นเวลาที่อิงกัน เช่น 5 นาทีที่แล้ว'
+    suffix: คำต่อท้าย
   file:
     file: ไฟล์
     description: แสดงไฟล์

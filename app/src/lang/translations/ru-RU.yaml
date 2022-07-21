@@ -1481,6 +1481,7 @@ interfaces:
     description: Создать несколько записей одной структуры
     edit_fields: Редактировать поля
     add_label: 'Ярлык «Создать новый»'
+    sort: Сортировать
     field_name_placeholder: Введите название поля...
     field_note_placeholder: Примечание к полю...
   slider:
@@ -1534,6 +1535,9 @@ interfaces:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
     toggle_split_view: Переключить Раздельный Вид
+    enable: Включить
+    user_language: Использовать текущий язык пользователя
+    default_language: Язык по умолчанию
     language_field: Языковое поле
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
@@ -1610,6 +1614,7 @@ displays:
     short: Короткий
     relative: Относительный
     relative_label: 'Показывать относительное время, прим.: 5 минут назад'
+    suffix: Суффикс
   file:
     file: Файл
     description: Показать файлы

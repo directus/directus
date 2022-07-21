@@ -29,6 +29,7 @@ draft: Чернетка
 archived: Архівовано
 modules: Модулі
 module_bar: Панель модулів
+logs: Логи
 reset_width: Скинути ширину
 tile_size: Розмір плитки
 edit_field: Редагувати поле
@@ -382,13 +383,13 @@ functions:
   second: Секунда
   count: Кількість
 date-fns_date: PPP
-date-fns_time: 'г:хх:сс'
-date-fns_time_no_seconds: 'г:хх'
-date-fns_time_24hour: 'ГГ:хх:сс'
-date-fns_time_no_seconds_24hour: 'ГГ:хх'
-date-fns_date_short: 'МММ д'
-date-fns_time_short: 'г:ххх'
-date-fns_date_short_no_year: МММ д
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: d MMM
 minutes: Хвилини
 hours: Години
 month: Місяць
@@ -1522,6 +1523,7 @@ interfaces:
     description: Створити кілька записів однієї структури
     edit_fields: Редагувати поля
     add_label: 'Ярлик «Створити новий»'
+    sort: Сортування
     field_name_placeholder: Введіть назву поля...
     field_note_placeholder: Примітка до поля...
     incompatible_data: Поточні дані не сумісні з інтерфейсом ретранслятора і будуть замінені під час додавання елементів до ретранслятора
@@ -1576,6 +1578,9 @@ interfaces:
     display_template: Шаблон відображення
     no_collection: Немає колекцій
     toggle_split_view: Перемикання розділеного перегляду
+    enable: Увімкнути
+    user_language: Використовувати поточну мову користувача
+    default_language: Мова за замовчуванням
     language_field: Поле визначення мови
   list-o2m-tree-view:
     description: У вигляді дерева рекурсивно вкладених елементів
@@ -1655,6 +1660,7 @@ displays:
     short: Короткий
     relative: Відносний
     relative_label: 'Показати відносний час, наприклад: 5 хвилин тому'
+    suffix: Суфікс
   file:
     file: Файл
     description: Показати файли

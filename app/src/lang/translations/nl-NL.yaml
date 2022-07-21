@@ -1102,6 +1102,7 @@ interfaces:
   list:
     repeater: Herhaler
     edit_fields: Velden bewerken
+    sort: Sorteren
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
@@ -1181,6 +1182,7 @@ displays:
     short: Kort
     relative: Relatief
     relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
+    suffix: Achtervoegsel
   file:
     file: Bestand
     description: Bestanden weergeven

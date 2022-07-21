@@ -49,26 +49,18 @@ export async function applySnapshot(
 						.filter((fieldDiff) => fieldDiff.collection === collection)
 						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
 						.map((fieldDiff) => {
-							// Casts field type to UUID when applying SQLite-based schema on other databases.
-							// This is needed because SQLite snapshots UUID fields as char with length 36, and
-							// it will fail when trying to create relation between char field to UUID field
+							// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
+							// This is needed because they snapshots UUID fields as char with length 36.
 							if (
-								!fieldDiff.schema ||
-								fieldDiff.schema.data_type !== 'char' ||
-								fieldDiff.schema.max_length !== 36 ||
-								!fieldDiff.schema.foreign_key_table ||
-								!fieldDiff.schema.foreign_key_column
+								fieldDiff.schema?.data_type === 'char' &&
+								fieldDiff.schema?.max_length === 36 &&
+								(fieldDiff.schema?.is_primary_key ||
+									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
 							) {
+								return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
+							} else {
 								return fieldDiff;
 							}
-
-							const matchingForeignKeyTable = schema.collections[fieldDiff.schema.foreign_key_table];
-							if (!matchingForeignKeyTable) return fieldDiff;
-
-							const matchingForeignKeyField = matchingForeignKeyTable.fields[fieldDiff.schema.foreign_key_column];
-							if (!matchingForeignKeyField || matchingForeignKeyField.type !== 'uuid') return fieldDiff;
-
-							return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
 						});
 
 					try {

@@ -337,6 +337,7 @@ revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
 revision_delta_reverted: Restauré
+revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
@@ -591,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
   INVALID_FOREIGN_KEY: Clé étrangère invalide
   UNKNOWN: Erreur inconnue
+  GRAPHQL_VALIDATION_EXCEPTION: Exception de validation de GraphQL
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
@@ -1589,6 +1591,8 @@ interfaces:
     description: Créer plusieurs entrées de la même structure
     edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
+    sort: Trier
+    sort_placeholder: Manuelle
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
@@ -1643,6 +1647,9 @@ interfaces:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue partagée
+    enable: Activer
+    user_language: Utiliser la langue actuelle de l'utilisateur
+    default_language: Langue par défaut
     language_field: Champ d'indicateur de langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
@@ -1729,6 +1736,12 @@ displays:
     short: Court
     relative: Relatif
     relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
+    suffix: Suffixe
+    suffix_label: Afficher l'indicateur relatif
+    suffix_note: Utilise des mots comme 'dans' et 'il y a'
+    strict: Stricte
+    strict_label: Utilisez des unités strictes
+    strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
   file:
     file: Fichier
     description: Afficher les fichiers
@@ -1950,6 +1963,10 @@ panels:
     bottom: Bas
     monochrome: Monochrome
     monochrome_color: Couleur Monochrome
+  variable:
+    name: Variable globale
+    description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
+    variable_key: Clé variable
 triggers:
   common:
     response_body: Corps de la Réponse
@@ -1996,6 +2013,7 @@ operations:
   item-delete:
     name: Suppression des données
     description: Supprimer des éléments dans la base de données
+    emit_events: Émettre des événements
     key: IDs
     query: Requête
   item-read:
@@ -2003,9 +2021,11 @@ operations:
     description: Lire les éléments de la base de données
     key: IDs
     query: Requête
+    emit_events: Émettre des événements
   item-update:
     name: Mettre à jour les données
     description: Mettre à jour les éléments de la base de données
+    emit_events: Émettre des événements
     key: IDs
     payload: Données utiles
     query: Requête

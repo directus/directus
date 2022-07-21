@@ -1,7 +1,6 @@
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { toArray } from '@directus/shared/utils';
-import { v4 as uuidv4 } from 'uuid';
-import { parseJSON } from '../../utils/parse-json';
+import { v4 as uuid } from 'uuid';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_flows', (table) => {
@@ -40,7 +39,7 @@ export async function up(knex: Knex): Promise<void> {
 	const operations = [];
 
 	for (const webhook of webhooks) {
-		const flowID = uuidv4();
+		const flowID = uuid();
 
 		flows.push({
 			id: flowID,
@@ -56,7 +55,7 @@ export async function up(knex: Knex): Promise<void> {
 		});
 
 		operations.push({
-			id: uuidv4(),
+			id: uuid(),
 			name: 'Request',
 			key: 'request',
 			type: 'request',

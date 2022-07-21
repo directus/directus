@@ -46,7 +46,7 @@ export default defineDisplay({
 			},
 		];
 	},
-	handler: async (value, options, { collection, field }) => {
+	handler: (value, options, { collection, field }) => {
 		if (!field || !collection) return value;
 
 		const relatedCollections = getRelatedCollection(collection, field.field);
@@ -82,7 +82,7 @@ export default defineDisplay({
 			const display = getDisplay(field.meta.display);
 
 			const stringValue = display?.handler
-				? await display.handler(fieldValue, field?.meta?.display_options ?? {}, {
+				? display.handler(fieldValue, field?.meta?.display_options ?? {}, {
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,
