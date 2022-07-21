@@ -101,6 +101,8 @@
 					</v-list>
 				</v-menu>
 
+				<v-checkbox v-model="createNewImage" :label="t('create_new_image')" />
+
 				<div class="spacer" />
 
 				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
@@ -147,6 +149,13 @@ type Image = {
 	height: number;
 };
 
+type CropCoordinates = {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+};
+
 export default defineComponent({
 	props: {
 		id: {
@@ -163,9 +172,8 @@ export default defineComponent({
 		const { t, n } = useI18n();
 
 		const settingsStore = useSettingsStore();
-
 		const localActive = ref(false);
-
+		const createNewImage = ref(false);
 		const internalActive = computed({
 			get() {
 				return props.modelValue === undefined ? localActive.value : props.modelValue;
@@ -175,9 +183,18 @@ export default defineComponent({
 				emit('update:modelValue', newActive);
 			},
 		});
-
-		const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad } = useImage();
-
+		const {
+			loading,
+			error,
+			imageData,
+			imageElement,
+			save,
+			saving,
+			fetchImage,
+			onImageLoad,
+			cropCoordinates,
+			originalImageID,
+		} = useImage();
 		const {
 			cropperInstance,
 			initCropper,
@@ -190,7 +207,6 @@ export default defineComponent({
 			dragMode,
 			cropping,
 		} = useCropper();
-
 		watch(internalActive, (isActive) => {
 			if (isActive === true) {
 				fetchImage();
@@ -198,7 +214,6 @@ export default defineComponent({
 				if (cropperInstance.value) {
 					cropperInstance.value.destroy();
 				}
-
 				loading.value = false;
 				error.value = null;
 				imageData.value = null;
@@ -235,16 +250,16 @@ export default defineComponent({
 			cropping,
 			setAspectRatio,
 			customAspectRatios,
+			createNewImage,
 		};
-
 		function useImage() {
 			const loading = ref(false);
 			const error = ref(null);
 			const imageData = ref<Image | null>(null);
 			const saving = ref(false);
-
+			const originalImageID = ref(null);
+			const cropCoordinates = ref<CropCoordinates | null>(null);
 			const imageElement = ref<HTMLImageElement | null>(null);
-
 			return {
 				loading,
 				error,
@@ -254,18 +269,37 @@ export default defineComponent({
 				imageElement,
 				save,
 				onImageLoad,
+				cropCoordinates,
+				originalImageID,
 			};
-
 			async function fetchImage() {
 				try {
 					loading.value = true;
-
-					const response = await api.get(`/files/${props.id}`, {
+					let response = await api.get(`/files/${props.id}`, {
 						params: {
-							fields: ['type', 'filesize', 'filename_download', 'width', 'height'],
+							fields: [
+								'type',
+								'filesize',
+								'filename_download',
+								'width',
+								'height',
+								'crop_original_image_id',
+								'crop_coordinates',
+							],
 						},
 					});
-
+					const childImage = response.data.data;
+					const cropOriginalImageID = childImage.crop_original_image_id;
+					if (cropOriginalImageID) {
+						cropCoordinates.value = {
+							x: childImage.crop_coordinates.x,
+							y: childImage.crop_coordinates.y,
+							width: childImage.width,
+							height: childImage.height,
+						};
+						originalImageID.value = cropOriginalImageID;
+						response = await api.get(`/files/${cropOriginalImageID}`);
+					}
 					imageData.value = response.data.data;
 				} catch (err: any) {
 					error.value = err;
@@ -273,10 +307,8 @@ export default defineComponent({
 					loading.value = false;
 				}
 			}
-
 			function save() {
 				saving.value = true;
-
 				cropperInstance.value
 					?.getCroppedCanvas({
 						imageSmoothingQuality: 'high',
@@ -286,12 +318,21 @@ export default defineComponent({
 							saving.value = false;
 							return;
 						}
-
 						const formData = new FormData();
-						formData.append('file', blob, imageData.value?.filename_download);
-
 						try {
-							await api.patch(`/files/${props.id}`, formData);
+							if (createNewImage.value) {
+								const cropperData = cropperInstance.value?.getData();
+								const x = cropperData?.x;
+								const y = cropperData?.y;
+
+								formData.append('crop_original_image_id', originalImageID.value || props.id);
+								formData.append('crop_coordinates', `{"x": ${x}, "y": ${y}}`);
+								formData.append('file', blob, imageData.value?.filename_download);
+								await api.post('/files', formData);
+							} else {
+								formData.append('file', blob, imageData.value?.filename_download);
+								await api.patch(`/files/${props.id}`, formData);
+							}
 							emit('refresh');
 							internalActive.value = false;
 							randomId.value = nanoid();
@@ -302,30 +343,27 @@ export default defineComponent({
 						}
 					}, imageData.value?.type);
 			}
-
 			async function onImageLoad() {
 				await nextTick();
 				initCropper();
 			}
 		}
-
+		function getStringValue(value: any): string {
+			return value.toString();
+		}
 		function useCropper() {
 			const cropperInstance = ref<Cropper | null>(null);
-
 			const localAspectRatio = ref(NaN);
-
 			const newDimensions = reactive({
 				width: null as null | number,
 				height: null as null | number,
 			});
-
 			watch(imageData, () => {
 				if (!imageData.value) return;
 				localAspectRatio.value = imageData.value.width / imageData.value.height;
 				newDimensions.width = imageData.value.width;
 				newDimensions.height = imageData.value.height;
 			});
-
 			const aspectRatio = computed<number>({
 				get() {
 					return localAspectRatio.value;
@@ -337,7 +375,6 @@ export default defineComponent({
 					dragMode.value = 'crop';
 				},
 			});
-
 			const aspectRatioIcon = computed(() => {
 				if (!imageData.value) return 'crop_original';
 
@@ -363,9 +400,7 @@ export default defineComponent({
 						return 'crop_free';
 				}
 			});
-
 			const localDragMode = ref<'move' | 'crop'>('move');
-
 			const dragMode = computed({
 				get() {
 					return localDragMode.value;
@@ -373,14 +408,12 @@ export default defineComponent({
 				set(newMode: 'move' | 'crop') {
 					cropperInstance.value?.setDragMode(newMode);
 					localDragMode.value = newMode;
-
 					if (newMode === 'move') {
 						cropperInstance.value?.clear();
 						localCropping.value = false;
 					}
 				},
 			});
-
 			const localCropping = ref(false);
 			const cropping = computed({
 				get() {
@@ -390,11 +423,9 @@ export default defineComponent({
 					if (newCropping === false) {
 						cropperInstance.value?.clear();
 					}
-
 					localCropping.value = newCropping;
 				},
 			});
-
 			return {
 				cropperInstance,
 				initCropper,
@@ -407,16 +438,12 @@ export default defineComponent({
 				dragMode,
 				cropping,
 			};
-
 			function initCropper() {
 				if (imageElement.value === null) return;
-
 				if (cropperInstance.value) {
 					cropperInstance.value.destroy();
 				}
-
 				localCropping.value = false;
-
 				cropperInstance.value = new Cropper(imageElement.value, {
 					autoCrop: false,
 					autoCropArea: 0.5,
@@ -425,14 +452,11 @@ export default defineComponent({
 					viewMode: 1,
 					crop: throttle((event) => {
 						if (!imageData.value) return;
-
 						if (cropping.value === false && (event.detail.width || event.detail.height)) {
 							cropping.value = true;
 						}
-
 						const newWidth = event.detail.width || imageData.value.width;
 						const newHeight = event.detail.height || imageData.value.height;
-
 						if (event.detail.rotate === 0 || event.detail.rotate === -180) {
 							newDimensions.width = Math.round(newWidth);
 							newDimensions.height = Math.round(newHeight);
@@ -442,8 +466,18 @@ export default defineComponent({
 						}
 					}, 50),
 				});
+				if (cropCoordinates.value) {
+					setTimeout(() => {
+						cropperInstance.value?.crop();
+						cropperInstance.value?.setData({
+							x: cropCoordinates.value?.x,
+							y: cropCoordinates.value?.y,
+							width: cropCoordinates.value?.width,
+							height: cropCoordinates.value?.height,
+						});
+					}, 100);
+				}
 			}
-
 			function flip(type: 'horizontal' | 'vertical') {
 				if (type === 'vertical') {
 					if (cropperInstance.value?.getData().scaleX === -1) {
@@ -452,7 +486,6 @@ export default defineComponent({
 						cropperInstance.value?.scaleX(-1);
 					}
 				}
-
 				if (type === 'horizontal') {
 					if (cropperInstance.value?.getData().scaleY === -1) {
 						cropperInstance.value?.scaleY(1);
@@ -461,11 +494,9 @@ export default defineComponent({
 					}
 				}
 			}
-
 			function rotate() {
 				cropperInstance.value?.rotate(-90);
 			}
-
 			function reset() {
 				cropperInstance.value?.reset();
 				dragMode.value = 'move';

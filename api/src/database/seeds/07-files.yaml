@@ -70,5 +70,9 @@ columns:
     type: text
   tags:
     type: text
+  crop_original_image_id:
+    type: uuid
+  crop_coordinates:
+    type: json
   metadata:
     type: json
