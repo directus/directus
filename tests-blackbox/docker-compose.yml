@@ -27,6 +27,12 @@
 #
 #   CockroachDB:
 #     User:          root
+#
+#   Redis:
+#     n/a
+#
+#   Memcached
+#     n/a
 
 version: '3.1'
 services:
@@ -87,3 +93,13 @@ services:
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
       - 6106:26257
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6107:6379
+
+  memcached:
+    image: memcached:latest
+    ports:
+      - 6108:11211
