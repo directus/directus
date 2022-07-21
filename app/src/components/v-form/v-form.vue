@@ -66,7 +66,7 @@
 				:raw-editor-enabled="rawEditorEnabled"
 				:raw-editor-active="rawActiveFields.has(field.field)"
 				@update:model-value="setValue(field.field, $event)"
-				@set-field-value="setValue($event.field, $event.value)"
+				@set-field-value="setValue($event.field, $event.value, { force: true })"
 				@unset="unsetValue(field)"
 				@toggle-batch="toggleBatchField(field)"
 				@toggle-raw="toggleRawField(field)"
@@ -356,10 +356,10 @@ export default defineComponent({
 			}
 		}
 
-		function setValue(fieldKey: string, value: any) {
+		function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 			const field = formFields.value?.find((field) => field.field === fieldKey);
 
-			if (!field || isDisabled(field)) return;
+			if (opts?.force !== true && (!field || isDisabled(field))) return;
 
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
 			edits[fieldKey] = value;

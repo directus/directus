@@ -3,7 +3,7 @@
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div v-if="info?.project?.project_logo" class="logo" :style="{ backgroundColor: info?.project.project_color }">
-					<img :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+					<v-image :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
 				</div>
 				<div v-else class="logo" :style="{ backgroundColor: info?.project?.project_color }">
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
@@ -47,7 +47,7 @@
 			</svg>
 
 			<transition name="scale">
-				<img v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
+				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
 			</transition>
 			<div class="note-container">
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />

@@ -24,11 +24,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from 'vue';
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
+import { computed, defineComponent, ref, watch } from 'vue';
 
-import { nanoid } from 'nanoid';
 import FilePreview from '@/views/private/components/file-preview';
+import { nanoid } from 'nanoid';
 
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -71,7 +71,7 @@ export default defineComponent({
 		const cacheBuster = ref(nanoid());
 
 		const fileSrc = computed(() => {
-			return addTokenToURL(getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster.value}`);
+			return getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster.value}`;
 		});
 
 		watch(
