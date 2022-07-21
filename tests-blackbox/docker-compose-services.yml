@@ -1,0 +1,22 @@
+# This composer file is meant to spin up a copy of required services used in tests.
+#
+# ONLY FOR TESTING. THIS IS NOT INTENDED FOR PRODUCTION USE.
+#
+# Credentials:
+#   Redis:
+#     n/a
+#
+#   Memcached
+#     n/a
+
+version: '3.1'
+services:
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6107:6379
+
+  memcached:
+    image: memcached:latest
+    ports:
+      - 6108:11211
