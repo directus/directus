@@ -3,7 +3,7 @@
 		:is="isSingleton ? 'item-route' : 'collection-route'"
 		:collection="collection"
 		:bookmark="bookmark"
-		:singleton="isSingleton ? true : undefined"
+		:singleton="isSingleton"
 		:archive="archive"
 	/>
 </template>
