@@ -228,6 +228,7 @@ export default definePanel({
 				interface: 'system-field',
 				width: 'half',
 				options: {
+					allowForeignKeys: false,
 					collectionField: 'collection',
 					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 				},
@@ -240,6 +241,7 @@ export default definePanel({
 						},
 						options: {
 							allowPrimaryKey: true,
+							allowForeignKeys: true,
 							typeAllowList: ['integer', 'bigInteger', 'uuid', 'string'],
 						},
 					},
