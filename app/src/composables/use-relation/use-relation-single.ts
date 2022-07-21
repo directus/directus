@@ -41,7 +41,7 @@ export function useRelationSingle(
 	}
 
 	async function refresh() {
-		getDisplayItems();
+		await getDisplayItems();
 	}
 
 	async function getDisplayItems() {
