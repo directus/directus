@@ -66,7 +66,7 @@ export default defineComponent({
 		},
 		collection: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		multiple: {
 			type: Boolean,

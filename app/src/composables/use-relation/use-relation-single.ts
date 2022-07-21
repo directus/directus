@@ -19,7 +19,7 @@ export function useRelationSingle(
 
 	watch([value, previewQuery, relation], getDisplayItems, { immediate: true });
 
-	return { update, remove, displayItem, loading };
+	return { update, remove, refresh, displayItem, loading };
 
 	function update(item: Record<string, any> | string | number) {
 		if (!relation.value) return;
@@ -35,8 +35,13 @@ export function useRelationSingle(
 
 		value.value = item;
 	}
+
 	function remove() {
 		value.value = null;
+	}
+
+	async function refresh() {
+		await getDisplayItems();
 	}
 
 	async function getDisplayItems() {

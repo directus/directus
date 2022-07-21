@@ -14,7 +14,7 @@ export function filterItems(items: Record<string, any>[], filter: Query['filter'
 	});
 
 	function passesFilter(item: Record<string, any>, filter: Query['filter']): boolean {
-		if (!filter) return true;
+		if (!filter || Object.keys(filter).length === 0) return true;
 
 		if (Object.keys(filter)[0] === '_and') {
 			const subfilter = Object.values(filter)[0] as Query['filter'][];

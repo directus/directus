@@ -39,7 +39,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('invite_users')" rounded icon secondary @click="userInviteModalActive = true">
+			<v-button
+				v-if="canInviteUsers"
+				v-tooltip.bottom="t('invite_users')"
+				rounded
+				icon
+				secondary
+				@click="userInviteModalActive = true"
+			>
 				<v-icon name="person_add" />
 			</v-button>
 
@@ -207,6 +214,7 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			canInviteUsers,
 		};
 
 		/**

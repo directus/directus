@@ -3,7 +3,7 @@
 		<div class="toolbar">
 			<template v-if="view[0] !== 'preview'">
 				<v-menu
-					v-if="toolbar.includes('heading')"
+					v-if="toolbar?.includes('heading')"
 					show-arrow
 					placement="bottom-start"
 					:class="[{ active: view[0] !== 'preview' }]"
@@ -22,7 +22,7 @@
 				</v-menu>
 
 				<v-button
-					v-if="toolbar.includes('bold')"
+					v-if="toolbar?.includes('bold')"
 					v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 					:disabled="disabled"
 					small
@@ -32,7 +32,7 @@
 					<v-icon name="format_bold" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('italic')"
+					v-if="toolbar?.includes('italic')"
 					v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 					:disabled="disabled"
 					small
@@ -42,7 +42,7 @@
 					<v-icon name="format_italic" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('strikethrough')"
+					v-if="toolbar?.includes('strikethrough')"
 					v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 					:disabled="disabled"
 					small
@@ -52,7 +52,7 @@
 					<v-icon name="format_strikethrough" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('bullist')"
+					v-if="toolbar?.includes('bullist')"
 					v-tooltip="t('wysiwyg_options.bullist')"
 					:disabled="disabled"
 					small
@@ -62,7 +62,7 @@
 					<v-icon name="format_list_bulleted" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('numlist')"
+					v-if="toolbar?.includes('numlist')"
 					v-tooltip="t('wysiwyg_options.numlist')"
 					:disabled="disabled"
 					small
@@ -72,7 +72,7 @@
 					<v-icon name="format_list_numbered" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('blockquote')"
+					v-if="toolbar?.includes('blockquote')"
 					v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 					:disabled="disabled"
 					small
@@ -82,7 +82,7 @@
 					<v-icon name="format_quote" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('code')"
+					v-if="toolbar?.includes('code')"
 					v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 					:disabled="disabled"
 					small
@@ -92,7 +92,7 @@
 					<v-icon name="code" />
 				</v-button>
 				<v-button
-					v-if="toolbar.includes('link')"
+					v-if="toolbar?.includes('link')"
 					v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 					:disabled="disabled"
 					small
@@ -102,7 +102,7 @@
 					<v-icon name="insert_link" />
 				</v-button>
 
-				<v-menu v-if="toolbar.includes('table')" show-arrow :close-on-content-click="false">
+				<v-menu v-if="toolbar?.includes('table')" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
 						<v-button v-tooltip="t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="table_chart" />
@@ -137,7 +137,7 @@
 				</v-menu>
 
 				<v-button
-					v-if="toolbar.includes('image')"
+					v-if="toolbar?.includes('image')"
 					v-tooltip="t('wysiwyg_options.image')"
 					:disabled="disabled"
 					small
@@ -190,14 +190,18 @@
 			:style="view[0] === 'preview' ? 'display:block' : 'display:none'"
 		></div>
 
-		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
+		<v-dialog
+			:model-value="imageDialogOpen"
+			@esc="imageDialogOpen = false"
+			@update:model-value="imageDialogOpen = false"
+		>
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="imageDialogOpen = null">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = false">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -312,6 +316,8 @@ export default defineComponent({
 					cursorBlinkRate: props.disabled ? -1 : 530,
 					placeholder: props.placeholder,
 					value: props.value || '',
+					spellcheck: true,
+					inputStyle: 'contenteditable',
 				});
 
 				codemirror.on('change', (cm, { origin }) => {
@@ -378,7 +384,7 @@ export default defineComponent({
 			columns: 4,
 		});
 
-		const percRemaining = computed(() => percentage(count.value, props.softLength));
+		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 		useShortcut('meta+b', () => edit('bold'), markdownInterface);
 		useShortcut('meta+i', () => edit('italic'), markdownInterface);
 		useShortcut('meta+k', () => edit('link'), markdownInterface);
