@@ -7,6 +7,8 @@ import count from './commands/count';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
 import init from './commands/init';
+import keyGenerate from './commands/security/key';
+import secretGenerate from './commands/security/secret';
 import rolesCreate from './commands/roles/create';
 import usersCreate from './commands/users/create';
 import usersPasswd from './commands/users/passwd';
@@ -29,6 +31,11 @@ export async function createCli(): Promise<Command> {
 
 	program.command('start').description('Start the Directus API').action(startServer);
 	program.command('init').description('Create a new Directus Project').action(init);
+
+	// Security
+	const securityCommand = program.command('security');
+	securityCommand.command('key:generate').description('Generate the app key').action(keyGenerate);
+	securityCommand.command('secret:generate').description('Generate the app secret').action(secretGenerate);
 
 	const dbCommand = program.command('database');
 	dbCommand.command('install').description('Install the database').action(dbInstall);

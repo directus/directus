@@ -240,12 +240,10 @@ const confirmDelete = ref(false);
 const editActive = ref(false);
 const fileSrc = computed(() => {
 	if (item.value && item.value.modified_on) {
-		return addTokenToURL(
-			getRootPath() + `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
-		);
+		return getRootPath() + `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`;
 	}
 
-	return addTokenToURL(getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`);
+	return getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`;
 });
 
 // These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar

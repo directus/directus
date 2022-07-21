@@ -163,5 +163,7 @@ export default defineComponent({
 	padding: 12px;
 	background-color: var(--folder-picker-background-color);
 	border-radius: var(--border-radius);
+	max-height: calc(var(--input-height-tall) * 2);
+	overflow: auto;
 }
 </style>
