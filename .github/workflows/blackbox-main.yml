@@ -9,6 +9,7 @@ on:
       - tests-blackbox/**
       - package.json
       - pnpm-lock.yaml
+      - .github/workflows/blackbox-main.yml
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144
