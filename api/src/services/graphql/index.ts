@@ -49,6 +49,7 @@ import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from '
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER } from '../../constants';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
@@ -1276,6 +1277,18 @@ export class GraphQLService {
 			};
 
 			query.limit = 1;
+		}
+
+		// Transform count(a.b.c) into a.b.count(c)
+		for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
+			if (query.fields[fieldIndex].includes('(') && query.fields[fieldIndex].includes(')')) {
+				const functionName = query.fields[fieldIndex].split('(')[0];
+				const columnNames = query.fields[fieldIndex].match(REGEX_BETWEEN_PARENS)![1].split('.');
+				if (columnNames.length > 1) {
+					const column = columnNames.pop();
+					query.fields[fieldIndex] = columnNames.join('.') + '.' + functionName + '(' + column + ')';
+				}
+			}
 		}
 
 		const result = await this.read(collection, query);

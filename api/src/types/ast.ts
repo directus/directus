@@ -3,7 +3,7 @@ import { Query, Relation } from '@directus/shared/types';
 export type M2ONode = {
 	type: 'm2o';
 	name: string;
-	children: (NestedCollectionNode | FieldNode)[];
+	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	query: Query;
 	fieldKey: string;
 	relation: Relation;
@@ -15,7 +15,7 @@ export type A2MNode = {
 	type: 'a2o';
 	names: string[];
 	children: {
-		[collection: string]: (NestedCollectionNode | FieldNode)[];
+		[collection: string]: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	};
 	query: {
 		[collection: string]: Query;
@@ -31,7 +31,7 @@ export type A2MNode = {
 export type O2MNode = {
 	type: 'o2m';
 	name: string;
-	children: (NestedCollectionNode | FieldNode)[];
+	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	query: Query;
 	fieldKey: string;
 	relation: Relation;
@@ -47,9 +47,17 @@ export type FieldNode = {
 	fieldKey: string;
 };
 
+export type FunctionFieldNode = {
+	type: 'functionField';
+	name: string;
+	fieldKey: string;
+	query: Query;
+	relatedCollection: string;
+};
+
 export type AST = {
 	type: 'root';
 	name: string;
-	children: (NestedCollectionNode | FieldNode)[];
+	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	query: Query;
 };
