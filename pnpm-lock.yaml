@@ -571,8 +571,8 @@ importers:
 
   packages/create-directus-extension:
     specifiers:
-      '@directus/extensions-sdk': 9.14.1
-      '@directus/shared': 9.14.1
+      '@directus/extensions-sdk': workspace:*
+      '@directus/shared': workspace:*
       inquirer: ^8.1.2
     dependencies:
       '@directus/extensions-sdk': link:../extensions-sdk
@@ -705,7 +705,7 @@ importers:
 
   packages/extensions-sdk:
     specifiers:
-      '@directus/shared': 9.14.1
+      '@directus/shared': workspace:*
       '@rollup/plugin-commonjs': ^21.0.1
       '@rollup/plugin-json': ^4.1.0
       '@rollup/plugin-node-resolve': ^13.1.3
