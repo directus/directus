@@ -36,7 +36,6 @@ import { useUserStore } from '@/stores/user';
 import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		collection: {
 			type: String,

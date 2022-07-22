@@ -30,7 +30,6 @@ import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		collection: {
 			type: String,

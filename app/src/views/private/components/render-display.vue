@@ -20,7 +20,6 @@ import { getDisplay } from '@/displays';
 import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		display: {
 			type: String,

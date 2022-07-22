@@ -42,7 +42,6 @@ import { getLocalTypeForField } from '../../modules/settings/routes/data-model/g
 import { get } from 'lodash';
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		collection: {
 			type: String,

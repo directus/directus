@@ -73,7 +73,7 @@ type RoleItem = Partial<Role> & {
 
 export default defineComponent({
 	name: 'RolesCollection',
-	components: { SettingsNavigation, ValueNull },
+	components: { SettingsNavigation },
 	props: {},
 	setup() {
 		const { t } = useI18n();

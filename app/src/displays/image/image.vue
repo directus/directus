@@ -22,7 +22,6 @@ type Image = {
 };
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		value: {
 			type: Object as PropType<Image>,
