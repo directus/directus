@@ -66,11 +66,19 @@ const authenticatedSrc = computed(() => addTokenToURL(props.src));
 	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
 
 	img,
+	video {
+		width: auto;
+		height: auto;
+	}
+
+	audio {
+		width: 100%;
+	}
+
+	img,
 	video,
 	audio {
-		width: auto;
 		max-width: 100%;
-		height: auto;
 		max-height: v-bind(maxHeight);
 		object-fit: contain;
 		border-radius: var(--border-radius);
