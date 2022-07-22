@@ -25,10 +25,10 @@
 		"dev": "vite",
 		"build": "vite build",
 		"serve": "vite preview",
-		"test": "jest",
-		"test:watch": "jest --watchAll"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest"
 	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@directus/docs": "9.14.2",
 		"@directus/extensions-sdk": "^9.14.1",
@@ -59,7 +59,6 @@
 		"@types/dompurify": "2.3.1",
 		"@types/file-saver": "^2.0.5",
 		"@types/geojson": "7946.0.8",
-		"@types/jest": "28.1.4",
 		"@types/json2csv": "^5.0.3",
 		"@types/lodash": "4.14.177",
 		"@types/mapbox__mapbox-gl-draw": "1.2.3",
@@ -93,7 +92,6 @@
 		"geojson": "^0.5.0",
 		"highlight.js": "^11.5.1",
 		"html-entities": "2.3.2",
-		"jest": "28.1.2",
 		"joi": "^17.6.0",
 		"json-to-graphql-query": "^2.2.4",
 		"json2csv": "^5.0.7",
@@ -125,6 +123,7 @@
 		"typescript": "4.7.3",
 		"vite": "2.9.9",
 		"vite-plugin-vue-markdown": "0.1.1",
+		"vitest": "^0.18.1",
 		"vue": "3.2.36",
 		"vue-i18n": "9.1.10",
 		"vue-router": "4.0.15",

@@ -1,4 +1,5 @@
-import { defineConfig, searchForWorkspaceRoot } from 'vite';
+import { searchForWorkspaceRoot } from 'vite';
+import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import md from 'vite-plugin-vue-markdown';
 import yaml from '@rollup/plugin-yaml';
@@ -140,6 +141,7 @@ export default defineConfig({
 			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
 		},
 	},
+	test: {},
 });
 
 function directusExtensions() {
