@@ -22,7 +22,7 @@
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
-				<v-image ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
 
 			<div class="toolbar">
@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -190,7 +190,7 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return `${getRootPath()}assets/${props.id}?${nanoid()}`;
+			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
 		});
 
 		return {
