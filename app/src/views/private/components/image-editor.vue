@@ -172,8 +172,11 @@ export default defineComponent({
 		const { t, n } = useI18n();
 
 		const settingsStore = useSettingsStore();
+		
 		const localActive = ref(false);
+
 		const createNewImage = ref(false);
+
 		const internalActive = computed({
 			get() {
 				return props.modelValue === undefined ? localActive.value : props.modelValue;
@@ -217,6 +220,7 @@ export default defineComponent({
 				if (cropperInstance.value) {
 					cropperInstance.value.destroy();
 				}
+
 				loading.value = false;
 				error.value = null;
 				imageData.value = null;
@@ -261,6 +265,7 @@ export default defineComponent({
 			const originalImageID = ref(null);
 			const cropCoordinates = ref<CropCoordinates | null>(null);
 			const imageElement = ref<HTMLImageElement | null>(null);
+
 			return {
 				loading,
 				error,
@@ -277,6 +282,7 @@ export default defineComponent({
 			async function fetchImage() {
 				try {
 					loading.value = true;
+
 					let response = await api.get(`/files/${props.id}`, {
 						params: {
 							fields: [
@@ -312,6 +318,7 @@ export default defineComponent({
 
 			function save() {
 				saving.value = true;
+
 				cropperInstance.value
 					?.getCroppedCanvas({
 						imageSmoothingQuality: 'high',
@@ -442,6 +449,7 @@ export default defineComponent({
 					if (newCropping === false) {
 						cropperInstance.value?.clear();
 					}
+
 					localCropping.value = newCropping;
 				},
 			});
@@ -461,10 +469,13 @@ export default defineComponent({
 
 			function initCropper() {
 				if (imageElement.value === null) return;
+
 				if (cropperInstance.value) {
 					cropperInstance.value.destroy();
 				}
+
 				localCropping.value = false;
+
 				cropperInstance.value = new Cropper(imageElement.value, {
 					autoCrop: false,
 					autoCropArea: 0.5,
