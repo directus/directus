@@ -511,6 +511,7 @@ export default defineComponent({
 							width: cropCoordinates.value?.width,
 							height: cropCoordinates.value?.height,
 						});
+						dragMode.value = 'crop';
 					}, 100);
 				}
 			}
