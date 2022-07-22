@@ -53,8 +53,8 @@ test('Ignores adding primary key if it already exists', () => {
 	(store.getField as Mock).mockReturnValueOnce({ collection: 'test' });
 	(store.getPrimaryKeyFieldForCollection as Mock).mockReturnValueOnce({ field: 'test_pk' });
 
-	const output = addRelatedPrimaryKeyToFields('articles', ['id', 'title', 'author.name', 'author.test_pk']);
-	expect(output).toEqual(['id', 'title', 'author.name', 'author.test_pk']);
+	const output = addRelatedPrimaryKeyToFields('articles', ['id', 'title', 'author.name', 'author.title']);
+	expect(output).toEqual(['id', 'title', 'author.name', 'author.test_pk', 'author.title']);
 });
 
 afterEach(() => {
