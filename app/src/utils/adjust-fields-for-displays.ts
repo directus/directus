@@ -2,7 +2,7 @@ import { getDisplay } from '@/displays';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/shared/types';
 
-export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
+export function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
 	const fieldsStore = useFieldsStore();
 
 	const adjustedFields: string[] = fields

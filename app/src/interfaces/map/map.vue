@@ -91,7 +91,7 @@ import {
 	SimpleGeometry,
 	MultiGeometry,
 } from '@directus/shared/types';
-import getSetting from '@/utils/get-setting';
+import { getSetting } from '@/utils/get-setting';
 import { snakeCase, isEqual, debounce } from 'lodash';
 import { getMapStyle } from './style';
 const activeLayers = [

@@ -75,7 +75,7 @@
 import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
-import formatFilesize from '@/utils/format-filesize';
+import { formatFilesize } from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item';

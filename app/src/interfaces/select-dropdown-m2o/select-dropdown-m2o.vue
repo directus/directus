@@ -68,7 +68,7 @@ import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relati
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useCollectionsStore } from '@/stores/collections';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';

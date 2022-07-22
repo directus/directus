@@ -37,7 +37,7 @@ import { useRoute } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import { translateAPIError } from '@/lang';
 import api, { RequestError } from '@/api';
-import jwtPayload from '@/utils/jwt-payload';
+import { jwtPayload } from '@/utils/jwt-payload';
 
 export default defineComponent({
 	setup() {

@@ -30,7 +30,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
-import translateShortcut from '@/utils/translate-shortcut';
+import { translateShortcut } from '@/utils/translate-shortcut';
 
 export default defineComponent({
 	props: {

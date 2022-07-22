@@ -25,7 +25,7 @@ import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/b
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
 import { useAppStore } from '@/stores/app';
-import getSetting from '@/utils/get-setting';
+import { getSetting } from '@/utils/get-setting';
 
 export default defineComponent({
 	props: {

@@ -129,7 +129,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import formatFilesize from '@/utils/format-filesize';
+import { formatFilesize } from '@/utils/format-filesize';
 import { localizedFormat } from '@/utils/localized-format';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';

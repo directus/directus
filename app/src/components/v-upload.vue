@@ -90,8 +90,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
-import uploadFiles from '@/utils/upload-files';
-import uploadFile from '@/utils/upload-file';
+import { uploadFiles } from '@/utils/upload-files';
+import { uploadFile } from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import emitter, { Events } from '@/events';

@@ -27,7 +27,7 @@ export async function loadDateFNSLocale(lang: string) {
 	return locale;
 }
 
-export default function importDateLocale(locale: string): Promise<any> {
+export function importDateLocale(locale: string): Promise<any> {
 	switch (locale) {
 		case 'af':
 			return import('date-fns/locale/af/index.js');

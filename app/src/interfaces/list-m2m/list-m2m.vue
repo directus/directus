@@ -92,7 +92,7 @@ import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import Draggable from 'vuedraggable';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, get, clamp } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';

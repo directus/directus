@@ -1,9 +1,9 @@
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
-import uploadFile from '@/utils/upload-file';
+import { uploadFile } from '@/utils/upload-file';
 import { unexpectedError } from './unexpected-error';
 
-export default async function uploadFiles(
+export async function uploadFiles(
 	files: File[],
 	options?: {
 		onProgressChange?: (percentages: number[]) => void;

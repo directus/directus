@@ -187,7 +187,7 @@ import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { get } from '@/utils/get-with-arrays';
 import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, merge } from 'lodash';
 
 interface Props {

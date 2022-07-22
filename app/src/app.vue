@@ -29,7 +29,7 @@ import { useServerStore } from '@/stores/server';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import { useSystem } from '@/composables/use-system';
 
-import setFavicon from '@/utils/set-favicon';
+import { setFavicon } from '@/utils/set-favicon';
 import { User } from '@directus/shared/types';
 
 export default defineComponent({

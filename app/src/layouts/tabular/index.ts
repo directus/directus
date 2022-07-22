@@ -1,7 +1,7 @@
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/fields';
 import { useAliasFields } from '@/composables/use-alias-fields';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';

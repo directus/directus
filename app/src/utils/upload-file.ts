@@ -4,7 +4,7 @@ import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from './unexpected-error';
 
-export default async function uploadFile(
+export async function uploadFile(
 	file: File,
 	options?: {
 		onProgressChange?: (percentage: number) => void;

@@ -139,7 +139,7 @@
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
