@@ -38,7 +38,6 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/user';
-import ValueNull from '@/views/private/components/value-null';
 import { TranslationString } from '@/composables/use-translation-strings';
 import { sortBy } from 'lodash';
 

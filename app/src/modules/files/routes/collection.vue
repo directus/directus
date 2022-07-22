@@ -190,10 +190,10 @@ import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextT
 import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
 import { usePreset } from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import AddFolder from '../components/add-folder.vue';
-import SearchInput from '@/views/private/components/search-input';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
 import emitter, { Events } from '@/events';
 import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -205,7 +205,7 @@ import { useEventListener } from '@/composables/use-event-listener';
 import { useLayout } from '@directus/shared/composables';
 import { uploadFiles } from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerBatch from '@/views/private/components/drawer-batch';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { Filter } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
 

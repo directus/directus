@@ -200,7 +200,7 @@ import { useAppStore } from '@/stores/app';
 import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
 import { pointOnLine } from '@/utils/point-on-line';
-import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail/refresh-sidebar-detail.vue';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import { applyOptionsData } from '@directus/shared/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';

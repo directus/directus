@@ -92,7 +92,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import { uploadFiles } from '@/utils/upload-files';
 import { uploadFile } from '@/utils/upload-file';
-import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';

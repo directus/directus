@@ -1,10 +1,10 @@
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
-import RenderDisplay from '@/views/private/components/render-display';
-import RenderTemplate from '@/views/private/components/render-template';
-import SidebarDetail from '@/views/private/components/sidebar-detail/';
-import UserPopover from '@/views/private/components/user-popover';
-import ValueNull from '@/views/private/components/value-null';
-import DocsWrapper from '@/views/private/components/docs-wrapper';
+import RenderDisplay from '@/views/private/components/render-display.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import UserPopover from '@/views/private/components/user-popover.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
+import DocsWrapper from '@/views/private/components/docs-wrapper.vue';
 import { App } from 'vue';
 import TransitionBounce from './transition/bounce';
 import TransitionDialog from './transition/dialog';

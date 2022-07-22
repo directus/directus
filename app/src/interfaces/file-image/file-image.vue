@@ -78,9 +78,9 @@ import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relati
 import { formatFilesize } from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import DrawerItem from '@/views/private/components/drawer-item';
-import FileLightbox from '@/views/private/components/file-lightbox';
-import ImageEditor from '@/views/private/components/image-editor';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import FileLightbox from '@/views/private/components/file-lightbox.vue';
+import ImageEditor from '@/views/private/components/image-editor.vue';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 

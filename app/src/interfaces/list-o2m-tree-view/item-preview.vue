@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { ref } from 'vue';
 

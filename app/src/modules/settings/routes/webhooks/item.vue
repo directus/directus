@@ -89,9 +89,9 @@ import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import { useRouter } from 'vue-router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import { useItem } from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
+import SaveOptions from '@/views/private/components/save-options.vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 
