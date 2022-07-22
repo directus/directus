@@ -125,8 +125,11 @@ RATE_LIMITER_STORE=memory
 # RATE_LIMITER_REDIS="redis://@127.0.0.1:5105"
 # RATE_LIMITER_MEMCACHE="localhost:5109"
 
-# The amount of allowed hits per duration [50]
+# The amount of allowed hits per duration [25]
 RATE_LIMITER_POINTS=25
+
+# The amount of allowed authenticated hits per duration [35]
+RATE_LIMITER_POINTS_AUTHENTICATED=35
 
 # The time window in seconds in which the hits are counted [1]
 RATE_LIMITER_DURATION=1

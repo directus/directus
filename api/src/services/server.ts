@@ -54,6 +54,7 @@ export class ServerService {
 			if (env.RATE_LIMITER_ENABLED) {
 				info.rateLimit = {
 					points: env.RATE_LIMITER_POINTS,
+					points_authenticated: env.RATE_LIMITER_POINTS_AUTHENTICATED,
 					duration: env.RATE_LIMITER_DURATION,
 				};
 			} else {

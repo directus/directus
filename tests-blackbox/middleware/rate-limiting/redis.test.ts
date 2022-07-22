@@ -11,6 +11,7 @@ describe('Rate Limiting (redis)', () => {
 	const databases = new Map<string, Knex>();
 	const rateLimitedDirectus = {} as { [vendor: string]: ChildProcess };
 	const rateLimiterPoints = 5;
+	const rateLimiterPointsAuthenticated = 8;
 	const rateLimiterDuration = 3;
 
 	beforeAll(async () => {
@@ -23,6 +24,7 @@ describe('Rate Limiting (redis)', () => {
 			config.envs[vendor]!.RATE_LIMITER_ENABLED = 'true';
 			config.envs[vendor]!.RATE_LIMITER_STORE = 'redis';
 			config.envs[vendor]!.RATE_LIMITER_POINTS = String(rateLimiterPoints);
+			config.envs[vendor]!.RATE_LIMITER_POINTS_AUTHENTICATED = String(rateLimiterPointsAuthenticated);
 			config.envs[vendor]!.RATE_LIMITER_DURATION = String(rateLimiterDuration);
 			config.envs[vendor]!.PORT = String(newServerPort);
 			config.envs[vendor]!.RATE_LIMITER_REDIS_HOST = 'localhost';
@@ -51,6 +53,7 @@ describe('Rate Limiting (redis)', () => {
 			config.envs[vendor]!.RATE_LIMITER_ENABLED = 'false';
 			delete config.envs[vendor]!.RATE_LIMITER_STORE;
 			delete config.envs[vendor]!.RATE_LIMITER_POINTS;
+			delete config.envs[vendor]!.RATE_LIMITER_POINTS_AUTHENTICATED;
 			delete config.envs[vendor]!.RATE_LIMITER_DURATION;
 			delete config.envs[vendor]!.RATE_LIMITER_REDIS_HOST;
 			delete config.envs[vendor]!.RATE_LIMITER_REDIS_PORT;
@@ -91,12 +94,10 @@ describe('Rate Limiting (redis)', () => {
 					.expect(200);
 			}
 
-			for (let i = 0; i < rateLimiterPoints - 1; i++) {
-				await request(getUrl(vendor))
-					.get(`/server/info`)
-					.expect('Content-Type', /application\/json/)
-					.expect(429);
-			}
+			await request(getUrl(vendor))
+				.get(`/server/info`)
+				.expect('Content-Type', /application\/json/)
+				.expect(429);
 		});
 	});
 
@@ -120,21 +121,12 @@ describe('Rate Limiting (redis)', () => {
 		});
 	});
 
-	describe('clears rate limited IP with authenticated requests', () => {
+	describe('authenticated requests increases IP rate limit', () => {
 		it.each(vendors)('%s', async (vendor) => {
 			await sleep(rateLimiterDuration * 1000);
 
-			// Invalid authentication to almost hit IP rate limit
+			// Authenticated bypasses for a higher rate limit
 			for (let i = 0; i < rateLimiterPoints - 1; i++) {
-				await request(getUrl(vendor))
-					.get(`/server/info`)
-					.set('Authorization', 'Bearer FakeToken')
-					.expect('Content-Type', /application\/json/)
-					.expect(401);
-			}
-
-			// Authenticated clears the IP rate limit
-			for (let i = 0; i < rateLimiterPoints; i++) {
 				await request(getUrl(vendor))
 					.get(`/server/info`)
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`)
@@ -142,22 +134,36 @@ describe('Rate Limiting (redis)', () => {
 					.expect(200);
 			}
 
-			// But will hit the user scoped rate limiting
+			// Invalid authentication to increase rate limit value
+			for (let i = 0; i < rateLimiterPointsAuthenticated - rateLimiterPoints; i++) {
+				await request(getUrl(vendor))
+					.get(`/server/info`)
+					.set('Authorization', 'Bearer FakeToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(401);
+			}
+
+			// Public access to hit IP rate limit
+			await request(getUrl(vendor))
+				.get(`/server/info`)
+				.expect('Content-Type', /application\/json/)
+				.expect(200);
+
+			// IP rate limited for authenticated
 			await request(getUrl(vendor))
 				.get(`/server/info`)
 				.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`)
 				.expect('Content-Type', /application\/json/)
 				.expect(429);
 
-			// IP rate limiting should be cleared
-			for (let i = 0; i < rateLimiterPoints; i++) {
-				await request(getUrl(vendor))
-					.get(`/server/info`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
-			}
+			// IP rate limited for invalid authentication
+			await request(getUrl(vendor))
+				.get(`/server/info`)
+				.set('Authorization', 'Bearer FakeToken')
+				.expect('Content-Type', /application\/json/)
+				.expect(429);
 
-			// IP rate limited
+			// IP rate limited for public
 			await request(getUrl(vendor))
 				.get(`/server/info`)
 				.expect('Content-Type', /application\/json/)

@@ -12,7 +12,12 @@ let checkRateLimit: (checkAccountability: boolean) => RequestHandler = () => (re
 export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
 
 if (env.RATE_LIMITER_ENABLED === true) {
-	validateEnv(['RATE_LIMITER_STORE', 'RATE_LIMITER_DURATION', 'RATE_LIMITER_POINTS']);
+	validateEnv([
+		'RATE_LIMITER_STORE',
+		'RATE_LIMITER_DURATION',
+		'RATE_LIMITER_POINTS',
+		'RATE_LIMITER_POINTS_AUTHENTICATED',
+	]);
 
 	rateLimiter = createRateLimiter();
 
@@ -20,7 +25,7 @@ if (env.RATE_LIMITER_ENABLED === true) {
 		asyncHandler(async (req, res, next) => {
 			try {
 				if (checkAccountability) {
-					await rateLimiter.consume(`${req.accountability?.user ?? ''}@${getIPFromReq(req)}`, 1);
+					await rateLimiter.consume(`${req.accountability?.user ?? 'public'}@${getIPFromReq(req)}`, 1);
 				} else {
 					await rateLimiter.consume(getIPFromReq(req), 1);
 				}

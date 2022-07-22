@@ -11,7 +11,9 @@ describe('Rate Limiting (memcache)', () => {
 	const databases = new Map<string, Knex>();
 	const rateLimitedDirectus = {} as { [vendor: string]: ChildProcess };
 	const rateLimiterPoints = 5;
+	const rateLimiterPointsAuthenticated = 8;
 	const rateLimiterDuration = 3;
+	const memcacheExpiryDelay = 200;
 
 	beforeAll(async () => {
 		const promises = [];
@@ -23,6 +25,7 @@ describe('Rate Limiting (memcache)', () => {
 			config.envs[vendor]!.RATE_LIMITER_ENABLED = 'true';
 			config.envs[vendor]!.RATE_LIMITER_STORE = 'memcache';
 			config.envs[vendor]!.RATE_LIMITER_POINTS = String(rateLimiterPoints);
+			config.envs[vendor]!.RATE_LIMITER_POINTS_AUTHENTICATED = String(rateLimiterPointsAuthenticated);
 			config.envs[vendor]!.RATE_LIMITER_DURATION = String(rateLimiterDuration);
 			config.envs[vendor]!.PORT = String(newServerPort);
 			config.envs[vendor]!.RATE_LIMITER_MEMCACHE = 'localhost:6108';
@@ -50,6 +53,7 @@ describe('Rate Limiting (memcache)', () => {
 			config.envs[vendor]!.RATE_LIMITER_ENABLED = 'false';
 			delete config.envs[vendor]!.RATE_LIMITER_STORE;
 			delete config.envs[vendor]!.RATE_LIMITER_POINTS;
+			delete config.envs[vendor]!.RATE_LIMITER_POINTS_AUTHENTICATED;
 			delete config.envs[vendor]!.RATE_LIMITER_DURATION;
 			delete config.envs[vendor]!.RATE_LIMITER_MEMCACHED;
 
@@ -59,7 +63,7 @@ describe('Rate Limiting (memcache)', () => {
 
 	describe('rate limits user with authentication', () => {
 		it.each(vendors)('%s', async (vendor) => {
-			await sleep(rateLimiterDuration * 1000);
+			await sleep(rateLimiterDuration * 1000 + memcacheExpiryDelay);
 
 			for (let i = 0; i < rateLimiterPoints; i++) {
 				await request(getUrl(vendor))
@@ -80,7 +84,7 @@ describe('Rate Limiting (memcache)', () => {
 
 	describe('rate limits IP without authentication', () => {
 		it.each(vendors)('%s', async (vendor) => {
-			await sleep(rateLimiterDuration * 1000);
+			await sleep(rateLimiterDuration * 1000 + memcacheExpiryDelay);
 
 			for (let i = 0; i < rateLimiterPoints; i++) {
 				await request(getUrl(vendor))
@@ -89,18 +93,16 @@ describe('Rate Limiting (memcache)', () => {
 					.expect(200);
 			}
 
-			for (let i = 0; i < rateLimiterPoints - 1; i++) {
-				await request(getUrl(vendor))
-					.get(`/server/info`)
-					.expect('Content-Type', /application\/json/)
-					.expect(429);
-			}
+			await request(getUrl(vendor))
+				.get(`/server/info`)
+				.expect('Content-Type', /application\/json/)
+				.expect(429);
 		});
 	});
 
 	describe('rate limits IP with invalid authentication', () => {
 		it.each(vendors)('%s', async (vendor) => {
-			await sleep(rateLimiterDuration * 1000);
+			await sleep(rateLimiterDuration * 1000 + memcacheExpiryDelay);
 
 			for (let i = 0; i < rateLimiterPoints; i++) {
 				await request(getUrl(vendor))
@@ -118,48 +120,58 @@ describe('Rate Limiting (memcache)', () => {
 		});
 	});
 
-	describe('clears rate limited IP with authenticated requests', () => {
-		it.each(vendors)('%s', async (vendor) => {
-			await sleep(rateLimiterDuration * 1000);
+	describe('authenticated requests increases IP rate limit', () => {
+		it.each(vendors)(
+			'%s',
+			async (vendor) => {
+				await sleep(rateLimiterDuration * 1000 + memcacheExpiryDelay);
 
-			// Invalid authentication to almost hit IP rate limit
-			for (let i = 0; i < rateLimiterPoints - 1; i++) {
+				// Authenticated bypasses for a higher rate limit
+				for (let i = 0; i < rateLimiterPoints - 1; i++) {
+					await request(getUrl(vendor))
+						.get(`/server/info`)
+						.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+					await sleep(200);
+				}
+
+				// Invalid authentication to increase rate limit value
+				for (let i = 0; i < rateLimiterPointsAuthenticated - rateLimiterPoints; i++) {
+					await request(getUrl(vendor))
+						.get(`/server/info`)
+						.set('Authorization', 'Bearer FakeToken')
+						.expect('Content-Type', /application\/json/)
+						.expect(401);
+				}
+
+				// Public access to hit IP rate limit
 				await request(getUrl(vendor))
 					.get(`/server/info`)
-					.set('Authorization', 'Bearer FakeToken')
 					.expect('Content-Type', /application\/json/)
-					.expect(401);
-			}
+					.expect(200);
 
-			// Authenticated clears the IP rate limit
-			for (let i = 0; i < rateLimiterPoints; i++) {
+				// IP rate limited for authenticated
 				await request(getUrl(vendor))
 					.get(`/server/info`)
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
-					.expect(200);
-			}
+					.expect(429);
 
-			// But will hit the user scoped rate limiting
-			await request(getUrl(vendor))
-				.get(`/server/info`)
-				.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`)
-				.expect('Content-Type', /application\/json/)
-				.expect(429);
+				// IP rate limited for invalid authentication
+				await request(getUrl(vendor))
+					.get(`/server/info`)
+					.set('Authorization', 'Bearer FakeToken')
+					.expect('Content-Type', /application\/json/)
+					.expect(429);
 
-			// IP rate limiting should be cleared
-			for (let i = 0; i < rateLimiterPoints; i++) {
+				// IP rate limited for public
 				await request(getUrl(vendor))
 					.get(`/server/info`)
 					.expect('Content-Type', /application\/json/)
-					.expect(200);
-			}
-
-			// IP rate limited
-			await request(getUrl(vendor))
-				.get(`/server/info`)
-				.expect('Content-Type', /application\/json/)
-				.expect(429);
-		});
+					.expect(429);
+			},
+			10000
+		);
 	});
 });

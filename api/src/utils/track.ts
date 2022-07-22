@@ -38,6 +38,7 @@ async function getEnvInfo(event: string) {
 		rate_limiter: {
 			enabled: env.RATE_LIMITER_ENABLED,
 			points: +env.RATE_LIMITER_POINTS,
+			points_authenticated: +env.RATE_LIMITER_POINTS_AUTHENTICATED,
 			duration: +env.RATE_LIMITER_DURATION,
 			store: env.RATE_LIMITER_STORE,
 		},
