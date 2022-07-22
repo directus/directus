@@ -1250,7 +1250,7 @@ export class GraphQLService {
 		if (!selections) return null;
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 
-		let query: Record<string, any>;
+		let query: Query;
 
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
@@ -1280,13 +1280,15 @@ export class GraphQLService {
 		}
 
 		// Transform count(a.b.c) into a.b.count(c)
-		for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
-			if (query.fields[fieldIndex].includes('(') && query.fields[fieldIndex].includes(')')) {
-				const functionName = query.fields[fieldIndex].split('(')[0];
-				const columnNames = query.fields[fieldIndex].match(REGEX_BETWEEN_PARENS)![1].split('.');
-				if (columnNames.length > 1) {
-					const column = columnNames.pop();
-					query.fields[fieldIndex] = columnNames.join('.') + '.' + functionName + '(' + column + ')';
+		if (query.fields?.length) {
+			for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
+				if (query.fields[fieldIndex].includes('(') && query.fields[fieldIndex].includes(')')) {
+					const functionName = query.fields[fieldIndex].split('(')[0];
+					const columnNames = query.fields[fieldIndex].match(REGEX_BETWEEN_PARENS)![1].split('.');
+					if (columnNames.length > 1) {
+						const column = columnNames.pop();
+						query.fields[fieldIndex] = columnNames.join('.') + '.' + functionName + '(' + column + ')';
+					}
 				}
 			}
 		}
