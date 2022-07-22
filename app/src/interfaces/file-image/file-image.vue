@@ -63,7 +63,13 @@
 				@input="update"
 			/>
 
-			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<image-editor
+				v-if="!disabled && image"
+				:id="image.id"
+				v-model="editImageEditor"
+				@refresh="refresh"
+				@replace-image="update($event.id)"
+			/>
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
