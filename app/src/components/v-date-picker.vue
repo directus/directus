@@ -151,11 +151,6 @@ export default defineComponent({
 });
 </script>
 
-<style>
-@import 'flatpickr/dist/flatpickr.css';
-@import './flatpickr-overrides.css';
-</style>
-
 <style lang="scss" scoped>
 .v-date-picker {
 	.input {

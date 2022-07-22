@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts" setup>
-import { FancySelectItem } from '@/components/v-fancy-select/types';
+import { FancySelectItem } from '@/components/v-fancy-select.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { getPanel, getPanels } from '@/panels';
 import { useInsightsStore } from '@/stores';

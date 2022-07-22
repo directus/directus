@@ -36,8 +36,17 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+export type FancySelectItem = {
+	icon: string;
+	value?: string | number;
+	text: string;
+	description?: string;
+	divider?: boolean;
+	iconRight?: string;
+};
+
 interface Props {
-	items: Record<string, any>[];
+	items: FancySelectItem[];
 	modelValue?: string | number | null;
 	disabled?: boolean;
 	itemText?: string;
