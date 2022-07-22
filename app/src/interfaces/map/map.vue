@@ -105,7 +105,7 @@ const activeLayers = [
 
 import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 

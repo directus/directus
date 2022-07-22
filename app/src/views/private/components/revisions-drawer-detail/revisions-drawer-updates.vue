@@ -23,7 +23,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
 import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
 import { isEqual } from 'lodash';

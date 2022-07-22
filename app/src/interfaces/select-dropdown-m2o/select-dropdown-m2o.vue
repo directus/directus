@@ -66,7 +66,8 @@
 <script setup lang="ts">
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
-import { usePermissionsStore, useCollectionsStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useCollectionsStore } from '@/stores/collections';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection';

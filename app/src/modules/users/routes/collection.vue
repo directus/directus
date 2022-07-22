@@ -169,7 +169,9 @@ import UsersNavigation from '../components/navigation.vue';
 
 import api from '@/api';
 import { usePreset } from '@/composables/use-preset';
-import { usePermissionsStore, useServerStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';

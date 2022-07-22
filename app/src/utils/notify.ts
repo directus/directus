@@ -1,4 +1,4 @@
-import { useNotificationsStore } from '@/stores/';
+import { useNotificationsStore } from '@/stores/notifications';
 import { SnackbarRaw } from '@/types';
 
 let store: any;

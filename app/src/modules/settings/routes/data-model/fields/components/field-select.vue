@@ -146,7 +146,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
-import { useCollectionsStore, useFieldsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { getInterface } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';

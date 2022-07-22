@@ -12,7 +12,7 @@
 import { defineComponent, computed, watch } from 'vue';
 import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
 import { useRoute } from 'vue-router';
 import { useLocalStorage } from '@/composables/use-local-storage';
 

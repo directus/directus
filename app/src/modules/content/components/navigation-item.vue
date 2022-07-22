@@ -60,7 +60,9 @@
 import { defineComponent, PropType, computed } from 'vue';
 import { Collection } from '@/types';
 import { Preset } from '@directus/shared/types';
-import { useUserStore, useCollectionsStore, usePresetsStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
+import { useCollectionsStore } from '@/stores/collections';
+import { usePresetsStore } from '@/stores/presets';
 import NavigationItemContent from './navigation-item-content.vue';
 import NavigationBookmark from './navigation-bookmark.vue';
 import { useI18n } from 'vue-i18n';

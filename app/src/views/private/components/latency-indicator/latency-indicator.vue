@@ -8,7 +8,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { useLatencyStore } from '@/stores';
+import { useLatencyStore } from '@/stores/latency';
 import { sortBy } from 'lodash';
 import ms from 'ms';
 

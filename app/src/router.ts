@@ -7,7 +7,9 @@ import LogoutRoute from '@/routes/logout.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
-import { useAppStore, useServerStore, useUserStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 

@@ -1,5 +1,5 @@
 import { getDisplay } from '@/displays';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/shared/types';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {

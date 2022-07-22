@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { get } from 'lodash';
 import { Field } from '@directus/shared/types';
 import { getDisplay } from '@/displays';

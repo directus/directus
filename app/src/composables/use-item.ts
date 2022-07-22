@@ -1,7 +1,8 @@
 import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';

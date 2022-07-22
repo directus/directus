@@ -108,7 +108,8 @@ import FieldsManagement from './components/fields-management.vue';
 
 import { useItem } from '@/composables/use-item';
 import { useRouter } from 'vue-router';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 

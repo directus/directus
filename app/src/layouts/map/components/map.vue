@@ -28,7 +28,7 @@ import { useI18n } from 'vue-i18n';
 
 import { ShowSelect } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 

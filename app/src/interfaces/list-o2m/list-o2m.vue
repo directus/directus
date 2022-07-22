@@ -98,7 +98,8 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp } from 'lodash';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(

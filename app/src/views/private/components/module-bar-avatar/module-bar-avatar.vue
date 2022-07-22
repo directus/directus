@@ -51,7 +51,9 @@
 </template>
 
 <script lang="ts">
-import { useAppStore, useNotificationsStore, useUserStore } from '@/stores/';
+import { useAppStore } from '@/stores/app';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';

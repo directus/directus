@@ -33,7 +33,7 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineComponent, ref, reactive, PropType, watch } from 'vue';
-import { useInsightsStore } from '@/stores';
+import { useInsightsStore } from '@/stores/insights';
 import { router } from '@/router';
 import { Dashboard } from '@/types';
 import { useI18n } from 'vue-i18n';

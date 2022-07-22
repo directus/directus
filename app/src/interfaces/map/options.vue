@@ -24,7 +24,7 @@ import { Field, GeometryType, GeometryOptions } from '@directus/shared/types';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 import getSetting from '@/utils/get-setting';
 
 export default defineComponent({

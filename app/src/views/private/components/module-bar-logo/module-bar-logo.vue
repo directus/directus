@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-import { useRequestsStore, useSettingsStore } from '@/stores/';
+import { useRequestsStore } from '@/stores/requests';
+import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';
 import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

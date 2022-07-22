@@ -68,7 +68,8 @@ import { useI18n } from 'vue-i18n';
 
 import { usePermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
-import { useFieldsStore, useRelationsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/shared/composables';

@@ -1,4 +1,4 @@
-import { useRelationsStore } from '@/stores/';
+import { useRelationsStore } from '@/stores/relations';
 import { Relation } from '@directus/shared/types';
 import { getLocalTypeForField } from '../../modules/settings/routes/data-model/get-local-type';
 

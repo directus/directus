@@ -57,7 +57,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
 import { orderBy } from 'lodash';
 
 export default defineComponent({

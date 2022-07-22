@@ -30,7 +30,8 @@
 
 <script lang="ts" setup>
 import { DEFAULT_AUTH_PROVIDER, DEFAULT_AUTH_DRIVER } from '@/constants';
-import { useAppStore, useServerStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';

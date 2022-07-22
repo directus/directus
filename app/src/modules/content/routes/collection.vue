@@ -286,7 +286,8 @@ import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vu
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import { useRouter } from 'vue-router';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';

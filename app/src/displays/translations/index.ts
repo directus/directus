@@ -1,5 +1,6 @@
 import { getDisplay } from '@/displays';
-import { useFieldsStore, useRelationsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';

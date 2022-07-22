@@ -1,5 +1,6 @@
 import { router } from '@/router';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
 import RouterPass from '@/utils/router-passthrough';
 import { getModules } from './index';

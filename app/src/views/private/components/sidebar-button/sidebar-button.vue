@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 
 export default defineComponent({
 	props: {

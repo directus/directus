@@ -66,7 +66,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
 import { Collection } from '@/types';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
 
 export default defineComponent({
 	props: {

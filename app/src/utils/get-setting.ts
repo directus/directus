@@ -1,4 +1,4 @@
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore } from '@/stores/settings';
 import { Settings } from '@directus/shared/types';
 
 export default function getSetting(setting: keyof Settings): any {

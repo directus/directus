@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import LatencyIndicator from '../latency-indicator';
-import { useServerStore } from '@/stores/';
+import { useServerStore } from '@/stores/server';
 
 export default defineComponent({
 	components: { LatencyIndicator },

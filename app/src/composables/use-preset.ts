@@ -1,4 +1,5 @@
-import { usePresetsStore, useUserStore } from '@/stores';
+import { usePresetsStore } from '@/stores/presets';
+import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
 import { Filter, Preset } from '@directus/shared/types';
 import { assign, debounce, isEqual } from 'lodash';

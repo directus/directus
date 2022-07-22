@@ -24,7 +24,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { useNotificationsStore, useUserStore } from '@/stores/';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useUserStore } from '@/stores/user';
 import { Notification } from '@/types';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 

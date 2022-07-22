@@ -30,7 +30,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
-import { useNotificationsStore } from '@/stores/';
+import { useNotificationsStore } from '@/stores/notifications';
 
 export default defineComponent({
 	components: { SidebarButton, NotificationItem },
