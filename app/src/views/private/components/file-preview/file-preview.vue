@@ -1,5 +1,9 @@
 <template>
-	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }">
+	<div
+		v-if="type && !imgError"
+		class="file-preview"
+		:class="{ modal: inModal, small: isSmall, svg: isSVG, centered: type === 'video' }"
+	>
 		<div v-if="type === 'image'" class="image" @click="$emit('click')">
 			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 		</div>
@@ -64,6 +68,11 @@ const authenticatedSrc = computed(() => addTokenToURL(props.src));
 .file-preview {
 	position: relative;
 	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
+
+	&.centered {
+		display: flex;
+		justify-content: center;
+	}
 
 	img,
 	video {
