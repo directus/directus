@@ -285,7 +285,7 @@ export default defineComponent({
 			});
 
 			const fieldsInGroup = computed(() =>
-				fields.value.filter(
+				formFields.value.filter(
 					(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 				)
 			);
