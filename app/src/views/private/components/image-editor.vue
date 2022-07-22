@@ -139,7 +139,6 @@ import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import Cropper from 'cropperjs';
 import throttle from 'lodash/throttle';
-import VCheckbox from '@/components/v-checkbox/v-checkbox.vue';
 import { nanoid } from 'nanoid';
 
 type Image = {
@@ -184,6 +183,7 @@ export default defineComponent({
 				emit('update:modelValue', newActive);
 			},
 		});
+
 		const {
 			loading,
 			error,
@@ -196,6 +196,7 @@ export default defineComponent({
 			cropCoordinates,
 			originalImageID,
 		} = useImage();
+
 		const {
 			cropperInstance,
 			initCropper,
@@ -208,6 +209,7 @@ export default defineComponent({
 			dragMode,
 			cropping,
 		} = useCropper();
+
 		watch(internalActive, (isActive) => {
 			if (isActive === true) {
 				fetchImage();
@@ -220,9 +222,6 @@ export default defineComponent({
 				imageData.value = null;
 			}
 		});
-
-		const randomId = ref<string>(nanoid());
-
 		const imageURL = computed(() => {
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
@@ -253,6 +252,7 @@ export default defineComponent({
 			customAspectRatios,
 			createNewImage,
 		};
+
 		function useImage() {
 			const loading = ref(false);
 			const error = ref(null);
@@ -273,6 +273,7 @@ export default defineComponent({
 				cropCoordinates,
 				originalImageID,
 			};
+
 			async function fetchImage() {
 				try {
 					loading.value = true;
@@ -308,6 +309,7 @@ export default defineComponent({
 					loading.value = false;
 				}
 			}
+
 			function save() {
 				saving.value = true;
 				cropperInstance.value
@@ -352,24 +354,30 @@ export default defineComponent({
 						}
 					}, imageData.value?.type);
 			}
+
 			async function onImageLoad() {
 				await nextTick();
 				initCropper();
 			}
 		}
+
 		function useCropper() {
 			const cropperInstance = ref<Cropper | null>(null);
+
 			const localAspectRatio = ref(NaN);
+
 			const newDimensions = reactive({
 				width: null as null | number,
 				height: null as null | number,
 			});
+
 			watch(imageData, () => {
 				if (!imageData.value) return;
 				localAspectRatio.value = imageData.value.width / imageData.value.height;
 				newDimensions.width = imageData.value.width;
 				newDimensions.height = imageData.value.height;
 			});
+
 			const aspectRatio = computed<number>({
 				get() {
 					return localAspectRatio.value;
@@ -381,6 +389,7 @@ export default defineComponent({
 					dragMode.value = 'crop';
 				},
 			});
+
 			const aspectRatioIcon = computed(() => {
 				if (!imageData.value) return 'crop_original';
 
@@ -406,7 +415,9 @@ export default defineComponent({
 						return 'crop_free';
 				}
 			});
+
 			const localDragMode = ref<'move' | 'crop'>('move');
+
 			const dragMode = computed({
 				get() {
 					return localDragMode.value;
@@ -420,7 +431,9 @@ export default defineComponent({
 					}
 				},
 			});
+
 			const localCropping = ref(false);
+
 			const cropping = computed({
 				get() {
 					return localCropping.value;
@@ -432,6 +445,7 @@ export default defineComponent({
 					localCropping.value = newCropping;
 				},
 			});
+
 			return {
 				cropperInstance,
 				initCropper,
@@ -444,6 +458,7 @@ export default defineComponent({
 				dragMode,
 				cropping,
 			};
+
 			function initCropper() {
 				if (imageElement.value === null) return;
 				if (cropperInstance.value) {
@@ -458,11 +473,14 @@ export default defineComponent({
 					viewMode: 1,
 					crop: throttle((event) => {
 						if (!imageData.value) return;
+
 						if (cropping.value === false && (event.detail.width || event.detail.height)) {
 							cropping.value = true;
 						}
+
 						const newWidth = event.detail.width || imageData.value.width;
 						const newHeight = event.detail.height || imageData.value.height;
+
 						if (event.detail.rotate === 0 || event.detail.rotate === -180) {
 							newDimensions.width = Math.round(newWidth);
 							newDimensions.height = Math.round(newHeight);
@@ -472,6 +490,7 @@ export default defineComponent({
 						}
 					}, 50),
 				});
+
 				if (cropCoordinates.value) {
 					setTimeout(() => {
 						cropperInstance.value?.crop();
@@ -484,6 +503,7 @@ export default defineComponent({
 					}, 100);
 				}
 			}
+
 			function flip(type: 'horizontal' | 'vertical') {
 				if (type === 'vertical') {
 					if (cropperInstance.value?.getData().scaleX === -1) {
@@ -492,6 +512,7 @@ export default defineComponent({
 						cropperInstance.value?.scaleX(-1);
 					}
 				}
+
 				if (type === 'horizontal') {
 					if (cropperInstance.value?.getData().scaleY === -1) {
 						cropperInstance.value?.scaleY(1);
@@ -500,9 +521,11 @@ export default defineComponent({
 					}
 				}
 			}
+
 			function rotate() {
 				cropperInstance.value?.rotate(-90);
 			}
+
 			function reset() {
 				cropperInstance.value?.reset();
 				dragMode.value = 'move';
