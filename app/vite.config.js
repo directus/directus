@@ -141,7 +141,9 @@ export default defineConfig({
 			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
 		},
 	},
-	test: {},
+	test: {
+		environment: 'happy-dom',
+	},
 });
 
 function directusExtensions() {
