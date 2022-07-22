@@ -12,11 +12,6 @@ beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
-			initialState: {
-				fieldsStore: {
-					fields: [],
-				},
-			},
 		})
 	);
 });
