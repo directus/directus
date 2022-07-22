@@ -32,7 +32,7 @@ import api from '@/api';
 import { Activity, ActivityByDate } from './types';
 import CommentInput from './comment-input.vue';
 import { groupBy, orderBy, flatten } from 'lodash';
-import formatLocalized from '@/utils/localized-format';
+import { localizedFormat } from '@/utils/localized-format';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
 import CommentItem from './comment-item.vue';
 import { userName } from '@/utils/user-name';
@@ -122,8 +122,8 @@ function useActivity(collection: string, primaryKey: string | number) {
 
 				if (today) dateFormatted = t('today');
 				else if (yesterday) dateFormatted = t('yesterday');
-				else if (thisYear) dateFormatted = await formatLocalized(date, String(t('date-fns_date_short_no_year')));
-				else dateFormatted = await formatLocalized(date, String(t('date-fns_date_short')));
+				else if (thisYear) dateFormatted = localizedFormat(date, String(t('date-fns_date_short_no_year')));
+				else dateFormatted = localizedFormat(date, String(t('date-fns_date_short')));
 
 				activityGrouped.push({
 					date: date,

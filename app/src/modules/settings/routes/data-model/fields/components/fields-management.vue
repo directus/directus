@@ -57,7 +57,7 @@ import Draggable from 'vuedraggable';
 import { Field } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores/fields';
 import FieldSelect from './field-select.vue';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import { orderBy, isNil } from 'lodash';
 import { LocalType } from '@directus/shared/types';
 

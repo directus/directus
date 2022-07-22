@@ -2,7 +2,7 @@ import api from '@/api';
 import emitter, { Events } from '@/events';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
-import { unexpectedError } from '../unexpected-error';
+import { unexpectedError } from './unexpected-error';
 
 export default async function uploadFile(
 	file: File,

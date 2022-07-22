@@ -5,9 +5,9 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import localizedFormat from '@/utils/localized-format';
-import localizedFormatDistance from '@/utils/localized-format-distance';
-import localizedFormatDistanceStrict from '@/utils/localized-format-distance-strict';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import { parseISO, parse } from 'date-fns';
 
 interface Props {

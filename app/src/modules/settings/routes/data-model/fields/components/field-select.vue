@@ -156,7 +156,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Field } from '@directus/shared/types';
 import FieldSelectMenu from './field-select-menu.vue';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 import formatTitle from '@directus/format-title';
 

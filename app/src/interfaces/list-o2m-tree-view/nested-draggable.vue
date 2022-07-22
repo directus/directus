@@ -88,7 +88,7 @@ export default {
 <script setup lang="ts">
 import Draggable from 'vuedraggable';
 import { computed, ref, toRefs } from 'vue';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 import { Filter } from '@directus/shared/types';
 import { RelationO2M } from '@/composables/use-relation-o2m';

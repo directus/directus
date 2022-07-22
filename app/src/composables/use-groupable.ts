@@ -1,4 +1,4 @@
-import { isEmpty, notEmpty } from '@/utils/is-empty/';
+import { isEmpty, notEmpty } from '@/utils/is-empty';
 import { isEqual } from 'lodash';
 import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 

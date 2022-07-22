@@ -1,6 +1,6 @@
 import { useRelationsStore } from '@/stores/relations';
 import { Relation } from '@directus/shared/types';
-import { getLocalTypeForField } from '../../modules/settings/routes/data-model/get-local-type';
+import { getLocalTypeForField } from '../modules/settings/routes/data-model/get-local-type';
 
 export interface RelatedCollectionData {
 	relatedCollection: string;
@@ -8,7 +8,7 @@ export interface RelatedCollectionData {
 	path?: string[];
 }
 
-export default function getRelatedCollection(collection: string, field: string): RelatedCollectionData {
+export function getRelatedCollection(collection: string, field: string): RelatedCollectionData {
 	const relationsStore = useRelationsStore();
 
 	const relations: Relation[] = relationsStore.getRelationsForField(collection, field);

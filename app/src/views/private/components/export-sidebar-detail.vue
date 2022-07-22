@@ -223,7 +223,7 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
