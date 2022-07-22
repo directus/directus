@@ -12,7 +12,7 @@ import { getEndpoint } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
 import { merge } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { usePermissions } from '../use-permissions';
+import { usePermissions } from './use-permissions';
 import { Field, Relation } from '@directus/shared/types';
 
 type UsableItem = {

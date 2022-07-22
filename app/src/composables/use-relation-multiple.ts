@@ -3,7 +3,9 @@ import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
-import { RelationM2A, RelationM2M, RelationO2M } from '@/composables/use-relation';
+import { RelationM2A } from '@/composables/use-relation-m2a';
+import { RelationM2M } from '@/composables/use-relation-m2m';
+import { RelationO2M } from '@/composables/use-relation-o2m';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -18,7 +20,7 @@ export type DisplayItem = {
 	$edits?: number;
 };
 
-export type Item = {
+export type ChangesItem = {
 	create: Record<string, any>[];
 	update: Record<string, any>[];
 	delete: (string | number)[];
@@ -36,7 +38,7 @@ export function useRelationMultiple(
 
 	const { cleanItem, getPage, localDelete } = useUtil();
 
-	const _value = computed<Item>({
+	const _value = computed<ChangesItem>({
 		get() {
 			if (!value.value || Array.isArray(value.value))
 				return {
@@ -44,7 +46,7 @@ export function useRelationMultiple(
 					update: [],
 					delete: [],
 				};
-			return value.value as Item;
+			return value.value as ChangesItem;
 		},
 		set(newValue) {
 			value.value = newValue;

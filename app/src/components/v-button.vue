@@ -41,8 +41,8 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 import { RouteLocation, useRoute, useLink } from 'vue-router';
-import useSizeClass, { sizeProps } from '@/composables/size-class';
-import { useGroupable } from '@/composables/groupable';
+import useSizeClass, { sizeProps } from '@/composables/use-size-class';
+import { useGroupable } from '@/composables/use-groupable';
 import { notEmpty } from '@/utils/is-empty';
 import { isEqual } from 'lodash';
 

@@ -64,7 +64,8 @@
 </template>
 
 <script setup lang="ts">
-import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
+import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
+import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { usePermissionsStore, useCollectionsStore } from '@/stores';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';

@@ -73,7 +73,8 @@
 
 <script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
-import { RelationQuerySingle, useRelationM2O, useRelationSingle } from '@/composables/use-relation';
+import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import formatFilesize from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';

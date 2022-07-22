@@ -146,7 +146,8 @@ import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { addQueryToPath } from '@/utils/add-query-to-path';
-import { useRelationM2O, useRelationSingle, RelationQuerySingle } from '@/composables/use-relation';
+import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
 
 type FileInfo = {
 	id: string;

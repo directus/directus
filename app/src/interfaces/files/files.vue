@@ -123,7 +123,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationM2M, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item';
