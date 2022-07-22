@@ -58,7 +58,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { useServerStore } from '@/stores';
+import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
 import { getRootPath } from '@/utils/get-root-path';
 import { useI18n } from 'vue-i18n';

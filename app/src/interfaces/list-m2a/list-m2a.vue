@@ -136,12 +136,13 @@
 </template>
 
 <script setup lang="ts">
-import { DisplayItem, RelationQueryMultiple, useRelationM2A, useRelationMultiple } from '@/composables/use-relation';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import DrawerCollection from '@/views/private/components/drawer-collection';
-import DrawerItem from '@/views/private/components/drawer-item';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { clamp, get } from 'lodash';

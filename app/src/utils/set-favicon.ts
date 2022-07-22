@@ -17,7 +17,7 @@ const svg = (color: string, hide: boolean) => `
 	}
 </svg>`;
 
-export default function setFavicon(color: string | null | undefined, hide = false): void {
+export function setFavicon(color: string | null | undefined, hide = false): void {
 	color = color || cssVar('--primary');
 
 	const icon = svg(color, hide);

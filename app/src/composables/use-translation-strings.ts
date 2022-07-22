@@ -2,7 +2,7 @@ import { ref, Ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Language, i18n } from '@/lang';
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
 export type Translation = {
 	language: string;

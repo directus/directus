@@ -30,7 +30,7 @@ let openFolders: Ref<string[] | null> | null = null;
 
 let error: Ref<any> | null = null;
 
-export default function useFolders(): UsableFolders {
+export function useFolders(): UsableFolders {
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);

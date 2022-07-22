@@ -1,4 +1,4 @@
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';

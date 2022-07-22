@@ -94,10 +94,10 @@
 </template>
 
 <script lang="ts" setup>
-import { FancySelectItem } from '@/components/v-fancy-select/types';
+import { FancySelectItem } from '@/components/v-fancy-select.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { getPanel, getPanels } from '@/panels';
-import { useInsightsStore } from '@/stores';
+import { useInsightsStore } from '@/stores/insights';
 import { CreatePanel } from '@/stores/insights';
 import { Panel } from '@directus/shared/types';
 import { assign, clone, omitBy, isUndefined } from 'lodash';

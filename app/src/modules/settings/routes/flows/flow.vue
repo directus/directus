@@ -182,11 +182,11 @@ import { FlowRaw, OperationRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 
 import { computed, ref } from 'vue';
-import { useFlowsStore } from '@/stores';
+import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
-import useEditsGuard from '@/composables/use-edits-guard';
-import useShortcut from '@/composables/use-shortcut';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
 import { isEmpty, merge, omit, cloneDeep } from 'lodash';
 import { router } from '@/router';
 import { nanoid, customAlphabet } from 'nanoid';
