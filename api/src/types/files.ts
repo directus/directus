@@ -19,7 +19,7 @@ export type File = {
 	tags: string | null;
 	metadata: Record<string, any> | null;
 	crop_original_image_id: string | null; // uuid
-	crop_coordinates: string;
+	crop_coordinates: string | null;
 };
 
 export type Metadata = {
