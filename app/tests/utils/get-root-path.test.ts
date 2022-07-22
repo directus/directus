@@ -1,6 +1,6 @@
-import { test, expect, describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { getRootPath, getPublicURL, extract } from '@/utils/get-root-path';
+import { extract, getPublicURL, getRootPath } from '@/utils/get-root-path';
 
 describe('extract', () => {
 	it('Returns the part of the string leading up to /admin', () => {
