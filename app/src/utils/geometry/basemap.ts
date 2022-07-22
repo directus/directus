@@ -1,6 +1,5 @@
 import { Style, RasterSource } from 'maplibre-gl';
 import { getSetting } from '@/utils/get-setting';
-import maplibre from 'maplibre-gl';
 import { getTheme } from '@/utils/get-theme';
 
 export type BasemapSource = {
@@ -33,8 +32,6 @@ export function getBasemapSources(): BasemapSource[] {
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
-	setMapboxAccessToken(basemap.url);
-
 	if (basemap.type == 'style') {
 		return basemap.url;
 	} else {
@@ -87,20 +84,6 @@ function expandUrl(url: string): string[] {
 	}
 	urls.push(url);
 	return urls;
-}
-
-function setMapboxAccessToken(styleURL: string): void {
-	styleURL = styleURL.replace(/^mapbox:\//, 'https://api.mapbox.com/styles/v1');
-
-	try {
-		const url = new URL(styleURL);
-		if (url.host == 'api.mapbox.com') {
-			const token = url.searchParams.get('access_token');
-			if (token) maplibre.accessToken = token;
-		}
-	} catch {
-		return;
-	}
 }
 
 function getDefaultMapboxBasemap(): BasemapSource {
