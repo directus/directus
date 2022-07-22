@@ -22,7 +22,7 @@
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
-				<v-image ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
 
 			<div class="toolbar">
@@ -80,7 +80,7 @@
 							v-if="imageData"
 							clickable
 							:active="aspectRatio === imageData.width / imageData.height"
-							@click="aspectRatio = imageData.width / imageData.height"
+							@click="setAspectRatio"
 						>
 							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
 							<v-list-item-content>{{ t('original') }}</v-list-item-content>
@@ -96,7 +96,7 @@
 					{{ n(imageData.width) }}x{{ n(imageData.height) }}
 					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
 						->
-						{{ n(newDimensions.width) }}x{{ n(newDimensions.height) }}
+						{{ n(newDimensions.width ?? 0) }}x{{ n(newDimensions.height ?? 0) }}
 					</template>
 				</div>
 
@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -190,7 +190,7 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return `${getRootPath()}assets/${props.id}?${nanoid()}`;
+			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
 		});
 
 		return {
@@ -213,6 +213,7 @@ export default defineComponent({
 			newDimensions,
 			dragMode,
 			cropping,
+			setAspectRatio,
 		};
 
 		function useImage() {
@@ -441,6 +442,12 @@ export default defineComponent({
 			function reset() {
 				cropperInstance.value?.reset();
 				dragMode.value = 'move';
+			}
+		}
+
+		function setAspectRatio() {
+			if (imageData.value) {
+				aspectRatio.value = imageData.value.width / imageData.value.height;
 			}
 		}
 	},
