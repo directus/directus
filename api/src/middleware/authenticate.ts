@@ -30,24 +30,26 @@ if (rateLimiter && rateLimiterPointsAuthenticated > rateLimiterPoints) {
 	});
 
 	if (env.RATE_LIMITER_STORE === 'memcache') {
-		useAuthenticatedRateLimit = async (req: Request) => {
-			try {
-				const ipAddress = getIPFromReq(req);
-				await authenticatedPointsLimiter.consume(`authenticated@${ipAddress}`, 1);
+		if (rateLimiterDuration > 1) {
+			useAuthenticatedRateLimit = async (req: Request) => {
+				try {
+					const ipAddress = getIPFromReq(req);
+					await authenticatedPointsLimiter.consume(`authenticated@${ipAddress}`, 1);
 
-				const status = await rateLimiter.get(ipAddress);
+					const status = await rateLimiter.get(ipAddress);
 
-				if (status && status.msBeforeNext > 1000) {
-					await rateLimiter.set(
-						ipAddress,
-						rateLimiterPoints - status.remainingPoints - 1,
-						Math.floor(status.msBeforeNext / 1000)
-					);
+					if (status && status.msBeforeNext > 1000) {
+						await rateLimiter.set(
+							ipAddress,
+							rateLimiterPoints - status.remainingPoints - 1,
+							Math.floor(status.msBeforeNext / 1000)
+						);
+					}
+				} catch (rateLimiterRes: any) {
+					if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 				}
-			} catch (rateLimiterRes: any) {
-				if (rateLimiterRes instanceof Error) throw rateLimiterRes;
-			}
-		};
+			};
+		}
 	} else {
 		useAuthenticatedRateLimit = async (req: Request) => {
 			try {
