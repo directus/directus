@@ -13,7 +13,7 @@ describe('Rate Limiting (memcache)', () => {
 	const rateLimiterPoints = 5;
 	const rateLimiterPointsAuthenticated = 8;
 	const rateLimiterDuration = 3;
-	const memcacheExpiryDelay = 200;
+	const memcacheExpiryDelay = 400;
 
 	beforeAll(async () => {
 		const promises = [];
@@ -133,7 +133,7 @@ describe('Rate Limiting (memcache)', () => {
 						.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
-					await sleep(200);
+					await sleep(memcacheExpiryDelay);
 				}
 
 				// Invalid authentication to increase rate limit value
