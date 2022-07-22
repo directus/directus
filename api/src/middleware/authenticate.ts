@@ -13,22 +13,22 @@ import { rateLimiter } from './rate-limiter';
 import { validateEnv } from '../utils/validate-env';
 import { createRateLimiter } from '../rate-limiter';
 
-validateEnv(['RATE_LIMITER_DURATION', 'RATE_LIMITER_POINTS', 'RATE_LIMITER_POINTS_AUTHENTICATED']);
-
 const rateLimiterDuration = Number(env.RATE_LIMITER_DURATION);
 const rateLimiterPoints = Number(env.RATE_LIMITER_POINTS);
 const rateLimiterPointsAuthenticated = Number(env.RATE_LIMITER_POINTS_AUTHENTICATED);
-
-const authenticatedPointsLimiter = createRateLimiter({
-	duration: rateLimiterDuration,
-	points: rateLimiterPointsAuthenticated - rateLimiterPoints,
-});
 
 let useAuthenticatedRateLimit: (req: Request) => void = async () => {
 	return;
 };
 
 if (rateLimiter && rateLimiterPointsAuthenticated > rateLimiterPoints) {
+	validateEnv(['RATE_LIMITER_DURATION', 'RATE_LIMITER_POINTS', 'RATE_LIMITER_POINTS_AUTHENTICATED']);
+
+	const authenticatedPointsLimiter = createRateLimiter({
+		duration: rateLimiterDuration,
+		points: rateLimiterPointsAuthenticated - rateLimiterPoints,
+	});
+
 	if (env.RATE_LIMITER_STORE === 'memcache') {
 		useAuthenticatedRateLimit = async (req: Request) => {
 			try {
