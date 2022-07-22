@@ -393,6 +393,35 @@ class OASSpecsService implements SpecificationSubService {
 		}
 	}
 
+	private getExtendedFieldType(field: Field): Record<string, any> {
+		if (field.type === 'json' && 'fields' in (field.meta?.options || {})) {
+			return {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: (field.meta?.options?.fields || {}).reduce(
+						(fields: any, field: { field: string; type: Type; meta?: any }) => {
+							fields[field.field] = { type: field.type };
+							if (field.type === 'integer' && 'options' in field.meta) {
+								fields[field.field] = {
+									...fields[field.field],
+									...Object.keys(field.meta.options).reduce((options: any, key: string) => {
+										if (key === 'minValue') options['minimum'] = field.meta.options[key];
+										if (key === 'maxValue') options['maximum'] = field.meta.options[key];
+										return options;
+									}, {}),
+								};
+							}
+							return fields;
+						},
+						{}
+					),
+				},
+			};
+		}
+		return this.fieldTypes[field.type];
+	}
+
 	private generateField(field: Field, relations: Relation[], tags: TagObject[], fields: Field[]): SchemaObject {
 		let propertyObject: SchemaObject = {
 			nullable: field.schema?.is_nullable,
@@ -408,7 +437,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (!relation) {
 			propertyObject = {
 				...propertyObject,
-				...this.fieldTypes[field.type],
+				...this.getExtendedFieldType(field),
 			};
 		} else {
 			const relationType = getRelationType({
