@@ -186,7 +186,6 @@ importers:
       openapi3-ts: ^2.0.2
       openid-client: ^5.1.6
       ora: ^5.4.0
-      oracledb: 5.3.0
       otplib: ^12.0.1
       pg: ^8.7.3
       pino: 6.13.3
@@ -307,7 +306,6 @@ importers:
       memcached: 2.2.2
       mysql: 2.18.1
       nodemailer-mailgun-transport: 2.1.4_lodash@4.17.21
-      oracledb: 5.3.0
       pg: 8.7.3
       sqlite3: 5.0.9
       tedious: 13.2.0
@@ -367,7 +365,7 @@ importers:
 
   app:
     specifiers:
-      '@directus/docs': ^9.13.2
+      '@directus/docs': 9.14.2
       '@directus/extensions-sdk': ^9.14.1
       '@directus/format-title': ^9.15.0
       '@directus/shared': workspace:*
@@ -468,7 +466,7 @@ importers:
       vuedraggable: 4.1.0
       wellknown: 0.5.0
     devDependencies:
-      '@directus/docs': 9.13.2
+      '@directus/docs': 9.14.2
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 9.15.0
       '@directus/shared': link:../packages/shared
@@ -571,8 +569,8 @@ importers:
 
   packages/create-directus-extension:
     specifiers:
-      '@directus/extensions-sdk': 9.14.1
-      '@directus/shared': 9.14.1
+      '@directus/extensions-sdk': workspace:*
+      '@directus/shared': workspace:*
       inquirer: ^8.1.2
     dependencies:
       '@directus/extensions-sdk': link:../extensions-sdk
@@ -705,7 +703,7 @@ importers:
 
   packages/extensions-sdk:
     specifiers:
-      '@directus/shared': 9.14.1
+      '@directus/shared': workspace:*
       '@rollup/plugin-commonjs': ^21.0.1
       '@rollup/plugin-json': ^4.1.0
       '@rollup/plugin-node-resolve': ^13.1.3
@@ -2159,9 +2157,9 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/docs/9.13.2:
+  /@directus/docs/9.14.2:
     resolution:
-      { integrity: sha512-rr68GtHafxdmUiELxtf9Vlmfr6fGXA2sGxKBKwAdnmrEdG6B1LAl4xfYSj8paUujh3SzDR9nL+CzQl4lLrVYwQ== }
+      { integrity: sha512-Q/19OXZRUXbUb9c68S5DDBlkzGUZiZYknuND+JlaKj0QAvBwRPQ5hDhazzO5dhOrw/G55Xa024eYr6yQHA3Ytw== }
     dev: true
 
   /@directus/format-title/9.15.0:
@@ -11862,14 +11860,6 @@ packages:
       wcwidth: 1.0.1
     dev: false
 
-  /oracledb/5.3.0:
-    resolution:
-      { integrity: sha512-HMJzQ6lCf287ztvvehTEmjCWA21FQ3RMvM+mgoqd4i8pkREuqFWO+y3ovsGR9moJUg4T0xjcwS8rl4mggWPxmg== }
-    engines: { node: '>=10.16' }
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /os-tmpdir/1.0.2:
     resolution:
       { integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g== }
@@ -14770,7 +14760,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.2
+      jest: 28.1.2_dyhfsldgbafx4up6nvciefunqu
       jest-util: 28.1.3
       json5: 2.2.1
       lodash.memoize: 4.1.2

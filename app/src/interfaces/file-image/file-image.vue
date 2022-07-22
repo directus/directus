@@ -63,7 +63,7 @@
 				@input="update"
 			/>
 
-			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" />
+			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
@@ -80,7 +80,6 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
-import { nanoid } from 'nanoid';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -112,20 +111,18 @@ const value = computed({
 });
 
 const query = ref<RelationQuerySingle>({
-	fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
+	fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download', 'modified_on'],
 });
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem: image, loading, update, remove } = useRelationSingle(value, query, relationInfo);
+const { displayItem: image, loading, update, remove, refresh } = useRelationSingle(value, query, relationInfo);
 
 const { t, n, te } = useI18n();
 
 const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
-
-const cacheBuster = ref(nanoid());
 
 const src = computed(() => {
 	if (!image.value) return null;
@@ -135,7 +132,9 @@ const src = computed(() => {
 	}
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		return getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${cacheBuster.value}`;
+		const url =
+			getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
+		return addTokenToURL(url);
 	}
 
 	return null;
