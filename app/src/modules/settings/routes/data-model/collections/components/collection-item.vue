@@ -59,7 +59,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from 'vue';
 import CollectionOptions from './collection-options.vue';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import Draggable from 'vuedraggable';
 import { useCollectionsStore } from '@/stores/collections';
 import { DeepPartial } from '@directus/shared/types';

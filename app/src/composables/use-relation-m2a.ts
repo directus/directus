@@ -1,7 +1,7 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { Field, Relation } from '@directus/shared/types';
 import { computed, Ref } from 'vue';
 

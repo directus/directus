@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { Preset } from '@directus/shared/types';
 import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';

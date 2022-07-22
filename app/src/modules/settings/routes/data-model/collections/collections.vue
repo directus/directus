@@ -112,7 +112,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import CollectionOptions from './components/collection-options.vue';
 import { sortBy, merge } from 'lodash';
 import CollectionItem from './components/collection-item.vue';

@@ -1,7 +1,7 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/shared/types';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { getCollectionType } from '@directus/shared/utils';
 import { notEmpty } from '@/utils/is-empty/';
 import { notify } from '@/utils/notify';

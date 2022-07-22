@@ -28,7 +28,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, toRefs } from 'vue';
 import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
-import { APIError } from '@/types';
+import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({

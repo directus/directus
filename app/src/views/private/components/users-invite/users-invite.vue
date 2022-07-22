@@ -45,7 +45,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { APIError } from '@/types';
+import { APIError } from '@/types/error';
 
 export default defineComponent({
 	props: {

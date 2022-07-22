@@ -26,7 +26,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { Notification } from '@/types';
+import { Notification } from '@/types/notifications';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 
 export default defineComponent({

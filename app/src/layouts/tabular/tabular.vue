@@ -180,7 +180,7 @@ export default {
 <script lang="ts" setup>
 import { HeaderRaw } from '@/components/v-table/types';
 import { useShortcut } from '@/composables/use-shortcut';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
