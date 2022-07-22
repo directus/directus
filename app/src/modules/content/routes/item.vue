@@ -212,10 +212,10 @@ import { ComponentPublicInstance, computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useEditsGuard from '@/composables/use-edits-guard';
-import useItem from '@/composables/use-item';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
-import useShortcut from '@/composables/use-shortcut';
-import useTemplateData from '@/composables/use-template-data';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useTemplateData } from '@/composables/use-template-data';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';

@@ -277,7 +277,7 @@ import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
 import ContentNotFound from './not-found.vue';
 import { useCollection, useLayout } from '@directus/shared/composables';
-import usePreset from '@/composables/use-preset';
+import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';

@@ -154,7 +154,7 @@ import SearchInput from '@/views/private/components/search-input';
 import { usePermissionsStore, useUserStore, usePresetsStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { getLayouts } from '@/layouts';
-import usePreset from '@/composables/use-preset';
+import { usePreset } from '@/composables/use-preset';
 
 export default defineComponent({
 	name: 'ContentCollection',

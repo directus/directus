@@ -63,7 +63,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, watch } from 'vue';
-import useFolders, { Folder } from '@/composables/use-folders';
+import { useFolders, Folder } from '@/composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';
 

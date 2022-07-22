@@ -10,7 +10,7 @@ import { useCollectionsStore } from '@/stores';
 import { Collection } from '@directus/shared/types';
 import { orderBy, isNil } from 'lodash';
 import { useNavigation } from './composables/use-navigation';
-import useLocalStorage from '@/composables/use-local-storage';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { ref } from 'vue';
 
 const checkForSystem: NavigationGuard = (to, from) => {

@@ -17,7 +17,7 @@ document.body.addEventListener('keyup', (event: KeyboardEvent) => {
 	keysdown.clear();
 });
 
-export default function useShortcut(
+export function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
 	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(document.body)

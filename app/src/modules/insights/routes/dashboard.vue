@@ -193,7 +193,7 @@
 <script lang="ts" setup>
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import useEditsGuard from '@/composables/use-edits-guard';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';
 import { router } from '@/router';
 import { useAppStore, useInsightsStore, usePermissionsStore } from '@/stores';

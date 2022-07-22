@@ -186,7 +186,7 @@ import { useFlowsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import useEditsGuard from '@/composables/use-edits-guard';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import { isEmpty, merge, omit, cloneDeep } from 'lodash';
 import { router } from '@/router';
 import { nanoid, customAlphabet } from 'nanoid';

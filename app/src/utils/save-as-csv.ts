@@ -1,4 +1,4 @@
-import useAliasFields from '@/composables/use-alias-fields';
+import { useAliasFields } from '@/composables/use-alias-fields';
 import { getDisplay } from '@/displays';
 import { useFieldsStore } from '@/stores';
 import { get } from '@/utils/get-with-arrays';

@@ -9,10 +9,7 @@ type UsableTemplateData = {
 	error: Ref<any>;
 };
 
-export default function useTemplateData(
-	collection: Ref<Collection | null>,
-	primaryKey: Ref<string>
-): UsableTemplateData {
+export function useTemplateData(collection: Ref<Collection | null>, primaryKey: Ref<string>): UsableTemplateData {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref<any>(null);

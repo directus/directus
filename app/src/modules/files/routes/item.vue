@@ -178,9 +178,9 @@
 <script lang="ts" setup>
 import api, { addTokenToURL } from '@/api';
 import useEditsGuard from '@/composables/use-edits-guard';
-import useItem from '@/composables/use-item';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';

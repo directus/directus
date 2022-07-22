@@ -14,7 +14,7 @@ import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';
 import { useCollectionsStore } from '@/stores/';
 import { useRoute } from 'vue-router';
-import useLocalStorage from '@/composables/use-local-storage';
+import { useLocalStorage } from '@/composables/use-local-storage';
 
 export default defineComponent({
 	components: {

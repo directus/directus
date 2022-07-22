@@ -26,7 +26,7 @@ interface RequiredProps {
 	xLarge: boolean;
 }
 
-export default function useSizeClass<T>(props: T & RequiredProps): ComputedRef<string | null> {
+export function useSizeClass<T>(props: T & RequiredProps): ComputedRef<string | null> {
 	const sizeClass = computed<string | null>(() => {
 		if (props.xSmall) return 'x-small';
 		if (props.small) return 'small';

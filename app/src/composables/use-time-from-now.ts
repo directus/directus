@@ -1,7 +1,7 @@
 import localizedFormatDistance from '@/utils/localized-format-distance/';
 import { onMounted, onUnmounted, Ref, ref } from 'vue';
 
-export async function useTimeFromNow(date: Date | number, autoUpdate = 60000): Promise<Ref<string>> {
+export function useTimeFromNow(date: Date | number, autoUpdate = 60000): Ref<string> {
 	let interval: number;
 
 	const formatOptions = {
@@ -12,7 +12,7 @@ export async function useTimeFromNow(date: Date | number, autoUpdate = 60000): P
 
 	if (autoUpdate !== 0) {
 		onMounted(() => {
-			interval = window.setInterval(async () => {
+			interval = window.setInterval(() => {
 				formattedDate.value = localizedFormatDistance(date, new Date(), formatOptions);
 			}, autoUpdate);
 		});

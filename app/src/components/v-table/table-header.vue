@@ -101,7 +101,7 @@
 import { useI18n } from 'vue-i18n';
 import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
-import useEventListener from '@/composables/use-event-listener';
+import { useEventListener } from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 import Draggable from 'vuedraggable';

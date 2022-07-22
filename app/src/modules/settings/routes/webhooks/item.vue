@@ -90,9 +90,9 @@ import { defineComponent, computed, toRefs, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import useItem from '@/composables/use-item';
+import { useItem } from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({

@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import vTemplateInput from '@/components/v-template-input.vue';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';

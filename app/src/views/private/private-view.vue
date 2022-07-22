@@ -74,11 +74,11 @@
 </template>
 
 <script lang="ts" setup>
-import useElementSize from '@/composables/use-element-size';
-import useEventListener from '@/composables/use-event-listener';
-import useLocalStorage from '@/composables/use-local-storage';
-import useTitle from '@/composables/use-title';
-import useWindowSize from '@/composables/use-window-size';
+import { useElementSize } from '@/composables/use-element-size';
+import { useEventListener } from '@/composables/use-event-listener';
+import { useLocalStorage } from '@/composables/use-local-storage';
+import { useTitle } from '@/composables/use-title';
+import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore, useUserStore } from '@/stores';
 import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';

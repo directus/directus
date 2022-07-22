@@ -218,7 +218,7 @@ import 'codemirror/addon/display/placeholder.js';
 
 import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
 import { percentage } from '@/utils/percentage';
 import { useWindowSize } from '@/composables/use-window-size';

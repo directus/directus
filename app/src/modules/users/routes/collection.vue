@@ -168,7 +168,7 @@ import { useI18n } from 'vue-i18n';
 import UsersNavigation from '../components/navigation.vue';
 
 import api from '@/api';
-import usePreset from '@/composables/use-preset';
+import { usePreset } from '@/composables/use-preset';
 import { usePermissionsStore, useServerStore, useUserStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';

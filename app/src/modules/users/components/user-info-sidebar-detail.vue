@@ -47,7 +47,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch } from 'vue';
 import localizedFormat from '@/utils/localized-format';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 export default defineComponent({
 	props: {

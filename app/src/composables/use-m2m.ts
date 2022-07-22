@@ -25,7 +25,7 @@ type UsableRelation = {
 	relationFields: ComputedRef<Field[]>;
 };
 
-export default function useRelation(collection: Ref<string>, field: Ref<string>): UsableRelation {
+export function useRelation(collection: Ref<string>, field: Ref<string>): UsableRelation {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
 

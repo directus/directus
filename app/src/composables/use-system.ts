@@ -9,7 +9,7 @@ import { getModules } from '@/modules';
 import { getPanels } from '@/panels';
 import { getOperations } from '@/operations';
 
-export default function useSystem(): void {
+export function useSystem(): void {
 	provide(STORES_INJECT, stores);
 
 	provide(API_INJECT, api);

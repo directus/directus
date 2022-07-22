@@ -187,10 +187,10 @@ import { useI18n } from 'vue-i18n';
 
 import api from '@/api';
 import useEditsGuard from '@/composables/use-edits-guard';
-import useFormFields from '@/composables/use-form-fields';
-import useItem from '@/composables/use-item';
+import { useFormFields } from '@/composables/use-form-fields';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import { setLanguage } from '@/lang/set-language';
 import { useUserStore } from '@/stores';
 import { useCollectionsStore, useFieldsStore, useServerStore } from '@/stores/';

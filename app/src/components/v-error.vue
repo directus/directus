@@ -17,7 +17,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref } from 'vue';
 import { isPlainObject } from 'lodash';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 export default defineComponent({
 	props: {

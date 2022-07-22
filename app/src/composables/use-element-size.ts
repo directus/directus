@@ -7,7 +7,7 @@ declare global {
 	}
 }
 
-export default function useElementSize<T extends Element>(
+export function useElementSize<T extends Element>(
 	target: T | Ref<T> | Ref<undefined>
 ): {
 	width: Ref<number>;

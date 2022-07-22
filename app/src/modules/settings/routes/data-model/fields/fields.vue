@@ -106,10 +106,10 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import { useCollection } from '@directus/shared/composables';
 import FieldsManagement from './components/fields-management.vue';
 
-import useItem from '@/composables/use-item';
+import { useItem } from '@/composables/use-item';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import useEditsGuard from '@/composables/use-edits-guard';
 
 export default defineComponent({

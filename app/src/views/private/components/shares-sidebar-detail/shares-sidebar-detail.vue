@@ -81,7 +81,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Share } from '@directus/shared/types';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 import api from '@/api';
 import ShareItem from './share-item.vue';

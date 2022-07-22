@@ -6,7 +6,7 @@ import { cloneDeep, orderBy } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';
 import { translate } from '@/utils/translate-object-values';
 
-export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
+export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
 	const formFields = computed(() => {
 		let formFields = cloneDeep(fields.value);
 
