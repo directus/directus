@@ -142,7 +142,7 @@ import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@directus/shared/composables';
 import { useShortcut } from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { isEqual } from 'lodash';
 
 type FormattedPreset = {

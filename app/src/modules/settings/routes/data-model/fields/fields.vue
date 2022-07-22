@@ -110,7 +110,7 @@ import { useItem } from '@/composables/use-item';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { useShortcut } from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },

@@ -109,7 +109,7 @@
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { usePermissionsStore, useServerStore, useUserStore } from '@/stores/';

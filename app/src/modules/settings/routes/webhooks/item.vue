@@ -93,7 +93,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import { useItem } from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import { useShortcut } from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'WebhooksItem',

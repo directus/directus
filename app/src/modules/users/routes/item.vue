@@ -186,7 +186,7 @@ import { ComponentPublicInstance, computed, defineComponent, ref, toRefs, watch 
 import { useI18n } from 'vue-i18n';
 
 import api from '@/api';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFormFields } from '@/composables/use-form-fields';
 import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
