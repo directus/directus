@@ -23,7 +23,7 @@ import { useUserStore } from '@/stores/user';
 import { useFlowsStore } from '@/stores/flows';
 
 export function useSystem(): void {
-	provide(STORES_INJECT, [
+	provide(STORES_INJECT, {
 		useAppStore,
 		useCollectionsStore,
 		useFieldsStore,
@@ -38,7 +38,7 @@ export function useSystem(): void {
 		useSettingsStore,
 		useUserStore,
 		useFlowsStore,
-	]);
+	});
 
 	provide(API_INJECT, api);
 
