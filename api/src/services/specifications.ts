@@ -393,35 +393,6 @@ class OASSpecsService implements SpecificationSubService {
 		}
 	}
 
-	private getExtendedFieldType(field: Field): Record<string, any> {
-		if (field.type === 'json' && 'fields' in (field.meta?.options || {})) {
-			return {
-				type: 'array',
-				items: {
-					type: 'object',
-					properties: (field.meta?.options?.fields || {}).reduce(
-						(fields: any, field: { field: string; type: Type; meta?: any }) => {
-							fields[field.field] = { type: field.type };
-							if (field.type === 'integer' && 'options' in field.meta) {
-								fields[field.field] = {
-									...fields[field.field],
-									...Object.keys(field.meta.options).reduce((options: any, key: string) => {
-										if (key === 'minValue') options['minimum'] = field.meta.options[key];
-										if (key === 'maxValue') options['maximum'] = field.meta.options[key];
-										return options;
-									}, {}),
-								};
-							}
-							return fields;
-						},
-						{}
-					),
-				},
-			};
-		}
-		return this.fieldTypes[field.type];
-	}
-
 	private generateField(field: Field, relations: Relation[], tags: TagObject[], fields: Field[]): SchemaObject {
 		let propertyObject: SchemaObject = {
 			nullable: field.schema?.is_nullable,
@@ -437,7 +408,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (!relation) {
 			propertyObject = {
 				...propertyObject,
-				...this.getExtendedFieldType(field),
+				...this.fieldTypes[field.type],
 			};
 		} else {
 			const relationType = getRelationType({
@@ -504,7 +475,7 @@ class OASSpecsService implements SpecificationSubService {
 	private fieldTypes: Record<
 		Type,
 		{
-			type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
+			type?: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
 			format?: string;
 			items?: any;
 		}
@@ -550,12 +521,7 @@ class OASSpecsService implements SpecificationSubService {
 		integer: {
 			type: 'integer',
 		},
-		json: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
-		},
+		json: {},
 		string: {
 			type: 'string',
 		},
