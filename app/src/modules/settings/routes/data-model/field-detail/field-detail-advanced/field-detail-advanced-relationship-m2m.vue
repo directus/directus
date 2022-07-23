@@ -204,7 +204,8 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore, useRelationsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 export default defineComponent({
 	components: { RelatedCollectionSelect, RelatedFieldSelect },

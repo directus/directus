@@ -74,10 +74,10 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineComponent, ref, reactive, PropType, watch } from 'vue';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 
 export default defineComponent({
 	name: 'CollectionDialog',

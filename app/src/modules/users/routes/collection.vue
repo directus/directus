@@ -162,18 +162,20 @@
 </template>
 
 <script lang="ts" setup>
-import UsersInvite from '@/views/private/components/users-invite';
+import UsersInvite from '@/views/private/components/users-invite.vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import UsersNavigation from '../components/navigation.vue';
 
 import api from '@/api';
-import usePreset from '@/composables/use-preset';
-import { usePermissionsStore, useServerStore, useUserStore } from '@/stores';
+import { usePreset } from '@/composables/use-preset';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerBatch from '@/views/private/components/drawer-batch';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/shared/composables';
 import { Role } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';

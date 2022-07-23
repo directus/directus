@@ -69,7 +69,7 @@ export default defineOperationApp({
 		{
 			field: 'payload',
 			name: '$t:operations.item-create.payload',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',

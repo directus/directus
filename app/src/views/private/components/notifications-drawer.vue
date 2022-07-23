@@ -55,7 +55,10 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAppStore, useUserStore, useNotificationsStore, useCollectionsStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useUserStore } from '@/stores/user';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useCollectionsStore } from '@/stores/collections';
 import { storeToRefs } from 'pinia';
 import { Notification } from '@directus/shared/types';
 import api from '@/api';
