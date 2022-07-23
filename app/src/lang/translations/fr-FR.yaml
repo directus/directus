@@ -614,6 +614,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
+edit_image: Éditer l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -1742,6 +1743,8 @@ displays:
     strict: Stricte
     strict_label: Utilisez des unités strictes
     strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
+    down: Bas
+    up: Haut
   file:
     file: Fichier
     description: Afficher les fichiers
