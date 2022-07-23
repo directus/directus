@@ -62,6 +62,7 @@ show_archived_items: Exibir Itens Arquivados
 show_all_items: Exibir Todos os Itens
 edited: Valor Editado
 required: Obrigatório
+require_value_to_be_set_on_creation: Exigir que o valor seja definido na criação
 required_for_app_access: Obrigatório para Acesso ao App
 requires_value: Requer valor
 create_preset: Criar Predefinição
