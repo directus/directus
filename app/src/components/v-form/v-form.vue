@@ -72,6 +72,7 @@
 				@toggle-raw="toggleRawField(fieldsMap[fieldName])"
 			/>
 		</template>
+		<v-divider v-if="showDivider && !noVisibleFields" />
 	</div>
 </template>
 
@@ -153,6 +154,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		showDivider: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -206,6 +211,13 @@ export default defineComponent({
 			return null;
 		});
 
+		const noVisibleFields = computed(() => {
+			return Object.keys(fieldsMap.value).every((fieldKey) => {
+				let field: Field = fieldsMap.value[fieldKey];
+				return field.meta?.hidden === true;
+			});
+		});
+
 		watch(
 			() => props.validationErrors,
 			(newVal, oldVal) => {
@@ -240,6 +252,7 @@ export default defineComponent({
 			formFieldEls,
 			fieldNames,
 			fieldsMap,
+			noVisibleFields,
 		};
 
 		function useForm() {
@@ -441,5 +454,11 @@ export default defineComponent({
 
 .v-form .first-visible-field :deep(.v-divider) {
 	margin-top: 0;
+}
+
+.v-divider {
+	margin-bottom: 50px;
+	grid-column-start: 1;
+	grid-column-end: 3;
 }
 </style>

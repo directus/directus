@@ -32,6 +32,17 @@
 				/>
 
 				<v-form
+					v-model="internalEdits"
+					:show-divider="showDivider"
+					:disabled="disabled"
+					:loading="loading"
+					:initial-values="item"
+					:primary-key="primaryKey"
+					:fields="fields"
+					:validation-errors="!junctionField ? validationErrors : undefined"
+				/>
+
+				<v-form
 					:disabled="disabled"
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
@@ -42,19 +53,7 @@
 					autofocus
 					@update:model-value="setJunctionEdits"
 				/>
-
-				<v-divider v-if="showDivider" />
 			</template>
-
-			<v-form
-				v-model="internalEdits"
-				:disabled="disabled"
-				:loading="loading"
-				:initial-values="item"
-				:primary-key="primaryKey"
-				:fields="fields"
-				:validation-errors="!junctionField ? validationErrors : undefined"
-			/>
 		</div>
 	</v-drawer>
 </template>
