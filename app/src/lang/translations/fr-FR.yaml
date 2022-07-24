@@ -1703,6 +1703,7 @@ interfaces:
     remove_token: Supprimer le jeton
   system-raw-editor:
     system-raw-editor: Éditeur brut
+    description: Permettre la saisie de valeurs brutes ou de modèles en moustache
 displays:
   translations:
     translations: Traductions
@@ -1746,7 +1747,9 @@ displays:
     strict: Stricte
     strict_label: Utilisez des unités strictes
     strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
+    round_note: Choisissez une fonction d'arrondi à utiliser
     down: Bas
+    nearest: Le plus proche
     up: Haut
   file:
     file: Fichier
