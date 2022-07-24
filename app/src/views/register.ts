@@ -1,10 +1,9 @@
 import { App, defineAsyncComponent } from 'vue';
 import PublicView from './public/';
 import SharedView from './shared/shared-view.vue';
-// import DrawerItem from './private/components/drawer-item/drawer-item.vue';
 
 const PrivateView = defineAsyncComponent(() => import('./private'));
-const DrawerItem = defineAsyncComponent(() => import('./private/components/drawer-item'));
+const DrawerItem = defineAsyncComponent(() => import('./private/components/drawer-item.vue'));
 
 export function registerViews(app: App): void {
 	app.component('PublicView', PublicView);
