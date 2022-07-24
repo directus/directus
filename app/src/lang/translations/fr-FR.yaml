@@ -309,6 +309,7 @@ primary_key: Clef primaire
 foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
 dismiss: Ignorer
+toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
 raw_value: Valeur brute
 copy_raw_value: Copier la valeur brute
 copy_raw_value_success: Copié
