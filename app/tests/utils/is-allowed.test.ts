@@ -1,6 +1,6 @@
 import { isAllowed } from '../../src/utils/is-allowed';
 
-jest.mock('../../src/stores', () => {
+jest.mock('../../src/stores/permissions', () => {
 	return {
 		usePermissionsStore: jest
 			.fn()
@@ -37,7 +37,11 @@ jest.mock('../../src/stores', () => {
 					},
 				],
 			}), //6
+	};
+});
 
+jest.mock('../../src/stores/user', () => {
+	return {
 		useUserStore: jest.fn().mockReturnValueOnce({ isAdmin: true }).mockReturnValue({ isAdmin: false }),
 	};
 });

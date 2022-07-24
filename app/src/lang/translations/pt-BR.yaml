@@ -440,7 +440,7 @@ generated_uuid: UUID gerado
 manual_string: String inserida manualmente
 save_and_create_new: Salvar e criar novo
 save_and_stay: Salvar e manter aqui
-save_as_copy: Salvar e Copiar
+save_as_copy: Salvar como cópia
 add_existing: Adicionar existente
 creating_items: Criando Itens
 enable_create_button: Habilitar botão de criação

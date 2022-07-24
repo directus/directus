@@ -133,7 +133,8 @@
 import api from '@/api';
 import { Sort, Header } from '@/components/v-table/types';
 import { router } from '@/router';
-import { useFlowsStore, usePermissionsStore } from '@/stores';
+import { useFlowsStore } from '@/stores/flows';
+import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FlowRaw } from '@directus/shared/types';
 import { computed, ref, Ref } from 'vue';

@@ -1,5 +1,5 @@
 import { Style, RasterSource } from 'maplibre-gl';
-import getSetting from '@/utils/get-setting';
+import { getSetting } from '@/utils/get-setting';
 import maplibre from 'maplibre-gl';
 import { getTheme } from '@/utils/get-theme';
 

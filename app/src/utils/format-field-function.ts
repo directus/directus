@@ -1,4 +1,4 @@
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { useI18n } from 'vue-i18n';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 

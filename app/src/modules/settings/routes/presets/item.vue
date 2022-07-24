@@ -136,13 +136,14 @@ import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
-import { useCollectionsStore, usePresetsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { usePresetsStore } from '@/stores/presets';
 import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@directus/shared/composables';
-import useShortcut from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { isEqual } from 'lodash';
 
 type FormattedPreset = {

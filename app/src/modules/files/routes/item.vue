@@ -177,19 +177,19 @@
 
 <script lang="ts" setup>
 import api, { addTokenToURL } from '@/api';
-import useEditsGuard from '@/composables/use-edits-guard';
-import useItem from '@/composables/use-item';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
-import useShortcut from '@/composables/use-shortcut';
+import { useShortcut } from '@/composables/use-shortcut';
 import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import FilePreview from '@/views/private/components/file-preview';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
-import ImageEditor from '@/views/private/components/image-editor';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import SaveOptions from '@/views/private/components/save-options';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import FilePreview from '@/views/private/components/file-preview.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import ImageEditor from '@/views/private/components/image-editor.vue';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 import { Field } from '@directus/shared/types';
 import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

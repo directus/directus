@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { computed } from 'vue';
 
 const props = withDefaults(
