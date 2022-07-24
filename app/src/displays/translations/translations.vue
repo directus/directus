@@ -31,13 +31,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType, toRefs } from 'vue';
-import ValueNull from '@/views/private/components/value-null';
-import useRelation from '@/composables/use-m2m';
-import { useUserStore } from '@/stores';
+import { useRelation } from '@/composables/use-m2m';
+import { useUserStore } from '@/stores/user';
 import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		collection: {
 			type: String,

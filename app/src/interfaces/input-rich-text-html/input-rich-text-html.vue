@@ -183,7 +183,7 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore } from '@/stores/settings';
 import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 import 'tinymce/tinymce';

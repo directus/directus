@@ -1,4 +1,4 @@
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
 
 /**
  * Adds the primary key field for any passed relational dot-notation field to the array of fields.

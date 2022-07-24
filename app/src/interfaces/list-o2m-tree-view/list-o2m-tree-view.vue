@@ -31,7 +31,8 @@ import { Filter } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { render } from 'micromustache';
 import { deepMap } from '@directus/shared/utils';
-import { ChangesItem, useRelationO2M } from '@/composables/use-relation';
+import { useRelationO2M } from '@/composables/use-relation-o2m';
+import { ChangesItem } from '@/composables/use-relation-multiple';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
