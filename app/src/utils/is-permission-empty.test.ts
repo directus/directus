@@ -1,4 +1,4 @@
-import { test, expect, vi } from 'vitest';
+import { test, expect } from 'vitest';
 
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 
