@@ -287,6 +287,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			});
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[LDAP] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
 			throw e;
