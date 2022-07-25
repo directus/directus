@@ -2,7 +2,7 @@ import { test, expect, beforeEach, vi } from 'vitest';
 import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 
-import { cryptoStub } from '@/__test_utils__/crypto';
+import { cryptoStub } from '@/__utils__/crypto';
 vi.stubGlobal('crypto', cryptoStub);
 
 beforeEach(() => {
