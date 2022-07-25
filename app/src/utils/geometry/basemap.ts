@@ -1,6 +1,6 @@
 import { Style, RasterSource } from 'maplibre-gl';
-import { getSetting } from '@/utils/get-setting';
 import { getTheme } from '@/utils/get-theme';
+import { useSettingsStore } from '@/stores/settings';
 
 export type BasemapSource = {
 	name: string;
@@ -24,11 +24,13 @@ const baseStyle: Style = {
 };
 
 export function getBasemapSources(): BasemapSource[] {
-	if (getSetting('mapbox_key')) {
-		return [getDefaultMapboxBasemap(), defaultBasemap, ...(getSetting('basemaps') || [])];
+	const settingsStore = useSettingsStore();
+
+	if (settingsStore.settings?.mapbox_key) {
+		return [getDefaultMapboxBasemap(), defaultBasemap, ...(settingsStore.settings?.basemaps || [])];
 	}
 
-	return [defaultBasemap, ...(getSetting('basemaps') || [])];
+	return [defaultBasemap, ...(settingsStore.settings?.basemaps || [])];
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
