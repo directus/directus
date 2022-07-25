@@ -189,6 +189,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			});
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[OpenID] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
 			throw e;
