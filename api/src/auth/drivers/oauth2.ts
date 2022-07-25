@@ -165,6 +165,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			});
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
 			throw e;
