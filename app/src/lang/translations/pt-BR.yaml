@@ -64,6 +64,7 @@ edited: Valor Editado
 required: Obrigatório
 required_for_app_access: Obrigatório para Acesso ao App
 requires_value: Requer valor
+require_value_to_be_set_on_creation: Requer que valor seja definido na criação
 create_preset: Criar Predefinição
 create_panel: Criar Painel
 create_role: Criar Cargo
