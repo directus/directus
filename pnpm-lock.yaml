@@ -21,7 +21,7 @@ importers:
       globby: ^11.0.4
       jest: 28.1.2
       jest-environment-node: ^28.1.2
-      knex: ^2.1.0
+      knex: 2.2.0
       lint-staged: ^13.0.3
       listr: ^0.14.3
       lodash: ^4.17.21
@@ -51,7 +51,7 @@ importers:
       globby: 11.1.0
       jest: 28.1.2
       jest-environment-node: 28.1.3
-      knex: 2.1.0
+      knex: 2.2.0
       lint-staged: 13.0.3
       listr: 0.14.3
       lodash: 4.17.21
@@ -164,7 +164,7 @@ importers:
       jsonwebtoken: ^8.5.1
       keyv: ^4.3.0
       keyv-memcache: ^1.2.5
-      knex: ^2.1.0
+      knex: 2.2.0
       knex-mock-client: 1.8.4
       knex-schema-inspector: ^2.0.3
       ldapjs: ^2.3.3
@@ -186,7 +186,6 @@ importers:
       openapi3-ts: ^2.0.2
       openid-client: ^5.1.6
       ora: ^5.4.0
-      oracledb: 5.3.0
       otplib: ^12.0.1
       pg: ^8.7.3
       pino: 6.13.3
@@ -265,7 +264,7 @@ importers:
       json2csv: 5.0.7
       jsonwebtoken: 8.5.1
       keyv: 4.3.2
-      knex: 2.1.0_2vpcbsnibo2fqjt4xpwdmbx3nu
+      knex: 2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu
       knex-schema-inspector: 2.0.3
       ldapjs: 2.3.3
       liquidjs: 9.39.1
@@ -307,7 +306,6 @@ importers:
       memcached: 2.2.2
       mysql: 2.18.1
       nodemailer-mailgun-transport: 2.1.4_lodash@4.17.21
-      oracledb: 5.3.0
       pg: 8.7.3
       sqlite3: 5.0.9
       tedious: 13.2.0
@@ -358,7 +356,7 @@ importers:
       cross-env: 7.0.3
       form-data: 4.0.0
       jest: 28.1.2_dyhfsldgbafx4up6nvciefunqu
-      knex-mock-client: 1.8.4_knex@2.1.0
+      knex-mock-client: 1.8.4_knex@2.2.0
       rimraf: 3.0.2
       ts-jest: 28.0.5_burdcpru4gmol7mmtlcoahzthu
       ts-node: 10.9.1_267sziivmg24nk6cdwmqdtczye
@@ -367,7 +365,7 @@ importers:
 
   app:
     specifiers:
-      '@directus/docs': ^9.13.2
+      '@directus/docs': 9.14.2
       '@directus/extensions-sdk': ^9.14.1
       '@directus/format-title': ^9.15.0
       '@directus/shared': workspace:*
@@ -468,7 +466,7 @@ importers:
       vuedraggable: 4.1.0
       wellknown: 0.5.0
     devDependencies:
-      '@directus/docs': 9.13.2
+      '@directus/docs': 9.14.2
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 9.15.0
       '@directus/shared': link:../packages/shared
@@ -571,8 +569,8 @@ importers:
 
   packages/create-directus-extension:
     specifiers:
-      '@directus/extensions-sdk': 9.14.1
-      '@directus/shared': 9.14.1
+      '@directus/extensions-sdk': workspace:*
+      '@directus/shared': workspace:*
       inquirer: ^8.1.2
     dependencies:
       '@directus/extensions-sdk': link:../extensions-sdk
@@ -705,7 +703,7 @@ importers:
 
   packages/extensions-sdk:
     specifiers:
-      '@directus/shared': 9.14.1
+      '@directus/shared': workspace:*
       '@rollup/plugin-commonjs': ^21.0.1
       '@rollup/plugin-json': ^4.1.0
       '@rollup/plugin-node-resolve': ^13.1.3
@@ -750,13 +748,13 @@ importers:
 
   packages/schema:
     specifiers:
-      knex: ^2.1.0
+      knex: 2.2.0
       knex-schema-inspector: ^2.0.3
       lodash: ^4.17.21
       npm-watch: 0.11.0
       typescript: 4.5.2
     dependencies:
-      knex: 2.1.0
+      knex: 2.2.0
       knex-schema-inspector: 2.0.3
       lodash: 4.17.21
     devDependencies:
@@ -780,7 +778,7 @@ importers:
       geojson: ^0.5.0
       jest: ^28.1.2
       joi: 17.4.2
-      knex: ^2.1.0
+      knex: 2.2.0
       knex-schema-inspector: ^2.0.1
       lodash: 4.17.21
       micromustache: ^8.0.3
@@ -800,7 +798,7 @@ importers:
       fs-extra: 10.0.0
       geojson: 0.5.0
       joi: 17.4.2
-      knex: 2.1.0
+      knex: 2.2.0
       knex-schema-inspector: 2.0.3
       lodash: 4.17.21
       micromustache: 8.0.3
@@ -2159,9 +2157,9 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/docs/9.13.2:
+  /@directus/docs/9.14.2:
     resolution:
-      { integrity: sha512-rr68GtHafxdmUiELxtf9Vlmfr6fGXA2sGxKBKwAdnmrEdG6B1LAl4xfYSj8paUujh3SzDR9nL+CzQl4lLrVYwQ== }
+      { integrity: sha512-Q/19OXZRUXbUb9c68S5DDBlkzGUZiZYknuND+JlaKj0QAvBwRPQ5hDhazzO5dhOrw/G55Xa024eYr6yQHA3Ytw== }
     dev: true
 
   /@directus/format-title/9.15.0:
@@ -5738,14 +5736,9 @@ packages:
       { integrity: sha512-Uqbg+J445nc1TKn4FoDPS6ZZqAvEDnwrH42yo8B40JSOgSLxMZ/gt3h4nmCtPLQeXhjJJkqBx7SCY35WnIixaQ== }
     dev: false
 
-  /colorette/2.0.16:
-    resolution:
-      { integrity: sha512-hUewv7oMjCp+wkBv5Rm0v87eJhq4woh5rSR+42YSQJKecCqgIqNkZ6lAlQms/BwHPJA5NKMRlpxPRv0n8HQW6g== }
-
   /colorette/2.0.19:
     resolution:
       { integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ== }
-    dev: true
 
   /combined-stream/1.0.8:
     resolution:
@@ -10388,14 +10381,14 @@ packages:
     engines: { node: '>=6' }
     dev: true
 
-  /knex-mock-client/1.8.4_knex@2.1.0:
+  /knex-mock-client/1.8.4_knex@2.2.0:
     resolution:
       { integrity: sha512-GdbJt8Zq+m3nr4vuFvx59hX5fBr15nNHi4yNNAWpbX5FjmskBXe6EaWUu1YVD5cFLhKvvrA0BgpyNXiHdeJbyg== }
     engines: { node: '>=12' }
     peerDependencies:
       knex: ^2.0.0
     dependencies:
-      knex: 2.1.0_2vpcbsnibo2fqjt4xpwdmbx3nu
+      knex: 2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu
       lodash.clonedeep: 4.5.0
     dev: true
 
@@ -10407,9 +10400,9 @@ packages:
       lodash.isnil: 4.0.0
     dev: false
 
-  /knex/2.1.0:
+  /knex/2.2.0:
     resolution:
-      { integrity: sha512-vVsnD6UJdSJy55TvCXfFF9syfwyXNxfE9mvr2hJL/4Obciy2EPGoqjDpgRSlMruHuPWDOeYAG25nyrGvU+jJog== }
+      { integrity: sha512-yhm1Qe9Ok0TeXBq3nNHqZYJPrQ4Iw2tq9k/HxjrZ/EWec2ifOjJlkNHr26v8cQrWtk5iG3iwfUazTIWy+VKG5g== }
     engines: { node: '>=12' }
     hasBin: true
     peerDependencies:
@@ -10436,7 +10429,7 @@ packages:
       tedious:
         optional: true
     dependencies:
-      colorette: 2.0.16
+      colorette: 2.0.19
       commander: 9.4.0
       debug: 4.3.4
       escalade: 3.1.1
@@ -10453,9 +10446,9 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /knex/2.1.0_2vpcbsnibo2fqjt4xpwdmbx3nu:
+  /knex/2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu:
     resolution:
-      { integrity: sha512-vVsnD6UJdSJy55TvCXfFF9syfwyXNxfE9mvr2hJL/4Obciy2EPGoqjDpgRSlMruHuPWDOeYAG25nyrGvU+jJog== }
+      { integrity: sha512-yhm1Qe9Ok0TeXBq3nNHqZYJPrQ4Iw2tq9k/HxjrZ/EWec2ifOjJlkNHr26v8cQrWtk5iG3iwfUazTIWy+VKG5g== }
     engines: { node: '>=12' }
     hasBin: true
     peerDependencies:
@@ -10482,7 +10475,7 @@ packages:
       tedious:
         optional: true
     dependencies:
-      colorette: 2.0.16
+      colorette: 2.0.19
       commander: 9.4.0
       debug: 4.3.4
       escalade: 3.1.1
@@ -11866,14 +11859,6 @@ packages:
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
     dev: false
-
-  /oracledb/5.3.0:
-    resolution:
-      { integrity: sha512-HMJzQ6lCf287ztvvehTEmjCWA21FQ3RMvM+mgoqd4i8pkREuqFWO+y3ovsGR9moJUg4T0xjcwS8rl4mggWPxmg== }
-    engines: { node: '>=10.16' }
-    requiresBuild: true
-    dev: false
-    optional: true
 
   /os-tmpdir/1.0.2:
     resolution:
@@ -14775,7 +14760,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.2
+      jest: 28.1.2_dyhfsldgbafx4up6nvciefunqu
       jest-util: 28.1.3
       json5: 2.2.1
       lodash.memoize: 4.1.2

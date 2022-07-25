@@ -80,7 +80,8 @@ test('Extracts path scope and returns correct alias for a2o', () => {
 	};
 
 	const result = getColumnPath(input as ColPathProps);
-	expect(result).toBe('abcdef.text');
+	expect(result.columnPath).toBe('abcdef.text');
+	expect(result.targetCollection).toBe('headings');
 });
 
 test('Returns correct alias for m2o', () => {
@@ -110,7 +111,8 @@ test('Returns correct alias for m2o', () => {
 	};
 
 	const result = getColumnPath(input as ColPathProps);
-	expect(result).toBe('grenv.name');
+	expect(result.columnPath).toBe('grenv.name');
+	expect(result.targetCollection).toBe('directus_roles');
 });
 
 test('Returns correct alias for o2m (& uses the table name if no alias exists)', () => {
@@ -139,5 +141,6 @@ test('Returns correct alias for o2m (& uses the table name if no alias exists)',
 	};
 
 	const result = getColumnPath(input as ColPathProps);
-	expect(result).toBe('categories.name');
+	expect(result.columnPath).toBe('categories.name');
+	expect(result.targetCollection).toBe('categories');
 });

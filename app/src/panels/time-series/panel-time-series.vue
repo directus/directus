@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { adjustDate } from '@/utils/adjust-date';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@directus/shared/utils';

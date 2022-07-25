@@ -1,5 +1,5 @@
-import localizedFormat from '@/utils/localized-format';
-import localizedFormatDistance from '@/utils/localized-format-distance';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { defineDisplay } from '@directus/shared/utils';
 import { parse, parseISO } from 'date-fns';
 import { i18n } from '@/lang';

@@ -4,6 +4,7 @@ exports.list = {
 		{ testFilePath: '/common/seed-database.test.ts' },
 		{ testFilePath: '/common/common.test.ts' },
 		{ testFilePath: '/routes/collections/crud.test.ts' },
+		{ testFilePath: '/routes/fields/delete-field.test.ts' },
 	],
 	after: [
 		{ testFilePath: '/schema/timezone/timezone.test.ts' },
