@@ -182,7 +182,7 @@
 </template>
 
 <script lang="ts">
-import { ComponentPublicInstance, computed, defineComponent, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import api from '@/api';
@@ -237,7 +237,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection('directus_users');
 
-		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
+		const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 		const {
 			isNew,
