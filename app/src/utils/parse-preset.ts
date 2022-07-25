@@ -1,4 +1,4 @@
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 import { Accountability, Role, User } from '@directus/shared/types';
 import { parsePreset as parsePresetShared } from '@directus/shared/utils';
 

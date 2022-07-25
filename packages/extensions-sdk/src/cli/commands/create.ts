@@ -3,10 +3,17 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import execa from 'execa';
 import ora from 'ora';
-import { EXTENSION_TYPES, EXTENSION_PKG_KEY, EXTENSION_LANGUAGES } from '@directus/shared/constants';
-import { isAppExtension, isExtension } from '@directus/shared/utils';
+import {
+	EXTENSION_TYPES,
+	EXTENSION_PKG_KEY,
+	EXTENSION_LANGUAGES,
+	HYBRID_EXTENSION_TYPES,
+	API_OR_HYBRID_EXTENSION_TYPES,
+	APP_OR_HYBRID_EXTENSION_TYPES,
+} from '@directus/shared/constants';
+import { isIn } from '@directus/shared/utils';
 import { ExtensionType } from '@directus/shared/types';
-import log from '../utils/logger';
+import { log } from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
 import renameMap from '../utils/rename-map';
 import { Language } from '../types';
@@ -21,9 +28,9 @@ type CreateOptions = { language: string };
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
 	const targetPath = path.resolve(name);
 
-	if (!isExtension(type)) {
+	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
-			`Extension type ${chalk.bold(type)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) =>
+			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
 				chalk.bold.magenta(t)
 			).join(', ')}.`,
 			'error'
@@ -57,7 +64,7 @@ export default async function create(type: string, name: string, options: Create
 		process.exit(1);
 	}
 
-	const spinner = ora(`Scaffolding Directus extension...`).start();
+	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
 
@@ -65,14 +72,19 @@ export default async function create(type: string, name: string, options: Create
 	await fse.copy(path.join(TEMPLATE_PATH, type, options.language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
+	const entryPath = isIn(type, HYBRID_EXTENSION_TYPES) ? { app: 'dist/app.js', api: 'dist/api.js' } : 'dist/index.js';
+	const sourcePath = isIn(type, HYBRID_EXTENSION_TYPES)
+		? { app: `src/app.${languageToShort(options.language)}`, api: `src/api.${languageToShort(options.language)}` }
+		: `src/index.${languageToShort(options.language)}`;
+
 	const packageManifest = {
 		name: `directus-extension-${name}`,
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
 			type,
-			path: 'dist/index.js',
-			source: `src/index.${languageToShort(options.language)}`,
+			path: entryPath,
+			source: sourcePath,
 			host: `^${pkg.version}`,
 		},
 		scripts: {
@@ -101,25 +113,16 @@ and then to build for production, run:
 }
 
 async function getPackageDeps(type: ExtensionType, language: Language) {
-	if (isAppExtension(type)) {
-		return {
-			'@directus/extensions-sdk': pkg.version,
-			...(language === 'typescript'
-				? {
-						typescript: `^${await getPackageVersion('typescript')}`,
-				  }
-				: {}),
-			vue: `^${await getPackageVersion('vue')}`,
-		};
-	} else {
-		return {
-			'@directus/extensions-sdk': pkg.version,
-			...(language === 'typescript'
-				? {
-						'@types/node': `^${await getPackageVersion('@types/node')}`,
-						typescript: `^${await getPackageVersion('typescript')}`,
-				  }
-				: {}),
-		};
-	}
+	return {
+		'@directus/extensions-sdk': pkg.version,
+		...(language === 'typescript'
+			? {
+					...(isIn(type, API_OR_HYBRID_EXTENSION_TYPES)
+						? { '@types/node': `^${await getPackageVersion('@types/node')}` }
+						: {}),
+					typescript: `^${await getPackageVersion('typescript')}`,
+			  }
+			: {}),
+		...(isIn(type, APP_OR_HYBRID_EXTENSION_TYPES) ? { vue: `^${await getPackageVersion('vue')}` } : {}),
+	};
 }

@@ -27,8 +27,8 @@ import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, toRefs, 
 import { useI18n } from 'vue-i18n';
 
 import { ShowSelect } from '@directus/shared/types';
-import getSetting from '@/utils/get-setting';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useSettingsStore } from '@/stores/settings';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
@@ -72,6 +72,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 		const appStore = useAppStore();
+		const settingsStore = useSettingsStore();
 		let map: Map;
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
 		const hoveredCluster = ref<boolean>();
@@ -79,7 +80,7 @@ export default defineComponent({
 		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
 		const { sidebarOpen, basemap } = toRefs(appStore);
-		const mapboxKey = getSetting('mapbox_key');
+		const mapboxKey = settingsStore.settings?.mapbox_key;
 		const basemaps = getBasemapSources();
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];

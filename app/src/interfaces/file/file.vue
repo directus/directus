@@ -139,14 +139,15 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, toRefs } from 'vue';
-import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerItem from '@/views/private/components/drawer-item';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { addQueryToPath } from '@/utils/add-query-to-path';
-import { useRelationM2O, useRelationSingle, RelationQuerySingle } from '@/composables/use-relation';
+import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
 
 type FileInfo = {
 	id: string;

@@ -18,10 +18,12 @@ import { AuthDriverOptions, User } from '../../types';
 import {
 	InvalidCredentialsException,
 	InvalidPayloadException,
+	InvalidProviderException,
 	ServiceUnavailableException,
 	InvalidConfigException,
 	UnexpectedResponseException,
 } from '../../exceptions';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import { AuthenticationService, UsersService } from '../../services';
 import asyncHandler from '../../utils/async-handler';
 import env from '../../env';
@@ -274,14 +276,22 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		await this.usersService.createOne({
-			provider: this.config.provider,
-			first_name: userInfo.firstName,
-			last_name: userInfo.lastName,
-			email: userInfo.email,
-			external_identifier: userInfo.dn,
-			role: userRole?.id ?? defaultRoleId,
-		});
+		try {
+			await this.usersService.createOne({
+				provider: this.config.provider,
+				first_name: userInfo.firstName,
+				last_name: userInfo.lastName,
+				email: userInfo.email,
+				external_identifier: userInfo.dn,
+				role: userRole?.id ?? defaultRoleId,
+			});
+		} catch (e) {
+			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[LDAP] Failed to register user. User not unique');
+				throw new InvalidProviderException();
+			}
+			throw e;
+		}
 
 		return (await this.fetchUserId(userInfo.dn)) as string;
 	}

@@ -23,7 +23,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, toRefs, PropType } from 'vue';
 import { useRouter } from 'vue-router';
-import { AuthProvider } from '@/types';
+import { AuthProvider } from '@/types/login';
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
 import { getRootPath } from '@/utils/get-root-path';

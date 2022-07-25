@@ -1,4 +1,4 @@
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { PanelQuery } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
 import { computed } from 'vue';
