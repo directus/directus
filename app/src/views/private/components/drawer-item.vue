@@ -33,7 +33,7 @@
 
 				<v-form
 					v-model="internalEdits"
-					:show-divider="showDivider"
+					:show-divider="true"
 					:disabled="disabled"
 					:loading="loading"
 					:initial-values="item"
@@ -155,13 +155,6 @@ export default defineComponent({
 				: t('editing_in', { collection: collection.name });
 		});
 
-		const showDivider = computed(() => {
-			return (
-				fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true)
-					.length > 0
-			);
-		});
-
 		const { fields: junctionRelatedCollectionFields } = usePermissions(
 			junctionRelatedCollection,
 			computed(() => item.value && item.value[props.junctionField]),
@@ -213,7 +206,6 @@ export default defineComponent({
 			junctionFieldInfo,
 			junctionRelatedCollection,
 			setJunctionEdits,
-			showDivider,
 			junctionRelatedCollectionFields,
 			fields,
 			template,
