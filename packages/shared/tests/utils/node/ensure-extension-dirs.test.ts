@@ -1,6 +1,5 @@
 import { ensureExtensionDirs } from '../../../src/utils/node/ensure-extension-dirs';
 import { EXTENSION_TYPES } from '../../../src/constants/extensions';
-import { ExtensionType } from '../../../src/types';
 import { dirSync, DirResult } from 'tmp';
 
 describe('ensureExtensionDirs', () => {
@@ -14,14 +13,13 @@ describe('ensureExtensionDirs', () => {
 		rootDir.removeCallback();
 	});
 
-	const types = EXTENSION_TYPES as readonly ExtensionType[];
 	it('returns undefined if the folders exist', async () => {
-		expect(await ensureExtensionDirs(rootDir.name, types)).toBe(undefined);
+		expect(await ensureExtensionDirs(rootDir.name, EXTENSION_TYPES)).toBe(undefined);
 	});
 
-	it('throws an error when a folder cant be opened', () => {
+	it('throws an error when a folder can not be opened', () => {
 		expect(async () => {
-			await ensureExtensionDirs('/.', types);
+			await ensureExtensionDirs('/.', EXTENSION_TYPES);
 		}).rejects.toThrow(`Extension folder "/interfaces" couldn't be opened`);
 	});
 });

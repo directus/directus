@@ -3,8 +3,9 @@ import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
 import { respond } from '../middleware/respond';
-import { depluralize, isAppExtension } from '@directus/shared/utils';
+import { depluralize, isIn } from '@directus/shared/utils';
 import { Plural } from '@directus/shared/types';
+import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/shared/constants';
 import ms from 'ms';
 import env from '../env';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
@@ -16,7 +17,7 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const type = depluralize(req.params.type as Plural<string>);
 
-		if (!isAppExtension(type)) {
+		if (!isIn(type, APP_OR_HYBRID_EXTENSION_TYPES)) {
 			throw new RouteNotFoundException(req.path);
 		}
 
@@ -38,7 +39,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const type = depluralize(req.params.type as Plural<string>);
 
-		if (!isAppExtension(type)) {
+		if (!isIn(type, APP_OR_HYBRID_EXTENSION_TYPES)) {
 			throw new RouteNotFoundException(req.path);
 		}
 
