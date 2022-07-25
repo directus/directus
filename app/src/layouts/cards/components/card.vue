@@ -113,7 +113,7 @@ export default defineComponent({
 				key = 'system-medium-contain';
 			}
 
-			const source = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+			const source = /*getRootPath() +*/ `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
 
 			return { source, fileType };
 		});

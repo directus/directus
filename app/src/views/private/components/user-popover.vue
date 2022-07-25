@@ -58,7 +58,7 @@ export default defineComponent({
 			if (data.value === null) return null;
 
 			if (data.value.avatar?.id) {
-				return `${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`;
+				return `assets/${data.value.avatar.id}?key=system-medium-cover`;
 			}
 			return null;
 		});

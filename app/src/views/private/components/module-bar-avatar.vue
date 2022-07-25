@@ -75,7 +75,7 @@ export default defineComponent({
 
 		const avatarURL = computed<string | null>(() => {
 			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-			return getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
+			return /*getRootPath() +*/ `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
 		});
 
 		const avatarError = ref(null);

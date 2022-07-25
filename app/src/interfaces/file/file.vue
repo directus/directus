@@ -198,7 +198,7 @@ const fileExtension = computed(() => {
 
 const assetURL = computed(() => {
 	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return getRootPath() + `assets/${id}`;
+	return /*getRootPath() +*/ `assets/${id}`;
 });
 
 const imageThumbnail = computed(() => {

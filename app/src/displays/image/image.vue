@@ -37,7 +37,7 @@ export default defineComponent({
 
 		const src = computed(() => {
 			if (props.value?.id === null || props.value?.id === undefined) return null;
-			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
+			return /*getRootPath() +*/ `assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		return { src, imageError };

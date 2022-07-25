@@ -35,7 +35,7 @@ export default defineComponent({
 		const customLogoPath = computed<string | null>(() => {
 			if (settingsStore.settings === null) return null;
 			if (!settingsStore.settings?.project_logo) return null;
-			return getRootPath() + `assets/${settingsStore.settings.project_logo}`;
+			return /*getRootPath() +*/ `assets/${settingsStore.settings.project_logo}`;
 		});
 
 		const showLoader = ref(false);

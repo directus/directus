@@ -45,9 +45,9 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (!props.value) return null;
-			if (props.value.type?.includes('svg')) return getRootPath() + `assets/${props.value.id}`;
+			if (props.value.type?.includes('svg')) return /*getRootPath() +*/ `assets/${props.value.id}`;
 			if (props.value.type?.includes('image') === false) return null;
-			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
+			return /*getRootPath() +*/ `assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		const { height } = useElementSize(previewEl);
