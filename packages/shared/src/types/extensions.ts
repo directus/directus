@@ -2,18 +2,14 @@ import { Knex } from 'knex';
 import { Logger } from 'pino';
 import { Ref } from 'vue';
 import {
-	API_EXTENSION_PACKAGE_TYPES,
 	API_EXTENSION_TYPES,
-	API_WITHOUT_HYBRID_EXTENSION_TYPES,
-	APP_EXTENSION_PACKAGE_TYPES,
 	APP_EXTENSION_TYPES,
-	APP_WITHOUT_HYBRID_EXTENSION_TYPES,
 	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
 	LOCAL_TYPES,
-	PACK_EXTENSION_TYPE,
+	PACKAGE_EXTENSION_TYPES,
 } from '../constants';
 import { Accountability } from './accountability';
 import { InterfaceConfig } from './interfaces';
@@ -27,16 +23,12 @@ import { Relation } from './relations';
 import { Collection } from './collection';
 import { SchemaOverview } from './schema';
 
-export type AppWithoutHybridExtensionType = typeof APP_WITHOUT_HYBRID_EXTENSION_TYPES[number];
-export type ApiWithoutHybridExtensionType = typeof API_WITHOUT_HYBRID_EXTENSION_TYPES[number];
-export type HybridExtensionType = typeof HYBRID_EXTENSION_TYPES[number];
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
+export type HybridExtensionType = typeof HYBRID_EXTENSION_TYPES[number];
 export type ExtensionType = typeof EXTENSION_TYPES[number];
 
-export type PackExtensionType = typeof PACK_EXTENSION_TYPE;
-export type AppExtensionPackageType = typeof APP_EXTENSION_PACKAGE_TYPES[number];
-export type ApiExtensionPackageType = typeof API_EXTENSION_PACKAGE_TYPES[number];
+export type PackageExtensionType = typeof PACKAGE_EXTENSION_TYPES[number];
 export type ExtensionPackageType = typeof EXTENSION_PACKAGE_TYPES[number];
 
 type ExtensionCommon = {
@@ -45,12 +37,12 @@ type ExtensionCommon = {
 };
 
 type AppExtensionCommon = {
-	type: AppWithoutHybridExtensionType;
+	type: AppExtensionType;
 	entrypoint: string;
 };
 
 type ApiExtensionCommon = {
-	type: ApiWithoutHybridExtensionType;
+	type: ApiExtensionType;
 	entrypoint: string;
 };
 
@@ -59,8 +51,8 @@ type HybridExtensionCommon = {
 	entrypoint: { app: string; api: string };
 };
 
-type PackExtensionCommon = {
-	type: PackExtensionType;
+type PackageExtensionCommon = {
+	type: PackageExtensionType;
 	children: string[];
 };
 
@@ -76,7 +68,7 @@ type ExtensionPackageCommon = ExtensionCommon & {
 
 export type ExtensionLocal = ExtensionLocalCommon & (AppExtensionCommon | ApiExtensionCommon | HybridExtensionCommon);
 export type ExtensionPackage = ExtensionPackageCommon &
-	(AppExtensionCommon | ApiExtensionCommon | HybridExtensionCommon | PackExtensionCommon);
+	(AppExtensionCommon | ApiExtensionCommon | HybridExtensionCommon | PackageExtensionCommon);
 
 export type AppExtension = AppExtensionCommon & (ExtensionLocalCommon | ExtensionPackageCommon);
 export type ApiExtension = ApiExtensionCommon & (ExtensionLocalCommon | ExtensionPackageCommon);
@@ -97,29 +89,29 @@ export type ExtensionManifestRaw = {
 	};
 };
 
-type ExtensionManifestCommon = {
+type ExtensionOptionsCommon = {
 	host: string;
 	hidden?: boolean;
 };
 
-type ExtensionManifestWithoutHybrid = {
-	type: AppWithoutHybridExtensionType | ApiWithoutHybridExtensionType;
+type ExtensionOptionsAppOrApi = {
+	type: AppExtensionType | ApiExtensionType;
 	path: string;
 	source: string;
 };
 
-type ExtensionManifestHybrid = {
+type ExtensionOptionsHybrid = {
 	type: HybridExtensionType;
 	path: { app: string; api: string };
 	source: { app: string; api: string };
 };
 
-type ExtensionManifestPack = {
-	type: PackExtensionType;
+type ExtensionOptionsPackage = {
+	type: PackageExtensionType;
 };
 
-export type ExtensionOptions = ExtensionManifestCommon &
-	(ExtensionManifestWithoutHybrid | ExtensionManifestHybrid | ExtensionManifestPack);
+export type ExtensionOptions = ExtensionOptionsCommon &
+	(ExtensionOptionsAppOrApi | ExtensionOptionsHybrid | ExtensionOptionsPackage);
 
 export type ExtensionManifest = {
 	name: string;
