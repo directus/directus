@@ -6,12 +6,11 @@ import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toArray } from '@directus/shared/utils';
 import { validateEnv } from './utils/validate-env';
+import { getExtensionManager } from './extensions';
 
 validateEnv(['STORAGE_LOCATIONS']);
 
 const storage = new StorageManager(getStorageConfig());
-
-registerDrivers(storage);
 
 export default storage;
 
@@ -39,7 +38,7 @@ function getStorageConfig(): StorageManagerConfig {
 	return config;
 }
 
-function registerDrivers(storage: StorageManager) {
+export function registerDrivers() {
 	const usedDrivers: string[] = [];
 
 	for (const [key, value] of Object.entries(env)) {
@@ -66,5 +65,18 @@ function getStorageDriver(driver: string) {
 			return GoogleCloudStorage;
 		case 'azure':
 			return AzureBlobWebServicesStorage;
+		default:
+			return getStorageDriverFromExtensions(driver);
+	}
+}
+
+function getStorageDriverFromExtensions(driver: string) {
+	const extensionManager = getExtensionManager();
+	const storagesExtensions = extensionManager.getApiExtensions().storages;
+	const storageExtension = storagesExtensions.find((storageExtension) => {
+		return storageExtension.config.id === driver;
+	});
+	if (storageExtension) {
+		return storageExtension!.config.driver;
 	}
 }

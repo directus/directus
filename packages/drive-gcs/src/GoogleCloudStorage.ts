@@ -12,6 +12,7 @@ import {
 	pipeline,
 	Response,
 	ExistsResponse,
+	PutResponse,
 	ContentResponse,
 	SignedUrlResponse,
 	SignedUrlOptions,
@@ -221,18 +222,18 @@ export class GoogleCloudStorage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<PutResponse> {
 		const file = this._file(location);
 
 		try {
 			if (isReadableStream(content)) {
 				const destStream = file.createWriteStream({ resumable: false });
 				await pipeline(content, destStream);
-				return { raw: undefined };
+				return { location, raw: undefined };
 			}
 
 			const result = await file.save(content, { resumable: false });
-			return { raw: result };
+			return { location, raw: result };
 		} catch (e: any) {
 			throw handleError(e, location);
 		}

@@ -1,6 +1,7 @@
 import { MethodNotSupported } from './exceptions';
 import {
 	Response,
+	PutResponse,
 	SignedUrlResponse,
 	ContentResponse,
 	ExistsResponse,
@@ -131,7 +132,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	put(_location: string, _content: Buffer | NodeJS.ReadableStream | string, _type?: string): Promise<Response> {
+	put(_location: string, _content: Buffer | NodeJS.ReadableStream | string, _type?: string): Promise<PutResponse> {
 		throw new MethodNotSupported('put', this.constructor.name);
 	}
 

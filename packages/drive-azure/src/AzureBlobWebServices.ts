@@ -5,6 +5,7 @@ import {
 	SignedUrlOptions,
 	Response,
 	ExistsResponse,
+	PutResponse,
 	ContentResponse,
 	SignedUrlResponse,
 	StatResponse,
@@ -217,23 +218,23 @@ export class AzureBlobWebServicesStorage extends Storage {
 		location: string,
 		content: Buffer | NodeJS.ReadableStream | string,
 		type?: string
-	): Promise<Response> {
-		location = this._fullPath(location);
+	): Promise<PutResponse> {
+		const locationFullPath = this._fullPath(location);
 
-		const blockBlobClient = this.$containerClient.getBlockBlobClient(location);
+		const blockBlobClient = this.$containerClient.getBlockBlobClient(locationFullPath);
 
 		try {
 			if (isReadableStream(content)) {
 				const result = await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {
 					blobHTTPHeaders: { blobContentType: type ?? 'application/octet-stream' },
 				});
-				return { raw: result };
+				return { location, raw: result };
 			}
 
 			const result = await blockBlobClient.upload(content, content.length);
-			return { raw: result };
+			return { location, raw: result };
 		} catch (e: any) {
-			throw handleError(e, location);
+			throw handleError(e, locationFullPath);
 		}
 	}
 

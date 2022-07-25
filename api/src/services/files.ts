@@ -68,19 +68,21 @@ export class FilesService extends ItemsService {
 			payload.type = 'application/octet-stream';
 		}
 
+		let fileLocation;
 		try {
-			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
+			const response = await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
+			fileLocation = response.location;
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
-		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
+		const { size } = await storage.disk(data.storage).getStat(fileLocation);
 		payload.filesize = size;
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
-			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
+			const buffer = await storage.disk(data.storage).getBuffer(fileLocation);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
 
 			payload.height ??= height;

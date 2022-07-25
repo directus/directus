@@ -8,6 +8,7 @@ import {
 	SignedUrlOptions,
 	Response,
 	ExistsResponse,
+	PutResponse,
 	ContentResponse,
 	SignedUrlResponse,
 	StatResponse,
@@ -251,11 +252,11 @@ export class AmazonWebServicesS3Storage extends Storage {
 		location: string,
 		content: Buffer | NodeJS.ReadableStream | string,
 		type?: string
-	): Promise<Response> {
-		location = this._fullPath(location);
+	): Promise<PutResponse> {
+		const locationFullPath = this._fullPath(location);
 
 		const params = {
-			Key: location,
+			Key: locationFullPath,
 			Body: content,
 			Bucket: this.$bucket,
 			ACL: this.$acl,
@@ -264,9 +265,9 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 		try {
 			const result = await this.$driver.upload(params).promise();
-			return { raw: result };
+			return { location, raw: result };
 		} catch (e: any) {
-			throw handleError(e, location, this.$bucket);
+			throw handleError(e, locationFullPath, this.$bucket);
 		}
 	}
 

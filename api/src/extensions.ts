@@ -54,6 +54,7 @@ import { getFlowManager } from './flows';
 import globby from 'globby';
 import { EventHandler } from './types';
 import { JobQueue } from './utils/job-queue';
+import { StorageConfig } from '@directus/shared/types';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -71,6 +72,7 @@ type AppExtensions = Partial<Record<AppExtensionType, string>>;
 type ApiExtensions = {
 	hooks: { path: string; events: EventHandler[] }[];
 	endpoints: { path: string }[];
+	storages: { path: string; config: StorageConfig }[];
 	operations: { path: string }[];
 };
 
@@ -91,7 +93,7 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = {};
-	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [], operations: [] };
+	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [], storages: [], operations: [] };
 
 	private apiEmitter: Emitter;
 	private endpointRouter: Router;
@@ -173,6 +175,10 @@ class ExtensionManager {
 		return this.appExtensions[type];
 	}
 
+	public getApiExtensions(): ApiExtensions {
+		return this.apiExtensions;
+	}
+
 	public getEndpointRouter(): Router {
 		return this.endpointRouter;
 	}
@@ -189,6 +195,7 @@ class ExtensionManager {
 
 		this.registerHooks();
 		this.registerEndpoints();
+		this.registerStorages();
 		await this.registerOperations();
 
 		if (env.SERVE_APP) {
@@ -201,6 +208,7 @@ class ExtensionManager {
 	private async unload(): Promise<void> {
 		this.unregisterHooks();
 		this.unregisterEndpoints();
+		this.unregisterStorages();
 		this.unregisterOperations();
 
 		this.apiEmitter.offAll();
@@ -359,6 +367,22 @@ class ExtensionManager {
 				this.registerEndpoint(config, endpointPath, endpoint.name, this.endpointRouter);
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
+				logger.warn(error);
+			}
+		}
+	}
+
+	registerStorages() {
+		const storages = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'storage');
+		for (const storage of storages) {
+			try {
+				const storagePath = path.resolve(storage.path, storage.entrypoint);
+				this.apiExtensions.storages.push({
+					path: storagePath,
+					config: require(storagePath),
+				});
+			} catch (error: any) {
+				logger.warn(`Couldn't register storage "${storage.name}"`);
 				logger.warn(error);
 			}
 		}
@@ -532,6 +556,13 @@ class ExtensionManager {
 		this.endpointRouter.stack = [];
 
 		this.apiExtensions.endpoints = [];
+	}
+
+	unregisterStorages() {
+		for (const storage of this.apiExtensions.storages) {
+			delete require.cache[require.resolve(storage.path)];
+		}
+		this.apiExtensions.storages = [];
 	}
 
 	private unregisterOperations(): void {

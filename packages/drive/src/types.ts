@@ -28,6 +28,10 @@ export interface Response {
 	raw: unknown;
 }
 
+export interface PutResponse extends Response {
+	location: string;
+}
+
 export interface ExistsResponse extends Response {
 	exists: boolean;
 }

@@ -12,6 +12,7 @@ import {
 	FileListResponse,
 	DeleteResponse,
 	Range,
+	PutResponse,
 } from './types';
 
 function handleError(err: Error & { code: string; path?: string }, location: string): Error {
@@ -183,7 +184,7 @@ export class LocalFileSystemStorage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<PutResponse> {
 		const fullPath = this._fullPath(location);
 
 		try {
@@ -192,11 +193,11 @@ export class LocalFileSystemStorage extends Storage {
 				await fse.ensureDir(dir);
 				const ws = fse.createWriteStream(fullPath);
 				await pipeline(content, ws);
-				return { raw: undefined };
+				return { location, raw: undefined };
 			}
 
 			const result = await fse.outputFile(fullPath, content);
-			return { raw: result };
+			return { location, raw: result };
 		} catch (e: any) {
 			throw handleError(e, location);
 		}

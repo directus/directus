@@ -61,6 +61,7 @@ import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { merge } from 'lodash';
+import { registerDrivers } from './storage';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -92,6 +93,8 @@ export default async function createApp(): Promise<express.Application> {
 
 	await extensionManager.initialize();
 	await flowManager.initialize();
+
+	registerDrivers();
 
 	const app = express();
 

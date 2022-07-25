@@ -25,4 +25,5 @@ export * from './relations';
 export * from './schema';
 export * from './settings';
 export * from './shares';
+export * from './storages';
 export * from './users';

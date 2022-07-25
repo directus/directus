@@ -8,12 +8,12 @@ import sharp from 'sharp';
 import getDatabase from '../database';
 import env from '../env';
 import { IllegalAssetTransformation, RangeNotSatisfiableException, ForbiddenException } from '../exceptions';
-import storage from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { AuthorizationService } from './authorization';
 import * as TransformationUtils from '../utils/transformations';
 import validateUUID from 'uuid-validate';
+import storage from '../storage';
 
 sharp.concurrency(1);
 
@@ -154,11 +154,12 @@ export class AssetsService {
 
 				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
 
-				await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
+				const response = await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
+				const assetLocation = response.location;
 
 				return {
-					stream: storage.disk(file.storage).getStream(assetFilename, range),
-					stat: await storage.disk(file.storage).getStat(assetFilename),
+					stream: storage.disk(file.storage).getStream(assetLocation, range),
+					stat: await storage.disk(file.storage).getStat(assetLocation),
 					file,
 				};
 			});
