@@ -1,14 +1,24 @@
 import path from 'path';
-import { AppExtension, AppExtensionType, Extension } from '../../types';
+import { HYBRID_EXTENSION_TYPES } from '../../constants';
+import { AppExtension, AppExtensionType, Extension, HybridExtension, HybridExtensionType } from '../../types';
+import { isTypeIn } from '../array-helpers';
 
-export function generateExtensionsEntry(type: AppExtensionType, extensions: Extension[]): string {
-	const filteredExtensions = extensions.filter((extension): extension is AppExtension => extension.type === type);
+export function generateExtensionsEntry(type: AppExtensionType | HybridExtensionType, extensions: Extension[]): string {
+	const filteredExtensions = extensions.filter(
+		(extension): extension is AppExtension | HybridExtension => extension.type === type
+	);
 
 	return `${filteredExtensions
 		.map(
 			(extension, i) =>
 				`import e${i} from './${path
-					.relative('.', path.resolve(extension.path, extension.entrypoint))
+					.relative(
+						'.',
+						path.resolve(
+							extension.path,
+							isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.app : extension.entrypoint
+						)
+					)
 					.split(path.sep)
 					.join(path.posix.sep)}';\n`
 		)
