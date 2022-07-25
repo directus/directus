@@ -292,6 +292,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			}
 			throw e;
 		}
+
 		return (await this.fetchUserId(userInfo.dn)) as string;
 	}
 
