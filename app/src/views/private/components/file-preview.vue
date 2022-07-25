@@ -1,14 +1,12 @@
 <template>
-	<div
-		v-if="type && !imgError"
-		class="file-preview"
-		:class="{ modal: inModal, small: isSmall, svg: isSVG, centered: type === 'video' }"
-	>
+	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }">
 		<div v-if="type === 'image'" class="image" @click="$emit('click')">
 			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 		</div>
 
-		<video v-else-if="type === 'video'" controls :src="authenticatedSrc" />
+		<div v-else-if="type === 'video'" class="video">
+			<video controls :src="authenticatedSrc" />
+		</div>
 
 		<audio v-else-if="type === 'audio'" controls :src="authenticatedSrc" />
 
@@ -69,11 +67,6 @@ const authenticatedSrc = computed(() => addTokenToURL(props.src));
 	position: relative;
 	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
 
-	&.centered {
-		display: flex;
-		justify-content: center;
-	}
-
 	img,
 	video {
 		width: auto;
@@ -93,14 +86,27 @@ const authenticatedSrc = computed(() => addTokenToURL(props.src));
 		border-radius: var(--border-radius);
 	}
 
-	.image {
+	.image,
+	.video {
 		background-color: var(--background-normal);
 		border-radius: var(--border-radius);
+	}
 
+	.image {
 		img {
 			z-index: 1;
 			display: block;
 			margin: 0 auto;
+		}
+	}
+
+	.video {
+		display: flex;
+		justify-content: center;
+
+		video {
+			min-height: 80px;
+			min-width: 80px;
 		}
 	}
 
