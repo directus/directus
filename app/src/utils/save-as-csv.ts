@@ -1,6 +1,6 @@
-import useAliasFields from '@/composables/use-alias-fields';
+import { useAliasFields } from '@/composables/use-alias-fields';
 import { getDisplay } from '@/displays';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { get } from '@/utils/get-with-arrays';
 import { DisplayConfig, Field, Item } from '@directus/shared/types';
 import { saveAs } from 'file-saver';

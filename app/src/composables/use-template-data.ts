@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { computed, Ref, ref, watch } from 'vue';
 
@@ -9,10 +9,7 @@ type UsableTemplateData = {
 	error: Ref<any>;
 };
 
-export default function useTemplateData(
-	collection: Ref<Collection | null>,
-	primaryKey: Ref<string>
-): UsableTemplateData {
+export function useTemplateData(collection: Ref<Collection | null>, primaryKey: Ref<string>): UsableTemplateData {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref<any>(null);

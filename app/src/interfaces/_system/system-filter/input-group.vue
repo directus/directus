@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { useI18n } from 'vue-i18n';
 import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';

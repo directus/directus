@@ -6,11 +6,11 @@ import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
 import NoCollections from './routes/no-collections.vue';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@directus/shared/types';
 import { orderBy, isNil } from 'lodash';
 import { useNavigation } from './composables/use-navigation';
-import useLocalStorage from '@/composables/use-local-storage';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { ref } from 'vue';
 
 const checkForSystem: NavigationGuard = (to, from) => {

@@ -1,4 +1,4 @@
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
 export function getTheme(): 'light' | 'dark' {
 	const userStore = useUserStore();

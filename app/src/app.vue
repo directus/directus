@@ -23,11 +23,13 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted, StyleValue } from 'vue';
-import { useAppStore, useUserStore, useServerStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useUserStore } from '@/stores/user';
+import { useServerStore } from '@/stores/server';
 import { startIdleTracking, stopIdleTracking } from './idle';
-import useSystem from '@/composables/use-system';
+import { useSystem } from '@/composables/use-system';
 
-import setFavicon from '@/utils/set-favicon';
+import { setFavicon } from '@/utils/set-favicon';
 import { User } from '@directus/shared/types';
 
 export default defineComponent({

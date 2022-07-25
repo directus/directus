@@ -1,5 +1,5 @@
 import { defineDisplay } from '@directus/shared/utils';
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import mime from 'mime/lite';
 
 export default defineDisplay({

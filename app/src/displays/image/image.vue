@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import { getRootPath } from '@/utils/get-root-path';
-import ValueNull from '@/views/private/components/value-null';
 import { computed, defineComponent, PropType, ref } from 'vue';
 
 type Image = {
@@ -23,7 +22,6 @@ type Image = {
 };
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		value: {
 			type: Object as PropType<Image>,

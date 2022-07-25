@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue';
 
-export default function useLocalStorage(key: string) {
+export function useLocalStorage(key: string) {
 	const internalKey = `directus-${key}`;
 	const data = ref<string | number | boolean | object | null>(null);
 
