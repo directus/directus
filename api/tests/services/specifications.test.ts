@@ -36,7 +36,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('returns untyped schema for json fields', async () => {
-					const readByQueryCollectionSpy = jest.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
+					jest.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
 						jest.fn().mockReturnValue([
 							{
 								collection: 'test_table',
@@ -57,7 +57,8 @@ describe('Integration Tests', () => {
 							},
 						])
 					);
-					const readAllFieldsSpy = jest.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
+
+					jest.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
 						jest.fn().mockReturnValue([
 							{
 								collection: 'test_table',
@@ -77,9 +78,7 @@ describe('Integration Tests', () => {
 							},
 						])
 					);
-					const readAlRelationsSpy = jest
-						.spyOn(RelationsService.prototype, 'readAll')
-						.mockImplementation(jest.fn().mockReturnValue([]));
+					jest.spyOn(RelationsService.prototype, 'readAll').mockImplementation(jest.fn().mockReturnValue([]));
 
 					const spec = await service.oas.generate();
 					expect(spec.components?.schemas).toEqual({
