@@ -153,6 +153,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			logger.trace(`[OAuth2] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
+
 		try {
 			await this.usersService.createOne({
 				provider,
