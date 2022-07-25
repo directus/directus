@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.14.1",
+	"version": "9.14.5",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -36,7 +36,7 @@
 		"cleanup:coverage": "rimraf ./coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
 		"fs-extra": "^10.0.0",

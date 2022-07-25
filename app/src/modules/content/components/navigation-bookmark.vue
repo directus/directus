@@ -86,7 +86,8 @@
 </template>
 
 <script lang="ts" setup>
-import { usePresetsStore, useUserStore } from '@/stores';
+import { usePresetsStore } from '@/stores/presets';
+import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Preset } from '@directus/shared/types';

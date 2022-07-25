@@ -309,6 +309,7 @@ primary_key: Clef primaire
 foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
 dismiss: Ignorer
+toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
 raw_value: Valeur brute
 copy_raw_value: Copier la valeur brute
 copy_raw_value_success: Copié
@@ -614,6 +615,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
+edit_image: Éditer l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -1501,6 +1503,7 @@ interfaces:
     allow_none_label: Autoriser aucune sélection
     choices_name_placeholder: Entrez un nom...
     choices_value_placeholder: Saisissez une valeur...
+    preview_threshold: Seuil d'aperçu
   select-multiple-dropdown:
     select-multiple-dropdown: Liste déroulante (choix multiple)
     description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
@@ -1699,6 +1702,9 @@ interfaces:
     regenerate: Régénérer le jeton
     generate_success_copy: Assurez-vous de sauvegarder et de copier le jeton ci-dessus. Pour des raisons de sécurité, vous ne pourrez plus voir le jeton après avoir enregistré et quitté cette page.
     remove_token: Supprimer le jeton
+  system-raw-editor:
+    system-raw-editor: Éditeur brut
+    description: Permettre la saisie de valeurs brutes ou de modèles en moustache
 displays:
   translations:
     translations: Traductions
@@ -1742,6 +1748,10 @@ displays:
     strict: Stricte
     strict_label: Utilisez des unités strictes
     strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
+    round_note: Choisissez une fonction d'arrondi à utiliser
+    down: Bas
+    nearest: Le plus proche
+    up: Haut
   file:
     file: Fichier
     description: Afficher les fichiers

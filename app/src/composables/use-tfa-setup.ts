@@ -2,7 +2,7 @@ import api from '@/api';
 import { nanoid } from 'nanoid';
 import { onMounted, ref } from 'vue';
 import qrcode from 'qrcode';
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
 export function useTFASetup(initialEnabled: boolean) {
 	const loading = ref(false);

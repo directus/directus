@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { Filter, Type, FieldFunction } from '@directus/shared/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';

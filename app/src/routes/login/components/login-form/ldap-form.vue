@@ -21,7 +21,7 @@ import { useRouter } from 'vue-router';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
 type Credentials = {
 	identifier: string;

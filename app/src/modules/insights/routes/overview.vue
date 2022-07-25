@@ -102,9 +102,10 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import { useInsightsStore, usePermissionsStore } from '@/stores';
+import { useInsightsStore } from '@/stores/insights';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useI18n } from 'vue-i18n';
-import { Dashboard } from '@/types';
+import { Dashboard } from '@/types/insights';
 import { router } from '@/router';
 import { Header } from '@/components/v-table/types';
 import InsightsNavigation from '../components/navigation.vue';

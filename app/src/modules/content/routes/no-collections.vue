@@ -36,7 +36,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import ContentNavigation from '../components/navigation.vue';
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
 	name: 'ContentOverview',

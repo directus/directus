@@ -31,7 +31,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@directus/shared/types';
 import { Field } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 
 export default defineComponent({
 	props: {

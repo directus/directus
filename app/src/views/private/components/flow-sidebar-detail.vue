@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import api from '@/api';
-import { useFlowsStore } from '@/stores';
+import { useFlowsStore } from '@/stores/flows';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/shared/composables';
@@ -29,7 +29,7 @@ import { useI18n } from 'vue-i18n';
 
 interface Props {
 	collection: string;
-	primaryKey?: string;
+	primaryKey?: string | number;
 	selection?: (number | string)[];
 	location: 'collection' | 'item';
 }

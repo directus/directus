@@ -43,7 +43,7 @@
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
 import { Share } from '@directus/shared/types';

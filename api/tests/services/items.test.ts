@@ -663,6 +663,120 @@ describe('Integration Tests', () => {
 					expect(tracker.history.select.length).toBe(0);
 				}
 			);
+
+			it.each(Object.keys(schemas))('%s returns count() that is processed without role permissions', async (schema) => {
+				const childTable = schemas[schema].tables[1];
+
+				const childItems = [
+					{
+						items_count: 1,
+						id: rawItems[0].id,
+					},
+				];
+
+				tracker.on.select(childTable).response(childItems);
+
+				const table = schemas[schema].tables[0];
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: {
+						role: 'admin',
+						admin: false,
+						permissions: [
+							{
+								id: 1,
+								role: 'admin',
+								collection: schemas[schema].tables[0],
+								action: 'read',
+								permissions: {},
+								validation: {},
+								presets: {},
+								fields: ['id', 'items'],
+							},
+							{
+								id: 2,
+								role: 'admin',
+								collection: schemas[schema].tables[1],
+								action: 'read',
+								permissions: {},
+								validation: {},
+								presets: {},
+								fields: ['id', 'title', 'uploaded_by'],
+							},
+						],
+					},
+					schema: schemas[schema].schema,
+				});
+				const response = await itemsService.readOne(rawItems[0].id, {
+					fields: ['count(items)'],
+				});
+
+				expect(tracker.history.select.length).toBe(1);
+				expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
+				expect(tracker.history.select[0].sql).toBe(
+					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id") AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+				);
+
+				expect(response).toStrictEqual({ items_count: 1 });
+			});
+
+			it.each(Object.keys(schemas))('%s returns count() that is processed with role permissions', async (schema) => {
+				const childTable = schemas[schema].tables[1];
+
+				const childItems = [
+					{
+						items_count: 1,
+						id: rawItems[0].id,
+					},
+				];
+
+				tracker.on.select(childTable).response(childItems);
+
+				const table = schemas[schema].tables[0];
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: {
+						role: 'admin',
+						admin: false,
+						permissions: [
+							{
+								id: 1,
+								role: 'admin',
+								collection: schemas[schema].tables[0],
+								action: 'read',
+								permissions: {},
+								validation: {},
+								presets: {},
+								fields: ['id', 'items'],
+							},
+							{
+								id: 2,
+								role: 'admin',
+								collection: schemas[schema].tables[1],
+								action: 'read',
+								permissions: { _and: [{ title: { _contains: 'child' } }] },
+								validation: {},
+								presets: {},
+								fields: ['id', 'title', 'uploaded_by'],
+							},
+						],
+					},
+					schema: schemas[schema].schema,
+				});
+				const response = await itemsService.readOne(rawItems[0].id, {
+					fields: ['count(items)'],
+				});
+
+				expect(tracker.history.select.length).toBe(1);
+				expect(tracker.history.select[0].bindings).toStrictEqual([rawItems[0].id, 100]);
+				expect(tracker.history.select[0].sql).toBe(
+					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id" and (("${childTable}"."title" like '%child%'))) AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+				);
+
+				expect(response).toStrictEqual({ items_count: 1 });
+			});
 		});
 	});
 

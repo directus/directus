@@ -6,6 +6,9 @@ import { respond } from '../middleware/respond';
 import { depluralize, isIn } from '@directus/shared/utils';
 import { Plural } from '@directus/shared/types';
 import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/shared/constants';
+import ms from 'ms';
+import env from '../env';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
 
 const router = Router();
 
@@ -48,7 +51,11 @@ router.get(
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		res.setHeader('Cache-Control', 'no-store');
+		if (env.EXTENSIONS_CACHE_TTL) {
+			res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.EXTENSIONS_CACHE_TTL as string)));
+		} else {
+			res.setHeader('Cache-Control', 'no-store');
+		}
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(extensionSource);
 	})
