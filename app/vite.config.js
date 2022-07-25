@@ -1,20 +1,21 @@
-import { defineConfig, searchForWorkspaceRoot } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import md from 'vite-plugin-vue-markdown';
-import yaml from '@rollup/plugin-yaml';
-import path from 'path';
-import {
-	ensureExtensionDirs,
-	getPackageExtensions,
-	getLocalExtensions,
-	generateExtensionsEntry,
-} from '@directus/shared/utils/node';
 import {
 	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 } from '@directus/shared/constants';
+import {
+	ensureExtensionDirs,
+	generateExtensionsEntry,
+	getLocalExtensions,
+	getPackageExtensions,
+} from '@directus/shared/utils/node';
+import yaml from '@rollup/plugin-yaml';
+import vue from '@vitejs/plugin-vue';
 import hljs from 'highlight.js';
+import path from 'path';
+import { searchForWorkspaceRoot } from 'vite';
+import md from 'vite-plugin-vue-markdown';
+import { defineConfig } from 'vitest/config';
 import hljsGraphQL from './src/utils/hljs-graphql';
 
 hljs.registerLanguage('graphql', hljsGraphQL);
@@ -143,6 +144,9 @@ export default defineConfig({
 		fs: {
 			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
 		},
+	},
+	test: {
+		environment: 'happy-dom',
 	},
 });
 
