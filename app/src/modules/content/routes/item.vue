@@ -208,7 +208,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ComponentPublicInstance, computed, ref, unref, toRefs } from 'vue';
+import { computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -248,7 +248,7 @@ const form = ref<HTMLElement>();
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetailRef = ref<ComponentPublicInstance | null>(null);
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
