@@ -1,6 +1,6 @@
 import { useRelationsStore } from '@/stores/relations';
 import { Relation } from '@directus/shared/types';
-import { getLocalTypeForField } from '../modules/settings/routes/data-model/get-local-type';
+import { getLocalTypeForField } from './get-local-type';
 
 export interface RelatedCollectionData {
 	relatedCollection: string;
@@ -8,6 +8,14 @@ export interface RelatedCollectionData {
 	path?: string[];
 }
 
+/**
+ * Get the related collection for a given relational field
+ * For many-to-many type fields, it will return both the junction as the related collection
+ *
+ * @param collection - Name of the current parent collection
+ * @param field - Name of the relational field in the current collection
+ * @returns Related collection name(s)
+ */
 export function getRelatedCollection(collection: string, field: string): RelatedCollectionData {
 	const relationsStore = useRelationsStore();
 
@@ -15,6 +23,7 @@ export function getRelatedCollection(collection: string, field: string): Related
 	const localType = getLocalTypeForField(collection, field);
 
 	const o2mTypes = ['o2m', 'm2m', 'm2a', 'translations', 'files'];
+
 	if (localType && o2mTypes.includes(localType)) {
 		if (localType == 'm2m' && relations.length > 1) {
 			return {

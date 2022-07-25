@@ -20,7 +20,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 
 import * as alterations from './alterations';
-import { getLocalTypeForField } from '../../get-local-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 import api from '@/api';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {

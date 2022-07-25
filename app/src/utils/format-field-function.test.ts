@@ -3,7 +3,7 @@ import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { createI18n } from 'vue-i18n';
 
-import { cryptoStub } from '../__test_utils__/crypto';
+import { cryptoStub } from '@/__test_utils__/crypto';
 vi.stubGlobal('crypto', cryptoStub);
 
 import { useFieldsStore } from '@/stores/fields';
