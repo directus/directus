@@ -32,19 +32,19 @@
 							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')">
 								<template #append>
 									<v-menu show-arrow placement="bottom-end">
-									<template #activator="{ toggle }">
-										<v-icon clickable class="options" name="more_vert" @click="toggle" />
-									</template>
-									<v-list>
-										<v-list-item clickable @click="activeDialog = true">
-											<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-											<v-list-item-content>
-												{{ t('choose_from_library') }}
-											</v-list-item-content>
-										</v-list-item>
-									</v-list>
-								</v-menu>
-							</template>
+										<template #activator="{ toggle }">
+											<v-icon clickable class="options" name="more_vert" @click="toggle" />
+										</template>
+										<v-list>
+											<v-list-item clickable @click="activeDialog = true">
+												<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
+												<v-list-item-content>
+													{{ t('choose_from_library') }}
+												</v-list-item-content>
+											</v-list-item>
+										</v-list>
+									</v-menu>
+								</template>
 							</v-input>
 						</div>
 						<div class="field">
@@ -71,11 +71,11 @@
 				</v-card-actions>
 			</v-card>
 			<drawer-collection
-			collection="directus_files"
-			:active="activeDialog"
-			:filter="filterByFolder"
-			@update:active="activeDialog = false"
-			@input="setSelection"
+				collection="directus_files"
+				:active="activeDialog"
+				:filter="filterByFolder"
+				@update:active="activeDialog = false"
+				@input="setSelection"
 			/>
 		</v-dialog>
 
@@ -453,7 +453,7 @@ export default defineComponent({
 			onLinkSelect,
 			activeDialog,
 			setSelection,
-			filterByFolder
+			filterByFolder,
 		};
 
 		function setCount() {
@@ -545,7 +545,6 @@ export default defineComponent({
 				}
 			}
 		}
-
 	},
 });
 </script>
