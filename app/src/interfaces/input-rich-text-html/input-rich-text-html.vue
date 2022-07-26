@@ -29,7 +29,23 @@
 					<div class="grid">
 						<div class="field">
 							<div class="type-label">{{ t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')"></v-input>
+							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')">
+								<template #append>
+									<v-menu show-arrow placement="bottom-end">
+									<template #activator="{ toggle }">
+										<v-icon clickable class="options" name="more_vert" @click="toggle" />
+									</template>
+									<v-list>
+										<v-list-item clickable @click="activeDialog = true">
+											<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
+											<v-list-item-content>
+												{{ t('choose_from_library') }}
+											</v-list-item-content>
+										</v-list-item>
+									</v-list>
+								</v-menu>
+							</template>
+							</v-input>
 						</div>
 						<div class="field">
 							<div class="type-label">{{ t('display_text') }}</div>
@@ -54,6 +70,13 @@
 					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
+			<drawer-collection
+			collection="directus_files"
+			:active="activeDialog"
+			:filter="filterByFolder"
+			@update:active="activeDialog = false"
+			@input="setSelection"
+			/>
 		</v-dialog>
 
 		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
@@ -185,6 +208,8 @@ import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
 import { useSettingsStore } from '@/stores/settings';
 import { SettingsStorageAssetPreset } from '@directus/shared/types';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import api from '@/api';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -214,7 +239,7 @@ type CustomFormat = {
 };
 
 export default defineComponent({
-	components: { Editor },
+	components: { Editor, DrawerCollection },
 	props: {
 		value: {
 			type: String,
@@ -281,9 +306,17 @@ export default defineComponent({
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
 		const settingsStore = useSettingsStore();
+		const { setSelection } = useSelection();
 
 		let storageAssetTransform = ref('all');
 		let storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+
+		const activeDialog = ref<boolean>(false);
+
+		const filterByFolder = computed(() => {
+			if (!props.folder) return null;
+			return { folder: { id: { _eq: props.folder } } };
+		});
 
 		if (settingsStore.settings?.storage_asset_transform) {
 			storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
@@ -315,7 +348,7 @@ export default defineComponent({
 			mediaButton,
 		} = useMedia(editorRef, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, onLinkSelect } = useLink(editorRef);
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
@@ -417,6 +450,10 @@ export default defineComponent({
 			contentUpdated,
 			storageAssetTransform,
 			storageAssetPresets,
+			onLinkSelect,
+			activeDialog,
+			setSelection,
+			filterByFolder
 		};
 
 		function setCount() {
@@ -497,6 +534,18 @@ export default defineComponent({
 				body.classList.remove('focus');
 			}
 		}
+
+		function useSelection() {
+			return { setSelection };
+			async function setSelection(selection: string[]) {
+				if (selection[0]) {
+					const id = selection[0];
+					const fileResponse = await api.get(`/files/${id}`);
+					onLinkSelect(fileResponse.data.data);
+				}
+			}
+		}
+
 	},
 });
 </script>
