@@ -30,29 +30,31 @@
 					:title="file.title"
 					:in-modal="true"
 				/>
+				<div class="drawer-item-order" :class="{ swap: relationFirst }">
+					<v-form
+						:disabled="disabled"
+						:loading="loading"
+						:initial-values="item && item[junctionField]"
+						:primary-key="relatedPrimaryKey"
+						:model-value="internalEdits[junctionField]"
+						:fields="junctionRelatedCollectionFields"
+						:validation-errors="junctionField ? validationErrors : undefined"
+						autofocus
+						:show-divider="!relationFirst"
+						@update:model-value="setJunctionEdits"
+					/>
 
-				<v-form
-					:disabled="disabled"
-					:loading="loading"
-					:initial-values="item && item[junctionField]"
-					:primary-key="relatedPrimaryKey"
-					:model-value="internalEdits[junctionField]"
-					:fields="junctionRelatedCollectionFields"
-					:validation-errors="junctionField ? validationErrors : undefined"
-					autofocus
-					:show-divider="true"
-					@update:model-value="setJunctionEdits"
-				/>
-
-				<v-form
-					v-model="internalEdits"
-					:disabled="disabled"
-					:loading="loading"
-					:initial-values="item"
-					:primary-key="primaryKey"
-					:fields="fields"
-					:validation-errors="!junctionField ? validationErrors : undefined"
-				/>
+					<v-form
+						v-model="internalEdits"
+						:disabled="disabled"
+						:loading="loading"
+						:initial-values="item"
+						:primary-key="primaryKey"
+						:fields="fields"
+						:show-divider="relationFirst"
+						:validation-errors="!junctionField ? validationErrors : undefined"
+					/>
+				</div>
 			</template>
 		</div>
 	</v-drawer>
@@ -114,6 +116,10 @@ export default defineComponent({
 		circularField: {
 			type: String,
 			default: null,
+		},
+		relationFirst: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:active', 'input'],
@@ -414,5 +420,11 @@ export default defineComponent({
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	.drawer-item-order {
+		&.swap {
+			display: flex;
+			flex-direction: column-reverse;
+		}
+	}
 }
 </style>

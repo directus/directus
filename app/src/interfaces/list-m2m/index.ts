@@ -75,6 +75,21 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'relationFirst',
+				name: '$t:relation_first',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:show_relation_first',
+					},
+					width: 'half',
+				},
+			},
+
+			{
 				field: 'filter',
 				name: '$t:filter',
 				type: 'json',
