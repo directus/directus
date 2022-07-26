@@ -24,6 +24,7 @@
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:direction="languageOptions.find((lang) => lang.value === firstLang)?.direction"
 				:autofocus="autofocus"
 				@update:model-value="updateValue($event, firstLang)"
 			/>
@@ -51,6 +52,7 @@
 				:initial-values="secondItemInitial"
 				:fields="fields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
+				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
 				:model-value="secondItem"
 				@update:model-value="updateValue($event, secondLang)"
 			/>
@@ -220,6 +222,7 @@ function useLanguages() {
 
 			return {
 				text: language[props.languageField ?? relationInfo.value.relatedPrimaryKeyField.field],
+				direction: language.direction,
 				value: langCode,
 				edited: edits?.$type !== undefined,
 				progress: Math.round((filledFields / totalFields) * 100),
@@ -243,6 +246,9 @@ function useLanguages() {
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 
 		fields.add(pkField);
+
+		// Open for discussion, since this field might need to be dynamic
+		fields.add('direction');
 
 		loading.value = true;
 
