@@ -477,7 +477,7 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.id
-						? `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						? `/assets/${response.data.data.avatar.id}?key=system-medium-cover`
 						: null;
 
 					roleName.value = response.data.data?.role?.name;

@@ -90,7 +90,7 @@ const formattedTime = computed(() => {
 const avatarSource = computed(() => {
 	if (!props.activity.user?.avatar) return null;
 
-	return `assets/${props.activity.user.avatar.id}?key=system-small-cover`;
+	return `/assets/${props.activity.user.avatar.id}?key=system-small-cover`;
 });
 
 const { confirmDelete, deleting, remove } = useDelete();

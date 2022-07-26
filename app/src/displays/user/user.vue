@@ -54,7 +54,7 @@ export default defineComponent({
 			if (props.value === null) return null;
 
 			if (props.value.avatar?.id) {
-				return `assets/${props.value.avatar.id}?key=system-small-cover`;
+				return `/assets/${props.value.avatar.id}?key=system-small-cover`;
 			}
 
 			return null;

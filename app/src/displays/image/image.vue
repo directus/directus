@@ -36,7 +36,7 @@ export default defineComponent({
 
 		const src = computed(() => {
 			if (props.value?.id === null || props.value?.id === undefined) return null;
-			return `assets/${props.value.id}?key=system-small-cover`;
+			return `/assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		return { src, imageError };

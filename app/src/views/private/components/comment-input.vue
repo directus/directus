@@ -285,7 +285,7 @@ function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; ca
 
 function avatarSource(url: string) {
 	if (url === null) return '';
-	return `assets/${url}?key=system-small-cover`;
+	return `/assets/${url}?key=system-small-cover`;
 }
 
 async function postComment() {

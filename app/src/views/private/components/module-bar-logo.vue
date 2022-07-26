@@ -34,7 +34,7 @@ export default defineComponent({
 		const customLogoPath = computed<string | null>(() => {
 			if (settingsStore.settings === null) return null;
 			if (!settingsStore.settings?.project_logo) return null;
-			return 'assets/' + settingsStore.settings.project_logo;
+			return '/assets/' + settingsStore.settings.project_logo;
 		});
 
 		const showLoader = ref(false);
