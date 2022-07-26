@@ -11,7 +11,9 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 
 	const fieldsWithConditions = fields.map((field) => applyConditions(item, field));
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	const requiredFields = fieldsWithConditions.filter(
+		(field) => !field.schema?.has_auto_increment && field.meta?.required === true
+	);
 
 	for (const field of requiredFields) {
 		if (isNew && isNil(field.schema?.default_value)) {
