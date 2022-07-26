@@ -8,7 +8,7 @@ export default defineInterface({
 	description: '$t:interfaces.tags.description',
 	icon: 'local_offer',
 	component: InterfaceTags,
-	types: ['json', 'csv'],
+	types: ['json', 'csv', 'unknown'],
 	group: 'standard',
 	options: [
 		{

@@ -10,7 +10,7 @@ export default defineInterface({
 	description: '$t:interfaces.input-rich-text-html.description',
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG,
-	types: ['text'],
+	types: ['text', 'string'],
 	group: 'standard',
 	preview: PreviewSVG,
 	options: {
