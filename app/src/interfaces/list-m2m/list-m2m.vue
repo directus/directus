@@ -195,7 +195,7 @@ import { isEmpty, get, clamp } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
-import { LAYOUTS } from '@/types';
+import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
