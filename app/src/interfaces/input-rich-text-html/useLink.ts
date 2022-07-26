@@ -1,5 +1,6 @@
 import { i18n } from '@/lang';
 import { Ref, ref } from 'vue';
+import { getPublicURL } from '@/utils/get-root-path';
 
 type LinkSelection = {
 	url: string | null;
@@ -19,6 +20,7 @@ type UsableLink = {
 	linkDrawerOpen: Ref<boolean>;
 	linkSelection: Ref<LinkSelection>;
 	closeLinkDrawer: () => void;
+	onLinkSelect: (file: Record<string, any>) => void;
 	saveLink: () => void;
 	linkButton: LinkButton;
 };
@@ -94,7 +96,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		},
 	};
 
-	return { linkDrawerOpen, linkSelection, closeLinkDrawer, saveLink, linkButton };
+	return { linkDrawerOpen, linkSelection, closeLinkDrawer, saveLink, linkButton,onLinkSelect };
 
 	function setLinkSelection(overrideLinkSelection: Partial<LinkSelection> = {}) {
 		linkSelection.value = Object.assign({}, defaultLinkSelection, overrideLinkSelection);
@@ -103,6 +105,17 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	function closeLinkDrawer() {
 		setLinkSelection();
 		linkDrawerOpen.value = false;
+	}
+
+	function onLinkSelect(file: Record<string, any>) {
+		const assetUrl = getPublicURL() + 'assets/' + file.id;
+
+		linkSelection.value = {
+			url: assetUrl,
+			displayText: linkSelection.value.displayText ?? file.title,
+			title: file.filename_download,
+			newTab: true
+		};
 	}
 
 	function saveLink() {
