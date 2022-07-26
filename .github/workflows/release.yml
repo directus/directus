@@ -8,7 +8,7 @@ on:
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
   DOCKERHUB_IMAGE: ${{ github.repository }}
-  NODE_OPTIONS: --max_old_space_size=8192
+  NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
   create-release:
@@ -35,24 +35,14 @@ jobs:
     name: Build Packages
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.15'
-          cache: npm
-
-      - name: Setup NPM cache
-        uses: c-hive/gha-npm-cache@v1
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Prepare
+        uses: ./.github/actions/prepare
 
       - name: Build
         run: |
-          npm run build
           node docker/pack
 
       - name: Cache build artifacts
@@ -77,20 +67,27 @@ jobs:
           path: '**/dist'
           key: build-artifacts-${{ github.sha }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.15'
-          registry-url: https://registry.npmjs.org
-          cache: npm
+          node-version: 16
+
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm i
 
       - name: Publish packages to NPM
-        run: npx lerna publish from-git --no-verify-access --yes
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          pnpm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
+          pnpm -r publish --access=public --no-git-checks
 
   build-images:
     name: Build Images

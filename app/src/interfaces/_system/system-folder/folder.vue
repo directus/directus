@@ -46,7 +46,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import FolderListItem from './folder-list-item.vue';
-import useFolders, { Folder } from '@/composables/use-folders';
+import { useFolders, Folder } from '@/composables/use-folders';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

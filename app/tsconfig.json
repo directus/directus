@@ -12,10 +12,11 @@
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"baseUrl": ".",
-		"types": ["vite/client", "jest"],
+		"types": ["vite/client"],
 		"paths": {
 			"@/*": ["src/*"],
-			"preact/*": ["stub/empty.d.ts"]
+			"preact/*": ["stub/empty.d.ts"],
+			"tslib": ["node_modules/tslib/tslib.d.ts"]
 		},
 		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
 	},

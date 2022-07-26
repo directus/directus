@@ -80,7 +80,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 import { Field } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
-import { getLocalTypeForField } from '../../get-local-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 
 export default defineComponent({
 	name: 'FieldSelectMenu',

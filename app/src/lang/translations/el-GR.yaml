@@ -23,10 +23,13 @@ identifier: Ταυτοποιητής
 avatar: Άβαταρ
 application: Εφαρμογή
 default_provider: Προεπιλογή
+method: Μέθοδος
 published: Δημοσιευμένο
 draft: Πρόχειρο
 archived: Αρχειοθετήθηκε
 modules: Ενότητες
+logs: Αρχεία καταγραφής (Logs)
+reset_width: Επαναφορά πλάτους
 tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
@@ -42,6 +45,7 @@ group: Ομάδα
 export_items: Εξαγωγή στοιχείων
 and: Και
 or: Ή
+custom: Προσαρμοσμένο
 fill_width: Πλήρες Πλάτος
 field_name_translations: Μεταφράσεις Ονόματος Πεδίου
 enter_password_to_enable_tfa: Εισάγετε τον κωδικό πρόσβασής σας για να ενεργοποιήσετε τον διπλό έλεγχο ταυτότητας
@@ -65,12 +69,16 @@ create_preset: Δημιουργία προεπιλογής
 create_panel: Δημιουργήστε Πάνελ
 create_role: Δημιουργία ρόλου
 create_user: Δημιουργία Χρήστη
+message: Μήνυμα
 delete_panel: Διαγραφή Πίνακα
 create_webhook: Δημιουργία Webhook
 create_translation_string: Δημιουργία Μετάφρασης
+translation_string_translations_placeholder: Δημιουργία νέας μετάφρασης
 invite_users: Πρόσκληση Χρηστών
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
+subject: Θέμα
+inbox: Εισερχόμενα
 emails: Emails
 connection_excellent: Εξαιρετική Σύνδεση
 connection_good: Καλή Σύνδεση
@@ -87,6 +95,7 @@ delete_bookmark: Διαγραφή σελιδοδείκτη
 logoutReason:
   SIGN_OUT: Αποσύνδεση
   SESSION_EXPIRED: Η συνεδρία έληξε
+public_label: Κοινόχρηστο
 public_description: Ελέγχει ποια δεδομένα API είναι διαθέσιμα χωρίς ταυτοποίηση.
 not_allowed: Δεν Επιτρέπεται
 directus_version: Έκδοση Directus
@@ -120,6 +129,8 @@ validationError:
   regex: Η τιμή δεν έχει τη σωστή μορφή
 all_access: Όλη Η Πρόσβαση
 no_access: Καμία Πρόσβαση
+nullable: Κενό
+allow_null_value: Επέτρεψε κενές τιμές
 field_standard: Τυπικό
 create_field: Δημιουργία πεδίου
 hidden_on_detail: Κρυφό στις λεπτομέρειες
@@ -351,3 +362,8 @@ layouts:
     comfortable: Άνετος
     compact: Συμπαγής
     cozy: Κανονικό
+operations:
+  log:
+    message: Μήνυμα
+  notification:
+    message: Μήνυμα

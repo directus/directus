@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-    # Ensures this workflow only runs when the readme.md or workflow file itself changes
     paths:
       - readme.md
       - .github/workflows/sync-dockerhub-readme.yml

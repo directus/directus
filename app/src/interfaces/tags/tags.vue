@@ -55,7 +55,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: Array as PropType<string[]>,
+			type: [Array, String] as PropType<string[] | string>,
 			default: null,
 		},
 		placeholder: {
@@ -100,7 +100,7 @@ export default defineComponent({
 			return [];
 		});
 
-		const selectedValsLocal = ref<string[]>(processArray(props.value || []));
+		const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
 
 		watch(
 			() => props.value,

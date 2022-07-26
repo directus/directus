@@ -125,4 +125,12 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			await this.changeNullable(table, column, options.nullable);
 		}
 	}
+
+	async preColumnDelete(): Promise<boolean> {
+		return false;
+	}
+
+	async postColumnDelete(): Promise<void> {
+		return;
+	}
 }

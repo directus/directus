@@ -1,5 +1,5 @@
 import { defineDisplay } from '@directus/shared/utils';
-import formatFilesize from '@/utils/format-filesize';
+import { formatFilesize } from '@/utils/format-filesize';
 
 export default defineDisplay({
 	id: 'filesize',

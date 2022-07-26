@@ -73,8 +73,17 @@ create_preset: إنشاء إعدادات مسبقة
 create_panel: إنشاء لوحة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
+message: الرسالة
 delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
+create_translation_string: إنشئ نص ترجمة
+no_translation_string: لا توجد نصوص ترجمة
+no_translation_string_copy: لا توجد نصوص ترجمة حتى الآن.
+translation_string_key_placeholder: مفتاح نص الترجمة...
+translation_string_translations_placeholder: إضافة ترجمة جديدة
+edit_translation_string: تحليل نص الترجمة
+delete_translation_string_copy: >-
+  هل أنت متأكد من أنك تريد حذف نص الترجمة لـ "{key}"؟ لا يمكن التراجع عن هذا الإجراء.
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
@@ -96,11 +105,14 @@ delete_bookmark: حذف إشارة مرجعية
 delete_bookmark_copy: >-
   هل تريد بالتأكيد حذف ال "{bookmark} "؟ لا يمكن التراجع عن هذا الإجراء.
 delete_personal_bookmark: حذف الإشارة المرجعية الشخصية
+delete_role_bookmark: حذف العلامة من الدور
+delete_global_bookmark: حذف العلامة من الكل
 logoutReason:
   SIGN_OUT: تسجيل الخروج
   SESSION_EXPIRED: انتهت الجلسة
 public_label: عام
 public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
+admin_description: الدور الأساسي للمدير مع وصول غير مقيّد للتطبيق والـ API.
 not_allowed: غير مسموح
 directus_version: إصدار Directus
 node_version: رقم نسخة الوحدة
@@ -121,6 +133,7 @@ recommended_defaults: الإعدادات الافتراضية الافضل
 unarchive: إزالة من الأرشيف
 unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
 nested_files_folders_will_be_moved: سيتم نقل الملفات والمجلدات الداخلية إلى درجة إلى الأعلى.
+validation_errors_notice: 'الحقول التالية تحمل قيم غير صالحة:'
 validationError:
   eq: القيمة يجب أن تكون {valid}
   neq: لا يمكن أن تكون القيمة {invalid}
@@ -170,6 +183,7 @@ revision_post_create: إليك ما بدا عليه هذا العنصر بعد �
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
 no_relational_data: 'ملاحظة: العلاقة بين الجداول غير مدرجة هنا.'
+hide_field: إخفاء الحقل
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -178,6 +192,7 @@ field_create_success: 'حقل تم إنشاؤه: "{field}"'
 field_update_success: 'حقل تم إنشاؤه: "{field}"'
 duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+language_placeholder: اختر اللغة...
 aggregate_function: وظائف المجاميع
 aggregate_precision: وظائف التدقيق
 group_aggregation: تجميع المجموعات
@@ -187,9 +202,13 @@ camera: الكاميرا
 show_zero: إظهار صفر
 create_in_advanced_field_creation_mode: إنشاء حقل في الوضع المتقدم
 continue_in_advanced_field_creation_mode: الاستمرار في وضع إنشاء الحقل المتقدم
+validation: التحقق
 sum: المجموع
+sum_distinct: المجموع للقيم المميزة
 avg: المتوسط
+avg_distinct: متوسط المميز
 count: عدد
+count_distinct: العدد للمميز
 min: الحد الأدنى
 max: الحد الأقصى
 exposure: التعرض
@@ -271,6 +290,7 @@ note: ملحوظة
 enter_a_value: أدخل قيمة...
 enter_a_placeholder: أدخل قيمة مؤقته...
 length: الطول
+soft_length: حد ناعم
 precision_scale: الدقة والقياس
 readonly: يقرأ فقط
 unique: فريد
@@ -1183,7 +1203,10 @@ panels:
   label:
     name: تسمية
 operations:
+  log:
+    message: الرسالة
   notification:
     recipient: مستخدم
+    message: الرسالة
   request:
     url: الرابط

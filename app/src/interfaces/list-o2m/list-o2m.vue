@@ -174,21 +174,24 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationO2M, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
+import { useRelationO2M } from '@/composables/use-relation-o2m';
+import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
 import { CollectionMeta, Field, Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SearchInput from '@/views/private/components/search-input';
-import DrawerItem from '@/views/private/components/drawer-item';
-import DrawerCollection from '@/views/private/components/drawer-collection';
+import SearchInput from '@/views/private/components/search-input.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp, get } from 'lodash';
-import { useFieldsStore, usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
@@ -398,7 +401,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	newItem = false;
-	editsAtStart.value = { [pkField]: item[pkField] };
+	editsAtStart.value = { [relatedPkField.value]: item[relatedPkField.value] };
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = '+';

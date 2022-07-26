@@ -5,9 +5,9 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import localizedFormat from '@/utils/localized-format';
-import localizedFormatDistance from '@/utils/localized-format-distance';
-import localizedFormatDistanceStrict from '@/utils/localized-format-distance-strict';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import { parseISO, parse } from 'date-fns';
 
 interface Props {
@@ -16,6 +16,7 @@ interface Props {
 	format?: string;
 	relative?: boolean;
 	strict?: boolean;
+	round?: string;
 	suffix?: boolean;
 }
 
@@ -23,6 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
 	format: 'long',
 	relative: false,
 	strict: false,
+	round: 'round',
 	suffix: true,
 });
 
@@ -50,6 +52,7 @@ const relativeFormat = (value: Date) => {
 	const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance;
 	return fn(value, new Date(), {
 		addSuffix: props.suffix,
+		roundingMethod: props.round,
 	});
 };
 

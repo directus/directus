@@ -1,0 +1,55 @@
+name: Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
+
+jobs:
+  cancel:
+    name: Cancel Previous Runs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel
+        uses: styfle/cancel-workflow-action@0.10.0
+        with:
+          workflow_id: all
+          access_token: ${{ github.token }}
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Run Linter
+        shell: bash
+        run: pnpm lint
+
+  unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Run Tests
+        shell: bash
+        run: pnpm -r test
+
+  analyze:
+    name: CodeQL Analysis
+    uses: ./.github/workflows/codeql-analysis.yml
