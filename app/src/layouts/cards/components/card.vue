@@ -331,6 +331,10 @@ export default defineComponent({
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+
+	:deep(.render-template) {
+		height: 100%;
+	}
 }
 
 .subtitle {

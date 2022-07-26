@@ -12,10 +12,10 @@ export function useWindowSize(options: WindowSizeOptions = { throttle: 100 }): {
 	const width = ref(0);
 	const height = ref(0);
 
-	function setSize() {
+	const setSize = () => {
 		width.value = window.innerWidth;
 		height.value = window.innerHeight;
-	}
+	};
 
 	const onResize = throttle(setSize, options.throttle);
 
