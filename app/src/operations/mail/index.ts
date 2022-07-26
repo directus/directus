@@ -57,7 +57,7 @@ export default defineOperationApp({
 		{
 			field: 'body',
 			name: '$t:operations.mail.body',
-			type: 'string',
+			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-md',

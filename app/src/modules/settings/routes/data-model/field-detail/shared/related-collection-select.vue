@@ -57,7 +57,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
 import { orderBy } from 'lodash';
 
 export default defineComponent({
@@ -90,15 +90,7 @@ export default defineComponent({
 			);
 		});
 
-		const systemCollections = computed(() => {
-			return orderBy(
-				collectionsStore.crudSafeSystemCollections.filter((collection) => {
-					return collection.collection.startsWith('directus_') === true;
-				}),
-				['collection'],
-				['asc']
-			);
-		});
+		const systemCollections = collectionsStore.crudSafeSystemCollections;
 
 		return { t, collectionExists, availableCollections, systemCollections };
 	},

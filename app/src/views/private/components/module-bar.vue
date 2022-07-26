@@ -31,9 +31,9 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { getModules } from '@/modules/';
-import ModuleBarLogo from './module-bar-logo/';
-import ModuleBarAvatar from './module-bar-avatar/';
-import { useSettingsStore } from '@/stores/';
+import ModuleBarLogo from './module-bar-logo.vue';
+import ModuleBarAvatar from './module-bar-avatar.vue';
+import { useSettingsStore } from '@/stores/settings';
 import { translate } from '@/utils/translate-object-values';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { omit } from 'lodash';

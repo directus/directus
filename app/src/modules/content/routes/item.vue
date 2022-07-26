@@ -180,7 +180,7 @@
 			</sidebar-detail>
 			<revisions-drawer-detail
 				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
-				ref="revisionsDrawerDetail"
+				ref="revisionsDrawerDetailRef"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:scope="accountabilityScope"
@@ -207,338 +207,262 @@
 	</private-view>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
-import ContentNavigation from '../components/navigation.vue';
-import ContentNotFound from './not-found.vue';
-import { useCollection } from '@directus/shared/composables';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail';
-import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
-import useShortcut from '@/composables/use-shortcut';
-import { useRouter } from 'vue-router';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useTemplateData } from '@/composables/use-template-data';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import useTemplateData from '@/composables/use-template-data';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
+import { useCollection } from '@directus/shared/composables';
+import { useRouter } from 'vue-router';
+import ContentNavigation from '../components/navigation.vue';
+import ContentNotFound from './not-found.vue';
 
-export default defineComponent({
-	name: 'ContentsItem',
-	components: {
-		ContentNavigation,
-		ContentNotFound,
-		RevisionsDrawerDetail,
-		CommentsSidebarDetail,
-		SharesSidebarDetail,
-		FlowSidebarDetail,
-		SaveOptions,
-	},
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		primaryKey: {
-			type: String,
-			default: null,
-		},
-		singleton: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t, te } = useI18n();
+interface Props {
+	collection: string;
+	primaryKey?: string | null;
+	singleton?: boolean;
+}
 
-		const router = useRouter();
-
-		const form = ref<HTMLElement>();
-
-		const { collection, primaryKey } = toRefs(props);
-		const { breadcrumb } = useBreadcrumb();
-
-		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
-
-		const {
-			info: collectionInfo,
-			defaults,
-			primaryKeyField,
-			isSingleton,
-			accountabilityScope,
-		} = useCollection(collection);
-
-		const {
-			isNew,
-			edits,
-			hasEdits,
-			item,
-			saving,
-			loading,
-			error,
-			save,
-			remove,
-			deleting,
-			archive,
-			archiving,
-			isArchived,
-			saveAsCopy,
-			refresh,
-			validationErrors,
-		} = useItem(collection, primaryKey);
-
-		const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
-
-		const isSavable = computed(() => {
-			if (saveAllowed.value === false) return false;
-			if (hasEdits.value === true) return true;
-
-			if (
-				!primaryKeyField.value?.schema?.has_auto_increment &&
-				!primaryKeyField.value?.meta?.special?.includes('uuid')
-			) {
-				return !!edits.value?.[primaryKeyField.value.field];
-			}
-
-			if (isNew.value === true) {
-				return Object.keys(defaults.value).length > 0 || hasEdits.value;
-			}
-
-			return hasEdits.value;
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-		const confirmDelete = ref(false);
-		const confirmArchive = ref(false);
-
-		const title = computed(() => {
-			if (te(`collection_names_singular.${props.collection}`)) {
-				return isNew.value
-					? t('creating_unit', { unit: t(`collection_names_singular.${props.collection}`) })
-					: t('editing_unit', { unit: t(`collection_names_singular.${props.collection}`) });
-			}
-
-			return isNew.value
-				? t('creating_in', { collection: collectionInfo.value?.name })
-				: t('editing_in', { collection: collectionInfo.value?.name });
-		});
-
-		const tabTitle = computed(() => {
-			let tabTitle = (collectionInfo.value?.name || '') + ' | ';
-
-			if (collectionInfo.value && collectionInfo.value.meta) {
-				if (collectionInfo.value.meta.singleton === true) {
-					return tabTitle + collectionInfo.value.name;
-				} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
-					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
-
-					if (displayValue.value !== undefined) return tabTitle + displayValue.value;
-				}
-			}
-
-			return tabTitle + title.value;
-		});
-
-		useTitle(tabTitle);
-
-		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return t('not_allowed');
-			if (isArchived.value === true) return t('unarchive');
-			return t('archive');
-		});
-
-		useShortcut('meta+s', saveAndStay, form);
-		useShortcut('meta+shift+s', saveAndAddNew, form);
-
-		const {
-			createAllowed,
-			deleteAllowed,
-			archiveAllowed,
-			saveAllowed,
-			updateAllowed,
-			shareAllowed,
-			fields,
-			revisionsAllowed,
-		} = usePermissions(collection, item, isNew);
-
-		const internalPrimaryKey = computed(() => {
-			if (isNew.value) return '+';
-
-			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field] ?? '+';
-
-			return props.primaryKey;
-		});
-
-		const disabledOptions = computed(() => {
-			if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
-			if (isNew.value) return ['save-as-copy'];
-			return [];
-		});
-
-		return {
-			t,
-			router,
-			item,
-			loading,
-			error,
-			isNew,
-			edits,
-			isSavable,
-			hasEdits,
-			saving,
-			collectionInfo,
-			saveAndQuit,
-			deleteAndQuit,
-			confirmDelete,
-			confirmArchive,
-			deleting,
-			archiving,
-			disabledOptions,
-			saveAndStay,
-			saveAndAddNew,
-			saveAsCopyAndNavigate,
-			discardAndStay,
-			templateData,
-			templateDataLoading,
-			archiveTooltip,
-			breadcrumb,
-			title,
-			revisionsDrawerDetail,
-			refresh,
-			confirmLeave,
-			leaveTo,
-			discardAndLeave,
-			createAllowed,
-			deleteAllowed,
-			saveAllowed,
-			archiveAllowed,
-			isArchived,
-			updateAllowed,
-			shareAllowed,
-			toggleArchive,
-			validationErrors,
-			form,
-			fields,
-			isSingleton,
-			internalPrimaryKey,
-			revisionsAllowed,
-			revert,
-			accountabilityScope,
-		};
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => [
-				{
-					name: collectionInfo.value?.name,
-					to: `/content/${props.collection}`,
-				},
-			]);
-
-			return { breadcrumb };
-		}
-
-		async function saveAndQuit() {
-			if (isSavable.value === false) return;
-
-			try {
-				await save();
-				if (props.singleton === false) router.push(`/content/${props.collection}`);
-			} catch {
-				// Save shows unexpected error dialog
-			}
-		}
-
-		async function saveAndStay() {
-			if (isSavable.value === false) return;
-
-			try {
-				const savedItem: Record<string, any> = await save();
-
-				revisionsDrawerDetail.value?.refresh?.();
-
-				if (props.primaryKey === '+') {
-					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-					router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
-				}
-			} catch {
-				// Save shows unexpected error dialog
-			}
-		}
-
-		async function saveAndAddNew() {
-			if (isSavable.value === false) return;
-
-			try {
-				await save();
-
-				if (isNew.value === true) {
-					refresh();
-				} else {
-					router.push(`/content/${props.collection}/+`);
-				}
-			} catch {
-				// Save shows unexpected error dialog
-			}
-		}
-
-		async function saveAsCopyAndNavigate() {
-			try {
-				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
-			} catch {
-				// Save shows unexpected error dialog
-			}
-		}
-
-		async function deleteAndQuit() {
-			try {
-				await remove();
-				edits.value = {};
-				router.replace(`/content/${props.collection}`);
-			} catch {
-				// `remove` will show the unexpected error dialog
-			}
-		}
-
-		async function toggleArchive() {
-			try {
-				await archive();
-
-				if (isArchived.value === true) {
-					router.push(`/content/${props.collection}`);
-				} else {
-					confirmArchive.value = false;
-				}
-			} catch {
-				// `archive` will show the unexpected error dialog
-			}
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-
-		function discardAndStay() {
-			edits.value = {};
-			confirmLeave.value = false;
-		}
-
-		function revert(values: Record<string, any>) {
-			edits.value = {
-				...edits.value,
-				...values,
-			};
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	primaryKey: null,
+	singleton: false,
 });
+
+const { t, te } = useI18n();
+
+const router = useRouter();
+
+const form = ref<HTMLElement>();
+
+const { collection, primaryKey } = toRefs(props);
+const { breadcrumb } = useBreadcrumb();
+
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+
+const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
+
+const {
+	isNew,
+	edits,
+	hasEdits,
+	item,
+	saving,
+	loading,
+	error,
+	save,
+	remove,
+	deleting,
+	archive,
+	archiving,
+	isArchived,
+	saveAsCopy,
+	refresh,
+	validationErrors,
+} = useItem(collection, primaryKey);
+
+const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
+
+const isSavable = computed(() => {
+	if (saveAllowed.value === false) return false;
+	if (hasEdits.value === true) return true;
+
+	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
+		return !!edits.value?.[primaryKeyField.value.field];
+	}
+
+	if (isNew.value === true) {
+		return Object.keys(defaults.value).length > 0 || hasEdits.value;
+	}
+
+	return hasEdits.value;
+});
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+const confirmDelete = ref(false);
+const confirmArchive = ref(false);
+
+const title = computed(() => {
+	if (te(`collection_names_singular.${props.collection}`)) {
+		return isNew.value
+			? t('creating_unit', { unit: t(`collection_names_singular.${props.collection}`) })
+			: t('editing_unit', { unit: t(`collection_names_singular.${props.collection}`) });
+	}
+
+	return isNew.value
+		? t('creating_in', { collection: collectionInfo.value?.name })
+		: t('editing_in', { collection: collectionInfo.value?.name });
+});
+
+const tabTitle = computed(() => {
+	let tabTitle = (collectionInfo.value?.name || '') + ' | ';
+
+	if (collectionInfo.value && collectionInfo.value.meta) {
+		if (collectionInfo.value.meta.singleton === true) {
+			return tabTitle + collectionInfo.value.name;
+		} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
+			const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
+
+			if (displayValue.value !== undefined) return tabTitle + displayValue.value;
+		}
+	}
+
+	return tabTitle + title.value;
+});
+
+useTitle(tabTitle);
+
+const archiveTooltip = computed(() => {
+	if (archiveAllowed.value === false) return t('not_allowed');
+	if (isArchived.value === true) return t('unarchive');
+	return t('archive');
+});
+
+useShortcut('meta+s', saveAndStay, form);
+useShortcut('meta+shift+s', saveAndAddNew, form);
+
+const {
+	createAllowed,
+	deleteAllowed,
+	archiveAllowed,
+	saveAllowed,
+	updateAllowed,
+	shareAllowed,
+	fields,
+	revisionsAllowed,
+} = usePermissions(collection, item, isNew);
+
+const internalPrimaryKey = computed(() => {
+	if (unref(loading)) return '+';
+	if (unref(isNew)) return '+';
+
+	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
+
+	return props.primaryKey;
+});
+
+const disabledOptions = computed(() => {
+	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
+	if (isNew.value) return ['save-as-copy'];
+	return [];
+});
+
+function useBreadcrumb() {
+	const breadcrumb = computed(() => [
+		{
+			name: collectionInfo.value?.name,
+			to: `/content/${props.collection}`,
+		},
+	]);
+
+	return { breadcrumb };
+}
+
+async function saveAndQuit() {
+	if (isSavable.value === false) return;
+
+	try {
+		await save();
+		if (props.singleton === false) router.push(`/content/${props.collection}`);
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
+async function saveAndStay() {
+	if (isSavable.value === false) return;
+
+	try {
+		const savedItem: Record<string, any> = await save();
+
+		revisionsDrawerDetailRef.value?.refresh?.();
+
+		if (props.primaryKey === '+') {
+			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
+			router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+		}
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
+async function saveAndAddNew() {
+	if (isSavable.value === false) return;
+
+	try {
+		await save();
+
+		if (isNew.value === true) {
+			refresh();
+		} else {
+			router.push(`/content/${props.collection}/+`);
+		}
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
+async function saveAsCopyAndNavigate() {
+	try {
+		const newPrimaryKey = await saveAsCopy();
+		if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
+async function deleteAndQuit() {
+	try {
+		await remove();
+		edits.value = {};
+		router.replace(`/content/${props.collection}`);
+	} catch {
+		// `remove` will show the unexpected error dialog
+	}
+}
+
+async function toggleArchive() {
+	try {
+		await archive();
+
+		if (isArchived.value === true) {
+			router.push(`/content/${props.collection}`);
+		} else {
+			confirmArchive.value = false;
+		}
+	} catch {
+		// `archive` will show the unexpected error dialog
+	}
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
+}
+
+function revert(values: Record<string, any>) {
+	edits.value = {
+		...edits.value,
+		...values,
+	};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 <template>
 	<v-icon v-if="imageError" name="image" />
-	<img
+	<v-image
 		v-else-if="src"
 		:src="src"
 		role="presentation"
@@ -12,10 +12,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
-import ValueNull from '@/views/private/components/value-null';
 import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
+import { computed, defineComponent, PropType, ref } from 'vue';
 
 type Image = {
 	id: string;
@@ -24,7 +22,6 @@ type Image = {
 };
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		value: {
 			type: Object as PropType<Image>,
@@ -39,9 +36,8 @@ export default defineComponent({
 		const imageError = ref(false);
 
 		const src = computed(() => {
-			if (props.value === null) return null;
-			const url = getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
-			return addTokenToURL(url);
+			if (props.value?.id === null || props.value?.id === undefined) return null;
+			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		return { src, imageError };

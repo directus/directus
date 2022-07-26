@@ -1,16 +1,21 @@
-import { defineConfig, searchForWorkspaceRoot } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import md from 'vite-plugin-vue-markdown';
-import yaml from '@rollup/plugin-yaml';
-import path from 'path';
+import {
+	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
+	APP_OR_HYBRID_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+} from '@directus/shared/constants';
 import {
 	ensureExtensionDirs,
-	getPackageExtensions,
-	getLocalExtensions,
 	generateExtensionsEntry,
+	getLocalExtensions,
+	getPackageExtensions,
 } from '@directus/shared/utils/node';
-import { APP_SHARED_DEPS, APP_EXTENSION_TYPES, APP_EXTENSION_PACKAGE_TYPES } from '@directus/shared/constants';
+import yaml from '@rollup/plugin-yaml';
+import vue from '@vitejs/plugin-vue';
 import hljs from 'highlight.js';
+import path from 'path';
+import { searchForWorkspaceRoot } from 'vite';
+import md from 'vite-plugin-vue-markdown';
+import { defineConfig } from 'vitest/config';
 import hljsGraphQL from './src/utils/hljs-graphql';
 
 hljs.registerLanguage('graphql', hljsGraphQL);
@@ -140,11 +145,14 @@ export default defineConfig({
 			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
 		},
 	},
+	test: {
+		environment: 'happy-dom',
+	},
 });
 
 function directusExtensions() {
 	const prefix = '@directus-extensions-';
-	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
+	const virtualIds = APP_OR_HYBRID_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
 	let extensionEntrypoints = {};
 
@@ -198,13 +206,13 @@ function directusExtensions() {
 		const apiPath = path.join('..', 'api');
 		const extensionsPath = path.join(apiPath, 'extensions');
 
-		await ensureExtensionDirs(extensionsPath, APP_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(apiPath, APP_EXTENSION_PACKAGE_TYPES);
-		const localExtensions = await getLocalExtensions(extensionsPath, APP_EXTENSION_TYPES);
+		await ensureExtensionDirs(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
+		const packageExtensions = await getPackageExtensions(apiPath, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const localExtensions = await getLocalExtensions(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
 
 		const extensions = [...packageExtensions, ...localExtensions];
 
-		for (const extensionType of APP_EXTENSION_TYPES) {
+		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
 			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
 		}
 	}

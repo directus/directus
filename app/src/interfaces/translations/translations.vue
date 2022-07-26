@@ -1,7 +1,7 @@
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
 		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-model="firstLang" :items="languageOptions">
+			<language-select v-if="showLanguageSelect" v-model="firstLang" :items="languageOptions">
 				<template #append>
 					<v-icon
 						v-if="splitViewAvailable && !splitViewEnabled"
@@ -61,9 +61,10 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import { DisplayItem, RelationQueryMultiple, useRelationM2M, useRelationMultiple } from '@/composables/use-relation';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useWindowSize } from '@/composables/use-window-size';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
 import { notEmpty } from '@/utils/is-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';
@@ -183,6 +184,10 @@ const splitViewAvailable = computed(() => {
 
 const splitViewEnabled = computed(() => {
 	return splitViewAvailable.value && splitView.value;
+});
+
+const showLanguageSelect = computed(() => {
+	return languageOptions.value.length > 1;
 });
 
 function useLanguages() {

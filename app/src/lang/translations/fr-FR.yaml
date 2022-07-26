@@ -309,6 +309,7 @@ primary_key: Clef primaire
 foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
 dismiss: Ignorer
+toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
 raw_value: Valeur brute
 copy_raw_value: Copier la valeur brute
 copy_raw_value_success: Copié
@@ -337,6 +338,7 @@ revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
 revision_delta_reverted: Restauré
+revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
@@ -591,6 +593,7 @@ errors:
   VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
   INVALID_FOREIGN_KEY: Clé étrangère invalide
   UNKNOWN: Erreur inconnue
+  GRAPHQL_VALIDATION_EXCEPTION: Exception de validation de GraphQL
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
@@ -612,6 +615,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
+edit_image: Éditer l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -1499,6 +1503,7 @@ interfaces:
     allow_none_label: Autoriser aucune sélection
     choices_name_placeholder: Entrez un nom...
     choices_value_placeholder: Saisissez une valeur...
+    preview_threshold: Seuil d'aperçu
   select-multiple-dropdown:
     select-multiple-dropdown: Liste déroulante (choix multiple)
     description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
@@ -1697,6 +1702,9 @@ interfaces:
     regenerate: Régénérer le jeton
     generate_success_copy: Assurez-vous de sauvegarder et de copier le jeton ci-dessus. Pour des raisons de sécurité, vous ne pourrez plus voir le jeton après avoir enregistré et quitté cette page.
     remove_token: Supprimer le jeton
+  system-raw-editor:
+    system-raw-editor: Éditeur brut
+    description: Permettre la saisie de valeurs brutes ou de modèles en moustache
 displays:
   translations:
     translations: Traductions
@@ -1735,6 +1743,15 @@ displays:
     relative: Relatif
     relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
     suffix: Suffixe
+    suffix_label: Afficher l'indicateur relatif
+    suffix_note: Utilise des mots comme 'dans' et 'il y a'
+    strict: Stricte
+    strict_label: Utilisez des unités strictes
+    strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
+    round_note: Choisissez une fonction d'arrondi à utiliser
+    down: Bas
+    nearest: Le plus proche
+    up: Haut
   file:
     file: Fichier
     description: Afficher les fichiers
@@ -1956,6 +1973,10 @@ panels:
     bottom: Bas
     monochrome: Monochrome
     monochrome_color: Couleur Monochrome
+  variable:
+    name: Variable globale
+    description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
+    variable_key: Clé variable
 triggers:
   common:
     response_body: Corps de la Réponse

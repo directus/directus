@@ -1,6 +1,7 @@
 import { getDisplay } from '@/displays';
-import { useFieldsStore, useRelationsStore } from '@/stores';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
@@ -19,7 +20,7 @@ export default defineDisplay({
 	description: '$t:displays.translations.description',
 	icon: 'translate',
 	component: DisplayTranslations,
-	handler: async (values, options, { collection, field }) => {
+	handler: (values, options, { collection, field }) => {
 		if (!field || !collection || !Array.isArray(values)) return values;
 
 		const relatedCollections = getRelatedCollection(collection, field.field);
@@ -85,7 +86,7 @@ export default defineDisplay({
 			const display = getDisplay(field.meta.display);
 
 			const stringValue = display?.handler
-				? await display.handler(fieldValue, field?.meta?.display_options ?? {}, {
+				? display.handler(fieldValue, field?.meta?.display_options ?? {}, {
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,

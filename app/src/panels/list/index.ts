@@ -1,5 +1,5 @@
-import { useFieldsStore } from '@/stores';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { useFieldsStore } from '@/stores/fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { definePanel, getFieldsFromTemplate } from '@directus/shared/utils';
 import PanelList from './panel-list.vue';
 
@@ -29,7 +29,7 @@ export default definePanel({
 			query: {
 				filter: options.filter ?? {},
 				fields: displayFields,
-				sort: options.sortDirection === 'desc' ? `-${sort}` : sort,
+				sort: !options.sortDirection || options.sortDirection === 'desc' ? `-${sort}` : sort,
 				limit: options.limit === undefined ? 5 : options.limit,
 			},
 		};
