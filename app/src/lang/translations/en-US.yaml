@@ -192,8 +192,8 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
-relation_first: Relation First.
-show_relation_first: Relation fields on top.
+relation_first: Relation First
+show_relation_first: Relation fields on top
 hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
