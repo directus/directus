@@ -21,7 +21,6 @@
 </template>
 
 <script lang="ts">
-import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 import { computed, defineComponent, PropType } from 'vue';
 
