@@ -96,7 +96,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		},
 	};
 
-	return { linkDrawerOpen, linkSelection, closeLinkDrawer, saveLink, linkButton,onLinkSelect };
+	return { linkDrawerOpen, linkSelection, closeLinkDrawer, saveLink, linkButton, onLinkSelect };
 
 	function setLinkSelection(overrideLinkSelection: Partial<LinkSelection> = {}) {
 		linkSelection.value = Object.assign({}, defaultLinkSelection, overrideLinkSelection);
@@ -114,7 +114,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			url: assetUrl,
 			displayText: linkSelection.value.displayText ?? file.title,
 			title: file.filename_download,
-			newTab: true
+			newTab: true,
 		};
 	}
 
