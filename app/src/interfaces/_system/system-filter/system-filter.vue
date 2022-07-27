@@ -80,7 +80,7 @@
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
 import { Filter, Type, FieldFunction } from '@directus/shared/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction, parseFilterFunctionPath } from '@directus/shared/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -163,6 +163,7 @@ function addNode(key: string) {
 		if (key.includes('(') && key.includes(')')) {
 			const functionName = key.split('(')[0] as FieldFunction;
 			type = getOutputTypeForFunction(functionName);
+			key = parseFilterFunctionPath(key);
 		} else {
 			type = field?.type || 'unknown';
 		}
