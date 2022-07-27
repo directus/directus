@@ -403,8 +403,11 @@ export function applyFilter(
 		) {
 			const [table, column] = key.split('.');
 
+			// Use original name only when column uses a function
+			const mappedTableName = column.includes('(') && column.includes(')') ? originalCollectionName || table : table;
+
 			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
-			const selectionRaw = getColumn(knex, table, column, false, schema) as any;
+			const selectionRaw = getColumn(knex, mappedTableName, column, false, schema) as any;
 
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
