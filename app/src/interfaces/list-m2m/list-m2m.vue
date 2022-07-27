@@ -65,7 +65,7 @@
 			:junction-field="relationInfo.junctionField.field"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
-			:relation-first="relationFirst"
+			:junction-field-location="junctionFieldLocation"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -111,7 +111,7 @@ const props = withDefaults(
 		enableSelect?: boolean;
 		filter?: Filter | null;
 		limit?: number;
-		relationFirst?: boolean;
+		junctionFieldLocation?: string;
 	}>(),
 	{
 		value: () => [],
@@ -121,7 +121,7 @@ const props = withDefaults(
 		enableSelect: true,
 		filter: () => null,
 		limit: 15,
-		relationFirst: false,
+		junctionFieldLocation: 'bottom',
 	}
 );
 

@@ -30,8 +30,9 @@
 					:title="file.title"
 					:in-modal="true"
 				/>
-				<div class="drawer-item-order" :class="{ swap: relationFirst }">
+				<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
 					<v-form
+						v-show="junctionFieldLocation !== 'hide_related'"
 						:disabled="disabled"
 						:loading="loading"
 						:initial-values="item && item[junctionField]"
@@ -40,18 +41,19 @@
 						:fields="junctionRelatedCollectionFields"
 						:validation-errors="junctionField ? validationErrors : undefined"
 						autofocus
-						:show-divider="!relationFirst"
+						:show-divider="!swapFormOrder"
 						@update:model-value="setJunctionEdits"
 					/>
 
 					<v-form
+						v-show="junctionFieldLocation !== 'hide_junction'"
 						v-model="internalEdits"
 						:disabled="disabled"
 						:loading="loading"
 						:initial-values="item"
 						:primary-key="primaryKey"
 						:fields="fields"
-						:show-divider="relationFirst"
+						:show-divider="swapFormOrder"
 						:validation-errors="!junctionField ? validationErrors : undefined"
 					/>
 				</div>
@@ -117,9 +119,9 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		relationFirst: {
-			type: Boolean,
-			default: false,
+		junctionFieldLocation: {
+			type: String,
+			default: 'bottom',
 		},
 	},
 	emits: ['update:active', 'input'],
@@ -142,6 +144,10 @@ export default defineComponent({
 		const { info: collectionInfo } = useCollection(collection);
 
 		const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
+
+		const swapFormOrder = computed(() => {
+			return props.junctionFieldLocation === 'top';
+		});
 
 		const title = computed(() => {
 			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
@@ -222,6 +228,7 @@ export default defineComponent({
 			collectionInfo,
 			file,
 			isDirectusFiles,
+			swapFormOrder,
 		};
 
 		function useFile() {

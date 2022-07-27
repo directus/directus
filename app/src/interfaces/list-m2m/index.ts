@@ -75,15 +75,33 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'relationFirst',
-				name: '$t:relation_first',
+				field: 'junctionFieldLocation',
+				name: '$t:junction_field_location',
+				type: 'string',
 				schema: {
-					default_value: false,
+					default_value: 'bottom',
 				},
 				meta: {
-					interface: 'boolean',
+					interface: 'select-dropdown',
 					options: {
-						label: '$t:show_relation_first',
+						choices: [
+							{
+								value: 'top',
+								text: '$t:top',
+							},
+							{
+								value: 'bottom',
+								text: '$t:bottom',
+							},
+							{
+								value: 'hide_junction',
+								text: '$t:hide_junction',
+							},
+							{
+								value: 'hide_related',
+								text: '$t:hide_related',
+							},
+						],
 					},
 					width: 'half',
 				},
