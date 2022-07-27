@@ -60,7 +60,6 @@
 import { computed } from 'vue';
 import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
-import { getRootPath } from '@/utils/get-root-path';
 import { useI18n } from 'vue-i18n';
 import { cssVar } from '@directus/shared/utils/browser';
 import Color from 'color';
@@ -131,7 +130,7 @@ const hasCustomBackground = computed(() => {
 const artStyles = computed(() => {
 	if (!hasCustomBackground.value) return null;
 
-	const url = getRootPath() + `assets/${info.value!.project?.public_background}`;
+	const url = `/assets/${info.value!.project?.public_background}`;
 
 	return {
 		background: `url(${url})`,
@@ -142,12 +141,12 @@ const artStyles = computed(() => {
 
 const foregroundURL = computed(() => {
 	if (!info.value?.project?.public_foreground) return null;
-	return getRootPath() + `assets/${info.value.project?.public_foreground}`;
+	return '/assets/' + info.value.project?.public_foreground;
 });
 
 const logoURL = computed<string | null>(() => {
 	if (!info.value?.project?.project_logo) return null;
-	return getRootPath() + `assets/${info.value.project?.project_logo}`;
+	return '/assets/' + info.value.project?.project_logo;
 });
 </script>
 

@@ -189,8 +189,10 @@ export default defineComponent({
 			}
 		});
 
+		const randomId = ref<string>(nanoid());
+
 		const imageURL = computed(() => {
-			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
+			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
 
 		return {
@@ -273,6 +275,7 @@ export default defineComponent({
 							await api.patch(`/files/${props.id}`, formData);
 							emit('refresh');
 							internalActive.value = false;
+							randomId.value = nanoid();
 						} catch (err: any) {
 							unexpectedError(err);
 						} finally {
