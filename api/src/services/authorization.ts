@@ -458,7 +458,12 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Partial<Item> {
+	validatePayload(
+		action: PermissionsAction,
+		collection: string,
+		data: Partial<Item>,
+		itemsBeforeUpdate: any
+	): Partial<Item> {
 		const payload = cloneDeep(data);
 
 		let permission: Permission | undefined;
@@ -560,7 +565,7 @@ export class AuthorizationService {
 
 		validationErrors.push(
 			...flatten(
-				validatePayload(permission.validation!, payloadWithPresets).map((error) =>
+				validatePayload(permission.validation!, payloadWithPresets, undefined, itemsBeforeUpdate).map((error) =>
 					error.details.map((details) => new FailedValidationException(details))
 				)
 			)

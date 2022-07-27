@@ -52,3 +52,13 @@ function second(value: string): number {
 function count(value: any): number | null {
 	return Array.isArray(value) ? value.length : null;
 }
+
+export function countUsingPreviousState(value: any, countBeforeUpdate: number): string | null {
+	if (value.create && value.delete) {
+		const changeInCount = value.create.length - value.delete.length;
+		const count = countBeforeUpdate + changeInCount;
+		return count.toString();
+	} else {
+		return null;
+	}
+}

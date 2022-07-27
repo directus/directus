@@ -10,12 +10,14 @@ import Joi from 'joi';
  * @param {Filter} filter - The filter rules to check against
  * @param {Record<string, any>} payload - The payload to validate
  * @param {JoiOptions} [options] - Optional options to pass to Joi
+ * @param {any} [itemsBeforeUpdate] - Optional items before update
  * @returns Array of errors
  */
 export function validatePayload(
 	filter: Filter,
 	payload: Record<string, any>,
-	options?: JoiOptions
+	options?: JoiOptions,
+	itemsBeforeUpdate?: any
 ): Joi.ValidationError[] {
 	const errors: Joi.ValidationError[] = [];
 
@@ -28,7 +30,7 @@ export function validatePayload(
 
 		const nestedErrors = flatten<Joi.ValidationError>(
 			subValidation.map((subObj: Record<string, any>) => {
-				return validatePayload(subObj, payload, options);
+				return validatePayload(subObj, payload, options, itemsBeforeUpdate);
 			})
 		).filter((err?: Joi.ValidationError) => err);
 
@@ -37,7 +39,7 @@ export function validatePayload(
 		const subValidation = Object.values(filter)[0] as FieldFilter[];
 
 		const nestedErrors = flatten<Joi.ValidationError>(
-			subValidation.map((subObj: Record<string, any>) => validatePayload(subObj, payload, options))
+			subValidation.map((subObj: Record<string, any>) => validatePayload(subObj, payload, options, itemsBeforeUpdate))
 		);
 
 		const allErrored = subValidation.length === nestedErrors.length;
@@ -46,13 +48,27 @@ export function validatePayload(
 			errors.push(...nestedErrors);
 		}
 	} else {
-		const payloadWithFunctions = injectFunctionResults(payload, filter);
-		const schema = generateJoi(filter as FieldFilter, options);
+		if (!itemsBeforeUpdate || itemsBeforeUpdate.length == 0) {
+			const payloadWithFunctions = injectFunctionResults(payload, filter);
+			const schema = generateJoi(filter as FieldFilter, options);
 
-		const { error } = schema.validate(payloadWithFunctions, { abortEarly: false });
+			const { error } = schema.validate(payloadWithFunctions, { abortEarly: false });
 
-		if (error) {
-			errors.push(error);
+			if (error) {
+				errors.push(error);
+			}
+		} else if (itemsBeforeUpdate && itemsBeforeUpdate.length > 0) {
+			for (const item of itemsBeforeUpdate) {
+				const payloadWithFunctions = injectFunctionResults(payload, filter, item);
+				const schema = generateJoi(filter as FieldFilter, options);
+
+				const { error } = schema.validate(payloadWithFunctions, { abortEarly: false });
+
+				if (error) {
+					errors.push(error);
+					break;
+				}
+			}
 		}
 	}
 

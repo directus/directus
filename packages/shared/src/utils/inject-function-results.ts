@@ -2,7 +2,7 @@ import { cloneDeep, get, isPlainObject, set } from 'lodash';
 import { REGEX_BETWEEN_PARENS } from '../constants';
 import { FieldFunction } from '../types';
 import { Filter } from '../types/filter';
-import { functions } from './functions';
+import { functions, countUsingPreviousState } from './functions';
 
 /**
  * Inject function output fields into a given payload for accurate validation
@@ -18,7 +18,7 @@ import { functions } from './functions';
  * // { date: '2022-03-29T11:37:56Z', 'year(date)': 2022 }
  * ```
  */
-export function injectFunctionResults(payload: Record<string, any>, filter: Filter) {
+export function injectFunctionResults(payload: Record<string, any>, filter: Filter, itemBeforeUpdate?: any) {
 	const newInput = cloneDeep(payload);
 
 	processFilterLevel(filter);
@@ -32,14 +32,18 @@ export function injectFunctionResults(payload: Record<string, any>, filter: Filt
 			if (key.startsWith('_') === false && isPlainObject(value)) {
 				processFilterLevel(value, path);
 			}
-
 			if (key.includes('(') && key.includes(')')) {
 				const functionName = key.split('(')[0] as FieldFunction;
 				const fieldKey = key.match(REGEX_BETWEEN_PARENS)?.[1];
 				if (!fieldKey || !functionName) continue;
+				const countBeforeUpdate = !itemBeforeUpdate ? 0 : itemBeforeUpdate[fieldKey].length;
 				const currentValuePath = parentPath ? parentPath + '.' + fieldKey : fieldKey;
 				const currentValue = get(newInput, currentValuePath);
-				set(newInput, path, functions[functionName](currentValue));
+				const functionResult =
+					functionName == 'count'
+						? countUsingPreviousState(currentValue, countBeforeUpdate)
+						: functions[functionName](currentValue);
+				set(newInput, path, functionResult);
 			}
 		}
 	}

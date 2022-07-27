@@ -109,7 +109,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
+				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks, [])
 				: payloadAfterHooks;
 
 			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
@@ -451,8 +451,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await authorizationService.checkAccess('update', this.collection, keys);
 		}
 
+		const itemsService = new ItemsService(this.collection, {
+			schema: this.schema,
+		});
+
+		const itemsBeforeUpdate = await itemsService.readMany(keys);
+
 		const payloadWithPresets = this.accountability
-			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks, itemsBeforeUpdate)
 			: payloadAfterHooks;
 
 		await this.knex.transaction(async (trx) => {
