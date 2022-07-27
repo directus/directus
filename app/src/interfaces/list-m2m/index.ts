@@ -94,12 +94,8 @@ export default defineInterface({
 								text: '$t:bottom',
 							},
 							{
-								value: 'hide_junction',
-								text: '$t:hide_junction',
-							},
-							{
-								value: 'hide_related',
-								text: '$t:hide_related',
+								value: 'off',
+								text: '$t:off',
 							},
 						],
 					},

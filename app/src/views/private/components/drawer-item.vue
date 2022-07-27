@@ -32,7 +32,6 @@
 				/>
 				<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
 					<v-form
-						v-show="junctionFieldLocation !== 'hide_related'"
 						:disabled="disabled"
 						:loading="loading"
 						:initial-values="item && item[junctionField]"
@@ -46,7 +45,7 @@
 					/>
 
 					<v-form
-						v-show="junctionFieldLocation !== 'hide_junction'"
+						v-show="junctionFieldLocation !== 'off'"
 						v-model="internalEdits"
 						:disabled="disabled"
 						:loading="loading"

@@ -195,8 +195,7 @@ no_relational_data: Keep in mind that relational data is not included here.
 junction_field_location: Junction Fields Location
 top: Top
 bottom: Bottom
-hide_junction: Hide Junction Fields
-hide_related: Hide Related Fields
+off: Off
 hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
