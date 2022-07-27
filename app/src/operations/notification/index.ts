@@ -19,7 +19,7 @@ export default defineOperationApp({
 		{
 			field: 'recipient',
 			name: '$t:operations.notification.recipient',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'half',
 				interface: 'tags',
