@@ -89,7 +89,7 @@ const props = withDefaults(
 	}>(),
 	{
 		languageField: () => null,
-		languageDirectionField: () => null,
+		languageDirectionField: () => 'direction',
 		value: () => [],
 		autofocus: false,
 		disabled: false,

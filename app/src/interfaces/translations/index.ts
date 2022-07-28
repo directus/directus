@@ -41,12 +41,11 @@ export default defineInterface({
 			{
 				field: 'languageDirectionField',
 				type: 'string',
-				name: '$t:interfaces.translations.language_direction_field',	
-				//TODO Default value, but there's a bug that is not setting the value if it is default
-				// schema: {
-				// 	data_type: 'string',
-				// 	default_value: choices.some((choice) => choice.value === 'direction') ? 'direction' : null,
-				// },
+				name: '$t:interfaces.translations.language_direction_field',
+				schema: {
+					data_type: 'string',
+					default_value: choices.some((choice) => choice.value === 'direction') ? 'direction' : null,
+				},
 				meta: {
 					interface: 'select-dropdown',
 					options: {
