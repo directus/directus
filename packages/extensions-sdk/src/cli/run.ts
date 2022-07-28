@@ -14,6 +14,7 @@ program
 	.arguments('<type> <name>')
 	.description('Scaffold a new Directus extension')
 	.option('-l, --language <language>', 'specify the language to use', 'javascript')
+	.option('-tw, --tailwind', 'include tailwindcss in the extension')
 	.action(create);
 
 program

@@ -23,11 +23,9 @@ const pkg = require('../../../../package.json');
 
 const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
 
-type CreateOptions = { language: string };
+type CreateOptions = { language: Language; tailwind: boolean };
 
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
-	const targetPath = path.resolve(name);
-
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
 			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
@@ -38,20 +36,9 @@ export default async function create(type: string, name: string, options: Create
 		process.exit(1);
 	}
 
-	if (await fse.pathExists(targetPath)) {
-		const info = await fse.stat(targetPath);
-
-		if (!info.isDirectory()) {
-			log(`Destination ${chalk.bold(name)} already exists and is not a directory.`, 'error');
-			process.exit(1);
-		}
-
-		const files = await fse.readdir(targetPath);
-
-		if (files.length > 0) {
-			log(`Destination ${chalk.bold(name)} already exists and is not empty.`, 'error');
-			process.exit(1);
-		}
+	const targetPath = await getTargetPath(name);
+	if (!targetPath) {
+		process.exit(1);
 	}
 
 	if (!isLanguage(options.language)) {
@@ -72,6 +59,23 @@ export default async function create(type: string, name: string, options: Create
 	await fse.copy(path.join(TEMPLATE_PATH, type, options.language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
+	if (options.tailwind && isIn(type, APP_OR_HYBRID_EXTENSION_TYPES)) {
+		await fse.copy(path.join(TEMPLATE_PATH, 'common', 'tailwindcss'), targetPath);
+
+		/* Update the *.vue file to import the styles.css file */
+		const srcFiles = await fse.readdir(path.join(targetPath, 'src'));
+		srcFiles.forEach(async (filename) => {
+			if (!/.vue$/.test(filename)) {
+				return;
+			}
+
+			const filePath = path.join(targetPath, 'src', filename);
+			const fileContents = await fse.readFile(filePath, 'utf8');
+			const newContents = fileContents.replace(/<script.+\n/gm, `$&import './styles.css';\n`);
+			await fse.writeFile(filePath, newContents, 'utf8');
+		});
+	}
+
 	const entryPath = isIn(type, HYBRID_EXTENSION_TYPES) ? { app: 'dist/app.js', api: 'dist/api.js' } : 'dist/index.js';
 	const sourcePath = isIn(type, HYBRID_EXTENSION_TYPES)
 		? { app: `src/app.${languageToShort(options.language)}`, api: `src/api.${languageToShort(options.language)}` }
@@ -91,7 +95,7 @@ export default async function create(type: string, name: string, options: Create
 			build: 'directus-extension build',
 			dev: 'directus-extension build -w --no-minify',
 		},
-		devDependencies: await getPackageDeps(type, options.language),
+		devDependencies: await getPackageDeps(type, options),
 	};
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
@@ -112,17 +116,47 @@ and then to build for production, run:
 	`);
 }
 
-async function getPackageDeps(type: ExtensionType, language: Language) {
-	return {
+async function getPackageDeps(type: ExtensionType, options: CreateOptions) {
+	const deps: Record<string, string> = {
 		'@directus/extensions-sdk': pkg.version,
-		...(language === 'typescript'
-			? {
-					...(isIn(type, API_OR_HYBRID_EXTENSION_TYPES)
-						? { '@types/node': `^${await getPackageVersion('@types/node')}` }
-						: {}),
-					typescript: `^${await getPackageVersion('typescript')}`,
-			  }
-			: {}),
-		...(isIn(type, APP_OR_HYBRID_EXTENSION_TYPES) ? { vue: `^${await getPackageVersion('vue')}` } : {}),
 	};
+
+	if (options.language === 'typescript') {
+		deps['typescript'] = `^${await getPackageVersion('typescript')}`;
+		if (isIn(type, API_OR_HYBRID_EXTENSION_TYPES)) {
+			deps['@types/node'] = `^${await getPackageVersion('@types/node')}`;
+		}
+	}
+
+	if (isIn(type, APP_OR_HYBRID_EXTENSION_TYPES)) {
+		deps['vue'] = `^${await getPackageVersion('vue')}`;
+
+		if (options.tailwind) {
+			deps['tailwindcss'] = `^${await getPackageVersion('tailwindcss')}`;
+			deps['postcss'] = `^${await getPackageVersion('postcss')}`;
+			deps['autoprefixer'] = `^${await getPackageVersion('autoprefixer')}`;
+		}
+	}
+	return deps;
+}
+
+async function getTargetPath(name: string) {
+	const targetPath = path.resolve(name);
+	if (await fse.pathExists(targetPath)) {
+		const info = await fse.stat(targetPath);
+
+		if (!info.isDirectory()) {
+			log(`Destination ${chalk.bold(name)} already exists and is not a directory.`, 'error');
+			return false;
+		}
+
+		const files = await fse.readdir(targetPath);
+
+		if (files.length > 0) {
+			log(`Destination ${chalk.bold(name)} already exists and is not empty.`, 'error');
+			return false;
+		}
+	}
+
+	return targetPath;
 }
