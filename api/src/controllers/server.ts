@@ -1,9 +1,24 @@
+import { parseJSON } from '@directus/shared/utils';
+import Busboy from 'busboy';
 import { format } from 'date-fns';
-import { Router } from 'express';
-import { RouteNotFoundException } from '../exceptions';
+import { RequestHandler, Router } from 'express';
+import { load as loadYaml } from 'js-yaml';
+import { Readable } from 'stream';
+import { flushCaches } from '../cache';
+import getDatabase from '../database';
+import {
+	ForbiddenException,
+	InvalidPayloadException,
+	RouteNotFoundException,
+	UnsupportedMediaTypeException,
+} from '../exceptions';
 import { respond } from '../middleware/respond';
 import { ServerService, SpecificationService } from '../services';
+import { Snapshot } from '../types';
+import { applySnapshot } from '../utils/apply-snapshot';
 import asyncHandler from '../utils/async-handler';
+import { getSnapshot } from '../utils/get-snapshot';
+import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 
 const router = Router();
 
@@ -78,6 +93,161 @@ router.get(
 		if (data.status === 'error') res.status(503);
 		res.locals.payload = data;
 		res.locals.cache = false;
+		return next();
+	}),
+	respond
+);
+
+router.get(
+	'/schema/snapshot',
+	asyncHandler(async (req, res, next) => {
+		if (req.accountability?.admin !== true) throw new ForbiddenException();
+
+		await flushCaches();
+		const database = getDatabase();
+		const currentSnapshot = await getSnapshot({ database });
+
+		res.locals.payload = currentSnapshot;
+
+		return next();
+	}),
+	respond
+);
+
+const schemaMultipartHandler: RequestHandler = (req, res, next) => {
+	if (req.is('application/json')) return next();
+
+	if (!req.is('multipart/form-data')) throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+
+	const headers = req.headers['content-type']
+		? req.headers
+		: {
+				...req.headers,
+				'content-type': 'application/octet-stream',
+		  };
+
+	const busboy = Busboy({ headers, limits: { files: 1 } });
+
+	let fileCount = 0;
+	let uploadedSnapshot: Snapshot | null = null;
+
+	busboy.on('file', async (_, fileStream, { mimeType }) => {
+		fileCount++;
+
+		try {
+			const uploadedString = await stringFromStream(fileStream);
+
+			if (mimeType === 'application/json') {
+				try {
+					uploadedSnapshot = parseJSON(uploadedString);
+				} catch (e) {
+					throw new InvalidPayloadException('Invalid JSON snapshot');
+				}
+			} else {
+				try {
+					uploadedSnapshot = (await loadYaml(uploadedString)) as Snapshot;
+				} catch (e) {
+					throw new InvalidPayloadException('Invalid YAML snapshot');
+				}
+			}
+
+			if (!uploadedSnapshot) {
+				return next(new InvalidPayloadException(`No files were included in the body`));
+			}
+
+			res.locals.uploadedSnapshot = uploadedSnapshot;
+
+			return next();
+		} catch (error: any) {
+			busboy.emit('error', error);
+		}
+	});
+
+	busboy.on('error', (error: Error) => next(error));
+
+	busboy.on('close', () => {
+		if (fileCount === 0) return next(new InvalidPayloadException(`No files were included in the body`));
+	});
+
+	req.pipe(busboy);
+
+	function stringFromStream(stream: Readable) {
+		const chunks: Buffer[] = [];
+
+		return new Promise<string>((resolve, reject) => {
+			stream
+				.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
+				.on('error', (err: any) => {
+					return reject(new InvalidPayloadException(err.message));
+				})
+				.on('end', () => {
+					const streamString = Buffer.concat(chunks).toString('utf8');
+					return resolve(streamString);
+				});
+		});
+	}
+};
+
+router.post(
+	'/schema/apply',
+	asyncHandler(schemaMultipartHandler),
+	asyncHandler(async (req, res, next) => {
+		if (req.accountability?.admin !== true) throw new ForbiddenException();
+
+		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
+
+		await flushCaches();
+		const database = getDatabase();
+		const currentSnapshot = await getSnapshot({ database });
+		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+
+		if (
+			snapshotDiff.collections.length === 0 &&
+			snapshotDiff.fields.length === 0 &&
+			snapshotDiff.relations.length === 0
+		) {
+			return next();
+		}
+
+		try {
+			await applySnapshot(snapshot, { current: currentSnapshot, diff: snapshotDiff, database });
+		} catch (err: any) {
+			throw new InvalidPayloadException('Failed to apply snapshot');
+		}
+
+		res.locals.payload = {
+			message: 'Snapshot applied successfully',
+			diff: snapshotDiff,
+		};
+
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/schema/diff',
+	asyncHandler(schemaMultipartHandler),
+	asyncHandler(async (req, res, next) => {
+		if (req.accountability?.admin !== true) throw new ForbiddenException();
+
+		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
+
+		await flushCaches();
+		const database = getDatabase();
+		const currentSnapshot = await getSnapshot({ database });
+		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+
+		if (
+			snapshotDiff.collections.length === 0 &&
+			snapshotDiff.fields.length === 0 &&
+			snapshotDiff.relations.length === 0
+		) {
+			return next();
+		}
+
+		res.locals.payload = snapshotDiff;
+
 		return next();
 	}),
 	respond
