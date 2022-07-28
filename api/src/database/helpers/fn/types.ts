@@ -6,6 +6,7 @@ import { DatabaseHelper } from '../types';
 export type FnHelperOptions = {
 	type?: string;
 	query?: Query;
+	originalCollectionName?: string;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
@@ -26,13 +27,17 @@ export abstract class FnHelper extends DatabaseHelper {
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const relation = this.schema.relations.find(
-			(relation) => relation.related_collection === table && relation?.meta?.one_field === column
+			(relation) =>
+				relation.related_collection === (options?.originalCollectionName || table) &&
+				relation?.meta?.one_field === column
 		);
 
-		const currentPrimary = this.schema.collections[table].primary;
+		const currentPrimary = this.schema.collections[options?.originalCollectionName || table].primary;
 
 		if (!relation) {
-			throw new Error(`Field ${table}.${column} isn't a nested relational collection`);
+			throw new Error(
+				`Field ${options?.originalCollectionName || table}.${column} isn't a nested relational collection`
+			);
 		}
 
 		let countQuery = this.knex
