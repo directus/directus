@@ -339,7 +339,7 @@ export default defineComponent({
 			}
 
 			function setPrimaryKeyReadonly(field: Field) {
-				// Allow to manually set auto incremented field if it is requried, might still be disabled
+				// Allow to manually set auto incremented field if it is required, might still be disabled
 				if (props.primaryKey === '+' && field.schema?.has_auto_increment === true && field.meta?.required) {
 					return field;
 				}
