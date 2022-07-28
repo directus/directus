@@ -185,8 +185,38 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 				{
 					field: 'direction',
 					type: 'string',
-					schema: {},
-					meta: {},
+					schema: {
+						default_value: 'ltr',
+					},
+					meta: {
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+						},
+						display: 'labels',
+						display_options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+							format: false,
+						},
+					},
 				},
 			],
 		});
