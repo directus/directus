@@ -80,6 +80,7 @@ const props = withDefaults(
 		field: string;
 		primaryKey: string | number;
 		languageField?: string | null;
+		languageDirectionField?: string | null;
 		defaultLanguage?: string | null;
 		userLanguage?: boolean;
 		value: (number | string | Record<string, any>)[] | Record<string, any>;
@@ -88,6 +89,7 @@ const props = withDefaults(
 	}>(),
 	{
 		languageField: () => null,
+		languageDirectionField: () => null,
 		value: () => [],
 		autofocus: false,
 		disabled: false,
@@ -222,7 +224,7 @@ function useLanguages() {
 
 			return {
 				text: language[props.languageField ?? relationInfo.value.relatedPrimaryKeyField.field],
-				direction: language.direction,
+				direction: props.languageDirectionField ? language[props.languageDirectionField] : undefined,
 				value: langCode,
 				edited: edits?.$type !== undefined,
 				progress: Math.round((filledFields / totalFields) * 100),
@@ -243,12 +245,13 @@ function useLanguages() {
 			fields.add(props.languageField);
 		}
 
+		if (props.languageDirectionField !== null) {
+			fields.add(props.languageDirectionField);
+		}
+
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 
 		fields.add(pkField);
-
-		// Open for discussion, since this field might need to be dynamic
-		fields.add('direction');
 
 		loading.value = true;
 
