@@ -215,11 +215,6 @@ router.post(
 			throw new InvalidPayloadException('Failed to apply snapshot');
 		}
 
-		res.locals.payload = {
-			message: 'Snapshot applied successfully',
-			diff: snapshotDiff,
-		};
-
 		return next();
 	}),
 	respond
