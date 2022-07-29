@@ -4,21 +4,12 @@ import { format } from 'date-fns';
 import { RequestHandler, Router } from 'express';
 import { load as loadYaml } from 'js-yaml';
 import { Readable } from 'stream';
-import { flushCaches } from '../cache';
-import getDatabase from '../database';
-import {
-	ForbiddenException,
-	InvalidPayloadException,
-	RouteNotFoundException,
-	UnsupportedMediaTypeException,
-} from '../exceptions';
+import { InvalidPayloadException, RouteNotFoundException, UnsupportedMediaTypeException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { ServerService, SpecificationService } from '../services';
+import { SchemaService } from '../services/schema';
 import { Snapshot } from '../types';
-import { applySnapshot } from '../utils/apply-snapshot';
 import asyncHandler from '../utils/async-handler';
-import { getSnapshot } from '../utils/get-snapshot';
-import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 
 const router = Router();
 
@@ -101,11 +92,12 @@ router.get(
 router.get(
 	'/schema/snapshot',
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new ForbiddenException();
+		const service = new SchemaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-		await flushCaches();
-		const database = getDatabase();
-		const currentSnapshot = await getSnapshot({ database });
+		const currentSnapshot = await service.snapshot();
 
 		res.locals.payload = {
 			data: currentSnapshot,
@@ -154,7 +146,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 			}
 
 			if (!uploadedSnapshot) {
-				return next(new InvalidPayloadException(`No files were included in the body`));
+				throw new InvalidPayloadException(`No files were included in the body`);
 			}
 
 			res.locals.uploadedSnapshot = uploadedSnapshot;
@@ -194,28 +186,14 @@ router.post(
 	'/schema/apply',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new ForbiddenException();
+		const service = new SchemaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
 
-		await flushCaches();
-		const database = getDatabase();
-		const currentSnapshot = await getSnapshot({ database });
-		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
-
-		if (
-			snapshotDiff.collections.length === 0 &&
-			snapshotDiff.fields.length === 0 &&
-			snapshotDiff.relations.length === 0
-		) {
-			return next();
-		}
-
-		try {
-			await applySnapshot(snapshot, { current: currentSnapshot, diff: snapshotDiff, database });
-		} catch (err: any) {
-			throw new InvalidPayloadException('Failed to apply snapshot');
-		}
+		await service.apply(snapshot);
 
 		return next();
 	}),
@@ -226,22 +204,16 @@ router.post(
 	'/schema/diff',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new ForbiddenException();
+		const service = new SchemaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
 
-		await flushCaches();
-		const database = getDatabase();
-		const currentSnapshot = await getSnapshot({ database });
-		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+		const snapshotDiff = await service.diff(snapshot);
 
-		if (
-			snapshotDiff.collections.length === 0 &&
-			snapshotDiff.fields.length === 0 &&
-			snapshotDiff.relations.length === 0
-		) {
-			return next();
-		}
+		if (!snapshotDiff) return next();
 
 		res.locals.payload = {
 			data: snapshotDiff,
