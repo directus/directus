@@ -395,13 +395,16 @@ function getRollupOptions({
 	plugins: Plugin[];
 }): RollupOptions {
 	if (mode === 'browser') {
+		const stylesPlugin = styles();
+		stylesPlugin.shouldTransformCachedModule = () => true;
+
 		return {
 			input,
 			external: APP_SHARED_DEPS,
 			plugins: [
 				vue({ preprocessStyles: true }),
 				language === 'typescript' ? typescript({ check: false }) : null,
-				styles(),
+				stylesPlugin,
 				...plugins,
 				nodeResolve({ browser: true }),
 				commonjs({ esmExternals: true, sourceMap: sourcemap }),
