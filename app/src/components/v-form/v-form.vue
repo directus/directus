@@ -339,14 +339,9 @@ export default defineComponent({
 			}
 
 			function setPrimaryKeyReadonly(field: Field) {
-				// Allow to manually set auto incremented field if it is required, might still be disabled
-				if (props.primaryKey === '+' && field.schema?.has_auto_increment === true && field.meta?.required) {
-					return field;
-				}
-
 				if (
-					field.schema?.has_auto_increment === true ||
-					(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+					props.primaryKey !== '+' &&
+					(field.schema?.has_auto_increment === true || field.schema?.is_primary_key === true)
 				) {
 					const fieldClone = cloneDeep(field) as any;
 					if (!fieldClone.meta) fieldClone.meta = {};

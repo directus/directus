@@ -57,6 +57,7 @@ export default defineComponent({
 						label: t('disabled_editing_value'),
 					},
 					width: 'half',
+					note: field.value.schema?.has_auto_increment ?? false ? t('readonly_warning_aif') : null,
 				},
 			},
 			{

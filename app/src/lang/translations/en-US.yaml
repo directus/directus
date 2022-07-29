@@ -308,6 +308,7 @@ length: Length
 soft_length: Soft Limit
 precision_scale: Precision & Scale
 readonly: Readonly
+readonly_warning_aif: 'Manually setting id could cause conflicts'
 unique: Unique
 updated_on: Updated On
 updated_by: Updated By

@@ -3,6 +3,7 @@
 		<div v-if="!isGenerated" class="field half-left">
 			<div class="label type-label">{{ t('readonly') }}</div>
 			<v-checkbox v-model="readonly" :label="t('disabled_editing_value')" block />
+			<small v-if="hasAutoIncrement" class="note">{{ t('readonly_warning_aif') }}</small>
 		</div>
 
 		<div v-if="!isGenerated" class="field half-right">
@@ -81,7 +82,8 @@ export default defineComponent({
 		const { field } = storeToRefs(fieldDetailStore);
 		const type = computed(() => field.value.type);
 		const isGenerated = computed(() => field.value.schema?.is_generated);
-		return { t, readonly, hidden, required, note, translations, type, isGenerated };
+		const hasAutoIncrement = computed(() => field.value.schema?.has_auto_increment);
+		return { t, readonly, hidden, required, note, translations, type, isGenerated, hasAutoIncrement };
 	},
 });
 </script>
@@ -98,6 +100,15 @@ export default defineComponent({
 	--form-horizontal-gap: 32px;
 
 	@include form-grid;
+}
+
+.note {
+	display: block;
+	max-width: 520px;
+	margin-top: 4px;
+	font-size: 0.9em;
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 
 .monospace {
