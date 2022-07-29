@@ -148,13 +148,15 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
 import { useCollection, useLayout } from '@directus/shared/composables';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
-import { usePermissionsStore, useUserStore, usePresetsStore } from '@/stores';
-import DrawerBatch from '@/views/private/components/drawer-batch';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { usePresetsStore } from '@/stores/presets';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { getLayouts } from '@/layouts';
-import usePreset from '@/composables/use-preset';
+import { usePreset } from '@/composables/use-preset';
 
 export default defineComponent({
 	name: 'ContentCollection',

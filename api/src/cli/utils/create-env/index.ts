@@ -3,7 +3,7 @@ import { Liquid } from 'liquidjs';
 import { nanoid } from 'nanoid';
 import path from 'path';
 import { promisify } from 'util';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { Credentials } from '../create-db-connection';
 import { drivers } from '../drivers';
 
@@ -18,7 +18,7 @@ const liquidEngine = new Liquid({
 
 const defaults = {
 	security: {
-		KEY: uuidv4(),
+		KEY: uuid(),
 		SECRET: nanoid(32),
 	},
 };

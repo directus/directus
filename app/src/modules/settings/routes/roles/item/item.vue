@@ -39,7 +39,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('invite_users')" rounded icon secondary @click="userInviteModalActive = true">
+			<v-button
+				v-if="canInviteUsers"
+				v-tooltip.bottom="t('invite_users')"
+				rounded
+				icon
+				secondary
+				@click="userInviteModalActive = true"
+			>
 				<v-icon name="person_add" />
 			</v-button>
 
@@ -102,12 +109,14 @@
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useEditsGuard from '@/composables/use-edits-guard';
-import useItem from '@/composables/use-item';
-import useShortcut from '@/composables/use-shortcut';
-import { usePermissionsStore, useServerStore, useUserStore } from '@/stores/';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import UsersInvite from '@/views/private/components/users-invite';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
+import { useShortcut } from '@/composables/use-shortcut';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import UsersInvite from '@/views/private/components/users-invite.vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
@@ -207,6 +216,7 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			canInviteUsers,
 		};
 
 		/**

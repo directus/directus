@@ -3,7 +3,7 @@
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div v-if="info?.project?.project_logo" class="logo" :style="{ backgroundColor: info?.project.project_color }">
-					<img :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+					<v-image :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
 				</div>
 				<div v-else class="logo" :style="{ backgroundColor: info?.project?.project_color }">
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
@@ -47,7 +47,7 @@
 			</svg>
 
 			<transition name="scale">
-				<img v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
+				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
 			</transition>
 			<div class="note-container">
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />
@@ -58,9 +58,8 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { useServerStore } from '@/stores';
+import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
-import { getRootPath } from '@/utils/get-root-path';
 import { useI18n } from 'vue-i18n';
 import { cssVar } from '@directus/shared/utils/browser';
 import Color from 'color';
@@ -131,7 +130,7 @@ const hasCustomBackground = computed(() => {
 const artStyles = computed(() => {
 	if (!hasCustomBackground.value) return null;
 
-	const url = getRootPath() + `assets/${info.value!.project?.public_background}`;
+	const url = `/assets/${info.value!.project?.public_background}`;
 
 	return {
 		background: `url(${url})`,
@@ -142,12 +141,12 @@ const artStyles = computed(() => {
 
 const foregroundURL = computed(() => {
 	if (!info.value?.project?.public_foreground) return null;
-	return getRootPath() + `assets/${info.value.project?.public_foreground}`;
+	return '/assets/' + info.value.project?.public_foreground;
 });
 
 const logoURL = computed<string | null>(() => {
 	if (!info.value?.project?.project_logo) return null;
-	return getRootPath() + `assets/${info.value.project?.project_logo}`;
+	return '/assets/' + info.value.project?.project_logo;
 });
 </script>
 

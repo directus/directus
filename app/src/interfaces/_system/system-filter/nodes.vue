@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/shared/composables';
 import {

@@ -12,6 +12,7 @@
 		:placeholder="placeholder"
 		:allow-other="allowOther"
 		:close-on-content-click="false"
+		:multiple-preview-threshold="previewThreshold"
 		@update:model-value="updateValue($event)"
 	>
 		<template v-if="icon" #prepend>
@@ -59,6 +60,10 @@ export default defineComponent({
 		allowOther: {
 			type: Boolean,
 			default: false,
+		},
+		previewThreshold: {
+			type: Number,
+			default: 3,
 		},
 	},
 	emits: ['input'],

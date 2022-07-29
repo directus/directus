@@ -1,5 +1,5 @@
 <template>
-	<img
+	<v-image
 		v-if="imageThumbnail && !imgError"
 		:src="imageThumbnail"
 		:class="{ 'is-svg': value && value.type?.includes('svg') }"
@@ -17,10 +17,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from 'vue';
-import readableMimeType from '@/utils/readable-mime-type';
-import useElementSize from '@/composables/use-element-size';
-import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import { useElementSize } from '@/composables/use-element-size';
 
 type File = {
 	id: string;
@@ -46,9 +44,9 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (!props.value) return null;
-			if (props.value.type?.includes('svg')) return addTokenToURL(getRootPath() + `assets/${props.value.id}`);
+			if (props.value.type?.includes('svg')) return '/assets/' + props.value.id;
 			if (props.value.type?.includes('image') === false) return null;
-			return addTokenToURL(getRootPath() + `assets/${props.value.id}?key=system-small-cover`);
+			return `/assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		const { height } = useElementSize(previewEl);

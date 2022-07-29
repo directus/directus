@@ -11,8 +11,11 @@
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
+					:raw-editor-enabled="rawEditorEnabled"
+					:raw-editor-active="rawEditorActive"
 					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
+					@toggle-raw="$emit('toggle-raw', $event)"
 				/>
 			</template>
 
@@ -39,6 +42,8 @@
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
+			:raw-editor-enabled="rawEditorEnabled"
+			:raw-editor-active="rawEditorActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -77,7 +82,7 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
 	field: Field;
@@ -91,6 +96,8 @@ interface Props {
 	validationError?: ValidationError;
 	autofocus?: boolean;
 	badge?: string;
+	rawEditorEnabled?: boolean;
+	rawEditorActive?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -104,9 +111,11 @@ const props = withDefaults(defineProps<Props>(), {
 	validationError: undefined,
 	autofocus: false,
 	badge: undefined,
+	rawEditorEnabled: false,
+	rawEditorActive: false,
 });
 
-const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'setFieldValue']);
+const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 

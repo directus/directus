@@ -45,10 +45,11 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import { Knex } from 'knex';
-import { flatten, get, isObject, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
+import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER } from '../../constants';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
@@ -632,6 +633,12 @@ export class GraphQLService {
 					_nnull: {
 						type: GraphQLBoolean,
 					},
+					_between: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
 				},
 			});
 
@@ -668,6 +675,12 @@ export class GraphQLService {
 					},
 					_nnull: {
 						type: GraphQLBoolean,
+					},
+					_between: {
+						type: new GraphQLList(GraphQLStringOrFloat),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLStringOrFloat),
 					},
 				},
 			});
@@ -834,6 +847,18 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
 
+				const countType = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated_count`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: GraphQLInt,
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				});
+
 				AggregateMethods[collection.collection] = {
 					group: {
 						name: 'group',
@@ -845,17 +870,11 @@ export class GraphQLService {
 					},
 					count: {
 						name: 'count',
-						type: schemaComposer.createObjectTC({
-							name: `${collection.collection}_aggregated_count`,
-							fields: Object.values(collection.fields).reduce((acc, field) => {
-								acc[field.field] = {
-									type: GraphQLInt,
-									description: field.note,
-								};
-
-								return acc;
-							}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
-						}),
+						type: countType,
+					},
+					countDistinct: {
+						name: 'countDistinct',
+						type: countType,
 					},
 				};
 
@@ -877,10 +896,6 @@ export class GraphQLService {
 						},
 						sum: {
 							name: 'sum',
-							type: AggregatedFields[collection.collection],
-						},
-						countDistinct: {
-							name: 'countDistinct',
 							type: AggregatedFields[collection.collection],
 						},
 						avgDistinct: {
@@ -1235,7 +1250,7 @@ export class GraphQLService {
 		if (!selections) return null;
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 
-		let query: Record<string, any>;
+		let query: Query;
 
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
@@ -1262,6 +1277,20 @@ export class GraphQLService {
 			};
 
 			query.limit = 1;
+		}
+
+		// Transform count(a.b.c) into a.b.count(c)
+		if (query.fields?.length) {
+			for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
+				if (query.fields[fieldIndex].includes('(') && query.fields[fieldIndex].includes(')')) {
+					const functionName = query.fields[fieldIndex].split('(')[0];
+					const columnNames = query.fields[fieldIndex].match(REGEX_BETWEEN_PARENS)![1].split('.');
+					if (columnNames.length > 1) {
+						const column = columnNames.pop();
+						query.fields[fieldIndex] = columnNames.join('.') + '.' + functionName + '(' + column + ')';
+					}
+				}
+			}
 		}
 
 		const result = await this.read(collection, query);
@@ -1573,7 +1602,8 @@ export class GraphQLService {
 
 						result[currentKey] = Object.values(value)[0]!;
 					} else {
-						result[currentKey] = isObject(value) ? replaceFuncDeep(value) : value;
+						result[currentKey] =
+							value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
 					}
 				});
 			}

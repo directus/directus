@@ -61,9 +61,10 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import { DisplayItem, RelationQueryMultiple, useRelationM2M, useRelationMultiple } from '@/composables/use-relation';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useWindowSize } from '@/composables/use-window-size';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
 import { notEmpty } from '@/utils/is-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';

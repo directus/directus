@@ -53,6 +53,7 @@
 				v-model="options"
 				:extension="operationType"
 				:options="operationOptions"
+				raw-editor-enabled
 				type="operation"
 			></extension-options>
 			<component

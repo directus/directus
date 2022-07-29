@@ -315,6 +315,8 @@ primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
+toggle_raw_editor: Toggle Raw Editor
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raw value
 copy_raw_value: Copy Raw Value
 copy_raw_value_success: Copied
@@ -623,6 +625,7 @@ password_reset_sent: If you have an account, we've sent you a secure link to res
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
+edit_image: Edit Image
 editing_image: Editing Image
 square: Square
 free: Free
@@ -1524,6 +1527,7 @@ interfaces:
     allow_none_label: Allow No Selection
     choices_name_placeholder: Enter a name...
     choices_value_placeholder: Enter a value...
+    preview_threshold: Preview Threshold
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (Multiple)
     description: Select multiple values from a dropdown
@@ -1724,6 +1728,9 @@ interfaces:
     regenerate: Regenerate Token
     generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
     remove_token: Remove Token
+  system-raw-editor:
+    system-raw-editor: Raw Editor
+    description: Allow entering of raw or mustache templating values
 displays:
   translations:
     translations: Translations
@@ -1768,6 +1775,11 @@ displays:
     strict: Strict
     strict_label: Use strict units
     strict_note: Removes words like 'almost', 'over', 'less than'
+    round: Round
+    round_note: Choose a rounding function to use
+    down: Down
+    nearest: Nearest
+    up: Up
   file:
     file: File
     description: Display files

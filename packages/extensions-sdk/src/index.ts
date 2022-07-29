@@ -6,6 +6,8 @@ export {
 	definePanel,
 	defineHook,
 	defineEndpoint,
+	defineOperationApp,
+	defineOperationApi,
 	getFieldsFromTemplate,
 	getRelationType,
 } from '@directus/shared/utils';

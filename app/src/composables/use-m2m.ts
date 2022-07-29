@@ -1,7 +1,8 @@
 import { useCollection } from '@directus/shared/composables';
-import { useCollectionsStore, useRelationsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
+import { useRelationsStore } from '@/stores/relations';
 import { Field, Relation } from '@directus/shared/types';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { computed, ComputedRef, Ref } from 'vue';
 
 export type RelationInfo = {
@@ -25,7 +26,7 @@ type UsableRelation = {
 	relationFields: ComputedRef<Field[]>;
 };
 
-export default function useRelation(collection: Ref<string>, field: Ref<string>): UsableRelation {
+export function useRelation(collection: Ref<string>, field: Ref<string>): UsableRelation {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
 

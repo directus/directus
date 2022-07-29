@@ -111,7 +111,7 @@
 		</div>
 
 		<drawer-collection
-			v-if="!disabled && !!selectingFrom"
+			v-if="!disabled"
 			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
@@ -136,18 +136,19 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationM2A, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { computed, ref, toRefs } from 'vue';
+import { clamp, get } from 'lodash';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item';
-import DrawerCollection from '@/views/private/components/drawer-collection';
 import Draggable from 'vuedraggable';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { get, clamp } from 'lodash';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -328,20 +329,29 @@ function getCollectionName(item: DisplayItem) {
 const customFilter = computed(() => {
 	const info = relationInfo.value;
 
+	if (!info || !selectingFrom.value) return {};
+
 	const filter: Filter = {
 		_and: [],
 	};
-
-	if (!info || !selectingFrom.value) return filter;
 
 	const reverseRelation = `$FOLLOW(${info.junctionCollection.collection},${info.junctionField.field},${info.collectionField.field})`;
 
 	const selectFilter: Filter = {
 		[reverseRelation]: {
 			_none: {
-				[relationInfo.value.reverseJunctionField.field]: {
-					_eq: props.primaryKey,
-				},
+				_and: [
+					{
+						[relationInfo.value.reverseJunctionField.field]: {
+							_eq: props.primaryKey,
+						},
+					},
+					{
+						[info.collectionField.field]: {
+							_eq: unref(selectingFrom),
+						},
+					},
+				],
 			},
 		},
 	};

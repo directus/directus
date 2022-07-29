@@ -32,7 +32,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, onMounted } from 'vue';
 import { Field } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import localizedFormat from '@/utils/localized-format';
+import { localizedFormat } from '@/utils/localized-format';
 import { add, startOfWeek } from 'date-fns';
 
 export default defineComponent({
