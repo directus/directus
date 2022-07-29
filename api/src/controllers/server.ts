@@ -3,13 +3,13 @@ import Busboy from 'busboy';
 import { format } from 'date-fns';
 import { RequestHandler, Router } from 'express';
 import { load as loadYaml } from 'js-yaml';
-import { Readable } from 'stream';
 import { InvalidPayloadException, RouteNotFoundException, UnsupportedMediaTypeException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { ServerService, SpecificationService } from '../services';
 import { SchemaService } from '../services/schema';
 import { Snapshot } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { getStringFromStream } from '../utils/get-string-from-stream';
 
 const router = Router();
 
@@ -129,7 +129,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 		fileCount++;
 
 		try {
-			const uploadedString = await stringFromStream(fileStream);
+			const uploadedString = await getStringFromStream(fileStream);
 
 			if (mimeType === 'application/json') {
 				try {
@@ -164,22 +164,6 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	});
 
 	req.pipe(busboy);
-
-	function stringFromStream(stream: Readable) {
-		const chunks: Buffer[] = [];
-
-		return new Promise<string>((resolve, reject) => {
-			stream
-				.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
-				.on('error', (err: any) => {
-					return reject(new InvalidPayloadException(err.message));
-				})
-				.on('end', () => {
-					const streamString = Buffer.concat(chunks).toString('utf8');
-					return resolve(streamString);
-				});
-		});
-	}
 };
 
 router.post(
