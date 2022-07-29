@@ -107,7 +107,9 @@ router.get(
 		const database = getDatabase();
 		const currentSnapshot = await getSnapshot({ database });
 
-		res.locals.payload = currentSnapshot;
+		res.locals.payload = {
+			data: currentSnapshot,
+		};
 
 		return next();
 	}),
@@ -241,7 +243,9 @@ router.post(
 			return next();
 		}
 
-		res.locals.payload = snapshotDiff;
+		res.locals.payload = {
+			data: snapshotDiff,
+		};
 
 		return next();
 	}),
