@@ -24,7 +24,7 @@
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -w --preserveWatchOutput --incremental"
+		"dev": "pnpm build -- -w --preserveWatchOutput --incremental"
 	},
 	"engines": {
 		"node": ">=12.20.0"
