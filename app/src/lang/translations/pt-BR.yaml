@@ -35,6 +35,7 @@ tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
 location: Local
+condition_rules: Regras da condição
 input: Entrada
 maps: Mapas
 switch_user: Alternar Usuário
@@ -48,6 +49,7 @@ group: Grupo
 export_items: Exportar itens
 and: E
 or: Ou
+dataset_too_large_currently_showing_n_items: Conjunto de dados é muito grande. Mostrando os primeiros {n} itens.
 modifier: Modificador
 custom: Personalizado
 fill_width: Preencher Largura
@@ -77,6 +79,7 @@ message: Mensagem
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
 create_translation_string: String chave para a tradução
+no_translation_string: Nenhuma tradução
 translation_string_translations_placeholder: Adicionar uma nova tradução
 delete_translation_string_copy: >-
   Tem certeza de que deseja excluir a string de tradução "{key}"? Essa ação não pode ser desfeita.
@@ -734,6 +737,8 @@ view_trigger: Ver gatilho
 create_trigger: Criar gatilho
 trigger_setup: Configuração de gatilho
 change_trigger: Alterar gatilho
+set_flow_active: Definir fluxo como ativo
+set_flow_inactive: Definir fluxo como inativo
 edit_flow: Editar fluxo
 delete_flow: Apagar fluxo
 no_other_flows_copy: Você ainda não tem outros fluxos.
@@ -876,6 +881,7 @@ settings_project: Configurações do projeto
 settings_webhooks: Webhooks
 settings_flows: Fluxos
 settings_presets: Predefinições & Marcadores
+settings_translation_strings: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão faltando
 scope: Escopo
 actions: Ações
@@ -1244,6 +1250,8 @@ inline: Em linha
 comment: Comentário
 shares: Compartilhar
 unlimited_usage: Uso Ilimitado
+uses_left: Não há usos restante | 1 uso restante | {n} usos restantes
+no_shares: Nenhum compartilhamento para mostrar
 expired: Expirado
 share: Compartilhar
 share_item: Compartilhar item
@@ -1576,6 +1584,7 @@ interfaces:
   input-translated-string:
     input-translated-string: Textos traduzidos
     search_placeholder: Pesquisar...
+    new_translation_string: Nova tradução
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
@@ -1673,6 +1682,7 @@ displays:
     relative: Relativo
     relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
     suffix: Sufixo
+    round_note: Escolha uma função de arredondamento para usar
   file:
     file: Arquivo
     description: Exibir arquivos
@@ -1697,7 +1707,10 @@ displays:
     suffix: Sufixo
     color: Cor
     icon: Ícone
+    border: Borda
+    border_label: Mostrar bordas
     text: Texto
+    text_placeholder: Substituição de valor opcional...
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
     description: Exibe uma versão formatada do objeto
@@ -1765,6 +1778,8 @@ layouts:
     optional: Opcional
   map:
     map: Mapa
+    invalid_geometry: Geometria inválida
+    find_location: Encontrar localização...
 panels:
   metric:
     name: Métrico
