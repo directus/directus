@@ -88,6 +88,7 @@ edit_translation_string: 編輯翻譯字串
 invite_users: 邀請用戶
 invite: 邀请
 email_already_invited: 此電郵 "{email}" 已被邀請
+subject: 標題
 inbox: 收件匣
 emails: 信件
 connection_excellent: 優秀的連接
@@ -170,6 +171,7 @@ revision_post_create: 這是項目建立後看起來的樣子.
 revision_post_update: 這是項目更新後看起來的樣子.
 changes_made: 以下是此版本所做的改變。
 no_relational_data: 請留意關聯數據並不包含於此。
+hide_field: 隱藏欄位
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示
 delete_field: 刪除欄位
@@ -183,6 +185,7 @@ global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
 camera: 相機
 show_zero: 顯示零值
+validation: 驗證
 sum: 總和
 avg: 平均
 count: 數量
@@ -406,6 +409,7 @@ active: 有效的
 move_to: 移動到...
 copy: 複製
 copy_to: 複製到...
+no_other_dashboards_copy: 目前尚未建立儀表板
 inactive: 未啟用
 users: 用戶
 activity: 活動
@@ -474,6 +478,7 @@ update_collection_success: 已更新集合
 delete_collection_success: 已刪除集合
 make_folder_visible: 設定資料夾為可見
 make_folder_hidden: 設定資料夾為隱藏
+goto_collection_content: 查看內容
 start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
 delete_folder_are_you_sure: 是否確定要刪除資料夾 {folder} ？包含的所有資料夾都會被移到最外層。
 visible_collections: 可見集合
@@ -511,6 +516,9 @@ optional_system_fields: 選用系統欄位
 value_unique: 值必須是唯一的
 display_template: 顯示模板
 n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
+all_files: 所有檔案
+my_files: 我的檔案
+recent_files: 最近使用的檔案
 create_folder: 建立資料夾
 edit_folder: 編輯資料夾
 folder_name: 資料夾名稱...
@@ -534,6 +542,11 @@ toggle: 切換
 flow_name: 名稱
 flow_tracking: 活動與紀錄追蹤
 flow_tracking_all: 追蹤活動與紀錄
+insights: 數據分析
+no_dashboards: 目前沒有儀表板
+no_dashboards_copy: 目前尚未建立儀表板
+create_dashboard: 建立儀表板
+dashboard_name: 儀表板名稱
 width: 寬度
 height: 高度
 wysiwyg_options:
@@ -589,6 +602,7 @@ unsaved_changes_copy: 您確定要離開此頁面嗎？
 discard_changes: 放棄修改
 keep_editing: 繼續編輯
 add_new: 新增
+create_new: 新增
 all: 全部
 no_layout_collection_selected_yet: 還沒有選擇佈局/集合
 batch_delete_confirm: >-
@@ -596,11 +610,13 @@ batch_delete_confirm: >-
 cancel: 取消
 collection: 集合
 collections: 資料集
+content: 內容管理
 singleton: 單一資料
 singleton_label: 視為單一物件
 system_fields_locked: 系統欄位已鎖定無法編輯
 directus_collection:
   directus_activity: 所有事件的詳細紀錄
+  directus_folders: 提供虛擬資料夾供存放檔案。
 fields:
   directus_activity:
     item: 項目主鍵值
@@ -829,7 +845,10 @@ interfaces:
     folder: 資料夾
     description: 選擇一個資料夾
     field_hint: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
+    root_name: 檔案庫的基礎位置
+    system_default: 系統預設值
   list:
+    add_label: '「新增」標籤'
     sort: 排序
   slider:
     slider: 滑塊
@@ -855,7 +874,10 @@ interfaces:
       auto: 自動
       dropdown: 下拉選單
   input-rich-text-html:
+    description: 可以編輯HTML內容的編輯器
     folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
+  system-token:
+    placeholder: 點選「產生token」來建立一個新的靜態token
 displays:
   translations:
     translations: 翻譯
