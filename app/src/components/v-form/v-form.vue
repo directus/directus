@@ -6,6 +6,9 @@
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
+		<v-info v-if="firstVisibleFieldIndex === null && !nested" :title="t('no_visible_fields')" icon="search" center>
+			{{ t('no_visible_fields_copy') }}
+		</v-info>
 		<template v-for="(fieldName, index) in fieldNames">
 			<component
 				:is="`interface-${fieldsMap[fieldName].meta?.interface || 'group-standard'}`"

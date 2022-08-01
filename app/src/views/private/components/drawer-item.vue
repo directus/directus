@@ -53,6 +53,7 @@
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:nested="true"
 				:validation-errors="!junctionField ? validationErrors : undefined"
 			/>
 		</div>
