@@ -179,7 +179,13 @@
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
+				v-if="
+					isNew === false &&
+					loading === false &&
+					internalPrimaryKey &&
+					revisionsAllowed &&
+					accountabilityScope === 'all'
+				"
 				ref="revisionsDrawerDetailRef"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
@@ -187,18 +193,18 @@
 				@revert="revert"
 			/>
 			<comments-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 			/>
 			<shares-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:allowed="shareAllowed"
 			/>
 			<flow-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				location="item"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
