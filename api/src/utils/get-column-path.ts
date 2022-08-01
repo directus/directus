@@ -3,7 +3,8 @@ import { getRelationInfo } from './get-relation-info';
 import { InvalidQueryException } from '../exceptions';
 import { get } from 'lodash';
 
-type AliasMap = string | { [key: string]: AliasMap };
+export type AliasMap = { [key: string]: AliasMapColumn };
+type AliasMapColumn = { '~alias': string } | ({ '~alias': string } & { [key: string]: AliasMapColumn });
 
 export type ColPathProps = {
 	path: string[];
@@ -23,7 +24,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 	function followRelation(
 		pathParts: string[],
 		parentCollection: string = collection,
-		parentAlias?: string
+		parentFields?: string
 	): { columnPath: string; targetCollection: string } {
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
@@ -35,7 +36,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 			throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
 		}
 
-		const alias = get(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts);
+		const alias = get(aliasMap, parentFields ? `${parentFields}.${pathParts[0]}.~alias` : `${pathParts[0]}.~alias`);
 		const remainingParts = pathParts.slice(1);
 
 		let parent: string;
@@ -59,7 +60,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 		}
 
 		if (remainingParts.length) {
-			return followRelation(remainingParts, parent, alias);
+			return followRelation(remainingParts, parent, `${parentFields ? parentFields + '.' : ''}${pathParts[0]}`);
 		}
 
 		return { columnPath: '', targetCollection: '' };

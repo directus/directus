@@ -7,8 +7,7 @@ import { DeepPartial } from '@directus/shared/types';
   path: [ 'author', 'role', 'name' ],
   collection: 'articles',
   aliasMap: {
-    author: { role: { name: 'ljnsv' } },
-    ljnsv: { role: { name: 'grenv' } }
+    author: { role: { '~alias': 'ljnsv' } },
   },
   relations: []
 
@@ -17,7 +16,7 @@ grenv.name
 {
   path: [ 'author', 'first_name' ],
   collection: 'articles',
-  aliasMap: { author: { first_name: 'rnmxt' } },
+  aliasMap: { author: { '~alias': 'rnmxt' } },
   relations: []
 
 rnmxt.first_name
@@ -25,7 +24,7 @@ rnmxt.first_name
 {
   path: [ 'item:headings', 'text' ],
   collection: 'pages_sections',
-  aliasMap: { 'item:headings': { text: 'yllus' } },
+  aliasMap: { 'item:headings': { '~alias': 'yllus' } },
   relations: [
 */
 
@@ -33,7 +32,7 @@ test('Throws an error when the field path is not known in relations', () => {
 	const input = {
 		path: ['author', 'first_name'],
 		collection: 'articles',
-		aliasMap: { author: { first_name: 'bjoyu' } },
+		aliasMap: {},
 		relations: [],
 	};
 
@@ -65,7 +64,7 @@ test('Extracts path scope and returns correct alias for a2o', () => {
 	const input: DeepPartial<ColPathProps> = {
 		path: ['item:headings', 'text'],
 		collection: 'pages',
-		aliasMap: { 'item:headings': { text: 'abcdef' } },
+		aliasMap: { 'item:headings': { '~alias': 'abcdef' } },
 		relations: [
 			{
 				collection: 'pages',
@@ -89,8 +88,12 @@ test('Returns correct alias for m2o', () => {
 		path: ['author', 'role', 'name'],
 		collection: 'articles',
 		aliasMap: {
-			author: { role: { name: 'ljnsv' } },
-			ljnsv: { role: { name: 'grenv' } },
+			author: {
+				'~alias': 'ljnsv',
+				role: {
+					'~alias': 'grenv',
+				},
+			},
 		},
 		relations: [
 			{
@@ -113,6 +116,43 @@ test('Returns correct alias for m2o', () => {
 	const result = getColumnPath(input as ColPathProps);
 	expect(result.columnPath).toBe('grenv.name');
 	expect(result.targetCollection).toBe('directus_roles');
+});
+
+test('Returns correct alias for o2m', () => {
+	const input: DeepPartial<ColPathProps> = {
+		path: ['categories', 'category_id', 'name'],
+		collection: 'articles',
+		aliasMap: {
+			categories: {
+				'~alias': 'aaaa',
+				category_id: {
+					'~alias': 'bbbb',
+				},
+			},
+		},
+		relations: [
+			{
+				collection: 'categories_articles',
+				field: 'category_id',
+				related_collection: 'categories',
+				meta: null,
+				schema: null,
+			},
+			{
+				collection: 'categories_articles',
+				field: 'article_id',
+				related_collection: 'articles',
+				meta: {
+					one_field: 'categories',
+				},
+				schema: null,
+			},
+		],
+	};
+
+	const result = getColumnPath(input as ColPathProps);
+	expect(result.columnPath).toBe('bbbb.name');
+	expect(result.targetCollection).toBe('categories');
 });
 
 test('Returns correct alias for o2m (& uses the table name if no alias exists)', () => {
@@ -143,4 +183,49 @@ test('Returns correct alias for o2m (& uses the table name if no alias exists)',
 	const result = getColumnPath(input as ColPathProps);
 	expect(result.columnPath).toBe('categories.name');
 	expect(result.targetCollection).toBe('categories');
+});
+
+test('Returns correct alias when there are multiple joins to the same table', () => {
+	const input: DeepPartial<ColPathProps> = {
+		path: ['author', 'secondary_role', 'name'],
+		collection: 'articles',
+		aliasMap: {
+			author: {
+				'~alias': 'ljnsv',
+				role: {
+					'~alias': 'grenv',
+				},
+				secondary_role: {
+					'~alias': 'psgwn',
+				},
+			},
+		},
+		relations: [
+			{
+				collection: 'articles',
+				field: 'author',
+				related_collection: 'directus_users',
+				meta: null,
+				schema: null,
+			},
+			{
+				collection: 'directus_users',
+				field: 'role',
+				related_collection: 'directus_roles',
+				meta: null,
+				schema: null,
+			},
+			{
+				collection: 'directus_users',
+				field: 'secondary_role',
+				related_collection: 'directus_roles',
+				meta: null,
+				schema: null,
+			},
+		],
+	};
+
+	const result = getColumnPath(input as ColPathProps);
+	expect(result.columnPath).toBe('psgwn.name');
+	expect(result.targetCollection).toBe('directus_roles');
 });
