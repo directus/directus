@@ -1701,6 +1701,8 @@ interfaces:
     regenerate: Wygeneruj ponownie token
     generate_success_copy: Wykonaj kopię zapasową i skopiuj token powyżej. Ze względów bezpieczeństwa nie będziesz w stanie wyświetlić tokenu ponownie po zapisaniu i opuszczeniu tej strony.
     remove_token: Usuń token
+  system-raw-editor:
+    system-raw-editor: Edycja bezpośrednia
 displays:
   translations:
     translations: Tłumaczenia
