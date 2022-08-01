@@ -48,7 +48,7 @@ import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
-import { DEFAULT_AUTH_PROVIDER } from '../../constants';
+import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database';
 import env from '../../env';
@@ -405,7 +405,11 @@ export class GraphQLService {
 						// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
 						// can't non-null in update, as that would require every not-nullable field to be
 						// submitted on updates
-						if (field.nullable === false && action !== 'update') {
+						if (
+							field.nullable === false &&
+							!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
+							action !== 'update'
+						) {
 							type = GraphQLNonNull(type);
 						}
 

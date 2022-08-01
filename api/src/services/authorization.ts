@@ -26,6 +26,7 @@ import { stripFunction } from '../utils/strip-function';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { getRelationInfo } from '../utils/get-relation-info';
+import { GENERATE_SPECIAL } from '../constants';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -513,9 +514,7 @@ export class AuthorizationService {
 		for (const field of Object.values(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
 
-			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
-				specials.includes(name)
-			);
+			const hasGenerateSpecial = GENERATE_SPECIAL.some((name) => specials.includes(name));
 
 			const nullable = field.nullable || hasGenerateSpecial || field.generated;
 
