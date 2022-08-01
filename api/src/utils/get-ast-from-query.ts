@@ -259,9 +259,7 @@ export default async function getASTFromQuery(
 					relatedKey: schema.collections[relatedCollection].primary,
 					relation: relation,
 					query: getDeepQuery(deep?.[fieldKey] || {}),
-					children: Array.isArray(nestedFields)
-						? await parseFields(relatedCollection, nestedFields, deep?.[fieldKey] || {})
-						: [],
+					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[fieldKey] || {}),
 				};
 
 				if (relationType === 'o2m' && !child!.query.sort) {
