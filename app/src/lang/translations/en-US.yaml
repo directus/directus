@@ -1308,6 +1308,8 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+full: Full
+half: Half
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1981,7 +1983,6 @@ panels:
   meter:
     description: Meter for tracking values
     name: Meter
-    arc: Arc
     stroke_width: Stroke Width
     select_max_value: You must select a maximum value.
     max_greater_than_zero: The maximum must be greater than 0.
