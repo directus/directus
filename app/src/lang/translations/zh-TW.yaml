@@ -1,42 +1,94 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: 識別
 avatar: 頭像
 application: 應用程式
 default_provider: 預設
+method: 方法
 published: 已發佈
 draft: 草稿
 archived: 已封存
 modules: 模組
+module_bar: 模組列
+logs: 日誌
+reset_width: 重設寬度
+tile_size: 圖磚尺寸
 edit_field: 編輯欄位
 conditions: 條件
 location: 位置
+condition_rules: 條件規則
+input: 輸入
+maps: 地圖
+switch_user: 切換使用者
+item_creation: 建立物件
 item_revision: 項目修改
 enter_a_name: 輸入名稱...
 duplicate_field: 複製欄位
 half_width: 半寬
 full_width: 滿寬
 group: 組
+export_items: 匯出物件
 and: 和
 or: 或
+init: 初始化
+dataset_too_large_currently_showing_n_items: 資料集過長，目前只顯示前 {n} 個物件
+modifier: 修改器
+custom: 自訂
+hook: 掛鉤
 fill_width: 填滿寬度
 field_name_translations: 欄位名稱翻譯
 enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
 add_field: 增加欄位
 role_name: 角色名稱
+branch: 分支
+leaf: 枝葉
+indeterminate: 不確定
+edit_collection: 編輯集合
 exclusive: 專屬
 children: 子層
 db_only_click_to_configure: '僅數據庫：單擊進行配置'
+show_active_items: 顯示可用物件
 show_archived_items: 顯示已封存的項目
+show_all_items: 顯示所有物件
 edited: 已編輯值
 required: 必填
 required_for_app_access: 連接程式時必需
 requires_value: 需要值
 create_preset: 創建預置
+create_panel: 建立面板
 create_role: 新建角色
 create_user: 建立用户
+message: 訊息
+delete_panel: 刪除面板
 create_webhook: 建立 Webhook
+create_translation_string: 建立翻譯字串
+no_translation_string: 尚無翻譯字串
+translation_string_key_placeholder: 翻譯字串
+translation_string_translations_placeholder: 新增翻譯字串
+edit_translation_string: 編輯翻譯字串
 invite_users: 邀請用戶
 invite: 邀请
 email_already_invited: 此電郵 "{email}" 已被邀請
+subject: 標題
 inbox: 收件匣
 emails: 信件
 connection_excellent: 優秀的連接
@@ -119,6 +171,7 @@ revision_post_create: 這是項目建立後看起來的樣子.
 revision_post_update: 這是項目更新後看起來的樣子.
 changes_made: 以下是此版本所做的改變。
 no_relational_data: 請留意關聯數據並不包含於此。
+hide_field: 隱藏欄位
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示
 delete_field: 刪除欄位
@@ -132,6 +185,7 @@ global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
 camera: 相機
 show_zero: 顯示零值
+validation: 驗證
 sum: 總和
 avg: 平均
 count: 數量
@@ -171,6 +225,7 @@ auto_generate: 自動產生
 this_will_auto_setup_fields_relations: 這會自動設定所有相關的必要欄位和關係。
 click_here: 點擊此處
 fields_group: 欄位群組
+new_data_alert: '以下資料將會在您的資料模型中建立:'
 choose_a_type: 選擇類型...
 determined_by_relationship: 由關聯決定
 add_note: 新增提示
@@ -304,6 +359,8 @@ type: 類型
 creating_new_collection: 建立新的集合
 created_by: 建立者
 created_on: 建立於
+creating_collection_info: 設定集合名稱，以及該集合的「關鍵」欄位
+creating_collection_system: 啟用並設定任何選用欄位的名稱
 auto_increment_integer: 自動遞增整數
 generated_uuid: 產生UUID
 manual_string: 自訂輸入的字串
@@ -336,6 +393,7 @@ no_files_copy: 這裡還沒有任何檔案。
 user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
 no_users_copy: 這個角色中還沒有任何使用者。
 webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
+activity_log: 歷程紀錄
 all_items: 所有項目
 any: 任何
 csv: CSV
@@ -344,12 +402,14 @@ create_collection: 新建集合
 no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始。
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
+collection_field_not_setup: 集合中有欄位設定錯誤
 select_a_collection: 選擇一個集合
 select_a_field: 選擇一個欄位
 active: 有效的
 move_to: 移動到...
 copy: 複製
 copy_to: 複製到...
+no_other_dashboards_copy: 目前尚未建立儀表板
 inactive: 未啟用
 users: 用戶
 activity: 活動
@@ -416,7 +476,11 @@ all_users: 所有使用者
 delete_collection: 刪除集合
 update_collection_success: 已更新集合
 delete_collection_success: 已刪除集合
+make_folder_visible: 設定資料夾為可見
+make_folder_hidden: 設定資料夾為隱藏
+goto_collection_content: 查看內容
 start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
+delete_folder_are_you_sure: 是否確定要刪除資料夾 {folder} ？包含的所有資料夾都會被移到最外層。
 visible_collections: 可見集合
 hidden_collections: 隱藏集合
 unmanaged_collections: 未配置集合
@@ -447,11 +511,18 @@ operators:
   between: 介於
   empty: 是空的
 loading: 載入中...
+collection_setup: 集合設定
+optional_system_fields: 選用系統欄位
 value_unique: 值必須是唯一的
 display_template: 顯示模板
 n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
+all_files: 所有檔案
+my_files: 我的檔案
+recent_files: 最近使用的檔案
 create_folder: 建立資料夾
+edit_folder: 編輯資料夾
 folder_name: 資料夾名稱...
+folder_key: 資料夾名稱...
 add_file: 新增檔案
 replace_file: 取代檔案
 no_results: 無任何結果
@@ -469,6 +540,13 @@ format_text: 格式化文本
 bold: 粗體
 toggle: 切換
 flow_name: 名稱
+flow_tracking: 活動與紀錄追蹤
+flow_tracking_all: 追蹤活動與紀錄
+insights: 數據分析
+no_dashboards: 目前沒有儀表板
+no_dashboards_copy: 目前尚未建立儀表板
+create_dashboard: 建立儀表板
+dashboard_name: 儀表板名稱
 width: 寬度
 height: 高度
 wysiwyg_options:
@@ -515,6 +593,7 @@ choices: 選擇
 deselect: 取消選擇
 deselect_all: 取消全選
 editing_in_batch: '批次編輯 {count} 個項目'
+settings_data_model: 資料模型
 settings_permissions: 角色和權限
 settings_project: 專案設定
 settings_webhooks: Webhooks
@@ -523,6 +602,7 @@ unsaved_changes_copy: 您確定要離開此頁面嗎？
 discard_changes: 放棄修改
 keep_editing: 繼續編輯
 add_new: 新增
+create_new: 新增
 all: 全部
 no_layout_collection_selected_yet: 還沒有選擇佈局/集合
 batch_delete_confirm: >-
@@ -530,7 +610,13 @@ batch_delete_confirm: >-
 cancel: 取消
 collection: 集合
 collections: 資料集
+content: 內容管理
+singleton: 單一資料
+singleton_label: 視為單一物件
 system_fields_locked: 系統欄位已鎖定無法編輯
+directus_collection:
+  directus_activity: 所有事件的詳細紀錄
+  directus_folders: 提供虛擬資料夾供存放檔案。
 fields:
   directus_activity:
     item: 項目主鍵值
@@ -548,6 +634,7 @@ fields:
     color: 顏色
     display_template: 顯示模板
     hidden: 隱藏
+    singleton: 單一資料
     sort_field: 排序欄位
   directus_files:
     title: 標題
@@ -597,7 +684,9 @@ fields:
     public_background: 公開後臺
     auth_password_policy: 身份驗證密碼政策
     auth_login_attempts: 身份驗證登錄嘗試
+    storage_default_folder: 預設資料夾
     custom_css: 自定義 CSS
+    module_bar: 模組列
   directus_shares:
     name: 名稱
     role: 角色
@@ -607,6 +696,7 @@ fields:
     icon: 集合圖示
     note: 備註
     hidden: 隱藏
+    singleton: 單一資料
     translation: 欄位名稱翻譯
     display_template: 模板
   directus_roles:
@@ -622,9 +712,12 @@ fields:
     collections: 資料集
 field_options:
   directus_activity:
+    login: 登入
     create: 新建
     update: 更新
   directus_collections:
+    collection_setup: 集合設定
+    singleton: 視為單一物件
     language: 語言
     translation: 翻譯
     collection_name: 集合名稱
@@ -717,10 +810,12 @@ interfaces:
     collections: 資料集
   select-color:
     color: 顏色
+    placeholder: 選擇一種顏色...
   datetime:
     datetime: 日期時間
   system-display-template:
     display-template: 顯示模板
+    collection_field_not_setup: 集合中有欄位設定錯誤
     select_a_collection: 選擇一個集合
   presentation-divider:
     divider: 分隔線
@@ -748,7 +843,12 @@ interfaces:
     zoom: 縮放
   system-folder:
     folder: 資料夾
+    description: 選擇一個資料夾
+    field_hint: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
+    root_name: 檔案庫的基礎位置
+    system_default: 系統預設值
   list:
+    add_label: '「新增」標籤'
     sort: 排序
   slider:
     slider: 滑塊
@@ -773,6 +873,11 @@ interfaces:
     modes:
       auto: 自動
       dropdown: 下拉選單
+  input-rich-text-html:
+    description: 可以編輯HTML內容的編輯器
+    folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
+  system-token:
+    placeholder: 點選「產生token」來建立一個新的靜態token
 displays:
   translations:
     translations: 翻譯
@@ -850,7 +955,10 @@ layouts:
     compact: 精簡
     cozy: 自在
 operations:
+  log:
+    message: 訊息
   notification:
     recipient: 用戶
+    message: 訊息
   request:
     url: URL
