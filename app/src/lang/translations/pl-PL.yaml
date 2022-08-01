@@ -1951,7 +1951,6 @@ panels:
   meter:
     description: Licznik wartości śledzenia
     name: Licznik
-    arc: Łuk
     stroke_width: Szerokość obrysu
     select_max_value: Musisz wybrać maksymalną wartość.
     max_greater_than_zero: Maksymalna wartość musi być większa niż 0.
