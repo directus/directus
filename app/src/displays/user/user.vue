@@ -21,7 +21,6 @@
 </template>
 
 <script lang="ts">
-import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 import { computed, defineComponent, PropType } from 'vue';
 
@@ -55,7 +54,7 @@ export default defineComponent({
 			if (props.value === null) return null;
 
 			if (props.value.avatar?.id) {
-				return `${getRootPath()}assets/${props.value.avatar.id}?key=system-small-cover`;
+				return `/assets/${props.value.avatar.id}?key=system-small-cover`;
 			}
 
 			return null;

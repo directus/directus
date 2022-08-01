@@ -2,12 +2,17 @@
 avatar: プロフィール画像
 application: アプリケーション
 default_provider: デフォルト
+method: 方法
+published: 公開済み
 draft: 下書き
 archived: アーカイブ済み
 modules: モジュール
+module_bar: モジュールバー
+tile_size: タイルサイズ
 edit_field: フィールドの編集
 conditions: 条件
 location: 場所
+input: 入力
 maps: 地図
 switch_user: ユーザーを切り替える
 item_creation: アイテム作成
@@ -20,6 +25,7 @@ group: グループ
 export_items: アイテムをエクスポート
 and: そして
 or: または
+custom: カスタム
 fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
 enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
@@ -30,6 +36,9 @@ leaf: リーフ
 indeterminate: 不確定
 edit_collection: コレクションを編集
 db_only_click_to_configure: 'データベースのみ: クリックして設定する'
+show_active_items: アクティブアイテムを表示
+show_archived_items: アーカイブ済みアイテムを表示
+show_all_items: 全て表示
 required: 必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成
@@ -413,6 +422,7 @@ fields:
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
+    module_bar: モジュールバー
   directus_shares:
     name: 名前
     password: パスワード

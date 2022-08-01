@@ -1,6 +1,11 @@
-import { EXTENSION_PKG_KEY, PACK_EXTENSION_TYPE } from '../constants';
+import {
+	EXTENSION_PACKAGE_TYPES,
+	EXTENSION_PKG_KEY,
+	HYBRID_EXTENSION_TYPES,
+	PACKAGE_EXTENSION_TYPES,
+} from '../constants';
 import { ExtensionManifest, ExtensionManifestRaw } from '../types';
-import { isExtensionPackage, isHybridExtension } from './is-extension';
+import { isIn } from './array-helpers';
 
 export function validateExtensionManifest(
 	extensionManifest: ExtensionManifestRaw
@@ -19,15 +24,15 @@ export function validateExtensionManifest(
 		return false;
 	}
 
-	if (!isExtensionPackage(extensionOptions.type)) {
+	if (!isIn(extensionOptions.type, EXTENSION_PACKAGE_TYPES)) {
 		return false;
 	}
 
-	if (extensionOptions.type === PACK_EXTENSION_TYPE) {
+	if (isIn(extensionOptions.type, PACKAGE_EXTENSION_TYPES)) {
 		if (!extensionOptions.host) {
 			return false;
 		}
-	} else if (isHybridExtension(extensionOptions.type)) {
+	} else if (isIn(extensionOptions.type, HYBRID_EXTENSION_TYPES)) {
 		if (
 			!extensionOptions.path ||
 			!extensionOptions.source ||

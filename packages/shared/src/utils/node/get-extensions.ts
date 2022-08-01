@@ -9,10 +9,15 @@ import {
 } from '../../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
-import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES, PACK_EXTENSION_TYPE } from '../../constants';
+import {
+	EXTENSION_NAME_REGEX,
+	EXTENSION_PKG_KEY,
+	HYBRID_EXTENSION_TYPES,
+	PACKAGE_EXTENSION_TYPES,
+} from '../../constants';
 import { pluralize } from '../pluralize';
 import { validateExtensionManifest } from '../validate-extension-manifest';
-import { isExtensionObject, isHybridExtension } from '../is-extension';
+import { isIn, isTypeIn } from '../array-helpers';
 
 async function resolvePackageExtensions(
 	extensionNames: string[],
@@ -31,8 +36,8 @@ async function resolvePackageExtensions(
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
-		if (types.includes(extensionOptions.type)) {
-			if (extensionOptions.type === PACK_EXTENSION_TYPE) {
+		if (isIn(extensionOptions.type, types)) {
+			if (isTypeIn(extensionOptions, PACKAGE_EXTENSION_TYPES)) {
 				const extensionChildren = Object.keys(extensionManifest.dependencies ?? {}).filter((dep) =>
 					EXTENSION_NAME_REGEX.test(dep)
 				);
@@ -49,7 +54,7 @@ async function resolvePackageExtensions(
 
 				extensions.push(extension);
 				extensions.push(...(await resolvePackageExtensions(extension.children || [], extension.path, types)));
-			} else if (isExtensionObject(extensionOptions, HYBRID_EXTENSION_TYPES)) {
+			} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
 				extensions.push({
 					path: extensionPath,
 					name: extensionName,
@@ -109,7 +114,7 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 			for (const extensionName of extensionNames) {
 				const extensionPath = path.join(typePath, extensionName);
 
-				if (!isHybridExtension(extensionType)) {
+				if (!isIn(extensionType, HYBRID_EXTENSION_TYPES)) {
 					extensions.push({
 						path: extensionPath,
 						name: extensionName,

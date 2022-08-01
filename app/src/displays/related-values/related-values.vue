@@ -38,7 +38,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { useCollection } from '@directus/shared/composables';
-import { getLocalTypeForField } from '../../modules/settings/routes/data-model/get-local-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 import { get } from 'lodash';
 
 export default defineComponent({

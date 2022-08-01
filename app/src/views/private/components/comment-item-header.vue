@@ -60,7 +60,6 @@
 </template>
 
 <script setup lang="ts">
-import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 import format from 'date-fns/format';
 import { computed, ref } from 'vue';
@@ -91,7 +90,7 @@ const formattedTime = computed(() => {
 const avatarSource = computed(() => {
 	if (!props.activity.user?.avatar) return null;
 
-	return getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`;
+	return `/assets/${props.activity.user.avatar.id}?key=system-small-cover`;
 });
 
 const { confirmDelete, deleting, remove } = useDelete();

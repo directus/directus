@@ -10,9 +10,11 @@ import env from '../../env';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
+	InvalidProviderException,
 	InvalidTokenException,
 	ServiceUnavailableException,
 } from '../../exceptions';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
@@ -175,15 +177,23 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		await this.usersService.createOne({
-			provider,
-			first_name: userInfo.given_name,
-			last_name: userInfo.family_name,
-			email: email,
-			external_identifier: identifier,
-			role: this.config.defaultRoleId,
-			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-		});
+		try {
+			await this.usersService.createOne({
+				provider,
+				first_name: userInfo.given_name,
+				last_name: userInfo.family_name,
+				email: email,
+				external_identifier: identifier,
+				role: this.config.defaultRoleId,
+				auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+			});
+		} catch (e) {
+			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[OpenID] Failed to register user. User not unique');
+				throw new InvalidProviderException();
+			}
+			throw e;
+		}
 
 		return (await this.fetchUserId(identifier)) as string;
 	}

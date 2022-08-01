@@ -5,6 +5,9 @@ import { useFieldsStore } from '@/stores/fields';
  * Useful for cases where you need to fetch a single piece of nested relational data, but also need
  * access to its primary key.
  *
+ * @param currentCollection - Current root collection
+ * @param fields - Array of (dot-notation) fields you want to augment
+ *
  * @example
  * const collection = 'articles';
  * const fields = ['title', 'user.name'];
@@ -26,12 +29,14 @@ export function addRelatedPrimaryKeyToFields(currentCollection: string, fields: 
 		const fieldParts = fieldName.split('.');
 
 		const field = fieldsStore.getField(currentCollection, fieldName);
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(field?.collection ?? '');
+		if (!field) continue;
 
-		const includeField = primaryKeyField && fieldParts.slice(0, -1).concat(primaryKeyField.field).join('.');
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(field.collection);
 
-		if (includeField && !sanitizedFields.includes(includeField)) {
-			sanitizedFields.push(includeField);
+		const fieldToInclude = primaryKeyField && fieldParts.slice(0, -1).concat(primaryKeyField.field).join('.');
+
+		if (fieldToInclude && !sanitizedFields.includes(fieldToInclude)) {
+			sanitizedFields.push(fieldToInclude);
 		}
 	}
 

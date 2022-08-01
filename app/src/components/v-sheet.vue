@@ -4,19 +4,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	props: {},
-	setup() {
-		return {};
-	},
-});
-</script>
-
-<style>
-body {
+<style lang="scss" scoped>
+:global(body) {
 	--v-sheet-background-color: var(--background-subdued);
 	--v-sheet-height: auto;
 	--v-sheet-min-height: var(--input-height);
@@ -26,9 +15,7 @@ body {
 	--v-sheet-max-width: none;
 	--v-sheet-padding: 8px;
 }
-</style>
 
-<style lang="scss" scoped>
 .v-sheet {
 	width: var(--v-sheet-width);
 	min-width: var(--v-sheet-min-width);
