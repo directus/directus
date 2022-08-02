@@ -1,7 +1,7 @@
 import api from '@/api';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';

@@ -420,6 +420,8 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
+		const runPostColumnDelete = await this.helpers.schema.preColumnDelete();
+
 		try {
 			await emitter.emitFilter(
 				'fields.delete',
@@ -535,6 +537,10 @@ export class FieldsService {
 				}
 			);
 		} finally {
+			if (runPostColumnDelete) {
+				await this.helpers.schema.postColumnDelete();
+			}
+
 			if (this.cache && env.CACHE_AUTO_PURGE) {
 				await this.cache.clear();
 			}

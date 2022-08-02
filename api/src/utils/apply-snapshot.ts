@@ -49,26 +49,18 @@ export async function applySnapshot(
 						.filter((fieldDiff) => fieldDiff.collection === collection)
 						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
 						.map((fieldDiff) => {
-							// Casts field type to UUID when applying SQLite-based schema on other databases.
-							// This is needed because SQLite snapshots UUID fields as char with length 36, and
-							// it will fail when trying to create relation between char field to UUID field
+							// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
+							// This is needed because they snapshots UUID fields as char with length 36.
 							if (
-								!fieldDiff.schema ||
-								fieldDiff.schema.data_type !== 'char' ||
-								fieldDiff.schema.max_length !== 36 ||
-								!fieldDiff.schema.foreign_key_table ||
-								!fieldDiff.schema.foreign_key_column
+								fieldDiff.schema?.data_type === 'char' &&
+								fieldDiff.schema?.max_length === 36 &&
+								(fieldDiff.schema?.is_primary_key ||
+									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
 							) {
+								return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
+							} else {
 								return fieldDiff;
 							}
-
-							const matchingForeignKeyTable = schema.collections[fieldDiff.schema.foreign_key_table];
-							if (!matchingForeignKeyTable) return fieldDiff;
-
-							const matchingForeignKeyField = matchingForeignKeyTable.fields[fieldDiff.schema.foreign_key_column];
-							if (!matchingForeignKeyField || matchingForeignKeyField.type !== 'uuid') return fieldDiff;
-
-							return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
 						});
 
 					try {
@@ -104,12 +96,38 @@ export async function applySnapshot(
 			}
 		};
 
-		// create top level collections (no group) first, then continue with nested collections recursively
-		await createCollections(
-			snapshotDiff.collections.filter(
-				({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
-			)
-		);
+		// Finds all collections that need to be created
+		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
+			// Check new collections only
+			const isNewCollection = diff[0].kind === 'N';
+			if (!isNewCollection) return false;
+
+			// Create now if no group
+			const groupName = (diff[0] as DiffNew<Collection>).rhs.meta?.group;
+			if (!groupName) return true;
+
+			// Check if parent collection already exists in schema
+			const parentExists = current.collections.find((c) => c.collection === groupName) !== undefined;
+			// If this is a new collection and the parent collection doesn't exist in current schema ->
+			// Check if the parent collection will be created as part of applying this snapshot ->
+			// If yes -> this collection will be created recursively
+			// If not -> create now
+			// (ex.)
+			// TopLevelCollection - I exist in current schema
+			// 		NestedCollection - I exist in snapshotDiff as a new collection
+			//			TheCurrentCollectionInIteration - I exist in snapshotDiff as a new collection but will be created as part of NestedCollection
+			const parentWillBeCreatedInThisApply =
+				snapshotDiff.collections.filter(({ collection, diff }) => diff[0].kind === 'N' && collection === groupName)
+					.length > 0;
+			// Has group, but parent is not new, parent is also not being created in this snapshot apply
+			if (parentExists && !parentWillBeCreatedInThisApply) return true;
+
+			return false;
+		};
+
+		// Create top level collections (no group, or highest level in existing group) first,
+		// then continue with nested collections recursively
+		await createCollections(snapshotDiff.collections.filter(filterCollectionsForCreation));
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(

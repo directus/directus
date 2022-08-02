@@ -1,7 +1,8 @@
 import { FlowRaw } from '@directus/shared/types';
 import api from '@/api';
 import { defineStore } from 'pinia';
-import { useUserStore, usePermissionsStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
+import { usePermissionsStore } from '@/stores/permissions';
 
 export const useFlowsStore = defineStore({
 	id: 'flowsStore',
@@ -31,7 +32,10 @@ export const useFlowsStore = defineStore({
 			this.$reset();
 		},
 		getManualFlowsForCollection(collection: string): FlowRaw[] {
-			return this.flows.filter((flow) => flow.trigger === 'manual' && flow.options?.collections?.includes(collection));
+			return this.flows.filter(
+				(flow) =>
+					flow.trigger === 'manual' && flow.status === 'active' && flow.options?.collections?.includes(collection)
+			);
 		},
 	},
 });

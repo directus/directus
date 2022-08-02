@@ -1,6 +1,18 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { FieldFunction } from '@directus/shared/types';
 
+/**
+ * Extracts the function and field name of a field wrapped in a function
+ *
+ * @param fieldKey - Field in function, for example `year(date_created)`
+ * @return Object of function name and field key
+ *
+ * @example
+ * ```js
+ * extractFieldFromFunction('year(date_created)');
+ * // => { fn: 'year', field: 'date_created' }
+ * ```
+ */
 export function extractFieldFromFunction(fieldKey: string): { fn: FieldFunction | null; field: string } {
 	let functionName;
 

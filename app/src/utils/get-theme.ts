@@ -1,5 +1,9 @@
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
+/**
+ * Returns the used theme for the current user. Will check prefers-color-scheme dark if theme is
+ * configured to be "auto"
+ */
 export function getTheme(): 'light' | 'dark' {
 	const userStore = useUserStore();
 

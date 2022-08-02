@@ -9,6 +9,7 @@ on:
       - tests-blackbox/**
       - package.json
       - pnpm-lock.yaml
+      - .github/workflows/blackbox-main.yml
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144
@@ -28,7 +29,8 @@ jobs:
         run: |
           sudo apt update -y && sudo apt install -y alien libaio1 && \
           wget https://download.oracle.com/otn_software/linux/instantclient/214000/$ORACLE_DL && \
-          sudo alien -i $ORACLE_DL
+          sudo alien -i $ORACLE_DL && \
+          pnpm -w -D add oracledb
         env:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 

@@ -1,9 +1,9 @@
 import { generateExtensionsEntry } from '../../../src/utils/node/generate-extensions-entry';
-import { APP_EXTENSION_TYPES } from '../../../src/constants/extensions';
 import { Extension } from '../../../src/types/extensions';
 
 describe('generateExtensionsEntry', () => {
-	const type = APP_EXTENSION_TYPES[4];
+	const type = 'panel';
+
 	it('returns an extension entrypoint exporting all extensions with a type that matches the provided type', () => {
 		const mockExtension: Extension[] = [
 			{ path: './extensions', name: 'mockExtension', type: 'panel', entrypoint: 'index.js', local: true },
@@ -13,6 +13,7 @@ describe('generateExtensionsEntry', () => {
 export default [e0];`
 		);
 	});
+
 	it('returns an empty extension entrypoint if there is no extension with the provided type', () => {
 		const mockExtension: Extension[] = [
 			{
