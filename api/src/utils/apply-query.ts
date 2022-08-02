@@ -285,7 +285,9 @@ export function applyFilter(
 
 	const aliasMap: AliasMap = {};
 
-	addJoins(rootQuery, rootFilter, collection);
+	if (subQuery) {
+		addJoins(rootQuery, rootFilter, collection);
+	}
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
 	return rootQuery;
@@ -358,14 +360,34 @@ export function applyFilter(
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
 			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
-				if (filterPath.length > 1) {
-					const { columnPath, targetCollection } = getColumnPath({ path: filterPath, collection, relations, aliasMap });
+				if (relationType && subQuery === false) {
+					const column = `${collection}.${schema.collections[collection].primary}`;
 
-					if (!columnPath) continue;
+					const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+						subQueryKnex
+							.select({ [schema.collections[collection].primary]: column })
+							.from(collection)
+							.whereNotNull(column);
 
-					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
+						applyQuery(knex, collection, subQueryKnex, { filter }, schema, true);
+					};
+
+					dbQuery[logical].whereIn(column, subQueryBuilder(filter));
 				} else {
-					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+					if (filterPath.length > 1) {
+						const { columnPath, targetCollection } = getColumnPath({
+							path: filterPath,
+							collection,
+							relations,
+							aliasMap,
+						});
+
+						if (!columnPath) continue;
+
+						applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
+					} else {
+						applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+					}
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
