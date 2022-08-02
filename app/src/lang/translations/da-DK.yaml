@@ -1796,7 +1796,6 @@ panels:
   meter:
     description: Måler til sporingsværdier
     name: Måler
-    arc: Bue
     stroke_width: Slag Bredde
     select_max_value: Du skal vælge en maksimal værdi.
     max_greater_than_zero: Maksimum skal være større end 0.

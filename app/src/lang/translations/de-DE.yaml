@@ -1910,7 +1910,6 @@ panels:
     smooth: 'Weich'
     straight: 'Gerade'
   meter:
-    arc: Bogen
     stroke_width: Strichbreite
     select_max_value: Es muss einen Maximalwert ausgewählt werden.
     select_field: Sie müssen ein Feld auswählen.

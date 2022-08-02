@@ -1940,7 +1940,6 @@ panels:
     straight: 'Линейна'
     step_line: 'Стъпкова'
   meter:
-    arc: Дъга
     stroke_width: Ширина на чертите
     select_max_value: Трябва да изберете максимална стойност.
     max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
