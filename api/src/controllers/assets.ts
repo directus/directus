@@ -154,14 +154,6 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		if (req.method.toLowerCase() === 'head') {
-			res.status(200);
-			res.setHeader('Accept-Ranges', 'bytes');
-			res.setHeader('Content-Length', stat.size);
-
-			return res.end();
-		}
-
 		const access = req.accountability?.role ? 'private' : 'public';
 
 		res.attachment(req.params.filename ?? file.filename_download);
@@ -185,6 +177,14 @@ router.get(
 
 		if ('download' in req.query === false) {
 			res.removeHeader('Content-Disposition');
+		}
+
+		if (req.method.toLowerCase() === 'head') {
+			res.status(200);
+			res.setHeader('Accept-Ranges', 'bytes');
+			res.setHeader('Content-Length', stat.size);
+
+			return res.end();
 		}
 
 		stream.on('data', (chunk) => res.write(chunk));
