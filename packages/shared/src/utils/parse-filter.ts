@@ -39,7 +39,7 @@ export function parseFilter(
 export function parsePreset(
 	preset: Record<string, any> | null,
 	accountability: Accountability | null,
-	context: ParseFilterContext
+	context: ParseFilterContext = {}
 ) {
 	if (!preset) return preset;
 	return deepMap(preset, (value) => parseFilterValue(value, accountability, context));

@@ -12,7 +12,6 @@ import { translateDatabaseError } from '../exceptions/database/translate';
 import { AbstractService, AbstractServiceOptions, Item as AnyItem, MutationOptions, PrimaryKey } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { validateKeys } from '../utils/validate-keys';
-import { AuthorizationService } from './authorization';
 import { ActivityService, RevisionsService } from './index';
 import { PayloadService } from './payload';
 
@@ -39,6 +38,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.cache = getCache().cache;
 
 		return this;
+	}
+
+	async getAuthorizationService(database?: Knex) {
+		// Solves the problem of circular dependency
+		const { AuthorizationService } = await import('./authorization');
+		return new AuthorizationService({
+			accountability: this.accountability,
+			schema: this.schema,
+			knex: database ?? this.knex,
+		});
 	}
 
 	async getKeysByQuery(query: Query): Promise<PrimaryKey[]> {
@@ -82,11 +91,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
+			const authorizationService = await this.getAuthorizationService(trx);
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
@@ -262,12 +267,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: this.knex,
-				schema: this.schema,
-			});
-
+			const authorizationService = await this.getAuthorizationService();
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
 		}
 
@@ -417,11 +417,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const payload: Partial<AnyItem> = cloneDeep(data);
 
-		const authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
+		const authorizationService = await this.getAuthorizationService();
 
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
@@ -660,12 +656,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				schema: this.schema,
-				knex: this.knex,
-			});
-
+			const authorizationService = await this.getAuthorizationService();
 			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 

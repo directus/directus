@@ -9,6 +9,8 @@ import {
 	SchemaOverview,
 } from '@directus/shared/types';
 import { validatePayload, parseFilter, parsePreset } from '@directus/shared/utils';
+import { parsePermissions } from '../utils/parse-permissions';
+import { getFilterContext } from '../utils/get-filter-context';
 import { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
 import getDatabase from '../database';
@@ -459,7 +461,7 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Partial<Item> {
+	async validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
 		const payload = cloneDeep(data);
 
 		let permission: Permission | undefined;
@@ -496,18 +498,33 @@ export class AuthorizationService {
 			}
 		}
 
-		const preset = permission.presets ?? {};
-
-		const payloadWithPresets = merge({}, parsePreset(preset, this.accountability, {}), payload);
-
 		const fieldValidationRules = Object.values(this.schema.collections[collection].fields)
 			.map((field) => field.validation)
 			.filter((v) => v) as Filter[];
 
+		const hasFieldValidationRules = fieldValidationRules && fieldValidationRules.length > 0;
+
+		if (hasFieldValidationRules) {
+			if (permission.validation && Object.keys(permission.validation).length > 0) {
+				permission.validation = { _and: [permission.validation, ...fieldValidationRules] };
+			} else {
+				permission.validation = { _and: fieldValidationRules };
+			}
+		}
+
 		const hasValidationRules =
 			isNil(permission.validation) === false && Object.keys(permission.validation ?? {}).length > 0;
 
-		const hasFieldValidationRules = fieldValidationRules && fieldValidationRules.length > 0;
+		const preset = permission.presets ?? {};
+
+		const { requiredPermissionData, containDynamicData } = parsePermissions([permission]);
+
+		const filterContext =
+			containDynamicData && this.accountability
+				? await getFilterContext(this.schema, this.accountability, requiredPermissionData)
+				: {};
+
+		const payloadWithPresets = merge({}, parsePreset(preset, this.accountability, filterContext), payload);
 
 		const requiredColumns: SchemaOverview['collections'][string]['fields'][string][] = [];
 
@@ -547,17 +564,8 @@ export class AuthorizationService {
 			}
 		}
 
-		if (hasFieldValidationRules) {
-			if (permission.validation && Object.keys(permission.validation).length > 0) {
-				permission.validation = { _and: [permission.validation, ...fieldValidationRules] };
-			} else {
-				permission.validation = { _and: fieldValidationRules };
-			}
-		}
-
+		const validationFilter: Filter = parseFilter(permission.validation, this.accountability, filterContext)!;
 		const validationErrors: FailedValidationException[] = [];
-
-		const validationFilter: Filter = parseFilter(permission.validation, this.accountability)!;
 		validationErrors.push(
 			...flatten(
 				validatePayload(validationFilter, payloadWithPresets).map((error) =>
