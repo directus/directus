@@ -29,10 +29,13 @@ draft: Rascunho
 archived: Arquivado
 modules: Módulos
 module_bar: Barra de Módulos
+logs: Registros
+reset_width: Redefinir largura
 tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
 location: Local
+condition_rules: Regras da condição
 input: Entrada
 maps: Mapas
 switch_user: Alternar Usuário
@@ -43,8 +46,12 @@ duplicate_field: Duplicar Campo
 half_width: Meia Largura
 full_width: Largura Total
 group: Grupo
+export_items: Exportar itens
 and: E
 or: Ou
+dataset_too_large_currently_showing_n_items: Conjunto de dados é muito grande. Mostrando os primeiros {n} itens.
+modifier: Modificador
+custom: Personalizado
 fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
@@ -64,7 +71,6 @@ edited: Valor Editado
 required: Obrigatório
 required_for_app_access: Obrigatório para Acesso ao App
 requires_value: Requer valor
-require_value_to_be_set_on_creation: Requer que valor seja definido na criação
 create_preset: Criar Predefinição
 create_panel: Criar Painel
 create_role: Criar Cargo
@@ -73,6 +79,7 @@ message: Mensagem
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
 create_translation_string: String chave para a tradução
+no_translation_string: Nenhuma tradução
 translation_string_translations_placeholder: Adicionar uma nova tradução
 delete_translation_string_copy: >-
   Tem certeza de que deseja excluir a string de tradução "{key}"? Essa ação não pode ser desfeita.
@@ -323,12 +330,14 @@ revision_delta_deleted: Excluído
 revision_delta_reverted: Revertido
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
+download_page_as_csv: 'Baixar página como CSV'
 private_user: Usuário privado
 creation_preview: Pré-visualização da criação
 revision_preview: Pré-visualização de revisão
 updates_made: Atualizações feitas
 leave_comment: Deixe um comentário...
 post_comment_success: Comentário postado
+post_comment_updated: Comentário atualizado
 item_create_success: Item criado | Itens criados
 item_update_success: Item atualizado | Itens atualizados
 item_delete_success: Item deletado | Itens deletados
@@ -361,6 +370,7 @@ interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
+delete_share: Excluir compartilhamento
 functions:
   year: Ano
   month: Mês
@@ -427,6 +437,9 @@ replace_from_url: Substituir Arquivo da URL
 no_file_selected: Nenhum arquivo selecionado
 download_file: Baixar arquivo
 open_file_in_tab: Abrir em nova guia
+start_export: Iniciar Exportação
+not_available_for_local_downloads: Não disponível para downloads locais
+exporting_download_hint: Uma vez concluído, este arquivo {format} será automaticamente baixado para o seu dispositivo.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -441,7 +454,7 @@ generated_uuid: UUID gerado
 manual_string: String inserida manualmente
 save_and_create_new: Salvar e criar novo
 save_and_stay: Salvar e manter aqui
-save_as_copy: Salvar como cópia
+save_as_copy: Salvar e Copiar
 add_existing: Adicionar existente
 creating_items: Criando Itens
 enable_create_button: Habilitar botão de criação
@@ -458,6 +471,7 @@ information: Informação
 report_bug: Relatar erro
 request_feature: Pedir funcionalidade
 interface_not_found: 'Interface "{interface}" não encontrada.'
+operation_not_found: 'Operação "{operation}" não encontrada.'
 reset_interface: Redefinir interface
 display_not_found: 'Exibição "{display}" não foi encontrada.'
 reset_display: Redefinir Exibição
@@ -544,6 +558,7 @@ errors:
   INVALID_OTP: Senha de uso único incorreta
   INVALID_PAYLOAD: Payload inválido
   INVALID_QUERY: Consulta inválida
+  INVALID_USER: Falha ao autenticar usuário
   ITEM_LIMIT_REACHED: Limite de elementos alcançado
   ITEM_NOT_FOUND: Item não encontrado
   ROUTE_NOT_FOUND: Não encontrado
@@ -554,6 +569,8 @@ errors:
   INTERNAL_SERVER_ERROR: Erro inesperado
   NOT_NULL_VIOLATION: O valor não pode ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
+  VALUE_TOO_LONG: Valor é muito longo
+  VALUE_OUT_OF_RANGE: Valor fora de alcance
   UNKNOWN: Erro inesperado
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
@@ -567,9 +584,11 @@ unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
+password_reset_sent: Se você tiver uma conta, enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
 filter: Filtro
+edit_image: Editar Imagem
 editing_image: Editando Imagem
 square: Quadrado
 free: Livre
@@ -585,10 +604,13 @@ make_collection_visible: Tornar Coleção Visível
 make_collection_hidden: Tornar Coleção Oculta
 make_folder_visible: Tornar Pasta Visível
 make_folder_hidden: Tornar Pasta Oculta
+goto_collection_content: Ver conteúdo
 start_end_of_count_items: '{start}-{end} de {count} itens'
 start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
 one_item: '1 item'
 one_filtered_item: '1 item filtrado'
+delete_collection_are_you_sure: >-
+  Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
 collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
@@ -615,6 +637,7 @@ advanced_settings: Configurações Avançadas
 advanced_filter: Filtro avançado
 delete_advanced_filter: Excluir Filtro
 change_advanced_filter_operator: Modificar Operador
+advanced: Avançado
 operators:
   eq: É igual
   neq: Não é igual
@@ -628,6 +651,7 @@ operators:
   nnull: Não é nulo
   contains: Contém
   ncontains: Não contém
+  icontains: Contém (insensível)
   starts_with: Começa com
   nstarts_with: Não começa com
   ends_with: Termina com
@@ -642,6 +666,7 @@ operators:
   nintersects: Não interceptado
   intersects_bbox: Cruza a caixa delimitadora
   nintersects_bbox: Não cruza a caixa delimitadora
+  regex: Coincide RegExp
 loading: Carregando...
 drop_to_upload: Solte para enviar
 item: Item
@@ -682,6 +707,7 @@ no_results_copy: Ajuste ou limpe os filtros de busca para ver resultados.
 clear_filters: Limpar filtros
 saves_automatically: Salva automaticamente
 role: Função
+edit_role: Editar cargo
 rule: Regra
 user: Usuário
 no_presets: Sem predefinições
@@ -696,6 +722,7 @@ update: Alteração
 delete: Excluir
 select_fields: Selecionar campos
 format_text: Formatar texto
+format_value: Formatar valor
 abbreviate_value: Abreviar Valor
 operator: Operador
 bold: Negrito
@@ -703,10 +730,37 @@ toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+flows: Fluxos
+flow: Fluxo
+select_a_flow: Selecione um fluxo
+run_flow_on_selected: Sem itens selecionados | Executar fluxo em 1 item selecionado | Executar fluxo em {n} itens selecionados
 trigger: Acionar
+view_trigger: Ver gatilho
+create_trigger: Criar gatilho
+trigger_setup: Configuração de gatilho
+change_trigger: Alterar gatilho
+set_flow_active: Definir fluxo como ativo
+set_flow_inactive: Definir fluxo como inativo
+edit_flow: Editar fluxo
+delete_flow: Apagar fluxo
+no_other_flows_copy: Você ainda não tem outros fluxos.
+no_flows: Sem fluxos
+no_flows_copy: Você ainda não tem fluxos.
+create_flow: Criar fluxo
+flow_setup: Configuração do fluxo
 flow_name: Nome
+flow_tracking: Rastreamento de atividades e registros
+flow_tracking_all: Rastrear atividades e registros
 flow_tracking_activity: Acompanhar apenas Atividade
 flow_tracking_null: Não rastreie nada
+start_flow: Iniciar fluxo
+stop_flow: Parar fluxo
+create_operation: Criar operação
+edit_operation: Editar operação
+operation_options: Opções de operação
+operation_name: Nome da operação...
+operation_key: Identificador de referência...
+operation_key_unique_error: Chaves de operação devem ser únicas em um fluxo
 insights: Estatísticas
 dashboard: Painel
 panel: Painel
@@ -728,8 +782,12 @@ create_dashboard: Criar painel
 dashboard_name: Nome do painel
 no_data: Sem dados
 accountability: Responsabilidade
+payload: Payload
+details: Detalhes
 full_screen: Tela cheia
+full_text_search: Pesquisa de texto completo
 edit_panels: Editar painéis
+center_align: Alinhar no centro
 left_align: Alinhar à Esquerda
 right_align: Alinhar à Direita
 fit_to_screen: Ajustar à tela
@@ -758,7 +816,7 @@ current_tab: Aba atual
 save_image: Salvar Imagem
 save_media: Salvar Arquivo
 wysiwyg_options:
-  aligncenter: Alinhar ao centro
+  aligncenter: Alinhar no centro
   alignjustify: Justificar
   alignleft: Alinhar à esquerda
   alignnone: Não alinhar
@@ -823,7 +881,9 @@ settings_data_model: Modelo de dados
 settings_permissions: Funções & Permissões
 settings_project: Configurações do projeto
 settings_webhooks: Webhooks
+settings_flows: Fluxos
 settings_presets: Predefinições & Marcadores
+settings_translation_strings: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão faltando
 scope: Escopo
 actions: Ações
@@ -871,6 +931,9 @@ page_help_settings_presets_item: >-
   **Detalhe da predefinição** — Um formulário para gerenciar marcadores e predefinições de coleção padrão.
 page_help_settings_webhooks_collection: '**Navegando em Webhooks** — Lista todos os webhooks dentro do projeto.'
 page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
+page_help_settings_flows_collection: '**Navegue fluxos** — Lista todos os fluxos dentro do projeto.'
+page_help_settings_flows_item: '**Detalhes do fluxo** — Área para gerenciar uma ou mais operações.'
+page_help_settings_translation_strings_collection: '**Navegue em traduções** — Lista todas as traduções do projeto.'
 page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
 page_help_users_item: >-
   **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
@@ -1189,9 +1252,24 @@ inline: Em linha
 comment: Comentário
 shares: Compartilhar
 unlimited_usage: Uso Ilimitado
+uses_left: Não há usos restante | 1 uso restante | {n} usos restantes
+no_shares: Nenhum compartilhamento para mostrar
+expired: Expirado
+share: Compartilhar
+share_item: Compartilhar item
+shared_with_you: Um item foi compartilhado com você
+shared_enter_passcode: Insira sua senha para continuar...
+shared_leave_blank_for_unlimited: Deixe em branco para ilimitado
+shared_times_remaining: Este link só pode ser usado {n} vezes
+shared_last_remaining: Este link só pode ser usado uma vez
 shared_uses_left: Para maior segurança, esta página compartilhada foi configurada com um número limitado de visualizações. Atualmente há {n} visualizações restantes, depois das quais a página não estará mais acessível.
 share_access_not_found: Esta página compartilhada não existe ou já excedeu o número máximo de usuários permitidos.
 share_access_not_found_desc: Entre em contato com um usuário autorizado deste projeto para solicitar acesso.
+share_access_not_found_title: Página de compartilhamento desconhecida
+share_copy_link: Copiar link
+share_copy_link_success: Link copiado
+share_copy_link_error: Não foi possível copiar o link
+share_send_link: Enviar link
 relational_triggers: Gatilhos Relacionais
 referential_action_field_label_m2o: Ao Excluir de {collection}...
 referential_action_field_label_o2m: Em Desmarcar {collection}...
@@ -1223,6 +1301,7 @@ file: Arquivo
 file_library: Galeria de Arquivos
 forgot_password: Esqueci minha Senha
 hidden: Oculto
+hidden_in_group: Oculto em {group}
 icon: Ícone
 info: Informação
 normal: Normal
@@ -1230,6 +1309,7 @@ success: Sucesso
 warning: Atenção
 danger: Perigo
 colors:
+  purple: Roxo
   blue: Azul
   green: Verde
   yellow: Amarelo
@@ -1238,7 +1318,7 @@ colors:
   black: Preto
   gray: Cinza
   white: Branco
-junction_collection: Junção da coleção
+junction_collection: Jução da coleção
 latency: Latência
 login: Entrar
 my_activity: Minha Atividade
@@ -1253,6 +1333,7 @@ reset: Redefinir
 reset_password: Recuperar senha
 revisions: Revisões
 no_revisions: Ainda não há revisões
+no_logs: Ainda não há registros
 revert: Reverter
 save: Salvar
 schema: Esquema
@@ -1266,9 +1347,13 @@ sign_out: Sair
 sign_out_confirm: Tem certeza que deseja sair?
 something_went_wrong: Algo está errado.
 sort_direction: Direção da ordenação
+export_location: Local de exportação
+export_started: Exportação iniciada
+export_started_copy: A exportação foi iniciada. Você será notificado quando estiver pronto para download.
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
 template: Template
+require_value_to_be_set: Requer que o valor seja definido na criação
 translation: Tradução
 translation_placeholder: Insira uma tradução...
 value: Valor
@@ -1286,13 +1371,19 @@ interfaces:
     all: Tudo
     any: Qualquer
     and: e
+    no_rules: Nenhuma regra configurada
     change_value: Clique para mudar o valor
+    placeholder: Arraste regras aqui
+    add_key_placeholder: Adicione uma chave e pressione enter...
+  fields:
+    name: Campos
   group-accordion:
     name: Sanfonada
     description: Exibir campos ou grupos como seções sanfonadas
     start: Início
     all_closed: Todos Fechados
     first_opened: Primeiro Aberto
+    all_opened: Todos abertos
   presentation-links:
     presentation-links: Links do botão
     links: Links
@@ -1313,6 +1404,8 @@ interfaces:
     description: Escolha entre várias opções via caixas de seleção aninhadas
     value_combining: Combinação de Valor
     value_combining_note: Controla qual valor é armazenado quando seleções aninhadas são feitas.
+    show_all: Mostrar todos
+    show_selected: Mostrar selecionados
   input-code:
     code: Código
     description: Escrever ou compartilhar trechos de código
@@ -1472,6 +1565,7 @@ interfaces:
     auto_formatter: Utilizar auto formatação de título
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
+    add_tags: Adicione uma tag e pressione Enter...
   input:
     input: Entrada
     description: Digite manualmente um valor
@@ -1491,6 +1585,8 @@ interfaces:
     description: Insira texto puro de múltiplas linhas
   input-translated-string:
     input-translated-string: Textos traduzidos
+    search_placeholder: Pesquisar...
+    new_translation_string: Nova tradução
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
@@ -1545,6 +1641,11 @@ interfaces:
     start_closed: Iniciar Fechado
   system-token:
     system-token: Token
+    value_securely_saved: Valor secretamente salvo
+    generate: Gerar token
+    regenerate: Regerar token
+    generate_success_copy: Certifique-se de fazer backup e copiar o token acima. Por motivos de segurança, você não poderá visualizar o token novamente depois de salvar e sair desta página.
+    remove_token: Remover token
 displays:
   translations:
     translations: Traduções
@@ -1583,6 +1684,7 @@ displays:
     relative: Relativo
     relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
     suffix: Sufixo
+    round_note: Escolha uma função de arredondamento para usar
   file:
     file: Arquivo
     description: Exibir arquivos
@@ -1607,7 +1709,10 @@ displays:
     suffix: Sufixo
     color: Cor
     icon: Ícone
+    border: Borda
+    border_label: Mostrar bordas
     text: Texto
+    text_placeholder: Substituição de valor opcional...
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
     description: Exibe uma versão formatada do objeto
@@ -1672,21 +1777,54 @@ layouts:
     calendar: Calendário
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
+    optional: Opcional
   map:
     map: Mapa
+    invalid_geometry: Geometria inválida
+    find_location: Encontrar localização...
 panels:
   metric:
     name: Métrico
+    field: Campo
   label:
     name: Rótulo
     description: Exibir algum texto
   list:
     name: Lista
     description: Filtrar e listar campos de uma coleção
+  barchart:
+    name: Gráfico de barras
+    select_field: Você deve selecionar um campo.
+    select_collection: Você deve selecionar uma coleção.
+    select_x_axis: Você deve selecionar um eixo X.
+    function: Função
+    horizontal: Horizontal
+    x_axis: Eixo X
+    y_axis_function: Função do eixo Y
+    y_axis: Eixo Y
+    show_x_axis: Mostrar eixo X
+    show_y_axis: Mostrar eixo Y
+  linechart:
+    select_field: Você deve selecionar um campo.
+    select_collection: Você deve selecionar uma coleção.
+    select_x_axis: Você deve selecionar um eixo X.
+    function: Função
+    x_axis: Eixo X
+    y_axis: Eixo Y
+  meter:
+    select_field: Você deve selecionar um campo.
+    select_collection: Você deve selecionar uma coleção.
+    function: Função
+  piechart:
+    function: 'Função'
 triggers:
   webhook:
     method: Método 
 operations:
+  item-create:
+    payload: Payload
+  item-update:
+    payload: Payload
   log:
     message: Mensagem
   notification:

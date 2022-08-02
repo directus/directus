@@ -5,9 +5,18 @@
 	<v-notice v-else-if="!displayTemplate" type="warning">
 		{{ t('display_template_not_setup') }}
 	</v-notice>
+	<v-notice v-else-if="!enableCreate && !enableSelect && !displayItem">
+		{{ t('no_items') }}
+	</v-notice>
 	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
-		<v-input v-else clickable :placeholder="t('select_an_item')" :disabled="disabled" @click="onPreviewClick">
+		<v-input
+			v-else
+			clickable
+			:placeholder="t(enableSelect ? 'select_an_item' : 'create_item')"
+			:disabled="disabled"
+			@click="onPreviewClick"
+		>
 			<template v-if="displayItem" #input>
 				<div class="preview">
 					<render-template
@@ -31,13 +40,13 @@
 				</template>
 				<template v-else>
 					<v-icon
-						v-if="createAllowed"
+						v-if="createAllowed && enableCreate"
 						v-tooltip="t('create_item')"
 						class="add"
 						name="add"
 						@click.stop="editModalActive = true"
 					/>
-					<v-icon class="expand" name="expand_more" />
+					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
 				</template>
 			</template>
 		</v-input>
@@ -88,6 +97,8 @@ const props = withDefaults(
 		selectMode?: 'auto' | 'dropdown' | 'modal';
 		disabled?: boolean;
 		filter?: Filter | null;
+		enableCreate?: boolean;
+		enableSelect?: boolean;
 	}>(),
 	{
 		value: () => null,
@@ -95,6 +106,8 @@ const props = withDefaults(
 		disabled: false,
 		template: () => null,
 		filter: () => null,
+		enableCreate: true,
+		enableSelect: true,
 	}
 );
 
@@ -174,7 +187,12 @@ const edits = computed(() => {
 function onPreviewClick() {
 	if (props.disabled) return;
 
-	selectModalActive.value = true;
+	if (props.enableSelect) {
+		selectModalActive.value = true;
+		return;
+	}
+
+	editModalActive.value = true;
 }
 
 function onDrawerItemInput(event: any) {

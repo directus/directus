@@ -1952,7 +1952,6 @@ panels:
   meter:
     description: Compteur pour les valeurs de suivi
     name: Compteur
-    arc: Arc
     stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
