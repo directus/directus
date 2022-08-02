@@ -8,7 +8,7 @@ import {
 	Query,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { validatePayload } from '@directus/shared/utils';
+import { validatePayload, parseFilter, parsePreset } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
 import getDatabase from '../database';
@@ -498,7 +498,7 @@ export class AuthorizationService {
 
 		const preset = permission.presets ?? {};
 
-		const payloadWithPresets = merge({}, preset, payload);
+		const payloadWithPresets = merge({}, parsePreset(preset, this.accountability, {}), payload);
 
 		const fieldValidationRules = Object.values(this.schema.collections[collection].fields)
 			.map((field) => field.validation)
@@ -557,9 +557,10 @@ export class AuthorizationService {
 
 		const validationErrors: FailedValidationException[] = [];
 
+		const validationFilter: Filter = parseFilter(permission.validation, this.accountability)!;
 		validationErrors.push(
 			...flatten(
-				validatePayload(permission.validation!, payloadWithPresets).map((error) =>
+				validatePayload(validationFilter, payloadWithPresets).map((error) =>
 					error.details.map((details) => new FailedValidationException(details))
 				)
 			)
