@@ -13,6 +13,9 @@ import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
 import hljs from 'highlight.js';
 import path from 'path';
+import markdownItAnchor from 'markdown-it-anchor';
+import markdownItContainer from 'markdown-it-container';
+import markdownItTableOfContents from 'markdown-it-table-of-contents';
 import { searchForWorkspaceRoot } from 'vite';
 import md from 'vite-plugin-vue-markdown';
 import { defineConfig } from 'vitest/config';
@@ -46,8 +49,10 @@ export default defineConfig({
 				},
 			},
 			markdownItSetup(md) {
-				md.use(require('markdown-it-table-of-contents'), { includeLevel: [2] });
-				md.use(require('markdown-it-anchor'), { permalink: true, permalinkSymbol: '#' });
+				md.use(markdownItTableOfContents, { includeLevel: [2] });
+				md.use(markdownItAnchor, {
+					permalink: markdownItAnchor.permalink.linkInsideHeader({ placement: 'before' }),
+				});
 
 				function hintRenderer(type) {
 					return (tokens, idx) => {
@@ -64,9 +69,9 @@ export default defineConfig({
 					};
 				}
 
-				md.use(require('markdown-it-container'), 'tip', { render: hintRenderer('tip') });
-				md.use(require('markdown-it-container'), 'warning', { render: hintRenderer('warning') });
-				md.use(require('markdown-it-container'), 'danger', { render: hintRenderer('danger') });
+				md.use(markdownItContainer, 'tip', { render: hintRenderer('tip') });
+				md.use(markdownItContainer, 'warning', { render: hintRenderer('warning') });
+				md.use(markdownItContainer, 'danger', { render: hintRenderer('danger') });
 
 				md.core.ruler.push('router-link', (state) => {
 					state.tokens.forEach((token) => {

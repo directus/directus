@@ -69,7 +69,6 @@
 import api from '@/api';
 import vTemplateInput from '@/components/v-template-input.vue';
 import { useShortcut } from '@/composables/use-shortcut';
-import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
@@ -286,7 +285,7 @@ function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; ca
 
 function avatarSource(url: string) {
 	if (url === null) return '';
-	return getRootPath() + `assets/${url}?key=system-small-cover`;
+	return `/assets/${url}?key=system-small-cover`;
 }
 
 async function postComment() {

@@ -1944,7 +1944,6 @@ panels:
   meter:
     description: Měřič pro sledování hodnot
     name: Měřič
-    arc: Oblouk
     stroke_width: Tloušťka tahu
     select_max_value: Musíte vybrat maximální hodnotu.
     max_greater_than_zero: Maximální hodnota musí být větší než 0.
