@@ -1,0 +1,27 @@
+post:
+  summary: Apply Schema
+  description: Apply schema snapshot based on JSON request body or a JSON/CSV schema file.
+  operationId: serverSchemaApply
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: object
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            file:
+              type: string
+              format: binary
+  responses:
+    '204':
+      description: Successful request
+    '403':
+      $ref: '../../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Server
