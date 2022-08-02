@@ -2,6 +2,7 @@ import knex, { Knex } from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { AuthorizationService } from '../../src/services';
 import { userSchema } from '../__test-utils__/schemas';
+import { cloneDeep } from 'lodash';
 
 jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
@@ -14,6 +15,22 @@ describe('Integration Tests', () => {
 
 	describe('Services / AuthorizationService', () => {
 		describe('validatePayload', () => {
+			const schema = cloneDeep(userSchema);
+			schema.collections.posts.fields.publish_date = {
+				field: 'publish_date',
+				defaultValue: null,
+				nullable: true,
+				generated: false,
+				type: 'timestamp',
+				dbType: 'timestamp',
+				precision: null,
+				scale: null,
+				special: [],
+				note: null,
+				alias: false,
+				validation: null,
+			};
+
 			const service: AuthorizationService = new AuthorizationService({
 				knex: db,
 				accountability: {
@@ -62,7 +79,7 @@ describe('Integration Tests', () => {
 						},
 					],
 				},
-				schema: userSchema,
+				schema,
 			});
 
 			describe('create', () => {
@@ -72,7 +89,7 @@ describe('Integration Tests', () => {
 					{ id: '6107c897-9182-40f7-b22e-4f044d1258d2', title: 'Hello 2', publish_date: nowTZ },
 				];
 
-				it.each(newPosts)('%s presets are added correctly to the payload', (payload) => {
+				it.each(newPosts)('presets are added correctly to the payload', (payload) => {
 					const payloadWithPresets = service.validatePayload('create', tableName, payload);
 
 					expect(payloadWithPresets).toHaveProperty('publish_date');
@@ -88,7 +105,7 @@ describe('Integration Tests', () => {
 					{ id: '6107c897-9182-40f7-b22e-4f044d1258d2', title: 'Hello World 2', publish_date: nowTZ },
 				];
 
-				it.each(newPosts)('%s validates the payload correctly', (payload) => {
+				it.each(newPosts)('validates the payload correctly', (payload) => {
 					// Should only validate if field is set in the payload
 					if (!payload.publish_date) {
 						const payloadWithPresets = service.validatePayload('update', tableName, payload);
