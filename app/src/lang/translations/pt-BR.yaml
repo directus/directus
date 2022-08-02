@@ -370,6 +370,7 @@ interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
+delete_share: Excluir compartilhamento
 functions:
   year: Ano
   month: Mês
@@ -665,6 +666,7 @@ operators:
   nintersects: Não interceptado
   intersects_bbox: Cruza a caixa delimitadora
   nintersects_bbox: Não cruza a caixa delimitadora
+  regex: Coincide RegExp
 loading: Carregando...
 drop_to_upload: Solte para enviar
 item: Item
@@ -785,7 +787,7 @@ details: Detalhes
 full_screen: Tela cheia
 full_text_search: Pesquisa de texto completo
 edit_panels: Editar painéis
-center_align: Centralizar
+center_align: Alinhar no centro
 left_align: Alinhar à Esquerda
 right_align: Alinhar à Direita
 fit_to_screen: Ajustar à tela
@@ -814,7 +816,7 @@ current_tab: Aba atual
 save_image: Salvar Imagem
 save_media: Salvar Arquivo
 wysiwyg_options:
-  aligncenter: Alinhar ao centro
+  aligncenter: Alinhar no centro
   alignjustify: Justificar
   alignleft: Alinhar à esquerda
   alignnone: Não alinhar

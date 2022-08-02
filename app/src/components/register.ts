@@ -5,6 +5,8 @@ import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
 import DocsWrapper from '@/views/private/components/docs-wrapper.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { App } from 'vue';
 import TransitionBounce from './transition/bounce';
 import TransitionDialog from './transition/dialog';
@@ -145,4 +147,6 @@ export function registerComponents(app: App): void {
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
 	app.component('DocsWrapper', DocsWrapper);
+	app.component('DrawerItem', DrawerItem);
+	app.component('DrawerBatch', DrawerBatch);
 }
