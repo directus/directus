@@ -54,7 +54,6 @@
 import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { getRootPath } from '@/utils/get-root-path';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -75,7 +74,7 @@ export default defineComponent({
 
 		const avatarURL = computed<string | null>(() => {
 			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-			return getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
+			return `/assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
 		});
 
 		const avatarError = ref(null);

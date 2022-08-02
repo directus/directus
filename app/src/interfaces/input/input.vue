@@ -73,7 +73,7 @@ export default defineComponent({
 		},
 		trim: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		font: {
 			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
