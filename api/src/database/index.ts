@@ -272,6 +272,9 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
 
 	if (getDatabaseClient(database) === 'mysql') {
+		const { version } = await database.select(database.raw('VERSION() as version')).first();
+		const isMariaDB = version.split('-').includes('MariaDB')
+
 		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
 
 		const tables = await database('information_schema.tables')
@@ -279,9 +282,14 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 			.where({ TABLE_SCHEMA: env.DB_DATABASE });
 
 		const columns = await database('information_schema.columns')
-			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME' })
+			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME', type: 'COLUMN_TYPE' })
 			.where({ TABLE_SCHEMA: env.DB_DATABASE })
-			.whereNot({ COLLATION_NAME: collation });
+			.whereNot({ COLLATION_NAME: collation })
+			// On MariaDB ignore for type LONGTEXT and collation utf8mb4_bin which is used as an alias for json type
+			.modify(queryBuilder => isMariaDB && queryBuilder
+				.andWhereNot({ COLUMN_TYPE: 'longtext', COLLATION_NAME: 'utf8mb4_bin' })
+			);
+
 
 		let inconsistencies = '';
 		for (const table of tables) {
