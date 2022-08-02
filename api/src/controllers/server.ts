@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { RequestHandler, Router } from 'express';
 import { load as loadYaml } from 'js-yaml';
 import { InvalidPayloadException, RouteNotFoundException, UnsupportedMediaTypeException } from '../exceptions';
+import logger from '../logger';
 import { respond } from '../middleware/respond';
 import { ServerService, SpecificationService } from '../services';
 import { SchemaService } from '../services/schema';
@@ -134,20 +135,20 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 			if (mimeType === 'application/json') {
 				try {
 					uploadedSnapshot = parseJSON(uploadedString);
-				} catch (e) {
-					throw new InvalidPayloadException('Invalid JSON snapshot');
+				} catch (err: any) {
+					logger.warn(err);
+					throw new InvalidPayloadException('Invalid JSON schema snapshot');
 				}
 			} else {
 				try {
 					uploadedSnapshot = (await loadYaml(uploadedString)) as Snapshot;
-				} catch (e) {
-					throw new InvalidPayloadException('Invalid YAML snapshot');
+				} catch (err: any) {
+					logger.warn(err);
+					throw new InvalidPayloadException('Invalid YAML schema snapshot');
 				}
 			}
 
-			if (!uploadedSnapshot) {
-				throw new InvalidPayloadException(`No files were included in the body`);
-			}
+			if (!uploadedSnapshot) throw new InvalidPayloadException(`No file were included in the body`);
 
 			res.locals.uploadedSnapshot = uploadedSnapshot;
 
@@ -160,7 +161,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	busboy.on('error', (error: Error) => next(error));
 
 	busboy.on('close', () => {
-		if (fileCount === 0) return next(new InvalidPayloadException(`No files were included in the body`));
+		if (fileCount === 0) return next(new InvalidPayloadException(`No file were included in the body`));
 	});
 
 	req.pipe(busboy);
