@@ -93,16 +93,11 @@ router.get(
 router.get(
 	'/schema/snapshot',
 	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		const service = new SchemaService({ accountability: req.accountability, schema: req.schema });
 
 		const currentSnapshot = await service.snapshot();
 
-		res.locals.payload = {
-			data: currentSnapshot,
-		};
+		res.locals.payload = { data: currentSnapshot };
 
 		return next();
 	}),
@@ -110,7 +105,10 @@ router.get(
 );
 
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
-	if (req.is('application/json')) return next();
+	if (req.is('application/json')) {
+		if (Object.keys(req.body).length === 0) throw new InvalidPayloadException(`No data were included in the body`);
+		return next();
+	}
 
 	if (!req.is('multipart/form-data')) throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
 
@@ -171,10 +169,7 @@ router.post(
 	'/schema/apply',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		const service = new SchemaService({ accountability: req.accountability, schema: req.schema });
 
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
 
@@ -189,10 +184,7 @@ router.post(
 	'/schema/diff',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		const service = new SchemaService({ accountability: req.accountability, schema: req.schema });
 
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
 
@@ -200,9 +192,7 @@ router.post(
 
 		if (!snapshotDiff) return next();
 
-		res.locals.payload = {
-			data: snapshotDiff,
-		};
+		res.locals.payload = { data: snapshotDiff };
 
 		return next();
 	}),
