@@ -163,8 +163,9 @@ export default defineComponent({
 	},
 	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
-		const settingsStore = useSettingsStore();
 		const { t, n } = useI18n();
+
+		const settingsStore = useSettingsStore();
 
 		const localActive = ref(false);
 
@@ -213,10 +214,7 @@ export default defineComponent({
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
 
-		const customAspectRatios =
-			settingsStore.settings && settingsStore.settings.image_editor_custom_aspect_ratios
-				? settingsStore.settings.image_editor_custom_aspect_ratios
-				: null;
+		const customAspectRatios = settingsStore.settings?.image_editor_custom_aspect_ratios ?? null;
 
 		return {
 			t,
