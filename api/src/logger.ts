@@ -50,8 +50,6 @@ export const expressLogger = pinoHTTP(
 	{
 		logger,
 		...httpLoggerEnvConfig,
-	},
-	{
 		serializers: {
 			req(request: Request) {
 				const output = stdSerializers.req(request);
