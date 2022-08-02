@@ -214,7 +214,7 @@ export default defineComponent({
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
 
-		const customAspectRatios = settingsStore.settings?.image_editor_custom_aspect_ratios ?? null;
+		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
 
 		return {
 			t,

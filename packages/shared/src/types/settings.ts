@@ -44,7 +44,7 @@ export type Settings = {
 	auth_password_policy: string | null;
 	storage_asset_transform: string;
 	storage_asset_presets: SettingsStorageAssetPreset[] | null;
-	image_editor_custom_aspect_ratios: CustomAspectRatio[] | null;
+	custom_aspect_ratios: CustomAspectRatio[] | null;
 	custom_css: string | null;
 	storage_default_folder: string | null;
 	basemaps: any[] | null;

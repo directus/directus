@@ -403,7 +403,7 @@ fields:
       - no-data
     width: full
 
-  - field: image_editor_custom_aspect_ratios
+  - field: custom_aspect_ratios
     interface: list
     special: cast-json
     options:
