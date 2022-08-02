@@ -273,7 +273,7 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 
 	if (getDatabaseClient(database) === 'mysql') {
 		const { version } = await database.select(database.raw('VERSION() as version')).first();
-		const isMariaDB = version.split('-').includes('MariaDB')
+		const isMariaDB = version.split('-').includes('MariaDB');
 
 		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
 
