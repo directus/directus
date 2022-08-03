@@ -179,7 +179,7 @@ export default defineComponent({
 			if (props.circularField) {
 				return fieldsWithPermissions.value.map((field: Field) => {
 					if (field.field === props.circularField) {
-						field.meta!.readonly = true;
+						set(field, 'meta.readonly', true);
 					}
 					return field;
 				});
