@@ -1,4 +1,5 @@
-import { functions } from '../../src/utils/functions';
+import { describe, expect, it } from 'vitest';
+import { functions } from './functions';
 
 describe('Data Functions', () => {
 	describe('year', () => {

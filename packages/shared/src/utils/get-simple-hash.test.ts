@@ -1,4 +1,5 @@
-import { getSimpleHash } from '../../src/utils/get-simple-hash';
+import { describe, expect, it } from 'vitest';
+import { getSimpleHash } from './get-simple-hash';
 
 describe('getSimpleHash', () => {
 	it('returns "364492" for string "test"', () => {

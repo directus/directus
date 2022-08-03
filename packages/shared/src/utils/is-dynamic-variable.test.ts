@@ -1,4 +1,5 @@
-import { isDynamicVariable } from '../../src/utils/is-dynamic-variable';
+import { describe, expect, it } from 'vitest';
+import { isDynamicVariable } from './is-dynamic-variable';
 
 const tests: [string, boolean][] = [
 	['$NOW', true],

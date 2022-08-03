@@ -1,4 +1,5 @@
-import { abbreviateNumber } from '../../src/utils/abbreviate-number';
+import { describe, expect, it } from 'vitest';
+import { abbreviateNumber } from './abbreviate-number';
 
 describe('when no unit is given', () => {
 	it('when under 1000', () => {

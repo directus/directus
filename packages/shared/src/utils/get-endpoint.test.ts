@@ -1,4 +1,5 @@
-import { getEndpoint } from '../../src/utils/get-endpoint';
+import { describe, expect, it } from 'vitest';
+import { getEndpoint } from './get-endpoint';
 
 describe('getEndpoint', () => {
 	it('When a system collection is passed in', () => {

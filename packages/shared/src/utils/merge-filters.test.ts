@@ -1,4 +1,5 @@
-import { mergeFilters } from '../../src/utils/merge-filters';
+import { describe, expect, it } from 'vitest';
+import { mergeFilters } from './merge-filters';
 
 describe('merge filters', () => {
 	it('defaults to A when B is null', () => {
