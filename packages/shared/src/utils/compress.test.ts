@@ -66,9 +66,9 @@ describe('encode', () => {
 });
 
 describe('to36', () => {
-	test('Converts base-10 number to capitalized base36 equivalent', () => {
-		expect(to36(1)).toBe('1');
-		expect(to36(1234)).toBe('YA');
-		expect(to36(10513)).toBe('841');
+	test('Converts base10 number to capitalized base36 equivalent', () => {
+		expect(to36(23)).toBe('N');
+		expect(to36(506999)).toBe('AV7B');
+		expect(to36(3226393)).toBe('1X5I1');
 	});
 });

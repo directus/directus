@@ -24,9 +24,8 @@ type Token = {
 type NestedToken = ['@' | '$', ...(Token | NestedToken)[]];
 
 /**
- * Compress an object or array to a smaller string representation by dropping the properties.
- *
- * @NOTE only works reliably on arrays of objects where each object has the same structure
+ * Compress any input object or array down to a minimal size reproduction in a string
+ * Inspired by `jsonpack`
  */
 export function compress(obj: Record<string, any> | Record<string, any>[]) {
 	const strings = new Map<string, number>();
