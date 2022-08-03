@@ -51,15 +51,23 @@ export async function setSystemCache(key: string, value: any, ttl?: number): Pro
 	const { systemCache, lockCache } = getCache();
 
 	if (!(await lockCache.get('system-cache-lock'))) {
-		const compressed = await compress(value);
-		await systemCache.set(key, compressed, ttl);
+		await setCacheValue(systemCache, key, value, ttl);
 	}
 }
 
 export async function getSystemCache(key: string): Promise<Record<string, any>> {
 	const { systemCache } = getCache();
 
-	const value = await systemCache.get(key);
+	return await getCacheValue(systemCache, key);
+}
+
+export async function setCacheValue(cache: Keyv, key: string, value: any, ttl?: number) {
+	const compressed = await compress(value);
+	await cache.set(key, compressed, ttl);
+}
+
+export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
+	const value = await cache.get(key);
 	const decompressed = await decompress(value);
 
 	return decompressed;
