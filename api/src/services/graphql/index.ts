@@ -92,6 +92,7 @@ import { GraphQLVoid } from './types/void';
 import { PrimaryKey } from '@directus/shared/types';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
+import { GraphQLHash } from './types/hash';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -713,6 +714,24 @@ export class GraphQLService {
 				},
 			});
 
+			const HashFilterOperators = schemaComposer.createInputTC({
+				name: 'hash_filter_operators',
+				fields: {
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+					_empty: {
+						type: GraphQLBoolean,
+					},
+					_nempty: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
 			const CountFunctionFilterOperators = schemaComposer.createInputTC({
 				name: 'count_function_filter_operators',
 				fields: {
@@ -790,6 +809,9 @@ export class GraphQLService {
 								break;
 							case GraphQLGeoJSON:
 								filterOperatorType = GeometryFilterOperators;
+								break;
+							case GraphQLHash:
+								filterOperatorType = HashFilterOperators;
 								break;
 							default:
 								filterOperatorType = StringFilterOperators;
