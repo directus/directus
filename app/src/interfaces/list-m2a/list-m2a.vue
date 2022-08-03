@@ -111,7 +111,7 @@
 		</div>
 
 		<drawer-collection
-			v-if="!disabled"
+			v-if="!disabled && selectingFrom"
 			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
