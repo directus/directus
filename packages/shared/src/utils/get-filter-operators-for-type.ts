@@ -14,6 +14,7 @@ export function getFilterOperatorsForType(
 		// Text
 		case 'binary':
 		case 'string':
+		case 'text':
 		case 'csv':
 			return [
 				'contains',
