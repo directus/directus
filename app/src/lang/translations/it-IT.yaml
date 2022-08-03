@@ -1955,6 +1955,7 @@ panels:
   meter:
     description: Metro per il rilevamento dei valori
     name: Metro
+    arc: Arco
     stroke_width: Spessore della linea
     select_max_value: Devi selezionare un valore massimo.
     max_greater_than_zero: Il massimo deve essere maggiore di zero.
