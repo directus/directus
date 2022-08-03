@@ -50,7 +50,8 @@ export async function setSystemCache(key: string, value: any, ttl?: number): Pro
 	const { systemCache, lockCache } = getCache();
 
 	if (!(await lockCache.get('system-cache-lock'))) {
-		await systemCache.set(key, value, ttl);
+		const compressed = await compress(value);
+		await systemCache.set(key, compressed, ttl);
 	}
 }
 
