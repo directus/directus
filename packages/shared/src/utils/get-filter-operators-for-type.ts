@@ -13,7 +13,6 @@ export function getFilterOperatorsForType(
 	switch (type) {
 		// Text
 		case 'binary':
-		case 'hash':
 		case 'string':
 		case 'csv':
 			return [
@@ -34,7 +33,9 @@ export function getFilterOperatorsForType(
 				'nin',
 				...validationOnlyStringFilterOperators,
 			];
-
+		// Hash
+		case 'hash':
+			return ['empty', 'nempty', 'null', 'nnull'];
 		// JSON
 		// UUID
 		case 'uuid':
