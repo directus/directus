@@ -48,7 +48,7 @@ import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
-import { DEFAULT_AUTH_PROVIDER } from '../../constants';
+import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database';
 import env from '../../env';
@@ -92,6 +92,7 @@ import { GraphQLVoid } from './types/void';
 import { PrimaryKey } from '@directus/shared/types';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
+import { GraphQLHash } from './types/hash';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -405,7 +406,11 @@ export class GraphQLService {
 						// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
 						// can't non-null in update, as that would require every not-nullable field to be
 						// submitted on updates
-						if (field.nullable === false && action !== 'update') {
+						if (
+							field.nullable === false &&
+							!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
+							action !== 'update'
+						) {
 							type = GraphQLNonNull(type);
 						}
 
@@ -709,6 +714,24 @@ export class GraphQLService {
 				},
 			});
 
+			const HashFilterOperators = schemaComposer.createInputTC({
+				name: 'hash_filter_operators',
+				fields: {
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+					_empty: {
+						type: GraphQLBoolean,
+					},
+					_nempty: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
 			const CountFunctionFilterOperators = schemaComposer.createInputTC({
 				name: 'count_function_filter_operators',
 				fields: {
@@ -786,6 +809,9 @@ export class GraphQLService {
 								break;
 							case GraphQLGeoJSON:
 								filterOperatorType = GeometryFilterOperators;
+								break;
+							case GraphQLHash:
+								filterOperatorType = HashFilterOperators;
 								break;
 							default:
 								filterOperatorType = StringFilterOperators;

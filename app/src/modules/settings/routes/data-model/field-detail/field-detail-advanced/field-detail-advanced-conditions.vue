@@ -44,6 +44,7 @@ export default defineComponent({
 					interface: 'system-filter',
 					options: {
 						collectionName: collection.value,
+						includeRelations: false,
 					},
 				},
 			},

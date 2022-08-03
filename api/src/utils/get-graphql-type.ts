@@ -11,6 +11,7 @@ import { GraphQLJSON } from 'graphql-compose';
 import { GraphQLDate } from '../services/graphql/types/date';
 import { GraphQLGeoJSON } from '../services/graphql/types/geojson';
 import { Type } from '@directus/shared/types';
+import { GraphQLHash } from '../services/graphql/types/hash';
 
 export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLScalarType | GraphQLList<GraphQLType> {
 	switch (localType) {
@@ -33,6 +34,8 @@ export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLSc
 		case 'dateTime':
 		case 'date':
 			return GraphQLDate;
+		case 'hash':
+			return GraphQLHash;
 		default:
 			return GraphQLString;
 	}
