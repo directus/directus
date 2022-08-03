@@ -42,6 +42,7 @@
 					v-if="collectionRequired"
 					:collection="collection"
 					include-functions
+					:exclude-relations="includeValidation"
 					@select-field="addNode($event)"
 				>
 					<template #prepend>
