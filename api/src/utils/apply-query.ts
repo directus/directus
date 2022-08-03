@@ -1,4 +1,13 @@
-import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
+import {
+	Aggregate,
+	ClientFilterOperator,
+	FieldFunction,
+	Filter,
+	Query,
+	Relation,
+	SchemaOverview,
+	Type,
+} from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
@@ -8,7 +17,7 @@ import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
-import { getOutputTypeForFunction } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -357,8 +366,15 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
+					validateFilterOperator(
+						schema.collections[targetCollection].fields[filterPath[filterPath.length - 1]].type,
+						filterOperator
+					);
+
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
+					validateFilterOperator(schema.collections[collection].fields[filterPath[0]].type, filterOperator);
+
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
@@ -394,6 +410,19 @@ export function applyFilter(
 				}
 			}
 		}
+
+		function validateFilterOperator(type: Type, filterOperator: string) {
+			if (filterOperator.startsWith('_')) {
+				filterOperator = filterOperator.slice(1);
+			}
+
+			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
+				throw new InvalidQueryException(
+					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
+				);
+			}
+		}
+
 		function applyFilterToQuery(
 			key: string,
 			operator: string,
