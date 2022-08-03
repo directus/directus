@@ -4,6 +4,7 @@ import env from './env';
 import logger from './logger';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { validateEnv } from './utils/validate-env';
+import { compress, decompress } from './utils/compress';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
@@ -53,6 +54,15 @@ export async function setSystemCache(key: string, value: any, ttl?: number): Pro
 		const compressed = await compress(value);
 		await systemCache.set(key, compressed, ttl);
 	}
+}
+
+export async function getSystemCache(key: string): Promise<Record<string, any>> {
+	const { systemCache } = getCache();
+
+	const value = await systemCache.get(key);
+	const decompressed = await decompress(value);
+
+	return decompressed;
 }
 
 function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Keyv {
