@@ -1,4 +1,5 @@
-import { getFilterOperatorsForType } from '../../src/utils/get-filter-operators-for-type';
+import { describe, expect, it } from 'vitest';
+import { getFilterOperatorsForType } from './get-filter-operators-for-type';
 
 describe('', () => {
 	it('returns the filter operators for alias', () => {
