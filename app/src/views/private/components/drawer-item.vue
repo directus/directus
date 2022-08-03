@@ -63,6 +63,7 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview.vue';
+import { set } from 'lodash';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
