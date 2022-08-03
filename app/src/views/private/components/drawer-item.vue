@@ -177,8 +177,11 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (props.circularField) {
-				return fieldsWithPermissions.value.filter((field: Field) => {
-					return field.field !== props.circularField;
+				return fieldsWithPermissions.value.map((field: Field) => {
+					if (field.field === props.circularField) {
+						field.meta!.readonly = true;
+					}
+					return field;
 				});
 			} else {
 				return fieldsWithPermissions.value;
