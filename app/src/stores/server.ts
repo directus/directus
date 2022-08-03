@@ -5,6 +5,7 @@ import { setLanguage } from '@/lang/set-language';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, unref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 type Info = {
 	project: null | {
@@ -83,7 +84,11 @@ export const useServerStore = defineStore('serverStore', () => {
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
 
-		await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
+		const { currentUser } = useUserStore();
+
+		if (!currentUser?.language) {
+			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
+		}
 
 		if (serverInfoResponse.data.data?.rateLimit !== undefined) {
 			if (serverInfoResponse.data.data?.rateLimit === false) {

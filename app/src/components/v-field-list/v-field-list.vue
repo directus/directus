@@ -36,11 +36,13 @@ interface Props {
 	field?: string;
 	disabledFields?: string[];
 	includeFunctions?: boolean;
+	includeRelations?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	disabledFields: () => [],
 	includeFunctions: false,
+	includeRelations: true,
 	field: undefined,
 });
 
@@ -48,7 +50,7 @@ defineEmits(['select-field']);
 
 const fieldsStore = useFieldsStore();
 
-const { collection } = toRefs(props);
+const { collection, includeRelations } = toRefs(props);
 
 const fieldsCount = computed(() => fieldsStore.getFieldsForCollection(collection.value)?.length ?? 0);
 
@@ -85,6 +87,7 @@ const treeList = computed(() => {
 });
 
 function filter(field: Field): boolean {
+	if (!includeRelations.value && (field.collection !== collection.value || field.type === 'alias')) return false;
 	if (!search.value) return true;
 	const children = fieldsStore.getFieldGroupChildren(collection.value, field.field);
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);

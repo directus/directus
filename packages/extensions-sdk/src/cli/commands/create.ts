@@ -104,7 +104,7 @@ export default async function create(type: string, name: string, options: Create
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 To start developing, run:
-  ${chalk.blue('cd')} c
+  ${chalk.blue('cd')} ${name}
   ${chalk.blue('npm run')} dev
 
 and then to build for production, run:
