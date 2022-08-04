@@ -563,6 +563,11 @@ const updateAllowed = computed(() => {
 	}
 }
 
+.v-skeleton-loader,
+.v-notice {
+	margin-top: 8px;
+}
+
 .actions {
 	display: flex;
 	align-items: center;
@@ -637,11 +642,12 @@ const updateAllowed = computed(() => {
 	justify-content: flex-end;
 	width: 120px;
 	padding: 10px 0;
+	margin-right: 2px;
 	color: var(--foreground-subdued);
 
 	span {
 		width: auto;
-		margin-right: 4px;
+		margin-right: 8px;
 	}
 
 	.v-select {

@@ -3,7 +3,7 @@
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="many-to-many">
-		<div :class="{ bordered: layout === LAYOUTS.TABLE }">
+		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
 			<div class="actions" :class="width">
 				<div class="spacer" />
 
@@ -614,6 +614,10 @@ const selectAllowed = computed(() => {
 	}
 }
 
+.v-notice {
+	margin-top: 8px;
+}
+
 .actions {
 	display: flex;
 	align-items: center;
@@ -688,11 +692,12 @@ const selectAllowed = computed(() => {
 	justify-content: flex-end;
 	width: 120px;
 	padding: 10px 0;
+	margin-right: 2px;
 	color: var(--foreground-subdued);
 
 	span {
 		width: auto;
-		margin-right: 4px;
+		margin-right: 8px;
 	}
 
 	.v-select {
