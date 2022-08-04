@@ -167,6 +167,85 @@ export function compress(obj: Record<string, any> | Record<string, any>[]) {
 	return compressed;
 }
 
+export function decompress(input: string): unknown {
+	const parts = input.split('^');
+	if (parts.length !== 4) throw new Error(`Invalid input string given`);
+
+	const values: (string | number)[] = [
+		...parts[0]!.split('|').map((part) => decode(part)),
+		...parts[1]!.split('|').map((part) => to10(part)),
+		...parts[2]!.split('|').map((part) => parseFloat(part)),
+	];
+
+	let num36Buffer = '';
+	const tokens: (string | number)[] = [];
+
+	parts[3]!.split('').forEach((symbol) => {
+		if (['|', '$', '@', ']'].includes(symbol)) {
+			if (num36Buffer) {
+				tokens.push(to10(num36Buffer));
+				num36Buffer = '';
+			}
+
+			if (symbol !== '|') tokens.push(symbol);
+		} else {
+			num36Buffer += symbol;
+		}
+	});
+
+	let tokenIndex = 0;
+
+	const getDecompressed = (): Record<string, any> | Record<string, any>[] => {
+		const type = tokens[tokenIndex++];
+
+		if (type === '$') {
+			const node: Record<string, any> = {};
+
+			for (; tokenIndex < tokens.length; tokenIndex++) {
+				const rawKey = tokens[tokenIndex]!;
+
+				if (rawKey === ']') return node;
+
+				const rawValue = tokens[++tokenIndex]!;
+
+				const key = values[rawKey as number] as string;
+
+				if (rawValue === '$' || rawValue === '@') {
+					node[key] = getDecompressed();
+				} else {
+					const value = values[rawValue as number] ?? getValueForToken(rawValue as Tokens);
+					node[key] = value;
+				}
+			}
+
+			return node;
+		}
+
+		if (type === '@') {
+			const node: any[] = [];
+
+			for (; tokenIndex < tokens.length; tokenIndex++) {
+				const rawValue = tokens[tokenIndex]!;
+
+				if (rawValue === ']') return node;
+
+				if (rawValue === '$' || rawValue === '@') {
+					node.push(getDecompressed());
+				} else {
+					const value = values[tokens[tokenIndex]! as number] ?? getValueForToken(tokens[tokenIndex] as Tokens);
+					node.push(value);
+				}
+			}
+
+			return node;
+		}
+
+		throw new Error('Bad token: ' + type);
+	};
+
+	return getDecompressed();
+}
+
 export function mapToSortedArray(map: Map<string | number, number>): (string | number)[] {
 	const output: (string | number)[] = [];
 
@@ -196,6 +275,44 @@ export function encode(str: string) {
 	});
 }
 
+export function decode(str: string) {
+	return str.replace(/\+|%2B|%7C|%5E|%25/g, (a) => {
+		switch (a) {
+			case '%25':
+				return '%';
+			case '%2B':
+				return '+';
+			case '%7C':
+				return '|';
+			case '%5E':
+				return '^';
+			case '+':
+			default:
+				// The regex matches explicit, so this default shouldn't be hit
+				return ' ';
+		}
+	});
+}
+
 export function to36(num: number): string {
 	return num.toString(36).toUpperCase();
+}
+
+export function to10(str: string): number {
+	return parseInt(str, 36);
+}
+
+export function getValueForToken(token: Tokens) {
+	switch (token) {
+		case Tokens.TRUE:
+			return true;
+		case Tokens.FALSE:
+			return false;
+		case Tokens.NULL:
+			return null;
+		case Tokens.EMPTY:
+			return '';
+		case Tokens.UNDEFINED:
+			return undefined;
+	}
 }

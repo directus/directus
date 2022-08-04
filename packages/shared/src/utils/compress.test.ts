@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { compress, mapToSortedArray, encode, to36 } from './compress';
+import { compress, decompress, mapToSortedArray, encode, to36 } from './compress';
 
 const plain = {
 	string: 'directus',
@@ -41,6 +41,32 @@ describe('compress', () => {
 
 	test('Throws error on non-supported types', () => {
 		expect(() => compress({ method: () => true })).toThrowError();
+	});
+});
+
+describe('decompress', () => {
+	test('Decompresses plain objects', () => {
+		expect(
+			decompress(
+				'string|directus|true|false|null|empty|integer|float|undefined^1K6^12.34^$0|1|2|-1|3|-2|4|-3|5|-4|6|9|7|A|8|-5]'
+			)
+		).toEqual(plain);
+	});
+
+	test('Decompresses deep nested objects', () => {
+		expect(
+			decompress(
+				'another|string|directus|true|false|null|empty|integer|float|undefined|nested|arr^1K6^12.34^$0|$1|2|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|A|$1|2|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|B|@$1|2|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|$1|2|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]]]'
+			)
+		).toEqual(deep);
+	});
+
+	test('Decompresses arrays', () => {
+		expect(
+			decompress(
+				'string|directus|true|false|null|empty|integer|float|undefined|another|nested|arr^1K6^12.34^@$0|1|2|-1|3|-2|4|-3|5|-4|6|C|7|D|8|-5]|$9|$0|1|2|-1|3|-2|4|-3|5|-4|6|C|7|D|8|-5]|A|$0|1|2|-1|3|-2|4|-3|5|-4|6|C|7|D|8|-5]|B|@$0|1|2|-1|3|-2|4|-3|5|-4|6|C|7|D|8|-5]|$0|1|2|-1|3|-2|4|-3|5|-4|6|C|7|D|8|-5]]]]'
+			)
+		).toEqual(arr);
 	});
 });
 
