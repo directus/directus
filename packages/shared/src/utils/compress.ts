@@ -217,8 +217,6 @@ export function decompress(input: string): unknown {
 					node[key] = value;
 				}
 			}
-
-			return node;
 		}
 
 		if (type === '@') {
@@ -236,8 +234,6 @@ export function decompress(input: string): unknown {
 					node.push(value);
 				}
 			}
-
-			return node;
 		}
 
 		throw new Error('Bad token: ' + type);
