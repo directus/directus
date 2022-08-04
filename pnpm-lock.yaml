@@ -367,7 +367,7 @@ importers:
 
   app:
     specifiers:
-      '@directus/docs': 9.14.3
+      '@directus/docs': 9.14.4
       '@directus/extensions-sdk': ^9.14.1
       '@directus/format-title': ^9.15.0
       '@directus/shared': workspace:*
@@ -470,7 +470,7 @@ importers:
       vuedraggable: 4.1.0
       wellknown: 0.5.0
     devDependencies:
-      '@directus/docs': 9.14.3
+      '@directus/docs': 9.14.4
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 9.15.0
       '@directus/shared': link:../packages/shared
@@ -2159,9 +2159,9 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/docs/9.14.3:
+  /@directus/docs/9.14.4:
     resolution:
-      { integrity: sha512-Vh/xfzycBantZ13+thhposR1LZRD8xhr+lxlYvtt06xlo59xcDrEe7fxuutUndd0+m0KWr2Y+RnQRWKbBtWkfg== }
+      { integrity: sha512-8yYZD9IXMQudi4jBJFkk+3xdFspyWNiPGQG296E6TdcVKrehLkv+Al37pJSBtGCjLqVh7Oy7D45I8OdIVTFEqw== }
     dev: true
 
   /@directus/format-title/9.15.0:
