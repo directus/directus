@@ -273,10 +273,6 @@ export default defineComponent({
 			type: Number,
 			default: undefined,
 		},
-		direction: {
-			type: String,
-			default: undefined,
-		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -352,6 +348,7 @@ export default defineComponent({
 			if (styleFormats) {
 				toolbarString += ' styleselect';
 			}
+			toolbarString += ' ltr rtl';
 
 			return {
 				skin: false,
@@ -373,7 +370,6 @@ export default defineComponent({
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
 				browser_spellcheck: true,
-				directionality: props.direction,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};
