@@ -1,4 +1,5 @@
-import { deepMap } from '../../src/utils/deep-map';
+import { describe, expect, it } from 'vitest';
+import { deepMap } from './deep-map';
 
 describe('deepMap', () => {
 	const mockIterator = (val: any, _key: string | number) => {

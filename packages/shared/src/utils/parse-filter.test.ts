@@ -1,15 +1,17 @@
-import { parseFilter } from '../../src/utils/parse-filter';
+import { vi, afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Filter } from '../../src/types/filter';
+import { parseFilter } from './parse-filter';
 
 describe('', () => {
 	beforeEach(() => {
-		jest.useFakeTimers();
-		jest.setSystemTime(new Date(1632431505992));
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date(1632431505992));
 	});
 
 	afterEach(() => {
-		jest.useRealTimers();
+		vi.useRealTimers();
 	});
+
 	it('returns the filter when passed accountability with only a role', () => {
 		const mockFilter = { _and: [{ field: { _eq: 'field' } }] } as Filter;
 		const mockAccountability = { role: 'admin' };

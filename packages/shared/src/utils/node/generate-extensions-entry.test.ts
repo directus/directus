@@ -1,5 +1,7 @@
-import { generateExtensionsEntry } from '../../../src/utils/node/generate-extensions-entry';
-import { Extension } from '../../../src/types/extensions';
+import { describe, expect, it } from 'vitest';
+
+import { Extension } from '../../types/extensions';
+import { generateExtensionsEntry } from './generate-extensions-entry';
 
 describe('generateExtensionsEntry', () => {
 	const type = 'panel';

@@ -1,4 +1,5 @@
-import { getFieldsFromTemplate } from '../../src/utils/get-fields-from-template';
+import { describe, expect, it } from 'vitest';
+import { getFieldsFromTemplate } from './get-fields-from-template';
 
 describe('getFieldsFromTemplate', () => {
 	it('returns an empty array when passed null', () => {

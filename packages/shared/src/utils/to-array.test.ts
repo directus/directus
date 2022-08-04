@@ -1,4 +1,5 @@
-import { toArray } from '../../src/utils/to-array';
+import { describe, expect, it } from 'vitest';
+import { toArray } from './to-array';
 
 describe('toArray', () => {
 	it('takes in a string and returns an array', () => {
