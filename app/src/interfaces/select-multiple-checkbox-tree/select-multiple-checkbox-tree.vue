@@ -1,6 +1,6 @@
 <template>
 	<div class="select-multiple-checkbox-tree">
-		<div v-if="choices.length > 10" class="search">
+		<div v-if="showSearch" class="search">
 			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
 				<template #prepend>
 					<v-icon name="search" />
@@ -18,7 +18,7 @@
 			:disabled="disabled"
 			:choices="choices"
 			:value-combining="valueCombining"
-			:show-selection-only="showSelectionOnly"
+			:show-selection-only="searchDebounced ? false : showSelectionOnly"
 			@update:model-value="$emit('input', $event)"
 		/>
 
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { debounce } from 'lodash';
-import { defineComponent, PropType, ref, watch } from 'vue';
+import { defineComponent, nextTick, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -44,6 +44,12 @@ type Choice = {
 	value: string | number;
 	children?: Choice[];
 };
+
+function deepCount(choices: Choice[]): number {
+	return choices.reduce((count, choice) => {
+		return count + (choice.children ? deepCount(choice.children) : 0) + 1;
+	}, 0);
+}
 
 export default defineComponent({
 	props: {
@@ -65,11 +71,19 @@ export default defineComponent({
 		},
 	},
 	emits: ['input'],
-	setup() {
+	setup(props) {
 		const { t } = useI18n();
 		const search = ref('');
 
+		const total = deepCount(props.choices);
+
+		const showSearch = ref(total > 10);
 		const showSelectionOnly = ref(false);
+		nextTick(() => {
+			if (showSearch.value && (props.value?.length ?? false)) {
+				showSelectionOnly.value = true;
+			}
+		});
 
 		const setSearchDebounced = debounce((val: string) => {
 			searchDebounced.value = val;
@@ -79,7 +93,7 @@ export default defineComponent({
 
 		const searchDebounced = ref('');
 
-		return { search, t, searchDebounced, showSelectionOnly };
+		return { search, t, showSearch, searchDebounced, showSelectionOnly };
 	},
 });
 </script>
