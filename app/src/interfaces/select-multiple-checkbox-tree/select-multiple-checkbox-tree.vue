@@ -1,7 +1,7 @@
 <template>
 	<div class="select-multiple-checkbox-tree">
 		<div v-if="showSearch" class="search">
-      <v-input v-model="search" class="input" type="text" :placeholder="t('search')">
+			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
 				<template #prepend>
 					<v-icon name="search" />
 				</template>
