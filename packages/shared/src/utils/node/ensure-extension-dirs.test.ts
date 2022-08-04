@@ -1,6 +1,8 @@
-import { ensureExtensionDirs } from '../../../src/utils/node/ensure-extension-dirs';
-import { EXTENSION_TYPES } from '../../../src/constants/extensions';
-import { dirSync, DirResult } from 'tmp';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+
+import { DirResult, dirSync } from 'tmp';
+import { EXTENSION_TYPES } from '../../constants/extensions';
+import { ensureExtensionDirs } from './ensure-extension-dirs';
 
 describe('ensureExtensionDirs', () => {
 	let rootDir: DirResult;
