@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { debounce } from 'lodash';
-import { defineComponent, nextTick, PropType, ref, watch } from 'vue';
+import { defineComponent, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -74,15 +74,17 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 		const search = ref('');
-
-		const total = deepCount(props.choices);
-
-		const showSearch = ref(total > 10);
+		const showSearch = ref(false);
 		const showSelectionOnly = ref(false);
-		nextTick(() => {
-			if (showSearch.value && (props.value?.length ?? false)) {
-				showSelectionOnly.value = true;
-			}
+
+		onMounted(() => {
+			setTimeout(() => {
+				const total = deepCount(props.choices);
+				showSearch.value = total > 10;
+				if (showSearch.value && (props.value?.length ?? false)) {
+					showSelectionOnly.value = true;
+				}
+			}, 100);
 		});
 
 		const setSearchDebounced = debounce((val: string) => {
