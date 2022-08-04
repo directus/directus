@@ -48,6 +48,8 @@ group: Группа
 export_items: Экспорт элементов
 and: и
 or: или
+init: Инициализация
+dataset_too_large_currently_showing_n_items: Набор данных слишком большой. Показано первые {n} элементов.
 fill_width: В ширину
 field_name_translations: Переводы названия поля
 enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
