@@ -1,5 +1,6 @@
-import { listFolders } from '../../../src/utils/node/list-folders';
-import { dirSync, DirResult } from 'tmp';
+import { DirResult, dirSync } from 'tmp';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { listFolders } from './list-folders';
 
 describe('', () => {
 	let rootDir: DirResult;
