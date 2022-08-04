@@ -621,7 +621,8 @@ const selectAllowed = computed(() => {
 
 	.v-pagination {
 		margin-top: var(--v-sheet-padding);
-		::v-deep(.v-button) {
+
+		:deep(.v-button) {
 			display: inline-flex;
 		}
 	}
@@ -648,11 +649,9 @@ const selectAllowed = computed(() => {
 			width: 100%;
 			order: -1;
 
-			&::v-deep {
-				.search-input,
-				.search-badge {
-					width: 100% !important;
-				}
+			:deep(.search-input),
+			:deep(.search-badge) {
+				width: 100% !important;
 			}
 		}
 	}
