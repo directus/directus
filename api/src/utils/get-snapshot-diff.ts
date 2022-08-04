@@ -1,4 +1,4 @@
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { diff } from 'deep-diff';
 import { omit, orderBy } from 'lodash';
 import { Collection, Snapshot, SnapshotDiff } from '../types';
@@ -80,7 +80,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						collection: currentRelation.collection,
 						field: currentRelation.field,
 						related_collection: currentRelation.related_collection,
-						diff: diff(currentRelation, afterRelation),
+						diff: diff(sanitizeRelation(currentRelation), sanitizeRelation(afterRelation)),
 					};
 				}),
 				...after.relations
@@ -96,7 +96,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						collection: afterRelation.collection,
 						field: afterRelation.field,
 						related_collection: afterRelation.related_collection,
-						diff: diff(undefined, afterRelation),
+						diff: diff(undefined, sanitizeRelation(afterRelation)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['relations'],
 			['collection']
@@ -176,4 +176,21 @@ function sanitizeField(field: Field | undefined, sanitizeAllSchema = false) {
 		  ];
 
 	return field ? omit(field, omittedPaths) : field;
+}
+
+/**
+ * Omit certain database vendor specific relation properties that should not be compared when performing diff
+ *
+ * @param relation relation to sanitize
+ * @returns sanitized relation
+ *
+ * @see {@link https://github.com/knex/knex-schema-inspector/blob/master/lib/types/foreign-key.ts}
+ */
+function sanitizeRelation(relation: Relation | undefined) {
+	const omittedPaths = [
+		// Postgres + MSSSQL
+		'schema.foreign_key_schema',
+	];
+
+	return relation ? omit(relation, omittedPaths) : relation;
 }
