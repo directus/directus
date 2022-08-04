@@ -61,13 +61,19 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	return await getCacheValue(systemCache, key);
 }
 
-export async function setCacheValue(cache: Keyv, key: string, value: any, ttl?: number) {
+export async function setCacheValue(
+	cache: Keyv,
+	key: string,
+	value: Record<string, any> | Record<string, any>[],
+	ttl?: number
+) {
 	const compressed = await compress(value);
 	await cache.set(key, compressed, ttl);
 }
 
 export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	const value = await cache.get(key);
+	if (!value) return undefined;
 	const decompressed = await decompress(value);
 	return decompressed;
 }

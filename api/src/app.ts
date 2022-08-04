@@ -61,6 +61,7 @@ import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { merge } from 'lodash';
+import { decompress } from '@directus/shared/utils';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);

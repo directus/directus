@@ -34,7 +34,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 		try {
 			await setCacheValue(cache, key, res.locals.payload, ms(env.CACHE_TTL as string));
-			await setCacheValue(cache, `${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));
+			await setCacheValue(cache, `${key}__expires_at`, { exp: Date.now() + ms(env.CACHE_TTL as string) });
 		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
 		}

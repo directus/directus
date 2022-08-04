@@ -34,7 +34,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 		let cacheExpiryDate;
 
 		try {
-			cacheExpiryDate = (await getCacheValue(cache, `${key}__expires_at`)) as number | null;
+			cacheExpiryDate = (await getCacheValue(cache, `${key}__expires_at`))?.exp;
 		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't read key ${`${key}__expires_at`}. ${err.message}`);
 			if (env.CACHE_STATUS_HEADER) res.setHeader(`${env.CACHE_STATUS_HEADER}`, 'MISS');
