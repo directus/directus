@@ -69,7 +69,6 @@ export async function setCacheValue(cache: Keyv, key: string, value: any, ttl?: 
 export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	const value = await cache.get(key);
 	const decompressed = await decompress(value);
-
 	return decompressed;
 }
 

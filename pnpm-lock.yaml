@@ -198,6 +198,7 @@ importers:
       rollup: ^2.75.6
       sanitize-html: ^2.7.0
       sharp: ^0.30.6
+      snappy: ^7.1.1
       sqlite3: ^5.0.8
       stream-json: ^1.7.4
       strip-bom-stream: ^4.0.0
@@ -292,6 +293,7 @@ importers:
       rollup: 2.77.0
       sanitize-html: 2.7.0
       sharp: 0.30.7
+      snappy: 7.1.1
       stream-json: 1.7.4
       strip-bom-stream: 4.0.0
       supertest: 6.2.4
@@ -3224,6 +3226,136 @@ packages:
       { integrity: sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q== }
     engines: { node: '>=6.0.0' }
     dev: true
+
+  /@napi-rs/snappy-android-arm-eabi/7.1.1:
+    resolution:
+      { integrity: sha512-NKd/ztuVEgQaAaNVQ5zZaCB9VV+7+uBXBHqhaE5iSapQhLc41szTlT0s68FCee75OoT3vhqdA6Jp5TrzZ2WOaw== }
+    engines: { node: '>= 10' }
+    cpu: [arm]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-android-arm64/7.1.1:
+    resolution:
+      { integrity: sha512-DktruMAO0K0toTnxNHg2GWNIAPJqdvIchCsdsRaKyuEnG101qBg0mYiRCAhxHgbT6RJlOGbUPKkbA9KKRhEJUg== }
+    engines: { node: '>= 10' }
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-darwin-arm64/7.1.1:
+    resolution:
+      { integrity: sha512-3LZyoAw3Qa5F7sCCTkSkhmGlydwUKU6L3Jl46eKHO2Ctm8Gcjxww6T7MfwlwGZ6JqAM6d1d++WLzUZPCGXVmag== }
+    engines: { node: '>= 10' }
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-darwin-x64/7.1.1:
+    resolution:
+      { integrity: sha512-X1D2F67bQkPwr5iSR29/RnOrLwAkB55YO6t41toABzla3mflLDpzZcakz6FokIukykf7ey31/t73v/4pbgaBkg== }
+    engines: { node: '>= 10' }
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-freebsd-x64/7.1.1:
+    resolution:
+      { integrity: sha512-vSeuf+An8jFVHPAn5IbWE9hTGU9PFAaZLj/X7rKTQQtZstnDsHgWe6u4g7FHLuOdwQ8TvhcxAEpNlYIXIk4AJg== }
+    engines: { node: '>= 10' }
+    cpu: [x64]
+    os: [freebsd]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-linux-arm-gnueabihf/7.1.1:
+    resolution:
+      { integrity: sha512-/yyN6QsnOs3D1+jI3SfRX+gtnD86rbixdfmgxv9g40+FrDaDTLAu/3VuZIqH02qqq/xiWbDnkO+42RGxXDzTCw== }
+    engines: { node: '>= 10' }
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-linux-arm64-gnu/7.1.1:
+    resolution:
+      { integrity: sha512-StEeUCSwUoajgrBtiCQPTkHu+0Q4QlYndghGZNdbN1zJ1ny70YzPpevaFBUyjI/eJ+FN9uICKtwTPtQNSILS5g== }
+    engines: { node: '>= 10' }
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-linux-arm64-musl/7.1.1:
+    resolution:
+      { integrity: sha512-jWEBRzj+lswZVYf0b5eY0fjMlBL9L9yqjmTuv2UIMjJNHPuR282LK/s3Fm9sYIXQtKkiCo5JyhmIcoghZ3v0Eg== }
+    engines: { node: '>= 10' }
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-linux-x64-gnu/7.1.1:
+    resolution:
+      { integrity: sha512-41DPoAUFAU9VNrj/96qKfStH2Xq88ZYIsSz8BlITDm2ScoeDGOGbmaWguCXU7I+bC2uKWTmUVMXKqk6tVY6LEg== }
+    engines: { node: '>= 10' }
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-linux-x64-musl/7.1.1:
+    resolution:
+      { integrity: sha512-xR4hzFQqVq6J8Zf6XyUVtFJBaRgDyAQYUoBsCr92tZ7gI/0RlWCV6Q6JMO/wP5CSsvyFJIAtSUXXqlzIpw0GPA== }
+    engines: { node: '>= 10' }
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-win32-arm64-msvc/7.1.1:
+    resolution:
+      { integrity: sha512-2mHPadctsaYtrfSV5Na8ooTdI5rflPxP1pceY4us6vbjeWrfgB+KQCuEFOHsGXqFNfsi6L9nWH8nB9swnxnSyw== }
+    engines: { node: '>= 10' }
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-win32-ia32-msvc/7.1.1:
+    resolution:
+      { integrity: sha512-FOMgs9W71hdgjyl3T9F7b/WEIuoryfgBqsyhtHjAaa/98R0BUHl0bOoHg8ka0b5GgnhLBHkX2Yd6VD+Si9Q2ww== }
+    engines: { node: '>= 10' }
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@napi-rs/snappy-win32-x64-msvc/7.1.1:
+    resolution:
+      { integrity: sha512-Mu3yELySvzhBcNTVCq+hYxVh+lH3/KjoQ5HIEb3DDPoX0AGRTm3XZa+usq8pFWjl91Cgp9nWK+9lVSkCCIRaKA== }
+    engines: { node: '>= 10' }
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /@nodelib/fs.scandir/2.1.5:
     resolution:
@@ -13903,6 +14035,26 @@ packages:
     engines: { node: '>= 6.0.0', npm: '>= 3.0.0' }
     optional: true
 
+  /snappy/7.1.1:
+    resolution:
+      { integrity: sha512-mL7GGPJ+WdsaFT5aR/uEqCq8cPg2VbhyifDEP7AeqIVDsAC8LBGYbZP1Qzoa2Ym84OW7JEQXqIpwqFp1EQw5BA== }
+    engines: { node: '>= 10' }
+    optionalDependencies:
+      '@napi-rs/snappy-android-arm-eabi': 7.1.1
+      '@napi-rs/snappy-android-arm64': 7.1.1
+      '@napi-rs/snappy-darwin-arm64': 7.1.1
+      '@napi-rs/snappy-darwin-x64': 7.1.1
+      '@napi-rs/snappy-freebsd-x64': 7.1.1
+      '@napi-rs/snappy-linux-arm-gnueabihf': 7.1.1
+      '@napi-rs/snappy-linux-arm64-gnu': 7.1.1
+      '@napi-rs/snappy-linux-arm64-musl': 7.1.1
+      '@napi-rs/snappy-linux-x64-gnu': 7.1.1
+      '@napi-rs/snappy-linux-x64-musl': 7.1.1
+      '@napi-rs/snappy-win32-arm64-msvc': 7.1.1
+      '@napi-rs/snappy-win32-ia32-msvc': 7.1.1
+      '@napi-rs/snappy-win32-x64-msvc': 7.1.1
+    dev: false
+
   /socket.io-adapter/2.1.0:
     resolution:
       { integrity: sha512-+vDov/aTsLjViYTwS9fPy5pEtTkrbEKsw2M+oVSoFGw6OD1IpvlV1VPhUzNbofCQ8oyMbdYJqDtGdmHQK6TdPg== }
@@ -14997,7 +15149,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.2
+      jest: 28.1.2_dyhfsldgbafx4up6nvciefunqu
       jest-util: 28.1.3
       json5: 2.2.1
       lodash.memoize: 4.1.2
