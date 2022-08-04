@@ -1,16 +1,17 @@
-import {
-	defineInterface,
-	defineDisplay,
-	defineModule,
-	defineLayout,
-	defineHook,
-	defineEndpoint,
-	defineOperationApp,
-	defineOperationApi,
-	definePanel,
-} from '../../src/utils/define-extension';
-import { Type } from '../../src/types/fields';
+import { describe, expect, it } from 'vitest';
 import { defineComponent } from 'vue';
+import { Type } from '../types/fields';
+import {
+	defineDisplay,
+	defineEndpoint,
+	defineHook,
+	defineInterface,
+	defineLayout,
+	defineModule,
+	defineOperationApi,
+	defineOperationApp,
+	definePanel,
+} from './define-extension';
 
 const mockComponent = defineComponent({});
 const mockHandler = () => {

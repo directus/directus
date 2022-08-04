@@ -1,5 +1,6 @@
-import { validatePayload } from '../../src/utils/validate-payload';
+import { describe, expect, it } from 'vitest';
 import { Filter } from '../../src/types/filter';
+import { validatePayload } from './validate-payload';
 
 describe('validatePayload', () => {
 	it('returns an empty array when there are no errors', () => {

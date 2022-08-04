@@ -1,4 +1,5 @@
-import { isIn, isTypeIn } from '../../src/utils/array-helpers';
+import { describe, expect, it } from 'vitest';
+import { isIn, isTypeIn } from './array-helpers';
 
 describe('type helpers for arrays', () => {
 	const array = ['foo', 'bar'] as const;
