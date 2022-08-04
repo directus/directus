@@ -348,7 +348,6 @@ export default defineComponent({
 			if (styleFormats) {
 				toolbarString += ' styleselect';
 			}
-			toolbarString += ' ltr rtl';
 
 			return {
 				skin: false,
