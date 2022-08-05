@@ -393,14 +393,14 @@ export function applyFilter(
 
 						if (!columnPath) continue;
 
-            validateFilterOperator(
-              schema.collections[targetCollection].fields[filterPath[filterPath.length - 1]].type,
-              filterOperator
-            );
+						validateFilterOperator(
+							schema.collections[targetCollection].fields[filterPath[filterPath.length - 1]].type,
+							filterOperator
+						);
 
 						applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 					} else {
-            validateFilterOperator(schema.collections[collection].fields[filterPath[0]].type, filterOperator);
+						validateFilterOperator(schema.collections[collection].fields[filterPath[0]].type, filterOperator);
 
 						applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 					}
