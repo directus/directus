@@ -29,11 +29,13 @@ draft: Skica
 archived: Arhivirano
 modules: Moduli
 module_bar: Bočni izbornik
+logs: Logovi
 reset_width: Resetiraj širinu
 tile_size: Veličina pločice
 edit_field: Uredi polje
 conditions: Uvjeti
 location: Lokacija
+condition_rules: Uvjetna pravila
 input: Unos
 maps: Karte
 switch_user: Promjena korisnika
@@ -47,6 +49,11 @@ group: Grupa
 export_items: Izvoz stavki
 and: I
 or: Ili
+init: Init
+dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno prikazuje prvih {n} stavki.
+modifier: Modifikator
+custom: Prilagođeno
+hook: Kuka
 fill_width: Širina ispune
 field_name_translations: Prijevodi naziva polja
 enter_password_to_enable_tfa: Unesite svoju lozinku za aktivaciju dvofaktorske autentifikacije
@@ -70,9 +77,12 @@ create_preset: Izrada unaprijed postavljene konfiguracije
 create_panel: Kreiraj ploču
 create_role: Stvori novu ulogu
 create_user: Dodaj korisnika
+message: Poruka
 delete_panel: Ukloni ploču
 create_webhook: Kreiraj webhook
 create_translation_string: Dodaj prijevodni niz
+no_translation_string: Nema prijevodnih nizova
+no_translation_string_copy: Još nema prijevodnih nizova.
 translation_string_key_placeholder: Ključ niza prijevoda...
 translation_string_translations_placeholder: Dodaj novi prijevod
 edit_translation_string: Uredi prijevodni niz
@@ -301,6 +311,7 @@ primary_key: Primarni ključ
 foreign_key: Strani ključ
 finish_setup: Završi postavljanje
 dismiss: Odbaci
+toggle_raw_editor: Uključi/isključi uređivač neobrađenog sadržaja
 raw_value: Neobrađena vrijednost
 copy_raw_value: Kopiraj neobrađenu vrijednost
 copy_raw_value_success: Kopirano
@@ -329,6 +340,7 @@ revision_delta_created_externally: Kreirano izvana
 revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
 revision_delta_deleted: Obrisano
 revision_delta_reverted: Vraćeno
+revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrijednost skrivena iz sigurnosnih razloga.
 revision_delta_other: Revizija
 revision_delta_by: '{date} od strane {user}'
 presentation_text_values_cannot_be_reimported: "Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti."
@@ -457,6 +469,7 @@ created_on: Kreirano
 creating_collection_info: Imenujte zbirku i postavite njeno jedinstveno polje "ključa"...
 creating_collection_system: Omogućite i preimenujte bilo koje od ovih neobaveznih polja.
 auto_increment_integer: Automatski inkrementirani cijeli broj
+auto_increment_big_integer: Automatski inkrementirani cijeli broj
 generated_uuid: Generiraj UUID
 manual_string: Ručno uneseni niz
 save_and_create_new: Spremi i kreiraj novo
@@ -477,7 +490,9 @@ disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
 request_feature: Zatraži značajku
+request_body: Tijelo zahtjeva
 interface_not_found: 'Sučelje "{interface}" nije pronađeno.'
+operation_not_found: 'Operacija "{operation}" nije pronađena.'
 reset_interface: Resetiraj sučelje
 display_not_found: 'Prikaz "{display}" nije pronađen.'
 reset_display: Resetiraj prikaz
@@ -580,6 +595,7 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   INVALID_FOREIGN_KEY: Neispravan strani ključ
   UNKNOWN: Neočekivana greška
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL iznimka provjere valjanosti
 security: Sigurnost
 value_hashed: Sigurno kriptirana vrijednost
 bookmark_name: Naziv oznake...
@@ -597,9 +613,11 @@ unexpected_error_copy: Došlo je do neočekivane greške, molimo pokušajte pono
 copy_details: Kopiraj pojedinosti
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
+password_reset_sent: Ako imate korisnički račun, poslali smo vam sigurnu vezu za ponovno postavljanje lozinke
 password_reset_successful: Lozinka je uspješno resetirana
 back: Povratak
 filter: Filter
+edit_image: Uredi sliku
 editing_image: Uređivanje slike
 square: Kvadrat
 free: Slobodni omjer stranica
@@ -620,6 +638,9 @@ start_end_of_count_items: '{start}-{end} od {count} stavki'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
 one_item: '1 stavka'
 one_filtered_item: '1 filtrirana stavka'
+delete_collection_are_you_sure: >-
+  Jeste li sigurni da želite izbrisati zbirku "{collection}"? Ovo će izbrisati zbirku i sve stavke u njoj. Ova akcija je trajna.
+delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati mapu "{folder}"? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
@@ -1774,8 +1795,11 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  log:
+    message: Poruka
   notification:
     recipient: Korisnik
+    message: Poruka
   request:
     url: URL
     method: Metoda
