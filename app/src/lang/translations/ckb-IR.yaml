@@ -1,1 +1,142 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: ناسەرەوە
+avatar: وێنۆچکە
+application: ئەپڵیکەیشن
+default_provider: بنەڕەت
+method: ڕێگە
+published: بڵاوکراوە
+draft: ڕەشنوس
+archived: ئەرشیفکراو
+modules: یەکەکان
+module_bar: شریتی یەکەکان
+logs: تۆمارەکان
+reset_width: ڕێکخستنەوەی پانی
+tile_size: قەبارەی خشت
+edit_field: دەستکاری خانە
+conditions: مەرجەکان
+location: شوێن
+input: تێچون
+maps: نەخشەکان
+switch_user: گۆڕینی بەکارهێنەر
+item_creation: دروستکردنی مادە
+item_revision: گەڕاندنەوەی مادە
+enter_a_name: ناوێک تۆماربکە...
+duplicate_field: لەبەرگرتنەوەی خانە
+half_width: نیوەی پانی
+full_width: پانی تەواو
+group: دەستە
+export_items: هەناردەکردنی مادەکان
+and: و
+or: یان
+init: سەرەتا
+dataset_too_large_currently_showing_n_items: داتاسێت زۆر گەورەیە. یەکەم {n} مادە نیشاندەدەین لە ئێستادا.
+modifier: گۆڕەر
+custom: تایبەتمەند
+hook: قولاپ
+fill_width: پڕکردنی پانی
+field_name_translations: وەرگێڕانەکانی ناوی خانە
+enter_password_to_enable_tfa: تێپەڕەوشەت بنوسە بۆ کاراکردنی سەلمێنەری دوو-هۆکار
+add_field: زیادکردنی خانە
+role_name: ناوی پلە
+branch: لق
+leaf: گەڵا
+indeterminate: دیاری نەکراو
+edit_collection: دەستکاری کۆمەڵە
+exclusive: تایبەت
+children: وەچەکان
+db_only_click_to_configure: 'تەنها بنکەدراو: کرتە بکە بۆ سازاندن'
+show_active_items: نیشاندانی مادە چالاکەکان
+show_archived_items: نیشاندانی مادە ئەرشیفکراوەکان
+show_all_items: نیشاندانی هەموو مادەکان
+os_type: جۆری سیستەم
+os_version: وەشانی سیستەم
+os_uptime: چالاکی سیستەم
+os_totalmem: بیرگەی سیستەم
+archive: ئەرشیڤ
+archive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف بکەیت؟
+archive_confirm_count: >-
+  هیچ مادەیەک دیاری نەکراوە | ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیڤ بکەیت؟ | ئایا دڵنیای دەتەوێت ئەم {count} مادەیە ئەرشیڤ بکەیت؟
+reset_system_permissions_to: 'رێکخستنەوەی ڕێپێدانەکانی سیستەم بۆ:'
+reset_system_permissions_copy: ئەم چالاکیە هەموو دەسەڵاتە تایبەتیەکان دەسڕێتەوە کە لەوانەیە لەسەر کۆمەڵەکانی سیستەم جێبەجێتکردون. ئایا دڵنیای؟
+the_following_are_minimum_permissions: ئەمانە کەمترین دەسەڵاتێکن کە پێویستن لەکاتێکدا کە "دەستگەیشتن بە پێگە" کاراکرابێت. دەتوانیت دەسەڵاتەکان زیاتر بکەیت لەمە، بەڵام کەمتر نا.
+app_access_minimum: کەمترینی دەستگەیشتن بە پێگە
+recommended_defaults: بنەڕەتیە پێشنیارکراوەکان
+unarchive: ئەرشیفنەکردن
+unarchive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف نەکەیت؟
+nested_files_folders_will_be_moved: پەڕگە و دۆسیە بەناویەکداچوەکان یەک ئاست دەبرێنە سەرەوە.
+validation_errors_notice: 'ئەم خانانە نرخی نادروستیان هەیە:'
+validationError:
+  eq: نرخ پێویستە {valid}
+  neq: نرخ نابێت {invalid}
+  in: نرخ پێویستە یەکێک بێت لە {valid}
+  nin: نرخ نابێت یەکێک بێت لە {invalid}
+  contains: نرخ پێویستە {substring} لەخۆ بگرێت
+  ncontains: نرخ نابێت {substring} لەخۆ بگرێت
+  gt: نرخ پێویستە گەورەتر بێت لە {valid}
+  gte: نرخ پێویستە گەورەتر یان یەکسان بێت لەگەڵ {valid}
+  lt: نرخ پێویستە کەمتربێت لە {valid}
+  lte: نرخ پێویستە کەمتر یان یەکسان بێت لەگەڵ {valid}
+  empty: نرخ پێویستە بەتاڵ بێت
+  nempty: نرخ نابێت بەتاڵ بێت
+  null: نرخ پێویستە پوچ بێت
+  nnull: نرخ نابێت پوچ بێت
+  required: نرخ داواکراوە
+  unique: نرخ پێویستە بێ هاوتا بێت
+  regex: نرخ شێویەکی دروستی نییە
+all_access: دەسەڵاتی هەمووی
+no_access: بێ دەسەڵات
+use_custom: بەکارهێنانی تایبەت
+nullable: پوچ بوون
+allow_null_value: ڕێگەدان بە نرخی پوچ
+allow_multiple: ڕێگەدان بە چەندانە
+allow_multiple_to_be_open: ڕێگەدان بە کردنەوەی چەندانە
+enter_value_to_replace_nulls: تکایە نرخێکی نوێ بنوسە بۆ جێگرتنەوەی پوچەکانی ئێستا لەم خانەیەدا.
+field_standard: ستاندەر
+field_presentation: پێشکەشکردن و جێگرەناو
+field_file: تاک پەڕگە
+field_files: چەند پەڕگە
+field_m2o: پەیوەندی هەموو بۆ یەک M2O
+field_m2a: پەیوەندی هەموو بۆ هەرچی M2A
+field_o2m: پەیوەندی یەک بۆ هەموو O2M
+field_m2m: پەیوەندی هەموو بۆ هەموو M2M
+field_translations: وەرگێڕانەکان
+field_group: دەستەی خانە
+item_permissions: دەسەڵاتەکانی مادە
+field_permissions: دەسەڵاتەکانی خانە
+field_validation: پشتڕاستکردنەوەی خانە
+field_presets: پێشسێتەکانی خانە
+permissions_for_role: 'مادەکانی پلەی {role} دەتوانن {action}.'
+fields_for_role: 'خانەکانی پلەی {role} دەتوانن {action}.'
+errors:
+  NOT_NULL_VIOLATION: نرخ نابێت پوچ بێت
+value_unique: نرخ پێویستە بێ هاوتا بێت
+fields:
+  directus_settings:
+    module_bar: شریتی یەکەکان
+  directus_fields:
+    translation: وەرگێڕانەکانی ناوی خانە
+  directus_roles:
+    name: ناوی پلە
+field_options:
+  directus_collections:
+    archive_divider: ئەرشیڤ
