@@ -15,7 +15,11 @@ export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<F
 			return systemFake === false;
 		});
 
-		formFields = orderBy(formFields, [(field) => !!field.meta?.system, 'meta.sort', 'meta.id'], ['desc', 'asc', 'asc']);
+		formFields = orderBy(
+			formFields,
+			[(field) => !!field.meta?.system, 'meta.group', 'meta.sort', 'meta.id'],
+			['desc', 'desc', 'asc', 'asc']
+		);
 
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;
