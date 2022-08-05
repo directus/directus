@@ -681,6 +681,7 @@ operators:
   nnull: Nije null
   contains: Sadrži
   ncontains: Ne sadrži
+  icontains: Sadrži (neosjetljivo)
   starts_with: Počinje sa
   nstarts_with: Ne počinje s
   ends_with: Završava s
@@ -760,10 +761,38 @@ toggle: Uključi/isključi
 icon_on: Ikona uključena
 icon_off: Ikona isključena
 label: Oznaka
+flows: Tokovi
+flow: Tok
+select_a_flow: Odaberite tok
+run_flow_on_current: Pokreni tok na trenutnoj stavci
+run_flow_on_selected: Nema odabranih stavki | Pokreni tok na 1 odabranoj stavci | Pokreni tok na {n} odabranih stavki
+run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
+trigger_options: Opcije okidača
+view_trigger: Prikaži okidač
+create_trigger: Kreiraj okidač
+trigger_setup: Postavljanje okidača
+change_trigger: Promjena okidača
+flow_delete_confirm: Jeste li sigurni da želite izbrisati tok "{flow}"? Ova se radnja ne može poništiti.
+set_flow_active: Aktiviraj tok
+set_flow_inactive: Deaktiviraj tok
+edit_flow: Uredi tok
+delete_flow: Obriši tok
+no_other_flows_copy: Nemate još ni jedan tok.
+no_flows: Nema tokova
+no_flows_copy: Nemate još ni jedan tok.
+create_flow: Kreiraj tok
+creating_new_flow: Kreiranje novog toka
+updating_flow: Ažuriranje toka
+flow_setup: Podešavanje toka
 flow_name: Naziv
+flow_tracking: Praćenje aktivnosti i zapisa
+flow_tracking_all: Pratite aktivnost i zapisnike
 flow_tracking_activity: Prati samo aktivnost
 flow_tracking_null: Nemoj pratiti ništa
+start_flow: Pokreni tok
+stop_flow: Zaustavi tok
+create_operation: Kreiraj operaciju
 insights: Uvidi
 dashboard: Upravljačka ploča
 panel: Panel
@@ -882,6 +911,7 @@ settings_data_model: Model podataka
 settings_permissions: Uloge i dopuštenja
 settings_project: Postavke projekta
 settings_webhooks: Web-dojavnici
+settings_flows: Tokovi
 settings_presets: Zadane postavke i oznake
 settings_translation_strings: Prijevodni nizovi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
@@ -1625,6 +1655,9 @@ interfaces:
     start_closed: Započni zatvoren
   system-token:
     system-token: Token
+  system-raw-editor:
+    system-raw-editor: Uređivač sirovog sadržaja
+    description: Omogućuje unos neobrađenih ili "mustache" predložaka
 displays:
   translations:
     translations: Prijevodi
@@ -1663,6 +1696,16 @@ displays:
     relative: Relativno
     relative_label: 'Prikaži relativno vrijeme, npr.: prije 5 minuta'
     suffix: Sufiks
+    suffix_label: Prikaži relativni indikator
+    suffix_note: Koristi riječi poput 'u' i 'prije'
+    strict: Striktno
+    strict_label: Koristi striktne jedinice
+    strict_note: Uklanja riječi poput 'skoro', 'preko', 'manje od'
+    round: Zaokruži
+    round_note: Odaberite funkciju zaokruživanja koju ćete koristiti
+    down: Dolje
+    nearest: Najbliže
+    up: Gore
   file:
     file: Datoteka
     description: Prikaži datoteke
@@ -1757,6 +1800,8 @@ layouts:
     calendar: Kalendar
     start_date_field: Polje datuma početka
     end_date_field: Polje datuma završetka
+    optional: Opcionalno
+    first_day: Prvi dan u tjednu
   map:
     map: Karta
     basemap: Osnovna karta
@@ -1771,6 +1816,35 @@ layouts:
     find_location: Pronađi lokaciju...
     default_template: Korištenje zadane zbirke...
     no_compatible_fields: Nema kompatibilnih polja
+  kanban:
+    name: Kanban,
+    group_field: Grupiraj po,
+    group_field_placeholder: Polje za grupiranje prema...,
+    group_title: Naslov Grupe,
+    group_title_placeholder: Polje za naslove grupa...,
+    title: Naslov kartice,
+    title_placeholder: Neobavezno polje naslova...,
+    text: Tekst kartice,
+    text_placeholder: Neobavezno tekstno polje...,
+    date: Datum kartice,
+    date_placeholder: Neobavezno polje datuma...,
+    tags: Tagovi kartice,
+    tags_placeholder: Neobavezno polje oznaka...,
+    user: Korisnik kartice,
+    user_placeholder: Neobavezno polje korisnika...,
+    image: Slika kartice,
+    image_placeholder: Neobavezno polje slike...,
+    image_fit: Prilagodba slike kartice,
+    crop: Obreži,
+    advanced: Napredno,
+    edit_group: Uredi grupu,
+    delete_group: Obriši grupu,
+    add_group: Dodaj grupu,
+    add_group_placeholder: Unesite novi naslov grupe...,
+    show_ungrouped: Prikaži negrupirano,
+    show: Prikaži,
+    no_group: Nema grupe,
+    not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 panels:
   metric:
     name: Metrički
@@ -1791,6 +1865,26 @@ panels:
     description: Filtrirajte i navedite polja iz zbirke
   barchart:
     name: Stupčasti grafikon
+    description: Trakasti ili stupčasti grafikoni za usporedbu grupa vrijednosti
+    select_field: Morate odabrati polje.
+    select_collection: Morate odabrati kolekciju.
+    select_x_axis: Morate odabrati X os.
+    function: Funkcija
+    horizontal: Horizontalno
+    x_axis_grouping: Grupna agregacija osi X
+    x_axis: X os
+  linechart:
+    select_field: Morate odabrati polje.
+    select_collection: Morate odabrati kolekciju.
+    select_x_axis: Morate odabrati X os.
+    function: Funkcija
+    x_axis: X os
+  meter:
+    select_field: Morate odabrati polje.
+    select_collection: Morate odabrati kolekciju.
+    function: Funkcija
+  piechart:
+    function: 'Funkcija'
 triggers:
   webhook:
     method: Metoda
@@ -1806,4 +1900,6 @@ operations:
     data: Podaci
     header: Zaglavlje
   trigger:
+    flows: Tokovi
+    flow: Tok
     data: Podaci
