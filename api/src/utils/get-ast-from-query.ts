@@ -106,7 +106,7 @@ export default async function getASTFromQuery(
 
 		fields = await convertWildcards(parentCollection, fields);
 
-		if (!fields) return [];
+		if (!fields || !Array.isArray(fields)) return [];
 
 		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [];
 

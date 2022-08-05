@@ -8,7 +8,7 @@
 			:query="query"
 			:disabled="disabled"
 			:dense="dense"
-			clickable
+			:clickable="Boolean(clickable || to || !open)"
 			@click="onClick"
 		>
 			<v-list-item-icon

@@ -29,6 +29,7 @@ draft: Vázlat
 archived: Archiválva
 modules: Modulok
 module_bar: Modulsáv
+logs: Naplók
 reset_width: Széllesség visszaállítása
 tile_size: Csempeméret
 edit_field: Mező szerkesztése
@@ -47,6 +48,8 @@ group: Csoport
 export_items: Elemek exportálása
 and: És
 or: Vagy
+dataset_too_large_currently_showing_n_items: Túlméretes adathalmaz. Jelenleg az első {n} adat jelenik meg.
+custom: Egyedi
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
 enter_password_to_enable_tfa: Írja be jelszavát a kétfaktoros ellenőrzés bekapcsolásához
@@ -70,6 +73,7 @@ create_preset: Alapértelmezés létrehozása
 create_panel: Panel létrehozása
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
+message: Üzenet
 delete_panel: Panel törlése
 create_webhook: Webhook létrehozása
 create_translation_string: Fordítás létrehozása
@@ -338,10 +342,15 @@ delete_comment: Hozzászólás törlése
 functions:
   year: év
   month: hónap
+  week: Hét
+  minute: Perc
+  second: Másodperc
   count: Mennyiség
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'ÓÓ:pp:mm'
+date-fns_time_no_seconds_24hour: 'ÓÓ:pp'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM. d.
@@ -392,6 +401,7 @@ replace_from_library: Fájl cseréje Könyvtárból
 replace_from_url: Fájl cseréje URL-ből
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
+open_file_in_tab: Megnyitás új fülön
 collection_key: Gyűjtemény kulcsa
 name: Név
 primary_key_field: Elsődleges kulcs mező
@@ -435,6 +445,7 @@ user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasznál�
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
 no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
+no_notifications: Nincsenek értesítések
 activity_log: Tevékenységnapló
 all_items: Minden elem
 any: Bármely
@@ -533,6 +544,7 @@ no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás haszná
 password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
 filter: Szűrő
+edit_image: Kép szerkesztése
 editing_image: Kép szerkesztése
 square: Négyzet
 free: Szabadon választott
@@ -546,11 +558,15 @@ update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
 make_collection_visible: A Gyűjtemény legyen látható
 make_collection_hidden: A Gyűjtemény legyen rejtett
+make_folder_visible: Mappa láthatóvá tétele
+make_folder_hidden: Mappa elrejtése
 goto_collection_content: Tartalom megtekintése
 start_end_of_count_items: '{start}-{end} {count} elemből'
 start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
 one_filtered_item: '1 szűrt elem'
+delete_collection_are_you_sure: >-
+  Biztos, hogy törölni szeretné ezt a gyűjteményt"{collection}"? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
 hidden_collections: Rejtett gyűjtemények
@@ -645,6 +661,7 @@ no_results_copy: Módosítsd vagy töröld a keresési szűrőket a találatoké
 clear_filters: Szűrök törlése
 saves_automatically: Automatikus mentés
 role: Szerepkör
+edit_role: Szerepkör szerkesztése
 rule: Szabály
 user: Felhasználó
 no_presets: Presetek
@@ -1572,8 +1589,11 @@ triggers:
   webhook:
     method: Metódus
 operations:
+  log:
+    message: Üzenet
   notification:
     recipient: Felhasználó
+    message: Üzenet
   request:
     url: URL
     method: Metódus

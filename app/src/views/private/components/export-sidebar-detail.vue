@@ -282,6 +282,15 @@ const exportSettings = reactive({
 });
 
 watch(
+	fields,
+	() => {
+		if (props.layoutQuery?.fields) return;
+		exportSettings.fields = fields.value?.map((field) => field.field);
+	},
+	{ immediate: true }
+);
+
+watch(
 	() => props.layoutQuery,
 	() => {
 		exportSettings.limit = props.layoutQuery?.limit ?? 25;

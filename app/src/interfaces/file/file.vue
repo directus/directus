@@ -142,7 +142,6 @@ import { ref, computed, toRefs } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { addQueryToPath } from '@/utils/add-query-to-path';
@@ -198,7 +197,7 @@ const fileExtension = computed(() => {
 
 const assetURL = computed(() => {
 	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return getRootPath() + `assets/${id}`;
+	return '/assets/' + id;
 });
 
 const imageThumbnail = computed(() => {

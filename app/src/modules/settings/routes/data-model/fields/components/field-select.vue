@@ -151,7 +151,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { getInterface } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
-import { getLocalTypeForField } from '../../get-local-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Field } from '@directus/shared/types';

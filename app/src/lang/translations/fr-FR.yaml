@@ -309,6 +309,7 @@ primary_key: Clef primaire
 foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
 dismiss: Ignorer
+toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
 raw_value: Valeur brute
 copy_raw_value: Copier la valeur brute
 copy_raw_value_success: Copié
@@ -1951,7 +1952,6 @@ panels:
   meter:
     description: Compteur pour les valeurs de suivi
     name: Compteur
-    arc: Arc
     stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
