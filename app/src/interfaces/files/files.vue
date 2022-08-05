@@ -207,7 +207,7 @@ const templateWithDefaults = computed(() => {
 
 const fields = computed(() =>
 	adjustFieldsForDisplays(
-		getFieldsFromTemplate(templateWithDefaults.value),
+		[...getFieldsFromTemplate(templateWithDefaults.value), `${relationInfo.value?.relation.field}.filename_download`],
 		relationInfo.value?.junctionCollection.collection ?? ''
 	)
 );
@@ -215,7 +215,7 @@ const fields = computed(() =>
 const page = ref(1);
 
 const query = computed<RelationQueryMultiple>(() => ({
-	fields: [...fields.value, 'directus_files_id.filename_download'],
+	fields: fields.value,
 	limit: limit.value,
 	page: page.value,
 }));
