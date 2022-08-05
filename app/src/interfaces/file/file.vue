@@ -46,7 +46,7 @@
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item :download="file.filename_download" :href="assetURL">
+					<v-list-item clickable :href="addTokenToURL(getRootPath() + `assets/${file.id}?download`)">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -140,7 +140,8 @@
 import { useI18n } from 'vue-i18n';
 import { ref, computed, toRefs } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
