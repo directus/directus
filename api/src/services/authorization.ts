@@ -8,7 +8,7 @@ import {
 	Query,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { validatePayload, parseFilter, parsePreset } from '@directus/shared/utils';
+import { validatePayload, parseFilter, parsePreset, ParseFilterContext } from '@directus/shared/utils';
 import { parsePermissions } from '../utils/parse-permissions';
 import { getFilterContext } from '../utils/get-filter-context';
 import { Knex } from 'knex';
@@ -25,7 +25,7 @@ import {
 	PrimaryKey,
 } from '../types';
 import { stripFunction } from '../utils/strip-function';
-import { ItemsService } from './items';
+import { ItemsService, QueryOptions } from './items';
 import { PayloadService } from './payload';
 import { getRelationInfo } from '../utils/get-relation-info';
 import { GENERATE_SPECIAL } from '../constants';
@@ -458,12 +458,7 @@ export class AuthorizationService {
 		}
 	}
 
-	/**
-	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
-	 */
-	async validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
-		const payload = cloneDeep(data);
-
+	getActionPermissions(action: PermissionsAction, collection: string, data: Partial<Item>) {
 		let permission: Permission | undefined;
 
 		if (this.accountability?.admin === true) {
@@ -489,7 +484,7 @@ export class AuthorizationService {
 			const allowedFields = permission.fields || [];
 
 			if (allowedFields.includes('*') === false) {
-				const keysInData = Object.keys(payload);
+				const keysInData = Object.keys(data);
 				const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
 
 				if (invalidKeys.length > 0) {
@@ -502,9 +497,7 @@ export class AuthorizationService {
 			.map((field) => field.validation)
 			.filter((v) => v) as Filter[];
 
-		const hasFieldValidationRules = fieldValidationRules && fieldValidationRules.length > 0;
-
-		if (hasFieldValidationRules) {
+		if (fieldValidationRules?.length > 0) {
 			if (permission.validation && Object.keys(permission.validation).length > 0) {
 				permission.validation = { _and: [permission.validation, ...fieldValidationRules] };
 			} else {
@@ -512,21 +505,10 @@ export class AuthorizationService {
 			}
 		}
 
-		const hasValidationRules =
+		let hasValidationRules =
 			isNil(permission.validation) === false && Object.keys(permission.validation ?? {}).length > 0;
 
-		const preset = permission.presets ?? {};
-
-		const { requiredPermissionData, containDynamicData } = parsePermissions([permission]);
-
-		const filterContext =
-			containDynamicData && this.accountability
-				? await getFilterContext(this.schema, this.accountability, requiredPermissionData)
-				: {};
-
-		const payloadWithPresets = merge({}, parsePreset(preset, this.accountability, filterContext), payload);
-
-		const requiredColumns: SchemaOverview['collections'][string]['fields'][string][] = [];
+		permission.validation = hasValidationRules ? { _and: [permission.validation!] } : { _and: [] };
 
 		for (const field of Object.values(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
@@ -536,18 +518,6 @@ export class AuthorizationService {
 			const nullable = field.nullable || hasGenerateSpecial || field.generated;
 
 			if (!nullable) {
-				requiredColumns.push(field);
-			}
-		}
-
-		if (hasValidationRules === false && hasFieldValidationRules === false && requiredColumns.length === 0) {
-			return payloadWithPresets;
-		}
-
-		if (requiredColumns.length > 0) {
-			permission.validation = hasValidationRules ? { _and: [permission.validation!] } : { _and: [] };
-
-			for (const field of requiredColumns) {
 				if (action === 'create' && field.defaultValue === null) {
 					permission.validation._and.push({
 						[field.field]: {
@@ -561,44 +531,111 @@ export class AuthorizationService {
 						_nnull: true,
 					},
 				});
+
+				hasValidationRules = true;
 			}
 		}
 
-		const validationFilter: Filter = parseFilter(permission.validation, this.accountability, filterContext)!;
-		const validationErrors: FailedValidationException[] = [];
-		validationErrors.push(
-			...flatten(
-				validatePayload(validationFilter, payloadWithPresets).map((error) =>
-					error.details.map((details) => new FailedValidationException(details))
-				)
-			)
-		);
+		const { permissions, requiredPermissionData, containDynamicData } = parsePermissions([permission]);
 
-		if (validationErrors.length > 0) throw validationErrors;
-
-		return payloadWithPresets;
+		return { permission: permissions[0], requiredPermissionData, containDynamicData, hasValidationRules };
 	}
 
-	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
-		if (this.accountability?.admin === true) return;
+	/**
+	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
+	 */
+	async validatePayload(
+		action: PermissionsAction,
+		collection: string,
+		data: Partial<Item>,
+		pk?: PrimaryKey | PrimaryKey[]
+	): Promise<Array<Partial<Item>>> {
+		const payload = cloneDeep(data);
 
+		const { permission, requiredPermissionData, containDynamicData, hasValidationRules } = this.getActionPermissions(
+			action,
+			collection,
+			data
+		);
+
+		const filterContext: Partial<ParseFilterContext> =
+			containDynamicData && this.accountability
+				? await getFilterContext(this.schema, this.accountability, requiredPermissionData)
+				: {};
+
+		const payloadFields = Object.keys(payload);
+		const itemContextFields = requiredPermissionData.$CURRENT_ITEM.filter(
+			(field: string) => !payloadFields.includes(field)
+		);
+
+		const itemContexts: Array<Partial<Item>> = pk
+			? await this.getItemsContext(collection, pk, itemContextFields)
+			: [{}];
+
+		return itemContexts.map((itemContext) => {
+			itemContext = merge({}, itemContext, payload);
+			const context: ParseFilterContext = { $CURRENT_ITEM: itemContext, ...filterContext };
+
+			const payloadWithPresets = merge(
+				{},
+				parsePreset(permission.presets ?? {}, this.accountability, context),
+				payload
+			);
+
+			if (hasValidationRules === false) {
+				// No validation is required, so simply populate the payload with the presets
+				return payloadWithPresets;
+			}
+
+			const validationFilter: Filter = parseFilter(permission.validation, this.accountability, context)!;
+			const validationErrors: FailedValidationException[] = [];
+
+			validationErrors.push(
+				...flatten(
+					validatePayload(validationFilter, payloadWithPresets).map((error) =>
+						error.details.map((details) => new FailedValidationException(details))
+					)
+				)
+			);
+
+			if (validationErrors.length > 0) throw validationErrors;
+
+			return payloadWithPresets;
+		});
+	}
+
+	async getItemsContext(
+		collection: string,
+		pk: PrimaryKey | PrimaryKey[],
+		fields: string[] = ['*'],
+		opts?: QueryOptions
+	): Promise<Array<Item>> {
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
 		});
 
+		if (!Array.isArray(pk)) {
+			pk = [pk];
+		}
+
+		const primaryKeyField = this.schema.collections[collection].primary;
+
 		const query: Query = {
-			fields: ['*'],
+			fields: [primaryKeyField, ...fields],
+			limit: pk.length,
 		};
 
-		if (Array.isArray(pk)) {
-			const result = await itemsService.readMany(pk, { ...query, limit: pk.length }, { permissionsAction: action });
-			if (!result) throw new ForbiddenException();
-			if (result.length !== pk.length) throw new ForbiddenException();
-		} else {
-			const result = await itemsService.readOne(pk, query, { permissionsAction: action });
-			if (!result) throw new ForbiddenException();
-		}
+		const result = await itemsService.readMany(pk, query, opts);
+		if (result?.length !== pk.length) throw new ForbiddenException();
+
+		return result;
+	}
+
+	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
+		if (this.accountability?.admin === true) return;
+
+		this.getItemsContext(collection, pk, ['*'], { permissionsAction: action });
 	}
 }

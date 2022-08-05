@@ -114,7 +114,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
+				? (await authorizationService.validatePayload('create', this.collection, payloadAfterHooks))[0]
 				: payloadAfterHooks;
 
 			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
@@ -443,12 +443,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// Sort keys to ensure that the order is maintained
 		keys.sort();
 
-		if (this.accountability) {
-			await authorizationService.checkAccess('update', this.collection, keys);
-		}
-
 		const payloadWithPresets = this.accountability
-			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+			? (await authorizationService.validatePayload('update', this.collection, payloadAfterHooks, keys))[0]
 			: payloadAfterHooks;
 
 		await this.knex.transaction(async (trx) => {

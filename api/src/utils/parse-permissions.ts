@@ -5,6 +5,7 @@ export function parsePermissions(permissions: any[]) {
 	const requiredPermissionData = {
 		$CURRENT_USER: [] as string[],
 		$CURRENT_ROLE: [] as string[],
+		$CURRENT_ITEM: [] as string[],
 	};
 
 	let containDynamicData = false;
@@ -44,6 +45,11 @@ export function parsePermissions(permissions: any[]) {
 
 			if (typeof val === 'string' && val.startsWith('$CURRENT_ROLE.')) {
 				requiredPermissionData.$CURRENT_ROLE.push(val.replace('$CURRENT_ROLE.', ''));
+				containDynamicData = true;
+			}
+
+			if (typeof val === 'string' && val.startsWith('$CURRENT_ITEM.')) {
+				requiredPermissionData.$CURRENT_ITEM.push(val.replace('$CURRENT_ITEM.', ''));
 				containDynamicData = true;
 			}
 
