@@ -4,7 +4,9 @@
 			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 		</div>
 
-		<video v-else-if="type === 'video'" controls :src="authenticatedSrc" />
+		<div v-else-if="type === 'video'" class="video">
+			<video controls :src="authenticatedSrc" />
+		</div>
 
 		<audio v-else-if="type === 'audio'" controls :src="authenticatedSrc" />
 
@@ -66,24 +68,45 @@ const authenticatedSrc = computed(() => addTokenToURL(props.src));
 	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
 
 	img,
+	video {
+		width: auto;
+		height: auto;
+	}
+
+	audio {
+		width: 100%;
+	}
+
+	img,
 	video,
 	audio {
-		width: auto;
 		max-width: 100%;
-		height: auto;
 		max-height: v-bind(maxHeight);
 		object-fit: contain;
 		border-radius: var(--border-radius);
 	}
 
-	.image {
+	.image,
+	.video {
 		background-color: var(--background-normal);
 		border-radius: var(--border-radius);
+	}
 
+	.image {
 		img {
 			z-index: 1;
 			display: block;
 			margin: 0 auto;
+		}
+	}
+
+	.video {
+		display: flex;
+		justify-content: center;
+
+		video {
+			min-height: 80px;
+			min-width: 80px;
 		}
 	}
 

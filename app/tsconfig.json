@@ -12,7 +12,7 @@
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"baseUrl": ".",
-		"types": ["vite/client", "jest"],
+		"types": ["vite/client"],
 		"paths": {
 			"@/*": ["src/*"],
 			"preact/*": ["stub/empty.d.ts"],

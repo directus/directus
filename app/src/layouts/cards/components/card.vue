@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts">
-import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -113,7 +112,7 @@ export default defineComponent({
 				key = 'system-medium-contain';
 			}
 
-			const source = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+			const source = `/assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
 
 			return { source, fileType };
 		});
@@ -332,6 +331,10 @@ export default defineComponent({
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+
+	:deep(.render-template) {
+		height: 100%;
+	}
 }
 
 .subtitle {

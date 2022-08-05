@@ -1,3 +1,15 @@
+/**
+ * Turns a bytes number into a human readable filesize
+ *
+ * @param bytes - Number of bytes
+ * @param decimal - Whether you want power of ten (default) or power of two (f.e. MB vs MiB)
+ *
+ * @example
+ * ```js
+ * formatFilesize(12500);
+ * // => "12.5 kB"
+ * ```
+ */
 export function formatFilesize(bytes = 0, decimal = true): string {
 	const threshold = decimal ? 1000 : 1024;
 

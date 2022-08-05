@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted, useAttrs } from 'vue';
+import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 import { omit } from 'lodash';
 import api from '@/api';
 
@@ -30,41 +30,52 @@ const observer = new IntersectionObserver(async (entries) => {
 	inView.value = entries[0].isIntersecting;
 
 	if (entries[0].isIntersecting && !loaded && props.src) {
-		try {
-			const res = await api.get(props.src, {
-				responseType: 'arraybuffer',
-				params: {
-					download: true,
-				},
-			});
-
-			if (res.headers['content-type'].startsWith('image') === false) return;
-
-			const contentType = res.headers['content-type'];
-
-			const data = new Uint8Array(res.data);
-
-			// 5mb
-			if (data.length > 1048576 * 5) {
-				emit('error', new Error('Image too big to render'));
-				return;
-			}
-
-			let raw = '';
-
-			data.forEach((byte) => {
-				raw += String.fromCharCode(byte);
-			});
-
-			const base64 = btoa(raw);
-			srcData.value = `data:${contentType};base64,${base64}`;
-		} catch (err) {
-			emit('error', err);
-		} finally {
-			loaded = true;
-		}
+		loadImage();
 	}
 });
+
+watch(
+	() => props.src,
+	() => {
+		loadImage();
+	}
+);
+
+async function loadImage() {
+	try {
+		loaded = true;
+
+		const res = await api.get(props.src, {
+			responseType: 'arraybuffer',
+			params: {
+				download: true,
+			},
+		});
+
+		if (res.headers['content-type'].startsWith('image') === false) return;
+
+		const contentType = res.headers['content-type'];
+
+		const data = new Uint8Array(res.data);
+
+		// 5mb
+		if (data.length > 1048576 * 5) {
+			emit('error', new Error('Image too big to render'));
+			return;
+		}
+
+		let raw = '';
+
+		data.forEach((byte) => {
+			raw += String.fromCharCode(byte);
+		});
+
+		const base64 = btoa(raw);
+		srcData.value = `data:${contentType};base64,${base64}`;
+	} catch (err) {
+		emit('error', err);
+	}
+}
 
 onMounted(() => {
 	if (!imageElement.value) return;

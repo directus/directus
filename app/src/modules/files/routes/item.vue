@@ -191,7 +191,7 @@ import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { Field } from '@directus/shared/types';
-import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
@@ -214,7 +214,7 @@ const { primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 const replaceFileDialogActive = ref(false);
 
-const revisionsDrawerDetailRef = ref<ComponentPublicInstance | null>(null);
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const {
 	isNew,

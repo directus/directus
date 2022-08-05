@@ -182,7 +182,7 @@
 </template>
 
 <script lang="ts">
-import { ComponentPublicInstance, computed, defineComponent, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import api from '@/api';
@@ -196,7 +196,6 @@ import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -237,7 +236,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection('directus_users');
 
-		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
+		const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 		const {
 			isNew,
@@ -478,7 +477,7 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.id
-						? getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						? `/assets/${response.data.data.avatar.id}?key=system-medium-cover`
 						: null;
 
 					roleName.value = response.data.data?.role?.name;
