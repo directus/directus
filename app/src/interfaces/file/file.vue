@@ -46,7 +46,11 @@
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item clickable :href="addTokenToURL(getRootPath() + `assets/${file.id}?download`)">
+					<v-list-item
+						clickable
+						:download="file.filename_download"
+						:href="addTokenToURL(getRootPath() + `assets/${file.id}?download`)"
+					>
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
