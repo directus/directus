@@ -18,6 +18,7 @@ import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -366,14 +367,21 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
-					validateFilterOperator(
-						schema.collections[targetCollection].fields[filterPath[filterPath.length - 1]].type,
-						filterOperator
-					);
+					const fieldKey =
+						filterPath[filterPath.length - 1].includes('(') && filterPath[filterPath.length - 1].includes(')')
+							? filterPath[filterPath.length - 1].match(REGEX_BETWEEN_PARENS)![1]
+							: filterPath[filterPath.length - 1];
+
+					validateFilterOperator(schema.collections[targetCollection].fields[fieldKey].type, filterOperator);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					validateFilterOperator(schema.collections[collection].fields[filterPath[0]].type, filterOperator);
+					const fieldKey =
+						filterPath[0].includes('(') && filterPath[0].includes(')')
+							? filterPath[0].match(REGEX_BETWEEN_PARENS)![1]
+							: filterPath[0];
+
+					validateFilterOperator(schema.collections[collection].fields[fieldKey].type, filterOperator);
 
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
