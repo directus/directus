@@ -66,8 +66,15 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('download')" rounded icon secondary @click="downloadFile">
-				<v-icon name="save_alt" />
+			<v-button
+				v-tooltip.bottom="t('download')"
+				secondary
+				icon
+				rounded
+				:download="item?.filename_download"
+				:href="addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`)"
+			>
+				<v-icon name="download" />
 			</v-button>
 
 			<v-button
@@ -347,11 +354,6 @@ function discardAndLeave() {
 function discardAndStay() {
 	edits.value = {};
 	confirmLeave.value = false;
-}
-
-function downloadFile() {
-	const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
-	window.open(filePath, '_blank');
 }
 
 function useMovetoFolder() {

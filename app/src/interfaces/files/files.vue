@@ -51,7 +51,11 @@
 									<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
 									<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
 								</v-list-item>
-								<v-list-item clickable :href="getUrl(element, true)">
+								<v-list-item
+									clickable
+									:download="element.directus_files_id.filename_download"
+									:href="getUrl(element, true)"
+								>
 									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
 									<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 								</v-list-item>
@@ -90,7 +94,7 @@
 					secondary
 					rounded
 					icon
-					download
+					:download="downloadName"
 					:href="downloadUrl"
 				>
 					<v-icon name="download" />
@@ -211,7 +215,7 @@ const fields = computed(() =>
 const page = ref(1);
 
 const query = computed<RelationQueryMultiple>(() => ({
-	fields: fields.value,
+	fields: [...fields.value, 'directus_files_id.filename_download'],
 	limit: limit.value,
 	page: page.value,
 }));
@@ -311,6 +315,11 @@ function onUpload(files: Record<string, any>[]) {
 
 	create(...filesAsJunctionRows);
 }
+
+const downloadName = computed(() => {
+	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
+	return editsAtStart.value.directus_files_id.filename_download;
+});
 
 const downloadUrl = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;

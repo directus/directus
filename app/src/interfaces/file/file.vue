@@ -90,7 +90,19 @@
 			:edits="edits"
 			:disabled="disabled"
 			@input="update"
-		/>
+		>
+			<template #actions>
+				<v-button
+					secondary
+					rounded
+					icon
+					:download="file.filename_download"
+					:href="addTokenToURL(getRootPath() + `assets/${file.id}?download`)"
+				>
+					<v-icon name="download" />
+				</v-button>
+			</template>
+		</drawer-item>
 
 		<v-dialog
 			:model-value="activeDialog === 'upload'"
