@@ -132,7 +132,6 @@
 		"ldapjs": "^2.3.3",
 		"liquidjs": "^9.37.0",
 		"lodash": "^4.17.21",
-		"macos-release": "^2.4.1",
 		"marked": "^4.0.16",
 		"micromustache": "^8.0.3",
 		"mime-types": "^2.1.35",
