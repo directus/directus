@@ -123,15 +123,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationM2M, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item';
-import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { get, clamp } from 'lodash';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -258,6 +260,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	editsAtStart.value = item;
@@ -269,7 +272,7 @@ function editItem(item: DisplayItem) {
 		relatedPrimaryKey.value = null;
 	} else {
 		currentlyEditing.value = get(item, [junctionPkField], null);
-		relatedPrimaryKey.value = get(item, [junctionPkField, relationPkField], null);
+		relatedPrimaryKey.value = get(item, [junctionField, relationPkField], null);
 	}
 }
 
@@ -320,9 +323,11 @@ function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
 
 	const key = junctionRow[junctionField]?.id ?? junctionRow[junctionField] ?? null;
 	if (!key) return null;
+
 	if (addDownload) {
 		return addTokenToURL(getRootPath() + `assets/${key}?download`);
 	}
+
 	return addTokenToURL(getRootPath() + `assets/${key}`);
 }
 
@@ -428,5 +433,9 @@ const selectAllowed = computed(() => {
 	&:hover {
 		--v-icon-color: var(--danger);
 	}
+}
+
+.render-template {
+	height: 100%;
 }
 </style>

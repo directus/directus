@@ -62,7 +62,6 @@ import SettingsNavigation from '../../components/navigation.vue';
 
 import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
@@ -74,7 +73,7 @@ type RoleItem = Partial<Role> & {
 
 export default defineComponent({
 	name: 'RolesCollection',
-	components: { SettingsNavigation, ValueNull },
+	components: { SettingsNavigation },
 	props: {},
 	setup() {
 		const { t } = useI18n();

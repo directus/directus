@@ -98,7 +98,7 @@ import TableRow from './table-row.vue';
 import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import Draggable from 'vuedraggable';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 
 const HeaderDefaults: Header = {
 	text: '',

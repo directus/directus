@@ -120,7 +120,7 @@
 
 <script lang="ts" setup>
 import api from '@/api';
-import { useFlowsStore } from '@/stores';
+import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { TriggerType } from '@directus/shared/types';
 import { computed, reactive, ref, watch } from 'vue';

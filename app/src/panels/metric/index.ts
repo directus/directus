@@ -1,4 +1,4 @@
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { PanelQuery } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
 import { computed } from 'vue';
@@ -99,6 +99,11 @@ export default definePanel({
 								disabled: false,
 							},
 							{
+								text: 'Count (Distinct)',
+								value: 'countDistinct',
+								disabled: false,
+							},
+							{
 								text: 'First',
 								value: 'first',
 								disabled: false,
@@ -110,12 +115,6 @@ export default definePanel({
 							},
 							{
 								divider: true,
-							},
-
-							{
-								text: 'Count (Distinct)',
-								value: 'countDistinct',
-								disabled: !fieldIsNumber.value,
 							},
 							{
 								text: 'Average',

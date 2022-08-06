@@ -183,7 +183,7 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore } from '@/stores/settings';
 import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 import 'tinymce/tinymce';
@@ -368,6 +368,7 @@ export default defineComponent({
 				style_formats: styleFormats,
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
+				browser_spellcheck: true,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};

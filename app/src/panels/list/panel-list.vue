@@ -12,19 +12,14 @@
 </template>
 
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores';
-import { Filter } from '@directus/shared/types';
+import { useFieldsStore } from '@/stores/fields';
 import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		displayTemplate?: string;
-		sortField?: string;
-		sortDirection?: string;
 		collection: string;
-		limit?: number;
-		filter?: Filter;
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		data?: object;
 	}>(),
@@ -32,8 +27,6 @@ const props = withDefaults(
 		showHeader: false,
 		displayTemplate: '',
 		sortDirection: 'desc',
-		limit: 5,
-		filter: () => ({}),
 		data: () => ({}),
 	}
 );

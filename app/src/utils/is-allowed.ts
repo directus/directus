@@ -1,4 +1,5 @@
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { FieldFilter, Permission } from '@directus/shared/types';
 import { generateJoi } from '@directus/shared/utils';
 

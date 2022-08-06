@@ -80,11 +80,11 @@ export class ImportService {
 			return new Promise<void>((resolve, reject) => {
 				stream.pipe(extractJSON);
 
-				extractJSON.on('data', ({ value }) => {
+				extractJSON.on('data', ({ value }: Record<string, any>) => {
 					saveQueue.push(value);
 				});
 
-				extractJSON.on('error', (err) => {
+				extractJSON.on('error', (err: any) => {
 					destroyStream(stream);
 					destroyStream(extractJSON);
 
@@ -140,7 +140,7 @@ export class ImportService {
 
 						saveQueue.push(obj);
 					})
-					.on('error', (err) => {
+					.on('error', (err: any) => {
 						destroyStream(stream);
 						reject(new InvalidPayloadException(err.message));
 					})
