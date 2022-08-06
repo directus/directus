@@ -281,6 +281,17 @@ choose_a_type: جۆر هەڵبژێرە...
 determined_by_relationship: بەپێی پەیوەندی دیاری دەکرێت
 add_note: تێبینیەکی بەسود زیاد بکە بۆ بەکارهێنەرەکان...
 add_link: بەستەر دابنێ
+custom_link: بەستەری تایبەت
+default_value: بەهای بنەڕەتی
+standard_field: خانەی ستاندارد
+single_file: تاک پەڕگە
+multiple_files: چەند پەڕگە
+m2o_relationship: پەیوەندی چەند بۆ یەک
+o2m_relationship: پەیوەندی یەک بۆ چەند
+m2m_relationship: پەیوەندی چەند بۆ چەند
+m2a_relationship: پەیوەندی چەند بۆ هەرشتێک
+invalid_item: مادەی نادروست
+next: دواتر
 display: پیشاندان
 settings_update_success: ڕێکخستنەکان نوێکراونەتەوە
 title: ناونیشان
