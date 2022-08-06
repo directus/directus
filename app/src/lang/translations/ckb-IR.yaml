@@ -466,6 +466,9 @@ created_by: دروستکراوە لەلایەن
 created_on: دروستکراوە لە
 creating_collection_info: ناوی کۆمەڵە بنێ و کلیلە وشەیەکی نوێی بێهاوتا دابمەزرێنە بۆ خانە...
 creating_collection_system: هەر یەکێک لەو خانە بژاردانە کارابکە و ناویان بنێوە.
+auto_increment_integer: ژمارەی تەواوی خۆکارە زیادبوو
+auto_increment_big_integer: ژمارەی تەواوی گەورەی خۆکارە زیادبوو
+generated_uuid: دروستکەری UUID
 all_items: هەموو مادەکان
 any: هەر
 csv: CSV
