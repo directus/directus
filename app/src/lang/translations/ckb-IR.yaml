@@ -239,15 +239,84 @@ revision_delta_created_externally: لە دەرەوە دروست کرا
 revision_delta_updated: 'یەک خانە نوێکرایەوە | {count} خانە نوێکرانەوە'
 revision_delta_deleted: سڕایەوە
 revision_delta_reverted: گەڕێندرایەوە
+revision_delta_update_message: ئەم خانەیە نوێ کراوەتەوە بەڵام بەهاکەی بە هۆکاری ئەمنی دەشاردرێتەوە.
+revision_delta_other: پێداچونەوە
+revision_delta_by: '{date} بەپێی {user}'
+presentation_text_values_cannot_be_reimported: "دەقی پێشکەشکردن بەکاردەهێنێت، بەهاکان ناتوانرێت دووبارە هاوردە بکرێتەوە."
+download_page_as_csv: 'داگرتنی پەڕە وەک CSV'
+private_user: بەکارهێنەری تایبەت
+creation_preview: پێشبینی دروستکردن
+revision_preview: پێشبینی پێداچونەوە
+updates_made: نوێکردنەوەکان ئەنجامدراون
+leave_comment: لێدوانێک جێبهێڵە...
+post_comment_success: لێدوان بڵاوکرایەوە
+post_comment_updated: لێدوان نوێکرایەوە
+item_create_success: مادە دروستکرا | مادەکان دروستکران
+item_update_success: مادە نوێکرایەوە | مادەکان نوێکرانەوە
+item_delete_success: مادە سڕایەوە | مادەکان سڕانەوە
+this_collection: ئەم کۆمەڵەیە
+related_collection: کۆمەڵەی پەیوەندیدار
+related_collections: کۆمەڵە پەیوەندیدارەکان
+translations_collection: کۆمەڵەی وەرگێران
+languages_collection: کۆمەڵەی زمانەکان
+import_data_input_placeholder: CSV یان JSON...
+import_data_button: دەستکردن بە هاوردەکردن
+import_data_indeterminate: هاوردەکردنی داتا...
+import_data_success: داتا بە سەرکەوتوویی هاوردەکرا لە {filename} ـەوە
+import_data_error: داتاکانی ئەم پەڕگەیە لەگەڵ کۆمەڵەکە تێک ناکەنەوە.
+label_import: هاوردن
+label_export: هەناردە
+import_export: هاوردن / هەناردە
+format: شێواز
+last_page: کۆتا پەڕ
+last_access: دواین دەستگەیشتن
+fill_template: بە بەهای قالب پڕی بکەوە
+a_unique_table_name: ناوێکی بێهاوتای خشتە...
+a_unique_column_name: ناوی بێهاوتای ستون...
+enable_custom_values: چالاککردنی بەها خوازراوەکان
+submit: پێشکەشکردن
+move_to_folder: گواستنەوە بۆ بوخچە
+move: گواستنەوە
+system: سیستەم
+add_field_related: زیادکردنی خانە بۆ کۆمەڵەی پەیوەندی دار
+interface_label: ڕوکار
+today: ئەمڕۆ
 created: دروستکرا
+zoom: نزیکخستنەوە
+download: داگرتن
+open: کردنەوە
+open_in_new_window: کردنەوە لە پەنجەرەی نوێدا
+open_folder: کردنەوەی بوخچەی "{folder}"
+foreground_color: ڕەنگی پێشەوە
+background_color: ڕەنگی پێشەوە
+upload_from_device: بارکردنی پەڕگەیەک لە ئامێرەوە
+choose_from_library: دیاری کردنی پەڕگە لە پێشانگاوە
+import_from_url: هاوردنی پەڕگە لە ڕێگای بەستەرەوە
+replace_from_device: جێگرتنەوەی پەڕگە لە ئامێرەوە
+replace_from_library: جێگرتنەوەی پەڕگە لە پێشانگاوە
+replace_from_url: جێگرتنەوەی پەڕگە لە ڕێگای بەستەرەوە
+no_file_selected: هیچ پەڕگەیەک دیاری نەکراوە
+download_file: داگرتنی پەڕگە
+open_file_in_tab: کردنەوەی پەڕگە لە پەنجەرەی نوێدا
+start_export: دەستپێکردنی هەناردەکردن
+not_available_for_local_downloads: بەردەست نییە بۆ داگرتنە نێوخۆیەکان
+exporting_all_items_in_collection: هەناردەکردنی سەرجەم {total} مادەکان لە کۆمەڵەی {collection}.
+exporting_limited_items_in_collection: هەناردەکردنی {limit} لە کۆی {total} مادە لە کۆمەڵەی {collection}.
+exporting_no_items_to_export: هیچ مادەیەک نییە بۆ هەناردە. ڕێکخستنی هەناردە لە خوارەوە ڕێکبخە.
+exporting_download_hint: کاتێک تەواوبوو، ئەم پەڕگە {format} ـە خۆکارانە دادەگیرێتە ناو ئامێرەکەتەوە.
 errors:
   NOT_NULL_VIOLATION: نرخ نابێت پوچ بێت
 value_unique: نرخ پێویستە بێ هاوتا بێت
+wysiwyg_options:
+  forecolor: ڕەنگی پێشەوە
+  backcolor: ڕەنگی پێشەوە
 fields:
   directus_files:
     title: ناونیشان
   directus_users:
     title: ناونیشان
+    last_page: کۆتا پەڕ
+    last_access: دواین دەستگەیشتن
   directus_settings:
     module_bar: شریتی یەکەکان
   directus_fields:
@@ -262,12 +331,16 @@ interfaces:
     primary: سەرەکی
   input-hash:
     hash: هاش
+  map:
+    zoom: نزیکخستنەوە
 displays:
   boolean:
     boolean: دوڕا
   datetime:
+    format: شێواز
     suffix: پاشگر
   formatted-value:
+    format: شێواز
     prefix: پێشگر
     suffix: پاشگر
     text: نوسین
