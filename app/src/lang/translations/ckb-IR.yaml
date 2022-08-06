@@ -100,6 +100,22 @@ connection_fair: پەیوەندی خراپ
 connection_poor: پەیوەندی زۆر خراپ
 primary: سەرەکی
 rename_folder: ناولێنانەوەی بوخچە
+delete_folder: سڕینەوەی بوخچە
+prefix: پێشگر
+suffix: پاشگر
+reset_bookmark: ڕێکخستنەوەی نیشانکەر
+update_bookmark: نوێکردنەوەی نیشانکەر
+delete_bookmark: سڕینەوەی نیشانکەر
+delete_bookmark_copy: >-
+  ئایا دڵنیای کە دەتەوێت نیشانکەری "{bookmark}" بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە.
+delete_personal_bookmark: سڕینەوەی نیشانکەری کەسی
+delete_role_bookmark: سڕینەوەی نیشانکەری پلە
+delete_global_bookmark: سڕینەوەی نیشانکەری گشتی
+logoutReason:
+  SIGN_OUT: دەرچوون
+  SESSION_EXPIRED: دەورە بەسەرچوو
+public_label: گشتی
+public_description: کۆنتڕۆڵکردنی ئەوەی کام داتایەی API بەردەستە بەبێ ڕەسەنایەتی.
 os_type: جۆری سیستەم
 os_version: وەشانی سیستەم
 os_uptime: چالاکی سیستەم
@@ -175,6 +191,12 @@ field_options:
 interfaces:
   presentation-links:
     primary: سەرەکی
+displays:
+  datetime:
+    suffix: پاشگر
+  formatted-value:
+    prefix: پێشگر
+    suffix: پاشگر
 operations:
   log:
     message: پەیام
