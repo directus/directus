@@ -292,6 +292,21 @@ m2m_relationship: پەیوەندی چەند بۆ چەند
 m2a_relationship: پەیوەندی چەند بۆ هەرشتێک
 invalid_item: مادەی نادروست
 next: دواتر
+field_name: ناوی خانە
+translations: وەرگێڕانەکان
+no_translations: هیچ وەرگێڕانێک نییە
+note: تێبینی
+enter_a_value: بەهایەک دابنێ...
+enter_a_placeholder: شوێنگرێک دابنێ...
+length: درێژی
+soft_length: سنووری نەرم
+precision_scale: پێوەر و وردی
+readonly: تەنها خوێندنەوە
+unique: بێهاوتا
+updated_on: نوێکراوە لە
+updated_by: نوێکراوەتەوە لەلایەن
+primary_key: کلیلی سەرەکی
+foreign_key: کلیلی دەرەکی
 display: پیشاندان
 settings_update_success: ڕێکخستنەکان نوێکراونەتەوە
 title: ناونیشان
@@ -712,6 +727,7 @@ page_help_collections_item: >-
   **وردەکاری مادە** — شێوەیەکە بۆ بینین و بەڕێوەبردنی ئەم مادەیە. ئەم شریتی لایە سەرجەم مێژووی هەموو پێداچونەوەکان و لێدوانە جێگیرکراوەکان لە خۆدەگرێت.
 fields:
   directus_collections:
+    note: تێبینی
     color: ڕەنگ
     display_template: پیشاندانی قالب
     sort_field: خانەی ڕیزکردن
@@ -733,6 +749,7 @@ fields:
   directus_shares:
     role: پلە
   directus_fields:
+    note: تێبینی
     translation: وەرگێڕانەکانی ناوی خانە
   directus_roles:
     name: ناوی پلە
@@ -767,6 +784,8 @@ interfaces:
     select_a_collection: کۆمەڵەیەک هەڵبژێرە
   presentation-divider:
     divider: دابەشکەر
+  select-dropdown:
+    choices_value_placeholder: بەهایەک دابنێ...
   input-hash:
     hash: هاش
   select-dropdown-m2o:
@@ -786,6 +805,8 @@ interfaces:
     modes:
       dropdown: لیستی داخراو
 displays:
+  translations:
+    translations: وەرگێڕانەکان
   boolean:
     boolean: دوڕا
     icon_on: ئایکۆنی چالاک
@@ -807,6 +828,8 @@ displays:
     text: نوسین
   image:
     circle: بازنە
+  labels:
+    choices_value_placeholder: بەهایەک دابنێ...
   user:
     user: بەکارهێنەر
 layouts:
