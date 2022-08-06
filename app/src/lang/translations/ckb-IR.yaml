@@ -137,35 +137,35 @@ recommended_defaults: بنەڕەتیە پێشنیارکراوەکان
 unarchive: ئەرشیفنەکردن
 unarchive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف نەکەیت؟
 nested_files_folders_will_be_moved: پەڕگە و دۆسیە بەناویەکداچوەکان یەک ئاست دەبرێنە سەرەوە.
-validation_errors_notice: 'ئەم خانانە نرخی نادروستیان هەیە:'
+validation_errors_notice: 'ئەم خانانە بەهای نادروستیان هەیە:'
 validationError:
-  eq: نرخ پێویستە {valid}
-  neq: نرخ نابێت {invalid}
-  in: نرخ پێویستە یەکێک بێت لە {valid}
-  nin: نرخ نابێت یەکێک بێت لە {invalid}
-  contains: نرخ پێویستە {substring} لەخۆ بگرێت
-  ncontains: نرخ نابێت {substring} لەخۆ بگرێت
-  gt: نرخ پێویستە گەورەتر بێت لە {valid}
-  gte: نرخ پێویستە گەورەتر یان یەکسان بێت لەگەڵ {valid}
-  lt: نرخ پێویستە کەمتربێت لە {valid}
-  lte: نرخ پێویستە کەمتر یان یەکسان بێت لەگەڵ {valid}
-  empty: نرخ پێویستە بەتاڵ بێت
-  nempty: نرخ نابێت بەتاڵ بێت
-  null: نرخ پێویستە پوچ بێت
-  nnull: نرخ نابێت پوچ بێت
-  required: نرخ داواکراوە
-  unique: نرخ پێویستە بێ هاوتا بێت
-  regex: نرخ شێویەکی دروستی نییە
+  eq: بەها پێویستە {valid}
+  neq: بەها نابێت {invalid}
+  in: بەها پێویستە یەکێک بێت لە {valid}
+  nin: بەها نابێت یەکێک بێت لە {invalid}
+  contains: بەها پێویستە {substring} لەخۆ بگرێت
+  ncontains: بەها نابێت {substring} لەخۆ بگرێت
+  gt: بەها پێویستە گەورەتر بێت لە {valid}
+  gte: بەها پێویستە گەورەتر یان یەکسان بێت لەگەڵ {valid}
+  lt: بەها پێویستە کەمتربێت لە {valid}
+  lte: بەها پێویستە کەمتر یان یەکسان بێت لەگەڵ {valid}
+  empty: بەها پێویستە بەتاڵ بێت
+  nempty: بەها نابێت بەتاڵ بێت
+  null: بەها پێویستە پوچ بێت
+  nnull: بەها نابێت پوچ بێت
+  required: بەها داواکراوە
+  unique: بەها پێویستە بێ هاوتا بێت
+  regex: بەها شێویەکی دروستی نییە
 all_access: دەسەڵاتی هەمووی
 no_access: بێ دەسەڵات
 use_custom: بەکارهێنانی تایبەت
 nullable: پوچ بوون
-allow_null_value: ڕێگەدان بە نرخی پوچ
+allow_null_value: ڕێگەدان بە بەهای پوچ
 allow_multiple: ڕێگەدان بە چەندانە
 allow_multiple_to_be_open: ڕێگەدان بە کردنەوەی چەندانە
-enter_value_to_replace_nulls: تکایە نرخێکی نوێ بنوسە بۆ جێگرتنەوەی پوچەکانی ئێستا لەم خانەیەدا.
+enter_value_to_replace_nulls: تکایە بەهایەکی نوێ بنوسە بۆ جێگرتنەوەی پوچەکانی ئێستا لەم خانەیەدا.
 field_standard: ستاندەر
-field_presentation: پێشکەشکردن و جێگرەناو
+field_presentation: پێشکەشکردن و ناوی خواستراو
 field_file: تاک پەڕگە
 field_files: چەند پەڕگە
 field_m2o: پەیوەندی هەموو بۆ یەک M2O
@@ -180,6 +180,56 @@ field_validation: پشتڕاستکردنەوەی خانە
 field_presets: پێشسێتەکانی خانە
 permissions_for_role: 'مادەکانی پلەی {role} دەتوانن {action}.'
 fields_for_role: 'خانەکانی پلەی {role} دەتوانن {action}.'
+validation_for_role: 'یاساکانی {action} ـی خانە پێویستە پابەند بن بە پلەی {role}.'
+presets_for_role: 'بەها بنەڕەتیەکانی خانە بۆ پلەی {role}.'
+presentation_and_aliases: پێشکەشکردن و ناوی خواستراو
+revision_post_create: ئەمە شێوەی دەرکەوتنی مادەیەکە کاتێک دروستدەکرێت.
+revision_post_update: ئەمە شێوەی دەرکەوتنی مادەیەکە دوای ئەوەی نوێدەکرێتەوە.
+changes_made: لە خوارەوە کۆمەڵێک گۆڕانکاری دیارن کە لەم گەڕاندنەوەیەدا دەکرێن.
+no_relational_data: لەبیرتبێت کە داتا بەیەکەوە بەستراوەکان بەشێک نین لێرە.
+hide_field: شاردنەوەی خانە
+hide_field_on_detail: شاردنەوەی خانە لە وردەکاریدا
+show_field_on_detail: نیشاندانی خانە لە وردەکاریدا
+delete_field: سڕینەوەی خانە
+fields_and_layout: خانە و نەخشەکان
+field_create_success: 'خانەی دروستکراو: "{field}"'
+field_update_success: 'خانەی نوێکراوە: "{field}"'
+duplicate_where_to: دەتەوێت ئەم خانەیە بۆ کوێ لەبەربگریتەوە؟
+language: زمان
+language_placeholder: زمانێک دیاریبکە...
+aggregate_function: فەرمانی کۆکردنەوە
+aggregate_precision: فەرمانی وردبینی
+group_aggregation: کۆمەڵەی کۆکردنەوە
+group_precision: کۆمەڵەی وردبینی
+global: گشتی
+admins_have_all_permissions: بەڕێوبەران سەرجەم دەسەڵاتەکانیان هەیە
+camera: کامێرا
+show_zero: نیشاندانی سفر
+create_in_advanced_field_creation_mode: دروستکردنی خانە لە دۆخی پێشکەوتوو
+continue_in_advanced_field_creation_mode: بەردەوام بوون لە دۆخی دروستکردنی پێشکەوتوی خانە
+validation: پشتڕاستکردنەوە
+sum: کۆ
+sum_distinct: کۆی بەها جیاوازەکان
+avg: تێکڕا
+avg_distinct: تێکڕای بەهای جیاواز
+count: ژمارە
+count_distinct: ژمارەی بەهای جیاواز
+min: لانیکەم
+max: ئەوپەڕی
+exposure: بەرکەوتن
+shutter: دەروازە
+iso: ISO
+focal_length: درێژی تیشکۆیی
+schema_setup_key: ناوی ستونی بنکەدراو و کلیلی API ـی ئەم خانەیە
+create_field: دروستکردنی خانە
+creating_new_field: 'خانەی نوێی ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: بنەڕەتیکردنەوەی بژاردەکانی پەڕە
+hidden_field: خانەی شاراوە
+hidden_on_detail: شاراوە لە وردەکاریدا
+disabled_editing_value: لەکارخستنی دەستکاری بەها
+key: کلیل
+alias: ناوی خواستراو
 bigInteger: ژمارەی تەواوی گەورە
 boolean: دوڕا
 date: ڕێکەوت
@@ -281,7 +331,59 @@ system: سیستەم
 add_field_related: زیادکردنی خانە بۆ کۆمەڵەی پەیوەندی دار
 interface_label: ڕوکار
 today: ئەمڕۆ
+yesterday: دوێنێ
+delete_comment: سڕینەوەی لێدوان
+delete_share: سڕینەوەی هاوبەشی
+functions:
+  year: ساڵ
+  month: مانگ
+  week: هەفتە
+  day: ڕۆژ
+  weekday: ڕۆژەکانی هەفتە
+  hour: کاتژمێر
+  minute: خولەک
+  second: چرکە
+  count: ژمارە
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: خولەک
+hours: کاتژمێر
+month: مانگ
+year: ساڵ
+select_all: دیاریکردنی هەموو
+months:
+  january: کانونی دووەم
+  february: شوبات
+  march: ئادار
+  april: نیسان
+  may: ئایار
+  june: حوزەیران
+  july: تەمووز
+  august: ئاب
+  september: ئەیلول
+  october: تشرینی یەکەم
+  november: تشرینی دووەم
+  december: کانونی یەکەم
+drag_mode: دۆخی ڕاکێشان
+cancel_crop: هەڵوەشاندنەوەی بڕین
+original: ڕەسەن
+url: بەستەر
+import_label: هاوردن
+file_details: وردەکاری پەڕگە
+dimensions: دوریەکان
+size: قەبارە
 created: دروستکرا
+modified: گۆڕدراو
+checksum: کۆی پشکنین
+owner: خاوەن
+edited_by: دەستکاریکراوە لەلایەن
+folder: بوخچە
 zoom: نزیکخستنەوە
 download: داگرتن
 open: کردنەوە
@@ -304,17 +406,106 @@ exporting_all_items_in_collection: هەناردەکردنی سەرجەم {total}
 exporting_limited_items_in_collection: هەناردەکردنی {limit} لە کۆی {total} مادە لە کۆمەڵەی {collection}.
 exporting_no_items_to_export: هیچ مادەیەک نییە بۆ هەناردە. ڕێکخستنی هەناردە لە خوارەوە ڕێکبخە.
 exporting_download_hint: کاتێک تەواوبوو، ئەم پەڕگە {format} ـە خۆکارانە دادەگیرێتە ناو ئامێرەکەتەوە.
+exporting_batch_hint: ئەم هەناردەکردنە بە وەجبە جێبەجێ دەکرێت، کاتێک تەواو بوو، پەڕگەی {format} لە پێشانگای پەڕگەکاندا پاشەکەوت دەبێت.
+all_items: هەموو مادەکان
+any: هەر
+csv: CSV
+no_collections: هیچ کۆمەڵەیەک نییە
+create_collection: دروستکردنی کۆمەڵە
+no_collections_copy_admin: هیچ کۆمەڵەیەکت نییە هێشتا. کرتە لەو دوگمەیەی خوارەوە بکە بۆ دەستپێکردن.
+no_collections_copy: هیچ کۆمەڵەیەکت نییە هێشتا. تکایە پەیوەندی بکە بە بەڕێوبەری سیستەم.
+relationship_not_setup: پەیوەندی بە شێوەیەکی دروست ڕێکنەخراوە
+display_template_not_setup: بژاردەی نیشاندانی قالب هەڵەڕێکخراوە
+collection_field_not_setup: بژاردەی خانەی کۆمەڵە هەڵەڕێکخراوە
+select_a_collection: کۆمەڵەیەک هەڵبژێرە
+select_a_field: خانەیەک هەڵبژێرە
+active: چالاک
+move_to: گواستنەوە بۆ...
+copy: لەبەرگرتنەوە
+copy_to: لەبەرگرتنەوە بۆ...
+no_other_dashboards_copy: هیچ داشبۆردێکی ترت نییە هێشتا.
+inactive: ناچالاک
+users: بەکارهێنەرەکان
+activity: چالاکی
+activity_item: چالاکی مادە
+action: کردەوە
+ip_address: ناونیشانی IP
+user_agent: نوێنەری بەکارهێنەر
+webhooks: وێبهووکەکان
+decimals: دەییەکان
+value_decimals: بەها دەییەکان
+min_value: کەمترین بەها
+max_value: زۆرترین بەها
+automatic: خۆکار
+field_width: پانی خانە
+add_filter: دانانی پاڵاوتن
+upper_limit: کۆتا سنور...
+lower_limit: کەمترین سنور...
+user_directory: پێڕستی بەکارهێنەر
+documentation: بەڵگەنامەسازی
+sidebar: شریتی لا
+duration: ماوە
+charset: کۆمەڵەهێما
+second: چرکە
+file_moved: پەڕگە گواسترایەوە
+collection_created: کۆمەڵە دروستکرا
+modified_on: دەستکاریکرا لە
+card_size: قەبارەی کارت
+sort_field: خانەی ڕیزکردن
+add_sort_field: دانانی خانەی ڕیزکردن
+sort: ڕیزکردن
+status: دۆخەکان
+remove: لابردن
+toggle_manual_sorting: گۆڕین بۆ ڕیزکردنی دەستی
 errors:
-  NOT_NULL_VIOLATION: نرخ نابێت پوچ بێت
-value_unique: نرخ پێویستە بێ هاوتا بێت
+  NOT_NULL_VIOLATION: بەها نابێت پوچ بێت
+copy_details: لەبەرگرتنەوەی وردەکاریەکان
+no_app_access: نەبوونی دەسەڵاتی پێگە
+no_app_access_copy: ئەم بەکارهێنەرە ڕێگەپێنەدراوە بۆ بەکارهێنانی پێگەی بەڕێوبەر.
+password_reset_sent: ئەگەر هەژمارت هەیە ئێمە بەستەرێکی پارێزراومان بۆ ناردویت بۆ دانانەوەی تێپەڕەوشەکەت
+password_reset_successful: تێپەڕەوشە نوێکرایەوە بە سەرکەوتوویی
+back: گەڕانەوە
+filter: پاڵاوتن
+edit_image: دەستکاری وێنە
+editing_image: دەستکاریکردنی وێنە
+square: چوارگۆشە
+free: ئازاد
+flip_horizontal: هەڵگێڕانەوەی ئاسۆیی
+flip_vertical: هەڵگێڕانەوەی ستونی
+aspect_ratio: ڕێژەی ڕووکار
+rotate: سوڕاندنەوە
+all_users: هەموو بەکارهێنەرەکان
+delete_collection: سڕینەوەی کۆمەڵە
+update_collection_success: کۆمەڵەی نوێکراوە
+delete_collection_success: کۆمەڵەی سڕاوە
+make_collection_visible: کۆمەڵە دیاربخە
+make_collection_hidden: کۆمەڵە بشارەوە
+make_folder_visible: بوخچە دیاربخە
+make_folder_hidden: بوخچە بشارەوە
+goto_collection_content: بینینی ناوەڕۆک
+start_end_of_count_items: '{start}-{end} لە {count} مادە'
+start_end_of_count_filtered_items: '{start}-{end} لە {count} مادەی پاڵاوتەکراو'
+one_item: 'یەک مادە'
+one_filtered_item: 'یەک مادەی پاڵاوتەکراو'
+value_unique: بەها پێویستە بێ هاوتا بێت
 wysiwyg_options:
   forecolor: ڕەنگی پێشەوە
   backcolor: ڕەنگی پێشەوە
+  selectall: دیاریکردنی هەموو
+settings_webhooks: وێبهووکەکان
 fields:
+  directus_collections:
+    sort_field: خانەی ڕیزکردن
   directus_files:
     title: ناونیشان
+    modified_on: دەستکاریکرا لە
+    folder: بوخچە
+    charset: کۆمەڵەهێما
+    duration: ماوە
   directus_users:
     title: ناونیشان
+    language: زمان
+    status_active: چالاک
     last_page: کۆتا پەڕ
     last_access: دواین دەستگەیشتن
   directus_settings:
@@ -325,14 +516,32 @@ fields:
     name: ناوی پلە
 field_options:
   directus_collections:
+    language: زمان
     archive_divider: ئەرشیڤ
+    sort_divider: ڕیزکردن
+  directus_users:
+    status_dropdown_active: چالاک
+  directus_webhooks:
+    status_options_active: چالاک
+    status_options_inactive: ناچالاک
 interfaces:
+  filter:
+    name: پاڵاوتن
+    add_filter: دانانی پاڵاوتن
+    any: هەر
   presentation-links:
     primary: سەرەکی
+  system-display-template:
+    collection_field_not_setup: بژاردەی خانەی کۆمەڵە هەڵەڕێکخراوە
+    select_a_collection: کۆمەڵەیەک هەڵبژێرە
   input-hash:
     hash: هاش
   map:
     zoom: نزیکخستنەوە
+  system-folder:
+    folder: بوخچە
+  list:
+    sort: ڕیزکردن
 displays:
   boolean:
     boolean: دوڕا
@@ -352,3 +561,5 @@ operations:
     message: پەیام
   notification:
     message: پەیام
+  request:
+    url: بەستەر
