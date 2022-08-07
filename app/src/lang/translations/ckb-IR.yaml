@@ -1040,9 +1040,42 @@ fields:
     role: پلە
     token: ئاماژە (Token)
     provider: دابینکەر
+    external_identifier: ناسەرەوەی دەرەکی
     last_page: کۆتا پەڕ
     last_access: دواین دەستگەیشتن
+    email_notifications: ئاگادارکەرەوەی ئیمەیڵ
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: نەخشەکێشان
+    basemaps: نەخشەی بنەڕەتی
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: شێوازی Mapbox
+    mapbox_key: ئاماژەی دەستگەیشتن بە Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: گرێدان
+    attribution_placeholder: '© بەشداربوانی OpenStreetMap'
+    transforms_note: ناوی شێوازی شارپ و ئارگیومێنتەکانی. ببینە https://sharp.pixelplumbing.com/api-constructor بۆ زانیاری زیاتر.
+    additional_transforms: گۆڕانکاریە زیادەکان
+    project_name: ناوی پڕۆژە
+    project_descriptor: وەسفی پڕۆژە
+    project_url: بەستەری پڕۆژە
+    project_color: ڕەنگی پڕۆژە
+    project_logo: لۆگۆی پڕۆژە
+    default_language: زمانی بنەڕەتی
+    branding: شێواز و براندینگ
+    public_foreground: ڕووبنەمای گشتی
+    public_background: پاشبنەمای گشتی
+    public_note: تێبینی گشتی
+    auth_password_policy: سیاسەتی تێپەڕەوشە و ڕەسەنایەتی
+    auth_login_attempts: هەوڵەکانی چوونەژوورەوەی ڕەسەنایەتی
+    files_and_thumbnails: پەڕگەکان و بیرگە
+    storage_default_folder: بوخچەی بنەڕەتی
+    storage_asset_presets: پێشسێتی گۆڕانکاری
+    storage_asset_transform: گۆرانکاریە ڕێگەپێدراوەکان
     module_bar: شریتی یەکەکان
   directus_shares:
     name: ناو
@@ -1062,6 +1095,14 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: پارێزراوی
+    additional_transforms: گۆڕانکاریە زیادەکان
+    transforms_note: ناوی شێوازی شارپ و ئارگیومێنتەکانی. ببینە https://sharp.pixelplumbing.com/api-constructor بۆ زانیاری زیاتر.
+    mapbox_key: ئاماژەی دەستگەیشتن بە Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: نەخشەی بنەڕەتی
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: شێوازی Mapbox
   directus_activity:
     create: دروستکردن
     update: نوێکردنەوە
