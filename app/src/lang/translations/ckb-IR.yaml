@@ -1213,16 +1213,47 @@ field_options:
     update: نوێکردنەوە
     delete: سڕینەوە
   directus_collections:
+    track_activity_revisions: بەدواداچوونی کردار و گەڕاندنەوەکان
+    only_track_activity: تەنها بەدواداچوونی کردار
+    do_not_track_anything: بەدواداچونی هیچ کردارێک مەکە
     collection_setup: دامەزراندنی کۆمەڵە
+    note_placeholder: وەسفێک بۆ ئەم کۆمەڵەیە...
+    hidden_label: شاردنەوەی لە پێگەدا
     singleton: وەک تاکە شت مامەڵەی لەگەڵ بکە
     language: زمان
+    translation: وەرگێڕان
+    translation_placeholder: وەرگێڕانێک بنوسە...
     collection_name: ناوی کۆمەڵە
+    singular_unit: یەکەی تاکی
+    plural_unit: یەکەی کۆ
     archive_divider: ئەرشیڤ
+    archive_field_placeholder: خانەیەک هەڵبژێرە...
+    archive_app_filter: کاراکردنی پاڵاوتنی ئەرشیفی پێگە
+    archive_value: دانانی بەها لەکاتی ئەرشیف کردن...
+    unarchive_value: دانانی بەها لەکاتی ئەرشیف نەکردن...
     sort_divider: ڕیزکردن
+    sort_field: خانەیەک هەڵبژێرە...
+    accountability_divider: بەرپرسیاری
+    duplication_divider: دووبارەکردنەوە
+  directus_files:
+    title: ناونیشانێکی بێ هاوتا...
+    description: وەسفێکی بژاردەیی...
+    location: شوێنێکی بژاردەیی...
+    storage_divider: ناونانی پەڕگە
+    filename_disk: ناو لەسەر پەپکەی بیرگە...
+    filename_download: ناو لەکاتی داگرتن...
   directus_roles:
+    name: ناوێکی بێ هاوتا بۆ ئەم پلەیە...
+    description: وەسفێک بۆ ئەم پلەیە...
+    ip_access: ناونیشانێکی ڕێگەپێدراوی IP زیاد بکە، بە بەتاڵی جێی بهێڵە بۆ ڕێگەپێدان بە هەمووان...
     fields:
+      icon_name: ئایکۆن
       name_name: ناو
+      name_placeholder: ناونیشانێک دابنێ...
+      link_name: بەستەر
+      link_placeholder: بەستەری ڕێژەیی یان ڕەها...
     collections_name: کۆمەڵەکان
+    collections_addLabel: زیادکردنی کۆمەڵە...
   directus_users:
     preferences_divider: هەڵبژاردنەکانی بەکارهێنەر
     dropdown_auto: خۆکار (بەپێی سیستەم)
@@ -1230,9 +1261,11 @@ field_options:
     dropdown_dark: دۆخی تاریک
     admin_divider: بژاردەکانی بەڕێوبەر
     status_dropdown_draft: ڕەشنوس
+    status_dropdown_invited: بانگهێشتکراوە
     status_dropdown_active: چالاک
     status_dropdown_suspended: ڕاگیراوە
     status_dropdown_archived: ئەرشیفکراوە
+    token: ئاماژەیەکی پارێزراوی دەستگەیشتن دابنێ...
   directus_webhooks:
     status_options_active: چالاک
     status_options_inactive: ناچالاک
@@ -1240,8 +1273,22 @@ field_options:
     triggers_divider: وروژاندنەکان
     actions_create: دروستکردن
     actions_update: نوێکردنەوە
+    actions_delete: سڕینەوە
+    actions_login: چوونەژوورەوە
     headers:
       header: سەرپەڕە
+      value: بەها
+      add: دانانی سەرپەڕە
+no_fields_in_collection: 'هێشتا هیچ خانەیەک نییە لە "{collection}"'
+no_value: هیچ بەهایەک نییە
+do_nothing: هیچ مەکە
+generate_and_save_uuid: UUID دروستبکە و پاشەکەوتی بکە
+save_current_user_id: ID بەکارهێنەری ئێستا پاشەکەوت بکە
+save_current_user_role: پلەی بەکارهێنەری ئێستا پاشەکەوت بکە
+save_current_datetime: ڕێکەوت و کاتی ئێستا پاشەکەوت بکە
+always_open: هەمیشە کراوە
+start_open: کرانەوەی دەستپێک
+start_collapsed: دەستپێکی داخراو
 comment: لێدوان
 uses_left: هیچ بەکارهێنانێک نەماوەتەوە | یەک بەکارهێنان ماوەتەوە | {n} بەکارهێنان ماوەتەوە
 no_shares: هیچ هاوبەشیکردنێک نییە بۆ نیشاندان
@@ -1271,6 +1318,7 @@ email: ئیمەیڵ
 hidden: شاراوە
 password: تێپەڕەوشە
 template: قالب
+translation_placeholder: وەرگێڕانێک بنوسە...
 interfaces:
   filter:
     name: پاڵاوتن
