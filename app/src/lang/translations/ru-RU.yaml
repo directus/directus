@@ -727,6 +727,7 @@ icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
 flows: Поток
+flow: Поток
 trigger: Триггер
 create_trigger: Создать триггер
 trigger_setup: Настройка триггера
@@ -1766,23 +1767,61 @@ panels:
   list:
     name: Список
     description: Фильтр и список полей из коллекции
+  barchart:
+    function: Функция
+    group_by: Группировка по
+  linechart:
+    function: Функция
+  meter:
+    function: Функция
   piechart:
     function: 'Функция'
     right: Справа
     bottom: Снизу
     monochrome: Монохром
     monochrome_color: Монохромный цвет
+  variable:
+    name: Глобальная переменная
 triggers:
+  common:
+    response_body_all: Все данные
+    response_body_last: Данные последней операции
   webhook:
     method: Метод
 operations:
+  item-create:
+    name: Создать данные
+  item-delete:
+    name: Удалить данные
+    query: Запрос
+  item-read:
+    name: Читать данные
+    description: Чтение элементов из базы данных
+    query: Запрос
+  item-update:
+    name: Обновить данные
+    description: Обновить элементы в базе данных
+    query: Запрос
+  log:
+    name: Лог в консоли
+    description: Вывод какой-либо информации в консоль
+  mail:
+    name: Отправить эл. письмо
+    description: Отправить письмо одному или нескольким людям
+    to_placeholder: Добавьте адреса эл. почты и нажмите Enter...
   notification:
+    name: Отправить уведомление
     recipient: Пользователь
   request:
     url: URL
+    url_placeholder: https://example.com/example
     method: Метод
     data: Данные
     header: Header
+    header_placeholder: Авторизация...
+  sleep:
+    milliseconds: Миллисекунды
   trigger:
     flows: Поток
+    flow: Поток
     data: Данные
