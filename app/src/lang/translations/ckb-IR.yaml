@@ -309,6 +309,7 @@ primary_key: کلیلی سەرەکی
 foreign_key: کلیلی دەرەکی
 finish_setup: تەواوکردنی دامەزراندن
 dismiss: پشتگوێخستن
+toggle_raw_editor: ڕەوشگۆڕینی دەستکاریکەری خاو
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: بەهای خاو
 copy_raw_value: لەبەرگرتنەوەی بەهای خاو
@@ -469,6 +470,43 @@ creating_collection_system: هەر یەکێک لەو خانە بژاردانە �
 auto_increment_integer: ژمارەی تەواوی خۆکارە زیادبوو
 auto_increment_big_integer: ژمارەی تەواوی گەورەی خۆکارە زیادبوو
 generated_uuid: دروستکەری UUID
+manual_string: دەقی دەستی دانراو
+save_and_create_new: پاشەکەوتکردن و دروستکردنی نوێ
+save_and_stay: پاشەکەوتکردن و مانەوە
+save_as_copy: پاشەکەوتکردن وەک لەبەرگرتنەوە
+add_existing: زیادکردنی بەردەست
+creating_items: دروستکردنی مادەکان
+enable_create_button: کاراکردنی دوگمەی دروستکردن
+selecting_items: دیاریکردنی مادەکان
+enable_select_button: کاراکردنی دوگمەی دیاریکردن
+comments: لێدوانەکان
+no_comments: هێشتا هیچ لێدوانێک نییە
+click_to_expand: کرتە بکە بۆ فراوانکردن
+select_item: مادە دیاری بکە
+no_items: هیچ مادەیەک نییە
+search_items: گەڕانی مادەکان...
+disabled: ناکاراکراو
+information: زانیاری
+report_bug: ڕاپۆرتکردنی هەڵە
+request_feature: داواکردنی تایبەتمەندی
+request_body: ناوەڕۆکی داواکاری
+interface_not_found: 'ڕوکاری "{interface}" نەدۆزرایەوە.'
+operation_not_found: 'کرداری "{operation}" نەدۆزرایەوە.'
+reset_interface: بنەڕەتیکردنەوەی ڕوکار
+display_not_found: 'پیشاندەری "{display}" نەدۆزرایەوە.'
+reset_display: بنەڕەتیکردنەوەی پیشاندەر
+list-m2a: بنیاتنەر (چەند بۆ هەرشتێک M2A)
+item_count: 'هیچ مادەیەک نییە | یەک مادە | {count} مادە'
+no_items_copy: هێشتا هیچ مادەیەک نییە لەم کۆمەڵەیەدا.
+file_count: 'هیچ پەڕگەیەک نییە | یەک پەڕگە | {count} پەڕگە'
+no_files_copy: هیچ پەڕگەیەک نییە لێرە.
+user_count: 'هیچ بەکارهێنەرێک نییە | یەک بەکارهێنەر | {count} بەکارهێنەر'
+no_users_copy: هێشتا هیچ بەکارهێنەرێک نییە لەم پلەیەدا.
+webhooks_count: 'هیچ وێبهووکێک نییە | یەک وێبهووک | {count} وێبهووک'
+no_webhooks_copy: هێشتا هیچ وێبهوکێک ڕێکنەخراوە. بە دروستکردنی دانەیەک لە خوارەوە دەستپێ بکە.
+no_notifications: هیچ ئاگادارکردنەوەیەک نییە
+no_notifications_copy: هەمووتان گیراون!
+activity_log: تۆماری کردار
 all_items: هەموو مادەکان
 any: هەر
 csv: CSV
@@ -518,8 +556,36 @@ add_sort_field: دانانی خانەی ڕیزکردن
 sort: ڕیزکردن
 status: دۆخەکان
 remove: لابردن
-toggle_manual_sorting: گۆڕین بۆ ڕیزکردنی دەستی
+toggle_manual_sorting: ڕەوشگۆڕین بۆ ڕیزکردنی دەستی
+bookmark_doesnt_exist: نیشانکردن بوونی نییە
+bookmark_doesnt_exist_copy: ئەو نیشانکردنەی کە دەتەوێت بیکەیتەوە ناتوانرێت بدۆزرێتەوە.
+bookmark_doesnt_exist_cta: گەڕانەوە بۆ کۆمەڵە
+select_an_item: مادەیەک دیاری بکە...
+edit: دەستکاری
+enabled: چالاککراوە
+disable_tfa: لەکارخستنی 2FA
+tfa_scan_code: کۆدەکە سکان بکە لە ڕێگەی بەرنامەیەکی پشتڕاستکەرەوە (authenticator app) بۆ کۆتایی پێهێنان بە ڕێکخستنی 2FA
+enter_otp_to_disable_tfa: OTP ـیەکە دابنێ بۆ ڕاگرتنی 2FA
+create_account: دروستکردنی هەژمار
+account_created_successfully: هەژمار دروستکرا بە سەرکەوتوویی
+auto_fill: پڕکردنەوەی خۆکاری
+corresponding_field: خانەی هاوچەشن
 errors:
+  COLLECTION_NOT_FOUND: "کۆمەڵە بونی نییە"
+  FIELD_NOT_FOUND: خانە نەدۆزرایەوە
+  FORBIDDEN: قەدەغە
+  INVALID_CREDENTIALS: ناوی بەکارهێنەر و تێپەڕەوشەی هەڵە
+  INVALID_OTP: یەکجارە تێپەڕەوشەی هەڵە
+  INVALID_PAYLOAD: سودباری نادروست
+  INVALID_PROVIDER: بەکارهێنەر سەر بەدابینکەرێکی جیاوازی پشتڕاستکەرەوەیە
+  INVALID_QUERY: پرسی نادروست
+  INVALID_USER: هەڵەڕویدا لە پشتڕاستکردنەوەی بەکارهێنەر
+  ITEM_LIMIT_REACHED: ماددە گەیشتە سنور
+  ITEM_NOT_FOUND: ماددە نەدۆزرایەوە
+  ROUTE_NOT_FOUND: نەدۆزرایەوە
+  RECORD_NOT_UNIQUE: بەهای لەبەرگیراوە دۆزرایەوە
+  USER_SUSPENDED: بەکارهێنەر ڕاگیراوە
+  CONTAINS_NULL_VALUES: خانە بەهای هیچی تێدایە
   NOT_NULL_VIOLATION: بەها نابێت پوچ بێت
 copy_details: لەبەرگرتنەوەی وردەکاریەکان
 no_app_access: نەبوونی دەسەڵاتی پێگە
@@ -834,6 +900,8 @@ interfaces:
     hash: هاش
   select-dropdown-m2o:
     display_template: پیشاندانی قالب
+  input-rich-text-md:
+    edit: دەستکاری
   map:
     zoom: نزیکخستنەوە
   system-folder:
@@ -842,8 +910,10 @@ interfaces:
     sort: ڕیزکردن
   boolean:
     toggle: ڕەوشگۆڕ
+    label_default: چالاککراوە
   translations:
     display_template: پیشاندانی قالب
+    toggle_split_view: ڕەوشگۆڕینی جیاکەرەوەی بینین
   user:
     user: بەکارهێنەر
     modes:
