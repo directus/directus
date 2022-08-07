@@ -846,10 +846,55 @@ interface_group_selection: دیاریکردن
 interface_group_relational: پەیوەندیدار
 interface_group_presentation: پێشکەشکردن
 interface_group_groups: دەستەکان
+interface_group_other: هیتر
+tooltip: ئاماژە
+tooltip_placeholder: ئاماژەیەک دابنێ...
+unlimited: بێ سنوور
+open_link_in: کردنەوەی بەستەر لە
+new_tab: پەنجەرەی نوێ
+current_tab: پەنجەرەی ئێستا
+save_image: وێنە پاشەکەوت بکە
+save_media: میدیا پاشەکەوت بکە
 wysiwyg_options:
+  aligncenter: لاگرتنی ناوەڕاست
+  alignjustify: لاگرتنی هاوستون
+  alignleft: لاگرتنی چەپ
+  alignnone: لاگرتنی هیچ لایەک
+  alignright: لاگرتنی ڕاست
   forecolor: ڕەنگی پێشەوە
   backcolor: ڕەنگی پێشەوە
   bold: تۆخ
+  italic: لار
+  underline: ژێرهێڵ
+  strikethrough: هێڵ پێداهاتوو
+  subscript: ژێرنووس
+  superscript: سەرنووس
+  codeblock: کۆد
+  blockquote: قاڵبی وتە
+  bullist: لیستی خاڵ
+  numlist: لیستی ژمارە
+  hr: یاسای ئاسۆیی
+  link: زیادکردن/دەستکاری بەستەر
+  unlink: لابردنی بەستەر
+  media: زیادکردن/دەستکاری میدیا
+  image: زیادکردن/دەستکاری میدیا
+  copy: لەبەرگرتنەوە
+  cut: بڕین
+  paste: دانانەوە
+  heading: سەردێڕ
+  h1: سەردێڕ ١
+  h2: سەردێڕ ٢
+  h3: سەردێڕ ٣
+  h4: سەردێڕ ٤
+  h5: سەردێڕ ٥
+  h6: سەردێڕ ٦
+  fontselect: دیاریکردنی فۆنت
+  fontsizeselect: دیاریکردنی قەبارەی نوسین
+  indent: چونەوەناو
+  outdent: چونەدەرەوە
+  undo: گەڕانەوە
+  redo: چونەوەپێش
+  remove: لابردن
   removeformat: لابردنی شێوە
   selectall: دیاریکردنی هەموو
   table: خشتە
@@ -905,6 +950,14 @@ page_help_collections_collection: >-
   **گەڕان بە مادەکاندا** — لیستی هەموو مادەکانی {collection} کە دەسەڵاتت بەسەریاندا هەیە. خوازراوکردنی خشتە، پاڵاوتنەکان، وە ڕیزکردنی بەپێی خواستی خۆت، وە تەنانەت پاشەکەوتکردنی نیشانکردنەکانی ئەم ڕێکخستنە جیاوازانە بۆ دەستگەیشتینی خێرا.
 page_help_collections_item: >-
   **وردەکاری مادە** — شێوەیەکە بۆ بینین و بەڕێوەبردنی ئەم مادەیە. ئەم شریتی لایە سەرجەم مێژووی هەموو پێداچونەوەکان و لێدوانە جێگیرکراوەکان لە خۆدەگرێت.
+page_help_activity_collection: >-
+  **گەڕانی چالاکی** — لیستێکی گشتگیر لە هەموو چالاکییەکانی سیستەم و ناوەڕۆکی بەکارهێنەرەکەت.
+page_help_docs_global: >-
+  **تێبینی گشتی بەڵگەنامەکان** — بەڵگەنامەکان کە بە تایبەتی بۆ وەشان و سکیمای ئەم پڕۆژەیە دروستکراون.
+page_help_files_collection: >-
+  **پێشانگای پەڕگەکان** — هەموو پەڕگەکان دەخاتە ڕوو کە بۆ ئەم پڕۆژەیە بارکراون. شێواز و پاڵاوتن و ڕیزکردن بەپێی خواستی خۆت دابنێ بۆ ئەوەی دیمەنەکەت بەپێی خواستی خۆت بێت، تەنانەت ئنیشانکردنەکانی ئەم ڕێکخستنە جیاوازانە پاشەکەوت بکە بۆ دەستگەیشتنێکی خێرا.
+page_help_files_item: >-
+  **وردەکاری پەڕگە** — شێوەیەکە بۆ بەڕێوەبردنی مێتاداتای پەڕگە، دەستکاریکردنی پەڕگەی ڕەسەن، وە نوێکردنەوەی ڕێکخستنەکانی دەستگەیشتن.
 page_help_settings_datamodel_collections: >-
   **مۆدێلی داتا: کۆمەڵەکان** — لیستی هەموو کۆمەڵەکان بەردەستە. ئەمە دیار و نادیار و کۆمەڵەکانی سیستەمیش لەخۆ دەگرێت، هەروەها خشتە بەڕێوەنەبراوەکانی بنکەدراویش دەتوانرێت زیادبکرێن.
 page_help_settings_datamodel_fields: >-
@@ -1143,6 +1196,8 @@ interfaces:
     any: هەر
   presentation-links:
     primary: سەرەکی
+  input-code:
+    code: کۆد
   system-collection:
     collection: کۆمەڵە
   system-collections:
@@ -1203,6 +1258,7 @@ displays:
     font_serif: Serif
     font_monospace: Monospace
     bold: تۆخ
+    italic: لار
     prefix: پێشگر
     suffix: پاشگر
     color: ڕەنگ
