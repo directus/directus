@@ -176,7 +176,7 @@ field_translations: وەرگێڕانەکان
 field_group: دەستەی خانە
 item_permissions: دەسەڵاتەکانی مادە
 field_permissions: دەسەڵاتەکانی خانە
-field_validation: پشتڕاستکردنەوەی خانە
+field_validation: سەلاماندنی خانە
 field_presets: پێشسێتەکانی خانە
 permissions_for_role: 'مادەکانی پلەی {role} دەتوانن {action}.'
 fields_for_role: 'خانەکانی پلەی {role} دەتوانن {action}.'
@@ -207,7 +207,7 @@ camera: کامێرا
 show_zero: نیشاندانی سفر
 create_in_advanced_field_creation_mode: دروستکردنی خانە لە دۆخی پێشکەوتوو
 continue_in_advanced_field_creation_mode: بەردەوام بوون لە دۆخی دروستکردنی پێشکەوتوی خانە
-validation: پشتڕاستکردنەوە
+validation: سەلاماندن
 sum: کۆ
 sum_distinct: کۆی بەها جیاوازەکان
 avg: تێکڕا
@@ -586,7 +586,29 @@ errors:
   RECORD_NOT_UNIQUE: بەهای لەبەرگیراوە دۆزرایەوە
   USER_SUSPENDED: بەکارهێنەر ڕاگیراوە
   CONTAINS_NULL_VALUES: خانە بەهای هیچی تێدایە
+  UNPROCESSABLE_ENTITY: یەکەی جێبەجێنەکراو
+  INTERNAL_SERVER_ERROR: هەڵەی پێشبینی نەکراو
   NOT_NULL_VIOLATION: بەها نابێت پوچ بێت
+  ILLEGAL_ASSET_TRANSFORMATION: سەرچاوەی وێنە زۆر گەورەیە بۆ پیشاندان
+  VALUE_TOO_LONG: بەها زۆر گەورەیە
+  VALUE_OUT_OF_RANGE: بەها لە دەرەوەی سنوری دیاریکراوە
+  INVALID_FOREIGN_KEY: کلیلی دەرەکی نادروست
+  UNKNOWN: هەڵەی پێشبینی نەکراو
+  GRAPHQL_VALIDATION_EXCEPTION: جیاکاری سەلماندنی GraphQL
+security: پارێزراوی
+value_hashed: بەها بە پارێزراوی هاشكراوە
+bookmark_name: ناوی نیشانکردن...
+create_bookmark: نیشانکردن دروستبکە
+edit_bookmark: دەستکاری نیشانکردن
+edit_personal_bookmark: دەستکاری نیشانکەری کەسی
+edit_role_bookmark: دەستکاری نیشانکەری پلە
+edit_global_bookmark: دەستکاری نیشانکەری گشتی
+cannot_edit_role_bookmarks: ناتوانرێت دەستکاری نیشانکەری پلە بکرێت
+cannot_edit_global_bookmarks: ناتوانرێت دەستکاری نیشانکەری گشتی بکرێت
+bookmarks: نیشانکراوەکان
+presets: پێشسێتەکان
+unexpected_error: هەڵەی پێشبینی نەکراو
+unexpected_error_copy: هەڵەیەکی چاوەڕوان نەکراو ڕویدا. تکایە دواتر دووبارە هەوڵبدەرەوە.
 copy_details: لەبەرگرتنەوەی وردەکاریەکان
 no_app_access: نەبوونی دەسەڵاتی پێگە
 no_app_access_copy: ئەم بەکارهێنەرە ڕێگەپێنەدراوە بۆ بەکارهێنانی پێگەی بەڕێوبەر.
@@ -638,6 +660,57 @@ divider: دابەشکەر
 color: ڕەنگ
 circle: بازنە
 empty_item: مادەی بەتاڵ
+log_in_with: 'بچۆژورەوە بە {provider}'
+conditional_styles: شێوازەکانی ئەگەرەکان
+advanced_settings: ڕێکخستنە پێشکەوتووەکان
+advanced_filter: پاڵاوتنە پێشکەوتوەکان
+delete_advanced_filter: سڕینەوەی پاڵاوتن
+change_advanced_filter_operator: گۆڕینی کارپێکەر
+advanced: پێشکەوتوو
+operators:
+  eq: یەکسانە
+  neq: یەکسان نییە
+  lt: کەمترە لە
+  gt: گەورتر لە
+  lte: کەمتر لە یان یەکسانە بە
+  gte: گەورەتر لە یان یەکسانە بە
+  in: یەکێکە لە
+  nin: یەکێک نییە لە
+  null: هیچە
+  nnull: هیچ نییە
+  contains: لەخۆدەگرێت
+  ncontains: لەخۆی ناگرێت
+  icontains: لەخۆدەگرێت (بێ هەست)
+  starts_with: دەستپێ دەکات بە
+  nstarts_with: دەستپێ ناکات بە
+  ends_with: کۆتایی پێ دێت بە
+  nends_with: کۆتایی نایات بە
+  between: دەکەوێتە نێوان
+  nbetween: ناکەوێتە نێوان
+  empty: بەتاڵە
+  nempty: بەتاڵ نییە
+  all: ئەم کلیلانە لەخۆ دەگرێت
+  has: بەشێک لەم کلیلانە لەخۆ دەگرێت
+  intersects: یەکتردەبڕن
+  nintersects: یەکترنابڕن
+  intersects_bbox: یەکتربرین لە سندوقی سنور
+  nintersects_bbox: یەکترنەبڕین لە سندوقی سنور
+  regex: یەکسان دەبێت لەگەڵ RegExp
+custom_validation_message: نامەی خوازراوی سەلماندن
+loading: بارکردن...
+drop_to_upload: فڕێی بدە بۆ بارکردن
+item: ماددە
+items: ماددەکان
+upload_file: پەڕگە باربکە
+upload_file_indeterminate: بارکردنی پەڕگە...
+upload_file_success: پەڕگە بارکرا
+upload_files_indeterminate: 'بارکردنی پەڕگەکان {done}/{total}'
+upload_files_success: '{count} پەڕگە بارکران'
+upload_pending: بارکردنی هەڵواسراو
+drag_file_here: پەڕگەیەک ڕابکێشە و فڕێی بدە لێرە
+click_to_browse: کرتە بکە بۆ گەڕان
+interface_options: بژاردەکانی ڕوکار
+layout_options: بژاردەکانی نەخشە
 rows: ڕیزەکان
 columns: ستونەکان
 collection_setup: دامەزراندنی کۆمەڵە
@@ -768,6 +841,11 @@ source: سەرچاوە
 url_placeholder: بەستەرێک دابنێ...
 display_text: پیشاندانی دەق
 display_text_placeholder: دەقێکی پیشاندراو دابنێ...
+interface_group_text_and_numbers: نوسین و ژمارەکان
+interface_group_selection: دیاریکردن
+interface_group_relational: پەیوەندیدار
+interface_group_presentation: پێشکەشکردن
+interface_group_groups: دەستەکان
 wysiwyg_options:
   forecolor: ڕەنگی پێشەوە
   backcolor: ڕەنگی پێشەوە
@@ -827,6 +905,26 @@ page_help_collections_collection: >-
   **گەڕان بە مادەکاندا** — لیستی هەموو مادەکانی {collection} کە دەسەڵاتت بەسەریاندا هەیە. خوازراوکردنی خشتە، پاڵاوتنەکان، وە ڕیزکردنی بەپێی خواستی خۆت، وە تەنانەت پاشەکەوتکردنی نیشانکردنەکانی ئەم ڕێکخستنە جیاوازانە بۆ دەستگەیشتینی خێرا.
 page_help_collections_item: >-
   **وردەکاری مادە** — شێوەیەکە بۆ بینین و بەڕێوەبردنی ئەم مادەیە. ئەم شریتی لایە سەرجەم مێژووی هەموو پێداچونەوەکان و لێدوانە جێگیرکراوەکان لە خۆدەگرێت.
+page_help_settings_datamodel_collections: >-
+  **مۆدێلی داتا: کۆمەڵەکان** — لیستی هەموو کۆمەڵەکان بەردەستە. ئەمە دیار و نادیار و کۆمەڵەکانی سیستەمیش لەخۆ دەگرێت، هەروەها خشتە بەڕێوەنەبراوەکانی بنکەدراویش دەتوانرێت زیادبکرێن.
+page_help_settings_datamodel_fields: >-
+  **مۆدێلی داتا: کۆمەڵەکان** —شێوەیەکە بۆ بەڕێوەبردنی کۆمەڵەکان و خانەکانیان.
+page_help_settings_roles_collection: '**گەڕانی پلەکان** — لیستی پلەکانی بەڕێوبەر و گشتی و پلە تایبەتەکانی بەکارهێنەران.'
+page_help_settings_roles_item: "**وردەکاری پلە** — بەڕێوەبردنی دەسەڵاتەکانی پلە و ڕێکخستنەکانی تر."
+page_help_settings_presets_collection: >-
+  **گەڕانی پێشسێتەکان** — لیستی هەموو پێشسێتەکان لە پڕۆژەکەدا، لەوانە: بەکارهێنەر، پلە، و نیشانکردنە گشتیەکان، هەروەها بینینە بنەڕەتیەکان.
+page_help_settings_presets_item: >-
+  **وردەکاری پێشسێت** — شێوەیەکە بۆ بەڕێوەبردنی نیشنکردنەکان و بنەڕەتی پێشسێتەکانی کۆمەڵە.
+page_help_settings_webhooks_collection: '**گەڕانی وێبهووکەکان** — لیستی هەموو وێبهووکەکان لەم پڕۆژەیەدا.'
+page_help_settings_webhooks_item: '**وردەکاری وێبهووک** —شێوەیەکە بۆ بەڕێوەبردنی و دروستکردنی وێبهووکەکانی پڕۆژە.'
+page_help_settings_flows_collection: '**گەڕانی لێشاوەکان** — لیستی سەرجەم لێشاوەکان لە پڕۆژەدا.'
+page_help_settings_flows_item: '**وردەکاری لێشاو** — ناوچەی کارە بۆ بەڕێوەبردنی یەک کردار یان زیاتر.'
+page_help_settings_translation_strings_collection: '**گەڕانی دەقە وەرگێڕەکان** — لیستی سەرجەم دەقە وەرگێڕاوەکان لە ناو پڕۆژەدا.'
+page_help_users_collection: '**بەڕێوبەرایەتی بەکارهێنەر** — لیستی سەرجەم بەکارهێنەرانی سیستەم لە پڕۆژەدا.'
+page_help_users_item: >-
+  **وردەکاری بەکارهێنەر** — بەڕێوەبردنی زانیاریەکانی هەژمار، یان بینینی وردەکاری بەکارهێنەرەکانی تر.
+page_help_insights_overview: '**تێڕوانینەکان** — لیستی سەرجەم ئەو داشبۆردانەی کە دەسەڵاتت هەیە بەسەریاندا.'
+page_help_insights_dashboard: '**داشبۆرد** — ناوچەی کارە بۆ بەڕێوەبردنی یەک پانێڵ یان زیاتر'
 fields:
   directus_collections:
     note: تێبینی
@@ -861,6 +959,8 @@ fields:
   directus_webhooks:
     name: ناو
 field_options:
+  directus_settings:
+    security_divider_title: پارێزراوی
   directus_activity:
     create: دروستکردن
     update: نوێکردنەوە
