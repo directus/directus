@@ -760,7 +760,7 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
-flows: Les Flux
+flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
 run_flow_on_current: Exécuter le flux sur l'élément actuel
@@ -921,9 +921,9 @@ settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
-settings_flows: Les Flux
+settings_flows: Flux
 settings_presets: Préréglages et favoris
-settings_translation_strings: Chaînes de traduction
+settings_translation_strings: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 actions: Actions
@@ -2082,6 +2082,6 @@ operations:
   trigger:
     name: Déclencher le Flux
     description: Transmettre ces données à un autre Flux
-    flows: Les Flux
+    flows: Flux
     flow: Flux
     data: Données
