@@ -958,6 +958,7 @@ page_help_files_collection: >-
   **پێشانگای پەڕگەکان** — هەموو پەڕگەکان دەخاتە ڕوو کە بۆ ئەم پڕۆژەیە بارکراون. شێواز و پاڵاوتن و ڕیزکردن بەپێی خواستی خۆت دابنێ بۆ ئەوەی دیمەنەکەت بەپێی خواستی خۆت بێت، تەنانەت ئنیشانکردنەکانی ئەم ڕێکخستنە جیاوازانە پاشەکەوت بکە بۆ دەستگەیشتنێکی خێرا.
 page_help_files_item: >-
   **وردەکاری پەڕگە** — شێوەیەکە بۆ بەڕێوەبردنی مێتاداتای پەڕگە، دەستکاریکردنی پەڕگەی ڕەسەن، وە نوێکردنەوەی ڕێکخستنەکانی دەستگەیشتن.
+page_help_settings_project: "**ڕێکخستنەکانی پڕۆژە** — بژاردەکانی ڕێکخستنی گشتی پڕۆژەکەت."
 page_help_settings_datamodel_collections: >-
   **مۆدێلی داتا: کۆمەڵەکان** — لیستی هەموو کۆمەڵەکان بەردەستە. ئەمە دیار و نادیار و کۆمەڵەکانی سیستەمیش لەخۆ دەگرێت، هەروەها خشتە بەڕێوەنەبراوەکانی بنکەدراویش دەتوانرێت زیادبکرێن.
 page_help_settings_datamodel_fields: >-
@@ -1015,6 +1016,7 @@ directus_collection:
   directus_settings: بژاردەکانی ڕێکخستنی پڕۆژە
   directus_shares: بەدواداچوونی ماددە هاوبەشیپێکراوە دەرەکیەکان
   directus_users: بەکارهێنەرەکانی سیستەم بۆ سەکۆکە
+  directus_webhooks: ڕێکخستن بۆ داواکارییەکانی HTTP لەسەر بنەمای ڕووداو
 fields:
   directus_activity:
     item: ماددەی کلیلی سەرەکی
@@ -1129,40 +1131,92 @@ fields:
     storage_default_folder: بوخچەی بنەڕەتی
     storage_asset_presets: پێشسێتی گۆڕانکاری
     storage_asset_transform: گۆرانکاریە ڕێگەپێدراوەکان
+    overrides: سەپاندنەکانی پێگە
+    custom_css: CSSی خواستراو
     module_bar: شریتی یەکەکان
+    transformations_all: ڕێگە بە هەموو گۆڕانکاریەکان بدە
+    transformations_none: پەکخستنی گۆڕانکاریەکان
+    transformations_presets: سنوردارکردنی گۆڕانکاریەکان بۆ پێشکەشکردن لە خوارەوە
+    image_editor: دەستکاریکەری وێنە
+    custom_aspect_ratios: ڕێژەی ڕوبەری خواستراو
   directus_shares:
     name: ناو
     role: پلە
     password: تێپەڕەوشە
+    date_start: دەستپێکی ڕێکەوت
+    date_end: کۆتایی ڕێکەوت
+    max_uses: ئەوپەڕی بەکارهێنان
+    times_used: جاری بەکارهێنراو
   directus_fields:
+    collection: ناوی کۆمەڵە
+    icon: ئایکۆنی کۆمەڵە
     note: تێبینی
+    hidden: شاراوە
     singleton: تاکی
     translation: وەرگێڕانەکانی ناوی خانە
+    display_template: قالب
   directus_roles:
     name: ناوی پلە
+    icon: ئایکۆنی پلە
     description: وەسف
+    app_access: دەستگەیشتن بە پێگە
+    admin_access: دەستگەیشتنی بەڕێوبەر
+    ip_access: دەستگەیشتنی IP
+    enforce_tfa: 2FA ـی داواکراوە
+    users: بەکارهێنەران لە پلەی
+    module_list: ڕێدۆزی یەکە
   directus_webhooks:
     name: ناو
+    method: ڕێگە
     status: دۆخەکان
+    data: داتا
+    header: سەرپەڕە
+    value: بەها
+    headers: داواکردنی سەرپەڕەکان
+    data_label: ناردنی داتای ڕوداو
+    triggers: وروژاندنەکان
+    actions: کردارەکان
     collections: کۆمەڵەکان
 field_options:
   directus_settings:
+    project_name_placeholder: پڕۆژەکەم...
+    project_color_note: چونەژوورەوە و لۆگی پاشبنەما
+    project_logo_note: سپی 40x40 SVG/PNG
+    public_note_placeholder: نامەیەکی کورت و گشتی کە پشتگیری شێوازی مارکداون بکات...
     security_divider_title: پارێزراوی
+    auth_password_policy:
+      none_text: هیچ کام ـ پێشنیار نەکراوە
+      weak_text: لاواز ـ لانیکەم 8 پیت و ژمارە
+      strong_text: بەهێز ـ پیتی گەورە / بچوک / ژمارەکان / هێمای تایبەت
+    storage_asset_presets:
+      fit_label: گونجان
+      upscaling: بەرزکردنەوە
+      fit:
+        contain_text: لەخۆگرتن (پاراستنی ڕێژەی ڕووبەر)
+        cover_text: بەرگ (قەبارەی ورد ناچار دەکات)
+        fit_text: جێکردنەوە لە ناوەوە
+        outside_text: جێکردنەوە لە دەرەوە
     additional_transforms: گۆڕانکاریە زیادەکان
     transforms_note: ناوی شێوازی شارپ و ئارگیومێنتەکانی. ببینە https://sharp.pixelplumbing.com/api-constructor بۆ زانیاری زیاتر.
     mapbox_key: ئاماژەی دەستگەیشتن بە Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: نەخشەی بنەڕەتی
+    basemaps_name_placeholder: ناوی نەخشەی بنەڕەتی دابنێ...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: شێوازی Mapbox
+    files_divider_title: پەڕگەکان و وێنە بچوککراوەکان
+    overrides_divider_title: سەپاندنەکانی پێگە
   directus_activity:
+    login: چوونەژوورەوە
     create: دروستکردن
     update: نوێکردنەوە
+    delete: سڕینەوە
   directus_collections:
     collection_setup: دامەزراندنی کۆمەڵە
     singleton: وەک تاکە شت مامەڵەی لەگەڵ بکە
     language: زمان
+    collection_name: ناوی کۆمەڵە
     archive_divider: ئەرشیڤ
     sort_divider: ڕیزکردن
   directus_roles:
@@ -1182,12 +1236,41 @@ field_options:
   directus_webhooks:
     status_options_active: چالاک
     status_options_inactive: ناچالاک
+    data_label: ناردنی داتای ڕوداو
+    triggers_divider: وروژاندنەکان
     actions_create: دروستکردن
     actions_update: نوێکردنەوە
+    headers:
+      header: سەرپەڕە
 comment: لێدوان
+uses_left: هیچ بەکارهێنانێک نەماوەتەوە | یەک بەکارهێنان ماوەتەوە | {n} بەکارهێنان ماوەتەوە
+no_shares: هیچ هاوبەشیکردنێک نییە بۆ نیشاندان
+new_share: هاوبەشی نوێ
+expired: بەسەرچوو
+upcoming: داهاتوو
+share: هاوبەشیکردن
+share_item: هاوبەشیکردنی ماددە
+shared_with_you: ماددەیەک هاوبەشی پێکراوە لەگەڵ تۆدا
+shared_enter_passcode: کۆدی تێپەڕبوون لێبدە بۆ بەردەوام بوون...
+shared_leave_blank_for_unlimited: بە بەتاڵی جێی بهێڵە بۆ بێسنووری
+shared_times_remaining: ئەم بەستەرە تەنها دەتوانرێت {n} جار بەکاربهێنرێت
+shared_last_remaining: ئەم بەستەرە تەنها دەتوانرێت یەک جار بەکاربهێنرێت
+shared_uses_left: بۆ دانانی پارێزراوی، ئەم پەڕە هاوبەشە وا ڕێکخراوە کە ژمارەیەکی دیاری کراو بینینی هەبێت. لە ئێستادا {n} بینینیتر ماوە، لە دوای ئەوە پەڕەکە چیتر بەردەست نابێت.
+share_access_page: دەستگەیشتن بە پەڕەی هاوبەشکراو
+share_access_not_found: ئەم پەڕە هاوبەشکراوە یان بوونی نییە، یان پێشتر گەیشتوە بە سنوری دیاریکراوەی ڕێگەپێدانەکانی بەکارهێنان.
+share_access_not_found_desc: تکایە پەیوەندی بکە بە بەکارهێنەرێکی ڕەسەنی ئەم پڕۆژەیە بۆ داواکاری دەستگەیشتن.
+share_access_not_found_title: پەڕەی هاوبەشی نەناسراو
+share_copy_link: لەبەرگرتنەوەی بەستەر
+share_copy_link_success: بەستەر لەبەرگیرایەوە
+share_copy_link_error: ناتوانرێت بەستەر لەبەر بگیرێتەوە
+share_send_link: ناردنی بەستەر
+relational_triggers: وروژاندنە پەیوەندیدارەکان
+referential_action_field_label_m2o: لە کاتی سڕینەوەی {collection}...
 description: وەسف
 email: ئیمەیڵ
+hidden: شاراوە
 password: تێپەڕەوشە
+template: قالب
 interfaces:
   filter:
     name: پاڵاوتن
@@ -1279,6 +1362,9 @@ layouts:
 panels:
   label:
     name: پێناس
+triggers:
+  webhook:
+    method: ڕێگە
 operations:
   item-create:
     payload: سودبار
@@ -1291,6 +1377,10 @@ operations:
     message: پەیام
   request:
     url: بەستەر
+    method: ڕێگە
+    data: داتا
+    header: سەرپەڕە
   trigger:
     flows: لێشاوەکان
     flow: لێشاو
+    data: داتا
