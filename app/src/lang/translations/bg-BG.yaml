@@ -1137,6 +1137,7 @@ fields:
     transformations_all: Позволяване на всякакви трансформации
     transformations_none: Забраняват се трансформациите
     transformations_presets: Ограничаване само до заготовките по-долу
+    image_editor: Редактор на изображения
   directus_shares:
     name: Име
     role: Роля
