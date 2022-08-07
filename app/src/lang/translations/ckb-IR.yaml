@@ -1484,9 +1484,17 @@ interfaces:
     placeholder: ڕوکارێک دیاری بکە...
   system-interface-options:
     interface-options: بژاردەکانی ڕوکار
+    description: مۆداڵێک بۆ دیاریکردنی بژاردەکانی ڕوکارێک
+  list-m2m:
+    many-to-many: چەند بۆ چەند
+    description: چەند ماددەی پەیوەندیداری یەکگرتوو دیاری بکە
+    display_template_configure_notice: دەتوانیت قاڵبی پیشاندان ڕێکبخەیت دوای دروستکردنی ئەم خانەیە.
   select-dropdown-m2o:
+    many-to-one: چەند بۆ یەک
+    description: تاکە ماددەیەکی پەیوەندیدار دیاریبکە
     display_template: پیشاندانی قالب
   input-rich-text-md:
+    markdown: Markdown
     edit: دەستکاری
   map:
     zoom: نزیکخستنەوە
@@ -1544,6 +1552,8 @@ displays:
     circle: بازنە
   labels:
     choices_value_placeholder: بەهایەک دابنێ...
+  related-values:
+    display_template_configure_notice: دەتوانیت قاڵبی پیشاندان ڕێکبخەیت دوای دروستکردنی ئەم خانەیە.
   user:
     user: بەکارهێنەر
     avatar: وێنۆچکە
