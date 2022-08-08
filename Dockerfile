@@ -35,7 +35,8 @@ COPY . .
 RUN apk add --update python3 make g++\
    && rm -rf /var/cache/apk/*
 
-RUN yarn --force
+RUN npm install
+RUN #yarn --force
 RUN #npm install
 #RUN yarn
 #RUN npm run build
