@@ -416,6 +416,9 @@ export function applyFilter(
 		}
 
 		function validateFilterOperator(type: Type, filterOperator: string) {
+			// @TODO remove when filtering of json is implemented
+			if (type === 'json') return;
+
 			if (filterOperator.startsWith('_')) {
 				filterOperator = filterOperator.slice(1);
 			}
