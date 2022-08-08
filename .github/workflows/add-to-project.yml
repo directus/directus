@@ -1,4 +1,4 @@
-name: Add issues to Projects (beta)
+name: Add issues to Projects
 
 on:
   issues:
