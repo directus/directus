@@ -18,6 +18,9 @@ jobs:
     name: SQLite Only
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Prepare
         uses: ./.github/actions/prepare
 
