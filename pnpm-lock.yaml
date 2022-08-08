@@ -170,7 +170,6 @@ importers:
       ldapjs: ^2.3.3
       liquidjs: ^9.37.0
       lodash: ^4.17.21
-      macos-release: ^2.4.1
       marked: ^4.0.16
       memcached: ^2.2.2
       micromustache: ^8.0.3
@@ -270,7 +269,6 @@ importers:
       ldapjs: 2.3.3
       liquidjs: 9.39.1
       lodash: 4.17.21
-      macos-release: 2.5.0
       marked: 4.0.18
       micromustache: 8.0.3
       mime-types: 2.1.35
@@ -11179,12 +11177,6 @@ packages:
     engines: { node: '>=10' }
     dependencies:
       yallist: 4.0.0
-
-  /macos-release/2.5.0:
-    resolution:
-      { integrity: sha512-EIgv+QZ9r+814gjJj0Bt5vSLJLzswGmSUbUpbi9AIr/fsN2IWFBl2NucV9PAiek+U1STK468tEkxmVYUtuAN3g== }
-    engines: { node: '>=6' }
-    dev: false
 
   /magic-string/0.25.9:
     resolution:

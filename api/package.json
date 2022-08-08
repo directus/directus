@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.15.0",
+	"version": "9.15.1",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -132,7 +132,6 @@
 		"ldapjs": "^2.3.3",
 		"liquidjs": "^9.37.0",
 		"lodash": "^4.17.21",
-		"macos-release": "^2.4.1",
 		"marked": "^4.0.16",
 		"micromustache": "^8.0.3",
 		"mime-types": "^2.1.35",

@@ -243,7 +243,8 @@ export class FilesService extends ItemsService {
 		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
 
 		try {
-			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
+			const shouldEncode = decodeURI(importURL) === importURL;
+			fileResponse = await axios.get<NodeJS.ReadableStream>(shouldEncode ? encodeURI(importURL) : importURL, {
 				responseType: 'stream',
 			});
 		} catch (err: any) {
@@ -254,7 +255,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-		const filename = path.basename(parsedURL.pathname as string);
+		const filename = decodeURI(path.basename(parsedURL.pathname as string));
 
 		const payload = {
 			filename_download: filename,
