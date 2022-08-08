@@ -18,12 +18,8 @@ jobs:
     name: SQLite Only
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Prepare
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        shell: bash
         run: TEST_DB=sqlite3 pnpm run -w test:blackbox

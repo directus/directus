@@ -26,28 +26,20 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Prepare
         uses: ./.github/actions/prepare
 
       - name: Run Linter
-        shell: bash
         run: pnpm lint
 
   unit:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Prepare
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        shell: bash
         run: pnpm -r test
 
   analyze:
