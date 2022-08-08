@@ -27,7 +27,6 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Linter
-        shell: bash
         run: pnpm lint
 
   unit:
@@ -41,7 +40,6 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        shell: bash
         run: pnpm -r test
 
   analyze:

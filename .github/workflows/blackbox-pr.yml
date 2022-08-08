@@ -29,5 +29,4 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        shell: bash
         run: TEST_DB=sqlite3 pnpm run -w test:blackbox
