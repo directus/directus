@@ -1,7 +1,7 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
 import { Knex } from 'knex';
-import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
+import { assign, clone, cloneDeep, isEqual, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
@@ -114,7 +114,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? (await authorizationService.validatePayload('create', this.collection, payloadAfterHooks))[0]
+				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
 			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
@@ -443,9 +443,22 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// Sort keys to ensure that the order is maintained
 		keys.sort();
 
-		const payloadWithPresets = this.accountability
-			? (await authorizationService.validatePayload('update', this.collection, payloadAfterHooks, keys))[0]
+		let payloadWithPresets = this.accountability
+			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks, keys)
 			: payloadAfterHooks;
+
+		// If payloadWithPresets is an array, ensure each object in the array is the same as the first object
+		if (Array.isArray(payloadWithPresets)) {
+			const firstPayload = payloadWithPresets[0];
+			for (const payload of payloadWithPresets) {
+				if (!isEqual(payload, firstPayload)) {
+					throw new InvalidPayloadException(`Cannot batch update items with different payloads.`);
+				}
+			}
+
+			payloadWithPresets = firstPayload;
+			Object.freeze(payloadWithPresets);
+		}
 
 		await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {

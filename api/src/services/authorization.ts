@@ -549,7 +549,7 @@ export class AuthorizationService {
 		collection: string,
 		data: Partial<Item>,
 		pk?: PrimaryKey | PrimaryKey[]
-	): Promise<Array<Partial<Item>>> {
+	): Promise<Array<Partial<Item>> | Partial<Item>> {
 		const payload = cloneDeep(data);
 
 		const { permission, requiredPermissionData, containDynamicData, hasValidationRules } = this.getActionPermissions(
@@ -572,11 +572,11 @@ export class AuthorizationService {
 			? await this.getItemsContext(collection, pk, itemContextFields)
 			: [{}];
 
-		return itemContexts.map((itemContext) => {
+		const payloadWithPresets = itemContexts.map((itemContext) => {
 			itemContext = merge({}, itemContext, payload);
 			const context: ParseFilterContext = { $CURRENT_ITEM: itemContext, ...filterContext };
 
-			const payloadWithPresets = merge(
+			const itemPayloadWithPreset = merge(
 				{},
 				parsePreset(permission.presets ?? {}, this.accountability, context),
 				payload
@@ -584,7 +584,7 @@ export class AuthorizationService {
 
 			if (hasValidationRules === false) {
 				// No validation is required, so simply populate the payload with the presets
-				return payloadWithPresets;
+				return itemPayloadWithPreset;
 			}
 
 			const validationFilter: Filter = parseFilter(permission.validation, this.accountability, context)!;
@@ -592,7 +592,7 @@ export class AuthorizationService {
 
 			validationErrors.push(
 				...flatten(
-					validatePayload(validationFilter, payloadWithPresets).map((error) =>
+					validatePayload(validationFilter, itemPayloadWithPreset).map((error) =>
 						error.details.map((details) => new FailedValidationException(details))
 					)
 				)
@@ -600,8 +600,10 @@ export class AuthorizationService {
 
 			if (validationErrors.length > 0) throw validationErrors;
 
-			return payloadWithPresets;
+			return itemPayloadWithPreset;
 		});
+
+		return Array.isArray(pk) ? payloadWithPresets : payloadWithPresets[0];
 	}
 
 	async getItemsContext(

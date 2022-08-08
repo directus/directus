@@ -90,7 +90,7 @@ describe('Integration Tests', () => {
 				];
 
 				it.each(newPosts)('presets are added correctly to the payload', async (payload) => {
-					const payloadWithPresets = await service.validatePayload('create', tableName, payload);
+					const payloadWithPresets = (await service.validatePayload('create', tableName, payload)) as Partial<any>;
 
 					expect(payloadWithPresets).toHaveProperty('publish_date');
 					expect(payloadWithPresets.publish_date).not.toEqual('$NOW');
@@ -108,7 +108,12 @@ describe('Integration Tests', () => {
 				it.each(newPosts)('validates the payload correctly', async (payload) => {
 					// Should only validate if field is set in the payload
 					if (!payload.publish_date) {
-						const payloadWithPresets = await service.validatePayload('update', tableName, payload);
+						const payloadWithPresets = (await service.validatePayload(
+							'update',
+							tableName,
+							payload,
+							payload.id
+						)) as Partial<any>;
 
 						expect(payloadWithPresets).not.toHaveProperty('publish_date');
 					} else {
