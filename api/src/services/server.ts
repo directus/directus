@@ -1,6 +1,5 @@
 import { Knex } from 'knex';
 import { merge } from 'lodash';
-import macosRelease from 'macos-release';
 import { nanoid } from 'nanoid';
 import os from 'os';
 import { performance } from 'perf_hooks';
@@ -17,6 +16,7 @@ import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
+import { getOSInfo } from '../utils/get-os-info';
 
 export class ServerService {
 	knex: Knex;
@@ -62,9 +62,7 @@ export class ServerService {
 		}
 
 		if (this.accountability?.admin === true) {
-			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
-
-			const osVersion = osType === 'macOS' ? `${macosRelease().name} (${macosRelease().version})` : os.release();
+			const { osType, osVersion } = getOSInfo();
 
 			info.directus = {
 				version,

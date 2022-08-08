@@ -18,6 +18,7 @@ import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { stripFunction } from './strip-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -367,13 +368,16 @@ export function applyFilter(
 					if (!columnPath) continue;
 
 					validateFilterOperator(
-						schema.collections[targetCollection].fields[filterPath[filterPath.length - 1]].type,
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
 						filterOperator
 					);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					validateFilterOperator(schema.collections[collection].fields[filterPath[0]].type, filterOperator);
+					validateFilterOperator(
+						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
+						filterOperator
+					);
 
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
