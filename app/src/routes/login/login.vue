@@ -11,7 +11,7 @@
 
 		<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
 
-		<login-form v-else-if="!auth.disableDefault" :provider="provider" />
+		<login-form v-else-if="driver === 'default'" :provider="provider" />
 
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
@@ -29,8 +29,9 @@
 </template>
 
 <script lang="ts" setup>
-import { DEFAULT_AUTH_PROVIDER } from '@/constants';
-import { useAppStore, useServerStore } from '@/stores';
+import { DEFAULT_AUTH_PROVIDER, DEFAULT_AUTH_DRIVER } from '@/constants';
+import { useAppStore } from '@/stores/app';
+import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -49,11 +50,11 @@ withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const appStore = useAppStore();
-const driver = ref('local');
-const provider = ref(DEFAULT_AUTH_PROVIDER);
 const serverStore = useServerStore();
-
 const { auth, providerOptions } = storeToRefs(serverStore);
+
+const driver = ref(unref(auth).disableDefault ? unref(providerOptions)?.[0]?.driver : DEFAULT_AUTH_DRIVER);
+const provider = ref(unref(auth).disableDefault ? unref(providerOptions)?.[0]?.value : DEFAULT_AUTH_PROVIDER);
 
 const providerSelect = computed({
 	get() {
@@ -61,7 +62,7 @@ const providerSelect = computed({
 	},
 	set(value: string) {
 		provider.value = value;
-		driver.value = unref(auth).providers.find((provider) => provider.name === value)?.driver ?? 'local';
+		driver.value = unref(auth).providers.find((provider) => provider.name === value)?.driver ?? 'default';
 	},
 });
 

@@ -1,5 +1,5 @@
-import { useNotificationsStore } from '@/stores/';
-import { SnackbarRaw } from '@/types';
+import { useNotificationsStore } from '@/stores/notifications';
+import { SnackbarRaw } from '@/types/notifications';
 
 let store: any;
 

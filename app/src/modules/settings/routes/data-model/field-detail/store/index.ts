@@ -15,10 +15,12 @@ import { LOCAL_TYPES } from '@directus/shared/constants';
 import { computed } from 'vue';
 import { get, set } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 import * as alterations from './alterations';
-import { getLocalTypeForField } from '../../get-local-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 import api from '@/api';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {

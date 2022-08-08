@@ -263,7 +263,9 @@ export async function CreateFieldM2O(vendor: string, options: OptionsCreateField
 		fieldSchema: {},
 		primaryKeyType: 'integer',
 		relationMeta: {},
-		relationSchema: {},
+		relationSchema: {
+			on_delete: 'SET NULL',
+		},
 	};
 
 	options = Object.assign({}, defaultOptions, options);
@@ -319,7 +321,9 @@ export async function CreateFieldO2M(vendor: string, options: OptionsCreateField
 		otherMeta: {},
 		otherSchema: {},
 		relationMeta: {},
-		relationSchema: {},
+		relationSchema: {
+			on_delete: 'SET NULL',
+		},
 	};
 
 	options = Object.assign({}, defaultOptions, options);

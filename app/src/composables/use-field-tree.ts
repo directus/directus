@@ -1,4 +1,5 @@
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { Field, Relation, Type } from '@directus/shared/types';
 import { getRelationType } from '@directus/shared/utils';
 import { isNil } from 'lodash';

@@ -46,21 +46,17 @@ const logger = pino(Object.assign(pinoOptions, loggerEnvConfig));
 
 const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
 
-export const expressLogger = pinoHTTP(
-	{
-		logger,
-		...httpLoggerEnvConfig,
-	},
-	{
-		serializers: {
-			req(request: Request) {
-				const output = stdSerializers.req(request);
-				output.url = redactQuery(output.url);
-				return output;
-			},
+export const expressLogger = pinoHTTP({
+	logger,
+	...httpLoggerEnvConfig,
+	serializers: {
+		req(request: Request) {
+			const output = stdSerializers.req(request);
+			output.url = redactQuery(output.url);
+			return output;
 		},
-	}
-) as RequestHandler;
+	},
+}) as RequestHandler;
 
 export default logger;
 

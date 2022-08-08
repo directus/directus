@@ -1,4 +1,13 @@
-import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
+import {
+	Aggregate,
+	ClientFilterOperator,
+	FieldFunction,
+	Filter,
+	Query,
+	Relation,
+	SchemaOverview,
+	Type,
+} from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
@@ -8,7 +17,8 @@ import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
-import { getOutputTypeForFunction } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { stripFunction } from './strip-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -243,8 +253,8 @@ export function applySort(
 					knex,
 				});
 
-				const colPath = getColumnPath({ path: column, collection, aliasMap, relations }) || '';
-				const [alias, field] = colPath.split('.');
+				const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations });
+				const [alias, field] = columnPath.split('.');
 
 				return {
 					order,
@@ -353,18 +363,22 @@ export function applyFilter(
 
 			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
 				if (filterPath.length > 1) {
-					const columnName = getColumnPath({ path: filterPath, collection, relations, aliasMap });
+					const { columnPath, targetCollection } = getColumnPath({ path: filterPath, collection, relations, aliasMap });
 
-					if (!columnName) continue;
+					if (!columnPath) continue;
 
-					if (relation?.related_collection) {
-						applyFilterToQuery(columnName, filterOperator, filterValue, logical, relation.related_collection); // m2o
-					} else if (filterPath[0].includes(':')) {
-						applyFilterToQuery(columnName, filterOperator, filterValue, logical, filterPath[0].split(':')[1]); // a2o
-					} else {
-						applyFilterToQuery(columnName, filterOperator, filterValue, logical);
-					}
+					validateFilterOperator(
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
+						filterOperator
+					);
+
+					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
+					validateFilterOperator(
+						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
+						filterOperator
+					);
+
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
@@ -400,6 +414,19 @@ export function applyFilter(
 				}
 			}
 		}
+
+		function validateFilterOperator(type: Type, filterOperator: string) {
+			if (filterOperator.startsWith('_')) {
+				filterOperator = filterOperator.slice(1);
+			}
+
+			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
+				throw new InvalidQueryException(
+					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
+				);
+			}
+		}
+
 		function applyFilterToQuery(
 			key: string,
 			operator: string,

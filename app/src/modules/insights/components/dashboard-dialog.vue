@@ -33,9 +33,9 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineComponent, ref, reactive, PropType, watch } from 'vue';
-import { useInsightsStore } from '@/stores';
+import { useInsightsStore } from '@/stores/insights';
 import { router } from '@/router';
-import { Dashboard } from '@/types';
+import { Dashboard } from '@/types/insights';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 

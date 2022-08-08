@@ -82,7 +82,7 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
 	field: Field;
@@ -255,6 +255,14 @@ function useComputedValues() {
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
+
+	:deep(a) {
+		color: var(--primary);
+
+		&:hover {
+			color: var(--primary-125);
+		}
+	}
 }
 
 .invalid {

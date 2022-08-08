@@ -1,7 +1,7 @@
 import api from '@/api';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
-import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
+import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';

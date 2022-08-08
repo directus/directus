@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
 	role?: Record<string, any> | null;

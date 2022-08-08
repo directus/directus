@@ -67,12 +67,10 @@ jobs:
           path: '**/dist'
           key: build-artifacts-${{ github.sha }}
 
-      - name: Setup Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16.15'
-          registry-url: https://registry.npmjs.org
-          cache: npm
+          node-version: 16
 
       - uses: pnpm/action-setup@v2.0.1
         name: Install pnpm

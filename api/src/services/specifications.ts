@@ -475,7 +475,7 @@ class OASSpecsService implements SpecificationSubService {
 	private fieldTypes: Record<
 		Type,
 		{
-			type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
+			type?: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
 			format?: string;
 			items?: any;
 		}
@@ -521,12 +521,7 @@ class OASSpecsService implements SpecificationSubService {
 		integer: {
 			type: 'integer',
 		},
-		json: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
-		},
+		json: {},
 		string: {
 			type: 'string',
 		},
