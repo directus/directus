@@ -134,6 +134,7 @@ const allowedEnvironmentVars = [
 	// extensions
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
+	'EXTENSIONS_AUTO_RELOAD_PATH',
 	// emails
 	'EMAIL_FROM',
 	'EMAIL_TRANSPORT',
@@ -216,6 +217,7 @@ const defaults: Record<string, any> = {
 
 	EXTENSIONS_PATH: './extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
+	EXTENSIONS_AUTO_RELOAD_PATH: '',
 
 	EMAIL_FROM: 'no-reply@directus.io',
 	EMAIL_VERIFY_SETUP: true,

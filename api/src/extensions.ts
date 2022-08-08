@@ -50,7 +50,7 @@ import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
 import { clone, escapeRegExp } from 'lodash';
 import chokidar, { FSWatcher } from 'chokidar';
-import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
+import { isIn, isTypeIn, pluralize, toArray } from '@directus/shared/utils';
 import { getFlowManager } from './flows';
 import globby from 'globby';
 import { EventHandler } from './types';
@@ -228,9 +228,18 @@ class ExtensionManager {
 					: path.posix.join(typeDir, '*', 'index.js');
 			});
 
-			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
-				ignoreInitial: true,
-			});
+			const additionalExtensionPaths = !env.EXTENSIONS_AUTO_RELOAD_PATH
+				? []
+				: toArray(env.EXTENSIONS_AUTO_RELOAD_PATH).flatMap((item) => {
+						return path.resolve(item);
+				  });
+
+			this.watcher = chokidar.watch(
+				[path.resolve('package.json'), ...localExtensionPaths, ...additionalExtensionPaths],
+				{
+					ignoreInitial: true,
+				}
+			);
 
 			this.watcher
 				.on('add', () => this.reload())
