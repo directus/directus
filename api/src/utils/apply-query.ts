@@ -376,7 +376,7 @@ export function applyFilter(
 					const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
 						subQueryKnex
 							.select({ [schema.collections[collection].primary]: column })
-							.distinctOn(column)
+							.distinct()
 							.from(collection)
 							.whereNotNull(column);
 
@@ -428,7 +428,7 @@ export function applyFilter(
 
 					subQueryKnex
 						.select({ [field]: column })
-						.distinctOn(`${collection}.${schema.collections[collection].primary}`)
+						.distinct()
 						.from(collection)
 						.whereNotNull(column);
 
