@@ -1,6 +1,6 @@
 # NOTE: Testing Only. DO NOT use this in production
 
-ARG NODE_VERSION=16-alpine
+ARG NODE_VERSION=18-alpine
 
 FROM node:${NODE_VERSION}
 
@@ -35,7 +35,6 @@ COPY . .
 RUN apk add --update python3 make g++\
    && rm -rf /var/cache/apk/*
 
-RUN npm install --location=global npm@latest
 RUN yarn --force
 RUN #npm install
 #RUN yarn
