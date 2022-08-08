@@ -392,3 +392,36 @@ fields:
   - field: translation_strings
     special: cast-json
     hidden: true
+
+  - field: image_editor
+    interface: presentation-divider
+    options:
+      icon: image
+      title: $t:fields.directus_settings.image_editor
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: custom_aspect_ratios
+    interface: list
+    special: cast-json
+    options:
+      template: '{{text}}'
+      fields:
+        - field: text
+          name: $t:text
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: $t:text
+        - field: value
+          name: $t:value
+          type: float
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: $t:value

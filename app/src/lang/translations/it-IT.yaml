@@ -1137,6 +1137,8 @@ fields:
     transformations_all: Permetti tutte le trasformazioni
     transformations_none: Disabilita le trasformazioni
     transformations_presets: Limita le trasformazioni ai preset preimpostati
+    image_editor: Editor di immagini
+    custom_aspect_ratios: Rapporti d'aspetto personalizzati
   directus_shares:
     name: Nome
     role: Ruolo

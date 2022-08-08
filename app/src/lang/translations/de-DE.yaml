@@ -308,6 +308,7 @@ primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
+toggle_raw_editor: Raw-Editor umschalten
 raw_value: Rohwert
 copy_raw_value: Unverarbeiteten Wert kopieren
 copy_raw_value_success: Kopiert
@@ -1122,6 +1123,8 @@ fields:
     transformations_all: Alle Transformationen erlauben
     transformations_none: Transformationen deaktivieren
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
+    image_editor: Bildeditor
+    custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
   directus_shares:
     name: Name
     role: Rolle
@@ -1361,6 +1364,7 @@ reset: Zurücksetzen
 reset_password: Passwort zurücksetzen
 revisions: Revisionen
 no_revisions: Noch keine Revision
+no_logs: Keine Logs vorhanden
 revert: Zurücksetzen
 save: Speichern
 schema: Schema
@@ -1380,6 +1384,7 @@ export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die 
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
+require_value_to_be_set: Wert muss bei Erstellung gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
@@ -1402,6 +1407,7 @@ interfaces:
     no_rules: Keine konfigurierten Regeln
     change_value: Klicken um Wert zu ändern
     placeholder: Regeln hierher ziehen
+    add_key_placeholder: Tag hinzufügen und Enter drücken...
   fields:
     name: Felder
   group-accordion:
@@ -1487,6 +1493,7 @@ interfaces:
     allow_none_label: Keine Auswahl zulassen
     choices_name_placeholder: Namen eingeben...
     choices_value_placeholder: Gib einen Wert ein...
+    preview_threshold: Vorschau-Grenzwert
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (Mehrfachauswahl)
     description: Mehrere Werte aus einer Dropdown-Liste auswählen
@@ -1678,8 +1685,12 @@ interfaces:
     start_closed: Geschlossen starten
   system-token:
     system-token: Token
+    description: Statische Zugriffstoken verwalten
+    placeholder: Klicken Sie auf "Token generieren", um ein neuen statischen Zugriffstoken zu erstellen
+    value_securely_saved: Wert sicher gespeichert
     generate: Token generieren
     regenerate: Token neu generieren
+    generate_success_copy: Stellen Sie sicher, dass Sie den obige Token sichern und kopieren. Aus Sicherheitsgründen können Sie den Token nach dem Speichern und Navigieren von dieser Seite nicht mehr anzeigen.
     remove_token: Token löschen
 displays:
   translations:
@@ -1910,9 +1921,10 @@ panels:
     smooth: 'Weich'
     straight: 'Gerade'
   meter:
-    arc: Bogen
+    name: Meter
     stroke_width: Strichbreite
     select_max_value: Es muss einen Maximalwert ausgewählt werden.
+    max_greater_than_zero: Der Wert muss größer als 0 sein.
     select_field: Sie müssen ein Feld auswählen.
     select_collection: Sie müssen eine Sammlung auswählen.
     function: Funktion
@@ -1923,6 +1935,7 @@ panels:
     name: Kuchen oder Donut Diagramm
     function: 'Funktion'
     donut: Donut
+    labels: Label anzeigen
     legend: Legende anzeigen
     right: Rechts
     bottom: Unten
