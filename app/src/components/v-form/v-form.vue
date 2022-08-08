@@ -387,7 +387,11 @@ export default defineComponent({
 
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };
-				delete newEdits[field.field];
+				if (props.initialValues && field.field in props.initialValues) {
+					newEdits[field.field] = props.initialValues[field.field];
+				} else {
+					delete newEdits[field.field];
+				}
 				emit('update:modelValue', newEdits);
 			}
 		}

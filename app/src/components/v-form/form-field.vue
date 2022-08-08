@@ -255,6 +255,14 @@ function useComputedValues() {
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
+
+	:deep(a) {
+		color: var(--primary);
+
+		&:hover {
+			color: var(--primary-125);
+		}
+	}
 }
 
 .invalid {
