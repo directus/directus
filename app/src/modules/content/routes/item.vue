@@ -358,9 +358,13 @@ const internalPrimaryKey = computed(() => {
 });
 
 const disabledOptions = computed(() => {
-	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
+	let disabled = [];
+	if (!unref(primaryKeyField)?.schema?.is_generated) {
+		disabled.push('save-as-copy');
+	}
+	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy', ...disabled];
 	if (isNew.value) return ['save-as-copy'];
-	return [];
+	return disabled;
 });
 
 function useBreadcrumb() {
