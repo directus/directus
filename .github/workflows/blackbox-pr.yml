@@ -7,8 +7,10 @@ on:
     paths:
       - api/**
       - tests-blackbox/**
+      - packages/shared/**
       - package.json
       - pnpm-lock.yaml
+      - .github/workflows/blackbox-pr.yml
 
 concurrency:
   group: blackbox-pr-${{ github.ref }}
