@@ -22,13 +22,13 @@ jobs:
         language:
           - javascript
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
-          build: 'false'
+          build: false
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
