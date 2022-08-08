@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+//import { describe, expect, it } from 'vitest';
 import { Filter } from '../../src/types/filter';
 import { validatePayload } from './validate-payload';
 
@@ -17,5 +17,24 @@ describe('validatePayload', () => {
 		const mockFilter = { _or: [{ field: { _eq: 'field' } }] } as Filter;
 		const mockPayload = { field: 'test' };
 		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(1);
+	});
+	it('returns an array of 1 when there errors with an _or containing _and operators', () => {
+		const mockFilter = {
+			_or: [
+				{
+					_and: [{ a: { _eq: 1 } }, { b: { _eq: 1 } }],
+				},
+				{
+					_and: [{ a: { _eq: 2 } }, { b: { _eq: 2 } }],
+				},
+			],
+		} as Filter;
+
+		const mockPayload = {
+			a: 0,
+			b: 0,
+		};
+
+		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(4);
 	});
 });
