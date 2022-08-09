@@ -176,7 +176,7 @@
 <script lang="ts">
 import Editor from '@tinymce/tinymce-vue';
 import { percentage } from '@/utils/percentage';
-import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs } from 'vue';
+import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import useImage from './useImage';
@@ -334,6 +334,19 @@ export default defineComponent({
 				return;
 			},
 		});
+
+		watch(
+			() => [props.direction, editorRef],
+			() => {
+				if (editorRef.value) {
+					if (props.direction === 'rtl') {
+						editorRef.value.editorCommands?.commands?.exec?.mcedirectionrtl();
+					} else {
+						editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
+					}
+				}
+			}
+		);
 
 		const editorOptions = computed(() => {
 			let styleFormats = null;
