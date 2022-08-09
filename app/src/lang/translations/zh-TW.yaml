@@ -197,12 +197,12 @@ field_update_success: '更新欄位: "{field}"'
 duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
 language_placeholder: 選擇語言...
-aggregate_function: 聚合函數
-aggregate_precision: 聚合精準
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
 camera: 相機
 show_zero: 顯示零值
+create_in_advanced_field_creation_mode: 建立進階欄位
+continue_in_advanced_field_creation_mode: 使用進階模式編輯欄位
 validation: 驗證
 sum: 總和
 avg: 平均
@@ -213,6 +213,7 @@ exposure: 曝光度
 shutter: 快門
 iso: ISO
 focal_length: 焦距
+schema_setup_key: 此欄位在資料庫及API中使用的名稱
 create_field: 新建欄位
 creating_new_field: '新欄位 ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -275,12 +276,14 @@ add_note: 新增提示
 add_link: 新增連結
 custom_link: 自訂連結
 default_value: 預設值
+standard_field: 標準欄位
 single_file: 單一檔案
 multiple_files: 多個檔案
 m2o_relationship: 多對一關聯
 o2m_relationship: 一對多關聯
 m2m_relationship: 多對多關聯
 m2a_relationship: 多對Any關係
+invalid_item: 無效項目
 next: 下一個
 field_name: 欄位名稱
 translations: 翻譯
@@ -289,6 +292,8 @@ note: 備註
 enter_a_value: 請輸入...
 enter_a_placeholder: 輸入一個佔位符...
 length: 長度
+soft_length: 軟限制
+precision_scale: 精度與規格
 readonly: 唯讀
 unique: 唯一
 updated_on: 更新於
@@ -297,27 +302,47 @@ primary_key: 主鍵
 foreign_key: 外鍵
 finish_setup: 完成安装
 dismiss: 忽略
+toggle_raw_editor: 切換原始碼編輯器
 raw_value: 原始值
+copy_raw_value: 複製原始資料
+copy_raw_value_success: 已複製
+copy_raw_value_fail: 複製失敗
+paste_raw_value: 貼上原始資料
+paste_raw_value_success: 已貼上
+paste_raw_value_fail: 貼上失敗
+view_raw_value: 檢視原始資料
 edit_raw_value: 編輯原始值
 enter_raw_value: 輸入原始值...
+clear_value: 清除內容
 clear_changes: 清除更改
+reset_to_default: 重設為預設值
+undo_changes: 還原變更
 notifications: 通知
 show_all_activity: 顯示所有活動
 page_not_found: 無法找到網頁
 page_not_found_body: 您在找的頁面不存在
+confirm_revert: 確定還原
 confirm_revert_body: 這將復原項目到所選狀態
 display: 顯示
 settings_update_success: 設定已更新
 title: 標題
 revision_delta_created: 已建立
+revision_delta_created_externally: 由外部建立
 revision_delta_updated: '更新 1 個欄位 | 更新 {count} 個欄位'
 revision_delta_deleted: 已刪除
 revision_delta_reverted: 已復原
+revision_delta_update_message: 欄位已更新，由於安全問題，內容已清除。
 revision_delta_other: 版本
 revision_delta_by: '{date} 由 {user}'
+presentation_text_values_cannot_be_reimported: "使用顯示文字，內容無法重新匯入。"
+download_page_as_csv: '將此頁下載為 CSV'
 private_user: 私密用戶
+creation_preview: 建立預覽
+revision_preview: 版本差異預覽
+updates_made: 更新已建立
 leave_comment: 發表評論
 post_comment_success: 評論已發佈。
+post_comment_updated: 意見已儲存
 item_create_success: 項目已建立 | 多個項目已建立
 item_update_success: 項目已更新 | 多個項目已更新
 item_delete_success: 項目已刪除 | 多個項目已刪除
@@ -330,7 +355,10 @@ import_data_input_placeholder: CSV 或 JSON...
 import_data_button: 開始匯入
 import_data_indeterminate: 正在匯入資料...
 import_data_success: 資料已成功由 {filename} 匯入
+import_data_error: 檔案的資料格式與目前的資料集不符合
 label_import: 匯入
+label_export: 匯出
+import_export: 匯入／匯出
 format: 格式
 last_page: 最後一頁
 last_access: 最後存取
@@ -347,9 +375,12 @@ interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
+delete_share: 刪除分享
 functions:
   year: 年
   month: 月
+  week: 週
+  day: 日
   weekday: 上班日
   hour: 時
   minute: 分
@@ -410,6 +441,10 @@ not_available_for_local_downloads: 無法下載至本地
 exporting_all_items_in_collection: 將 {collection} 中的所有 {total} 個項目匯出。
 exporting_limited_items_in_collection: '{collection} 中共有 {total} 個項目，現在匯出 {limit} 個。'
 exporting_no_items_to_export: 沒有可供匯出的項目，請修改匯出設定。
+exporting_download_hint: 完成後，{format} 格式的檔案將會下載到您的裝置上。
+exporting_batch_hint: 將進行批次匯出作業，完成後 {format} 檔案將會儲存到檔案庫中。
+exporting_batch_hint_forced: 由於資料項目較多，將進行批次匯出作業，完成後 {format} 檔案將會儲存到檔案庫中。
+collection_key: 資料集名稱
 name: 名稱
 primary_key_field: 主鍵欄位
 type: 類型
@@ -419,6 +454,7 @@ created_on: 建立於
 creating_collection_info: 設定集合名稱，以及該集合的「關鍵」欄位
 creating_collection_system: 啟用並設定任何選用欄位的名稱
 auto_increment_integer: 自動遞增整數
+auto_increment_big_integer: 自動增加的長整數
 generated_uuid: 產生UUID
 manual_string: 自訂輸入的字串
 save_and_create_new: 儲存並新建
@@ -439,10 +475,13 @@ disabled: 已停用
 information: 詳細資訊
 report_bug: 回報程式錯誤
 request_feature: 功能請求
+request_body: 呼叫內文
 interface_not_found: '找不到介面"{interface}"'
+operation_not_found: '找不到作業 {operation}'
 reset_interface: 重置介面
 display_not_found: '顯示 "{display}" 找不到'
 reset_display: 重設顯示
+list-m2a: 編輯器 (多對一)
 item_count: '無項目 | 一個項目 | {count} 個項目'
 no_items_copy: 此集合中還沒有任何項目。
 file_count: '沒有檔案 | 1 個檔案 | {count} 個檔案'
@@ -450,6 +489,9 @@ no_files_copy: 這裡還沒有任何檔案。
 user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
 no_users_copy: 這個角色中還沒有任何使用者。
 webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
+no_webhooks_copy: 目前未設定任何 webhook ，從下方開始建立
+no_notifications: 沒有通知
+no_notifications_copy: 已經追上了！沒有新通知。
 activity_log: 歷程紀錄
 all_items: 所有項目
 any: 任何
@@ -459,6 +501,7 @@ create_collection: 新建集合
 no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始。
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
+display_template_not_setup: 顯示範本選項設定錯誤。
 collection_field_not_setup: 集合中有欄位設定錯誤
 select_a_collection: 選擇一個集合
 select_a_field: 選擇一個欄位
@@ -475,6 +518,11 @@ action: 操作
 ip_address: IP位址
 user_agent: 代理用戶
 webhooks: Webhooks
+decimals: 小數點
+value_decimals: 含有小數點的值
+min_value: 最小值
+max_value: 最大值
+automatic: 自動
 field_width: 欄位寬度
 add_filter: 新增篩選器
 upper_limit: 上限...
@@ -522,8 +570,14 @@ errors:
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
   RECORD_NOT_UNIQUE: 偵測到重複資料
+  USER_SUSPENDED: 用戶已停用
+  CONTAINS_NULL_VALUES: 欄位含有空白值
+  UNPROCESSABLE_ENTITY: 無法處理的項目
   INTERNAL_SERVER_ERROR: 未預期的錯誤
   NOT_NULL_VIOLATION: 值不能為null
+  ILLEGAL_ASSET_TRANSFORMATION: 原始檔案過大，無法預覽
+  VALUE_TOO_LONG: 數值過長
+  VALUE_OUT_OF_RANGE: 內容值超出範圍
   UNKNOWN: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
@@ -608,11 +662,17 @@ item: 項目
 items: 項目
 upload_file: 上傳檔案
 upload_file_indeterminate: 正在上傳檔案
+columns: 欄位
 collection_setup: 集合設定
 optional_system_fields: 選用系統欄位
 value_unique: 值必須是唯一的
+all_activity: 所有活動
+create_item: 建立項目
 display_template: 顯示模板
+language_display_template: 語言顯示範本
+translations_display_template: 翻譯顯示範本
 n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
+per_page: 每頁
 all_files: 所有檔案
 my_files: 我的檔案
 recent_files: 最近使用的檔案
@@ -627,15 +687,28 @@ no_results_copy: 調整或清除搜尋篩選器以查看結果。
 clear_filters: 清除篩選器
 saves_automatically: 自動儲存
 role: 角色
+edit_role: 編輯角色
+rule: 規則
 user: 用戶
+no_presets: 無預設值
+no_presets_copy: 沒有建立任何預設內容或書籤。
+no_presets_cta: 新增預設
+presets_only: 只有預設
 create: 新建
+on_create: 建立時
 on_update: 更新時
 read: 讀取
 update: 更新
+delete: 刪除
 select_fields: 選擇欄位
 format_text: 格式化文本
+format_value: 格式化值
+abbreviate_value: 縮寫值
+operator: 操作者
 bold: 粗體
 toggle: 切換
+icon_on: 圖示開啟
+icon_off: 圖示關閉
 label: 標籤
 flows: 流程
 flow: 流程
@@ -690,12 +763,43 @@ delete_dashboard: 刪除儀表板
 visible: 顯示
 prefix_placeholder: 前綴字元....
 suffix_placeholder: 後綴字元....
+decimals_placeholder: 小數點位置
 no_dashboards: 目前沒有儀表板
 no_dashboards_copy: 目前尚未建立儀表板
 create_dashboard: 建立儀表板
 dashboard_name: 儀表板名稱
+no_data: 沒有資料
+no_data_in_flow: 此流程沒有產生或存取任何資料
+accountability: 負責
+payload: 傳送資料
+details: 細節
+full_screen: 全螢幕
+full_text_search: 全文搜尋
+edit_panels: 編輯面板
+center_align: 置中對齊
+left_align: 置左對齊
+right_align: 置右對齊
+fit_to_screen: 符合螢幕大小
+image_url: 圖檔網址
+alt_text: 替代性文字
+media: 媒體
+quality: 品質
 width: 寬度
 height: 高度
+transformation_preset_key: 轉換預設鍵值
+source: 來源
+url_placeholder: 輸入網址.....
+display_text: 顯示文字
+display_text_placeholder: 輸入顯示文字
+interface_group_text_and_numbers: 文字與數字
+interface_group_selection: 選擇
+interface_group_relational: 關係
+interface_group_presentation: 顯示
+interface_group_groups: 群組：
+interface_group_other: 其它
+tooltip: 工具提示
+tooltip_placeholder: 輸入工具提示....
+unlimited: 無限制
 wysiwyg_options:
   aligncenter: 置中
   alignleft: 置左對齊
@@ -791,6 +895,17 @@ system_fields_locked: 系統欄位已鎖定無法編輯
 directus_collection:
   directus_activity: 所有事件的詳細紀錄
   directus_folders: 提供虛擬資料夾供存放檔案。
+  directus_panels: 在儀表板中的獨立面板
+  directus_permissions: 每種角色的使用權限
+  directus_presets: 資料集以及書籤的預設值
+  directus_relations: 關聯資料及元資料的設定
+  directus_revisions: 所有操作的資料快照
+  directus_roles: 系統使用者的權限組
+  directus_sessions: 使用者登入階段資訊
+  directus_settings: 專案設定選項
+  directus_shares: 追蹤外部分享資料項目
+  directus_users: 平台的系統使用者
+  directus_webhooks: 事件驅動的 HTTP 請求設定
 fields:
   directus_activity:
     item: 項目主鍵值
@@ -801,6 +916,7 @@ fields:
     comment: 評論
     user_agent: 代理用戶
     ip: IP位址
+    revisions: 修訂版本
   directus_collections:
     collection: 集合
     icon: 圖示
@@ -809,13 +925,23 @@ fields:
     display_template: 顯示模板
     hidden: 隱藏
     singleton: 單一資料
+    translations: 集合名稱翻譯
+    archive_app_filter: 歸檔篩選器
+    archive_value: 歸檔值
+    unarchive_value: 不歸檔值
     sort_field: 排序欄位
+    accountability: 操作及修訂追蹤
+    archive_field: 歸檔欄位
+    item_duplication_fields: 項目重複欄位
   directus_files:
+    $thumbnail: 縮圖
     title: 標題
     description: 描述說明
     tags: 標籤
     location: 位置
     storage: 儲存空間
+    filename_disk: 檔案名稱(磁碟)
+    filename_download: 檔案名稱(下載)
     metadata: 元數據
     type: Mime 類型
     filesize: 檔案大小
@@ -841,15 +967,42 @@ fields:
     title: 標題
     description: 描述說明
     tags: 標籤
+    user_preferences: 使用者喜好設定
     language: 語言
     theme: 主題
+    theme_auto: 自動 (根據系統設定)
+    theme_light: 淺色模式
+    theme_dark: 深色模式
     tfa_secret: 雙重身份驗證
+    admin_options: 管理選項
     status: 狀態
+    status_draft: 草稿
+    status_invited: 已邀請
     status_active: 有效的
+    status_suspended: 已暫停
+    status_archived: 已封存
     role: 角色
+    token: 權杖
+    provider: 供應商
+    external_identifier: 外部索引值
     last_page: 最後一頁
     last_access: 最後存取
+    email_notifications: 電子郵件通知
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: 地圖
+    basemaps: 基礎地圖
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox 風格
+    mapbox_key: Mapbox Access Token
+    attribution: 致謝
+    attribution_placeholder: '© OpenStreetMap'
+    transforms_note: Sharp方式的名稱以及其欄位。請至 https://sharp.pixelplumbing.com/api-constructor 查詢更多資訊。
+    additional_transforms: 其他轉換
     project_name: 專案名稱
     project_url: 專案 URL
     project_color: 專案顏色
@@ -885,38 +1038,93 @@ fields:
     value: 值
     collections: 資料集
 field_options:
+  directus_settings:
+    additional_transforms: 其他轉換
+    transforms_note: Sharp方式的名稱以及其欄位。請至 https://sharp.pixelplumbing.com/api-constructor 查詢更多資訊。
+    mapbox_key: Mapbox Access Token
+    basemaps: 基礎地圖
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox 風格
   directus_activity:
     login: 登入
     create: 新建
     update: 更新
   directus_collections:
+    do_not_track_anything: 不進行任何追蹤
     collection_setup: 集合設定
+    note_placeholder: 這個資料集的簡介
+    hidden_label: 在管理介面中隱藏
     singleton: 視為單一物件
     language: 語言
     translation: 翻譯
+    translation_placeholder: 輸入翻譯...
     collection_name: 集合名稱
+    singular_unit: 單數時名稱
+    plural_unit: 複數時名稱
     archive_divider: 封存
+    archive_field_placeholder: 選擇欄位
+    archive_app_filter: 啟用歸檔篩選
+    archive_value: 當歸檔時將值設定為
+    unarchive_value: 當不歸檔時將值設定為
     sort_divider: 排序
+    sort_field: 選擇欄位
+    accountability_divider: 負責
+    duplication_divider: 複製
+  directus_files:
+    title: 不重複的標題...
+    description: 選填的描述內容
+    location: 選填的地點....
+    storage_divider: 檔案命名
+    filename_disk: 在磁碟儲存的名稱
+    filename_download: 下載時的名稱
   directus_roles:
+    name: 這個角色的名稱
+    description: 這個角色的簡介
+    ip_access: 輸入允許的IP位置，留白的話則全部允許
     fields:
       icon_name: 圖示
       name_name: 名稱
+      name_placeholder: 輸入標題
+      link_name: 連結
+      link_placeholder: 相關或絕對網址
     collections_name: 資料集
+    collections_addLabel: 新增資料集
   directus_users:
+    preferences_divider: 使用者喜好設定
+    dropdown_auto: 自動 (根據系統設定)
+    dropdown_light: 淺色模式
+    dropdown_dark: 深色模式
+    admin_divider: 管理選項
+    status_dropdown_draft: 草稿
+    status_dropdown_invited: 已邀請
     status_dropdown_active: 有效的
+    status_dropdown_suspended: 已暫停
+    status_dropdown_archived: 已封存
+    token: 輸入安全的 access token
   directus_webhooks:
     status_options_active: 有效的
     status_options_inactive: 未啟用
+    data_label: 傳送事件資料
+    triggers_divider: 觸發器
     actions_create: 新建
     actions_update: 更新
+    actions_delete: 刪除
+    actions_login: 登入
     headers:
+      header: 標題
       value: 值
+      add: 新增標題
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
+no_value: 尚無內容
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID
 save_current_user_id: 儲存當前使用者 ID
 save_current_user_role: 儲存當前使用者角色
 save_current_datetime: 儲存當前日期/時間
+always_open: 總是開啟
+start_open: 現在打開
+start_collapsed: 現在折疊
 comment: 評論
 editing_role: '{role} 角色'
 creating_webhook: 建立 Webhook
@@ -968,6 +1176,7 @@ something_went_wrong: 出了點問題
 sort_direction: 排序方向
 template: 模板
 translation: 翻譯
+translation_placeholder: 輸入翻譯...
 value: 值
 interfaces:
   filter:
@@ -1052,6 +1261,7 @@ interfaces:
     description: 可以編輯HTML內容的編輯器
     folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
   system-token:
+    system-token: 權杖
     placeholder: 點選「產生token」來建立一個新的靜態token
 displays:
   translations:
@@ -1059,6 +1269,8 @@ displays:
   boolean:
     boolean: 布林值
     description: 顯示開關狀態
+    icon_on: 圖示開啟
+    icon_off: 圖示關閉
   collection:
     collection: 集合
   color:
@@ -1134,6 +1346,10 @@ panels:
   label:
     name: 標籤
 operations:
+  item-create:
+    payload: 傳送資料
+  item-update:
+    payload: 傳送資料
   log:
     message: 訊息
   notification:
