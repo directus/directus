@@ -1601,18 +1601,43 @@ interfaces:
     toggle_split_view: ڕەوشگۆڕینی جیاکەرەوەی بینین
     enable: کاراکردن
     user_language: بەکارهێنانی زمانی بەکارهێنەری ئێستا
+    default_language: زمانی بنەڕەتی
+    language_field: خانەی نیشاندەری زمان
   user:
     user: بەکارهێنەر
+    select_mode: دۆخ دیاری بکە
     modes:
+      auto: خودکار
       dropdown: لیستی داخراو
+      modal: مۆدێل
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: دەستکاریکەرێکی دەوڵەمەندی دەقە بە نوسینی ناوەڕۆکی HTML
+    toolbar: شریتی ئامرازەکان
+    custom_formats: شێوە تایبەتەکان
+    options_override: هەڵبژاردەکانی سەرپێچی
     imageToken: ئاماژەی دەستگەیشتنی جێگیر
     imageToken_label: نیشانەی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
+  input-autocomplete-api:
+    trigger: وروژاندن
+    rate: تێکڕا
+  group-raw:
+    name: دەستەی خاو
+    description: نمایشی خانەکە بکە وەک خۆی
+  group-detail:
+    name: دەستەی وردەکاری
+    show_header: نیشاندانی ناونیشانی دەستە
+    header_icon: ئایکۆنی ناونیشان
+    header_color: ڕەنگی ناونیشان
+    start_open: کرانەوەی دەستپێک
+    start_closed: دەستپێکی داخراو
   system-token:
     system-token: ئاماژە (Token)
+    description: بەڕێوەبردنی ئاماژەی دەستگەیشتنی جێگیر
 displays:
   translations:
     translations: وەرگێڕانەکان
+    language_field: خانەی نیشاندەری زمان
   boolean:
     boolean: دوڕا
     icon_on: ئایکۆنی چالاک
@@ -1627,7 +1652,12 @@ displays:
     suffix: پاشگر
   file:
     file: پەڕگە
+    description: نیشاندانی پەڕەگەکان
+  filesize:
+    filesize: قەبارەی پەڕگە
+    description: پێشاندانی قەبارەی پەڕگە
   formatted-value:
+    formatted-value: بەهای شێوە کراو
     format: شێواز
     font: فۆنت
     font_serif: Serif
