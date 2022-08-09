@@ -10,7 +10,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import getDatabase from '../database';
 import { getHelpers, Helpers } from '../database/helpers';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, ActionEventParams, Alterations, Item, PrimaryKey } from '../types';
+import { AbstractServiceOptions, ActionEventParams, Alterations, Item, MutationOptions, PrimaryKey } from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { ItemsService } from './items';
 
@@ -365,7 +365,8 @@ export class PayloadService {
 	 * Recursively save/update all nested related Any-to-One items
 	 */
 	async processA2O(
-		data: Partial<Item>
+		data: Partial<Item>,
+		opts?: MutationOptions
 	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.collection === this.collection;
@@ -432,12 +433,14 @@ export class PayloadService {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -452,7 +455,8 @@ export class PayloadService {
 	 * Save/update all nested related m2o items inside the payload
 	 */
 	async processM2O(
-		data: Partial<Item>
+		data: Partial<Item>,
+		opts?: MutationOptions
 	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const payload = cloneDeep(data);
 
@@ -506,12 +510,14 @@ export class PayloadService {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -527,7 +533,8 @@ export class PayloadService {
 	 */
 	async processO2M(
 		data: Partial<Item>,
-		parent: PrimaryKey
+		parent: PrimaryKey,
+		opts?: MutationOptions
 	): Promise<{ revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const revisions: PrimaryKey[] = [];
 
@@ -616,6 +623,7 @@ export class PayloadService {
 					...(await itemsService.upsertMany(recordsToUpsert, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					}))
 				);
 
@@ -641,6 +649,7 @@ export class PayloadService {
 					// There's no revision for a deletion
 					await itemsService.deleteByQuery(query, {
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					});
 				} else {
 					await itemsService.updateByQuery(
@@ -649,6 +658,7 @@ export class PayloadService {
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
 							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
 						}
 					);
 				}
@@ -668,6 +678,7 @@ export class PayloadService {
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
 							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
 						}
 					);
 				}
@@ -685,6 +696,7 @@ export class PayloadService {
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
 								bypassEmitAction: (params) => nestedActionEvents.push(params),
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}
@@ -711,6 +723,7 @@ export class PayloadService {
 					if (relation.meta.one_deselect_action === 'delete') {
 						await itemsService.deleteByQuery(query, {
 							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
 						});
 					} else {
 						await itemsService.updateByQuery(
@@ -719,6 +732,7 @@ export class PayloadService {
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
 								bypassEmitAction: (params) => nestedActionEvents.push(params),
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}

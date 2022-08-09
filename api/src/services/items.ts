@@ -124,12 +124,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
-			} = await payloadService.processM2O(payloadWithPresets);
+			} = await payloadService.processM2O(payloadWithPresets, opts);
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
-			} = await payloadService.processA2O(payloadWithM2O);
+			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
@@ -164,7 +164,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
 				payload,
-				primaryKey
+				primaryKey,
+				opts
 			);
 
 			nestedActionEvents.push(...nestedActionEventsM2O);
@@ -501,12 +502,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
-			} = await payloadService.processM2O(payloadWithPresets);
+			} = await payloadService.processM2O(payloadWithPresets, opts);
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
-			} = await payloadService.processA2O(payloadWithM2O);
+			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
@@ -525,7 +526,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			nestedActionEvents.push(...nestedActionEventsA2O);
 
 			for (const key of keys) {
-				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(payload, key);
+				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
+					payload,
+					key,
+					opts
+				);
 				childrenRevisions.push(...revisions);
 				nestedActionEvents.push(...nestedActionEventsO2M);
 			}
