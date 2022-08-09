@@ -301,8 +301,6 @@ next: Next
 field_name: Field Name
 translations: Translations
 no_translations: No Translations
-left_to_right: Left to Right
-right_to_left: Right to Left
 note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
@@ -1684,7 +1682,6 @@ interfaces:
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
-    language_direction_field: Language Direction Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
