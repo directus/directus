@@ -7,8 +7,14 @@ on:
     paths:
       - api/**
       - tests-blackbox/**
+      - packages/shared/**
       - package.json
       - pnpm-lock.yaml
+      - .github/workflows/blackbox-pr.yml
+
+concurrency:
+  group: blackbox-pr-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144
@@ -25,5 +31,4 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        shell: bash
         run: TEST_DB=sqlite3 pnpm run -w test:blackbox

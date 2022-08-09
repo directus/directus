@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { getCache } from '../cache';
+import { getCache, getCacheValue } from '../cache';
 import env from '../env';
 import asyncHandler from '../utils/async-handler';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
@@ -23,7 +23,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 	let cachedData;
 
 	try {
-		cachedData = await cache.get(key);
+		cachedData = await getCacheValue(cache, key);
 	} catch (err: any) {
 		logger.warn(err, `[cache] Couldn't read key ${key}. ${err.message}`);
 		if (env.CACHE_STATUS_HEADER) res.setHeader(`${env.CACHE_STATUS_HEADER}`, 'MISS');
@@ -34,7 +34,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 		let cacheExpiryDate;
 
 		try {
-			cacheExpiryDate = (await cache.get(`${key}__expires_at`)) as number | null;
+			cacheExpiryDate = (await getCacheValue(cache, `${key}__expires_at`))?.exp;
 		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't read key ${`${key}__expires_at`}. ${err.message}`);
 			if (env.CACHE_STATUS_HEADER) res.setHeader(`${env.CACHE_STATUS_HEADER}`, 'MISS');
