@@ -242,10 +242,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			} else {
 				opts.bypassEmitAction(actionEvent);
 			}
-		}
 
-		for (const actionEvent of nestedActionEvents) {
-			emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+			for (const nestedActionEvent of nestedActionEvents) {
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+			}
 		}
 
 		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
@@ -629,10 +629,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			} else {
 				opts.bypassEmitAction(actionEvent);
 			}
-		}
 
-		for (const actionEvent of nestedActionEvents) {
-			emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+			for (const nestedActionEvent of nestedActionEvents) {
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+			}
 		}
 
 		return keys;
