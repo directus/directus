@@ -43,6 +43,7 @@
 				</template>
 			</language-select>
 			<v-form
+				v-if="languageOptions.find((lang) => lang.value === secondLang)"
 				:primary-key="
 					relationInfo?.junctionPrimaryKeyField.field
 						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
