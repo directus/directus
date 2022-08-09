@@ -117,8 +117,8 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = fetchedSelectItems.value.map((item) => {
-			const edits = selected.value.find((edit) => {
+		const selectedOnPage = selected.value.map((item) => {
+			const edits = fetchedSelectItems.value.find((edit) => {
 				switch (relation.value?.type) {
 					case 'o2m':
 						return edit[targetPKField] === item[targetPKField];
