@@ -1436,12 +1436,31 @@ interfaces:
   presentation-links:
     presentation-links: دوگمە بەستەرەکان
     links: بەستەرەکان
+    style: شێواز
     primary: سەرەکی
     link: بەستەرەکان
+    button: دوگمەکان
+    error: ئەم کردارە ناتوانرێت جێبەجێ بکرێت
+  select-multiple-checkbox:
+    checkboxes: هەڵبژاردە خانەکان
+    description: هەڵبژێرە لەنێوان چەندین بژاردەدا لەڕێگەی هەڵبژاردەخانەکان
+    allow_other: ڕێگەپێدان بە زیاتر
+    show_more: 'نیشاندانی {count} یتر'
+    items_shown: ماددەکان نیشاندراون
+  select-multiple-checkbox-tree:
+    name: هەڵبژاردەخانەکان (درەخت)
+    description: هەڵبژێرە لەنێوان چەندین بژاردەدا لەڕێگەی هەڵبژاردەخانە بەیەکداچوەکان
+    value_combining: تێکەڵکردنی بەها
+    show_all: هەمووی نیشانبدە
+    show_selected: دیاریکراوەکان نیشانبدە
   input-code:
     code: کۆد
+    line_number: هێڵی ژمارە
+    line_wrapping: پێچانی هێڵ
+    placeholder: کۆدەکە لێرە دابنێ...
   system-collection:
     collection: کۆمەڵە
+    description: دیاریبکە لە نێوان کۆمەڵە بەردەستەکان
   system-collections:
     collections: کۆمەڵەکان
   select-color:
@@ -1453,6 +1472,7 @@ interfaces:
   presentation-divider:
     divider: دابەشکەر
   select-dropdown:
+    allow_other: ڕێگەپێدان بە زیاتر
     choices_value_placeholder: بەهایەک دابنێ...
     preview_threshold: ئاستی پێشبینین
   select-multiple-dropdown:
