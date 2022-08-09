@@ -1436,6 +1436,7 @@ interfaces:
   presentation-links:
     presentation-links: دوگمە بەستەرەکان
     links: بەستەرەکان
+    description: ڕێکخستنی دوگمەی بەستەرەکان بۆ کردنەوەی بەستەرە گۆڕاوەکان
     style: شێواز
     primary: سەرەکی
     link: بەستەرەکان
@@ -1451,20 +1452,38 @@ interfaces:
     name: هەڵبژاردەخانەکان (درەخت)
     description: هەڵبژێرە لەنێوان چەندین بژاردەدا لەڕێگەی هەڵبژاردەخانە بەیەکداچوەکان
     value_combining: تێکەڵکردنی بەها
+    value_combining_note: ڕێکخستنی ئەو بەهایەی کە دەبێت پاشەکەوت بکرێت کاتێک دیاریکەری بەیەکداچوو دروست دەبێت.
     show_all: هەمووی نیشانبدە
     show_selected: دیاریکراوەکان نیشانبدە
   input-code:
     code: کۆد
+    description: پارچە کۆدەکان بنووسە یان هاوبەشی بکە
     line_number: هێڵی ژمارە
     line_wrapping: پێچانی هێڵ
     placeholder: کۆدەکە لێرە دابنێ...
   system-collection:
     collection: کۆمەڵە
     description: دیاریبکە لە نێوان کۆمەڵە بەردەستەکان
+    include_system_collections: لە خۆگرتنی کۆمەڵەکانی سیستەم
   system-collections:
     collections: کۆمەڵەکان
+    description: دیاریبکە لە نێوان کۆمەڵە بەردەستەکان
+    include_system_collections: لە خۆگرتنی کۆمەڵەکانی سیستەم
   select-color:
     color: ڕەنگ
+    description: بەهای ڕەنگێک دابنێ یان دیاری بکە
+    placeholder: ڕەنگێک هەڵبژێرە...
+    preset_colors: پێشکۆمەڵی ڕەنگەکان
+    opacity: ڕوونی
+    preset_colors_add_label: ڕەنگێکی نوێ زیاد بکە...
+    name_placeholder: ناوی ڕەنگ بنوسە...
+  datetime:
+    datetime: کات و ڕێکەوت
+    description: کات و ڕێکەوتەکان دابنێ
+    include_seconds: چرکەش لەخۆبگرێت
+    set_to_now: ئێستا دابنێ
+    use_24: شێوازی 24 کاتژمێری دابنێ
+    placeholder: کات و ڕێکەوت هەڵبژێرە...
   system-display-template:
     display-template: پیشاندانی قالب
     collection_field_not_setup: بژاردەی خانەی کۆمەڵە هەڵەڕێکخراوە
@@ -1550,6 +1569,7 @@ displays:
   color:
     color: ڕەنگ
   datetime:
+    datetime: کات و ڕێکەوت
     format: شێواز
     suffix: پاشگر
   file:
