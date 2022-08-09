@@ -938,9 +938,13 @@ describe('Integration Tests', () => {
 					},
 					schema: schemas[schema].schema,
 				});
-				const response = await itemsService.updateOne(item.id, {
-					items: [],
-				});
+				const response = await itemsService.updateOne(
+					item.id,
+					{
+						items: [],
+					},
+					{ emitEvents: false }
+				);
 
 				expect(tracker.history.select.length).toBe(4);
 				expect(tracker.history.select[0].bindings).toStrictEqual([item.id, 1]);
