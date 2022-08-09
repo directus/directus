@@ -13,6 +13,7 @@
 				</template>
 			</language-select>
 			<v-form
+				v-if="languageOptions.find((lang) => lang.value === firstLang)"
 				:primary-key="
 					relationInfo?.junctionPrimaryKeyField.field
 						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]

@@ -273,6 +273,10 @@ export default defineComponent({
 			type: Number,
 			default: undefined,
 		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -323,7 +327,10 @@ export default defineComponent({
 			get() {
 				return props.value || '';
 			},
-			set() {
+			set(value) {
+				if (props.value !== value) {
+					contentUpdated();
+				}
 				return;
 			},
 		});
@@ -369,6 +376,7 @@ export default defineComponent({
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
 				browser_spellcheck: true,
+				directionality: props.direction,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};
