@@ -1486,12 +1486,26 @@ interfaces:
     placeholder: کات و ڕێکەوت هەڵبژێرە...
   system-display-template:
     display-template: پیشاندانی قالب
+    description: تێکەڵکردنی دەقی جێگیر و بەهاکانی خانەی گۆڕاو
+    collection_field: خانەی کۆمەڵە
     collection_field_not_setup: بژاردەی خانەی کۆمەڵە هەڵەڕێکخراوە
     select_a_collection: کۆمەڵەیەک هەڵبژێرە
   presentation-divider:
     divider: دابەشکەر
+    description: ناولێنان و دابەش کردنی خانەکان بۆ سەر بەشەکان
+    title_placeholder: ناونیشان بنوسە، یان بە بەتاڵی جێی بهێڵە بۆ تەنها نیشاندانی هێڵێک...
+    inline_title: ناونیشانی ناوهێڵ
+    inline_title_label: نیشاندانی ناونیشان لە ناو هێڵدا
+    margin_top: پەراوێزی سەرەوە
+    margin_top_label: زیادکردنی پەراوێزی سەرەوە
   select-dropdown:
+    description: دیاریکردنی بەها لە لیستی داخراودا
+    choices_placeholder: زیادکردنی هەڵبژاردەیەکی نوێ
     allow_other: ڕێگەپێدان بە زیاتر
+    allow_other_label: ڕێگەدان بە بەهای زیاتر
+    allow_none: ڕێگە بە هیچیان بدە
+    allow_none_label: ڕێگە بە هیچ هەڵبژاردنێک بدە
+    choices_name_placeholder: ناوێک تۆماربکە...
     choices_value_placeholder: بەهایەک دابنێ...
     preview_threshold: ئاستی پێشبینین
   select-multiple-dropdown:
@@ -1534,9 +1548,27 @@ interfaces:
     display_template: پیشاندانی قالب
   input-rich-text-md:
     markdown: Markdown
+    description: دایبنێ و Markdown ببینە
     edit: دەستکاری
+    preview: بینین
+    editorFont: دەستکاریکەری فۆنت
+    previewFont: بینینی فۆنت
+    customSyntax: خشتە تایبەتەکان
+    customSyntax_label: جۆرەکانی ڕستەسازی تایبەت زیاد بکە
+    customSyntax_add: ڕستەسازی تایبەت زیادبکە
+    box: بلۆک / ناوهێڵ
+    imageToken: ئاماژەی دەستگەیشتنی جێگیر
+    imageToken_label: نیشانەی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
   map:
+    map: نەخشە
+    description: شوێنێک هەڵبژێرە لەسەر نەخشە
     zoom: نزیکخستنەوە
+    geometry_type: جۆری ئەندازەیی
+    geometry_format: شێوەی ئەندازەیی
+    default_view: بینینی بنەڕەتی
+    invalid_options: بژاردە نادروستەکان
+    invalid_format: شێوەی نادروست ({format})
+    unexpected_geometry: '{expected} پێشبینیکراوە، {got} وەرگیراوە.'
   system-folder:
     folder: بوخچە
   list:
@@ -1545,16 +1577,37 @@ interfaces:
     tags: نیشانەکان
   input:
     mask: دامامککراو
+    maximum_value: گەورەترین بەها
+    step_interval: مەودای هەنگاو
+    slug_label: بەهای بەستەرە دانراوەکان پارێزراو بکە
+  input-multiline:
+    textarea: ناوچەی نوسین
+    description: دانانی نوسینی چەند دێڕی
+  input-translated-string:
+    input-translated-string: دەقە وەرگێڕدراوەکان
+    description: دەقی وەرگێڕان دیاریبکە یان زیادی بکە
+    search_placeholder: گەڕان...
+    new_translation_string: وەرگێڕانی دەقی نوێ
   boolean:
     toggle: ڕەوشگۆڕ
+    description: گۆڕین لە نێوان هەڵبون و خامۆش بووندا
+    color_on: ڕەنگی هەڵبوون
+    color_off: ڕەنگی خامۆشبوون
+    label_placeholder: پێناسێک دابنێ...
     label_default: چالاککراوە
   translations:
     display_template: پیشاندانی قالب
+    no_collection: هیچ کۆمەڵەیەک
     toggle_split_view: ڕەوشگۆڕینی جیاکەرەوەی بینین
+    enable: کاراکردن
+    user_language: بەکارهێنانی زمانی بەکارهێنەری ئێستا
   user:
     user: بەکارهێنەر
     modes:
       dropdown: لیستی داخراو
+  input-rich-text-html:
+    imageToken: ئاماژەی دەستگەیشتنی جێگیر
+    imageToken_label: نیشانەی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
   system-token:
     system-token: ئاماژە (Token)
 displays:
@@ -1603,6 +1656,8 @@ layouts:
     title: ناونیشان
   tabular:
     tabular: خشتە
+  map:
+    map: نەخشە
 panels:
   label:
     name: پێناس
