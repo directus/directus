@@ -299,6 +299,12 @@ delete_comment: Xóa Bình luận
 functions:
   year: Năm
   month: Tháng
+  week: Tuần
+  day: Ngày
+  weekday: Ngày trong tuần
+  hour: Giờ
+  minute: Phút
+  second: Giây
 minutes: Phút
 hours: Giờ
 month: Tháng
