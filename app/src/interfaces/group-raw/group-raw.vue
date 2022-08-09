@@ -11,6 +11,7 @@
 			:disabled="disabled"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
+			:direction="direction"
 			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
@@ -70,6 +71,10 @@ export default defineComponent({
 		rawEditorEnabled: {
 			type: Boolean,
 			default: false,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['apply'],
