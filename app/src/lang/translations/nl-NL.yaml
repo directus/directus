@@ -356,6 +356,12 @@ delete_comment: Reactie verwijderen
 functions:
   year: Jaar
   month: Maand
+  week: Week
+  day: Dag
+  weekday: Weekdag
+  hour: Uur
+  minute: Minuut
+  second: Seconde
   count: Aantal
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
@@ -1182,6 +1188,7 @@ displays:
     short: Kort
     relative: Relatief
     relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
+    suffix: Achtervoegsel
   file:
     file: Bestand
     description: Bestanden weergeven

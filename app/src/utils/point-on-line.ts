@@ -1,4 +1,4 @@
-type Point = [number, number];
+export type Point = [number, number];
 
 /**
  * Check if a given X, Y coordinate is on the line between two other points
@@ -18,6 +18,17 @@ export function pointOnLine(current: Point, point1: Point, point2: Point): boole
 
 	if (cross !== 0) return false;
 
-	if (Math.abs(dxl) >= Math.abs(dyl)) return dxl > 0 ? p1X <= curX && curX <= p2X : p2X <= curX && curX <= p1X;
-	else return dyl > 0 ? p1Y <= curY && curY <= p2Y : p2Y <= curY && curY <= p1Y;
+	if (Math.abs(dxl) >= Math.abs(dyl)) {
+		if (dxl > 0) {
+			return p1X <= curX && curX <= p2X;
+		} else {
+			return p2X <= curX && curX <= p1X;
+		}
+	} else {
+		if (dyl > 0) {
+			return p1Y <= curY && curY <= p2Y;
+		} else {
+			return p2Y <= curY && curY <= p1Y;
+		}
+	}
 }

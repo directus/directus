@@ -17,7 +17,7 @@
 import { defineComponent, computed } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import useSizeClass, { sizeProps } from '@/composables/size-class';
+import { useSizeClass, sizeProps } from '@/composables/use-size-class';
 
 import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';

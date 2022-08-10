@@ -103,6 +103,7 @@ export type AppTile = {
 	minHeight?: number;
 	draggable?: boolean;
 	borderRadius?: [boolean, boolean, boolean, boolean];
+	data?: Record<string, any>;
 };
 
 // Right now, it is not possible to do type Props = AppTile & {resizable?: boolean; editMode?: boolean}
@@ -384,7 +385,7 @@ function useDragDrop() {
 }
 
 .tile-content.has-header {
-	height: calc(100% - 48px);
+	height: calc(100% - 42px);
 }
 
 .header {

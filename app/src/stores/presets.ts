@@ -1,5 +1,5 @@
 import api from '@/api';
-import { useUserStore } from '@/stores/';
+import { useUserStore } from '@/stores/user';
 import { Preset } from '@directus/shared/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';

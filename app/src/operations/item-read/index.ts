@@ -14,7 +14,7 @@ export default defineOperationApp({
 			},
 			{
 				label: '$t:operations.item-read.key',
-				text: key ? toArray(key).join(', ') : '--',
+				text: toArray(key).length > 0 ? toArray(key).join(', ') : '--',
 			},
 		];
 
@@ -74,7 +74,7 @@ export default defineOperationApp({
 		{
 			field: 'query',
 			name: '$t:operations.item-read.query',
-			type: 'string',
+			type: 'json',
 			meta: {
 				width: 'full',
 				interface: 'input-code',
@@ -103,6 +103,18 @@ export default defineOperationApp({
 						2
 					),
 				},
+			},
+		},
+		{
+			field: 'emitEvents',
+			name: '$t:operations.item-create.emit_events',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 	],

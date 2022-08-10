@@ -23,7 +23,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, toRefs, PropType } from 'vue';
 import { useRouter } from 'vue-router';
-import { AuthProvider } from '@/types';
+import { AuthProvider } from '@/types/login';
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
 import { getRootPath } from '@/utils/get-root-path';
@@ -44,18 +44,22 @@ export default defineComponent({
 		const { providers } = toRefs(props);
 		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
 
-		watch(providers, () => {
-			ssoProviders.value = providers.value
-				.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
-				.map((provider: AuthProvider) => ({
-					name: formatTitle(provider.name),
-					link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
-						location.search,
-						''
-					)}?continue`,
-					icon: provider.icon ?? 'account_circle',
-				}));
-		});
+		watch(
+			providers,
+			() => {
+				ssoProviders.value = providers.value
+					.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
+					.map((provider: AuthProvider) => ({
+						name: formatTitle(provider.name),
+						link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
+							location.search,
+							''
+						)}?continue`,
+						icon: provider.icon ?? 'account_circle',
+					}));
+			},
+			{ immediate: true }
+		);
 
 		const errorFormatted = computed(() => {
 			const validReasons = ['SIGN_OUT', 'SESSION_EXPIRED'];

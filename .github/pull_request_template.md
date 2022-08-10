@@ -13,6 +13,7 @@ Fixes #
 ## Type of Change
 
 - [ ] Bugfix
+- [ ] Improvement
 - [ ] New Feature
 - [ ] Refactor / codestyle updates
 - [ ] Other, please describe:

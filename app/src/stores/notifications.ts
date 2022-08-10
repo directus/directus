@@ -1,4 +1,4 @@
-import { Snackbar, SnackbarRaw } from '@/types';
+import { Snackbar, SnackbarRaw } from '@/types/notifications';
 import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';

@@ -1,5 +1,5 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { FieldFunction, SchemaOverview } from '@directus/shared/types';
+import { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { getFunctions } from '../database/helpers';
@@ -21,7 +21,8 @@ export function getColumn(
 	table: string,
 	column: string,
 	alias: string | false = applyFunctionToColumnName(column),
-	schema: SchemaOverview
+	schema: SchemaOverview,
+	query?: Query
 ): Knex.Raw {
 	const fn = getFunctions(knex, schema);
 
@@ -37,7 +38,7 @@ export function getColumn(
 				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 			}
 
-			const result = fn[functionName as keyof typeof fn](table, columnName, { type }) as Knex.Raw;
+			const result = fn[functionName as keyof typeof fn](table, columnName, { type, query }) as Knex.Raw;
 
 			if (alias) {
 				return knex.raw(result + ' AS ??', [alias]);

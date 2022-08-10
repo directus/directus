@@ -309,6 +309,8 @@ primary_key: Chiave primaria
 foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
+toggle_raw_editor: Attiva/Disattiva editor grezzo
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valore grezzo
 copy_raw_value: Copia il valore grezzo
 copy_raw_value_success: Copiato
@@ -592,6 +594,7 @@ errors:
   VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
   INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
+  GRAPHQL_VALIDATION_EXCEPTION: Eccezione di validazione GraphQL
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -613,6 +616,7 @@ password_reset_sent: Se hai un account riceverai via email un link sicuro per re
 password_reset_successful: Password reimpostata con successo
 back: Indietro
 filter: Filtro
+edit_image: Modifica immagine
 editing_image: Modifica Immagine
 square: Quadrato
 free: Libero
@@ -1133,6 +1137,8 @@ fields:
     transformations_all: Permetti tutte le trasformazioni
     transformations_none: Disabilita le trasformazioni
     transformations_presets: Limita le trasformazioni ai preset preimpostati
+    image_editor: Editor di immagini
+    custom_aspect_ratios: Rapporti d'aspetto personalizzati
   directus_shares:
     name: Nome
     role: Ruolo
@@ -1502,6 +1508,7 @@ interfaces:
     allow_none_label: Consenti nessuna selezione
     choices_name_placeholder: Inserisci un nome...
     choices_value_placeholder: Inserisci un valore...
+    preview_threshold: Soglia anteprima
   select-multiple-dropdown:
     select-multiple-dropdown: Menu a discesa (Multipla)
     description: Seleziona più valori da un menu a discesa
@@ -1700,6 +1707,9 @@ interfaces:
     regenerate: Rigenera Token
     generate_success_copy: Assicurati di copiare e salvare il token qui sopra. Per motivi di sicurezza, non sarà possibile visualizzare nuovamente il token dopo aver salvato e navigato fuori da questa pagina.
     remove_token: Cancellare il token
+  system-raw-editor:
+    system-raw-editor: Editor Grezzo
+    description: Permetti l'inserimento di valori di template grezzi o di mustache
 displays:
   translations:
     translations: Traduzioni
@@ -1737,6 +1747,17 @@ displays:
     short: Breve
     relative: Relativo
     relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
+    suffix: Suffisso
+    suffix_label: Mostra indicatore relativo
+    suffix_note: Usa espressioni come 'fra...' e '...fa'
+    strict: Esatto
+    strict_label: Usa unià esatte
+    strict_note: Rimuove espressioni come 'quasi...', 'più di...', 'meno di...'
+    round: Arrotonda
+    round_note: Scegli una funzione di arrotondamento
+    down: In basso
+    nearest: Il più vicino
+    up: In alto
   file:
     file: File
     description: Visualizza file
@@ -1958,6 +1979,10 @@ panels:
     bottom: In basso
     monochrome: Monocromatico
     monochrome_color: Colore monocromatico
+  variable:
+    name: Variabile globale
+    description: Imposta un valore globale da usare nei filtri di altri pannelli
+    variable_key: Chiave della variabile
 triggers:
   common:
     response_body: Corpo della risposta
@@ -2012,6 +2037,7 @@ operations:
     description: Leggi elementi dal database
     key: ID
     query: Interrogazione
+    emit_events: Genera gli eventi
   item-update:
     name: Aggiorna dati
     description: Aggiorna elementi nel database

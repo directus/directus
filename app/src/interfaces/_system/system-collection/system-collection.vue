@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

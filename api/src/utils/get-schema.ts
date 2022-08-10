@@ -1,9 +1,9 @@
 import SchemaInspector from '@directus/schema';
 import { Accountability, Filter, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
-import { getCache, setSystemCache } from '../cache';
+import { getSystemCache, setSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
@@ -13,7 +13,6 @@ import logger from '../logger';
 import { RelationsService } from '../services';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
-import { parseJSON } from './parse-json';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -21,7 +20,6 @@ export async function getSchema(options?: {
 }): Promise<SchemaOverview> {
 	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
-	const { systemCache } = getCache();
 
 	let result: SchemaOverview;
 
@@ -29,7 +27,7 @@ export async function getSchema(options?: {
 		let cachedSchema;
 
 		try {
-			cachedSchema = (await systemCache.get('schema')) as SchemaOverview;
+			cachedSchema = (await getSystemCache('schema')) as SchemaOverview;
 		} catch (err: any) {
 			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
 		}

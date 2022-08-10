@@ -8,10 +8,19 @@ import {
 	GraphQLType,
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
-import { GraphQLDate, GraphQLGeoJSON } from '../services/graphql';
+import { GraphQLDate } from '../services/graphql/types/date';
+import { GraphQLGeoJSON } from '../services/graphql/types/geojson';
 import { Type } from '@directus/shared/types';
+import { GraphQLHash } from '../services/graphql/types/hash';
 
-export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLScalarType | GraphQLList<GraphQLType> {
+export function getGraphQLType(
+	localType: Type | 'alias' | 'unknown',
+	special: string[]
+): GraphQLScalarType | GraphQLList<GraphQLType> {
+	if (special.includes('conceal')) {
+		return GraphQLHash;
+	}
+
 	switch (localType) {
 		case 'boolean':
 			return GraphQLBoolean;
@@ -32,6 +41,8 @@ export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLSc
 		case 'dateTime':
 		case 'date':
 			return GraphQLDate;
+		case 'hash':
+			return GraphQLHash;
 		default:
 			return GraphQLString;
 	}

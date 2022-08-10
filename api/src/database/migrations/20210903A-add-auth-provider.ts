@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('external_identifier').unique();
 	});
 
-	await helper.changeToString('directus_users', 'email', {
+	await helper.changeToType('directus_users', 'email', 'string', {
 		nullable: true,
 		length: 128,
 	});
@@ -35,7 +35,7 @@ export async function down(knex: Knex): Promise<void> {
 		table.dropColumn('external_identifier');
 	});
 
-	await helper.changeToString('directus_users', 'email', {
+	await helper.changeToType('directus_users', 'email', 'string', {
 		nullable: false,
 		length: 128,
 	});

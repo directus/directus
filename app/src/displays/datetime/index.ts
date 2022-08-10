@@ -1,5 +1,5 @@
-import localizedFormat from '@/utils/localized-format';
-import localizedFormatDistance from '@/utils/localized-format-distance';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { defineDisplay } from '@directus/shared/utils';
 import { parse, parseISO } from 'date-fns';
 import { i18n } from '@/lang';
@@ -11,7 +11,7 @@ export default defineDisplay({
 	description: '$t:displays.datetime.description',
 	icon: 'query_builder',
 	component: DisplayDateTime,
-	handler: async (value, options, { field }) => {
+	handler: (value, options, { field }) => {
 		if (!value) return value;
 
 		const relativeFormat = (value: Date) =>
@@ -30,7 +30,7 @@ export default defineDisplay({
 		}
 
 		if (options.relative) {
-			return await relativeFormat(value);
+			return relativeFormat(value);
 		} else {
 			let format;
 
@@ -46,7 +46,7 @@ export default defineDisplay({
 				format = options?.format;
 			}
 
-			return await localizedFormat(value, format);
+			return localizedFormat(value, format);
 		}
 	},
 	options: ({ field }) => {
@@ -94,15 +94,15 @@ export default defineDisplay({
 			fields.push(
 				{
 					field: 'suffix',
-					name: 'Suffix',
+					name: '$t:displays.datetime.suffix',
 					type: 'boolean',
 					meta: {
 						width: 'half',
 						interface: 'boolean',
 						options: {
-							label: 'Show relative indicator',
+							label: '$t:displays.datetime.suffix_label',
 						},
-						note: "Uses words like 'in' and 'ago'",
+						note: '$t:displays.datetime.suffix_note',
 					},
 					schema: {
 						default_value: true,
@@ -110,18 +110,38 @@ export default defineDisplay({
 				},
 				{
 					field: 'strict',
-					name: 'Strict',
+					name: '$t:displays.datetime.strict',
 					type: 'boolean',
 					meta: {
-						width: 'full',
+						width: 'half',
 						interface: 'boolean',
 						options: {
-							label: 'Use strict units',
+							label: '$t:displays.datetime.strict_label',
 						},
-						note: "Removes words like 'almost', 'over', 'less than'",
+						note: '$t:displays.datetime.strict_note',
 					},
 					schema: {
 						default_value: false,
+					},
+				},
+				{
+					field: 'round',
+					name: '$t:displays.datetime.round',
+					type: 'string',
+					meta: {
+						width: 'half',
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{ text: '$t:displays.datetime.down', value: 'floor' },
+								{ text: '$t:displays.datetime.nearest', value: 'round' },
+								{ text: '$t:displays.datetime.up', value: 'ceil' },
+							],
+						},
+						note: '$t:displays.datetime.round_note',
+					},
+					schema: {
+						default_value: 'round',
 					},
 				}
 			);

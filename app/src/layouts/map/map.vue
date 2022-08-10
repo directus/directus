@@ -335,6 +335,10 @@ export default defineComponent({
 
 		display: inline-block;
 		margin-right: 10px;
+
+		button {
+			box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+		}
 	}
 }
 
@@ -346,14 +350,5 @@ export default defineComponent({
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
-}
-</style>
-<style lang="scss">
-.footer {
-	.pagination {
-		button {
-			box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
-		}
-	}
 }
 </style>

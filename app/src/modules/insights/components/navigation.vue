@@ -15,8 +15,8 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import { useInsightsStore } from '@/stores';
-import { Dashboard } from '@/types';
+import { useInsightsStore } from '@/stores/insights';
+import { Dashboard } from '@/types/insights';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

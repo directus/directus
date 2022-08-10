@@ -3,7 +3,8 @@ import { getInterfaces } from '@/interfaces';
 import { getPanels } from '@/panels';
 import { getLayouts } from '@/layouts';
 import { getModules } from '@/modules';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { translate } from '@/utils/translate-object-values';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
@@ -15,6 +16,7 @@ const { interfaces, interfacesRaw } = getInterfaces();
 const { panels, panelsRaw } = getPanels();
 const { displays, displaysRaw } = getDisplays();
 const { operations, operationsRaw } = getOperations();
+import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
@@ -51,6 +53,8 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
 	mergeTranslationStringsForLanguage(lang);
+
+	await loadDateFNSLocale(lang);
 
 	return true;
 }

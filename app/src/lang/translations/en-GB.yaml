@@ -1639,6 +1639,7 @@ displays:
     short: Short
     relative: Relative
     relative_label: 'Show relative time, eg: 5 minutes ago'
+    suffix: Suffix
   file:
     file: File
     description: Display files

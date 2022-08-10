@@ -1607,6 +1607,7 @@ displays:
     short: Kort
     relative: Relativ
     relative_label: 'Vis relativ tid, fx: 5 minutter siden'
+    suffix: Suffiks
   file:
     file: Fil
     description: Vis filer
@@ -1795,7 +1796,6 @@ panels:
   meter:
     description: Måler til sporingsværdier
     name: Måler
-    arc: Bue
     stroke_width: Slag Bredde
     select_max_value: Du skal vælge en maksimal værdi.
     max_greater_than_zero: Maksimum skal være større end 0.
