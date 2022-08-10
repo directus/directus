@@ -1265,37 +1265,86 @@ something_went_wrong: 出了點問題
 sort_direction: 排序方向
 export_location: 匯出地點
 export_started: 匯出已開始
+export_started_copy: 匯出作業已經開始，當可下載時會通知您。
+sort_asc: 由小到大排序
+sort_desc: 由大到小排序
 template: 模板
+require_value_to_be_set: 建立時須填寫必填欄位
 translation: 翻譯
 translation_placeholder: 輸入翻譯...
 value: 值
+view_project: 檢視專案
+report_error: 報告錯誤
+start: 開始
 interfaces:
   filter:
     name: 篩選
     add_filter: 新增篩選器
     all: 全部
     any: 任何
+  group-accordion:
+    start: 開始
   presentation-links:
     primary: 主要
+  select-multiple-checkbox-tree:
+    show_all: 顯示全部
+    show_selected: 顯示已選取的項目
   input-code:
     code: 程式碼
+    description: 書寫或分享程式碼
+    line_number: 行號
+    line_wrapping: 自動換行
+    placeholder: 在此輸入代碼
   system-collection:
     collection: 集合
+    description: 從已存在的資料集中選擇
+    include_system_collections: 包含系統資料集
   system-collections:
     collections: 資料集
+    description: 從已存在的資料集中選擇
+    include_system_collections: 包含系統資料集
   select-color:
     color: 顏色
+    description: 輸入或選擇色彩
     placeholder: 選擇一種顏色...
+    preset_colors: 預設色彩
+    opacity: 透明度
+    preset_colors_add_label: 新增顏色...
+    name_placeholder: 輸入顏色名稱
   datetime:
     datetime: 日期時間
+    description: 輸入日期和時間
+    include_seconds: 包含秒數
+    set_to_now: 設為現在
+    use_24: 使用 24 小時格式
+    placeholder: 選擇日期時間...
   system-display-template:
     display-template: 顯示模板
+    description: 混合文字與動態欄位內容
+    collection_field: 集合欄位
     collection_field_not_setup: 集合中有欄位設定錯誤
     select_a_collection: 選擇一個集合
   presentation-divider:
     divider: 分隔線
+    description: 將欄位分隔為多個區域
+    title_placeholder: 輸入標題，或留白以顯示分隔線
+    inline_title: 行內標題
+    inline_title_label: 在行內顯示標題
+    margin_top: 上邊界
+    margin_top_label: 增加上方邊界
   select-dropdown:
+    description: 從下拉選單中選擇一個
+    choices_placeholder: 新增選項
+    allow_other: 允許其他選項
+    allow_other_label: 允許其他值
+    allow_none: 可不選
+    allow_none_label: 可以不選擇
+    choices_name_placeholder: 輸入名稱...
     choices_value_placeholder: 請輸入...
+    preview_threshold: 預覽限制
+  select-multiple-dropdown:
+    select-multiple-dropdown: 下拉 (多選)
+    description: 從下拉選單選擇多個值
   file:
     file: 檔案
     description: 選擇或上傳檔案
@@ -1304,12 +1353,24 @@ interfaces:
     description: 選擇或上傳多個檔案
   input-hash:
     hash: 哈希
+    description: 輸入要加密的值
+    masked: 已遮罩
+    masked_label: 隱藏真實值
   select-icon:
     icon: 圖示
+    description: 從下拉清單中選擇圖示
+    search_for_icon: 搜尋圖示...
   file-image:
     image: 圖像
+    description: 選擇或上傳檔案
+    crop: 裁切以符合
+    crop_label: 當需要時進行裁切
   system-interface:
     interface: 介面
+    description: 選擇現有介面
+    placeholder: 選擇一個介面...
+  system-interface-options:
+    interface-options: 介面選項
   select-dropdown-m2o:
     display_template: 顯示模板
   input-rich-text-md:
@@ -1334,9 +1395,26 @@ interfaces:
     description: 選擇或新增標籤
     whitespace: 空格
     remove: 移除空白
+    capitalization: 大寫
+    uppercase: 轉換成大寫
+    lowercase: 轉換成小寫
     auto_formatter: 使用標題自動格式化
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
+    add_tags: 輸入標籤並按下Enter...
+  input:
+    input: 輸入
+    description: 人工輸入值
+    trim: 裁切
+    trim_label: 裁切開頭與結尾
+    mask: 已遮罩
+    mask_label: 隱藏真實值
+    clear: 清除內容
+    clear_label: 設定為空白字串
+    minimum_value: 最小值
+    maximum_value: 最大值
+    step_interval: 每次增加或減少數字
+    slug: 網址化
   boolean:
     toggle: 切換
     label_default: 已啟用
