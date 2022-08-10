@@ -151,7 +151,7 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
 
-		const geometryType = props.geometryType || (props.fieldData?.type.split('.')[1] as GeometryType);
+		const geometryType = props.fieldData?.type.split('.')[1] as GeometryType;
 		const geometryFormat = getGeometryFormatForType(props.type)!;
 
 		const settingsStore = useSettingsStore();

@@ -18,6 +18,7 @@ import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { stripFunction } from './strip-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -367,13 +368,18 @@ export function applyFilter(
 					if (!columnPath) continue;
 
 					validateFilterOperator(
-						schema.collections[targetCollection].fields[filterPath[filterPath.length - 1]].type,
-						filterOperator
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
+						filterOperator,
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
 					);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					validateFilterOperator(schema.collections[collection].fields[filterPath[0]].type, filterOperator);
+					validateFilterOperator(
+						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
+						filterOperator,
+						schema.collections[collection].fields[stripFunction(filterPath[0])].special
+					);
 
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
@@ -411,7 +417,7 @@ export function applyFilter(
 			}
 		}
 
-		function validateFilterOperator(type: Type, filterOperator: string) {
+		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
 			if (filterOperator.startsWith('_')) {
 				filterOperator = filterOperator.slice(1);
 			}
@@ -419,6 +425,15 @@ export function applyFilter(
 			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
 				throw new InvalidQueryException(
 					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
+				);
+			}
+
+			if (
+				special.includes('conceal') &&
+				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
+			) {
+				throw new InvalidQueryException(
+					`Field with "conceal" special does not allow the "_${filterOperator}" filter operator`
 				);
 			}
 		}

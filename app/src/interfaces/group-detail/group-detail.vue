@@ -37,6 +37,7 @@
 			:batch-mode="batchMode"
 			:disabled="disabled"
 			:badge="badge"
+			:direction="direction"
 			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
@@ -111,6 +112,10 @@ export default defineComponent({
 		headerColor: {
 			type: String,
 			default: null,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['apply'],

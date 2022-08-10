@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Create release
         id: create_release
@@ -35,7 +35,7 @@ jobs:
     name: Build Packages
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Prepare
@@ -46,7 +46,7 @@ jobs:
           node docker/pack
 
       - name: Cache build artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: '**/dist'
           key: build-artifacts-${{ github.sha }}
@@ -59,10 +59,10 @@ jobs:
     if: ${{ github.repository_owner == 'directus' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore build artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: '**/dist'
           key: build-artifacts-${{ github.sha }}
@@ -72,7 +72,7 @@ jobs:
         with:
           node-version: 16
 
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: pnpm/action-setup@v2.2.2
         name: Install pnpm
         id: pnpm-install
         with:
@@ -95,22 +95,22 @@ jobs:
     needs: build
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore build artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: '**/dist'
           key: build-artifacts-${{ github.sha }}
 
       - name: Setup QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -119,7 +119,7 @@ jobs:
 
       - name: Extract metadata for Docker image
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: |
             ${{ env.DOCKERHUB_IMAGE }}
@@ -130,14 +130,14 @@ jobs:
             type=semver,pattern={{major}}
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         if: ${{ env.DOCKERHUB_IMAGE }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Login to GHCR
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         if: ${{ env.GHCR_IMAGE }}
         with:
           registry: ghcr.io
@@ -145,7 +145,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           file: ./docker/Dockerfile
