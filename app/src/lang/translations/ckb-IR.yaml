@@ -1588,11 +1588,41 @@ interfaces:
     folder: بوخچە
     description: بوخچەیەک دیاریبکە
     field_hint: بوخچە بۆ بارکردنی پەڕگەکان. کاریگەری نابێت لەسەر پەڕگە هەنووکەیەکان.
+    root_name: ڕیشەی پێشانگای پەڕگە
+    system_default: بنەڕەتیەکانی سیستەم
+  select-radio:
+    radio-buttons: دوگمە ڕادیۆییەکان
+    description: یەکێک دیاری بکە لە چەند هەڵبژاردەیەک
   list:
+    repeater: دوبارەکەرەوە
+    description: چەندین نوسراو لەهەمان پێکهاتە دروست بکە
+    edit_fields: دەستکاری خانەکان
+    add_label: 'پێناسی "دروستکردنی نوێ"'
     sort: ڕیزکردن
+    sort_placeholder: دەستی
+    field_name_placeholder: ناوی خانە تۆماربکە...
+    field_note_placeholder: تێبینی خانە تۆماربکە...
+    incompatible_data: داتاکانی ئێستا لەگەڵ ڕووکاری دووبارەکەرەوەدا ناگونجێت و لە کاتی زیادکردنی ماددەکان بۆ دووبارەکەرەوەکە دەسڕدرێنەوە
+  slider:
+    slider: سڵایدەر
+    description: ژمارەیەک دیاریبکە بەبەکارهێنانی سڵایدەر
+    always_show_value: هەمیشە بەها نیشان بدە
   tags:
     tags: نیشانەکان
+    description: نیشانەیەک دیاریبکە یان زیاد بکە
+    whitespace: بۆشایی سپی
+    hyphen: جێگۆڕکێ بکە لەگەڵ نێوانەهێڵ
+    underscore: جێگۆڕکێ بکە لەگەڵ ژێرهێڵ
+    remove: لابردنی بۆشایی سپی
+    capitalization: پیت گەورەکردن
+    uppercase: گۆڕین بۆ پیت گەورەکردن
+    lowercase: گۆڕین بۆ پیت بچووکردنەوە
+    auto_formatter: بەکارهێنانی شێوە خودکاری ناونیشان
+    alphabetize: ڕیزکردن بەپێی ئەلفوبێ
+    alphabetize_label: سەپاندنی ڕیزکردن بەپێی ئەلفوبێ
+    add_tags: نیشانەیەک زیادبکە و ئینتەر لێبدە...
   input:
+    input: تێچون
     mask: دامامککراو
     maximum_value: گەورەترین بەها
     step_interval: مەودای هەنگاو
