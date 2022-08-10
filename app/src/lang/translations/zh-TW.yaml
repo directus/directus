@@ -578,10 +578,15 @@ errors:
   ILLEGAL_ASSET_TRANSFORMATION: 原始檔案過大，無法預覽
   VALUE_TOO_LONG: 數值過長
   VALUE_OUT_OF_RANGE: 內容值超出範圍
+  INVALID_FOREIGN_KEY: 外部鍵值錯誤
   UNKNOWN: 未預期的錯誤
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 驗證錯誤
+security: 安全
+value_hashed: 值已安全加密
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
+edit_personal_bookmark: 編輯個人書籤
 edit_role_bookmark: 編輯角色書籤
 edit_global_bookmark: 編輯全站書籤
 cannot_edit_role_bookmarks: 無法編輯角色書籤
@@ -642,8 +647,12 @@ color: 顏色
 circle: 圓形
 empty_item: 空項目
 log_in_with: '以 {provider} 登入'
+conditional_styles: 規則格式設定
+advanced_settings: 高級設定
 advanced_filter: 進階篩選器
 delete_advanced_filter: 刪除篩選器
+change_advanced_filter_operator: 修改操作
+advanced: 進階
 operators:
   eq: 等於
   neq: 不等於
@@ -651,12 +660,25 @@ operators:
   gt: 大於
   lte: 小於等於
   gte: 大於等於
+  in: 是其中之一
+  nin: 不是其中之一
   null: 是 null
   nnull: 不是 null
   contains: 包含
   ncontains: 不包含
+  icontains: 包含 (不嚴謹)
+  starts_with: 開頭為
+  nstarts_with: 開頭不為
+  ends_with: 結尾為
+  nends_with: 結尾不為
   between: 介於
+  nbetween: 不在其中
   empty: 是空的
+  nempty: 非空
+  all: 包含這些關鍵值
+  has: 包含部分關鍵值
+  intersects: 交集
+  nintersects: 無交集
 loading: 載入中...
 item: 項目
 items: 項目
@@ -1039,6 +1061,7 @@ fields:
     collections: 資料集
 field_options:
   directus_settings:
+    security_divider_title: 安全
     additional_transforms: 其他轉換
     transforms_note: Sharp方式的名稱以及其欄位。請至 https://sharp.pixelplumbing.com/api-constructor 查詢更多資訊。
     mapbox_key: Mapbox Access Token
