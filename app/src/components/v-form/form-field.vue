@@ -44,6 +44,7 @@
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
+			:direction="direction"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -98,6 +99,7 @@ interface Props {
 	badge?: string;
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
+	direction?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -113,6 +115,7 @@ const props = withDefaults(defineProps<Props>(), {
 	badge: undefined,
 	rawEditorEnabled: false,
 	rawEditorActive: false,
+	direction: undefined,
 });
 
 const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);

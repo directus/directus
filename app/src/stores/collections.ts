@@ -26,6 +26,9 @@ export const useCollectionsStore = defineStore({
 		allCollections(): Collection[] {
 			return this.collections.filter(({ collection }) => collection.startsWith('directus_') === false);
 		},
+		databaseCollections(): Collection[] {
+			return this.allCollections.filter((collection) => collection.schema);
+		},
 		crudSafeSystemCollections(): Collection[] {
 			return orderBy(
 				this.collections.filter((collection) => {

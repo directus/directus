@@ -310,6 +310,7 @@ foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
 dismiss: Ignorer
 toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valeur brute
 copy_raw_value: Copier la valeur brute
 copy_raw_value_success: Copié
@@ -759,7 +760,7 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
-flows: Les Flux
+flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
 run_flow_on_current: Exécuter le flux sur l'élément actuel
@@ -835,6 +836,7 @@ media: Média
 quality: Qualité
 width: Largeur
 height: Hauteur
+transformation_preset_key: Préréglages de transformation
 source: Source
 url_placeholder: Entrez une url...
 display_text: Afficher le texte
@@ -919,9 +921,9 @@ settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
-settings_flows: Les Flux
+settings_flows: Flux
 settings_presets: Préréglages et favoris
-settings_translation_strings: Chaînes de traduction
+settings_translation_strings: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 actions: Actions
@@ -1135,6 +1137,8 @@ fields:
     transformations_all: Autoriser toutes les transformations
     transformations_none: Désactiver les transformations
     transformations_presets: Limiter les transformations aux présélections ci-dessous
+    image_editor: Éditeur d'Image
+    custom_aspect_ratios: Personnaliser le rapport d'aspect
   directus_shares:
     name: Nom
     role: Rôle
@@ -1399,6 +1403,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 interfaces:
@@ -1748,6 +1753,7 @@ displays:
     strict: Stricte
     strict_label: Utilisez des unités strictes
     strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
+    round: Arrondir
     round_note: Choisissez une fonction d'arrondi à utiliser
     down: Bas
     nearest: Le plus proche
@@ -1952,6 +1958,7 @@ panels:
   meter:
     description: Compteur pour les valeurs de suivi
     name: Compteur
+    arc: Arc
     stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
@@ -2075,6 +2082,6 @@ operations:
   trigger:
     name: Déclencher le Flux
     description: Transmettre ces données à un autre Flux
-    flows: Les Flux
+    flows: Flux
     flow: Flux
     data: Données
