@@ -1569,8 +1569,25 @@ interfaces:
     invalid_options: بژاردە نادروستەکان
     invalid_format: شێوەی نادروست ({format})
     unexpected_geometry: '{expected} پێشبینیکراوە، {got} وەرگیراوە.'
+    fit_bounds: گونجاندنی بینین لەگەڵ داتاکان
+    native: ڕەسەن
+    geojson: GeoJSON
+    lnglat: درێژایی، پانی
+    wkt: WKT
+    wkb: WKB
+    click_to_select: کرتە لێرە بکە بۆ دیاریکردنی {geometry}
+  presentation-notice:
+    notice: تێبینی
+    description: پیشاندانی تێبینیەکی بچووک
+    text: ناوەڕۆکی تێبینی لێرە دابنێ...
+  list-o2m:
+    one-to-many: یەک بۆ چەند
+    description: چەند ماددەی پەیوەندیدار دیاری بکە
+    no_collection: کۆمەڵەکە نادۆزرێتەوە
   system-folder:
     folder: بوخچە
+    description: بوخچەیەک دیاریبکە
+    field_hint: بوخچە بۆ بارکردنی پەڕگەکان. کاریگەری نابێت لەسەر پەڕگە هەنووکەیەکان.
   list:
     sort: ڕیزکردن
   tags:
@@ -1616,6 +1633,7 @@ interfaces:
     toolbar: شریتی ئامرازەکان
     custom_formats: شێوە تایبەتەکان
     options_override: هەڵبژاردەکانی سەرپێچی
+    folder_note: بوخچە بۆ بارکردنی پەڕگەکان. کاریگەری نابێت لەسەر پەڕگە هەنووکەیەکان.
     imageToken: ئاماژەی دەستگەیشتنی جێگیر
     imageToken_label: نیشانەی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
   input-autocomplete-api:
