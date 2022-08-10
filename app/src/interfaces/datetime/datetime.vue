@@ -3,12 +3,12 @@
 		<template #activator="{ toggle, active }">
 			<v-input
 				:active="active"
-				:class="{ invalid }"
-				:disabled="disabled"
-				:model-value="displayValue"
-				:placeholder="!isValidValue ? value : t('enter_a_value')"
 				clickable
 				readonly
+				:model-value="displayValue"
+				:class="{ invalid }"
+				:disabled="disabled"
+				:placeholder="!isValidValue ? value : t('enter_a_value')"
 				@click="toggle"
 			>
 				<template v-if="!disabled" #append>
@@ -41,6 +41,7 @@ import { ComputedRef, computed, defineComponent, inject, PropType, ref, watch } 
 import { localizedFormat } from '@/utils/localized-format';
 import { isValid, parse, parseISO } from 'date-fns';
 import { get } from 'lodash';
+import { adjustDate } from '@directus/shared/utils';
 
 export default defineComponent({
 	props: {
@@ -84,8 +85,22 @@ export default defineComponent({
 
 		const values = inject('values') as ComputedRef<Record<string, any>>;
 
-		const min = computed(() => (props.minField ? get(values.value, props.minField) : ''));
-		const max = computed(() => (props.maxField ? get(values.value, props.maxField) : ''));
+		function fieldValueOrDate(value: string) {
+			if (value.startsWith('$NOW')) {
+				if (value.includes('(') && value.includes(')')) {
+					const adjustment = value.match(/\(([^)]+)\)/)?.[1];
+					if (!adjustment) return new Date();
+					return adjustDate(new Date(), adjustment);
+				}
+
+				return new Date();
+			}
+
+			return get(values.value, props.minField, '');
+		}
+
+		const min = computed(() => fieldValueOrDate(props.minField));
+		const max = computed(() => fieldValueOrDate(props.maxField));
 
 		const invalid = computed(() => {
 			if (!props.value) {

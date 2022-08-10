@@ -3,7 +3,7 @@ import InterfaceDateTime from './datetime.vue';
 import PreviewSVG from './preview.svg?raw';
 import type { DeepPartial } from '@directus/shared/src/types/misc';
 import type { Field } from '@directus/shared/src/types/fields';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 
 export default defineInterface({
 	id: 'datetime',
@@ -36,27 +36,31 @@ export default defineInterface({
 			opts.push(
 				{
 					field: 'minField',
-					name: `$t:interfaces.datetime.min_${label}_field`,
+					name: `$t:interfaces.datetime.min_${label}`,
 					type: 'string',
 					meta: {
 						width: 'half',
 						interface: 'select-dropdown',
+						note: '$t:interfaces.datetime.setting_other_value',
 						options: {
 							choices,
 							showDeselect: true,
+							allowOther: true,
 						},
 					},
 				},
 				{
 					field: 'maxField',
-					name: `$t:interfaces.datetime.max_${label}_field`,
+					name: `$t:interfaces.datetime.max_${label}`,
 					type: 'string',
 					meta: {
 						width: 'half',
 						interface: 'select-dropdown',
+						note: '$t:interfaces.datetime.setting_other_value',
 						options: {
 							choices,
 							showDeselect: true,
+							allowOther: true,
 						},
 					},
 				}

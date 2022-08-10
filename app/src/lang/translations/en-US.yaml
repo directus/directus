@@ -1506,6 +1506,11 @@ interfaces:
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
     placeholder: Choose a datetime...
+    min_time: Min time
+    max_time: Max time
+    min_date: Min date
+    max_date: Max date
+    setting_other_value: Choose other to set $NOW
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
