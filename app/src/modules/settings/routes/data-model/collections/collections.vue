@@ -3,7 +3,7 @@
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="list_alt" />
 			</v-button>
 		</template>
@@ -50,8 +50,8 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
-							@editCollection="editCollection = $event"
-							@setNestedSort="onSort"
+							@edit-collection="editCollection = $event"
+							@set-nested-sort="onSort"
 						/>
 					</template>
 				</draggable>
@@ -111,8 +111,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
-import { useCollectionsStore } from '@/stores/';
-import { Collection } from '@/types';
+import { useCollectionsStore } from '@/stores/collections';
+import { Collection } from '@/types/collections';
 import CollectionOptions from './components/collection-options.vue';
 import { sortBy, merge } from 'lodash';
 import CollectionItem from './components/collection-item.vue';
@@ -228,8 +228,10 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 
 .collection-item.hidden {

@@ -2,11 +2,17 @@
 avatar: プロフィール画像
 application: アプリケーション
 default_provider: デフォルト
+method: 方法
+published: 公開済み
 draft: 下書き
 archived: アーカイブ済み
 modules: モジュール
+module_bar: モジュールバー
+tile_size: タイルサイズ
 edit_field: フィールドの編集
 conditions: 条件
+location: 場所
+input: 入力
 maps: 地図
 switch_user: ユーザーを切り替える
 item_creation: アイテム作成
@@ -19,6 +25,7 @@ group: グループ
 export_items: アイテムをエクスポート
 and: そして
 or: または
+custom: カスタム
 fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
 enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
@@ -29,6 +36,9 @@ leaf: リーフ
 indeterminate: 不確定
 edit_collection: コレクションを編集
 db_only_click_to_configure: 'データベースのみ: クリックして設定する'
+show_active_items: アクティブアイテムを表示
+show_archived_items: アーカイブ済みアイテムを表示
+show_all_items: 全て表示
 required: 必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成
@@ -139,6 +149,8 @@ this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
 languages_collection: 言語コレクション
+label_import: インポート
+import_export: インポート / エクスポート
 format: 書式
 last_access: 最後にアクセスした日時
 a_unique_table_name: 重複しない名前をつけてください
@@ -172,6 +184,7 @@ months:
   december: 12月
 cancel_crop: トリミングをキャンセル
 url: URL
+import_label: インポート
 file_details: ファイルの詳細
 size: サイズ
 modified: 修正されました
@@ -259,6 +272,7 @@ unexpected_error: 予期しないエラーが発生しました
 back: 戻る
 rotate: 回転
 all_users: すべてのユーザー
+goto_collection_content: コンテンツを表示
 one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
@@ -301,6 +315,7 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+flow_name: 名前
 dashboard: ダッシュボード
 dashboard_delete_confirm: このダッシュボードを削除してよろしいですか？この操作を取り消すことはできません。
 edit_dashboard: ダッシュボードを編集
@@ -356,6 +371,7 @@ batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
 collections: コレクション
+content: コンテンツ
 singleton: シングルトン
 singleton_label: シングルオブジェクトに設定する
 fields:
@@ -406,6 +422,7 @@ fields:
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
+    module_bar: モジュールバー
   directus_shares:
     name: 名前
     password: パスワード
@@ -514,6 +531,8 @@ interfaces:
     icon: アイコン
   system-folder:
     folder: フォルダ
+  list:
+    sort: 並べ替え
   tags:
     tags: タグ
   translations:
@@ -562,3 +581,8 @@ layouts:
     comfortable: 広め
     compact: コンパクト
     cozy: 普通
+operations:
+  notification:
+    recipient: ユーザー
+  request:
+    url: URL

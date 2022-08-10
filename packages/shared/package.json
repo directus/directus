@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.11.1",
+	"version": "9.15.1",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -35,44 +35,47 @@
 	},
 	"sideEffects": false,
 	"scripts": {
-		"build": "run-p \"build:* -- {@}\" --",
+		"build": "run-p \"build:* {@}\"",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
-		"test": "jest",
-		"test:watch": "jest --watchAll",
-		"prepublishOnly": "npm run cleanup && npm run build"
+		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest"
 	},
 	"author": "Nicola Krumschmidt",
 	"maintainers": [
 		"Rijk van Zanten <rijkvanzanten@me.com>"
 	],
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
+		"axios": "^0.27.2",
 		"date-fns": "2.24.0",
+		"express": "^4.18.1",
 		"fs-extra": "10.0.0",
+		"geojson": "^0.5.0",
 		"joi": "17.4.2",
-		"lodash": "4.17.21"
-	},
-	"peerDependencies": {
-		"@types/express": "*",
-		"@types/geojson": "*",
-		"@types/pino": "*",
-		"axios": "*",
-		"express": "*",
-		"geojson": "*",
-		"knex": "*",
-		"knex-schema-inspector": "*",
-		"pino": "*",
-		"vue": "3",
-		"vue-i18n": "9",
-		"vue-router": "4"
+		"knex": "2.2.0",
+		"knex-schema-inspector": "^2.0.1",
+		"lodash": "4.17.21",
+		"micromustache": "^8.0.3",
+		"pino": "6.13.3",
+		"vue": "3.2.36",
+		"vue-i18n": "9.1.10",
+		"vue-router": "4.0.15"
 	},
 	"devDependencies": {
+		"@types/express": "4.17.13",
+		"@types/fs-extra": "9.0.13",
+		"@types/geojson": "7946.0.8",
+		"@types/lodash": "^4.14.182",
+		"@types/pino": "6.3.12",
+		"@types/tmp": "^0.2.3",
+		"c8": "^7.12.0",
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
 		"tmp": "0.2.1",
-		"typescript": "4.5.2"
+		"typescript": "4.5.2",
+		"vitest": "^0.18.1"
 	}
 }

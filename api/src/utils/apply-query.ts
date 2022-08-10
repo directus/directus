@@ -1,4 +1,13 @@
-import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
+import {
+	Aggregate,
+	ClientFilterOperator,
+	FieldFunction,
+	Filter,
+	Query,
+	Relation,
+	SchemaOverview,
+	Type,
+} from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
@@ -8,7 +17,8 @@ import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
-import { getOutputTypeForFunction } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { stripFunction } from './strip-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -243,8 +253,8 @@ export function applySort(
 					knex,
 				});
 
-				const colPath = getColumnPath({ path: column, collection, aliasMap, relations }) || '';
-				const [alias, field] = colPath.split('.');
+				const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations });
+				const [alias, field] = columnPath.split('.');
 
 				return {
 					order,
@@ -353,12 +363,24 @@ export function applyFilter(
 
 			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
 				if (filterPath.length > 1) {
-					const columnName = getColumnPath({ path: filterPath, collection, relations, aliasMap });
+					const { columnPath, targetCollection } = getColumnPath({ path: filterPath, collection, relations, aliasMap });
 
-					if (!columnName) continue;
+					if (!columnPath) continue;
 
-					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+					validateFilterOperator(
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
+						filterOperator,
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
+					);
+
+					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
+					validateFilterOperator(
+						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
+						filterOperator,
+						schema.collections[collection].fields[stripFunction(filterPath[0])].special
+					);
+
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
@@ -394,7 +416,35 @@ export function applyFilter(
 				}
 			}
 		}
-		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
+
+		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
+			if (filterOperator.startsWith('_')) {
+				filterOperator = filterOperator.slice(1);
+			}
+
+			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
+				throw new InvalidQueryException(
+					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
+				);
+			}
+
+			if (
+				special.includes('conceal') &&
+				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
+			) {
+				throw new InvalidQueryException(
+					`Field with "conceal" special does not allow the "_${filterOperator}" filter operator`
+				);
+			}
+		}
+
+		function applyFilterToQuery(
+			key: string,
+			operator: string,
+			compareValue: any,
+			logical: 'and' | 'or' = 'and',
+			originalCollectionName?: string
+		) {
 			const [table, column] = key.split('.');
 
 			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
@@ -424,6 +474,18 @@ export function applyFilter(
 				});
 			}
 
+			// The following fields however, require a value to be run. If no value is passed, we
+			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
+			// conditionally build out your filter structure (#4471)
+			if (compareValue === undefined) return;
+
+			if (Array.isArray(compareValue)) {
+				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined].
+				// We need to remove any undefined values, as they are useless
+				compareValue = compareValue.filter((val) => val !== undefined);
+			}
+
 			// Cast filter value (compareValue) based on function used
 			if (column.includes('(') && column.includes(')')) {
 				const functionName = column.split('(')[0] as FieldFunction;
@@ -436,9 +498,10 @@ export function applyFilter(
 
 			// Cast filter value (compareValue) based on type of field being filtered against
 			const [collection, field] = key.split('.');
+			const mappedCollection = originalCollectionName || collection;
 
-			if (collection in schema.collections && field in schema.collections[collection].fields) {
-				const type = schema.collections[collection].fields[field].type;
+			if (mappedCollection in schema.collections && field in schema.collections[mappedCollection].fields) {
+				const type = schema.collections[mappedCollection].fields[field].type;
 
 				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
 					if (Array.isArray(compareValue)) {
@@ -455,18 +518,6 @@ export function applyFilter(
 						compareValue = Number(compareValue);
 					}
 				}
-			}
-
-			// The following fields however, require a value to be run. If no value is passed, we
-			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
-			// conditionally build out your filter structure (#4471)
-			if (compareValue === undefined) return;
-
-			if (Array.isArray(compareValue)) {
-				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
-				// reported as [undefined].
-				// We need to remove any undefined values, as they are useless
-				compareValue = compareValue.filter((val) => val !== undefined);
 			}
 
 			if (operator === '_eq') {

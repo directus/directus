@@ -2,7 +2,7 @@
 	<private-view :title="t('settings_project')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="public" />
 			</v-button>
 		</template>
@@ -45,11 +45,12 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { useCollection } from '@directus/shared/composables';
-import { useSettingsStore, useServerStore } from '@/stores';
+import { useSettingsStore } from '@/stores/settings';
+import { useServerStore } from '@/stores/server';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
-import useShortcut from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -118,7 +119,9 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 </style>

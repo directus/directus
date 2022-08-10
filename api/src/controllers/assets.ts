@@ -1,4 +1,5 @@
 import { Range } from '@directus/drive';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import helmet from 'helmet';
 import { merge, pick } from 'lodash';
@@ -7,19 +8,19 @@ import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constant
 import getDatabase from '../database';
 import env from '../env';
 import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
+import logger from '../logger';
 import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
 import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
-import { parseJSON } from '../utils/parse-json';
 
 const router = Router();
 
 router.use(useCollection('directus_files'));
 
 router.get(
-	'/:pk',
+	'/:pk/:filename?',
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
@@ -155,7 +156,7 @@ router.get(
 
 		const access = req.accountability?.role ? 'private' : 'public';
 
-		res.attachment(file.filename_download);
+		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
@@ -186,7 +187,37 @@ router.get(
 			return res.end();
 		}
 
-		stream.pipe(res);
+		let isDataSent = false;
+
+		stream.on('data', (chunk) => {
+			isDataSent = true;
+			res.write(chunk);
+		});
+
+		stream.on('end', () => {
+			res.status(200).send();
+		});
+
+		stream.on('error', (e) => {
+			logger.error(e, `Couldn't stream file ${file.id} to the client`);
+
+			if (!isDataSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			}
+		});
 	})
 );
 

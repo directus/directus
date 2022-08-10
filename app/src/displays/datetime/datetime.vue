@@ -5,8 +5,9 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import localizedFormat from '@/utils/localized-format';
-import localizedFormatDistance from '@/utils/localized-format-distance';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import { parseISO, parse } from 'date-fns';
 
 interface Props {
@@ -14,11 +15,17 @@ interface Props {
 	type: 'dateTime' | 'date' | 'time' | 'timestamp';
 	format?: string;
 	relative?: boolean;
+	strict?: boolean;
+	round?: string;
+	suffix?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	format: 'long',
 	relative: false,
+	strict: false,
+	round: 'round',
+	suffix: true,
 });
 
 const { t } = useI18n();
@@ -41,10 +48,13 @@ const localValue = computed(() => {
 	return null;
 });
 
-const relativeFormat = (value: Date) =>
-	localizedFormatDistance(value, new Date(), {
-		addSuffix: true,
+const relativeFormat = (value: Date) => {
+	const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance;
+	return fn(value, new Date(), {
+		addSuffix: props.suffix,
+		roundingMethod: props.round,
 	});
+};
 
 watch(
 	localValue,
@@ -70,7 +80,7 @@ watch(
 				format = props.format;
 			}
 
-			displayValue.value = await localizedFormat(newValue, format);
+			displayValue.value = localizedFormat(newValue, format);
 		}
 	},
 	{ immediate: true }

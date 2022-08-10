@@ -23,15 +23,20 @@ identifier: Identificador
 avatar: Avatar
 application: Aplicación
 default_provider: Predeterminado
+method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
 modules: Módulos
 module_bar: Barra de módulos
+logs: Registros
 reset_width: Reestablecer Ancho
 tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
+location: Ubicación
+condition_rules: Regla de condición
+input: Entrada
 maps: Mapas
 switch_user: Cambiar usuario
 item_creation: Creación de Elemento
@@ -44,6 +49,11 @@ group: Grupo
 export_items: Exportar Elementos
 and: "Y"
 or: O
+init: Inicializador
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente muestra los primeros {n} elementos.
+modifier: Modificador
+custom: Personalizado
+hook: Hook
 fill_width: Llenar ancho
 field_name_translations: Traducciónes del nombre de campo
 enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar el doble factor de autenticación
@@ -67,9 +77,12 @@ create_preset: Crear ajuste
 create_panel: Crear Panel
 create_role: Crear rol
 create_user: Crear Usuario
+message: Mensaje
 delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
 create_translation_string: Crear Traducciones
+no_translation_string: No hay cadenas de traducción
+no_translation_string_copy: Todavía no hay cadenas de traducción.
 translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Agregar una nueva traducción
 edit_translation_string: Editar Texto de Traducción
@@ -324,6 +337,7 @@ revision_delta_created_externally: Creado externamente
 revision_delta_updated: '1 Campo Actualizado |{count} Campos Actualizados'
 revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
@@ -452,6 +466,7 @@ created_on: Creado el
 creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
 creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
 auto_increment_integer: Número Entero Auto-Incrementado
+auto_increment_big_integer: Número Entero Auto-Incrementado
 generated_uuid: UUID Generado
 manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
@@ -472,7 +487,9 @@ disabled: Deshabilitado
 information: Información
 report_bug: Reportar Error
 request_feature: Solicitar Características
+request_body: Cuerpo de la Solicitud
 interface_not_found: 'Interfaz "{interface}" no encontrada.'
+operation_not_found: 'Operación "{operation}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
@@ -558,7 +575,9 @@ errors:
   INVALID_CREDENTIALS: Usuario o clave incorrectos
   INVALID_OTP: Clave incorrecta
   INVALID_PAYLOAD: Carga inválida
+  INVALID_PROVIDER: El usuario pertenece a un proveedor de autenticación diferente
   INVALID_QUERY: Consulta inválida
+  INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Limite de items alcanzado
   ITEM_NOT_FOUND: Ítem no encontrado
   ROUTE_NOT_FOUND: No encontrado
@@ -573,6 +592,7 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error inesperado
+  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
 security: Seguridad
 value_hashed: Valor codificado con seguridad
 bookmark_name: Nombre de marcador...
@@ -590,6 +610,7 @@ unexpected_error_copy: Ocurrió un error inesperado. Por favor, intente nuevamen
 copy_details: Copiar Detalles
 no_app_access: Sin acceso a la aplicación
 no_app_access_copy: Este usuario no tiene permiso para usar la aplicación de administración.
+password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Restablecimiento de contraseña con éxito
 back: Regresar
 filter: Filtro
@@ -721,6 +742,7 @@ on_create: Al Crear
 on_update: Al Actualizar
 read: Leer
 update: Actualizar
+delete: Eliminar
 select_fields: Seleccionar Campos
 format_text: Formatear Texto
 format_value: Formatear Valor
@@ -731,6 +753,10 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+trigger: Disparador
+flow_name: Nombre
+flow_tracking_activity: Sólo seguimiento de actividad
+flow_tracking_null: No realizar seguimiento
 insights: Informes
 dashboard: Tablero
 panel: Panel
@@ -748,9 +774,10 @@ suffix_placeholder: Texto despues de valor...
 decimals_placeholder: Numero de decimales...
 no_dashboards: Sin tableros
 no_dashboards_copy: Todavía no tiene otros paneles.
-no_data: Sin datos
 create_dashboard: Crear panel
 dashboard_name: Nombre del panel
+no_data: Sin datos
+accountability: Responsabilidad
 full_screen: Pantalla completa
 full_text_search: Búsqueda de texto completo
 edit_panels: Editar paneles
@@ -852,6 +879,7 @@ settings_presets: Predefinidos y Marcadores
 settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
+actions: Acciones
 select: Seleccionar...
 layout: Diseño
 tree_view: Vista en árbol
@@ -861,6 +889,7 @@ preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
 layout_setup: Configuración del Diseño
+data: Datos
 unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Realmente desea salir de esta página?'
 discard_changes: Descartar Cambios
@@ -925,9 +954,9 @@ directus_collection:
   directus_files: Metadatos para todos los archivos gestionados
   directus_folders: Proporciona directorios virtuales para archivos
   directus_migrations: Qué versión de la base de datos estás usando
+  directus_notifications: Notificaciones enviadas a usuarios
   directus_panels: Paneles individuales dentro de los paneles de Individual
   directus_permissions: Permisos de acceso para cada rol
-  directus_notifications: Notificaciones enviadas a usuarios
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1512,6 +1541,7 @@ interfaces:
     description: Crear múltiples entradas con la misma estructura
     edit_fields: Editar campos
     add_label: 'Etiqueta "Crear nuevo"'
+    sort: Elegir
     field_name_placeholder: Ingrese el nombre del campo...
     field_note_placeholder: Introducir nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
@@ -1566,6 +1596,9 @@ interfaces:
     display_template: Mostrar plantilla
     no_collection: Sin Colección
     toggle_split_view: Cambiar vista dividida
+    enable: Habilitado
+    user_language: Usar el idioma actual del usuario
+    default_language: Idioma predeterminado
     language_field: Campo indicador de idioma
   list-o2m-tree-view:
     description: Vista del árbol para elementos anidados recursivos uno a muchos
@@ -1645,6 +1678,7 @@ displays:
     short: Corta
     relative: Relativa
     relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
+    suffix: Sufijo
   file:
     file: Archivo
     description: Presentar archivos
@@ -1836,3 +1870,19 @@ panels:
     function: Función
   piechart:
     function: 'Función'
+triggers:
+  webhook:
+    method: Método
+operations:
+  log:
+    message: Mensaje
+  notification:
+    recipient: Usuario
+    message: Mensaje
+  request:
+    url: URL
+    method: Método
+    data: Datos
+    header: Cabecera
+  trigger:
+    data: Datos

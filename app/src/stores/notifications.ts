@@ -1,10 +1,10 @@
-import { Snackbar, SnackbarRaw } from '@/types';
+import { Snackbar, SnackbarRaw } from '@/types/notifications';
 import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { Notification } from '@directus/shared/types';
-import { useUserStore } from '.';
 import api from '@/api';
+import { useUserStore } from './user';
 
 export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',

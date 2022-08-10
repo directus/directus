@@ -31,7 +31,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
-import useFolders from '@/composables/use-folders';
+import { useFolders } from '@/composables/use-folders';
 import api from '@/api';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';

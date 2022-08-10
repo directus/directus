@@ -16,7 +16,8 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<v-menu placement="bottom-start" show-arrow>
+						<span v-if="!isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
+						<v-menu v-else placement="bottom-start" show-arrow>
 							<template #activator="{ toggle }">
 								<button class="name" @click="toggle">
 									<span>{{ getFieldPreview(element) }}</span>
@@ -27,6 +28,7 @@
 								:collection="collection"
 								:field="field"
 								include-functions
+								:include-relations="includeRelations"
 								@select-field="updateField(index, $event)"
 							/>
 						</v-menu>
@@ -36,7 +38,7 @@
 							placement="bottom-start"
 							:model-value="filterInfo[index].comparator"
 							:items="getCompareOptions(filterInfo[index].field)"
-							@update:modelValue="updateComparator(index, $event)"
+							@update:model-value="updateComparator(index, $event)"
 						/>
 						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
 						<span class="delete">
@@ -96,7 +98,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/shared/composables';
 import {
@@ -138,6 +140,7 @@ interface Props {
 	depth?: number;
 	inline?: boolean;
 	includeValidation?: boolean;
+	includeRelations?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -145,6 +148,7 @@ const props = withDefaults(defineProps<Props>(), {
 	depth: 1,
 	inline: false,
 	includeValidation: false,
+	includeRelations: true,
 });
 
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);
@@ -337,6 +341,13 @@ function getCompareOptions(name: string) {
 		value: `_${type}`,
 	}));
 }
+
+function isExistingField(node: Record<string, any>): boolean {
+	if (!props.collection) return false;
+	const fieldKey = getField(node);
+	const field = fieldsStore.getField(props.collection, fieldKey);
+	return !!field;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -388,6 +399,11 @@ function getCompareOptions(name: string) {
 		.v-icon {
 			display: none;
 		}
+	}
+
+	.plain-name {
+		display: inline-block;
+		margin-right: 8px;
 	}
 
 	.name {

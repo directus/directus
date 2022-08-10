@@ -46,6 +46,7 @@ export default defineComponent({
 					options: {
 						collectionName: permissionSync.value.collection,
 						includeValidation: true,
+						includeRelations: false,
 					},
 				},
 			},

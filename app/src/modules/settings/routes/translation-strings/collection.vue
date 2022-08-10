@@ -3,7 +3,7 @@
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="translate" />
 			</v-button>
 		</template>
@@ -111,10 +111,11 @@ function updateTranslationStringsDialog(val: boolean) {
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
-
 .translation-strings {
 	padding: var(--content-padding);
 	padding-top: 0;

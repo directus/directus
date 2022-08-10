@@ -252,6 +252,7 @@
 					@download="download"
 					@refresh="refresh"
 				/>
+				<flow-sidebar-detail location="collection" :collection="collection" :selection="selection" @refresh="refresh" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -276,16 +277,18 @@ import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
 import ContentNotFound from './not-found.vue';
 import { useCollection, useLayout } from '@directus/shared/composables';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail';
-import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
+import { usePreset } from '@/composables/use-preset';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
-import SearchInput from '@/views/private/components/search-input';
-import BookmarkAdd from '@/views/private/components/bookmark-add';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import BookmarkAdd from '@/views/private/components/bookmark-add.vue';
 import { useRouter } from 'vue-router';
-import { usePermissionsStore, useUserStore } from '@/stores';
-import DrawerBatch from '@/views/private/components/drawer-batch';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
 import { mergeFilters } from '@directus/shared/utils';
@@ -307,6 +310,7 @@ export default defineComponent({
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
 		ExportSidebarDetail,
+		FlowSidebarDetail,
 	},
 	props: {
 		collection: {

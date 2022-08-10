@@ -23,7 +23,7 @@ export interface DisplayConfig {
 		value: any,
 		options: Record<string, any>,
 		ctx: { interfaceOptions?: Record<string, any>; field?: Field; collection?: string }
-	) => string | null | Promise<string | null>;
+	) => string | null;
 	options:
 		| DeepPartial<Field>[]
 		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }

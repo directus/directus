@@ -2,9 +2,11 @@
 	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
 			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
+				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				{{ field.name }}
+				<span class="field-name">{{ field.name }}</span>
 				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
+				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 				<v-icon
 					v-if="!active && validationMessage"
 					v-tooltip="validationMessage"
@@ -26,6 +28,7 @@
 						:loading="loading"
 						:batch-mode="batchMode"
 						:disabled="disabled"
+						:direction="direction"
 						nested
 						@update:model-value="$emit('apply', $event)"
 					/>
@@ -37,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { merge } from 'lodash';
+import { merge, isNil } from 'lodash';
 import { Field } from '@directus/shared/types';
 import { ValidationError } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
@@ -85,14 +88,21 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
 		group: {
 			type: String,
 			required: true,
 		},
-
 		multiple: {
 			type: Boolean,
 			default: false,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['apply', 'toggleAll'],
@@ -100,27 +110,18 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const fieldsInSection = computed(() => {
-			return props.fields
-				.filter((field) => {
-					if (field.meta?.group === props.group && field.meta?.id !== props.field.meta?.id) return false;
-					return true;
-				})
-				.map((field) => {
-					if (field.meta?.id === props.field.meta?.id) {
-						return merge({}, field, {
-							hideLabel: true,
-						});
-					}
-
-					return field;
-				});
+			let fields: Field[] = [merge({}, props.field, { hideLabel: true })];
+			if (props.field.meta?.special?.includes('group')) {
+				fields.push(...getFieldsForGroup(props.field.meta?.field));
+			}
+			return fields;
 		});
 
 		const edited = computed(() => {
 			if (!props.values) return false;
 
 			const editedFields = Object.keys(props.values);
-			return fieldsInSection.value.some((field) => editedFields.includes(field.field)) ? true : false;
+			return fieldsInSection.value.some((field) => editedFields.includes(field.field));
 		});
 
 		const validationMessage = computed(() => {
@@ -134,7 +135,7 @@ export default defineComponent({
 			}
 		});
 
-		return { fieldsInSection, edited, handleModifier, validationMessage };
+		return { t, fieldsInSection, edited, handleModifier, validationMessage };
 
 		function handleModifier(event: MouseEvent, toggle: () => void) {
 			if (props.multiple === false) {
@@ -147,6 +148,21 @@ export default defineComponent({
 			} else {
 				toggle();
 			}
+		}
+
+		function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
+			const fieldsInGroup: Field[] = props.fields.filter((field) => {
+				return field.meta?.group === group || (group === null && isNil(field.meta));
+			});
+
+			for (const field of fieldsInGroup) {
+				if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
+					passed.push(field.meta!.field);
+					fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
+				}
+			}
+
+			return fieldsInGroup;
 		}
 	},
 });
@@ -166,13 +182,21 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	margin: 8px 0;
-	color: var(--foreground-subdued);
+
 	cursor: pointer;
-	transition: color var(--fast) var(--transition);
 
 	&:hover,
 	&.active {
-		color: var(--foreground-normal);
+		.field-name,
+		.icon {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.field-name,
+	.icon {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
 	}
 
 	.required {
@@ -182,7 +206,12 @@ export default defineComponent({
 		margin-left: 2px;
 	}
 
-	&.edited::before {
+	.v-chip {
+		margin: 0;
+		margin-left: 8px;
+	}
+
+	.edit-dot {
 		position: absolute;
 		top: 14px;
 		left: -7px;
@@ -192,7 +221,6 @@ export default defineComponent({
 		background-color: var(--foreground-subdued);
 		border-radius: 4px;
 		content: '';
-		pointer-events: none;
 	}
 }
 

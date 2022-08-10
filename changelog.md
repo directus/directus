@@ -2,6 +2,608 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.15.0 (August 4, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#14833](https://github.com/directus/directus/pull/14833) Improve cache performance by compressing records (by
+    @joselcvarela)
+- **App**
+  - [#14786](https://github.com/directus/directus/pull/14786) Support custom aspect ratios in image editor (by
+    @azrikahar)
+- **Extensions**
+  - [#14410](https://github.com/directus/directus/pull/14410) Add support for operation extensions to the Extensions SDK
+    (by @nickrum)
+
+### :rocket: Improvements
+
+- **App**
+  - [#14818](https://github.com/directus/directus/pull/14818) Exclude relationship fields on field validation (by
+    @u12206050)
+  - [#14745](https://github.com/directus/directus/pull/14745) Add configuration for "Add New"/"Select Existing" buttons
+    in M2O interface (by @rijkvanzanten)
+  - [#14663](https://github.com/directus/directus/pull/14663) Add Show Search option to checkbox tree (by @u12206050)
+  - [#14662](https://github.com/directus/directus/pull/14662) Resolve a warning shown when opening the in-App docs in
+    dev mode (by @nickrum)
+- **Extensions**
+  - [#14659](https://github.com/directus/directus/pull/14659) Improve extension scaffolding log message (by @nickrum)
+- **API**
+  - [#14625](https://github.com/directus/directus/pull/14625) Handle not unique errors during auto-registration (by
+    @aidenfoxx)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#14829](https://github.com/directus/directus/pull/14829) Check for allowed filter operators when applying filter
+    (by @licitdev)
+  - [#14803](https://github.com/directus/directus/pull/14803) Move serializers option to the right place for pino-http
+    (by @erickjth)
+  - [#14741](https://github.com/directus/directus/pull/14741) Fix Emit Events for item CRUD operations in Flows (by
+    @azrikahar)
+  - [#14705](https://github.com/directus/directus/pull/14705) Replace functions within arrays in GraphQL (by @licitdev)
+  - [#14627](https://github.com/directus/directus/pull/14627) 500 error when using scoped fields query when not
+    applicable (by @br41nslug)
+  - [#14581](https://github.com/directus/directus/pull/14581) Extend OpenAPI schemas for JSON-backed fields (by
+    @pmwheatley)
+  - [#14323](https://github.com/directus/directus/pull/14323) Change notifications timestamp to nullable & default to
+    now (by @azrikahar)
+- **App**
+  - [#14806](https://github.com/directus/directus/pull/14806) Check for null initialValues in unsetValue (by @licitdev)
+  - [#14791](https://github.com/directus/directus/pull/14791) Nested forms get out of sync on unset (by @br41nslug)
+  - [#14776](https://github.com/directus/directus/pull/14776) Comments not getting loaded properly (by @br41nslug)
+  - [#14769](https://github.com/directus/directus/pull/14769) Do not show inactive manual flows in flows sidebar (by
+    @azrikahar)
+  - [#14709](https://github.com/directus/directus/pull/14709) Input and textarea fields are always getting trimmed (by
+    @br41nslug)
+  - [#14695](https://github.com/directus/directus/pull/14695) Fix exported fields reactivity in export drawer (by
+    @azrikahar)
+  - [#14693](https://github.com/directus/directus/pull/14693) Fix fallback icon styling for interfaces (by @azrikahar)
+  - [#14688](https://github.com/directus/directus/pull/14688) Fix files interface's drawer download button (by
+    @azrikahar)
+  - [#14685](https://github.com/directus/directus/pull/14685) Cast values to string when matching in v-select (by
+    @licitdev)
+  - [#14666](https://github.com/directus/directus/pull/14666) Fix Favicon when project color and logo are not set (by
+    @nickrum)
+  - [#14650](https://github.com/directus/directus/pull/14650) broken assets paths when serving Directus from a subfolder
+    (by @br41nslug)
+  - [#14648](https://github.com/directus/directus/pull/14648) Do not override current admin language when updating
+    project default language (by @azrikahar)
+  - [#14646](https://github.com/directus/directus/pull/14646) Reload image view when src is updated (by @licitdev)
+  - [#14644](https://github.com/directus/directus/pull/14644) Fix render template height in card subtitle (by
+    @rijkvanzanten)
+  - [#14637](https://github.com/directus/directus/pull/14637) Fix list-group clickable; Fix navigation-item initial
+    state (by @dimitrov-adrian)
+  - [#14626](https://github.com/directus/directus/pull/14626) Fix calendar list view styling (by @azrikahar)
+  - [#14618](https://github.com/directus/directus/pull/14618) Fix flatpickr global style (by @azrikahar)
+  - [#14570](https://github.com/directus/directus/pull/14570) File Preview fixes (by @azrikahar)
+- **specs**
+  - [#14795](https://github.com/directus/directus/pull/14795) Fix typo for operation component in OAS (by @azrikahar)
+- **Extensions**
+  - [#14658](https://github.com/directus/directus/pull/14658) Fix building the extensions-sdk in dev mode (by @nickrum)
+
+### :sponge: Optimizations
+
+- **App**
+  - [#14751](https://github.com/directus/directus/pull/14751) Make DrawerItem, DrawerBatch global components (by
+    @j0hnfl0w)
+  - [#14615](https://github.com/directus/directus/pull/14615) Fix revisions drawer detail ref type (by @azrikahar)
+  - [#14580](https://github.com/directus/directus/pull/14580) Refactor unnecessary nested app folders (by
+    @rijkvanzanten)
+- **Misc.**
+  - [#14728](https://github.com/directus/directus/pull/14728) Support running prod locally through ./api/cli.js (by
+    @rijkvanzanten)
+
+## v9.14.2 (July 21, 2022)
+
+### :rocket: Improvements
+
+- **App**
+  - [#14541](https://github.com/directus/directus/pull/14541) Select multiple dropdown preview threshold (by
+    @rijkvanzanten)
+  - [#14412](https://github.com/directus/directus/pull/14412) Enable spellcheck on wysiwyg and markdown interfaces (by
+    @licitdev)
+  - [#14390](https://github.com/directus/directus/pull/14390) Fix strict relative dates showing "incorrect" (by
+    @u12206050)
+  - [#14021](https://github.com/directus/directus/pull/14021) Add raw editor toggle for using variables in flows
+    operations (by @azrikahar)
+  - [#10592](https://github.com/directus/directus/pull/10592) Optimize media loading across app (by @jaycammarano)
+  - [#10488](https://github.com/directus/directus/pull/10488) Adding editor to image component (by @juancarlosjr97)
+- **API**
+  - [#14499](https://github.com/directus/directus/pull/14499) Enable extensions cache (by @claytongulick)
+  - [#9400](https://github.com/directus/directus/pull/9400) Add "security" commands to api CLI (by @danilopolani)
+- **Extensions**
+  - [#14475](https://github.com/directus/directus/pull/14475) Improve extension create onboarding (by @u12206050)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#14543](https://github.com/directus/directus/pull/14543) Fix map layout not rendering items on search (by
+    @rijkvanzanten)
+  - [#14542](https://github.com/directus/directus/pull/14542) Fix singleton navigation temporarily using wrong ID (by
+    @rijkvanzanten)
+  - [#14539](https://github.com/directus/directus/pull/14539) Don't render explicit null values in md custom blocks (by
+    @rijkvanzanten)
+  - [#14538](https://github.com/directus/directus/pull/14538) Add max height to folder picker (by @rijkvanzanten)
+  - [#14537](https://github.com/directus/directus/pull/14537) Don't disable distinct count based on integer type (by
+    @rijkvanzanten)
+  - [#14536](https://github.com/directus/directus/pull/14536) Default auth provider to first configured one if default
+    is disabled (by @rijkvanzanten)
+  - [#14532](https://github.com/directus/directus/pull/14532) Skip disabled field check when using set-field-value event
+    (by @rijkvanzanten)
+  - [#14530](https://github.com/directus/directus/pull/14530) Fix M2A filter scope on select existing (by
+    @rijkvanzanten)
+  - [#14511](https://github.com/directus/directus/pull/14511) Fix the preview not being updated after editing the image
+    (by @qborisb)
+  - [#14488](https://github.com/directus/directus/pull/14488) Conditions not working (partially) (by @br41nslug)
+  - [#14438](https://github.com/directus/directus/pull/14438) Prevent app crash on empty manual flow config (by
+    @rijkvanzanten)
+  - [#14404](https://github.com/directus/directus/pull/14404) Fix/wysiwyg context menu (by @licitdev)
+  - [#14402](https://github.com/directus/directus/pull/14402) Insights: Fix query primary field for system tables (by
+    @joselcvarela)
+  - [#14396](https://github.com/directus/directus/pull/14396) Fix list panel descending sort (by @azrikahar)
+  - [#14369](https://github.com/directus/directus/pull/14369) Fixes nested groups in accordions not rendering fields (by
+    @br41nslug)
+  - [#14358](https://github.com/directus/directus/pull/14358) Fix disabled state for markdown interface (by @azrikahar)
+  - [#14355](https://github.com/directus/directus/pull/14355) Fix translation in render-template (by @u12206050)
+  - [#14322](https://github.com/directus/directus/pull/14322) Prevent empty title attribute in WYSIWYG links (by
+    @azrikahar)
+  - [#14256](https://github.com/directus/directus/pull/14256) Fix field aliasing not returning null after merging
+    documents (by @addisonElliott)
+  - [#10592](https://github.com/directus/directus/pull/10592) Optimize media loading across app (by @jaycammarano)
+- **API**
+  - [#14540](https://github.com/directus/directus/pull/14540) Add missing \_between/\_nbetween filter operators to GQL
+    (by @rijkvanzanten)
+  - [#14520](https://github.com/directus/directus/pull/14520) Graphql: Do not try to convert Dates (considered an
+    object) (by @joselcvarela)
+  - [#14512](https://github.com/directus/directus/pull/14512) Disable foreign check on SQLite when deleting fields (by
+    @licitdev)
+  - [#14506](https://github.com/directus/directus/pull/14506) Fix apply snapshot for UUID primary keys (by @azrikahar)
+  - [#14460](https://github.com/directus/directus/pull/14460) API/Graphql: Use same types as `count` for `countDistinct`
+    (by @joselcvarela)
+  - [#14423](https://github.com/directus/directus/pull/14423) Fix filter column aliasing (by @licitdev)
+  - [#14418](https://github.com/directus/directus/pull/14418) Encoded the url using encodeURIComponent, so that the url
+    gets sanitzed and so, we did not get 404 error. (by @zeel-pathak)
+  - [#14416](https://github.com/directus/directus/pull/14416) fix generateJoi error due to empty permissions when
+    creating new role (by @azrikahar)
+  - [#14401](https://github.com/directus/directus/pull/14401) Don't use locales in generated camelCased values from env
+    (by @rijkvanzanten)
+  - [#14371](https://github.com/directus/directus/pull/14371) Add GraphQL query POST caching (by @rijkvanzanten)
+  - [#13949](https://github.com/directus/directus/pull/13949) Fix: Error applying schemas with nested collection(s) (by
+    @IanPirro)
+  - [#13870](https://github.com/directus/directus/pull/13870) Process relational collection's permissions in functions
+    (by @licitdev)
+  - [#11462](https://github.com/directus/directus/pull/11462) Cache GraphQL POST queries (by @viters)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#14555](https://github.com/directus/directus/pull/14555) Resolve lint warnings (by @rijkvanzanten)
+  - [#14525](https://github.com/directus/directus/pull/14525) Cancel all previous workflows in the branch (by @licitdev)
+  - [#14350](https://github.com/directus/directus/pull/14350) Move repo to `pnpm` based workflow (by @rijkvanzanten)
+  - [#14335](https://github.com/directus/directus/pull/14335) Move external packages to separate repos (by
+    @rijkvanzanten)
+- **API**
+  - [#13596](https://github.com/directus/directus/pull/13596) Generate joi merge (by @jaycammarano)
+
+### :package: Dependency Updates
+
+- [#14509](https://github.com/directus/directus/pull/14509) Update Knex version to fix CockroachDB relationships showing
+  multiple times (by @christopher-kapic)
+- [#14437](https://github.com/directus/directus/pull/14437) Update knex-schema-inspector to 2.0.3 (by @rijkvanzanten)
+
+## v9.14.0 (July 7, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#14203](https://github.com/directus/directus/pull/14203) Emitter emits event in the meta (by @licitdev)
+
+### :rocket: Improvements
+
+- **API**
+  - :warning: [#14287](https://github.com/directus/directus/pull/14287) Terminate Directus if OpenID discovery fails (by
+    @aidenfoxx)
+  - [#14164](https://github.com/directus/directus/pull/14164) Add emitEvents flag to item reads in service (by
+    @rijkvanzanten)
+  - [#9191](https://github.com/directus/directus/pull/9191) Enable caching for App assets (by @nickrum)
+- **shared**
+  - [#14254](https://github.com/directus/directus/pull/14254) Fix type for defaults in useCollection composable (by
+    @addisonElliott)
+- **App**
+  - [#14244](https://github.com/directus/directus/pull/14244) Don't show language select when there is only one language
+    to choose from (by @janwillemvd)
+  - [#14232](https://github.com/directus/directus/pull/14232) Use string displays on the calendar layout (by
+    @rijkvanzanten)
+  - [#14229](https://github.com/directus/directus/pull/14229) Hide user invite flow when default auth provider is
+    disabled (by @rijkvanzanten)
+  - [#14193](https://github.com/directus/directus/pull/14193) Use native api with access_token when defineing url as
+    relative (by @u12206050)
+  - [#14186](https://github.com/directus/directus/pull/14186) Tweaks for datetime display options (by @azrikahar)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#14303](https://github.com/directus/directus/pull/14303) Prevents selecting relational fields as sort field (by
+    @br41nslug)
+  - [#14300](https://github.com/directus/directus/pull/14300) Fixes data missing after sort in m2a interface (by
+    @br41nslug)
+  - [#14252](https://github.com/directus/directus/pull/14252) Remove auto-open groups in v-select (by @azrikahar)
+  - [#14251](https://github.com/directus/directus/pull/14251) Fix crash on logout due to `te` missing (by
+    @addisonElliott)
+  - [#14241](https://github.com/directus/directus/pull/14241) broken image display for null assets (by @br41nslug)
+  - [#14234](https://github.com/directus/directus/pull/14234) Don't force reset scroll on hash changes (by
+    @rijkvanzanten)
+  - [#14233](https://github.com/directus/directus/pull/14233) Fix conditions crash when custom options component is used
+    (by @rijkvanzanten)
+  - [#14231](https://github.com/directus/directus/pull/14231) Fix vertical alignment of render-template in tabular (by
+    @rijkvanzanten)
+  - [#14227](https://github.com/directus/directus/pull/14227) Persist existing global variable values on save (by
+    @azrikahar)
+  - [#14216](https://github.com/directus/directus/pull/14216) Only emit value if updated for wysiwyg interface (by
+    @licitdev)
+  - [#14195](https://github.com/directus/directus/pull/14195) Fix rendering of social icons (by @licitdev)
+  - [#14188](https://github.com/directus/directus/pull/14188) Performance improvements for groups within v-form (by
+    @br41nslug)
+  - [#13970](https://github.com/directus/directus/pull/13970) Fix Save As Copy with edited relational fields (by
+    @younky-yang)
+- **API**
+  - [#14286](https://github.com/directus/directus/pull/14286) Fix filename charset for uploaded files (by @azrikahar)
+  - [#14131](https://github.com/directus/directus/pull/14131) Fixes: No notification being created when sendmail fails.
+    (by @jaycammarano)
+  - [#14127](https://github.com/directus/directus/pull/14127) Check if a date string is valid ISO8601 before parsing it
+    (by @br41nslug)
+  - [#14057](https://github.com/directus/directus/pull/14057) CSV import converts numeric strings to numbers (by
+    @br41nslug)
+
+### :sponge: Optimizations
+
+- **App**
+  - [#14299](https://github.com/directus/directus/pull/14299) Remove invalid exported type in app (by @azrikahar)
+  - [#14255](https://github.com/directus/directus/pull/14255) Fix duplicate logic for retrieving system collections in
+    related-collection-select (by @addisonElliott)
+- **Misc.**
+  - [#14214](https://github.com/directus/directus/pull/14214) Fix vite error when pre-bundling docs package (by
+    @azrikahar)
+
+### :memo: Documentation
+
+- [#14177](https://github.com/directus/directus/pull/14177) Add bootstrap step in manual installation (by @raflymln)
+
+## v9.13.0 (June 28, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#14096](https://github.com/directus/directus/pull/14096) Insights 2.0 (by @rijkvanzanten)
+  - [#13924](https://github.com/directus/directus/pull/13924) API: Add env var to opt-out mailer setup verification (by
+    @joselcvarela)
+  - [#13907](https://github.com/directus/directus/pull/13907) Allow setting a custom filename in the /assets endpoint
+    for SEO (by @rijkvanzanten)
+  - [#13871](https://github.com/directus/directus/pull/13871) Add optional cache max value size limit configuration (by
+    @rijkvanzanten)
+- **App**
+  - [#14096](https://github.com/directus/directus/pull/14096) Insights 2.0 (by @rijkvanzanten)
+  - [#13867](https://github.com/directus/directus/pull/13867) Add search in v-select (by @azrikahar)
+  - [#13576](https://github.com/directus/directus/pull/13576) Allow setting default language for translations interface
+    or choosing user's language (by @u12206050)
+  - [#7805](https://github.com/directus/directus/pull/7805) Add tfa enforce flow (by @Nitwel)
+
+### :rocket: Improvements
+
+- **App**
+  - [#14154](https://github.com/directus/directus/pull/14154) Fix v-select search & selection of groups (by @azrikahar)
+  - [#14090](https://github.com/directus/directus/pull/14090) Improve IDs field interaction for Flows item
+    read/update/delete operations when empty (by @azrikahar)
+  - [#14083](https://github.com/directus/directus/pull/14083) App Docs Module Improvements (by @azrikahar)
+  - [#14065](https://github.com/directus/directus/pull/14065) Allow admin to import into system collections (by
+    @azrikahar)
+  - [#14064](https://github.com/directus/directus/pull/14064) Prevent filename overflow in import file field for
+    Import/Export sidebar (by @azrikahar)
+  - [#14041](https://github.com/directus/directus/pull/14041) Prevent hyphens in auto generated operation keys (by
+    @azrikahar)
+  - [#13996](https://github.com/directus/directus/pull/13996) Minor tweaks to some flow operations (by @azrikahar)
+  - [#13940](https://github.com/directus/directus/pull/13940) invert color shades (by @benhaynes)
+  - [#13934](https://github.com/directus/directus/pull/13934) Improve Flows drawer editing experience (by @azrikahar)
+  - [#13929](https://github.com/directus/directus/pull/13929) Enable header resize for Insights & Flows overview (by
+    @azrikahar)
+  - :warning: [#13921](https://github.com/directus/directus/pull/13921) add `Emit Events` option to item update/delete
+    operations in Flows (by @azrikahar)
+- **API**
+  - [#14094](https://github.com/directus/directus/pull/14094) Mark list result as non-nullable in GraphQL schema (by
+    @licitdev)
+  - [#14090](https://github.com/directus/directus/pull/14090) Improve IDs field interaction for Flows item
+    read/update/delete operations when empty (by @azrikahar)
+  - [#14080](https://github.com/directus/directus/pull/14080) Fix `undefined` values in filters for GraphQL (by
+    @azrikahar)
+  - [#14074](https://github.com/directus/directus/pull/14074) Make path argument optional for snapshot command (by
+    @claytongulick)
+  - :warning: [#14066](https://github.com/directus/directus/pull/14066) API: Return more error messages for OpenID and
+    OAuth2 (by @joselcvarela)
+  - [#14065](https://github.com/directus/directus/pull/14065) Allow admin to import into system collections (by
+    @azrikahar)
+  - :warning: [#13921](https://github.com/directus/directus/pull/13921) add `Emit Events` option to item update/delete
+    operations in Flows (by @azrikahar)
+  - [#13897](https://github.com/directus/directus/pull/13897) API: Ignore `returning` not supported messages (by
+    @joselcvarela)
+- **shared**
+  - [#14001](https://github.com/directus/directus/pull/14001) Update get-filter-operators-for-type.ts (by @licitdev)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#14163](https://github.com/directus/directus/pull/14163) Prevent webhooks from registering twice (by
+    @rijkvanzanten)
+  - [#14034](https://github.com/directus/directus/pull/14034) fix action event Flows for related tables (by @azrikahar)
+  - [#14029](https://github.com/directus/directus/pull/14029) Commented out text in .env (by @jaycammarano)
+  - [#13906](https://github.com/directus/directus/pull/13906) Dashboards: Add missing system `color` field (by
+    @joselcvarela)
+  - [#13900](https://github.com/directus/directus/pull/13900) Sanitize query for item read/update/delete operations in
+    Flows (by @azrikahar)
+  - [#13891](https://github.com/directus/directus/pull/13891) Fix date filter with null value on SQLite (by @licitdev)
+  - [#13879](https://github.com/directus/directus/pull/13879) Add migration to rename `hook` triggers to `event` (by
+    @azrikahar)
+  - [#13575](https://github.com/directus/directus/pull/13575) Fix aliased DB table names in filter query (by @licitdev)
+  - :warning: [#11845](https://github.com/directus/directus/pull/11845) Add depth limit to filtering (by @licitdev)
+- **App**
+  - [#14154](https://github.com/directus/directus/pull/14154) Fix v-select search & selection of groups (by @azrikahar)
+  - [#14147](https://github.com/directus/directus/pull/14147) Fix relational fields for Download Page as CSV & relevant
+    displays' handler improvements (by @azrikahar)
+  - [#14124](https://github.com/directus/directus/pull/14124) Use conditional props for links in v-list-item (by
+    @azrikahar)
+  - [#14078](https://github.com/directus/directus/pull/14078) Fix M2O interface in junction tables (by @azrikahar)
+  - [#14070](https://github.com/directus/directus/pull/14070) Fixed firefox opacity of placeholders issue (by
+    @jaycammarano)
+  - [#14043](https://github.com/directus/directus/pull/14043) Fix autocomplete field options not selectable (by
+    @azrikahar)
+  - [#14035](https://github.com/directus/directus/pull/14035) Major input delays on text fields in complex documents (by
+    @br41nslug)
+  - [#13998](https://github.com/directus/directus/pull/13998) Fix saving error with custom permissions in O2M fields (by
+    @younky-yang)
+  - [#13953](https://github.com/directus/directus/pull/13953) Fix in-app docs (by @azrikahar)
+  - [#13952](https://github.com/directus/directus/pull/13952) batch edit toggle not rendered side-by-side (by
+    @br41nslug)
+  - [#13930](https://github.com/directus/directus/pull/13930) Prevent translations validation error matching parent (by
+    @azrikahar)
+  - [#13920](https://github.com/directus/directus/pull/13920) Translation Strings Improvements (by @azrikahar)
+  - [#13905](https://github.com/directus/directus/pull/13905) Redirect to page not found for flows that do not exist (by
+    @azrikahar)
+  - [#13904](https://github.com/directus/directus/pull/13904) Big Integer fields sort as strings (by @br41nslug)
+  - [#13890](https://github.com/directus/directus/pull/13890) Labels with v-chips are not rendered side-by-side (by
+    @br41nslug)
+  - [#13874](https://github.com/directus/directus/pull/13874) Fix insights panel configuration not persisting to tiles
+    (by @rijkvanzanten)
+  - [#13866](https://github.com/directus/directus/pull/13866) O2M relation does not display correctly (by @br41nslug)
+  - [#13861](https://github.com/directus/directus/pull/13861) Use translate in render-display (by @azrikahar)
+  - [#13846](https://github.com/directus/directus/pull/13846) Fix: Time Series panel crashes when setting a max value
+    with no min value (by @jaycammarano)
+  - [#13840](https://github.com/directus/directus/pull/13840) Use conditional props for component in v-button (by
+    @azrikahar)
+  - [#13830](https://github.com/directus/directus/pull/13830) use parsePreset in App side (by @azrikahar)
+  - [#13829](https://github.com/directus/directus/pull/13829) Trigger focus event to ensure observable exists in WYSIWYG
+    (by @licitdev)
+  - [#13752](https://github.com/directus/directus/pull/13752) Checkbox Tree Field Expand/Collapse in Show Selected (by
+    @br41nslug)
+  - [#7805](https://github.com/directus/directus/pull/7805) Add tfa enforce flow (by @Nitwel)
+- **specs**
+  - [#14060](https://github.com/directus/directus/pull/14060) OAS does not contain all utility functions (by @br41nslug)
+
+### :sponge: Optimizations
+
+- **API**
+  - [#13877](https://github.com/directus/directus/pull/13877) Prevent unknown knex methods from being used (by
+    @rijkvanzanten)
+  - [#13873](https://github.com/directus/directus/pull/13873) Added correct null parsing to Directus schemas (by
+    @aidenfoxx)
+- **Misc.**
+  - [#13876](https://github.com/directus/directus/pull/13876) Upgrade codeql to v2 (by @rijkvanzanten)
+  - [#13849](https://github.com/directus/directus/pull/13849) Fix linting for api/src/utils/get-local-type.ts (by
+    @licitdev)
+  - [#13824](https://github.com/directus/directus/pull/13824) Auto approve pull requests from Crowdin via label (by
+    @paescuj)
+
+### :memo: Documentation
+
+- [#14101](https://github.com/directus/directus/pull/14101) Document insights updates (by @erondpowell)
+- [#14067](https://github.com/directus/directus/pull/14067) Docs: Fix how to refresh token example on SSO example (by
+  @joselcvarela)
+- [#13995](https://github.com/directus/directus/pull/13995) fixes 404 links in docs (by @br41nslug)
+- [#13976](https://github.com/directus/directus/pull/13976) Docs: fixed more links (by @erondpowell)
+- [#13967](https://github.com/directus/directus/pull/13967) Docs: Fixed Resources Headers (by @erondpowell)
+- [#13945](https://github.com/directus/directus/pull/13945) Docs config refactor (by @erondpowell)
+- [#13919](https://github.com/directus/directus/pull/13919) Docs: Translation Strings (by @erondpowell)
+- [#13908](https://github.com/directus/directus/pull/13908) Docs: Lori's Flows Edits (by @erondpowell)
+- [#13903](https://github.com/directus/directus/pull/13903) Update flows.md - broken links (by @jkarelins)
+- [#13893](https://github.com/directus/directus/pull/13893) Clarified DEFAULT_ROLE_ID for LDAP (by @aidenfoxx)
+- [#13844](https://github.com/directus/directus/pull/13844) fixed links, tweaked text (by @erondpowell)
+- [#12289](https://github.com/directus/directus/pull/12289) Cleanup of the plesk docs page to make it more streamlined
+  (by @Slations)
+
+### :package: Dependency Updates
+
+- [#13878](https://github.com/directus/directus/pull/13878) Upgrade gluegun (by @rijkvanzanten)
+- [#13876](https://github.com/directus/directus/pull/13876) Upgrade codeql to v2 (by @rijkvanzanten)
+- [#13875](https://github.com/directus/directus/pull/13875) Upgrade busboy (by @rijkvanzanten)
+- [#13845](https://github.com/directus/directus/pull/13845) Upgrade API & Schema dependencies (by @rijkvanzanten)
+
+## v9.12.2 (June 9, 2022)
+
+### :rocket: Improvements
+
+- **Extensions**
+  - [#13797](https://github.com/directus/directus/pull/13797) Use latest vue version when scaffolding extension packages
+    (by @nickrum)
+- **API**
+  - [#13796](https://github.com/directus/directus/pull/13796) Use JobQueue when reloading extensions (by @nickrum)
+  - [#12044](https://github.com/directus/directus/pull/12044) Enable activity tracking at password reset (by @ybelenko)
+- **App**
+  - [#13777](https://github.com/directus/directus/pull/13777) Allow selection of image transformation in the WYSIWYG
+    interface (by @licitdev)
+  - [#13772](https://github.com/directus/directus/pull/13772) Add configurable page-size to files/o2m/m2m/m2a interfaces
+    (by @rijkvanzanten)
+  - [#12804](https://github.com/directus/directus/pull/12804) Take into account the format option when displaying dates
+    relative. (by @u12206050)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#13821](https://github.com/directus/directus/pull/13821) Fix preset layouts not persisting. (by @jaycammarano)
+  - [#13802](https://github.com/directus/directus/pull/13802) Emit input whenever WYSIWYG content is updated (by
+    @licitdev)
+  - [#13799](https://github.com/directus/directus/pull/13799) Make UUID/manual primary keys selectable with count in
+    Time Series panels (by @azrikahar)
+  - [#13789](https://github.com/directus/directus/pull/13789) Set count on fresh init of defered tinymce (by
+    @rijkvanzanten)
+  - [#13768](https://github.com/directus/directus/pull/13768) Fix filter error when switching between collections with
+    map layout (by @azrikahar)
+  - [#13757](https://github.com/directus/directus/pull/13757) header bar icon color: var(--primary) (by @jaycammarano)
+  - [#13750](https://github.com/directus/directus/pull/13750) Searching the top level bug (by @br41nslug)
+  - [#13701](https://github.com/directus/directus/pull/13701) Fix range to be based on current time (by @licitdev)
+  - [#13574](https://github.com/directus/directus/pull/13574) fix nested array updates for relational interfaces (by
+    @azrikahar)
+  - [#13224](https://github.com/directus/directus/pull/13224) Fix clear value for relational interfaces (by @azrikahar)
+  - [#13187](https://github.com/directus/directus/pull/13187) Show fields inside groups correctly in display templates
+    for relational interfaces (by @br41nslug)
+  - [#13141](https://github.com/directus/directus/pull/13141) Fix form field label responsiveness (by @azrikahar)
+  - [#12759](https://github.com/directus/directus/pull/12759) Use aliases for relational fields (by @azrikahar)
+- **API**
+  - [#13783](https://github.com/directus/directus/pull/13783) Fix flow triggers being registered multiple times (by
+    @nickrum)
+  - [#13762](https://github.com/directus/directus/pull/13762) Flush caches after applying schema snapshot (by
+    @rijkvanzanten)
+  - [#13759](https://github.com/directus/directus/pull/13759) Fix formatting of headers in request operation (by
+    @rijkvanzanten)
+  - [#13754](https://github.com/directus/directus/pull/13754) Serve robots.txt from root (by @rijkvanzanten)
+  - [#13751](https://github.com/directus/directus/pull/13751) Fix description field in directus_flows (by @azrikahar)
+  - [#13701](https://github.com/directus/directus/pull/13701) Fix range to be based on current time (by @licitdev)
+- **specs**
+  - [#13776](https://github.com/directus/directus/pull/13776) Fixes OAS specs for Flows & Operations (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **App**
+  - [#13755](https://github.com/directus/directus/pull/13755) Fix various linter warnings, disable new rule (by
+    @rijkvanzanten)
+- **Misc.**
+  - [#13714](https://github.com/directus/directus/pull/13714) disable thumbsmith update blocking the docs build (by
+    @br41nslug)
+
+### :memo: Documentation
+
+- [#13794](https://github.com/directus/directus/pull/13794) tweaks done for today (by @erondpowell)
+- [#13793](https://github.com/directus/directus/pull/13793) replaced replace a file video file (by @erondpowell)
+- [#13692](https://github.com/directus/directus/pull/13692) Docs/Cloud: Add "Asia Pacific, Singapore" to regions (by
+  @joselcvarela)
+- [#13672](https://github.com/directus/directus/pull/13672) Docs: Fix one last link to installation (by @erondpowell)
+- [#13358](https://github.com/directus/directus/pull/13358) Docs & Specs update for Data Flows (by @azrikahar)
+- [#13258](https://github.com/directus/directus/pull/13258) Docs: getting-started > architecture (by @erondpowell)
+- [#13246](https://github.com/directus/directus/pull/13246) Docs: Configuration > Data Flows (by @erondpowell)
+- [#13122](https://github.com/directus/directus/pull/13122) Docs: getting-started > backing-directus (by @erondpowell)
+- [#13055](https://github.com/directus/directus/pull/13055) Docs: getting-started > Introduction (by @erondpowell)
+
+## v9.12.1 (June 3, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#13724](https://github.com/directus/directus/pull/13724) Only render first 10000 items on calendar layout view (by
+    @rijkvanzanten)
+  - [#13723](https://github.com/directus/directus/pull/13723) Don't crash on misconfigured scope trigger (by
+    @rijkvanzanten)
+  - [#13713](https://github.com/directus/directus/pull/13713) Fix flows editing existing operations (by @rijkvanzanten)
+  - [#13635](https://github.com/directus/directus/pull/13635) Add Locale labels to groups (by @azrikahar)
+- **API**
+  - [#13719](https://github.com/directus/directus/pull/13719) Fix installer missing package (by @rijkvanzanten)
+  - [#13694](https://github.com/directus/directus/pull/13694) Fix export offset (by @licitdev)
+- **Extensions**
+  - [#13709](https://github.com/directus/directus/pull/13709) Fix endpoint extensions being registered under wrong route
+    (by @nickrum)
+
+## v9.12.0 (June 2, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#12522](https://github.com/directus/directus/pull/12522) 🌊 Add Data Flows to Directus 🌊 (by @Nitwel)
+- **App**
+  - [#12522](https://github.com/directus/directus/pull/12522) 🌊 Add Data Flows to Directus 🌊 (by @Nitwel)
+- **Misc.**
+  - [#11186](https://github.com/directus/directus/pull/11186) Docs: Auto-generated "Link preview" thumbnails for all
+    pages (by @loteoo)
+
+### :rocket: Improvements
+
+- **App**
+  - [#13639](https://github.com/directus/directus/pull/13639) Translations: Make password reset notice clearer (by
+    @joselcvarela)
+  - [#13610](https://github.com/directus/directus/pull/13610) add collection and folder names to delete confirmation
+    messages (by @sxsws)
+  - :warning: [#13549](https://github.com/directus/directus/pull/13549) Add System token interface (by @azrikahar)
+  - [#13540](https://github.com/directus/directus/pull/13540) Add copy button to user id on user info page (by @nickrum)
+  - [#13389](https://github.com/directus/directus/pull/13389) Don't consider SIGN_OUT an SSO error (by @aidenfoxx)
+  - [#13363](https://github.com/directus/directus/pull/13363) Improve translation for require_value_to_be_set (by
+    @janwillemvd)
+- **format-title**
+  - [#13629](https://github.com/directus/directus/pull/13629) Remove BASIC acronym (by @azrikahar)
+- **API**
+  - :warning: [#13549](https://github.com/directus/directus/pull/13549) Add System token interface (by @azrikahar)
+  - [#13352](https://github.com/directus/directus/pull/13352) Add comments to the .env file stub (by @sxsws)
+  - [#12033](https://github.com/directus/directus/pull/12033) Add projectUrl to defaultTemplateData (by @ybelenko)
+  - [#11141](https://github.com/directus/directus/pull/11141) Allow authentication using MSSQL
+    azure-active-directory-service-principal-secret (by @erickjth)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#13681](https://github.com/directus/directus/pull/13681) fix collection & folder delete dialog message (by
+    @azrikahar)
+  - [#13630](https://github.com/directus/directus/pull/13630) use v-if instead of v-show in v-detail component (by
+    @azrikahar)
+  - [#13563](https://github.com/directus/directus/pull/13563) Fix field conditions optionDefaults computed property (by
+    @yassilah)
+  - [#13532](https://github.com/directus/directus/pull/13532) Remove the paste value check on slug inputs (by
+    @azrikahar)
+- **API**
+  - [#13660](https://github.com/directus/directus/pull/13660) Fix wrong source of meta info for notifications API (by
+    @tenebrius)
+  - [#13651](https://github.com/directus/directus/pull/13651) Add cross-instance messenger pubsub setup (by
+    @rijkvanzanten)
+  - [#13623](https://github.com/directus/directus/pull/13623) Field permissions and relational interfaces (by
+    @br41nslug)
+  - [#13539](https://github.com/directus/directus/pull/13539) Added missing "DB*SSL*\*\_FILE" to the "\_FILE" allow
+    list. (by @br41nslug)
+  - [#13527](https://github.com/directus/directus/pull/13527) Fix metadata for directus_folders (by @azrikahar)
+- **Misc.**
+  - [#13577](https://github.com/directus/directus/pull/13577) `last_page` type was `date` instead of `str` (by
+    @louisgavalda)
+- **specs**
+  - [#13531](https://github.com/directus/directus/pull/13531) add `meta` to list responses for OAS (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#13648](https://github.com/directus/directus/pull/13648) Use `pull_request_target` instead of `pull_request` for
+    auto-project-assign (by @jaycammarano)
+  - [#13633](https://github.com/directus/directus/pull/13633) Auto approve pull requests from Crowdin (by @paescuj)
+  - [#13455](https://github.com/directus/directus/pull/13455) Remove workaround in release flow (by @nickrum)
+  - [#13444](https://github.com/directus/directus/pull/13444) Remove npmrc files which prevent lockfile creation in
+    workspaces (by @nickrum)
+- **shared**
+  - [#13594](https://github.com/directus/directus/pull/13594) Moved tests from the "shared" package into a single test
+    folder (by @jaycammarano)
+
+### :memo: Documentation
+
+- [#13688](https://github.com/directus/directus/pull/13688) fixed typo (by @erondpowell)
+- [#13656](https://github.com/directus/directus/pull/13656) removing remaining links to example.env (by @sxsws)
+- [#13642](https://github.com/directus/directus/pull/13642) Quickstart fix (by @erondpowell)
+- [#13601](https://github.com/directus/directus/pull/13601) Docs: fix wrong url paths for self-hosted installation
+  guides (by @thammarith)
+- [#13577](https://github.com/directus/directus/pull/13577) `last_page` type was `date` instead of `str` (by
+  @louisgavalda)
+- [#11186](https://github.com/directus/directus/pull/11186) Docs: Auto-generated "Link preview" thumbnails for all pages
+  (by @loteoo)
+
 ## v9.11.1 (May 24, 2022)
 
 ### :rocket: Improvements

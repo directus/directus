@@ -7,7 +7,7 @@ type Message = {
 	fail?: string;
 };
 
-export default function useClipboard() {
+export function useClipboard() {
 	const { t } = useI18n();
 
 	const isCopySupported = computed(() => {

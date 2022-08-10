@@ -1,6 +1,7 @@
 ---
 avatar: Nuotrauka
 edit_field: Redaguoti lauką
+location: Vietovė
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
@@ -503,6 +504,7 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+flow_name: Pavadinimas
 full_screen: Per visą ekraną
 width: Plotis
 height: Aukštis
@@ -855,6 +857,8 @@ interfaces:
     zoom: Padidinti
   system-folder:
     folder: Aplankas
+  list:
+    sort: Rūšiuoti
   tags:
     tags: Žymos
     whitespace: Matomi tarpai
@@ -915,6 +919,7 @@ displays:
     short: Trumpas
     relative: Santykinis
     relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
+    suffix: Priesaga
   file:
     file: Failas
     description: Rodyti failus
@@ -973,3 +978,8 @@ layouts:
 panels:
   label:
     name: Žyma
+operations:
+  notification:
+    recipient: Vartotojas
+  request:
+    url: URL

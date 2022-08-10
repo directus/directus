@@ -7,8 +7,11 @@ import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
 import { ActionHandler } from '@directus/shared/types';
 import { getMessenger } from './messenger';
+import { JobQueue } from './utils/job-queue';
 
 let registered: { event: string; handler: ActionHandler }[] = [];
+
+const reloadQueue = new JobQueue();
 
 export async function init(): Promise<void> {
 	await register();
@@ -16,7 +19,9 @@ export async function init(): Promise<void> {
 
 	messenger.subscribe('webhooks', (event) => {
 		if (event.type === 'reload') {
-			reload();
+			reloadQueue.enqueue(async () => {
+				await reload();
+			});
 		}
 	});
 }

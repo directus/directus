@@ -38,7 +38,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ComputedRef, computed, defineComponent, inject, PropType, ref, watch } from 'vue';
-import formatLocalized from '@/utils/localized-format';
+import { localizedFormat } from '@/utils/localized-format';
 import { isValid, parse, parseISO } from 'date-fns';
 import { get } from 'lodash';
 
@@ -120,7 +120,7 @@ export default defineComponent({
 				if (props.type === 'date') format = String(t('date-fns_date'));
 				if (props.type === 'time') format = String(t(timeFormat));
 
-				displayValue.value = await formatLocalized(parseValue(props.value), format);
+				displayValue.value = localizedFormat(parseValue(props.value), format);
 			}
 
 			function parseValue(value: string): Date {

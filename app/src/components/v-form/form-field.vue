@@ -11,8 +11,11 @@
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
+					:raw-editor-enabled="rawEditorEnabled"
+					:raw-editor-active="rawEditorActive"
 					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
+					@toggle-raw="$emit('toggle-raw', $event)"
 				/>
 			</template>
 
@@ -39,6 +42,9 @@
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
+			:raw-editor-enabled="rawEditorEnabled"
+			:raw-editor-active="rawEditorActive"
+			:direction="direction"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -71,13 +77,13 @@
 import { getJSType } from '@/utils/get-js-type';
 import { Field, ValidationError } from '@directus/shared/types';
 import { isEqual } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
 	field: Field;
@@ -91,6 +97,9 @@ interface Props {
 	validationError?: ValidationError;
 	autofocus?: boolean;
 	badge?: string;
+	rawEditorEnabled?: boolean;
+	rawEditorActive?: boolean;
+	direction?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -104,9 +113,12 @@ const props = withDefaults(defineProps<Props>(), {
 	validationError: undefined,
 	autofocus: false,
 	badge: undefined,
+	rawEditorEnabled: false,
+	rawEditorActive: false,
+	direction: undefined,
 });
 
-const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'setFieldValue']);
+const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
@@ -117,22 +129,7 @@ const isDisabled = computed(() => {
 	return false;
 });
 
-const defaultValue = computed(() => {
-	const value = props.field?.schema?.default_value;
-
-	if (value !== undefined) return value;
-	return undefined;
-});
-
-const internalValue = computed(() => {
-	if (props.modelValue !== undefined) return props.modelValue;
-	if (props.initialValue !== undefined) return props.initialValue;
-	return defaultValue.value;
-});
-
-const isEdited = computed<boolean>(() => {
-	return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
-});
+const { internalValue, isEdited, defaultValue } = useComputedValues();
 
 const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
 
@@ -221,6 +218,34 @@ function useRaw() {
 
 	return { showRaw, rawValue, copyRaw, pasteRaw };
 }
+
+function useComputedValues() {
+	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
+	const internalValue = ref<any>(getInternalValue());
+	const isEdited = ref<boolean>(getIsEdited());
+
+	watch(
+		() => props.modelValue,
+		() => {
+			const newVal = getInternalValue();
+			if (!isEqual(internalValue.value, newVal)) {
+				internalValue.value = newVal;
+			}
+			isEdited.value = getIsEdited();
+		}
+	);
+
+	return { internalValue, isEdited, defaultValue };
+
+	function getInternalValue(): any {
+		if (props.modelValue !== undefined) return props.modelValue;
+		if (props.initialValue !== undefined) return props.initialValue;
+		return defaultValue.value;
+	}
+	function getIsEdited(): boolean {
+		return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -233,6 +258,14 @@ function useRaw() {
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
+
+	:deep(a) {
+		color: var(--primary);
+
+		&:hover {
+			color: var(--primary-125);
+		}
+	}
 }
 
 .invalid {

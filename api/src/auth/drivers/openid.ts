@@ -1,3 +1,5 @@
+import { BaseException } from '@directus/shared/exceptions';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
@@ -8,10 +10,11 @@ import env from '../../env';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
-	InvalidTokenException,
 	InvalidProviderException,
+	InvalidTokenException,
 	ServiceUnavailableException,
 } from '../../exceptions';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
@@ -19,7 +22,6 @@ import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { parseJSON } from '../../utils/parse-json';
 import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 
@@ -71,7 +73,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 						})
 					);
 				})
-				.catch(reject);
+				.catch((e) => {
+					logger.error(e, '[OpenID] Failed to fetch provider config');
+					process.exit(1);
+				});
 		});
 	}
 
@@ -172,15 +177,23 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
-		await this.usersService.createOne({
-			provider,
-			first_name: userInfo.given_name,
-			last_name: userInfo.family_name,
-			email: email,
-			external_identifier: identifier,
-			role: this.config.defaultRoleId,
-			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-		});
+		try {
+			await this.usersService.createOne({
+				provider,
+				first_name: userInfo.given_name,
+				last_name: userInfo.family_name,
+				email: email,
+				external_identifier: identifier,
+				role: this.config.defaultRoleId,
+				auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+			});
+		} catch (e) {
+			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[OpenID] Failed to register user. User not unique');
+				throw new InvalidProviderException();
+			}
+			throw e;
+		}
 
 		return (await this.fetchUserId(identifier)) as string;
 	}
@@ -317,14 +330,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof ServiceUnavailableException) {
-						reason = 'SERVICE_UNAVAILABLE';
-					} else if (error instanceof InvalidCredentialsException) {
-						reason = 'INVALID_USER';
-					} else if (error instanceof InvalidTokenException) {
-						reason = 'INVALID_TOKEN';
-					} else if (error instanceof InvalidProviderException) {
-						reason = 'INVALID_PROVIDER';
+					if (error instanceof BaseException) {
+						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}

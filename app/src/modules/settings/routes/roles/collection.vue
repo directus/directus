@@ -3,7 +3,7 @@
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
@@ -62,7 +62,6 @@ import SettingsNavigation from '../../components/navigation.vue';
 
 import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import ValueNull from '@/views/private/components/value-null';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
@@ -74,7 +73,7 @@ type RoleItem = Partial<Role> & {
 
 export default defineComponent({
 	name: 'RolesCollection',
-	components: { SettingsNavigation, ValueNull },
+	components: { SettingsNavigation },
 	props: {},
 	setup() {
 		const { t } = useI18n();
@@ -192,6 +191,8 @@ export default defineComponent({
 .header-icon {
 	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 
 .roles {

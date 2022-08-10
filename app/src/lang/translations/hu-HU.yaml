@@ -23,15 +23,19 @@ identifier: Azonosító
 avatar: Profilkép
 application: Alkalmazás
 default_provider: Alapértelmezett
+method: Metódus
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
 modules: Modulok
 module_bar: Modulsáv
+logs: Naplók
 reset_width: Széllesség visszaállítása
 tile_size: Csempeméret
 edit_field: Mező szerkesztése
 conditions: Feltételek
+location: Pozíció
+input: Bevitel
 maps: Térképek
 switch_user: Felhasználó váltása
 item_creation: Elem létrehozása
@@ -44,6 +48,8 @@ group: Csoport
 export_items: Elemek exportálása
 and: És
 or: Vagy
+dataset_too_large_currently_showing_n_items: Túlméretes adathalmaz. Jelenleg az első {n} adat jelenik meg.
+custom: Egyedi
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
 enter_password_to_enable_tfa: Írja be jelszavát a kétfaktoros ellenőrzés bekapcsolásához
@@ -67,6 +73,7 @@ create_preset: Alapértelmezés létrehozása
 create_panel: Panel létrehozása
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
+message: Üzenet
 delete_panel: Panel törlése
 create_webhook: Webhook létrehozása
 create_translation_string: Fordítás létrehozása
@@ -335,10 +342,15 @@ delete_comment: Hozzászólás törlése
 functions:
   year: év
   month: hónap
+  week: Hét
+  minute: Perc
+  second: Másodperc
   count: Mennyiség
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'ÓÓ:pp:mm'
+date-fns_time_no_seconds_24hour: 'ÓÓ:pp'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM. d.
@@ -389,6 +401,7 @@ replace_from_library: Fájl cseréje Könyvtárból
 replace_from_url: Fájl cseréje URL-ből
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
+open_file_in_tab: Megnyitás új fülön
 collection_key: Gyűjtemény kulcsa
 name: Név
 primary_key_field: Elsődleges kulcs mező
@@ -432,6 +445,7 @@ user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasznál�
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
 no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
+no_notifications: Nincsenek értesítések
 activity_log: Tevékenységnapló
 all_items: Minden elem
 any: Bármely
@@ -530,6 +544,7 @@ no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás haszná
 password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
 filter: Szűrő
+edit_image: Kép szerkesztése
 editing_image: Kép szerkesztése
 square: Négyzet
 free: Szabadon választott
@@ -543,11 +558,15 @@ update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
 make_collection_visible: A Gyűjtemény legyen látható
 make_collection_hidden: A Gyűjtemény legyen rejtett
+make_folder_visible: Mappa láthatóvá tétele
+make_folder_hidden: Mappa elrejtése
 goto_collection_content: Tartalom megtekintése
 start_end_of_count_items: '{start}-{end} {count} elemből'
 start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
 one_filtered_item: '1 szűrt elem'
+delete_collection_are_you_sure: >-
+  Biztos, hogy törölni szeretné ezt a gyűjteményt"{collection}"? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
 hidden_collections: Rejtett gyűjtemények
@@ -642,6 +661,7 @@ no_results_copy: Módosítsd vagy töröld a keresési szűrőket a találatoké
 clear_filters: Szűrök törlése
 saves_automatically: Automatikus mentés
 role: Szerepkör
+edit_role: Szerepkör szerkesztése
 rule: Szabály
 user: Felhasználó
 no_presets: Presetek
@@ -653,6 +673,7 @@ on_create: Létrehozáskor
 on_update: Módosításkor
 read: Olvasás
 update: Frissítés
+delete: Törlés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
 format_value: Érték formázása
@@ -663,6 +684,10 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+trigger: Eseményindító
+flow_name: Név
+flow_tracking_activity: Csak a tevékenység nyomon követése
+flow_tracking_null: Minden nyomkövetés tiltása
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
@@ -679,9 +704,9 @@ suffix_placeholder: Érték utáni szöveg...
 decimals_placeholder: Decimális helyek száma...
 no_dashboards: Nincs irányítópult
 no_dashboards_copy: Önnek egy irányítópultja sincs még.
-no_data: Nincs adat
 create_dashboard: Irányítópult létrehozása
 dashboard_name: Irányítópult neve
+no_data: Nincs adat
 full_screen: Teljes képernyő
 edit_panels: Panel szerkesztése
 left_align: Balra igazítás
@@ -772,6 +797,7 @@ settings_webhooks: Webhookok
 settings_presets: Alapértelmezések és Könyvjelzők
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
+actions: Műveletek
 select: Válasszon...
 layout: Elrendezés
 tree_view: Fa nézet
@@ -781,6 +807,7 @@ preset_search_placeholder: Keresési lekérdezés...
 editing_preset: Alapértelmezés szerkesztése
 layout_preview: Elrendezés előnézet
 layout_setup: További beállítások
+data: Adat
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
@@ -1332,6 +1359,7 @@ interfaces:
     description: Ugyanazon struktúra több bejegyzésének létrehozása
     edit_fields: Mezők szerkesztése
     add_label: '"Új létrehozása" címke'
+    sort: Rendezés
     field_name_placeholder: Mezőnév megadása...
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
   slider:
@@ -1447,6 +1475,7 @@ displays:
     short: Rövid
     relative: Relatív
     relative_label: 'Relatív idő megjelenítése, pl.: 5 perccel ezelőtt'
+    suffix: Utótag
   file:
     file: File
     description: Fájlok megjelenítése
@@ -1556,3 +1585,18 @@ panels:
   list:
     name: Lista
     description: Mezők szűrése és listázása egy gyűjteményből
+triggers:
+  webhook:
+    method: Metódus
+operations:
+  log:
+    message: Üzenet
+  notification:
+    recipient: Felhasználó
+    message: Üzenet
+  request:
+    url: URL
+    method: Metódus
+    data: Adat
+  trigger:
+    data: Adat

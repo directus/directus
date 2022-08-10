@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/shared/utils';
 import chalk from 'chalk';
 import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
@@ -10,7 +11,6 @@ import { Snapshot } from '../../../types';
 import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
-import { parseJSON } from '../../../utils/parse-json';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);

@@ -2,6 +2,8 @@
 avatar: Avatar
 published: Objavljeno
 edit_field: Izmijeni
+location: Lokacija
+input: Unos
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
 half_width: Pola širine
@@ -525,6 +527,10 @@ toggle: Isključi / Uključi
 icon_on: Ikonica Na
 icon_off: Bez Ikonice
 label: Oznaka
+trigger: Okidač
+flow_name: Ime
+flow_tracking_activity: Samo Prati Aktivnost
+flow_tracking_null: Bez praćenja
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
@@ -1003,6 +1009,7 @@ interfaces:
     description: Napravi više upisa od postojeće strukture
     edit_fields: Izmijeni Polja
     add_label: '"Napravi Novi" Labela'
+    sort: Sortiranje
     field_name_placeholder: Unesi ime polja...
     field_note_placeholder: Unesi napomenu polja...
   slider:
@@ -1107,6 +1114,7 @@ displays:
     short: Kratko
     relative: Relativno
     relative_label: 'Prikaži relativno vrijeme, primjer: prije 5 minuta'
+    suffix: Sufiks
   file:
     file: Fajl
     description: Prikaži fajlove
@@ -1194,3 +1202,8 @@ layouts:
 panels:
   label:
     name: Oznaka
+operations:
+  notification:
+    recipient: Korisnik
+  request:
+    url: URL adresa

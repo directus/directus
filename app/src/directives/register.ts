@@ -1,8 +1,8 @@
 import { App } from 'vue';
-import ClickOutside from './click-outside/click-outside';
-import ContextMenu from './context-menu/context-menu';
-import Focus from './focus/focus';
-import Tooltip from './tooltip/tooltip';
+import ClickOutside from './click-outside';
+import ContextMenu from './context-menu';
+import Focus from './focus';
+import Tooltip from './tooltip';
 import Markdown from './markdown';
 
 export function registerDirectives(app: App): void {

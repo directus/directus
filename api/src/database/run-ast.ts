@@ -6,7 +6,7 @@ import getDatabase from '.';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
 import { PayloadService } from '../services/payload';
-import { AST, FieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
+import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
@@ -58,7 +58,11 @@ export default async function runAST(
 		return await run(ast.name, ast.children, options?.query || ast.query);
 	}
 
-	async function run(collection: string, children: (NestedCollectionNode | FieldNode)[], query: Query) {
+	async function run(
+		collection: string,
+		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
+		query: Query
+	) {
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
@@ -137,7 +141,7 @@ export default async function runAST(
 async function parseCurrentLevel(
 	schema: SchemaOverview,
 	collection: string,
-	children: (NestedCollectionNode | FieldNode)[],
+	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 	query: Query
 ) {
 	const primaryKeyField = schema.collections[collection].primary;
@@ -147,7 +151,7 @@ async function parseCurrentLevel(
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 	for (const child of children) {
-		if (child.type === 'field') {
+		if (child.type === 'field' || child.type === 'functionField') {
 			const fieldName = stripFunction(child.name);
 
 			if (columnsInCollection.includes(fieldName)) {
@@ -185,7 +189,10 @@ async function parseCurrentLevel(
 
 	const fieldNodes = columnsToSelect.map(
 		(column: string) =>
-			children.find((childNode) => childNode.type === 'field' && childNode.fieldKey === column) ?? {
+			children.find(
+				(childNode) =>
+					(childNode.type === 'field' || childNode.type === 'functionField') && childNode.fieldKey === column
+			) ?? {
 				type: 'field',
 				name: column,
 				fieldKey: column,
@@ -198,7 +205,7 @@ async function parseCurrentLevel(
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helpers = getHelpers(knex);
 
-	return function (fieldNode: FieldNode | M2ONode): Knex.Raw<string> {
+	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Knex.Raw<string> {
 		let alias = undefined;
 
 		if (fieldNode.name !== fieldNode.fieldKey) {
@@ -207,7 +214,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 
 		let field;
 
-		if (fieldNode.type === 'field') {
+		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
 			field = schema.collections[table].fields[stripFunction(fieldNode.name)];
 		} else {
 			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
@@ -215,6 +222,10 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 
 		if (field?.type?.startsWith('geometry')) {
 			return helpers.st.asText(table, field.field);
+		}
+
+		if (fieldNode.type === 'functionField') {
+			return getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
 		}
 
 		return getColumn(knex, table, fieldNode.name, alias, schema);
@@ -225,7 +236,7 @@ function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
-	fieldNodes: FieldNode[],
+	fieldNodes: (FieldNode | FunctionFieldNode)[],
 	query: Query
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
@@ -412,7 +423,7 @@ function removeTemporaryFields(
 			if (!nestedCollectionNodes[relatedCollection]) nestedCollectionNodes[relatedCollection] = [];
 
 			for (const child of ast.children[relatedCollection]) {
-				if (child.type === 'field') {
+				if (child.type === 'field' || child.type === 'functionField') {
 					fields[relatedCollection].push(child.name);
 				} else {
 					fields[relatedCollection].push(child.fieldKey);
@@ -449,7 +460,7 @@ function removeTemporaryFields(
 		for (const child of ast.children) {
 			fields.push(child.fieldKey);
 
-			if (child.type !== 'field') {
+			if (child.type !== 'field' && child.type !== 'functionField') {
 				nestedCollectionNodes.push(child);
 			}
 		}

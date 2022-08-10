@@ -34,11 +34,7 @@
 						<v-icon name="delete" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{
-							collection.schema
-								? t('delete_collection', { collection: collection.collection })
-								: t('delete_folder', { folder: folder.folder })
-						}}
+						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -47,7 +43,11 @@
 		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
 				<v-card-title>
-					{{ collection.schema ? t('delete_collection_are_you_sure') : t('delete_folder_are_you_sure') }}
+					{{
+						collection.schema
+							? t('delete_collection_are_you_sure', { collection: collection.collection })
+							: t('delete_folder_are_you_sure', { folder: collection.collection })
+					}}
 				</v-card-title>
 				<v-card-actions>
 					<v-button :disabled="deleting" secondary @click="deleteActive = null">
@@ -65,8 +65,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import { Collection } from '@/types';
-import { useCollectionsStore } from '@/stores/';
+import { Collection } from '@/types/collections';
+import { useCollectionsStore } from '@/stores/collections';
 
 export default defineComponent({
 	props: {

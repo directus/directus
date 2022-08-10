@@ -1,5 +1,7 @@
 ---
 edit_field: Kemm ar vaezienn
+location: Lec'h
+input: Enkas
 item_revision: Roll-istor ar pennad
 duplicate_field: Eilañ ar vaezienn
 half_width: Hanter-vann
@@ -525,6 +527,10 @@ toggle: Enaouiñ/Lazhañ
 icon_on: Arlun dibab
 icon_off: Arlun diziuzañ
 label: Tikedenn
+trigger: Distegner
+flow_name: Anv
+flow_tracking_activity: Enrollañ an obererezh hepken
+flow_tracking_null: Enrollañ netra
 full_screen: Skramm a-bezh
 image_url: Url ar skeudenn
 alt_text: Eil testenn
@@ -1000,6 +1006,7 @@ interfaces:
     description: Krouiñ meur a ebarzh evit ar memes framm
     edit_fields: Aozañ ar maeziennoù
     add_label: 'Skridennad "Krouiñ unan Nevez"'
+    sort: Rummañ
     field_name_placeholder: Bizskrivit anv ar vaezienn...
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
   slider:
@@ -1104,6 +1111,7 @@ displays:
     short: Berr
     relative: Relativel
     relative_label: 'Diskwel an eur relativel, da skouer: 5 munutenn zo'
+    suffix: Lostger
   file:
     file: Restr
     description: Diskwel ar restroù
@@ -1189,3 +1197,6 @@ layouts:
 panels:
   label:
     name: Tikedenn
+operations:
+  notification:
+    recipient: Implijer

@@ -32,7 +32,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, onMounted } from 'vue';
 import { Field } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import localizedFormat from '@/utils/localized-format';
+import { localizedFormat } from '@/utils/localized-format';
 import { add, startOfWeek } from 'date-fns';
 
 export default defineComponent({
@@ -78,7 +78,7 @@ export default defineComponent({
 			const firstDayOfWeekForDate = startOfWeek(new Date());
 			firstDayOptions.value = await Promise.all(
 				[...Array(7).keys()].map(async (_, i) => ({
-					text: await localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
+					text: localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
 					value: i,
 				}))
 			);

@@ -23,15 +23,19 @@ identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
 default_provider: За замовчуванням
+method: Метод
 published: Опубліковано
 draft: Чернетка
 archived: Архівовано
 modules: Модулі
 module_bar: Панель модулів
+logs: Логи
 reset_width: Скинути ширину
 tile_size: Розмір плитки
 edit_field: Редагувати поле
 conditions: Умови
+location: Розташування
+input: Введення
 maps: Мапи
 switch_user: Змінити користувача
 item_creation: Створення елемента
@@ -379,13 +383,13 @@ functions:
   second: Секунда
   count: Кількість
 date-fns_date: PPP
-date-fns_time: 'г:хх:сс'
-date-fns_time_no_seconds: 'г:хх'
-date-fns_time_24hour: 'ГГ:хх:сс'
-date-fns_time_no_seconds_24hour: 'ГГ:хх'
-date-fns_date_short: 'МММ д'
-date-fns_time_short: 'г:ххх'
-date-fns_date_short_no_year: МММ д
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: d MMM
 minutes: Хвилини
 hours: Години
 month: Місяць
@@ -720,6 +724,7 @@ on_create: При створенні
 on_update: При оновленні
 read: Прочитайте
 update: Оновити
+delete: Видалити
 select_fields: Обрати поля
 format_text: Форматувати текст
 format_value: Форматувати значення
@@ -730,6 +735,10 @@ toggle: Переключити
 icon_on: Підключити іконку
 icon_off: Відключити іконку
 label: Ярлик
+trigger: Тригер
+flow_name: Назва
+flow_tracking_activity: Лише відстежувати діяльність
+flow_tracking_null: Нічого не відслідковувати
 insights: Статистика
 dashboard: Панель приладів
 panel: Панель
@@ -747,9 +756,10 @@ suffix_placeholder: Текст після значення...
 decimals_placeholder: Кількість десяткових знаків...
 no_dashboards: Немає панелі керування
 no_dashboards_copy: В вас ще немає панелі керування.
-no_data: Немає даних
 create_dashboard: Створити панель керування
 dashboard_name: Назва панелі керування
+no_data: Немає даних
+accountability: Підзвітність
 full_screen: Повний екран
 full_text_search: Пошук за повним текстом
 edit_panels: Редагувати панелі
@@ -851,6 +861,7 @@ settings_presets: Шаблони і закладки
 settings_translation_strings: Переклади рядків
 one_or_more_options_are_missing: Одно або більше налаштувань відсутні
 scope: Область застосування
+actions: Дії
 select: Обрати...
 layout: Макет
 tree_view: Файлова структура
@@ -860,6 +871,7 @@ preset_search_placeholder: Пошуковий запит...
 editing_preset: Редагувати шаблон
 layout_preview: Попередній перегляд макету
 layout_setup: Попередній перегляд налаштувань
+data: Дані
 unsaved_changes: Незбережені зміни
 unsaved_changes_copy: Ви впевнені, що хочете залишити цю сторінку?
 discard_changes: Скасувати зміни
@@ -924,9 +936,9 @@ directus_collection:
   directus_files: Метадані для всіх керованих файлів
   directus_folders: Забезпечує віртуальні каталоги для файлів
   directus_migrations: Яку версію бази даних ви використовуєте
+  directus_notifications: Сповіщення відіслано користувачам
   directus_panels: Окремі панелі на панелях керування інсайтів
   directus_permissions: Доступ до дозволів для кожної ролі
-  directus_notifications: Сповіщення відіслано користувачам
   directus_presets: Попередні налаштування для передустановок і закладок колекції
   directus_relations: Конфігурація зв'язків і метадані
   directus_revisions: Знімки даних для всіх видів діяльності
@@ -1511,6 +1523,7 @@ interfaces:
     description: Створити кілька записів однієї структури
     edit_fields: Редагувати поля
     add_label: 'Ярлик «Створити новий»'
+    sort: Сортування
     field_name_placeholder: Введіть назву поля...
     field_note_placeholder: Примітка до поля...
     incompatible_data: Поточні дані не сумісні з інтерфейсом ретранслятора і будуть замінені під час додавання елементів до ретранслятора
@@ -1565,6 +1578,9 @@ interfaces:
     display_template: Шаблон відображення
     no_collection: Немає колекцій
     toggle_split_view: Перемикання розділеного перегляду
+    enable: Увімкнути
+    user_language: Використовувати поточну мову користувача
+    default_language: Мова за замовчуванням
     language_field: Поле визначення мови
   list-o2m-tree-view:
     description: У вигляді дерева рекурсивно вкладених елементів
@@ -1644,6 +1660,7 @@ displays:
     short: Короткий
     relative: Відносний
     relative_label: 'Показати відносний час, наприклад: 5 хвилин тому'
+    suffix: Суфікс
   file:
     file: Файл
     description: Показати файли
@@ -1782,3 +1799,16 @@ panels:
     function: Функція
   piechart:
     monochrome_color: Монохромний колір
+triggers:
+  webhook:
+    method: Метод
+operations:
+  notification:
+    recipient: Користувач
+  request:
+    url: URL
+    method: Метод
+    data: Дані
+    header: Заголовок
+  trigger:
+    data: Дані

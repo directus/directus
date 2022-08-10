@@ -144,6 +144,7 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 	},
 ];
 
-export const DEFAULT_AUTH_PROVIDER = 'default';
+export const DEFAULT_AUTH_PROVIDER = 'local';
+export const DEFAULT_AUTH_DRIVER = 'default';
 
 export const AUTH_SSO_DRIVERS = ['oauth2', 'openid'];
