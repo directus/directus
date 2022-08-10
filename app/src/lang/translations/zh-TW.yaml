@@ -679,11 +679,25 @@ operators:
   has: 包含部分關鍵值
   intersects: 交集
   nintersects: 無交集
+  intersects_bbox: 區域交集
+  nintersects_bbox: 區域不交集
+  regex: 符合正規表示式
+custom_validation_message: 自訂驗證訊息
 loading: 載入中...
+drop_to_upload: 拖放到此處以上傳
 item: 項目
 items: 項目
 upload_file: 上傳檔案
 upload_file_indeterminate: 正在上傳檔案
+upload_file_success: 檔案已上傳
+upload_files_indeterminate: '上傳檔案 {done}/{total}'
+upload_files_success: '已上傳 {count} 個檔案'
+upload_pending: 上傳等待中
+drag_file_here: 拖拉一個檔案至此
+click_to_browse: 點此瀏覽
+interface_options: 介面選項
+layout_options: 頁面配置選項
+rows: 行
 columns: 欄位
 collection_setup: 集合設定
 optional_system_fields: 選用系統欄位
@@ -898,6 +912,7 @@ discard_changes_copy: 您確定要放棄所有變更嗎？
 show_x_axis: 顯示 X 軸
 show_y_axis: 顯示 Y 軸
 keep_editing: 繼續編輯
+page_help_settings_flows_item: '流程細節 - 管理各項操作'
 activity_feed: 活動紀錄
 add_new: 新增
 create_new: 新增
@@ -916,6 +931,7 @@ singleton_label: 視為單一物件
 system_fields_locked: 系統欄位已鎖定無法編輯
 directus_collection:
   directus_activity: 所有事件的詳細紀錄
+  directus_flows: 自動流程
   directus_folders: 提供虛擬資料夾供存放檔案。
   directus_panels: 在儀表板中的獨立面板
   directus_permissions: 每種角色的使用權限
@@ -1040,6 +1056,10 @@ fields:
     name: 名稱
     role: 角色
     password: 密碼
+    date_start: 開始日期
+    date_end: 結束日期
+    max_uses: 最大使用次數
+    times_used: 使用次數
   directus_fields:
     collection: 集合名稱
     icon: 集合圖示
@@ -1052,16 +1072,35 @@ fields:
     name: 角色名稱
     icon: 角色圖示
     description: 描述說明
+    app_access: 管理介面存取
+    admin_access: 管理者存取
+    ip_access: IP存取
     enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
+    module_list: 模組導覽
   directus_webhooks:
     name: 名稱
+    method: 方法
     status: 狀態
+    data: 資料
+    header: 標題
     value: 值
+    headers: 請求標頭
+    data_label: 傳送事件資料
+    triggers: 觸發器
+    actions: 操作
     collections: 資料集
 field_options:
   directus_settings:
+    project_name_placeholder: 我的專案...
+    project_color_note: 登入及 Logo 背景
+    project_logo_note: 白底 40x40 SVG/PNG
+    public_note_placeholder: 可使用 markdown 格式撰寫
     security_divider_title: 安全
+    auth_password_policy:
+      none_text: 無（不推薦）
+      weak_text: 弱 - 至少要八個字元
+      strong_text: 強 - 使用大小寫數字及特殊符號
     additional_transforms: 其他轉換
     transforms_note: Sharp方式的名稱以及其欄位。請至 https://sharp.pixelplumbing.com/api-constructor 查詢更多資訊。
     mapbox_key: Mapbox Access Token
@@ -1073,6 +1112,7 @@ field_options:
     login: 登入
     create: 新建
     update: 更新
+    delete: 刪除
   directus_collections:
     do_not_track_anything: 不進行任何追蹤
     collection_setup: 集合設定
@@ -1149,8 +1189,18 @@ always_open: 總是開啟
 start_open: 現在打開
 start_collapsed: 現在折疊
 comment: 評論
+shared_with_you: 與您共享了一個新的項目
+shared_enter_passcode: 輸入您的密碼繼續
+shared_leave_blank_for_unlimited: 留白表示不限制
+shared_times_remaining: 這個連結只能使用 {n} 次
+shared_last_remaining: 這個連結只能使用一次
+continue_label: 繼續
+continue_as: >-
+  {name} 目前已登入，若這是您的帳號，請點選繼續。
 editing_role: '{role} 角色'
 creating_webhook: 建立 Webhook
+default_label: 預設
+delete_label: 刪除
 delete_are_you_sure: >-
   此操作是永久性的，無法撤銷。是否確實要繼續？
 delete_field_are_you_sure: >-
@@ -1158,6 +1208,7 @@ delete_field_are_you_sure: >-
 description: 描述說明
 done: 完成
 duplicate: 複製
+limit: 限制
 email: 電子郵件
 embed: 內嵌
 fallback_icon: 後備圖示
@@ -1166,17 +1217,29 @@ file: 檔案
 file_library: 檔案庫
 forgot_password: 忘記密碼
 hidden: 隱藏
+hidden_in_group: 在 {group} 中隱藏
 icon: 圖示
 info: 資訊
 normal: 一般
 success: 成功
 warning: 警告
 danger: 危險
+colors:
+  purple: 紫色
+  blue: 藍色
+  green: 綠色
+  yellow: 黃色
+  orange: 橘色
+  red: 紅色
+  black: 黑色
+  gray: 灰色
+  white: 白色
 junction_collection: 連接點集合
 latency: 延遲
 login: 登入
 my_activity: 我的活動
 not_authenticated: 未認證
+authenticated: 已認證
 options: 選項
 otp: 一次性密碼
 password: 密碼
@@ -1184,6 +1247,9 @@ permissions: 權限
 relationship: 關聯
 reset: 重設
 reset_password: 重設密碼
+revisions: 修訂版本
+no_revisions: 尚無修訂版本
+no_logs: 尚無紀錄
 revert: 復原
 save: 儲存
 schema: 架構
@@ -1197,6 +1263,8 @@ sign_out: 登出
 sign_out_confirm: 是否確定要登出?
 something_went_wrong: 出了點問題
 sort_direction: 排序方向
+export_location: 匯出地點
+export_started: 匯出已開始
 template: 模板
 translation: 翻譯
 translation_placeholder: 輸入翻譯...
@@ -1368,6 +1436,9 @@ layouts:
 panels:
   label:
     name: 標籤
+triggers:
+  webhook:
+    method: 方法
 operations:
   item-create:
     payload: 傳送資料
@@ -1380,6 +1451,10 @@ operations:
     message: 訊息
   request:
     url: URL
+    method: 方法
+    data: 資料
+    header: 標題
   trigger:
     flows: 流程
     flow: 流程
+    data: 資料
