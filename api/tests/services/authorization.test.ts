@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import { MockClient } from 'knex-mock-client';
+import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { AuthorizationService } from '../../src/services';
 import { userSchema } from '../__test-utils__/schemas';
 import { cloneDeep } from 'lodash';
@@ -10,11 +10,19 @@ jest.mock('../../src/database/index', () => {
 jest.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	const db: jest.Mocked<Knex> = knex({ client: MockClient }) as jest.Mocked<Knex>;
+	let db: jest.Mocked<Knex>;
+	let tracker: Tracker;
 	const tableName = 'posts';
+
+	afterEach(() => {
+		tracker.reset();
+	});
 
 	describe('Services / AuthorizationService', () => {
 		describe('validatePayload', () => {
+			db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+			tracker = getTracker();
+
 			const schema = cloneDeep(userSchema);
 			schema.collections.posts.fields.publish_date = {
 				field: 'publish_date',
@@ -90,6 +98,8 @@ describe('Integration Tests', () => {
 				];
 
 				it.each(newPosts)('presets are added correctly to the payload', async (payload) => {
+					tracker.on.select(tableName).response([payload]);
+
 					const payloadWithPresets = (await service.validatePayload('create', tableName, payload)) as Partial<any>;
 
 					expect(payloadWithPresets).toHaveProperty('publish_date');
@@ -106,6 +116,8 @@ describe('Integration Tests', () => {
 				];
 
 				it.each(newPosts)('validates the payload correctly', async (payload) => {
+					tracker.on.select(tableName).response([payload]);
+
 					// Should only validate if field is set in the payload
 					if (!payload.publish_date) {
 						const payloadWithPresets = (await service.validatePayload(
@@ -117,10 +129,13 @@ describe('Integration Tests', () => {
 
 						expect(payloadWithPresets).not.toHaveProperty('publish_date');
 					} else {
-						expect(() => service.validatePayload('update', tableName, payload)).rejects.toBeInstanceOf(Array);
+						const error = await service.validatePayload('update', tableName, payload).catch((err) => err.toString());
+						expect(error).toContain('"publish_date" must be greater than');
 					}
 				});
 			});
+
+			tracker.reset();
 		});
 	});
 });

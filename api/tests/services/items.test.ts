@@ -942,22 +942,18 @@ describe('Integration Tests', () => {
 					items: [],
 				});
 
-				expect(tracker.history.select.length).toBe(4);
+				expect(tracker.history.select.length).toBe(3);
 				expect(tracker.history.select[0].bindings).toStrictEqual([item.id, 1]);
 				expect(tracker.history.select[0].sql).toBe(
-					`select "${table}"."id", "${table}"."name" from "${table}" where (("${table}"."id" in (?))) order by "${table}"."id" asc limit ?`
+					`select "${table}"."id" from "${table}" where (("${table}"."id" in (?))) order by "${table}"."id" asc limit ?`
 				);
-				expect(tracker.history.select[1].bindings).toStrictEqual([item.id, 25000]);
+				expect(tracker.history.select[1].bindings).toStrictEqual([item.id, 1, 100]);
 				expect(tracker.history.select[1].sql).toBe(
-					`select "${childTable}"."uploaded_by", "${childTable}"."id" from "${childTable}" where "${childTable}"."uploaded_by" in (?) order by "${childTable}"."id" asc limit ?`
-				);
-				expect(tracker.history.select[2].bindings).toStrictEqual([item.id, 1, 100]);
-				expect(tracker.history.select[2].sql).toBe(
 					`select "${childTable}"."id" from "${childTable}" where ("${childTable}"."uploaded_by" = ? and 1 = ?) order by "${childTable}"."id" asc limit ?`
 				);
-				expect(tracker.history.select[3].bindings).toStrictEqual([childItem.id, 1]);
-				expect(tracker.history.select[3].sql).toBe(
-					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where (("${childTable}"."id" in (?))) order by "${childTable}"."id" asc limit ?`
+				expect(tracker.history.select[2].bindings).toStrictEqual([childItem.id, 1]);
+				expect(tracker.history.select[2].sql).toBe(
+					`select "${childTable}"."id" from "${childTable}" where (("${childTable}"."id" in (?))) order by "${childTable}"."id" asc limit ?`
 				);
 				expect(tracker.history.update[0].bindings).toStrictEqual([null, childItem.id]);
 				expect(tracker.history.update[0].sql).toBe(`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`);

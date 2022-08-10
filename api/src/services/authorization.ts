@@ -25,7 +25,7 @@ import {
 	PrimaryKey,
 } from '../types';
 import { stripFunction } from '../utils/strip-function';
-import { ItemsService, QueryOptions } from './items';
+import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { getRelationInfo } from '../utils/get-relation-info';
 import { GENERATE_SPECIAL } from '../constants';
@@ -569,7 +569,7 @@ export class AuthorizationService {
 		);
 
 		const itemContexts: Array<Partial<Item>> = pk
-			? await this.getItemsContext(collection, pk, itemContextFields)
+			? await this.getItemsContext(action, collection, pk, itemContextFields)
 			: [{}];
 
 		const payloadWithPresets = itemContexts.map((itemContext) => {
@@ -607,10 +607,10 @@ export class AuthorizationService {
 	}
 
 	async getItemsContext(
+		action: PermissionsAction,
 		collection: string,
 		pk: PrimaryKey | PrimaryKey[],
-		fields: string[] = ['*'],
-		opts?: QueryOptions
+		fields: string[] = ['*']
 	): Promise<Array<Item>> {
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
@@ -622,14 +622,12 @@ export class AuthorizationService {
 			pk = [pk];
 		}
 
-		const primaryKeyField = this.schema.collections[collection].primary;
-
 		const query: Query = {
-			fields: [primaryKeyField, ...fields],
+			fields,
 			limit: pk.length,
 		};
 
-		const result = await itemsService.readMany(pk, query, opts);
+		const result = await itemsService.readMany(pk, query, { permissionsAction: action });
 		if (result?.length !== pk.length) throw new ForbiddenException();
 
 		return result;
@@ -638,6 +636,6 @@ export class AuthorizationService {
 	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
 		if (this.accountability?.admin === true) return;
 
-		this.getItemsContext(collection, pk, ['*'], { permissionsAction: action });
+		this.getItemsContext(action, collection, pk, ['*']);
 	}
 }
