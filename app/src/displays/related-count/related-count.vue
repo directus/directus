@@ -4,12 +4,16 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { get } from 'lodash';
 import FormattedValue from '../formatted-value/formatted-value.vue';
 
 export default defineComponent({
+	components: { FormattedValue },
 	props: {
+		value: {
+			type: [String, Number],
+			default: null,
+		},
 		field: {
 			type: String,
 			required: true,
@@ -20,11 +24,9 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t, n } = useI18n();
 		const count = computed(() => get(props.rootItem, `${props.field}_count`) ?? 0);
 
-		return { t, count };
+		return { count };
 	},
-	components: { FormattedValue },
 });
 </script>
