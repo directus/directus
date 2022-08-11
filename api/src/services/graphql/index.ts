@@ -401,7 +401,10 @@ export class GraphQLService {
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
-						let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(field.type);
+						let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(
+							field.type,
+							field.special
+						);
 
 						// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
 						// can't non-null in update, as that would require every not-nullable field to be
@@ -792,7 +795,7 @@ export class GraphQLService {
 				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
 					name: `${collection.collection}_filter`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
-						const graphqlType = getGraphQLType(field.type);
+						const graphqlType = getGraphQLType(field.type, field.special);
 
 						let filterOperatorType: InputTypeComposer;
 
@@ -855,7 +858,7 @@ export class GraphQLService {
 				AggregatedFields[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated_fields`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
-						const graphqlType = getGraphQLType(field.type);
+						const graphqlType = getGraphQLType(field.type, field.special);
 
 						switch (graphqlType) {
 							case GraphQLInt:
@@ -905,7 +908,7 @@ export class GraphQLService {
 				};
 
 				const hasNumericAggregates = Object.values(collection.fields).some((field) => {
-					const graphqlType = getGraphQLType(field.type);
+					const graphqlType = getGraphQLType(field.type, field.special);
 
 					if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
 						return true;
@@ -2242,7 +2245,9 @@ export class GraphQLService {
 					name: 'directus_collections_meta',
 					fields: Object.values(schema.read.collections['directus_collections'].fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
+							type: field.nullable
+								? getGraphQLType(field.type, field.special)
+								: GraphQLNonNull(getGraphQLType(field.type, field.special)),
 							description: field.note,
 						};
 
@@ -2297,7 +2302,9 @@ export class GraphQLService {
 					name: 'directus_fields_meta',
 					fields: Object.values(schema.read.collections['directus_fields'].fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
+							type: field.nullable
+								? getGraphQLType(field.type, field.special)
+								: GraphQLNonNull(getGraphQLType(field.type, field.special)),
 							description: field.note,
 						};
 
@@ -2388,7 +2395,7 @@ export class GraphQLService {
 					name: 'directus_relations_meta',
 					fields: Object.values(schema.read.collections['directus_relations'].fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type: getGraphQLType(field.type),
+							type: getGraphQLType(field.type, field.special),
 							description: field.note,
 						};
 

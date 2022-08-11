@@ -4,6 +4,7 @@
 			v-if="allowCustom"
 			:placeholder="placeholder || t('interfaces.tags.add_tags')"
 			:disabled="disabled"
+			:dir="direction"
 			@keydown="onInput"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -16,6 +17,7 @@
 					:key="preset"
 					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
 					:disabled="disabled"
+					:dir="direction"
 					small
 					label
 					clickable
@@ -30,6 +32,7 @@
 					v-for="val in customVals"
 					:key="val"
 					:disabled="disabled"
+					:dir="direction"
 					class="tag"
 					small
 					label
@@ -89,6 +92,10 @@ export default defineComponent({
 		allowCustom: {
 			type: Boolean,
 			default: true,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],
