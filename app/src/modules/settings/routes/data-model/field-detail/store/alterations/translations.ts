@@ -181,6 +181,43 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 					schema: {},
 					meta: {},
 				},
+				// Open for discussion: we might want to limit choices to 'ltr' and 'rtl'
+				{
+					field: 'direction',
+					type: 'string',
+					schema: {
+						default_value: 'ltr',
+					},
+					meta: {
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+						},
+						display: 'labels',
+						display_options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+							format: false,
+						},
+					},
+				},
 			],
 		});
 
@@ -194,30 +231,42 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 				{
 					code: 'en-US',
 					name: 'English',
+					direction: 'ltr',
+				},
+				{
+					code: 'ar-SA',
+					name: 'Arabic',
+					direction: 'rtl',
 				},
 				{
 					code: 'de-DE',
 					name: 'German',
+					direction: 'ltr',
 				},
 				{
 					code: 'fr-FR',
 					name: 'French',
+					direction: 'ltr',
 				},
 				{
 					code: 'ru-RU',
 					name: 'Russian',
+					direction: 'ltr',
 				},
 				{
 					code: 'es-ES',
 					name: 'Spanish',
+					direction: 'ltr',
 				},
 				{
 					code: 'it-IT',
 					name: 'Italian',
+					direction: 'ltr',
 				},
 				{
 					code: 'pt-BR',
 					name: 'Portuguese',
+					direction: 'ltr',
 				},
 			],
 		};
