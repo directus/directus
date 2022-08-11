@@ -197,6 +197,7 @@ field_update_success: '更新欄位: "{field}"'
 duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
 language_placeholder: 選擇語言...
+aggregate_function: 聚合函數
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
 camera: 相機
@@ -836,8 +837,14 @@ interface_group_other: 其它
 tooltip: 工具提示
 tooltip_placeholder: 輸入工具提示....
 unlimited: 無限制
+open_link_in: 開啟連結至
+new_tab: 新分頁
+current_tab: 目前分頁
+save_image: 儲存圖片
+save_media: 儲存媒體
 wysiwyg_options:
   aligncenter: 置中
+  alignjustify: 分散對齊
   alignleft: 置左對齊
   alignnone: 不對齊
   alignright: 置右對齊
@@ -854,7 +861,10 @@ wysiwyg_options:
   bullist: 項目列表
   numlist: 編號列表
   hr: 分隔線
+  link: 新增/修改連結
   unlink: 移除連結
+  media: 新增/修改媒體
+  image: 新增/修改圖片
   copy: 複製
   cut: 剪下
   paste: 貼上
@@ -875,10 +885,20 @@ wysiwyg_options:
   removeformat: 移除格式
   selectall: 全選
   table: 表格
+  visualaid: 顯示設定為隱藏的元素
+  source_code: 編輯原始碼
+  fullscreen: 全螢幕
+  directionality: 方向
 dropdown: 下拉選單
 choices: 選擇
+choices_option_configured_incorrectly: 選項設定錯誤
 deselect: 取消選擇
 deselect_all: 取消全選
+other: 其它...
+adding_user: 新增使用者
+unknown_user: 未知的使用者
+creating_in: '在 {collection} 中新增項目'
+editing_in: '在 {collection} 中編輯項目'
 viewing_in: '在 {collection} 中檢視項目'
 creating_unit: '建立 {unit}'
 editing_unit: '編輯 {unit}'
@@ -1042,16 +1062,29 @@ fields:
     transforms_note: Sharp方式的名稱以及其欄位。請至 https://sharp.pixelplumbing.com/api-constructor 查詢更多資訊。
     additional_transforms: 其他轉換
     project_name: 專案名稱
+    project_descriptor: 專案描述
     project_url: 專案 URL
     project_color: 專案顏色
     project_logo: 專案 Logo
+    default_language: 預設語言
+    branding: 品牌識別與形象
     public_foreground: 公開前臺
     public_background: 公開後臺
+    public_note: 公開頁面底部文字
     auth_password_policy: 身份驗證密碼政策
     auth_login_attempts: 身份驗證登錄嘗試
+    files_and_thumbnails: 檔案與儲存空間
     storage_default_folder: 預設資料夾
+    storage_asset_presets: 資料轉換預設值
+    storage_asset_transform: 允許的資料轉換
+    overrides: 管理介面強迫修改
     custom_css: 自定義 CSS
     module_bar: 模組列
+    transformations_all: 允許所有資料轉換
+    transformations_none: 停用轉換
+    transformations_presets: 限制資料轉換範圍為以下清單
+    image_editor: 圖片編輯器
+    custom_aspect_ratios: 自訂比例
   directus_shares:
     name: 名稱
     role: 角色
@@ -1101,13 +1134,25 @@ field_options:
       none_text: 無（不推薦）
       weak_text: 弱 - 至少要八個字元
       strong_text: 強 - 使用大小寫數字及特殊符號
+    storage_asset_presets:
+      fit_label: 符合大小
+      upscaling: 放大
+      fit:
+        contain_text: 包含 (保持原始尺寸)
+        cover_text: 覆蓋 (強迫原始尺寸)
+        fit_text: 從內部填滿
+        outside_text: 外部填滿
     additional_transforms: 其他轉換
     transforms_note: Sharp方式的名稱以及其欄位。請至 https://sharp.pixelplumbing.com/api-constructor 查詢更多資訊。
     mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: 基礎地圖
+    basemaps_name_placeholder: 編輯基礎地圖名稱...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox 風格
+    files_divider_title: 檔案與縮圖
+    overrides_divider_title: 管理介面強迫修改
   directus_activity:
     login: 登入
     create: 新建
@@ -1189,11 +1234,34 @@ always_open: 總是開啟
 start_open: 現在打開
 start_collapsed: 現在折疊
 comment: 評論
+no_shares: 目前沒有分享
+new_share: 新增分享
+expired: 已過期
+upcoming: 即將開始
+share: 分享
+share_item: 分享項目
 shared_with_you: 與您共享了一個新的項目
 shared_enter_passcode: 輸入您的密碼繼續
 shared_leave_blank_for_unlimited: 留白表示不限制
 shared_times_remaining: 這個連結只能使用 {n} 次
 shared_last_remaining: 這個連結只能使用一次
+shared_uses_left: 由於安全因素，本分享頁面已設定為限制讀取次數。目前剩餘 {n} 次讀取次數，到達最大數量後，本頁面將無法使用。
+share_access_page: 存取分享頁面
+share_access_not_found: 本頁面不存在，或已到達最高使用次數。
+share_access_not_found_desc: 請聯絡管理者或頁面所有者以修改進入權限。
+share_access_not_found_title: 未知的分享頁面
+share_copy_link: 複製連結
+share_copy_link_success: 已複製連結
+share_copy_link_error: 無法複製連結
+share_send_link: 傳送連結
+relational_triggers: 關聯式觸發器
+referential_action_field_label_m2o: 當 {collection} 刪除資料時...
+referential_action_field_label_o2m: 當 {collection} 取消選取時
+referential_action_no_action: 預防刪除
+referential_action_cascade: 在 {collection} 中刪除項目
+referential_action_set_null: 將 {field} 設定為空值
+referential_action_set_default: 設定 {field} 為預設值
+choose_action: 選擇動作
 continue_label: 繼續
 continue_as: >-
   {name} 目前已登入，若這是您的帳號，請點選繼續。
@@ -1279,13 +1347,42 @@ start: 開始
 interfaces:
   filter:
     name: 篩選
+    description: 設定一個篩選物件
     add_filter: 新增篩選器
+    add_group: 和 / 或 群組
+    add_value: 新增值
+    logic_type_and: 和
+    logic_type_or: 或
     all: 全部
     any: 任何
+    and: 和
+    of_the_following: 以下的
+    no_rules: 尚未設定規則
+    change_value: 點選修改內容
+    placeholder: 將規則拖至此處
+    add_key_placeholder: 新增鍵值並按下 Enter...
+  fields:
+    name: 欄位
   group-accordion:
+    name: 收合
+    description: 將欄位或群組以區塊收合方式顯示
     start: 開始
+    all_closed: 全部收合
+    first_opened: 展開第一項
+    all_opened: 全部展開
+    accordion_mode: 收合模式
+    max_one_section_open: 最多開啟一個區塊
   presentation-links:
+    presentation-links: 連結按鈕
+    links: 連結
+    description: 可修改的連結按鈕，可連結至動態網址
+    style: 樣式
     primary: 主要
+    link: 連結
+    button: 按鈕
+    error: 無法執行操作
+  select-multiple-checkbox:
+    checkboxes: 核取方塊
   select-multiple-checkbox-tree:
     show_all: 顯示全部
     show_selected: 顯示已選取的項目
@@ -1384,8 +1481,12 @@ interfaces:
     root_name: 檔案庫的基礎位置
     system_default: 系統預設值
   list:
+    edit_fields: 編輯欄位
     add_label: '「新增」標籤'
     sort: 排序
+    sort_placeholder: 手動
+    field_name_placeholder: 輸入欄位名稱...
+    field_note_placeholder: 輸入欄位備註...
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -1394,6 +1495,8 @@ interfaces:
     tags: 標籤
     description: 選擇或新增標籤
     whitespace: 空格
+    hyphen: 使用破折號取代
+    underscore: 使用底線取代
     remove: 移除空白
     capitalization: 大寫
     uppercase: 轉換成大寫
@@ -1465,6 +1568,9 @@ interfaces:
     rate: 頻率
   group-raw:
     name: 原始群組
+  group-detail:
+    header_icon: 標題圖示
+    header_color: 標題顏色
   system-token:
     system-token: 權杖
     placeholder: 點選「產生token」來建立一個新的靜態token
@@ -1595,10 +1701,64 @@ layouts:
     group_field: 分組,
     group_field_placeholder: 要用來分組的欄位,
     group_title: 分組標題,
+    group_title_placeholder: 群組標題欄位,
+    title: 卡片標題
+    title_placeholder: 可選標題欄位,
+    text: 卡片文字,
 panels:
   label:
     name: 標籤
+  barchart:
+    group_by: 群組方式
+    y_axis_NaN: Y 軸必須是數字。
+    y_axis_conditional_one: 條件值
+    y_axis_conditional_two: 只允許數字
+  linechart:
+    name: 折線圖
+    description: 比較欄位修改之折線圖
+    select_field: 你必須選擇一個欄位。
+    select_collection: 您必須選擇一個資料集。
+    select_x_axis: 您必須選擇一個 X 軸。
+    function: 函數
+    x_axis: X 軸
+    x_axis_decimals: X 軸位數
+    disabled_no_grouping: 當未選擇群組時停用
+    y_axis: Y 軸
+    datasets: 資料集
+    show_legend: 顯示圖例
+    show_marker: 顯示提示文字
+    include_dataset: 您至少需要選擇一個資料集。
+    include_y_axis: 當沒有選擇群組時，必須包含一個 Y 軸
+    group_and_function: 您必須選擇一個群組或一個函數。
+    smooth: '平滑'
+    straight: '直線'
+    step_line: '線段'
+  meter:
+    description: 根據數值產生格線
+    name: 格線
+    arc: 弧形
+    stroke_width: 線條粗細
+    thin: 細線
+    medium: 中等
+    broad: 寬線
+  piechart:
+    name: 圓餅圖
+    description: 顯示各個欄位比例的圓形圖表
+    function: '函數'
+    donut: 圓餅圖
+    labels: 顯示標籤
+    legend: 顯示圖例
+    right: 右
+    bottom: 下方
+    monochrome: 黑白
+    monochrome_color: 黑白
+  variable:
+    name: 全域變數
+    description: 在其他面板的篩選器中設定一個全域值
+    variable_key: 變動值
 triggers:
+  common:
+    response_body: 回應內文
   webhook:
     method: 方法
 operations:
@@ -1606,17 +1766,44 @@ operations:
     payload: 傳送資料
   item-update:
     payload: 傳送資料
+    query: 查詢
   log:
+    name: 紀錄於主控台
+    description: 將文字顯示到控制台中
     message: 訊息
+    message_placeholder: 輸入要顯示在控制台的文字
+  mail:
+    name: 傳送電子郵件
+    description: 傳送電子郵件給一或多個人
+    to: 收件人
+    to_placeholder: 輸入電子郵件信箱並按下Enter...
+    body: 郵件內文
   notification:
+    name: 發送通知
+    description: 發送管理介面通知給其他使用者
     recipient: 用戶
     message: 訊息
   request:
+    name: Webhook / 要求網址
+    description: "發送要求至特定網址"
     url: URL
+    url_placeholder: https://example.com/example
     method: 方法
     data: 資料
+    headers: 標頭
     header: 標題
+    header_placeholder: 授權
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: 等待
+    description: 等待以毫秒為單位的數字
+    milliseconds: 毫秒
+  transform:
+    name: 轉換內文
+    description: 修改 JSON 內文
   trigger:
+    name: 觸發流程
+    description: 將資料傳送給其他流程
     flows: 流程
     flow: 流程
     data: 資料
