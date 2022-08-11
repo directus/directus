@@ -1506,30 +1506,51 @@ displays:
     italic: 斜體
     prefix: 前綴
     suffix: 後綴
+    suffix_label: 後綴文字
     color: 顏色
+    background: 背景
     icon: 圖示
+    border: 框線
+    border_label: 顯示框線
     text: 文字
+    text_placeholder: 選填值覆蓋...
   formatted-json-value:
     formatted-json-value: 格式化JSON值
     description: 顯示物件的格式化版本
   icon:
     icon: 圖示
     description: 顯示圖示
+    filled: 已填滿
+    filled_label: 已填滿
   image:
     image: 圖像
     description: 顯示圖像預覽
     circle: 圓形
+    circle_label: 顯示為圓形
   labels:
     labels: 標籤
+    description: 顯示一個或多個標籤
+    default_foreground: 預設前景
+    default_background: 預設背景
+    format_label: 替每個標籤啟用格式
+    show_as_dot: 顯示為點
     choices_value_placeholder: 請輸入...
     choices_text_placeholder: 輸入文字...
   mime-type:
     mime-type: MIME 類型
     description: 顯示檔案的 MIME 類型
+    extension_only: 只顯示副檔名
+    extension_only_label: 只顯示檔案的副檔名
   rating:
     rating: 評分
+  raw:
+    raw: 原始值
+  related-values:
+    related-values: 相關值
+    description: 顯示相關值
   user:
     user: 用戶
+    description: 顯示一個系統使用者
     avatar: 頭像
     name: 名稱
     both: 都要
@@ -1538,6 +1559,7 @@ layouts:
   cards:
     cards: 卡片
     image_source: 圖片來源
+    image_fit: 圖片適應
     crop: 裁剪
     contain: 包含
     title: 標題
@@ -1548,6 +1570,31 @@ layouts:
     comfortable: 舒適
     compact: 精簡
     cozy: 自在
+  calendar:
+    calendar: 行事曆
+    start_date_field: 開始日期欄位
+    end_date_field: 結束日期欄位
+    optional: 非必填
+    first_day: 一週的起始日
+  map:
+    map: 地圖
+    basemap: 基礎地圖
+    layers: 圖層
+    cluster_options: 叢集選項
+    cluster: 將靠近的資料進行叢集
+    cluster_radius: 叢集半徑
+    cluster_minpoints: 叢集最小尺寸
+    cluster_maxzoom: 叢集的最大放大尺寸
+    field: 地圖資料欄位
+    invalid_geometry: 無效的座標
+    find_location: 搜尋位置
+    default_template: 使用資料集的預設值...
+    no_compatible_fields: 沒有相容的欄位
+  kanban:
+    name: 看板,
+    group_field: 分組,
+    group_field_placeholder: 要用來分組的欄位,
+    group_title: 分組標題,
 panels:
   label:
     name: 標籤
