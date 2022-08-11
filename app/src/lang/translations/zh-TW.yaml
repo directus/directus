@@ -1417,9 +1417,13 @@ interfaces:
     slug: 網址化
   boolean:
     toggle: 切換
+    color_on: 開啟時色彩
+    color_off: 關閉時色彩
+    label_placeholder: 輸入名稱...
     label_default: 已啟用
   translations:
     display_template: 顯示模板
+    no_collection: 尚無資料集
   user:
     user: 用戶
     select_mode: 選取模式
