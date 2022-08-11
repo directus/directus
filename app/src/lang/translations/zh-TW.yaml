@@ -198,6 +198,9 @@ duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
 language_placeholder: 選擇語言...
 aggregate_function: 聚合函數
+aggregate_precision: 整合精度
+group_aggregation: 群組整合
+group_precision: 群組精確
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
 camera: 相機
@@ -206,8 +209,11 @@ create_in_advanced_field_creation_mode: 建立進階欄位
 continue_in_advanced_field_creation_mode: 使用進階模式編輯欄位
 validation: 驗證
 sum: 總和
+sum_distinct: 非重複加總
 avg: 平均
+avg_distinct: 平均加總
 count: 數量
+count_distinct: 非重複統計數量
 min: 最小值
 max: 最大值
 exposure: 曝光度
@@ -951,8 +957,15 @@ singleton_label: 視為單一物件
 system_fields_locked: 系統欄位已鎖定無法編輯
 directus_collection:
   directus_activity: 所有事件的詳細紀錄
+  directus_collections: 額外的資料集設定以及元資料
+  directus_dashboards: 儀表板以及預測模組
+  directus_fields: 額外的資料集設定以及元資料
+  directus_files: 所有檔案資源的元資料
   directus_flows: 自動流程
   directus_folders: 提供虛擬資料夾供存放檔案。
+  directus_migrations: 您使用的資料庫類型
+  directus_notifications: 傳送給使用者的通知
+  directus_operations: 執行在流程中的操作
   directus_panels: 在儀表板中的獨立面板
   directus_permissions: 每種角色的使用權限
   directus_presets: 資料集以及書籤的預設值
@@ -1159,6 +1172,8 @@ field_options:
     update: 更新
     delete: 刪除
   directus_collections:
+    track_activity_revisions: 追蹤活動與紀錄
+    only_track_activity: 只追蹤操作紀錄
     do_not_track_anything: 不進行任何追蹤
     collection_setup: 集合設定
     note_placeholder: 這個資料集的簡介
@@ -1233,7 +1248,12 @@ save_current_datetime: 儲存當前日期/時間
 always_open: 總是開啟
 start_open: 現在打開
 start_collapsed: 現在折疊
+block: 區塊
+inline: 行內
 comment: 評論
+shares: 分享
+unlimited_usage: 無限制使用
+uses_left: 已無法使用 | 剩下1次 | 剩下{n} 次
 no_shares: 目前沒有分享
 new_share: 新增分享
 expired: 已過期
@@ -1472,21 +1492,55 @@ interfaces:
     display_template: 顯示模板
   input-rich-text-md:
     edit: 編輯
+    customSyntax_label: 新增自訂語法類型
+    customSyntax_add: 新增自訂語法
+    box: 區塊 / 行內
+    imageToken: 永久的 Access Token
+    imageToken_label: 永久的 Access Token 將會附在網址後方
   map:
+    map: 地圖
+    description: 在地圖上選擇一個地點
     zoom: 縮放
+    geometry_type: 地理類型
+    geometry_format: 地理格式
+    default_view: 預設顯示地點
+    invalid_options: 無效選項
+    invalid_format: 無效格式 ({format})
+    unexpected_geometry: 期待值為 {expected} ，但收到 {got} 。
+    fit_bounds: 適應資料顯示
+    native: 原始
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
+    click_to_select: 點選以選擇 {geometry}
+  presentation-notice:
+    notice: 注意
+    description: 顯示簡短通知訊息
+    text: 在此輸入通知內容...
+  list-o2m:
+    one-to-many: 一對多
+    description: 選擇多個關聯項目
+    no_collection: 找不到該集合
   system-folder:
     folder: 資料夾
     description: 選擇一個資料夾
     field_hint: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
     root_name: 檔案庫的基礎位置
     system_default: 系統預設值
+  select-radio:
+    radio-buttons: 單選按鈕
+    description: 選擇一或多個選擇
   list:
+    repeater: 重複器
+    description: 建立多個擁有相同結構的資料項目
     edit_fields: 編輯欄位
     add_label: '「新增」標籤'
     sort: 排序
     sort_placeholder: 手動
     field_name_placeholder: 輸入欄位名稱...
     field_note_placeholder: 輸入欄位備註...
+    incompatible_data: 目前的資料與重複器不相容，在將資料加入重複器時將會被覆寫
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -1542,8 +1596,12 @@ interfaces:
     user_language: 使用目前使用者的語言
     default_language: 預設語言
     language_field: 語言判斷欄位
+  list-o2m-tree-view:
+    description: 以樹狀方式顯示多層一對多的資料項目
+    recursive_only: 樹狀結構只能用來顯示有多層關係的資料
   user:
     user: 用戶
+    description: 選擇一個存在的使用者
     select_mode: 選取模式
     modes:
       auto: 自動
@@ -1568,7 +1626,10 @@ interfaces:
     rate: 頻率
   group-raw:
     name: 原始群組
+    description: 以原始模樣顯示欄位
   group-detail:
+    name: 群組詳細資料
+    description: 將欄位顯示為收合區塊
     header_icon: 標題圖示
     header_color: 標題顏色
   system-token:
@@ -1649,11 +1710,14 @@ displays:
     extension_only_label: 只顯示檔案的副檔名
   rating:
     rating: 評分
+    simple: 簡單
+    simple_label: 以簡易格式顯示星等
   raw:
     raw: 原始值
   related-values:
     related-values: 相關值
     description: 顯示相關值
+    display_template_configure_notice: 您可以在建立欄位後修改顯示範本
   user:
     user: 用戶
     description: 顯示一個系統使用者
@@ -1705,11 +1769,61 @@ layouts:
     title: 卡片標題
     title_placeholder: 可選標題欄位,
     text: 卡片文字,
+    text_placeholder: 選填文字欄位...,
+    date: 卡片日期,
+    date_placeholder: 選填日期欄位...,
+    tags: 卡片標籤,
+    tags_placeholder: 選填卡片標籤...,
+    user: 卡片使用者,
+    user_placeholder: 選填使用者欄位...,
+    image: 卡片圖片
+    image_placeholder: 選填卡片圖片...,
+    image_fit: 卡片圖片顯示,
+    crop: 裁切,
+    advanced: 進階,
+    edit_group: 編輯群組,
+    delete_group: 刪除群組,
+    add_group: 新增群組,
+    add_group_placeholder: 輸入新的群組名稱,
+    show_ungrouped: 以非群組方式顯示,
+    show: 顯示,
+    no_group: 沒有群組,
+    not_all_loaded: 只能讀取前1000個項目。
 panels:
+  metric:
+    name: 格式
+    description: 依據顯示結果顯示單一值
+    field: 欄位
+  time_series:
+    name: 時間序列
+    description: 依照各時間數值顯示直線圖
+    date_field: 日期欄位
+    value_field: 值欄位
+    fill_type: 填充方式
+    curve_type: 曲線類型
   label:
     name: 標籤
+    description: 顯示文字
+  list:
+    name: 清單
+    description: 從資料集中篩選並顯示欄位
   barchart:
+    name: 柱狀圖
+    description: 以柱狀圖顯示群組後的值
+    select_field: 你必須選擇一個欄位。
+    select_collection: 您必須選擇一個資料集。
+    select_x_axis: 您必須選擇一個 X 軸。
+    function: 函數
+    horizontal: 水平
+    x_axis_grouping: X軸群組集合
+    x_axis: X 軸
+    y_axis_function: Y軸函數
+    y_axis: Y 軸
+    show_x_axis: 顯示 X 軸
+    show_y_axis: 顯示 Y 軸
+    show_data_label: 顯示資料標籤
     group_by: 群組方式
+    group_and_function: 您必須選擇一個群組或一個函數。
     y_axis_NaN: Y 軸必須是數字。
     y_axis_conditional_one: 條件值
     y_axis_conditional_two: 只允許數字
@@ -1738,6 +1852,11 @@ panels:
     name: 格線
     arc: 弧形
     stroke_width: 線條粗細
+    select_max_value: 您必須選擇最大值
+    max_greater_than_zero: 最大值必須大於0
+    select_field: 你必須選擇一個欄位。
+    select_collection: 您必須選擇一個資料集。
+    function: 函數
     thin: 細線
     medium: 中等
     broad: 寬線
@@ -1759,12 +1878,63 @@ panels:
 triggers:
   common:
     response_body: 回應內文
+    response_body_all: 所有資料
+    response_body_last: 上次操作的資料
+  event:
+    name: 事件掛鉤
+    description: 平台或事件觸發器
+    action: '操作(非阻斷)'
+    filter: '篩選(阻斷)'
   webhook:
+    name: Webhook
+    description: 當HTTP呼叫送入時觸發
     method: 方法
+    async: 非同步
+  operation:
+    name: 另一個流程
+    description: 由另一個流程觸發
+    preview: 由另一個流程中的操作觸發
+  schedule:
+    name: 定時執行 (CRON)
+    description: 在特定時間觸發
+    cron: 間隔時間
+  manual:
+    name: 手動
+    description: 在選擇的資料集中手動執行
+    collection_and_item: 資料集與項目頁面
+    collection_only: 只在資料集頁面
+    item_only: 只在資料項目頁面
+a_users_uuid: 使用者的不重複編碼 UUID
+a_flow_uuid: 流程的不重複編碼 UUID
+any_string_or_json: 任何字串或 JSON...
+item_payload_placeholder: 這個JSON用來更新資料項目各欄位的值
+operation_variables_note: 您可透過這些方法存取流程中的資料 **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** 及 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或呼叫之前的操作如 **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: 條件
+    description: 透過判斷邏輯來操作流程
   item-create:
+    name: 建立資料
+    description: 在資料庫中建立資料
     payload: 傳送資料
+    emit_events: 執行事件
+  item-delete:
+    name: 刪除資料
+    description: 在資料庫中刪除資料
+    emit_events: 執行事件
+    key: ID
+    query: 查詢
+  item-read:
+    name: 讀取資料
+    description: 從資料庫中讀取資料
+    key: ID
+    query: 查詢
+    emit_events: 執行事件
   item-update:
+    name: 更新資料
+    description: 在資料庫中更新資料
+    emit_events: 執行事件
+    key: ID
     payload: 傳送資料
     query: 查詢
   log:
