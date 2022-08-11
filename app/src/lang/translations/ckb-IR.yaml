@@ -1858,7 +1858,16 @@ layouts:
     layers: چینەکان
     cluster_options: پۆلێنکردنی بژاردەکان
     cluster: پۆلێنکردنی نزیکیی داتا
+    cluster_radius: نیوەتیرەی پۆل
+    cluster_minpoints: بچوکترین قەبارەی پۆل
+    cluster_maxzoom: زۆرترین نزیککردنەوە بۆ پۆل
     default_template: بەکارهێنانی بنەڕەتی کۆمەڵە...
+  kanban:
+    group_field: دەستەکردن بەپێی،
+    group_field_placeholder: خانە بۆ دەستەکردن پێی...،
+    group_title: ناونیشانی دەستە،
+    group_title_placeholder: خانە بۆ ناونیشانەکانی دەستە...،
+    title: ناونیشانی کارت،
 panels:
   label:
     name: پێناس
