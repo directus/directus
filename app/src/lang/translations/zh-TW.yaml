@@ -1415,8 +1415,18 @@ interfaces:
     maximum_value: 最大值
     step_interval: 每次增加或減少數字
     slug: 網址化
+    slug_label: 讓輸入的值可使用於網址中
+  input-multiline:
+    textarea: 文字區域
+    description: 輸入多行純文字
+  input-translated-string:
+    input-translated-string: 已翻譯字串
+    description: 選擇或新增翻譯字串
+    search_placeholder: 搜尋...
+    new_translation_string: 尚無翻譯字串
   boolean:
     toggle: 切換
+    description: 在狀態間切換
     color_on: 開啟時色彩
     color_off: 關閉時色彩
     label_placeholder: 輸入名稱...
@@ -1424,21 +1434,44 @@ interfaces:
   translations:
     display_template: 顯示模板
     no_collection: 尚無資料集
+    toggle_split_view: 分側顯示切換
+    enable: 啟用
+    user_language: 使用目前使用者的語言
+    default_language: 預設語言
+    language_field: 語言判斷欄位
   user:
     user: 用戶
     select_mode: 選取模式
     modes:
       auto: 自動
       dropdown: 下拉選單
+      modal: 對話框
   input-rich-text-html:
+    wysiwyg: 所見即所得
     description: 可以編輯HTML內容的編輯器
+    toolbar: 工具列
+    custom_formats: 自訂格式
+    options_override: 覆蓋選項
     folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
+    imageToken: 永久的 Access Token
+    imageToken_label: 永久的 Access Token 將會附在網址後方
+  input-autocomplete-api:
+    input-autocomplete-api: 輸入自動完成 (API)
+    description: 在搜尋外部 API 資料時開啟自動完成功能。
+    results_path: 結果路徑
+    value_path: 值路徑
+    text_path: 文字路徑
+    trigger: 觸發條件
+    rate: 頻率
+  group-raw:
+    name: 原始群組
   system-token:
     system-token: 權杖
     placeholder: 點選「產生token」來建立一個新的靜態token
 displays:
   translations:
     translations: 翻譯
+    language_field: 語言判斷欄位
   boolean:
     boolean: 布林值
     description: 顯示開關狀態
