@@ -39,8 +39,8 @@ condition_rules: 條件規則
 input: 輸入
 maps: 地圖
 switch_user: 切換使用者
-item_creation: 建立物件
-item_revision: 項目修改
+item_creation: 建立資料項目
+item_revision: 資料項目修改
 enter_a_name: 輸入名稱...
 duplicate_field: 複製欄位
 half_width: 半寬
@@ -938,6 +938,20 @@ discard_changes_copy: 您確定要放棄所有變更嗎？
 show_x_axis: 顯示 X 軸
 show_y_axis: 顯示 Y 軸
 keep_editing: 繼續編輯
+page_help_collections_overview: '**資料集一覽** - 列出所有您有權存取的資料集。'
+page_help_collections_collection: >-
+  **瀏覽資料項目** - 列出在 {collection} 中所有您有權存取的資料項目。自訂顯示方式、篩選器以及排序方式。您也可將不同的顯示方式建立為書籤以供日後快速存取。
+page_help_collections_item: >-
+  **資料項目細節** - 顯示與編輯資料項目的畫面。側邊欄同時包含有完整的修訂歷史以及其他人的意見。
+page_help_activity_collection: >-
+  **瀏覽歷史** - 所有使用者的系統及內容操作記錄。
+page_help_docs_global: >-
+  **文件概覽** - 本專案的版本及資料結構說明文件。
+page_help_files_collection: >-
+  **檔案庫** - 列出所有上傳至此專案的檔案。自訂顯示方式、篩選器以及排序方式。您也可將不同的顯示方式建立為書籤以供日後快速存取。
+page_help_files_item: >-
+  **檔案細節** - 管理檔案元資料、編輯原始資源以及更新存取設定。
+page_help_settings_project: "**專案設定** - 專案的全域設定選項"
 page_help_settings_flows_item: '流程細節 - 管理各項操作'
 activity_feed: 活動紀錄
 add_new: 新增
@@ -1403,7 +1417,15 @@ interfaces:
     error: 無法執行操作
   select-multiple-checkbox:
     checkboxes: 核取方塊
+    description: 透過核取方塊在多個選項中選取
+    allow_other: 允許其他選項
+    show_more: '顯示其餘 {count} 項'
+    items_shown: 項目已顯示
   select-multiple-checkbox-tree:
+    name: 核取方塊(樹狀)
+    description: 在樹狀和取方塊中選取多個選項
+    value_combining: 連結值
+    value_combining_note: 設定樹狀選項如何儲存
     show_all: 顯示全部
     show_selected: 顯示已選取的項目
   input-code:
@@ -1488,10 +1510,23 @@ interfaces:
     placeholder: 選擇一個介面...
   system-interface-options:
     interface-options: 介面選項
+    description: 透過一個彈出方塊選擇選項
+  list-m2m:
+    many-to-many: 多對多
+    description: 選擇多個關聯項目
+    display_template_configure_notice: 您可以在建立欄位後修改顯示範本
   select-dropdown-m2o:
+    many-to-one: 多對一
+    description: 選擇一個關聯項目
     display_template: 顯示模板
   input-rich-text-md:
+    markdown: Markdown
+    description: 輸入和預覽 Markdown
     edit: 編輯
+    preview: 預覽
+    editorFont: 編輯器字型
+    previewFont: 預覽字型
+    customSyntax: 自訂區塊
     customSyntax_label: 新增自訂語法類型
     customSyntax_add: 新增自訂語法
     box: 區塊 / 行內
@@ -1626,35 +1661,75 @@ interfaces:
     rate: 頻率
   group-raw:
     name: 原始群組
-    description: 以原始模樣顯示欄位
+    description: 將欄位顯示為原始模式
   group-detail:
     name: 群組詳細資料
     description: 將欄位顯示為收合區塊
+    show_header: 顯示群組標題
     header_icon: 標題圖示
     header_color: 標題顏色
+    start_open: 預設為開啟
+    start_closed: 預設為收合
   system-token:
     system-token: 權杖
+    description: 管理永久 access token
     placeholder: 點選「產生token」來建立一個新的靜態token
+    value_securely_saved: 值已安全加密
+    generate: 產生 Token
+    regenerate: 重新產生 token
+    generate_success_copy: 請記得備份下方的 token ，由於安全問題，在離開此頁之後您將無法再看到這個 token 。
+    remove_token: 移除 Token
+  system-raw-editor:
+    system-raw-editor: 原始資料編輯器
+    description: 讓您透過編輯器編輯範本
 displays:
   translations:
     translations: 翻譯
+    description: 預覽翻譯
+    enable: 啟用
+    user_language: 使用目前使用者的語言
+    default_language: 預設語言
     language_field: 語言判斷欄位
   boolean:
     boolean: 布林值
     description: 顯示開關狀態
+    label_on: 啟用時標籤
+    label_on_placeholder: 輸入一個啟用時的標籤...
+    label_off: 關閉時標籤
+    label_off_placeholder: 輸入一個關閉時的標籤...
     icon_on: 圖示開啟
     icon_off: 圖示關閉
+    color_on: 啟用時色彩
+    color_off: 關閉時色彩
   collection:
     collection: 集合
+    description: 顯示一個資料集
+    icon_label: 顯示資料集的圖示
   color:
     color: 顏色
+    description: 顯示一個有色點
     default_color: 預設顏色
   datetime:
     datetime: 日期時間
+    description: 顯示相關時間
     format: 格式
+    format_note: >-
+      自訂格式可以使用 __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: 長
     short: 短
+    relative: 相關
+    relative_label: '顯示相關時間，如 5 分鐘前'
     suffix: 後綴
+    suffix_label: 顯示相關指示
+    suffix_note: 使用「在」和「前」之類的文字
+    strict: 嚴格
+    strict_label: 使用嚴格方式
+    strict_note: 移除像是「大約」、「超過」、「小於」等的字
+    round: 進位
+    round_note: 選擇要使用的進位函數
+    down: 下
+    nearest: 最接近
+    up: 上
   file:
     file: 檔案
     description: 顯示檔案
@@ -1665,13 +1740,17 @@ displays:
     formatted-value: 格式化值
     description: 顯示文本的格式化版本
     format: 格式
+    format_label: 自動修改大小寫
     font: 字體
+    font_sans_serif: 無襯線字體
     font_serif: 襯線體
     font_monospace: 等寬字體
     bold: 粗體
     bold_label: 使用粗體樣式
     italic: 斜體
+    italic_label: 使用斜體
     prefix: 前綴
+    prefix_label: 前置文字
     suffix: 後綴
     suffix_label: 後綴文字
     color: 顏色
@@ -1710,6 +1789,7 @@ displays:
     extension_only_label: 只顯示檔案的副檔名
   rating:
     rating: 評分
+    description: 將一個數字與最大值比較，產生星等
     simple: 簡單
     simple_label: 以簡易格式顯示星等
   raw:
