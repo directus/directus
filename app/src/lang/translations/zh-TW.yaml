@@ -952,6 +952,8 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **檔案細節** - 管理檔案元資料、編輯原始資源以及更新存取設定。
 page_help_settings_project: "**專案設定** - 專案的全域設定選項"
+page_help_settings_datamodel_collections: >-
+  **資料模型：資料集** - 列出所有可用的資料集。包含可見、隱藏以及系統資料集，以及尚未加入管理介面的資料庫。
 page_help_settings_flows_item: '流程細節 - 管理各項操作'
 activity_feed: 活動紀錄
 add_new: 新增
