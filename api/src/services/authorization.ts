@@ -25,7 +25,7 @@ import {
 	PrimaryKey,
 } from '../types';
 import { stripFunction } from '../utils/strip-function';
-import { ItemsService } from './items';
+import { getItemsContext } from '../utils/get-items-context';
 import { PayloadService } from './payload';
 import { getRelationInfo } from '../utils/get-relation-info';
 import { GENERATE_SPECIAL } from '../constants';
@@ -606,31 +606,23 @@ export class AuthorizationService {
 		return Array.isArray(pk) ? payloadWithPresets : payloadWithPresets[0];
 	}
 
-	async getItemsContext(
+	getItemsContext(
 		action: PermissionsAction,
 		collection: string,
 		pk: PrimaryKey | PrimaryKey[],
 		fields: string[] = ['*']
 	): Promise<Array<Item>> {
-		const itemsService = new ItemsService(collection, {
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		if (!Array.isArray(pk)) {
-			pk = [pk];
-		}
-
-		const query: Query = {
-			fields,
-			limit: pk.length,
-		};
-
-		const result = await itemsService.readMany(pk, query, { permissionsAction: action });
-		if (result?.length !== pk.length) throw new ForbiddenException();
-
-		return result;
+		return getItemsContext(
+			{
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: this.knex,
+			},
+			action,
+			collection,
+			pk,
+			fields
+		);
 	}
 
 	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
