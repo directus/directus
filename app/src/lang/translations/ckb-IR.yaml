@@ -1868,6 +1868,11 @@ layouts:
     group_title: ناونیشانی دەستە،
     group_title_placeholder: خانە بۆ ناونیشانەکانی دەستە...،
     title: ناونیشانی کارت،
+    title_placeholder: خانە ئارەزوومەندانەکانی ناونیشان...،
+    text: نوسینی کارت،
+    text_placeholder: خانە ئارەزوومەندانەکانی نوسین...،
+    date: ڕێکەوتی کارت،
+    date_placeholder: خانە ئارەزوومەندانەکانی ڕێکەوت...،
 panels:
   label:
     name: پێناس
