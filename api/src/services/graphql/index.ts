@@ -1477,7 +1477,11 @@ export class GraphQLService {
 				const values: any = [];
 
 				for (const valueNode of argument.value.values) {
-					if (valueNode.kind === 'ObjectValue') {
+					if (valueNode.kind === 'ListValue') {
+						const node = { value: valueNode, kind: 'ListValue', name: { value: 'result' } };
+						const { result } = this.parseArgs([node], variableValues);
+						values.push(result);
+					} else if (valueNode.kind === 'ObjectValue') {
 						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
 						if (valueNode.kind === 'Variable') {
