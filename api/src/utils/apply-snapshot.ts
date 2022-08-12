@@ -234,9 +234,13 @@ export async function applySnapshot(
 			if (diff?.[0].kind === 'D') {
 				try {
 					await relationsService.deleteOne(collection, field);
-				} catch (err) {
-					logger.error(`Failed to delete relation "${collection}.${field}"`);
-					throw err;
+				} catch (err: any) {
+					if (err.message?.includes("doesn't exist in collection")) {
+						logger.warn(`Skip delete relation "${collection}.${field}"`);
+					} else {
+						logger.error(`Failed to delete relation "${collection}.${field}"`);
+						throw err;
+					}
 				}
 			}
 		}
