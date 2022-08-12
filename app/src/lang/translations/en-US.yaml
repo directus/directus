@@ -1455,6 +1455,14 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  presentation-external-images:
+    presentation-external-images: External Images
+    description: Display images from external sources
+    images: Images
+    src: URL
+    src-placeholder: https://example.com/image.png
+    width: Width
+    width-placeholder: 200px or 100%
   presentation-links:
     presentation-links: Button Links
     links: Links
