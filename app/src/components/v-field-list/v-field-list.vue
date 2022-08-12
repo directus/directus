@@ -87,13 +87,16 @@ const treeList = computed(() => {
 });
 
 function filter(field: Field, parent?: FieldNode): boolean {
-	if (!includeRelations.value && (field.collection !== collection.value || field.type === 'alias')) return false;
+	if (
+		!includeRelations.value &&
+		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
+	)
+		return false;
 	if (!search.value || isNil(parent) === false) return true;
 
 	const children = isNil(field.schema?.foreign_key_table)
 		? fieldsStore.getFieldGroupChildren(field.collection, field.field)
 		: fieldsStore.getFieldsForCollection(field.schema!.foreign_key_table);
-
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
 
 	function matchesSearch(field: Field) {

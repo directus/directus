@@ -166,7 +166,7 @@ importers:
       keyv-memcache: ^1.2.5
       knex: 2.2.0
       knex-mock-client: 1.8.4
-      knex-schema-inspector: ^2.0.3
+      knex-schema-inspector: 2.0.4
       ldapjs: ^2.3.3
       liquidjs: ^9.37.0
       lodash: ^4.17.21
@@ -265,7 +265,7 @@ importers:
       jsonwebtoken: 8.5.1
       keyv: 4.3.2
       knex: 2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu
-      knex-schema-inspector: 2.0.3
+      knex-schema-inspector: 2.0.4
       ldapjs: 2.3.3
       liquidjs: 9.39.1
       lodash: 4.17.21
@@ -753,13 +753,13 @@ importers:
   packages/schema:
     specifiers:
       knex: 2.2.0
-      knex-schema-inspector: ^2.0.3
+      knex-schema-inspector: 2.0.4
       lodash: ^4.17.21
       npm-watch: 0.11.0
       typescript: 4.5.2
     dependencies:
       knex: 2.2.0
-      knex-schema-inspector: 2.0.3
+      knex-schema-inspector: 2.0.4
       lodash: 4.17.21
     devDependencies:
       npm-watch: 0.11.0
@@ -781,7 +781,7 @@ importers:
       geojson: ^0.5.0
       joi: 17.4.2
       knex: 2.2.0
-      knex-schema-inspector: ^2.0.1
+      knex-schema-inspector: 2.0.4
       lodash: 4.17.21
       micromustache: ^8.0.3
       npm-run-all: 4.1.5
@@ -801,7 +801,7 @@ importers:
       geojson: 0.5.0
       joi: 17.4.2
       knex: 2.2.0
-      knex-schema-inspector: 2.0.3
+      knex-schema-inspector: 2.0.4
       lodash: 4.17.21
       micromustache: 8.0.3
       pino: 6.13.3
@@ -10574,8 +10574,8 @@ packages:
     engines: { node: '>= 0.6' }
     hasBin: true
     dependencies:
-      chalk: 2.4.2
       JSV: 4.0.2
+      chalk: 2.4.2
       underscore: 1.13.4
     dev: true
 
@@ -10684,9 +10684,9 @@ packages:
       lodash.clonedeep: 4.5.0
     dev: true
 
-  /knex-schema-inspector/2.0.3:
+  /knex-schema-inspector/2.0.4:
     resolution:
-      { integrity: sha512-PY4sGfmRn9TY73/wTjDhwxslDNnKeGYFw86N0Qb7xfq+s82B49gcMq4Gt2J5gSLNGE094BGnIJtu5YUu+yn4+w== }
+      { integrity: sha512-UGCB6sXhejQMr9Kd39hacAdIG8JEhr9LboOuBTT41jvDgGu0FRbdtqdnWfbv56Sfz5YoN5zkJt7upZCLEaY73Q== }
     dependencies:
       lodash.flatten: 4.4.0
       lodash.isnil: 4.0.0
