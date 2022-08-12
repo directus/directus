@@ -1906,9 +1906,13 @@ panels:
     description: هێڵکاری هێڵێک بکە بەپێی بەهاکان بەپێی تێپەڕبونی کات
     date_field: خانەی ڕێکەوت
     value_field: خانەی بەها
+    fill_type: جۆری گونجاندن
+    curve_type: جۆری کەوانە
   label:
     name: پێناس
     description: هەندێ نوسین نیشان بدە
+  list:
+    name: لیست
   barchart:
     show_data_label: داتای پێناس نیشانبدە
   piechart:
