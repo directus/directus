@@ -17,6 +17,7 @@
 			:raw-editor-enabled="rawEditorEnabled"
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
+			:direction="direction"
 			@apply="$emit('apply', $event)"
 			@toggle-all="toggleAll"
 		/>
@@ -90,6 +91,10 @@ export default defineComponent({
 			type: String,
 			enum: ['opened', 'closed', 'first'],
 			default: 'closed',
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['apply'],

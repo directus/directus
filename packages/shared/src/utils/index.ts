@@ -1,3 +1,4 @@
+export { compress, decompress } from './compress';
 export * from './abbreviate-number';
 export * from './add-field-flag';
 export * from './adjust-date';

@@ -10,6 +10,7 @@
 					:disabled="disabled"
 					:class="font"
 					:model-value="value"
+					:dir="direction"
 					@update:model-value="onInput"
 					@focus="activate"
 				>
@@ -84,6 +85,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

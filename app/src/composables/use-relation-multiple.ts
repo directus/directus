@@ -349,20 +349,23 @@ export function useRelationMultiple(
 
 			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
-			const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
-			if (previewQuery.value.filter) {
-				filter._and.push(previewQuery.value.filter);
+			if (itemId.value !== '+') {
+				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+				if (previewQuery.value.filter) {
+					filter._and.push(previewQuery.value.filter);
+				}
+
+				const response = await api.get(getEndpoint(targetCollection), {
+					params: {
+						fields: Array.from(fields),
+						filter,
+						page: previewQuery.value.page,
+						limit: previewQuery.value.limit,
+					},
+				});
+
+				fetchedItems.value = response.data.data;
 			}
-
-			const response = await api.get(getEndpoint(targetCollection), {
-				params: {
-					...previewQuery.value,
-					fields: Array.from(fields),
-					filter,
-				},
-			});
-
-			fetchedItems.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
