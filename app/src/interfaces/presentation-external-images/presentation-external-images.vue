@@ -1,7 +1,6 @@
 <template>
 	<div class="presentation-external-images">
-		<!-- <img v-for="(image, index) in images" :key="index" :src="image.src" :style="{ width: image.width ?? 'auto' }" /> -->
-		<v-image v-for="(image, index) in images" :key="index" :src="image.src" :style="{ width: image.width ?? 'auto' }" />
+		<img v-for="(image, index) in images" :key="index" :src="image.src" :style="{ width: image.width ?? 'auto' }" />
 	</div>
 </template>
 
