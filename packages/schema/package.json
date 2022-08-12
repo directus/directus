@@ -48,7 +48,7 @@
 	},
 	"dependencies": {
 		"knex": "2.2.0",
-		"knex-schema-inspector": "^2.0.3",
+		"knex-schema-inspector": "2.0.4",
 		"lodash": "^4.17.21"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
