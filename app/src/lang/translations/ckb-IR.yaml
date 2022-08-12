@@ -1816,6 +1816,7 @@ displays:
     extension_only_label: تەنها پاشکۆی پەڕگە نیشانبدە
   rating:
     rating: هەڵسەنگاندن
+    description: ژمارەیەک وەک ئەستێرەکان وێنا بکە نزیک بە بەرزترین بەها
     simple: سادە
     simple_label: ئەستێرەکان بە داڕشتنێکی سادە نیشان بدە
   raw:
@@ -1861,8 +1862,13 @@ layouts:
     cluster_radius: نیوەتیرەی پۆل
     cluster_minpoints: بچوکترین قەبارەی پۆل
     cluster_maxzoom: زۆرترین نزیککردنەوە بۆ پۆل
+    field: خانەی جیۆفەزایی
+    invalid_geometry: ئەندازەی نادروست
+    find_location: شوێن بدۆزەوە...
     default_template: بەکارهێنانی بنەڕەتی کۆمەڵە...
+    no_compatible_fields: هیچ خانەیەکی گونجاو نییە
   kanban:
+    name: کانبان،
     group_field: دەستەکردن بەپێی،
     group_field_placeholder: خانە بۆ دەستەکردن پێی...،
     group_title: ناونیشانی دەستە،
@@ -1873,7 +1879,33 @@ layouts:
     text_placeholder: خانە ئارەزوومەندانەکانی نوسین...،
     date: ڕێکەوتی کارت،
     date_placeholder: خانە ئارەزوومەندانەکانی ڕێکەوت...،
+    tags: نیشانەکانی کارت،
+    tags_placeholder: خانە ئارەزوومەندانەکانی نیشانەکان...،
+    user: کارتی بەکارهێنەر،
+    user_placeholder: خانە ئارەزوومەندانەکانی بەکارهێنەر...،
+    image: وێنەی کارت،
+    image_placeholder: خانە ئارەزوومەندانەکانی وێنە...،
+    image_fit: گونجانی وێنەی کارت،
+    crop: بڕین،
+    advanced: پێشکەوتوو،
+    edit_group: دەستکاری دەستە،
+    delete_group: سڕینەوەی دەستە،
+    add_group: زیادکردنی دەستە،
+    add_group_placeholder: ناونیشانی دەستەیەکی نوێ دابنێ...،
+    show_ungrouped: بە نادەستەیی نیشان بدە،
+    show: نیشان بدە،
+    no_group: هیچ دەستەیەک،
+    not_all_loaded: تەنها دەتوانرێت یەکەم 1000 ماددە باربکرێت.
 panels:
+  metric:
+    name: مەتری
+    description: نیشاندانی تاکە بەهایەک بەپێی پرسێک
+    field: خانە
+  time_series:
+    name: زنجیرەی کات
+    description: هێڵکاری هێڵێک بکە بەپێی بەهاکان بەپێی تێپەڕبونی کات
+    date_field: خانەی ڕێکەوت
+    value_field: خانەی بەها
   label:
     name: پێناس
     description: هەندێ نوسین نیشان بدە
