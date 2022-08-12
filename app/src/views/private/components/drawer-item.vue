@@ -178,24 +178,18 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (props.circularField) {
-				return fieldsWithPermissions.value.map((field: Field) => {
+				return fieldsWithPermissions.value.filter((field: Field) => {
 					if (field.field === props.circularField) {
+						if (props.primaryKey === '+') {
+							return false;
+						}
+
 						set(field, 'meta.readonly', true);
 					}
-					return field;
+					return true;
 				});
 			} else {
 				return fieldsWithPermissions.value;
-			}
-		});
-
-		const fieldsWithoutCircular = computed(() => {
-			if (props.circularField) {
-				return fields.value.filter((field) => {
-					return field.field !== props.circularField;
-				});
-			} else {
-				return fields.value;
 			}
 		});
 
@@ -406,9 +400,7 @@ export default defineComponent({
 
 			function save() {
 				const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
-				const fieldsToValidate = props.junctionField
-					? junctionRelatedCollectionFields.value
-					: fieldsWithoutCircular.value;
+				const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fields.value;
 				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
 
 				if (errors.length > 0) {
