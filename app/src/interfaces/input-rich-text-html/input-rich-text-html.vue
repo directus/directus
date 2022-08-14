@@ -176,14 +176,14 @@
 <script lang="ts">
 import Editor from '@tinymce/tinymce-vue';
 import { percentage } from '@/utils/percentage';
-import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs } from 'vue';
+import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore } from '@/stores/settings';
 import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 import 'tinymce/tinymce';
@@ -273,6 +273,10 @@ export default defineComponent({
 			type: Number,
 			default: undefined,
 		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -323,10 +327,26 @@ export default defineComponent({
 			get() {
 				return props.value || '';
 			},
-			set() {
+			set(value) {
+				if (props.value !== value) {
+					contentUpdated();
+				}
 				return;
 			},
 		});
+
+		watch(
+			() => [props.direction, editorRef],
+			() => {
+				if (editorRef.value) {
+					if (props.direction === 'rtl') {
+						editorRef.value.editorCommands?.commands?.exec?.mcedirectionrtl();
+					} else {
+						editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
+					}
+				}
+			}
+		);
 
 		const editorOptions = computed(() => {
 			let styleFormats = null;
@@ -369,6 +389,7 @@ export default defineComponent({
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
 				browser_spellcheck: true,
+				directionality: props.direction,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};

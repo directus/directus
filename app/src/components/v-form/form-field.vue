@@ -44,6 +44,7 @@
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
+			:direction="direction"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -82,7 +83,7 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
 	field: Field;
@@ -98,6 +99,7 @@ interface Props {
 	badge?: string;
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
+	direction?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -113,6 +115,7 @@ const props = withDefaults(defineProps<Props>(), {
 	badge: undefined,
 	rawEditorEnabled: false,
 	rawEditorActive: false,
+	direction: undefined,
 });
 
 const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
@@ -255,6 +258,14 @@ function useComputedValues() {
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
+
+	:deep(a) {
+		color: var(--primary);
+
+		&:hover {
+			color: var(--primary-125);
+		}
+	}
 }
 
 .invalid {

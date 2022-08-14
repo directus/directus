@@ -172,7 +172,7 @@ export default defineComponent({
 
 	display: grid;
 	grid-gap: 12px 32px;
-	grid-template-columns: repeat(var(--columns), 1fr);
+	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 
 .grid-2 {

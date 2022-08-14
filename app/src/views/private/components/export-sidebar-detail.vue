@@ -223,7 +223,7 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -231,8 +231,8 @@ import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
 import { getEndpoint } from '@directus/shared/utils';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
-import { usePermissionsStore } from '@/stores';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import { usePermissionsStore } from '@/stores/permissions';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -280,6 +280,15 @@ const exportSettings = reactive({
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
+
+watch(
+	fields,
+	() => {
+		if (props.layoutQuery?.fields) return;
+		exportSettings.fields = fields.value?.map((field) => field.field);
+	},
+	{ immediate: true }
+);
 
 watch(
 	() => props.layoutQuery,

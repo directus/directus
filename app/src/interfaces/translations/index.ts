@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceTranslations from './translations.vue';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
@@ -34,6 +34,21 @@ export default defineInterface({
 					interface: 'select-dropdown',
 					options: {
 						placeholder: '$t:primary_key',
+						choices,
+					},
+				},
+			},
+			{
+				field: 'languageDirectionField',
+				type: 'string',
+				name: '$t:interfaces.translations.language_direction_field',
+				schema: {
+					data_type: 'string',
+					default_value: choices.some((choice) => choice.value === 'direction') ? 'direction' : null,
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
 						choices,
 					},
 				},

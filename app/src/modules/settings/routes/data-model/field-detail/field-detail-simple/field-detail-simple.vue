@@ -14,7 +14,7 @@
 					<div class="preview">
 						<template v-if="inter.preview">
 							<!-- eslint-disable-next-line vue/no-v-html -->
-							<span v-if="isSVG(inter.preview)" v-html="inter.preview" />
+							<span v-if="isSVG(inter.preview)" class="svg" v-html="inter.preview" />
 							<img v-else :src="inter.preview" alt="" />
 						</template>
 
@@ -222,7 +222,7 @@ export default defineComponent({
 	object-fit: cover;
 }
 
-.preview span {
+.preview .svg {
 	display: contents;
 }
 
