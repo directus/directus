@@ -8,24 +8,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+interface Props {
+	vertical?: boolean;
+	inlineTitle?: boolean;
+	large?: boolean;
+}
 
-export default defineComponent({
-	props: {
-		vertical: {
-			type: Boolean,
-			default: false,
-		},
-		inlineTitle: {
-			type: Boolean,
-			default: true,
-		},
-		large: {
-			type: Boolean,
-			default: false,
-		},
-	},
+const props = withDefaults(defineProps<Props>(), {
+	vertical: false,
+	inlineTitle: true,
+	large: false,
 });
 </script>
 

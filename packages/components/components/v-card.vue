@@ -4,23 +4,15 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+interface Props {
+	disabled?: boolean;
+	tile?: boolean;
+}
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		tile: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup() {
-		return {};
-	},
+withDefaults(defineProps<Props>(), {
+	disabled: false,
+	tile: false,
 });
 </script>
 

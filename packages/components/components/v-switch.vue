@@ -14,57 +14,52 @@
 	</button>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		modelValue: {
-			type: [Boolean, Array],
-			default: false,
-		},
-		label: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const isChecked = computed<boolean>(() => {
-			if (props.modelValue instanceof Array) {
-				return props.modelValue.includes(props.value);
-			}
+interface Props {
+	value?: string | null;
+	modelValue?: boolean | string[];
+	label?: string | null;
+	disabled?: boolean;
+}
 
-			return props.modelValue === true;
-		});
-
-		return { isChecked, toggleInput };
-
-		function toggleInput(): void {
-			if (props.modelValue instanceof Array) {
-				const newValue = [...props.modelValue];
-
-				if (isChecked.value === false) {
-					newValue.push(props.value);
-				} else {
-					newValue.splice(newValue.indexOf(props.value), 1);
-				}
-
-				emit('update:modelValue', newValue);
-			} else {
-				emit('update:modelValue', !isChecked.value);
-			}
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	value: null,
+	modelValue: false,
+	label: null,
+	disabled: false,
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const isChecked = computed<boolean>(() => {
+	if (props.modelValue instanceof Array) {
+		if (!props.value) return false;
+
+		return props.modelValue.includes(props.value);
+	}
+
+	return props.modelValue === true;
+});
+
+return { isChecked, toggleInput };
+
+function toggleInput(): void {
+	if (props.modelValue instanceof Array && props.value) {
+		const newValue = [...props.modelValue];
+
+		if (isChecked.value === false) {
+			newValue.push(props.value);
+		} else {
+			newValue.splice(newValue.indexOf(props.value), 1);
+		}
+
+		emit('update:modelValue', newValue);
+	} else {
+		emit('update:modelValue', !isChecked.value);
+	}
+}
 </script>
 
 <style>

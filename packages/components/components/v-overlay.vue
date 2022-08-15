@@ -5,33 +5,24 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+interface Props {
+	active?: boolean;
+	absolute?: boolean;
+	clickable?: boolean;
+}
 
-export default defineComponent({
-	props: {
-		active: {
-			type: Boolean,
-			default: false,
-		},
-		absolute: {
-			type: Boolean,
-			default: false,
-		},
-		clickable: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['click'],
-	setup(props, { emit }) {
-		return { onClick };
-
-		function onClick(event: MouseEvent) {
-			emit('click', event);
-		}
-	},
+withDefaults(defineProps<Props>(), {
+	active: false,
+	absolute: false,
+	clickable: true,
 });
+
+const emit = defineEmits(['click']);
+
+function onClick(event: MouseEvent) {
+	emit('click', event);
+}
 </script>
 
 <style>

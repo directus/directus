@@ -43,7 +43,7 @@ export type FancySelectItem = {
 	description?: string;
 	divider?: boolean;
 	iconRight?: string;
-};
+} & Record<string, any>;
 
 interface Props {
 	items: FancySelectItem[];

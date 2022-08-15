@@ -8,7 +8,7 @@ export function useVisibleChildren(
 	itemText: Ref<string>,
 	itemValue: Ref<string>,
 	itemChildren: Ref<string>,
-	parentValue: Ref<string | number>,
+	parentValue: Ref<string | number | null>,
 	value: Ref<string | number>
 ) {
 	const visibleChildrenValues = computed(() => {
@@ -28,7 +28,7 @@ export function useVisibleChildren(
 				(child) =>
 					modelValue.value.includes(child[itemValue.value]) ||
 					childrenHaveValueMatch(child[itemChildren.value]) ||
-					modelValue.value.includes(parentValue.value) ||
+					(parentValue.value && modelValue.value.includes(parentValue.value)) ||
 					modelValue.value.includes(value.value)
 			);
 		}

@@ -4,48 +4,38 @@
 	</component>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 
-export default defineComponent({
-	props: {
-		closeDelay: {
-			type: Number,
-			default: 0,
-		},
-		openDelay: {
-			type: Number,
-			default: 0,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		tag: {
-			type: String,
-			default: 'div',
-		},
-	},
-	setup(props) {
-		const hover = ref<boolean>(false);
+interface Props {
+	closeDelay?: number;
+	openDelay?: number;
+	disabled?: boolean;
+	tag?: string;
+}
 
-		return { hover, onMouseEnter, onMouseLeave };
-
-		function onMouseEnter() {
-			if (props.disabled === true) return;
-
-			setTimeout(() => {
-				hover.value = true;
-			}, props.openDelay);
-		}
-
-		function onMouseLeave() {
-			if (props.disabled === true) return;
-
-			setTimeout(() => {
-				hover.value = false;
-			}, props.closeDelay);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	closeDelay: 0,
+	openDelay: 0,
+	disabled: false,
+	tag: 'div',
 });
+
+const hover = ref<boolean>(false);
+
+function onMouseEnter() {
+	if (props.disabled === true) return;
+
+	setTimeout(() => {
+		hover.value = true;
+	}, props.openDelay);
+}
+
+function onMouseLeave() {
+	if (props.disabled === true) return;
+
+	setTimeout(() => {
+		hover.value = false;
+	}, props.closeDelay);
+}
 </script>

@@ -7,16 +7,15 @@
 <script setup lang="ts">
 import ExpandMethods from './expand-methods';
 
-const props = withDefaults(
-	defineProps<{
-		xAxis?: boolean;
-		expandedParentClass?: string;
-	}>(),
-	{
-		xAxis: false,
-		expandedParentClass: '',
-	}
-);
+interface Props {
+	xAxis?: boolean;
+	expandedParentClass?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	xAxis: false,
+	expandedParentClass: '',
+});
 
 const emit = defineEmits([
 	'beforeEnter',

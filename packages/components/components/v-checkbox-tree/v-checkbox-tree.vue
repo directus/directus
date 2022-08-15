@@ -30,30 +30,29 @@ import { computed, ref, watch, toRefs } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
-const props = withDefaults(
-	defineProps<{
-		choices?: Record<string, any>[];
-		modelValue?: string[] | null;
-		valueCombining: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
-		search?: string | null;
-		itemText?: string;
-		itemValue?: string;
-		itemChildren?: string;
-		disabled?: boolean;
-		showSelectionOnly?: boolean;
-	}>(),
-	{
-		choices: () => [],
-		modelValue: null,
-		valueCombining: 'all',
-		search: null,
-		itemText: 'text',
-		itemValue: 'value',
-		itemChildren: 'children',
-		disabled: false,
-		showSelectionOnly: false,
-	}
-);
+interface Props {
+	choices?: Record<string, any>[];
+	modelValue?: (string | number)[];
+	valueCombining: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+	search?: string | null;
+	itemText?: string;
+	itemValue?: string;
+	itemChildren?: string;
+	disabled?: boolean;
+	showSelectionOnly?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	choices: () => [],
+	modelValue: () => [],
+	valueCombining: 'all',
+	search: null,
+	itemText: 'text',
+	itemValue: 'value',
+	itemChildren: 'children',
+	disabled: false,
+	showSelectionOnly: false,
+});
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
 
@@ -61,7 +60,7 @@ const value = computed({
 	get() {
 		return props.modelValue || [];
 	},
-	set(newValue: string[]) {
+	set(newValue: (string | number)[]) {
 		emit('update:modelValue', newValue);
 	},
 });
@@ -128,7 +127,7 @@ function searchChoices(text: string, target: Record<string, any>[]) {
 function findSelectedChoices(choices: Record<string, any>[], checked: (string | number)[]) {
 	function selectedChoices(item: Record<string, any>): (string | number)[] {
 		if (!item[props.itemValue]) return [];
-		let result = [];
+		let result: (string | number)[] = [];
 
 		const itemValue: string | number = item[props.itemValue];
 		if (checked.includes(itemValue)) result.push(itemValue);

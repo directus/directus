@@ -25,54 +25,37 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		absolute: {
-			type: Boolean,
-			default: false,
-		},
-		bottom: {
-			type: Boolean,
-			default: false,
-		},
-		fixed: {
-			type: Boolean,
-			default: false,
-		},
-		indeterminate: {
-			type: Boolean,
-			default: false,
-		},
-		rounded: {
-			type: Boolean,
-			default: false,
-		},
-		top: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: Number,
-			default: 0,
-		},
-		colorful: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['animationiteration'],
-	setup(props) {
-		const color = computed(() => {
-			if (props.value <= 33) return 'danger';
-			if (props.value <= 66) return 'warning';
-			return 'success';
-		});
+interface Props {
+	absolute?: boolean;
+	bottom?: boolean;
+	fixed?: boolean;
+	indeterminate?: boolean;
+	rounded?: boolean;
+	top?: boolean;
+	value?: number;
+	colorful?: boolean;
+}
 
-		return { color };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	absolute: false,
+	bottom: false,
+	fixed: false,
+	indeterminate: false,
+	rounded: false,
+	top: false,
+	value: 0,
+	colorful: false,
+});
+
+defineEmits(['animationiteration']);
+
+const color = computed(() => {
+	if (props.value <= 33) return 'danger';
+	if (props.value <= 66) return 'warning';
+	return 'success';
 });
 </script>
 
