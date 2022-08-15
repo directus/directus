@@ -1,5 +1,5 @@
 import { defineOperationApi, toArray } from '@directus/shared/utils';
-import { VM, NodeVM, VMScript, NodeVMOptions, VMOptions } from 'vm2';
+import { NodeVM, VM, VMOptions, VMScript } from 'vm2';
 import env from '../../env';
 
 type Options = {
