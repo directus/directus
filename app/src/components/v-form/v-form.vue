@@ -33,6 +33,7 @@
 				:validation-errors="validationErrors"
 				:badge="badge"
 				:raw-editor-enabled="rawEditorEnabled"
+				:direction="direction"
 				v-bind="fieldsMap[fieldName].meta?.options || {}"
 				@apply="apply"
 			/>
@@ -65,6 +66,7 @@
 				:badge="badge"
 				:raw-editor-enabled="rawEditorEnabled"
 				:raw-editor-active="rawActiveFields.has(fieldName)"
+				:direction="direction"
 				@update:model-value="setValue(fieldName, $event)"
 				@set-field-value="setValue($event.field, $event.value, { force: true })"
 				@unset="unsetValue(fieldsMap[fieldName])"
@@ -152,6 +154,10 @@ export default defineComponent({
 		rawEditorEnabled: {
 			type: Boolean,
 			default: false,
+		},
+		direction: {
+			type: String,
+			default: null,
 		},
 	},
 	emits: ['update:modelValue'],
@@ -387,7 +393,11 @@ export default defineComponent({
 
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };
-				delete newEdits[field.field];
+				if (props.initialValues && field.field in props.initialValues) {
+					newEdits[field.field] = props.initialValues[field.field];
+				} else {
+					delete newEdits[field.field];
+				}
 				emit('update:modelValue', newEdits);
 			}
 		}

@@ -28,6 +28,7 @@
 								:collection="collection"
 								:field="field"
 								include-functions
+								:include-relations="includeRelations"
 								@select-field="updateField(index, $event)"
 							/>
 						</v-menu>
@@ -139,6 +140,7 @@ interface Props {
 	depth?: number;
 	inline?: boolean;
 	includeValidation?: boolean;
+	includeRelations?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -146,6 +148,7 @@ const props = withDefaults(defineProps<Props>(), {
 	depth: 1,
 	inline: false,
 	includeValidation: false,
+	includeRelations: true,
 });
 
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);

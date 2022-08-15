@@ -3,12 +3,14 @@ import { getHelpers } from '../helpers';
 
 export async function up(knex: Knex): Promise<void> {
 	const helper = getHelpers(knex).schema;
-	await helper.changeToText('directus_webhooks', 'collections', {
+	const type = helper.isOneOfClients(['oracle', 'cockroachdb']) ? 'text' : 'string';
+	await helper.changeToType('directus_webhooks', 'collections', type, {
 		nullable: false,
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
 	const helper = getHelpers(knex).schema;
-	await helper.changeToText('directus_webhooks', 'collections');
+	const type = helper.isOneOfClients(['oracle', 'cockroachdb']) ? 'text' : 'string';
+	await helper.changeToType('directus_webhooks', 'collections', type);
 }

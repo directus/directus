@@ -5,6 +5,7 @@
 		:nullable="!clear"
 		:disabled="disabled"
 		:class="font"
+		:dir="direction"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="(percentageRemaining && percentageRemaining <= 20) || softLength" #append>
@@ -53,6 +54,10 @@ export default defineComponent({
 		},
 		softLength: {
 			type: Number,
+			default: undefined,
+		},
+		direction: {
+			type: String,
 			default: undefined,
 		},
 	},
