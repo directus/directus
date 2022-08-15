@@ -1436,23 +1436,76 @@ interfaces:
   presentation-links:
     presentation-links: دوگمە بەستەرەکان
     links: بەستەرەکان
+    description: ڕێکخستنی دوگمەی بەستەرەکان بۆ کردنەوەی بەستەرە گۆڕاوەکان
+    style: شێواز
     primary: سەرەکی
     link: بەستەرەکان
+    button: دوگمەکان
+    error: ئەم کردارە ناتوانرێت جێبەجێ بکرێت
+  select-multiple-checkbox:
+    checkboxes: هەڵبژاردە خانەکان
+    description: هەڵبژێرە لەنێوان چەندین بژاردەدا لەڕێگەی هەڵبژاردەخانەکان
+    allow_other: ڕێگەپێدان بە زیاتر
+    show_more: 'نیشاندانی {count} یتر'
+    items_shown: ماددەکان نیشاندراون
+  select-multiple-checkbox-tree:
+    name: هەڵبژاردەخانەکان (درەخت)
+    description: هەڵبژێرە لەنێوان چەندین بژاردەدا لەڕێگەی هەڵبژاردەخانە بەیەکداچوەکان
+    value_combining: تێکەڵکردنی بەها
+    value_combining_note: ڕێکخستنی ئەو بەهایەی کە دەبێت پاشەکەوت بکرێت کاتێک دیاریکەری بەیەکداچوو دروست دەبێت.
+    show_all: هەمووی نیشانبدە
+    show_selected: دیاریکراوەکان نیشانبدە
   input-code:
     code: کۆد
+    description: پارچە کۆدەکان بنووسە یان هاوبەشی بکە
+    line_number: هێڵی ژمارە
+    line_wrapping: پێچانی هێڵ
+    placeholder: کۆدەکە لێرە دابنێ...
   system-collection:
     collection: کۆمەڵە
+    description: دیاریبکە لە نێوان کۆمەڵە بەردەستەکان
+    include_system_collections: لە خۆگرتنی کۆمەڵەکانی سیستەم
   system-collections:
     collections: کۆمەڵەکان
+    description: دیاریبکە لە نێوان کۆمەڵە بەردەستەکان
+    include_system_collections: لە خۆگرتنی کۆمەڵەکانی سیستەم
   select-color:
     color: ڕەنگ
+    description: بەهای ڕەنگێک دابنێ یان دیاری بکە
+    placeholder: ڕەنگێک هەڵبژێرە...
+    preset_colors: پێشکۆمەڵی ڕەنگەکان
+    opacity: ڕوونی
+    preset_colors_add_label: ڕەنگێکی نوێ زیاد بکە...
+    name_placeholder: ناوی ڕەنگ بنوسە...
+  datetime:
+    datetime: کات و ڕێکەوت
+    description: کات و ڕێکەوتەکان دابنێ
+    include_seconds: چرکەش لەخۆبگرێت
+    set_to_now: ئێستا دابنێ
+    use_24: شێوازی 24 کاتژمێری دابنێ
+    placeholder: کات و ڕێکەوت هەڵبژێرە...
   system-display-template:
     display-template: پیشاندانی قالب
+    description: تێکەڵکردنی دەقی جێگیر و بەهاکانی خانەی گۆڕاو
+    collection_field: خانەی کۆمەڵە
     collection_field_not_setup: بژاردەی خانەی کۆمەڵە هەڵەڕێکخراوە
     select_a_collection: کۆمەڵەیەک هەڵبژێرە
   presentation-divider:
     divider: دابەشکەر
+    description: ناولێنان و دابەش کردنی خانەکان بۆ سەر بەشەکان
+    title_placeholder: ناونیشان بنوسە، یان بە بەتاڵی جێی بهێڵە بۆ تەنها نیشاندانی هێڵێک...
+    inline_title: ناونیشانی ناوهێڵ
+    inline_title_label: نیشاندانی ناونیشان لە ناو هێڵدا
+    margin_top: پەراوێزی سەرەوە
+    margin_top_label: زیادکردنی پەراوێزی سەرەوە
   select-dropdown:
+    description: دیاریکردنی بەها لە لیستی داخراودا
+    choices_placeholder: زیادکردنی هەڵبژاردەیەکی نوێ
+    allow_other: ڕێگەپێدان بە زیاتر
+    allow_other_label: ڕێگەدان بە بەهای زیاتر
+    allow_none: ڕێگە بە هیچیان بدە
+    allow_none_label: ڕێگە بە هیچ هەڵبژاردنێک بدە
+    choices_name_placeholder: ناوێک تۆماربکە...
     choices_value_placeholder: بەهایەک دابنێ...
     preview_threshold: ئاستی پێشبینین
   select-multiple-dropdown:
@@ -1495,9 +1548,27 @@ interfaces:
     display_template: پیشاندانی قالب
   input-rich-text-md:
     markdown: Markdown
+    description: دایبنێ و Markdown ببینە
     edit: دەستکاری
+    preview: بینین
+    editorFont: دەستکاریکەری فۆنت
+    previewFont: بینینی فۆنت
+    customSyntax: خشتە تایبەتەکان
+    customSyntax_label: جۆرەکانی ڕستەسازی تایبەت زیاد بکە
+    customSyntax_add: ڕستەسازی تایبەت زیادبکە
+    box: بلۆک / ناوهێڵ
+    imageToken: ئاماژەی دەستگەیشتنی جێگیر
+    imageToken_label: نیشانەی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
   map:
+    map: نەخشە
+    description: شوێنێک هەڵبژێرە لەسەر نەخشە
     zoom: نزیکخستنەوە
+    geometry_type: جۆری ئەندازەیی
+    geometry_format: شێوەی ئەندازەیی
+    default_view: بینینی بنەڕەتی
+    invalid_options: بژاردە نادروستەکان
+    invalid_format: شێوەی نادروست ({format})
+    unexpected_geometry: '{expected} پێشبینیکراوە، {got} وەرگیراوە.'
   system-folder:
     folder: بوخچە
   list:
@@ -1506,21 +1577,67 @@ interfaces:
     tags: نیشانەکان
   input:
     mask: دامامککراو
+    maximum_value: گەورەترین بەها
+    step_interval: مەودای هەنگاو
+    slug_label: بەهای بەستەرە دانراوەکان پارێزراو بکە
+  input-multiline:
+    textarea: ناوچەی نوسین
+    description: دانانی نوسینی چەند دێڕی
+  input-translated-string:
+    input-translated-string: دەقە وەرگێڕدراوەکان
+    description: دەقی وەرگێڕان دیاریبکە یان زیادی بکە
+    search_placeholder: گەڕان...
+    new_translation_string: وەرگێڕانی دەقی نوێ
   boolean:
     toggle: ڕەوشگۆڕ
+    description: گۆڕین لە نێوان هەڵبون و خامۆش بووندا
+    color_on: ڕەنگی هەڵبوون
+    color_off: ڕەنگی خامۆشبوون
+    label_placeholder: پێناسێک دابنێ...
     label_default: چالاککراوە
   translations:
     display_template: پیشاندانی قالب
+    no_collection: هیچ کۆمەڵەیەک
     toggle_split_view: ڕەوشگۆڕینی جیاکەرەوەی بینین
+    enable: کاراکردن
+    user_language: بەکارهێنانی زمانی بەکارهێنەری ئێستا
+    default_language: زمانی بنەڕەتی
+    language_field: خانەی نیشاندەری زمان
   user:
     user: بەکارهێنەر
+    select_mode: دۆخ دیاری بکە
     modes:
+      auto: خودکار
       dropdown: لیستی داخراو
+      modal: مۆدێل
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: دەستکاریکەرێکی دەوڵەمەندی دەقە بە نوسینی ناوەڕۆکی HTML
+    toolbar: شریتی ئامرازەکان
+    custom_formats: شێوە تایبەتەکان
+    options_override: هەڵبژاردەکانی سەرپێچی
+    imageToken: ئاماژەی دەستگەیشتنی جێگیر
+    imageToken_label: نیشانەی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
+  input-autocomplete-api:
+    trigger: وروژاندن
+    rate: تێکڕا
+  group-raw:
+    name: دەستەی خاو
+    description: نمایشی خانەکە بکە وەک خۆی
+  group-detail:
+    name: دەستەی وردەکاری
+    show_header: نیشاندانی ناونیشانی دەستە
+    header_icon: ئایکۆنی ناونیشان
+    header_color: ڕەنگی ناونیشان
+    start_open: کرانەوەی دەستپێک
+    start_closed: دەستپێکی داخراو
   system-token:
     system-token: ئاماژە (Token)
+    description: بەڕێوەبردنی ئاماژەی دەستگەیشتنی جێگیر
 displays:
   translations:
     translations: وەرگێڕانەکان
+    language_field: خانەی نیشاندەری زمان
   boolean:
     boolean: دوڕا
     icon_on: ئایکۆنی چالاک
@@ -1530,11 +1647,17 @@ displays:
   color:
     color: ڕەنگ
   datetime:
+    datetime: کات و ڕێکەوت
     format: شێواز
     suffix: پاشگر
   file:
     file: پەڕگە
+    description: نیشاندانی پەڕەگەکان
+  filesize:
+    filesize: قەبارەی پەڕگە
+    description: پێشاندانی قەبارەی پەڕگە
   formatted-value:
+    formatted-value: بەهای شێوە کراو
     format: شێواز
     font: فۆنت
     font_serif: Serif
@@ -1563,6 +1686,8 @@ layouts:
     title: ناونیشان
   tabular:
     tabular: خشتە
+  map:
+    map: نەخشە
 panels:
   label:
     name: پێناس

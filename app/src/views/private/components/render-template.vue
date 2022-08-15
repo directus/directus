@@ -14,7 +14,7 @@
 				:collection="part.collection"
 				:field="part.field"
 			/>
-			<span v-else-if="typeof part === 'string'">{{ translate(part) }}</span>
+			<span v-else-if="typeof part === 'string'" :dir="direction">{{ translate(part) }}</span>
 			<span v-else>{{ part }}</span>
 		</template>
 	</div>
@@ -46,6 +46,10 @@ export default defineComponent({
 		template: {
 			type: String,
 			required: true,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	setup(props) {

@@ -7,9 +7,14 @@ on:
     paths:
       - api/**
       - tests-blackbox/**
+      - packages/shared/**
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox-main.yml
+
+concurrency:
+  group: blackbox-main
+  cancel-in-progress: true
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144
@@ -35,9 +40,7 @@ jobs:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 
       - name: Start Databases
-        shell: bash
         run: docker compose -f tests-blackbox/docker-compose.yml up -d --quiet-pull --wait
 
       - name: Run Tests
-        shell: bash
         run: pnpm run -w test:blackbox
