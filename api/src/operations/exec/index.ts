@@ -1,5 +1,6 @@
-import { defineOperationApi } from '@directus/shared/utils';
-import { NodeVM, VMScript } from 'vm2';
+import { defineOperationApi, toArray } from '@directus/shared/utils';
+import { VM, NodeVM, VMScript, NodeVMOptions, VMOptions } from 'vm2';
+import env from '../../env';
 
 type Options = {
 	code: string;
@@ -8,11 +9,16 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data }) => {
-		const vm = new NodeVM({
+		const allowedModules = env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [];
+
+		const opts: VMOptions = {
 			eval: false,
 			wasm: false,
-			require: false,
-		});
+		};
+
+		const vm = allowedModules.length
+			? new NodeVM({ ...opts, require: { external: { modules: allowedModules, transitive: false } } })
+			: new VM(opts);
 
 		let script;
 

@@ -38,6 +38,9 @@ type Info = {
 				points: number;
 				duration: number;
 		  };
+	flows?: {
+		execAllowedModules: string[];
+	};
 };
 
 type Auth = {
@@ -80,6 +83,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.directus = serverInfoResponse.data.data?.directus;
 		info.node = serverInfoResponse.data.data?.node;
 		info.os = serverInfoResponse.data.data?.os;
+		info.flows = serverInfoResponse.data.data?.flows;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
