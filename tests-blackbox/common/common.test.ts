@@ -5,6 +5,8 @@ import * as common from '@common/index';
 import { collectionName, collectionNameM2O, collectionNameO2M } from './common.seed';
 
 describe('Common', () => {
+	common.DisableTestCachingSetup();
+
 	describe('createRole()', () => {
 		describe('Creates default admin role', () => {
 			it.each(vendors)('%s', async (vendor) => {
@@ -275,361 +277,449 @@ describe('Common', () => {
 
 	describe('createCollection()', () => {
 		describe('Creates a new collection', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const options: common.OptionsCreateCollection = {
-					collection: collectionName,
-				};
-
-				// Action
-				await common.CreateCollection(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/collections/${collectionName}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
-
-				// Assert
-				expect(response.body.data).toEqual({
-					collection: collectionName,
-					meta: expect.objectContaining({
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const options: common.OptionsCreateCollection = {
 						collection: collectionName,
-					}),
-					schema: expect.objectContaining({
-						name: collectionName,
-					}),
-				});
-			});
+					};
+					const options2: common.OptionsCreateCollection = {
+						collection: collectionNameM2O,
+					};
+					const options3: common.OptionsCreateCollection = {
+						collection: collectionNameO2M,
+					};
+
+					// Action
+					await common.CreateCollection(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/collections/${collectionName}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					await common.CreateCollection(vendor, options2);
+					const response2 = await request(getUrl(vendor))
+						.get(`/collections/${collectionNameM2O}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					await common.CreateCollection(vendor, options3);
+					const response3 = await request(getUrl(vendor))
+						.get(`/collections/${collectionNameO2M}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
+
+					// Assert
+					expect(response.body.data).toEqual({
+						collection: collectionName,
+						meta: expect.objectContaining({
+							collection: collectionName,
+						}),
+						schema: expect.objectContaining({
+							name: collectionName,
+						}),
+					});
+					expect(response2.body.data).toEqual({
+						collection: collectionNameM2O,
+						meta: expect.objectContaining({
+							collection: collectionNameM2O,
+						}),
+						schema: expect.objectContaining({
+							name: collectionNameM2O,
+						}),
+					});
+					expect(response3.body.data).toEqual({
+						collection: collectionNameO2M,
+						meta: expect.objectContaining({
+							collection: collectionNameO2M,
+						}),
+						schema: expect.objectContaining({
+							name: collectionNameO2M,
+						}),
+					});
+				},
+				30000
+			);
 		});
 	});
 
 	describe('createField()', () => {
 		describe('Creates a new field', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const fieldName = 'sample_field';
-				const fieldType = 'string';
-				const options: common.OptionsCreateField = {
-					collection: collectionName,
-					field: fieldName,
-					type: fieldType,
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const fieldName = 'sample_field';
+					const fieldType = 'string';
+					const options: common.OptionsCreateField = {
+						collection: collectionName,
+						field: fieldName,
+						type: fieldType,
+					};
 
-				// Action
-				await common.CreateField(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/fields/${collectionName}/${fieldName}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.CreateField(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/fields/${collectionName}/${fieldName}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				expect(response.body.data).toEqual({
-					collection: collectionName,
-					field: fieldName,
-					type: fieldType,
-					meta: expect.anything(),
-					schema: expect.anything(),
-				});
-			});
+					// Assert
+					expect(response.body.data).toEqual({
+						collection: collectionName,
+						field: fieldName,
+						type: fieldType,
+						meta: expect.anything(),
+						schema: expect.anything(),
+					});
+				},
+				30000
+			);
 		});
 	});
 
 	describe('createFieldM2O()', () => {
 		describe('Creates a new M2O field', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const fieldName = 'm2o_field';
-				const primaryKeyType = 'integer';
-				const collectionOptions: common.OptionsCreateCollection = {
-					collection: collectionNameM2O,
-					primaryKeyType,
-				};
-				await common.CreateCollection(vendor, collectionOptions);
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const fieldName = 'm2o_field';
+					const primaryKeyType = 'integer';
+					const collectionOptions: common.OptionsCreateCollection = {
+						collection: collectionNameM2O,
+						primaryKeyType,
+					};
+					await common.CreateCollection(vendor, collectionOptions);
 
-				const options: common.OptionsCreateFieldM2O = {
-					collection: collectionName,
-					field: fieldName,
-					otherCollection: collectionNameM2O,
-					primaryKeyType: primaryKeyType,
-				};
+					const options: common.OptionsCreateFieldM2O = {
+						collection: collectionName,
+						field: fieldName,
+						otherCollection: collectionNameM2O,
+						primaryKeyType: primaryKeyType,
+					};
 
-				// Action
-				await common.CreateFieldM2O(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/fields/${collectionName}/${fieldName}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.CreateFieldM2O(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/fields/${collectionName}/${fieldName}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				expect(response.body.data).toEqual({
-					collection: collectionName,
-					field: fieldName,
-					type: primaryKeyType,
-					meta: expect.objectContaining({
-						special: expect.arrayContaining(['m2o']),
-					}),
-					schema: expect.anything(),
-				});
-			});
+					// Assert
+					expect(response.body.data).toEqual({
+						collection: collectionName,
+						field: fieldName,
+						type: primaryKeyType,
+						meta: expect.objectContaining({
+							special: expect.arrayContaining(['m2o']),
+						}),
+						schema: expect.anything(),
+					});
+				},
+				30000
+			);
 		});
 	});
 
 	describe('createFieldO2M()', () => {
 		describe('Creates a new O2M field', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const fieldName = 'o2m_field';
-				const otherFieldName = 'm2o_field';
-				const primaryKeyType = 'integer';
-				const collectionOptions: common.OptionsCreateCollection = {
-					collection: collectionNameO2M,
-					primaryKeyType,
-				};
-				await common.CreateCollection(vendor, collectionOptions);
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const fieldName = 'o2m_field';
+					const otherFieldName = 'm2o_field';
+					const primaryKeyType = 'integer';
+					const collectionOptions: common.OptionsCreateCollection = {
+						collection: collectionNameO2M,
+						primaryKeyType,
+					};
+					await common.CreateCollection(vendor, collectionOptions);
 
-				const options: common.OptionsCreateFieldO2M = {
-					collection: collectionName,
-					field: fieldName,
-					otherField: otherFieldName,
-					otherCollection: collectionNameO2M,
-					primaryKeyType: primaryKeyType,
-				};
+					const options: common.OptionsCreateFieldO2M = {
+						collection: collectionName,
+						field: fieldName,
+						otherField: otherFieldName,
+						otherCollection: collectionNameO2M,
+						primaryKeyType: primaryKeyType,
+					};
 
-				// Action
-				await common.CreateFieldO2M(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/fields/${collectionName}/${fieldName}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.CreateFieldO2M(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/fields/${collectionName}/${fieldName}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				expect(response.body.data).toEqual({
-					collection: collectionName,
-					field: fieldName,
-					type: 'alias',
-					meta: expect.anything(),
-					schema: null,
-				});
-			});
+					// Assert
+					expect(response.body.data).toEqual({
+						collection: collectionName,
+						field: fieldName,
+						type: 'alias',
+						meta: expect.anything(),
+						schema: null,
+					});
+				},
+				30000
+			);
 		});
 	});
 
 	describe('createItem()', () => {
 		describe('Creates a new item', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const options: common.OptionsCreateItem = {
-					collection: collectionName,
-					item: {
-						sample_field: 'sample_value',
-					},
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const options: common.OptionsCreateItem = {
+						collection: collectionName,
+						item: {
+							sample_field: 'sample_value',
+						},
+					};
 
-				// Action
-				const createdItem = await common.CreateItem(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/items/${collectionName}/${createdItem.id}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					const createdItem = await common.CreateItem(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/items/${collectionName}/${createdItem.id}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				expect(response.body.data).toEqual(
-					expect.objectContaining({
-						id: createdItem.id,
-						sample_field: 'sample_value',
-					})
-				);
-			});
+					// Assert
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							id: createdItem.id,
+							sample_field: 'sample_value',
+						})
+					);
+				},
+				30000
+			);
 		});
 
 		describe('Creates a new M2O item', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const options: common.OptionsCreateItem = {
-					collection: collectionName,
-					item: {
-						sample_field: 'sample_value',
-						m2o_field: {},
-					},
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const options: common.OptionsCreateItem = {
+						collection: collectionName,
+						item: {
+							sample_field: 'sample_value',
+							m2o_field: {},
+						},
+					};
 
-				// Action
-				const createdItem = await common.CreateItem(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/items/${collectionName}/${createdItem.id}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					const createdItem = await common.CreateItem(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/items/${collectionName}/${createdItem.id}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				expect(response.body.data).toEqual(
-					expect.objectContaining({
-						id: createdItem.id,
-						sample_field: 'sample_value',
-						m2o_field: expect.any(Number),
-					})
-				);
-			});
+					// Assert
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							id: createdItem.id,
+							sample_field: 'sample_value',
+							m2o_field: expect.any(Number),
+						})
+					);
+				},
+				30000
+			);
 		});
 
 		describe('Creates a new O2M item', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const options: common.OptionsCreateItem = {
-					collection: collectionName,
-					item: {
-						sample_field: 'sample_value',
-						o2m_field: {
-							create: [{}],
-							update: [],
-							delete: [],
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const options: common.OptionsCreateItem = {
+						collection: collectionName,
+						item: {
+							sample_field: 'sample_value',
+							o2m_field: {
+								create: [{}],
+								update: [],
+								delete: [],
+							},
 						},
-					},
-				};
+					};
 
-				// Action
-				const createdItem = await common.CreateItem(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/items/${collectionName}/${createdItem.id}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					const createdItem = await common.CreateItem(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/items/${collectionName}/${createdItem.id}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				expect(response.body.data).toEqual(
-					expect.objectContaining({
-						id: createdItem.id,
-						sample_field: 'sample_value',
-						o2m_field: [expect.any(Number)],
-					})
-				);
-			});
+					// Assert
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							id: createdItem.id,
+							sample_field: 'sample_value',
+							o2m_field: [expect.any(Number)],
+						})
+					);
+				},
+				30000
+			);
 		});
 	});
 
 	describe('deleteField()', () => {
 		describe('Deletes an O2M field', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const fieldName = 'o2m_field';
-				const options: common.OptionsDeleteField = {
-					collection: collectionName,
-					field: fieldName,
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const fieldName = 'o2m_field';
+					const options: common.OptionsDeleteField = {
+						collection: collectionName,
+						field: fieldName,
+					};
 
-				// Action
-				await common.DeleteField(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/fields/${collectionName}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.DeleteField(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/fields/${collectionName}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				for (const child of response.body.data) {
-					expect(child.field).not.toEqual(fieldName);
-				}
-			});
+					// Assert
+					for (const child of response.body.data) {
+						expect(child.field).not.toEqual(fieldName);
+					}
+				},
+				30000
+			);
 		});
 
 		describe('Deletes other M2O field', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const fieldName = 'm2o_field';
-				const options: common.OptionsDeleteField = {
-					collection: collectionNameO2M,
-					field: fieldName,
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const fieldName = 'm2o_field';
+					const options: common.OptionsDeleteField = {
+						collection: collectionNameO2M,
+						field: fieldName,
+					};
 
-				// Action
-				await common.DeleteField(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/fields/${collectionNameO2M}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.DeleteField(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/fields/${collectionNameO2M}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				for (const child of response.body.data) {
-					expect(child.field).not.toEqual(fieldName);
-				}
-			});
+					// Assert
+					for (const child of response.body.data) {
+						expect(child.field).not.toEqual(fieldName);
+					}
+				},
+				30000
+			);
 		});
 
 		describe('Deletes an M2O field', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const fieldName = 'm2o_field';
-				const options: common.OptionsDeleteField = {
-					collection: collectionName,
-					field: fieldName,
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const fieldName = 'm2o_field';
+					const options: common.OptionsDeleteField = {
+						collection: collectionName,
+						field: fieldName,
+					};
 
-				// Action
-				await common.DeleteField(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/fields/${collectionName}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.DeleteField(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/fields/${collectionName}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				for (const child of response.body.data) {
-					expect(child.field).not.toEqual(fieldName);
-				}
-			});
+					// Assert
+					for (const child of response.body.data) {
+						expect(child.field).not.toEqual(fieldName);
+					}
+				},
+				30000
+			);
 		});
 
 		describe('Deletes a field', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const fieldName = 'sample_field';
-				const options: common.OptionsDeleteField = {
-					collection: collectionName,
-					field: fieldName,
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const fieldName = 'sample_field';
+					const options: common.OptionsDeleteField = {
+						collection: collectionName,
+						field: fieldName,
+					};
 
-				// Action
-				await common.DeleteField(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/fields/${collectionName}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.DeleteField(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/fields/${collectionName}`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				for (const child of response.body.data) {
-					expect(child.field).not.toEqual(fieldName);
-				}
-			});
+					// Assert
+					for (const child of response.body.data) {
+						expect(child.field).not.toEqual(fieldName);
+					}
+				},
+				30000
+			);
 		});
 	});
 
 	describe('deleteCollection()', () => {
 		describe('Deletes a collection', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const options: common.OptionsDeleteCollection = {
-					collection: collectionName,
-				};
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const options: common.OptionsDeleteCollection = {
+						collection: collectionName,
+					};
 
-				// Action
-				await common.DeleteCollection(vendor, options);
-				const response = await request(getUrl(vendor))
-					.get(`/collections`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-					.expect('Content-Type', /application\/json/)
-					.expect(200);
+					// Action
+					await common.DeleteCollection(vendor, options);
+					const response = await request(getUrl(vendor))
+						.get(`/collections`)
+						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+						.expect('Content-Type', /application\/json/)
+						.expect(200);
 
-				// Assert
-				for (const child of response.body.data) {
-					expect(child.collection).not.toEqual(collectionName);
-				}
-			});
+					// Assert
+					for (const child of response.body.data) {
+						expect(child.collection).not.toEqual(collectionName);
+					}
+				},
+				30000
+			);
 		});
 	});
+
+	common.ClearCaches();
 });
