@@ -20,6 +20,22 @@ const deep = {
 
 const arr = ['directus', false, deep];
 
+const geoJSON = {
+	data: [
+		{
+			id: 'f36431ea-0d25-4747-8b37-185eb3ba66d0',
+			point1: {
+				type: 'Point',
+				coordinates: [-107.57812499999984, 34.30714385628873],
+			},
+			point2: {
+				type: 'Point',
+				coordinates: [-91.25923790168956, 42.324763327278106],
+			},
+		},
+	],
+};
+
 describe('compress', () => {
 	test('Compresses plain objects', () => {
 		expect(compress(plain)).toBe(
@@ -36,6 +52,12 @@ describe('compress', () => {
 	test('Compresses array input', () => {
 		expect(compress(arr)).toBe(
 			'directus|another|string|true|false|null|empty|integer|float|undefined|nested|arr^1K6^12.34^@0|-2|$1|$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|A|$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|B|@$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]]]]'
+		);
+	});
+
+	test('Compresses GeoJSON format reliably', () => {
+		expect(compress(geoJSON)).toBe(
+			'data|id|f36431ea-0d25-4747-8b37-185eb3ba66d0|point1|type|Point|coordinates|point2^^-107.57812499999984|34.30714385628873|-91.25923790168956|42.324763327278106^$0|@$1|2|3|$4|5|6|@8|9]]|7|$4|5|6|@A|B]]]]]'
 		);
 	});
 
@@ -67,6 +89,14 @@ describe('decompress', () => {
 				'directus|another|string|true|false|null|empty|integer|float|undefined|nested|arr^1K6^12.34^@0|-2|$1|$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|A|$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|B|@$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]|$2|0|3|-1|4|-2|5|-3|6|-4|7|C|8|D|9|-5]]]]'
 			)
 		).toEqual(arr);
+	});
+
+	test('Decompresses GeoJSON properly', () => {
+		expect(
+			decompress(
+				'data|id|f36431ea-0d25-4747-8b37-185eb3ba66d0|point1|type|Point|coordinates|point2^^-107.57812499999984|34.30714385628873|-91.25923790168956|42.324763327278106^$0|@$1|2|3|$4|5|6|@8|9]]|7|$4|5|6|@A|B]]]]]'
+			)
+		).toEqual(geoJSON);
 	});
 
 	test('Errors when not enough parts exist', () => {

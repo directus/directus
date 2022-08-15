@@ -1,4 +1,4 @@
-name: Add issues to Projects (beta)
+name: Add issues to Projects
 
 on:
   issues:
@@ -13,7 +13,9 @@ jobs:
     name: Add issue to project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/add-to-project@v0.0.3
+      - uses: actions/add-to-project@v0.3.0
         with:
           project-url: https://github.com/orgs/directus/projects/6
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          labeled: Automerge
+          label-operator: NOT

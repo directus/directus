@@ -171,11 +171,19 @@ export function decompress(input: string): unknown {
 	const parts = input.split('^');
 	if (parts.length !== 4) throw new Error(`Invalid input string given`);
 
-	const values: (string | number)[] = [
-		...parts[0]!.split('|').map((part) => decode(part)),
-		...parts[1]!.split('|').map((part) => to10(part)),
-		...parts[2]!.split('|').map((part) => parseFloat(part)),
-	];
+	const values: (string | number)[] = [];
+
+	if (parts[0]) {
+		values.push(...parts[0]!.split('|').map((part) => decode(part)));
+	}
+
+	if (parts[1]) {
+		values.push(...parts[1]!.split('|').map((part) => to10(part)));
+	}
+
+	if (parts[2]) {
+		values.push(...parts[2]!.split('|').map((part) => parseFloat(part)));
+	}
 
 	let num36Buffer = '';
 	const tokens: (string | number)[] = [];
