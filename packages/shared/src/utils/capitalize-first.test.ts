@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 
-import { capitalizeFirst } from '@/utils/capitalize-first';
+import { capitalizeFirst } from './capitalize-first';
 
 test('Capitalizes first character', () => {
 	expect(capitalizeFirst('test')).toBe('Test');

@@ -1,0 +1,47 @@
+{
+	"name": "@directus/components",
+	"version": "9.15.1",
+	"description": "Components of the Directus App.",
+	"exports": {
+		".": "./components/",
+    	"./package.json": "./package.json"
+	},
+	"sideEffects": false,
+	"scripts": {
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest"
+	},
+	"author": "Nils Twelker",
+	"maintainers": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
+	"dependencies": {
+		"lodash": "4.17.21",
+		"micromustache": "^8.0.3",
+		"vue-i18n": "9.1.10",
+		"vue-router": "4.0.15",
+    "vue": "3.2.37"
+	},
+  "peerDependencies": {
+    "vue": "3.2.37"
+  },
+	"devDependencies": {
+		"@types/lodash": "^4.14.182",
+    "@vue/test-utils": "^2.0.2",
+    "@fortawesome/fontawesome-svg-core": "1.2.36",
+		"@fortawesome/free-brands-svg-icons": "5.15.4",
+    "@joeattardi/emoji-button": "^4.6.2",
+    "@sindresorhus/slugify": "2.1.0",
+    "@popperjs/core": "2.10.2",
+    "@types/diacritics": "1.3.1",
+    "diacritics": "1.3.0",
+		"c8": "^7.12.0",
+		"npm-run-all": "4.1.5",
+		"rimraf": "3.0.2",
+		"typescript": "4.5.2",
+		"vitest": "^0.18.1",
+    "nanoid": "3.1.30",
+    "caret-pos": "2.0.0"
+	}
+}

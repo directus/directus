@@ -24,3 +24,4 @@ export * from './pluralize';
 export * from './to-array';
 export * from './validate-extension-manifest';
 export * from './validate-payload';
+export * from './capitalize-first';

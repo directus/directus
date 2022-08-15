@@ -1,7 +1,7 @@
 import { computed, Ref } from 'vue';
 
 export function useVisibleChildren(
-	search: Ref<string>,
+	search: Ref<string | null>,
 	modelValue: Ref<(string | number)[]>,
 	children: Ref<Record<string, any>[]>,
 	showSelectionOnly: Ref<boolean>,
@@ -13,11 +13,12 @@ export function useVisibleChildren(
 ) {
 	const visibleChildrenValues = computed(() => {
 		let options = children.value || [];
+		const _search = search.value;
 
-		if (search.value) {
+		if (_search) {
 			options = options.filter(
 				(child) =>
-					child[itemText.value].toLowerCase().includes(search.value.toLowerCase()) ||
+					child[itemText.value].toLowerCase().includes(_search.toLowerCase()) ||
 					childrenHaveSearchMatch(child[itemChildren.value])
 			);
 		}
@@ -38,7 +39,7 @@ export function useVisibleChildren(
 			if (!children) return false;
 			return children.some(
 				(child) =>
-					child[itemText.value].toLowerCase().includes(search.value.toLowerCase()) ||
+					child[itemText.value].toLowerCase().includes(search.value?.toLowerCase()) ||
 					childrenHaveSearchMatch(child[itemChildren.value])
 			);
 		}

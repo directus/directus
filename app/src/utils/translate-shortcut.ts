@@ -1,4 +1,4 @@
-import { capitalizeFirst } from '@/utils/capitalize-first';
+import { capitalizeFirst } from '@directus/shared/utils';
 
 export function translateShortcut(keys: string[]): string {
 	const isMac = navigator.platform.toLowerCase().startsWith('mac') || navigator.platform.startsWith('iP');
