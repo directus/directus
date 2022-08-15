@@ -1,6 +1,46 @@
 import request from 'supertest';
 import { getUrl } from './config';
 import * as common from './index';
+import vendors from './get-dbs-to-test';
+
+export function DisableTestCachingSetup() {
+	beforeEach(async () => {
+		process.env.TEST_NO_CACHE = 'true';
+	});
+
+	afterAll(async () => {
+		delete process.env.TEST_NO_CACHE;
+	});
+}
+
+export function ClearCaches() {
+	describe('Clear Caches', () => {
+		it.each(vendors)(
+			'%s',
+			async (vendor) => {
+				// Setup
+				common.EnableTestCaching();
+
+				// Assert
+				const response = await request(getUrl(vendor))
+					.post(`/utils/cache/clear`)
+					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+
+				const response2 = await request(getUrl(vendor))
+					.get(`/fields`)
+					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+
+				expect(response.statusCode).toBe(200);
+				expect(response2.statusCode).toBe(200);
+			},
+			30000
+		);
+	});
+}
+
+export function EnableTestCaching() {
+	delete process.env.TEST_NO_CACHE;
+}
 
 export type OptionsCreateRole = {
 	name: string;
@@ -193,16 +233,6 @@ export async function CreateField(vendor: string, options: OptionsCreateField) {
 	options = Object.assign({}, defaultOptions, options);
 
 	// Action
-	const collectionResponse = await request(getUrl(vendor))
-		.get(`/fields/${options.collection}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
-
-	for (const field of collectionResponse.body.data) {
-		if (field.field === options.field) {
-			return field;
-		}
-	}
-
 	const response = await request(getUrl(vendor))
 		.post(`/fields/${options.collection}`)
 		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)

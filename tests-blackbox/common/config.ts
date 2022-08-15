@@ -37,7 +37,7 @@ const directusConfig = {
 	KEY: 'directus-test',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
-	CACHE_SCHEMA: 'false',
+	CACHE_SCHEMA: 'true',
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: logLevel,
@@ -247,6 +247,8 @@ export function getUrl(vendor: typeof allVendors[number]) {
 
 	if (process.env.TEST_LOCAL) {
 		port = '8055';
+	} else if (process.env.TEST_NO_CACHE) {
+		port = String(parseInt(config.envs[vendor]!.PORT) + 50);
 	}
 
 	return `http://localhost:${port}`;
