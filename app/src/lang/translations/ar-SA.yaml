@@ -48,6 +48,7 @@ group: المجموعة
 export_items: تصدير عنصر
 and: و
 or: أو
+init: إطلاق
 dataset_too_large_currently_showing_n_items: مجموعة البيانات كبيرة جداً. حالياً تظهر العناصر {n} الأولى.
 hook: ربط
 fill_width: العرض الكامل
