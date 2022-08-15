@@ -694,6 +694,7 @@ layout_setup: Configuração de Layout
 unsaved_changes: Alterações por guardar
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Cancelar alterações
+discard_changes_copy: Tem a certeza de que pretende ignorar as alterações?
 keep_editing: Continuar a editar
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
@@ -832,6 +833,9 @@ creating_webhook: Criando Webhook
 description: Descrição
 file_library: Biblioteca de Arquivos
 save: Guardar
+sign_in: Iniciar Sessão
+sign_out: Sair
+sign_out_confirm: Tem certeza que deseja sair?
 report_error: Reportar erro
 interfaces:
   filter:

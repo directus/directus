@@ -97,7 +97,7 @@ export default defineComponent({
 		const availableCollections = computed(() => {
 			return orderBy(
 				[
-					...collectionsStore.allCollections,
+					...collectionsStore.databaseCollections,
 					{
 						divider: true,
 					},
