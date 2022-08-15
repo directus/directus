@@ -280,7 +280,7 @@ const panels = computed(() => {
 			const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
 
 			if (updates) {
-				return merge({}, panel, updates);
+				return Object.assign({}, panel, updates);
 			}
 
 			return panel;

@@ -13,6 +13,7 @@
 				</template>
 			</language-select>
 			<v-form
+				v-if="languageOptions.find((lang) => lang.value === firstLang)"
 				:primary-key="
 					relationInfo?.junctionPrimaryKeyField.field
 						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
@@ -24,6 +25,7 @@
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:direction="languageOptions.find((lang) => lang.value === firstLang)?.direction"
 				:autofocus="autofocus"
 				@update:model-value="updateValue($event, firstLang)"
 			/>
@@ -41,6 +43,7 @@
 				</template>
 			</language-select>
 			<v-form
+				v-if="languageOptions.find((lang) => lang.value === secondLang)"
 				:primary-key="
 					relationInfo?.junctionPrimaryKeyField.field
 						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
@@ -51,6 +54,7 @@
 				:initial-values="secondItemInitial"
 				:fields="fields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
+				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
 				:model-value="secondItem"
 				@update:model-value="updateValue($event, secondLang)"
 			/>
@@ -78,6 +82,7 @@ const props = withDefaults(
 		field: string;
 		primaryKey: string | number;
 		languageField?: string | null;
+		languageDirectionField?: string | null;
 		defaultLanguage?: string | null;
 		userLanguage?: boolean;
 		value: (number | string | Record<string, any>)[] | Record<string, any>;
@@ -86,6 +91,7 @@ const props = withDefaults(
 	}>(),
 	{
 		languageField: () => null,
+		languageDirectionField: () => 'direction',
 		value: () => [],
 		autofocus: false,
 		disabled: false,
@@ -220,6 +226,7 @@ function useLanguages() {
 
 			return {
 				text: language[props.languageField ?? relationInfo.value.relatedPrimaryKeyField.field],
+				direction: props.languageDirectionField ? language[props.languageDirectionField] : undefined,
 				value: langCode,
 				edited: edits?.$type !== undefined,
 				progress: Math.round((filledFields / totalFields) * 100),
@@ -238,6 +245,10 @@ function useLanguages() {
 
 		if (props.languageField !== null) {
 			fields.add(props.languageField);
+		}
+
+		if (props.languageDirectionField !== null) {
+			fields.add(props.languageDirectionField);
 		}
 
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
