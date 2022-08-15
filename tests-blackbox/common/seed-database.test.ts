@@ -1,6 +1,9 @@
 import globby from 'globby';
+import * as common from '@common/index';
 
 describe('Seed Database Structure', () => {
+	common.DisableTestCachingSetup();
+
 	const paths = globby.sync('**.seed.ts', {
 		cwd: `${__dirname}/../`,
 	});
@@ -20,4 +23,6 @@ describe('Seed Database Structure', () => {
 			});
 		}
 	}
+
+	common.ClearCaches();
 });
