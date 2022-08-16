@@ -93,6 +93,7 @@ export default defineComponent({
 
 .nav {
 	--v-list-padding: 12px;
+	--v-list-item-icon-color: var(--primary);
 }
 
 :slotted(.v-divider) {

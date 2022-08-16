@@ -23,12 +23,19 @@ module.exports = {
 		ecmaVersion: 2020,
 	},
 	overrides: [
-		// Parse rollup configration as module
+		// Parse rollup configuration as module
 		{
 			files: ['rollup.config.js', 'vite.config.js'],
 			parserOptions: {
 				sourceType: 'module',
 			},
+		},
+		{
+			files: ['**/*.test.js'],
+			env: {
+				jest: true,
+			},
+			plugins: ['jest'],
 		},
 		// Configuration for ts/vue files
 		{
@@ -45,6 +52,7 @@ module.exports = {
 			],
 			rules: {
 				...defaultRules,
+				'vue/multi-word-component-names': 'off',
 				// It's recommended to turn off this rule on TypeScript projects
 				'no-undef': 'off',
 				// Allow ts-directive comments (used to suppress TypeScript compiler errors)

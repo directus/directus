@@ -1,18 +1,18 @@
-import { format, parseISO } from 'date-fns';
+import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import { format, parseISO, isValid } from 'date-fns';
+import { parseJSON, toArray } from '@directus/shared/utils';
+import { unflatten } from 'flat';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit, pick, isNil } from 'lodash';
+import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import getDatabase from '../database';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Item, PrimaryKey, Alterations } from '../types';
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
-import { ItemsService } from './items';
-import { unflatten } from 'flat';
-import { getHelpers, Helpers } from '../database/helpers';
 import { parse as wktToGeoJSON } from 'wellknown';
+import getDatabase from '../database';
+import { getHelpers, Helpers } from '../database/helpers';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { AbstractServiceOptions, Alterations, Item, PrimaryKey } from '../types';
 import { generateHash } from '../utils/generate-hash';
+import { ItemsService } from './items';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -23,6 +23,7 @@ type Transformers = {
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 		specials: string[];
+		helpers: Helpers;
 	}) => Promise<any>;
 };
 
@@ -63,7 +64,7 @@ export class PayloadService {
 
 			return value;
 		},
-		async boolean({ action, value }) {
+		async 'cast-boolean'({ action, value }) {
 			if (action === 'read') {
 				if (value === true || value === 1 || value === '1') {
 					return true;
@@ -76,11 +77,11 @@ export class PayloadService {
 
 			return value;
 		},
-		async json({ action, value }) {
+		async 'cast-json'({ action, value }) {
 			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
-						return JSON.parse(value);
+						return parseJSON(value);
 					} catch {
 						return value;
 					}
@@ -109,15 +110,15 @@ export class PayloadService {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'({ action, value }) {
-			if (action === 'create') return new Date();
+		async 'date-created'({ action, value, helpers }) {
+			if (action === 'create') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
-		async 'date-updated'({ action, value }) {
-			if (action === 'update') return new Date();
+		async 'date-updated'({ action, value, helpers }) {
+			if (action === 'update') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
-		async csv({ action, value }) {
+		async 'cast-csv'({ action, value }) {
 			if (Array.isArray(value) === false && typeof value !== 'string') return;
 
 			if (action === 'read' && Array.isArray(value) === false) {
@@ -222,6 +223,7 @@ export class PayloadService {
 					payload,
 					accountability,
 					specials: fieldSpecials,
+					helpers: this.helpers,
 				});
 			}
 		}
@@ -239,7 +241,7 @@ export class PayloadService {
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
-				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
+				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
@@ -288,24 +290,26 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'timestamp') {
-						const newValue = value.toISOString();
+						const newValue = this.helpers.date.readTimestampString(value.toISOString());
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'dateTime') {
-						const year = String(value.getUTCFullYear());
-						const month = String(value.getUTCMonth() + 1).padStart(2, '0');
-						const date = String(value.getUTCDate()).padStart(2, '0');
-						const hours = String(value.getUTCHours()).padStart(2, '0');
-						const minutes = String(value.getUTCMinutes()).padStart(2, '0');
-						const seconds = String(value.getUTCSeconds()).padStart(2, '0');
+						const year = String(value.getFullYear());
+						const month = String(value.getMonth() + 1).padStart(2, '0');
+						const day = String(value.getDate()).padStart(2, '0');
+						const hours = String(value.getHours()).padStart(2, '0');
+						const minutes = String(value.getMinutes()).padStart(2, '0');
+						const seconds = String(value.getSeconds()).padStart(2, '0');
 
-						const newValue = `${year}-${month}-${date}T${hours}:${minutes}:${seconds}`;
+						const newValue = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'date') {
-						const [year, month, day] = value.toISOString().substr(0, 10).split('-');
+						const year = String(value.getFullYear());
+						const month = String(value.getMonth() + 1).padStart(2, '0');
+						const day = String(value.getDate()).padStart(2, '0');
 
 						// Strip off the time / timezone information from a date-only value
 						const newValue = `${year}-${month}-${day}`;
@@ -314,24 +318,23 @@ export class PayloadService {
 				} else {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
-							const [date] = value.split('T');
-							const [year, month, day] = date.split('-');
-
-							payload[name] = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+							const parsedDate = parseISO(value);
+							if (!isValid(parsedDate)) {
+								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
+							}
+							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'dateTime') {
-							const [date, time] = value.split('T');
-							const [year, month, day] = date.split('-');
-							const [hours, minutes, seconds] = time.substring(0, 8).split(':');
-
-							payload[name] = new Date(
-								Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes), Number(seconds))
-							);
+							const parsedDate = parseISO(value);
+							if (!isValid(parsedDate)) {
+								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
+							}
+							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'timestamp') {
-							const newValue = parseISO(value);
+							const newValue = this.helpers.date.writeTimestamp(value);
 							payload[name] = newValue;
 						}
 					}
@@ -391,7 +394,7 @@ export class PayloadService {
 
 			if (allowedCollections.includes(relatedCollection) === false) {
 				throw new InvalidPayloadException(
-					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}`
+					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`
 				);
 			}
 
@@ -532,7 +535,7 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-			if (!relation.meta || !payload[relation.meta.one_field!]) continue;
+			if (!relation.meta) continue;
 
 			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!].primary;
 			const relatedPrimaryKeyField = this.schema.collections[relation.collection].primary;
@@ -547,9 +550,11 @@ export class PayloadService {
 			const savedPrimaryKeys: PrimaryKey[] = [];
 
 			// Nested array of individual items
-			if (Array.isArray(payload[relation.meta!.one_field!])) {
-				for (let i = 0; i < (payload[relation.meta!.one_field!] || []).length; i++) {
-					const relatedRecord = (payload[relation.meta!.one_field!] || [])[i];
+			const field = payload[relation.meta!.one_field!];
+			if (!field || Array.isArray(field)) {
+				const updates = field || []; // treat falsey values as removing all children
+				for (let i = 0; i < updates.length; i++) {
+					const relatedRecord = updates[i];
 
 					let record = cloneDeep(relatedRecord);
 
@@ -629,7 +634,7 @@ export class PayloadService {
 			}
 			// "Updates" object w/ create/update/delete
 			else {
-				const alterations = payload[relation.meta!.one_field!] as Alterations;
+				const alterations = field as Alterations;
 				const { error } = nestedUpdateSchema.validate(alterations);
 				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
 
@@ -702,7 +707,7 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(data: Partial<Item>): Promise<string> {
+	async prepareDelta(data: Partial<Item>): Promise<string | null> {
 		let payload = cloneDeep(data);
 
 		for (const key in payload) {
@@ -712,6 +717,8 @@ export class PayloadService {
 		}
 
 		payload = await this.processValues('read', payload);
+
+		if (Object.keys(payload).length === 0) return null;
 
 		return JSON.stringify(payload);
 	}

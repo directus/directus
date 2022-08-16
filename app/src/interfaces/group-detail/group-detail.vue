@@ -1,5 +1,5 @@
 <template>
-	<v-detail :start-open="start === 'open'" class="group-detail">
+	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
 			<v-divider
 				:style="{
@@ -12,11 +12,12 @@
 			>
 				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
 				<template v-if="field.name">
+					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 					<span class="title">{{ field.name }}</span>
 				</template>
 				<v-icon
-					v-if="!active && validationMessages"
-					v-tooltip="validationMessages"
+					v-if="!active && validationMessages!.length > 0"
+					v-tooltip="validationMessages!.join('\n')"
 					class="warning"
 					name="error_outline"
 					small
@@ -35,6 +36,8 @@
 			:loading="loading"
 			:batch-mode="batchMode"
 			:disabled="disabled"
+			:badge="badge"
+			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>
@@ -42,10 +45,11 @@
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupDetail',
@@ -90,6 +94,10 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
 
 		start: {
 			type: String,
@@ -109,11 +117,13 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
+		const detailOpen = ref(props.start === 'open');
+
 		const edited = computed(() => {
 			if (!props.values) return false;
 
 			const editedFields = Object.keys(props.values);
-			return props.fields.some((field) => editedFields.includes(field.field)) ? true : false;
+			return props.fields.some((field) => editedFields.includes(field.field));
 		});
 
 		const validationMessages = computed(() => {
@@ -137,12 +147,18 @@ export default defineComponent({
 				return acc;
 			}, [] as string[]);
 
-			if (errors.length === 0) return;
+			if (errors.length === 0) return [];
 
-			return errors.join('\n');
+			return errors;
 		});
 
-		return { edited, validationMessages };
+		watch(validationMessages, (newVal, oldVal) => {
+			if (!validationMessages.value) return;
+			if (isEqual(newVal, oldVal)) return;
+			detailOpen.value = validationMessages.value.length > 0;
+		});
+
+		return { t, edited, validationMessages, detailOpen };
 	},
 });
 </script>
@@ -166,13 +182,13 @@ export default defineComponent({
 	transform: rotate(0) !important;
 }
 
-.v-divider .title {
+.v-divider :deep(.type-text) {
 	position: relative;
 }
 
-.v-divider.edited:not(.active) .title::before {
+.v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	top: 14px;
+	top: 7px;
 	left: -7px;
 	display: block;
 	width: 4px;
@@ -180,7 +196,6 @@ export default defineComponent({
 	background-color: var(--foreground-subdued);
 	border-radius: 4px;
 	content: '';
-	pointer-events: none;
 }
 
 .header-icon {

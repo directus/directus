@@ -39,7 +39,7 @@ export default defineComponent({
 		const imageError = ref(false);
 
 		const src = computed(() => {
-			if (props.value === null) return null;
+			if (props.value?.id === null || props.value?.id === undefined) return null;
 			const url = getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
 			return addTokenToURL(url);
 		});

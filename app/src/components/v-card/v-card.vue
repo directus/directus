@@ -40,7 +40,7 @@ body {
 .v-card {
 	--border-radius: 6px;
 	--input-height: 60px;
-	--input-padding: 16px; // (60 - 4 - 24) / 2
+	--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 	--form-vertical-gap: 52px;
 
 	min-width: var(--v-card-min-width);
@@ -49,7 +49,7 @@ body {
 	min-height: var(--v-card-min-height);
 	max-height: var(--v-card-max-height);
 
-	// Page Content Spacing
+	/* Page Content Spacing */
 	font-size: 15px;
 	line-height: 24px;
 	background-color: var(--v-card-background-color);

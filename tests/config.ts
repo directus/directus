@@ -35,6 +35,8 @@ const directusConfig = {
 	RATE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: 'error',
 	SERVE_APP: 'false',
+	DB_EXCLUDE_TABLES: 'knex_migrations,knex_migrations_lock,spatial_ref_sys,sysdiagrams',
+	MAX_RELATIONAL_DEPTH: '5',
 };
 
 const config: Config = {
@@ -228,8 +230,14 @@ const config: Config = {
 	},
 };
 
+const isWindows = ['win32', 'win64'].includes(process.platform);
+
+for (const vendor of allVendors) {
+	config.envs[vendor]!.TZ = isWindows ? '0' : 'UTC';
+}
+
 export function getUrl(vendor: typeof allVendors[number]) {
-	let port = config.envs[vendor].PORT;
+	let port = config.envs[vendor]!.PORT;
 
 	if (process.env.TEST_LOCAL) {
 		port = '8055';

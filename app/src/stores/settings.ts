@@ -38,7 +38,6 @@ export const useSettingsStore = defineStore({
 
 				notify({
 					title: i18n.global.t('settings_update_success'),
-					type: 'success',
 				});
 			} catch (err: any) {
 				this.settings = settingsCopy;

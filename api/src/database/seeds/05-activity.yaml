@@ -20,7 +20,6 @@ columns:
   user_agent:
     type: string
     length: 255
-    nullabel: false
   collection:
     type: string
     length: 64

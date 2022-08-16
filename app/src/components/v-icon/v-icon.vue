@@ -635,7 +635,6 @@ body {
 		display: block;
 		font-weight: normal;
 		font-size: var(--v-icon-size);
-		/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
 		font-family: 'Material Icons Outline';
 		font-style: normal;
 		line-height: 1;
@@ -650,7 +649,6 @@ body {
 		}
 
 		&.filled {
-			/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
 			font-family: 'Material Icons';
 		}
 	}

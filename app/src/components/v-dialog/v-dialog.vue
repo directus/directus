@@ -2,21 +2,17 @@
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
-		<teleport v-if="placement === 'right'" to="#drawer-outlet">
+		<teleport to="#dialog-outlet">
 			<transition-dialog @after-leave="leave">
-				<div v-if="internalActive" class="container" :class="[className, placement]">
+				<component
+					:is="placement === 'right' ? 'div' : 'span'"
+					v-if="internalActive"
+					class="container"
+					:class="[className, placement]"
+				>
 					<v-overlay active absolute @click="emitToggle" />
 					<slot />
-				</div>
-			</transition-dialog>
-		</teleport>
-
-		<teleport v-else to="#dialog-outlet">
-			<transition-dialog @after-leave="leave">
-				<div v-if="internalActive" class="container" :class="[className, placement]">
-					<v-overlay active absolute @click="emitToggle" />
-					<slot />
-				</div>
+				</component>
 			</transition-dialog>
 		</teleport>
 	</div>

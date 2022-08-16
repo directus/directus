@@ -23,12 +23,13 @@ import VDivider from './v-divider';
 import VDrawer from './v-drawer/';
 import VError from './v-error';
 import VFancySelect from './v-fancy-select';
-import VFieldSelect from './v-field-select';
 import VFieldTemplate from './v-field-template';
+import VFieldList from './v-field-list/v-field-list.vue';
 import VForm from './v-form';
 import VHover from './v-hover/';
 import VHighlight from './v-highlight.vue';
 import VIcon from './v-icon/';
+import VIconFile from './v-icon-file.vue';
 import VInfo from './v-info/';
 import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
@@ -52,6 +53,9 @@ import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
 import VDatePicker from './v-date-picker';
+import VEmojiPicker from './v-emoji-picker.vue';
+import VWorkspace from './v-workspace.vue';
+import VWorkspaceTile from './v-workspace-tile.vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -72,11 +76,12 @@ export function registerComponents(app: App): void {
 	app.component('VError', VError);
 	app.component('VFancySelect', VFancySelect);
 	app.component('VFieldTemplate', VFieldTemplate);
-	app.component('VFieldSelect', VFieldSelect);
+	app.component('VFieldList', VFieldList);
 	app.component('VForm', VForm);
 	app.component('VHover', VHover);
 	app.component('VHighlight', VHighlight);
 	app.component('VIcon', VIcon);
+	app.component('VIconFile', VIconFile);
 	app.component('VInfo', VInfo);
 	app.component('VInput', VInput);
 	app.component('VItemGroup', VItemGroup);
@@ -110,6 +115,9 @@ export function registerComponents(app: App): void {
 	app.component('VTextOverflow', VTextOverflow);
 	app.component('VUpload', VUpload);
 	app.component('VDatePicker', VDatePicker);
+	app.component('VEmojiPicker', VEmojiPicker);
+	app.component('VWorkspace', VWorkspace);
+	app.component('VWorkspaceTile', VWorkspaceTile);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);

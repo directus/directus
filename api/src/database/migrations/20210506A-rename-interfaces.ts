@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
 
 // [before, after, after-option additions]
@@ -57,7 +58,7 @@ export async function up(knex: Knex): Promise<void> {
 
 			for (const { id, options: existingOptionsRaw } of fields) {
 				const existingOptions =
-					typeof existingOptionsRaw === 'string' ? JSON.parse(existingOptionsRaw) : existingOptionsRaw;
+					typeof existingOptionsRaw === 'string' ? parseJSON(existingOptionsRaw) : existingOptionsRaw;
 
 				const newOptions = {
 					...(existingOptions || {}),

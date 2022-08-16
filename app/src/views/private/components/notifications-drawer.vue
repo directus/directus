@@ -11,7 +11,7 @@
 				icon
 				rounded
 				:disabled="selection.length === 0"
-				warning
+				secondary
 				@click="toggleArchive"
 			>
 				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
@@ -160,7 +160,7 @@ export default defineComponent({
 				for (const notification of notificationsRaw) {
 					notificationsWithRelative.push({
 						...notification,
-						timestampDistance: await localizedFormatDistance(parseISO(notification.timestamp), new Date(), {
+						timestampDistance: localizedFormatDistance(parseISO(notification.timestamp), new Date(), {
 							addSuffix: true,
 						}),
 					});

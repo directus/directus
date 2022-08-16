@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.5.0",
+	"version": "9.14.1",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -33,14 +33,15 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"sideEffects": false,
 	"scripts": {
 		"build": "run-p \"build:* -- {@}\" --",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
-		"test": "jest --coverage",
-		"test:watch": "jest --coverage --watchAll",
+		"test": "jest",
+		"test:watch": "jest --watchAll",
 		"prepublishOnly": "npm run cleanup && npm run build"
 	},
 	"author": "Nicola Krumschmidt",
@@ -52,7 +53,8 @@
 		"date-fns": "2.24.0",
 		"fs-extra": "10.0.0",
 		"joi": "17.4.2",
-		"lodash": "4.17.21"
+		"lodash": "4.17.21",
+		"micromustache": "^8.0.3"
 	},
 	"peerDependencies": {
 		"@types/express": "*",
