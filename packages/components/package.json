@@ -3,9 +3,9 @@
 	"version": "9.15.1",
 	"description": "Components of the Directus App.",
 	"exports": {
-		"./": "./src/components/",
-		"./composables/": "./src/composables/",
-		"./utils/": "./src/utils/"
+		"./c/": "./src/components/",
+		"./composables": "./src/composables/index.ts",
+		"./utils": "./src/utils/index.ts"
 	},
 	"sideEffects": false,
 	"scripts": {

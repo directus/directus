@@ -53,8 +53,6 @@ const listeners = computed(() => ({
 
 const hasContent = computed(() => props.modelValue && props.modelValue.length > 0);
 
-return { listeners, hasContent };
-
 function emitValue(event: InputEvent) {
 	const value = (event.target as HTMLInputElement).value;
 

@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useSync } from '@directus/components/composables';
+import { useSync } from '../composables';
 
 interface Props {
 	value?: string | null;
@@ -73,8 +73,6 @@ const icon = computed<string>(() => {
 
 	return isChecked.value ? props.iconOn : props.iconOff;
 });
-
-return { isChecked, toggleInput, icon, internalValue };
 
 function toggleInput(): void {
 	if (props.indeterminate === true) {

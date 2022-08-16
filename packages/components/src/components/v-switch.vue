@@ -43,8 +43,6 @@ const isChecked = computed<boolean>(() => {
 	return props.modelValue === true;
 });
 
-return { isChecked, toggleInput };
-
 function toggleInput(): void {
 	if (props.modelValue instanceof Array && props.value) {
 		const newValue = [...props.modelValue];
