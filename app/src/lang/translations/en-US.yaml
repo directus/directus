@@ -488,6 +488,7 @@ creating_items: Creating Items
 enable_create_button: Enable Create Button
 selecting_items: Selecting Items
 enable_select_button: Enable Select Button
+allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
 click_to_expand: Click to Expand
