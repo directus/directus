@@ -116,9 +116,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import useFolders, { Folder } from '@/composables/use-folders';
+import { useFolders, Folder } from '@/composables/use-folders';
 import api from '@/api';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 

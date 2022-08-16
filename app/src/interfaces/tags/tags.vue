@@ -4,6 +4,7 @@
 			v-if="allowCustom"
 			:placeholder="placeholder || t('interfaces.tags.add_tags')"
 			:disabled="disabled"
+			:dir="direction"
 			@keydown="onInput"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -16,6 +17,7 @@
 					:key="preset"
 					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
 					:disabled="disabled"
+					:dir="direction"
 					small
 					label
 					clickable
@@ -30,6 +32,7 @@
 					v-for="val in customVals"
 					:key="val"
 					:disabled="disabled"
+					:dir="direction"
 					class="tag"
 					small
 					label
@@ -55,7 +58,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: Array as PropType<string[]>,
+			type: [Array, String] as PropType<string[] | string>,
 			default: null,
 		},
 		placeholder: {
@@ -90,6 +93,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -100,7 +107,7 @@ export default defineComponent({
 			return [];
 		});
 
-		const selectedValsLocal = ref<string[]>(processArray(props.value || []));
+		const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
 
 		watch(
 			() => props.value,

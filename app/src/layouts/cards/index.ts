@@ -1,5 +1,5 @@
-import { useRelationsStore } from '@/stores/';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { useRelationsStore } from '@/stores/relations';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/shared/composables';

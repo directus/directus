@@ -308,6 +308,7 @@ primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
+toggle_raw_editor: Raw-Editor umschalten
 raw_value: Rohwert
 copy_raw_value: Unverarbeiteten Wert kopieren
 copy_raw_value_success: Kopiert
@@ -613,6 +614,7 @@ password_reset_sent: Wenn Sie ein Konto haben, haben wir Ihnen einen sicheren Li
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 filter: Filter
+edit_image: Bild bearbeiten
 editing_image: Bild bearbeiten
 square: Quadratisch
 free: Frei
@@ -809,7 +811,9 @@ no_dashboards_copy: Sie haben noch keine Dashboards.
 create_dashboard: Dashboard erstellen
 dashboard_name: Name des Dashboards
 no_data: Keine Daten
+no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
+payload: Auslastung
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -1119,6 +1123,8 @@ fields:
     transformations_all: Alle Transformationen erlauben
     transformations_none: Transformationen deaktivieren
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
+    image_editor: Bildeditor
+    custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
   directus_shares:
     name: Name
     role: Rolle
@@ -1358,6 +1364,7 @@ reset: Zurücksetzen
 reset_password: Passwort zurücksetzen
 revisions: Revisionen
 no_revisions: Noch keine Revision
+no_logs: Keine Logs vorhanden
 revert: Zurücksetzen
 save: Speichern
 schema: Schema
@@ -1377,6 +1384,7 @@ export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die 
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
+require_value_to_be_set: Wert muss bei Erstellung gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
@@ -1399,6 +1407,7 @@ interfaces:
     no_rules: Keine konfigurierten Regeln
     change_value: Klicken um Wert zu ändern
     placeholder: Regeln hierher ziehen
+    add_key_placeholder: Tag hinzufügen und Enter drücken...
   fields:
     name: Felder
   group-accordion:
@@ -1484,6 +1493,7 @@ interfaces:
     allow_none_label: Keine Auswahl zulassen
     choices_name_placeholder: Namen eingeben...
     choices_value_placeholder: Gib einen Wert ein...
+    preview_threshold: Vorschau-Grenzwert
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (Mehrfachauswahl)
     description: Mehrere Werte aus einer Dropdown-Liste auswählen
@@ -1675,8 +1685,12 @@ interfaces:
     start_closed: Geschlossen starten
   system-token:
     system-token: Token
+    description: Statische Zugriffstoken verwalten
+    placeholder: Klicken Sie auf "Token generieren", um ein neuen statischen Zugriffstoken zu erstellen
+    value_securely_saved: Wert sicher gespeichert
     generate: Token generieren
     regenerate: Token neu generieren
+    generate_success_copy: Stellen Sie sicher, dass Sie den obige Token sichern und kopieren. Aus Sicherheitsgründen können Sie den Token nach dem Speichern und Navigieren von dieser Seite nicht mehr anzeigen.
     remove_token: Token löschen
 displays:
   translations:
@@ -1907,9 +1921,10 @@ panels:
     smooth: 'Weich'
     straight: 'Gerade'
   meter:
-    arc: Bogen
+    name: Meter
     stroke_width: Strichbreite
     select_max_value: Es muss einen Maximalwert ausgewählt werden.
+    max_greater_than_zero: Der Wert muss größer als 0 sein.
     select_field: Sie müssen ein Feld auswählen.
     select_collection: Sie müssen eine Sammlung auswählen.
     function: Funktion
@@ -1919,27 +1934,73 @@ panels:
   piechart:
     name: Kuchen oder Donut Diagramm
     function: 'Funktion'
+    donut: Donut
+    labels: Label anzeigen
     legend: Legende anzeigen
+    right: Rechts
+    bottom: Unten
+    monochrome: Monochrom
 triggers:
   webhook:
+    name: Webhook
     method: Methode
+    async: Asynchron
   schedule:
     name: Zeitplan (CRON)
     cron: Intervall
   manual:
     name: Manuell
     collection_and_item: Sammlungen & Element Seiten
+any_string_or_json: Ein String oder JSON...
 operations:
+  condition:
+    name: Kondition
+  item-create:
+    name: Daten erstellen
+    description: Elemente in der Datenbank erstellen
+    payload: Auslastung
+  item-delete:
+    name: Daten löschen
+    description: Elemente aus der Datenbank löschen
+    key: IDs
+    query: Abfrage
+  item-read:
+    name: Daten lesen
+    description: Elemente aus der Datenbank lesen
+    key: IDs
+    query: Abfrage
+  item-update:
+    name: Daten aktualisieren
+    description: Elemente in der Datenbank aktualisieren
+    key: IDs
+    payload: Auslastung
+    query: Abfrage
   log:
+    description: Etwas in die Konsole ausgeben
     message: Nachricht
+    message_placeholder: Geben Sie eine Nachricht ein, die in der Konsole angezeigt werden soll...
+  mail:
+    name: Email senden
+    description: Sende eine E-Mail an eine oder mehrere Personen
+    to: An
+    to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
+    body: Inhalt
   notification:
+    name: Benachrichtigung senden
+    description: In-app Benachrichtigung an Benutzer senden
     recipient: Benutzer
     message: Nachricht
   request:
+    name: Webhook / Anfrage URL
+    description: "Eine Anfrage an eine URL senden"
     url: URL
+    url_placeholder: https://example.com/example
     method: Methode
     data: Daten
     header: Header
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    milliseconds: Millisekunden
   trigger:
     flows: Flows
     flow: Flow

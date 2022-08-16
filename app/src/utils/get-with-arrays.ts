@@ -10,9 +10,12 @@
  */
 export function get(object: Record<string, any> | any[], path: string, defaultValue?: any): any {
 	const [key, ...follow] = path.split('.');
+
 	const result = Array.isArray(object) ? object.map((entry) => entry[key!]) : object?.[key!];
+
 	if (follow.length > 0) {
 		return get(result, follow.join('.'), defaultValue);
 	}
+
 	return result ?? defaultValue;
 }

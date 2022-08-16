@@ -21,7 +21,7 @@
 									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
-								<img
+								<v-image
 									v-if="imageThumbnail && !imageThumbnailError"
 									:src="imageThumbnail"
 									:alt="file?.title"
@@ -108,6 +108,7 @@
 			v-if="activeDialog === 'choose'"
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
+			:filter="filterByFolder"
 			@update:active="activeDialog = null"
 			@input="setSelection"
 		/>
@@ -139,15 +140,15 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, toRefs } from 'vue';
-import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
-import readableMimeType from '@/utils/readable-mime-type';
-import { getRootPath } from '@/utils/get-root-path';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { addTokenToURL } from '@/api';
-import DrawerItem from '@/views/private/components/drawer-item';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { addQueryToPath } from '@/utils/add-query-to-path';
-import { useRelationM2O, useRelationSingle, RelationQuerySingle } from '@/composables/use-relation';
+import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
+import { Filter } from '@directus/shared/types';
 
 type FileInfo = {
 	id: string;
@@ -191,6 +192,11 @@ const { t } = useI18n();
 
 const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
+const filterByFolder = computed(() => {
+	if (!props.folder) return undefined;
+	return { folder: { id: { _eq: props.folder } } } as Filter;
+});
+
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
 	return readableMimeType(file.value.type, true);
@@ -198,7 +204,7 @@ const fileExtension = computed(() => {
 
 const assetURL = computed(() => {
 	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return addTokenToURL(getRootPath() + `assets/${id}`);
+	return '/assets/' + id;
 });
 
 const imageThumbnail = computed(() => {

@@ -42,7 +42,7 @@ export default defineOperationApi<Options>({
 		if (!payloadObject) {
 			result = null;
 		} else {
-			result = await itemsService.createMany(toArray(payloadObject), { emitEvents });
+			result = await itemsService.createMany(toArray(payloadObject), { emitEvents: !!emitEvents });
 		}
 
 		return result;

@@ -1,6 +1,6 @@
 import api from '@/api';
 import { getPanels } from '@/panels';
-import { usePermissionsStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Item, Panel } from '@directus/shared/types';
@@ -215,9 +215,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				.filter(({ collection }) => {
 					return collection.startsWith('directus_') === true;
 				})
-				.map(({ key, collection, ...rest }) => ({
+				.map(({ key, ...rest }) => ({
 					key: `query_${key}`,
-					collection: collection.substring(9),
 					...rest,
 				}))
 		);

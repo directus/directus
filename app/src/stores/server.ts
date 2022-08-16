@@ -1,10 +1,11 @@
-import api from '@/api';
+import api, { replaceQueue } from '@/api';
 import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { computed, reactive, ref, unref } from 'vue';
-import { i18n } from '@/lang';
+import { computed, reactive, unref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 type Info = {
 	project: null | {
@@ -31,6 +32,12 @@ type Info = {
 		uptime: number;
 		totalmem: number;
 	};
+	rateLimiter?:
+		| false
+		| {
+				points: number;
+				duration: number;
+		  };
 };
 
 type Auth = {
@@ -54,10 +61,10 @@ export const useServerStore = defineStore('serverStore', () => {
 	const providerOptions = computed(() => {
 		const options = auth.providers
 			.filter((provider) => !AUTH_SSO_DRIVERS.includes(provider.driver))
-			.map((provider) => ({ text: formatTitle(provider.name), value: provider.name }));
+			.map((provider) => ({ text: formatTitle(provider.name), value: provider.name, driver: provider.driver }));
 
 		if (!auth.disableDefault) {
-			options.unshift({ text: i18n.global.t('default_provider'), value: DEFAULT_AUTH_PROVIDER });
+			options.unshift({ text: i18n.global.t('default_provider'), value: DEFAULT_AUTH_PROVIDER, driver: 'default' });
 		}
 
 		return options;
@@ -77,7 +84,20 @@ export const useServerStore = defineStore('serverStore', () => {
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
 
-		await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
+		const { currentUser } = useUserStore();
+
+		if (!currentUser?.language) {
+			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
+		}
+
+		if (serverInfoResponse.data.data?.rateLimit !== undefined) {
+			if (serverInfoResponse.data.data?.rateLimit === false) {
+				await replaceQueue();
+			} else {
+				const { duration, points } = serverInfoResponse.data.data.rateLimit;
+				await replaceQueue({ intervalCap: points - 10, interval: duration * 1000, carryoverConcurrencyCount: true });
+			}
+		}
 	};
 
 	const dehydrate = () => {

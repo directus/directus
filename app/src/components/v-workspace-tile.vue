@@ -385,7 +385,7 @@ function useDragDrop() {
 }
 
 .tile-content.has-header {
-	height: calc(100% - 48px);
+	height: calc(100% - 42px);
 }
 
 .header {

@@ -13,6 +13,7 @@
 		:min="min"
 		:max="max"
 		:step="step"
+		:dir="direction"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
 	>
@@ -72,7 +73,7 @@ export default defineComponent({
 		},
 		trim: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		font: {
 			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
@@ -110,6 +111,10 @@ export default defineComponent({
 		step: {
 			type: Number,
 			default: 1,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

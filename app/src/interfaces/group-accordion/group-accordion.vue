@@ -4,7 +4,7 @@
 			v-for="accordionField in groupFields"
 			:key="accordionField.field"
 			:field="accordionField"
-			:fields="groupFields"
+			:fields="fields"
 			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
@@ -14,8 +14,10 @@
 			:loading="loading"
 			:validation-errors="validationErrors"
 			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
+			:direction="direction"
 			@apply="$emit('apply', $event)"
 			@toggle-all="toggleAll"
 		/>
@@ -77,6 +79,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
 		accordionMode: {
 			type: Boolean,
 			default: true,
@@ -85,6 +91,10 @@ export default defineComponent({
 			type: String,
 			enum: ['opened', 'closed', 'first'],
 			default: 'closed',
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['apply'],
