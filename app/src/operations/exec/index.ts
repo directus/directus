@@ -1,14 +1,17 @@
 import { useServerStore } from '@/stores/server';
 import { DeepPartial, Field } from '@directus/shared/types';
 import { defineOperationApp } from '@directus/shared/utils';
+import { useI18n } from 'vue-i18n';
 
 export default defineOperationApp({
 	id: 'exec',
 	icon: 'code',
-	name: 'code',
-	description: 'code',
+	name: '$t:operations.exec.name',
+	description: '$t:operations.exec.description',
 	overview: () => [],
 	options: () => {
+		const { t } = useI18n();
+
 		const serverStore = useServerStore();
 
 		const standard: DeepPartial<Field>[] = [
@@ -43,9 +46,9 @@ export default defineOperationApp({
 						width: 'full',
 						interface: 'presentation-notice',
 						options: {
-							text: `The following **Node Modules** can be used:<br>${serverStore.info.flows.execAllowedModules
-								.map((mod) => `\`${mod}\``)
-								.join(', ')}`,
+							text:
+								t('operations.exec.modules') +
+								`<br>${serverStore.info.flows.execAllowedModules.map((mod) => `\`${mod}\``).join(', ')}`,
 						},
 					},
 				},
