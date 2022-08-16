@@ -274,26 +274,30 @@ describe('applySnapshot', () => {
 		});
 	});
 
-	describe('Delete interrelated collections', async () => {
-		const snapshotToApply: Snapshot = {
-			version: 1,
-			directus: '0.0.0',
-			collections: [],
-			fields: [],
-			relations: [],
-		};
+	describe('Delete collections', () => {
+		it('Deletes interrelated collections', async () => {
+			const snapshotToApply: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				relations: [],
+			};
 
-		// Stop call to db later on in apply-snapshot
-		jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
-		// We are not actually testing that deleteOne works, just that is is called correctly
-		const deleteOneCollectionSpy = jest.spyOn(CollectionsService.prototype, 'deleteOne').mockImplementation(jest.fn());
+			// Stop call to db later on in apply-snapshot
+			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			// We are not actually testing that deleteOne works, just that is is called correctly
+			const deleteOneCollectionSpy = jest
+				.spyOn(CollectionsService.prototype, 'deleteOne')
+				.mockImplementation(jest.fn());
 
-		await applySnapshot(snapshotToApply, {
-			database: db,
-			current: snapshotBeforeDeleteCollection,
-			schema: snapshotApplyTestSchema,
+			await applySnapshot(snapshotToApply, {
+				database: db,
+				current: snapshotBeforeDeleteCollection,
+				schema: snapshotApplyTestSchema,
+			});
+
+			expect(deleteOneCollectionSpy).toHaveBeenCalledTimes(3);
 		});
-
-		expect(deleteOneCollectionSpy).toHaveBeenCalledTimes(3);
 	});
 });
