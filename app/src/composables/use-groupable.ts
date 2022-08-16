@@ -1,5 +1,4 @@
-import { isEmpty, notEmpty } from '@/utils/is-empty';
-import { isEqual } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 
 export type GroupableInstance = {
@@ -29,7 +28,7 @@ export function useGroupable(options?: GroupableOptions): UsableGroupable {
 	// Injects the registration / toggle functions from the parent scope
 	const parentFunctions = inject(options?.group || 'item-group', null);
 
-	if (isEmpty(parentFunctions)) {
+	if (isNil(parentFunctions)) {
 		return {
 			active: ref(false),
 			toggle: () => {
@@ -138,14 +137,14 @@ export function useGroupableParent(
 	// handler if it's passed
 	const selection = computed<readonly (number | string)[]>({
 		get() {
-			if (notEmpty(state.selection) && notEmpty(state.selection.value)) {
+			if (!isNil(state.selection) && !isNil(state.selection.value)) {
 				return state.selection.value;
 			}
 
 			return internalSelection.value;
 		},
 		set(newSelection) {
-			if (notEmpty(state.onSelectionChange)) {
+			if (isNil(state.onSelectionChange)) {
 				state.onSelectionChange(newSelection);
 			}
 
@@ -211,7 +210,7 @@ export function useGroupableParent(
 			toggleSingle(item);
 		}
 
-		if (notEmpty(state.onToggle)) {
+		if (!isNil(state.onToggle)) {
 			state.onToggle(item);
 		}
 	}

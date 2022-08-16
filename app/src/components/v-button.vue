@@ -43,8 +43,7 @@ import { computed } from 'vue';
 import { RouteLocation, useRoute, useLink } from 'vue-router';
 import { useSizeClass } from '@directus/components/composables';
 import { useGroupable } from '@/composables/use-groupable';
-import { notEmpty } from '@/utils/is-empty';
-import { isEqual } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 
 interface Props {
 	autofocus?: boolean;
@@ -105,7 +104,7 @@ const sizeClass = useSizeClass(props);
 
 const component = computed(() => {
 	if (props.disabled) return 'button';
-	if (notEmpty(props.href)) return 'a';
+	if (!isNil(props.href)) return 'a';
 	if (props.to) return 'router-link';
 	return 'button';
 });

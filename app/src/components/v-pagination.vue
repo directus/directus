@@ -59,7 +59,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { isEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
 	props: {
@@ -95,7 +94,7 @@ export default defineComponent({
 			let startPage: number;
 			let endPage: number;
 
-			if (isEmpty(props.totalVisible) || props.length <= props.totalVisible) {
+			if (!Number.isInteger(props.totalVisible) || props.length <= props.totalVisible) {
 				startPage = 1;
 				endPage = props.length;
 			} else {

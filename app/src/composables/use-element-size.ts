@@ -1,4 +1,4 @@
-import { notEmpty } from '@/utils/is-empty';
+import { isNil } from 'lodash';
 import { isRef, onMounted, onUnmounted, Ref, ref } from 'vue';
 
 declare global {
@@ -24,7 +24,7 @@ export function useElementSize<T extends Element>(
 	onMounted(() => {
 		const t = isRef(target) ? target.value : target;
 
-		if (notEmpty(t)) {
+		if (!isNil(t)) {
 			resizeObserver.observe(t);
 		}
 	});
