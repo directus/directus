@@ -8,7 +8,6 @@
 import { useSizeClass } from '../composables';
 
 interface Props {
-	size?: number | null;
 	tile?: boolean;
 	xSmall?: boolean;
 	small?: boolean;
