@@ -14,7 +14,7 @@ import {
 	seedAllFieldTypesStructure,
 	seedAllFieldTypesValues,
 	getTestsAllTypesSchema,
-	seedAliasAllFieldTypesValues,
+	seedO2MAliasAllFieldTypesValues,
 } from './seed-all-field-types';
 import { set } from 'lodash';
 
@@ -212,7 +212,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		300000
+		600000
 	);
 };
 
@@ -301,8 +301,8 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				set(vendorSchemaValues, `${vendor}.${localCollectionCities}.id`, citiesIDs);
 
 				await seedAllFieldTypesValues(vendor, localCollectionCountries, pkType);
-				await seedAliasAllFieldTypesValues(vendor, localCollectionStates, pkType, 'country_id', countriesIDs);
-				await seedAliasAllFieldTypesValues(vendor, localCollectionCities, pkType, 'state_id', statesIDs);
+				await seedO2MAliasAllFieldTypesValues(vendor, localCollectionStates, pkType, 'country_id', countriesIDs);
+				await seedO2MAliasAllFieldTypesValues(vendor, localCollectionCities, pkType, 'state_id', statesIDs);
 			}
 		})
 	);
