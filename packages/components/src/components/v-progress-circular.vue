@@ -22,33 +22,31 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useSizeClass, sizeProps } from '@/composables/use-size-class';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useSizeClass } from '../composables';
 
-export default defineComponent({
-	props: {
-		indeterminate: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: Number,
-			default: 0,
-		},
-		...sizeProps,
-	},
-	emits: ['animationiteration'],
-	setup(props) {
-		const sizeClass = useSizeClass(props);
+interface Props {
+	indeterminate?: boolean;
+	value?: number;
+	xSmall?: boolean;
+	small?: boolean;
+	large?: boolean;
+	xLarge?: boolean;
+}
 
-		const circleStyle = computed(() => ({
-			'stroke-dasharray': (props.value / 100) * 78.5 + ', 78.5',
-		}));
-
-		return { sizeClass, circleStyle };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	indeterminate: false,
+	value: 0,
 });
+
+defineEmits(['animationiteration']);
+
+const sizeClass = useSizeClass(props);
+
+const circleStyle = computed(() => ({
+	'stroke-dasharray': (props.value / 100) * 78.5 + ', 78.5',
+}));
 </script>
 
 <style>

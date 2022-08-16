@@ -14,69 +14,59 @@
 	</span>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useSizeClass, sizeProps } from '@/composables/use-size-class';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useSizeClass } from '../composables';
 
-export default defineComponent({
-	props: {
-		active: {
-			type: Boolean,
-			default: null,
-		},
-		close: {
-			type: Boolean,
-			default: false,
-		},
-		closeIcon: {
-			type: String,
-			default: 'close',
-		},
-		outlined: {
-			type: Boolean,
-			default: false,
-		},
-		label: {
-			type: Boolean,
-			default: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		...sizeProps,
+interface Props {
+	active?: boolean | null;
+	close?: boolean;
+	closeIcon?: string;
+	outlined?: boolean;
+	label?: boolean;
+	disabled?: boolean;
+	xSmall?: boolean;
+	small?: boolean;
+	large?: boolean;
+	xLarge?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	active: null,
+	close: false,
+	closeIcon: 'close',
+	outlined: false,
+	label: true,
+	disabled: false,
+});
+
+const emit = defineEmits(['update:active', 'click', 'close']);
+
+const internalLocalActive = ref(true);
+
+const internalActive = computed<boolean>({
+	get: () => {
+		if (props.active !== null) return props.active;
+		return internalLocalActive.value;
 	},
-	emits: ['update:active', 'click', 'close'],
-	setup(props, { emit }) {
-		const internalLocalActive = ref(true);
-
-		const internalActive = computed<boolean>({
-			get: () => {
-				if (props.active !== null) return props.active;
-				return internalLocalActive.value;
-			},
-			set: (active: boolean) => {
-				emit('update:active', active);
-				internalLocalActive.value = active;
-			},
-		});
-
-		const sizeClass = useSizeClass(props);
-
-		return { sizeClass, internalActive, onClick, onCloseClick };
-
-		function onClick(event: MouseEvent) {
-			if (props.disabled) return;
-			emit('click', event);
-		}
-
-		function onCloseClick(event: MouseEvent) {
-			if (props.disabled) return;
-			internalActive.value = !internalActive.value;
-			emit('close', event);
-		}
+	set: (active: boolean) => {
+		emit('update:active', active);
+		internalLocalActive.value = active;
 	},
 });
+
+const sizeClass = useSizeClass(props);
+
+function onClick(event: MouseEvent) {
+	if (props.disabled) return;
+	emit('click', event);
+}
+
+function onCloseClick(event: MouseEvent) {
+	if (props.disabled) return;
+	internalActive.value = !internalActive.value;
+	emit('close', event);
+}
 </script>
 
 <style>

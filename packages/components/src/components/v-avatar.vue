@@ -4,27 +4,24 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useSizeClass, sizeProps } from '@/composables/use-size-class';
+<script setup lang="ts">
+import { useSizeClass } from '../composables';
 
-export default defineComponent({
-	props: {
-		size: {
-			type: Number,
-			default: null,
-		},
-		tile: {
-			type: Boolean,
-			default: false,
-		},
-		...sizeProps,
-	},
-	setup(props) {
-		const sizeClass = useSizeClass(props);
-		return { sizeClass };
-	},
+interface Props {
+	size?: number | null;
+	tile?: boolean;
+	xSmall?: boolean;
+	small?: boolean;
+	large?: boolean;
+	xLarge?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	size: null,
+	tile: false,
 });
+
+const sizeClass = useSizeClass(props);
 </script>
 
 <style>

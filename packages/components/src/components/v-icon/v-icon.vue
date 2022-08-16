@@ -2,8 +2,8 @@
 	<span
 		class="v-icon"
 		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
-		:role="clickable ? 'button' : null"
-		:tabindex="clickable ? 0 : null"
+		:role="clickable ? 'button' : undefined"
+		:tabindex="clickable ? 0 : undefined"
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
 	>
@@ -13,11 +13,11 @@
 	</span>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { useSizeClass, sizeProps } from '@/composables/use-size-class';
+import { useSizeClass } from '../../composables';
 
 import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
@@ -522,94 +522,51 @@ const socialIcons: string[] = [
 	'zhihu',
 ];
 
-export default defineComponent({
-	components: {
-		CustomIconDirectus,
-		CustomIconBookmarkSave,
-		CustomIconBox,
-		CustomIconCommitNode,
-		CustomIconGrid1,
-		CustomIconGrid2,
-		CustomIconGrid3,
-		CustomIconGrid4,
-		CustomIconGrid5,
-		CustomIconGrid6,
-		CustomIconSignalWifi1Bar,
-		CustomIconSignalWifi2Bar,
-		CustomIconSignalWifi3Bar,
-		CustomIconFlipHorizontal,
-		CustomIconFlipVertical,
-		CustomIconFolderMove,
-		CustomIconFolderLock,
-		CustomIconLogout,
-		SocialIcon,
-	},
-	props: {
-		name: {
-			type: String,
-			required: true,
-		},
-		filled: {
-			type: Boolean,
-			default: false,
-		},
-		sup: {
-			type: Boolean,
-			default: false,
-		},
-		left: {
-			type: Boolean,
-			default: false,
-		},
-		right: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		clickable: {
-			type: Boolean,
-			default: false,
-		},
-		color: {
-			type: String,
-			default: null,
-		},
-		...sizeProps,
-	},
-	emits: ['click'],
+interface Props {
+	name: string;
+	filled?: boolean;
+	sup?: boolean;
+	left?: boolean;
+	right?: boolean;
+	disabled?: boolean;
+	clickable?: boolean;
+	color?: string;
+	xSmall?: boolean;
+	small?: boolean;
+	large?: boolean;
+	xLarge?: boolean;
+}
 
-	setup(props, { emit }) {
-		const sizeClass = computed<string | null>(() => {
-			if (props.sup) return 'sup';
-			return useSizeClass(props).value;
-		});
-
-		const customIconName = computed<string | null>(() => {
-			if (customIcons.includes(props.name)) return `custom-icon-${props.name}`.replace(/_/g, '-');
-			return null;
-		});
-
-		const socialIconName = computed<string | null>(() => {
-			if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-');
-			return null;
-		});
-
-		return {
-			sizeClass,
-			customIconName,
-			socialIconName,
-			emitClick,
-		};
-
-		function emitClick(event: MouseEvent) {
-			if (props.disabled) return;
-			emit('click', event);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	filled: false,
+	sup: false,
+	left: false,
+	right: false,
+	disabled: false,
+	clickable: false,
 });
+
+const emit = defineEmits(['click']);
+
+const sizeClass = computed<string | null>(() => {
+	if (props.sup) return 'sup';
+	return useSizeClass(props).value;
+});
+
+const customIconName = computed<string | null>(() => {
+	if (customIcons.includes(props.name)) return `custom-icon-${props.name}`.replace(/_/g, '-');
+	return null;
+});
+
+const socialIconName = computed<string | null>(() => {
+	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-');
+	return null;
+});
+
+function emitClick(event: MouseEvent) {
+	if (props.disabled) return;
+	emit('click', event);
+}
 </script>
 
 <style>

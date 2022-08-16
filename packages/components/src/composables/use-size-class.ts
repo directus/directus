@@ -19,14 +19,14 @@ export const sizeProps = {
 	},
 };
 
-interface RequiredProps {
-	xSmall: boolean;
-	small: boolean;
-	large: boolean;
-	xLarge: boolean;
+interface SizeProps {
+	xSmall?: boolean;
+	small?: boolean;
+	large?: boolean;
+	xLarge?: boolean;
 }
 
-export function useSizeClass<T>(props: T & RequiredProps): ComputedRef<string | null> {
+export function useSizeClass<T>(props: T & SizeProps): ComputedRef<string | null> {
 	const sizeClass = computed<string | null>(() => {
 		if (props.xSmall) return 'x-small';
 		if (props.small) return 'small';
