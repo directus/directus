@@ -2049,8 +2049,8 @@ operations:
     name: Condition
     description: Route a flow based on If / Else logic
   exec:
-    name: Execute JavaScript
-    description: Run arbitrary code to modify the payload
+    name: Run JavaScript
+    description: Execute arbitrary code to modify the payload
     modules: 'The following **Node modules** can be used:'
   item-create:
     name: Create Data
