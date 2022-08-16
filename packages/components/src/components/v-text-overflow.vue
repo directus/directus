@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import { useElementSize } from '@/composables/use-element-size';
+import { useElementSize } from '../composables';
 
 export default defineComponent({
 	props: {

@@ -65,7 +65,7 @@ import VTab from '@directus/components/v-tab.vue';
 import VTabItem from '@directus/components/v-tab-item.vue';
 import VTabsItems from '@directus/components/v-tabs-items.vue';
 import VTemplateInput from '@directus/components/v-template-input.vue';
-import VTextOverflow from './v-text-overflow.vue';
+import VTextOverflow from '@directus/components/v-text-overflow.vue';
 import VTextarea from '@directus/components/v-textarea.vue';
 import VUpload from './v-upload.vue';
 import VDatePicker from './v-date-picker.vue';

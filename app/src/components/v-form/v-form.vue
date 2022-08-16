@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { useElementSize } from '@/composables/use-element-size';
+import { useElementSize } from '@directus/components/composables';
 import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
