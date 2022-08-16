@@ -1,4 +1,4 @@
-import { capitalizeFirst } from '@directus/shared/utils';
+import { capitalize } from 'lodash';
 
 interface HTMLExpandElement extends HTMLElement {
 	_parent?: (Node & ParentNode & HTMLElement) | null;
@@ -20,7 +20,7 @@ export default function (
 	) => void
 ): Record<string, any> {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
-	const offsetProperty = `offset${capitalizeFirst(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
+	const offsetProperty = `offset${capitalize(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
 	return {
 		beforeEnter(el: HTMLExpandElement) {
