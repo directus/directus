@@ -8,7 +8,7 @@
 		@click="emitClick"
 	>
 		<component :is="customIconName" v-if="customIconName" />
-		<socialIcon v-else-if="socialIconName" :name="socialIconName" />
+		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }" :data-icon="name"></i>
 	</span>
 </template>
@@ -18,6 +18,8 @@ import { computed } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { useSizeClass } from '../../composables';
+import { capitalizeFirst } from '@directus/shared/utils';
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
@@ -40,28 +42,28 @@ import CustomIconLogout from './custom-icons/logout.vue';
 
 import SocialIcon from './social-icon.vue';
 
-library.add(fab);
+const components: Record<string, any> = {
+	CustomIconDirectus,
+	CustomIconBookmarkSave,
+	CustomIconBox,
+	CustomIconCommitNode,
+	CustomIconGrid1,
+	CustomIconGrid2,
+	CustomIconGrid3,
+	CustomIconGrid4,
+	CustomIconGrid5,
+	CustomIconGrid6,
+	CustomIconSignalWifi1Bar,
+	CustomIconSignalWifi2Bar,
+	CustomIconSignalWifi3Bar,
+	CustomIconFlipHorizontal,
+	CustomIconFlipVertical,
+	CustomIconFolderMove,
+	CustomIconFolderLock,
+	CustomIconLogout,
+};
 
-const customIcons: string[] = [
-	'directus',
-	'bookmark_save',
-	'box',
-	'commit_node',
-	'grid_1',
-	'grid_2',
-	'grid_3',
-	'grid_4',
-	'grid_5',
-	'grid_6',
-	'signal_wifi_1_bar',
-	'signal_wifi_2_bar',
-	'signal_wifi_3_bar',
-	'flip_horizontal',
-	'flip_vertical',
-	'folder_move',
-	'folder_lock',
-	'logout',
-];
+library.add(fab);
 
 const socialIcons: string[] = [
 	'500px',
@@ -553,13 +555,14 @@ const sizeClass = computed<string | null>(() => {
 	return useSizeClass(props).value;
 });
 
-const customIconName = computed<string | null>(() => {
-	if (customIcons.includes(props.name)) return `custom-icon-${props.name}`.replace(/_/g, '-');
+const customIconName = computed(() => {
+	const name = `CustomIcon${capitalizeFirst(props.name.replace(/_/g, '-'))}`;
+	if (name in components) return components[name];
 	return null;
 });
 
-const socialIconName = computed<string | null>(() => {
-	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-');
+const socialIconName = computed<IconName | null>(() => {
+	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-') as IconName;
 	return null;
 });
 

@@ -34,7 +34,7 @@ interface Props {
 	iconIndeterminate?: string;
 	block?: boolean;
 	customValue?: boolean;
-	checked: boolean | null;
+	checked?: boolean | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {

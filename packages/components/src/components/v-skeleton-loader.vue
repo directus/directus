@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 interface Props {
-	type: string;
+	type?: string;
 }
 
 withDefaults(defineProps<Props>(), {
