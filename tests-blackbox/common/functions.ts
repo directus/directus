@@ -2,6 +2,7 @@ import request from 'supertest';
 import { getUrl } from './config';
 import * as common from './index';
 import vendors from './get-dbs-to-test';
+import { Filter } from '@directus/shared/types';
 
 export function DisableTestCachingSetup() {
 	beforeEach(async () => {
@@ -398,6 +399,130 @@ export async function CreateFieldO2M(vendor: string, options: OptionsCreateField
 	return { field, otherField, relation };
 }
 
+export type OptionsCreateFieldM2M = {
+	collection: string;
+	field: string;
+	fieldMeta?: any;
+	fieldSchema?: any;
+	otherCollection: string;
+	otherField: string;
+	junctionCollection: string;
+	primaryKeyType?: string;
+	otherMeta?: any;
+	otherSchema?: any;
+	relationMeta?: any;
+	relationSchema?: any;
+	otherRelationSchema?: any;
+};
+
+export async function CreateFieldM2M(vendor: string, options: OptionsCreateFieldM2M) {
+	// Parse options
+	const defaultOptions = {
+		fieldMeta: {},
+		fieldSchema: {},
+		primaryKeyType: 'integer',
+		otherMeta: {},
+		otherSchema: {},
+		relationMeta: {},
+		relationSchema: {
+			on_delete: 'SET NULL',
+		},
+		otherRelationSchema: {
+			on_delete: 'SET NULL',
+		},
+	};
+
+	options = Object.assign({}, defaultOptions, options);
+
+	const fieldOptions: OptionsCreateField = {
+		collection: options.collection,
+		field: options.field,
+		type: 'alias',
+		meta: options.fieldMeta,
+		schema: options.fieldSchema,
+	};
+
+	if (!fieldOptions.meta.special) {
+		fieldOptions.meta.special = ['m2m'];
+	} else if (!fieldOptions.meta.special.includes('m2m')) {
+		fieldOptions.meta.special.push('m2m');
+	}
+
+	// Action
+	const field = await CreateField(vendor, fieldOptions);
+
+	const otherFieldOptions: OptionsCreateField = {
+		collection: options.otherCollection,
+		field: options.otherField,
+		type: 'alias',
+		meta: options.otherMeta,
+		schema: options.otherSchema,
+	};
+
+	if (!otherFieldOptions.meta.special) {
+		otherFieldOptions.meta.special = ['m2m'];
+	} else if (!otherFieldOptions.meta.special.includes('m2m')) {
+		otherFieldOptions.meta.special.push('m2m');
+	}
+
+	const otherField = await CreateField(vendor, otherFieldOptions);
+
+	const junctionCollectionOptions: OptionsCreateCollection = {
+		collection: options.junctionCollection,
+		primaryKeyType: 'integer',
+	};
+
+	const junctionCollection = await CreateCollection(vendor, junctionCollectionOptions);
+
+	const junctionFieldName = `${options.collection}_id`;
+	const junctionFieldOptions: OptionsCreateField = {
+		collection: options.junctionCollection,
+		field: junctionFieldName,
+		type: options.primaryKeyType!,
+	};
+
+	const junctionField = await CreateField(vendor, junctionFieldOptions);
+
+	const otherJunctionFieldName = `${options.otherCollection}_id`;
+	const otherJunctionFieldOptions: OptionsCreateField = {
+		collection: options.junctionCollection,
+		field: otherJunctionFieldName,
+		type: options.primaryKeyType!,
+	};
+
+	const otherJunctionField = await CreateField(vendor, otherJunctionFieldOptions);
+
+	const relationOptions: OptionsCreateRelation = {
+		collection: options.junctionCollection,
+		field: junctionFieldName,
+		meta: {
+			...options.relationMeta,
+			one_field: options.field,
+			junction_field: otherJunctionFieldName,
+		},
+		schema: options.relationSchema,
+		related_collection: options.collection,
+	};
+
+	const relation = await CreateRelation(vendor, relationOptions);
+
+	const otherRelationOptions: OptionsCreateRelation = {
+		collection: options.junctionCollection,
+		field: otherJunctionFieldName,
+		meta: {
+			...options.relationMeta,
+			one_field: options.otherField,
+			junction_field: junctionFieldName,
+		},
+		schema: options.otherRelationSchema,
+		related_collection: options.otherCollection,
+	};
+
+	const otherRelation = await CreateRelation(vendor, otherRelationOptions);
+
+	return { field, otherField, junctionCollection, junctionField, otherJunctionField, relation, otherRelation };
+}
+
 export type OptionsCreateItem = {
 	collection: string;
 	item: any;
@@ -409,6 +534,33 @@ export async function CreateItem(vendor: string, options: OptionsCreateItem) {
 		.post(`/items/${options.collection}`)
 		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
+
+	return response.body.data;
+}
+
+export type OptionsReadItem = {
+	collection: string;
+	filter?: Filter;
+	fields?: string;
+};
+
+export async function ReadItem(vendor: string, options: OptionsReadItem) {
+	// Parse options
+	const defaultOptions = {
+		filter: {},
+		fields: '*',
+	};
+
+	options = Object.assign({}, defaultOptions, options);
+
+	// Action
+	const response = await request(getUrl(vendor))
+		.get(`/items/${options.collection}`)
+		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.query({
+			filter: options.filter,
+			fields: options.fields,
+		});
 
 	return response.body.data;
 }
