@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useGroupable } from '@/composables/use-groupable';
+import { useGroupable } from '@directus/components/composables';
 
 export default defineComponent({
 	props: {

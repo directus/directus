@@ -7,36 +7,29 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, inject, ref } from 'vue';
-import { useGroupable } from '@/composables/use-groupable';
+<script setup lang="ts">
+import { inject, ref } from 'vue';
+import { useGroupable } from '../composables';
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { active, toggle } = useGroupable({
-			value: props.value,
-			group: 'v-tabs',
-		});
+interface Props {
+	value?: string | number;
+	disabled?: boolean;
+}
 
-		const vertical = inject('v-tabs-vertical', ref(false));
-
-		return { active, toggle, onClick, vertical };
-
-		function onClick() {
-			if (props.disabled === false) toggle();
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	disabled: false,
 });
+
+const { active, toggle } = useGroupable({
+	value: props.value,
+	group: 'v-tabs',
+});
+
+const vertical = inject('v-tabs-vertical', ref(false));
+
+function onClick() {
+	if (props.disabled === false) toggle();
+}
 </script>
 
 <style>

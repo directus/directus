@@ -23,7 +23,7 @@
 <script lang="ts">
 import { RouteLocation, useLink, useRoute } from 'vue-router';
 import { defineComponent, PropType, computed } from 'vue';
-import { useGroupable } from '@/composables/use-groupable';
+import { useGroupable } from '@directus/components/composables';
 import { isEqual } from 'lodash';
 
 export default defineComponent({

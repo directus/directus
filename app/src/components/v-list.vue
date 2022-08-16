@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs } from 'vue';
-import { useGroupableParent } from '@/composables/use-groupable';
+import { useGroupableParent } from '@directus/components/composables';
 
 export default defineComponent({
 	props: {
