@@ -20,6 +20,7 @@
 		<navigation-item
 			v-for="childCollection in childCollections"
 			:key="childCollection.collection"
+			:show-hidden="showHidden"
 			:collection="childCollection"
 			:search="search"
 		/>

@@ -212,7 +212,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		300000
+		600000
 	);
 };
 

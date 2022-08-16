@@ -63,6 +63,7 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview.vue';
+import { set } from 'lodash';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -177,11 +178,24 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (props.circularField) {
-				return fieldsWithPermissions.value.filter((field: Field) => {
-					return field.field !== props.circularField;
+				return fieldsWithPermissions.value.map((field: Field) => {
+					if (field.field === props.circularField) {
+						set(field, 'meta.readonly', true);
+					}
+					return field;
 				});
 			} else {
 				return fieldsWithPermissions.value;
+			}
+		});
+
+		const fieldsWithoutCircular = computed(() => {
+			if (props.circularField) {
+				return fields.value.filter((field) => {
+					return field.field !== props.circularField;
+				});
+			} else {
+				return fields.value;
 			}
 		});
 
@@ -392,7 +406,9 @@ export default defineComponent({
 
 			function save() {
 				const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
-				const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fields.value;
+				const fieldsToValidate = props.junctionField
+					? junctionRelatedCollectionFields.value
+					: fieldsWithoutCircular.value;
 				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
 
 				if (errors.length > 0) {

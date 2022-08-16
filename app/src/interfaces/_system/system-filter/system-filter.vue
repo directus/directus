@@ -19,6 +19,7 @@
 				:field="fieldName"
 				:depth="1"
 				:include-validation="includeValidation"
+				:include-relations="includeRelations"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
@@ -42,6 +43,7 @@
 					v-if="collectionRequired"
 					:collection="collection"
 					include-functions
+					:include-relations="includeRelations"
 					@select-field="addNode($event)"
 				>
 					<template #prepend>
@@ -96,6 +98,7 @@ interface Props {
 	fieldName?: string;
 	inline?: boolean;
 	includeValidation?: boolean;
+	includeRelations?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -107,6 +110,7 @@ const props = withDefaults(defineProps<Props>(), {
 	fieldName: undefined,
 	inline: false,
 	includeValidation: false,
+	includeRelations: true,
 });
 
 const emit = defineEmits(['input']);
