@@ -195,7 +195,7 @@ router.get(
 		});
 
 		stream.on('end', () => {
-			res.status(200).send();
+			res.end();
 		});
 
 		stream.on('error', (e) => {
