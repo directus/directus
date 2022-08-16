@@ -336,6 +336,14 @@ const customFilter = computed(() => {
 		_and: [],
 	};
 
+	if (props.folder) {
+		filter._and.push({
+			folder: {
+				id: { _eq: props.folder },
+			},
+		});
+	}
+
 	if (!relationInfo.value) return filter;
 
 	const reverseRelation = `$FOLLOW(${relationInfo.value.junctionCollection.collection},${relationInfo.value.junctionField.field})`;
