@@ -61,7 +61,7 @@ import { computed } from 'vue';
 import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
-import { cssVar } from '@directus/shared/utils/browser';
+import { cssVar } from '@directus/components/utils';
 import Color from 'color';
 import { getTheme } from '@/utils/get-theme';
 

@@ -100,7 +100,7 @@
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/components/composables';
 import {
 	FieldFilter,
 	FieldFilterOperator,

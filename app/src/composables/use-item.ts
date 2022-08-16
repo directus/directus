@@ -8,7 +8,7 @@ import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/components/composables';
 import { getEndpoint } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
 import { merge } from 'lodash';

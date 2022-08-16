@@ -64,7 +64,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import { usePreset } from '@/composables/use-preset';
-import { useLayout } from '@directus/shared/composables';
+import { useLayout } from '@directus/components/composables';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { Filter } from '@directus/shared/types';

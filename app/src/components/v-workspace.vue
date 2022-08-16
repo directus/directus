@@ -42,7 +42,7 @@
 import { computed, inject, ref } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
 import { AppTile } from './v-workspace-tile.vue';
-import { cssVar } from '@directus/shared/utils/browser';
+import { cssVar } from '@directus/components/utils';
 
 const props = withDefaults(
 	defineProps<{

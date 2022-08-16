@@ -276,7 +276,7 @@ import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
 import ContentNotFound from './not-found.vue';
-import { useCollection, useLayout } from '@directus/shared/composables';
+import { useCollection, useLayout } from '@directus/components/composables';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';

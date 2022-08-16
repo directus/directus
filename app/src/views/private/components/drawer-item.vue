@@ -73,7 +73,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/components/composables';
 import { Field, Relation } from '@directus/shared/types';
 
 export default defineComponent({

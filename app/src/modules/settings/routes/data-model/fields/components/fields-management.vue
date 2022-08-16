@@ -52,7 +52,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs } from 'vue';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/components/composables';
 import Draggable from 'vuedraggable';
 import { Field } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores/fields';

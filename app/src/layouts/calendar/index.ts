@@ -6,7 +6,7 @@ import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { useCollection, useItems, useSync } from '@directus/components/composables';
 import { Field, Item } from '@directus/shared/types';
 import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';

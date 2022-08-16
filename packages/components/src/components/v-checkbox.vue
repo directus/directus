@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/components/composables';
 
 interface Props {
 	value?: string | null;

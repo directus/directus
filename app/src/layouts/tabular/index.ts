@@ -6,7 +6,7 @@ import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { useCollection, useItems, useSync } from '@directus/components/composables';
 import { Field } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
 import { clone, debounce } from 'lodash';

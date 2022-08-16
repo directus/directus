@@ -2,7 +2,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { useCollection, useItems, useSync } from '@directus/components/composables';
 import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
 import { clone } from 'lodash';
 import { computed, ref, toRefs } from 'vue';

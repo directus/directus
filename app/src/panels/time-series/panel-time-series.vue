@@ -8,7 +8,7 @@
 import { useFieldsStore } from '@/stores/fields';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber, adjustDate } from '@directus/shared/utils';
-import { cssVar } from '@directus/shared/utils/browser';
+import { cssVar } from '@directus/components/utils';
 import ApexCharts from 'apexcharts';
 import { addWeeks } from 'date-fns';
 import { isNil } from 'lodash';
