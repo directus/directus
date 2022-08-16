@@ -144,7 +144,7 @@ export function useGroupableParent(
 			return internalSelection.value;
 		},
 		set(newSelection) {
-			if (isNil(state.onSelectionChange)) {
+			if (!isNil(state.onSelectionChange)) {
 				state.onSelectionChange(newSelection);
 			}
 
