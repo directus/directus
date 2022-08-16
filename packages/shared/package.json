@@ -56,7 +56,7 @@
 		"geojson": "^0.5.0",
 		"joi": "17.4.2",
 		"knex": "2.2.0",
-		"knex-schema-inspector": "^2.0.1",
+		"knex-schema-inspector": "2.0.4",
 		"lodash": "4.17.21",
 		"micromustache": "^8.0.3",
 		"pino": "6.13.3",

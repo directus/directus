@@ -117,8 +117,8 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = fetchedSelectItems.value.map((item) => {
-			const edits = selected.value.find((edit) => {
+		const selectedOnPage = selected.value.map((item) => {
+			const edits = fetchedSelectItems.value.find((edit) => {
 				switch (relation.value?.type) {
 					case 'o2m':
 						return edit[targetPKField] === item[targetPKField];
@@ -345,18 +345,20 @@ export function useRelationMultiple(
 
 			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
-			const response = await api.get(getEndpoint(targetCollection), {
-				params: {
-					fields: Array.from(fields),
-					filter: {
-						[reverseJunctionField]: itemId.value,
+			if (itemId.value !== '+') {
+				const response = await api.get(getEndpoint(targetCollection), {
+					params: {
+						fields: Array.from(fields),
+						filter: {
+							[reverseJunctionField]: itemId.value,
+						},
+						page: previewQuery.value.page,
+						limit: previewQuery.value.limit,
 					},
-					page: previewQuery.value.page,
-					limit: previewQuery.value.limit,
-				},
-			});
+				});
 
-			fetchedItems.value = response.data.data;
+				fetchedItems.value = response.data.data;
+			}
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
