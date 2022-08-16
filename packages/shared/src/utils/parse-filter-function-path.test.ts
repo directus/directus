@@ -1,4 +1,5 @@
-import { parseFilterFunctionPath } from '../../src/utils/parse-filter-function-path';
+import { describe, expect, it } from 'vitest';
+import { parseFilterFunctionPath } from './parse-filter-function-path';
 
 describe('parseFilterFunctionPath', () => {
 	it('parses an empty input', () => {
