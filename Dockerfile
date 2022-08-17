@@ -33,7 +33,8 @@ COPY . .
 RUN apk add --update python3 make g++\
    && rm -rf /var/cache/apk/*
 
-RUN npm install
+RUN npm install -g pnpm
+RUN pnpm install
 
 WORKDIR /directus/api
 
