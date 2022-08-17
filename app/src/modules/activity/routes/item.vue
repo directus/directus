@@ -38,10 +38,6 @@
 			<v-button v-if="openItemLink" v-tooltip.bottom="t('open')" :to="openItemLink" icon rounded>
 				<v-icon name="launch" />
 			</v-button>
-
-			<v-button v-tooltip.bottom="t('done')" to="/activity" icon rounded>
-				<v-icon name="check" />
-			</v-button>
 		</template>
 	</v-drawer>
 </template>
