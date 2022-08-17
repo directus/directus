@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { AuthorizationService } from '../../src/services';
+import { AuthorizationService, PayloadChunk } from '../../src/services';
 import { userSchema } from '../__test-utils__/schemas';
 import { cloneDeep } from 'lodash';
 
@@ -100,7 +100,11 @@ describe('Integration Tests', () => {
 				it.each(newPosts)('presets are added correctly to the payload', async (payload) => {
 					tracker.on.select(tableName).response([payload]);
 
-					const payloadWithPresets = (await service.validatePayload('create', tableName, payload)) as Partial<any>;
+					const { payload: payloadWithPresets } = (await service.validatePayload(
+						'create',
+						tableName,
+						payload
+					)) as PayloadChunk;
 
 					expect(payloadWithPresets).toHaveProperty('publish_date');
 					expect(payloadWithPresets.publish_date).not.toEqual('$NOW');
@@ -120,12 +124,12 @@ describe('Integration Tests', () => {
 
 					// Should only validate if field is set in the payload
 					if (!payload.publish_date) {
-						const payloadWithPresets = (await service.validatePayload(
+						const { payload: payloadWithPresets } = (await service.validatePayload(
 							'update',
 							tableName,
 							payload,
 							payload.id
-						)) as Partial<any>;
+						)) as PayloadChunk;
 
 						expect(payloadWithPresets).not.toHaveProperty('publish_date');
 					} else {

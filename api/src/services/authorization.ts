@@ -12,7 +12,7 @@ import { validatePayload, parseFilter, parsePreset, ParseFilterContext } from '@
 import { parsePermissions } from '../utils/parse-permissions';
 import { getFilterContext } from '../utils/get-filter-context';
 import { Knex } from 'knex';
-import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
+import { cloneDeep, flatten, get, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import {
@@ -29,6 +29,11 @@ import { getItemsContext } from '../utils/get-items-context';
 import { PayloadService } from './payload';
 import { getRelationInfo } from '../utils/get-relation-info';
 import { GENERATE_SPECIAL } from '../constants';
+
+export type PayloadChunk = {
+	keys: Array<PrimaryKey>;
+	payload: Partial<Item>;
+};
 
 export class AuthorizationService {
 	knex: Knex;
@@ -549,7 +554,7 @@ export class AuthorizationService {
 		collection: string,
 		data: Partial<Item>,
 		pk?: PrimaryKey | PrimaryKey[]
-	): Promise<Array<Partial<Item>> | Partial<Item>> {
+	): Promise<Array<PayloadChunk> | PayloadChunk> {
 		const payload = cloneDeep(data);
 
 		const { permission, requiredPermissionData, containDynamicData, hasValidationRules } = this.getActionPermissions(
@@ -568,41 +573,75 @@ export class AuthorizationService {
 			(field: string) => !payloadFields.includes(field)
 		);
 
-		const itemContexts: Array<Partial<Item>> = pk
-			? await this.getItemsContext(action, collection, pk, itemContextFields)
-			: [{}];
+		const pkField = this.schema.collections[collection].primary;
+		const includesPK = pk && itemContextFields.includes(pkField);
+		let itemContexts: Array<Partial<Item>> = [
+			{
+				[pkField]: '+',
+			},
+		];
 
-		const payloadWithPresets = itemContexts.map((itemContext) => {
-			itemContext = merge({}, itemContext, payload);
-			const context: ParseFilterContext = { $CURRENT_ITEM: itemContext, ...filterContext };
-
-			const itemPayloadWithPreset = merge(
-				{},
-				parsePreset(permission.presets ?? {}, this.accountability, context),
-				payload
-			);
-
-			if (hasValidationRules === false) {
-				// No validation is required, so simply populate the payload with the presets
-				return itemPayloadWithPreset;
+		if (pk) {
+			if (!includesPK) {
+				itemContextFields.push(pkField);
 			}
 
+			itemContexts = await this.getItemsContext(action, collection, pk, itemContextFields);
+
+			// Remove pk field so we don't check it during hashing later on
+			itemContextFields.splice(itemContextFields.indexOf(pkField), 1);
+		}
+
+		const chunks: Record<string, PayloadChunk> = {};
+		itemContexts.forEach((itemContext) => {
+			itemContext = merge({}, itemContext, payload);
+			const context: ParseFilterContext = { $CURRENT_ITEM: itemContext, ...filterContext };
 			const validationFilter: Filter = parseFilter(permission.validation, this.accountability, context)!;
 			const validationErrors: FailedValidationException[] = [];
 
-			validationErrors.push(
-				...flatten(
-					validatePayload(validationFilter, itemPayloadWithPreset).map((error) =>
-						error.details.map((details) => new FailedValidationException(details))
-					)
-				)
-			);
+			// If no validation is required, simply return null
+			const validate = hasValidationRules
+				? function (payloadWithPreset: Record<string, any>) {
+						validationErrors.push(
+							...flatten(
+								validatePayload(validationFilter, payloadWithPreset).map((error) =>
+									error.details.map((details) => new FailedValidationException(details))
+								)
+							)
+						);
 
-			if (validationErrors.length > 0) throw validationErrors;
+						if (validationErrors.length > 0) throw validationErrors;
+				  }
+				: () => null;
 
-			return itemPayloadWithPreset;
+			const preset = parsePreset(permission.presets ?? {}, this.accountability, context);
+			/*if (JSON.stringify(permission.presets).indexOf('$CURRENT_ITEM') > -1) {
+				// TODO, do'nt need to do this if the preset is not dynamic
+			}*/
+
+			const key = itemContext[pkField];
+			if (!includesPK) {
+				const hash = itemContextFields.map((path) => get(preset, path, '')).join(':');
+				if (!chunks[hash]) {
+					chunks[hash] = {
+						keys: [],
+						payload: merge({}, preset, payload),
+					};
+
+					validate(chunks[hash].payload);
+				}
+				chunks[hash].keys.push(key);
+			} else {
+				chunks[key] = {
+					keys: [key],
+					payload: merge({}, preset, payload),
+				};
+
+				validate(chunks[key].payload);
+			}
 		});
 
+		const payloadWithPresets = Object.values(chunks);
 		return Array.isArray(pk) ? payloadWithPresets : payloadWithPresets[0];
 	}
 
@@ -615,7 +654,7 @@ export class AuthorizationService {
 		return getItemsContext(
 			{
 				schema: this.schema,
-				accountability: this.accountability,
+				accountability: null,
 				knex: this.knex,
 			},
 			action,
@@ -628,6 +667,15 @@ export class AuthorizationService {
 	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
 		if (this.accountability?.admin === true) return;
 
-		this.getItemsContext(action, collection, pk, ['*']);
+		getItemsContext(
+			{
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: this.knex,
+			},
+			action,
+			collection,
+			pk
+		);
 	}
 }

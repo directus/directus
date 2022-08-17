@@ -12,7 +12,7 @@ import { translateDatabaseError } from '../exceptions/database/translate';
 import { AbstractService, AbstractServiceOptions, Item as AnyItem, MutationOptions, PrimaryKey } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { validateKeys } from '../utils/validate-keys';
-import { ActivityService, RevisionsService } from './index';
+import { ActivityService, PayloadChunk, RevisionsService } from './index';
 import { PayloadService } from './payload';
 
 export type QueryOptions = {
@@ -114,10 +114,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
-				: payloadAfterHooks;
+				? ((await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)) as PayloadChunk)
+				: { keys: [], payload: payloadAfterHooks };
 
-			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
+			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(
+				payloadWithPresets.payload
+			);
 			const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
 
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
@@ -443,22 +445,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// Sort keys to ensure that the order is maintained
 		keys.sort();
 
-		let payloadWithPresets = this.accountability
-			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks, keys)
-			: payloadAfterHooks;
+		let payloadWithPresets = (
+			this.accountability
+				? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks, keys)
+				: [{ keys, payload: payloadAfterHooks }]
+		) as Array<PayloadChunk>;
 
-		// If payloadWithPresets is an array, ensure each object in the array is the same as the first object
-		if (Array.isArray(payloadWithPresets)) {
-			const firstPayload = payloadWithPresets[0];
-			for (const payload of payloadWithPresets) {
-				if (!isEqual(payload, firstPayload)) {
-					throw new InvalidPayloadException(`Cannot batch update items with different payloads.`);
-				}
-			}
-
-			payloadWithPresets = firstPayload;
-			Object.freeze(payloadWithPresets);
-		}
+		payloadWithPresets = Array.isArray(payloadWithPresets) ? payloadWithPresets : [payloadWithPresets];
 
 		await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
@@ -467,87 +460,91 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
-			const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
+			for (const { keys, payload } of payloadWithPresets) {
+				const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payload);
+				const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
 
-			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
-			const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
+				const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
+				const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
 
-			if (Object.keys(payloadWithTypeCasting).length > 0) {
-				try {
-					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
-				} catch (err: any) {
-					throw await translateDatabaseError(err);
+				if (Object.keys(payloadWithTypeCasting).length > 0) {
+					try {
+						await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
+					} catch (err: any) {
+						throw await translateDatabaseError(err);
+					}
 				}
-			}
 
-			const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
+				const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
 
-			for (const key of keys) {
-				const { revisions } = await payloadService.processO2M(payload, key);
-				childrenRevisions.push(...revisions);
-			}
+				for (const key of keys) {
+					const { revisions } = await payloadService.processO2M(payload, key);
+					childrenRevisions.push(...revisions);
+				}
 
-			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityService = new ActivityService({
-					knex: trx,
-					schema: this.schema,
-				});
-
-				const activity = await activityService.createMany(
-					keys.map((key) => ({
-						action: Action.UPDATE,
-						user: this.accountability!.user,
-						collection: this.collection,
-						ip: this.accountability!.ip,
-						user_agent: this.accountability!.userAgent,
-						item: key,
-					}))
-				);
-
-				if (this.schema.collections[this.collection].accountability === 'all') {
-					const itemsService = new ItemsService(this.collection, {
+				// If this is an authenticated action, and accountability tracking is enabled, save activity row
+				if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
+					const activityService = new ActivityService({
 						knex: trx,
 						schema: this.schema,
 					});
 
-					const snapshots = await itemsService.readMany(keys);
+					const activity = await activityService.createMany(
+						keys.map((key) => ({
+							action: Action.UPDATE,
+							user: this.accountability!.user,
+							collection: this.collection,
+							ip: this.accountability!.ip,
+							user_agent: this.accountability!.userAgent,
+							item: key,
+						}))
+					);
 
-					const revisionsService = new RevisionsService({
-						knex: trx,
-						schema: this.schema,
-					});
+					if (this.schema.collections[this.collection].accountability === 'all') {
+						const itemsService = new ItemsService(this.collection, {
+							knex: trx,
+							schema: this.schema,
+						});
 
-					const revisions = (
-						await Promise.all(
-							activity.map(async (activity, index) => ({
-								activity: activity,
-								collection: this.collection,
-								item: keys[index],
-								data:
-									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
-								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
-							}))
-						)
-					).filter((revision) => revision.delta);
+						const snapshots = await itemsService.readMany(keys);
 
-					const revisionIDs = await revisionsService.createMany(revisions);
+						const revisionsService = new RevisionsService({
+							knex: trx,
+							schema: this.schema,
+						});
 
-					for (let i = 0; i < revisionIDs.length; i++) {
-						const revisionID = revisionIDs[i];
+						const revisions = (
+							await Promise.all(
+								activity.map(async (activity, index) => ({
+									activity: activity,
+									collection: this.collection,
+									item: keys[index],
+									data:
+										snapshots && Array.isArray(snapshots)
+											? JSON.stringify(snapshots[index])
+											: JSON.stringify(snapshots),
+									delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+								}))
+							)
+						).filter((revision) => revision.delta);
 
-						if (opts?.onRevisionCreate) {
-							opts.onRevisionCreate(revisionID);
-						}
+						const revisionIDs = await revisionsService.createMany(revisions);
 
-						if (i === 0) {
-							// In case of a nested relational creation/update in a updateMany, the nested m2o/a2o
-							// creation is only done once. We treat the first updated item as the "main" update,
-							// with all other revisions on the current level as regular "flat" updates, and
-							// nested revisions as children of this first "root" item.
-							if (childrenRevisions.length > 0) {
-								await revisionsService.updateMany(childrenRevisions, { parent: revisionID });
+						for (let i = 0; i < revisionIDs.length; i++) {
+							const revisionID = revisionIDs[i];
+
+							if (opts?.onRevisionCreate) {
+								opts.onRevisionCreate(revisionID);
+							}
+
+							if (i === 0) {
+								// In case of a nested relational creation/update in a updateMany, the nested m2o/a2o
+								// creation is only done once. We treat the first updated item as the "main" update,
+								// with all other revisions on the current level as regular "flat" updates, and
+								// nested revisions as children of this first "root" item.
+								if (childrenRevisions.length > 0) {
+									await revisionsService.updateMany(childrenRevisions, { parent: revisionID });
+								}
 							}
 						}
 					}
