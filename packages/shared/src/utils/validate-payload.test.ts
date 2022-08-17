@@ -30,11 +30,39 @@ describe('validatePayload', () => {
 			],
 		} as Filter;
 
-		const mockPayload = {
-			a: 0,
-			b: 0,
-		};
+		expect(
+			validatePayload(mockFilter, {
+				a: 0,
+				b: 0,
+			})
+		).toHaveLength(4);
 
-		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(4);
+		expect(
+			validatePayload(mockFilter, {
+				a: 0,
+				b: 1,
+			})
+		).toHaveLength(3);
+
+		expect(
+			validatePayload(mockFilter, {
+				a: 1,
+				b: 2,
+			})
+		).toHaveLength(2);
+
+		expect(
+			validatePayload(mockFilter, {
+				a: 1,
+				b: 1,
+			})
+		).toHaveLength(0);
+
+		expect(
+			validatePayload(mockFilter, {
+				a: 2,
+				b: 2,
+			})
+		).toHaveLength(0);
 	});
 });
