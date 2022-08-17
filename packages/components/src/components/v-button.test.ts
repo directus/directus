@@ -6,16 +6,7 @@ import { Directive, h } from 'vue';
 import { generateRouter } from '@/__utils__/router';
 import { Router } from 'vue-router';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';
-
-const Focus: Directive = {
-	mounted(el, binding) {
-		if (binding.value) {
-			el.focus();
-		} else {
-			el.blur();
-		}
-	},
-};
+import { Focus } from '@/__utils__/focus';
 
 let router: Router;
 

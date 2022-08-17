@@ -58,7 +58,6 @@ import VSelect from '@directus/components/v-select/v-select.vue';
 import VSheet from '@directus/components/v-sheet.vue';
 import VSkeletonLoader from '@directus/components/v-skeleton-loader.vue';
 import VSlider from '@directus/components/v-slider.vue';
-import VSwitch from '@directus/components/v-switch.vue';
 import VTable from './v-table/v-table.vue';
 import VTabs from '@directus/components/v-tabs.vue';
 import VTab from '@directus/components/v-tab.vue';

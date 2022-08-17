@@ -1,0 +1,3 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `"<button class=\\"v-switch\\" type=\\"button\\" role=\\"switch\\" aria-pressed=\\"false\\" disabled=\\"false\\" data-v-7d31220a=\\"\\"><span class=\\"switch\\" data-v-7d31220a=\\"\\"></span><span class=\\"label type-label\\" data-v-7d31220a=\\"\\"></span></button>"`;
