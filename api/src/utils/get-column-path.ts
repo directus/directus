@@ -15,6 +15,7 @@ export type ColPathProps = {
 /**
  * Converts a Directus field list path to the correct SQL names based on the constructed alias map.
  * For example: ['author', 'role', 'name'] -> 'ljnsv.name'
+ * Also returns the target collection of the column: 'directus_roles'
  */
 export function getColumnPath({ path, collection, aliasMap, relations }: ColPathProps) {
 	return followRelation(path);
@@ -23,7 +24,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 		pathParts: string[],
 		parentCollection: string = collection,
 		parentAlias?: string
-	): string | void {
+	): { columnPath: string; targetCollection: string } {
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 		 */
@@ -54,11 +55,13 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 		}
 
 		if (remainingParts.length === 1) {
-			return `${alias || parent}.${remainingParts[0]}`;
+			return { columnPath: `${alias || parent}.${remainingParts[0]}`, targetCollection: parent };
 		}
 
 		if (remainingParts.length) {
 			return followRelation(remainingParts, parent, alias);
 		}
+
+		return { columnPath: '', targetCollection: '' };
 	}
 }

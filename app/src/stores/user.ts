@@ -1,5 +1,5 @@
 import api from '@/api';
-import { useLatencyStore } from '@/stores';
+import { useLatencyStore } from '@/stores/latency';
 import { User } from '@directus/shared/types';
 import { userName } from '@/utils/user-name';
 import { defineStore } from 'pinia';

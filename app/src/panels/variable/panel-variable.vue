@@ -3,6 +3,7 @@
 		<component
 			:is="`interface-${inter}`"
 			v-bind="options"
+			:disabled="true"
 			:value="value"
 			:width="fieldWidth"
 			:type="type"
@@ -15,7 +16,7 @@
 <script lang="ts" setup>
 import { Type } from '@directus/shared/types';
 import { computed } from 'vue';
-import { useInsightsStore } from '@/stores';
+import { useInsightsStore } from '@/stores/insights';
 
 interface Props {
 	type: Type;

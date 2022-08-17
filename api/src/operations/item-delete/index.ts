@@ -47,9 +47,9 @@ export default defineOperationApi<Options>({
 			const keys = toArray(key);
 
 			if (keys.length === 1) {
-				result = await itemsService.deleteOne(keys[0], { emitEvents });
+				result = await itemsService.deleteOne(keys[0], { emitEvents: !!emitEvents });
 			} else {
-				result = await itemsService.deleteMany(keys, { emitEvents });
+				result = await itemsService.deleteMany(keys, { emitEvents: !!emitEvents });
 			}
 		}
 

@@ -19,7 +19,7 @@ type UsableAliasFields = {
 	};
 };
 
-export default function useAliasFields(fields: Ref<string[]>): UsableAliasFields {
+export function useAliasFields(fields: Ref<string[]>): UsableAliasFields {
 	const aliasFields = computed(() => {
 		if (!fields.value || fields.value.length === 0) return null;
 

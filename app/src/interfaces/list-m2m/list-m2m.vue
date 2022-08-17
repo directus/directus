@@ -81,19 +81,21 @@
 </template>
 
 <script setup lang="ts">
-import { useRelationM2M, useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
 import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item';
-import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, get, clamp } from 'lodash';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
@@ -108,6 +110,7 @@ const props = withDefaults(
 		enableSelect?: boolean;
 		filter?: Filter | null;
 		limit?: number;
+		allowDuplicates?: boolean;
 	}>(),
 	{
 		value: () => [],
@@ -117,6 +120,7 @@ const props = withDefaults(
 		enableSelect: true,
 		filter: () => null,
 		limit: 15,
+		allowDuplicates: false,
 	}
 );
 
@@ -285,7 +289,7 @@ const customFilter = computed(() => {
 
 	if (!isEmpty(customFilter)) filter._and.push(customFilter);
 
-	if (!relationInfo.value) return filter;
+	if (!relationInfo.value || props.allowDuplicates) return filter;
 
 	const reverseRelation = `$FOLLOW(${relationInfo.value.junctionCollection.collection},${relationInfo.value.junctionField.field})`;
 

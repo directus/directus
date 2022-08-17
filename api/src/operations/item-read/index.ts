@@ -48,9 +48,9 @@ export default defineOperationApi<Options>({
 			const keys = toArray(key);
 
 			if (keys.length === 1) {
-				result = await itemsService.readOne(keys[0], sanitizedQueryObject, { emitEvents });
+				result = await itemsService.readOne(keys[0], sanitizedQueryObject, { emitEvents: !!emitEvents });
 			} else {
-				result = await itemsService.readMany(keys, sanitizedQueryObject, { emitEvents });
+				result = await itemsService.readMany(keys, sanitizedQueryObject, { emitEvents: !!emitEvents });
 			}
 		}
 

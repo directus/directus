@@ -1,22 +1,20 @@
 import { setLanguage } from '@/lang/set-language';
 import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 import { getBasemapSources } from '@/utils/geometry/basemap';
-import {
-	useAppStore,
-	useCollectionsStore,
-	useFieldsStore,
-	useLatencyStore,
-	useInsightsStore,
-	useFlowsStore,
-	usePermissionsStore,
-	usePresetsStore,
-	useRelationsStore,
-	useRequestsStore,
-	useServerStore,
-	useSettingsStore,
-	useUserStore,
-	useNotificationsStore,
-} from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useLatencyStore } from '@/stores/latency';
+import { useInsightsStore } from '@/stores/insights';
+import { useFlowsStore } from '@/stores/flows';
+import { usePermissionsStore } from '@/stores/permissions';
+import { usePresetsStore } from '@/stores/presets';
+import { useRelationsStore } from '@/stores/relations';
+import { useRequestsStore } from '@/stores/requests';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useTranslationStrings } from '@/composables/use-translation-strings';
 
 type GenericStore = {

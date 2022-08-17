@@ -179,26 +179,32 @@
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
-				ref="revisionsDrawerDetail"
+				v-if="
+					isNew === false &&
+					loading === false &&
+					internalPrimaryKey &&
+					revisionsAllowed &&
+					accountabilityScope === 'all'
+				"
+				ref="revisionsDrawerDetailRef"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:scope="accountabilityScope"
 				@revert="revert"
 			/>
 			<comments-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 			/>
 			<shares-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:allowed="shareAllowed"
 			/>
 			<flow-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				location="item"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
@@ -208,21 +214,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ComponentPublicInstance, computed, ref, unref, toRefs } from 'vue';
+import { computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useEditsGuard from '@/composables/use-edits-guard';
-import useItem from '@/composables/use-item';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
-import useShortcut from '@/composables/use-shortcut';
-import useTemplateData from '@/composables/use-template-data';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useTemplateData } from '@/composables/use-template-data';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import SaveOptions from '@/views/private/components/save-options';
-import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/shared/composables';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -231,11 +237,12 @@ import ContentNotFound from './not-found.vue';
 interface Props {
 	collection: string;
 	primaryKey?: string | null;
-	singleton: boolean;
+	singleton?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	primaryKey: null,
+	singleton: false,
 });
 
 const { t, te } = useI18n();
@@ -247,7 +254,7 @@ const form = ref<HTMLElement>();
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
@@ -384,7 +391,7 @@ async function saveAndStay() {
 	try {
 		const savedItem: Record<string, any> = await save();
 
-		revisionsDrawerDetail.value?.refresh?.();
+		revisionsDrawerDetailRef.value?.refresh?.();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];

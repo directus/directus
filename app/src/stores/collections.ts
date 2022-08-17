@@ -1,9 +1,9 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/shared/types';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { getCollectionType } from '@directus/shared/utils';
-import { notEmpty } from '@/utils/is-empty/';
+import { notEmpty } from '@/utils/is-empty';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
@@ -25,6 +25,9 @@ export const useCollectionsStore = defineStore({
 		},
 		allCollections(): Collection[] {
 			return this.collections.filter(({ collection }) => collection.startsWith('directus_') === false);
+		},
+		databaseCollections(): Collection[] {
+			return this.allCollections.filter((collection) => collection.schema);
 		},
 		crudSafeSystemCollections(): Collection[] {
 			return orderBy(

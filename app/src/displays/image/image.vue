@@ -12,8 +12,6 @@
 </template>
 
 <script lang="ts">
-import { getRootPath } from '@/utils/get-root-path';
-import ValueNull from '@/views/private/components/value-null';
 import { computed, defineComponent, PropType, ref } from 'vue';
 
 type Image = {
@@ -23,7 +21,6 @@ type Image = {
 };
 
 export default defineComponent({
-	components: { ValueNull },
 	props: {
 		value: {
 			type: Object as PropType<Image>,
@@ -39,7 +36,7 @@ export default defineComponent({
 
 		const src = computed(() => {
 			if (props.value?.id === null || props.value?.id === undefined) return null;
-			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
+			return `/assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		return { src, imageError };

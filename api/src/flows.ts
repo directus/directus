@@ -135,6 +135,7 @@ class FlowManager {
 		const flows = await flowsService.readByQuery({
 			filter: { status: { _eq: 'active' } },
 			fields: ['*', 'operations.*'],
+			limit: -1,
 		});
 
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));

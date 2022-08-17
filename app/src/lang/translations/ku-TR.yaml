@@ -23,14 +23,18 @@ identifier: ناسەرەوە
 avatar: وێنۆچکە
 application: ئەپڵیکەیشن
 default_provider: بنەڕەتی
+method: ڕێگە
 published: بڵاوکراوە
 draft: ڕەشنوس
 archived: ئەرشیفکراو
 modules: مۆدیوڵەکان
 module_bar: شریتی مۆدیوڵەکان
+logs: تۆمار
+reset_width: ڕێکخستنەوەی پانی
 tile_size: قەبارەی خشت
 edit_field: دەستکاری خانە
 conditions: مەرجەکان
+location: شوێن
 maps: نەخشەکان
 switch_user: گۆڕینی بەکارهێنەر
 item_creation: دروستکردنی مادە

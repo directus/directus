@@ -138,6 +138,7 @@ validationError:
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
+nullable: Có thể rỗng
 allow_null_value: Cho phép NULL
 allow_multiple: Cho phép nhiều
 field_standard: Tiêu chuẩn
@@ -202,9 +203,14 @@ time: Thời gian
 timestamp: Mốc thời gian
 uuid: UUID
 hash: Hash
+geometry.Point: Point
+geometry.LineString: LineString
+geometry.Polygon: Polygon
+geometry.MultiPoint: MultiPoint
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
 auto_refresh: Tự động Làm mới
+refresh_interval_minutes: Mỗi phút | Mỗi {minutes} phút
 auto_generate: Tự khởi tạo
 this_will_auto_setup_fields_relations: Các trường và mối quan hệ bắt buộc sẽ được tự động tạo ra.
 click_here: Nhấn vào đây
@@ -293,6 +299,12 @@ delete_comment: Xóa Bình luận
 functions:
   year: Năm
   month: Tháng
+  week: Tuần
+  day: Ngày
+  weekday: Ngày trong tuần
+  hour: Giờ
+  minute: Phút
+  second: Giây
 minutes: Phút
 hours: Giờ
 month: Tháng
@@ -340,6 +352,7 @@ replace_from_library: Hoán đổi với Tập Tin từ Thư Viện
 replace_from_url: Hoán đổi với Tập Tin từ một Đường Dẫn
 no_file_selected: Chưa Có Tập Tin Nào Được Chọn
 download_file: Tải Xuống Tập Tin
+open_file_in_tab: Mở file trong tab mới
 collection_key: Khóa Của Danh Mục
 name: Tên
 primary_key_field: Khóa Chính
@@ -911,7 +924,7 @@ layouts:
     spacing: Khoảng cách
     comfortable: Thoải mái
     compact: Thu gọn
-    cozy: Ấm cúng
+    cozy: Khít
 panels:
   label:
     name: Nhãn

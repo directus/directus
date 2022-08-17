@@ -45,11 +45,12 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { useCollection } from '@directus/shared/composables';
-import { useSettingsStore, useServerStore } from '@/stores';
+import { useSettingsStore } from '@/stores/settings';
+import { useServerStore } from '@/stores/server';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
-import useShortcut from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({

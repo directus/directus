@@ -1137,6 +1137,8 @@ fields:
     transformations_all: Permetti tutte le trasformazioni
     transformations_none: Disabilita le trasformazioni
     transformations_presets: Limita le trasformazioni ai preset preimpostati
+    image_editor: Editor di immagini
+    custom_aspect_ratios: Rapporti d'aspetto personalizzati
   directus_shares:
     name: Nome
     role: Ruolo
@@ -1401,6 +1403,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1505,6 +1508,7 @@ interfaces:
     allow_none_label: Consenti nessuna selezione
     choices_name_placeholder: Inserisci un nome...
     choices_value_placeholder: Inserisci un valore...
+    preview_threshold: Soglia anteprima
   select-multiple-dropdown:
     select-multiple-dropdown: Menu a discesa (Multipla)
     description: Seleziona più valori da un menu a discesa

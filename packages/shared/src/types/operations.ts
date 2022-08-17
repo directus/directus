@@ -20,6 +20,7 @@ export interface OperationAppConfig {
 	name: string;
 	icon: string;
 	description?: string;
+
 	overview:
 		| ((
 				options: Record<string, any>,

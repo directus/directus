@@ -1,4 +1,4 @@
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
@@ -57,6 +57,15 @@ export function formatQuery({ collection, query }: QueryInfo): Record<string, an
 
 	if (query.deep) {
 		// TBD @TODO
+	}
+
+	if (query.filter) {
+		try {
+			const json = String(query.filter);
+			formattedQuery.__args.filter = JSON.parse(json);
+		} catch {
+			// Keep current value there
+		}
 	}
 
 	return formattedQuery;

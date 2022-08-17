@@ -1,4 +1,4 @@
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter as parseFilterShared } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';

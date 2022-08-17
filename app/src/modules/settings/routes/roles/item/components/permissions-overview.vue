@@ -65,7 +65,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, provide, watch } from 'vue';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@directus/shared/types';
@@ -96,11 +96,7 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 
-		const regularCollections = computed(() =>
-			collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false && collection.schema
-			)
-		);
+		const regularCollections = computed(() => collectionsStore.databaseCollections);
 
 		const systemCollections = computed(() =>
 			orderBy(

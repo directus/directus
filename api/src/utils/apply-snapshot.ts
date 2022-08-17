@@ -84,6 +84,30 @@ export async function applySnapshot(
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
 				if (diff?.[0].kind === 'D') {
+					const relations = schema.relations.filter(
+						(r) => r.related_collection === collection || r.collection === collection
+					);
+
+					if (relations.length > 0) {
+						const relationsService = new RelationsService({ knex: trx, schema });
+
+						for (const relation of relations) {
+							try {
+								await relationsService.deleteOne(relation.collection, relation.field);
+							} catch (err) {
+								logger.error(
+									`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
+								);
+								throw err;
+							}
+						}
+
+						// clean up deleted relations from existing schema
+						schema.relations = schema.relations.filter(
+							(r) => r.related_collection !== collection && r.collection !== collection
+						);
+					}
+
 					await deleteCollections(getNestedCollectionsToDelete(collection));
 
 					try {
@@ -96,12 +120,38 @@ export async function applySnapshot(
 			}
 		};
 
-		// create top level collections (no group) first, then continue with nested collections recursively
-		await createCollections(
-			snapshotDiff.collections.filter(
-				({ diff }) => diff[0].kind === 'N' && (diff[0] as DiffNew<Collection>).rhs.meta?.group === null
-			)
-		);
+		// Finds all collections that need to be created
+		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
+			// Check new collections only
+			const isNewCollection = diff[0].kind === 'N';
+			if (!isNewCollection) return false;
+
+			// Create now if no group
+			const groupName = (diff[0] as DiffNew<Collection>).rhs.meta?.group;
+			if (!groupName) return true;
+
+			// Check if parent collection already exists in schema
+			const parentExists = current.collections.find((c) => c.collection === groupName) !== undefined;
+			// If this is a new collection and the parent collection doesn't exist in current schema ->
+			// Check if the parent collection will be created as part of applying this snapshot ->
+			// If yes -> this collection will be created recursively
+			// If not -> create now
+			// (ex.)
+			// TopLevelCollection - I exist in current schema
+			// 		NestedCollection - I exist in snapshotDiff as a new collection
+			//			TheCurrentCollectionInIteration - I exist in snapshotDiff as a new collection but will be created as part of NestedCollection
+			const parentWillBeCreatedInThisApply =
+				snapshotDiff.collections.filter(({ collection, diff }) => diff[0].kind === 'N' && collection === groupName)
+					.length > 0;
+			// Has group, but parent is not new, parent is also not being created in this snapshot apply
+			if (parentExists && !parentWillBeCreatedInThisApply) return true;
+
+			return false;
+		};
+
+		// Create top level collections (no group, or highest level in existing group) first,
+		// then continue with nested collections recursively
+		await createCollections(snapshotDiff.collections.filter(filterCollectionsForCreation));
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
