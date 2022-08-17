@@ -75,6 +75,8 @@ const icon = computed<string>(() => {
 });
 
 function toggleInput(): void {
+	if (props.disabled) return;
+
 	if (props.indeterminate === true) {
 		emit('update:indeterminate', false);
 	}

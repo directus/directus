@@ -1,3 +1,9 @@
 // Vitest Snapshot v1
 
-exports[`Mount component 1`] = `"<button class=\\"v-switch\\" type=\\"button\\" role=\\"switch\\" aria-pressed=\\"false\\" disabled=\\"false\\" data-v-7d31220a=\\"\\"><span class=\\"switch\\" data-v-7d31220a=\\"\\"></span><span class=\\"label type-label\\" data-v-7d31220a=\\"\\"></span></button>"`;
+exports[`Mount component 1`] = `
+"<button class=\\"v-checkbox\\" type=\\"button\\" role=\\"checkbox\\" aria-pressed=\\"false\\" disabled=\\"false\\" data-v-d0be376c=\\"\\">
+  <!--v-if-->
+  <v-icon-stub class=\\"checkbox\\" name=\\"indeterminate_check_box\\" disabled=\\"false\\" data-v-d0be376c=\\"\\"></v-icon-stub><span class=\\"label type-text\\" data-v-d0be376c=\\"\\"><div>Hi</div></span>
+  <!--v-if-->
+</button>"
+`;
