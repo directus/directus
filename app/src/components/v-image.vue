@@ -25,15 +25,17 @@ const srcData = ref<string>(emptyPixel);
 
 let loaded = false;
 
-const observer = new IntersectionObserver(async (entries) => {
+const observer = new IntersectionObserver((entries) => {
 	if (entries.length === 0) return;
-	inView.value = entries[0].isIntersecting;
 
-	if (entries[0].isIntersecting && !loaded && props.src) {
+	const isIntersecting = entries.at(-1)!.isIntersecting;
+
+	inView.value = isIntersecting;
+
+	if (isIntersecting && !loaded && props.src) {
 		loadImage();
 	}
 });
-
 watch(
 	() => props.src,
 	() => {
