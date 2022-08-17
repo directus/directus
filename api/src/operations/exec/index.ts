@@ -1,6 +1,5 @@
 import { defineOperationApi, toArray } from '@directus/shared/utils';
 import { NodeVM, NodeVMOptions, VMScript } from 'vm2';
-import env from '../../env';
 
 type Options = {
 	code: string;
@@ -8,7 +7,7 @@ type Options = {
 
 export default defineOperationApi<Options>({
 	id: 'exec',
-	handler: async ({ code }, { data }) => {
+	handler: async ({ code }, { data, env }) => {
 		const allowedModules = env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [];
 
 		const opts: NodeVMOptions = {
