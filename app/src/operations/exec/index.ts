@@ -1,7 +1,7 @@
 import { useServerStore } from '@/stores/server';
 import { DeepPartial, Field } from '@directus/shared/types';
 import { defineOperationApp } from '@directus/shared/utils';
-import { useI18n } from 'vue-i18n';
+import { i18n } from '@/lang';
 
 export default defineOperationApp({
 	id: 'exec',
@@ -16,7 +16,7 @@ export default defineOperationApp({
 	// 	},
 	// ],
 	options: () => {
-		const { t } = useI18n();
+		const { t } = i18n.global;
 
 		const serverStore = useServerStore();
 
