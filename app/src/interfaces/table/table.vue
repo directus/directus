@@ -73,7 +73,7 @@ import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@directus/shared/types';
 import { i18n } from '@/lang';
 import { isEqual } from 'lodash';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
