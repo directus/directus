@@ -52,6 +52,17 @@ export default defineInterface({
 				default_value: 15,
 			},
 		},
+		{
+			field: 'allowDuplicates',
+			name: '$t:allow_duplicates',
+			schema: {
+				default_value: false,
+			},
+			meta: {
+				interface: 'boolean',
+				width: 'half',
+			},
+		},
 	],
 	preview: PreviewSVG,
 });

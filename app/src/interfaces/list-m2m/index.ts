@@ -152,6 +152,17 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'allowDuplicates',
+				name: '$t:allow_duplicates',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+			},
+			{
 				field: 'filter',
 				name: '$t:filter',
 				type: 'json',

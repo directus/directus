@@ -87,7 +87,11 @@ const treeList = computed(() => {
 });
 
 function filter(field: Field): boolean {
-	if (!includeRelations.value && (field.collection !== collection.value || field.type === 'alias')) return false;
+	if (
+		!includeRelations.value &&
+		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
+	)
+		return false;
 	if (!search.value) return true;
 	const children = fieldsStore.getFieldGroupChildren(collection.value, field.field);
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);

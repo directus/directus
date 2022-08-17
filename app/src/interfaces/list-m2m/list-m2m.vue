@@ -217,6 +217,7 @@ const props = withDefaults(
 		enableSearchFilter?: boolean;
 		enableLink?: boolean;
 		limit?: number;
+		allowDuplicates?: boolean;
 	}>(),
 	{
 		value: () => [],
@@ -231,6 +232,7 @@ const props = withDefaults(
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
+		allowDuplicates: false,
 	}
 );
 
@@ -495,7 +497,7 @@ const customFilter = computed(() => {
 
 	if (!isEmpty(customFilter)) filter._and.push(customFilter);
 
-	if (!relationInfo.value) return filter;
+	if (!relationInfo.value || props.allowDuplicates) return filter;
 
 	const reverseRelation = `$FOLLOW(${junctionCollection.value},${junctionField.value})`;
 
