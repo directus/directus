@@ -45,9 +45,7 @@ async function loadImage() {
 	try {
 		loaded = true;
 
-		const rootPath = getRootPath();
-
-		const res = await api.get(props.src.startsWith(rootPath) ? props.src.slice(rootPath.length) : props.src, {
+		const res = await api.get(props.src, {
 			responseType: 'arraybuffer',
 			params: {
 				download: true,
@@ -93,7 +91,6 @@ const attrsWithoutSrc = computed(() => omit(attrs, ['src']));
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
 	inheritAttrs: false,
