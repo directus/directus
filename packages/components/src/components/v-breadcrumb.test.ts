@@ -3,12 +3,10 @@ import { mount } from '@vue/test-utils';
 
 import VBreadcrumb from './v-breadcrumb.vue';
 import { h } from 'vue';
+import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
-const global = {
-	components: {
-		'v-icon': (props: any) => h('span', { class: 'icon' }, props.name),
-		'router-link': (props: any, { slots }: any) => h('a', { href: props.to }, slots),
-	},
+const global: GlobalMountOptions = {
+	stubs: ['v-icon', 'router-link'],
 };
 
 test('Mount component', () => {

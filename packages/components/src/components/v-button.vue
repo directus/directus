@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { RouteLocation, useRoute, useLink } from 'vue-router';
+import { RouteLocation, useRoute, useLink, useRouter } from 'vue-router';
 import { useSizeClass, useGroupable } from '../composables';
 import { isEqual, isNil } from 'lodash';
 
@@ -97,8 +97,10 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['click']);
 
 const route = useRoute();
+const router = useRouter();
 
 const { route: linkRoute, isActive, isExactActive } = useLink(props);
+
 const sizeClass = useSizeClass(props);
 
 const component = computed(() => {
@@ -147,7 +149,7 @@ const isActiveRoute = computed(() => {
 	return false;
 });
 
-function onClick(event: MouseEvent) {
+async function onClick(event: MouseEvent) {
 	if (props.loading === true) return;
 	// Toggles the active state in the parent groupable element. Allows buttons to work ootb in button-groups
 	toggle();

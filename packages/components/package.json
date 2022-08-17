@@ -11,7 +11,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest --coverage"
+		"test:watch": "vitest"
 	},
 	"author": "Nils Twelker",
 	"maintainers": [

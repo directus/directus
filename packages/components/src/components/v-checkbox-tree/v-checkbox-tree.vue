@@ -33,7 +33,7 @@ import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 interface Props {
 	choices?: Record<string, any>[];
 	modelValue?: (string | number)[];
-	valueCombining: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+	valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
 	search?: string | null;
 	itemText?: string;
 	itemValue?: string;

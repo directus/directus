@@ -3,11 +3,10 @@ import { mount } from '@vue/test-utils';
 
 import VBadge from './v-badge.vue';
 import { h } from 'vue';
+import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
-const global = {
-	components: {
-		'v-icon': (props: any) => h('span', { class: 'icon' }, props.name),
-	},
+const global: GlobalMountOptions = {
+	stubs: ['v-icon'],
 };
 
 test('Mount component', () => {
@@ -46,7 +45,7 @@ test('icon prop', () => {
 		global,
 	});
 
-	expect(wrapper.getComponent({ name: 'v-icon' }).text()).toBe('close');
+	expect(wrapper.get('v-icon-stub').attributes().name).toBe('close');
 });
 
 test('value prop', () => {
