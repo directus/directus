@@ -26,7 +26,7 @@ const srcData = ref<string>(emptyPixel);
 let loaded = false;
 
 const observer = new IntersectionObserver((entries) => {
-	if (entries && entries.length === 0) return;
+	if (entries.length === 0) return;
 
 	const isIntersecting = entries.at(-1)!.isIntersecting;
 
