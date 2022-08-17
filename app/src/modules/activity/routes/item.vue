@@ -85,7 +85,7 @@ export default defineComponent({
 		const error = ref<any>(null);
 
 		const openItemLink = computed(() => {
-			if (!item.value || item.value.collection.startsWith('directus_')) return;
+			if (!item.value || item.value.collection.startsWith('directus_') || item.value.action === 'Delete') return;
 			return `/content/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
