@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 interface Props {
-	value?: string | number | null;
+	value?: string | number | boolean | null;
 	dot?: boolean;
 	left?: boolean;
 	bottom?: boolean;

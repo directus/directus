@@ -20,132 +20,99 @@
 	</component>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { RouteLocation, useLink, useRoute } from 'vue-router';
-import { defineComponent, PropType, computed } from 'vue';
-import { useGroupable } from '@directus/components/composables';
+import { computed } from 'vue';
+import { useGroupable } from '../composables';
 import { isEqual } from 'lodash';
 
-export default defineComponent({
-	props: {
-		block: {
-			type: Boolean,
-			default: false,
-		},
-		dense: {
-			type: Boolean,
-			default: false,
-		},
-		to: {
-			type: [String, Object] as PropType<string | RouteLocation>,
-			default: '',
-		},
-		href: {
-			type: String,
-			default: undefined,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		clickable: {
-			type: Boolean,
-			default: false,
-		},
-		active: {
-			type: Boolean,
-			default: undefined,
-		},
-		dashed: {
-			type: Boolean,
-			default: false,
-		},
-		exact: {
-			type: Boolean,
-			default: false,
-		},
-		query: {
-			type: Boolean,
-			default: false,
-		},
-		download: {
-			type: String,
-			default: undefined,
-		},
-		value: {
-			type: [String, Number],
-			default: undefined,
-		},
-		nav: {
-			type: Boolean,
-			default: false,
-		},
-		scope: {
-			type: String,
-			default: 'v-list',
-		},
-	},
-	emits: ['click'],
-	setup(props, { emit }) {
-		const route = useRoute();
+interface Props {
+	block?: boolean;
+	dense?: boolean;
+	to?: string | RouteLocation;
+	href?: string;
+	disabled?: boolean;
+	clickable?: boolean;
+	active?: boolean;
+	dashed?: boolean;
+	exact?: boolean;
+	query?: boolean;
+	download?: string;
+	value?: number | string;
+	nav?: boolean;
+	scope?: string;
+}
 
-		const { route: linkRoute, isActive, isExactActive } = useLink(props);
-
-		const component = computed(() => {
-			if (props.to) return 'router-link';
-			if (props.href) return 'a';
-			return 'li';
-		});
-
-		const additionalProps = computed(() => {
-			if (props.to) {
-				return {
-					to: props.to,
-				};
-			}
-
-			if (component.value === 'a') {
-				return {
-					href: props.href,
-					target: '_blank',
-					rel: 'noopener noreferrer',
-				};
-			}
-
-			return {};
-		});
-
-		useGroupable({
-			value: props.value,
-			group: props.scope,
-		});
-
-		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
-
-		const isActiveRoute = computed(() => {
-			if (props.active !== undefined) return props.active;
-
-			if (props.to) {
-				const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
-
-				if (!props.exact) {
-					return isActive.value && isQueryActive;
-				} else {
-					return isExactActive.value && isQueryActive;
-				}
-			}
-
-			return false;
-		});
-
-		return { component, additionalProps, isLink, isActiveRoute, onClick };
-
-		function onClick(event: PointerEvent) {
-			if (props.disabled === true) return;
-			emit('click', event);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	block: false,
+	dense: false,
+	to: '',
+	disabled: false,
+	clickable: false,
+	dashed: false,
+	exact: false,
+	query: false,
+	nav: false,
+	scope: 'v-list',
 });
+
+const emit = defineEmits(['click']);
+
+const route = useRoute();
+
+const { route: linkRoute, isActive, isExactActive } = useLink(props);
+
+const component = computed(() => {
+	if (props.to) return 'router-link';
+	if (props.href) return 'a';
+	return 'li';
+});
+
+const additionalProps = computed(() => {
+	if (props.to) {
+		return {
+			to: props.to,
+		};
+	}
+
+	if (component.value === 'a') {
+		return {
+			href: props.href,
+			target: '_blank',
+			rel: 'noopener noreferrer',
+		};
+	}
+
+	return {};
+});
+
+useGroupable({
+	value: props.value,
+	group: props.scope,
+});
+
+const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
+
+const isActiveRoute = computed(() => {
+	if (props.active !== undefined) return props.active;
+
+	if (props.to) {
+		const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+
+		if (!props.exact) {
+			return isActive.value && isQueryActive;
+		} else {
+			return isExactActive.value && isQueryActive;
+		}
+	}
+
+	return false;
+});
+
+function onClick(event: PointerEvent) {
+	if (props.disabled === true) return;
+	emit('click', event);
+}
 </script>
 
 <style>

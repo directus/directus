@@ -40,9 +40,9 @@
 
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
-import { useElementSize } from '@directus/components/composables';
+import { useElementSize } from '../composables';
 import { AppTile } from './v-workspace-tile.vue';
-import { cssVar } from '@directus/components/utils';
+import { cssVar } from '../utils';
 
 const props = withDefaults(
 	defineProps<{

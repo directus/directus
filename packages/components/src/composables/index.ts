@@ -7,3 +7,4 @@ export * from './use-system';
 export * from './use-size-class';
 export * from './use-groupable';
 export * from './use-element-size';
+export * from './use-custom-selection';
