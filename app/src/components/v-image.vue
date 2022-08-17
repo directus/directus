@@ -26,17 +26,16 @@ const srcData = ref<string>(emptyPixel);
 let loaded = false;
 
 const observer = new IntersectionObserver((entries) => {
-	if (entries.length === 0) return;
+	if (entries && entries.length === 0) return;
 
-	entries.forEach((entry) => {
-		inView.value = entry.isIntersecting;
+	const isIntersecting = entries.at(-1)!.isIntersecting;
 
-		if (entry.isIntersecting && !loaded && props.src) {
-			loadImage();
-		}
-	});
+	inView.value = isIntersecting;
+
+	if (isIntersecting && !loaded && props.src) {
+		loadImage();
+	}
 });
-
 watch(
 	() => props.src,
 	() => {
