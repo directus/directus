@@ -54,6 +54,8 @@ export const useServerStore = defineStore('serverStore', () => {
 		directus: undefined,
 		node: undefined,
 		os: undefined,
+		rateLimiter: undefined,
+		flows: undefined,
 	});
 
 	const auth = reactive<Auth>({
