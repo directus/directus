@@ -369,14 +369,16 @@ export function applyFilter(
 
 					validateFilterOperator(
 						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
-						filterOperator
+						filterOperator,
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
 					);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
 					validateFilterOperator(
 						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
-						filterOperator
+						filterOperator,
+						schema.collections[collection].fields[stripFunction(filterPath[0])].special
 					);
 
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
@@ -415,7 +417,7 @@ export function applyFilter(
 			}
 		}
 
-		function validateFilterOperator(type: Type, filterOperator: string) {
+		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
 			if (filterOperator.startsWith('_')) {
 				filterOperator = filterOperator.slice(1);
 			}
@@ -423,6 +425,15 @@ export function applyFilter(
 			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
 				throw new InvalidQueryException(
 					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
+				);
+			}
+
+			if (
+				special.includes('conceal') &&
+				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
+			) {
+				throw new InvalidQueryException(
+					`Field with "conceal" special does not allow the "_${filterOperator}" filter operator`
 				);
 			}
 		}

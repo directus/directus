@@ -111,7 +111,7 @@
 		</div>
 
 		<drawer-collection
-			v-if="!disabled"
+			v-if="!disabled && selectingFrom"
 			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
@@ -160,6 +160,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		limit?: number;
+		allowDuplicates?: boolean;
 	}>(),
 	{
 		value: () => [],
@@ -167,6 +168,7 @@ const props = withDefaults(
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
+		allowDuplicates: false,
 	}
 );
 
@@ -329,7 +331,7 @@ function getCollectionName(item: DisplayItem) {
 const customFilter = computed(() => {
 	const info = relationInfo.value;
 
-	if (!info || !selectingFrom.value) return {};
+	if (!info || !selectingFrom.value || props.allowDuplicates) return {};
 
 	const filter: Filter = {
 		_and: [],

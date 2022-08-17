@@ -187,32 +187,36 @@ router.get(
 			return res.end();
 		}
 
-		stream.on('data', (chunk) => res.write(chunk));
+		let isDataSent = false;
+
+		stream.on('data', (chunk) => {
+			isDataSent = true;
+			res.write(chunk);
+		});
 
 		stream.on('end', () => {
-			res.status(200).send();
+			res.end();
 		});
 
 		stream.on('error', (e) => {
 			logger.error(e, `Couldn't stream file ${file.id} to the client`);
 
-			stream.unpipe(res);
+			if (!isDataSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
 
-			res.removeHeader('Content-Disposition');
-			res.removeHeader('Content-Type');
-			res.removeHeader('Content-Disposition');
-			res.removeHeader('Cache-Control');
-
-			res.status(500).json({
-				errors: [
-					{
-						message: 'An unexpected error occurred.',
-						extensions: {
-							code: 'INTERNAL_SERVER_ERROR',
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
 						},
-					},
-				],
-			});
+					],
+				});
+			}
 		});
 	})
 );

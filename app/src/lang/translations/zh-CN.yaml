@@ -1736,6 +1736,7 @@ displays:
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
     suffix: 后缀
+    strict_note: 删除像‘几乎’，‘超过’，‘小于’ 这样的单词
   file:
     file: 文件
     description: 显示文件
@@ -1846,6 +1847,10 @@ layouts:
     find_location: 搜索地点
     default_template: 使用Collection默认值
     no_compatible_fields: 没有兼容的字段
+  kanban:
+    title: 卡片标题
+    image_fit: 卡片图像匹配
+    show_ungrouped: 显示未分组
 panels:
   metric:
     name: 公制
@@ -1864,6 +1869,9 @@ panels:
   list:
     name: 列表
     description: 筛选并列出表模型中的字段
+  barchart:
+    name: 条形图
+    description: 比较数值组的条形图或柱形图
 triggers:
   webhook:
     method: 方法

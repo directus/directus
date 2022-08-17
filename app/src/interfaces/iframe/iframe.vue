@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, computed } from 'vue';
-import useItem from '@/composables/use-item';
+import { useItem } from '@/composables/use-item';
 import { Field } from '@directus/shared/types';
 import { renderStringTemplate } from '@/utils/render-string-template';
 
