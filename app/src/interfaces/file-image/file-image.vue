@@ -36,7 +36,7 @@
 					<v-icon name="zoom_in" />
 				</v-button>
 				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
-					<v-icon name="get_app" />
+					<v-icon name="file_download" />
 				</v-button>
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />

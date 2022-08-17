@@ -67,7 +67,7 @@
 			</v-dialog>
 
 			<v-button v-tooltip.bottom="t('download')" rounded icon secondary @click="downloadFile">
-				<v-icon name="save_alt" />
+				<v-icon name="file_download" />
 			</v-button>
 
 			<v-button
