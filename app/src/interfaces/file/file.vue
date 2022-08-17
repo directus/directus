@@ -149,6 +149,7 @@ import { addQueryToPath } from '@/utils/add-query-to-path';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
 import { Filter } from '@directus/shared/types';
+import { getRootPath } from '@/utils/get-root-path';
 
 type FileInfo = {
 	id: string;
@@ -204,7 +205,7 @@ const fileExtension = computed(() => {
 
 const assetURL = computed(() => {
 	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return '/assets/' + id;
+	return getRootPath() + 'assets/' + id;
 });
 
 const imageThumbnail = computed(() => {
