@@ -25,6 +25,9 @@ export default async function teardown(jestConfig?: GlobalConfigTsJest, _isAfter
 								task: async () => {
 									const directus = global.directus[vendor];
 									directus!.kill();
+
+									const directusNoCache = global.directusNoCache[vendor];
+									directusNoCache!.kill();
 								},
 							};
 						}),
