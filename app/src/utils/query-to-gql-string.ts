@@ -59,5 +59,14 @@ export function formatQuery({ collection, query }: QueryInfo): Record<string, an
 		// TBD @TODO
 	}
 
+	if (query.filter) {
+		try {
+			const json = String(query.filter);
+			formattedQuery.__args.filter = JSON.parse(json);
+		} catch {
+			// Keep current value there
+		}
+	}
+
 	return formattedQuery;
 }

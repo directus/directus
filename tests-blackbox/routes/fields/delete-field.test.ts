@@ -25,6 +25,8 @@ describe('Seed Database Values', () => {
 });
 
 describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
+	common.DisableTestCachingSetup();
+
 	const localCollectionCountries = `${collectionCountries}_${pkType}`;
 	const localCollectionStates = `${collectionStates}_${pkType}`;
 
@@ -68,4 +70,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 			});
 		});
 	});
+
+	common.ClearCaches();
 });
