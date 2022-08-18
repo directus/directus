@@ -627,6 +627,7 @@ create: ایجاد
 update: بروزرسانی
 delete: حذف
 flow_name: نام
+code: کد
 insights: بینش های داده ای
 dashboard: پیشخوان
 panel: پنل
