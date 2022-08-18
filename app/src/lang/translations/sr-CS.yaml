@@ -532,6 +532,7 @@ trigger: Okidač
 flow_name: Ime
 flow_tracking_activity: Samo Prati Aktivnost
 flow_tracking_null: Bez praćenja
+code: Kod
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
