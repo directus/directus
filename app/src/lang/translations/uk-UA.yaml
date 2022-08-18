@@ -739,6 +739,7 @@ trigger: Тригер
 flow_name: Назва
 flow_tracking_activity: Лише відстежувати діяльність
 flow_tracking_null: Нічого не відслідковувати
+code: Код
 insights: Статистика
 dashboard: Панель приладів
 panel: Панель
