@@ -752,6 +752,7 @@ start_flow: Запустить Поток
 stop_flow: Остановить Поток
 create_operation: Создать новую операцию
 edit_operation: Изменить операцию
+code: Код
 operation_options: Параметры операции
 operation_name: Название операции...
 operation_key_unique_error: Ключи операции должны быть уникальными в Потоке
