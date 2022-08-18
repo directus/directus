@@ -4,8 +4,8 @@ jest.mock('../../src/cache');
 jest.mock('../../src/database');
 jest.mock('../../src/utils/validate-env');
 
-import { multipartHandler } from '../../src/controllers/files';
-import { InvalidPayloadException } from '../../src/exceptions/invalid-payload';
+import { multipartHandler } from './files';
+import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import { PassThrough } from 'stream';
 
 import FormData from 'form-data';

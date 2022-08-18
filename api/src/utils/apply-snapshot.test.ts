@@ -1,11 +1,17 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { snapshotApplyTestSchema } from '../__test-utils__/schemas';
+import { snapshotApplyTestSchema } from '../__utils__/schemas';
 
-import { applySnapshot } from '../../src/utils/apply-snapshot';
-import { testSnapshotToApply, testSnapshotBefore, testSnapshotToApplyNotNested } from '../__test-utils__/snapshots';
-import { CollectionsService, FieldsService } from '../../src/services';
-import * as getSchema from '../../src/utils/get-schema';
+import { CollectionsService, FieldsService } from '../services';
+import { applySnapshot } from './apply-snapshot';
+import * as getSchema from './get-schema';
+import {
+	snapshotBeforeCreateCollection,
+	snapshotCreateCollection,
+	snapshotCreateCollectionNotNested,
+	snapshotBeforeDeleteCollection,
+} from '../__utils__/snapshots';
+import { Snapshot } from '../types';
 
 jest.mock('../../src/database/index', () => {
 	return {
@@ -103,9 +109,9 @@ describe('applySnapshot', () => {
 				.mockImplementation(jest.fn());
 			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
 
-			await applySnapshot(testSnapshotToApplyNotNested, {
+			await applySnapshot(snapshotCreateCollectionNotNested, {
 				database: db,
-				current: testSnapshotBefore,
+				current: snapshotBeforeCreateCollection,
 				schema: snapshotApplyTestSchema,
 			});
 
@@ -252,9 +258,9 @@ describe('applySnapshot', () => {
 				.mockImplementation(jest.fn());
 			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
 
-			await applySnapshot(testSnapshotToApply, {
+			await applySnapshot(snapshotCreateCollection, {
 				database: db,
-				current: testSnapshotBefore,
+				current: snapshotBeforeCreateCollection,
 				schema: snapshotApplyTestSchema,
 			});
 
@@ -265,6 +271,33 @@ describe('applySnapshot', () => {
 			// There should be no fields left to create
 			// they will get filtered in createCollections
 			expect(createFieldSpy).toHaveBeenCalledTimes(0);
+		});
+	});
+
+	describe('Delete collections', () => {
+		it('Deletes interrelated collections', async () => {
+			const snapshotToApply: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				relations: [],
+			};
+
+			// Stop call to db later on in apply-snapshot
+			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			// We are not actually testing that deleteOne works, just that is is called correctly
+			const deleteOneCollectionSpy = jest
+				.spyOn(CollectionsService.prototype, 'deleteOne')
+				.mockImplementation(jest.fn());
+
+			await applySnapshot(snapshotToApply, {
+				database: db,
+				current: snapshotBeforeDeleteCollection,
+				schema: snapshotApplyTestSchema,
+			});
+
+			expect(deleteOneCollectionSpy).toHaveBeenCalledTimes(3);
 		});
 	});
 });
