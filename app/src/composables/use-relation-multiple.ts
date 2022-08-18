@@ -365,6 +365,7 @@ export function useRelationMultiple(
 
 				const response = await api.get(getEndpoint(targetCollection), {
 					params: {
+						search: previewQuery.value.search,
 						fields: Array.from(fields),
 						filter,
 						page: previewQuery.value.page,
