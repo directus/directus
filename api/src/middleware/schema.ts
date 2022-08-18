@@ -3,8 +3,6 @@ import asyncHandler from '../utils/async-handler';
 import { getSchema } from '../utils/get-schema';
 
 const schema: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (req.path?.startsWith('/server/ping') === true) return next();
-
 	req.schema = await getSchema({ accountability: req.accountability });
 	return next();
 });
