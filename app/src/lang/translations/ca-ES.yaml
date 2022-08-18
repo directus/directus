@@ -736,6 +736,7 @@ trigger: Disparador
 flow_name: Nom
 flow_tracking_activity: Només traça l'activitat
 flow_tracking_null: No tracis res
+code: Codi
 full_screen: Pantalla completa
 image_url: URL de la imatge
 alt_text: Text alternatiu
