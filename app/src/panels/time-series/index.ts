@@ -187,7 +187,7 @@ export default definePanel({
 				options: {
 					choices: [
 						{
-							text: 'Automatic (Select range by filter)',
+							text: 'Automatic (Based on data)',
 							value: 'auto',
 						},
 						{

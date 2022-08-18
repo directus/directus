@@ -120,8 +120,8 @@ function setupChart() {
 		return new Date(toISO(metric.group)).getTime();
 	});
 
-	const minDate = Math.min(...allDates);
-	const maxDate = Math.max(...allDates);
+	const minDate = Math.min(...allDates) - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0);
+	const maxDate = Math.max(...allDates) - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0);
 
 	metrics.value = orderBy(
 		props.data.map((metric) => ({
