@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VRadio from '../src/components/v-radio.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VRadio',
+    component: VRadio,
     argTypes: {
 
     },
@@ -13,9 +13,12 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-radio v-bind="args"/>',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
+    value: '1',
+    label: 'My Radio',
+    modelValue: '1'
 };

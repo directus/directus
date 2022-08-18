@@ -1,11 +1,11 @@
-import VButton from '../src/components/v-button.vue';
+import VChip from '../src/components/v-chip.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VChip',
+    component: VChip,
     argTypes: {
-
+        close: { 'control': 'boolean' }
     },
 };
 
@@ -13,7 +13,7 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-chip v-bind="args" >Cake</v-chip>',
 });
 
 export const Primary = Template.bind({});

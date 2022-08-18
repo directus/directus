@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VCheckbox from '../src/components/v-checkbox.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VCheckbox',
+    component: VCheckbox,
     argTypes: {
 
     },
@@ -13,9 +13,10 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-checkbox v-bind="args" >My Checkbox</v-checkbox>',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
+    modelValue: true
 };

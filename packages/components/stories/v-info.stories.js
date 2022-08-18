@@ -1,0 +1,23 @@
+import VInfo from '../src/components/v-info.vue';
+document.body.classList.add('light')
+
+export default {
+    title: 'Example/VInfo',
+    component: VInfo,
+    argTypes: {
+
+    },
+};
+
+const Template = (args) => ({
+    setup() {
+        return { args };
+    },
+    template: '<v-info v-bind="args" >You have sadly eaten all the cookies!</v-info>',
+});
+
+export const Primary = Template.bind({});
+Primary.args = {
+    title: 'No more cookies',
+    icon: 'cookie'
+};

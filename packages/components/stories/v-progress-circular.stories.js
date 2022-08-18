@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VProgressCircular from '../src/components/v-progress-circular.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VProgressCircular',
+    component: VProgressCircular,
     argTypes: {
 
     },
@@ -13,9 +13,10 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-progress-circular v-bind="args" />',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
+    value: 70
 };

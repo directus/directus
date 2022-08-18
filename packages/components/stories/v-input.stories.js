@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VInput from '../src/components/v-input.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VInput',
+    component: VInput,
     argTypes: {
 
     },
@@ -13,9 +13,11 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-input v-bind="args" />',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
+    modelValue: 'Shut up and take my money. 💸',
+    disabled: false
 };

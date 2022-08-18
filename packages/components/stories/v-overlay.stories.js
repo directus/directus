@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VOverlay from '../src/components/v-overlay.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VOverlay',
+    component: VOverlay,
     argTypes: {
 
     },
@@ -13,9 +13,10 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<div>This is hidden behind the overlay.</div><v-overlay v-bind="args" />',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
+    active: true
 };

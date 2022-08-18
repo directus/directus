@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VDivider from '../src/components/v-divider.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VDivider',
+    component: VDivider,
     argTypes: {
 
     },
@@ -13,7 +13,7 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-divider v-bind="args" />',
 });
 
 export const Primary = Template.bind({});

@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VIconFile from '../src/components/v-icon-file.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VIconFile',
+    component: VIconFile,
     argTypes: {
 
     },
@@ -13,9 +13,10 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-icon-file v-bind="args" >My Button</v-icon-file>',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
+    ext: "png"
 };

@@ -113,7 +113,7 @@ export function register(app) {
 	app.component('VPagination', VPagination);
 	app.component('VProgressCircular', VProgressCircular);
 	app.component('VProgressLinear', VProgressLinear);
-	// app.component('VRadio', VRadio);
+	app.component('VRadio', VRadio);
 	app.component('VSelect', VSelect);
 	app.component('VSheet', VSheet);
 	app.component('VSkeletonLoader', VSkeletonLoader);

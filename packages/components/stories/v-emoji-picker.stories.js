@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VEmojiPicker from '../src/components/v-emoji-picker.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VEmojiPicker',
+    component: VEmojiPicker,
     argTypes: {
 
     },
@@ -13,7 +13,7 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-emoji-picker v-bind="args" >My Button</v-emoji-picker>',
 });
 
 export const Primary = Template.bind({});

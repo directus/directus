@@ -1,9 +1,9 @@
-import VButton from '../src/components/v-button.vue';
+import VSheet from '../src/components/v-sheet.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
-    component: VButton,
+    title: 'Example/VSheet',
+    component: VSheet,
     argTypes: {
 
     },
@@ -13,7 +13,7 @@ const Template = (args) => ({
     setup() {
         return { args };
     },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+    template: '<v-sheet v-bind="args" >This is some wanky sheet that is not even used inside Directus.</v-sheet>',
 });
 
 export const Primary = Template.bind({});
