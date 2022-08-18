@@ -791,6 +791,7 @@ start_flow: Flow starten
 stop_flow: Flow stoppen
 create_operation: Operation erstellen
 edit_operation: Operation bearbeiten
+code: Code
 insights: Einblicke
 dashboard: Dashboard
 panel: Panel
@@ -1991,7 +1992,6 @@ operations:
     body: Inhalt
   notification:
     name: Benachrichtigung senden
-    description: In-app Benachrichtigung an Benutzer senden
     recipient: Benutzer
     message: Nachricht
   request:
