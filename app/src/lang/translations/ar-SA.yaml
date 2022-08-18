@@ -672,6 +672,7 @@ label: تسمية
 flow_name: الاسم
 flow_tracking_activity: تتبع النشاط فقط
 flow_tracking_null: عدم تتبع أي شيء
+code: نص برمجي
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
