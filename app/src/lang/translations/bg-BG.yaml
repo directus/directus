@@ -1405,6 +1405,8 @@ value: Стойност
 view_project: Преглед на проекта
 report_error: Докладване на грешка
 start: Начало
+table: Таблица
+list: Списък
 interfaces:
   filter:
     name: Филтриране
@@ -1484,6 +1486,8 @@ interfaces:
     set_to_now: Сегашно време
     use_24: Използване на 24 часов формат
     placeholder: Избор на дата и час...
+  system-fields:
+    select_a_collection: Избор на колекция
   system-display-template:
     display-template: Шаблон при показване
     description: Комбиниране на статичен текст и динамични стойности от полета
