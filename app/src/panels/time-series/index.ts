@@ -12,6 +12,31 @@ export default definePanel({
 			return;
 		}
 
+		const filter = () => {
+			if (options.range === 'auto') {
+				if (options.filter) {
+					return options.filter;
+				}
+				return {};
+			}
+
+			return {
+				_and: [
+					{
+						[options.dateField]: {
+							_gte: `$NOW(-${options.range || '1 week'})`,
+						},
+					},
+					{
+						[options.dateField]: {
+							_lte: `$NOW`,
+						},
+					},
+					options.filter || {},
+				],
+			};
+		};
+
 		return {
 			collection: options.collection,
 			query: {
@@ -19,21 +44,7 @@ export default definePanel({
 				aggregate: {
 					[options.function]: [options.valueField],
 				},
-				filter: {
-					_and: [
-						{
-							[options.dateField]: {
-								_gte: `$NOW(-${options.range || '1 week'})`,
-							},
-						},
-						{
-							[options.dateField]: {
-								_lte: `$NOW`,
-							},
-						},
-						options.filter || {},
-					],
-				},
+				filter: filter(),
 				limit: -1,
 			},
 		};
@@ -175,6 +186,10 @@ export default definePanel({
 				width: 'half',
 				options: {
 					choices: [
+						{
+							text: 'Automatic (Select range by filter)',
+							value: 'auto',
+						},
 						{
 							text: 'Past 5 Minutes',
 							value: '5 minutes',
