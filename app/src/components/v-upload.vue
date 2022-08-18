@@ -96,6 +96,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { DrawerCollection },
@@ -136,8 +137,8 @@ export default defineComponent({
 		const activeDialog = ref<'choose' | 'url' | null>(null);
 
 		const filterByFolder = computed(() => {
-			if (!props.folder) return null;
-			return { folder: { id: { _eq: props.folder } } };
+			if (!props.folder) return undefined;
+			return { folder: { id: { _eq: props.folder } } } as Filter;
 		});
 
 		return {
