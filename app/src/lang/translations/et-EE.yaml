@@ -555,6 +555,7 @@ trigger: Päästik
 flow_name: Nimi
 flow_tracking_activity: Jälgi ainult aktiivsust
 flow_tracking_null: Ära jälgi midagi
+code: Kood
 full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
