@@ -1405,6 +1405,8 @@ value: Valore
 view_project: Visualizza Progetto
 report_error: Segnala l'errore
 start: Inizio
+table: Tabella
+list: Elenco
 interfaces:
   filter:
     name: Filtro
@@ -1484,6 +1486,8 @@ interfaces:
     set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
     placeholder: Scegli data e ora...
+  system-fields:
+    select_a_collection: Seleziona una Raccolta
   system-display-template:
     display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
