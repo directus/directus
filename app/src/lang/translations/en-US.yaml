@@ -805,6 +805,7 @@ start_flow: Start Flow
 stop_flow: Stop Flow
 create_operation: Create Operation
 edit_operation: Edit Operation
+code: Code
 operation_options: Operation Options
 operation_name: Name of operation...
 operation_key: Identifier for reference...
@@ -2064,6 +2065,10 @@ operations:
   condition:
     name: Condition
     description: Route a flow based on If / Else logic
+  exec:
+    name: Run Script
+    description: Execute arbitrary code to modify the payload
+    modules: 'The following **Node modules** can be used:'
   item-create:
     name: Create Data
     description: Create items in the database
