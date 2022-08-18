@@ -1289,6 +1289,8 @@ value: Værdi
 view_project: Vis Projekt
 report_error: Fejl I Rapport
 start: Start
+table: Tabel
+list: Liste
 interfaces:
   filter:
     name: Filtrer
@@ -1367,6 +1369,8 @@ interfaces:
     set_to_now: Indstil til nu
     use_24: Brug 24-timers Format
     placeholder: Vælg en datetime...
+  system-fields:
+    select_a_collection: Vælg en samling
   system-display-template:
     display-template: Vis Skabelon
     description: Bland statisk tekst og dynamiske feltværdier
