@@ -37,6 +37,7 @@ RUN apk add --update python3 make g++\
 
 RUN npm install -g pnpm
 RUN pnpm install
+RUN pnpm -r build
 
 WORKDIR /directus/api
 
