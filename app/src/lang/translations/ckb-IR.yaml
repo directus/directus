@@ -1405,6 +1405,8 @@ value: بەها
 view_project: بینینی پڕۆژە
 report_error: ڕاپۆرتی هەڵە
 start: دەستپێکردن
+table: خشتە
+list: لیست
 interfaces:
   filter:
     name: پاڵاوتن
@@ -1484,6 +1486,8 @@ interfaces:
     set_to_now: ئێستا دابنێ
     use_24: داڕشتنی 24 کاتژمێری دابنێ
     placeholder: کات و ڕێکەوت هەڵبژێرە...
+  system-fields:
+    select_a_collection: کۆمەڵەیەک هەڵبژێرە
   system-display-template:
     display-template: پیشاندانی قاڵب
     description: تێکەڵکردنی دەقی جێگیر و بەهاکانی خانەی گۆڕاو
