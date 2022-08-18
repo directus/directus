@@ -757,6 +757,7 @@ start_flow: Iniciar fluxo
 stop_flow: Parar fluxo
 create_operation: Criar operação
 edit_operation: Editar operação
+code: Código
 operation_options: Opções de operação
 operation_name: Nome da operação...
 operation_key: Identificador de referência...
