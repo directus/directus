@@ -571,6 +571,7 @@ icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
 flow_name: Tên
+code: Mã nguồn
 dashboard: Bảng điều khiển
 panel: Bảng
 panel_options: Tùy chọn Bảng
