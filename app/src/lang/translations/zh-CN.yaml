@@ -1403,6 +1403,8 @@ value: 值
 view_project: 查看项目
 report_error: 报告错误
 start: 开始
+table: 表
+list: 列表
 interfaces:
   filter:
     name: 筛选
@@ -1482,6 +1484,8 @@ interfaces:
     set_to_now: 设置为现在
     use_24: 使用24小时格式
     placeholder: 选择日期时间...
+  system-fields:
+    select_a_collection: 选择模型
   system-display-template:
     display-template: 显示模板
     description: 混合静态文本和动态字段值
