@@ -665,6 +665,7 @@ trigger: Laukaisija
 flow_name: Nimi
 flow_tracking_activity: Seuraa vain tapahtumia
 flow_tracking_null: Älä seuraa mitään
+code: Koodi
 insights: Yleiskatsaus
 dashboard: Kojelauta
 panel: Paneeli
