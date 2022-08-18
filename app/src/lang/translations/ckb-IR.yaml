@@ -793,6 +793,7 @@ start_flow: لێشاو دەستپێبکە
 stop_flow: لێشاو ڕابگرە
 create_operation: دروستکردنی کردار
 edit_operation: دەستکاری کردار
+code: کۆد
 operation_options: بژاردەکانی کردار
 operation_name: ناوی کردار...
 operation_key: پێناسە بۆ سەرچاوە...
