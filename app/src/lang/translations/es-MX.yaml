@@ -757,6 +757,7 @@ trigger: Disparador
 flow_name: Nombre
 flow_tracking_activity: Sólo seguimiento de actividad
 flow_tracking_null: No realizar seguimiento
+code: Código
 insights: Informes
 dashboard: Panel de control
 panel: Panel
