@@ -7,6 +7,8 @@ import { getCacheKey } from '../utils/get-cache-key';
 import logger from '../logger';
 
 const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
+	if (req.path?.startsWith('/server/ping') === true) return next();
+
 	const { cache } = getCache();
 
 	if (req.method.toLowerCase() !== 'get' && req.path?.startsWith('/graphql') === false) return next();
