@@ -724,6 +724,7 @@ label: Label
 flow_name: Nama
 flow_tracking_activity: Hanya Aktifitas Melacak
 flow_tracking_null: Jangan Lacak Apapun
+code: Kode
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
