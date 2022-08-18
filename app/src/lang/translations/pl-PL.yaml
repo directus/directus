@@ -1403,6 +1403,8 @@ value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
 start: Rozpocznij
+table: Tabela
+list: Lista
 interfaces:
   filter:
     name: Filtr
@@ -1482,6 +1484,8 @@ interfaces:
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
     placeholder: Wybierz datę...
+  system-fields:
+    select_a_collection: Wybierz kolekcje
   system-display-template:
     display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
