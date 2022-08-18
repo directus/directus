@@ -793,6 +793,7 @@ start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
 edit_operation: Modifier l'Opération
+code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
 operation_key: Identifiant pour référence...
@@ -2015,7 +2016,6 @@ triggers:
     collection_and_item: Pages des Collections et des Articles
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'Article Uniquement
-a_users_uuid: La Clé Primaire UUID d'un utilisateur...
 a_flow_uuid: La Clé primaire UUID d'un Flux...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
@@ -2061,7 +2061,6 @@ operations:
     body: Corps du mail
   notification:
     name: Envoyer la Notification
-    description: Envoyer une notification in-app à un utilisateur
     recipient: Utilisateur
     message: Message
   request:
