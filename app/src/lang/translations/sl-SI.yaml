@@ -568,6 +568,7 @@ trigger: Sprožilec
 flow_name: Ime
 flow_tracking_activity: Sledi samo aktivnosti
 flow_tracking_null: Ne sledi ničesar
+code: Koda
 accountability: Odgovornost
 full_screen: Celozaslonski način
 image_url: URL naslov slike
