@@ -2,8 +2,8 @@ import { Query } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { ItemsService } from '../../src/services';
-import { sqlFieldFormatter, sqlFieldList } from '../__test-utils__/items-utils';
-import { systemSchema, userSchema } from '../__test-utils__/schemas';
+import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
+import { systemSchema, userSchema } from '../__utils__/schemas';
 import { cloneDeep } from 'lodash';
 
 jest.mock('../../src/database/index', () => {
