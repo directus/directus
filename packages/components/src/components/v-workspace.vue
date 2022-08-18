@@ -44,19 +44,18 @@ import { useElementSize } from '../composables';
 import { AppTile } from './v-workspace-tile.vue';
 import { cssVar } from '../utils';
 
-const props = withDefaults(
-	defineProps<{
-		tiles: AppTile[];
-		editMode?: boolean;
-		zoomToFit?: boolean;
-		resizable?: boolean;
-	}>(),
-	{
-		editMode: false,
-		zoomToFit: false,
-		resizable: true,
-	}
-);
+interface Props {
+	tiles: AppTile[];
+	editMode?: boolean;
+	zoomToFit?: boolean;
+	resizable?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(),{
+	editMode: false,
+	zoomToFit: false,
+	resizable: true,
+});
 
 defineEmits(['update', 'move', 'delete', 'duplicate', 'edit', 'preview']);
 

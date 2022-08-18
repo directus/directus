@@ -1,4 +1,5 @@
 import '../../../app/src/styles/main.scss';
+import './styles.scss';
 
 import { app } from "@storybook/vue3";
 import { createRouter, createWebHistory } from 'vue-router';

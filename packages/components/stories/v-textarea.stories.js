@@ -1,21 +1,23 @@
-import VTemplateInput from '../src/components/v-button.vue';
+import VTextarea from '../src/components/v-textarea.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VTemplateInput',
-    component: VTemplateInput,
-    argTypes: {
-
-    },
+  title: 'Example/VTextarea',
+  component: VTextarea,
+  argTypes: {
+    
+  },
 };
 
 const Template = (args) => ({
-    setup() {
-        return { args };
-    },
-    template: '<v-button v-bind="args" >My Button</v-button>',
+  setup() {
+    return { args };
+  },
+  template: '<v-textarea v-bind="args" >My Button</v-textarea>',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
+    modelValue: `This is some text that will be displayed in the textarea.
+This is a new line.`
 };
