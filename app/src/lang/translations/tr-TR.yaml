@@ -731,6 +731,7 @@ change_trigger: Tetikleyici Değiştirin
 flow_name: İsim
 flow_tracking_activity: Sadece Etkinlikleri Takip Et
 flow_tracking_null: Hiçbir Şeyi Takip Etme
+code: Kod
 insights: Kontrol Panelleri
 dashboard: Pano
 panel: Panel
