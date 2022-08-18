@@ -365,16 +365,21 @@ watch(
 			});
 		});
 
-		headers.value = props.fields.map((key) => {
-			const { name, type } = fieldsStore.getField(junctionCollection.value, key) as Field;
+		headers.value = props.fields
+			.map((key) => {
+				const field = fieldsStore.getField(junctionCollection.value, key);
 
-			return {
-				text: name,
-				value: key,
-				width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
-				sortable: !['json'].includes(type),
-			};
-		});
+				// when user has no permission to this field or junction collection
+				if (!field) return null;
+
+				return {
+					text: field.name,
+					value: key,
+					width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					sortable: !['json'].includes(field.type),
+				};
+			})
+			.filter((key) => key !== null);
 	},
 	{ immediate: true }
 );

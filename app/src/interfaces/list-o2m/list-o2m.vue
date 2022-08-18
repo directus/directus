@@ -331,16 +331,21 @@ watch(
 			});
 		});
 
-		headers.value = props.fields.map((key) => {
-			const { name, field, type } = fieldsStore.getField(relatedCollection.value, key) as Field;
+		headers.value = props.fields
+			.map((key) => {
+				const field = fieldsStore.getField(relatedCollection.value, key);
 
-			return {
-				text: name,
-				value: field,
-				width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
-				sortable: !['json'].includes(type),
-			};
-		});
+				// when user has no permission to this field or junction collection
+				if (!field) return null;
+
+				return {
+					text: field.name,
+					value: field.field,
+					width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					sortable: !['json'].includes(field.type),
+				};
+			})
+			.filter((key) => key !== null);
 	},
 	{ immediate: true }
 );
