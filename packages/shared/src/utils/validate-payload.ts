@@ -36,14 +36,19 @@ export function validatePayload(
 	} else if (Object.keys(filter)[0] === '_or') {
 		const subValidation = Object.values(filter)[0] as FieldFilter[];
 
-		const nestedErrors = flatten<Joi.ValidationError>(
-			subValidation.map((subObj: Record<string, any>) => validatePayload(subObj, payload, options))
-		);
+		const swallowErrors: Joi.ValidationError[] = [];
 
-		const allErrored = subValidation.length === nestedErrors.length;
+		const pass = subValidation.some((subObj: Record<string, any>) => {
+			const nestedErrors = validatePayload(subObj, payload, options);
+			if (nestedErrors.length > 0) {
+				swallowErrors.push(...nestedErrors);
+				return false;
+			}
+			return true;
+		});
 
-		if (allErrored) {
-			errors.push(...nestedErrors);
+		if (!pass) {
+			errors.push(...swallowErrors);
 		}
 	} else {
 		const payloadWithFunctions = injectFunctionResults(payload, filter);

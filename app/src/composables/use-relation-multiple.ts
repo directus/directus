@@ -117,8 +117,8 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = fetchedSelectItems.value.map((item) => {
-			const edits = selected.value.find((edit) => {
+		const selectedOnPage = selected.value.map((item) => {
+			const edits = fetchedSelectItems.value.find((edit) => {
 				switch (relation.value?.type) {
 					case 'o2m':
 						return edit[targetPKField] === item[targetPKField];
@@ -283,17 +283,25 @@ export function useRelationMultiple(
 		function clear() {
 			if (!relation.value) return;
 
-			value.value = itemId.value === '+' ? undefined : [];
-			existingItemCount.value = 0;
-			fetchedItems.value = [];
-
 			target.value.create = [];
 			target.value.update = [];
 			target.value.delete = [];
+
+			reset();
+		}
+
+		function reset() {
+			value.value = itemId.value === '+' ? undefined : [];
+			existingItemCount.value = 0;
+			fetchedItems.value = [];
 		}
 
 		function updateValue() {
 			target.value = cloneDeep(target.value);
+
+			if (target.value.create.length === 0 && target.value.update.length === 0 && target.value.delete.length === 0) {
+				reset();
+			}
 		}
 	}
 
