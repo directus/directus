@@ -58,7 +58,7 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/no-wrap';
+@import '../styles/no-wrap';
 
 .v-radio {
 	display: flex;

@@ -120,7 +120,6 @@ export function registerComponents(app: App): void {
 	app.component('VSheet', VSheet);
 	app.component('VSkeletonLoader', VSkeletonLoader);
 	app.component('VSlider', VSlider);
-	app.component('VSwitch', VSwitch);
 	app.component('VTabItem', VTabItem);
 	app.component('VTab', VTab);
 	app.component('VTable', VTable);

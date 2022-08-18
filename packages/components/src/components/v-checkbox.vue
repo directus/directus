@@ -105,7 +105,7 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/no-wrap';
+@import '../styles/no-wrap'; // TODO: this has to be thought trough
 
 .v-checkbox {
 	--v-icon-color: var(--v-checkbox-unchecked-color);
