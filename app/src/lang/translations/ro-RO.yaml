@@ -720,6 +720,7 @@ trigger: Declanșator
 flow_name: Nume
 flow_tracking_activity: Urmărește doar activitatea
 flow_tracking_null: Nu urmări nimic
+code: Cod
 insights: Analize
 dashboard: Panou
 panel: Panou
