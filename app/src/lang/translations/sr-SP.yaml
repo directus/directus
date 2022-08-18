@@ -157,6 +157,7 @@ embed: Угради
 my_activity: Моја активност
 password: Лозинка
 template: Шаблон
+table: Табела
 interfaces:
   filter:
     all: Sve
