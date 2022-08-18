@@ -667,6 +667,7 @@ label: Label
 flow_name: Naam
 flow_tracking_activity: Track alleen activiteiten
 flow_tracking_null: Niets tracken
+code: Code
 insights: Inzichten
 dashboard: Dashboard
 panel: Paneel
