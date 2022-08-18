@@ -793,6 +793,7 @@ flow_tracking_null: Nemoj pratiti ništa
 start_flow: Pokreni tok
 stop_flow: Zaustavi tok
 create_operation: Kreiraj operaciju
+code: Kôd
 insights: Uvidi
 dashboard: Upravljačka ploča
 panel: Panel
