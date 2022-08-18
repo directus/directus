@@ -626,6 +626,7 @@ trigger: Trigger
 flow_name: ชื่อ
 flow_tracking_activity: ติดตามกิจกรรมเท่านั้น
 flow_tracking_null: อย่าติดตามอะไรเลย
+code: โค้ด
 dashboard: แดชบอร์ด
 panel: แพแนล
 panel_options: ตัวเลือกแพแนล
