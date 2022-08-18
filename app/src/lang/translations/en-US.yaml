@@ -1430,6 +1430,16 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 start: Start
+table: Table
+list: List
+search_filter: Search & Filter
+enable_search_filter: Enable searching & filtering
+item_link: Item link
+show_link_to_item: Show a link to the item
+navigate_to_item: Navigate to Item
+undo_removed_item: Undo Removed Item
+remove_item: Remove Item
+delete_item: Delete Item
 interfaces:
   filter:
     name: Filter
@@ -1509,6 +1519,9 @@ interfaces:
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
     placeholder: Choose a datetime...
+  system-fields:
+    select_a_collection: Select a Collection
+    no_fields: No fields
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1566,6 +1579,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    columns_configure_notice: You can configure the columns after creating this field.
     display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
