@@ -719,6 +719,7 @@ trigger: Trigger
 flow_name: Name
 flow_tracking_activity: Only Track Activity
 flow_tracking_null: Do Not Track Anything
+code: Code
 insights: Insights
 dashboard: Dashboard
 panel: Panel
