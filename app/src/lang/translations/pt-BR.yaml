@@ -1360,6 +1360,8 @@ value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
 start: Início
+table: Tabela
+list: Lista
 interfaces:
   filter:
     name: Filtro
@@ -1433,6 +1435,8 @@ interfaces:
     include_seconds: Incluir segundos
     set_to_now: Definir como Agora
     use_24: Usar formato de 24 horas
+  system-fields:
+    select_a_collection: Selecione uma coleção
   system-display-template:
     display-template: Modelo de exibição
     description: Combinar texto estático e valores dinâmicos
