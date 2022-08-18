@@ -725,6 +725,7 @@ trigger: Utlösare
 flow_name: Namn
 flow_tracking_activity: Spåra endast aktivitet
 flow_tracking_null: Spåra ingenting
+code: Kod
 insights: Insikter
 dashboard: Kontrollpanel
 panel: Panel
