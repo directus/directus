@@ -1380,6 +1380,8 @@ value: 值
 view_project: 檢視專案
 report_error: 報告錯誤
 start: 開始
+table: 表格
+list: 清單
 interfaces:
   filter:
     name: 篩選
@@ -1459,6 +1461,8 @@ interfaces:
     set_to_now: 設為現在
     use_24: 使用 24 小時格式
     placeholder: 選擇日期時間...
+  system-fields:
+    select_a_collection: 選擇一個集合
   system-display-template:
     display-template: 顯示模板
     description: 混合文字與動態欄位內容
