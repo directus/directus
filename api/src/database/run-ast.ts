@@ -1,3 +1,4 @@
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { Item, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
@@ -187,17 +188,21 @@ async function parseCurrentLevel(
 	/** Make sure select list has unique values */
 	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
-	const fieldNodes = columnsToSelect.map(
-		(column: string) =>
-			children.find(
-				(childNode) =>
-					(childNode.type === 'field' || childNode.type === 'functionField') && childNode.fieldKey === column
-			) ?? {
-				type: 'field',
-				name: column,
-				fieldKey: column,
+	/** Map fieldNodes and ensure the function query is passed */
+	const fieldNodes = columnsToSelect.map((column: string) => {
+		const node = children.find(
+			(childNode) => (childNode.type === 'field' || childNode.type === 'functionField') && childNode.fieldKey === column
+		) ?? { type: 'field', name: column, fieldKey: column };
+		if (column.includes('(') && column.includes(')')) {
+			// find the query used for the to be counted field
+			const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
+			const relatedNode = children.find((childNode) => childNode.fieldKey === columnName);
+			if (relatedNode && 'query' in relatedNode) {
+				(node as FunctionFieldNode).query = relatedNode.query;
 			}
-	) as FieldNode[];
+		}
+		return node;
+	}) as FieldNode[];
 
 	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
 }
