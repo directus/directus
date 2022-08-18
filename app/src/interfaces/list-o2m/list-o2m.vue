@@ -177,7 +177,7 @@
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
-import { CollectionMeta, Field, Filter } from '@directus/shared/types';
+import { CollectionMeta, Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
