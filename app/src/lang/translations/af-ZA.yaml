@@ -164,6 +164,7 @@ description: Beskrywing
 email: E-pos
 password: Wagwoord
 template: Modelvorm
+table: Tafel
 interfaces:
   filter:
     all: Alle
