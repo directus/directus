@@ -1299,6 +1299,8 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata Bildir
 start: Başla
+table: Tablo
+list: Liste
 interfaces:
   filter:
     name: Filtrele
@@ -1373,6 +1375,8 @@ interfaces:
     include_seconds: Saniyeleri Dahil Et
     set_to_now: Şimdiye Ayarla
     use_24: 24 Saat Biçimini Kullan
+  system-fields:
+    select_a_collection: Bir Koleksiyon Seç
   system-display-template:
     display-template: Görüntüleme Şablonu
     description: Sabit metin ve dinamik alan değerlerini karıştırın
