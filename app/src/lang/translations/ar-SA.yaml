@@ -972,6 +972,7 @@ translation: الترجمة
 value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
+table: الجدول
 interfaces:
   filter:
     add_filter: إضافة فلتر
@@ -1009,6 +1010,8 @@ interfaces:
     description: أدخل التواريخ والأوقات
     set_to_now: اضبط على الآن
     use_24: استخدم تنسيق 24 ساعة
+  system-fields:
+    select_a_collection: حدد مجموعة
   system-display-template:
     display-template: عرض القالب
     description: خلط النص الثابت وقيم الحقل الديناميكي
