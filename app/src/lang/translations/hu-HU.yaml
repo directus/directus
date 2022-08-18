@@ -688,6 +688,7 @@ trigger: Eseményindító
 flow_name: Név
 flow_tracking_activity: Csak a tevékenység nyomon követése
 flow_tracking_null: Minden nyomkövetés tiltása
+code: Kód
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
