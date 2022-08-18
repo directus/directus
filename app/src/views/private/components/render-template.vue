@@ -145,10 +145,6 @@ export default defineComponent({
 	.render-template {
 		display: inline;
 	}
-
-	img {
-		max-height: 32px;
-	}
 }
 
 .subdued {
