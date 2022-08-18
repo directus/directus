@@ -121,7 +121,6 @@ export default defineComponent({
 	emits: ['apply'],
 	setup(props) {
 		const { t } = useI18n();
-
 		const detailOpen = ref(props.start === 'open');
 
 		const edited = computed(() => {
@@ -162,6 +161,12 @@ export default defineComponent({
 			if (isEqual(newVal, oldVal)) return;
 			detailOpen.value = validationMessages.value.length > 0;
 		});
+		watch(
+			() => props.start,
+			(startOpen) => {
+				detailOpen.value = startOpen === 'open';
+			}
+		);
 
 		return { t, edited, validationMessages, detailOpen };
 	},
