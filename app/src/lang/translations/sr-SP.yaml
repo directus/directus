@@ -72,6 +72,7 @@ operators:
 role: Рола
 create: Креирај
 flow_name: Име
+code: Код
 width: Ширина
 height: Висина
 wysiwyg_options:
