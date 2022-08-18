@@ -877,6 +877,7 @@ translation: Troidigezh
 value: Talvoud
 view_project: Gwelet ar raktres
 report_error: Disklêriañ ar fazi
+table: Taolenn
 interfaces:
   filter:
     add_filter: Ouzhpenn ur sil
@@ -927,6 +928,8 @@ interfaces:
     include_seconds: Enklozañ an eilennoù
     set_to_now: Lakaat da vremañ
     use_24: Implijout ar furmad 24e
+  system-fields:
+    select_a_collection: Dibab un dastumad
   system-display-template:
     display-template: Patrom diskwel
     description: Meskañ testenn statik ha talvoudoù ar maeziennoù dinamek
