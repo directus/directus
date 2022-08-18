@@ -1405,6 +1405,8 @@ value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
 start: Début
+table: Tableau
+list: Liste
 interfaces:
   filter:
     name: Filtre
@@ -1484,6 +1486,8 @@ interfaces:
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
     placeholder: Choisissez une date et heure...
+  system-fields:
+    select_a_collection: Sélectionner une collection
   system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
