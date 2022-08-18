@@ -1,3 +1,5 @@
+import { VMError } from 'vm2';
+
 import config from './index';
 
 test('Rejects when modules are used without modules being allowed', async () => {
@@ -5,22 +7,22 @@ test('Rejects when modules are used without modules being allowed', async () => 
 		const test = require('test');
 	`;
 
-	expect(
+	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
 				FLOWS_EXEC_ALLOWED_MODULES: '',
 			},
 		} as any)
-	).rejects.toEqual(new Error("Couldn't run code: Cannot find module 'test'"));
+	).rejects.toEqual(new VMError("Cannot find module 'test'"));
 });
 
-test('Rejects when code contains syntax errors', () => {
+test('Rejects when code contains syntax errors', async () => {
 	const testCode = `
 		~~
 	`;
 
-	expect(
+	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
@@ -30,53 +32,53 @@ test('Rejects when code contains syntax errors', () => {
 	).rejects.toEqual(new Error("Couldn't compile code: Unexpected end of input"));
 });
 
-test('Rejects when returned function does something illegal', () => {
+test('Rejects when returned function does something illegal', async () => {
 	const testCode = `
 		module.exports = function() {
 			return a + b;
 		};
 	`;
 
-	expect(
+	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
 				FLOWS_EXEC_ALLOWED_MODULES: '',
 			},
 		} as any)
-	).rejects.toEqual(new Error("Couldn't run code: a is not defined"));
+	).rejects.toEqual(new ReferenceError('a is not defined'));
 });
 
-test("Rejects when code doesn't return valid function", () => {
+test("Rejects when code doesn't return valid function", async () => {
 	const testCode = `
 		module.exports = false;
 	`;
 
-	expect(
+	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
 				FLOWS_EXEC_ALLOWED_MODULES: '',
 			},
 		} as any)
-	).rejects.toEqual(new Error("Couldn't run code: fn is not a function"));
+	).rejects.toEqual(new TypeError('fn is not a function'));
 });
 
-test('Rejects returned function throws errors', () => {
+test('Rejects returned function throws errors', async () => {
 	const testCode = `
 		module.exports = function () {
 			throw new Error('test');
 		};
 	`;
 
-	expect(
+	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
 				FLOWS_EXEC_ALLOWED_MODULES: '',
 			},
 		} as any)
-	).rejects.toEqual(new Error("Couldn't run code: test"));
+	).rejects.toEqual(new Error('test'));
 });
 
 test('Executes function when valid', () => {

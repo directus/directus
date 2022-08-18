@@ -26,19 +26,9 @@ export default defineOperationApi<Options>({
 
 		const vm = new NodeVM(opts);
 
-		let script;
+		const script = new VMScript(code).compile();
+		const fn = await vm.run(script);
 
-		try {
-			script = new VMScript(code).compile();
-		} catch (err: any) {
-			throw new Error(`Couldn't compile code: ${err?.message}`);
-		}
-
-		try {
-			const fn = await vm.run(script);
-			return await fn(data);
-		} catch (err: any) {
-			throw new Error(`Couldn't run code: ${err?.message}`);
-		}
+		return await fn(data);
 	},
 });
