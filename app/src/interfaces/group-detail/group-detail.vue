@@ -121,6 +121,7 @@ export default defineComponent({
 	emits: ['apply'],
 	setup(props) {
 		const { t } = useI18n();
+
 		const detailOpen = ref(props.start === 'open');
 
 		const edited = computed(() => {
