@@ -1399,6 +1399,8 @@ value: Hodnota
 view_project: Zobrazit projekt
 report_error: Nahlásit chybu
 start: Začátek
+table: Tabulka
+list: Seznam
 interfaces:
   filter:
     name: Filtr
@@ -1478,6 +1480,8 @@ interfaces:
     set_to_now: Nastavit na teď
     use_24: Používat 24hodinový formát
     placeholder: Vyberte datum a čas...
+  system-fields:
+    select_a_collection: Vyberte kolekci
   system-display-template:
     display-template: Šablona zobrazení
     description: Směs statických hodnot textu a dynamického pole
