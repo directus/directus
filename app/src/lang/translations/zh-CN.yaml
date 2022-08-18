@@ -793,6 +793,7 @@ start_flow: 启动流程
 stop_flow: 中止流程
 create_operation: 新建操作
 edit_operation: 编辑操作
+code: 代码
 operation_options: 操作选项
 operation_name: 操作名称...
 operation_key: 用于引用的标识...
