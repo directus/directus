@@ -282,6 +282,7 @@ export default defineComponent({
 			const { formFields } = useFormFields(fields);
 
 			const fieldsMap = computed(() => {
+				if (Object.keys(values.value).length === 0) return {};
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 				return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
 					const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
