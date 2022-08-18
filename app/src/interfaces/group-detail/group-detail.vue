@@ -161,12 +161,6 @@ export default defineComponent({
 			if (isEqual(newVal, oldVal)) return;
 			detailOpen.value = validationMessages.value.length > 0;
 		});
-		watch(
-			() => props.start,
-			(startOpen) => {
-				detailOpen.value = startOpen === 'open';
-			}
-		);
 
 		return { t, edited, validationMessages, detailOpen };
 	},
