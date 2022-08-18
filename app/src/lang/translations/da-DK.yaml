@@ -729,6 +729,7 @@ trigger: Udløser
 flow_name: Navn
 flow_tracking_activity: Spor Kun Aktivitet
 flow_tracking_null: Spor Ikke Noget
+code: Kode
 insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
