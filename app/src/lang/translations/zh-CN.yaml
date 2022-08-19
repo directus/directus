@@ -309,6 +309,8 @@ primary_key: 主键
 foreign_key: 外键
 finish_setup: 完成安装
 dismiss: 关闭
+toggle_raw_editor: 切换原始编辑器
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: 原始值
 copy_raw_value: 复制原始值
 copy_raw_value_success: 已复制
@@ -592,6 +594,7 @@ errors:
   VALUE_OUT_OF_RANGE: 数值超出范围
   INVALID_FOREIGN_KEY: 无效的外键
   UNKNOWN: 未知错误
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 验证异常
 security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称
@@ -613,6 +616,7 @@ password_reset_sent: 如果您有一个账户，我们已经向您发送了一�
 password_reset_successful: 密码重置成功。
 back: 后退
 filter: 筛选
+edit_image: 编辑图片
 editing_image: 编辑图像
 square: 正方形
 free: 自由的
@@ -789,6 +793,7 @@ start_flow: 启动流程
 stop_flow: 中止流程
 create_operation: 新建操作
 edit_operation: 编辑操作
+code: 代码
 operation_options: 操作选项
 operation_name: 操作名称...
 operation_key: 用于引用的标识...
@@ -1132,6 +1137,7 @@ fields:
     transformations_all: 允许所有转换
     transformations_none: 禁用转换
     transformations_presets: 限制转换到下面预设
+    image_editor: 图像编辑器
   directus_shares:
     name: 名称
     role: 角色
@@ -1398,6 +1404,8 @@ value: 值
 view_project: 查看项目
 report_error: 报告错误
 start: 开始
+table: 表
+list: 列表
 interfaces:
   filter:
     name: 筛选
@@ -1477,6 +1485,8 @@ interfaces:
     set_to_now: 设置为现在
     use_24: 使用24小时格式
     placeholder: 选择日期时间...
+  system-fields:
+    select_a_collection: 选择模型
   system-display-template:
     display-template: 显示模板
     description: 混合静态文本和动态字段值
@@ -1500,6 +1510,7 @@ interfaces:
     allow_none_label: 不允许选择
     choices_name_placeholder: 输入名称...
     choices_value_placeholder: 请输入值...
+    preview_threshold: 预览阈值
   select-multiple-dropdown:
     select-multiple-dropdown: 下拉(多选)
     description: 从下拉列表中选择多个值
@@ -1698,6 +1709,8 @@ interfaces:
     regenerate: 重新生成令牌
     generate_success_copy: 确保备份并复制上述令牌。 出于安全原因，保存并导航此页面后，您将无法再次查看令牌。
     remove_token: 删除令牌
+  system-raw-editor:
+    system-raw-editor: 原始编辑器
 displays:
   translations:
     translations: 翻译
@@ -1736,6 +1749,8 @@ displays:
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
     suffix: 后缀
+    strict_note: 删除像‘几乎’，‘超过’，‘小于’ 这样的单词
+    up: 上移
   file:
     file: 文件
     description: 显示文件
@@ -1846,6 +1861,10 @@ layouts:
     find_location: 搜索地点
     default_template: 使用Collection默认值
     no_compatible_fields: 没有兼容的字段
+  kanban:
+    title: 卡片标题
+    image_fit: 卡片图像匹配
+    show_ungrouped: 显示未分组
 panels:
   metric:
     name: 公制
@@ -1864,6 +1883,9 @@ panels:
   list:
     name: 列表
     description: 筛选并列出表模型中的字段
+  barchart:
+    name: 条形图
+    description: 比较数值组的条形图或柱形图
 triggers:
   webhook:
     method: 方法

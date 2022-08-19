@@ -8,9 +8,9 @@
 		/>
 		<template v-for="(fieldName, index) in fieldNames">
 			<component
-				:is="`interface-${fieldsMap[fieldName].meta?.interface || 'group-standard'}`"
-				v-if="fieldsMap[fieldName].meta?.special?.includes('group')"
-				v-show="!fieldsMap[fieldName].meta?.hidden"
+				:is="`interface-${fieldsMap[fieldName]?.meta?.interface || 'group-standard'}`"
+				v-if="fieldsMap[fieldName]?.meta?.special?.includes('group')"
+				v-show="!fieldsMap[fieldName]?.meta?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
@@ -18,7 +18,7 @@
 				"
 				:key="fieldName + '_group'"
 				:class="[
-					fieldsMap[fieldName].meta?.width || 'full',
+					fieldsMap[fieldName]?.meta?.width || 'full',
 					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
 				]"
 				:field="fieldsMap[fieldName]"
@@ -33,12 +33,13 @@
 				:validation-errors="validationErrors"
 				:badge="badge"
 				:raw-editor-enabled="rawEditorEnabled"
-				v-bind="fieldsMap[fieldName].meta?.options || {}"
+				:direction="direction"
+				v-bind="fieldsMap[fieldName]?.meta?.options || {}"
 				@apply="apply"
 			/>
 
 			<form-field
-				v-else-if="!fieldsMap[fieldName].meta?.hidden"
+				v-else-if="!fieldsMap[fieldName]?.meta?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
@@ -46,7 +47,7 @@
 				"
 				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
-				:field="fieldsMap[fieldName]"
+				:field="fieldsMap[fieldName] || {}"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[fieldName]"
 				:initial-value="(initialValues || {})[fieldName]"
@@ -65,6 +66,7 @@
 				:badge="badge"
 				:raw-editor-enabled="rawEditorEnabled"
 				:raw-editor-active="rawActiveFields.has(fieldName)"
+				:direction="direction"
 				@update:model-value="setValue(fieldName, $event)"
 				@set-field-value="setValue($event.field, $event.value, { force: true })"
 				@unset="unsetValue(fieldsMap[fieldName])"
@@ -83,7 +85,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
+import { computed, ComputedRef, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -153,6 +155,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		direction: {
+			type: String,
+			default: null,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -189,7 +195,7 @@ export default defineComponent({
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < fieldNames.value.length; i++) {
 				const field = fieldsMap.value[fieldNames.value[i]];
-				if (field.meta && !field.meta?.readonly && !field.meta?.hidden) {
+				if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
 					return i;
 				}
 			}
@@ -199,7 +205,7 @@ export default defineComponent({
 		const firstVisibleFieldIndex = computed(() => {
 			for (let i = 0; i < fieldNames.value.length; i++) {
 				const field = fieldsMap.value[fieldNames.value[i]];
-				if (field.meta && !field.meta?.hidden) {
+				if (field?.meta && !field.meta?.hidden) {
 					return i;
 				}
 			}
@@ -275,7 +281,8 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fields);
 
-			const fieldsMap = computed(() => {
+			const fieldsMap: ComputedRef<Record<string, Field | undefined>> = computed(() => {
+				if (props.loading) return {} as Record<string, undefined>;
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 				return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
 					const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
@@ -299,8 +306,9 @@ export default defineComponent({
 
 			return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 
-			function isDisabled(field: Field) {
-				const meta = fieldsMap.value?.[field.field].meta;
+			function isDisabled(field: Field | undefined) {
+				if (!field) return true;
+				const meta = fieldsMap.value?.[field.field]?.meta;
 				return (
 					props.loading ||
 					props.disabled === true ||
@@ -312,12 +320,12 @@ export default defineComponent({
 
 			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
 				const fieldsInGroup: Field[] = fields.value.filter((field) => {
-					const meta = fieldsMap.value?.[field.field].meta;
+					const meta = fieldsMap.value?.[field.field]?.meta;
 					return meta?.group === group || (group === null && isNil(meta));
 				});
 
 				for (const field of fieldsInGroup) {
-					const meta = fieldsMap.value?.[field.field].meta;
+					const meta = fieldsMap.value?.[field.field]?.meta;
 					if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
 						passed.push(meta!.field);
 						fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
@@ -382,7 +390,8 @@ export default defineComponent({
 			}
 		}
 
-		function unsetValue(field: Field) {
+		function unsetValue(field: Field | undefined) {
+			if (!field) return;
 			if (!props.batchMode && isDisabled(field)) return;
 
 			if (field.field in (props.modelValue || {})) {
@@ -401,7 +410,8 @@ export default defineComponent({
 
 			return { batchActiveFields, toggleBatchField };
 
-			function toggleBatchField(field: Field) {
+			function toggleBatchField(field: Field | undefined) {
+				if (!field) return;
 				if (batchActiveFields.value.includes(field.field)) {
 					batchActiveFields.value = batchActiveFields.value.filter((fieldKey) => fieldKey !== field.field);
 
@@ -424,7 +434,8 @@ export default defineComponent({
 
 			return { rawActiveFields, toggleRawField };
 
-			function toggleRawField(field: Field) {
+			function toggleRawField(field: Field | undefined) {
+				if (!field) return;
 				if (rawActiveFields.value.has(field.field)) {
 					rawActiveFields.value.delete(field.field);
 				} else {

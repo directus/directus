@@ -1,5 +1,6 @@
 ---
 avatar: Avatar
+application: Aplikacija
 published: Objavljeno
 edit_field: Izmijeni
 location: Lokacija
@@ -531,6 +532,7 @@ trigger: Okidač
 flow_name: Ime
 flow_tracking_activity: Samo Prati Aktivnost
 flow_tracking_null: Bez praćenja
+code: Kod
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
@@ -879,6 +881,7 @@ translation: Prevodi
 value: Vrijednost
 view_project: Pregledaj Projekat
 report_error: Prijavi Grešku
+table: Tabela
 interfaces:
   filter:
     add_filter: Dodaj Filter
@@ -924,6 +927,8 @@ interfaces:
     include_seconds: Uključujući Sekunde
     set_to_now: Postavi na Sadašnji
     use_24: Koristi 24-časovni Format
+  system-fields:
+    select_a_collection: Izaberi Kolekciju
   system-display-template:
     display-template: Šablon za Prikaz
     description: Miješanje statičnih tekstualnih i dinamičkih vrijednosti polja

@@ -23,16 +23,20 @@ identifier: شناسه
 avatar: آواتار
 application: برنامه
 default_provider: پیش‌فرض
+method: شیوه
 published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
 modules: ماژول‌ها
 module_bar: نوار ماژول ها
+logs: تاریخچه رخدادها
 reset_width: تنظیم مجدد عرض
 tile_size: اندازه هر مربع در نقشه
 edit_field: ویرایش فیلد
 conditions: شرایط
 location: موقعیت
+condition_rules: استایل شرطی
+input: ورودی
 maps: نقشه ها
 switch_user: تغییر کاربر
 item_creation: ساخت یک آیتم
@@ -45,6 +49,9 @@ group: گروه
 export_items: خروجی گرفتن از موارد
 and: و
 or: یا
+init: شروع
+dataset_too_large_currently_showing_n_items: مجموعه داده خیلی بزرگ است. در حال حاضر {n} مورد اول نشان داده می شود.
+custom: سفارشی
 fill_width: عرض کامل
 field_name_translations: ترجمه‌های نام فیلد
 enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی، رمز عبور خود را وارد کنید
@@ -68,6 +75,7 @@ create_preset: ایجاد الگو
 create_panel: ایجاد پنل
 create_role: ایجاد نقش
 create_user: ایجاد کاربر
+message: پیام
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک
 edit_translation_string: ویرایش متن ترجمه
@@ -619,6 +627,7 @@ create: ایجاد
 update: بروزرسانی
 delete: حذف
 flow_name: نام
+code: کد
 insights: بینش های داده ای
 dashboard: پیشخوان
 panel: پنل
@@ -925,6 +934,7 @@ save: ذخیره
 sign_in: ورود
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
+table: جدول
 interfaces:
   filter:
     name: فیلتر
@@ -1022,5 +1032,9 @@ layouts:
     map: نقشه
     find_location: پیدا کردن موفعیت...
 operations:
+  log:
+    message: پیام
+  notification:
+    message: پیام
   request:
     url: URL

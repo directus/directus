@@ -295,6 +295,8 @@ next: Następny
 field_name: Nazwa pola
 translations: Tłumaczenia
 no_translations: Brak tłumaczeń
+left_to_right: Od lewej do prawej
+right_to_left: Od prawej do lewej
 note: Notatka
 enter_a_value: Wprowadź wartość...
 enter_a_placeholder: Wprowadź tekst zastępczy...
@@ -395,8 +397,8 @@ functions:
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_time_24hour: 'GG:mm:ss'
-date-fns_time_no_seconds_24hour: 'GG:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -477,6 +479,7 @@ creating_items: Tworzenie elementów
 enable_create_button: Włącz przycisk Utwórz
 selecting_items: Wybranie elementów
 enable_select_button: Włącz przycisk wyboru
+allow_duplicates: Zezwalaj na duplikaty
 comments: Komentarze
 no_comments: Brak komentarzy
 click_to_expand: Kliknij, aby rozwinąć
@@ -791,6 +794,7 @@ start_flow: Rozpocznij przepływ
 stop_flow: Zatrzymaj przepływ
 create_operation: Utwórz operację
 edit_operation: Edytuj operację
+code: Kod
 operation_options: Opcje operacji
 operation_name: Nazwa operacji...
 operation_key: Identyfikator odniesienia...
@@ -1135,6 +1139,8 @@ fields:
     transformations_all: Zezwól na wszystkie transformacje
     transformations_none: Wyłącz transformacje
     transformations_presets: Ogranicz transformacje do poniższych ustawień
+    image_editor: Edytor obrazu
+    custom_aspect_ratios: Niestandardowe proporcje
   directus_shares:
     name: Nazwa
     role: Rola
@@ -1401,6 +1407,16 @@ value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
 start: Rozpocznij
+table: Tabela
+list: Lista
+search_filter: Szukaj i filtruj
+enable_search_filter: Włącz wyszukiwanie i filtrowanie
+item_link: Link do elementu
+show_link_to_item: Pokaż link do elementu
+navigate_to_item: Przejdź do elementu
+undo_removed_item: Cofnij usunięcie elementu
+remove_item: Usuń element
+delete_item: Usuń element
 interfaces:
   filter:
     name: Filtr
@@ -1480,6 +1496,9 @@ interfaces:
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
     placeholder: Wybierz datę...
+  system-fields:
+    select_a_collection: Wybierz kolekcje
+    no_fields: Brak pól
   system-display-template:
     display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
@@ -1536,6 +1555,7 @@ interfaces:
   list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
+    columns_configure_notice: Możesz skonfigurować kolumny po utworzeniu tego pola.
     display_template_configure_notice: Możesz skonfigurować szablon wyświetlania po utworzeniu tego pola.
   select-dropdown-m2o:
     many-to-one: Wiele do jednego
@@ -2004,7 +2024,6 @@ triggers:
     collection_and_item: Strony kolekcji i rekordów
     collection_only: Tylko strona kolekcji
     item_only: Tylko strona rekordu
-a_users_uuid: Klucz główny użytkownika UUID...
 a_flow_uuid: Podstawowy UUID klucza głównego przepływu...
 any_string_or_json: Dowolny ciąg znaków lub JSON...
 item_payload_placeholder: To jest JSON używany do aktualizacji wartości pola elementu...
@@ -2050,7 +2069,6 @@ operations:
     body: Treść
   notification:
     name: Wyślij powiadomienie
-    description: Wyślij powiadomienie w aplikacji do użytkownika
     recipient: Użytkownik
     message: Wiadomość
   request:

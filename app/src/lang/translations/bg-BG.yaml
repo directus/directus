@@ -323,8 +323,8 @@ edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
 clear_value: Изчистване
 clear_changes: Изчистване на промените
-reset_to_default: Нулиране по подразбиране
-undo_changes: Отмяна на промените
+reset_to_default: Връщане към стойността по подразбиране
+undo_changes: Отмяна на текущите промени
 notifications: Известия
 show_all_activity: Преглед на цялата активност
 page_not_found: Страницата не е намерена
@@ -793,6 +793,7 @@ start_flow: Стартиране на процеса
 stop_flow: Спиране на процеса
 create_operation: Създаване на операция
 edit_operation: Редактиране на операцията
+code: Код
 operation_options: Настройки на операцията
 operation_name: Име на операцията...
 operation_key: Идентификатор за референцията...
@@ -940,11 +941,11 @@ data: Данни
 unsaved_changes: Има незапазени промени
 unsaved_changes_copy: Сигурни ли сте, че искате да напуснете страницата?
 discard_changes: Отмяна на промените
-discard_all_changes: Отмяна на промените
+discard_all_changes: Отмяна на всички промени
 discard_changes_copy: Сигурни ли сте, че искате да отхвърлите тези промени?
 show_x_axis: Показване на оста по X
 show_y_axis: Показване на оста по Y
-keep_editing: Редакция
+keep_editing: Редактиране
 page_help_collections_overview: '**Обзор на колекциите** — Показват се всички налични колекции до които имате достъп.'
 page_help_collections_collection: >-
   **Преглед на записи** — Показват се всички достъпни за вас записи от {collection}. Предоставена е възможност за персонализация на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори е възможно създаването на заготовка за бърз достъп от създадената конфигурация.
@@ -958,7 +959,7 @@ page_help_files_collection: >-
   **Файлова библиотека** — Показват се всички достъпни за вас файлове. Предоставена е възможност за персонализация на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори е възможно създаването на заготовка за бърз достъп от създадената конфигурация.
 page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
-page_help_settings_project: "**Настройки за проекта** — Глобална конфигурация и общи настройки за вашият проект."
+page_help_settings_project: "**Настройки на проекта** — Глобална конфигурация и общи настройки за вашият проект."
 page_help_settings_datamodel_collections: >-
   **Модел на данните: Колекции** — Показват се всички налични колекции. Това включва всички видими, невидими, системни, както и все още не конфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
@@ -1113,7 +1114,7 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Кредитиране
     attribution_placeholder: '© Сътрудници на OpenStreetMap'
-    transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
+    transforms_note: Методи и параметри за Sharp. За повече информация, посетете https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
     project_descriptor: Описание на проекта
@@ -1137,6 +1138,8 @@ fields:
     transformations_all: Позволяване на всякакви трансформации
     transformations_none: Забраняват се трансформациите
     transformations_presets: Ограничаване само до заготовките по-долу
+    image_editor: Редактор на изображения
+    custom_aspect_ratios: Собствени аспектни съотношения
   directus_shares:
     name: Име
     role: Роля
@@ -1195,7 +1198,7 @@ field_options:
         fit_text: Напасване отвътре
         outside_text: Напасване отвън
     additional_transforms: Допълнителни трансформации
-    transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
+    transforms_note: Методи и параметри за Sharp. За повече информация, посетете https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Токен за mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Базови карти
@@ -1403,6 +1406,8 @@ value: Стойност
 view_project: Преглед на проекта
 report_error: Докладване на грешка
 start: Начало
+table: Таблица
+list: Списък
 interfaces:
   filter:
     name: Филтриране
@@ -1482,6 +1487,8 @@ interfaces:
     set_to_now: Сегашно време
     use_24: Използване на 24 часов формат
     placeholder: Избор на дата и час...
+  system-fields:
+    select_a_collection: Избор на колекция
   system-display-template:
     display-template: Шаблон при показване
     description: Комбиниране на статичен текст и динамични стойности от полета
@@ -1585,7 +1592,7 @@ interfaces:
   system-folder:
     folder: Папка
     description: Избор на папка
-    field_hint: Папка за качените файлове. Съществуващите файлове не се променят.
+    field_hint: Папка за качване на файловете. Съществуващите файлове не се променят.
     root_name: Главна папка
     system_default: По подразбиране
   select-radio:
@@ -1673,7 +1680,7 @@ interfaces:
     toolbar: Лента с инструменти
     custom_formats: Собтсвени формати
     options_override: Преопределяне на настройки
-    folder_note: Папка за качените файлове. Съществуващите файлове не се променят.
+    folder_note: Папка за качване на файловете. Съществуващите файлове не се променят.
     imageToken: Статичен токен за достъп
     imageToken_label: Статичния токен за достъп се добавя след URL-a на файла
   input-autocomplete-api:
@@ -1857,7 +1864,7 @@ layouts:
     layers: Слоеве
     cluster_options: Настройки за групиране
     cluster: Групиране на близките обекти
-    cluster_radius: Радиус за групиране
+    cluster_radius: Радиус на групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
     field: Геопространствено поле
@@ -1870,7 +1877,20 @@ layouts:
     group_field: Групиране по
     group_field_placeholder: Поле за групиране
     group_title: Заглавие при групиране
+    group_title_placeholder: Полета за групиране
     title: Заглавие на карта
+    title_placeholder: Незадължително поле за заглавие
+    text: Текст на картата
+    text_placeholder: Незадължително поле за текст
+    date: Дата на картата
+    date_placeholder: Незадължително поле за дата
+    tags: Етикети на картата
+    tags_placeholder: Незадължително поле за етикети
+    user: Потребител на картата
+    user_placeholder: Незадължително поле за потребител
+    image: Избражение на картата
+    image_placeholder: Незадължително поле за изображение
+    image_fit: Напасване на изображението
     crop: Изрязване
     advanced: Разширени
     edit_group: Редактиране на група
@@ -1940,6 +1960,9 @@ panels:
     straight: 'Линейна'
     step_line: 'Стъпкова'
   meter:
+    description: Циферблат за показване на стойности
+    name: Циферблат
+    arc: Арка
     stroke_width: Ширина на чертите
     select_max_value: Трябва да изберете максимална стойност.
     max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
@@ -1981,11 +2004,11 @@ triggers:
     async: Асинхронно
   operation:
     name: Друг процес
-    description: Задействане от друг процес, при навързване
+    description: Задействане от друг процес, при композиция
     preview: Задействан от операция в друг процес
   schedule:
     name: График (CRON)
-    description: Задействане на равни интервали от време
+    description: Задействане на определени интервали от време
     cron: Интервал
   manual:
     name: Ръчно
@@ -1993,11 +2016,10 @@ triggers:
     collection_and_item: В колекцията и детайлния изглед
     collection_only: Само в изгледа на колекцията
     item_only: Само в детайлния изглед
-a_users_uuid: Потребителски първичен UUID ключ...
 a_flow_uuid: Първичен UUID ключ на процеса...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
-operation_variables_note: Данните от операцията са достъпни чрез променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или достъп до предишната операция чрез **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operation_variables_note: Данните от операцията са достъпни чрез променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или за достъп до предишната операция чрез **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Условие
@@ -2009,19 +2031,19 @@ operations:
     emit_events: Излъчване на събития
   item-delete:
     name: Изтриване на данни
-    description: Изтриване в базата от данни
+    description: Изтриване на записи от базата от данни
     emit_events: Излъчване на събития
     key: Ключови имена
     query: Заявка
   item-read:
     name: Четене на данни
-    description: Четене на записи в базата от данни
+    description: Четене на записи от базата от данни
     key: Ключови имена
     query: Заявка
     emit_events: Излъчване на събития
   item-update:
-    name: Обновяване на данните
-    description: Обновяване на записите в базата от данни
+    name: Обновяване на данни
+    description: Обновяване на записи в базата от данни
     emit_events: Излъчване на събития
     key: Ключови имена
     payload: Съдържание
@@ -2039,12 +2061,11 @@ operations:
     body: Съдържание
   notification:
     name: Изпращане на известие
-    description: Изпращане на известие до потребител
     recipient: Потребител
     message: Съобщение
   request:
     name: Уеб-кука / URL заявка
-    description: "Осъществяване на заявка до URL адрес"
+    description: "Изпълняване на HTTP заявка до URL адрес"
     url: URL
     url_placeholder: https://example.com/example
     method: Метод
@@ -2059,7 +2080,7 @@ operations:
     milliseconds: Милисекунди
   transform:
     name: Трансформиране на съдържанието
-    description: Подмяна на JSON съдържанието на процеса
+    description: Промяна на JSON съдържанието на процеса
   trigger:
     name: Задействане на процес
     description: Подаване на данните към друг процес

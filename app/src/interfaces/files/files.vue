@@ -323,7 +323,7 @@ const downloadName = computed(() => {
 
 const downloadUrl = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
-	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
+	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}?download`);
 });
 
 function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
@@ -344,6 +344,14 @@ const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
 	};
+
+	if (props.folder) {
+		filter._and.push({
+			folder: {
+				id: { _eq: props.folder },
+			},
+		});
+	}
 
 	if (!relationInfo.value) return filter;
 
