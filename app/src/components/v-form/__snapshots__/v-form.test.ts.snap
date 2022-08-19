@@ -5,3 +5,10 @@ exports[`Mount component 1`] = `
   <!--v-if-->
 </div>"
 `;
+
+exports[`Render text field 1`] = `
+"<div class=\\"v-form grid\\" data-v-3fb8a5a2=\\"\\">
+  <!--v-if-->
+  <form-field-stub field=\\"[object Object]\\" batchmode=\\"false\\" batchactive=\\"false\\" disabled=\\"false\\" loading=\\"false\\" autofocus=\\"false\\" raweditorenabled=\\"false\\" raweditoractive=\\"false\\" class=\\"first-visible-field\\" data-v-3fb8a5a2=\\"\\"></form-field-stub>
+</div>"
+`;
