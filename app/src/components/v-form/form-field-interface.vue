@@ -69,11 +69,13 @@ const props = withDefaults(defineProps<Props>(), {
 	batchMode: false,
 	batchActive: false,
 	primaryKey: null,
+	modelValue: undefined,
 	loading: false,
 	disabled: false,
 	autofocus: false,
 	rawEditorEnabled: false,
 	rawEditorActive: false,
+	direction: undefined,
 });
 
 defineEmits(['update:modelValue', 'setFieldValue']);

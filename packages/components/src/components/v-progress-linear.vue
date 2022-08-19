@@ -13,7 +13,7 @@
 			},
 			color,
 		]"
-		@animationiteration="$emit('animationiteration')"
+		@animationiteration="$emit('animationiteration', $event)"
 	>
 		<div
 			class="inner"

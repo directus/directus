@@ -18,6 +18,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
 	nav: false,
 	dense: false,
 	multiple: true,

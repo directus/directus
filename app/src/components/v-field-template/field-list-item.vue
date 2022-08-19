@@ -28,7 +28,9 @@ interface Props {
 	depth?: number;
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+	depth: undefined,
+});
 
 defineEmits(['add']);
 </script>

@@ -546,6 +546,7 @@ const props = withDefaults(defineProps<Props>(), {
 	right: false,
 	disabled: false,
 	clickable: false,
+	color: undefined,
 });
 
 const emit = defineEmits(['click']);

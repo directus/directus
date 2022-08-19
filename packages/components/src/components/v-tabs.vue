@@ -18,6 +18,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	vertical: false,
+	modelValue: undefined,
 });
 
 const emit = defineEmits(['update:modelValue']);

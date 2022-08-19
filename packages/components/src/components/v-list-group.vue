@@ -58,6 +58,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	multiple: true,
 	to: '',
+	active: undefined,
 	exact: false,
 	query: false,
 	disabled: false,

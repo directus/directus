@@ -19,7 +19,7 @@ import { ref, computed } from 'vue';
 import { useSizeClass } from '../composables';
 
 interface Props {
-	active?: boolean | null;
+	active?: boolean;
 	close?: boolean;
 	closeIcon?: string;
 	outlined?: boolean;
@@ -32,7 +32,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	active: null,
+	active: undefined,
 	close: false,
 	closeIcon: 'close',
 	outlined: false,
@@ -46,7 +46,7 @@ const internalLocalActive = ref(true);
 
 const internalActive = computed<boolean>({
 	get: () => {
-		if (props.active !== null) return props.active;
+		if (props.active !== undefined) return props.active;
 		return internalLocalActive.value;
 	},
 	set: (active: boolean) => {

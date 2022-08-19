@@ -26,6 +26,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
 	label: i18n.global.t('toggle'),
 	startOpen: false,
 	disabled: false,

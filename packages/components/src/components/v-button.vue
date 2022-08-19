@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { RouteLocation, useRoute, useLink, useRouter } from 'vue-router';
+import { RouteLocation, useRoute, useLink } from 'vue-router';
 import { useSizeClass, useGroupable } from '../composables';
 import { isEqual, isNil } from 'lodash';
 
@@ -84,20 +84,23 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	loading: false,
 	to: '',
+	href: undefined,
+	active: undefined,
 	exact: false,
 	query: false,
 	secondary: false,
 	warning: false,
 	danger: false,
+	value: undefined,
 	dashed: false,
 	tile: false,
 	align: 'center',
+	download: undefined,
 });
 
 const emit = defineEmits(['click']);
 
 const route = useRoute();
-const router = useRouter();
 
 const { route: linkRoute, isActive, isExactActive } = useLink(props);
 

@@ -4,7 +4,7 @@
 			class="circle"
 			viewBox="0 0 30 30"
 			:class="{ indeterminate }"
-			@animationiteration="$emit('animationiteration')"
+			@animationiteration="$emit('animationiteration', $event)"
 		>
 			<path
 				class="circle-background"

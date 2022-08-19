@@ -32,9 +32,9 @@ import { Option } from './types';
 
 interface Props {
 	item: Option;
-	modelValue: string | number | (string | number)[] | null;
-	multiple: boolean;
-	allowOther: boolean;
+	modelValue?: string | number | (string | number)[] | null;
+	multiple?: boolean;
+	allowOther?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

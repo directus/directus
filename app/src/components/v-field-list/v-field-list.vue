@@ -40,10 +40,10 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	field: undefined,
 	disabledFields: () => [],
 	includeFunctions: false,
 	includeRelations: true,
-	field: undefined,
 });
 
 defineEmits(['select-field']);

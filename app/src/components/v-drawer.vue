@@ -78,6 +78,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	subtitle: null,
+	modelValue: undefined,
 	persistent: false,
 	icon: 'box',
 	sidebarLabel: i18n.global.t('sidebar'),

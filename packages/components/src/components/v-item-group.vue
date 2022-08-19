@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 	mandatory: false,
 	max: -1,
 	multiple: false,
+	modelValue: undefined,
 	scope: 'item-group',
 });
 

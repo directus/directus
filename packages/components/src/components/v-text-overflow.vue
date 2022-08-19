@@ -5,44 +5,34 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { useElementSize } from '../composables';
 
-export default defineComponent({
-	props: {
-		text: {
-			type: [String, Number, Array, Object, Boolean],
-			required: true,
-		},
-		highlight: {
-			type: String,
-			default: null,
-		},
-		placement: {
-			type: String,
-			default: 'top',
-			validator: (val: string) => ['top', 'bottom', 'left', 'right', 'start', 'end'].includes(val),
-		},
-	},
-	setup() {
-		const el = ref<HTMLElement>();
-		const hasEllipsis = ref(false);
+interface Props {
+	text: string | number | boolean | Record<string, any> | Array<any>;
+	highlight?: string;
+	placement?: 'top' | 'bottom' | 'left' | 'right' | 'start' | 'end';
+}
 
-		const { width } = useElementSize(el);
-
-		watch(
-			width,
-			() => {
-				if (!el.value) return;
-				hasEllipsis.value = el.value.offsetWidth < el.value.scrollWidth;
-			},
-			{ immediate: true }
-		);
-
-		return { el, hasEllipsis };
-	},
+withDefaults(defineProps<Props>(), {
+	highlight: undefined,
+	placement: 'top',
 });
+
+const el = ref<HTMLElement>();
+const hasEllipsis = ref(false);
+
+const { width } = useElementSize(el);
+
+watch(
+	width,
+	() => {
+		if (!el.value) return;
+		hasEllipsis.value = el.value.offsetWidth < el.value.scrollWidth;
+	},
+	{ immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>

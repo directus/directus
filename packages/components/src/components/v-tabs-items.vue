@@ -9,7 +9,9 @@ interface Props {
 	modelValue?: (number | string)[];
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
+});
 
 const emit = defineEmits(['update:modelValue']);
 

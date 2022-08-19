@@ -24,7 +24,9 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
 	multiline: false,
+	placeholder: undefined,
 });
 
 const emit = defineEmits(['update:modelValue', 'trigger', 'deactivate', 'up', 'down', 'enter']);

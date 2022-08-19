@@ -55,9 +55,9 @@ import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
 	field: Field;
-	modelValue: string | number | boolean | Record<string, any> | Array<any> | null;
-	initialValue: string | number | boolean | Record<string, any> | Array<any> | null;
-	restricted: boolean;
+	modelValue?: string | number | boolean | Record<string, any> | Array<any> | null;
+	initialValue?: string | number | boolean | Record<string, any> | Array<any> | null;
+	restricted?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

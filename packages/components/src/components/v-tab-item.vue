@@ -11,7 +11,9 @@ interface Props {
 	value?: string | number;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
+});
 
 const { active, toggle } = useGroupable({ value: props.value, group: 'v-tabs-items' });
 </script>

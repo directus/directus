@@ -41,7 +41,7 @@
 			<form-field
 				v-else-if="!fieldsMap[fieldName].meta?.hidden"
 				:ref="
-					(el: VNodeRef | undefined) => {
+					(el) => {
 						formFieldEls[fieldName] = el;
 					}
 				"
@@ -85,7 +85,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, onBeforeUpdate, provide, ref, VNodeRef, watch } from 'vue';
+import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -113,21 +113,24 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	collection: undefined,
+	fields: undefined,
 	initialValues: null,
 	modelValue: null,
 	loading: false,
 	batchMode: false,
+	primaryKey: undefined,
 	disabled: false,
 	validationErrors: () => [],
 	autofocus: false,
 	group: null,
+	badge: undefined,
 	nested: false,
 	rawEditorEnabled: false,
+	direction: undefined,
 });
 
 const emit = defineEmits(['update:modelValue']);
-
-const { t } = useI18n();
 
 const values = computed(() => {
 	return Object.assign({}, props.initialValues, props.modelValue);

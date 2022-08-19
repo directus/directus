@@ -52,9 +52,9 @@ import SelectListItem from './select-list-item.vue';
 interface Props {
 	item: Option;
 	modelValue?: string | number | (string | number)[] | null;
-	multiple: boolean;
-	allowOther: boolean;
-	groupSelectable: boolean;
+	multiple?: boolean;
+	allowOther?: boolean;
+	groupSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

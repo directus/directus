@@ -20,7 +20,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { nanoid } from 'nanoid';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
 
@@ -31,6 +30,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
 	persistent: false,
 	placement: 'center',
 });
@@ -47,7 +47,6 @@ useShortcut('escape', (event, cancelNext) => {
 const localActive = ref(false);
 
 const className = ref<string | null>(null);
-const id = computed(() => nanoid());
 
 const internalActive = computed({
 	get() {

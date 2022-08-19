@@ -17,6 +17,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
 	disabled: false,
 });
 

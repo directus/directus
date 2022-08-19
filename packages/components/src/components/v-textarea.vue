@@ -39,8 +39,10 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	autofocus: false,
 	fullWidth: true,
+	modelValue: undefined,
 	nullable: true,
 	expandOnFocus: false,
+	placeholder: undefined,
 	trim: false,
 });
 

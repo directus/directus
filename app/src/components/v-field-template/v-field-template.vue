@@ -54,6 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	nullable: true,
 	collection: null,
+	depth: undefined,
 	placeholder: null,
 	inject: null,
 });

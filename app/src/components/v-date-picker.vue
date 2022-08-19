@@ -13,14 +13,14 @@ import { getFlatpickrLocale } from '@/utils/get-flatpickr-locale';
 
 interface Props {
 	type: 'date' | 'time' | 'dateTime' | 'timestamp';
-	modelValue?: string | null;
+	modelValue?: string;
 	disabled?: boolean;
 	includeSeconds?: boolean;
 	use24?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	modelValue: null,
+	modelValue: undefined,
 	disabled: false,
 	includeSeconds: false,
 	use24: true,

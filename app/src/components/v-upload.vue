@@ -110,8 +110,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	multiple: false,
 	preset: () => ({}),
+	fileId: undefined,
 	fromUrl: false,
 	fromLibrary: false,
+	folder: undefined,
 });
 
 const emit = defineEmits(['input']);

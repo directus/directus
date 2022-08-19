@@ -16,6 +16,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
 	scope: 'item-group',
 	active: undefined,
 	watch: true,

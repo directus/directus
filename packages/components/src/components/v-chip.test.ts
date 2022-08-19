@@ -18,17 +18,33 @@ test('Mount component', () => {
 	expect(wrapper.html()).toMatchSnapshot();
 });
 
-test('modelValue prop', async () => {
+test('active prop', async () => {
 	const wrapper = mount(VChip, {
 		props: {
-			modelValue: 'my value',
+			active: true,
+			close: true,
 		},
 		global,
 	});
 
-	expect(wrapper.get('input').element.value).toBe('my value');
+	expect(wrapper.find('.v-chip').exists()).toBeTruthy();
 
-	await wrapper.find('input').setValue('my value1');
+	await wrapper.get('.close-outline').trigger('click');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['my value1']);
+	expect(wrapper.emitted()['update:active'][0]).toEqual([false]);
+});
+
+test('close prop', async () => {
+	const wrapper = mount(VChip, {
+		props: {
+			close: true,
+		},
+		global,
+	});
+
+	expect(wrapper.find('.v-chip').exists()).toBeTruthy();
+
+	await wrapper.get('.close-outline').trigger('click');
+
+	expect(wrapper.find('.v-chip').exists()).toBeFalsy();
 });
