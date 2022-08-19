@@ -757,6 +757,7 @@ trigger: Disparador
 flow_name: Nombre
 flow_tracking_activity: Sólo seguimiento de actividad
 flow_tracking_null: No realizar seguimiento
+code: Código
 insights: Informes
 dashboard: Tablero
 panel: Panel
@@ -1350,6 +1351,8 @@ value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
 start: Iniciar
+table: Tabla
+list: Lista
 interfaces:
   filter:
     name: Filtro
@@ -1428,6 +1431,8 @@ interfaces:
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
     placeholder: Elija una fecha...
+  system-fields:
+    select_a_collection: Seleccione una colección
   system-display-template:
     display-template: Mostrar plantilla
     description: Combinar texto estático y valores de campos dinámicos

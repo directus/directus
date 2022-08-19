@@ -793,6 +793,7 @@ start_flow: Стартиране на процеса
 stop_flow: Спиране на процеса
 create_operation: Създаване на операция
 edit_operation: Редактиране на операцията
+code: Код
 operation_options: Настройки на операцията
 operation_name: Име на операцията...
 operation_key: Идентификатор за референцията...
@@ -1403,9 +1404,10 @@ translation: Превод
 translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
+table: Таблица
+list: Списък
 interfaces:
   filter:
     name: Филтриране
@@ -1485,6 +1487,8 @@ interfaces:
     set_to_now: Сегашно време
     use_24: Използване на 24 часов формат
     placeholder: Избор на дата и час...
+  system-fields:
+    select_a_collection: Избор на колекция
   system-display-template:
     display-template: Шаблон при показване
     description: Комбиниране на статичен текст и динамични стойности от полета
@@ -2012,7 +2016,6 @@ triggers:
     collection_and_item: В колекцията и детайлния изглед
     collection_only: Само в изгледа на колекцията
     item_only: Само в детайлния изглед
-a_users_uuid: Потребителски първичен UUID ключ...
 a_flow_uuid: Първичен UUID ключ на процеса...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
@@ -2058,7 +2061,6 @@ operations:
     body: Съдържание
   notification:
     name: Изпращане на известие
-    description: Изпращане на известие до потребител
     recipient: Потребител
     message: Съобщение
   request:
