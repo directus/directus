@@ -1,6 +1,6 @@
 import { Snackbar, SnackbarRaw } from '@/types/notifications';
 import { reverse, sortBy } from 'lodash';
-import { nanoid } from 'nanoid/non-secure';
+import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { Notification } from '@directus/shared/types';
 import api from '@/api';

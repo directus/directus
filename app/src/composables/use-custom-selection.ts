@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid/non-secure';
+import { nanoid } from 'nanoid';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
 type UsableCustomSelection = {

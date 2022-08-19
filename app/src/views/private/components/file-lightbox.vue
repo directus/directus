@@ -28,7 +28,7 @@ import api from '@/api';
 import { computed, defineComponent, ref, watch } from 'vue';
 
 import FilePreview from '@/views/private/components/file-preview.vue';
-import { nanoid } from 'nanoid/non-secure';
+import { nanoid } from 'nanoid';
 
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';

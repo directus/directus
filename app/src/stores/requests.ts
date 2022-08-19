@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid/non-secure';
+import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
 export const useRequestsStore = defineStore({

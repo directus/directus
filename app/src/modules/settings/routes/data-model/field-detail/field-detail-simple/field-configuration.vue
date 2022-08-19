@@ -69,7 +69,7 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
 import RelationshipConfiguration from './relationship-configuration.vue';
-import { nanoid } from 'nanoid/non-secure';
+import { nanoid } from 'nanoid';
 
 export default defineComponent({
 	components: { ExtensionOptions, RelationshipConfiguration },

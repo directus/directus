@@ -7,7 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
 import { isEqual, merge, omit, orderBy } from 'lodash';
-import { nanoid } from 'nanoid/non-secure';
+import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
 /**
