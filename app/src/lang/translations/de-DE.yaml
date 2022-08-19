@@ -51,6 +51,7 @@ and: Und
 or: Oder
 init: Initialisierung
 dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit werden die ersten {n} Elemente angezeigt.
+modifier: Geändert von
 custom: Eigene
 hook: Hook
 fill_width: Breite füllen
@@ -294,6 +295,8 @@ next: Weiter
 field_name: Feldname
 translations: Übersetzungen
 no_translations: Keine Übersetzung
+left_to_right: Von links nach rechts
+right_to_left: Von rechts nach links
 note: Notiz
 enter_a_value: Gib einen Wert ein...
 enter_a_placeholder: Platzhalter eingeben...
@@ -477,6 +480,7 @@ creating_items: Elemente erstellen
 enable_create_button: Knopf zum Erstellen aktivieren
 selecting_items: Elemente auswählen
 enable_select_button: Knopf zum Auswählen aktivieren
+allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
 click_to_expand: Zum Erweitern klicken
@@ -792,6 +796,12 @@ stop_flow: Flow stoppen
 create_operation: Operation erstellen
 edit_operation: Operation bearbeiten
 code: Code
+operation_options: Operation Optionen
+operation_name: Name der Operation...
+operation_key: Bezeichner für Referenz...
+operation_key_unique_error: Operationsschlüssel müssen in einem Flow eindeutig sein
+operation_handle_resolve: 'Lösen: Zum Hinzufügen klicken oder für Reroute ziehen'
+operation_handle_reject: 'Ablehnen: Zum Hinzufügen klicken oder für Reroute ziehen'
 insights: Einblicke
 dashboard: Dashboard
 panel: Panel
@@ -815,6 +825,7 @@ no_data: Keine Daten
 no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
 payload: Auslastung
+details: Details
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -828,6 +839,7 @@ media: Medien
 quality: Qualität
 width: Breite
 height: Höhe
+transformation_preset_key: Transformation Preset Key
 source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
@@ -990,6 +1002,7 @@ directus_collection:
   directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
+  directus_flows: Automation Flows
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_notifications: Benachrichtigungen an Benutzer gesendet
@@ -1394,6 +1407,11 @@ report_error: Fehler melden
 start: Start
 table: Tabelle
 list: Liste
+search_filter: Suche & Filter
+enable_search_filter: Suche & Filterung aktivieren
+undo_removed_item: Entferntes Item rückgängig
+remove_item: Item entfernen
+delete_item: Item löschen
 interfaces:
   filter:
     name: Filter
@@ -1475,6 +1493,7 @@ interfaces:
     placeholder: Datum wählen...
   system-fields:
     select_a_collection: Sammlung auswählen
+    no_fields: Keine Felder
   system-display-template:
     display-template: Anzeigevorlage
     description: Statischen Text und dynamische Feldwerte mischen
@@ -1735,6 +1754,7 @@ displays:
     relative: Relativ
     relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
     suffix: Suffix
+    strict: Strikt
   file:
     file: Datei
     description: Dateien anzeigen
