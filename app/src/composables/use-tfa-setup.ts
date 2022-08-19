@@ -1,5 +1,5 @@
 import api from '@/api';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 import { onMounted, ref } from 'vue';
 import qrcode from 'qrcode';
 import { useUserStore } from '@/stores/user';

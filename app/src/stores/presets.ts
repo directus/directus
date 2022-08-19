@@ -2,7 +2,7 @@ import api from '@/api';
 import { useUserStore } from '@/stores/user';
 import { Preset } from '@directus/shared/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 import { defineStore } from 'pinia';
 
 const defaultPreset: Omit<Preset, 'collection'> = {

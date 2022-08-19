@@ -66,7 +66,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 import { assign } from 'lodash';
 import { useI18n } from 'vue-i18n';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 import { Field, DeepPartial } from '@directus/shared/types';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 
