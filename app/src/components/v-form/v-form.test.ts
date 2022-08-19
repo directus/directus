@@ -1,24 +1,17 @@
 import { test, expect, beforeEach, vitest, vi } from 'vitest';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { mount } from '@vue/test-utils';
-import { nanoid } from 'nanoid';
+import { createTestingPinia } from '@pinia/testing';
+import { createI18n } from 'vue-i18n';
 
-// import { generateRouter } from '@/__utils__/router';
-// import { nanoid } from 'nanoid/non-secure';
-// import { Directive, h } from 'vue';
-// import { Router } from 'vue-router';
+import { generateRouter } from '@/__utils__/router';
+import { Directive, h } from 'vue';
+import { Router } from 'vue-router';
 
 import VForm from './v-form.vue';
 
 let router: Router;
 let global: GlobalMountOptions;
-
-// mocking insecure version of nanoid
-vi.mock('nanoid', () => {
-	return {
-		nanoid: vi.fn(() => 'test'),
-	};
-});
 
 // beforeEach(async () => {
 // 	router = generateRouter([
@@ -32,27 +25,34 @@ vi.mock('nanoid', () => {
 // 		},
 // 	]);
 // 	router.push('/');
-// 	await router.isReady();
-
-// 	global = {
-// 		stubs: ['v-progress-circular'],
-// 		directives: {},
-// 		plugins: [router],
-// 	};
 // });
 
+vi.stubGlobal(
+	'ResizeObserver',
+	vi.fn(() => ({
+		disconnect: vi.fn(),
+		observe: vi.fn(),
+		takeRecords: vi.fn(),
+		unobserve: vi.fn(),
+	}))
+);
+
 test('Mount component', () => {
-	expect(nanoid()).toBe('test');
 	expect(VForm).toBeTruthy();
 
-	// const wrapper = mount(VForm, {
-	// 	props: {
-	// 		fields: [],
-	// 	},
-	// 	global,
-	// });
+	const i18n = createI18n();
 
-	// console.log(wrapper.html());
-	// expect('x').toBe('x');
-	// expect(wrapper.html()).toMatchSnapshot();
+	const wrapper = mount(VForm, {
+		global: {
+			plugins: [i18n, createTestingPinia()],
+		},
+		props: {
+			fields: [],
+			collection: null,
+			loading: false,
+		},
+		shallow: true,
+	});
+
+	expect(wrapper.html()).not.toBe('');
 });
