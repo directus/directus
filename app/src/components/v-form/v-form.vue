@@ -8,9 +8,9 @@
 		/>
 		<template v-for="(fieldName, index) in fieldNames">
 			<component
-				:is="`interface-${fieldsMap[fieldName].meta?.interface || 'group-standard'}`"
-				v-if="fieldsMap[fieldName].meta?.special?.includes('group')"
-				v-show="!fieldsMap[fieldName].meta?.hidden"
+				:is="`interface-${fieldsMap[fieldName]?.meta?.interface || 'group-standard'}`"
+				v-if="fieldsMap[fieldName]?.meta?.special?.includes('group')"
+				v-show="!fieldsMap[fieldName]?.meta?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
@@ -18,7 +18,7 @@
 				"
 				:key="fieldName + '_group'"
 				:class="[
-					fieldsMap[fieldName].meta?.width || 'full',
+					fieldsMap[fieldName]?.meta?.width || 'full',
 					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
 				]"
 				:field="fieldsMap[fieldName]"
@@ -34,12 +34,12 @@
 				:badge="badge"
 				:raw-editor-enabled="rawEditorEnabled"
 				:direction="direction"
-				v-bind="fieldsMap[fieldName].meta?.options || {}"
+				v-bind="fieldsMap[fieldName]?.meta?.options || {}"
 				@apply="apply"
 			/>
 
 			<form-field
-				v-else-if="!fieldsMap[fieldName].meta?.hidden"
+				v-else-if="!fieldsMap[fieldName]?.meta?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
@@ -195,7 +195,7 @@ export default defineComponent({
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < fieldNames.value.length; i++) {
 				const field = fieldsMap.value[fieldNames.value[i]];
-				if (field.meta && !field.meta?.readonly && !field.meta?.hidden) {
+				if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
 					return i;
 				}
 			}
@@ -205,7 +205,7 @@ export default defineComponent({
 		const firstVisibleFieldIndex = computed(() => {
 			for (let i = 0; i < fieldNames.value.length; i++) {
 				const field = fieldsMap.value[fieldNames.value[i]];
-				if (field.meta && !field.meta?.hidden) {
+				if (field?.meta && !field.meta?.hidden) {
 					return i;
 				}
 			}
@@ -307,7 +307,7 @@ export default defineComponent({
 			return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 
 			function isDisabled(field: Field) {
-				const meta = fieldsMap.value?.[field.field].meta;
+				const meta = fieldsMap.value?.[field.field]?.meta;
 				return (
 					props.loading ||
 					props.disabled === true ||
@@ -319,12 +319,12 @@ export default defineComponent({
 
 			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
 				const fieldsInGroup: Field[] = fields.value.filter((field) => {
-					const meta = fieldsMap.value?.[field.field].meta;
+					const meta = fieldsMap.value?.[field.field]?.meta;
 					return meta?.group === group || (group === null && isNil(meta));
 				});
 
 				for (const field of fieldsInGroup) {
-					const meta = fieldsMap.value?.[field.field].meta;
+					const meta = fieldsMap.value?.[field.field]?.meta;
 					if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
 						passed.push(meta!.field);
 						fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
