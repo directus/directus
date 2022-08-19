@@ -85,7 +85,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
+import { computed, ComputedRef, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
@@ -281,8 +281,8 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fields);
 
-			const fieldsMap = computed(() => {
-				if (props.loading) return {};
+			const fieldsMap: ComputedRef<Record<string, Field | undefined>> = computed(() => {
+				if (props.loading) return {} as Record<string, undefined>;
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 				return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
 					const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
@@ -390,7 +390,8 @@ export default defineComponent({
 			}
 		}
 
-		function unsetValue(field: Field) {
+		function unsetValue(field: Field | undefined) {
+			if (!field) return;
 			if (!props.batchMode && isDisabled(field)) return;
 
 			if (field.field in (props.modelValue || {})) {
@@ -409,7 +410,8 @@ export default defineComponent({
 
 			return { batchActiveFields, toggleBatchField };
 
-			function toggleBatchField(field: Field) {
+			function toggleBatchField(field: Field | undefined) {
+				if (!field) return;
 				if (batchActiveFields.value.includes(field.field)) {
 					batchActiveFields.value = batchActiveFields.value.filter((fieldKey) => fieldKey !== field.field);
 
@@ -432,7 +434,8 @@ export default defineComponent({
 
 			return { rawActiveFields, toggleRawField };
 
-			function toggleRawField(field: Field) {
+			function toggleRawField(field: Field | undefined) {
+				if (!field) return;
 				if (rawActiveFields.value.has(field.field)) {
 					rawActiveFields.value.delete(field.field);
 				} else {
