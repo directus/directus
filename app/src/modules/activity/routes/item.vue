@@ -16,7 +16,7 @@
 			</user-popover>
 
 			<p class="type-label">{{ t('action') }}:</p>
-			<p>{{ item.action }}</p>
+			<p>{{ item.action_translated }}</p>
 
 			<p class="type-label">{{ t('date') }}:</p>
 			<p>{{ item.timestamp }}</p>
@@ -58,6 +58,7 @@ type ActivityRecord = {
 		last_name: string;
 	} | null;
 	action: string;
+	action_translated: string;
 	timestamp: string;
 	ip: string;
 	user_agent: string;
@@ -85,7 +86,7 @@ export default defineComponent({
 		const error = ref<any>(null);
 
 		const openItemLink = computed(() => {
-			if (!item.value || item.value.collection.startsWith('directus_')) return;
+			if (!item.value || item.value.collection.startsWith('directus_') || item.value.action === 'delete') return;
 			return `/content/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
@@ -117,7 +118,7 @@ export default defineComponent({
 				item.value = response.data.data;
 				if (item.value) {
 					if (te(`field_options.directus_activity.${item.value.action}`))
-						item.value.action = t(`field_options.directus_activity.${item.value.action}`);
+						item.value.action_translated = t(`field_options.directus_activity.${item.value.action}`);
 					item.value.timestamp = new Date(item.value.timestamp).toLocaleString(i18n.global.locale.value);
 				}
 			} catch (err: any) {
