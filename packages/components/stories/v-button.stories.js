@@ -1,5 +1,5 @@
 import VButton from '../src/components/v-button.vue';
-import { fix } from './fix-actions';
+
 
 document.body.classList.add('light')
 
@@ -12,9 +12,9 @@ export default {
     },
 };
 
-const Template = (args, {argTypes}) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-button v-bind="args" v-on="args">My Button{{args.onClick}}</v-button>',
 });

@@ -1,7 +1,7 @@
 import VCheckboxTree from '../src/components/v-checkbox-tree/v-checkbox-tree.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VCheckboxTree',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-checkbox-tree v-bind="args" v-on="args" />',
 });

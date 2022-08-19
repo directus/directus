@@ -1,7 +1,7 @@
 import VWorkspace from '../src/components/v-workspace.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VWorkspace',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-workspace v-bind="args" v-on="args" ></v-workspace>',
 });

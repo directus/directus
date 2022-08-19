@@ -1,7 +1,7 @@
 import VCard from '../src/components/v-card.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VCard',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: `<v-card v-bind="args" v-on="args" >
     <v-card-title>Want a cake?</v-card-title>

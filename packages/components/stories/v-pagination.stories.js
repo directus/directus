@@ -1,7 +1,7 @@
 import VPagination from '../src/components/v-pagination.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VPagination',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-pagination v-bind="args" v-on="args" />',
 });

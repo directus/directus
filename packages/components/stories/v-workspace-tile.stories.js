@@ -1,7 +1,7 @@
 import VWorkspaceTile from '../src/components/v-workspace-tile.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VWorkspaceTile',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-workspace-tile v-bind="args" v-on="args" >Contents of the tile</v-workspace-tile>',
 });

@@ -1,7 +1,7 @@
 import VHover from '../src/components/v-hover.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VHover',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-hover v-bind="args" v-on="args" v-slot="{ hover }">Hover me!<div v-if="hover">This is only shown on hover.</div></v-hover>',
 });

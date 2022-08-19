@@ -1,7 +1,7 @@
 import VTextOverflow from '../src/components/v-text-overflow.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VTextOverflow',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-text-overflow v-bind="args" v-on="args"></v-text-overflow>',
 });

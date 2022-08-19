@@ -1,7 +1,7 @@
 import VItemGroup from '../src/components/v-item-group.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VItemGroup',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-item-group v-bind="args" v-on="args" ><v-item watch value="item1" v-slot="{active}">First item is active: {{active}}</v-item><v-item value="item2" v-slot="{active}">Second item is active: {{active}}</v-item></v-item-group>',
 });

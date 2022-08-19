@@ -1,7 +1,7 @@
 import VBadge from '../src/components/v-badge.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
   title: 'Example/VBadge',
@@ -11,9 +11,9 @@ export default {
   },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
   setup() {
-    return { args: fix(args, argTypes) };
+    return { args };
   },
   template: '<v-badge v-bind="args" v-on="args" ><v-icon name="notifications_active" /></v-badge>',
 });

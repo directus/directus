@@ -1,7 +1,7 @@
 import VListItem from '../src/components/v-list-item.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VListItem',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: `
 <v-list-item v-bind="args" v-on="args" >List Item 1</v-list-item>

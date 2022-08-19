@@ -1,7 +1,7 @@
 import VFancySelect from '../src/components/v-fancy-select.vue';
 document.body.classList.add('light')
 
-import { fix } from './fix-actions';
+
 
 export default {
     title: 'Example/VFancySelect',
@@ -11,9 +11,9 @@ export default {
     },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template = (args) => ({
     setup() {
-        return { args: fix(args, argTypes) };
+        return { args };
     },
     template: '<v-fancy-select v-bind="args" v-on="args" >My Button</v-fancy-select>',
 });
