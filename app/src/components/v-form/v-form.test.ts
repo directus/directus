@@ -10,22 +10,15 @@ import { Router } from 'vue-router';
 
 import VForm from './v-form.vue';
 
-let router: Router;
 let global: GlobalMountOptions;
 
-// beforeEach(async () => {
-// 	router = generateRouter([
-// 		{
-// 			path: '/',
-// 			component: h('div', VForm),
-// 		},
-// 		{
-// 			path: '/test',
-// 			component: h('div', 'empty'),
-// 		},
-// 	]);
-// 	router.push('/');
-// });
+beforeEach(async () => {
+	const i18n = createI18n();
+
+	global = {
+		plugins: [i18n, createTestingPinia()],
+	};
+});
 
 vi.stubGlobal(
 	'ResizeObserver',
@@ -40,12 +33,8 @@ vi.stubGlobal(
 test('Mount component', () => {
 	expect(VForm).toBeTruthy();
 
-	const i18n = createI18n();
-
 	const wrapper = mount(VForm, {
-		global: {
-			plugins: [i18n, createTestingPinia()],
-		},
+		global,
 		props: {
 			fields: [],
 			collection: null,
@@ -54,5 +43,5 @@ test('Mount component', () => {
 		shallow: true,
 	});
 
-	expect(wrapper.html()).not.toBe('');
+	expect(wrapper.html()).toMatchSnapshot();
 });

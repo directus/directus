@@ -1,0 +1,7 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-form grid\\" data-v-3fb8a5a2=\\"\\">
+  <!--v-if-->
+</div>"
+`;
