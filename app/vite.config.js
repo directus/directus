@@ -149,6 +149,9 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'happy-dom',
+		alias: {
+			nanoid: 'nanoid/non-secure',
+		},
 	},
 });
 
