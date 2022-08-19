@@ -1,8 +1,8 @@
-import { test, expect, beforeEach, vitest, vi } from 'vitest';
+import { test, expect, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 
 import VButton from './v-button.vue';
-import { Directive, h } from 'vue';
+import { h } from 'vue';
 import { generateRouter } from '@/__utils__/router';
 import { Router } from 'vue-router';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';

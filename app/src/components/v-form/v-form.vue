@@ -86,7 +86,6 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
 

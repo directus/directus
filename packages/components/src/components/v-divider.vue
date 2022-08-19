@@ -15,7 +15,7 @@ interface Props {
 	large?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	vertical: false,
 	inlineTitle: true,
 	large: false,

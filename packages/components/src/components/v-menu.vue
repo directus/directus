@@ -69,7 +69,7 @@ import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
 import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
 import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { debounce } from 'lodash';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, onUnmounted, ref, Ref, watch } from 'vue';
 
 interface Props {

@@ -1,3 +1,13 @@
 // Vitest Snapshot v1
 
-exports[`Mount component 1`] = `"<button class=\\"v-switch\\" type=\\"button\\" role=\\"switch\\" aria-pressed=\\"false\\" disabled=\\"false\\" data-v-7d31220a=\\"\\"><span class=\\"switch\\" data-v-7d31220a=\\"\\"></span><span class=\\"label type-label\\" data-v-7d31220a=\\"\\"></span></button>"`;
+exports[`Mount component 1`] = `
+"<div class=\\"v-slider\\" data-v-18099228=\\"\\">
+  <!--v-if-->
+  <div class=\\"slider\\" data-v-18099228=\\"\\"><input type=\\"range\\" max=\\"100\\" min=\\"0\\" step=\\"1\\" data-v-18099228=\\"\\">
+    <div class=\\"fill\\" data-v-18099228=\\"\\"></div>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+</div>"
+`;

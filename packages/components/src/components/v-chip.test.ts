@@ -48,3 +48,18 @@ test('close prop', async () => {
 
 	expect(wrapper.find('.v-chip').exists()).toBeFalsy();
 });
+
+test('style props', async () => {
+	const props = ['outlined', 'label', 'disabled', 'close', 'x-small', 'small', 'large', 'x-large'];
+
+	for (const prop of props) {
+		const wrapper = mount(VChip, {
+			props: {
+				[prop]: true,
+			},
+			global,
+		});
+
+		expect(wrapper.classes()).toContain(prop);
+	}
+});
