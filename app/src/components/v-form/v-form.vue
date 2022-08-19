@@ -47,7 +47,7 @@
 				"
 				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
-				:field="fieldsMap[fieldName]"
+				:field="fieldsMap[fieldName] || {}"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[fieldName]"
 				:initial-value="(initialValues || {})[fieldName]"
@@ -282,7 +282,7 @@ export default defineComponent({
 			const { formFields } = useFormFields(fields);
 
 			const fieldsMap = computed(() => {
-				if (Object.keys(values.value).length === 0) return {};
+				if (props.loading) return {};
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 				return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
 					const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
@@ -306,7 +306,8 @@ export default defineComponent({
 
 			return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 
-			function isDisabled(field: Field) {
+			function isDisabled(field: Field | undefined) {
+				if (!field) return true;
 				const meta = fieldsMap.value?.[field.field]?.meta;
 				return (
 					props.loading ||
