@@ -1,6 +1,8 @@
 import VInput from '../src/components/v-input.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VInput',
     component: VInput,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-input v-bind="args" />',
+    template: '<v-input v-bind="args" v-on="args" />',
 });
 
 export const Primary = Template.bind({});

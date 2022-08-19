@@ -1,6 +1,8 @@
 import VNotice from '../src/components/v-notice.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VNotice',
     component: VNotice,
@@ -11,11 +13,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-notice v-bind="args" >Making a pizza ist best done without ordering a pizza.</v-notice>',
+    template: '<v-notice v-bind="args" v-on="args" >Making a pizza ist best done without ordering a pizza.</v-notice>',
 });
 
 export const Primary = Template.bind({});

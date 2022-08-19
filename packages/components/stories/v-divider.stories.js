@@ -1,6 +1,8 @@
 import VDivider from '../src/components/v-divider.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VDivider',
     component: VDivider,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-divider v-bind="args" />',
+    template: '<v-divider v-bind="args" v-on="args" />',
 });
 
 export const Primary = Template.bind({});

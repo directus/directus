@@ -2,6 +2,8 @@ import VSelect from '../src/components/v-select/v-select.vue';
 
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VSelect',
     component: VSelect,
@@ -10,11 +12,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: `<v-select v-bind="args" ></v-select>`,
+    template: `<v-select v-bind="args" v-on="args"></v-select>`,
 });
 
 export const Primary = Template.bind({});

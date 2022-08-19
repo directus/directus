@@ -1,6 +1,8 @@
 import VChip from '../src/components/v-chip.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VChip',
     component: VChip,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-chip v-bind="args" >Cake</v-chip>',
+    template: '<v-chip v-bind="args" v-on="args" >Cake</v-chip>',
 });
 
 export const Primary = Template.bind({});

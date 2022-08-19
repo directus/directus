@@ -1,6 +1,8 @@
 import VHighlight from '../src/components/v-highlight.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VHighlight',
     component: VHighlight,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-highlight v-bind="args" />',
+    template: '<v-highlight v-bind="args" v-on="args" />',
 });
 
 export const Primary = Template.bind({});

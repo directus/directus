@@ -1,6 +1,8 @@
 import VTextarea from '../src/components/v-textarea.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
   title: 'Example/VTextarea',
   component: VTextarea,
@@ -9,11 +11,11 @@ export default {
   },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
   setup() {
-    return { args };
+    return { args: fix(args, argTypes) };
   },
-  template: '<v-textarea v-bind="args" >My Button</v-textarea>',
+  template: '<v-textarea v-bind="args" v-on="args" >My Button</v-textarea>',
 });
 
 export const Primary = Template.bind({});

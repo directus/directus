@@ -1,6 +1,8 @@
 import VIconFile from '../src/components/v-icon-file.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VIconFile',
     component: VIconFile,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-icon-file v-bind="args" >My Button</v-icon-file>',
+    template: '<v-icon-file v-bind="args" v-on="args" >My Button</v-icon-file>',
 });
 
 export const Primary = Template.bind({});

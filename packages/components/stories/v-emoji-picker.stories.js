@@ -1,6 +1,8 @@
 import VEmojiPicker from '../src/components/v-emoji-picker.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VEmojiPicker',
     component: VEmojiPicker,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-emoji-picker v-bind="args" >My Button</v-emoji-picker>',
+    template: '<v-emoji-picker v-bind="args" v-on="args" >My Button</v-emoji-picker>',
 });
 
 export const Primary = Template.bind({});

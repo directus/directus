@@ -1,6 +1,8 @@
 import VInfo from '../src/components/v-info.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VInfo',
     component: VInfo,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-info v-bind="args" >You have sadly eaten all the cookies!</v-info>',
+    template: '<v-info v-bind="args" v-on="args" >You have sadly eaten all the cookies!</v-info>',
 });
 
 export const Primary = Template.bind({});

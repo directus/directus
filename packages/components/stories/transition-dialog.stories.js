@@ -1,6 +1,8 @@
 import TransitionDialog from '../src/components/transition/dialog.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/TransitionDialog',
     component: TransitionDialog,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-hover v-slot="{ hover }">Hover me!<transition-dialog v-bind="args"><div v-if="hover" style="background-color: var(--background-normal); height: 200px; width: 400px; display: flex; justify-content: center; align-items: center">This is only shown on hover.</div></transition-dialog></v-hover>',
+    template: '<v-hover v-slot="{ hover }">Hover me!<transition-dialog v-bind="args" v-on="args"><div v-if="hover" style="background-color: var(--background-normal); height: 200px; width: 400px; display: flex; justify-content: center; align-items: center">This is only shown on hover.</div></transition-dialog></v-hover>',
 });
 
 export const Primary = Template.bind({});

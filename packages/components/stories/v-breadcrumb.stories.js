@@ -1,6 +1,8 @@
 import VBreadcrumb from '../src/components/v-breadcrumb.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
   title: 'Example/VBreadcrumb',
   component: VBreadcrumb,
@@ -9,11 +11,11 @@ export default {
   },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
   setup() {
-    return { args };
+    return { args: fix(args, argTypes) };
   },
-  template: '<v-breadcrumb v-bind="args" />',
+  template: '<v-breadcrumb v-bind="args" v-on="args" />',
 });
 
 export const Primary = Template.bind({});

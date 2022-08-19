@@ -20,7 +20,7 @@ const i18n = createI18n();
 
 
 export const parameters = {
-    actions: { argTypesRegex: "^(change|click|update:.*?)" },
+    // actions: { argTypesRegex: "(change|emoji-selected|update:.*?)" },
     controls: {
       matchers: {
         color: /(background|color)$/i,

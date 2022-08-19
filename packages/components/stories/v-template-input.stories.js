@@ -1,6 +1,8 @@
 import VTemplateInput from '../src/components/v-template-input.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VTemplateInput',
     component: VTemplateInput,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-template-input v-bind="args" >My Template Input</v-template-input>',
+    template: '<v-template-input v-bind="args" v-on="args" >My Template Input</v-template-input>',
 });
 
 export const Primary = Template.bind({});

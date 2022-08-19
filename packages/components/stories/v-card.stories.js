@@ -1,6 +1,8 @@
 import VCard from '../src/components/v-card.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VCard',
     component: VCard,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: `<v-card v-bind="args" >
+    template: `<v-card v-bind="args" v-on="args" >
     <v-card-title>Want a cake?</v-card-title>
     <v-card-text>
         If you want a cake, you have to click on accept.

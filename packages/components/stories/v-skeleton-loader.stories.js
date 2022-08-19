@@ -1,6 +1,8 @@
 import VSkeletonLoader from '../src/components/v-skeleton-loader.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VSkeletonLoader',
     component: VSkeletonLoader,
@@ -14,11 +16,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-skeleton-loader v-bind="args"  />',
+    template: '<v-skeleton-loader v-bind="args" v-on="args"  />',
 });
 
 export const Primary = Template.bind({});

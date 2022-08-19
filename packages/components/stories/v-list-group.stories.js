@@ -1,6 +1,8 @@
 import VListGroup from '../src/components/v-list-group.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VListGroup',
     component: VListGroup,
@@ -9,16 +11,16 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
     template: `
 <v-list>
     <v-list-item>Item 1 </v-list-item>
     <v-list-item>Item 2 </v-list-item>
 
-    <v-list-group v-bind="args">
+    <v-list-group v-bind="args" v-on="args">
 		<template #activator="{active}">
 			<v-list-item>Group Item 3</v-list-item>
 		</template>

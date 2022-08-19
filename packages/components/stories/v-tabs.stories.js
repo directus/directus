@@ -1,6 +1,8 @@
 import VTabs from '../src/components/v-tabs.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VTabs',
     component: VTabs,
@@ -9,13 +11,13 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
     template: `
 <div>
-    <v-tabs v-bind="args" >
+    <v-tabs v-bind="args" v-on="args" >
         <v-tab>Foods</v-tab>
         <v-tab>Drinks</v-tab>
         <v-tab>Extras</v-tab>

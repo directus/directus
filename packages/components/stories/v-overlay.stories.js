@@ -1,6 +1,8 @@
 import VOverlay from '../src/components/v-overlay.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VOverlay',
     component: VOverlay,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<div>This is hidden behind the overlay.</div><v-overlay v-bind="args" />',
+    template: '<div>This is hidden behind the overlay.</div><v-overlay v-bind="args" v-on="args" />',
 });
 
 export const Primary = Template.bind({});

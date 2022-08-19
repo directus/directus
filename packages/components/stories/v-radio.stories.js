@@ -1,6 +1,8 @@
 import VRadio from '../src/components/v-radio.vue';
 document.body.classList.add('light')
 
+import { fix } from './fix-actions';
+
 export default {
     title: 'Example/VRadio',
     component: VRadio,
@@ -9,11 +11,11 @@ export default {
     },
 };
 
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
     setup() {
-        return { args };
+        return { args: fix(args, argTypes) };
     },
-    template: '<v-radio v-bind="args"/>',
+    template: '<v-radio v-bind="args" v-on="args"/>',
 });
 
 export const Primary = Template.bind({});

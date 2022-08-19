@@ -3,6 +3,8 @@ import VSlider from '../src/components/v-slider.vue';
 document.body.classList.add('light')
 
 // More on default export: https://storybook.js.org/docs/vue/writing-stories/introduction#default-export
+import { fix } from './fix-actions';
+
 export default {
   title: 'Example/VSlider',
   component: VSlider,
@@ -13,13 +15,13 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/vue/writing-stories/introduction#using-args
-const Template = (args) => ({
+const Template = (args, { argTypes }) => ({
   // The story's `args` need to be mapped into the template through the `setup()` method
   setup() {
-    return { args };
+    return { args: fix(args, argTypes) };
   },
-  // And then the `args` are bound to your component with `v-bind="args"`
-  template: '<v-slider v-bind="args" />',
+  // And then the `args` are bound to your component with `v-bind="args" v-on="args"`
+  template: '<v-slider v-bind="args" v-on="args" />',
 });
 
 export const Primary = Template.bind({});
