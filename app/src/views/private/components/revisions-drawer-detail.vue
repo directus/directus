@@ -76,6 +76,10 @@ function openModal(id: number) {
 	modalCurrentRevision.value = id;
 	modalActive.value = true;
 }
+
+defineExpose({
+	refresh,
+});
 </script>
 
 <style lang="scss" scoped>

@@ -28,6 +28,7 @@
 						:loading="loading"
 						:batch-mode="batchMode"
 						:disabled="disabled"
+						:direction="direction"
 						nested
 						@update:model-value="$emit('apply', $event)"
 					/>
@@ -98,6 +99,10 @@ export default defineComponent({
 		multiple: {
 			type: Boolean,
 			default: false,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['apply', 'toggleAll'],

@@ -294,7 +294,14 @@ function useDragDrop() {
 
 	function onPointerUp() {
 		dragging.value = false;
-		if (props.editMode === false || props.draggable === false) return;
+		if (
+			props.editMode === false ||
+			props.draggable === false ||
+			Object.values(editedPosition).every((v) => v === undefined)
+		) {
+			return;
+		}
+
 		emit('update', editedPosition);
 		window.removeEventListener('pointerup', onPointerUp);
 		window.removeEventListener('pointermove', onPointerMove);
@@ -385,7 +392,7 @@ function useDragDrop() {
 }
 
 .tile-content.has-header {
-	height: calc(100% - 48px);
+	height: calc(100% - 42px);
 }
 
 .header {

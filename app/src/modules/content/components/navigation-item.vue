@@ -6,6 +6,7 @@
 		scope="content-navigation"
 		:value="collection.collection"
 		query
+		:open="collection.meta?.collapse === 'locked'"
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
 	>
 		<template #activator>
@@ -16,10 +17,10 @@
 				:color="collection.meta?.color"
 			/>
 		</template>
-
 		<navigation-item
 			v-for="childCollection in childCollections"
 			:key="childCollection.collection"
+			:show-hidden="showHidden"
 			:collection="childCollection"
 			:search="search"
 		/>

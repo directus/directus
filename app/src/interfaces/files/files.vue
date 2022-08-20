@@ -260,6 +260,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	editsAtStart.value = item;
@@ -271,7 +272,7 @@ function editItem(item: DisplayItem) {
 		relatedPrimaryKey.value = null;
 	} else {
 		currentlyEditing.value = get(item, [junctionPkField], null);
-		relatedPrimaryKey.value = get(item, [junctionPkField, relationPkField], null);
+		relatedPrimaryKey.value = get(item, [junctionField, relationPkField], null);
 	}
 }
 
@@ -313,7 +314,7 @@ function onUpload(files: Record<string, any>[]) {
 
 const downloadUrl = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
-	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
+	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}?download`);
 });
 
 function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
@@ -334,6 +335,14 @@ const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
 	};
+
+	if (props.folder) {
+		filter._and.push({
+			folder: {
+				id: { _eq: props.folder },
+			},
+		});
+	}
 
 	if (!relationInfo.value) return filter;
 

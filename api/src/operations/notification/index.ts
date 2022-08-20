@@ -1,5 +1,5 @@
 import { Accountability } from '@directus/shared/types';
-import { defineOperationApi, optionToString } from '@directus/shared/utils';
+import { defineOperationApi, optionToString, toArray } from '@directus/shared/utils';
 import { NotificationsService } from '../../services';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
 
@@ -36,12 +36,15 @@ export default defineOperationApi<Options>({
 
 		const messageString = message ? optionToString(message) : null;
 
-		const result = await notificationsService.createOne({
-			recipient,
-			sender: customAccountability?.user ?? null,
-			subject,
-			message: messageString,
+		const payload = toArray(recipient).map((userId) => {
+			return {
+				recipient: userId,
+				sender: customAccountability?.user ?? null,
+				subject,
+				message: messageString,
+			};
 		});
+		const result = await notificationsService.createMany(payload);
 
 		return result;
 	},

@@ -36,7 +36,7 @@
 					<v-icon name="zoom_in" />
 				</v-button>
 				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
-					<v-icon name="get_app" />
+					<v-icon name="file_download" />
 				</v-button>
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />
@@ -129,12 +129,11 @@ const src = computed(() => {
 	if (!image.value) return null;
 
 	if (image.value.type.includes('svg')) {
-		return getRootPath() + `assets/${image.value.id}`;
+		return '/assets/' + image.value.id;
 	}
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url =
-			getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
+		const url = `/assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
 		return addTokenToURL(url);
 	}
 
@@ -145,7 +144,7 @@ const ext = computed(() => (image.value ? readableMimeType(image.value.type, tru
 
 const downloadSrc = computed(() => {
 	if (!image.value) return null;
-	return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
+	return addTokenToURL(getRootPath() + 'assets/' + image.value.id);
 });
 
 const meta = computed(() => {

@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import api from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/shared/types';
 import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
@@ -58,7 +57,7 @@ export default defineComponent({
 			if (data.value === null) return null;
 
 			if (data.value.avatar?.id) {
-				return `${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`;
+				return `/assets/${data.value.avatar.id}?key=system-medium-cover`;
 			}
 			return null;
 		});

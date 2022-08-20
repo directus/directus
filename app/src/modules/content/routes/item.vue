@@ -179,7 +179,13 @@
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
+				v-if="
+					isNew === false &&
+					loading === false &&
+					internalPrimaryKey &&
+					revisionsAllowed &&
+					accountabilityScope === 'all'
+				"
 				ref="revisionsDrawerDetailRef"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
@@ -187,18 +193,18 @@
 				@revert="revert"
 			/>
 			<comments-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 			/>
 			<shares-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:allowed="shareAllowed"
 			/>
 			<flow-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				location="item"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
@@ -208,7 +214,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ComponentPublicInstance, computed, ref, unref, toRefs } from 'vue';
+import { computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -248,7 +254,7 @@ const form = ref<HTMLElement>();
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetailRef = ref<ComponentPublicInstance | null>(null);
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 

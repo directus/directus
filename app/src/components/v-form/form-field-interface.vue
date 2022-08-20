@@ -26,6 +26,7 @@
 			:field-data="field"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
+			:direction="direction"
 			@input="$emit('update:modelValue', $event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -91,6 +92,10 @@ export default defineComponent({
 		rawEditorActive: {
 			type: Boolean,
 			default: false,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['update:modelValue', 'setFieldValue'],

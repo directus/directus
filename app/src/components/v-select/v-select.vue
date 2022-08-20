@@ -302,7 +302,12 @@ export default defineComponent({
 						: isMatchingCurrentItem(item, searchValue);
 
 					function isMatchingCurrentItem(item: Record<string, any>, searchValue: string): boolean {
-						return item.text?.toLowerCase().includes(searchValue) || item.value?.toLowerCase().includes(searchValue);
+						const text = get(item, props.itemText);
+						const value = get(item, props.itemValue);
+						return (
+							(text ? String(text).toLowerCase().includes(searchValue) : false) ||
+							(value ? String(value).toLowerCase().includes(searchValue) : false)
+						);
 					}
 				};
 

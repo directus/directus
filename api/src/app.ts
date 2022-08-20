@@ -179,7 +179,7 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env.SERVE_APP) {
-		const adminPath = require.resolve('@directus/app');
+		const adminPath = require.resolve('@directus/app', require.main ? { paths: [require.main.filename] } : undefined);
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL
@@ -206,6 +206,8 @@ export default async function createApp(): Promise<express.Application> {
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
+
+	app.get('/server/ping', (req, res) => res.send('pong'));
 
 	app.use(authenticate);
 

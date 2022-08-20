@@ -12,28 +12,105 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['m2m'],
 	group: 'relational',
-	options: ({ editing, relations }) => {
-		const displayTemplateMeta =
-			editing === '+'
-				? {
-						interface: 'presentation-notice',
-						options: {
-							text: '$t:interfaces.list-m2m.display_template_configure_notice',
-						},
-				  }
-				: {
-						interface: 'system-display-template',
-						options: {
-							collectionName: relations.o2m?.collection,
-						},
-				  };
+	options: ({ editing, relations, field: { meta } }) => {
+		const { collection, related_collection } = relations.o2m ?? {};
+		const options = meta?.options ?? {};
 
-		return [
+		const tableOptions = [
+			{
+				field: 'tableSpacing',
+				name: '$t:layouts.tabular.spacing',
+				schema: {
+					default_value: 'cozy',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:layouts.tabular.compact',
+								value: 'compact',
+							},
+							{
+								text: '$t:layouts.tabular.cozy',
+								value: 'cozy',
+							},
+							{
+								text: '$t:layouts.tabular.comfortable',
+								value: 'comfortable',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'fields',
+				name: '$t:columns',
+				meta:
+					editing === '+'
+						? {
+								interface: 'presentation-notice',
+								options: {
+									text: '$t:interfaces.list-m2m.columns_configure_notice',
+								},
+						  }
+						: {
+								interface: 'system-fields',
+								options: {
+									collectionName: collection,
+								},
+								width: 'full',
+						  },
+			},
+		];
+
+		const listOptions = [
 			{
 				field: 'template',
 				name: '$t:display_template',
-				meta: displayTemplateMeta,
+				meta:
+					editing === '+'
+						? {
+								interface: 'presentation-notice',
+								options: {
+									text: '$t:interfaces.list-m2m.display_template_configure_notice',
+								},
+						  }
+						: {
+								interface: 'system-display-template',
+								options: {
+									collectionName: collection,
+								},
+						  },
 			},
+		];
+
+		return [
+			{
+				field: 'layout',
+				name: '$t:layout',
+				schema: {
+					default_value: 'list',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:list',
+								value: 'list',
+							},
+							{
+								text: '$t:table',
+								value: 'table',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			...(options.layout === 'table' ? tableOptions : listOptions),
 			{
 				field: 'enableCreate',
 				name: '$t:creating_items',
@@ -75,13 +152,24 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'allowDuplicates',
+				name: '$t:allow_duplicates',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+			},
+			{
 				field: 'filter',
 				name: '$t:filter',
 				type: 'json',
 				meta: {
 					interface: 'system-filter',
 					options: {
-						collectionName: relations.m2o?.related_collection ?? null,
+						collectionName: related_collection,
 					},
 					conditions: [
 						{
@@ -93,6 +181,34 @@ export default defineInterface({
 							hidden: true,
 						},
 					],
+				},
+			},
+			{
+				field: 'enableSearchFilter',
+				name: '$t:search_filter',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:enable_search_filter',
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'enableLink',
+				name: '$t:item_link',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:show_link_to_item',
+					},
+					width: 'half',
 				},
 			},
 		];
