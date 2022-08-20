@@ -13,7 +13,7 @@
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title">
+		<private-view :title="bookmark ? bookmarkTitle : title">
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>
@@ -22,6 +22,61 @@
 				<v-button class="header-icon" rounded disabled icon secondary>
 					<v-icon name="people_alt" />
 				</v-button>
+			</template>
+
+			<template #title-outer:append>
+				<div class="bookmark-controls">
+					<bookmark-add
+						v-if="!bookmark"
+						v-model="bookmarkDialogActive"
+						class="add"
+						:saving="creatingBookmark"
+						@save="createBookmark"
+					>
+						<template #activator="{ on }">
+							<v-icon
+								v-tooltip.right="t('create_bookmark')"
+								class="toggle"
+								clickable
+								name="bookmark_outline"
+								@click="on"
+							/>
+						</template>
+					</bookmark-add>
+
+					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" />
+
+					<template v-else-if="bookmarkIsMine">
+						<v-icon
+							v-tooltip.bottom="t('update_bookmark')"
+							class="save"
+							clickable
+							name="bookmark_save"
+							@click="savePreset()"
+						/>
+					</template>
+
+					<bookmark-add
+						v-else
+						v-model="bookmarkDialogActive"
+						class="add"
+						:saving="creatingBookmark"
+						@save="createBookmark"
+					>
+						<template #activator="{ on }">
+							<v-icon class="toggle" name="bookmark_outline" clickable @click="on" />
+						</template>
+					</bookmark-add>
+
+					<v-icon
+						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+						v-tooltip.bottom="t('reset_bookmark')"
+						name="settings_backup_restore"
+						clickable
+						class="clear"
+						@click="clearLocalSave"
+					/>
+				</div>
 			</template>
 
 			<template #actions:prepend>
@@ -95,8 +150,24 @@
 			</template>
 
 			<template #navigation>
-				<users-navigation :current-role="role" />
+				<users-navigation :current-role="role" current-collection="directus_users" />
 			</template>
+
+			<v-info
+				v-if="bookmark && bookmarkExists === false"
+				type="warning"
+				:title="t('bookmark_doesnt_exist')"
+				icon="bookmark"
+				center
+			>
+				{{ t('bookmark_doesnt_exist_copy') }}
+
+				<template #append>
+					<v-button to="/users">
+						{{ t('bookmark_doesnt_exist_cta') }}
+					</v-button>
+				</template>
+			</v-info>
 
 			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
@@ -149,6 +220,7 @@
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 				<export-sidebar-detail
 					collection="directus_users"
 					:layout-query="layoutQuery"
@@ -175,23 +247,28 @@ import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/shared/composables';
 import { Role } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
+import { useRouter } from 'vue-router';
+import BookmarkAdd from '@/views/private/components/bookmark-add.vue';
 
 type Item = {
 	[field: string]: any;
 };
 
 interface Props {
-	role: string | null;
+	role?: string | null;
+	bookmark?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	role: null,
+	bookmark: null,
 });
 
 const { t } = useI18n();
@@ -205,10 +282,32 @@ const serverStore = useServerStore();
 const layoutRef = ref();
 const selection = ref<Item[]>([]);
 
-const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
+const router = useRouter();
+
+const bookmark = computed(() => (props?.bookmark ? +props.bookmark : null));
+const {
+	layout,
+	layoutOptions,
+	layoutQuery,
+	filter,
+	search,
+	savePreset,
+	bookmarkExists,
+	saveCurrentAsBookmark,
+	bookmarkTitle,
+	resetPreset,
+	bookmarkSaved,
+	bookmarkIsMine,
+	refreshInterval,
+	busy: bookmarkSaving,
+	clearLocalSave,
+} = usePreset(ref('directus_users'), bookmark);
+
 const { addNewLink } = useLinks();
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
+
+const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
 const { breadcrumb, title } = useBreadcrumb();
 
@@ -318,6 +417,36 @@ function useBreadcrumb() {
 	});
 
 	return { breadcrumb, title };
+}
+
+function useBookmarks() {
+	const bookmarkDialogActive = ref(false);
+	const creatingBookmark = ref(false);
+
+	return {
+		bookmarkDialogActive,
+		creatingBookmark,
+		createBookmark,
+	};
+
+	async function createBookmark(bookmark: any) {
+		creatingBookmark.value = true;
+
+		try {
+			const newBookmark = await saveCurrentAsBookmark({
+				bookmark: bookmark.name,
+				icon: bookmark.icon,
+				color: bookmark.color,
+			});
+			router.push(`/users/?bookmark=${newBookmark.id}`);
+
+			bookmarkDialogActive.value = false;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			creatingBookmark.value = false;
+		}
+	}
 }
 
 function clearFilters() {

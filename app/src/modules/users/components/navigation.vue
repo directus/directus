@@ -20,18 +20,26 @@
 			:last-admin="lastAdminRoleId === role.id"
 			:active="currentRole === role.id"
 		/>
+
+		<v-divider v-if="(roles && roles.length > 0) || loading" />
+
+		<navigation-bookmark v-for="bookmark in childBookmarks" :key="bookmark.id" :bookmark="bookmark" go-to="/users" />
 	</v-list>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, defineComponent } from 'vue';
+import { Collection } from '@/types/collections';
+import { usePresetsStore } from '@/stores/presets';
+import { useCollectionsStore } from '@/stores/collections';
 
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
+import NavigationBookmark from '@/modules/content/components/navigation-bookmark.vue';
 
 export default defineComponent({
-	components: { NavigationRole },
+	components: { NavigationRole, NavigationBookmark },
 	props: {
 		currentRole: {
 			type: String,
@@ -43,13 +51,27 @@ export default defineComponent({
 
 		const { roles, loading } = useNavigation();
 
+		const presetsStore = usePresetsStore();
+		const collectionsStore = useCollectionsStore();
+		const collection = computed(() =>
+			collectionsStore.crudSafeSystemCollections.find(
+				(collection: Collection) => collection.collection === 'directus_users'
+			)
+		);
+
+		const childBookmarks = computed(() => (collection.value ? getChildBookmarks(collection.value) : []));
+
 		const lastAdminRoleId = computed(() => {
 			if (!roles.value) return null;
 			const adminRoles = roles.value.filter((role) => role.admin_access === true);
 			return adminRoles.length === 1 ? adminRoles[0].id : null;
 		});
 
-		return { t, roles, loading, lastAdminRoleId };
+		return { t, roles, loading, childBookmarks, lastAdminRoleId };
+
+		function getChildBookmarks(collection: Collection) {
+			return presetsStore.bookmarks.filter((bookmark) => bookmark.collection === collection.collection);
+		}
 	},
 });
 </script>

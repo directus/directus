@@ -1,6 +1,6 @@
 <template>
 	<v-list-item
-		:to="`/content/${bookmark.collection}?bookmark=${bookmark.id}`"
+		:to="goTo ? `${goTo}?bookmark=${bookmark.id}` : `/content/${bookmark.collection}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"
 		clickable
@@ -97,6 +97,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 interface Props {
 	bookmark: Preset;
+	goTo: string;
 }
 
 const props = defineProps<Props>();

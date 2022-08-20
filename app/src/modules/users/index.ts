@@ -11,6 +11,10 @@ export default defineModule({
 			name: 'users-collection',
 			path: '',
 			component: Collection,
+			props: (route) => ({
+				role: route.params.role,
+				bookmark: route.query.bookmark,
+			}),
 		},
 		{
 			name: 'users-item',
