@@ -35,6 +35,7 @@ tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
 location: Konum
+condition_rules: Durum Kuralları
 input: Girdi
 maps: Haritalar
 switch_user: Kullanıcı Değiştir
@@ -49,6 +50,7 @@ export_items: Ögeleri Dışa Aktar
 and: Ve
 or: Veya
 init: Başlangıç
+modifier: Düzenleyici
 custom: Özel
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
@@ -466,6 +468,7 @@ creating_items: Öğe Oluşturma
 enable_create_button: Oluştur Butonunu Etkinleştir
 selecting_items: Öğeler Seçiliyor
 enable_select_button: Seç Butonunu Etkinleştir
+allow_duplicates: Çiftlere İzin Ver
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
 click_to_expand: Genişletmek için Tıklayın
@@ -583,6 +586,7 @@ value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
 create_bookmark: Yer İşareti Oluştur
 edit_bookmark: Yer İşaretini Düzenle
+edit_personal_bookmark: Kişisel Yer İşaretini Düzenle
 bookmarks: Yer İmleri
 presets: Ön Ayarlar
 unexpected_error: Beklenmeyen Hata
@@ -708,6 +712,7 @@ no_results_copy: Sonuçları görmek için arama filtrelerini ayarlayın veya te
 clear_filters: Filtreleri Temizle
 saves_automatically: Otomati̇k Olarak Kaydedilir
 role: Rol
+edit_role: Rolü Düzenle
 rule: Kural
 user: Kullanıcı
 no_presets: Hiç Ön Ayar Yok
@@ -1811,6 +1816,7 @@ panels:
     show_x_axis: X Eksenini Göster
     show_y_axis: Y Eksenini Göster
     show_data_label: Veri Etiketini Göster
+    group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
     y_axis_NaN: Y ekseni bir sayı olmalıdır.
     y_axis_conditional_two: bir sayı olmalıdır.
   linechart:
@@ -1819,6 +1825,7 @@ panels:
     x_axis: X-Ekseni
     y_axis: Y-Ekseni
     show_legend: Göstergeyi Göster
+    group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
   meter:
     name: Metre
     function: İşlev
