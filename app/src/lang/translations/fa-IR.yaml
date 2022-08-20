@@ -627,6 +627,7 @@ create: ایجاد
 update: بروزرسانی
 delete: حذف
 flow_name: نام
+code: کد
 insights: بینش های داده ای
 dashboard: پیشخوان
 panel: پنل
@@ -933,6 +934,7 @@ save: ذخیره
 sign_in: ورود
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
+table: جدول
 interfaces:
   filter:
     name: فیلتر

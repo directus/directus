@@ -314,7 +314,7 @@ function onUpload(files: Record<string, any>[]) {
 
 const downloadUrl = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
-	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
+	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}?download`);
 });
 
 function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
