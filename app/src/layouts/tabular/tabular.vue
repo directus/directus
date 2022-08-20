@@ -20,7 +20,7 @@
 			:manual-sort-key="sortField"
 			allow-header-reorder
 			selection-use-keys
-			@click:row="onRowClick"
+			@click:row="onRowClickLocal"
 			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
@@ -201,7 +201,7 @@ interface Props {
 	error?: any;
 	totalPages: number;
 	tableSort?: { by: string; desc: boolean } | null;
-	onRowClick: (item: Item) => void;
+	onRowClick: (item: Item) => boolean | void;
 	tableRowHeight: number;
 	page: number;
 	toPage: (newPage: number) => void;
@@ -235,7 +235,13 @@ const props = withDefaults(defineProps<Props>(), {
 	onAlignChange: () => undefined,
 });
 
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
+const emit = defineEmits([
+	'update:selection',
+	'update:tableHeaders',
+	'update:limit',
+	'update:fields',
+	'update:selection-drawer',
+]);
 
 const { t } = useI18n();
 
@@ -294,6 +300,15 @@ function addField(fieldKey: string) {
 
 function removeField(fieldKey: string) {
 	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
+}
+
+function onRowClickLocal({ item, event }: { item: Item; event: PointerEvent }) {
+	// console.log(':onRowClickLocal', item, event);
+	if (event.altKey) {
+		emit('update:selection-drawer', item);
+	} else {
+		props.onRowClick({ item, event });
+	}
 }
 </script>
 

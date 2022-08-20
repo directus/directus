@@ -204,7 +204,13 @@
 				</template>
 			</v-info>
 
-			<component :is="`layout-${layout || 'tabular'}`" v-else class="layout" v-bind="layoutState">
+			<component
+				:is="`layout-${layout || 'tabular'}`"
+				v-else
+				class="layout"
+				v-bind="layoutState"
+				@update:selection-drawer="drawerItemOpen"
+			>
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
@@ -231,6 +237,14 @@
 				:primary-keys="selection"
 				:collection="collection"
 				@refresh="drawerBatchRefresh"
+			/>
+
+			<drawer-item
+				v-model:active="drawerItemOpened"
+				:collection="collection"
+				:primary-key="'id'"
+				:edits="drawerItemItem"
+				@input="() => {}"
 			/>
 
 			<template #sidebar>
@@ -291,6 +305,7 @@ import { useRouter } from 'vue-router';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
 import { mergeFilters } from '@directus/shared/utils';
@@ -309,6 +324,7 @@ export default defineComponent({
 		SearchInput,
 		BookmarkAdd,
 		DrawerBatch,
+		DrawerItem,
 		ArchiveSidebarDetail,
 		RefreshSidebarDetail,
 		ExportSidebarDetail,
@@ -429,11 +445,16 @@ export default defineComponent({
 			}
 		});
 
+		const drawerItemOpened = ref(false);
+		const drawerItemItem = ref<Item | null>(null);
+
 		return {
 			t,
 			addNewLink,
 			batchDelete,
 			batchEditActive,
+			drawerItemOpened,
+			drawerItemItem,
 			confirmDelete,
 			currentCollection,
 			deleting,
@@ -468,6 +489,7 @@ export default defineComponent({
 			bookmarkSaving,
 			clearLocalSave,
 			drawerBatchRefresh,
+			drawerItemOpen,
 			refresh,
 			refreshInterval,
 			currentLayout,
@@ -488,6 +510,12 @@ export default defineComponent({
 		async function drawerBatchRefresh() {
 			selection.value = [];
 			await refresh();
+		}
+
+		function drawerItemOpen(item: Item) {
+			// console.log(':drawerItemOpen', item);
+			drawerItemItem.value = item;
+			drawerItemOpened.value = true;
 		}
 
 		function useBreadcrumb() {
