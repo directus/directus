@@ -609,6 +609,7 @@ make_collection_visible: Koleksiyonu Görünür Yap
 make_collection_hidden: Koleksiyonu Gizli Yap
 make_folder_visible: Klasörü Görünür Yap
 make_folder_hidden: Klasörü Gizli Yap
+goto_collection_content: İçeriği Görüntüle
 start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler gösteriliyor'
 start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler gösteriliyor'
 one_item: '1 öğe'
@@ -761,9 +762,11 @@ create_dashboard: Pano Oluştur
 dashboard_name: Pano Adı
 no_data: Hiç Veri Yok
 accountability: İzlenebilirlik
+details: Ayrıntılar
 full_screen: Tam Ekran
 full_text_search: Tam Metin Araması
 edit_panels: Panelleri Düzenle
+center_align: Ortala
 left_align: Sola hizala
 right_align: Sağa hizala
 fit_to_screen: Ekrana Sığdır
@@ -1342,6 +1345,7 @@ interfaces:
     no_rules: Hiç yapılandırılmış kural yok
     change_value: Değeri değiştirmek için tıklayın
     placeholder: Kuralları buraya sürükleyin
+    add_key_placeholder: Bir anahtar ekleyin ve enter tuşuna basın...
   fields:
     name: Alanlar
   group-accordion:
@@ -1792,6 +1796,7 @@ panels:
     y_axis: Y-Ekseni
     show_x_axis: X Eksenini Göster
     show_y_axis: Y Eksenini Göster
+    show_data_label: Veri Etiketini Göster
   linechart:
     function: İşlev
     x_axis: X-Ekseni
