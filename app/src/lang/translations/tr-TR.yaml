@@ -288,6 +288,8 @@ next: Sonraki
 field_name: Alan Adı
 translations: Çeviriler
 no_translations: Çeviri Yok
+left_to_right: Soldan Sağa
+right_to_left: Sağdan Sola
 note: Not
 enter_a_value: Bir değer girin...
 enter_a_placeholder: Yertutucu Ekle...
@@ -387,6 +389,8 @@ functions:
 date-fns_date: PPP
 date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
+date-fns_time_24hour: 'SS:dd:ss'
+date-fns_time_no_seconds_24hour: 'SS:dd'
 date-fns_date_short: 'AAA d, u'
 date-fns_time_short: 's:aa a'
 date-fns_date_short_no_year: AAA d
