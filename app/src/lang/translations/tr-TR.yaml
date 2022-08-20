@@ -1660,6 +1660,7 @@ displays:
     suffix: Suffiks
     strict: Katı
     down: Aşağı
+    nearest: En yakın
     up: Yukarı
   file:
     file: Dosya
@@ -1771,6 +1772,18 @@ layouts:
     find_location: Lokasyon bul...
     default_template: Koleksiyon Varsayılanı Kullanılıyor...
     no_compatible_fields: Hiç uyumlu alan yok
+  kanban:
+    group_title: Grup Başlığı,
+    title: Kart Başlığı,
+    text: Kart Metni,
+    date: Kart Tarihi,
+    crop: Kırp,
+    advanced: Gelişmiş,
+    edit_group: Grubu Düzenle,
+    delete_group: Grubu sil,
+    add_group: Grup Ekle,
+    show: Göster,
+    no_group: Grup Yok,
 panels:
   metric:
     name: Metrik
@@ -1790,6 +1803,7 @@ panels:
     name: Liste
     description: Bir koleksiyondan alanları filtrele ve listele
   barchart:
+    select_x_axis: Bir X Ekseni seçmelisiniz.
     function: İşlev
     horizontal: Yatay
     x_axis: X-Ekseni
@@ -1797,7 +1811,10 @@ panels:
     show_x_axis: X Eksenini Göster
     show_y_axis: Y Eksenini Göster
     show_data_label: Veri Etiketini Göster
+    y_axis_NaN: Y ekseni bir sayı olmalıdır.
+    y_axis_conditional_two: bir sayı olmalıdır.
   linechart:
+    select_x_axis: Bir X Ekseni seçmelisiniz.
     function: İşlev
     x_axis: X-Ekseni
     y_axis: Y-Ekseni
@@ -1810,6 +1827,9 @@ panels:
     labels: Etiketleri Göster
     legend: Göstergeyi Göster
     right: Sağ
+  variable:
+    name: Global Değişken
+    variable_key: Değişken Anahtar
 triggers:
   webhook:
     method: Metod
@@ -1818,13 +1838,23 @@ triggers:
   manual:
     name: Elle
 operations:
+  exec:
+    name: Komut Dosyasını Çalıştır
   item-delete:
     name: Veriyi Sil
+    query: Sorgula
+  item-read:
+    name: Veriyi oku
+    query: Sorgula
+  item-update:
+    query: Sorgula
   log:
     message: Mesaj
   mail:
+    name: E-posta Gönder
     body: Gövde
   notification:
+    name: Bildirim Gönder
     recipient: Kullanıcı
     message: Mesaj
   request:
@@ -1836,6 +1866,7 @@ operations:
     header_placeholder: Yetkilendirme...
   sleep:
     name: Uyku
+    milliseconds: Milisaniye
   trigger:
     flow: Akış
     data: Veri
