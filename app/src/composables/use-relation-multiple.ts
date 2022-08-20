@@ -3,6 +3,7 @@ import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
+import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
@@ -11,6 +12,9 @@ export type RelationQueryMultiple = {
 	page: number;
 	limit: number;
 	fields: string[];
+	search?: string;
+	sort?: string[];
+	filter?: Filter;
 };
 
 export type DisplayItem = {
@@ -117,8 +121,8 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = fetchedSelectItems.value.map((item) => {
-			const edits = selected.value.find((edit) => {
+		const selectedOnPage = selected.value.map((item) => {
+			const edits = fetchedSelectItems.value.find((edit) => {
 				switch (relation.value?.type) {
 					case 'o2m':
 						return edit[targetPKField] === item[targetPKField];
@@ -283,17 +287,25 @@ export function useRelationMultiple(
 		function clear() {
 			if (!relation.value) return;
 
-			value.value = itemId.value === '+' ? undefined : [];
-			existingItemCount.value = 0;
-			fetchedItems.value = [];
-
 			target.value.create = [];
 			target.value.update = [];
 			target.value.delete = [];
+
+			reset();
+		}
+
+		function reset() {
+			value.value = itemId.value === '+' ? undefined : [];
+			existingItemCount.value = 0;
+			fetchedItems.value = [];
 		}
 
 		function updateValue() {
 			target.value = cloneDeep(target.value);
+
+			if (target.value.create.length === 0 && target.value.update.length === 0 && target.value.delete.length === 0) {
+				reset();
+			}
 		}
 	}
 
@@ -345,18 +357,24 @@ export function useRelationMultiple(
 
 			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
-			const response = await api.get(getEndpoint(targetCollection), {
-				params: {
-					fields: Array.from(fields),
-					filter: {
-						[reverseJunctionField]: itemId.value,
-					},
-					page: previewQuery.value.page,
-					limit: previewQuery.value.limit,
-				},
-			});
+			if (itemId.value !== '+') {
+				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+				if (previewQuery.value.filter) {
+					filter._and.push(previewQuery.value.filter);
+				}
 
-			fetchedItems.value = response.data.data;
+				const response = await api.get(getEndpoint(targetCollection), {
+					params: {
+						search: previewQuery.value.search,
+						fields: Array.from(fields),
+						filter,
+						page: previewQuery.value.page,
+						limit: previewQuery.value.limit,
+					},
+				});
+
+				fetchedItems.value = response.data.data;
+			}
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -365,14 +383,18 @@ export function useRelationMultiple(
 	}
 
 	async function updateItemCount(targetCollection: string, targetPKField: string, reverseJunctionField: string) {
+		const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+		if (previewQuery.value.filter) {
+			filter._and.push(previewQuery.value.filter);
+		}
+
 		const response = await api.get(getEndpoint(targetCollection), {
 			params: {
+				search: previewQuery.value.search,
 				aggregate: {
 					count: targetPKField,
 				},
-				filter: {
-					[reverseJunctionField]: itemId.value,
-				},
+				filter,
 			},
 		});
 

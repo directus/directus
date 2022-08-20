@@ -739,6 +739,7 @@ trigger: Тригер
 flow_name: Назва
 flow_tracking_activity: Лише відстежувати діяльність
 flow_tracking_null: Нічого не відслідковувати
+code: Код
 insights: Статистика
 dashboard: Панель приладів
 panel: Панель
@@ -1332,6 +1333,8 @@ value: Значення
 view_project: Переглянути проект
 report_error: Звіт про помилку
 start: Почати
+table: Таблиця
+list: Список
 interfaces:
   filter:
     name: Фільтр
@@ -1410,6 +1413,8 @@ interfaces:
     set_to_now: Перемкнути на Зараз
     use_24: Використовувати 24-годинний формат
     placeholder: Виберіть дату та час...
+  system-fields:
+    select_a_collection: Оберіть колекцію
   system-display-template:
     display-template: Шаблон відображення
     description: Змішати статичний текст і динамічні значення поля

@@ -10,7 +10,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import getDatabase from '../database';
 import { getHelpers, Helpers } from '../database/helpers';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Alterations, Item, PrimaryKey } from '../types';
+import { AbstractServiceOptions, ActionEventParams, Alterations, Item, MutationOptions, PrimaryKey } from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { ItemsService } from './items';
 
@@ -364,12 +364,17 @@ export class PayloadService {
 	/**
 	 * Recursively save/update all nested related Any-to-One items
 	 */
-	async processA2O(data: Partial<Item>): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[] }> {
+	async processA2O(
+		data: Partial<Item>,
+		opts?: MutationOptions
+	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.collection === this.collection;
 		});
 
 		const revisions: PrimaryKey[] = [];
+
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		const payload = cloneDeep(data);
 
@@ -427,11 +432,15 @@ export class PayloadService {
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
+					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -439,17 +448,22 @@ export class PayloadService {
 			payload[relation.field] = relatedPrimaryKey;
 		}
 
-		return { payload, revisions };
+		return { payload, revisions, nestedActionEvents };
 	}
 
 	/**
 	 * Save/update all nested related m2o items inside the payload
 	 */
-	async processM2O(data: Partial<Item>): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[] }> {
+	async processM2O(
+		data: Partial<Item>,
+		opts?: MutationOptions
+	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const payload = cloneDeep(data);
 
 		// All the revisions saved on this level
 		const revisions: PrimaryKey[] = [];
+
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		// Many to one relations that exist on the current collection
 		const relations = this.schema.relations.filter((relation) => {
@@ -495,11 +509,15 @@ export class PayloadService {
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
+					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -507,14 +525,20 @@ export class PayloadService {
 			payload[relation.field] = relatedPrimaryKey;
 		}
 
-		return { payload, revisions };
+		return { payload, revisions, nestedActionEvents };
 	}
 
 	/**
 	 * Recursively save/update all nested related o2m items
 	 */
-	async processO2M(data: Partial<Item>, parent: PrimaryKey): Promise<{ revisions: PrimaryKey[] }> {
+	async processO2M(
+		data: Partial<Item>,
+		parent: PrimaryKey,
+		opts?: MutationOptions
+	): Promise<{ revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const revisions: PrimaryKey[] = [];
+
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.related_collection === this.collection;
@@ -598,6 +622,8 @@ export class PayloadService {
 				savedPrimaryKeys.push(
 					...(await itemsService.upsertMany(recordsToUpsert, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					}))
 				);
 
@@ -621,13 +647,18 @@ export class PayloadService {
 				// Nullify all related items that aren't included in the current payload
 				if (relation.meta.one_deselect_action === 'delete') {
 					// There's no revision for a deletion
-					await itemsService.deleteByQuery(query);
+					await itemsService.deleteByQuery(query, {
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
+					});
 				} else {
 					await itemsService.updateByQuery(
 						query,
 						{ [relation.field]: null },
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
 						}
 					);
 				}
@@ -646,6 +677,8 @@ export class PayloadService {
 						})),
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
 						}
 					);
 				}
@@ -662,6 +695,8 @@ export class PayloadService {
 							},
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
+								bypassEmitAction: (params) => nestedActionEvents.push(params),
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}
@@ -686,13 +721,18 @@ export class PayloadService {
 					};
 
 					if (relation.meta.one_deselect_action === 'delete') {
-						await itemsService.deleteByQuery(query);
+						await itemsService.deleteByQuery(query, {
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+						});
 					} else {
 						await itemsService.updateByQuery(
 							query,
 							{ [relation.field]: null },
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
+								bypassEmitAction: (params) => nestedActionEvents.push(params),
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}
@@ -700,7 +740,7 @@ export class PayloadService {
 			}
 		}
 
-		return { revisions };
+		return { revisions, nestedActionEvents };
 	}
 
 	/**

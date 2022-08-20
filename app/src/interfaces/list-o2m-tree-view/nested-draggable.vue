@@ -311,4 +311,12 @@ function addNew(item: Record<string, any>) {
 	background-color: var(--primary-alt);
 	box-shadow: 0 !important;
 }
+
+.actions {
+	margin-top: 12px;
+}
+
+.actions .v-button + .v-button {
+	margin-left: 12px;
+}
 </style>

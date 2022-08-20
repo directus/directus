@@ -791,6 +791,7 @@ start_flow: Začít tok
 stop_flow: Zastavit tok
 create_operation: Vytvořit operaci
 edit_operation: Upravit operaci
+code: Kód
 operation_options: Možnosti operace
 operation_name: Název operace...
 operation_key: Identifikátor pro odkaz...
@@ -1399,6 +1400,8 @@ value: Hodnota
 view_project: Zobrazit projekt
 report_error: Nahlásit chybu
 start: Začátek
+table: Tabulka
+list: Seznam
 interfaces:
   filter:
     name: Filtr
@@ -1478,6 +1481,8 @@ interfaces:
     set_to_now: Nastavit na teď
     use_24: Používat 24hodinový formát
     placeholder: Vyberte datum a čas...
+  system-fields:
+    select_a_collection: Vyberte kolekci
   system-display-template:
     display-template: Šablona zobrazení
     description: Směs statických hodnot textu a dynamického pole
@@ -1990,7 +1995,6 @@ triggers:
     collection_and_item: Stránka kolekce a položek
     collection_only: Pouze stránka kolekce
     item_only: Pouze stránka položek
-a_users_uuid: Primární UUID klíč uživatele...
 a_flow_uuid: Primární UUID klíč toku...
 any_string_or_json: Jakýkoliv řetězec nebo JSON...
 item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
@@ -2027,7 +2031,6 @@ operations:
     body: Tělo
   notification:
     name: Odeslat oznámení
-    description: Odeslat uživateli notifikaci v aplikaci
     recipient: Uživatel
     message: Zpráva
   request:
