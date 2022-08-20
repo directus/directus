@@ -97,7 +97,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 interface Props {
 	bookmark: Preset;
-	goTo: string;
+	goTo?: string;
 }
 
 const props = defineProps<Props>();
