@@ -17,7 +17,9 @@ type HighlightPart = {
 };
 
 interface Props {
+	/** What parts of the `text` should be highlighted */
 	query?: string | string[] | null;
+	/** The text to display */
 	text?: string;
 }
 

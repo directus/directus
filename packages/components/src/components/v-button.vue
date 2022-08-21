@@ -45,31 +45,57 @@ import { useSizeClass, useGroupable } from '../composables';
 import { isEqual, isNil } from 'lodash';
 
 interface Props {
+	/** Automatically focuses on the button */
 	autofocus?: boolean;
+	/** Styling of the button */
 	kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
+	/** Stretches the button to it's maximal width */
 	fullWidth?: boolean;
+	/** Enable rounded corners */
 	rounded?: boolean;
+	/** No background */
 	outlined?: boolean;
+	/** Remove padding / min-width. Meant to be used with just an icon as content */
 	icon?: boolean;
+	/** Element type to be used */
 	type?: string;
+	/** Disables the button */
 	disabled?: boolean;
+	/** Show a circular progress bar */
 	loading?: boolean;
+	/** To what internal link the button should direct */
 	to?: string | RouteLocation;
+	/** To what external link the button should direct */
 	href?: string;
+	/** Renders the button highlighted */
 	active?: boolean;
+	/** If the button should be highlighted if it matches the current internal link */
 	exact?: boolean;
+	/** Renders the button highlighted when it matches the given query  */
 	query?: boolean;
+	/** Renders the button in a less important styling */
 	secondary?: boolean;
+	/** Deprecated! The `kind` prop should be used instead */
 	warning?: boolean;
+	/** Deprecated! The `kind` prop should be used instead */
 	danger?: boolean;
+	/** What value to use for the button when rendered inside a group of buttons */
 	value?: number | string;
+	/** Renders the button with a dashed border */
 	dashed?: boolean;
+	/** Renders the button as a square */
 	tile?: boolean;
+	/** Align the button to a given side */
 	align?: 'left' | 'center' | 'right';
+	/** Add the download attribute (used in combo with `href`) */
 	download?: string;
+	/** Renders a smaller button */
 	xSmall?: boolean;
+	/** Renders a small button */
 	small?: boolean;
+	/** Renders a large button */
 	large?: boolean;
+	/** Renders a larger button */
 	xLarge?: boolean;
 }
 

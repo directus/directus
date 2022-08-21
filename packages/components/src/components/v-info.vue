@@ -11,9 +11,13 @@
 
 <script setup lang="ts">
 interface Props {
+	/** The title to display in the info */
 	title: string;
+	/** What icon to render above the title */
 	icon?: string;
+	/** Styling of the info */
 	type?: 'info' | 'success' | 'warning' | 'danger';
+	/** Displays the info centered */
 	center?: boolean;
 }
 

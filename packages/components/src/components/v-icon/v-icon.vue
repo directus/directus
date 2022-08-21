@@ -525,17 +525,29 @@ const socialIcons: string[] = [
 ];
 
 interface Props {
+	/** Which type of icon to display */
 	name: string;
+	/** Removes the outline style if enabled */
 	filled?: boolean;
+	/** Makes the icon very small */
 	sup?: boolean;
+	/** Displays the icon more to the left */
 	left?: boolean;
+	/** Displays the icon more to the right */
 	right?: boolean;
+	/** Disables the icon */
 	disabled?: boolean;
+	/** If it should render inside a button */
 	clickable?: boolean;
+	/** What color for the icon to use */
 	color?: string;
+	/** Makes the icon smaller */
 	xSmall?: boolean;
+	/** Makes the icon small */
 	small?: boolean;
+	/** Makes the icon large */
 	large?: boolean;
+	/**	Makes the icon larger */
 	xLarge?: boolean;
 }
 

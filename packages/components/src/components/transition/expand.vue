@@ -8,7 +8,9 @@
 import ExpandMethods from './expand-methods';
 
 interface Props {
+	/** Expand on the horizontal instead vertical axis */
 	xAxis?: boolean;
+	/** Add a custom class to the element that is expanded */
 	expandedParentClass?: string;
 }
 

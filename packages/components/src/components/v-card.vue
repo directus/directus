@@ -6,7 +6,9 @@
 
 <script setup lang="ts">
 interface Props {
+	/** Disables any interactions with the card */
 	disabled?: boolean;
+	/** Render without rounded corners */
 	tile?: boolean;
 }
 

@@ -9,10 +9,15 @@ import { toRefs } from 'vue';
 import { useGroupableParent } from '../composables';
 
 interface Props {
+	/** If enabled, at least one item has to be selected */
 	mandatory?: boolean;
+	/** The maximum amount of items that can be selected */
 	max?: number;
+	/** If enabled, multiple elements can be selected */
 	multiple?: boolean;
+	/** Model what items should be selected */
 	modelValue?: (number | string)[];
+	/** Items that do not have the same scope will be ignored */
 	scope?: string;
 }
 

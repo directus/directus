@@ -19,15 +19,25 @@ import { ref, computed } from 'vue';
 import { useSizeClass } from '../composables';
 
 interface Props {
+	/** Model the active state */
 	active?: boolean;
+	/** Displays a close icon which triggers the close event */
 	close?: boolean;
+	/** Which icon should be displayed to close it */
 	closeIcon?: string;
+	/** No background */
 	outlined?: boolean;
+	/** Adds a border radius */
 	label?: boolean;
+	/** Disables the chip */
 	disabled?: boolean;
+	/** Renders a smaller chip */
 	xSmall?: boolean;
+	/** Renders a small chip */
 	small?: boolean;
+	/** Renders a large chip */
 	large?: boolean;
+	/** Renders a larger chip */
 	xLarge?: boolean;
 }
 

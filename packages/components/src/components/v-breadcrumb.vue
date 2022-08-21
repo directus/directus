@@ -23,6 +23,7 @@ interface Breadcrumb {
 }
 
 interface Props {
+	/** An array of objects which information about each section */
 	items?: Breadcrumb[];
 }
 

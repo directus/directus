@@ -24,16 +24,27 @@ import { computed } from 'vue';
 import { useSync } from '../composables';
 
 interface Props {
+	/** If the `modelValue` is an array of strings, activates the checkbox if the value is inside it */
 	value?: string | null;
+	/** Used to model the active state */
 	modelValue?: boolean | string[] | null;
+	/** Label for the checkbox */
 	label?: string | null;
+	/** Disable the checkbox */
 	disabled?: boolean;
+	/** Renders the checkbox neither selected nor unselected */
 	indeterminate?: boolean;
+	/** What icon to use for the on state */
 	iconOn?: string;
+	/** What icon to use for the off state */
 	iconOff?: string;
+	/** What icon to use for the indeterminate state */
 	iconIndeterminate?: string;
+	/** Show as styled block. Matches input size */
 	block?: boolean;
+	/** If a custom value can be entered next to it */
 	customValue?: boolean;
+	/** TODO: What the? */
 	checked?: boolean | null;
 }
 

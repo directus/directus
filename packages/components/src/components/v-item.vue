@@ -9,9 +9,13 @@ import { toRefs } from 'vue';
 import { useGroupable } from '../composables';
 
 interface Props {
+	/** Which value to represent when active */
 	value?: string | number;
+	/** Only matches to a group when both scopes are the same */
 	scope?: string;
+	/** If the item is currently activated */
 	active?: boolean;
+	/** If the active state should update after initially set */
 	watch?: boolean;
 }
 

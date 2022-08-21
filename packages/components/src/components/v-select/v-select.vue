@@ -141,26 +141,46 @@ type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | null;
 
 interface Props {
+	/** The items that should be selectable */
 	items: ItemsRaw;
+	/** Which key in items is used to display the text */
 	itemText?: string;
+	/** Which key in items is used to model the active state */
 	itemValue?: string;
+	/** Which key in items is used to show an icon */
 	itemIcon?: string | null;
+	/** Which key in items is used to model the disabled state */
 	itemDisabled?: string;
+	/** Which key in items is used to model the selectable state */
 	itemSelectable?: string;
+	/** Which key in items is used to render the children */
 	itemChildren?: string;
+	/** Which items should be shown as selected, depending on their value */
 	modelValue?: InputValue;
+	/** Allow to select multiple values */
 	multiple?: boolean;
+	/** Allow to select the parent of a group */
 	groupSelectable?: boolean;
+	/** Require a minimum selection of at least one element */
 	mandatory?: boolean;
+	/** Text that is displayed when no items are selected */
 	placeholder?: string | null;
+	/** Spreads the select element to it's maximal width */
 	fullWidth?: boolean;
+	/** Disables any interaction */
 	disabled?: boolean;
+	/** Allow to deselect all currently selected items */
 	showDeselect?: boolean;
+	/** Allow to enter custom values */
 	allowOther?: boolean;
+	/** Closes the dropdown after an items has been selected  */
 	closeOnContentClick?: boolean;
+	/** Renders the element inline, good for seamless selections */
 	inline?: boolean;
 	label?: boolean;
+	/** Limits the amount of items inside the preview */
 	multiplePreviewThreshold?: number;
+	/** The direction the menu should open */
 	placement?: Placement;
 }
 

@@ -46,7 +46,7 @@
 		"@storybook/addon-links": "6.5.10",
 		"@storybook/addon-measure": "6.5.10",
 		"@storybook/addon-outline": "6.5.10",
-		"@storybook/builder-vite": "^0.1.27",
+		"@storybook/builder-vite": "^0.1.41",
 		"@storybook/client-api": "6.5.10",
 		"@storybook/client-logger": "6.5.10",
 		"@storybook/core-common": "6.5.10",

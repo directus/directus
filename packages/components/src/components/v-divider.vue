@@ -10,8 +10,11 @@
 
 <script setup lang="ts">
 interface Props {
+	/** Render the divider vertically */
 	vertical?: boolean;
+	/** Render the title inline with the divider, or under it */
 	inlineTitle?: boolean;
+	/** Renders a larger divider text */
 	large?: boolean;
 }
 

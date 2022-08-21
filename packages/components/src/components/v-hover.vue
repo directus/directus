@@ -8,9 +8,13 @@
 import { ref } from 'vue';
 
 interface Props {
+	/** Time in ms until closing */
 	closeDelay?: number;
+	/** Time in ms until opening */
 	openDelay?: number;
+	/** Disables any intractability */
 	disabled?: boolean;
+	/** The type of element to wrap around the slot */
 	tag?: string;
 }
 
