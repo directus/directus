@@ -742,9 +742,18 @@ view_trigger: Tetikleyiciyi Görüntüle
 create_trigger: Tetikleyici Oluşturun
 trigger_setup: Tetikleyici Ayarı
 change_trigger: Tetikleyici Değiştirin
+edit_flow: Akışı Düzenle
+delete_flow: Akışı Sil
+create_flow: Akış Oluştur
+flow_setup: Akış Kurulumu
 flow_name: İsim
+flow_tracking: Etkinlik ve Günlük Takibi
 flow_tracking_activity: Sadece Etkinlikleri Takip Et
 flow_tracking_null: Hiçbir Şeyi Takip Etme
+start_flow: Akışı Başlat
+stop_flow: Akışı Durdur
+create_operation: İşlem Oluştur
+edit_operation: İşlemi Düzenle
 code: Kod
 insights: Kontrol Panelleri
 dashboard: Pano
@@ -864,7 +873,9 @@ settings_data_model: Veri Modeli
 settings_permissions: Roller ve Yetkiler
 settings_project: Proje Ayarları
 settings_webhooks: Webhooklar
+settings_flows: Akışlar
 settings_presets: Ön Ayarlar ve Yer İşaretleri
+settings_translation_strings: Çeviri Dizeleri
 one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
 scope: Kapsam
 actions: Aksiyonlar
@@ -1308,6 +1319,7 @@ reset: Sıfırla
 reset_password: Parolamı Sıfırla
 revisions: Revizyonlar
 no_revisions: Henüz Hiç Revizyon Yok
+no_logs: Henüz Günlük Yok
 revert: Eski Haline Döndür
 save: Kaydet
 schema: Şema
@@ -1778,6 +1790,7 @@ layouts:
     default_template: Koleksiyon Varsayılanı Kullanılıyor...
     no_compatible_fields: Hiç uyumlu alan yok
   kanban:
+    group_field: Gruplandırma,
     group_title: Grup Başlığı,
     title: Kart Başlığı,
     text: Kart Metni,
@@ -1838,34 +1851,54 @@ panels:
     name: Global Değişken
     variable_key: Değişken Anahtar
 triggers:
+  common:
+    response_body_all: Tüm Veri
+    response_body_last: Son İşlem Verileri
   webhook:
     method: Metod
+    async: Eşzamanlı Olmayan
+  operation:
+    name: Başka Bir Akış
   schedule:
+    name: Program (CRON)
     cron: Aralık
   manual:
     name: Elle
+    collection_and_item: Koleksiyon ve Öğe Sayfaları
+    collection_only: Yalnızca Koleksiyon Sayfası
+    item_only: Yalnızca Öğe Sayfası
 operations:
+  condition:
+    name: Durum
   exec:
     name: Komut Dosyasını Çalıştır
   item-delete:
     name: Veriyi Sil
+    key: Kimlikler
     query: Sorgula
   item-read:
     name: Veriyi oku
+    key: Kimlikler
     query: Sorgula
   item-update:
+    name: Verileri Güncelle
+    key: Kimlikler
     query: Sorgula
   log:
+    name: Konsolda Oturum Aç
     message: Mesaj
   mail:
     name: E-posta Gönder
+    to_placeholder: E-posta adreslerini ekleyin ve enter tuşuna basın...
     body: Gövde
   notification:
     name: Bildirim Gönder
     recipient: Kullanıcı
     message: Mesaj
   request:
+    description: "Bir URL'ye istekte bulunun"
     url: URL
+    url_placeholder: https://example.com/example
     method: Metod
     data: Veri
     headers: Başlıklar
@@ -1873,7 +1906,10 @@ operations:
     header_placeholder: Yetkilendirme...
   sleep:
     name: Uyku
+    description: Belirli bir milisaniye kadar bekleyin
     milliseconds: Milisaniye
   trigger:
+    description: Bu verileri başka bir akışa iletin
+    flows: Akışlar
     flow: Akış
     data: Veri
