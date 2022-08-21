@@ -6,6 +6,7 @@ import bootstrap from './commands/bootstrap';
 import count from './commands/count';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
+import dbMigrationGenerate from './commands/database/migration-generate';
 import init from './commands/init';
 import keyGenerate from './commands/security/key';
 import secretGenerate from './commands/security/secret';
@@ -51,6 +52,12 @@ export async function createCli(): Promise<Command> {
 		.command('migrate:down')
 		.description('Downgrade the database')
 		.action(() => dbMigrate('down'));
+
+	dbCommand
+		.command('migration:generate')
+		.description('Generate a migration file')
+		.argument('<name>', 'Name of the migration file')
+		.action(dbMigrationGenerate);
 
 	const usersCommand = program.command('users');
 
