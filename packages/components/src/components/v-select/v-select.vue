@@ -268,9 +268,11 @@ function useItems() {
 				: isMatchingCurrentItem(item, searchValue);
 
 			function isMatchingCurrentItem(item: Record<string, any>, searchValue: string): boolean {
+				const text = get(item, props.itemText);
+				const value = get(item, props.itemValue);
 				return (
-					(item.text ? String(item.text).toLowerCase().includes(searchValue) : false) ||
-					(item.value ? String(item.value).toLowerCase().includes(searchValue) : false)
+					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
+					(value ? String(value).toLowerCase().includes(searchValue) : false)
 				);
 			}
 		};
