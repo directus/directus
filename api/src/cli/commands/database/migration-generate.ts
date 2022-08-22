@@ -41,11 +41,17 @@ async function generateMigrationFileName(migrationName: string): Promise<string>
 	const migrationPrefix = formatYYYYMMDD(new Date(Date.now()));
 	const nextCharVersion = await getNextCharVersion(migrationPrefix);
 
-	return `${migrationPrefix}${nextCharVersion}-${migrationName.replace('_', '-')}.js`;
+	return `${migrationPrefix}${nextCharVersion}-${migrationName}.js`;
+}
+
+function standardizeMigrationName(migrationName: string) {
+	let formattedMigrationName = path.parse(migrationName).name;
+	formattedMigrationName = formattedMigrationName.replace('_', '-');
+	return formattedMigrationName;
 }
 
 export default async function start(migrationName: string) {
-	const migrationFileName = await generateMigrationFileName(migrationName);
+	const migrationFileName = await generateMigrationFileName(standardizeMigrationName(migrationName));
 	copyFileSync(
 		path.resolve(path.dirname(__dirname), 'templates/migration.js'),
 		`${migrationPath}/${migrationFileName}`
