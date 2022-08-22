@@ -20,13 +20,11 @@ function formatYYYYMMDD(date: Date): string {
 	)}${padNumberWithOneZero(date.getUTCDate())}`;
 }
 
-async function generateMigrationFileName(migrationName: string): Promise<string> {
-	const migrationPrefix = formatYYYYMMDD(new Date(Date.now()));
-
+async function getNextCharVersion(yyyymmdd: string): Promise<string> {
 	let currentDaysMigrationFiles = await fse.readdir(migrationPath);
 
 	currentDaysMigrationFiles = currentDaysMigrationFiles.filter((file: string) => {
-		return new RegExp(`^${migrationPrefix}[A-Z]-[^.]+\\.js$`, 'i').test(file);
+		return new RegExp(`^${yyyymmdd}[A-Z]-[^.]+\\.js$`, 'i').test(file);
 	});
 
 	let nextCharVersion = 'A';
@@ -36,6 +34,12 @@ async function generateMigrationFileName(migrationName: string): Promise<string>
 			latestMigrationFilePrefix.charCodeAt(latestMigrationFilePrefix.length - 1) + 1
 		);
 	}
+	return nextCharVersion;
+}
+
+async function generateMigrationFileName(migrationName: string): Promise<string> {
+	const migrationPrefix = formatYYYYMMDD(new Date(Date.now()));
+	const nextCharVersion = await getNextCharVersion(migrationPrefix);
 
 	return `${migrationPrefix}${nextCharVersion}-${migrationName.replace('_', '-')}.js`;
 }
