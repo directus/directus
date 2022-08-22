@@ -276,7 +276,7 @@ const columnStyle = computed<string>(() => {
 
 		gridTemplateColumns = gridTemplateColumns + ' 1fr';
 
-		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' auto';
+		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' min-content';
 
 		return gridTemplateColumns;
 	}
