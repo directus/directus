@@ -1333,6 +1333,7 @@ sign_out: Oturumu Kapat
 sign_out_confirm: Oturumunuzu kapatmak istediğinize emin misiniz?
 something_went_wrong: Bir şeyler ters gitti.
 sort_direction: Sıralama Yönü
+export_location: Konumu Dışa Aktar
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
@@ -1426,6 +1427,7 @@ interfaces:
     use_24: 24 Saat Biçimini Kullan
   system-fields:
     select_a_collection: Bir Koleksiyon Seç
+    no_fields: Alan yok
   system-display-template:
     display-template: Görüntüleme Şablonu
     description: Sabit metin ve dinamik alan değerlerini karıştırın
@@ -1560,6 +1562,7 @@ interfaces:
     auto_formatter: Başlık Otomatik Biçimlendiricisini Kullan
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik Sırayı Zorla
+    add_tags: Bir etiket ekleyin ve Enter'a basın...
   input:
     input: Girdi
     description: Manuel olarak bir değer gir
@@ -1795,6 +1798,8 @@ layouts:
     title: Kart Başlığı,
     text: Kart Metni,
     date: Kart Tarihi,
+    tags: Kart Etiketleri,
+    user: Kart Kullanıcısı,
     crop: Kırp,
     advanced: Gelişmiş,
     edit_group: Grubu Düzenle,
@@ -1821,6 +1826,7 @@ panels:
     name: Liste
     description: Bir koleksiyondan alanları filtrele ve listele
   barchart:
+    select_collection: Bir koleksiyon seçmelisiniz.
     select_x_axis: Bir X Ekseni seçmelisiniz.
     function: İşlev
     horizontal: Yatay
@@ -1833,6 +1839,10 @@ panels:
     y_axis_NaN: Y ekseni bir sayı olmalıdır.
     y_axis_conditional_two: bir sayı olmalıdır.
   linechart:
+    name: Çizgi Grafik
+    description: Bir alanın değişimini karşılaştırmak için çizgi grafiği.
+    select_field: Bir alan seçmelisiniz.
+    select_collection: Bir koleksiyon seçmelisiniz.
     select_x_axis: Bir X Ekseni seçmelisiniz.
     function: İşlev
     x_axis: X-Ekseni
@@ -1841,12 +1851,18 @@ panels:
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
   meter:
     name: Metre
+    select_collection: Bir koleksiyon seçmelisiniz.
     function: İşlev
+    thin: İnce
+    medium: Orta
+    broad: Kalın
   piechart:
     function: 'İşlev'
     labels: Etiketleri Göster
     legend: Göstergeyi Göster
     right: Sağ
+    monochrome: Tek Renkli
+    monochrome_color: Tek Renk
   variable:
     name: Global Değişken
     variable_key: Değişken Anahtar
