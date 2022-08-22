@@ -4,7 +4,7 @@ import { Field } from '@directus/shared/types';
 import { computed, ComputedRef, Ref } from 'vue';
 import { cloneDeep } from 'lodash';
 import { isAllowed } from '../utils/is-allowed';
-import { useCollection } from '@directus/components/composables';
+import { useCollection } from '@directus/shared/composables';
 
 type UsablePermissions = {
 	createAllowed: ComputedRef<boolean>;

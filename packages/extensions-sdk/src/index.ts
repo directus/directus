@@ -20,4 +20,4 @@ export {
 	useItems,
 	useLayout,
 	useFilterFields,
-} from '@directus/components/composables';
+} from '@directus/shared/composables';

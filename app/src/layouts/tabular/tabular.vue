@@ -181,7 +181,7 @@ export default {
 import { HeaderRaw } from '@/components/v-table/types';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
-import { useSync } from '@directus/components/composables';
+import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';

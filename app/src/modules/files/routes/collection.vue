@@ -202,7 +202,7 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { subDays } from 'date-fns';
 import { useFolders, Folder } from '@/composables/use-folders';
 import { useEventListener } from '@/composables/use-event-listener';
-import { useLayout } from '@directus/components/composables';
+import { useLayout } from '@directus/shared/composables';
 import { uploadFiles } from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';

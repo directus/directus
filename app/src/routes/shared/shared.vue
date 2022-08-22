@@ -49,7 +49,7 @@ import { login, logout } from '@/auth';
 import { Share } from '@directus/shared/types';
 import ShareItem from './components/share-item.vue';
 import { hydrate } from '@/hydrate';
-import { useCollection } from '@directus/components/composables';
+import { useCollection } from '@directus/shared/composables';
 
 type ShareInfo = Pick<
 	Share,

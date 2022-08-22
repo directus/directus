@@ -3,7 +3,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
-import { useCollection, useItems, useSync } from '@directus/components/composables';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
 import { clone } from 'lodash';
 import { computed, ref, toRefs } from 'vue';

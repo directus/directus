@@ -64,7 +64,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, PropType, ref } from 'vue';
-import { useCustomSelectionMultiple } from '@directus/components/composables';
+import { useCustomSelectionMultiple } from '@directus/shared/composables';
 
 type Option = {
 	text: string;

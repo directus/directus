@@ -40,7 +40,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, PropType } from 'vue';
-import { useCustomSelection } from '@directus/components/composables';
+import { useCustomSelection } from '@directus/shared/composables';
 
 type Option = {
 	text: string;

@@ -201,7 +201,7 @@ import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { useCollection } from '@directus/components/composables';
+import { useCollection } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';

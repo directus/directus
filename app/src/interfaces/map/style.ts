@@ -1,4 +1,4 @@
-import { cssVar } from '@directus/components/utils';
+import { cssVar } from '@directus/shared/utils';
 
 export function getMapStyle() {
 	const color = [

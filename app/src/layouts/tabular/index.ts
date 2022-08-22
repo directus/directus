@@ -7,7 +7,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
-import { useCollection, useItems, useSync } from '@directus/components/composables';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
 import { clone, debounce } from 'lodash';
