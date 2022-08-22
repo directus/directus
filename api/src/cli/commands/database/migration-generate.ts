@@ -10,7 +10,7 @@ if (!existsSync(migrationPath)) {
 	mkdirSync(migrationPath);
 }
 
-function padNumberWithOneZero(number: number) {
+function padNumberWithOneZero(number: number): string {
 	return number.toString().padStart(2, '0');
 }
 
@@ -20,7 +20,7 @@ function formatYYYYMMDD(date: Date): string {
 	)}${padNumberWithOneZero(date.getUTCDate())}`;
 }
 
-async function generateMigrationFileName(migrationName: string) {
+async function generateMigrationFileName(migrationName: string): Promise<string> {
 	const migrationPrefix = formatYYYYMMDD(new Date(Date.now()));
 
 	let currentDaysMigrationFiles = await fse.readdir(migrationPath);
