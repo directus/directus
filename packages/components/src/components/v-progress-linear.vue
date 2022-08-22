@@ -43,7 +43,7 @@ interface Props {
 	top?: boolean;
 	/** Which value to represent from 0 to 100 */
 	value?: number;
-	/** Adds color to progress linear */
+	/** Adds color to progress linear depending on the current percentage */
 	colorful?: boolean;
 }
 
