@@ -791,6 +791,7 @@ start_flow: Flow starten
 stop_flow: Flow stoppen
 create_operation: Operation erstellen
 edit_operation: Operation bearbeiten
+code: Code
 insights: Einblicke
 dashboard: Dashboard
 panel: Panel
@@ -1391,6 +1392,8 @@ value: Wert
 view_project: Projekt anzeigen
 report_error: Fehler melden
 start: Start
+table: Tabelle
+list: Liste
 interfaces:
   filter:
     name: Filter
@@ -1470,6 +1473,8 @@ interfaces:
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
     placeholder: Datum wählen...
+  system-fields:
+    select_a_collection: Sammlung auswählen
   system-display-template:
     display-template: Anzeigevorlage
     description: Statischen Text und dynamische Feldwerte mischen
@@ -1987,7 +1992,6 @@ operations:
     body: Inhalt
   notification:
     name: Benachrichtigung senden
-    description: In-app Benachrichtigung an Benutzer senden
     recipient: Benutzer
     message: Nachricht
   request:

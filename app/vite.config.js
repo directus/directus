@@ -16,7 +16,6 @@ import path from 'path';
 import markdownItAnchor from 'markdown-it-anchor';
 import markdownItContainer from 'markdown-it-container';
 import markdownItTableOfContents from 'markdown-it-table-of-contents';
-import { searchForWorkspaceRoot } from 'vite';
 import md from 'vite-plugin-vue-markdown';
 import { defineConfig } from 'vitest/config';
 import hljsGraphQL from './src/utils/hljs-graphql';
@@ -145,9 +144,6 @@ export default defineConfig({
 				target: process.env.API_URL ? process.env.API_URL : 'http://localhost:8055/',
 				changeOrigin: true,
 			},
-		},
-		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
 		},
 	},
 	test: {

@@ -61,7 +61,6 @@
 
 <script lang="ts">
 import api from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview.vue';
 import { set } from 'lodash';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
@@ -251,7 +250,7 @@ export default defineComponent({
 				const fileData = item.value?.[props.junctionField];
 				if (!fileData) return null;
 
-				const src = getRootPath() + `assets/${fileData.id}?key=system-large-contain`;
+				const src = `assets/${fileData.id}?key=system-large-contain`;
 				return { ...fileData, src };
 			});
 

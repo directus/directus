@@ -142,7 +142,7 @@ const query = ref<RelationQueryMultiple>({
 	page: 1,
 });
 
-const { create, update, displayItems, loading, fetchedItems } = useRelationMultiple(
+const { create, update, remove, displayItems, loading, fetchedItems } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -168,19 +168,24 @@ function updateValue(item: DisplayItem, lang: string | undefined) {
 
 	const itemInfo = getItemWithLang(displayItems.value, lang);
 
-	if (itemInfo) {
-		update({
-			...item,
-			$type: itemInfo?.$type,
-			$index: itemInfo?.$index,
-		});
-	} else {
+	if (!itemInfo) {
 		create({
 			...item,
 			[info.junctionField.field]: {
 				[info.relatedPrimaryKeyField.field]: lang,
 			},
 		});
+		return;
+	}
+
+	if (Object.keys(item).some((key) => ![info.junctionField.field, '$type', '$index'].includes(key))) {
+		update({
+			...item,
+			$type: itemInfo?.$type,
+			$index: itemInfo?.$index,
+		});
+	} else {
+		remove(item);
 	}
 }
 

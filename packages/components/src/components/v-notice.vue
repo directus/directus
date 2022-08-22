@@ -42,16 +42,14 @@ const iconName = computed(() => {
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-notice-color: var(--foreground-subdued);
 	--v-notice-background-color: var(--background-subdued);
 	--v-notice-border-color: var(--background-subdued);
 	--v-notice-icon-color: var(--foreground-subdued);
 }
-</style>
 
-<style scoped>
 .v-notice {
 	position: relative;
 	display: flex;
