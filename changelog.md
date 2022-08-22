@@ -2,6 +2,14 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.16.1 (August 19, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15160](https://github.com/directus/directus/pull/15160) v-form error: Cannot read properties of undefined (reading
+    'meta') (by @br41nslug)
+
 ## v9.16.0 (August 18, 2022)
 
 ### :sparkles: New Features
