@@ -29,13 +29,21 @@
 import { computed } from 'vue';
 
 interface Props {
+	/** Sets position to absolute */
 	absolute?: boolean;
+	/** Positions the bar at the bottom */
 	bottom?: boolean;
+	/** Sets position to fixed */
 	fixed?: boolean;
+	/** Play a general loading animation */
 	indeterminate?: boolean;
+	/** Rounds up the corners of the progress */
 	rounded?: boolean;
+	/** Positions the bar at the top */
 	top?: boolean;
+	/** Which value to represent from 0 to 100 */
 	value?: number;
+	/** Adds color to progress linear */
 	colorful?: boolean;
 }
 

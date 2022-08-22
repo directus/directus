@@ -9,7 +9,8 @@
 
 <script setup lang="ts">
 interface Props {
-	type?: string;
+	/** Name of another component to mirror */
+	type?: 'input' | 'input-tall' | 'block-list-item' | 'block-list-item-dense' | 'list-item-icon' | 'text';
 }
 
 withDefaults(defineProps<Props>(), {

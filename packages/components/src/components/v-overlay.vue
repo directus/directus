@@ -7,8 +7,11 @@
 
 <script setup lang="ts">
 interface Props {
+	/** Show / hide the overlay */
 	active?: boolean;
+	/** Makes the position absolute */
 	absolute?: boolean;
+	/** Makes the overlay clickable */
 	clickable?: boolean;
 }
 

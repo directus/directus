@@ -45,13 +45,17 @@ import { AppTile } from './v-workspace-tile.vue';
 import { cssVar } from '../utils';
 
 interface Props {
+	/** What tiles to render inside the workspace */
 	tiles: AppTile[];
+	/** Enables the edit mode */
 	editMode?: boolean;
+	/** Sets zoom and position so that all components are perfectly shown */
 	zoomToFit?: boolean;
+	/** Makes the panel resizable */
 	resizable?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(),{
+const props = withDefaults(defineProps<Props>(), {
 	editMode: false,
 	zoomToFit: false,
 	resizable: true,

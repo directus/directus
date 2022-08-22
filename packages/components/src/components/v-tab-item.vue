@@ -8,6 +8,7 @@
 import { useGroupable } from '../composables';
 
 interface Props {
+	/** Custom value to use for selection state */
 	value?: string | number;
 }
 

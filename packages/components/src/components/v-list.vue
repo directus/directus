@@ -9,11 +9,17 @@ import { toRefs } from 'vue';
 import { useGroupableParent } from '../composables';
 
 interface Props {
+	/** Model what elements should be currently active */
 	modelValue?: (string | number)[];
+	/** If the item is inside the navigation */
 	nav?: boolean;
+	/** Renders the list densely */
 	dense?: boolean;
+	/** Allows to select multiple items in the list */
 	multiple?: boolean;
+	/** At least one item has to be selected */
 	mandatory?: boolean;
+	/** Items that do not have the same scope will be ignored */
 	scope?: string;
 }
 

@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 interface Props {
+	/** What tab should be currently active */
 	modelValue?: (number | string)[];
 }
 

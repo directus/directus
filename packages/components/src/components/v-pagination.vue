@@ -68,24 +68,29 @@
 import { computed } from 'vue';
 
 const props = defineProps({
+	/** Disables the pagination */
 	disabled: {
 		type: Boolean,
 		default: false,
 	},
+	/** The amount of pages to render */
 	length: {
 		type: Number,
 		required: true,
 		validator: Number.isInteger,
 	},
+	/** Specify the max total visible pagination numbers */
 	totalVisible: {
 		type: Number,
 		default: undefined,
 		validator: (val: number) => val >= 0,
 	},
+	/** Currently selected page */
 	modelValue: {
 		type: Number,
 		default: null,
 	},
+	/** Show first/last buttons */
 	showFirstLast: {
 		type: Boolean,
 		default: false,

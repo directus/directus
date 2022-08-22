@@ -12,7 +12,9 @@ import { inject, ref } from 'vue';
 import { useGroupable } from '../composables';
 
 interface Props {
+	/** A custom value to be used with `v-tabs` */
 	value?: string | number;
+	/** Disable the tab */
 	disabled?: boolean;
 }
 

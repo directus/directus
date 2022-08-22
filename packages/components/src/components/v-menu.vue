@@ -73,18 +73,31 @@ import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, onUnmounted, ref, Ref, watch } from 'vue';
 
 interface Props {
+	/** Where to position the popper */
 	placement?: Placement;
+	/** Model the open state */
 	modelValue?: boolean;
+	/** Close the menu when clicking outside of the menu */
 	closeOnClick?: boolean;
+	/** Close the menu when clicking the content of the menu */
 	closeOnContentClick?: boolean;
+	/** Attach the menu to an input */
 	attached?: boolean;
+	/** Show an arrow pointer */
 	showArrow?: boolean;
+	/** Menu does not appear */
 	disabled?: boolean;
+	/** Activate the menu on a trigger */
 	trigger?: 'hover' | 'click' | 'keyDown' | null;
+	/** Time in ms before menu activates after trigger */
 	delay?: number;
+	/** Offset from the top */
 	offsetY?: number;
+	/** Offset from the left */
 	offsetX?: number;
+	/** Removes the scrollbar */
 	fullHeight?: boolean;
+	/** Removes any styling from the menu */
 	seamless?: boolean;
 }
 

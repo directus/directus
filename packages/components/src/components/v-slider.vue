@@ -36,13 +36,21 @@
 import { computed } from 'vue';
 
 interface Props {
+	/** Disables the slider */
 	disabled?: boolean;
+	/** Show the thumb label on drag of the thumb */
 	showThumbLabel?: boolean;
+	/** Maximum allowed value */
 	max?: number;
+	/** Minimum allowed value */
 	min?: number;
+	/** In what step the value can be entered */
 	step?: number;
+	/** Show tick for each step */
 	showTicks?: boolean;
+	/** Always the current selected value */
 	alwaysShowValue?: boolean;
+	/** Model the current selected value */
 	modelValue?: number;
 }
 

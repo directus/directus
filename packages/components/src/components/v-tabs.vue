@@ -12,7 +12,9 @@ import { toRefs, provide, ref } from 'vue';
 import { useGroupableParent } from '../composables';
 
 interface Props {
+	/** Display the tabs in a vertical format */
 	vertical?: boolean;
+	/** The currently selected tab */
 	modelValue?: (number | string)[];
 }
 

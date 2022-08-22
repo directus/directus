@@ -75,9 +75,9 @@ interface Props {
 	query?: boolean;
 	/** Renders the button in a less important styling */
 	secondary?: boolean;
-	/** Deprecated! The `kind` prop should be used instead */
+	/** @deprecated The `kind` prop should be used instead */
 	warning?: boolean;
-	/** Deprecated! The `kind` prop should be used instead */
+	/** @deprecated The `kind` prop should be used instead */
 	danger?: boolean;
 	/** What value to use for the button when rendered inside a group of buttons */
 	value?: number | string;

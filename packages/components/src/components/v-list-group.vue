@@ -41,24 +41,33 @@ import { computed } from 'vue';
 import { useGroupable } from '../composables';
 
 interface Props {
+	/** If enabled, multiple elements can be selected */
 	multiple?: boolean;
+	/** To what route the item should link to */
 	to?: string;
-	active?: boolean;
+	/** Renders an active state if the route matches exactly */
 	exact?: boolean;
+	/** Renders an active state it the route matches the query  */
 	query?: boolean;
+	/** Disables the group */
 	disabled?: boolean;
+	/** If the group itself should be selectable */
 	clickable?: boolean;
+	/** Only matches to a group when both scopes are the same */
 	scope?: string;
+	/** Which value to represent when active */
 	value?: number | string;
+	/** Renders the group densely */
 	dense?: boolean;
+	/** Overrides the internal open state */
 	open?: boolean;
+	/** Where the visual arrow should be placed */
 	arrowPlacement?: 'before' | 'after' | false;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	multiple: true,
 	to: '',
-	active: undefined,
 	exact: false,
 	query: false,
 	disabled: false,

@@ -25,13 +25,21 @@
 import { computed } from 'vue';
 
 interface Props {
+	/** Disables the input */
 	disabled?: boolean;
+	/** Autofocusses the input on render */
 	autofocus?: boolean;
+	/** Render the input with 100% width */
 	fullWidth?: boolean;
+	/** Model the text inside the input */
 	modelValue?: string;
+	/** If the input is empty, return `null` instead of `''` */
 	nullable?: boolean;
+	/** Renders the textarea at regular input size, and expands to max-height on focus */
 	expandOnFocus?: boolean;
+	/** Text to show when no input is entered */
 	placeholder?: string;
+	/** Trim leading and trailing whitespace */
 	trim?: boolean;
 }
 

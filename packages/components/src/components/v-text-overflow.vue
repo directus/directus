@@ -10,8 +10,11 @@ import { ref, watch } from 'vue';
 import { useElementSize } from '../composables';
 
 interface Props {
+	/** The text that should be displayed */
 	text: string | number | boolean | Record<string, any> | Array<any>;
+	/** What parts of the text should be highlighted */
 	highlight?: string;
+	/** The placement of the tooltip */
 	placement?: 'top' | 'bottom' | 'left' | 'right' | 'start' | 'end';
 }
 

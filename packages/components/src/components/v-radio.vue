@@ -18,12 +18,19 @@
 import { computed } from 'vue';
 
 interface Props {
+	/** What value to represent when selected */
 	value: string | number;
+	/** If `value` and `modelValue` match, the radio is selected */
 	modelValue?: string | number | null;
+	/** Label to render next to the radio */
 	label?: string | null;
+	/** Disable the radio button */
 	disabled?: boolean;
+	/** Change the icon to display when enabled */
 	iconOn?: string;
+	/** Change the icon to display when disabled */
 	iconOff?: string;
+	/** Render the radio in a block like style */
 	block?: boolean;
 }
 

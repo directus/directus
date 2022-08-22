@@ -9,8 +9,11 @@
 import { computed } from 'vue';
 
 interface Props {
+	/** Renders the components in each of it styles */
 	type?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
+	/** Custom icon name, or false if you want to hide the icon completely */
 	icon?: string | boolean | null;
+	/** Render notice content centered */
 	center?: boolean;
 }
 

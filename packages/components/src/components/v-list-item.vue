@@ -28,18 +28,31 @@ import { isEqual } from 'lodash';
 
 interface Props {
 	block?: boolean;
+	/** Makes the item smaller */
 	dense?: boolean;
+	/** Where the item should link to */
 	to?: string | RouteLocation;
+	/** Same as to except that it takes an external link */
 	href?: string;
+	/** Disables the item */
 	disabled?: boolean;
+	/** If the item should be clickable */
 	clickable?: boolean;
+	/** If the item should be active or not */
 	active?: boolean;
+	/** Adds a dashed style */
 	dashed?: boolean;
+	/** Renders an active state if the route matches exactly */
 	exact?: boolean;
+	/** Renders an active state it the route matches the query  */
 	query?: boolean;
+	/** Signal that the target link is a downloadable file */
 	download?: string;
+	/** What value to represent when active */
 	value?: number | string;
+	/** If the item is inside the navigation */
 	nav?: boolean;
+	/** Only matches to a group when both scopes are the same */
 	scope?: string;
 }
 

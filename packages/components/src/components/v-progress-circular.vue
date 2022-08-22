@@ -27,11 +27,17 @@ import { computed } from 'vue';
 import { useSizeClass } from '../composables';
 
 interface Props {
+	/** If set to true displays no value but spins indefinitely */
 	indeterminate?: boolean;
+	/** Which value to represent going from 0 to 100 */
 	value?: number;
+	/** Renders the progress circular smaller */
 	xSmall?: boolean;
+	/** Renders the progress circular small */
 	small?: boolean;
+	/** Renders the progress circular large */
 	large?: boolean;
+	/** Renders the progress circular larger */
 	xLarge?: boolean;
 }
 
