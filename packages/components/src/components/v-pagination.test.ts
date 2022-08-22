@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils';
 
 import VPagination from './v-pagination.vue';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';
-import { h } from 'vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon', 'v-button'],

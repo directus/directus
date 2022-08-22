@@ -2,7 +2,6 @@ import { test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 
 import VBreadcrumb from './v-breadcrumb.vue';
-import { h } from 'vue';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
 const global: GlobalMountOptions = {

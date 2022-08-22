@@ -1,4 +1,4 @@
-import { test, expect, beforeAll, beforeEach } from 'vitest';
+import { test, expect, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 
 import VMenu from './v-menu.vue';
