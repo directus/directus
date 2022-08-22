@@ -72,6 +72,7 @@ operators:
 role: Рола
 create: Креирај
 flow_name: Име
+code: Код
 width: Ширина
 height: Висина
 wysiwyg_options:
@@ -157,6 +158,7 @@ embed: Угради
 my_activity: Моја активност
 password: Лозинка
 template: Шаблон
+table: Табела
 interfaces:
   filter:
     all: Sve

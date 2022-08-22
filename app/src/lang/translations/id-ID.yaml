@@ -724,6 +724,7 @@ label: Label
 flow_name: Nama
 flow_tracking_activity: Hanya Aktifitas Melacak
 flow_tracking_null: Jangan Lacak Apapun
+code: Kode
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
@@ -1154,6 +1155,7 @@ value: Nilai
 view_project: Lihat Proyek
 report_error: Lapor Kesalahan
 start: Mulai
+table: Tabel
 interfaces:
   filter:
     name: Penyaring
@@ -1220,6 +1222,8 @@ interfaces:
     description: Masukan atau pilih nilai warna
   datetime:
     datetime: Datetime
+  system-fields:
+    select_a_collection: Pilih Koleksi
   system-display-template:
     display-template: Tampilan Template
     collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
