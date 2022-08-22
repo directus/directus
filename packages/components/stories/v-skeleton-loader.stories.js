@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VSkeletonLoader',
+    title: 'Components/VSkeletonLoader',
     component: VSkeletonLoader,
     argTypes: {
         type: {

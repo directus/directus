@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VFancySelect',
+    title: 'Components/VFancySelect',
     component: VFancySelect,
     argTypes: {
 

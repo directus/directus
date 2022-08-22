@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VHover',
+    title: 'Components/VHover',
     component: VHover,
     argTypes: {
 

@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VInput',
+    title: 'Components/VInput',
     component: VInput,
     argTypes: {
 

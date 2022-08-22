@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/TransitionDialog',
+    title: 'Components/Transition/TransitionDialog',
     component: TransitionDialog,
     argTypes: {
 

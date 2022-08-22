@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VMenu',
+    title: 'Components/VMenu',
     component: VMenu,
     argTypes: {
 

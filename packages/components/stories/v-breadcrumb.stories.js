@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-  title: 'Example/VBreadcrumb',
+  title: 'Components/VBreadcrumb',
   component: VBreadcrumb,
   argTypes: {
     

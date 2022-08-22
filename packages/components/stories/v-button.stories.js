@@ -4,7 +4,7 @@ import VButton from '../src/components/v-button.vue';
 document.body.classList.add('light')
 
 export default {
-    title: 'Example/VButton',
+    title: 'Components/VButton',
     component: VButton,
     
     argTypes: {

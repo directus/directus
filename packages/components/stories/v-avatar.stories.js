@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-  title: 'Example/VAvatar',
+  title: 'Components/VAvatar',
   component: VAvatar,
   argTypes: {
     

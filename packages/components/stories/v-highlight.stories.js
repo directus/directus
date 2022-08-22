@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VHighlight',
+    title: 'Components/VHighlight',
     component: VHighlight,
     argTypes: {
 

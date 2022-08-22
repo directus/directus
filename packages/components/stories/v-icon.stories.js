@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-  title: 'Example/VIcon',
+  title: 'Components/VIcon',
   component: VIcon,
   argTypes: {
     

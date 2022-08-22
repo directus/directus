@@ -6,7 +6,7 @@ document.body.classList.add('light')
 
 
 export default {
-  title: 'Example/VSlider',
+  title: 'Components/VSlider',
   component: VSlider,
   // More on argTypes: https://storybook.js.org/docs/vue/api/argtypes
   argTypes: {

@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-  title: 'Example/VBadge',
+  title: 'Components/VBadge',
   component: VBadge,
   argTypes: {
     

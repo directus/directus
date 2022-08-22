@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-  title: 'Example/VTextarea',
+  title: 'Components/VTextarea',
   component: VTextarea,
   argTypes: {
     

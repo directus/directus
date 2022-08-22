@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VIconFile',
+    title: 'Components/VIconFile',
     component: VIconFile,
     argTypes: {
 

@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VTabs',
+    title: 'Components/VTabs',
     component: VTabs,
     argTypes: {
 

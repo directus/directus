@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VOverlay',
+    title: 'Components/VOverlay',
     component: VOverlay,
     argTypes: {
 

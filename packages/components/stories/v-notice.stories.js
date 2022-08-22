@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VNotice',
+    title: 'Components/VNotice',
     component: VNotice,
     argTypes: {
         type: {

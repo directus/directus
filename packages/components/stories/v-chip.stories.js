@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VChip',
+    title: 'Components/VChip',
     component: VChip,
     argTypes: {
         close: { 'control': 'boolean' }

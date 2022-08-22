@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VDivider',
+    title: 'Components/VDivider',
     component: VDivider,
     argTypes: {
 

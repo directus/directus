@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VCard',
+    title: 'Components/VCard',
     component: VCard,
     argTypes: {
 

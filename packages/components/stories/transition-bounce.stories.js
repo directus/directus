@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/TransitionBounce',
+    title: 'Components/Transition/TransitionBounce',
     component: TransitionBounce,
     argTypes: {
 

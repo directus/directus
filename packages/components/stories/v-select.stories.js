@@ -5,7 +5,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VSelect',
+    title: 'Components/VSelect',
     component: VSelect,
     argTypes: {
 

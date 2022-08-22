@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VEmojiPicker',
+    title: 'Components/VEmojiPicker',
     component: VEmojiPicker,
     argTypes: {
 

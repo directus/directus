@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VWorkspace',
+    title: 'Components/VWorkspace',
     component: VWorkspace,
     argTypes: {
 

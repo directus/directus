@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VTemplateInput',
+    title: 'Components/VTemplateInput',
     component: VTemplateInput,
     argTypes: {
 

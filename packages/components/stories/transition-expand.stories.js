@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/TransitionExpand',
+    title: 'Components/Transition/TransitionExpand',
     component: TransitionExpand,
     argTypes: {
 

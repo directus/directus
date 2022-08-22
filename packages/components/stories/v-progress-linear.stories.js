@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VProgressLinear',
+    title: 'Components/VProgressLinear',
     component: VProgressLinear,
     argTypes: {
 

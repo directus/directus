@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VList',
+    title: 'Components/List/VList',
     component: VList,
     argTypes: {
 

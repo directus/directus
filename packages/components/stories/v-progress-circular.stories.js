@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VProgressCircular',
+    title: 'Components/VProgressCircular',
     component: VProgressCircular,
     argTypes: {
 

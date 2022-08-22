@@ -4,7 +4,7 @@ document.body.classList.add('light')
 
 
 export default {
-    title: 'Example/VCheckboxTree',
+    title: 'Components/VCheckboxTree',
     component: VCheckboxTree,
     argTypes: {
 
