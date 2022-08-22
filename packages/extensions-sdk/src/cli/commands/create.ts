@@ -27,7 +27,8 @@ const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
 type CreateOptions = { language: string };
 
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
-	const targetPath = path.resolve(name);
+	const targetDir = name.substring(name.lastIndexOf('/') + 1);
+	const targetPath = path.resolve(targetDir);
 
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
@@ -43,14 +44,14 @@ export default async function create(type: string, name: string, options: Create
 		const info = await fse.stat(targetPath);
 
 		if (!info.isDirectory()) {
-			log(`Destination ${chalk.bold(name)} already exists and is not a directory.`, 'error');
+			log(`Destination ${chalk.bold(targetDir)} already exists and is not a directory.`, 'error');
 			process.exit(1);
 		}
 
 		const files = await fse.readdir(targetPath);
 
 		if (files.length > 0) {
-			log(`Destination ${chalk.bold(name)} already exists and is not empty.`, 'error');
+			log(`Destination ${chalk.bold(targetDir)} already exists and is not empty.`, 'error');
 			process.exit(1);
 		}
 	}
@@ -105,7 +106,7 @@ export default async function create(type: string, name: string, options: Create
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 To start developing, run:
-  ${chalk.blue('cd')} ${name}
+  ${chalk.blue('cd')} ${targetDir}
   ${chalk.blue('npm run')} dev
 
 and then to build for production, run:
