@@ -50,6 +50,7 @@ export_items: Ögeleri Dışa Aktar
 and: Ve
 or: Veya
 init: Başlangıç
+dataset_too_large_currently_showing_n_items: Veri kümesi çok büyük. Şu anda ilk {n} öğe gösteriliyor.
 modifier: Düzenleyici
 custom: Özel
 fill_width: Genişliği Doldur
@@ -448,6 +449,10 @@ start_export: Dışa Aktarmayı Başlat
 not_available_for_local_downloads: Yerel indirmeler için mevcut değil
 exporting_all_items_in_collection: '{collection} içindeki tüm {total} öğe dışa aktarılıyor.'
 exporting_limited_items_in_collection: '{collection} içindeki {total} öğeden {limit} dışa aktarılıyor.'
+exporting_no_items_to_export: Dışa aktarılacak öğe yok. Aşağıdaki dışa aktarma yapılandırmasını ayarlayın.
+exporting_download_hint: Tamamlandığında, bu {format} dosyası otomatik olarak cihazınıza indirilecektir.
+exporting_batch_hint: Bu dışa aktarma, gruplar halinde işlenecek ve tamamlandıktan sonra {format} dosyası Dosya Kitaplığına kaydedilecektir.
+exporting_batch_hint_forced: Çok sayıda öğe nedeniyle, bu dışa aktarma toplu olarak işlenecek ve tamamlandıktan sonra {format} dosyası Dosya Kitaplığına kaydedilecektir.
 collection_key: Koleksiyon Anahtarı
 name: İsim
 primary_key_field: Birincil Anahtar Alanı
@@ -594,6 +599,7 @@ unexpected_error_copy: Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar d
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
+password_reset_sent: Bir hesabınız varsa, şifrenizi sıfırlamanız için size güvenli bir bağlantı gönderdik
 password_reset_successful: Parola başarıyla sıfırlandı
 back: Geri
 filter: Filtrele
@@ -618,6 +624,9 @@ start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler göster
 start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler gösteriliyor'
 one_item: '1 öğe'
 one_filtered_item: '1 filtrelenmiş öğe'
+delete_collection_are_you_sure: >-
+  "{collection}" koleksiyonunu silmek istediğinizden emin misiniz? Bu, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem kalıcıdır.
+delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar
@@ -735,7 +744,9 @@ toggle: Aç/Kapat
 icon_on: Açık İkonu
 icon_off: Kapalı İkonu
 label: Etiket
+flows: Akışlar
 flow: Akış
+select_a_flow: Bir Akış Seç
 trigger: Tetikleme
 trigger_options: Tetikleyici Seçenekleri
 view_trigger: Tetikleyiciyi Görüntüle
@@ -744,6 +755,7 @@ trigger_setup: Tetikleyici Ayarı
 change_trigger: Tetikleyici Değiştirin
 edit_flow: Akışı Düzenle
 delete_flow: Akışı Sil
+no_flows: Akış yok
 create_flow: Akış Oluştur
 flow_setup: Akış Kurulumu
 flow_name: İsim
@@ -755,6 +767,7 @@ stop_flow: Akışı Durdur
 create_operation: İşlem Oluştur
 edit_operation: İşlemi Düzenle
 code: Kod
+operation_key_unique_error: İşlem anahtarları bir Akışta benzersiz olmalıdır
 insights: Kontrol Panelleri
 dashboard: Pano
 panel: Panel
@@ -790,6 +803,7 @@ media: Medya
 quality: Kalite
 width: Genişlik
 height: Yükseklik
+transformation_preset_key: Dönüşüm Ön Ayar Anahtarı
 source: Kaynak
 url_placeholder: Bir URL girin...
 display_text: Görüntüleme Metni
@@ -1582,6 +1596,7 @@ interfaces:
     description: Birden çok satırlı düz metin gir
   input-translated-string:
     input-translated-string: Çevrilmiş Dizeler
+    description: Çeviri dizesi seçin veya ekleyin
     search_placeholder: Ara...
     new_translation_string: Yeni Çeviri Dizesi
   boolean:
@@ -1796,10 +1811,13 @@ layouts:
     group_field: Gruplandırma,
     group_title: Grup Başlığı,
     title: Kart Başlığı,
+    title_placeholder: İsteğe bağlı başlık alanı...,
     text: Kart Metni,
+    text_placeholder: İsteğe bağlı metin alanı...,
     date: Kart Tarihi,
     tags: Kart Etiketleri,
     user: Kart Kullanıcısı,
+    image_placeholder: İsteğe bağlı görüntü alanı...,
     crop: Kırp,
     advanced: Gelişmiş,
     edit_group: Grubu Düzenle,
@@ -1826,6 +1844,7 @@ panels:
     name: Liste
     description: Bir koleksiyondan alanları filtrele ve listele
   barchart:
+    name: Grafik Çubuğu
     select_collection: Bir koleksiyon seçmelisiniz.
     select_x_axis: Bir X Ekseni seçmelisiniz.
     function: İşlev
