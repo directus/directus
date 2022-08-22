@@ -166,20 +166,15 @@ export function updateGeneratedRelatedField(updates: StateUpdates, state: State)
 	}
 }
 
+function fieldExists(collection: string, field: string) {
+	return !!useFieldsStore().getField(collection, field);
+}
+
 export function generateSortField(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
+	const relatedCollection = getCurrent('relations.o2m.collection');
 	const sort = getCurrent('relations.o2m.meta.sort_field');
 
-	if (!sort) return;
-
-	const fieldsStore = useFieldsStore();
-
-	const relatedCollection = getCurrent('relations.o2m.collection');
-
-	const exists = !!fieldsStore.getField(relatedCollection, sort);
-
-	if (exists) {
-		set(updates, 'fields.sort', undefined);
-	} else {
+	if (relatedCollection && sort && fieldExists(relatedCollection, sort) === false) {
 		set(updates, 'fields.sort', {
 			collection: relatedCollection,
 			field: sort,
@@ -189,5 +184,7 @@ export function generateSortField(updates: StateUpdates, state: State, { getCurr
 				hidden: false,
 			},
 		});
+	} else {
+		set(updates, 'fields.sort', undefined);
 	}
 }

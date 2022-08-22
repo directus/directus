@@ -86,6 +86,7 @@ operators:
   contains: Bevat
 role: Rol
 create: Skep
+code: Kode
 width: Breedte
 height: Hoogte
 wysiwyg_options:
@@ -164,6 +165,7 @@ description: Beskrywing
 email: E-pos
 password: Wagwoord
 template: Modelvorm
+table: Tafel
 interfaces:
   filter:
     all: Alle
