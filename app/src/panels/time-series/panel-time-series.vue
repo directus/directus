@@ -117,11 +117,13 @@ function setupChart() {
 	const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
 
 	const allDates = props.data.map((metric) => {
-		return new Date(toISO(metric.group)).getTime();
+		return (
+			new Date(toISO(metric.group)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0)
+		);
 	});
 
-	const minDate = Math.min(...allDates) - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0);
-	const maxDate = Math.max(...allDates) - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0);
+	const minDate = Math.min(...allDates);
+	const maxDate = Math.max(...allDates);
 
 	metrics.value = orderBy(
 		props.data.map((metric) => ({
