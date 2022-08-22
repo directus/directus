@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@directus/shared/utils';
-import { cssVar } from '@directus/shared/utils';
+import { cssVar } from '@directus/shared/utils/browser';
 import { isNil } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
