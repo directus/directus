@@ -40,6 +40,11 @@ export default async function create(type: string, name: string, options: Create
 		process.exit(1);
 	}
 
+	if (targetDir.length === 0) {
+		log(`Extension name can not be empty.`, 'error');
+		process.exit(1);
+	}
+
 	if (await fse.pathExists(targetPath)) {
 		const info = await fse.stat(targetPath);
 
