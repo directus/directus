@@ -46,7 +46,7 @@
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item :download="file.filename_download" :href="assetURL">
+					<v-list-item :download="file.filename_download" :href="downloadURL">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -141,7 +141,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref, computed, toRefs } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -149,6 +149,7 @@ import { addQueryToPath } from '@/utils/add-query-to-path';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
 import { Filter } from '@directus/shared/types';
+import { getRootPath } from '@/utils/get-root-path';
 
 type FileInfo = {
 	id: string;
@@ -205,6 +206,10 @@ const fileExtension = computed(() => {
 const assetURL = computed(() => {
 	const id = typeof props.value === 'string' ? props.value : props.value?.id;
 	return '/assets/' + id;
+});
+
+const downloadURL = computed(() => {
+	return addTokenToURL(getRootPath() + assetURL.value.slice(1));
 });
 
 const imageThumbnail = computed(() => {

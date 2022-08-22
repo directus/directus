@@ -1,7 +1,7 @@
 import exifr from 'exifr';
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { FilesService } from '../../src/services';
+import { FilesService } from '.';
 
 jest.mock('exifr');
 jest.mock('../../src/database/index', () => {

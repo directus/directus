@@ -752,6 +752,7 @@ start_flow: Запустить Поток
 stop_flow: Остановить Поток
 create_operation: Создать новую операцию
 edit_operation: Изменить операцию
+code: Код
 operation_options: Параметры операции
 operation_name: Название операции...
 operation_key_unique_error: Ключи операции должны быть уникальными в Потоке
@@ -1330,6 +1331,8 @@ value: Значение
 view_project: Просмотр Проекта
 report_error: Сообщить об Ошибке
 start: Начало
+table: Таблица
+list: Список
 interfaces:
   filter:
     name: Фильтр
@@ -1407,6 +1410,8 @@ interfaces:
     set_to_now: Установить Сейчас
     use_24: Использовать 24-Часовой Формат
     placeholder: Выберите дату и время...
+  system-fields:
+    select_a_collection: Выберите Коллекцию
   system-display-template:
     display-template: Шаблон отображения
     description: Смешивать статический текст и динамические значения полей

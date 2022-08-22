@@ -555,6 +555,7 @@ trigger: Päästik
 flow_name: Nimi
 flow_tracking_activity: Jälgi ainult aktiivsust
 flow_tracking_null: Ära jälgi midagi
+code: Kood
 full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
@@ -906,6 +907,7 @@ translation: Tõlge
 value: Väärtus
 view_project: Näita projekti
 report_error: Raporteeri viga
+table: Tabel
 interfaces:
   filter:
     add_filter: Lisa filter
@@ -951,6 +953,8 @@ interfaces:
     include_seconds: Lisa sekundid
     set_to_now: Seadista praegusele hetkele
     use_24: Kasuta 24h formaati
+  system-fields:
+    select_a_collection: Vali andmekogu
   system-display-template:
     display-template: Vaate mall
     description: Kombineeri staatilist teksti ja dünaamiliste väljadega

@@ -251,6 +251,8 @@ const defaults: Record<string, any> = {
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
 
 	GRAPHQL_INTROSPECTION: true,
+
+	FLOWS_EXEC_ALLOWED_MODULES: false,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

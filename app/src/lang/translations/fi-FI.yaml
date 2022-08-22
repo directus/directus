@@ -665,6 +665,7 @@ trigger: Laukaisija
 flow_name: Nimi
 flow_tracking_activity: Seuraa vain tapahtumia
 flow_tracking_null: Älä seuraa mitään
+code: Koodi
 insights: Yleiskatsaus
 dashboard: Kojelauta
 panel: Paneeli
@@ -1175,6 +1176,8 @@ value: Arvo
 view_project: Näytä projekti
 report_error: Raportoi virhe
 start: Aloita
+table: Taulukko
+list: Lista
 interfaces:
   filter:
     name: Suodatin
@@ -1243,6 +1246,8 @@ interfaces:
     include_seconds: Sisällytä sekunnit
     set_to_now: Aseta olemaan nyt
     use_24: Käytä 24-tuntista muotoa
+  system-fields:
+    select_a_collection: Valitse kokoelma
   system-display-template:
     display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
