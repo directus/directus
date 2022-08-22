@@ -10,6 +10,7 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	API_OR_HYBRID_EXTENSION_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
+	EXTENSION_NAME_REGEX,
 } from '@directus/shared/constants';
 import { isIn } from '@directus/shared/utils';
 import { ExtensionType } from '@directus/shared/types';
@@ -78,7 +79,7 @@ export default async function create(type: string, name: string, options: Create
 		: `src/index.${languageToShort(options.language)}`;
 
 	const packageManifest = {
-		name: `directus-extension-${name}`,
+		name: EXTENSION_NAME_REGEX.test(name) ? name : `directus-extension-${name}`,
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
