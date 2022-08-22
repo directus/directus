@@ -199,14 +199,18 @@ watch(
 
 watch(
 	() => values.trigger,
-	() => {
+	(_, previousTrigger) => {
+		if (previousTrigger === undefined) return;
+
 		values.options = {};
 	}
 );
 
 watch(
 	() => values.options?.type,
-	(type) => {
+	(type, previousType) => {
+		if (previousType === undefined) return;
+
 		values.options = {
 			type,
 		};

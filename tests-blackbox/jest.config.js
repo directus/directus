@@ -10,4 +10,5 @@ module.exports = {
 	testSequencer: './setup/customSequencer.js',
 	testEnvironment: './setup/customEnvironment.ts',
 	moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
+	testTimeout: 15000,
 };

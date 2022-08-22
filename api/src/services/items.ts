@@ -1,7 +1,7 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
 import { Knex } from 'knex';
-import { assign, clone, cloneDeep, isEqual, omit, pick, without } from 'lodash';
+import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
@@ -9,7 +9,14 @@ import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import { AbstractService, AbstractServiceOptions, Item as AnyItem, MutationOptions, PrimaryKey } from '../types';
+import {
+	AbstractService,
+	AbstractServiceOptions,
+	ActionEventParams,
+	Item as AnyItem,
+	MutationOptions,
+	PrimaryKey,
+} from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { validateKeys } from '../utils/validate-keys';
 import { ActivityService, PayloadChunk, RevisionsService } from './index';
@@ -78,6 +85,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			.map((field) => field.field);
 
 		const payload: AnyItem = cloneDeep(data);
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
 		// changes in the DB if any of the parts contained within throws an error. This also means
@@ -117,10 +125,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				? ((await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)) as PayloadChunk)
 				: { keys: [], payload: payloadAfterHooks };
 
-			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(
-				payloadWithPresets.payload
-			);
-			const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
+			const {
+				payload: payloadWithM2O,
+				revisions: revisionsM2O,
+				nestedActionEvents: nestedActionEventsM2O,
+			} = await payloadService.processM2O(payloadWithPresets.payload, opts);
+			const {
+				payload: payloadWithA2O,
+				revisions: revisionsA2O,
+				nestedActionEvents: nestedActionEventsA2O,
+			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
@@ -153,7 +167,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload[primaryKeyField] = primaryKey;
 			}
 
-			const { revisions: revisionsO2M } = await payloadService.processO2M(payload, primaryKey);
+			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
+				payload,
+				primaryKey,
+				opts
+			);
+
+			nestedActionEvents.push(...nestedActionEventsM2O);
+			nestedActionEvents.push(...nestedActionEventsA2O);
+			nestedActionEvents.push(...nestedActionEventsO2M);
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
@@ -203,21 +225,32 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(
-				this.eventScope === 'items' ? ['items.create', `${this.collection}.items.create`] : `${this.eventScope}.create`,
-				{
+			const actionEvent = {
+				event:
+					this.eventScope === 'items'
+						? ['items.create', `${this.collection}.items.create`]
+						: `${this.eventScope}.create`,
+				meta: {
 					payload,
 					key: primaryKey,
 					collection: this.collection,
 				},
-				{
-					// This hook is called async. If we would pass the transaction here, the hook can be
-					// called after the transaction is done #5460
-					database: this.knex || getDatabase(),
+				context: {
+					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
-				}
-			);
+				},
+			};
+
+			if (!opts?.bypassEmitAction) {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+			} else {
+				opts.bypassEmitAction(actionEvent);
+			}
+
+			for (const nestedActionEvent of nestedActionEvents) {
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+			}
 		}
 
 		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
@@ -418,6 +451,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			.map((field) => field.field);
 
 		const payload: Partial<AnyItem> = cloneDeep(data);
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		const authorizationService = await this.getAuthorizationService();
 
@@ -461,8 +495,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 
 			for (const { keys, payload } of payloadWithPresets) {
-				const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payload);
-				const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
+				const {
+					payload: payloadWithM2O,
+					revisions: revisionsM2O,
+					nestedActionEvents: nestedActionEventsM2O,
+				} = await payloadService.processM2O(payload, opts);
+				const {
+					payload: payloadWithA2O,
+					revisions: revisionsA2O,
+					nestedActionEvents: nestedActionEventsA2O,
+				} = await payloadService.processA2O(payloadWithM2O, opts);
 
 				const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
 				const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
@@ -477,9 +519,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 				const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
 
+				nestedActionEvents.push(...nestedActionEventsM2O);
+				nestedActionEvents.push(...nestedActionEventsA2O);
+
 				for (const key of keys) {
-					const { revisions } = await payloadService.processO2M(payload, key);
+					const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
+						payload,
+						key,
+						opts
+					);
 					childrenRevisions.push(...revisions);
+					nestedActionEvents.push(...nestedActionEventsO2M);
 				}
 
 				// If this is an authenticated action, and accountability tracking is enabled, save activity row
@@ -557,21 +607,32 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(
-				this.eventScope === 'items' ? ['items.update', `${this.collection}.items.update`] : `${this.eventScope}.update`,
-				{
+			const actionEvent = {
+				event:
+					this.eventScope === 'items'
+						? ['items.update', `${this.collection}.items.update`]
+						: `${this.eventScope}.update`,
+				meta: {
 					payload,
 					keys,
 					collection: this.collection,
 				},
-				{
-					// This hook is called async. If we would pass the transaction here, the hook can be
-					// called after the transaction is done #5460
-					database: this.knex || getDatabase(),
+				context: {
+					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
-				}
-			);
+				},
+			};
+
+			if (!opts?.bypassEmitAction) {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+			} else {
+				opts.bypassEmitAction(actionEvent);
+			}
+
+			for (const nestedActionEvent of nestedActionEvents) {
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+			}
 		}
 
 		return keys;
@@ -708,21 +769,28 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(
-				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
-				{
+			const actionEvent = {
+				event:
+					this.eventScope === 'items'
+						? ['items.delete', `${this.collection}.items.delete`]
+						: `${this.eventScope}.delete`,
+				meta: {
 					payload: keys,
 					keys: keys,
 					collection: this.collection,
 				},
-				{
-					// This hook is called async. If we would pass the transaction here, the hook can be
-					// called after the transaction is done #5460
-					database: this.knex || getDatabase(),
+				context: {
+					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
-				}
-			);
+				},
+			};
+
+			if (!opts?.bypassEmitAction) {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+			} else {
+				opts.bypassEmitAction(actionEvent);
+			}
 		}
 
 		return keys;

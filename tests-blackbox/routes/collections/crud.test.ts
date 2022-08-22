@@ -6,6 +6,8 @@ import knex, { Knex } from 'knex';
 import { Collection } from '@directus/shared/types';
 
 describe('/collections', () => {
+	common.DisableTestCachingSetup();
+
 	const databases = new Map<string, Knex>();
 
 	beforeAll(() => {
@@ -238,4 +240,6 @@ describe('/collections', () => {
 			});
 		});
 	});
+
+	common.ClearCaches();
 });

@@ -1,7 +1,7 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { AuthorizationService, PayloadChunk } from '../../src/services';
-import { userSchema } from '../__test-utils__/schemas';
+import { userSchema } from '../__utils__/schemas';
 import { cloneDeep } from 'lodash';
 
 jest.mock('../../src/database/index', () => {

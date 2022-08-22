@@ -301,6 +301,8 @@ next: Next
 field_name: Field Name
 translations: Translations
 no_translations: No Translations
+left_to_right: Left to Right
+right_to_left: Right to Left
 note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
@@ -488,6 +490,7 @@ creating_items: Creating Items
 enable_create_button: Enable Create Button
 selecting_items: Selecting Items
 enable_select_button: Enable Select Button
+allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
 click_to_expand: Click to Expand
@@ -802,6 +805,7 @@ start_flow: Start Flow
 stop_flow: Stop Flow
 create_operation: Create Operation
 edit_operation: Edit Operation
+code: Code
 operation_options: Operation Options
 operation_name: Name of operation...
 operation_key: Identifier for reference...
@@ -1427,6 +1431,16 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 start: Start
+table: Table
+list: List
+search_filter: Search & Filter
+enable_search_filter: Enable searching & filtering
+item_link: Item link
+show_link_to_item: Show a link to the item
+navigate_to_item: Navigate to Item
+undo_removed_item: Undo Removed Item
+remove_item: Remove Item
+delete_item: Delete Item
 interfaces:
   filter:
     name: Filter
@@ -1506,6 +1520,9 @@ interfaces:
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
     placeholder: Choose a datetime...
+  system-fields:
+    select_a_collection: Select a Collection
+    no_fields: No fields
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1563,6 +1580,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    columns_configure_notice: You can configure the columns after creating this field.
     display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
@@ -1682,6 +1700,7 @@ interfaces:
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
+    language_direction_field: Language Direction Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -2037,7 +2056,6 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
-a_users_uuid: A User's Primary Key UUID...
 a_flow_uuid: A Flow's Primary Key UUID...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
@@ -2046,6 +2064,10 @@ operations:
   condition:
     name: Condition
     description: Route a flow based on If / Else logic
+  exec:
+    name: Run Script
+    description: Execute arbitrary code to modify the payload
+    modules: 'The following **Node modules** can be used:'
   item-create:
     name: Create Data
     description: Create items in the database
@@ -2083,8 +2105,9 @@ operations:
     body: Body
   notification:
     name: Send Notification
-    description: Send an in-app notification to a user
+    description: Send an in-app notification to one or more users
     recipient: User
+    recipient_placeholder: Add user UUID and press enter...
     message: Message
   request:
     name: Webhook / Request URL

@@ -61,7 +61,6 @@
 
 <script lang="ts">
 import api from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview.vue';
 import { set } from 'lodash';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
@@ -189,6 +188,16 @@ export default defineComponent({
 			}
 		});
 
+		const fieldsWithoutCircular = computed(() => {
+			if (props.circularField) {
+				return fields.value.filter((field) => {
+					return field.field !== props.circularField;
+				});
+			} else {
+				return fields.value;
+			}
+		});
+
 		const templatePrimaryKey = computed(() =>
 			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
 		);
@@ -241,7 +250,7 @@ export default defineComponent({
 				const fileData = item.value?.[props.junctionField];
 				if (!fileData) return null;
 
-				const src = getRootPath() + `assets/${fileData.id}?key=system-large-contain`;
+				const src = `assets/${fileData.id}?key=system-large-contain`;
 				return { ...fileData, src };
 			});
 
@@ -396,7 +405,9 @@ export default defineComponent({
 
 			function save() {
 				const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
-				const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fields.value;
+				const fieldsToValidate = props.junctionField
+					? junctionRelatedCollectionFields.value
+					: fieldsWithoutCircular.value;
 				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
 
 				if (errors.length > 0) {

@@ -793,6 +793,7 @@ start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
 edit_operation: Modifier l'Opération
+code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
 operation_key: Identifiant pour référence...
@@ -1403,9 +1404,10 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
+table: Tableau
+list: Liste
 interfaces:
   filter:
     name: Filtre
@@ -1485,6 +1487,8 @@ interfaces:
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
     placeholder: Choisissez une date et heure...
+  system-fields:
+    select_a_collection: Sélectionner une collection
   system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
@@ -2012,7 +2016,6 @@ triggers:
     collection_and_item: Pages des Collections et des Articles
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'Article Uniquement
-a_users_uuid: La Clé Primaire UUID d'un utilisateur...
 a_flow_uuid: La Clé primaire UUID d'un Flux...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
@@ -2058,7 +2061,6 @@ operations:
     body: Corps du mail
   notification:
     name: Envoyer la Notification
-    description: Envoyer une notification in-app à un utilisateur
     recipient: Utilisateur
     message: Message
   request:

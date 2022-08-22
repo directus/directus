@@ -571,6 +571,7 @@ icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
 flow_name: Tên
+code: Mã nguồn
 dashboard: Bảng điều khiển
 panel: Bảng
 panel_options: Tùy chọn Bảng
@@ -810,6 +811,7 @@ sort_direction: Chiều sắp xếp
 template: Mẫu
 translation: Bản dịch
 value: Giá trị
+table: Bảng
 interfaces:
   filter:
     name: Bộ lọc
@@ -828,6 +830,8 @@ interfaces:
   datetime:
     datetime: Ngày giờ
     use_24: Sử dụng Định dạng 24-giờ
+  system-fields:
+    select_a_collection: Chọn Bảng
   system-display-template:
     display-template: Mẫu hiển thị
     select_a_collection: Chọn Bảng
