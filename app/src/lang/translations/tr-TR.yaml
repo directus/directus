@@ -45,8 +45,10 @@ duplicate_field: Alanı Kopyala
 half_width: Yarı Genişlik
 full_width: Tam Genişlik
 group: Grup
+export_items: Ögeleri Dışa Aktar
 and: Ve
 or: Veya
+init: Başlangıç
 custom: Özel
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
@@ -557,6 +559,7 @@ errors:
   INVALID_OTP: Tek kullanımlık parola hatalı
   INVALID_PAYLOAD: Geçersiz yük
   INVALID_QUERY: Geçersiz sorgu
+  INVALID_USER: Kullanıcı kimliği doğrulanamadı
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
   ROUTE_NOT_FOUND: Bulunamadı
@@ -720,10 +723,15 @@ toggle: Aç/Kapat
 icon_on: Açık İkonu
 icon_off: Kapalı İkonu
 label: Etiket
+flow: Akış
 trigger: Tetikleme
+trigger_options: Tetikleyici Seçenekleri
+create_trigger: Tetikleyici Oluşturun
+change_trigger: Tetikleyici Değiştirin
 flow_name: İsim
 flow_tracking_activity: Sadece Etkinlikleri Takip Et
 flow_tracking_null: Hiçbir Şeyi Takip Etme
+code: Kod
 insights: Kontrol Panelleri
 dashboard: Pano
 panel: Panel
@@ -1292,6 +1300,8 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata Bildir
 start: Başla
+table: Tablo
+list: Liste
 interfaces:
   filter:
     name: Filtrele
@@ -1366,6 +1376,8 @@ interfaces:
     include_seconds: Saniyeleri Dahil Et
     set_to_now: Şimdiye Ayarla
     use_24: 24 Saat Biçimini Kullan
+  system-fields:
+    select_a_collection: Bir Koleksiyon Seç
   system-display-template:
     display-template: Görüntüleme Şablonu
     description: Sabit metin ve dinamik alan değerlerini karıştırın
@@ -1751,4 +1763,5 @@ operations:
     data: Veri
     header: Header
   trigger:
+    flow: Akış
     data: Veri
