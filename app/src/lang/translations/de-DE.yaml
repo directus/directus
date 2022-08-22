@@ -824,7 +824,7 @@ dashboard_name: Name des Dashboards
 no_data: Keine Daten
 no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
-payload: Auslastung
+payload: Nutzdaten
 details: Details
 full_screen: Vollbild
 full_text_search: Volltextsuche
@@ -1983,7 +1983,7 @@ operations:
   item-create:
     name: Daten erstellen
     description: Elemente in der Datenbank erstellen
-    payload: Auslastung
+    payload: Nutzdaten
   item-delete:
     name: Daten löschen
     description: Elemente aus der Datenbank löschen
@@ -1998,7 +1998,7 @@ operations:
     name: Daten aktualisieren
     description: Elemente in der Datenbank aktualisieren
     key: IDs
-    payload: Auslastung
+    payload: Nutzdaten
     query: Abfrage
   log:
     description: Etwas in die Konsole ausgeben
