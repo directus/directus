@@ -1,17 +1,17 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { snapshotApplyTestSchema } from '../__test-utils__/schemas';
+import { snapshotApplyTestSchema } from '../__utils__/schemas';
 
-import { CollectionsService, FieldsService } from '../../src/services';
-import { applySnapshot } from '../../src/utils/apply-snapshot';
-import * as getSchema from '../../src/utils/get-schema';
+import { CollectionsService, FieldsService } from '../services';
+import { applySnapshot } from './apply-snapshot';
+import * as getSchema from './get-schema';
 import {
 	snapshotBeforeCreateCollection,
 	snapshotCreateCollection,
 	snapshotCreateCollectionNotNested,
 	snapshotBeforeDeleteCollection,
-} from '../__test-utils__/snapshots';
-import { Snapshot } from '../../src/types';
+} from '../__utils__/snapshots';
+import { Snapshot } from '../types';
 
 jest.mock('../../src/database/index', () => {
 	return {
