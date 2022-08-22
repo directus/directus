@@ -17,6 +17,7 @@ export function useElementSize<T extends Element>(
 	const height = ref(0);
 
 	const resizeObserver = new ResizeObserver(([entry]) => {
+		if (entry === undefined) return;
 		width.value = entry.contentRect.width;
 		height.value = entry.contentRect.height;
 	});

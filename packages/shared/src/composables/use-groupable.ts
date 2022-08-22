@@ -171,7 +171,7 @@ export function useGroupableParent(
 
 			// If you're required to select a value, make sure a value is selected on first render
 			if (!selection.value || (selection.value.length === 0 && options?.mandatory?.value === true)) {
-				selection.value = [getValueForItem(items.value[0])];
+				if (items.value[0]) selection.value = [getValueForItem(items.value[0])];
 			}
 		}
 	);

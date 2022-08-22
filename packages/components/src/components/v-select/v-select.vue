@@ -128,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCustomSelection, useCustomSelectionMultiple } from '../../composables/use-custom-selection';
+import { useCustomSelection, useCustomSelectionMultiple } from '@directus/shared/composables';
 import { Placement } from '@popperjs/core';
 import { debounce, get } from 'lodash';
 import { computed, Ref, ref, toRefs, watch } from 'vue';

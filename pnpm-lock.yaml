@@ -812,6 +812,7 @@ importers:
 
   packages/extensions-sdk:
     specifiers:
+      '@directus/components': workspace:*
       '@directus/shared': workspace:*
       '@rollup/plugin-commonjs': ^21.0.1
       '@rollup/plugin-json': ^4.1.0
@@ -833,6 +834,7 @@ importers:
       rollup-plugin-vue: ^6.0.0
       typescript: 4.5.2
     dependencies:
+      '@directus/components': link:../components
       '@directus/shared': link:../shared
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.77.0
       '@rollup/plugin-json': 4.1.0_rollup@2.77.0
@@ -889,6 +891,7 @@ importers:
       knex-schema-inspector: 2.0.4
       lodash: 4.17.21
       micromustache: ^8.0.3
+      nanoid: ^4.0.0
       npm-run-all: 4.1.5
       pino: 6.13.3
       rimraf: 3.0.2
@@ -909,6 +912,7 @@ importers:
       knex-schema-inspector: 2.0.4
       lodash: 4.17.21
       micromustache: 8.0.3
+      nanoid: 4.0.0
       pino: 6.13.3
       vue: 3.2.36
       vue-i18n: 9.1.10_vue@3.2.36
@@ -17671,6 +17675,13 @@ packages:
       { integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw== }
     engines: { node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1 }
     hasBin: true
+
+  /nanoid/4.0.0:
+    resolution:
+      { integrity: sha512-IgBP8piMxe/gf73RTQx7hmnhwz0aaEXYakvqZyE302IXW3HyVNhdNGC+O2MwMAVhLEnvXlvKtGbtJf6wvHihCg== }
+    engines: { node: ^14 || ^16 || >=18 }
+    hasBin: true
+    dev: false
 
   /nanomatch/1.2.13:
     resolution:

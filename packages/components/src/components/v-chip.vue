@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useSizeClass } from '../composables';
+import { useSizeClass } from '@directus/shared/composables';
 
 interface Props {
 	/** Model the active state */

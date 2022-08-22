@@ -17,7 +17,7 @@
 import { computed } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { useSizeClass } from '../../composables';
+import { useSizeClass } from '@directus/shared/composables';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { capitalize } from 'lodash';
 
