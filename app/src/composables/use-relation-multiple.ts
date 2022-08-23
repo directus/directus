@@ -1,7 +1,7 @@
 import api from '@/api';
 import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
+import { clamp, cloneDeep, isEqual, merge, isPlainObject, mergeWith } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
@@ -102,16 +102,18 @@ export function useRelationMultiple(
 			);
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
-			const updatedItem: Record<string, any> = {};
+			const updatedItem: Record<string, any> = cloneDeep(item);
 
 			if (editsIndex !== -1) {
-				merge(
+				mergeWith(
 					updatedItem,
 					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
-					_value.value.update[editsIndex]
+					_value.value.update[editsIndex],
+					(_objValue, srcValue) => {
+						// skip the default merge behavior for objects/arrays
+						if (typeof srcValue === 'object') return srcValue;
+					}
 				);
-			} else {
-				merge(updatedItem, cloneDeep(item));
 			}
 
 			if (deleteIndex !== -1) {
