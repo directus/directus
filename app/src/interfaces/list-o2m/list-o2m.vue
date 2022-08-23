@@ -188,7 +188,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, clamp, get } from 'lodash';
+import { isEmpty, clamp, get, pick } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
@@ -406,7 +406,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	newItem = false;
-	editsAtStart.value = { [relatedPkField.value]: item[relatedPkField.value] };
+	editsAtStart.value = item;
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = '+';
@@ -423,7 +423,13 @@ function stageEdits(item: Record<string, any>) {
 	if (newItem) {
 		create(item);
 	} else {
-		update(item);
+		const updatePermission = permissionsStore.getPermissionsForUser(relatedCollection.value, 'update');
+		// prevent update payload containing fields that are included for displays, but without edit permission
+		const itemToUpdate =
+			updatePermission?.fields && !updatePermission.fields.includes('*')
+				? pick(item, [...updatePermission.fields, '$index', '$type', '$edits'])
+				: item;
+		update(itemToUpdate);
 	}
 }
 
