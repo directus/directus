@@ -210,6 +210,8 @@ geometry.MultiPoint: MultiPoint
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
 auto_refresh: Tự động Làm mới
+no_refresh: Không tự làm mới
+refresh_interval_seconds: Mỗi giây | Mỗi {seconds} giây
 refresh_interval_minutes: Mỗi phút | Mỗi {minutes} phút
 auto_generate: Tự khởi tạo
 this_will_auto_setup_fields_relations: Các trường và mối quan hệ bắt buộc sẽ được tự động tạo ra.
@@ -630,8 +632,8 @@ choices: Lựa chọn
 deselect: Bỏ chọn
 deselect_all: Bỏ chọn tất cả
 other: Khác...
-adding_user: Đang thêm người dùng
-unknown_user: Người dùng vô danh
+adding_user: Đã thêm người dùng
+unknown_user: Người dùng không xác định
 creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
 editing_in: 'Chỉnh sửa mục trong {collection}'
 creating_unit: 'Đang tạo {unit}'
@@ -654,6 +656,8 @@ unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
 keep_editing: Tiếp tục chỉnh sửa
+page_help_collections_collection: >-
+  ** Duyệt các mục ** - Liệt kê tất cả các mục trong {collection} mà bạn có quyền truy cập. Tùy chỉnh bố cục, bộ lọc và sắp xếp để điều chỉnh chế độ xem của bạn và thậm chí lưu dấu trang của các cấu hình khác nhau này để truy cập nhanh.
 add_new: Thêm mới
 create_new: Tạo Mới
 all: Tất cả
@@ -713,7 +717,11 @@ fields:
     theme: Theme
     tfa_secret: Xác thực hai yếu tố
     status: Trạng thái
+    status_draft: Bản nháp
+    status_invited: Mời
     status_active: Kích hoạt
+    status_suspended: Tạm ngưng
+    status_archived: Đã lưu trữ
     role: Phân quyền
     last_access: Truy cập lần cuối
   directus_settings:
@@ -758,14 +766,20 @@ field_options:
       name_name: Tên
     collections_name: Danh mục
   directus_users:
+    status_dropdown_draft: Bản nháp
+    status_dropdown_invited: Mời
     status_dropdown_active: Kích hoạt
+    status_dropdown_suspended: Tạm ngưng
+    status_dropdown_archived: Đã lưu trữ
   directus_webhooks:
     status_options_active: Kích hoạt
+    status_options_inactive: Không hoạt động
     actions_create: Tạo
     actions_update: Cập nhật
     headers:
       value: Giá trị
 comment: Bình luận
+share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.
 continue_label: Tiếp tục
 continue_as: >-
   Đang đăng nhập {name}. Nhấn tiếp tục đề đăng nhập.
@@ -785,10 +799,10 @@ hidden: Ẩn
 icon: Biểu tượng
 info: Thông tin
 junction_collection: Danh mục liên kết
-latency: Đỗ trễ
+latency: Độ trễ
 login: Đăng nhập
 my_activity: Hoạt động cá nhân
-not_authenticated: Chư đăng nhập
+not_authenticated: Chưa xác thực
 options: Tuỳ chọn
 otp: Mật khẩu sử dụng một lần
 password: Mật khẩu
@@ -854,6 +868,7 @@ interfaces:
   input-rich-text-md:
     edit: Sửa
   map:
+    map: Bản đồ
     zoom: Thu phóng
   system-folder:
     folder: Thư mục
@@ -929,6 +944,10 @@ layouts:
     comfortable: Thoải mái
     compact: Thu gọn
     cozy: Khít
+  calendar:
+    calendar: Lịch
+  map:
+    map: Bản đồ
 panels:
   label:
     name: Nhãn
@@ -937,3 +956,4 @@ operations:
     recipient: Người dùng
   request:
     url: Đường Dẫn
+    header_placeholder: Đang xác thực...
