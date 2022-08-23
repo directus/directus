@@ -21,7 +21,7 @@ export async function applySnapshot(
 	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff }
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
-	const schema = options?.schema ?? (await getSchema({ database }));
+	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 	const { systemCache } = getCache();
 
 	const current = options?.current ?? (await getSnapshot({ database, schema }));

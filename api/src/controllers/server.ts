@@ -91,7 +91,7 @@ router.get(
 router.get(
 	'/schema/snapshot',
 	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({ accountability: req.accountability, schema: req.schema });
+		const service = new SchemaService({ accountability: req.accountability });
 
 		const currentSnapshot = await service.snapshot();
 
@@ -167,7 +167,7 @@ router.post(
 	'/schema/apply',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({ accountability: req.accountability, schema: req.schema });
+		const service = new SchemaService({ accountability: req.accountability });
 
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
 
@@ -182,7 +182,7 @@ router.post(
 	'/schema/diff',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({ accountability: req.accountability, schema: req.schema });
+		const service = new SchemaService({ accountability: req.accountability });
 
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
 

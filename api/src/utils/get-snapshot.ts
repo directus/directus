@@ -9,7 +9,7 @@ import { SchemaOverview } from '@directus/shared/types';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
-	const schema = options?.schema ?? (await getSchema({ database }));
+	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const collectionsService = new CollectionsService({ knex: database, schema });
 	const fieldsService = new FieldsService({ knex: database, schema });

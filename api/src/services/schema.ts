@@ -1,6 +1,5 @@
-import { Accountability, SchemaOverview } from '@directus/shared/types';
+import { Accountability } from '@directus/shared/types';
 import { Knex } from 'knex';
-import { flushCaches } from '../cache';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Snapshot, SnapshotDiff } from '../types';
@@ -11,20 +10,16 @@ import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 export class SchemaService {
 	knex: Knex;
 	accountability: Accountability | null;
-	schema: SchemaOverview;
 
-	constructor(options: AbstractServiceOptions) {
+	constructor(options: Omit<AbstractServiceOptions, 'schema'>) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.schema = options.schema;
 	}
 
 	async snapshot(): Promise<Snapshot> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
-		await flushCaches();
-
-		const currentSnapshot = await getSnapshot({ database: this.knex, schema: this.schema });
+		const currentSnapshot = await getSnapshot({ database: this.knex });
 
 		return currentSnapshot;
 	}
@@ -32,9 +27,7 @@ export class SchemaService {
 	async apply(snapshot: Snapshot): Promise<void> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
-		await flushCaches();
-
-		const currentSnapshot = await getSnapshot({ database: this.knex, schema: this.schema });
+		const currentSnapshot = await getSnapshot({ database: this.knex });
 		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
 
 		if (
@@ -55,9 +48,7 @@ export class SchemaService {
 	async diff(snapshot: Snapshot): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
-		await flushCaches();
-
-		const currentSnapshot = await getSnapshot({ database: this.knex, schema: this.schema });
+		const currentSnapshot = await getSnapshot({ database: this.knex });
 		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
 
 		if (
