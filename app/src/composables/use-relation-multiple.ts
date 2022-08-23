@@ -434,7 +434,7 @@ export function useRelationMultiple(
 			},
 		});
 
-		existingSortMax.value = response.data.data[0].max[sortField] as number | null;
+		existingItemCount.value = Number(response.data.data[0].count[targetPKField]);
 	}
 
 	async function updateSortMax(targetCollection: string, sortField: string, reverseJunctionField: string) {
