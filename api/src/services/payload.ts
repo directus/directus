@@ -670,17 +670,36 @@ export class PayloadService {
 				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
 
 				if (alterations.create) {
-					await itemsService.createMany(
-						alterations.create.map((item) => ({
-							...item,
-							[relation.field]: parent || payload[currentPrimaryKeyField],
-						})),
-						{
-							onRevisionCreate: (pk) => revisions.push(pk),
-							bypassEmitAction: (params) => nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
+					const sortField = relation.meta.sort_field;
+
+					const processCreateItem = async (item: Record<string, any>) => {
+						const record = cloneDeep(item);
+
+						// add sort field value if it is not supplied in the item
+						if (sortField !== null && parent !== null && record[sortField] === undefined) {
+							const highestOrderNumber: Record<string, any> | undefined = await this.knex
+								.select(sortField)
+								.from(relation.collection)
+								.where({ [relation.field]: parent })
+								.whereNotNull(sortField)
+								.orderBy(sortField, 'desc')
+								.first();
+
+							record[sortField] = highestOrderNumber?.[sortField] ? highestOrderNumber[sortField] + 1 : 1;
 						}
-					);
+
+						return {
+							...record,
+							[relation.field]: parent || payload[currentPrimaryKeyField],
+						};
+					};
+
+					const createPayload = await Promise.all(alterations.create.map(processCreateItem));
+					await itemsService.createMany(createPayload, {
+						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
+					});
 				}
 
 				if (alterations.update) {
