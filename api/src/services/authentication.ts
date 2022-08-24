@@ -49,10 +49,19 @@ export class AuthenticationService {
 		payload: Record<string, any>,
 		otp?: string
 	): Promise<LoginResult> {
-		const STALL_TIME = 100;
+		const STALL_TIME = env.LOGIN_STALL_TIME;
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
+
+		let userId;
+
+		try {
+			userId = await provider.getUserID(cloneDeep(payload));
+		} catch (err) {
+			await stall(STALL_TIME, timeStart);
+			throw err;
+		}
 
 		const user = await this.knex
 			.select<User & { tfa_secret: string | null }>(
@@ -72,7 +81,7 @@ export class AuthenticationService {
 			)
 			.from('directus_users as u')
 			.leftJoin('directus_roles as r', 'u.role', 'r.id')
-			.where('u.id', await provider.getUserID(cloneDeep(payload)))
+			.where('u.id', userId)
 			.first();
 
 		const updatedPayload = await emitter.emitFilter(
