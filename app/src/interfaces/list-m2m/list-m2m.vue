@@ -444,7 +444,19 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	newItem = false;
-	editsAtStart.value = item;
+
+	relatedPrimaryKey.value = get(item, [junctionField.value, relatedPkField.value], null);
+	editsAtStart.value = Object.assign(
+		{},
+		item,
+		relatedPrimaryKey.value
+			? {
+					[junctionField.value]: {
+						[relatedPkField.value]: relatedPrimaryKey.value,
+					},
+			  }
+			: {}
+	);
 
 	editModalActive.value = true;
 
@@ -453,7 +465,6 @@ function editItem(item: DisplayItem) {
 		relatedPrimaryKey.value = null;
 	} else {
 		currentlyEditing.value = get(item, [junctionPkField.value], null);
-		relatedPrimaryKey.value = get(item, [junctionPkField.value, relatedPkField.value], null);
 	}
 }
 
