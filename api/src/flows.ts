@@ -9,7 +9,7 @@ import {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { applyOptionsData } from '@directus/shared/utils';
+import { applyOptionsData, toArray } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import { Knex } from 'knex';
 import { omit } from 'lodash';
@@ -143,7 +143,7 @@ class FlowManager {
 		for (const flow of flowTrees) {
 			if (flow.trigger === 'event') {
 				const events: string[] =
-					flow.options?.scope
+					toArray(flow.options?.scope)
 						?.map((scope: string) => {
 							if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
 								return (

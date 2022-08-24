@@ -241,7 +241,7 @@ export default defineComponent({
 
 				const editsParsed: Partial<Preset> = {};
 
-				if (edits.value.name) editsParsed.bookmark = edits.value.name;
+				if (edits.value.name !== undefined) editsParsed.bookmark = edits.value.name;
 				if (edits.value.name?.length === 0) editsParsed.bookmark = null;
 				if (edits.value.icon) editsParsed.icon = edits.value.icon;
 				if (edits.value.color) editsParsed.color = edits.value.color;
