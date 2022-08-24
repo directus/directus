@@ -397,8 +397,8 @@ functions:
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_time_24hour: 'HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_time_24hour: 'GG:mm:ss'
+date-fns_time_no_seconds_24hour: 'GG:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -2032,6 +2032,10 @@ operations:
   condition:
     name: Warunek
     description: Trasa przepływu na podstawie logiki If / Else
+  exec:
+    name: Uruchom skrypt
+    description: Wykonaj arbitralny kod, aby zmodyfikować ładunek
+    modules: 'Następujące **Moduły Node** mogą być używane:'
   item-create:
     name: Utwórz dane
     description: Utwórz elementy w bazie danych
