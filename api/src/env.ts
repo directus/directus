@@ -199,7 +199,7 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
 	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 
-	LOGIN_STALL_TIME: 300,
+	LOGIN_STALL_TIME: 500,
 
 	ROOT_REDIRECT: './admin',
 
