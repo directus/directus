@@ -67,8 +67,25 @@ export default defineComponent({
 					if (part.startsWith('{{') === false) return part;
 
 					let fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const field: Field | undefined =
-						fieldsStore.getField(props.collection, fieldKey) || props.fields?.find((field) => field.field === fieldKey);
+					let fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
+
+					// Try getting the value from the item, return some question marks if it doesn't exist
+					let value = get(props.item, fieldKeyBefore);
+					let field: Field | undefined;
+
+					// In case we want to use the render template on an array of elements
+					if (Array.isArray(value)) {
+						field =
+							fieldsStore.getField(props.collection, fieldKeyBefore) ||
+							props.fields?.find((field) => field.field === fieldKeyBefore);
+					} else {
+						value = get(props.item, fieldKey);
+						field =
+							fieldsStore.getField(props.collection, fieldKey) ||
+							props.fields?.find((field) => field.field === fieldKey);
+					}
+
+					if (value === undefined) return null;
 
 					/**
 					 * This is for cases where you are rendering a display template directly on
@@ -84,11 +101,6 @@ export default defineComponent({
 							.filter((part) => part !== '$thumbnail')
 							.join('.');
 					}
-
-					// Try getting the value from the item, return some question marks if it doesn't exist
-					const value = get(props.item, fieldKey);
-
-					if (value === undefined) return null;
 
 					if (!field) return value;
 
