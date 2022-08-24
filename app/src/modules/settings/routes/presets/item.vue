@@ -14,7 +14,7 @@
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact :to="backLink">
+				<v-button class="header-icon" rounded icon exact to="/settings/presets">
 					<v-icon name="arrow_back" />
 				</v-button>
 			</template>
@@ -175,7 +175,6 @@ const router = useRouter();
 const collectionsStore = useCollectionsStore();
 const presetsStore = usePresetsStore();
 const { layouts } = getLayouts();
-const { backLink } = useLinks();
 
 const isNew = computed(() => props.id === '+');
 
@@ -430,14 +429,6 @@ function usePreset() {
 			loading.value = false;
 		}
 	}
-}
-
-function useLinks() {
-	const backLink = computed(() => {
-		return `/settings/presets`;
-	});
-
-	return { backLink };
 }
 
 function useForm() {
