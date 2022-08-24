@@ -176,8 +176,11 @@ export default defineComponent({
 		);
 
 		const fields = computed(() => {
-			if (props.circularField) {
+			if (props.circularField || props.junctionField) {
 				return fieldsWithPermissions.value.filter((field: Field) => {
+					if (field.field === props.junctionField) {
+						set(field, 'meta.hidden', true);
+					}
 					if (field.field === props.circularField) {
 						if (props.primaryKey === '+') {
 							return false;
