@@ -12,7 +12,11 @@
 				</div>
 
 				<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
-					<search-input v-model="search" v-model:filter="searchFilter" :collection="relatedCollection" />
+					<search-input
+						v-model="search"
+						v-model:filter="searchFilter"
+						:collection="relationInfo.relatedCollection.collection"
+					/>
 				</div>
 
 				<v-button
@@ -51,7 +55,7 @@
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
 						:title="header.value"
-						:collection="relatedCollection"
+						:collection="relationInfo.relatedCollection.collection"
 						:item="item"
 						:template="`{{${header.value}}}`"
 					/>
@@ -109,7 +113,11 @@
 							@click="editItem(element)"
 						>
 							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-							<render-template :collection="relatedCollection" :item="element" :template="templateWithDefaults" />
+							<render-template
+								:collection="relationInfo.relatedCollection.collection"
+								:item="element"
+								:template="templateWithDefaults"
+							/>
 							<div class="spacer" />
 
 							<router-link
@@ -154,7 +162,7 @@
 		<drawer-item
 			:disabled="disabled"
 			:active="currentlyEditing !== null"
-			:collection="relatedCollection"
+			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
@@ -165,7 +173,7 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relatedCollection"
+			:collection="relationInfo.relatedCollection.collection"
 			:filter="customFilter"
 			multiple
 			@input="select"
@@ -177,7 +185,7 @@
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
-import { CollectionMeta, Filter } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
@@ -237,10 +245,6 @@ const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
 
-const relatedCollection = computed(() => relationInfo.value?.relatedCollection.collection ?? '');
-const relatedPkField = computed(() => relationInfo.value?.relatedPrimaryKeyField.field ?? 'id');
-const relatedMeta = computed(() => relationInfo.value?.relatedCollection.meta ?? ({} as CollectionMeta));
-
 const value = computed({
 	get: () => props.value,
 	set: (val) => {
@@ -249,18 +253,27 @@ const value = computed({
 });
 
 const templateWithDefaults = computed(() => {
-	return props.template || relatedMeta.value.display_template || `{{${relatedPkField.value}}}`;
+	return (
+		props.template ||
+		relationInfo.value?.relatedCollection.meta?.display_template ||
+		`{{${relationInfo.value?.relatedPrimaryKeyField.field}}}`
+	);
 });
 
 const fields = computed(() => {
+	if (!relationInfo.value) return [];
+
 	let displayFields: string[] = [];
 	if (props.layout === LAYOUTS.TABLE) {
-		displayFields = adjustFieldsForDisplays(props.fields, relatedCollection.value);
+		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.relatedCollection.collection);
 	} else {
-		displayFields = adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relatedCollection.value);
+		displayFields = adjustFieldsForDisplays(
+			getFieldsFromTemplate(templateWithDefaults.value),
+			relationInfo.value.relatedCollection.collection
+		);
 	}
 
-	return addRelatedPrimaryKeyToFields(relatedCollection.value, displayFields);
+	return addRelatedPrimaryKeyToFields(relationInfo.value.relatedCollection.collection, displayFields);
 });
 
 const limit = ref(props.limit);
@@ -317,7 +330,10 @@ watch(
 	() => {
 		if (!relationInfo.value) {
 			headers.value = [];
+			return;
 		}
+
+		const relatedCollection = relationInfo.value.relatedCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
@@ -333,7 +349,7 @@ watch(
 
 		headers.value = props.fields
 			.map((key) => {
-				const field = fieldsStore.getField(relatedCollection.value, key);
+				const field = fieldsStore.getField(relatedCollection, key);
 
 				// when user has no permission to this field or junction collection
 				if (!field) return null;
@@ -388,7 +404,9 @@ function sortItems(items: DisplayItem[]) {
 const selectedPrimaryKeys = computed(() => {
 	if (!relationInfo.value) return [];
 
-	return selected.value.map((item) => item[relatedPkField.value]);
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+
+	return selected.value.map((item) => item[relatedPkField]);
 });
 
 const currentlyEditing = ref<string | null>(null);
@@ -405,13 +423,15 @@ function createItem() {
 function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+
 	newItem = false;
-	editsAtStart.value = { [relatedPkField.value]: item[relatedPkField.value] };
+	editsAtStart.value = { [relatedPkField]: item[relatedPkField] };
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = '+';
 	} else {
-		currentlyEditing.value = item[relatedPkField.value];
+		currentlyEditing.value = item[relatedPkField];
 	}
 }
 
@@ -479,7 +499,7 @@ const customFilter = computed(() => {
 
 	if (selectedPrimaryKeys.value.length > 0) {
 		filter._and.push({
-			[relatedPkField.value]: {
+			[relationInfo.value.relatedPrimaryKeyField.field]: {
 				_nin: selectedPrimaryKeys.value,
 			},
 		});
@@ -492,8 +512,8 @@ const customFilter = computed(() => {
 
 function getLinkForItem(item: DisplayItem) {
 	if (relationInfo.value) {
-		const primaryKey = get(item, relatedPkField.value);
-		return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
+		const primaryKey = get(item, relationInfo.value.relatedPrimaryKeyField.field);
+		return `/content/${relationInfo.value.relatedCollection.collection}/${encodeURIComponent(primaryKey)}`;
 	}
 
 	return null;
@@ -507,7 +527,8 @@ const createAllowed = computed(() => {
 	if (admin) return true;
 
 	return !!permissionsStore.permissions.find(
-		(permission) => permission.action === 'create' && permission.collection === relatedCollection.value
+		(permission) =>
+			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
 	);
 });
 
@@ -516,7 +537,8 @@ const updateAllowed = computed(() => {
 	if (admin) return true;
 
 	return !!permissionsStore.permissions.find(
-		(permission) => permission.action === 'update' && permission.collection === relatedCollection.value
+		(permission) =>
+			permission.action === 'update' && permission.collection === relationInfo.value?.relatedCollection.collection
 	);
 });
 </script>

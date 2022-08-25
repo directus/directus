@@ -275,14 +275,10 @@ export default defineComponent({
 
 			const internalEdits = computed<Record<string, any>>({
 				get() {
-					if (props.edits !== undefined) {
-						return {
-							...props.edits,
-							...localEdits.value,
-						};
-					}
-
-					return localEdits.value;
+					return {
+						...(props.edits ?? {}),
+						...localEdits.value,
+					};
 				},
 				set(newEdits) {
 					localEdits.value = newEdits;
@@ -295,7 +291,7 @@ export default defineComponent({
 			watch(
 				() => props.active,
 				(isActive) => {
-					if (isActive === true) {
+					if (isActive) {
 						if (props.primaryKey !== '+') fetchItem();
 						if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
 					} else {
