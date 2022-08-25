@@ -457,14 +457,14 @@ function editItem(item: DisplayItem) {
 
 	newItem = false;
 
-	relatedPrimaryKey.value = get(item, [junctionField.value, relatedPkField.value], null);
+	relatedPrimaryKey.value = get(item, [junctionField, relatedPkField], null);
 	editsAtStart.value = Object.assign(
 		{},
 		item,
 		relatedPrimaryKey.value
 			? {
-					[junctionField.value]: {
-						[relatedPkField.value]: relatedPrimaryKey.value,
+					[junctionField]: {
+						[relatedPkField]: relatedPrimaryKey.value,
 					},
 			  }
 			: {}
@@ -477,7 +477,6 @@ function editItem(item: DisplayItem) {
 		relatedPrimaryKey.value = null;
 	} else {
 		currentlyEditing.value = get(item, [junctionPkField], null);
-		relatedPrimaryKey.value = get(item, [junctionField, relatedPkField], null);
 	}
 }
 
