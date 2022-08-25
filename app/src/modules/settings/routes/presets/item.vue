@@ -14,7 +14,7 @@
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact :to="backLink">
+				<v-button class="header-icon" rounded icon exact to="/settings/presets">
 					<v-icon name="arrow_back" />
 				</v-button>
 			</template>
@@ -129,9 +129,9 @@
 	</component>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@directus/shared/types';
@@ -153,446 +153,414 @@ type FormattedPreset = {
 	layout: string | null;
 	name: string | null;
 	search: string | null;
-
+	icon: string;
 	layout_query: Record<string, any> | null;
-
+	color?: string | null;
 	layout_options: Record<string, any> | null;
 	filter: Filter | null;
 };
 
-export default defineComponent({
-	components: { SettingsNavigation },
-	props: {
-		id: {
-			type: String,
-			default: null,
-		},
+interface Props {
+	id?: string | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	id: null,
+});
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const collectionsStore = useCollectionsStore();
+const presetsStore = usePresetsStore();
+const { layouts } = getLayouts();
+
+const isNew = computed(() => props.id === '+');
+
+const { loading, preset } = usePreset();
+const { fields } = useForm();
+const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, search } = useValues();
+const { save, saving } = useSave();
+const { deleting, deleteAndQuit, confirmDelete } = useDelete();
+
+const layoutFilter = computed<any>({
+	get() {
+		return values.value.filter ?? null;
 	},
-	setup(props) {
-		const { t } = useI18n();
-
-		const router = useRouter();
-
-		const collectionsStore = useCollectionsStore();
-		const presetsStore = usePresetsStore();
-		const { layouts } = getLayouts();
-		const { backLink } = useLinks();
-
-		const isNew = computed(() => props.id === '+');
-
-		const { loading, preset } = usePreset();
-		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, search } = useValues();
-		const { save, saving } = useSave();
-		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
-
-		const layoutFilter = computed<any>({
-			get() {
-				return values.value.filter ?? null;
-			},
-			set(newFilters) {
-				updateFilters(newFilters);
-			},
-		});
-
-		const layout = computed(() => values.value.layout);
-
-		const { layoutWrapper } = useLayout(layout);
-
-		useShortcut('meta+s', () => {
-			if (hasEdits.value) save();
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		return {
-			t,
-			backLink,
-			loading,
-			preset,
-			edits,
-			fields,
-			values,
-			initialValues,
-			saving,
-			save,
-			layoutWrapper,
-			layoutQuery,
-			layoutOptions,
-			layoutFilter,
-			hasEdits,
-			deleting,
-			deleteAndQuit,
-			confirmDelete,
-			updateFilters,
-			search,
-			confirmLeave,
-			leaveTo,
-			discardAndLeave,
-		};
-
-		function useSave() {
-			const saving = ref(false);
-
-			return { saving, save };
-
-			async function save() {
-				saving.value = true;
-
-				const editsParsed: Partial<Preset> = {};
-
-				if (edits.value.name !== undefined) editsParsed.bookmark = edits.value.name;
-				if (edits.value.name?.length === 0) editsParsed.bookmark = null;
-				if (edits.value.icon) editsParsed.icon = edits.value.icon;
-				if (edits.value.color) editsParsed.color = edits.value.color;
-				if (edits.value.collection) editsParsed.collection = edits.value.collection;
-				if (edits.value.layout) editsParsed.layout = edits.value.layout;
-				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
-				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
-				if (edits.value.filter) editsParsed.filter = edits.value.filter;
-				editsParsed.search = edits.value.search;
-
-				if (edits.value.scope) {
-					if (edits.value.scope.startsWith('role_')) {
-						editsParsed.role = edits.value.scope.substring(5);
-						editsParsed.user = null;
-					} else if (edits.value.scope.startsWith('user_')) {
-						editsParsed.user = edits.value.scope.substring(5);
-						editsParsed.role = null;
-					} else {
-						editsParsed.role = null;
-						editsParsed.user = null;
-					}
-				}
-
-				try {
-					if (isNew.value === true) {
-						await api.post(`/presets`, editsParsed);
-					} else {
-						await api.patch(`/presets/${props.id}`, editsParsed);
-					}
-
-					await presetsStore.hydrate();
-
-					edits.value = {};
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					saving.value = false;
-					router.push(`/settings/presets`);
-				}
-			}
-		}
-
-		function useDelete() {
-			const deleting = ref(false);
-			const confirmDelete = ref(false);
-
-			return { deleting, confirmDelete, deleteAndQuit };
-
-			async function deleteAndQuit() {
-				deleting.value = true;
-
-				try {
-					await presetsStore.delete([Number(props.id)]);
-					router.replace(`/settings/presets`);
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					deleting.value = false;
-				}
-			}
-		}
-
-		function useValues() {
-			const edits = ref<Record<string, any>>({});
-
-			const hasEdits = computed(() => Object.keys(edits.value).length > 0);
-
-			const initialValues = computed(() => {
-				const defaultValues = {
-					collection: null,
-					layout: 'tabular',
-					search: null,
-					scope: 'all',
-					layout_query: null,
-					layout_options: null,
-					filter: null,
-				};
-				if (isNew.value === true) return defaultValues;
-				if (preset.value === null) return defaultValues;
-
-				let scope = 'all';
-
-				if (preset.value.user !== null) {
-					scope = `user_${preset.value.user}`;
-				} else if (preset.value.role !== null) {
-					scope = `role_${preset.value.role}`;
-				}
-
-				const value: FormattedPreset = {
-					id: preset.value.id!,
-					collection: preset.value.collection,
-					layout: preset.value.layout,
-					name: preset.value.bookmark,
-					icon: preset.value.icon,
-					color: preset.value.color,
-					search: preset.value.search,
-					scope: scope,
-					layout_query: preset.value.layout_query,
-					layout_options: preset.value.layout_options,
-					filter: preset.value.filter,
-				};
-
-				return value;
-			});
-
-			const values = computed(() => {
-				return {
-					...initialValues.value,
-					...edits.value,
-				};
-			});
-
-			const layoutQuery = computed<any>({
-				get() {
-					if (!values.value.layout_query) return null;
-					if (!values.value.layout) return null;
-
-					return values.value.layout_query[values.value.layout];
-				},
-				set(newQuery) {
-					if (
-						values.value.layout_query &&
-						values.value.layout &&
-						isEqual(newQuery, values.value.layout_query[values.value.layout])
-					) {
-						return;
-					}
-
-					edits.value = {
-						...edits.value,
-						layout_query: {
-							...edits.value.layout_query,
-							[values.value.layout || 'tabular']: newQuery,
-						},
-					};
-				},
-			});
-
-			const layoutOptions = computed<any>({
-				get() {
-					if (!values.value.layout_options) return null;
-					if (!values.value.layout) return null;
-
-					return values.value.layout_options[values.value.layout];
-				},
-				set(newOptions) {
-					if (
-						values.value.layout_options &&
-						values.value.layout &&
-						isEqual(newOptions, values.value.layout_options[values.value.layout])
-					) {
-						return;
-					}
-
-					edits.value = {
-						...edits.value,
-						layout_options: {
-							...edits.value.layout_options,
-							[values.value.layout || 'tabular']: newOptions,
-						},
-					};
-				},
-			});
-
-			const search = computed<string | null>({
-				get() {
-					return values.value.search;
-				},
-				set(newSearch) {
-					edits.value = {
-						...edits.value,
-						search: newSearch,
-					};
-				},
-			});
-
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, search };
-
-			function updateFilters(newFilter: Filter) {
-				edits.value = {
-					...edits.value,
-					filter: newFilter,
-				};
-			}
-		}
-
-		function usePreset() {
-			const loading = ref(false);
-			const preset = ref<Preset | null>(null);
-
-			fetchPreset();
-
-			return { loading, preset, fetchPreset };
-
-			async function fetchPreset() {
-				if (props.id === '+') return;
-
-				loading.value = true;
-
-				try {
-					const response = await api.get(`/presets/${props.id}`);
-
-					preset.value = response.data.data;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
-			}
-		}
-
-		function useLinks() {
-			const backLink = computed(() => {
-				return `/settings/presets`;
-			});
-
-			return { backLink };
-		}
-
-		function useForm() {
-			const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
-
-			const fields = computed(() => [
-				{
-					field: 'collection',
-					name: t('collection'),
-					type: 'string',
-					meta: {
-						interface: 'select-dropdown',
-						options: {
-							choices: collectionsStore.collections
-								.map((collection) => ({
-									text: collection.name,
-									value: collection.collection,
-								}))
-								.filter((option) => {
-									if (option.value.startsWith('directus_')) return systemCollectionWhiteList.includes(option.value);
-
-									return true;
-								}),
-						},
-						width: 'half',
-					},
-				},
-				{
-					field: 'scope',
-					name: t('scope'),
-					type: 'string',
-					meta: {
-						interface: 'system-scope',
-						width: 'half',
-					},
-				},
-				{
-					field: 'layout',
-					name: t('layout'),
-					type: 'string',
-					meta: {
-						interface: 'select-dropdown',
-						options: {
-							choices: layouts.value.map((layout) => ({
-								text: layout.name,
-								value: layout.id,
-							})),
-						},
-						width: 'half',
-					},
-				},
-				{
-					field: 'name',
-					name: t('name'),
-					type: 'string',
-					meta: {
-						interface: 'system-input-translated-string',
-						width: 'half',
-						options: {
-							placeholder: t('preset_name_placeholder'),
-						},
-					},
-				},
-				{
-					field: 'icon',
-					name: '$t:icon',
-					type: 'string',
-					meta: {
-						interface: 'select-icon',
-						width: 'half',
-					},
-					schema: {
-						default_value: 'bookmark_outline',
-					},
-				},
-				{
-					field: 'color',
-					name: '$t:color',
-					type: 'string',
-					meta: {
-						interface: 'select-color',
-						width: 'half',
-					},
-				},
-				{
-					field: 'search',
-					name: t('search'),
-					type: 'string',
-					meta: {
-						interface: 'input',
-						width: 'half',
-						options: {
-							placeholder: t('search_items'),
-						},
-					},
-				},
-				{
-					field: 'filter',
-					name: t('filter'),
-					type: 'string',
-					meta: {
-						interface: 'system-filter',
-						width: 'half',
-						options: {
-							collectionField: 'collection',
-						},
-					},
-				},
-				{
-					field: 'divider',
-					name: t('divider'),
-					type: 'alias',
-					meta: {
-						interface: 'presentation-divider',
-						width: 'fill',
-						options: {
-							title: t('layout_preview'),
-							icon: 'visibility',
-						},
-					},
-				},
-			]);
-
-			return { fields };
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
+	set(newFilters) {
+		updateFilters(newFilters);
 	},
 });
+
+const layout = computed(() => values.value.layout);
+
+const { layoutWrapper } = useLayout(layout);
+
+useShortcut('meta+s', () => {
+	if (hasEdits.value) save();
+});
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+function useSave() {
+	const saving = ref(false);
+
+	return { saving, save };
+
+	async function save() {
+		saving.value = true;
+
+		const editsParsed: Partial<Preset> = {};
+
+		const keys = [
+			'icon',
+			'color',
+			'collection',
+			'layout',
+			'layout_query',
+			'layout_options',
+			'filter',
+			'search',
+		] as (keyof Preset)[];
+
+		if ('name' in edits.value) editsParsed.bookmark = edits.value.name;
+
+		for (const key of keys) {
+			if (key in edits.value) editsParsed[key] = edits.value[key];
+		}
+
+		if (edits.value.scope) {
+			if (edits.value.scope.startsWith('role_')) {
+				editsParsed.role = edits.value.scope.substring(5);
+				editsParsed.user = null;
+			} else if (edits.value.scope.startsWith('user_')) {
+				editsParsed.user = edits.value.scope.substring(5);
+				editsParsed.role = null;
+			} else {
+				editsParsed.role = null;
+				editsParsed.user = null;
+			}
+		}
+
+		try {
+			if (isNew.value === true) {
+				await api.post(`/presets`, editsParsed);
+			} else {
+				await api.patch(`/presets/${props.id}`, editsParsed);
+			}
+
+			await presetsStore.hydrate();
+
+			edits.value = {};
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			saving.value = false;
+			router.push(`/settings/presets`);
+		}
+	}
+}
+
+function useDelete() {
+	const deleting = ref(false);
+	const confirmDelete = ref(false);
+
+	return { deleting, confirmDelete, deleteAndQuit };
+
+	async function deleteAndQuit() {
+		deleting.value = true;
+
+		try {
+			await presetsStore.delete([Number(props.id)]);
+			router.replace(`/settings/presets`);
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			deleting.value = false;
+		}
+	}
+}
+
+function useValues() {
+	const edits = ref<Record<string, any>>({});
+
+	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
+
+	const initialValues = computed(() => {
+		const defaultValues = {
+			collection: null,
+			layout: 'tabular',
+			search: null,
+			scope: 'all',
+			layout_query: null,
+			layout_options: null,
+			filter: null,
+		};
+		if (isNew.value === true) return defaultValues;
+		if (preset.value === null) return defaultValues;
+
+		let scope = 'all';
+
+		if (preset.value.user !== null) {
+			scope = `user_${preset.value.user}`;
+		} else if (preset.value.role !== null) {
+			scope = `role_${preset.value.role}`;
+		}
+
+		const value: FormattedPreset = {
+			id: preset.value.id!,
+			collection: preset.value.collection,
+			layout: preset.value.layout,
+			name: preset.value.bookmark,
+			icon: preset.value.icon,
+			color: preset.value.color,
+			search: preset.value.search,
+			scope: scope,
+			layout_query: preset.value.layout_query,
+			layout_options: preset.value.layout_options,
+			filter: preset.value.filter,
+		};
+
+		return value;
+	});
+
+	const values = computed(() => {
+		return {
+			...initialValues.value,
+			...edits.value,
+		};
+	});
+
+	const layoutQuery = computed<any>({
+		get() {
+			if (!values.value.layout_query) return null;
+			if (!values.value.layout) return null;
+
+			return values.value.layout_query[values.value.layout];
+		},
+		set(newQuery) {
+			if (
+				values.value.layout_query &&
+				values.value.layout &&
+				isEqual(newQuery, values.value.layout_query[values.value.layout])
+			) {
+				return;
+			}
+
+			edits.value = {
+				...edits.value,
+				layout_query: {
+					...edits.value.layout_query,
+					[values.value.layout || 'tabular']: newQuery,
+				},
+			};
+		},
+	});
+
+	const layoutOptions = computed<any>({
+		get() {
+			if (!values.value.layout_options) return null;
+			if (!values.value.layout) return null;
+
+			return values.value.layout_options[values.value.layout];
+		},
+		set(newOptions) {
+			if (
+				values.value.layout_options &&
+				values.value.layout &&
+				isEqual(newOptions, values.value.layout_options[values.value.layout])
+			) {
+				return;
+			}
+
+			edits.value = {
+				...edits.value,
+				layout_options: {
+					...edits.value.layout_options,
+					[values.value.layout || 'tabular']: newOptions,
+				},
+			};
+		},
+	});
+
+	const search = computed<string | null>({
+		get() {
+			return values.value.search;
+		},
+		set(newSearch) {
+			edits.value = {
+				...edits.value,
+				search: newSearch,
+			};
+		},
+	});
+
+	return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, search };
+
+	function updateFilters(newFilter: Filter) {
+		edits.value = {
+			...edits.value,
+			filter: newFilter,
+		};
+	}
+}
+
+function usePreset() {
+	const loading = ref(false);
+	const preset = ref<Preset | null>(null);
+
+	fetchPreset();
+
+	return { loading, preset, fetchPreset };
+
+	async function fetchPreset() {
+		if (props.id === '+') return;
+
+		loading.value = true;
+
+		try {
+			const response = await api.get(`/presets/${props.id}`);
+
+			preset.value = response.data.data;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			loading.value = false;
+		}
+	}
+}
+
+function useForm() {
+	const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
+
+	const fields = computed(() => [
+		{
+			field: 'collection',
+			name: t('collection'),
+			type: 'string',
+			meta: {
+				interface: 'select-dropdown',
+				options: {
+					choices: collectionsStore.collections
+						.map((collection) => ({
+							text: collection.name,
+							value: collection.collection,
+						}))
+						.filter((option) => {
+							if (option.value.startsWith('directus_')) return systemCollectionWhiteList.includes(option.value);
+
+							return true;
+						}),
+				},
+				width: 'half',
+			},
+		},
+		{
+			field: 'scope',
+			name: t('scope'),
+			type: 'string',
+			meta: {
+				interface: 'system-scope',
+				width: 'half',
+			},
+		},
+		{
+			field: 'layout',
+			name: t('layout'),
+			type: 'string',
+			meta: {
+				interface: 'select-dropdown',
+				options: {
+					choices: layouts.value.map((layout) => ({
+						text: layout.name,
+						value: layout.id,
+					})),
+				},
+				width: 'half',
+			},
+		},
+		{
+			field: 'name',
+			name: t('name'),
+			type: 'string',
+			meta: {
+				interface: 'system-input-translated-string',
+				width: 'half',
+				options: {
+					placeholder: t('preset_name_placeholder'),
+				},
+			},
+		},
+		{
+			field: 'icon',
+			name: '$t:icon',
+			type: 'string',
+			meta: {
+				interface: 'select-icon',
+				width: 'half',
+			},
+			schema: {
+				default_value: 'bookmark_outline',
+			},
+		},
+		{
+			field: 'color',
+			name: '$t:color',
+			type: 'string',
+			meta: {
+				interface: 'select-color',
+				width: 'half',
+			},
+		},
+		{
+			field: 'search',
+			name: t('search'),
+			type: 'string',
+			meta: {
+				interface: 'input',
+				width: 'half',
+				options: {
+					placeholder: t('search_items'),
+				},
+			},
+		},
+		{
+			field: 'filter',
+			name: t('filter'),
+			type: 'string',
+			meta: {
+				interface: 'system-filter',
+				width: 'half',
+				options: {
+					collectionField: 'collection',
+				},
+			},
+		},
+		{
+			field: 'divider',
+			name: t('divider'),
+			type: 'alias',
+			meta: {
+				interface: 'presentation-divider',
+				width: 'fill',
+				options: {
+					title: t('layout_preview'),
+					icon: 'visibility',
+				},
+			},
+		},
+	]);
+
+	return { fields };
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
 </script>
 
 <style lang="scss" scoped>
