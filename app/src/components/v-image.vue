@@ -28,7 +28,7 @@ let loaded = false;
 const observer = new IntersectionObserver((entries) => {
 	if (entries.length === 0) return;
 
-	const isIntersecting = entries.at(-1)!.isIntersecting;
+	const isIntersecting = entries[entries.length - 1].isIntersecting;
 
 	inView.value = isIntersecting;
 
