@@ -1,4 +1,4 @@
-import { Item, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Item, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
@@ -40,6 +40,7 @@ type RunASTOptions = {
 export default async function runAST(
 	originalAST: AST | NestedCollectionNode,
 	schema: SchemaOverview,
+	accountability?: Accountability | null,
 	options?: RunASTOptions
 ): Promise<null | Item | Item[]> {
 	const ast = cloneDeep(originalAST);
@@ -50,18 +51,19 @@ export default async function runAST(
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
-			results[collection] = await run(collection, ast.children[collection], ast.query[collection]);
+			results[collection] = await run(collection, ast.children[collection], ast.query[collection], accountability);
 		}
 
 		return results;
 	} else {
-		return await run(ast.name, ast.children, options?.query || ast.query);
+		return await run(ast.name, ast.children, options?.query || ast.query, accountability);
 	}
 
 	async function run(
 		collection: string,
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-		query: Query
+		query: Query,
+		accountability?: Accountability | null
 	) {
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
@@ -79,7 +81,7 @@ export default async function runAST(
 		if (!rawItems) return null;
 
 		// Run the items through the special transforms
-		const payloadService = new PayloadService(collection, { knex, schema });
+		const payloadService = new PayloadService(collection, { knex, schema, accountability });
 		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
 
 		if (!items || items.length === 0) return items;
@@ -100,7 +102,7 @@ export default async function runAST(
 						query: { limit: env.RELATIONAL_BATCH_SIZE, offset: batchCount * env.RELATIONAL_BATCH_SIZE },
 					});
 
-					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
+					nestedItems = (await runAST(node, schema, accountability, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
 						items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
@@ -117,7 +119,7 @@ export default async function runAST(
 					query: { limit: -1 },
 				});
 
-				nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
+				nestedItems = (await runAST(node, schema, accountability, { knex, nested: true })) as Item[] | null;
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items
