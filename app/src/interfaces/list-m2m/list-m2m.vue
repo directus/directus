@@ -4,7 +4,7 @@
 	</v-notice>
 	<div v-else class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
-			<div class="actions" :class="width">
+			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
 				<div class="spacer" />
 
 				<div v-if="totalItemCount" class="item-count">
@@ -12,7 +12,11 @@
 				</div>
 
 				<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
-					<search-input v-model="search" v-model:filter="searchFilter" :collection="junctionCollection" />
+					<search-input
+						v-model="search"
+						v-model:filter="searchFilter"
+						:collection="relationInfo.junctionCollection.collection"
+					/>
 				</div>
 
 				<v-button
@@ -51,7 +55,7 @@
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
 						:title="header.value"
-						:collection="junctionCollection"
+						:collection="relationInfo.junctionCollection.collection"
 						:item="item"
 						:template="`{{${header.value}}}`"
 					/>
@@ -110,7 +114,11 @@
 							@click="editItem(element)"
 						>
 							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-							<render-template :collection="junctionCollection" :item="element" :template="templateWithDefaults" />
+							<render-template
+								:collection="relationInfo.junctionCollection.collection"
+								:item="element"
+								:template="templateWithDefaults"
+							/>
 							<div class="spacer" />
 
 							<router-link
@@ -135,30 +143,44 @@
 				</draggable>
 			</v-list>
 
-			<div v-if="totalItemCount > 10" class="actions">
-				<v-pagination
-					v-if="pageCount > 1"
-					v-model="page"
-					:length="pageCount"
-					:total-visible="width.includes('half') ? 3 : 5"
-				/>
+			<div class="actions" :class="layout">
+				<template v-if="layout === LAYOUTS.TABLE">
+					<template v-if="totalItemCount > 10">
+						<v-pagination
+							v-if="pageCount > 1"
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 3 : 5"
+						/>
 
-				<div class="spacer" />
+						<div class="spacer" />
 
-				<div v-if="loading === false" class="per-page">
-					<span>{{ t('per_page') }}</span>
-					<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
-				</div>
+						<div v-if="loading === false" class="per-page">
+							<span>{{ t('per_page') }}</span>
+							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+						</div>
+					</template>
+				</template>
+				<template v-else>
+					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+						{{ t('create_new') }}
+					</v-button>
+					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+						{{ t('add_existing') }}
+					</v-button>
+					<div class="spacer" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+				</template>
 			</div>
 		</div>
 
 		<drawer-item
 			:disabled="disabled"
 			:active="editModalActive"
-			:collection="junctionCollection"
+			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
-			:junction-field="junctionField"
+			:junction-field="relationInfo.junctionField.field"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
 			@input="stageEdits"
@@ -168,7 +190,7 @@
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
-			:collection="relatedCollection"
+			:collection="relationInfo.relatedCollection.collection"
 			:filter="customFilter"
 			multiple
 			@input="select"
@@ -180,7 +202,7 @@
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
-import { CollectionMeta, Filter } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
@@ -242,15 +264,6 @@ const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 const fieldsStore = useFieldsStore();
 
-const relatedCollection = computed(() => relationInfo.value?.relatedCollection.collection ?? '');
-const relatedPkField = computed(() => relationInfo.value?.relatedPrimaryKeyField.field ?? 'id');
-const relatedMeta = computed(() => relationInfo.value?.relatedCollection.meta ?? ({} as CollectionMeta));
-
-const junctionCollection = computed(() => relationInfo.value?.junctionCollection.collection ?? '');
-const junctionPkField = computed(() => relationInfo.value?.junctionPrimaryKeyField.field ?? 'id');
-const junctionMeta = computed(() => relationInfo.value?.junctionCollection.meta ?? ({} as CollectionMeta));
-const junctionField = computed(() => relationInfo.value?.junctionField.field ?? '');
-
 const value = computed({
 	get: () => props.value,
 	set: (val) => {
@@ -262,9 +275,10 @@ const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
 
 	if (props.template) return props.template;
-	if (junctionMeta.value.display_template) return junctionMeta.value.display_template;
+	if (relationInfo.value.junctionCollection.meta?.display_template)
+		return relationInfo.value.junctionCollection.meta.display_template;
 
-	let relatedDisplayTemplate = relatedMeta.value.display_template;
+	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
 	if (relatedDisplayTemplate) {
 		const regex = /({{.*?}})/g;
 		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -280,21 +294,23 @@ const templateWithDefaults = computed(() => {
 		return relatedDisplayTemplate;
 	}
 
-	return `{{${relationInfo.value.relation.field}.${relatedPkField.value}}}`;
+	return `{{${relationInfo.value.relation.field}.${relationInfo.value.relatedPrimaryKeyField.field}}}`;
 });
 
 const fields = computed(() => {
+	if (!relationInfo.value) return [];
 	let displayFields: string[] = [];
+
 	if (props.layout === LAYOUTS.TABLE) {
-		displayFields = adjustFieldsForDisplays(props.fields, junctionCollection.value);
+		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.junctionCollection.collection);
 	} else {
 		displayFields = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templateWithDefaults.value),
-			junctionCollection.value
+			relationInfo.value.junctionCollection.collection
 		);
 	}
 
-	return addRelatedPrimaryKeyToFields(junctionCollection.value, displayFields);
+	return addRelatedPrimaryKeyToFields(relationInfo.value.junctionCollection.collection, displayFields);
 });
 
 const limit = ref(props.limit);
@@ -320,7 +336,7 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${junctionField.value}.${sort.value.by}`];
+		q.sort = [`${sort.value.desc ? '-' : ''}${relationInfo.value.junctionField.field}.${sort.value.by}`];
 	}
 
 	return q;
@@ -351,7 +367,10 @@ watch(
 	() => {
 		if (!relationInfo.value) {
 			headers.value = [];
+			return;
 		}
+
+		const junctionCollection = relationInfo.value.junctionCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
@@ -367,7 +386,7 @@ watch(
 
 		headers.value = props.fields
 			.map((key) => {
-				const field = fieldsStore.getField(junctionCollection.value, key);
+				const field = fieldsStore.getField(junctionCollection, key);
 
 				// when user has no permission to this field or junction collection
 				if (!field) return null;
@@ -422,7 +441,10 @@ function sortItems(items: DisplayItem[]) {
 const selectedPrimaryKeys = computed(() => {
 	if (!relationInfo.value) return [];
 
-	return selected.value.map((item) => item[junctionField.value][relatedPkField.value]);
+	const junctionField = relationInfo.value.junctionField.field;
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+
+	return selected.value.map((item) => item[junctionField][relatedPkField]);
 });
 
 const editModalActive = ref(false);
@@ -443,6 +465,10 @@ function createItem() {
 function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
+	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
+
 	newItem = false;
 	editsAtStart.value = item;
 
@@ -452,8 +478,8 @@ function editItem(item: DisplayItem) {
 		currentlyEditing.value = null;
 		relatedPrimaryKey.value = null;
 	} else {
-		currentlyEditing.value = get(item, [junctionPkField.value], null);
-		relatedPrimaryKey.value = get(item, [junctionPkField.value, relatedPkField.value], null);
+		currentlyEditing.value = get(item, [junctionPkField], null);
+		relatedPrimaryKey.value = get(item, [junctionField, relatedPkField], null);
 	}
 }
 
@@ -504,7 +530,7 @@ const customFilter = computed(() => {
 
 	if (!relationInfo.value || props.allowDuplicates) return filter;
 
-	const reverseRelation = `$FOLLOW(${junctionCollection.value},${junctionField.value})`;
+	const reverseRelation = `$FOLLOW(${relationInfo.value.junctionCollection.collection},${relationInfo.value.junctionField.field})`;
 
 	const selectFilter: Filter = {
 		[reverseRelation]: {
@@ -518,7 +544,7 @@ const customFilter = computed(() => {
 
 	if (selectedPrimaryKeys.value.length > 0) {
 		filter._and.push({
-			[relatedPkField.value]: {
+			[relationInfo.value.relatedPrimaryKeyField.field]: {
 				_nin: selectedPrimaryKeys.value,
 			},
 		});
@@ -531,8 +557,11 @@ const customFilter = computed(() => {
 
 function getLinkForItem(item: DisplayItem) {
 	if (relationInfo.value) {
-		const primaryKey = get(item, [junctionField.value, relatedPkField.value]);
-		return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
+		const primaryKey = get(item, [
+			relationInfo.value.junctionField.field,
+			relationInfo.value.relatedPrimaryKeyField.field,
+		]);
+		return `/content/${relationInfo.value.relatedCollection.collection}/${encodeURIComponent(primaryKey)}`;
 	}
 
 	return null;
@@ -546,11 +575,13 @@ const createAllowed = computed(() => {
 	if (admin) return true;
 
 	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) => permission.action === 'create' && permission.collection === junctionCollection.value
+		(permission) =>
+			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
 	);
 
 	const hasRelatedPermissions = !!permissionsStore.permissions.find(
-		(permission) => permission.action === 'create' && permission.collection === relatedCollection.value
+		(permission) =>
+			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
 	);
 
 	return hasJunctionPermissions && hasRelatedPermissions;
@@ -561,7 +592,8 @@ const selectAllowed = computed(() => {
 	if (admin) return true;
 
 	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) => permission.action === 'create' && permission.collection === junctionCollection.value
+		(permission) =>
+			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
 	);
 
 	return hasJunctionPermissions;
@@ -631,11 +663,13 @@ const selectAllowed = computed(() => {
 	gap: var(--v-sheet-padding);
 
 	.v-pagination {
-		margin-top: var(--v-sheet-padding);
-
 		:deep(.v-button) {
 			display: inline-flex;
 		}
+	}
+
+	.table.v-pagination {
+		margin-top: var(--v-sheet-padding);
 	}
 
 	.spacer {
@@ -665,6 +699,10 @@ const selectAllowed = computed(() => {
 				width: 100% !important;
 			}
 		}
+	}
+
+	&.list {
+		margin-top: 8px;
 	}
 }
 

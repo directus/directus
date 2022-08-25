@@ -591,6 +591,9 @@ errors:
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
+  INVALID_CONFIG: Invalid config
+  INVALID_TOKEN: Invalid token
+  INVALID_IP: IP Address not allowed
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
@@ -607,6 +610,13 @@ errors:
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  SERVICE_UNAVAILABLE: Service Unavailable
+  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  UNEXPECTED_RESPONSE: Unexpected response
+  TOKEN_EXPIRED: Token expired
+  RANGE_NOT_SATISFIABLE: Invalid range
+  METHOD_NOT_ALLOWED: Method not allowed
+  REQUESTS_EXCEEDED: Requests limit reached
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
