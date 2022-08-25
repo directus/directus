@@ -130,6 +130,8 @@ interface Props {
 	inline?: boolean;
 	disabled?: boolean;
 	clickable?: boolean;
+	perPage?: number;
+	page?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -152,6 +154,8 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	disabled: false,
 	clickable: true,
+	perPage: 0,
+	page: 1,
 });
 
 const emit = defineEmits([
@@ -233,17 +237,22 @@ const fullColSpan = computed<string>(() => {
 	return `1 / span ${length}`;
 });
 
+const sortedItems = computed(() => {
+	if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
+		return props.items;
+	}
+
+	if (internalSort.value.by === null) return props.items;
+
+	const itemsSorted = sortBy(props.items, [internalSort.value.by]);
+	if (internalSort.value.desc === true) itemsSorted.reverse();
+	return itemsSorted;
+});
+
 const internalItems = computed({
 	get: () => {
-		if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
-			return props.items;
-		}
-
-		if (internalSort.value.by === null) return props.items;
-
-		const itemsSorted = sortBy(props.items, [internalSort.value.by]);
-		if (internalSort.value.desc === true) return itemsSorted.reverse();
-		return itemsSorted;
+		const { perPage, page } = props;
+		return perPage > 0 ? sortedItems.value.slice(perPage * page - perPage, perPage) : sortedItems.value;
 	},
 	set: (value: Item[]) => {
 		emit('update:items', value);
