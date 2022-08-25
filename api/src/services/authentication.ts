@@ -179,11 +179,23 @@ export class AuthenticationService {
 			}
 		}
 
+		function getCustomUserClaims(user) {
+			const claims = env.ACCESS_TOKEN_CUSTOM_CLAIMS ?? false;
+			if (claims) {
+				return claims.split(',').reduce((acc, val) => {
+					acc[val] = user.val;
+				}, {});
+			} else {
+				return {};
+			}
+		}
+
 		const tokenPayload = {
 			id: user.id,
 			role: user.role,
 			app_access: user.app_access,
 			admin_access: user.admin_access,
+			...getCustomUserClaims(user),
 		};
 
 		const customClaims = await emitter.emitFilter(
