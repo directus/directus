@@ -2,6 +2,7 @@ import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Relation, DeepPartial } from '@directus/shared/types';
+import { getRelationType } from '@directus/shared/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';
 
@@ -103,6 +104,44 @@ export const useRelationsStore = defineStore({
 			});
 
 			return relations.find((relation) => relation.collection === collection && relation.field === field) || null;
+		},
+		/**
+		 * Get a list of all relation types the path is made of
+		 * @param collection The starting collection
+		 * @param path The path to digest
+		 * @returns An array of types of the relations
+		 */
+		getRelationTypes(collection: string, path: string): ('m2a' | 'o2m' | 'm2o')[] {
+			if (!path.includes('.')) return [];
+
+			const parts = path.split('.');
+
+			const currentField = parts[0].includes(':') ? parts[0].split(':')[0] : parts[0];
+
+			const relation = this.getRelationsForField(collection, currentField).find(
+				(relation) => relation.collection === collection || relation.related_collection === collection
+			);
+
+			if (!relation) return [];
+
+			const type = getRelationType({
+				collection: collection,
+				field: currentField,
+				relation,
+			});
+
+			switch (type) {
+				case 'o2m':
+					return ['o2m', ...this.getRelationTypes(relation.collection, parts.slice(1).join('.'))];
+				case 'm2o':
+					if (!relation.related_collection) return [];
+					return ['m2o', ...this.getRelationTypes(relation.related_collection, parts.slice(1).join('.'))];
+				case 'm2a':
+					if (!relation.meta?.one_allowed_collections) return ['m2a'];
+					return ['m2a', ...this.getRelationTypes(parts[0].split(':')[1], parts.slice(1).join('.'))];
+			}
+
+			return [];
 		},
 	},
 });

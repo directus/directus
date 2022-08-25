@@ -16,3 +16,8 @@ test('Returns values in array path as flattened array', () => {
 	const input = { test: [{ path: 'example' }, { path: 'another' }] };
 	expect(get(input, 'test.path')).toEqual(['example', 'another']);
 });
+
+test('Returns values in array path as flattened array', () => {
+	const input = { test: [{ path: 'example' }, { falsePath: 'another' }] };
+	expect(get(input, 'test:collection.path')).toEqual(['example']);
+});
