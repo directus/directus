@@ -849,6 +849,8 @@ export class GraphQLService {
 				ReadableCollectionFilterTypes[collection.collection].addFields({
 					_and: [ReadableCollectionFilterTypes[collection.collection]],
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
+					_none: [ReadableCollectionFilterTypes[collection.collection]],
+					_some: [ReadableCollectionFilterTypes[collection.collection]],
 				});
 
 				AggregatedFields[collection.collection] = schemaComposer.createObjectTC({
