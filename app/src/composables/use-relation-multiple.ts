@@ -107,6 +107,7 @@ export function useRelationMultiple(
 			if (editsIndex !== -1) {
 				mergeWith(
 					updatedItem,
+					cloneDeep(item),
 					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
 					_value.value.update[editsIndex],
 					(_objValue, srcValue) => {
