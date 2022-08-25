@@ -177,15 +177,14 @@ const arrows = computed(() => {
 			}
 		}
 		const arrowSize = 8;
-		const arrow = `M ${points.at(-1)} L ${points
-			.at(-1)
+		const lastPoint = points[points.length - 1];
+		const arrow = `M ${lastPoint} L ${lastPoint
 			?.clone()
-			.add(new Vector2(-arrowSize, -arrowSize))} M ${points.at(-1)} L ${points
-			.at(-1)
+			.add(new Vector2(-arrowSize, -arrowSize))} M ${lastPoint} L ${lastPoint
 			?.clone()
 			.add(new Vector2(-arrowSize, arrowSize))}`;
 
-		return path + ` L ${points.at(-1)} ${arrow}`;
+		return path + ` L ${lastPoint} ${arrow}`;
 	}
 
 	function generateCorner(start: Vector2, middle: Vector2, end: Vector2) {
