@@ -21,3 +21,6 @@ columns:
   user_agent:
     type: string
     length: 255
+  origin:
+    type: string
+    length: 255

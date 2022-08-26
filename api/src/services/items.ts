@@ -185,6 +185,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
+					origin: this.accountability!.origin,
 					item: primaryKey,
 				});
 
@@ -549,6 +550,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						collection: this.collection,
 						ip: this.accountability!.ip,
 						user_agent: this.accountability!.userAgent,
+						origin: this.accountability!.origin,
 						item: key,
 					}))
 				);
@@ -763,6 +765,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						collection: this.collection,
 						ip: this.accountability!.ip,
 						user_agent: this.accountability!.userAgent,
+						origin: this.accountability!.origin,
 						item: key,
 					}))
 				);
