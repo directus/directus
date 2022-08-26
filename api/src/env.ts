@@ -134,6 +134,8 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_GROUP_DN',
 	'AUTH_.+_GROUP_ATTRIBUTE',
 	'AUTH_.+_GROUP_SCOPE',
+	'AUTH_.+_IDP.+',
+	'AUTH_.+_SP.+',
 	// extensions
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
@@ -407,6 +409,9 @@ function processValues(env: Record<string, any>) {
 					);
 				}
 				try {
+					// Don't keep *_FILE env floating around in final env object
+					delete env[key];
+
 					value = fs.readFileSync(value, { encoding: 'utf8' });
 					key = newKey;
 				} catch {
