@@ -39,7 +39,7 @@ export default defineComponent({
 		const values = inject('values', ref<Record<string, any>>({}));
 
 		const linksParsed = computed(() => {
-			return props.links.map((link) => {
+			return props.links?.map((link) => {
 				const parsedLink = omit<Record<string, any>>(link, ['url']);
 				const linkValue = render(link.url ?? '', values.value);
 

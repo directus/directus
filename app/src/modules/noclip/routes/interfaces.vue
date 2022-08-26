@@ -27,7 +27,7 @@
                 <component v-if="loaded" :is="`interface-${id}`" v-bind="bindings" v-on="listeners" />
             </div>
 
-            <v-divider />
+            <v-divider>{{t('props')}}</v-divider>
 
             <div class="props">
                 <v-form v-model="bindings" :fields="fields" />
@@ -60,22 +60,22 @@
 
 <script lang="ts" setup>
 import Navigation from '../components/navigation.vue';
-import { ComponentInternalInstance, computed, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getInterface } from '@/interfaces';
-import { Field } from '@directus/shared/types';
+import { Field, InterfaceConfig } from '@directus/shared/types';
 import formatTitle from '@directus/format-title';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
-import { padStart } from 'lodash';
+import { merge, padStart } from 'lodash';
+import {getFieldDefaults} from '../utils/getFieldDefaults';
 
 interface Props {
-	role: string | null;
     id: string
 }
 
 interface PropInfo {
     type: any,
-    default?: string | boolean | number | (() => any),
+    default?: string | boolean | number | Function,
     required?: boolean
 }
 
@@ -86,7 +86,7 @@ interface EmittedInfo {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	role: null,
+	
 });
 
 const { t } = useI18n();
@@ -98,63 +98,93 @@ const interfaceInfo = computed(() => getInterface(props.id))
 const bindings = ref<Record<string, any>>({})
 const loaded = ref(false)
 
-watch(interfaceInfo, (newValue) => {
-    if (newValue) {
-        bindings.value = {}
-        const props = (newValue.component as any as ComponentInternalInstance).props as Record<string, PropInfo>
+const emitted = ref<EmittedInfo[]>([])
+const emitOpen = ref<number | null>(null)
 
-        for(const [key, value] of Object.entries(props)) {
-            bindings.value[key] = getDefaultValue(value)
+watch(interfaceInfo, (value) => {
+    updateDefaults(value)
+    updateField(value)
+    updateListeners(value)
+}, { immediate: true })
+
+async function updateDefaults(value?: InterfaceConfig) {
+    if (value) {
+        emitted.value = []
+        loaded.value = false
+        bindings.value = {}
+        let propInfo = (await getComponent(value.component)).props
+        if(!propInfo) return
+
+        const fieldDefaults = getFieldDefaults('interface', props.id)
+
+        for(const [key, value] of Object.entries(propInfo)) {
+            bindings.value[key] = fieldDefaults[key]?.default ?? getDefaultValue(value)
         }
 
         loaded.value = true
     } else {
         loaded.value = false
     }
-}, { immediate: true })
+}
 
-const fields = computed(() => {
-    if (!interfaceInfo.value) return []
-    const props = (interfaceInfo.value.component as any).props as Record<string, PropInfo>
+const fields = ref<Field[]>([])
 
-    const fields = Object.entries(props).map(([key, value]) => {
-        return {
-            collection: 'directus_users',
+async function updateField(value?: InterfaceConfig) {
+    if (!value) return []
+    const propInfo = (await getComponent(value.component)).props
+
+    if(!propInfo) return []
+
+    const fieldDefaults = getFieldDefaults('interface', props.id)
+
+    fields.value = Object.entries(propInfo).map(([key, value]) => {
+
+        return merge({
             field: key,
             meta: {
-                interface: getDefaultInterface(value.type),
-                width: 'half'
-            },
-            schema: {
-                default_value: getDefaultValue(value),
+                width: 'half',
+                required: value.required ?? false,
             },
             name: formatTitle(key),
             type: typeToString(value.type),
-        } as Field
+        } as Field,
+            fieldDefaults[key]
+        )
     })
-    return fields
-})
+}
 
-const emitted = ref<EmittedInfo[]>([])
-const emitOpen = ref<number | null>(null)
+const listeners = ref<Record<string, Function>>({})
 
-const listeners = computed(() => {
-    if (!interfaceInfo.value) return {}
-    const emits = (interfaceInfo.value.component as any).emits as string[]
+async function updateListeners(value?: InterfaceConfig) {
+    if (!value) return {}
+    const emitInfo = (await getComponent(value.component)).emits
 
-    const listeners = emits.reduce<Record<string, Function>>((acc, event) => {
+    if(!emitInfo) return {}
+
+    listeners.value = emitInfo.reduce<Record<string, Function>>((acc, event) => {
         acc[event] = (value: any) => {
             emitted.value.splice(0, 0, {
                 key: event,
                 value,
                 date: new Date()
             })
+
+            if(event === 'input') {
+                bindings.value.value = value
+            }
         }
         return acc
     }, {})
+}
 
-    return listeners
-})
+async function getComponent(component: any): Promise<{props?: Record<string, any>, emits?: string[]}> {
+    if('__asyncLoader' in component) {
+        return await component.__asyncLoader()
+    }
+
+    return component
+}
+
 
 function openEmit(index: number) {
     emitOpen.value = index
@@ -169,7 +199,7 @@ function typeToString(type: any) {
         case Boolean:
             return 'boolean'
         case Array:
-            return 'csv'
+            return 'json'
         case Object:
             return 'json'
         default:
@@ -177,47 +207,30 @@ function typeToString(type: any) {
     }
 }
 
-function getDefaultInterface(type: any) {
-    switch(type) {
-        case String:
-            return 'text'
-        case Number:
-            return 'number'
-        case Boolean:
-            return 'checkbox'
-        default:
-            return 'text'
-    }
-}
-
 function getDefaultValue(prop: PropInfo) {
     if (prop.default) {
         return typeof prop.default === 'function' ? prop.default() : prop.default
-    } else if (prop.required) {
-        switch(prop.type) {
-            case String:
-                return ''
-            case Number:
-                return 0
-            case Boolean:
-                return false
-            case Array:
-                return []
-            case Object:
-                return {}
-            default:
-                return null
-        }
-    } else {
-        return undefined
+    }
+
+    switch(prop.type) {
+        case String:
+            return ''
+        case Number:
+            return 0
+        case Boolean:
+            return false
+        case Array:
+            return []
+        case Object:
+            return {}
+        default:
+            return null
     }
 }
 
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {
-		if (!props.role) return null;
-
 		return [
 			{
 				name: t('user_directory'),
@@ -238,12 +251,10 @@ function useBreadcrumb() {
 <style lang="scss" scoped>
 .main {
     padding: var(--content-padding);
-    .component {
-        margin-bottom: 40px;
-    }
 
-    .props {
-        margin-top: 40px;
+
+    .v-divider {
+        margin: 40px 0;
     }
 }
 

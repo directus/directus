@@ -259,7 +259,7 @@ export default defineComponent({
 		},
 		disabled: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		imageToken: {
 			type: String,
