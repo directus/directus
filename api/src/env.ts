@@ -169,6 +169,8 @@ const allowedEnvironmentVars = [
 	// limits & optimization
 	'RELATIONAL_BATCH_SIZE',
 	'EXPORT_BATCH_SIZE',
+	// flows
+	'FLOWS_EXEC_ALLOWED_MODULES',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];

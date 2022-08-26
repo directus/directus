@@ -177,7 +177,7 @@ importers:
       ms: ^2.1.3
       mysql: ^2.18.1
       nanoid: ^3.1.23
-      node-cron: ^3.0.1
+      node-cron: ^3.0.2
       node-machine-id: ^1.1.12
       nodemailer: ^6.7.5
       nodemailer-mailgun-transport: ^2.1.4
@@ -275,7 +275,7 @@ importers:
       mime-types: 2.1.35
       ms: 2.1.3
       nanoid: 3.3.4
-      node-cron: 3.0.1
+      node-cron: 3.0.2
       node-machine-id: 1.1.12
       nodemailer: 6.7.7
       object-hash: 2.2.0
@@ -11724,10 +11724,12 @@ packages:
       { integrity: sha512-CvkDw2OEnme7ybCykJpVcKH+uAOLV2qLqiyla128dN9TkEWfrYmxG6C2boDe5KcNQqZF3orkqzGgOMvZ/JNekA== }
     dev: false
 
-  /node-cron/3.0.1:
+  /node-cron/3.0.2:
     resolution:
-      { integrity: sha512-RAWZTNn2M5KDIUV/389UX0EXsqvdFAwc9QwHQceh0Ga56dygqSRthqIjwpgZsoDspHGt2rkHdk9Z4RgfPMdALw== }
+      { integrity: sha512-iP8l0yGlNpE0e6q1o185yOApANRe47UPbLf4YxfbiNHt/RU5eBcGB/e0oudruheSf+LQeDMezqC5BVAb5wwRcQ== }
     engines: { node: '>=6.0.0' }
+    dependencies:
+      uuid: 8.3.2
     dev: false
 
   /node-exceptions/4.0.1:
