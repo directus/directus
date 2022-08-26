@@ -108,6 +108,7 @@ delete_bookmark: Yer İşaretini Kaldır
 delete_bookmark_copy: >-
   {bookmark} yer işaretini kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
 delete_personal_bookmark: Kişisel Yer İşaretini Sil
+delete_role_bookmark: Rol İşaretini Sil
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
@@ -756,10 +757,14 @@ change_trigger: Tetikleyici Değiştirin
 edit_flow: Akışı Düzenle
 delete_flow: Akışı Sil
 no_flows: Akış yok
+no_flows_copy: Henüz Akışınız yok.
 create_flow: Akış Oluştur
+creating_new_flow: Yeni Akış Oluşturma
+updating_flow: Akış Güncelleme
 flow_setup: Akış Kurulumu
 flow_name: İsim
 flow_tracking: Etkinlik ve Günlük Takibi
+flow_tracking_all: Etkinlik ve Günlükleri İzle
 flow_tracking_activity: Sadece Etkinlikleri Takip Et
 flow_tracking_null: Hiçbir Şeyi Takip Etme
 start_flow: Akışı Başlat
@@ -768,7 +773,10 @@ create_operation: İşlem Oluştur
 edit_operation: İşlemi Düzenle
 code: Kod
 operation_options: İşlem Seçenekleri
+operation_name: Operasyonun adı...
 operation_key_unique_error: İşlem anahtarları bir Akışta benzersiz olmalıdır
+operation_handle_resolve: 'Çözümle: Eklemek İçin Tıklayın veya Yeniden Yönlendirmek İçin Sürükleyin'
+operation_handle_reject: 'Reddet: Eklemek İçin Tıklayın veya Yeniden Yönlendirmek İçin Sürükleyin'
 insights: Kontrol Panelleri
 dashboard: Pano
 panel: Panel
@@ -789,6 +797,7 @@ no_dashboards_copy: Henüz hiç panonuz yok.
 create_dashboard: Pano Oluştur
 dashboard_name: Pano Adı
 no_data: Hiç Veri Yok
+no_data_in_flow: Bu Akış içinde hiçbir veri üretilmedi veya erişilmedi
 accountability: İzlenebilirlik
 details: Ayrıntılar
 full_screen: Tam Ekran
@@ -818,6 +827,7 @@ interface_group_other: Diğer
 tooltip: İpucu
 tooltip_placeholder: Bir ipucu girin...
 unlimited: Limitsiz
+open_link_in: Bağlantıyı aç
 new_tab: Yeni sekme
 current_tab: Mevcut sekme
 save_image: Fotoğrafı Kaydet
@@ -968,6 +978,7 @@ directus_collection:
   directus_fields: Ek alan ayarları ve metaveri
   directus_files: Yönetilen tüm dosyalar için metaveri
   directus_folders: Dosyalar için sanal klasörler sunar
+  directus_migrations: Veritabanının hangi sürümünü kullanıyorsunuz
   directus_notifications: Bildirimler kullanıcılara gönderildi
   directus_panels: Panolar modülündeki panolardaki tekil paneller
   directus_permissions: Her bir rol için yetkilere eriş
@@ -1444,6 +1455,7 @@ interfaces:
     include_seconds: Saniyeleri Dahil Et
     set_to_now: Şimdiye Ayarla
     use_24: 24 Saat Biçimini Kullan
+    placeholder: Bir tarih ve saat seçin...
   system-fields:
     select_a_collection: Bir Koleksiyon Seç
     no_fields: Alan yok
@@ -1660,6 +1672,9 @@ interfaces:
     start_closed: Kapalı Başla
   system-token:
     system-token: Erişim Anahtarı (Token)
+    value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
+  system-raw-editor:
+    system-raw-editor: Ham Düzenleyici
 displays:
   translations:
     translations: Çeviriler
@@ -1699,6 +1714,7 @@ displays:
     relative_label: 'Göreceli zamanı göster, örn: 5 dakika önce'
     suffix: Suffiks
     strict: Katı
+    strict_label: Katı birimler kullanın
     down: Aşağı
     nearest: En yakın
     up: Yukarı
@@ -1873,6 +1889,7 @@ panels:
     x_axis: X-Ekseni
     y_axis: Y-Ekseni
     show_legend: Göstergeyi Göster
+    show_marker: Araç İpucu İşaretçisini Göster
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
   meter:
     name: Metre
@@ -1915,6 +1932,7 @@ operations:
   exec:
     name: Komut Dosyasını Çalıştır
   item-create:
+    name: Veri Oluştur
     emit_events: Olayları Yayımla
   item-delete:
     name: Veriyi Sil
@@ -1934,6 +1952,7 @@ operations:
   log:
     name: Konsolda Oturum Aç
     message: Mesaj
+    message_placeholder: Konsolda gösterilecek bir mesaj girin...
   mail:
     name: E-posta Gönder
     description: Bir veya daha fazla kişiye e-posta gönderin
@@ -1941,6 +1960,7 @@ operations:
     body: Gövde
   notification:
     name: Bildirim Gönder
+    description: Bir veya daha fazla kullanıcıya uygulama içi bildirim gönderin
     recipient: Kullanıcı
     message: Mesaj
   request:
