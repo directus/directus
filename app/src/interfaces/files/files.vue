@@ -47,14 +47,14 @@
 							</template>
 
 							<v-list>
-								<v-list-item clickable :href="getUrl(element)">
+								<v-list-item clickable :href="useAssetUrl(getFilename(element))">
 									<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
 									<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
 								</v-list-item>
 								<v-list-item
 									clickable
 									:download="element.directus_files_id.filename_download"
-									:href="getUrl(element, true)"
+									:href="useAssetUrl(getFilename(element), true)"
 								>
 									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
 									<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
@@ -127,6 +127,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAssetUrl } from '@/composables/use-asset-url';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { computed, ref, toRefs } from 'vue';
@@ -138,8 +139,6 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { get, clamp } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { addTokenToURL } from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
 
@@ -323,21 +322,17 @@ const downloadName = computed(() => {
 
 const downloadUrl = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
-	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}?download`);
+	return useAssetUrl(String(relatedPrimaryKey.value), true);
 });
 
-function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
+function getFilename(junctionRow: Record<string, any>) {
 	const junctionField = relationInfo.value?.junctionField.field;
 	if (!junctionField) return;
 
 	const key = junctionRow[junctionField]?.id ?? junctionRow[junctionField] ?? null;
 	if (!key) return null;
 
-	if (addDownload) {
-		return addTokenToURL(getRootPath() + `assets/${key}?download`);
-	}
-
-	return addTokenToURL(getRootPath() + `assets/${key}`);
+	return key;
 }
 
 const customFilter = computed(() => {
