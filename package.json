@@ -35,7 +35,7 @@
 	},
 	"devDependencies": {
 		"@directus/shared": "workspace:*",
-		"@types/jest": "28.1.2",
+		"@types/jest": "28.1.8",
 		"@types/listr": "^0.14.4",
 		"@types/lodash": "^4.14.182",
 		"@types/seedrandom": "^3.0.2",
