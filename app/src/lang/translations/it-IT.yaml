@@ -295,6 +295,8 @@ next: Avanti
 field_name: Nome del Campo
 translations: Traduzioni
 no_translations: Nessuna traduzione
+left_to_right: Da sinistra a destra
+right_to_left: Da destra a sinistra
 note: Nota
 enter_a_value: Inserisci un valore...
 enter_a_placeholder: Inserisci un segnaposto...
@@ -479,6 +481,7 @@ creating_items: Creazione Oggetti
 enable_create_button: Abilita il pulsante di creazione
 selecting_items: Selezione elementi
 enable_select_button: Abilita il pulsante di selezione
+allow_duplicates: Consenti duplicati
 comments: Commenti
 no_comments: Non ci sono ancora commenti
 click_to_expand: Fare clic per espandere
@@ -579,6 +582,9 @@ errors:
   INVALID_PAYLOAD: Payload non valido
   INVALID_PROVIDER: L'utente appartiene a un provider di autenticazione diverso
   INVALID_QUERY: Query non valida
+  INVALID_CONFIG: Configurazione non valida
+  INVALID_TOKEN: Token non valido
+  INVALID_IP: Indirizzo IP non consentito
   INVALID_USER: Autenticazione dell'utente fallita
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
@@ -595,6 +601,13 @@ errors:
   INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
   GRAPHQL_VALIDATION_EXCEPTION: Eccezione di validazione GraphQL
+  SERVICE_UNAVAILABLE: Servizio non disponibile
+  UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
+  UNEXPECTED_RESPONSE: Risposta inattesa
+  TOKEN_EXPIRED: Token scaduto
+  RANGE_NOT_SATISFIABLE: Intervallo non valido
+  METHOD_NOT_ALLOWED: Metodo non consentito
+  REQUESTS_EXCEEDED: Limite di richieste raggiunto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -1408,6 +1421,8 @@ report_error: Segnala l'errore
 start: Inizio
 table: Tabella
 list: Elenco
+search_filter: Cerca e filtra
+enable_search_filter: Abilita la ricerca e i filtri
 interfaces:
   filter:
     name: Filtro
