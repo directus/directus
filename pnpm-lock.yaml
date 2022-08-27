@@ -828,11 +828,8 @@ importers:
     specifiers:
       npm-watch: 0.11.0
       openapi-types: ^12.0.0
-      openapi3-ts: ^2.0.1
       swagger-cli: 4.0.4
       swagger-ui-watcher: 2.1.12
-    dependencies:
-      openapi3-ts: 2.0.2
     devDependencies:
       npm-watch: 0.11.0
       openapi-types: 12.0.0
