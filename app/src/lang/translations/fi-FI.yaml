@@ -348,6 +348,7 @@ revision_preview: Version esikatselu
 updates_made: Päivitykset tehty
 leave_comment: Jätä kommentti...
 post_comment_success: Kommentti lähetetty
+post_comment_updated: Kommentti päivitetty
 item_create_success: Kohde luotu | Kohteet luotu
 item_update_success: Kohde päivitetty | Kohteet päivitetty
 item_delete_success: Kohde poistettu | Kohteet poistettu
@@ -356,6 +357,8 @@ related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
 translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
+import_data_input_placeholder: CSV tai JSON...
+import_data_button: Aloita tuonti
 label_import: Tuo
 format: Muoto
 last_page: Viimeinen sivu
