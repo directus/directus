@@ -1417,12 +1417,19 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
 list: Elenco
 search_filter: Cerca e filtra
 enable_search_filter: Abilita la ricerca e i filtri
+item_link: Collegamento dell'elemento
+show_link_to_item: Mostra un collegamento all'elemento
+navigate_to_item: Vai all'elemento
+undo_removed_item: Annulla la rimozione dell'elemento
+remove_item: Rimuovi l'elemento
+delete_item: Elimina l'elemento
 interfaces:
   filter:
     name: Filtro
@@ -1504,6 +1511,7 @@ interfaces:
     placeholder: Scegli data e ora...
   system-fields:
     select_a_collection: Seleziona una Raccolta
+    no_fields: Nessun campo
   system-display-template:
     display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
@@ -1561,6 +1569,7 @@ interfaces:
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
+    columns_configure_notice: Puoi configurare le colonne dopo aver creato questo campo.
     display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   select-dropdown-m2o:
     many-to-one: Molti a Uno
@@ -1678,6 +1687,7 @@ interfaces:
     user_language: Usa la lingua dell'utente corrente
     default_language: Lingua predefinita
     language_field: Campo indicatore della lingua
+    language_direction_field: Campo direzione della lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
@@ -2039,6 +2049,10 @@ operations:
   condition:
     name: Condizione
     description: Stabilisce il percorso di un flusso con una logica Se / Altrimenti
+  exec:
+    name: Esegui lo script
+    description: Esegui codice arbitrario per modificare il payload
+    modules: 'I seguenti **moduli Node** possono essere utilizzati:'
   item-create:
     name: Crea dati
     description: Crea elementi nel database
@@ -2076,7 +2090,9 @@ operations:
     body: Contenuto
   notification:
     name: Invia una notifica
+    description: Invia una notifica in app a uno o più utenti
     recipient: Utente
+    recipient_placeholder: Inserisci l'UUID dell'utente e premi invio...
     message: Messaggio
   request:
     name: URL webhook / chiamata
