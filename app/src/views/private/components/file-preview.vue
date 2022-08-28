@@ -106,8 +106,11 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src)
 		justify-content: center;
 
 		video {
+			width: 100%;
 			min-height: 80px;
 			min-width: 80px;
+			object-fit: contain;
+			background-color: #000000;
 		}
 	}
 
