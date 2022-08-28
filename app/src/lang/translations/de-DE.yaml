@@ -581,6 +581,7 @@ errors:
   INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_PROVIDER: Benutzer gehört zu einem anderen Authentifizierungsanbieter
   INVALID_QUERY: Ungültige anfrage
+  INVALID_IP: IP-Adresse nicht erlaubt
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
