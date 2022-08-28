@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import ms from 'ms';
 import env from '../env';
 import { InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
