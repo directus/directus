@@ -1,7 +1,7 @@
 import KnexOracle, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/oracledb';
-import { Column } from 'knex-schema-inspector/dist/types/column';
-import { SchemaOverview } from '../types/overview';
-import { SchemaInspector } from '../types/schema';
+import type { Column } from 'knex-schema-inspector/dist/types/column';
+import type { SchemaOverview } from '../types/overview';
+import type { SchemaInspector } from '../types/schema';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	private static _mapColumnAutoIncrement(column: Column): Column {
@@ -16,10 +16,10 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 		};
 	}
 
-	columnInfo(): Promise<Column[]>;
-	columnInfo(table: string): Promise<Column[]>;
-	columnInfo(table: string, column: string): Promise<Column>;
-	async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
+	override columnInfo(): Promise<Column[]>;
+	override columnInfo(table: string): Promise<Column[]>;
+	override columnInfo(table: string, column: string): Promise<Column>;
+	override async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
 		if (column) {
 			const columnInfo: Column = await super.columnInfo(table!, column!);
 			return Oracle._mapColumnAutoIncrement(columnInfo);
@@ -97,7 +97,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			// keys without a default are AUTO_INCREMENT
 			const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.column_key === 'P';
 
-			overview[column.table_name].columns[column.column_name] = {
+			overview[column.table_name]!.columns[column.column_name] = {
 				...column,
 				is_nullable: column.is_nullable === 'Y',
 				is_generated: column.is_generated === 'YES',

@@ -758,14 +758,14 @@ importers:
       knex-schema-inspector: 2.0.4
       lodash: ^4.17.21
       npm-watch: 0.11.0
-      typescript: 4.5.2
+      typescript: 4.8.2
     dependencies:
       knex: 2.2.0
       knex-schema-inspector: 2.0.4
       lodash: 4.17.21
     devDependencies:
       npm-watch: 0.11.0
-      typescript: 4.5.2
+      typescript: 4.8.2
 
   packages/shared:
     specifiers:
@@ -15404,6 +15404,13 @@ packages:
   /typescript/4.7.4:
     resolution:
       { integrity: sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ== }
+    engines: { node: '>=4.2.0' }
+    hasBin: true
+    dev: true
+
+  /typescript/4.8.2:
+    resolution:
+      { integrity: sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw== }
     engines: { node: '>=4.2.0' }
     hasBin: true
     dev: true

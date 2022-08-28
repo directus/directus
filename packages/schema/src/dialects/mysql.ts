@@ -1,6 +1,6 @@
 import KnexMySQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mysql';
-import { SchemaOverview } from '../types/overview';
-import { SchemaInspector } from '../types/schema';
+import type { SchemaOverview } from '../types/overview';
+import type { SchemaInspector } from '../types/schema';
 
 export default class MySQL extends KnexMySQL implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {
@@ -45,7 +45,7 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 				dataType = 'boolean';
 			}
 
-			overview[column.table_name].columns[column.column_name] = {
+			overview[column.table_name]!.columns[column.column_name] = {
 				...column,
 				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',

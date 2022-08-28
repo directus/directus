@@ -1,6 +1,6 @@
 import KnexMSSQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mssql';
-import { SchemaOverview } from '../types/overview';
-import { SchemaInspector } from '../types/schema';
+import type { SchemaOverview } from '../types/overview';
+import type { SchemaInspector } from '../types/schema';
 
 export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 	// Overview
@@ -54,7 +54,7 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 				};
 			}
 
-			overview[column.table_name].columns[column.column_name] = {
+			overview[column.table_name]!.columns[column.column_name] = {
 				...column,
 				default_value: column.is_identity ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',

@@ -1,7 +1,7 @@
 import KnexPostgres, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/postgres';
-import { Column } from 'knex-schema-inspector/dist/types/column';
-import { SchemaOverview } from '../types/overview';
-import { SchemaInspector } from '../types/schema';
+import type { Column } from 'knex-schema-inspector/dist/types/column';
+import type { SchemaOverview } from '../types/overview';
+import type { SchemaInspector } from '../types/schema';
 
 export default class Postgres extends KnexPostgres implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {
@@ -117,14 +117,14 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			if (['point', 'polygon'].includes(column.data_type)) {
 				column.data_type = 'unknown';
 			}
-			overview[column.table_name].columns[column.column_name] = column;
+			overview[column.table_name]!.columns[column.column_name] = column;
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
-			overview[table_name].primary = column_name;
+			overview[table_name]!.primary = column_name;
 		}
 		for (const { table_name, column_name, data_type } of geometryColumns) {
-			overview[table_name].columns[column_name].data_type = data_type;
+			overview[table_name]!.columns[column_name]!.data_type = data_type;
 		}
 
 		return overview;
@@ -132,10 +132,10 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 
 	// This is required as PostGIS data types are not accessible from the
 	// information_schema. We have to fetch them from geography_columns
-	columnInfo(): Promise<Column[]>;
-	columnInfo(table: string): Promise<Column[]>;
-	columnInfo(table: string, column: string): Promise<Column>;
-	async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
+	override columnInfo(): Promise<Column[]>;
+	override columnInfo(table: string): Promise<Column[]>;
+	override columnInfo(table: string, column: string): Promise<Column>;
+	override async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
 		// Call the parent columnInfo()
 		// @ts-ignore
 		const columns = await super.columnInfo(table, column);
