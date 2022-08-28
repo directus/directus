@@ -4,7 +4,7 @@
 	</v-notice>
 	<div v-else class="one-to-many">
 		<div :class="{ bordered: layout === LAYOUTS.TABLE }">
-			<div class="actions" :class="width">
+			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
 				<div class="spacer" />
 
 				<div v-if="totalItemCount" class="item-count">
@@ -142,20 +142,34 @@
 				</draggable>
 			</v-list>
 
-			<div v-if="totalItemCount > 10" class="actions">
-				<v-pagination
-					v-if="pageCount > 1"
-					v-model="page"
-					:length="pageCount"
-					:total-visible="width.includes('half') ? 3 : 5"
-				/>
+			<div class="actions" :class="layout">
+				<template v-if="layout === LAYOUTS.TABLE">
+					<template v-if="totalItemCount > 10">
+						<v-pagination
+							v-if="pageCount > 1"
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 3 : 5"
+						/>
 
-				<div class="spacer" />
+						<div class="spacer" />
 
-				<div v-if="loading === false" class="per-page">
-					<span>{{ t('per_page') }}</span>
-					<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
-				</div>
+						<div v-if="loading === false" class="per-page">
+							<span>{{ t('per_page') }}</span>
+							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+						</div>
+					</template>
+				</template>
+				<template v-else>
+					<v-button v-if="enableCreate && createAllowed && updateAllowed" :disabled="disabled" @click="createItem">
+						{{ t('create_new') }}
+					</v-button>
+					<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
+						{{ t('add_existing') }}
+					</v-button>
+					<div class="spacer" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+				</template>
 			</div>
 		</div>
 
@@ -601,11 +615,13 @@ const updateAllowed = computed(() => {
 	gap: var(--v-sheet-padding);
 
 	.v-pagination {
-		margin-top: var(--v-sheet-padding);
-
 		:deep(.v-button) {
 			display: inline-flex;
 		}
+	}
+
+	.table.v-pagination {
+		margin-top: var(--v-sheet-padding);
 	}
 
 	.spacer {
@@ -635,6 +651,10 @@ const updateAllowed = computed(() => {
 				width: 100% !important;
 			}
 		}
+	}
+
+	&.list {
+		margin-top: 8px;
 	}
 }
 
