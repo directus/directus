@@ -3,7 +3,7 @@ import { Field } from '@directus/shared/types';
 export function getJSType(field: Field): string {
 	if (
 		Array.isArray(field.meta?.special) &&
-		field.meta!.special.some((special) => ['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(special))
+		field.meta!.special.some((special) => ['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations', 'image_crops'].includes(special))
 	)
 		return 'object';
 	if (['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) return 'number';

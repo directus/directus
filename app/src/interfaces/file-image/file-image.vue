@@ -67,17 +67,18 @@
 				v-if="!disabled && image"
 				:id="image.id"
 				v-model="editImageEditor"
+				:crop-coordinates="cropCoordinates"
 				@refresh="refresh"
-				@replace-image="update($event.id)"
+				@replace-image="updateImage($event.id)"
 			/>
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url :folder="folder" @input="update($event.id)" />
+		<v-upload v-else from-library from-url :folder="folder" @input="updateImage($event.id)" />
 	</div>
 </template>
 
-<script setup lang="ts">
+<script async setup lang="ts">
 import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -110,20 +111,29 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const value = computed({
-	get: () => props.value ?? null,
-	set: (value) => {
-		emit('input', value);
-	},
+const cropID = props.value
+const cropQuery = ref<RelationQuerySingle>({
+	fields: ['x,y,file_id.*'],
 });
-
-const query = ref<RelationQuerySingle>({
-	fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download', 'modified_on'],
-});
-
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem: image, loading, update, remove, refresh } = useRelationSingle(value, query, relationInfo);
+const { displayItem: cropInfo, loading, update, remove, refresh } = useRelationSingle(ref(cropID), cropQuery, relationInfo);
+
+const fileID = computed(() => {
+	if (!cropInfo.value) return null;
+	return cropInfo.value.file_id.id
+})
+
+const image = computed(() => {
+	if (!cropInfo.value) return null;
+	return cropInfo.value.file_id
+})
+
+const cropCoordinates = computed(() => {
+	if (!cropInfo.value) return null;
+	const coordinates = (cropInfo.value.x != null && cropInfo.value.y != null) ? {x: cropInfo.value.x, y: cropInfo.value.y} : undefined
+	return coordinates
+})
 
 const { t, n, te } = useI18n();
 
@@ -180,6 +190,17 @@ async function imageErrorHandler() {
 	}
 }
 
+async function updateImage(item: string | number) {
+	try {
+		// TODO: handle item
+		const response = await api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {collection: collection.value, file_id: item});
+		update(response.data.data.id)
+	} catch (err: any) {
+		// TODO: Handle prop could not be created
+		console.log(err)
+	}
+}
+
 function deselect() {
 	remove();
 
@@ -191,9 +212,9 @@ function deselect() {
 }
 
 const edits = computed(() => {
-	if (!props.value || typeof props.value !== 'object') return {};
+	if (!fileID || typeof fileID !== 'object') return {};
 
-	return props.value;
+	return fileID;
 });
 </script>
 

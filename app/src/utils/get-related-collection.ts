@@ -22,7 +22,7 @@ export function getRelatedCollection(collection: string, field: string): Related
 	const relations: Relation[] = relationsStore.getRelationsForField(collection, field);
 	const localType = getLocalTypeForField(collection, field);
 
-	const o2mTypes = ['o2m', 'm2m', 'm2a', 'translations', 'files'];
+	const o2mTypes = ['o2m', 'm2m', 'm2a', 'translations', 'image_crops', 'files'];
 
 	if (localType && o2mTypes.includes(localType)) {
 		if (localType == 'm2m' && relations.length > 1) {

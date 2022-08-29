@@ -340,6 +340,8 @@ this_collection: This Collection
 related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
+files_collection: Files Collection
+crop_collection: Crop Collection
 languages_collection: Languages Collection
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import

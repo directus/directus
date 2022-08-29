@@ -151,6 +151,11 @@ export default defineComponent({
 				icon: 'translate',
 				text: t('translations'),
 			},
+			{
+				type: 'image_crops',
+				icon: 'crop_original',
+				text: t('image_crops'),
+			},
 		]);
 
 		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions, setNestedSort, isNil };

@@ -16,6 +16,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 	if (hasChanged('field.field')) {
 		updateRelationField(updates);
 		autoGenerateJunctionCollectionName(updates, helperFn);
+
+		// For the image crops, field name is going to be a field
+		// linking the M2A collections back to the junction collection
+		set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', updates.field?.field);
 	}
 
 	if (hasChanged('relations.o2m.field')) {
@@ -62,7 +66,7 @@ export function prepareRelation(updates: StateUpdates, state: State) {
 	updates.relations.o2m = {
 		collection: undefined,
 		field: undefined,
-		related_collection: "directus_files",
+		related_collection: 'directus_files',
 		meta: {
 			one_field: updates.field?.field ?? state.field.field,
 			sort_field: null,
@@ -93,25 +97,23 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	// Set relation from files to crops collection and setup an M2A
 	set(updates, 'collection', 'directus_files');
 	set(updates, 'relations.o2m.collection', junctionName);
-	set(updates, 'relations.o2m.field', 'file');
-	
+	set(updates, 'relations.o2m.field', 'file_id');
+
 	set(updates, 'relations.m2o.collection', junctionName);
 	set(updates, 'relations.m2o.field', 'item');
 	set(updates, 'relations.m2o.meta.one_allowed_collections', [currentCollection]);
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
+
+	// Create a M2O relation between the collections and junction table
+	set(state, 'createFieldOnCurrentCollection', false)
+	set(updates, 'relations.m2o.meta.link_one_allowed_collections_back', true);
+	set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', state.field.name);
 }
 
-export function autoGenerateJunctionCollectionName(
-	updates: StateUpdates,
-	{ getCurrent }: HelperFunctions
-) {
+export function autoGenerateJunctionCollectionName(updates: StateUpdates, { getCurrent }: HelperFunctions) {
 	if (getCurrent('autoGenerateJunctionRelation') === false) return;
 
-	set(
-		updates,
-		'relations.o2m.collection',
-		getAutomaticJunctionCollectionName()
-	);
+	set(updates, 'relations.o2m.collection', getAutomaticJunctionCollectionName());
 }
 
 export function getAutomaticJunctionCollectionName() {

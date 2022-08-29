@@ -95,7 +95,7 @@ export default defineDisplay({
 		return renderPlainStringTemplate(options.template, stringValues);
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
+	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'image_crops', 'm2a', 'file', 'files'],
 	fields: (options: Options | null, { field, collection }) => {
 		const { junctionCollection, relatedCollection, path } = getRelatedCollection(collection, field);
 		const fieldsStore = useFieldsStore();

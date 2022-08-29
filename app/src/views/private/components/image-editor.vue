@@ -101,7 +101,7 @@
 					</v-list>
 				</v-menu>
 
-				<v-checkbox v-model="createNewImage" :label="t('create_new_image')" />
+				<v-checkbox v-model="createNewCrop" :label="t('create_crop')" />
 
 				<div class="spacer" />
 
@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import api, { addTokenToURL } from '@/api';
-import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useSettingsStore } from '@/stores/settings';
@@ -152,8 +152,6 @@ type Image = {
 type CropCoordinates = {
 	x: number;
 	y: number;
-	width: number;
-	height: number;
 };
 
 export default defineComponent({
@@ -166,16 +164,20 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
+		cropCoordinates: {
+			type: Object as PropType<CropCoordinates | undefined>,
+			default: undefined
+		}
 	},
-	emits: ['update:modelValue', 'refresh', 'replace-image'],
+	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
 		const settingsStore = useSettingsStore();
-		
+
 		const localActive = ref(false);
 
-		const createNewImage = ref(false);
+		const createNewCrop = ref(false);
 
 		const internalActive = computed({
 			get() {
@@ -187,18 +189,7 @@ export default defineComponent({
 			},
 		});
 
-		const {
-			loading,
-			error,
-			imageData,
-			imageElement,
-			save,
-			saving,
-			fetchImage,
-			onImageLoad,
-			cropCoordinates,
-			originalImageID,
-		} = useImage();
+		const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad, } = useImage();
 
 		const {
 			cropperInstance,
@@ -226,6 +217,9 @@ export default defineComponent({
 				imageData.value = null;
 			}
 		});
+
+		const randomId = ref<string>(nanoid());
+
 		const imageURL = computed(() => {
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
@@ -254,7 +248,7 @@ export default defineComponent({
 			cropping,
 			setAspectRatio,
 			customAspectRatios,
-			createNewImage,
+			createNewCrop,
 		};
 
 		function useImage() {
@@ -262,8 +256,7 @@ export default defineComponent({
 			const error = ref(null);
 			const imageData = ref<Image | null>(null);
 			const saving = ref(false);
-			const originalImageID = ref(null);
-			const cropCoordinates = ref<CropCoordinates | null>(null);
+
 			const imageElement = ref<HTMLImageElement | null>(null);
 
 			return {
@@ -275,39 +268,18 @@ export default defineComponent({
 				imageElement,
 				save,
 				onImageLoad,
-				cropCoordinates,
-				originalImageID,
 			};
 
 			async function fetchImage() {
 				try {
 					loading.value = true;
 
-					let response = await api.get(`/files/${props.id}`, {
+					const response = await api.get(`/files/${props.id}`, {
 						params: {
-							fields: [
-								'type',
-								'filesize',
-								'filename_download',
-								'width',
-								'height',
-								'crop_original_image_id',
-								'crop_coordinates',
-							],
+							fields: ['type', 'filesize', 'filename_download', 'width', 'height'],
 						},
 					});
-					const childImage = response.data.data;
-					const cropOriginalImageID = childImage.crop_original_image_id;
-					if (cropOriginalImageID && childImage.crop_coordinates) {
-						cropCoordinates.value = {
-							x: childImage.crop_coordinates.x,
-							y: childImage.crop_coordinates.y,
-							width: childImage.width,
-							height: childImage.height,
-						};
-						originalImageID.value = cropOriginalImageID;
-						response = await api.get(`/files/${cropOriginalImageID}`);
-					}
+
 					imageData.value = response.data.data;
 				} catch (err: any) {
 					error.value = err;
@@ -328,28 +300,15 @@ export default defineComponent({
 							saving.value = false;
 							return;
 						}
+
 						const formData = new FormData();
+						formData.append('file', blob, imageData.value?.filename_download);
+
 						try {
-							if (createNewImage.value) {
-								const cropperData = cropperInstance.value?.getData();
-								const x = cropperData?.x;
-								const y = cropperData?.y;
-
-								formData.append('crop_original_image_id', originalImageID.value || props.id);
-								formData.append('crop_coordinates', `{"x": ${x}, "y": ${y}}`);
-								formData.append('file', blob, imageData.value?.filename_download);
-
-								const newCropResponse = await api.post('/files', formData);
-								emit('replace-image', newCropResponse.data.data);
+							if (createNewCrop.value) {
+								
 							} else {
-								formData.append('file', blob, imageData.value?.filename_download);
 								await api.patch(`/files/${props.id}`, formData);
-
-								// Remove the crop metadata in case new image does not get created
-								if (originalImageID.value) {
-									await api.patch(`files/${props.id}`, { crop_coordinates: null, crop_original_image_id: null });
-								}
-
 								emit('refresh');
 							}
 							internalActive.value = false;
@@ -432,6 +391,7 @@ export default defineComponent({
 				set(newMode: 'move' | 'crop') {
 					cropperInstance.value?.setDragMode(newMode);
 					localDragMode.value = newMode;
+
 					if (newMode === 'move') {
 						cropperInstance.value?.clear();
 						localCropping.value = false;
@@ -440,7 +400,6 @@ export default defineComponent({
 			});
 
 			const localCropping = ref(false);
-
 			const cropping = computed({
 				get() {
 					return localCropping.value;
@@ -502,14 +461,14 @@ export default defineComponent({
 					}, 50),
 				});
 
-				if (cropCoordinates.value) {
+				if (props.cropCoordinates) {
 					setTimeout(() => {
 						cropperInstance.value?.crop();
 						cropperInstance.value?.setData({
-							x: cropCoordinates.value?.x,
-							y: cropCoordinates.value?.y,
-							width: cropCoordinates.value?.width,
-							height: cropCoordinates.value?.height,
+							x: props.cropCoordinates.x,
+							y: props.cropCoordinates.y,
+							width: imageData.value?.width,
+							height: imageData.value?.height,
 						});
 						dragMode.value = 'crop';
 					}, 100);

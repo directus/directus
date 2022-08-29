@@ -59,6 +59,7 @@ export function setSpecialForLocalType(updates: StateUpdates) {
 		case 'm2o':
 		case 'translations':
 		case 'file':
+		case 'image_crops':
 		case 'files':
 			set(updates, 'field.meta.special', [localType]);
 			break;

@@ -44,7 +44,7 @@ export const useRelationsStore = defineStore({
 					});
 				} else {
 					const createdRelationResponse = await api.post<{ data: Relation }>(`/relations`, values);
-
+					
 					this.relations = [...this.relations, createdRelationResponse.data.data];
 				}
 			} catch (err: any) {

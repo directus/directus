@@ -47,6 +47,15 @@
 			<related-collection-select v-model="relatedCollectionM2O" />
 		</div>
 
+		<div v-if="localType === 'image_crops'" class="field full">
+			<div class="label type-label">
+				{{ t('crop_collection') }}
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+			</div>
+
+			<related-collection-select v-model="o2mCollection" />
+		</div>
+
 		<div v-if="localType === 'm2a'" class="field full">
 			<div class="label type-label">
 				{{ t('related_collections') }}

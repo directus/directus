@@ -11,6 +11,8 @@ export type RelationMeta = {
 	one_collection_field: string | null;
 	one_allowed_collections: string[] | null;
 	one_deselect_action: 'nullify' | 'delete';
+	link_one_allowed_collections_back: boolean;
+	one_allowed_collections_relation_field: string;
 
 	junction_field: string | null;
 	sort_field: string | null;

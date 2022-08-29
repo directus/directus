@@ -51,6 +51,7 @@ export const LOCAL_TYPES = [
 	'm2a',
 	'presentation',
 	'translations',
+	'image_crops',
 	'group',
 ] as const;
 
