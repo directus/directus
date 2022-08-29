@@ -1,3 +1,5 @@
+const getRandomString = () => Math.random().toString(36).substring(2, 15);
+
 const testEnv = {
 	NUMBER: '1234',
 	NUMBER_CAST_AS_STRING: 'string:1234',
@@ -5,6 +7,9 @@ const testEnv = {
 	CSV: 'one,two,three,four',
 	CSV_CAST_AS_STRING: 'string:one,two,three,four',
 	MULTIPLE: 'array:string:https://example.com,regex:\\.example2\\.com$',
+	CACHE_REDIS_PASSWORD: `${getRandomString()},${getRandomString()}`,
+	MESSENGER_REDIS_PASSWORD: `${getRandomString()},${getRandomString()}`,
+	RATE_LIMITER_REDIS_PASSWORD: `${getRandomString()},${getRandomString()}`,
 };
 
 describe('env processed values', () => {
@@ -43,5 +48,11 @@ describe('env processed values', () => {
 
 	test('Multiple type cast', () => {
 		expect(env.MULTIPLE).toStrictEqual(['https://example.com', /\.example2\.com$/]);
+	});
+
+	test('*_REDIS_PASSWORD with a comma must be a string', () => {
+		expect(env.CACHE_REDIS_PASSWORD).toStrictEqual(testEnv.CACHE_REDIS_PASSWORD);
+		expect(env.MESSENGER_REDIS_PASSWORD).toStrictEqual(testEnv.MESSENGER_REDIS_PASSWORD);
+		expect(env.RATE_LIMITER_REDIS_PASSWORD).toStrictEqual(testEnv.RATE_LIMITER_REDIS_PASSWORD);
 	});
 });

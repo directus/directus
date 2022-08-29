@@ -278,6 +278,10 @@ const typeMap: Record<string, string> = {
 	FILE_METADATA_ALLOW_LIST: 'array',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
+
+	CACHE_REDIS_PASSWORD: 'string',
+	MESSENGER_REDIS_PASSWORD: 'string',
+	RATE_LIMITER_REDIS_PASSWORD: 'string',
 };
 
 let env: Record<string, any> = {
