@@ -52,7 +52,7 @@ export async function applySnapshot(
 							// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
 							// This is needed because they snapshots UUID fields as char with length 36.
 							if (
-								fieldDiff.schema?.data_type === 'char' &&
+								String(fieldDiff.schema?.data_type).toLowerCase() === 'char' &&
 								fieldDiff.schema?.max_length === 36 &&
 								(fieldDiff.schema?.is_primary_key ||
 									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
