@@ -1984,8 +1984,14 @@ panels:
   variable:
     name: Globale Variable
 triggers:
+  common:
+    response_body_last: Daten der letzten Operation
+  event:
+    action: 'Aktion (nicht blockierend)'
+    filter: 'Filter (blockierend)'
   webhook:
     name: Webhook
+    description: Auslösend bei eingehender HTTP-Anfrage
     method: Methode
     async: Asynchron
   schedule:
@@ -1998,13 +2004,18 @@ any_string_or_json: Ein String oder JSON...
 operations:
   condition:
     name: Kondition
+  exec:
+    name: Skript ausführen
+    modules: 'Die folgenden **Node Module** können genutzt werden:'
   item-create:
     name: Daten erstellen
     description: Elemente in der Datenbank erstellen
     payload: Nutzdaten
+    emit_events: Event auslösen
   item-delete:
     name: Daten löschen
     description: Elemente aus der Datenbank löschen
+    emit_events: Event auslösen
     key: IDs
     query: Abfrage
   item-read:
@@ -2012,13 +2023,16 @@ operations:
     description: Elemente aus der Datenbank lesen
     key: IDs
     query: Abfrage
+    emit_events: Event auslösen
   item-update:
     name: Daten aktualisieren
     description: Elemente in der Datenbank aktualisieren
+    emit_events: Event auslösen
     key: IDs
     payload: Nutzdaten
     query: Abfrage
   log:
+    name: Konsolenausgabe
     description: Etwas in die Konsole ausgeben
     message: Nachricht
     message_placeholder: Geben Sie eine Nachricht ein, die in der Konsole angezeigt werden soll...
@@ -2031,6 +2045,7 @@ operations:
   notification:
     name: Benachrichtigung senden
     recipient: Benutzer
+    recipient_placeholder: Benutzer UUID eingeben und Enter drücken...
     message: Nachricht
   request:
     name: Webhook / Anfrage URL
@@ -2042,8 +2057,14 @@ operations:
     header: Header
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
+    description: Gegebene Zeit in Millisekunden warten
     milliseconds: Millisekunden
+  transform:
+    name: Payload bearbeiten
+    description: JSON Payload des Flows bearbeiten
   trigger:
+    name: Flow auslösen
+    description: Daten an anderen Flow übergeben
     flows: Flows
     flow: Flow
     data: Daten
