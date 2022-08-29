@@ -13,7 +13,7 @@ export function getDefaultValuesFromFields(fields: Field[] | Ref<Field[]>) {
 					typeof field.schema.default_value === 'string'
 				)
 			) {
-				acc[field.field] = field.schema?.default_value;
+				acc[field.field] = field.schema.default_value;
 			}
 			return acc;
 		}, {} as Record<string, any>);
