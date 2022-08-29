@@ -144,19 +144,16 @@
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
-					<v-pagination
-						v-if="pageCount > 1"
-						v-model="page"
-						:length="pageCount"
-						:total-visible="width.includes('half') ? 3 : 5"
-					/>
+					<template v-if="pageCount > 1">
+						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
 
-					<div class="spacer" />
+						<div class="spacer" />
 
-					<div v-if="loading === false" class="per-page">
-						<span>{{ t('per_page') }}</span>
-						<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
-					</div>
+						<div v-if="loading === false" class="per-page">
+							<span>{{ t('per_page') }}</span>
+							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+						</div>
+					</template>
 				</template>
 				<template v-else>
 					<v-button v-if="enableCreate && createAllowed && updateAllowed" :disabled="disabled" @click="createItem">
