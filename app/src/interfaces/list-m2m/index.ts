@@ -195,6 +195,17 @@ export default defineInterface({
 						label: '$t:enable_search_filter',
 					},
 					width: 'half',
+					hidden: true,
+					conditions: [
+						{
+							rule: {
+								layout: {
+									_eq: 'table',
+								},
+							},
+							hidden: false,
+						},
+					],
 				},
 			},
 			{
