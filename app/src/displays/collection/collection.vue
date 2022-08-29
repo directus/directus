@@ -6,26 +6,20 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+<script setup lang="ts">
+import { toRefs } from 'vue';
 import { useCollection } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const collection = toRefs(props).value;
-		const { info } = useCollection(collection);
+interface Props {
+	value?: string
+	icon?: boolean
+}
 
-		return { info };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
+	icon: false
 });
+
+const {value} = toRefs(props);
+const { info } = useCollection(value);
 </script>

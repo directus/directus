@@ -68,15 +68,11 @@ import formatTitle from '@directus/format-title';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { merge, padStart } from 'lodash';
 import {getFieldDefaults} from '../utils/getFieldDefaults';
+import { getDefaultValue, typeToString } from '../utils/getDefaultValue';
+import { getComponent } from '../utils/getComponent';
 
 interface Props {
     id: string
-}
-
-interface PropInfo {
-    type: any,
-    default?: string | boolean | number | Function,
-    required?: boolean
 }
 
 interface EmittedInfo {
@@ -137,16 +133,18 @@ async function updateField(value?: InterfaceConfig) {
 
     const fieldDefaults = getFieldDefaults('interface', props.id)
 
-    fields.value = Object.entries(propInfo).map(([key, value]) => {
+    const keys = new Set([...Object.keys(propInfo), ...Object.keys(fieldDefaults)])
+
+    fields.value = [...keys].map(key => {
 
         return merge({
             field: key,
             meta: {
                 width: 'half',
-                required: value.required ?? false,
+                required: propInfo[key].required ?? false,
             },
             name: formatTitle(key),
-            type: typeToString(value.type),
+            type: typeToString(propInfo[key].type),
         } as Field,
             fieldDefaults[key]
         )
@@ -177,57 +175,9 @@ async function updateListeners(value?: InterfaceConfig) {
     }, {})
 }
 
-async function getComponent(component: any): Promise<{props?: Record<string, any>, emits?: string[]}> {
-    if('__asyncLoader' in component) {
-        return await component.__asyncLoader()
-    }
-
-    return component
-}
-
-
 function openEmit(index: number) {
     emitOpen.value = index
 }
-
-function typeToString(type: any) {
-    switch(type) {
-        case String:
-            return 'string'
-        case Number:
-            return 'integer'
-        case Boolean:
-            return 'boolean'
-        case Array:
-            return 'json'
-        case Object:
-            return 'json'
-        default:
-            return 'string'
-    }
-}
-
-function getDefaultValue(prop: PropInfo) {
-    if (prop.default) {
-        return typeof prop.default === 'function' ? prop.default() : prop.default
-    }
-
-    switch(prop.type) {
-        case String:
-            return ''
-        case Number:
-            return 0
-        case Boolean:
-            return false
-        case Array:
-            return []
-        case Object:
-            return {}
-        default:
-            return null
-    }
-}
-
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {

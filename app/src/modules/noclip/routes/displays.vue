@@ -27,7 +27,7 @@
                 <component v-if="loaded" :is="`display-${id}`" v-bind="bindings" />
             </div>
 
-            <v-divider />
+            <v-divider>{{t('props')}}</v-divider>
 
             <div class="props">
                 <v-form v-model="bindings" :fields="fields" />
@@ -38,25 +38,21 @@
 
 <script lang="ts" setup>
 import Navigation from '../components/navigation.vue';
-import { ComponentInternalInstance, computed, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/shared/types';
+import { DisplayConfig, Field } from '@directus/shared/types';
 import formatTitle from '@directus/format-title';
 import { getDisplay } from '@/displays';
+import { getDefaultValue, typeToString } from '../utils/getDefaultValue';
+import { keyBy, merge } from 'lodash';
+import { getFieldDefaults } from '../utils/getFieldDefaults';
+import { getComponent } from '../utils/getComponent';
 
 interface Props {
-	role: string | null;
     id: string
 }
 
-interface PropInfo {
-    type: any,
-    default?: string | boolean | number | (() => any),
-    required?: boolean
-}
-
 const props = withDefaults(defineProps<Props>(), {
-	role: null,
 });
 
 const { t } = useI18n();
@@ -68,101 +64,60 @@ const displayInfo = computed(() => getDisplay(props.id))
 const bindings = ref<Record<string, any>>({})
 const loaded = ref(false)
 
-watch(displayInfo, (newValue) => {
-    if (newValue) {
-        bindings.value = {}
-        const props = (newValue.component as any as ComponentInternalInstance).props as Record<string, PropInfo>
+watch(displayInfo, (value) => {
+    updateDefaults(value)
+    updateField(value)
+}, { immediate: true })
 
-        for(const [key, value] of Object.entries(props)) {
-            bindings.value[key] = getDefaultValue(value)
+async function updateDefaults(value?: DisplayConfig) {
+    if (value) {
+        loaded.value = false
+        bindings.value = {}
+        let propInfo = (await getComponent(value.component)).props
+        if(!propInfo) return
+
+        const fieldDefaults = getFieldDefaults('display', props.id)
+
+        for(const [key, value] of Object.entries(propInfo)) {
+            bindings.value[key] = fieldDefaults[key]?.default ?? getDefaultValue(value)
         }
 
         loaded.value = true
     } else {
         loaded.value = false
     }
-}, { immediate: true })
+}
 
-const fields = computed(() => {
-    if (!displayInfo.value) return []
-    const props = (displayInfo.value.component as any).props as Record<string, PropInfo>
+const fields = ref<Field[]>([])
 
-    const fields = Object.entries(props).map(([key, value]) => {
-        return {
-            collection: 'directus_users',
+async function updateField(value?: DisplayConfig) {
+    if (!value) return []
+    const propInfo = (await getComponent(value.component)).props
+
+    if(!propInfo) return []
+
+    const fieldDefaults = getFieldDefaults('display', props.id)
+
+    const keys = new Set([...Object.keys(propInfo), ...Object.keys(fieldDefaults)])
+
+    fields.value = [...keys].map(key => {
+
+        return merge({
             field: key,
             meta: {
-                interface: getDefaultInterface(value.type),
-                width: 'half'
-            },
-            schema: {
-                default_value: getDefaultValue(value),
+                width: 'half',
+                required: propInfo[key].required ?? false,
             },
             name: formatTitle(key),
-            type: typeToString(value.type),
-        } as Field
+            type: typeToString(propInfo[key].type),
+        } as Field,
+            fieldDefaults[key] ?? {},
+        )
     })
-    return fields
-})
-
-function typeToString(type: any) {
-    switch(type) {
-        case String:
-            return 'string'
-        case Number:
-            return 'integer'
-        case Boolean:
-            return 'boolean'
-        case Array:
-            return 'csv'
-        case Object:
-            return 'json'
-        default:
-            return 'string'
-    }
 }
-
-function getDefaultInterface(type: any) {
-    switch(type) {
-        case String:
-            return 'text'
-        case Number:
-            return 'number'
-        case Boolean:
-            return 'checkbox'
-        default:
-            return 'text'
-    }
-}
-
-function getDefaultValue(prop: PropInfo) {
-    if (prop.default) {
-        return typeof prop.default === 'function' ? prop.default() : prop.default
-    } else if (prop.required) {
-        switch(prop.type) {
-            case String:
-                return ''
-            case Number:
-                return 0
-            case Boolean:
-                return false
-            case Array:
-                return []
-            case Object:
-                return {}
-            default:
-                return null
-        }
-    } else {
-        return undefined
-    }
-}
-
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {
-		if (!props.role) return null;
-
 		return [
 			{
 				name: t('user_directory'),
@@ -177,7 +132,6 @@ function useBreadcrumb() {
 
 	return { breadcrumb, title };
 }
-
 </script>
 
 <style lang="scss" scoped>

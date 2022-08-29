@@ -151,6 +151,105 @@ export function getFieldDefaults(type: 'interface' | 'display', name: string): R
                     })
                 }
         }
+    } else if (type === 'display') {
+        switch(name) {
+            case 'boolean':
+                return {
+                    labelOn: def('Currently On'),
+                    labelOff: def('Currently Off'),
+                    value: def(true),
+                }
+            case 'collection':
+                return {
+                    value: def('directus_settings')
+                }
+            case 'color':
+                return {
+                    value: def('#6644ff')
+                }
+            case 'datetime':
+                return {
+                    value: def('2001-01-02T18:30:00'),
+                    type: def('dateTime', {
+                        meta: {
+                            interface: 'select-dropdown',
+                            options: {
+                                choices: [{ text: 'Date', value: 'date' }, { text: 'Time', value: 'time' }, { text: 'DateTime', value: 'dateTime' }, { text: 'Timestamp', value: 'timestamp' }]
+                            }
+                        }
+                    }),
+                    format: def('yyyy-MMM-dd HH:mm', {
+                        meta: {
+                            interface: 'select-dropdown',
+                            options: {
+                                choices: [{text: 'Long', value: 'long'}, {text: 'Short', value: 'short'}],
+                                allowOther: true
+                            }
+                        }
+                    })
+                }
+            case 'file':
+                return {
+                    value: def({
+                        id: '5fe34cf0-453d-4b72-bbde-e24c8ea76ec2',
+                        type: 'image/jpeg',
+                        title: 'image.jpg',
+                    })
+                }
+            case 'filesize':
+                return {
+                    value: def(100000, {
+                        type: 'integer',
+                    })
+                }
+            case 'formatted-json-value':
+                return {
+                    value: def({
+                        foo: 'bar',
+                        baz: 'qux',
+                        quux: {
+                            corge: 'grault',
+                            garply: 'waldo',
+                        },
+                    }, {
+                        type: 'json',
+                    }),
+                    format: def('{{baz}} --- {{quux.corge}}')
+                }
+            case 'formatted-value':
+                return {
+                    type: def('string'),
+                    value: def('hello-world'),
+                    format: def(true)
+                }
+            case 'icon':
+                return {
+                    value: def('widgets'),
+                    color: def('#6644ff')
+                }
+            case 'image':
+                return {
+                    value: def({
+                        "id": "5fe34cf0-453d-4b72-bbde-e24c8ea76ec2",
+                        "type": "image/jpeg",
+                        "title": "image.jpg"
+                    })
+                }
+            case 'labels':
+                return {
+                    value: def(['item-1', 'item-2', 'item-3'])
+                }
+            case 'mime-type':
+                return {
+                    value: def("image/jpeg")
+                }
+            case 'rating':
+                return {
+                    value: def(3.5, {
+                        type: 'integer',
+                    })
+                }
+        }
     }
 
     return {}
