@@ -1,7 +1,7 @@
 import api from '@/api';
 import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
+import { clamp, cloneDeep, isEqual, merge, isPlainObject, isNil } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
@@ -223,7 +223,7 @@ export function useRelationMultiple(
 			for (const item of items) {
 				target.value.create.push(
 					cleanItem(
-						sortField && (item[sortField] === undefined || item[sortField] === null)
+						sortField && isNil(item[sortField])
 							? {
 									...item,
 									[sortField]: (totalSortMax.value || 0) + 1,
