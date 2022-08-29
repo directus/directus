@@ -289,14 +289,14 @@ export class ServerService {
 
 			for (const location of toArray(env.STORAGE_LOCATIONS)) {
 				const disk = storage.disk(location);
-				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase()
+				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 				checks[`storage:${location}:responseTime`] = [
 					{
 						status: 'ok',
 						componentType: 'objectstore',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env[envThresholdKey] ? +env[envThresholdKey] : 750
+						threshold: env[envThresholdKey] ? +env[envThresholdKey] : 750,
 					},
 				];
 
