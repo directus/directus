@@ -1,6 +1,7 @@
 import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
 import { KNEX_TYPES } from '@directus/shared/constants';
+import { Field, Type } from '@directus/shared/types';
 
 type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 
@@ -89,5 +90,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	async postColumnDelete(): Promise<void> {
 		return;
+	}
+
+	processFieldType(field: Field): Type {
+		return field.type;
 	}
 }
