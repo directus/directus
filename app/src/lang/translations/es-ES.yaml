@@ -2062,14 +2062,22 @@ operations:
     description: Borrar elementos en la base de datos
     emit_events: Emitir eventos
     key: IDs
+    query: Consulta
   item-read:
+    name: Leer datos
+    description: Leer elementos de la base de datos
     key: IDs
+    query: Consulta
     emit_events: Emitir eventos
   item-update:
+    name: Actualizar datos
+    description: Actualizar elementos en la base de datos
     emit_events: Emitir eventos
     key: IDs
     payload: Payload
+    query: Consulta
   log:
+    name: Registrar en la consola
     message: Mensaje
   notification:
     recipient: Usuario
