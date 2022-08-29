@@ -580,6 +580,9 @@ errors:
   INVALID_PAYLOAD: Błędny payload
   INVALID_PROVIDER: Użytkownik należy do innego dostawcy autoryzacji
   INVALID_QUERY: Nieprawidłowe zapytanie
+  INVALID_CONFIG: Nieprawidłowa konfiguracja
+  INVALID_TOKEN: Nieprawidłowy token
+  INVALID_IP: Adres IP niedozwolony
   INVALID_USER: Błąd uwierzytelniania użytkownika
   ITEM_LIMIT_REACHED: Osiągnięto limit przedmiotów
   ITEM_NOT_FOUND: Nie znaleziono elementu
@@ -596,6 +599,13 @@ errors:
   INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
   GRAPHQL_VALIDATION_EXCEPTION: Wyjątek sprawdzania poprawności grafiki
+  SERVICE_UNAVAILABLE: Serwis niedostępny
+  UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
+  UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
+  TOKEN_EXPIRED: Token wygasł
+  RANGE_NOT_SATISFIABLE: Błędny zakres
+  METHOD_NOT_ALLOWED: Metoda niedozwolona
+  REQUESTS_EXCEEDED: Osiągnięto limit żądań
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
