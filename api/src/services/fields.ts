@@ -178,7 +178,7 @@ export class FieldsService {
 				field.type = 'dateTime';
 			}
 
-			field.type = this.helpers.schema.processFieldType(field);
+			this.helpers.schema.processField(field);
 		}
 
 		return result;
