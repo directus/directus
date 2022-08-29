@@ -30,14 +30,6 @@ export type ChangesItem = {
 	delete: (string | number)[];
 };
 
-function getSortMax(...values: (number | null)[]) {
-	return values.reduce<null | number>((max, v) => {
-		if (max === null) return v;
-		if (v === null) return max;
-		return Math.max(max, v);
-	}, null);
-}
-
 export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
@@ -93,12 +85,13 @@ export function useRelationMultiple(
 		const sortField = relation.value?.sortField;
 		if (!sortField) return null;
 
-		const createdSorts = _value.value.create.map((v) => v[sortField]);
+		const createdSorts = _value.value.create.map((v) => v[sortField] as number);
 		if (relation.value?.type === 'o2m') {
-			return getSortMax(existingSortMax.value, ...createdSorts, ...selected.value.map((v) => v[sortField]));
+			const selectedSorts = selected.value.map((v) => v[sortField] as number);
+			return Math.max(existingSortMax.value ?? 0, ...createdSorts, ...selectedSorts);
 		}
 
-		return getSortMax(existingSortMax.value, ...createdSorts);
+		return Math.max(existingSortMax.value ?? 0, ...createdSorts);
 	});
 
 	const createdItems = computed(() => {
