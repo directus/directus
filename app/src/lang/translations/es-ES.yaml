@@ -1423,6 +1423,12 @@ table: Tabla
 list: Lista
 search_filter: Buscar & Filtrar
 enable_search_filter: Habilitar busqueda y filtración
+item_link: Enlace de elemento
+show_link_to_item: Mostrar un enlace al elemento
+navigate_to_item: Navegar al elemento
+undo_removed_item: Deshacer eliminar elemento
+remove_item: Eliminar elemento
+delete_item: Borrar elemento
 interfaces:
   filter:
     name: Filtro
@@ -1439,6 +1445,7 @@ interfaces:
     no_rules: No hay reglas configuradas
     change_value: Haga clic para cambiar el valor
     placeholder: Arrastre archivos a esta zona
+    add_key_placeholder: Añada una clave y presionar Enter...
   fields:
     name: Campos
   group-accordion:
@@ -1503,6 +1510,7 @@ interfaces:
     placeholder: Elija una fecha...
   system-fields:
     select_a_collection: Seleccionar una Colección
+    no_fields: No hay campos
   system-display-template:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
@@ -1526,6 +1534,7 @@ interfaces:
     allow_none_label: Permitir "Sin selección"
     choices_name_placeholder: Ingrese un nombre...
     choices_value_placeholder: Ingrese un valor...
+    preview_threshold: Umbral de vista previa
   select-multiple-dropdown:
     select-multiple-dropdown: Lista Desplegable (Múltiple)
     description: Seleccione múltiples valores de una lista de selección
@@ -1559,6 +1568,7 @@ interfaces:
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
+    columns_configure_notice: Puedes configurar las columnas después de crear este campo.
     display_template_configure_notice: Puede configurar la plantilla de pantalla después de crear este campo.
   select-dropdown-m2o:
     many-to-one: Muchos a Uno
@@ -1676,6 +1686,7 @@ interfaces:
     user_language: Usar el idioma actual del usuario
     default_language: Idioma predeterminado
     language_field: Campo indicador de idioma
+    language_direction_field: Campo de Dirección de Idioma
   list-o2m-tree-view:
     description: Vista del árbol para elementos anidados recursivos uno a muchos
     recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
@@ -1717,6 +1728,16 @@ interfaces:
     start_closed: Iniciar colapsado
   system-token:
     system-token: Token
+    description: Administrar token de acceso estático
+    placeholder: Haga clic en "Generar token" para crear un nuevo token de acceso estático
+    value_securely_saved: Valor guardado de forma segura
+    generate: Generar token
+    regenerate: Regenerar token
+    generate_success_copy: Asegúrese de hacer una copia de seguridad y copiar el token de arriba. Por razones de seguridad, no podrá volver a ver el token después de guardar y navegar fuera de esta página.
+    remove_token: Remover token
+  system-raw-editor:
+    system-raw-editor: Editor bruto
+    description: Permitir la introducción de valores de plantillas en crudo o en mostacho
 displays:
   translations:
     translations: Traducciones
@@ -1755,6 +1776,16 @@ displays:
     relative: Relativa
     relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
     suffix: Sufijo
+    suffix_label: Mostrar indicador relativo
+    suffix_note: Usa palabras cómo 'en' y 'antes'
+    strict: Estricto
+    strict_label: Usa unidades estrictas
+    strict_note: Remover palabras cómo 'casi', 'encima', 'menos que'
+    round: Redondeo
+    round_note: Escoja una función de redondeo para usar
+    down: Abajo
+    nearest: Más cercano
+    up: Arriba
   file:
     file: Archivo
     description: Presentar archivos
@@ -1933,6 +1964,7 @@ panels:
     y_axis_conditional_one: Valor para la condición
     y_axis_conditional_two: debe ser un número.
   linechart:
+    name: Gráficos de línea
     description: Gráfico de líneas para comparar el cambio de un campo.
     select_field: Debe seleccionar un campo.
     select_collection: Debe seleccionar una colección.
@@ -2005,10 +2037,37 @@ triggers:
   manual:
     name: Manual
     description: Se activa al ejecutar manualmente sin colección(es) seleccionada
+    collection_and_item: Paginas de colección y elementos
+    collection_only: Pagina de colección solamente
+    item_only: Página de elemento solamente
+a_flow_uuid: Clave primaria UUID del flujo...
+any_string_or_json: Alguna cadena o JSON...
+item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
+operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condición
+    description: Enrutar un flujo basado en si / Otra lógica
+  exec:
+    name: Ejecutar script
+    description: Ejecutar código arbitrario para modificar el payload
+    modules: 'Los siguientes **módulos del nodo** pueden ser usados:'
   item-create:
+    name: Crear datos
+    description: Crear elementos en la base de datos
     payload: Payload
+    emit_events: Emitir eventos
+  item-delete:
+    name: Borrar datos
+    description: Borrar elementos en la base de datos
+    emit_events: Emitir eventos
+    key: IDs
+  item-read:
+    key: IDs
+    emit_events: Emitir eventos
   item-update:
+    emit_events: Emitir eventos
+    key: IDs
     payload: Payload
   log:
     message: Mensaje
