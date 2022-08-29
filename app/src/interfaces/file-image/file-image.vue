@@ -111,13 +111,19 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const cropID = props.value
+const cropID = computed({
+	get: () => props.value ?? null,
+	set: (value) => {
+		emit('input', value);
+	},
+});
+
 const cropQuery = ref<RelationQuerySingle>({
 	fields: ['x,y,file_id.*'],
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem: cropInfo, loading, update, remove, refresh } = useRelationSingle(ref(cropID), cropQuery, relationInfo);
+const { displayItem: cropInfo, loading, update, remove, refresh } = useRelationSingle(cropID, cropQuery, relationInfo);
 
 const fileID = computed(() => {
 	if (!cropInfo.value) return null;
