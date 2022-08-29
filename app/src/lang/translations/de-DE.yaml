@@ -312,6 +312,7 @@ foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 toggle_raw_editor: Raw-Editor umschalten
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Rohwert
 copy_raw_value: Unverarbeiteten Wert kopieren
 copy_raw_value_success: Kopiert
@@ -581,6 +582,8 @@ errors:
   INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_PROVIDER: Benutzer gehört zu einem anderen Authentifizierungsanbieter
   INVALID_QUERY: Ungültige anfrage
+  INVALID_CONFIG: Ungültige Konfiguration
+  INVALID_TOKEN: Token ungültig
   INVALID_IP: IP-Adresse nicht erlaubt
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
@@ -598,6 +601,11 @@ errors:
   INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
   UNKNOWN: Unerwarteter Fehler
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
+  SERVICE_UNAVAILABLE: Dienst nicht verfügbar
+  UNEXPECTED_RESPONSE: Unerwartete Antwort
+  TOKEN_EXPIRED: Token abgelaufen
+  RANGE_NOT_SATISFIABLE: Ungültiger Bereich
+  REQUESTS_EXCEEDED: Anfragelimit erreicht
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
@@ -975,6 +983,8 @@ page_help_settings_presets_item: >-
   **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
 page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
+page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
+page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
 page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
@@ -1007,6 +1017,7 @@ directus_collection:
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_notifications: Benachrichtigungen an Benutzer gesendet
+  directus_operations: In Flows ausgeführte Operationen
   directus_panels: Individuelle Panels in Einblicke-Dashboards
   directus_permissions: Zugriffsrechte für jede Rolle
   directus_presets: Vorlagen für Sammlung und Lesezeichen
@@ -1410,6 +1421,9 @@ table: Tabelle
 list: Liste
 search_filter: Suche & Filter
 enable_search_filter: Suche & Filterung aktivieren
+item_link: Elementlink
+show_link_to_item: Zeige Link zum Element
+navigate_to_item: Zum Element navigieren
 undo_removed_item: Entferntes Item rückgängig
 remove_item: Item entfernen
 delete_item: Item löschen
@@ -1552,6 +1566,7 @@ interfaces:
   list-m2m:
     many-to-many: n:n
     description: Mehrere verwandte Elemente auswählen
+    columns_configure_notice: Sie können Spalten nach dem Anlegen der Felder konfigurieren.
     display_template_configure_notice: Sie können die Anzeige-Vorlage nach dem Erstellen dieses Feldes konfigurieren.
   select-dropdown-m2o:
     many-to-one: n:1
@@ -1966,6 +1981,8 @@ panels:
     right: Rechts
     bottom: Unten
     monochrome: Monochrom
+  variable:
+    name: Globale Variable
 triggers:
   webhook:
     name: Webhook
