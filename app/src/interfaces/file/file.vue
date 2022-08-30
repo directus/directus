@@ -46,7 +46,7 @@
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item clickable :download="file.filename_download" :href="useAssetUrl(file.id, true)">
+					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, true)">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -88,7 +88,7 @@
 			@input="update"
 		>
 			<template #actions>
-				<v-button secondary rounded icon :download="file.filename_download" :href="useAssetUrl(file.id, true)">
+				<v-button secondary rounded icon :download="file.filename_download" :href="getAssetUrl(file.id, true)">
 					<v-icon name="download" />
 				</v-button>
 			</template>
@@ -148,7 +148,7 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed, toRefs } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
-import { useAssetUrl } from '@/composables/use-asset-url';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';

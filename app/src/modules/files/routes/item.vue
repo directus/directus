@@ -71,7 +71,7 @@
 				icon
 				rounded
 				:download="item?.filename_download"
-				:href="useAssetUrl(props.primaryKey, true)"
+				:href="getAssetUrl(props.primaryKey, true)"
 			>
 				<v-icon name="download" />
 			</v-button>
@@ -183,11 +183,11 @@
 
 <script lang="ts" setup>
 import api from '@/api';
-import { useAssetUrl } from '@/composables/use-asset-url';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
