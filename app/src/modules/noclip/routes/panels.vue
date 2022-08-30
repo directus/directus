@@ -39,6 +39,7 @@
 								:height="tile.height"
 								:width="tile.width"
 								:now="now"
+								:data="tiles[0].data"
 							/>
 						</div>
 					</template>
@@ -74,9 +75,8 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DeepPartial, Field, PanelConfig } from '@directus/shared/types';
 import formatTitle from '@directus/format-title';
-import { merge } from 'lodash';
 import { getFieldDefaults } from '../utils/getFieldDefaults';
-import { getDefaultValue, typeToString } from '../utils/getDefaultValue';
+import { getDefaultValue } from '../utils/getDefaultValue';
 import { getComponent } from '../utils/getComponent';
 import { getPanel } from '@/panels';
 import VWorkspace from '@/components/v-workspace.vue';
@@ -99,6 +99,8 @@ const editMode = ref(false);
 const bindings = ref<Record<string, any>>({});
 const loaded = ref(false);
 
+const fields = ref<Partial<Field>[]>([]);
+
 const workspaceOptions = computed({
 	get() {
 		return {
@@ -112,37 +114,40 @@ const workspaceOptions = computed({
 	},
 });
 
-const tiles = ref<AppTile[]>([
-	{
-		height: 20,
-		width: 20,
-		x: 10,
-		y: 2,
-		id: 'my-id',
-		name: 'My Panel',
-	},
-]);
+const tiles = ref<AppTile[]>([]);
 
 watch(
 	panelInfo,
 	(value) => {
 		updateDefaults(value);
 		updateField(value);
+		updateTile();
 	},
 	{ immediate: true }
 );
+
+function updateTile() {
+	tiles.value[0] = {
+		height: 20,
+		width: 20,
+		x: 10,
+		y: 2,
+		id: 'my-id',
+		name: 'My Panel',
+		data: getFieldDefaults('panel', props.id)?.data?.default ?? [],
+	};
+}
 
 async function updateDefaults(value?: PanelConfig) {
 	if (value) {
 		loaded.value = false;
 		bindings.value = {};
-		let propInfo = (await getComponent(value.component)).props;
-		if (!propInfo) return;
 
-		const fieldDefaults = getFieldDefaults('interface', props.id);
+		const fieldDefaults = getFieldDefaults('panel', props.id);
+		const options = getOptions(value.options, bindings.value);
 
-		for (const [key, value] of Object.entries(propInfo)) {
-			bindings.value[key] = fieldDefaults[key]?.default ?? getDefaultValue(value);
+		for (const key of Object.keys(options)) {
+			bindings.value[key] = fieldDefaults[key]?.default;
 		}
 
 		loaded.value = true;
@@ -151,32 +156,12 @@ async function updateDefaults(value?: PanelConfig) {
 	}
 }
 
-const fields = ref<Field[]>([]);
-
 async function updateField(value?: PanelConfig) {
 	if (!value) return [];
-	const propInfo = (await getComponent(value.component)).props;
 
-	if (!propInfo) return [];
+	const options = getOptions(value.options, bindings.value);
 
-	const fieldDefaults = getOptions(value.options);
-
-	const keys = new Set([...Object.keys(propInfo), ...Object.keys(fieldDefaults)]);
-
-	fields.value = [...keys].map((key) => {
-		return merge(
-			{
-				field: key,
-				meta: {
-					width: 'half',
-					required: propInfo[key]?.required ?? false,
-				},
-				name: formatTitle(key),
-				type: typeToString(propInfo[key]?.type),
-			} as Field,
-			fieldDefaults[key] ?? {}
-		);
-	});
+	fields.value = Object.values(options);
 }
 
 function useBreadcrumb() {
@@ -210,64 +195,110 @@ function updatePanel({
 const panelFields = computed(() => {
 	const fields: DeepPartial<Field>[] = [
 		{
+			field: 'data',
+			type: 'json',
+		},
+		{
 			field: 'id',
 			type: 'string',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'height',
 			type: 'integer',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'width',
 			type: 'integer',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'x',
 			type: 'integer',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'y',
 			type: 'integer',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'name',
 			type: 'string',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'icon',
 			type: 'string',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'color',
 			type: 'string',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'note',
 			type: 'string',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'showHeader',
 			type: 'boolean',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'minWidth',
 			type: 'integer',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'minHeight',
 			type: 'integer',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'draggable',
 			type: 'boolean',
+			meta: {
+				width: 'half',
+			},
 		},
 		{
 			field: 'borderRadius',
 			type: 'json',
+			meta: {
+				width: 'half',
+			},
 		},
 	];
 
-	return fields.map((panel) => ({ ...panel, meta: { width: 'half' }, name: formatTitle(panel.field ?? '') }));
+	return fields.map((panel) => ({ ...panel, name: formatTitle(panel.field ?? '') }));
 });
 
 const workspaceFields = computed(() => [

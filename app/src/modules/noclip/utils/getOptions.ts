@@ -1,12 +1,12 @@
-import { Field } from '@directus/shared/types';
+import { DeepPartial, Field } from '@directus/shared/types';
 
-export function getOptions(options?: any): Record<string, Partial<Field>> {
+export function getOptions(options: any, bindings: Record<string, any>): Record<string, Partial<Field>> {
 	if (!options) return {};
 
 	let reference = options;
 
 	if (typeof options === 'function') {
-		reference = options({ options: {} });
+		reference = options({ options: bindings });
 	}
 
 	if (!Array.isArray(reference)) {
