@@ -101,6 +101,8 @@
 					</v-list>
 				</v-menu>
 
+				<v-checkbox v-if="!cropInfo.coordinates && dragMode === 'crop'" v-model="referToOriginalImage" :label="t('refer_to_original_image')" />
+
 				<div class="spacer" />
 
 				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
@@ -184,7 +186,7 @@ export default defineComponent({
 
 		const localActive = ref(false);
 
-		const createNewCrop = ref(false);
+		const referToOriginalImage = ref(false);
 
 		const internalActive = computed({
 			get() {
@@ -231,6 +233,8 @@ export default defineComponent({
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
 
+		const cropInfo = computed(() => props.cropInfo);
+
 		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
 
 		return {
@@ -255,7 +259,7 @@ export default defineComponent({
 			cropping,
 			setAspectRatio,
 			customAspectRatios,
-			createNewCrop,
+			referToOriginalImage,
 		};
 
 		function useImage() {
@@ -314,7 +318,9 @@ export default defineComponent({
 						try {
 							const cropperData = cropperInstance.value?.getData();
 
-							if (cropperData && props.cropInfo.id && props.cropInfo.collection) {
+							if (!referToOriginalImage.value && !props.cropInfo.coordinates) {
+								await api.patch(`/files/${props.id}`, formData);
+							} else if (cropperData && props.cropInfo.cropCollection && props.cropInfo.id) {
 								const x = Math.round(cropperData.x);
 								const y = Math.round(cropperData.y);
 								const width = Math.round(cropperData.width);
@@ -326,11 +332,11 @@ export default defineComponent({
 									width: width,
 									height: height,
 								});
-
-								emit('refresh');
-								internalActive.value = false;
-								randomId.value = nanoid();
 							}
+
+							emit('refresh');
+							internalActive.value = false;
+							randomId.value = nanoid();
 						} catch (err: any) {
 							unexpectedError(err);
 						} finally {
