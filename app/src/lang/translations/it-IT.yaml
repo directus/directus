@@ -499,7 +499,7 @@ reset_interface: Reimposta interfaccia
 display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
 list-m2a: Costruttore (M2A)
-item_count: 'Nessun elemento | Un articolo | {count} Articoli'
+item_count: 'Nessun elemento | Un elemento | {count} elementi'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
@@ -786,8 +786,8 @@ create_trigger: Crea un trigger
 trigger_setup: Impostazione del trigger
 change_trigger: Cambia trigger
 flow_delete_confirm: Sei sicuro di voler eliminare il flusso "{flow}"? Questa azione non può essere annullata.
-set_flow_active: Rendi il flusso attivo
-set_flow_inactive: Rendi il flusso disattivo
+set_flow_active: Attiva il flusso
+set_flow_inactive: Disattiva il flusso
 edit_flow: Modifica il flusso
 delete_flow: Elimina il flusso
 no_other_flows_copy: Non hai ancora ancora nessun altro flusso.
@@ -1000,7 +1000,7 @@ all: Tutti
 none: Nessuno
 no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
-  Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
+  Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
 no_upscale: Non ingrandire le immagini
 collection: Raccolta
@@ -1771,7 +1771,7 @@ displays:
     description: Visualizza valori relativi al tempo
     format: Formato
     format_note: >-
-      Il formato personalizzato accetta la __[tabella dei simboli del campo data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Il formato personalizzato accetta i simboli nella __[tabella dei simboli del campo data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lungo
     short: Breve
     relative: Relativo
