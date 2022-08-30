@@ -83,7 +83,7 @@ import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import getDefaultValuesFromFields from '@/utils/get-default-values-from-fields';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';

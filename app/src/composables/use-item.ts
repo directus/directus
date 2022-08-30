@@ -15,7 +15,7 @@ import { merge } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Relation } from '@directus/shared/types';
-import getDefaultValuesFromFields from '@/utils/get-default-values-from-fields';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
