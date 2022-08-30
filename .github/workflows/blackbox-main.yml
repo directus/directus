@@ -1,6 +1,9 @@
 name: Blackbox Tests
 
 on:
+  pull_request: # Remove block before marking PR as ready for review
+    branches:
+      - main
   push:
     branches:
       - main
