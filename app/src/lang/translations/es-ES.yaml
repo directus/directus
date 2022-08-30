@@ -43,49 +43,49 @@ item_creation: Creación de artículos
 item_revision: Revisión de Elemento
 enter_a_name: Introduce un Nombre...
 duplicate_field: Duplicar Campo
-half_width: Anchura 50%
+half_width: Media Ancho
 full_width: Ancho Completo
 group: Grupo
 export_items: Exportar elementos
 and: "Y"
 or: O
 init: Inicializador
-dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente muestra los primeros {n} elementos.
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente mostraremos los primeros {n} elementos.
 modifier: Modificador
-custom: Personalizado
+custom: Personalizar
 hook: Hook
 fill_width: Llenar Ancho
-field_name_translations: 'Nombre de Campo: Traducciones'
-enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
-add_field: Agregar Campo
-role_name: Nombre del Rol
+field_name_translations: Traducciones del nombre del campo
+enter_password_to_enable_tfa: Introduce tu contraseña para habilitar la autenticación de dos factores
+add_field: Añadir campo
+role_name: Nombre del rol
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
-edit_collection: Editar Colección
+edit_collection: Editar colección
 exclusive: Exclusivo
-children: Subsecciones
-db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
+children: Niños
+db_only_click_to_configure: 'Solo para la base de datos: Clic para configurar'
 show_active_items: Mostrar elementos activos
-show_archived_items: Mostrar Elementos Archivados
+show_archived_items: Mostrar elementos archivados
 show_all_items: Mostrar todos los elementos
-edited: Valor Editado
+edited: Valor editado
 required: Requerido
-required_for_app_access: Necesario para el acceso a App
-requires_value: Valor obligatorio
-create_preset: Crear Predefinido
-create_panel: Crear Panel
+required_for_app_access: Requerido para el acceso a la aplicación
+requires_value: Requiere un valor
+create_preset: Crear preestablecido
+create_panel: Crear panel
 create_role: Crear Rol
-create_user: Crear Usuario
+create_user: Crear usuario
 message: Mensaje
-delete_panel: Eliminar Panel
-create_webhook: Crear Webhook
-create_translation_string: Crear Traducciones
+delete_panel: Eliminar panel
+create_webhook: Crear webhook
+create_translation_string: Crear cadena de traducción
 no_translation_string: No hay cadenas de traducción
 no_translation_string_copy: Todavía no hay cadenas de traducción.
 translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar traducción
+edit_translation_string: Editar cadena de traducción
 delete_translation_string_copy: >-
   ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
@@ -1085,7 +1085,7 @@ fields:
   directus_users:
     first_name: Nombres
     last_name: Apellidos
-    email: Correo Electrónico
+    email: Correo electrónico
     password: Contraseña
     avatar: Avatar
     location: Ubicación
@@ -1167,10 +1167,10 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: 'Nombre de Campo: Traducciones'
+    translation: Traducciones del nombre del campo
     display_template: Plantilla
   directus_roles:
-    name: Nombre del Rol
+    name: Nombre del rol
     icon: Ícono del Rol
     description: Descripción
     app_access: Acceso a App
@@ -1352,7 +1352,7 @@ description: Descripción
 done: Completado
 duplicate: Duplicado
 limit: Límite
-email: Correo Electrónico
+email: Correo electrónico
 embed: Incrustado
 fallback_icon: Ícono de Reserva
 field: Campo | Campos
