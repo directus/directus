@@ -3,7 +3,6 @@ import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
-	DefinitionNode,
 	execute,
 	ExecutionResult,
 	FieldNode,
@@ -28,7 +27,6 @@ import {
 	InlineFragmentNode,
 	NoSchemaIntrospectionCustomRule,
 	SelectionNode,
-	SelectionSetNode,
 	specifiedRules,
 	validate,
 	ValueNode,
