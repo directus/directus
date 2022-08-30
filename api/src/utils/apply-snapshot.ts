@@ -177,7 +177,10 @@ export async function applySnapshot(
 			}
 		}
 
-		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const fieldsService = new FieldsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0].kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
@@ -222,7 +225,10 @@ export async function applySnapshot(
 			}
 		}
 
-		const relationsService = new RelationsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const relationsService = new RelationsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.relations) {
 			const structure = {};
