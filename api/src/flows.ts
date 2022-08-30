@@ -299,6 +299,7 @@ class FlowManager {
 		};
 
 		let nextOperation = flow.operation;
+		let lastOperationStatus: 'resolve' | 'reject' | 'unknown' = 'unknown';
 
 		const steps: {
 			operation: string;
@@ -312,6 +313,7 @@ class FlowManager {
 
 			keyedData[nextOperation.key] = data;
 			keyedData[LAST_KEY] = data;
+			lastOperationStatus = status;
 			steps.push({ operation: nextOperation!.id, key: nextOperation.key, status, options });
 
 			nextOperation = successor;
@@ -351,6 +353,10 @@ class FlowManager {
 					},
 				});
 			}
+		}
+
+		if (flow.trigger === 'event' && flow.options.type === 'filter' && lastOperationStatus === 'reject') {
+			throw keyedData[LAST_KEY];
 		}
 
 		if (flow.options.return === '$all') {
