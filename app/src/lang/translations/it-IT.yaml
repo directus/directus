@@ -1780,7 +1780,7 @@ displays:
     suffix_label: Mostra indicatore relativo
     suffix_note: Usa espressioni come 'fra...' e '...fa'
     strict: Esatto
-    strict_label: Usa unià esatte
+    strict_label: Usa unità esatte
     strict_note: Rimuove espressioni come 'quasi...', 'più di...', 'meno di...'
     round: Arrotonda
     round_note: Scegli una funzione di arrotondamento
