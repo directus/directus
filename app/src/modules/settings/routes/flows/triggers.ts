@@ -28,18 +28,18 @@ export function getTriggers() {
 				const labels = [
 					{
 						label: t('type'),
-						text: type,
+						text: type ?? '--',
 					},
 				];
 
 				labels.push({
 					label: t('scope'),
-					text: scope ? toArray(scope).join(', ') : '--',
+					text: scope && scope.length > 0 ? toArray(scope).join(', ') : '--',
 				});
 
 				labels.push({
 					label: t('collections'),
-					text: collections ? toArray(collections).join(', ') : '--',
+					text: collections && collections.length > 0 ? toArray(collections).join(', ') : '--',
 				});
 
 				return labels;

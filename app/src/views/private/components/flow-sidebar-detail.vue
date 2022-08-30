@@ -8,13 +8,29 @@
 					full-width
 					:loading="runningFlows.includes(manualFlow.id)"
 					:disabled="!primaryKey && selection.length === 0"
-					@click="runManualFlow(manualFlow.id)"
+					@click="onFlowClick(manualFlow.id)"
 				>
 					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
 					{{ manualFlow.name }}
 				</v-button>
 			</div>
 		</div>
+
+		<v-dialog :model-value="!!confirmRunFlow" @esc="confirmRunFlow = null">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="confirmRunFlow = null">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button @click="runManualFlow(confirmRunFlow!)">
+						{{ t('run_flow_on_current') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</sidebar-detail>
 </template>
 
@@ -32,18 +48,20 @@ interface Props {
 	primaryKey?: string | number;
 	selection?: (number | string)[];
 	location: 'collection' | 'item';
+	hasEdits?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	primaryKey: undefined,
 	selection: () => [],
+	hasEdits: false,
 });
 
 const emit = defineEmits(['refresh']);
 
 const { t } = useI18n();
 
-const { collection, primaryKey, selection } = toRefs(props);
+const { collection, primaryKey, selection, hasEdits } = toRefs(props);
 
 const { primaryKeyField } = useCollection(collection);
 
@@ -60,7 +78,19 @@ const manualFlows = computed(() =>
 
 const runningFlows = ref<string[]>([]);
 
+const confirmRunFlow = ref<string | null>(null);
+
+async function onFlowClick(flowId: string) {
+	if (hasEdits.value) {
+		confirmRunFlow.value = flowId;
+	} else {
+		runManualFlow(flowId);
+	}
+}
+
 async function runManualFlow(flowId: string) {
+	confirmRunFlow.value = null;
+
 	const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
 
 	if (!selectedFlow || !primaryKeyField.value) return;

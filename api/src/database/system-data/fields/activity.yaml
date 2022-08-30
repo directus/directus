@@ -60,6 +60,12 @@ fields:
       font: monospace
     width: half
 
+  - field: origin
+    display: formatted-value
+    display_options:
+      font: monospace
+    width: half
+
   - field: ip
     display: formatted-value
     display_options:
