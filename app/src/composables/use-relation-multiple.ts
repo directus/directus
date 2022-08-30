@@ -213,13 +213,13 @@ export function useRelationMultiple(
 		function create(...items: Record<string, any>[]) {
 			const sortField = relation.value?.sortField;
 
-			for (const item of items) {
+			for (const [index, item] of items.entries()) {
 				target.value.create.push(
 					cleanItem(
 						sortField && isNil(item[sortField])
 							? {
 									...item,
-									[sortField]: (totalSortMax.value || 0) + 1,
+									[sortField]: (totalSortMax.value || 0) + 1 + index,
 							  }
 							: item
 					)
