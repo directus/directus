@@ -62,7 +62,7 @@
 <script lang="ts">
 import api from '@/api';
 import FilePreview from '@/views/private/components/file-preview.vue';
-import { set } from 'lodash';
+import { merge, set } from 'lodash';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -74,6 +74,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/shared/composables';
 import { Field, Relation } from '@directus/shared/types';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 export default defineComponent({
 	components: { FilePreview },
@@ -404,7 +405,8 @@ export default defineComponent({
 				const fieldsToValidate = props.junctionField
 					? junctionRelatedCollectionFields.value
 					: fieldsWithoutCircular.value;
-				let errors = validateItem(editsToValidate || {}, fieldsToValidate, isNew.value);
+				const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
+				let errors = validateItem(merge({}, defaultValues.value, editsToValidate), fieldsToValidate, isNew.value);
 
 				if (errors.length > 0) {
 					validationErrors.value = errors;
