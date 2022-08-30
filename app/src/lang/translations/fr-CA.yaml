@@ -295,6 +295,7 @@ next: Suivant
 field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
+left_to_right: Hello
 note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un texte d'indication...
