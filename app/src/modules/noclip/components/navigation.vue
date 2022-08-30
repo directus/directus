@@ -10,7 +10,7 @@
 			<template #activator>
 				<v-list-item-icon><v-icon name="keyboard" /></v-list-item-icon>
 				<v-list-item-content>
-					<v-text-overflow :text="t('interfaces')" />
+					<v-text-overflow :text="t('dx.interfaces')" />
 				</v-list-item-content>
 			</template>
 
@@ -25,7 +25,7 @@
 			<template #activator>
 				<v-list-item-icon><v-icon name="monitor" /></v-list-item-icon>
 				<v-list-item-content>
-					<v-text-overflow :text="t('displays')" />
+					<v-text-overflow :text="t('dx.displays')" />
 				</v-list-item-content>
 			</template>
 
@@ -40,7 +40,7 @@
 			<template #activator>
 				<v-list-item-icon><v-icon name="space_dashboard" /></v-list-item-icon>
 				<v-list-item-content>
-					<v-text-overflow :text="t('panels')" />
+					<v-text-overflow :text="t('dx.panels')" />
 				</v-list-item-content>
 			</template>
 

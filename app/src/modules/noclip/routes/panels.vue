@@ -1,18 +1,10 @@
 <template>
 	<private-view :title="title">
-		<template v-if="breadcrumb" #headline>
-			<v-breadcrumb :items="breadcrumb" />
-		</template>
-
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="people_alt" />
 			</v-button>
 		</template>
-
-		<template #actions:prepend></template>
-
-		<template #actions></template>
 
 		<template #navigation>
 			<navigation />
@@ -46,26 +38,24 @@
 				</v-workspace>
 			</div>
 
-			<v-divider>{{ t('props') }}</v-divider>
+			<v-divider>{{ t('dx.props') }}</v-divider>
 
 			<div class="props">
 				<v-form v-model="bindings" :fields="fields" />
 			</div>
 
-			<v-divider>{{ t('panel') }}</v-divider>
+			<v-divider>{{ t('dx.panel') }}</v-divider>
 
 			<div class="props">
 				<v-form v-model="tiles[0]" :fields="panelFields" />
 			</div>
 
-			<v-divider>{{ t('workspace') }}</v-divider>
+			<v-divider>{{ t('dx.workspace') }}</v-divider>
 
 			<div class="props">
 				<v-form v-model="workspaceOptions" :fields="workspaceFields" />
 			</div>
 		</div>
-
-		<template #sidebar></template>
 	</private-view>
 </template>
 
@@ -74,10 +64,7 @@ import Navigation from '../components/navigation.vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DeepPartial, Field, PanelConfig } from '@directus/shared/types';
-import formatTitle from '@directus/format-title';
 import { getFieldDefaults } from '../utils/getFieldDefaults';
-import { getDefaultValue } from '../utils/getDefaultValue';
-import { getComponent } from '../utils/getComponent';
 import { getPanel } from '@/panels';
 import VWorkspace from '@/components/v-workspace.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
@@ -87,11 +74,10 @@ interface Props {
 	id: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {});
+const props = defineProps<Props>();
 
 const { t } = useI18n();
 const now = new Date();
-const { breadcrumb, title } = useBreadcrumb();
 
 const panelInfo = computed(() => getPanel(props.id));
 const zoomToFit = ref(false);
@@ -118,9 +104,9 @@ const tiles = ref<AppTile[]>([]);
 
 watch(
 	panelInfo,
-	(value) => {
-		updateDefaults(value);
-		updateField(value);
+	async (value) => {
+		await updateDefaults(value);
+		await updateField(value);
 		updateTile();
 	},
 	{ immediate: true }
@@ -164,22 +150,9 @@ async function updateField(value?: PanelConfig) {
 	fields.value = Object.values(options);
 }
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		return [
-			{
-				name: t('user_directory'),
-				to: `/noclip`,
-			},
-		];
-	});
-
-	const title = computed(() => {
-		return `Panels / ${panelInfo.value?.name}`;
-	});
-
-	return { breadcrumb, title };
-}
+const title = computed(() => {
+	return `Panels / ${panelInfo.value?.name}`;
+});
 
 function updatePanel({
 	edits,
@@ -199,21 +172,14 @@ const panelFields = computed(() => {
 			type: 'json',
 		},
 		{
-			field: 'id',
-			type: 'string',
-			meta: {
-				width: 'half',
-			},
-		},
-		{
-			field: 'height',
+			field: 'width',
 			type: 'integer',
 			meta: {
 				width: 'half',
 			},
 		},
 		{
-			field: 'width',
+			field: 'height',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -229,6 +195,13 @@ const panelFields = computed(() => {
 		{
 			field: 'y',
 			type: 'integer',
+			meta: {
+				width: 'half',
+			},
+		},
+		{
+			field: 'id',
+			type: 'string',
 			meta: {
 				width: 'half',
 			},
@@ -298,14 +271,14 @@ const panelFields = computed(() => {
 		},
 	];
 
-	return fields.map((panel) => ({ ...panel, name: formatTitle(panel.field ?? '') }));
+	return fields.map((panel) => ({ ...panel, name: t(`dx.${panel.field}`) }));
 });
 
 const workspaceFields = computed(() => [
 	{
 		field: 'editMode',
 		type: 'boolean',
-		name: t('edit_mode'),
+		name: t('dx.edit_mode'),
 		meta: {
 			width: 'half',
 		},
@@ -313,7 +286,7 @@ const workspaceFields = computed(() => [
 	{
 		field: 'zoomToFit',
 		type: 'boolean',
-		name: t('zoom_to_fit'),
+		name: t('dx.zoom_to_fit'),
 		meta: {
 			width: 'half',
 		},

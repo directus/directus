@@ -377,6 +377,13 @@ export function getFieldDefaults(
 						},
 					]),
 				};
+			case 'variable':
+				return {
+					field: def('my_key'),
+					type: def('string'),
+					defaultValue: def('my string'),
+					inter: def('input'),
+				};
 		}
 	}
 

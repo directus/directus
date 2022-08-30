@@ -1,9 +1,9 @@
 import { definePanel } from '@directus/shared/utils';
 import PanelVariable from './panel-variable.vue';
-import { useI18n } from 'vue-i18n';
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { i18n } from '@/lang';
 
 export default definePanel({
 	id: 'variable',
@@ -13,7 +13,7 @@ export default definePanel({
 	component: PanelVariable,
 	variable: true,
 	options: (panel) => {
-		const { t } = useI18n();
+		const { t } = i18n.global;
 
 		return [
 			{

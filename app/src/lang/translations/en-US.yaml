@@ -2143,3 +2143,32 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
+dx:
+  loaded_interfaces: Loaded Interfaces
+  loaded_displays: Loaded Displays
+  loaded_panels: Loaded Panels
+  interfaces: Interfaces
+  displays: Displays
+  panels: Panels
+  props: Properties
+  panel: Panel
+  workspace: Workspace
+  emits: Emitted Events
+  noclip: Noclip
+  edit_mode: Edit Mode
+  zoom_to_fit: Zoom To Fit
+  data: Data
+  id: ID
+  height: Height
+  width: Width
+  x: Offset Left
+  y: Offset Top
+  name: Name
+  icon: Icon
+  color: Color
+  note: Note
+  showHeader: Show Header
+  minWidth: Minimum Width
+  minHeight: Minimum Height
+  draggable: Daggable
+  borderRadius: Border Radius

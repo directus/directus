@@ -6,7 +6,7 @@ import Panels from './routes/panels.vue';
 
 export default defineModule({
 	id: 'noclip',
-	name: '$t:noclip',
+	name: '$t:dx.noclip',
 	icon: 'meeting_room',
 	routes: [
 		{

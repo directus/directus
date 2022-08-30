@@ -1,30 +1,20 @@
 <template>
 	<private-view :title="title">
-		<template v-if="breadcrumb" #headline>
-			<v-breadcrumb :items="breadcrumb" />
-		</template>
-
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="people_alt" />
 			</v-button>
 		</template>
 
-		<template #actions:prepend>
-			
-		</template>
-
-		<template #actions>
-			
-		</template>
-
 		<template #navigation>
 			<navigation />
 		</template>
 
-		<template #sidebar>
-			
-		</template>
+		<div class="info">
+			<div>{{ t('dx.loaded_interfaces') }}: {{ interfaceCount }}</div>
+			<div>{{ t('dx.loaded_displays') }}: {{ displayCount }}</div>
+			<div>{{ t('dx.loaded_panels') }}: {{ panelCount }}</div>
+		</div>
 	</private-view>
 </template>
 
@@ -32,51 +22,36 @@
 import Navigation from '../components/navigation.vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-interface Props {
-	role: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	role: null,
-});
+import { getInterfaces } from '@/interfaces';
+import { getPanels } from '@/panels';
+import { getDisplays } from '@/displays';
 
 const { t } = useI18n();
 
-const { breadcrumb, title } = useBreadcrumb();
+const title = computed(() => {
+	return t('dashboard');
+});
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		if (!props.role) return null;
-
-		return [
-			{
-				name: t('user_directory'),
-				to: `/noclip`,
-			},
-		];
-	});
-
-	const title = computed(() => {
-		return t('user_directory');
-	});
-
-	return { breadcrumb, title };
-}
-
+const interfaceCount = computed(() => getInterfaces().interfaces.value.length);
+const displayCount = computed(() => getDisplays().displays.value.length);
+const panelCount = computed(() => getPanels().panels.value.length);
 </script>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
 }
 
-.layout {
-	--layout-offset-top: 64px;
+.info {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font-size: 20px;
+	font-weight: 600;
+
+	div {
+		margin-bottom: 10px;
+	}
 }
 </style>
