@@ -74,8 +74,12 @@ export const useFieldDetailStore = defineStore({
 			junctionCurrent: undefined as DeepPartial<Field> | undefined,
 			junctionRelated: undefined as DeepPartial<Field> | undefined,
 			sort: undefined as DeepPartial<Field> | undefined,
-			oneCollectionField: undefined as DeepPartial<Field> | undefined,
-			oneAllowedCollectionFields: [Object as DeepPartial<Field>]
+			oneCollectionField: undefined as DeepPartial<Field> | undefined
+		},
+
+		relatedCollectionFields: {
+			m2o: undefined as [DeepPartial<Field>] | undefined,
+			o2m: undefined as [DeepPartial<Field>] | undefined
 		},
 
 		// Any items that need to be injected into any collection
@@ -175,6 +179,17 @@ export const useFieldDetailStore = defineStore({
 				for (const relation of Object.values(this.relations)) {
 					if (!relation || !relation.collection || !relation.field) continue;
 					await relationsStore.upsertRelation(relation.collection, relation.field, relation);
+				}
+
+				for (const [relationType, fields] of Object.entries(this.relatedCollectionFields)) {
+					if (fields) {
+						for (const field of fields) {
+							const relation = this.relations[relationType as keyof typeof this.relatedCollectionFields]
+							if (relation && relation.collection) {
+								await fieldsStore.upsertField(relation.collection, '+', field);
+							}
+						}
+					}
 				}
 
 				for (const collection of Object.keys(this.items)) {
@@ -313,7 +328,6 @@ export const useFieldDetailStore = defineStore({
 
 			for (const field of Object.values(this.fields)) {
 				if (!field || !field.collection || !field.field) continue;
-
 				items.push({
 					name: `${field.collection}.${field.field}`,
 					type: 'field',
@@ -332,6 +346,20 @@ export const useFieldDetailStore = defineStore({
 								name: `${oneAllowedCollection}.${linkCollectionsToJunctionField}`,
 								type: 'field',
 							});
+						}
+					}
+				}
+			}
+
+			for (const [relationType, fields] of Object.entries(this.relatedCollectionFields)) {
+				if (fields) {
+					for (const field of fields) {
+						const relation = this.relations[relationType as keyof typeof this.relatedCollectionFields]
+						if (relation && relation.collection) {
+							items.push({
+								name: `${relation.collection}.${field.field}`,
+								type: 'field'
+							})
 						}
 					}
 				}

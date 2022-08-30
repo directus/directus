@@ -101,11 +101,33 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 
 	set(updates, 'relations.m2o.collection', junctionName);
 	set(updates, 'relations.m2o.field', 'item');
+	set(updates, 'relatedCollectionFields.m2o', [
+		{
+			collection: junctionName,
+			field: 'x',
+			type: 'integer',
+		},
+		{
+			collection: junctionName,
+			field: 'y',
+			type: 'integer',
+		},
+		{
+			collection: junctionName,
+			field: 'width',
+			type: 'integer',
+		},
+		{
+			collection: junctionName,
+			field: 'height',
+			type: 'integer',
+		}
+	]);
 	set(updates, 'relations.m2o.meta.one_allowed_collections', [currentCollection]);
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
 
 	// Create a M2O relation between the collections and junction table
-	set(state, 'createFieldOnCurrentCollection', false)
+	set(state, 'createFieldOnCurrentCollection', false);
 	set(updates, 'relations.m2o.meta.link_one_allowed_collections_back', true);
 	set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', state.field.name);
 }

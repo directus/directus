@@ -67,7 +67,8 @@
 				v-if="!disabled && image"
 				:id="image.id"
 				v-model="editImageEditor"
-				:crop-coordinates="cropCoordinates"
+				:crop-info="cropInfoForEditor"
+				:crop-collection="cropCollection"
 				@refresh="refresh"
 				@replace-image="updateImage($event.id)"
 			/>
@@ -88,7 +89,7 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -97,6 +98,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		folder?: string;
 		collection: string;
+		primaryKey: string;
 		field: string;
 		width: string;
 		crop?: boolean;
@@ -119,7 +121,7 @@ const cropID = computed({
 });
 
 const cropQuery = ref<RelationQuerySingle>({
-	fields: ['x,y,file_id.*'],
+	fields: ['x,y,width,height,file_id.*'],
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
@@ -127,19 +129,44 @@ const { displayItem: cropInfo, loading, update, remove, refresh } = useRelationS
 
 const fileID = computed(() => {
 	if (!cropInfo.value) return null;
-	return cropInfo.value.file_id.id
-})
+	return cropInfo.value.file_id.id;
+});
 
 const image = computed(() => {
 	if (!cropInfo.value) return null;
-	return cropInfo.value.file_id
-})
+	return cropInfo.value.file_id;
+});
 
-const cropCoordinates = computed(() => {
-	if (!cropInfo.value) return null;
-	const coordinates = (cropInfo.value.x != null && cropInfo.value.y != null) ? {x: cropInfo.value.x, y: cropInfo.value.y} : undefined
-	return coordinates
-})
+const cropInfoForEditor = computed(() => {
+	let coordinates = null;
+	if (
+		cropInfo.value &&
+		cropInfo.value.x != null &&
+		cropInfo.value.y != null &&
+		cropInfo.value.height != null &&
+		cropInfo.value.width != null
+	) {
+		coordinates = {
+			x: cropInfo.value.x,
+			y: cropInfo.value.y,
+			width: cropInfo.value.width,
+			height: cropInfo.value.height,
+		};
+	}
+	const primaryKey = props.primaryKey == '+' ? null : props.primaryKey;
+	const cropCollection = relationInfo.value ? relationInfo.value.relatedCollection.collection : null;
+
+	return {
+		coordinates: coordinates,
+		collection: collection.value,
+		cropCollection: cropCollection,
+		id: cropID.value || null,
+		fileID: fileID.value || null,
+		item: primaryKey,
+	};
+});
+
+const cropCollection = computed(() => relationInfo.value?.relatedCollection.collection);
 
 const { t, n, te } = useI18n();
 
@@ -148,14 +175,17 @@ const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
 
 const src = computed(() => {
-	if (!image.value) return null;
+	if (!image.value || !cropInfo.value) return null;
 
 	if (image.value.type.includes('svg')) {
 		return '/assets/' + image.value.id;
 	}
+	if (image.value.type.includes('image') && cropInfoForEditor.value.coordinates) {
+		const url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}&transforms=[ ["extract", { "width": ${cropInfo.value.width}, "height": ${cropInfo.value.height}, "left": ${cropInfo.value.x}, "top": ${cropInfo.value.y} }] ]`;
+		return addTokenToURL(url);
+	}
 	if (image.value.type.includes('image')) {
-		const fit = props.crop ? 'cover' : 'contain';
-		const url = `/assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
+		const url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}`;
 		return addTokenToURL(url);
 	}
 
@@ -188,6 +218,7 @@ async function imageErrorHandler() {
 	try {
 		await api.get(src.value);
 	} catch (err: any) {
+		console.log(err.response);
 		imageError.value = err.response?.data?.errors[0]?.extensions?.code;
 
 		if (!imageError.value || !te('errors.' + imageError.value)) {
@@ -199,11 +230,16 @@ async function imageErrorHandler() {
 async function updateImage(item: string | number) {
 	try {
 		// TODO: handle item
-		const response = await api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {collection: collection.value, file_id: item});
-		update(response.data.data.id)
+		const primaryKey = props.primaryKey == '+' ? null : props.primaryKey;
+		const response = await api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {
+			collection: collection.value,
+			file_id: item,
+			item: primaryKey,
+		});
+		update(response.data.data.id);
 	} catch (err: any) {
 		// TODO: Handle prop could not be created
-		console.log(err)
+		console.log(err);
 	}
 }
 

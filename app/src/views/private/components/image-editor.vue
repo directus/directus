@@ -101,8 +101,6 @@
 					</v-list>
 				</v-menu>
 
-				<v-checkbox v-model="createNewCrop" :label="t('create_crop')" />
-
 				<div class="spacer" />
 
 				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
@@ -149,9 +147,18 @@ type Image = {
 	height: number;
 };
 
-type CropCoordinates = {
-	x: number;
-	y: number;
+type CropInfo = {
+	coordinates: {
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+	} | null;
+	cropCollection: string | null;
+	id: string | number | null;
+	collection: string;
+	fileID: string | null;
+	item: string | null;
 };
 
 export default defineComponent({
@@ -164,10 +171,10 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
-		cropCoordinates: {
-			type: Object as PropType<CropCoordinates | undefined>,
-			default: undefined
-		}
+		cropInfo: {
+			type: Object as PropType<CropInfo>,
+			required: true,
+		},
 	},
 	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
@@ -189,7 +196,7 @@ export default defineComponent({
 			},
 		});
 
-		const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad, } = useImage();
+		const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad } = useImage();
 
 		const {
 			cropperInstance,
@@ -305,14 +312,25 @@ export default defineComponent({
 						formData.append('file', blob, imageData.value?.filename_download);
 
 						try {
-							if (createNewCrop.value) {
-								
-							} else {
-								await api.patch(`/files/${props.id}`, formData);
+							const cropperData = cropperInstance.value?.getData();
+
+							if (cropperData && props.cropInfo.id && props.cropInfo.collection) {
+								const x = Math.round(cropperData.x);
+								const y = Math.round(cropperData.y);
+								const width = Math.round(cropperData.width);
+								const height = Math.round(cropperData.height);
+
+								await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
+									x: x,
+									y: y,
+									width: width,
+									height: height,
+								});
+
 								emit('refresh');
+								internalActive.value = false;
+								randomId.value = nanoid();
 							}
-							internalActive.value = false;
-							randomId.value = nanoid();
 						} catch (err: any) {
 							unexpectedError(err);
 						} finally {
@@ -461,14 +479,16 @@ export default defineComponent({
 					}, 50),
 				});
 
-				if (props.cropCoordinates) {
+				cropperInstance.value?.getData();
+
+				if (props.cropInfo && props.cropInfo.coordinates) {
 					setTimeout(() => {
 						cropperInstance.value?.crop();
 						cropperInstance.value?.setData({
-							x: props.cropCoordinates.x,
-							y: props.cropCoordinates.y,
-							width: imageData.value?.width,
-							height: imageData.value?.height,
+							x: props.cropInfo?.coordinates.x,
+							y: props.cropInfo?.coordinates.y,
+							width: props.cropInfo?.coordinates.width,
+							height: props.cropInfo?.coordinates.height,
 						});
 						dragMode.value = 'crop';
 					}, 100);

@@ -43,7 +43,7 @@
 
 			<related-field-select
 				v-model="oneCollectionField"
-				class="one-collection-field"
+				class="second-col-field"
 				:collection="junctionCollection"
 				:placeholder="t('collection_key') + '...'"
 				:disabled="autoGenerateJunctionRelation || isExisting"
@@ -61,7 +61,12 @@
 
 			<div class="spacer" />
 
-			<v-checkbox v-if="!isExisting" v-model="autoGenerateJunctionRelation" block :label="t('auto_fill')" />
+			<template v-for="field in junctionFieldsRelated">
+				<v-input class="second-col-field" :model-value="field.field" :disabled="autoGenerateJunctionRelation || isExisting" />
+				<div class="spacer" />
+			</template>
+
+			<v-checkbox v-if="!isExisting" class="second-col-field" v-model="autoGenerateJunctionRelation" block :label="t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 			<v-icon class="arrow" name="arrow_backward" />
@@ -187,6 +192,7 @@ export default defineComponent({
 		const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
 		const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
 		const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
+		const junctionFieldsRelated = syncFieldDetailStoreProperty('relatedCollectionFields.m2o');
 		const oneCollectionField = syncFieldDetailStoreProperty('relations.m2o.meta.one_collection_field');
 		const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
 		const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
@@ -236,6 +242,7 @@ export default defineComponent({
 			currentPrimaryKey,
 			junctionFieldCurrent,
 			junctionFieldRelated,
+			junctionFieldsRelated,
 			oneCollectionField,
 			sortField,
 			onDelete,
@@ -330,7 +337,7 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 }
 
-.one-collection-field {
+.second-col-field {
 	grid-column: 2;
 }
 
