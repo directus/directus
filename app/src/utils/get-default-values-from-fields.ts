@@ -1,7 +1,7 @@
 import { Field } from '@directus/shared/types';
-import { Ref, unref, computed } from 'vue';
+import { Ref, unref, computed, ComputedRef } from 'vue';
 
-export function getDefaultValuesFromFields(fields: Field[] | Ref<Field[]>) {
+export function getDefaultValuesFromFields(fields: Field[] | Ref<Field[]>): ComputedRef<Record<string, any>> {
 	return computed(() => {
 		return unref(fields).reduce(function (acc, field) {
 			if (
@@ -19,5 +19,3 @@ export function getDefaultValuesFromFields(fields: Field[] | Ref<Field[]>) {
 		}, {} as Record<string, any>);
 	});
 }
-
-export default getDefaultValuesFromFields;

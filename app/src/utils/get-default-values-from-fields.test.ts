@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest';
-import getDefaultValuesFromFields from './get-default-values-from-fields';
+import { getDefaultValuesFromFields } from './get-default-values-from-fields';
 
-test('Ignores PK values', () => {
+test('Ignores PK default value', () => {
 	const values = getDefaultValuesFromFields([
 		{
 			collection: 'test_collection',
@@ -30,6 +30,26 @@ test('Ignores PK values', () => {
 			meta: null,
 			name: 'ID',
 		},
+	]);
+	expect(values.value).toStrictEqual({});
+});
+
+test('Ignores schemaless fields', () => {
+	const values = getDefaultValuesFromFields([
+		{
+			collection: 'test_collection',
+			field: 'test',
+			type: 'integer',
+			schema: null,
+			meta: null,
+			name: 'Test',
+		},
+	]);
+	expect(values.value).toStrictEqual({});
+});
+
+test('Parses default values', () => {
+	const values = getDefaultValuesFromFields([
 		{
 			collection: 'test_collection',
 			field: 'condition',
