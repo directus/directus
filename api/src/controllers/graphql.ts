@@ -33,7 +33,9 @@ router.use(
 			scope: 'items',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams);
+		const graphqlParams = await service.cleanSingletons(res.locals.graphqlParams);
+
+		res.locals.payload = await service.execute(graphqlParams);
 
 		return next();
 	}),

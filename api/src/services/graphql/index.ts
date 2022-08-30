@@ -3,6 +3,7 @@ import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
+	DefinitionNode,
 	execute,
 	ExecutionResult,
 	FieldNode,
@@ -27,6 +28,7 @@ import {
 	InlineFragmentNode,
 	NoSchemaIntrospectionCustomRule,
 	SelectionNode,
+	SelectionSetNode,
 	specifiedRules,
 	validate,
 	ValueNode,
@@ -132,7 +134,6 @@ export class GraphQLService {
 		contextValue,
 	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
-
 		const validationErrors = validate(schema, document, validationRules).map((validationError) =>
 			addPathToValidationError(validationError)
 		);
@@ -1446,6 +1447,37 @@ export class GraphQLService {
 		} catch (err: any) {
 			throw this.formatError(err);
 		}
+	}
+
+	/**
+	 * Check the raw document (hence the any) to see if we are querying on a singleton, and if so, remove any arguments as singletons can not have arguments and will
+	 * fail GraphQL validation
+	 */
+	async cleanSingletons(graphqlParams: any): Promise<any> {
+		for (let d = 0; d < graphqlParams.document.definitions.length; d++) {
+			const selectionSet = graphqlParams.document.definitions[d]?.selectionSet;
+			if (selectionSet?.selections.length > 0) {
+				for (let s = 0; s < selectionSet.selections.length; s++) {
+					const selection = selectionSet.selections[s];
+					if (selection.kind === 'Field' && selection.arguments && selection.arguments.length > 0) {
+						if (this.schema.collections[selection.name.value].singleton) {
+							// singletons don't support arguments so we have to remove them.
+							if (selection.arguments && selection.arguments.length > 0) {
+								for (let a = 0; a < selection.arguments.length; a++) {
+									const argument = selection.arguments[a];
+									if (argument.kind === 'Argument') {
+										if (graphqlParams.document.definitions[d].selectionSet.selections[s].arguments[a]) {
+											delete graphqlParams.document.definitions[d].selectionSet.selections[s].arguments[a];
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return graphqlParams;
 	}
 
 	/**
