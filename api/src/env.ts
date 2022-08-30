@@ -76,6 +76,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
 	'CACHE_VALUE_MAX_SIZE',
+	'CACHE_HEALTHCHECK_THRESHOLD',
 	// storage
 	'STORAGE_LOCATIONS',
 	'STORAGE_.+_DRIVER',
@@ -92,6 +93,7 @@ const allowedEnvironmentVars = [
 	'STORAGE_.+_ENDPOINT',
 	'STORAGE_.+_KEY_FILENAME',
 	'STORAGE_.+_BUCKET',
+	'STORAGE_.+_HEALTHCHECK_THRESHOLD',
 	// metadata
 	'FILE_METADATA_ALLOW_LIST',
 	// assets

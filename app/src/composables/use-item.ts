@@ -15,6 +15,7 @@ import { merge } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Relation } from '@directus/shared/types';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -72,6 +73,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		return `${getEndpoint(collection.value)}/${encodeURIComponent(primaryKey.value as string)}`;
 	});
 
+	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
+
 	watch([collection, primaryKey], refresh, { immediate: true });
 
 	return {
@@ -113,7 +116,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validateItem(merge({}, item.value, edits.value), fieldsWithPermissions.value, isNew.value);
+		const errors = validateItem(
+			merge({}, defaultValues.value, item.value, edits.value),
+			fieldsWithPermissions.value,
+			isNew.value
+		);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;

@@ -137,6 +137,15 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(expressLogger);
 
+	app.use((_req, res, next) => {
+		res.setHeader('X-Powered-By', 'Directus');
+		next();
+	});
+
+	if (env.CORS_ENABLED === true) {
+		app.use(cors);
+	}
+
 	app.use((req, res, next) => {
 		(
 			express.json({
@@ -154,15 +163,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(cookieParser());
 
 	app.use(extractToken);
-
-	app.use((_req, res, next) => {
-		res.setHeader('X-Powered-By', 'Directus');
-		next();
-	});
-
-	if (env.CORS_ENABLED === true) {
-		app.use(cors);
-	}
 
 	app.get('/', (_req, res, next) => {
 		if (env.ROOT_REDIRECT) {
