@@ -1957,6 +1957,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const authenticationService = new AuthenticationService({
@@ -1990,6 +1991,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const authenticationService = new AuthenticationService({
@@ -2026,6 +2028,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const authenticationService = new AuthenticationService({
@@ -2050,6 +2053,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const service = new UsersService({ accountability, schema: this.schema });
@@ -2075,6 +2079,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const service = new UsersService({ accountability, schema: this.schema });
@@ -2682,6 +2687,7 @@ export class GraphQLService {
 							user: this.accountability?.user,
 							ip: this.accountability?.ip,
 							user_agent: this.accountability?.userAgent,
+							origin: this.accountability?.origin,
 						});
 
 						if ('directus_activity' in ReadCollectionTypes) {
