@@ -9,12 +9,6 @@ export default defineOperationApp({
 	name: '$t:operations.exec.name',
 	description: '$t:operations.exec.description',
 	overview: () => [],
-	// overview: ({ code }) => [
-	// 	{
-	// 		label: '$t:code',
-	// 		text: code,
-	// 	},
-	// ],
 	options: () => {
 		const { t } = i18n.global;
 
