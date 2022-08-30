@@ -787,6 +787,7 @@ flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
 run_flow_on_current: Run flow on Current Item
+run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
