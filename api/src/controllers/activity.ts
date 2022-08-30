@@ -92,6 +92,7 @@ router.post(
 			user: req.accountability?.user,
 			ip: getIPFromReq(req),
 			user_agent: req.get('user-agent'),
+			origin: req.get('origin'),
 		});
 
 		try {

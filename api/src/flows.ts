@@ -299,6 +299,7 @@ class FlowManager {
 		};
 
 		let nextOperation = flow.operation;
+		let lastOperationStatus: 'resolve' | 'reject' | 'unknown' = 'unknown';
 
 		const steps: {
 			operation: string;
@@ -312,6 +313,7 @@ class FlowManager {
 
 			keyedData[nextOperation.key] = data;
 			keyedData[LAST_KEY] = data;
+			lastOperationStatus = status;
 			steps.push({ operation: nextOperation!.id, key: nextOperation.key, status, options });
 
 			nextOperation = successor;
@@ -331,6 +333,7 @@ class FlowManager {
 				collection: 'directus_flows',
 				ip: accountability?.ip ?? null,
 				user_agent: accountability?.userAgent ?? null,
+				origin: accountability?.origin ?? null,
 				item: flow.id,
 			});
 
@@ -350,6 +353,10 @@ class FlowManager {
 					},
 				});
 			}
+		}
+
+		if (flow.trigger === 'event' && flow.options.type === 'filter' && lastOperationStatus === 'reject') {
+			throw keyedData[LAST_KEY];
 		}
 
 		if (flow.options.return === '$all') {
