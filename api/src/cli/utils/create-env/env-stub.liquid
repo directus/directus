@@ -211,6 +211,10 @@ REFRESH_TOKEN_COOKIE_NAME="directus_refresh_token"
 # Which domain to use for the refresh cookie. Useful for development mode.
 # REFRESH_TOKEN_COOKIE_DOMAIN
 
+# The duration in milliseconds that a login request will be stalled for,
+# and it should be greater than the time taken for a login request with an invalid password [500]
+# LOGIN_STALL_TIME=500
+
 # Whether or not to enable the CORS headers [false]
 CORS_ENABLED=true
 

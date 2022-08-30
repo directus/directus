@@ -660,6 +660,7 @@ sign_out: Logg ut
 sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
+table: Tabell
 interfaces:
   filter:
     name: Filter
@@ -672,6 +673,8 @@ interfaces:
     collection: Kolleksjon
   system-collections:
     collections: Kolleksjoner
+  system-fields:
+    select_a_collection: Velg en Kolleksjon
   system-display-template:
     collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
     select_a_collection: Velg en Kolleksjon

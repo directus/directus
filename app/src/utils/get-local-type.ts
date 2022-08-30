@@ -25,7 +25,7 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 
 	if (relations.length === 1) {
 		const relation = relations[0];
-		if (relation.related_collection === 'directus_files') return 'file';
+		if (relation.related_collection === 'directus_files' && relation.related_collection !== collection) return 'file';
 		if (relation.collection === collection && relation.field === field) return 'm2o';
 		return 'o2m';
 	}

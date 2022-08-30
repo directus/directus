@@ -185,7 +185,7 @@ import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from '@/utils/get-with-arrays';
+import { get } from '@directus/shared/utils';
 import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, merge } from 'lodash';
