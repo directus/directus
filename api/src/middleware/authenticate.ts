@@ -21,6 +21,7 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 		app: false,
 		ip: getIPFromReq(req),
 		userAgent: req.get('user-agent'),
+		origin: req.get('origin'),
 	};
 
 	const database = getDatabase();
