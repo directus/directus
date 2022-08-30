@@ -5,6 +5,7 @@ importers:
     specifiers:
       '@directus/shared': workspace:*
       '@types/jest': 27.5.2
+      '@types/js-yaml': 4.0.5
       '@types/listr': ^0.14.4
       '@types/lodash': ^4.14.182
       '@types/seedrandom': ^3.0.2
@@ -21,6 +22,7 @@ importers:
       globby: ^11.0.4
       jest: 28.1.2
       jest-environment-node: ^28.1.2
+      js-yaml: ^4.1.0
       knex: 2.2.0
       lint-staged: ^13.0.3
       listr: ^0.14.3
@@ -35,6 +37,7 @@ importers:
     devDependencies:
       '@directus/shared': link:packages/shared
       '@types/jest': 27.5.2
+      '@types/js-yaml': 4.0.5
       '@types/listr': 0.14.4
       '@types/lodash': 4.14.182
       '@types/seedrandom': 3.0.2
@@ -51,6 +54,7 @@ importers:
       globby: 11.1.0
       jest: 28.1.2
       jest-environment-node: 28.1.3
+      js-yaml: 4.1.0
       knex: 2.2.0
       lint-staged: 13.0.3
       listr: 0.14.3
