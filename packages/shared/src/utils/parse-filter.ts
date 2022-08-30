@@ -1,8 +1,9 @@
-import { get, isObjectLike } from 'lodash';
+import { isObjectLike } from 'lodash';
 import { REGEX_BETWEEN_PARENS } from '../constants';
 import { Accountability, Filter, Role, User } from '../types';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
+import { get } from './get-with-arrays';
 import { isDynamicVariable } from './is-dynamic-variable';
 import { toArray } from './to-array';
 
