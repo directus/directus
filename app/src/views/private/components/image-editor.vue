@@ -101,7 +101,7 @@
 					</v-list>
 				</v-menu>
 
-				<v-checkbox v-if="!cropInfo.coordinates && dragMode === 'crop'" v-model="referToOriginalImage" :label="t('refer_to_original_image')" />
+				<v-checkbox v-if="showReferToOriginalCheckbox" v-model="referToOriginalImage" :label="t('refer_to_original_image')" />
 
 				<div class="spacer" />
 
@@ -175,7 +175,7 @@ export default defineComponent({
 		},
 		cropInfo: {
 			type: Object as PropType<CropInfo>,
-			required: true,
+			default: undefined
 		},
 	},
 	emits: ['update:modelValue', 'refresh'],
@@ -233,7 +233,7 @@ export default defineComponent({
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
 
-		const cropInfo = computed(() => props.cropInfo);
+		const showReferToOriginalCheckbox = computed(() => props.cropInfo && !props.cropInfo.coordinates && dragMode.value === 'crop')
 
 		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
 
@@ -260,6 +260,7 @@ export default defineComponent({
 			setAspectRatio,
 			customAspectRatios,
 			referToOriginalImage,
+			showReferToOriginalCheckbox
 		};
 
 		function useImage() {
@@ -318,20 +319,24 @@ export default defineComponent({
 						try {
 							const cropperData = cropperInstance.value?.getData();
 
-							if (!referToOriginalImage.value && !props.cropInfo.coordinates) {
+							if (!props.cropInfo) {
 								await api.patch(`/files/${props.id}`, formData);
-							} else if (cropperData && props.cropInfo.cropCollection && props.cropInfo.id) {
-								const x = Math.round(cropperData.x);
-								const y = Math.round(cropperData.y);
-								const width = Math.round(cropperData.width);
-								const height = Math.round(cropperData.height);
+							} else {
+								if (!referToOriginalImage.value && !props.cropInfo.coordinates) {
+									await api.patch(`/files/${props.id}`, formData);
+								} else if (cropperData && props.cropInfo.cropCollection && props.cropInfo.id) {
+									const x = Math.round(cropperData.x);
+									const y = Math.round(cropperData.y);
+									const width = Math.round(cropperData.width);
+									const height = Math.round(cropperData.height);
 
-								await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
-									x: x,
-									y: y,
-									width: width,
-									height: height,
-								});
+									await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
+										x: x,
+										y: y,
+										width: width,
+										height: height,
+									});
+								}
 							}
 
 							emit('refresh');
