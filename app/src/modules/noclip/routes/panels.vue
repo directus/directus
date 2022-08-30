@@ -105,9 +105,11 @@ const tiles = ref<AppTile[]>([]);
 watch(
 	panelInfo,
 	async (value) => {
+		loaded.value = false;
+		updateTile();
 		await updateDefaults(value);
 		await updateField(value);
-		updateTile();
+		if (value) loaded.value = true;
 	},
 	{ immediate: true }
 );
@@ -125,25 +127,20 @@ function updateTile() {
 }
 
 async function updateDefaults(value?: PanelConfig) {
-	if (value) {
-		loaded.value = false;
-		bindings.value = {};
+	bindings.value = {};
+	if (!value) return;
 
-		const fieldDefaults = getFieldDefaults('panel', props.id);
-		const options = getOptions(value.options, bindings.value);
+	const fieldDefaults = getFieldDefaults('panel', props.id);
+	const options = getOptions(value.options, bindings.value);
 
-		for (const key of Object.keys(options)) {
-			bindings.value[key] = fieldDefaults[key]?.default;
-		}
-
-		loaded.value = true;
-	} else {
-		loaded.value = false;
+	for (const key of Object.keys(options)) {
+		bindings.value[key] = fieldDefaults[key]?.default;
 	}
 }
 
 async function updateField(value?: PanelConfig) {
-	if (!value) return [];
+	fields.value = [];
+	if (!value) return;
 
 	const options = getOptions(value.options, bindings.value);
 

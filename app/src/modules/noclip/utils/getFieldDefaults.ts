@@ -346,37 +346,39 @@ export function getFieldDefaults(
 						},
 					]),
 				};
-			case 'time-series':
+			case 'time-series': {
+				const now = new Date();
+				now.setMonth(now.getMonth() + 1);
+				now.setMinutes(now.getMinutes() + now.getTimezoneOffset());
+
+				const data = [];
+
+				for (let i = 0; i < 5; i++) {
+					data.push({
+						sum: {
+							id: Math.floor(Math.random() * 5 + 5),
+						},
+						group: {
+							timestamp_year: now.getFullYear(),
+							timestamp_month: now.getMonth(),
+							timestamp_day: now.getDate(),
+							timestamp_hour: now.getHours(),
+							timestamp_minute: now.getMinutes(),
+						},
+					});
+					now.setMinutes(now.getMinutes() - 15);
+				}
+
 				return {
 					collection: def('directus_notifications'),
 					dateField: def('timestamp'),
-					data: def([
-						{
-							first_name: 'John',
-							last_name: 'Doe',
-						},
-						{
-							first_name: 'Jane',
-							last_name: 'Berger',
-						},
-						{
-							first_name: 'Joe',
-							last_name: 'Bloggs',
-						},
-						{
-							first_name: 'Jill',
-							last_name: 'Fritz',
-						},
-						{
-							first_name: 'Jack',
-							last_name: 'Frost',
-						},
-						{
-							first_name: 'Jana',
-							last_name: 'Amber',
-						},
-					]),
+					precision: def('minute'),
+					range: def('1 hour'),
+					function: def('sum'),
+					valueField: def('id'),
+					data: def(data),
 				};
+			}
 			case 'variable':
 				return {
 					field: def('my_key'),
