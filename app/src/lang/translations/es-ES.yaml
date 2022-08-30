@@ -1417,6 +1417,7 @@ translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 start: Iniciar
 table: Tabla
@@ -2078,16 +2079,35 @@ operations:
     query: Consulta
   log:
     name: Registrar en la consola
+    description: Envía algo a la consola
     message: Mensaje
+    message_placeholder: Envía un mensaje para mostrar en la consola...
+  mail:
+    name: Enviar Email
+    description: Envía un email a una o más personas
+    to: A
+    to_placeholder: Añada la dirección del correo electrónico y presionar Enter...
+    body: Cuerpo
   notification:
+    name: Enviar notificación
+    description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
+    recipient_placeholder: Añadir la UUID del usuario y presionar Enter...
     message: Mensaje
   request:
+    name: Webhook / Solicitud de URL
+    description: "Haz una solicitud a una URL"
     url: URL
+    url_placeholder: https://ejemplo.com/ejemplo
     method: Método
     data: Datos
+    headers: Encabezados
     header: Encabezado
+    header_placeholder: Autorización...
+    value_placeholder: Portador eyJhbGciOi...
   sleep:
+    name: Dormir
+    description: Espera un número dado de milisegundos
     milliseconds: Milisegundos
   transform:
     name: Transformar payload
