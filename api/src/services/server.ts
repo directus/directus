@@ -160,7 +160,7 @@ export class ServerService {
 					componentType: 'datastore',
 					observedUnit: 'ms',
 					observedValue: 0,
-					threshold: 150,
+					threshold: env.DB_HEALTHCHECK_THRESHOLD ? +env.DB_HEALTHCHECK_THRESHOLD : 150,
 				},
 			];
 
@@ -216,7 +216,7 @@ export class ServerService {
 						componentType: 'cache',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: 150,
+						threshold: env.CACHE_HEALTHCHECK_THRESHOLD ? +env.CACHE_HEALTHCHECK_THRESHOLD : 150,
 					},
 				],
 			};
@@ -256,7 +256,7 @@ export class ServerService {
 						componentType: 'ratelimiter',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: 150,
+						threshold: env.RATE_LIMITER_HEALTHCHECK_THRESHOLD ? +env.RATE_LIMITER_HEALTHCHECK_THRESHOLD : 150,
 					},
 				],
 			};
@@ -289,14 +289,14 @@ export class ServerService {
 
 			for (const location of toArray(env.STORAGE_LOCATIONS)) {
 				const disk = storage.disk(location);
-
+				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 				checks[`storage:${location}:responseTime`] = [
 					{
 						status: 'ok',
 						componentType: 'objectstore',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: 750,
+						threshold: env[envThresholdKey] ? +env[envThresholdKey] : 750,
 					},
 				];
 

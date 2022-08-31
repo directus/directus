@@ -19,6 +19,7 @@
 			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
 				<item-preview
 					:item="element"
+					:edits="getItemEdits(element)"
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"
@@ -27,7 +28,7 @@
 					:deleted="element.$type === 'deleted'"
 					:delete-icon="getDeselectIcon(element)"
 					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
-					@input="update"
+					@input="stageEdits"
 					@deselect="remove(element)"
 				/>
 				<nested-draggable
@@ -102,7 +103,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { useI18n } from 'vue-i18n';
 import { moveInArray } from '@directus/shared/utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 
 type ChangeEvent =
 	| {
@@ -182,7 +183,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem, localDelete } = useRelationMultiple(
+const { displayItems, create, update, remove, select, cleanItem, localDelete, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -270,6 +271,12 @@ const addNewActive = ref(false);
 function addNew(item: Record<string, any>) {
 	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value;
 	create(item);
+}
+
+function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
+	update(item);
 }
 </script>
 

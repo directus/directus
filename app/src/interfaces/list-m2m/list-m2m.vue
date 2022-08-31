@@ -4,7 +4,7 @@
 	</v-notice>
 	<div v-else class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
-			<div class="actions" :class="width">
+			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
 				<div class="spacer" />
 
 				<div v-if="totalItemCount" class="item-count">
@@ -143,26 +143,35 @@
 				</draggable>
 			</v-list>
 
-			<div v-if="totalItemCount > 10" class="actions">
-				<v-pagination
-					v-if="pageCount > 1"
-					v-model="page"
-					:length="pageCount"
-					:total-visible="width.includes('half') ? 3 : 5"
-				/>
+			<div class="actions" :class="layout">
+				<template v-if="layout === LAYOUTS.TABLE">
+					<template v-if="pageCount > 1">
+						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
 
-				<div class="spacer" />
+						<div class="spacer" />
 
-				<div v-if="loading === false" class="per-page">
-					<span>{{ t('per_page') }}</span>
-					<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
-				</div>
+						<div v-if="loading === false" class="per-page">
+							<span>{{ t('per_page') }}</span>
+							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+						</div>
+					</template>
+				</template>
+				<template v-else>
+					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+						{{ t('create_new') }}
+					</v-button>
+					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+						{{ t('add_existing') }}
+					</v-button>
+					<div class="spacer" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+				</template>
 			</div>
 		</div>
 
 		<drawer-item
+			v-model:active="editModalActive"
 			:disabled="disabled"
-			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -170,7 +179,6 @@
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
 			@input="stageEdits"
-			@update:active="cancelEdit"
 		/>
 
 		<drawer-collection
@@ -332,8 +340,19 @@ watch([search, searchFilter], () => {
 	page.value = 1;
 });
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	create,
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -455,9 +474,8 @@ function editItem(item: DisplayItem) {
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
+	editsAtStart.value = getItemEdits(item);
 	newItem = false;
-	editsAtStart.value = item;
-
 	editModalActive.value = true;
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
@@ -474,15 +492,13 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
 	if (newItem) {
 		create(item);
 	} else {
 		update(item);
 	}
-}
-
-function cancelEdit() {
-	editModalActive.value = false;
 }
 
 function deleteItem(item: DisplayItem) {
@@ -649,11 +665,13 @@ const selectAllowed = computed(() => {
 	gap: var(--v-sheet-padding);
 
 	.v-pagination {
-		margin-top: var(--v-sheet-padding);
-
 		:deep(.v-button) {
 			display: inline-flex;
 		}
+	}
+
+	.table.v-pagination {
+		margin-top: var(--v-sheet-padding);
 	}
 
 	.spacer {
@@ -683,6 +701,10 @@ const selectAllowed = computed(() => {
 				width: 100% !important;
 			}
 		}
+	}
+
+	&.list {
+		margin-top: 8px;
 	}
 }
 
