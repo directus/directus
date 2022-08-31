@@ -4,12 +4,12 @@
 			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
-				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
+				<render-template :collection="templateCollection?.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
 
 		<template #subtitle>
-			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+			<v-breadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
 		</template>
 
 		<template #actions>
@@ -36,7 +36,7 @@
 					:loading="loading"
 					:initial-values="initialValues?.[junctionField]"
 					:primary-key="relatedPrimaryKey"
-					:model-value="localEdits?.[junctionField]"
+					:model-value="internalEdits?.[junctionField]"
 					:fields="junctionRelatedCollectionFields"
 					:validation-errors="junctionField ? validationErrors : undefined"
 					autofocus
@@ -47,7 +47,7 @@
 			</template>
 
 			<v-form
-				v-model="localEdits"
+				v-model="internalEdits"
 				:disabled="disabled"
 				:loading="loading"
 				:initial-values="initialValues"
@@ -63,7 +63,7 @@
 import api from '@/api';
 import FilePreview from '@/views/private/components/file-preview.vue';
 import { merge, set } from 'lodash';
-import { computed, onMounted, onUnmounted, onUpdated, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { usePermissions } from '@/composables/use-permissions';
@@ -102,18 +102,6 @@ const props = withDefaults(defineProps<Props>(), {
 	circularField: null,
 });
 
-onMounted(() => {
-	console.log("On Mounted Child")
-})
-
-onUnmounted(() => {
-	console.log("On Unmounted Child")
-})
-
-onUpdated(() => {
-	console.log("On Updated Child")
-})
-
 const emit = defineEmits(['update:active', 'input']);
 
 const { t, te } = useI18n();
@@ -125,7 +113,7 @@ const relationsStore = useRelationsStore();
 
 const { internalActive } = useActiveState();
 const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } = useJunction();
-const { internalEdits, loading, initialValues, localEdits } = useItem();
+const { internalEdits, loading, initialValues } = useItem();
 const { save, cancel } = useActions();
 
 const { collection } = toRefs(props);
@@ -160,8 +148,8 @@ const showDivider = computed(() => {
 });
 
 const { fields: junctionRelatedCollectionFields } = usePermissions(
-	junctionRelatedCollection,
-	computed(() => initialValues.value && initialValues.value[props.junctionField]),
+	junctionRelatedCollection as any,
+	computed(() => initialValues.value && initialValues.value[props.junctionField as any]),
 	computed(() => props.primaryKey === '+')
 );
 
@@ -214,7 +202,7 @@ function useFile() {
 	});
 
 	const file = computed(() => {
-		if (isDirectusFiles.value === false || !initialValues.value) return null;
+		if (isDirectusFiles.value === false || !initialValues.value || !props.junctionField) return null;
 		const fileData = initialValues.value?.[props.junctionField];
 		if (!fileData) return null;
 
@@ -230,7 +218,7 @@ function useActiveState() {
 
 	const internalActive = computed({
 		get() {
-			return props.active ?? localActive.value
+			return props.active ?? localActive.value;
 		},
 		set(newActive: boolean) {
 			localActive.value = newActive;
@@ -242,43 +230,32 @@ function useActiveState() {
 }
 
 function useItem() {
-	const localEdits = ref<Record<string, any>>({});
-
-	const internalEdits = computed<Record<string, any>>({
-		get() {
-			return {
-				...(props.edits ?? {}),
-				...localEdits.value,
-			};
-		},
-		set(newEdits) {
-			localEdits.value = newEdits;
-		},
-	});
-
+	const internalEdits = ref<Record<string, any>>({});
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
 
 	watch(
 		() => props.active,
-		(isActive, oldValue) => {
-			console.log("isActive!!", isActive, oldValue);
+		(isActive) => {
 			if (isActive) {
 				if (props.primaryKey !== '+') fetchItem();
 				if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
+				internalEdits.value = props.edits ?? {};
 			} else {
 				loading.value = false;
 				initialValues.value = null;
-				localEdits.value = {};
+				internalEdits.value = {};
 			}
 		},
-		{ immediate: true, onTrack: (event) => {console.log("Track",event)}, onTrigger: (event) => {console.log("Trigger", event)} }
+		{ immediate: true }
 	);
 
-	return { internalEdits, loading, initialValues, fetchItem, localEdits };
+	return { internalEdits, loading, initialValues, fetchItem };
 
 	async function fetchItem() {
 		loading.value = true;
+
+		if (!props.primaryKey) return;
 
 		const endpoint = props.collection.startsWith('directus_')
 			? `/${props.collection.substring(9)}/${props.primaryKey}`
@@ -306,14 +283,14 @@ function useItem() {
 
 		const collection = junctionRelatedCollection.value;
 
+		if (!collection || !junctionFieldInfo.value) return;
+
 		const endpoint = collection.startsWith('directus_')
 			? `/${collection.substring(9)}/${props.relatedPrimaryKey}`
 			: `/items/${collection}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 
 		try {
 			const response = await api.get(endpoint);
-
-			console.log(response.data.data);
 
 			initialValues.value = {
 				...(initialValues.value || {}),
@@ -334,15 +311,17 @@ function useJunction() {
 		return fieldsStore.getField(props.collection, props.junctionField);
 	});
 
-	const junctionRelatedCollection = computed(() => {
+	const junctionRelatedCollection = computed<string | null>(() => {
 		if (!props.junctionField) return null;
 
 		// If this is a m2m/m2a, there will be 2 relations associated with this field
 		const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
 
-		const relationForField: Relation = relations.find((relation: Relation) => {
+		const relationForField = relations.find((relation: Relation) => {
 			return relation.collection === props.collection && relation.field === props.junctionField;
 		});
+
+		if (!relationForField) return null;
 
 		if (relationForField.related_collection) return relationForField.related_collection;
 		if (relationForField.meta?.one_collection_field)
@@ -353,17 +332,18 @@ function useJunction() {
 		return null;
 	});
 
-	const { info: junctionRelatedCollectionInfo } = useCollection(junctionRelatedCollection);
+	const { info: junctionRelatedCollectionInfo, primaryKeyField } = useCollection(junctionRelatedCollection);
 
 	return { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits };
 
 	function setJunctionEdits(edits: any) {
 		if (!props.junctionField) return;
 
-		internalEdits.value = {
-			...internalEdits.value,
-			[props.junctionField]: edits,
-		};
+		if (props.relatedPrimaryKey !== '+' && primaryKeyField.value) {
+			edits[primaryKeyField.value.field] = props.relatedPrimaryKey;
+		}
+
+		internalEdits.value[props.junctionField] = edits;
 	}
 }
 
@@ -381,7 +361,7 @@ function useActions() {
 			return;
 		}
 
-		emit('input', localEdits.value);
+		emit('input', internalEdits.value);
 
 		internalActive.value = false;
 		internalEdits.value = {};

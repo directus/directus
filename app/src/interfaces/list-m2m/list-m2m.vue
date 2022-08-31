@@ -175,8 +175,8 @@
 		</div>
 
 		<drawer-item
-			:disabled="disabled"
 			v-model:active="editModalActive"
+			:disabled="disabled"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -256,18 +256,6 @@ const props = withDefaults(
 		allowDuplicates: false,
 	}
 );
-
-onMounted(() => {
-	console.log("On Mounted")
-})
-
-onUnmounted(() => {
-	console.log("On Unmounted")
-})
-
-onUpdated(() => {
-	console.log("On Updated")
-})
 
 const emit = defineEmits(['input']);
 const { t } = useI18n();
@@ -357,8 +345,19 @@ watch([search, searchFilter], () => {
 	page.value = 1;
 });
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	create,
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -465,10 +464,6 @@ const selectModalActive = ref(false);
 const editsAtStart = ref<Record<string, any>>({});
 let newItem = false;
 
-watch(editModalActive, (newVal) => {
-	console.log("EditModalActive", newVal)
-})
-
 function createItem() {
 	currentlyEditing.value = null;
 	relatedPrimaryKey.value = null;
@@ -484,9 +479,8 @@ function editItem(item: DisplayItem) {
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
+	editsAtStart.value = getItemEdits(item);
 	newItem = false;
-	editsAtStart.value = item;
-
 	editModalActive.value = true;
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
@@ -503,7 +497,7 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if(isEmpty(item)) return;
+	if (isEmpty(item)) return;
 
 	if (newItem) {
 		create(item);
