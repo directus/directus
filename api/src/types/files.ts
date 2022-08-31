@@ -18,8 +18,6 @@ export type File = {
 	location: string | null;
 	tags: string | null;
 	metadata: Record<string, any> | null;
-	crop_original_image_id: string | null; // uuid
-	crop_coordinates: string | null;
 };
 
 export type Metadata = {
