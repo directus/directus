@@ -79,7 +79,7 @@
 	</div>
 </template>
 
-<script async setup lang="ts">
+<script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
