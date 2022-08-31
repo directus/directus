@@ -543,6 +543,7 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
+origin: Origin
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -591,6 +592,9 @@ errors:
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
+  INVALID_CONFIG: Invalid config
+  INVALID_TOKEN: Invalid token
+  INVALID_IP: IP Address not allowed
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
@@ -607,6 +611,13 @@ errors:
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  SERVICE_UNAVAILABLE: Service Unavailable
+  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  UNEXPECTED_RESPONSE: Unexpected response
+  TOKEN_EXPIRED: Token expired
+  RANGE_NOT_SATISFIABLE: Invalid range
+  METHOD_NOT_ALLOWED: Method not allowed
+  REQUESTS_EXCEEDED: Requests limit reached
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -776,6 +787,7 @@ flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
 run_flow_on_current: Run flow on Current Item
+run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
@@ -1046,6 +1058,7 @@ fields:
     user: Action By
     comment: Comment
     user_agent: User Agent
+    origin: Origin
     ip: IP Address
     revisions: Revisions
   directus_collections:
