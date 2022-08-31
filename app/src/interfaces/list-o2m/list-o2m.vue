@@ -435,7 +435,7 @@ function editItem(item: DisplayItem) {
 	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
 
 	newItem = false;
-	editsAtStart.value = item;
+	editsAtStart.value = { [relatedPkField]: item[relatedPkField] };
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = '+';
@@ -449,23 +449,10 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if (!relationInfo.value) return;
-
 	if (newItem) {
 		create(item);
 	} else {
-		const relatedCollection = relationInfo.value.relatedCollection.collection;
-		const updatePermission = permissionsStore.getPermissionsForUser(relatedCollection, 'update');
-		// prevent update payload from containing fields that are included for displays only, without edit permission
-		const itemToUpdate =
-			updatePermission?.fields && !updatePermission.fields.includes('*')
-				? Object.entries(item).reduce((acc, [key, value]) => {
-						if (key.startsWith('$')) acc[key] = value;
-						else if (updatePermission.fields?.includes(key)) acc[key] = value;
-						return acc;
-				  }, {} as Record<string, any>)
-				: item;
-		update(itemToUpdate);
+		update(item);
 	}
 }
 
