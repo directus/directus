@@ -205,7 +205,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, clamp, get, pick } from 'lodash';
+import { isEmpty, clamp, get } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
@@ -456,10 +456,14 @@ function stageEdits(item: Record<string, any>) {
 	} else {
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
 		const updatePermission = permissionsStore.getPermissionsForUser(relatedCollection, 'update');
-		// prevent update payload containing fields that are included for displays, but without edit permission
+		// prevent update payload from containing fields that are included for displays only, without edit permission
 		const itemToUpdate =
 			updatePermission?.fields && !updatePermission.fields.includes('*')
-				? pick(item, [...updatePermission.fields, '$index', '$type', '$edits'])
+				? Object.entries(item).reduce((acc, [key, value]) => {
+						if (key.startsWith('$')) acc[key] = value;
+						else if (updatePermission.fields?.includes(key)) acc[key] = value;
+						return acc;
+				  }, {} as Record<string, any>)
 				: item;
 		update(itemToUpdate);
 	}
