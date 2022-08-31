@@ -83,6 +83,7 @@ import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, onBeforeUpdate, provide, ref, watch } from 'vue';
@@ -204,28 +205,12 @@ function useForm() {
 		}
 	);
 
-	const defaultValues = computed(() => {
-		return fields.value.reduce(function (acc, field) {
-			if (
-				field.schema?.default_value !== undefined &&
-				// Ignore autoincremented integer PK field
-				!(
-					field.schema.is_primary_key &&
-					field.schema.data_type === 'integer' &&
-					typeof field.schema.default_value === 'string'
-				)
-			) {
-				acc[field.field] = field.schema?.default_value;
-			}
-			return acc;
-		}, {} as Record<string, any>);
-	});
+	const defaultValues = getDefaultValuesFromFields(fields);
 
 	const { formFields } = useFormFields(fields);
 
 	const fieldsMap: ComputedRef<Record<string, Field | undefined>> = computed(() => {
 		if (props.loading) return {} as Record<string, undefined>;
-
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 		return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
 			const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
@@ -333,16 +318,13 @@ function apply(updates: { [field: string]: any }) {
 	}
 }
 
-function unsetValue(field: Field) {
+function unsetValue(field: Field | undefined) {
+	if (!field) return;
 	if (!props.batchMode && isDisabled(field)) return;
 
 	if (field.field in (props.modelValue || {})) {
 		const newEdits = { ...props.modelValue };
-		if (props.initialValues && field.field in props.initialValues) {
-			newEdits[field.field] = props.initialValues[field.field];
-		} else {
-			delete newEdits[field.field];
-		}
+		delete newEdits[field.field];
 		emit('update:modelValue', newEdits);
 	}
 }

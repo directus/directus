@@ -40,7 +40,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage, localDelete } = useUtil();
+	const { cleanItem, getPage, localDelete, getItemEdits } = useUtil();
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -107,6 +107,7 @@ export function useRelationMultiple(
 			if (editsIndex !== -1) {
 				merge(
 					updatedItem,
+					cloneDeep(item),
 					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
 					_value.value.update[editsIndex]
 				);
@@ -189,6 +190,7 @@ export function useRelationMultiple(
 		cleanItem,
 		isItemSelected,
 		localDelete,
+		getItemEdits,
 	};
 
 	function useActions(target: Ref<Item>) {
@@ -539,8 +541,6 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		return { cleanItem, getPage, localDelete };
-
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {
 				if (!key.startsWith('$')) acc[key] = value;
@@ -558,5 +558,32 @@ export function useRelationMultiple(
 			const end = clamp(previewQuery.value.page * previewQuery.value.limit - offset, 0, items.length);
 			return items.slice(start, end);
 		}
+
+		function getItemEdits(item: DisplayItem) {
+			if ('$type' in item && item.$index !== undefined) {
+				if (item.$type === 'created')
+					return {
+						..._value.value.create[item.$index],
+						$type: 'created',
+						$index: item.$index,
+					};
+				else if (item.$type === 'updated')
+					return {
+						..._value.value.update[item.$index],
+						$type: 'updated',
+						$index: item.$index,
+					};
+				else if (item.$type === 'deleted' && item.$edits)
+					return {
+						..._value.value.update[item.$edits],
+						$type: 'deleted',
+						$index: item.$index,
+						$edits: item.$edits,
+					};
+			}
+			return {};
+		}
+
+		return { cleanItem, getPage, localDelete, getItemEdits };
 	}
 }
