@@ -144,13 +144,8 @@
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
-					<template v-if="totalItemCount > 10">
-						<v-pagination
-							v-if="pageCount > 1"
-							v-model="page"
-							:length="pageCount"
-							:total-visible="width.includes('half') ? 3 : 5"
-						/>
+					<template v-if="pageCount > 1">
+						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
 
 						<div class="spacer" />
 

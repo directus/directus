@@ -1,5 +1,6 @@
 import { defineOperationApi, parseJSON } from '@directus/shared/utils';
 import axios, { Method } from 'axios';
+import encodeUrl from 'encodeurl';
 
 type Options = {
 	url: string;
@@ -22,9 +23,8 @@ export default defineOperationApi<Options>({
 			customHeaders['Content-Type'] = 'application/json';
 		}
 
-		const shouldEncode = decodeURI(url) === url;
 		const result = await axios({
-			url: shouldEncode ? encodeURI(url) : url,
+			url: encodeUrl(url),
 			method,
 			data: body,
 			headers: customHeaders,
