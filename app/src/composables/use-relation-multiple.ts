@@ -251,7 +251,7 @@ export function useRelationMultiple(
 
 		function select(items: (string | number)[], collection?: string) {
 			const info = relation.value;
-			if (!info) return;
+			if (!info || items.length === 0) return;
 
 			const selected = items.map((item) => {
 				switch (info.type) {
