@@ -18,7 +18,12 @@
 			<v-progress-circular indeterminate />
 		</div>
 
-		<v-notice v-else-if="error" type="error">error</v-notice>
+		<div class="warnings">
+			<v-notice v-if="!loading && error" type="error">error</v-notice>
+			<v-notice v-if="showOriginalHasCropsWarning" type="warning">
+				Attention: this image has some crops refering to it. Changing this image has irreversable effect on them!
+			</v-notice>
+		</div>
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
@@ -235,6 +240,9 @@ export default defineComponent({
 
 		const showReferToOriginalCheckbox = computed(() => props.cropInfo && !props.cropInfo.coordinates && dragMode.value === 'crop')
 
+		// TODO: add original has crops logic
+		const showOriginalHasCropsWarning = computed(() => !props.cropInfo)
+
 		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
 
 		return {
@@ -260,7 +268,8 @@ export default defineComponent({
 			setAspectRatio,
 			customAspectRatios,
 			referToOriginalImage,
-			showReferToOriginalCheckbox
+			showReferToOriginalCheckbox,
+			showOriginalHasCropsWarning
 		};
 
 		function useImage() {
@@ -320,6 +329,7 @@ export default defineComponent({
 							const cropperData = cropperInstance.value?.getData();
 
 							if (!props.cropInfo) {
+								// Default behaviour: update the directus_files entry, not the crop
 								await api.patch(`/files/${props.id}`, formData);
 							} else {
 								if (!referToOriginalImage.value && !props.cropInfo.coordinates) {
@@ -336,6 +346,8 @@ export default defineComponent({
 										width: width,
 										height: height,
 									});
+
+									await saveFileTransformationsWithoutCropping()
 								}
 							}
 
@@ -353,6 +365,30 @@ export default defineComponent({
 			async function onImageLoad() {
 				await nextTick();
 				initCropper();
+			}
+
+			async function saveFileTransformationsWithoutCropping() {
+				cropperInstance.value?.setData({
+					x: 0,
+					y: 0,
+					width: imageData.value?.width,
+					height: imageData.value?.height,
+				});
+
+				cropperInstance.value
+					?.getCroppedCanvas({
+						imageSmoothingQuality: 'high',
+					})
+					.toBlob(async (blob) => {
+						if (blob === null) {
+							saving.value = false;
+							return;
+						}
+						const formData = new FormData();
+						formData.append('file', blob, imageData.value?.filename_download);
+
+						await api.patch(`/files/${props.id}`, formData);
+					})
 			}
 		}
 
@@ -592,6 +628,16 @@ export default defineComponent({
 
 .spacer {
 	flex-grow: 1;
+}
+
+.warnings {
+	width: 2/3; 
+	position: absolute; 
+	z-index: 9999;
+	margin: 20px 20px 0;
+	
+	display: grid;
+	grid-gap: 10px;
 }
 
 .dimensions {

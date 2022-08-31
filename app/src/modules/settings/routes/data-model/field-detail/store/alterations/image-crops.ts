@@ -139,26 +139,13 @@ export function autoGenerateJunctionCollectionName(updates: StateUpdates, { getC
 }
 
 export function getAutomaticJunctionCollectionName() {
-	let index = 0;
-	let name = getName(index);
+	let name = `image_crops`;
 
-	while (collectionExists(name)) {
-		index++;
-		name = getName(index);
+	if (name.startsWith('directus_')) {
+		name = 'junction_' + name;
 	}
 
 	return name;
-
-	function getName(index: number) {
-		let name = `image_crops`;
-
-		if (name.startsWith('directus_')) {
-			name = 'junction_' + name;
-		}
-
-		if (index) return name + '_' + index;
-		return name;
-	}
 }
 
 export function updateRelationField(updates: StateUpdates) {

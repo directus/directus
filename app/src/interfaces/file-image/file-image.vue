@@ -181,7 +181,7 @@ const src = computed(() => {
 		return '/assets/' + image.value.id;
 	}
 	if (image.value.type.includes('image') && cropInfoForEditor.value.coordinates) {
-		const url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}&transforms=[ ["extract", { "width": ${cropInfo.value.width}, "height": ${cropInfo.value.height}, "left": ${cropInfo.value.x}, "top": ${cropInfo.value.y} }] ]`;
+		const url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}&transforms=[["extract",{"width": ${cropInfo.value.width}, "height": ${cropInfo.value.height}, "left": ${cropInfo.value.x}, "top": ${cropInfo.value.y}}]]`;
 		return addTokenToURL(url);
 	}
 	if (image.value.type.includes('image')) {
