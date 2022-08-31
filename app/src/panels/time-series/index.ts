@@ -1,4 +1,5 @@
 import { getGroups } from '@/utils/get-groups';
+import { Filter } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
 import PanelTimeSeries from './panel-time-series.vue';
 
@@ -12,6 +13,25 @@ export default definePanel({
 			return;
 		}
 
+		const filter: Filter = {
+			_and: [options.filter || {}],
+		};
+
+		if (options.range !== 'auto') {
+			filter._and.push(
+				{
+					[options.dateField]: {
+						_gte: `$NOW(-${options.range || '1 week'})`,
+					},
+				},
+				{
+					[options.dateField]: {
+						_lte: `$NOW`,
+					},
+				}
+			);
+		}
+
 		return {
 			collection: options.collection,
 			query: {
@@ -19,21 +39,7 @@ export default definePanel({
 				aggregate: {
 					[options.function]: [options.valueField],
 				},
-				filter: {
-					_and: [
-						{
-							[options.dateField]: {
-								_gte: `$NOW(-${options.range || '1 week'})`,
-							},
-						},
-						{
-							[options.dateField]: {
-								_lte: `$NOW`,
-							},
-						},
-						options.filter || {},
-					],
-				},
+				filter,
 				limit: -1,
 			},
 		};
@@ -175,6 +181,10 @@ export default definePanel({
 				width: 'half',
 				options: {
 					choices: [
+						{
+							text: 'Automatic (Based on data)',
+							value: 'auto',
+						},
 						{
 							text: 'Past 5 Minutes',
 							value: '5 minutes',
