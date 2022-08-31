@@ -626,6 +626,7 @@ trigger: Trigger
 flow_name: ชื่อ
 flow_tracking_activity: ติดตามกิจกรรมเท่านั้น
 flow_tracking_null: อย่าติดตามอะไรเลย
+code: โค้ด
 dashboard: แดชบอร์ด
 panel: แพแนล
 panel_options: ตัวเลือกแพแนล
@@ -1039,6 +1040,8 @@ value: ค่า
 view_project: ดูโครงการ
 report_error: แจ้งข้อผิดพลาด
 start: เริ่มต้น
+table: ตาราง
+list: รายการ
 interfaces:
   filter:
     name: ตัวกรอง
@@ -1092,6 +1095,8 @@ interfaces:
     include_seconds: รวมวินาทีด้วย
     set_to_now: ตั้งค่าเป็นตอนนี้
     use_24: ใช้รูปแบบ 24 ชั่วโมง
+  system-fields:
+    select_a_collection: เลือกคอลเลกชัน
   system-display-template:
     display-template: แม่แบบการแสดงผล
     description: ผสมระหว่างข้อความและค่าของฟิลด์

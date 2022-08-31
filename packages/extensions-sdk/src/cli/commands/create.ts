@@ -10,6 +10,7 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	API_OR_HYBRID_EXTENSION_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
+	EXTENSION_NAME_REGEX,
 } from '@directus/shared/constants';
 import { isIn } from '@directus/shared/utils';
 import { ExtensionType } from '@directus/shared/types';
@@ -26,7 +27,8 @@ const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
 type CreateOptions = { language: string };
 
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
-	const targetPath = path.resolve(name);
+	const targetDir = name.substring(name.lastIndexOf('/') + 1);
+	const targetPath = path.resolve(targetDir);
 
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
@@ -38,18 +40,23 @@ export default async function create(type: string, name: string, options: Create
 		process.exit(1);
 	}
 
+	if (targetDir.length === 0) {
+		log(`Extension name can not be empty.`, 'error');
+		process.exit(1);
+	}
+
 	if (await fse.pathExists(targetPath)) {
 		const info = await fse.stat(targetPath);
 
 		if (!info.isDirectory()) {
-			log(`Destination ${chalk.bold(name)} already exists and is not a directory.`, 'error');
+			log(`Destination ${chalk.bold(targetDir)} already exists and is not a directory.`, 'error');
 			process.exit(1);
 		}
 
 		const files = await fse.readdir(targetPath);
 
 		if (files.length > 0) {
-			log(`Destination ${chalk.bold(name)} already exists and is not empty.`, 'error');
+			log(`Destination ${chalk.bold(targetDir)} already exists and is not empty.`, 'error');
 			process.exit(1);
 		}
 	}
@@ -78,7 +85,7 @@ export default async function create(type: string, name: string, options: Create
 		: `src/index.${languageToShort(options.language)}`;
 
 	const packageManifest = {
-		name: `directus-extension-${name}`,
+		name: EXTENSION_NAME_REGEX.test(name) ? name : `directus-extension-${name}`,
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
@@ -104,7 +111,7 @@ export default async function create(type: string, name: string, options: Create
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 To start developing, run:
-  ${chalk.blue('cd')} ${name}
+  ${chalk.blue('cd')} ${targetDir}
   ${chalk.blue('npm run')} dev
 
 and then to build for production, run:

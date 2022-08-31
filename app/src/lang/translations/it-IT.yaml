@@ -793,6 +793,7 @@ start_flow: Avvia il flusso
 stop_flow: Interrompi il flusso
 create_operation: Crea un'operazione
 edit_operation: Modifica l'operazione
+code: Codice
 operation_options: Opzioni dell'operazione
 operation_name: Nome dell'operazione...
 operation_key: Identificatore per riferimento...
@@ -1403,9 +1404,10 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
+table: Tabella
+list: Elenco
 interfaces:
   filter:
     name: Filtro
@@ -1485,6 +1487,8 @@ interfaces:
     set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
     placeholder: Scegli data e ora...
+  system-fields:
+    select_a_collection: Seleziona una Raccolta
   system-display-template:
     display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
@@ -2012,7 +2016,6 @@ triggers:
     collection_and_item: Pagine della raccolta e degli elementi
     collection_only: Solo pagina della raccolta
     item_only: Solo pagina dell'elemento
-a_users_uuid: Chiave primaria UUID di un utente...
 a_flow_uuid: Chiave primaria UUID di un flusso...
 any_string_or_json: Qualsiasi stringa o JSON...
 item_payload_placeholder: Questo è il JSON usato per aggiornare i valori dei campi dell'elemento...
@@ -2058,7 +2061,6 @@ operations:
     body: Contenuto
   notification:
     name: Invia una notifica
-    description: Invia una notifica in-app a un utente
     recipient: Utente
     message: Messaggio
   request:

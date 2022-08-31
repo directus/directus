@@ -170,6 +170,14 @@ export default defineComponent({
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
+
+			:deep(.type-title) {
+				.render-template {
+					img {
+						height: 24px;
+					}
+				}
+			}
 		}
 	}
 

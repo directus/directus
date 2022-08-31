@@ -2,6 +2,136 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.16.1 (August 19, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15160](https://github.com/directus/directus/pull/15160) v-form error: Cannot read properties of undefined (reading
+    'meta') (by @br41nslug)
+
+## v9.16.0 (August 18, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#15101](https://github.com/directus/directus/pull/15101) Add "Run Script" operation (by @rijkvanzanten)
+- **App**
+  - [#15101](https://github.com/directus/directus/pull/15101) Add "Run Script" operation (by @rijkvanzanten)
+  - [#14665](https://github.com/directus/directus/pull/14665) RTL support in translation interface (by @ramonvanbezouw)
+  - [#12820](https://github.com/directus/directus/pull/12820) Initial interface of O2M & M2M Table View (by @u12206050)
+
+### :rocket: Improvements
+
+- **API**
+  - [#15149](https://github.com/directus/directus/pull/15149) API: Bypass cache for `/server/ping` (by @joselcvarela)
+  - [#15029](https://github.com/directus/directus/pull/15029) Add Content-Type header to Flows request operation when
+    applicable (by @azrikahar)
+  - [#14694](https://github.com/directus/directus/pull/14694) Allow array of user IDs for Notify operation (by
+    @azrikahar)
+- **App**
+  - [#15132](https://github.com/directus/directus/pull/15132) Unify download icon (by @Tummerhore)
+  - [#15131](https://github.com/directus/directus/pull/15131) Hide item link for delete action in activity feed (by
+    @licitdev)
+  - [#15107](https://github.com/directus/directus/pull/15107) Remove check button when displaying activity log item (by
+    @licitdev)
+  - [#15032](https://github.com/directus/directus/pull/15032) Fix date-fns format to use hours (HH) instead of era (GG)
+    in polish translation (by @piotr-cz)
+  - [#14987](https://github.com/directus/directus/pull/14987) Add allow duplicates option to M2A and M2M interfaces (by
+    @Le4Q)
+  - [#14913](https://github.com/directus/directus/pull/14913) Remove disabled override (by @u12206050)
+  - [#14858](https://github.com/directus/directus/pull/14858) Missed Kurdish language dialects (by @halwesit)
+  - [#14694](https://github.com/directus/directus/pull/14694) Allow array of user IDs for Notify operation (by
+    @azrikahar)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15148](https://github.com/directus/directus/pull/15148) Fix searching custom value and text property on v-select
+    (by @u12206050)
+  - [#15144](https://github.com/directus/directus/pull/15144) Stop groups from rendering before the conditions are
+    applied (by @br41nslug)
+  - [#15141](https://github.com/directus/directus/pull/15141) fix name removal in Presets & Bookmarks (by @azrikahar)
+  - [#15126](https://github.com/directus/directus/pull/15126) Fix URL for subfolder assets (by @licitdev)
+  - [#15117](https://github.com/directus/directus/pull/15117) Fix margin for tree view buttons (by @azrikahar)
+  - [#15113](https://github.com/directus/directus/pull/15113) Reinstate language direction translations keys (by
+    @azrikahar)
+  - [#15111](https://github.com/directus/directus/pull/15111) Fix translations interface and use-relation-multiple empty
+    edits (by @azrikahar)
+  - [#15109](https://github.com/directus/directus/pull/15109) Use img for user placeholder image in activity feed (by
+    @licitdev)
+  - [#15082](https://github.com/directus/directus/pull/15082) Fix v-image's intersection observer sometimes preventing
+    image load (by @azrikahar)
+  - [#15073](https://github.com/directus/directus/pull/15073) Fix filter by folder for file and files interface (by
+    @azrikahar)
+  - [#15065](https://github.com/directus/directus/pull/15065) Fix manually typed o2m sort field (by @azrikahar)
+  - [#15050](https://github.com/directus/directus/pull/15050) Graphql: Fix geometry type in arguments (by @joselcvarela)
+  - [#15044](https://github.com/directus/directus/pull/15044) Allow fields nested in groups to be visible (by @licitdev)
+  - [#15041](https://github.com/directus/directus/pull/15041) Show sub fields if parent exists (by @u12206050)
+  - [#15023](https://github.com/directus/directus/pull/15023) Skip fetching items when id = '+' (by @licitdev)
+  - [#15009](https://github.com/directus/directus/pull/15009) Encode webhook url only if it does not contain encoded
+    values (by @licitdev)
+  - [#15008](https://github.com/directus/directus/pull/15008) Fix map interface controls for non-native geometry types
+    (by @azrikahar)
+  - [#15005](https://github.com/directus/directus/pull/15005) Prevent clearing of trigger options when initialising (by
+    @licitdev)
+  - [#14998](https://github.com/directus/directus/pull/14998) Fix Flow operations update bug (by @azrikahar)
+  - [#14996](https://github.com/directus/directus/pull/14996) App: Do not validate circular fields (by @joselcvarela)
+  - [#14952](https://github.com/directus/directus/pull/14952) App: Do not allow to link collection `folders` to M2A
+    relationship (by @joselcvarela)
+  - [#14935](https://github.com/directus/directus/pull/14935) Fix show hidden collections for nested collections (by
+    @azrikahar)
+  - [#14867](https://github.com/directus/directus/pull/14867) Remove disabled props from presentation links (by
+    @JonathanSchndr)
+  - [#14841](https://github.com/directus/directus/pull/14841) Fix checkboxes and radio buttons overflow (by @azrikahar)
+  - [#14824](https://github.com/directus/directus/pull/14824) m2a drawer throwing errors for alternate layouts (by
+    @br41nslug)
+- **API**
+  - [#15106](https://github.com/directus/directus/pull/15106) Remove limit when loading flows (by @licitdev)
+  - [#15097](https://github.com/directus/directus/pull/15097) Remove usage of .send() when ending stream (by @licitdev)
+  - [#15087](https://github.com/directus/directus/pull/15087) Fix foreign key constraint errors for nested operations
+    when deleting a Flow (by @azrikahar)
+  - [#15081](https://github.com/directus/directus/pull/15081) Add messenger to allow list of environment variables with
+    `_FILE` suffix (by @azrikahar)
+  - [#15072](https://github.com/directus/directus/pull/15072) Fix schema apply when deleting interrelated collections
+    (by @azrikahar)
+  - [#15050](https://github.com/directus/directus/pull/15050) Graphql: Fix geometry type in arguments (by @joselcvarela)
+  - [#15010](https://github.com/directus/directus/pull/15010) Only allow null filter operators for fields with "conceal"
+    special (by @licitdev)
+  - [#15007](https://github.com/directus/directus/pull/15007) Send error status only if no data is written (by
+    @licitdev)
+  - [#14985](https://github.com/directus/directus/pull/14985) Fix decompression when floats are used, but no integers
+    are present (by @rijkvanzanten)
+  - [#14981](https://github.com/directus/directus/pull/14981) Emit nested action events after the transaction completes
+    (by @licitdev)
+  - [#14951](https://github.com/directus/directus/pull/14951) Fix validatePayload for \_or containing \_and (by
+    @u12206050)
+  - [#14854](https://github.com/directus/directus/pull/14854) Encode file import url if not already encoded (by
+    @licitdev)
+  - [#14845](https://github.com/directus/directus/pull/14845) Fix duplicate env keys (by @bjornarhagen)
+  - [#14840](https://github.com/directus/directus/pull/14840) Fix macos-release error in server info (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#15146](https://github.com/directus/directus/pull/15146) Revert "Fix "Unrestricted file system access to" messages"
+    (by @paescuj)
+  - [#15130](https://github.com/directus/directus/pull/15130) Move unit tests to files they apply to (by @rijkvanzanten)
+  - [#15093](https://github.com/directus/directus/pull/15093) Add M2M base tests (by @licitdev)
+  - [#15083](https://github.com/directus/directus/pull/15083) Skip seeding of excluded tests when running "only" in
+    blackbox (by @licitdev)
+  - [#15070](https://github.com/directus/directus/pull/15070) Enable schema caching for blackbox tests (by @licitdev)
+  - [#14954](https://github.com/directus/directus/pull/14954) Run blackbox tests when shared package / workflow is
+    updated (by @licitdev)
+  - [#14945](https://github.com/directus/directus/pull/14945) Clean-up GitHub workflows (by @paescuj)
+  - [#14943](https://github.com/directus/directus/pull/14943) Use native concurrency option to cancel outdated workflow
+    runs (by @paescuj)
+  - [#14934](https://github.com/directus/directus/pull/14934) Tweak add-to-project GitHub action (by @azrikahar)
+
+### :package: Dependency Updates
+
+- [#15047](https://github.com/directus/directus/pull/15047) Update knex-schema-inspector to 2.0.4 (by @rijkvanzanten)
+
 ## v9.15.0 (August 4, 2022)
 
 ### :sparkles: New Features
