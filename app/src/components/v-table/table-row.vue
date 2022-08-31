@@ -67,12 +67,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits(['click', 'item-selected']);
 
-const cssHeight = computed(() => props.height + 2 + 'px');
+const cssHeight = computed(() => {
+	return {
+		tableRow: props.height + 2 + 'px',
+		renderTemplateImage: props.height - 16 + 'px',
+	};
+});
 </script>
 
 <style lang="scss" scoped>
 .table-row {
-	height: v-bind(cssHeight);
+	height: v-bind('cssHeight.tableRow');
 
 	.cell {
 		display: flex;
@@ -119,6 +124,14 @@ const cssHeight = computed(() => props.height + 2 + 'px');
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
+	}
+
+	:deep(.render-template) {
+		height: v-bind('cssHeight.tableRow');
+
+		img {
+			height: v-bind('cssHeight.renderTemplateImage');
+		}
 	}
 }
 </style>
