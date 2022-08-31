@@ -14,7 +14,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete'): RequestHandl
 
 		if (!req.body) throw new InvalidPayloadException('Payload in body is required');
 
-		if (req.singleton) return next();
+		if (req.singleton && scope !== 'read' && req.method.toLowerCase() !== 'search') return next();
 
 		// Every cRUD action has either keys or query
 		let batchSchema = Joi.object().keys({
