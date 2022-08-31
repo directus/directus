@@ -534,6 +534,7 @@ activity_item: Elemento attività
 action: Azioni
 ip_address: Indirizzo IP
 user_agent: User agent
+origin: Origine
 webhooks: Webhooks
 decimals: Decimali
 value_decimals: Valore decimali
@@ -777,6 +778,7 @@ flows: Flussi
 flow: Flusso
 select_a_flow: Seleziona un flusso
 run_flow_on_current: Esegui il flusso sull'elemento corrente
+run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
 run_flow_on_selected: Nessun elemento selezionato | Eseguire il flusso su 1 elemento selezionato | Eseguire il flusso su {n} elementi selezionati
 run_flow_success: Flusso "{flow}" eseguito con successo
 trigger: Trigger
@@ -1040,6 +1042,7 @@ fields:
     user: Autore
     comment: Commento
     user_agent: User agent
+    origin: Origine
     ip: Indirizzo IP
     revisions: Revisioni
   directus_collections:
@@ -1417,6 +1420,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
