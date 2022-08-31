@@ -117,7 +117,7 @@ function setupChart() {
 	const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
 
 	const allDates = props.data.map((metric) => {
-		return toIncludeTimezoneOffest(metric.group, isFieldTimestamp);
+		return toIncludeTimezoneOffset(metric.group, isFieldTimestamp);
 	});
 
 	const minDate = Math.min(...allDates);
@@ -125,7 +125,7 @@ function setupChart() {
 
 	metrics.value = orderBy(
 		props.data.map((metric) => ({
-			x: toIncludeTimezoneOffest(metric.group, isFieldTimestamp),
+			x: toIncludeTimezoneOffset(metric.group, isFieldTimestamp),
 			y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 		})),
 		'x'
@@ -298,7 +298,7 @@ function setupChart() {
 
 	chart.value.render();
 
-	function toIncludeTimezoneOffest(time: Record<string, any>, isFieldTimestamp: boolean): number {
+	function toIncludeTimezoneOffset(time: Record<string, any>, isFieldTimestamp: boolean): number {
 		return new Date(toISO(time)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0);
 	}
 

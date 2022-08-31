@@ -39,7 +39,7 @@ export default definePanel({
 				aggregate: {
 					[options.function]: [options.valueField],
 				},
-				filter: filter,
+				filter,
 				limit: -1,
 			},
 		};
