@@ -176,7 +176,7 @@
 
 		<drawer-item
 			:disabled="disabled"
-			:active="editModalActive"
+			v-model:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -184,7 +184,6 @@
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
 			@input="stageEdits"
-			@update:active="cancelEdit"
 		/>
 
 		<drawer-collection
@@ -205,7 +204,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, onMounted, onUnmounted, onUpdated, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SearchInput from '@/views/private/components/search-input.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -257,6 +256,18 @@ const props = withDefaults(
 		allowDuplicates: false,
 	}
 );
+
+onMounted(() => {
+	console.log("On Mounted")
+})
+
+onUnmounted(() => {
+	console.log("On Unmounted")
+})
+
+onUpdated(() => {
+	console.log("On Updated")
+})
 
 const emit = defineEmits(['input']);
 const { t } = useI18n();
@@ -454,6 +465,10 @@ const selectModalActive = ref(false);
 const editsAtStart = ref<Record<string, any>>({});
 let newItem = false;
 
+watch(editModalActive, (newVal) => {
+	console.log("EditModalActive", newVal)
+})
+
 function createItem() {
 	currentlyEditing.value = null;
 	relatedPrimaryKey.value = null;
@@ -488,15 +503,13 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
+	if(isEmpty(item)) return;
+
 	if (newItem) {
 		create(item);
 	} else {
 		update(item);
 	}
-}
-
-function cancelEdit() {
-	editModalActive.value = false;
 }
 
 function deleteItem(item: DisplayItem) {

@@ -63,7 +63,7 @@
 import api from '@/api';
 import FilePreview from '@/views/private/components/file-preview.vue';
 import { merge, set } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, onUpdated, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { usePermissions } from '@/composables/use-permissions';
@@ -93,7 +93,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	active: false,
+	active: undefined,
 	primaryKey: null,
 	edits: undefined,
 	junctionField: null,
@@ -101,6 +101,18 @@ const props = withDefaults(defineProps<Props>(), {
 	relatedPrimaryKey: '+',
 	circularField: null,
 });
+
+onMounted(() => {
+	console.log("On Mounted Child")
+})
+
+onUnmounted(() => {
+	console.log("On Unmounted Child")
+})
+
+onUpdated(() => {
+	console.log("On Updated Child")
+})
 
 const emit = defineEmits(['update:active', 'input']);
 
@@ -218,7 +230,7 @@ function useActiveState() {
 
 	const internalActive = computed({
 		get() {
-			return props.active === undefined ? localActive.value : props.active;
+			return props.active ?? localActive.value
 		},
 		set(newActive: boolean) {
 			localActive.value = newActive;
@@ -249,7 +261,8 @@ function useItem() {
 
 	watch(
 		() => props.active,
-		(isActive) => {
+		(isActive, oldValue) => {
+			console.log("isActive!!", isActive, oldValue);
 			if (isActive) {
 				if (props.primaryKey !== '+') fetchItem();
 				if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
@@ -259,7 +272,7 @@ function useItem() {
 				localEdits.value = {};
 			}
 		},
-		{ immediate: true }
+		{ immediate: true, onTrack: (event) => {console.log("Track",event)}, onTrigger: (event) => {console.log("Trigger", event)} }
 	);
 
 	return { internalEdits, loading, initialValues, fetchItem, localEdits };
@@ -299,6 +312,8 @@ function useItem() {
 
 		try {
 			const response = await api.get(endpoint);
+
+			console.log(response.data.data);
 
 			initialValues.value = {
 				...(initialValues.value || {}),
