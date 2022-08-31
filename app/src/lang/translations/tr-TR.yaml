@@ -1893,6 +1893,7 @@ panels:
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
   meter:
     name: Metre
+    select_max_value: Bir maksimum değer seçmelisiniz.
     select_field: Bir alan seçmelisiniz.
     select_collection: Bir koleksiyon seçmelisiniz.
     function: İşlev
